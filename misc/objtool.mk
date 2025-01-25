@@ -3,7 +3,7 @@
 #---------------------------------------------------------------------
 LIB_ROOT = ../libs/
 
-# Define Source Directories. 
+# Define Source Directories.
 #---------------------------------------------------------------------
 DIR_SRC = ../src/
 DIR_CXX = ../$(DIR_SRC)
@@ -11,13 +11,14 @@ DIR_CXX = ../$(DIR_SRC)
 # Name of c source files to be included in build.
 #---------------------------------------------------------------------
 SRCS_C = \
-	objtool.c
+	objtool.c \
+	buffer.c
 
 # Name of cpp source files to be included in build.
 #---------------------------------------------------------------------
-SRCS_CPP = 
-	
-# Name of target and map file to be built. 
+SRCS_CPP =
+
+# Name of target and map file to be built.
 #---------------------------------------------------------------------
 TARGETBASE = objtool
 
@@ -163,7 +164,7 @@ help:
 	@echo ' checkall Function to call check external make files.'
 	@echo '-----------------------------------------------------------------------------------'
 	@echo ' clean    clean all - called from eclipse.'
-	@echo ' build    build rule external module attributes.'	
+	@echo ' build    build rule external module attributes.'
 	@echo '-----------------------------------------------------------------------------------'
 	@echo ' NOTE'
 	@echo ' ****'
@@ -174,7 +175,7 @@ help:
 	@echo ' set CROSS=ARM to build ARM version.'
 	@echo ' set CROSS=WIN to build Windows version.'
 	@echo ' set CROSS=I386 to build native version.'
-	@echo ' ' 
+	@echo ' '
 	@echo ' e.g. make -f $(TARGETBASE).mk DEBUG=y CROSS=ARM all.'
 	@echo '-----------------------------------------------------------------------------------'
 	@echo ' '
@@ -212,13 +213,13 @@ check:
 	@echo 'LIB_PATHS = $(LIB_PATHS)'
 	@echo ' '
 
-# All Target 
+# All Target
 #---------------------------------------------------------------------
 all: rm_exe dir_creation build_dependants $(TARGET)
 
 # Remove any previously build executable - to force build.
 #---------------------------------------------------------------------
-rm_exe: 
+rm_exe:
 	@echo 'Removing executable.'
 	-$(RM) $(TARGET) $(MAP_FILE) $(PROFILE_FILE)
 	@echo 'Removed.'
@@ -286,7 +287,7 @@ kprof:
 
 # Phony command definitions
 #---------------------------------------------------------------------
-#Phony 
+#Phony
 .PHONY: dir_creation clean build check checkall rm_exe help
 
 .SECONDARY:

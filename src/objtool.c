@@ -1,71 +1,8 @@
 #include <bfd.h>
-#include <elf.h>
 #include <stdio.h>
 #include <malloc.h>
 
-unsigned char *data = NULL;
-
-Elf32_Ehdr *pElfHdr32 = NULL;
-Elf64_Ehdr *pElfHdr64 = NULL;
-
-static int is32(const unsigned char *p) {
-  if (p) {
-    return 1 == p[4] ? 1 : 0;
-  }
-
-  return -1;
-}
-
-static int is64(const unsigned char *p) {
-  if (p) {
-    return 2 == p[4] ? 1 : 0;
-  }
-
-  return -1;
-}
-
-static int isELF(const unsigned char *p) {
-  if (p) {
-    return 0x7f == p[0] && 'E' == p[1] && 'L' == p[2] && 'F' == p[3] ? 1 : 0;
-  }
-
-  return -1;
-}
-
-static unsigned char* get(const char *name) {
-  FILE* f = fopen(name, "rb");
-  if (f) {
-    fseek(f, 0, SEEK_END);
-    long n = ftell(f);
-    fseek(f, 0, SEEK_SET);
-
-    unsigned char* p = malloc(n);
-    if (n != fread(p, 1, n, f)) {
-      free(p);
-    }
-
-    fclose(f);
-    return p;
-  }
-
-  return 0;
-}
-
-static Elf32_Ehdr* get_ehdr32(const unsigned char *p) {
-  return (Elf32_Ehdr*)p;
-}
-
-static Elf64_Ehdr* get_ehdr64(const unsigned char *p) {
-  return (Elf64_Ehdr*)p;
-}
-
-static Elf64_Shdr* get_shdr64(const unsigned char *p) {
-  if (p) {
-    Elf64_Ehdr *e = get_ehdr64(p);
-    return (Elf64_Shdr*)(p + e->e_shoff);
-  }
-  return NULL;
-}
+#include "buffer.h"
 
 static int show_magic64(Elf64_Ehdr *e) {
   if (e) {
@@ -139,8 +76,7 @@ static int show_shdr64(Elf64_Shdr *s) {
   return 0;
 }
 
-
-static int show(const unsigned char *p) {
+static int show(const pbuffer_t p) {
   printf("32 BIT: %d\n", is32(p));
   printf("64 BIT: %d\n", is64(p));
   printf("ELF:    %d\n", isELF(p));
@@ -184,11 +120,11 @@ int main() {
   enum bfd_architecture iarch;
   unsigned int imach;
 
-  data = get("example");
-  if (data) {
-    show(data);
+  pbuffer_t p = create("example");
+  if (p) {
+    show(p);
   }
-	
+
   bfd* ibfd = bfd_openr("example", NULL);
   if (ibfd) {
     printf("size: %lu\n", bfd_get_size(ibfd));
@@ -199,20 +135,20 @@ int main() {
     }
     start = bfd_get_start_address (ibfd);
     printf("start: %lu\n", start);
-    
+
     iarch = bfd_get_arch (ibfd);
     imach = bfd_get_mach (ibfd);
     printf("%d %d\n", iarch, imach);
-    
+
     do_section(ibfd, ".data");
     do_section(ibfd, ".symtab");
     do_section(ibfd, ".strtab");
     do_section(ibfd, ".shstrtab");
-    
+
     bfd_close(ibfd);
   }
 
-  free(data);
+  destroy(p);
   return 0;
 }
 
