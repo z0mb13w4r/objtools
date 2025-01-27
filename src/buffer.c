@@ -38,7 +38,7 @@ int issafe(pbuffer_t p) {
 }
 
 void* getp(const pbuffer_t p, const int index, const size_t size) {
-  if (issafe(p) && index < p->size && (index + size) < p->size) {
+  if (issafe(p) && (index + size - 1) < p->size) {
     return ((unsigned char*)p->data) + index;
   }
 
@@ -62,10 +62,11 @@ Elf64_Ehdr* get_ehdr64(const pbuffer_t p) {
   return (Elf64_Ehdr*)getp(p, 0, sizeof(Elf64_Ehdr));
 }
 
-Elf64_Shdr* get_shdr64(const pbuffer_t p) {
+Elf64_Shdr* get_shdr64(const pbuffer_t p, const int index) {
   Elf64_Ehdr *e = get_ehdr64(p);
   if (e) {
-    return (Elf64_Shdr*)getp(p, e->e_shoff, sizeof(Elf64_Shdr));
+    //return (Elf64_Shdr*)getp(p, e->e_shoff + (sizeof(Elf64_Shdr) * index), sizeof(Elf64_Shdr));
+    return (Elf64_Shdr*)getp(p, e->e_shoff + (e->e_shentsize * index), e->e_shentsize);
   }
 
   return NULL;
@@ -73,7 +74,7 @@ Elf64_Shdr* get_shdr64(const pbuffer_t p) {
 
 int is32(const pbuffer_t p) {
   if (issafe(p)) {
-    return 1 == get(p, 4) ? 1 : 0;
+    return 1 == get(p, EI_CLASS) ? 1 : 0;
   }
 
   return -1;
@@ -81,7 +82,7 @@ int is32(const pbuffer_t p) {
 
 int is64(const pbuffer_t p) {
   if (issafe(p)) {
-    return 2 == get(p, 4) ? 1 : 0;
+    return 2 == get(p, EI_CLASS) ? 1 : 0;
   }
 
   return -1;
@@ -89,7 +90,23 @@ int is64(const pbuffer_t p) {
 
 int isELF(const pbuffer_t p) {
   if (issafe(p)) {
-    return 0x7f == get(p, 0) && 'E' == get(p, 1) && 'L' == get(p, 2) && 'F' == get(p, 3) ? 1 : 0;
+    return 0x7f == get(p, EI_MAG0) && 'E' == get(p, EI_MAG1) && 'L' == get(p, EI_MAG2) && 'F' == get(p, EI_MAG3) ? 1 : 0;
+  }
+
+  return -1;
+}
+
+int isBigEndian(const pbuffer_t p) {
+  if (issafe(p)) {
+    return ELFDATA2MSB == get(p, EI_DATA);
+  }
+
+  return -1;
+}
+
+int isLittleEndian(const pbuffer_t p) {
+  if (issafe(p)) {
+    return ELFDATA2LSB == get(p, EI_DATA);
   }
 
   return -1;

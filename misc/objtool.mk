@@ -12,7 +12,9 @@ DIR_CXX = ../$(DIR_SRC)
 #---------------------------------------------------------------------
 SRCS_C = \
 	objtool.c \
-	buffer.c
+	buffer.c \
+	printf.c \
+	show.c
 
 # Name of cpp source files to be included in build.
 #---------------------------------------------------------------------
