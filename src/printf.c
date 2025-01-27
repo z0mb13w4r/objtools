@@ -6,8 +6,10 @@
 
 int printf_nice(const uint64_t value, const int mode) {
   switch (mode) {
-  case USE_DECIMAL:                 return printf(" %" PRId64, value);
-  case USE_DECIMAL2:                return printf(" %2" PRId64, value);
+  case USE_DEC:                     return printf(" %" PRId64, value);
+  case USE_DEC2:                    return printf(" %2" PRId64, value);
+  case USE_FHEX:                    return printf(" 0x%" PRIx64, value);
+  case USE_LHEX:                    return printf(" %" PRIx64, value);
   case USE_FHEX8:                   return printf(" 0x%2.2" PRIx64, value);
   case USE_LHEX8:                   return printf(" %2.2" PRIx64, value);
   case USE_FHEX16:                  return printf(" 0x%4.4" PRIx64, value);

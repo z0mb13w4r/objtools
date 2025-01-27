@@ -65,8 +65,16 @@ Elf64_Ehdr* get_ehdr64(const pbuffer_t p) {
 Elf64_Shdr* get_shdr64(const pbuffer_t p, const int index) {
   Elf64_Ehdr *e = get_ehdr64(p);
   if (e) {
-    //return (Elf64_Shdr*)getp(p, e->e_shoff + (sizeof(Elf64_Shdr) * index), sizeof(Elf64_Shdr));
     return (Elf64_Shdr*)getp(p, e->e_shoff + (e->e_shentsize * index), e->e_shentsize);
+  }
+
+  return NULL;
+}
+
+Elf64_Phdr* get_phdr64(const pbuffer_t p, const int index) {
+  Elf64_Ehdr *e = get_ehdr64(p);
+  if (e) {
+    return (Elf64_Phdr*)getp(p, e->e_phoff + (e->e_phentsize * index), e->e_phentsize);
   }
 
   return NULL;

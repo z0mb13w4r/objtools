@@ -79,6 +79,27 @@ static convert_t SHDRTYPE[] = {
   {0, 0}
 };
 
+static convert_t PHDRTYPE[] = {
+  {"NULL",                   PT_NULL},
+  {"LOAD",                   PT_LOAD},
+  {"DYNAMIC",                PT_DYNAMIC},
+  {"INTERP",                 PT_INTERP},
+  {"NOTE",                   PT_NOTE},
+  {"SHLIB",                  PT_SHLIB},
+  {"PHDR",                   PT_PHDR},
+  {"TLS",                    PT_TLS},
+  {"GNU_EH_FRAME",           PT_GNU_EH_FRAME},
+  {"GNU_STACK",              PT_GNU_STACK},
+  {"GNU_RELRO",              PT_GNU_RELRO},
+  {"GNU_PROPERTY",           PT_GNU_PROPERTY},
+  {"GNU_SFRAME",             PT_GNU_SFRAME},
+  {"OPENBSD_MUTABLE",        PT_OPENBSD_MUTABLE},
+  {"OPENBSD_RANDOMIZE",      PT_OPENBSD_RANDOMIZE},
+  {"OPENBSD_WXNEEDED",       PT_OPENBSD_WXNEEDED},
+  {"OPENBSD_BOOTDATA",       PT_OPENBSD_BOOTDATA},
+  {0, 0}
+};
+
 
 static const char* get_ehdrtype64(Elf64_Ehdr *e) {
   static char buff[32];
@@ -196,7 +217,24 @@ static const char* get_shdrtype64(Elf64_Shdr *s) {
     snprintf (buff, sizeof (buff), "<unknown: %x>", s->sh_type);
     return buff;
   }
-  
+
+  return NULL;
+}
+
+static const char* get_phdrtype64(Elf64_Phdr *p) {
+  static char buff[32];
+
+  if (p) {
+    for (pconvert_t x = PHDRTYPE; 0 != x->text; ++x) {
+      if (x->type == p->p_type) {
+        return x->text;
+      }
+    }
+
+    snprintf (buff, sizeof (buff), "<unknown: %x>", p->p_type);
+    return buff;
+  }
+
   return NULL;
 }
 
@@ -256,8 +294,11 @@ int show(const pbuffer_t p) {
       printf("  Size of section headers:           %d (bytes)\n",            e->e_shentsize);
       printf("  Number of section headers:         %d\n",                    e->e_shnum);
       printf("  Section header string table index: %d\n",                    e->e_shstrndx);
+      printf("\n");
 
       printf("SECTION HEADERS:\n");
+      printf("  [Nr] Name                 Type            Address          Off      Size     ES Flg Lk Inf  Al\n");
+
       char *xx = NULL;
       Elf64_Shdr *x = get_shdr64(p, e->e_shstrndx);
       if (x) {
@@ -267,30 +308,53 @@ int show(const pbuffer_t p) {
       for (Elf64_Half i = 0; i < e->e_shnum; ++i) {
         printf("  [%2d]", i);
 
-        Elf64_Shdr *s = get_shdr64(p, i);
-        if (s) {
+        Elf64_Shdr *shdr = get_shdr64(p, i);
+        if (shdr) {
           if (xx) {
-	    printf(" %-20s", xx + s->sh_name);
-	  } else {
-	    printf(" %3d", s->sh_name);
-	  }
-	  printf(" %-15s", get_shdrtype64(s));
+            printf(" %-20s", xx + shdr->sh_name);
+          } else {
+            printf(" %3d", shdr->sh_name);
+          }
+          printf(" %-15s", get_shdrtype64(shdr));
 
-          printf_nice(s->sh_addr, USE_LHEX64);
-          printf_nice(s->sh_offset, USE_LHEX32);
-          printf_nice(s->sh_size, USE_LHEX32);
-          printf_nice(s->sh_entsize, USE_LHEX8);
-	  printf(" %3s", get_shdrflags64(s));
-	  printf(" %2u %3u ", s->sh_link, s->sh_info);
-	  printf_nice(s->sh_addralign, USE_DECIMAL2);
+          printf_nice(shdr->sh_addr, USE_LHEX64);
+          printf_nice(shdr->sh_offset, USE_LHEX32);
+          printf_nice(shdr->sh_size, USE_LHEX32);
+          printf_nice(shdr->sh_entsize, USE_LHEX8);
+          printf(" %3s", get_shdrflags64(shdr));
+          printf(" %2u %3u ", shdr->sh_link, shdr->sh_info);
+          printf_nice(shdr->sh_addralign, USE_DEC2);
         }
-	printf("\n");
+        printf("\n");
       }
       printf("Key to Flags:\n");
       printf("  W (write), A (alloc), X (execute), M (merge), S (strings), I (info),\n");
       printf("  L (link order), O (extra OS processing required), G (group), T (TLS),\n");
       printf("  C (compressed), x (unknown), o (OS specific), E (exclude),\n");
       printf("  l (large), p (processor specific)\n");
+      printf("\n");
+
+      printf("PROGRAM HEADERS:\n");
+      printf("  Type            Offset VirtAddr           PhysAddr           FileSiz MemSiz Flg  Align\n");
+      for (Elf64_Half i = 0; i < e->e_phnum; ++i) {
+        Elf64_Phdr *phdr = get_phdr64(p, i);
+        printf ("  %-14s ", get_phdrtype64(phdr));
+        printf_nice(phdr->p_offset, USE_FHEX16);
+        printf_nice(phdr->p_vaddr,  USE_FHEX64);
+        printf_nice(phdr->p_paddr,  USE_FHEX64);
+        printf_nice(phdr->p_filesz, USE_FHEX16);
+        printf(" ");
+        printf_nice(phdr->p_memsz,  USE_FHEX16);
+
+        printf(" %c%c%c ",
+              (phdr->p_flags & PF_R ? 'R' : ' '),
+              (phdr->p_flags & PF_W ? 'W' : ' '),
+              (phdr->p_flags & PF_X ? 'E' : ' '));
+
+        printf_nice(phdr->p_align, USE_FHEX);
+        printf("\n");
+      }
+      printf("\n");
     }
   }
 

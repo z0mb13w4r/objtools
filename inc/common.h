@@ -20,8 +20,16 @@
 /* MSP430 magic number.  Written in the absense of everything.  */
 #define EM_MSP430_OLD          0x1059
 
-
 #define SHT_RELR               19 /* RELR relative relocations */
+
+#define PT_GNU_PROPERTY        (PT_LOOS + 0x474e553) /* GNU property */
+#define PT_GNU_SFRAME          (PT_LOOS + 0x474e554) /* SFrame stack trace information */
+
+/* OpenBSD segment types.  */
+#define PT_OPENBSD_MUTABLE     (PT_LOOS + 0x5a3dbe5)  /* Like bss, but not immutable.  */
+#define PT_OPENBSD_RANDOMIZE   (PT_LOOS + 0x5a3dbe6)  /* Fill with random data.  */
+#define PT_OPENBSD_WXNEEDED    (PT_LOOS + 0x5a3dbe7)  /* Program does W^X violations.  */
+#define PT_OPENBSD_BOOTDATA    (PT_LOOS + 0x5a41be6)  /* Section for boot arguments.  */
 
 #endif
 
