@@ -14,7 +14,8 @@ SRCS_C = \
 	objtool.c \
 	buffer.c \
 	printf.c \
-	show.c
+	options.c \
+	readelf.c
 
 # Name of cpp source files to be included in build.
 #---------------------------------------------------------------------

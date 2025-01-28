@@ -2,8 +2,9 @@
 #include <stdio.h>
 #include <malloc.h>
 
-#include "show.h"
 #include "buffer.h"
+#include "readelf.h"
+#include "options.h"
 
 static char* get_format(bfd *p) {
   if (bfd_check_format(p, bfd_archive))       return "BFD_ARCHIVE";
@@ -27,14 +28,22 @@ static void do_section(bfd *abfd, const char *name) {
   }
 }
 
-int main() {
+int main(int argc, char* argv[]) {
   bfd_vma start;
   enum bfd_architecture iarch;
   unsigned int imach;
 
-  pbuffer_t p = create("example");
-  if (p) {
-    show(p);
+  options_t o;
+
+  if (0 == get_options(&o, argc, argv)) {
+    pbuffer_t p = create(o.inpname);
+    if (p) {
+      if (OPT_READELF == o.option) {
+        readelf(p, &o);
+      }
+    }
+
+    destroy(p);
   }
 
   bfd* ibfd = bfd_openr("example", NULL);
@@ -60,7 +69,6 @@ int main() {
     bfd_close(ibfd);
   }
 
-  destroy(p);
   return 0;
 }
 

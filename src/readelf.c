@@ -1,7 +1,7 @@
 #include <stdio.h>
 
-#include "show.h"
 #include "printf.h"
+#include "readelf.h"
 
 typedef struct convert_s {
   const char* text;
@@ -238,123 +238,144 @@ static const char* get_phdrtype64(Elf64_Phdr *p) {
   return NULL;
 }
 
-int show(const pbuffer_t p) {
+int readelf(const pbuffer_t p, const poptions_t o) {
   if (isELF(p)) {
-    printf("ELF HEADER:\n");
+    if (o->readelf.do_header) {
+      printf("ELF HEADER:\n");
 
-    printf("  Magic: %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x\n",
-              get(p,  0), get(p,  1), get(p,  2), get(p,  3),
-              get(p,  4), get(p,  5), get(p,  6), get(p,  7),
-              get(p,  8), get(p,  9), get(p, 10), get(p, 11),
-              get(p, 12), get(p, 13), get(p, 14), get(p, 15));
+      printf("  Magic: %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x\n",
+                get(p,  0), get(p,  1), get(p,  2), get(p,  3),
+                get(p,  4), get(p,  5), get(p,  6), get(p,  7),
+                get(p,  8), get(p,  9), get(p, 10), get(p, 11),
+                get(p, 12), get(p, 13), get(p, 14), get(p, 15));
 
-    if (is32(p)) {
-      printf("  Class:                             ELF32\n");
-    } else if (is64(p)) {
-      printf("  Class:                             ELF64\n");
-    } else {
-      return -1;
+      if (is32(p)) {
+        printf("  Class:                             ELF32\n");
+      } else if (is64(p)) {
+        printf("  Class:                             ELF64\n");
+      } else {
+        return -1;
+      }
+
+      if (isLittleEndian(p)) {
+        printf("  Data:                              2's complement, little endian\n");
+      } else if (isBigEndian(p)) {
+        printf("  Data:                              2's complement, big endian\n");
+      } else {
+        printf("  Data:                              none\n");
+      }
+
+      if (EV_CURRENT == get(p, EI_VERSION)) {
+        printf("  Version:                           1 (current)\n");
+      } else if (EV_NONE == get(p, EI_VERSION)) {
+        printf("  Version:                           0\n");
+      } else {
+        printf("  Version:                           %d <unknown>\n", get(p, EI_VERSION));
+      }
+
+      printf("  OS/ABI:                            %s\n", get_ehdrosabi(p));
+      printf("  ABI Version:                       %d\n", get(p, EI_ABIVERSION));
     }
-
-    if (isLittleEndian(p)) {
-      printf("  Data:                              2's complement, little endian\n");
-    } else if (isBigEndian(p)) {
-      printf("  Data:                              2's complement, big endian\n");
-    } else {
-      printf("  Data:                              none\n");
-    }
-
-    if (EV_CURRENT == get(p, EI_VERSION)) {
-      printf("  Version:                           1 (current)\n");
-    } else if (EV_NONE == get(p, EI_VERSION)) {
-      printf("  Version:                           0\n");
-    } else {
-      printf("  Version:                           %d <unknown>\n", get(p, EI_VERSION));
-    }
-
-    printf("  OS/ABI:                            %s\n", get_ehdrosabi(p));
-
-    printf("  ABI Version:                       %d\n", get(p, EI_ABIVERSION));
 
     if (is32(p)) {
       Elf32_Ehdr *e = get_ehdr32(p);
     } else if (is64(p)) {
       Elf64_Ehdr *e = get_ehdr64(p);
-      printf("  Type:                              %s\n",                    get_ehdrtype64(e));
+      if (o->readelf.do_header) {
+        printf("  Type:                              %s\n",                    get_ehdrtype64(e));
 
-      printf("  Version:                           0x%x\n",                  e->e_version);
-      printf("  Entry point address:               0x%04lx\n",               e->e_entry);
-      printf("  Start of program headers:          %lu (bytes into file)\n", e->e_phoff);
-      printf("  Start of section headers:          %lu (bytes into file)\n", e->e_shoff);
-      printf("  Flags:                             0x%x\n",                  e->e_flags);
+        printf("  Version:                           0x%x\n",                  e->e_version);
+        printf("  Entry point address:               0x%04lx\n",               e->e_entry);
+        printf("  Start of program headers:          %lu (bytes into file)\n", e->e_phoff);
+        printf("  Start of section headers:          %lu (bytes into file)\n", e->e_shoff);
+        printf("  Flags:                             0x%x\n",                  e->e_flags);
 
-      printf("  Size of this header:               %d (bytes)\n",            e->e_ehsize);
-      printf("  Size of program headers:           %d (bytes)\n",            e->e_phentsize);
-      printf("  Number of program headers:         %d\n",                    e->e_phnum);
-      printf("  Size of section headers:           %d (bytes)\n",            e->e_shentsize);
-      printf("  Number of section headers:         %d\n",                    e->e_shnum);
-      printf("  Section header string table index: %d\n",                    e->e_shstrndx);
-      printf("\n");
-
-      printf("SECTION HEADERS:\n");
-      printf("  [Nr] Name                 Type            Address          Off      Size     ES Flg Lk Inf  Al\n");
-
-      char *xx = NULL;
-      Elf64_Shdr *x = get_shdr64(p, e->e_shstrndx);
-      if (x) {
-	xx = getp(p, x->sh_offset, x->sh_size);
+        printf("  Size of this header:               %d (bytes)\n",            e->e_ehsize);
+        printf("  Size of program headers:           %d (bytes)\n",            e->e_phentsize);
+        printf("  Number of program headers:         %d\n",                    e->e_phnum);
+        printf("  Size of section headers:           %d (bytes)\n",            e->e_shentsize);
+        printf("  Number of section headers:         %d\n",                    e->e_shnum);
+        printf("  Section header string table index: %d\n",                    e->e_shstrndx);
+        printf("\n");
       }
 
-      for (Elf64_Half i = 0; i < e->e_shnum; ++i) {
-        printf("  [%2d]", i);
+      if (o->readelf.do_sections) {
+        printf("SECTION HEADERS:\n");
+        printf("  [Nr] Name                 Type            Address          Off      Size     ES Flg Lk Inf  Al\n");
 
-        Elf64_Shdr *shdr = get_shdr64(p, i);
-        if (shdr) {
-          if (xx) {
-            printf(" %-20s", xx + shdr->sh_name);
-          } else {
-            printf(" %3d", shdr->sh_name);
-          }
-          printf(" %-15s", get_shdrtype64(shdr));
-
-          printf_nice(shdr->sh_addr, USE_LHEX64);
-          printf_nice(shdr->sh_offset, USE_LHEX32);
-          printf_nice(shdr->sh_size, USE_LHEX32);
-          printf_nice(shdr->sh_entsize, USE_LHEX8);
-          printf(" %3s", get_shdrflags64(shdr));
-          printf(" %2u %3u ", shdr->sh_link, shdr->sh_info);
-          printf_nice(shdr->sh_addralign, USE_DEC2);
+        char *xx = NULL;
+        Elf64_Shdr *x = get_shdr64(p, e->e_shstrndx);
+        if (x) {
+	  xx = getp(p, x->sh_offset, x->sh_size);
         }
+
+        for (Elf64_Half i = 0; i < e->e_shnum; ++i) {
+          printf("  [%2d]", i);
+
+          Elf64_Shdr *shdr = get_shdr64(p, i);
+          if (shdr) {
+            if (xx) {
+              printf(" %-20s", xx + shdr->sh_name);
+            } else {
+              printf(" %3d", shdr->sh_name);
+            }
+            printf(" %-15s", get_shdrtype64(shdr));
+
+            printf_nice(shdr->sh_addr, USE_LHEX64);
+            printf_nice(shdr->sh_offset, USE_LHEX32);
+            printf_nice(shdr->sh_size, USE_LHEX32);
+            printf_nice(shdr->sh_entsize, USE_LHEX8);
+            printf(" %3s", get_shdrflags64(shdr));
+            printf(" %2u %3u ", shdr->sh_link, shdr->sh_info);
+            printf_nice(shdr->sh_addralign, USE_DEC2);
+            // TBD
+          }
+          printf("\n");
+        }
+        printf("Key to Flags:\n");
+        printf("  W (write), A (alloc), X (execute), M (merge), S (strings), I (info),\n");
+        printf("  L (link order), O (extra OS processing required), G (group), T (TLS),\n");
+        printf("  C (compressed), x (unknown), o (OS specific), E (exclude),\n");
+        printf("  l (large), p (processor specific)\n");
         printf("\n");
       }
-      printf("Key to Flags:\n");
-      printf("  W (write), A (alloc), X (execute), M (merge), S (strings), I (info),\n");
-      printf("  L (link order), O (extra OS processing required), G (group), T (TLS),\n");
-      printf("  C (compressed), x (unknown), o (OS specific), E (exclude),\n");
-      printf("  l (large), p (processor specific)\n");
-      printf("\n");
 
-      printf("PROGRAM HEADERS:\n");
-      printf("  Type            Offset VirtAddr           PhysAddr           FileSiz MemSiz Flg  Align\n");
-      for (Elf64_Half i = 0; i < e->e_phnum; ++i) {
-        Elf64_Phdr *phdr = get_phdr64(p, i);
-        printf ("  %-14s ", get_phdrtype64(phdr));
-        printf_nice(phdr->p_offset, USE_FHEX16);
-        printf_nice(phdr->p_vaddr,  USE_FHEX64);
-        printf_nice(phdr->p_paddr,  USE_FHEX64);
-        printf_nice(phdr->p_filesz, USE_FHEX16);
-        printf(" ");
-        printf_nice(phdr->p_memsz,  USE_FHEX16);
+      if (o->readelf.do_segments) {
+        printf("PROGRAM HEADERS:\n");
+        printf("  Type            Offset VirtAddr           PhysAddr           FileSiz MemSiz Flg  Align\n");
+        for (Elf64_Half i = 0; i < e->e_phnum; ++i) {
+          Elf64_Phdr *phdr = get_phdr64(p, i);
+          printf ("  %-14s ", get_phdrtype64(phdr));
+          printf_nice(phdr->p_offset, USE_FHEX16);
+          printf_nice(phdr->p_vaddr,  USE_FHEX64);
+          printf_nice(phdr->p_paddr,  USE_FHEX64);
+          printf_nice(phdr->p_filesz, USE_FHEX16);
+          printf(" ");
+          printf_nice(phdr->p_memsz,  USE_FHEX16);
 
-        printf(" %c%c%c ",
-              (phdr->p_flags & PF_R ? 'R' : ' '),
-              (phdr->p_flags & PF_W ? 'W' : ' '),
-              (phdr->p_flags & PF_X ? 'E' : ' '));
+          printf(" %c%c%c ",
+                (phdr->p_flags & PF_R ? 'R' : ' '),
+                (phdr->p_flags & PF_W ? 'W' : ' '),
+                (phdr->p_flags & PF_X ? 'E' : ' '));
 
-        printf_nice(phdr->p_align, USE_FHEX);
+          printf_nice(phdr->p_align, USE_FHEX);
+          printf("\n");
+        }
+
         printf("\n");
+
+        printf("Section to Segment mapping:\n");
+        printf(" Segment Sections...\n");
+	for (Elf64_Half i = 0; i < e->e_phnum; ++i) {
+	  printf("  %2.2d", i);
+	  for (Elf64_Half j = 1; j < e->e_shnum; ++j) {
+            // TBD
+	  }
+	  printf("\n");
+	}
+
+	printf("\n");
       }
-      printf("\n");
     }
   }
 
