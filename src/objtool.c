@@ -33,18 +33,21 @@ int main(int argc, char* argv[]) {
   enum bfd_architecture iarch;
   unsigned int imach;
 
-  options_t o;
-
-  if (0 == get_options(&o, argc, argv)) {
-    pbuffer_t p = create(o.inpname);
-    if (p) {
-      if (OPT_READELF == o.option) {
-        readelf(p, &o);
+  poptions_t o = create(MODE_OPTIONS);
+  if (o) {
+    if (0 == get_options(o, argc, argv)) {
+      pbuffer_t p = open(o->inpname);
+      if (p) {
+        if (OPT_READELF == o->option) {
+          readelf(p, o);
+        }
       }
-    }
 
-    destroy(p);
+      destroy(p);
+    }
   }
+
+  destroy(o);
 
   bfd* ibfd = bfd_openr("example", NULL);
   if (ibfd) {

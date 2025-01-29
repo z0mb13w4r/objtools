@@ -240,7 +240,7 @@ static const char* get_phdrtype64(Elf64_Phdr *p) {
 
 int readelf(const pbuffer_t p, const poptions_t o) {
   if (isELF(p)) {
-    if (o->readelf.do_header) {
+    if (o->action & OPTREADELF_FILEHEADER) {
       printf("ELF HEADER:\n");
 
       printf("  Magic: %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x\n",
@@ -281,7 +281,7 @@ int readelf(const pbuffer_t p, const poptions_t o) {
       Elf32_Ehdr *e = get_ehdr32(p);
     } else if (is64(p)) {
       Elf64_Ehdr *e = get_ehdr64(p);
-      if (o->readelf.do_header) {
+      if (o->action & OPTREADELF_FILEHEADER) {
         printf("  Type:                              %s\n",                    get_ehdrtype64(e));
 
         printf("  Version:                           0x%x\n",                  e->e_version);
@@ -299,7 +299,7 @@ int readelf(const pbuffer_t p, const poptions_t o) {
         printf("\n");
       }
 
-      if (o->readelf.do_sections) {
+      if (o->action & OPTREADELF_SECTIONHEADERS) {
         printf("SECTION HEADERS:\n");
         printf("  [Nr] Name                 Type            Address          Off      Size     ES Flg Lk Inf  Al\n");
 
@@ -340,7 +340,7 @@ int readelf(const pbuffer_t p, const poptions_t o) {
         printf("\n");
       }
 
-      if (o->readelf.do_segments) {
+      if (o->action & OPTREADELF_PROGRAMHEADERS) {
         printf("PROGRAM HEADERS:\n");
         printf("  Type            Offset VirtAddr           PhysAddr           FileSiz MemSiz Flg  Align\n");
         for (Elf64_Half i = 0; i < e->e_phnum; ++i) {
@@ -375,6 +375,16 @@ int readelf(const pbuffer_t p, const poptions_t o) {
 	}
 
 	printf("\n");
+      }
+
+      if (o->actions) {
+        char data[518];
+        paction_t x = o->actions;
+        while (x) {
+          printf("%d %s\n", x->action, x->secname);
+	  printf_data(data, sizeof(data), USE_HEXDUMP);
+          x = x->actions;
+        }
       }
     }
   }

@@ -1,36 +1,92 @@
 #include <stdio.h>
 #include <malloc.h>
+#include <string.h>
 
 #include "buffer.h"
+#include "options.h"
 
-pbuffer_t create(const char* name) {
-  FILE* f = fopen(name, "rb");
-  if (f) {
-    pbuffer_t p = malloc(sizeof(buffer_t));
-
-    fseek(f, 0, SEEK_END);
-    p->size = ftell(f);
-    fseek(f, 0, SEEK_SET);
-
-    p->data = malloc(p->size);
-    if (p->size != fread(p->data, 1, p->size, f)) {
-      p = destroy(p);
-    }
-
-    fclose(f);
-    return p;
+static int ismode(void *p, const int mode) {
+  if (p) {
+    const char* pc = p;
+    if (MODE_GET0(mode) != pc[0]) return 0;
+    else if (MODE_GET1(mode) != pc[1]) return 0;
+    else if (MODE_GET2(mode) != pc[2]) return 0;
+    else return 1;
   }
 
   return 0;
 }
 
-pbuffer_t destroy(pbuffer_t p) {
+static void* setmode(void *p, const int mode) {
   if (p) {
-    free(p->data);
+    char* pc = p;
+    pc[0] = MODE_GET0(mode);
+    pc[1] = MODE_GET1(mode);
+    pc[2] = MODE_GET2(mode);
+  }
+
+  return p;
+}
+
+void* mallocx(const size_t size) {
+  void* p = malloc(size);
+  if (p) {
+    memset(p, 0, size);
+  }
+  return p;
+}
+
+void* create(const int mode) {
+  if (MODE_BUFFER == mode) {
+    pbuffer_t p = mallocx(sizeof(buffer_t));
+    return setmode(p, mode);
+  } else if (MODE_OPTIONS == mode) {
+    poptions_t p = mallocx(sizeof(options_t));
+    return setmode(p, mode);
+  } else if (MODE_ACTIONS == mode) {
+    paction_t p = mallocx(sizeof(action_t));
+    return setmode(p, mode);
+  }
+
+  return NULL;
+}
+
+void* destroy(void* p) {
+  if (p) {
+    if (ismode(p, MODE_BUFFER)) {
+      free(((pbuffer_t)p)->data);
+    } else if (ismode(p, MODE_OPTIONS)) {
+      destroy(((poptions_t)p)->actions);
+    } else if (ismode(p, MODE_ACTIONS)) {
+      destroy(((paction_t)p)->actions);
+    }
     free(p);
   }
 
   return NULL;
+}
+
+pbuffer_t open(const char* name) {
+  FILE* f = fopen(name, "rb");
+  if (f) {
+    pbuffer_t p = create(MODE_BUFFER);
+    if (p) {
+      fseek(f, 0, SEEK_END);
+      p->size = ftell(f);
+      fseek(f, 0, SEEK_SET);
+
+      p->data = malloc(p->size);
+      if (p->size != fread(p->data, 1, p->size, f)) {
+        p = destroy(p);
+      }
+
+      fclose(f);
+    }
+
+    return p;
+  }
+
+  return 0;
 }
 
 int issafe(pbuffer_t p) {

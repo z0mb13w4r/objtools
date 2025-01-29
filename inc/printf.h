@@ -16,8 +16,12 @@
 #define USE_LHEX32        (9)
 #define USE_FHEX64        (10)
 #define USE_LHEX64        (11)
+#define USE_CHAR          (12)
+
+#define USE_HEXDUMP       (0)
 
 int printf_nice(const uint64_t value, const int mode);
+int printf_data(const void* data, const size_t size, const int mode);
 
 #endif
 

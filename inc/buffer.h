@@ -3,14 +3,30 @@
 
 #include "common.h"
 
+#define MODE_GET0(x)            (((x) >> 0) & 0xFF)
+#define MODE_GET1(x)            (((x) >> 8) & 0xFF)
+#define MODE_GET2(x)            (((x) >> 16) & 0xFF)
+
+#define MODE_PUT0(x)            ((x) << 0)
+#define MODE_PUT1(x)            ((x) << 8)
+#define MODE_PUT2(x)            ((x) << 16)
+
+#define MODE_BUFFER             (MODE_PUT0('B') | MODE_PUT1('U') | MODE_PUT2('F'))
+#define MODE_OPTIONS            (MODE_PUT0('O') | MODE_PUT1('P') | MODE_PUT2('T'))
+#define MODE_ACTIONS            (MODE_PUT0('A') | MODE_PUT1('C') | MODE_PUT2('T'))
+
 typedef struct buffer_s {
+  char   mode[3];
   size_t size;
   void  *data;
 
 } buffer_t, *pbuffer_t;
 
-pbuffer_t create(const char* name);
-pbuffer_t destroy(pbuffer_t p);
+void* mallocx(const size_t size);
+void* create(const int mode);
+void* destroy(void* p);
+
+pbuffer_t open(const char* name);
 
 int issafe(pbuffer_t p);
 
