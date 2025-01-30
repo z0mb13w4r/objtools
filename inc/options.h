@@ -16,6 +16,11 @@
 #define OPTREADELF_NOTES               (1 << 10)
 #define OPTREADELF_VERSION             (1 << 11)
 
+#define OPTREADELF_ALL                 (OPTREADELF_SYMBOLS | OPTREADELF_RELOCS | OPTREADELF_UNWIND \
+                                           | OPTREADELF_DYNAMIC | OPTREADELF_FILEHEADER | OPTREADELF_SECTIONHEADERS \
+                                           | OPTREADELF_SECTIONGROUPS | OPTREADELF_PROGRAMHEADERS | OPTREADELF_VERSION \
+                                           | OPTREADELF_HISTOGRAM | OPTREADELF_ARCH | OPTREADELF_NOTES)
+
 #define ACT_HEXDUMP                    (0)
 #define ACT_STRDUMP                    (1)
 

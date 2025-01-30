@@ -9,11 +9,11 @@ typedef struct convert_s {
 } convert_t, *pconvert_t;
 
 static convert_t EHDRTYPE[] = {
-  {"NONE (No file type)",      ET_NONE},
-  {"REL (Relocatable file)",   ET_REL},
-  {"EXEC (Executable file)",   ET_EXEC},
-  {"DYN (Shared object file)", ET_DYN},
-  {0,                          0}
+  {"NONE (No file type)",          ET_NONE},
+  {"REL (Relocatable file)",       ET_REL},
+  {"EXEC (Executable file)",       ET_EXEC},
+  {"DYN (Shared object file)",     ET_DYN},
+  {0, 0}
 };
 
 static convert_t EHDROSABI[] = {
@@ -38,65 +38,65 @@ static convert_t EHDROSABI[] = {
 };
 
 static convert_t EHDRFLAGS[] = {
-  {"W", SHF_WRITE},
-  {"A", SHF_ALLOC},
-  {"X", SHF_EXECINSTR},
-  {"M", SHF_MERGE},
-  {"S", SHF_STRINGS},
-  {"I", SHF_INFO_LINK},
-  {"L", SHF_LINK_ORDER},
-  {"O", SHF_OS_NONCONFORMING},
-  {"G", SHF_GROUP},
-  {"T", SHF_TLS},
-  {"E", SHF_EXCLUDE},
-  {"C", SHF_COMPRESSED},
+  {"W",                            SHF_WRITE},
+  {"A",                            SHF_ALLOC},
+  {"X",                            SHF_EXECINSTR},
+  {"M",                            SHF_MERGE},
+  {"S",                            SHF_STRINGS},
+  {"I",                            SHF_INFO_LINK},
+  {"L",                            SHF_LINK_ORDER},
+  {"O",                            SHF_OS_NONCONFORMING},
+  {"G",                            SHF_GROUP},
+  {"T",                            SHF_TLS},
+  {"E",                            SHF_EXCLUDE},
+  {"C",                            SHF_COMPRESSED},
   {0, 0}
 };
 
 static convert_t SHDRTYPE[] = {
-  {"NULL",                   SHT_NULL},
-  {"PROGBITS",               SHT_PROGBITS},
-  {"SYMTAB",                 SHT_SYMTAB},
-  {"STRTAB",                 SHT_STRTAB},
-  {"RELA",                   SHT_RELA},
-  {"RELR",                   SHT_RELR},
-  {"HASH",                   SHT_HASH},
-  {"DYNAMIC",                SHT_DYNAMIC},
-  {"NOTE",                   SHT_NOTE},
-  {"NOBITS",                 SHT_NOBITS},
-  {"REL",                    SHT_REL},
-  {"SHLIB",                  SHT_SHLIB},
-  {"DYNSYM",                 SHT_DYNSYM},
-  {"INIT_ARRAY",             SHT_INIT_ARRAY},
-  {"FINI_ARRAY",             SHT_FINI_ARRAY},
-  {"PREINIT_ARRAY",          SHT_PREINIT_ARRAY},
-  {"GNU_HASH",               SHT_GNU_HASH},
-  {"GROUP",                  SHT_GROUP},
-  {"SYMTAB SECTION INDICES", SHT_SYMTAB_SHNDX},
-  {"VERDEF",                 SHT_GNU_verdef},
-  {"VERNEED",                SHT_GNU_verneed},
-  {"VERSYM",                 SHT_GNU_versym},
+  {"NULL",                         SHT_NULL},
+  {"PROGBITS",                     SHT_PROGBITS},
+  {"SYMTAB",                       SHT_SYMTAB},
+  {"STRTAB",                       SHT_STRTAB},
+  {"RELA",                         SHT_RELA},
+  {"RELR",                         SHT_RELR},
+  {"HASH",                         SHT_HASH},
+  {"DYNAMIC",                      SHT_DYNAMIC},
+  {"NOTE",                         SHT_NOTE},
+  {"NOBITS",                       SHT_NOBITS},
+  {"REL",                          SHT_REL},
+  {"SHLIB",                        SHT_SHLIB},
+  {"DYNSYM",                       SHT_DYNSYM},
+  {"INIT_ARRAY",                   SHT_INIT_ARRAY},
+  {"FINI_ARRAY",                   SHT_FINI_ARRAY},
+  {"PREINIT_ARRAY",                SHT_PREINIT_ARRAY},
+  {"GNU_HASH",                     SHT_GNU_HASH},
+  {"GROUP",                        SHT_GROUP},
+  {"SYMTAB SECTION INDICES",       SHT_SYMTAB_SHNDX},
+  {"VERDEF",                       SHT_GNU_verdef},
+  {"VERNEED",                      SHT_GNU_verneed},
+  {"VERSYM",                       SHT_GNU_versym},
   {0, 0}
 };
 
 static convert_t PHDRTYPE[] = {
-  {"NULL",                   PT_NULL},
-  {"LOAD",                   PT_LOAD},
-  {"DYNAMIC",                PT_DYNAMIC},
-  {"INTERP",                 PT_INTERP},
-  {"NOTE",                   PT_NOTE},
-  {"SHLIB",                  PT_SHLIB},
-  {"PHDR",                   PT_PHDR},
-  {"TLS",                    PT_TLS},
-  {"GNU_EH_FRAME",           PT_GNU_EH_FRAME},
-  {"GNU_STACK",              PT_GNU_STACK},
-  {"GNU_RELRO",              PT_GNU_RELRO},
-  {"GNU_PROPERTY",           PT_GNU_PROPERTY},
-  {"GNU_SFRAME",             PT_GNU_SFRAME},
-  {"OPENBSD_MUTABLE",        PT_OPENBSD_MUTABLE},
-  {"OPENBSD_RANDOMIZE",      PT_OPENBSD_RANDOMIZE},
-  {"OPENBSD_WXNEEDED",       PT_OPENBSD_WXNEEDED},
-  {"OPENBSD_BOOTDATA",       PT_OPENBSD_BOOTDATA},
+  {"NULL",                         PT_NULL},
+  {"LOAD",                         PT_LOAD},
+  {"DYNAMIC",                      PT_DYNAMIC},
+  {"INTERP",                       PT_INTERP},
+  {"NOTE",                         PT_NOTE},
+  {"SHLIB",                        PT_SHLIB},
+  {"PHDR",                         PT_PHDR},
+  {"TLS",                          PT_TLS},
+  {"GNU_EH_FRAME",                 PT_GNU_EH_FRAME},
+  {"GNU_STACK",                    PT_GNU_STACK},
+  {"GNU_RELRO",                    PT_GNU_RELRO},
+  {"GNU_PROPERTY",                 PT_GNU_PROPERTY},
+  {"GNU_SFRAME",                   PT_GNU_SFRAME},
+  {"OPENBSD_MUTABLE",              PT_OPENBSD_MUTABLE},
+  {"OPENBSD_RANDOMIZE",            PT_OPENBSD_RANDOMIZE},
+  {"OPENBSD_WXNEEDED",             PT_OPENBSD_WXNEEDED},
+  {"OPENBSD_BOOTDATA",             PT_OPENBSD_BOOTDATA},
   {0, 0}
 };
 
@@ -303,22 +303,12 @@ int readelf(const pbuffer_t p, const poptions_t o) {
         printf("SECTION HEADERS:\n");
         printf("  [Nr] Name                 Type            Address          Off      Size     ES Flg Lk Inf  Al\n");
 
-        char *xx = NULL;
-        Elf64_Shdr *x = get_shdr64(p, e->e_shstrndx);
-        if (x) {
-	  xx = getp(p, x->sh_offset, x->sh_size);
-        }
-
         for (Elf64_Half i = 0; i < e->e_shnum; ++i) {
           printf("  [%2d]", i);
 
-          Elf64_Shdr *shdr = get_shdr64(p, i);
+          Elf64_Shdr *shdr = get_shdr64byindex(p, i);
           if (shdr) {
-            if (xx) {
-              printf(" %-20s", xx + shdr->sh_name);
-            } else {
-              printf(" %3d", shdr->sh_name);
-            }
+            printf(" %-20s", get_secname64byindex(p, i));
             printf(" %-15s", get_shdrtype64(shdr));
 
             printf_nice(shdr->sh_addr, USE_LHEX64);
@@ -344,7 +334,7 @@ int readelf(const pbuffer_t p, const poptions_t o) {
         printf("PROGRAM HEADERS:\n");
         printf("  Type            Offset VirtAddr           PhysAddr           FileSiz MemSiz Flg  Align\n");
         for (Elf64_Half i = 0; i < e->e_phnum; ++i) {
-          Elf64_Phdr *phdr = get_phdr64(p, i);
+          Elf64_Phdr *phdr = get_phdr64byindex(p, i);
           printf ("  %-14s ", get_phdrtype64(phdr));
           printf_nice(phdr->p_offset, USE_FHEX16);
           printf_nice(phdr->p_vaddr,  USE_FHEX64);
@@ -377,12 +367,49 @@ int readelf(const pbuffer_t p, const poptions_t o) {
 	printf("\n");
       }
 
+      if (o->action & OPTREADELF_NOTES) {
+        if (ET_CORE != e->e_type) {
+          for (Elf64_Half i = 0; i < e->e_shnum; ++i) {
+            Elf64_Nhdr *n = get_nhdr64byindex(p, i);
+            if (n) {
+              // TBD
+              printf("Displaying notes found in: %s\n", get_secname64byindex(p, i));
+              printf("  Owner                Data size        Description\n");
+              printf("  %-20s 0x%08x", get_nhdrname64byindex(p, i), n->n_descsz);
+              printf(" %-10s\n", get_nhdrdesc64byindex(p, i));
+            }
+          }
+        }
+      }
+
       if (o->actions) {
-        char data[518];
         paction_t x = o->actions;
         while (x) {
-          printf("%d %s\n", x->action, x->secname);
-	  printf_data(data, sizeof(data), USE_HEXDUMP);
+          Elf64_Shdr* s = get_shdr64byname(p, x->secname);
+	  if (s) {
+            if (ACT_HEXDUMP == x->action) {
+              printf("Hex dump of section '%s':\n", x->secname);
+
+              if (0 != s->sh_size && s->sh_type != SHT_NOBITS) {
+                printf_data(getp(p, s->sh_offset, s->sh_size), s->sh_size, s->sh_addr, USE_HEXDUMP);
+              } else {
+                printf("readelf: Warning: Section '%s' has no data to dump!\n", x->secname);
+	      }
+	    } else if (ACT_STRDUMP == x->action) {
+              printf("String dump of section '%s':\n", x->secname);
+
+              if (0 != s->sh_size && s->sh_type != SHT_NOBITS) {
+                printf_data(getp(p, s->sh_offset, s->sh_size), s->sh_size, s->sh_addr, USE_STRDUMP);
+              } else {
+                printf("readelf: Warning: Section '%s' has no data to dump!\n", x->secname);
+	      }
+	    }
+
+            printf("\n");
+	  } else {
+            printf("readelf: Warning: Section '%s' was not dumped because it does not exist!\n", x->secname);
+	  }
+
           x = x->actions;
         }
       }

@@ -1,3 +1,4 @@
+#include <ctype.h>
 #include <inttypes.h>
 
 #include "printf.h"
@@ -16,36 +17,61 @@ int printf_nice(const uint64_t value, const int mode) {
   case USE_LHEX32:                  return printf(" %8.8" PRIx64, value);
   case USE_FHEX64:                  return printf(" 0x%16.16" PRIx64, value);
   case USE_LHEX64:                  return printf(" %16.16" PRIx64, value);
-  case USE_CHAR:                    return printf("%c", (int)(value & 0xff));
   default:
     break;
   }
 
-  return 0;
+  return -1;
 }
 
-int printf_data(const void* data, const size_t size, const int mode) {
+int printf_data(const void* data, const size_t size, const int addr, const int mode) {
 #define MAX_SIZE (16)
+  int x = addr;
   const unsigned char *p = data;
   for (size_t i = 0; i < size; ) {
-    size_t siz = size > MAX_SIZE ? MAX_SIZE : size;
-    for (size_t j = 0; j < MAX_SIZE; j++) {
-      if (j < siz)  printf_nice(p[j], USE_LHEX8);
-      else printf("  ");
+    if (USE_HEXDUMP == mode) {
+      printf_nice(x, USE_FHEX32);
+
+      size_t siz = (size - i) > MAX_SIZE ? MAX_SIZE : (size - i);
+      for (size_t j = 0; j < MAX_SIZE; j++) {
+        if (j < siz) printf_nice(p[j], USE_LHEX8);
+        else printf("   ");
+      }
+
+      printf("  ");
+
+      for (size_t k = 0; k < siz; ++k) {
+        printf("%c", isprint(p[k]) ? p[k] : '.');
+      }
+
+      printf("\n");
+
+      p += siz;
+      i += siz;
+      x += siz;
+    } else if (USE_STRDUMP == mode) {
+      while (!isprint(*p) && i < size) {
+        ++p;
+        ++i;
+      }
+
+      printf ("  [%6lx]  ", i);
+
+      while (0 != *p && i < size) {
+        if (iscntrl(*p)) printf("^%c", *p + 0x40);
+        else if (isprint(*p)) printf("%c", *p);
+        ++p;
+        ++i;
+      }
+      ++p;
+      ++i;
+
+      printf("\n");
+    } else {
+      return -1;
     }
-
-    printf("  ");
-
-    for (size_t k = 0; k < siz; ++k) {
-      char c = p[k];
-      if (c >= ' ' && c < 0x7f) printf_nice(c, USE_CHAR);
-      else printf_nice('.', USE_CHAR);
-    }
-
-    printf_nice('\n', USE_CHAR);
-    p += siz;
-    i += siz;
   }
 #undef MAX_SIZE
   return 0;
 }
+

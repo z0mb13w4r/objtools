@@ -10,24 +10,11 @@ static int get_options_readelf(poptions_t o, int argc, char** argv) {
   for (int i = 0; i < argc; ++i) {
     if ('-' == argv[i][0]) {
       if (0 == strcmp(argv[i], "-a") || 0 == strcmp(argv[i], "--all")) {
-        o->action |= OPTREADELF_SYMBOLS;
-        o->action |= OPTREADELF_RELOCS;
-        o->action |= OPTREADELF_UNWIND;
-        o->action |= OPTREADELF_DYNAMIC;
-        o->action |= OPTREADELF_FILEHEADER;
-        o->action |= OPTREADELF_SECTIONHEADERS;
-        o->action |= OPTREADELF_SECTIONGROUPS;
-        o->action |= OPTREADELF_PROGRAMHEADERS;
-        o->action |= OPTREADELF_VERSION;
-        o->action |= OPTREADELF_HISTOGRAM;
-        o->action |= OPTREADELF_ARCH;
-        o->action |= OPTREADELF_NOTES;
+        o->action |= OPTREADELF_ALL;
       } else if (0 == strcmp(argv[i], "-g") || 0 == strcmp(argv[i], "--section-groups")) {
         o->action |= OPTREADELF_SECTIONGROUPS;
       } else if (0 == strcmp(argv[i], "-e") || 0 == strcmp(argv[i], "--headers")) {
-        o->action |= OPTREADELF_FILEHEADER;
-        o->action |= OPTREADELF_SECTIONHEADERS;
-        o->action |= OPTREADELF_PROGRAMHEADERS;
+        o->action |= OPTREADELF_FILEHEADER | OPTREADELF_SECTIONHEADERS | OPTREADELF_PROGRAMHEADERS;
       } else if (0 == strcmp(argv[i], "-A") || 0 == strcmp(argv[i], "--arch-specific")) {
         o->action |= OPTREADELF_ARCH;
       } else if (0 == strcmp(argv[i], "-r") || 0 == strcmp(argv[i], "--relocs")) {
