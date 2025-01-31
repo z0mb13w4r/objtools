@@ -1,6 +1,7 @@
 #include <stdio.h>
-#include <malloc.h>
+#include <stdlib.h>
 #include <string.h>
+#include <malloc.h>
 
 #include "buffer.h"
 #include "options.h"
@@ -251,5 +252,37 @@ int isLittleEndian(const pbuffer_t p) {
   }
 
   return -1;
+}
+
+uint64_t getLE(const void *p, const size_t siz) {
+  uint64_t x = 0;
+
+  if (1 <= siz && siz <= 8) {
+    for (size_t i = 0; i < siz; ++i) {
+      x <<= 8;
+      x |= ((uint64_t) ((unsigned char*)p)[siz - i - 1]);
+    }
+  } else {
+    printf("Unhandled data length: %ld\n", siz);
+    abort ();
+  }
+
+  return x;
+}
+
+uint64_t getBE(const void *p, const size_t siz) {
+  uint64_t x = 0;
+
+  if (1 <= siz && siz <= 8) {
+    for (size_t i = 0; i < siz; ++i) {
+      x <<= 8;
+      x |= ((uint64_t) ((unsigned char*)p)[i]);
+    }
+  } else {
+    printf("Unhandled data length: %ld\n", siz);
+    abort ();
+  }
+
+  return x;
 }
 

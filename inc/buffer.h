@@ -53,5 +53,8 @@ int isELF(const pbuffer_t p);
 int isBigEndian(const pbuffer_t p);
 int isLittleEndian(const pbuffer_t p);
 
+uint64_t getLE(const void *p, const size_t siz);
+uint64_t getBE(const void *p, const size_t siz);
+
 #endif
 

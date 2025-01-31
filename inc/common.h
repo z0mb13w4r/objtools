@@ -26,10 +26,42 @@
 #define PT_GNU_SFRAME          (PT_LOOS + 0x474e554) /* SFrame stack trace information */
 
 /* OpenBSD segment types.  */
-#define PT_OPENBSD_MUTABLE     (PT_LOOS + 0x5a3dbe5)  /* Like bss, but not immutable.  */
-#define PT_OPENBSD_RANDOMIZE   (PT_LOOS + 0x5a3dbe6)  /* Fill with random data.  */
-#define PT_OPENBSD_WXNEEDED    (PT_LOOS + 0x5a3dbe7)  /* Program does W^X violations.  */
-#define PT_OPENBSD_BOOTDATA    (PT_LOOS + 0x5a41be6)  /* Section for boot arguments.  */
+#define PT_OPENBSD_MUTABLE     (PT_LOOS + 0x5a3dbe5) /* Like bss, but not immutable.  */
+#define PT_OPENBSD_RANDOMIZE   (PT_LOOS + 0x5a3dbe6) /* Fill with random data.  */
+#define PT_OPENBSD_WXNEEDED    (PT_LOOS + 0x5a3dbe7) /* Program does W^X violations.  */
+#define PT_OPENBSD_BOOTDATA    (PT_LOOS + 0x5a41be6) /* Section for boot arguments.  */
+
+/* Values used in GNU .note.ABI-tag notes (NT_GNU_ABI_TAG).  */
+#define GNU_ABI_TAG_LINUX	0
+#define GNU_ABI_TAG_HURD	1
+#define GNU_ABI_TAG_SOLARIS	2
+#define GNU_ABI_TAG_FREEBSD	3
+#define GNU_ABI_TAG_NETBSD	4
+#define GNU_ABI_TAG_SYLLABLE	5
+#define GNU_ABI_TAG_NACL	6
+
+#define NT_GNU_BUILD_ATTRIBUTE_OPEN     0x100
+#define NT_GNU_BUILD_ATTRIBUTE_FUNC     0x101
+
+#define NT_X86_CET                      0x203 /* x86 CET state. */
+                                              /* note name must be "LINUX". */
+#define NT_ARM_TAGGED_ADDR_CTRL         0x409 /* AArch64 tagged address control (prctl()) */
+#define NT_ARM_PAC_ENABLED_KEYS         0x40a /* AArch64 pointer authentication enabled keys (prctl()) */
+#define NT_ARM_SSVE                     0x40b /* AArch64 SME streaming SVE registers. */
+                                              /* Note: name must be "LINUX". */
+#define NT_ARM_ZA                       0x40c /* AArch64 SME ZA register. */
+                                              /* Note: name must be "LINUX". */
+#define NT_ARC_V2                       0x600 /* ARC HS accumulator/extra registers. */
+                                              /* note name must be "LINUX". */
+#define NT_RISCV_CSR                    0x900 /* RISC-V Control and Status Registers */
+                                              /* note name must be "LINUX". */
+
+#define NT_FPREGS                       12 /* Has a struct fpregset */
+#define NT_WIN32PSTATUS                 18 /* Has a struct win32_pstatus */
+
+/* The range 0xff000000 to 0xffffffff is set aside for notes that don't
+   originate from any particular operating system.  */
+#define NT_GDB_TDESC                    0xff000000 /* Contains copy of GDB's target description XML.  */
 
 #endif
 
