@@ -1,8 +1,9 @@
 #ifndef __PRINT_H_
 #define __PRINT_H_
 
-#include <stdio.h>
 #include <stdint.h>
+
+#include "common.h"
 
 #define USE_DEC           (0)
 #define USE_DEC2          (1)

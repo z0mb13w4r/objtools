@@ -11,7 +11,12 @@ DIR_CXX = ../$(DIR_SRC)
 # Name of c source files to be included in build.
 #---------------------------------------------------------------------
 SRCS_C = \
-	example.c
+	buffer.c \
+	printf.c \
+	elfcode.c \
+	options.c \
+	readelf.c \
+	readelf-ng.c
 
 # Name of cpp source files to be included in build.
 #---------------------------------------------------------------------
@@ -19,7 +24,7 @@ SRCS_CPP =
 
 # Name of target and map file to be built.
 #---------------------------------------------------------------------
-TARGETBASE = example
+TARGETBASE = readelf-ng
 
 ifeq ($(CROSS),ARM)
 else
@@ -35,7 +40,7 @@ ifeq ($(DEBUG),y)
 else
 	DIR_OBJ = release$(CROSS)/
 	TARGET = $(TARGETBASE)
-	DEBUG = n
+	DEBUG = y
 endif
 
 MAP_FILE = $(TARGET).map
@@ -56,6 +61,7 @@ ifeq ($(CROSS),WIN)
 SYS_OBJS =
 else
 SYS_OBJS = \
+	-lbfd \
 	-lrt
 endif
 

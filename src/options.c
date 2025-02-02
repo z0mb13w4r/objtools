@@ -1,10 +1,13 @@
-#include <stdio.h>
 #include <string.h>
 
 #include "buffer.h"
 #include "options.h"
 
-static int get_options_readelf(poptions_t o, int argc, char** argv) {
+int get_options_readelf(poptions_t o, int argc, char** argv) {
+  if (argc < 2) {
+    return -1;
+  }
+
   o->option = OPT_READELF;
 
   for (int i = 0; i < argc; ++i) {
@@ -66,6 +69,33 @@ static int get_options_readelf(poptions_t o, int argc, char** argv) {
       strcpy(o->inpname, argv[i]);
     }
   }
+
+  return 0;
+}
+
+int get_options_objcopy(poptions_t o, int argc, char** argv) {
+  if (argc < 3) {
+    return -1;
+  }
+
+  o->option = OPT_OBJCOPY;
+
+  for (int i = 0; i < argc; ++i) {
+  }
+
+  return 0;
+}
+
+int get_options_objdump(poptions_t o, int argc, char** argv) {
+  if (argc < 3) {
+    return -1;
+  }
+
+  o->option = OPT_OBJDUMP;
+
+  for (int i = 0; i < argc; ++i) {
+  }
+
   return 0;
 }
 
@@ -76,6 +106,10 @@ int get_options(poptions_t o, int argc, char** argv) {
 
   if (0 == strcmp("--readelf", argv[1])) {
     return get_options_readelf(o, argc - 2, argv + 2);
+  } else if (0 == strcmp("--objcopy", argv[1])) {
+    return get_options_objcopy(o, argc - 2, argv + 2);
+  } else if (0 == strcmp("--objdump", argv[1])) {
+    return get_options_objdump(o, argc - 2, argv + 2);
   }
 
   return -1;

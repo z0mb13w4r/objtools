@@ -1,5 +1,4 @@
 #include <bfd.h>
-#include <stdio.h>
 #include <malloc.h>
 
 #include "buffer.h"

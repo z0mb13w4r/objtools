@@ -2,6 +2,8 @@
 #define __OPTIONS_H_
 
 #define OPT_READELF                    (0)
+#define OPT_OBJDUMP                    (1)
+#define OPT_OBJCOPY                    (2)
 
 #define OPTREADELF_FILEHEADER          (1 << 0)
 #define OPTREADELF_SECTIONGROUPS       (1 << 1)
@@ -40,6 +42,10 @@ typedef struct options_s {
   int  action;
   paction_t actions;
 } options_t, *poptions_t;
+
+int get_options_readelf(poptions_t o, int argc, char** argv);
+int get_options_objcopy(poptions_t o, int argc, char** argv);
+int get_options_objdump(poptions_t o, int argc, char** argv);
 
 int get_options(poptions_t o, int argc, char** argv);
 

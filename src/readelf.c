@@ -1,7 +1,6 @@
-#include <stdio.h>
-
 #include "printf.h"
 #include "readelf.h"
+#include "elfcode.h"
 
 typedef struct convert_s {
   const char* text;
@@ -62,6 +61,19 @@ static convert_t GNUABITAB[] = {
   {"Syllable",                     GNU_ABI_TAG_SYLLABLE},
   {"NaCl",                         GNU_ABI_TAG_NACL},
   {0, 0},
+};
+
+static convert_t GNUPROPERTY[] = {
+  {"x86 ISA used: ",               GNU_PROPERTY_X86_ISA_1_USED},
+  {"x86 ISA needed: ",             GNU_PROPERTY_X86_ISA_1_NEEDED},
+  {"x86 feature: ",                GNU_PROPERTY_X86_FEATURE_1_AND},
+  {"x86 feature used: ",           GNU_PROPERTY_X86_FEATURE_2_USED},
+  {"x86 feature needed: ",         GNU_PROPERTY_X86_FEATURE_2_NEEDED},
+  {"x86 ISA used: ",               GNU_PROPERTY_X86_COMPAT_ISA_1_USED},
+  {"x86 ISA needed: ",             GNU_PROPERTY_X86_COMPAT_ISA_1_NEEDED},
+  {"x86 ISA used: ",               GNU_PROPERTY_X86_COMPAT_2_ISA_1_USED},
+  {"x86 ISA needed: ",             GNU_PROPERTY_X86_COMPAT_2_ISA_1_NEEDED},
+  {0, 0}
 };
 
 static convert_t NHDRTYPE[] = {
@@ -188,16 +200,29 @@ static convert_t PHDRTYPE[] = {
   {0, 0}
 };
 
-static const char* get_gnuabitab(const int g) {
+static const char* get_gnuabitab(const int y) {
   static char buff[32];
 
   for (pconvert_t x = GNUABITAB; 0 != x->text; ++x) {
-    if (x->type == g) {
+    if (x->type == y) {
       return x->text;
     }
   }
 
-  snprintf (buff, sizeof (buff), "<unknown: %x>", g);
+  snprintf (buff, sizeof (buff), "<unknown: %x>", y);
+  return buff;
+}
+
+static const char *get_gnuproperty64(const int y) {
+  static char buff[32];
+
+  for (pconvert_t x = GNUPROPERTY; 0 != x->text; ++x) {
+    if (x->type == y) {
+      return x->text;
+    }
+  }
+
+  snprintf (buff, sizeof (buff), "<unknown: %x>", y);
   return buff;
 }
 
@@ -482,59 +507,40 @@ int readelf(const pbuffer_t p, const poptions_t o) {
 
         printf("Section to Segment mapping:\n");
         printf(" Segment Sections...\n");
-	for (Elf64_Half i = 0; i < ehdr->e_phnum; ++i) {
-	  printf("  %2.2d", i);
-	  for (Elf64_Half j = 1; j < ehdr->e_shnum; ++j) {
-            // TBD
-	  }
+        for (Elf64_Half i = 0; i < ehdr->e_phnum; ++i) {
+          printf("  %2.2d", i);
+
+          Elf64_Phdr *phdr = get_phdr64byindex(p, i);
+          if (phdr) {
+            for (Elf64_Half j = 1; j < ehdr->e_shnum; ++j) {
+              Elf64_Shdr *shdr = get_shdr64byindex(p, j);
+              if (shdr) {
+                if (shdrinphdr64(shdr, phdr)) {
+                  printf(" %s", get_secname64byindex(p, j));
+                }
+              }
+            }
+          }
 	  printf("\n");
 	}
 
 	printf("\n");
       }
 
-      if (o->action & OPTREADELF_NOTES) {
-        if (ET_CORE != ehdr->e_type) {
-          for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
-            Elf64_Nhdr *nhdr = get_nhdr64byindex(p, i);
-            if (nhdr) {
-              printf("Displaying notes found in: %s\n", get_secname64byindex(p, i));
-              printf("  Owner                Data size        Description\n");
-              printf("  %-20s 0x%08x       %-10s\n", get_nhdrname64byindex(p, i), nhdr->n_descsz, get_nhdrtype64(p, nhdr));
+      if (o->action & OPTREADELF_DYNAMIC) {
+        // TBD
+      }
 
-              const char* cc = get_nhdrdesc64byindex(p, i);
-              if (NT_GNU_BUILD_ID == nhdr->n_type) {
-                printf("  Build ID: ");
-                for (Elf64_Word i = 0; i < nhdr->n_descsz; ++i) {
-                  printf ("%02x", cc[i] & 0xff);
-                }
-                printf ("\n");
-              } else if (NT_GNU_GOLD_VERSION == nhdr->n_type) {
-                printf("  Version: ");
-                for (Elf64_Word i = 0; i < nhdr->n_descsz && 0 != cc[i]; ++i) {
-                  printf ("%c", cc[i] & 0xff);
-                }
-                printf ("\n");
-              } else if (NT_GNU_HWCAP == nhdr->n_type) {
-                printf("  Hardware Capabilities: ");
-                // TBD
-              } else if (NT_GNU_PROPERTY_TYPE_0 == nhdr->n_type) {
-                printf("  Properties: ");
-                // TBD
-              } else if (NT_GNU_ABI_TAG == nhdr->n_type) {
-                printf("  OS: %s, ABI: %ld.%ld.%ld\n",
-                  get_gnuabitab(getLE(cc, 4)), getLE(cc + 4, 4), getLE(cc + 8, 4), getLE(cc + 12, 4));
-              } else {
-                printf("  Description Data: ");
-                for (Elf64_Word i = 0; i < nhdr->n_descsz; ++i) {
-                  printf ("%02x", cc[i] & 0xff);
-                }
-                printf ("\n");
-              }
-              printf("\n");
-            }
-          }
-        }
+      if (o->action & OPTREADELF_RELOCS) {
+        // TBD
+      }
+
+      if (o->action & OPTREADELF_UNWIND) {
+        // TBD
+      }
+
+      if (o->action & OPTREADELF_VERSION) {
+        // TBD
       }
 
       if (o->actions) {
@@ -566,6 +572,73 @@ int readelf(const pbuffer_t p, const poptions_t o) {
 	  }
 
           x = x->actions;
+        }
+      }
+
+      if (o->action & OPTREADELF_NOTES) {
+        if (ET_CORE != ehdr->e_type) {
+          for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
+            Elf64_Nhdr *nhdr = get_nhdr64byindex(p, i);
+            if (nhdr) {
+              printf("Displaying notes found in: %s\n", get_secname64byindex(p, i));
+              printf("  Owner                Data size        Description\n");
+              printf("  %-20s 0x%08x       %-10s\n", get_nhdrname64byindex(p, i), nhdr->n_descsz, get_nhdrtype64(p, nhdr));
+
+              const char* cc = get_nhdrdesc64byindex(p, i);
+              if (NT_GNU_BUILD_ID == nhdr->n_type) {
+                printf("  Build ID: ");
+                for (Elf64_Word i = 0; i < nhdr->n_descsz; ++i) {
+                  printf ("%02x", cc[i] & 0xff);
+                }
+                printf ("\n");
+              } else if (NT_GNU_GOLD_VERSION == nhdr->n_type) {
+                printf("  Version: ");
+                for (Elf64_Word i = 0; i < nhdr->n_descsz && 0 != cc[i]; ++i) {
+                  printf ("%c", cc[i] & 0xff);
+                }
+                printf ("\n");
+              } else if (NT_GNU_HWCAP == nhdr->n_type) {
+                printf("  Hardware Capabilities: ");
+                // TBD
+              } else if (NT_GNU_PROPERTY_TYPE_0 == nhdr->n_type) {
+                printf("  Properties: ");
+                for (Elf64_Word i = 0; i < nhdr->n_descsz; i += 8) {
+                  if ((nhdr->n_descsz - i) < 8) {
+                    printf("<corrupt descsz: %#x\n", nhdr->n_descsz);
+                    break;
+                  } else {
+                    // TBD
+                    unsigned int x = getLE(cc + i, 4);
+                    unsigned int y = getLE(cc + i + 4, 4);
+                    if ((nhdr->n_descsz - i + 1) < x) {
+                      printf("<corrupt type (%#x) datasz: %#x>\n", x, y);
+                      break;
+                    } else {
+//printf("A %x %x\n", x, y);
+                      if (x >= GNU_PROPERTY_LOPROC && x <= GNU_PROPERTY_HIPROC) {
+//printf("B\n");
+                        if (ehdr->e_machine == EM_X86_64 || ehdr->e_machine == EM_IAMCU || ehdr->e_machine == EM_386) {
+//printf("C\n");
+                          printf("%s", get_gnuproperty64(x));
+                        }
+                      }
+                    }
+                  }
+                }
+                printf ("\n");
+              } else if (NT_GNU_ABI_TAG == nhdr->n_type) {
+                printf("  OS: %s, ABI: %ld.%ld.%ld\n",
+                  get_gnuabitab(getLE(cc, 4)), getLE(cc + 4, 4), getLE(cc + 8, 4), getLE(cc + 12, 4));
+              } else {
+                printf("  Description Data: ");
+                for (Elf64_Word i = 0; i < nhdr->n_descsz; ++i) {
+                  printf ("%02x", cc[i] & 0xff);
+                }
+                printf ("\n");
+              }
+              printf("\n");
+            }
+          }
         }
       }
     }

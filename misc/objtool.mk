@@ -11,9 +11,10 @@ DIR_CXX = ../$(DIR_SRC)
 # Name of c source files to be included in build.
 #---------------------------------------------------------------------
 SRCS_C = \
-	objtool.c \
 	buffer.c \
 	printf.c \
+	elfcode.c \
+	objtool.c \
 	options.c \
 	readelf.c
 
@@ -98,7 +99,7 @@ PROFILE_FILE = gmon.out
 #---------------------------------------------------------------------
 ifeq ($(CROSS),ARM)
 	CROSS_COMPILE = /home/WF_3.02/wrlinux-3.0/sysroots/arm-mm6-glibc-small/x86-linux2/arm-wrs-linux-gnueabi-arm_iwmmxt_el-glibc_small-
-	DFLAGS += -DENV_LINUX -DLINUX -DTARGET_MM6
+	DFLAGS += -DENV_LINUX -DLINUX -DTARGET_ARM
 	EFLAGS  = -Wl,--no-enum-size-warning
 	LFLAGS +=
 else
