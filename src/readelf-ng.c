@@ -3,13 +3,14 @@
 #include "options.h"
 
 int main(int argc, char* argv[]) {
+  int r = -1;
   poptions_t o = create(MODE_OPTIONS);
   if (o) {
     if (0 == get_options_readelf(o, argc, argv)) {
       pbuffer_t p = open(o->inpname);
       if (p) {
         if (OPT_READELF == o->option) {
-          readelf(p, o);
+          r = readelf(p, o);
         }
       }
 
@@ -18,6 +19,6 @@ int main(int argc, char* argv[]) {
   }
 
   destroy(o);
-  return 0;
+  return r;
 }
 

@@ -15,11 +15,15 @@
 #define USE_LHEX16        (7)
 #define USE_FHEX32        (8)
 #define USE_LHEX32        (9)
-#define USE_FHEX64        (10)
-#define USE_LHEX64        (11)
+#define USE_FHEX48        (10)
+#define USE_LHEX48        (11)
+#define USE_FHEX64        (12)
+#define USE_LHEX64        (13)
 
 #define USE_HEXDUMP       (0)
 #define USE_STRDUMP       (1)
+#define USE_STR           (2)
+#define USE_HEX           (3)
 
 int printf_nice(const uint64_t value, const int mode);
 int printf_data(const void* data, const size_t size, const int addr, const int mode);

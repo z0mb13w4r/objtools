@@ -153,6 +153,31 @@ static convert_t NHDRTYPECORE[] = {
   {0, 0}
 };
 
+static convert_t RELATYPE[] = {
+  {"R_X86_64_NONE",                R_X86_64_NONE},
+  {"R_X86_64_64",                  R_X86_64_64},
+  {"R_X86_64_PC32",                R_X86_64_PC32},
+  {"R_X86_64_GOT32",               R_X86_64_GOT32},
+  {"R_X86_64_PLT32",               R_X86_64_PLT32},
+  {"R_X86_64_COPY",                R_X86_64_COPY},
+  {"R_X86_64_GLOB_DAT",            R_X86_64_GLOB_DAT},
+  {"R_X86_64_JUMP_SLOT",           R_X86_64_JUMP_SLOT},
+  {"R_X86_64_RELATIVE",            R_X86_64_RELATIVE},
+  {"R_X86_64_GOTPCREL",            R_X86_64_GOTPCREL},
+  {"R_X86_64_32",                  R_X86_64_32},
+  {"R_X86_64_32S",                 R_X86_64_32S},
+  {"R_X86_64_16",                  R_X86_64_16},
+  {"R_X86_64_PC16",                R_X86_64_PC16},
+  {"R_X86_64_8",                   R_X86_64_8},
+  {"R_X86_64_PC8",                 R_X86_64_PC8},
+  {"R_X86_64_PC64",                R_X86_64_PC64},
+  {"R_X86_64_GOTOFF64",            R_X86_64_GOTOFF64},
+  {"R_X86_64_GOTPC32",             R_X86_64_GOTPC32},
+  {"R_X86_64_SIZE32",              R_X86_64_SIZE32},
+  {"R_X86_64_SIZE64",              R_X86_64_SIZE64},
+  {0, 0}
+};
+
 static convert_t SHDRTYPE[] = {
   {"NULL",                         SHT_NULL},
   {"PROGBITS",                     SHT_PROGBITS},
@@ -209,7 +234,7 @@ static const char* get_gnuabitab(const int y) {
     }
   }
 
-  snprintf (buff, sizeof (buff), "<unknown: %x>", y);
+  snprintf(buff, sizeof (buff), "<unknown: %x>", y);
   return buff;
 }
 
@@ -222,7 +247,7 @@ static const char *get_gnuproperty64(const int y) {
     }
   }
 
-  snprintf (buff, sizeof (buff), "<unknown: %x>", y);
+  snprintf(buff, sizeof (buff), "<unknown: %x>", y);
   return buff;
 }
 
@@ -236,7 +261,7 @@ static const char* get_ehdrtype64(Elf64_Ehdr *e) {
       }
     }
 
-    snprintf (buff, sizeof (buff), "<unknown: %x>", e->e_type);
+    snprintf(buff, sizeof (buff), "<unknown: %x>", e->e_type);
     return buff;
   }
 
@@ -301,7 +326,7 @@ static const char* get_ehdrosabi(pbuffer_t p) {
       }
     }
 
-    snprintf (buff, sizeof (buff), "<unknown: %x>", e->e_type);
+    snprintf(buff, sizeof (buff), "<unknown: %x>", e->e_type);
     return buff;
   }
 
@@ -339,7 +364,24 @@ static const char* get_shdrtype64(Elf64_Shdr *s) {
       }
     }
 
-    snprintf (buff, sizeof (buff), "<unknown: %x>", s->sh_type);
+    snprintf(buff, sizeof (buff), "<unknown: %x>", s->sh_type);
+    return buff;
+  }
+
+  return NULL;
+}
+
+static const char* get_relatype(Elf64_Rela *r) {
+  static char buff[32];
+
+  if (r) {
+    for (pconvert_t x = RELATYPE; 0 != x->text; ++x) {
+      if (x->type == (r->r_info & 0xff)) {
+        return x->text;
+      }
+    }
+
+    snprintf(buff, sizeof (buff), "<unknown: %lx>", r->r_info);
     return buff;
   }
 
@@ -365,7 +407,7 @@ static const char* get_nhdrtype64(const pbuffer_t p, Elf64_Nhdr *n) {
       }
     }
 
-    snprintf (buff, sizeof (buff), "<unknown: %x>", n->n_type);
+    snprintf(buff, sizeof (buff), "<unknown: %x>", n->n_type);
     return buff;
   }
 
@@ -382,7 +424,7 @@ static const char* get_phdrtype64(Elf64_Phdr *p) {
       }
     }
 
-    snprintf (buff, sizeof (buff), "<unknown: %x>", p->p_type);
+    snprintf(buff, sizeof (buff), "<unknown: %x>", p->p_type);
     return buff;
   }
 
@@ -469,7 +511,6 @@ int readelf(const pbuffer_t p, const poptions_t o) {
             printf(" %3s", get_shdrflags64(shdr));
             printf(" %2u %3u ", shdr->sh_link, shdr->sh_info);
             printf_nice(shdr->sh_addralign, USE_DEC2);
-            // TBD
           }
           printf("\n");
         }
@@ -486,21 +527,29 @@ int readelf(const pbuffer_t p, const poptions_t o) {
         printf("  Type            Offset VirtAddr           PhysAddr           FileSiz MemSiz Flg  Align\n");
         for (Elf64_Half i = 0; i < ehdr->e_phnum; ++i) {
           Elf64_Phdr *phdr = get_phdr64byindex(p, i);
-          printf ("  %-14s ", get_phdrtype64(phdr));
-          printf_nice(phdr->p_offset, USE_FHEX16);
-          printf_nice(phdr->p_vaddr,  USE_FHEX64);
-          printf_nice(phdr->p_paddr,  USE_FHEX64);
-          printf_nice(phdr->p_filesz, USE_FHEX16);
-          printf(" ");
-          printf_nice(phdr->p_memsz,  USE_FHEX16);
+          if (phdr) {
+            printf ("  %-14s ", get_phdrtype64(phdr));
+            printf_nice(phdr->p_offset, USE_FHEX16);
+            printf_nice(phdr->p_vaddr,  USE_FHEX64);
+            printf_nice(phdr->p_paddr,  USE_FHEX64);
+            printf_nice(phdr->p_filesz, USE_FHEX16);
+            printf(" ");
+            printf_nice(phdr->p_memsz,  USE_FHEX16);
 
-          printf(" %c%c%c ",
-                (phdr->p_flags & PF_R ? 'R' : ' '),
-                (phdr->p_flags & PF_W ? 'W' : ' '),
-                (phdr->p_flags & PF_X ? 'E' : ' '));
+            printf(" %c%c%c ",
+                  (phdr->p_flags & PF_R ? 'R' : ' '),
+                  (phdr->p_flags & PF_W ? 'W' : ' '),
+                  (phdr->p_flags & PF_X ? 'E' : ' '));
 
-          printf_nice(phdr->p_align, USE_FHEX);
-          printf("\n");
+            printf_nice(phdr->p_align, USE_FHEX);
+            printf("\n");
+
+            if (PT_INTERP == phdr->p_type) {
+              printf("    [Requesting program interpreter:" );
+              printf_data(getp(p, phdr->p_offset, phdr->p_filesz), phdr->p_filesz, 0, USE_STR);
+              printf("]\n");
+            }
+          }
         }
 
         printf("\n");
@@ -532,6 +581,49 @@ int readelf(const pbuffer_t p, const poptions_t o) {
       }
 
       if (o->action & OPTREADELF_RELOCS) {
+        for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
+          Elf64_Shdr *shdr = get_shdr64byindex(p, i);
+          if (shdr) {
+            if (SHT_RELA == shdr->sh_type || SHT_REL == shdr->sh_type || SHT_RELR == shdr->sh_type) {
+              size_t cnt = shdr->sh_size / shdr->sh_entsize;
+
+              printf("Relocation section");
+              printf(" %s", get_secname64byindex(p, i));
+              printf(" at offset");
+              printf_nice(shdr->sh_offset, USE_FHEX16);
+              printf(" contains");
+              printf_nice(cnt, USE_DEC);
+              printf(" %s\n", 1 == cnt ? "entry:" : "entries:");
+	      if (SHT_RELA == shdr->sh_type) {
+                printf(" Offset       Info             Type               Symbol's Value  Symbol's Name + Addend\n");
+              } else {
+                printf(" Offset       Info             Type               Symbol's Value  Symbol's Name\n");
+              }
+
+              void *rr = get64s(p, shdr);
+              for (size_t j = 0; j < cnt; j++) {
+                if (SHT_REL == shdr->sh_type) {
+                  Elf64_Rel *r = rr + (j * sizeof(Elf64_Rel));
+                  if (r) {
+                    printf_nice(r->r_offset, USE_LHEX48);
+                    printf_nice(r->r_info, USE_LHEX48);
+                    printf(" %-20s", get_relatype(r));
+                  }
+                } else if (SHT_RELA == shdr->sh_type) {
+                  Elf64_Rela *r = rr + (j * sizeof(Elf64_Rela));
+                  if (r) {
+                    printf_nice(r->r_offset, USE_LHEX48);
+                    printf_nice(r->r_info, USE_LHEX48);
+                    printf(" %-20s", get_relatype(r));
+                  }
+                } else if (SHT_RELR == shdr->sh_type) {
+                }
+                printf("\n");
+              }
+            }
+          }
+        }
+
         // TBD
       }
 
@@ -587,15 +679,11 @@ int readelf(const pbuffer_t p, const poptions_t o) {
               const char* cc = get_nhdrdesc64byindex(p, i);
               if (NT_GNU_BUILD_ID == nhdr->n_type) {
                 printf("  Build ID: ");
-                for (Elf64_Word i = 0; i < nhdr->n_descsz; ++i) {
-                  printf ("%02x", cc[i] & 0xff);
-                }
+                printf_data(cc, nhdr->n_descsz, 0, USE_HEX);
                 printf ("\n");
               } else if (NT_GNU_GOLD_VERSION == nhdr->n_type) {
                 printf("  Version: ");
-                for (Elf64_Word i = 0; i < nhdr->n_descsz && 0 != cc[i]; ++i) {
-                  printf ("%c", cc[i] & 0xff);
-                }
+                printf_data(cc, nhdr->n_descsz, 0, USE_STR);
                 printf ("\n");
               } else if (NT_GNU_HWCAP == nhdr->n_type) {
                 printf("  Hardware Capabilities: ");
@@ -631,9 +719,7 @@ int readelf(const pbuffer_t p, const poptions_t o) {
                   get_gnuabitab(getLE(cc, 4)), getLE(cc + 4, 4), getLE(cc + 8, 4), getLE(cc + 12, 4));
               } else {
                 printf("  Description Data: ");
-                for (Elf64_Word i = 0; i < nhdr->n_descsz; ++i) {
-                  printf ("%02x", cc[i] & 0xff);
-                }
+                printf_data(cc, nhdr->n_descsz, 0, USE_STR);
                 printf ("\n");
               }
               printf("\n");

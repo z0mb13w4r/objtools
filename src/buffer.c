@@ -92,16 +92,24 @@ int issafe(pbuffer_t p) {
   return p && p->data;
 }
 
-void* getp(const pbuffer_t p, const int index, const size_t size) {
-  if (issafe(p) && (index + size - 1) < p->size) {
-    return ((unsigned char*)p->data) + index;
+void* get64s(const pbuffer_t p, Elf64_Shdr *s) {
+  if (s) {
+    return getp(p, s->sh_offset, s->sh_size);
   }
 
   return NULL;
 }
 
-int get(const pbuffer_t p, const int index) {
-  unsigned char *v = getp(p, index, 1);
+void* getp(const pbuffer_t p, const int offset, const size_t size) {
+  if (issafe(p) && (offset + size - 1) < p->size) {
+    return ((unsigned char*)p->data) + offset;
+  }
+
+  return NULL;
+}
+
+int get(const pbuffer_t p, const int offset) {
+  unsigned char *v = getp(p, offset, 1);
   if (v) {
     return *v;
   }

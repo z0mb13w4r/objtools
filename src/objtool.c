@@ -15,19 +15,20 @@ static char* get_format(bfd *p) {
 
 static void do_section(bfd *abfd, const char *name) {
   printf("-- %s\n", name);
-  asection *osec = bfd_get_section_by_name(abfd, ".data");
+  asection *osec = bfd_get_section_by_name(abfd, name);
   if (osec) {
     printf("got section\n");
-    if ((bfd_section_flags (osec) & SEC_HAS_CONTENTS) == 0) {
+    if ((bfd_section_flags(osec) & SEC_HAS_CONTENTS) == 0) {
       printf("no contents\n");
     } else {
-      bfd_size_type size = bfd_section_size (osec);
+      bfd_size_type size = bfd_section_size(osec);
       printf("section size: %lu\n", size);
     }
   }
 }
 
 int main(int argc, char* argv[]) {
+  int r = -1;
   bfd_vma start;
   enum bfd_architecture iarch;
   unsigned int imach;
@@ -38,7 +39,7 @@ int main(int argc, char* argv[]) {
       pbuffer_t p = open(o->inpname);
       if (p) {
         if (OPT_READELF == o->option) {
-          readelf(p, o);
+          r = readelf(p, o);
         }
       }
 
@@ -71,6 +72,6 @@ int main(int argc, char* argv[]) {
     bfd_close(ibfd);
   }
 
-  return 0;
+  return r;
 }
 

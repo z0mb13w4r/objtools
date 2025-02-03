@@ -30,8 +30,9 @@ pbuffer_t open(const char* name);
 
 int issafe(pbuffer_t p);
 
-void* getp(const pbuffer_t p, const int index, const size_t size);
-int   get(const pbuffer_t p, const int index);
+void* get64s(const pbuffer_t p, Elf64_Shdr *s);
+void* getp(const pbuffer_t p, const int offset, const size_t size);
+int   get(const pbuffer_t p, const int offset);
 
 Elf32_Ehdr* get_ehdr32(const pbuffer_t p);
 Elf64_Ehdr* get_ehdr64(const pbuffer_t p);

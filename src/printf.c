@@ -15,6 +15,8 @@ int printf_nice(const uint64_t value, const int mode) {
   case USE_LHEX16:                  return printf(" %4.4" PRIx64, value);
   case USE_FHEX32:                  return printf(" 0x%8.8" PRIx64, value);
   case USE_LHEX32:                  return printf(" %8.8" PRIx64, value);
+  case USE_FHEX48:                  return printf(" 0x%12.12" PRIx64, value);
+  case USE_LHEX48:                  return printf(" %12.12" PRIx64, value);
   case USE_FHEX64:                  return printf(" 0x%16.16" PRIx64, value);
   case USE_LHEX64:                  return printf(" %16.16" PRIx64, value);
   default:
@@ -27,8 +29,9 @@ int printf_nice(const uint64_t value, const int mode) {
 int printf_data(const void* data, const size_t size, const int addr, const int mode) {
 #define MAX_SIZE (16)
   int x = addr;
+  size_t i = 0;
   const unsigned char *p = data;
-  for (size_t i = 0; i < size; ) {
+  for (i = 0; i < size; ) {
     if (USE_HEXDUMP == mode) {
       printf_nice(x, USE_FHEX32);
 
@@ -67,11 +70,21 @@ int printf_data(const void* data, const size_t size, const int addr, const int m
       ++i;
 
       printf("\n");
+    } else if (USE_STR == mode) {
+      if (0 == *p) return i;
+      else if (iscntrl(*p)) printf("^%c", *p + 0x40);
+      else printf("%c", isprint(*p) ? *p : '.');
+      ++p;
+      ++i;
+    } else if (USE_HEX == mode) {
+      printf("%2x", *p);
+      ++p;
+      ++i;
     } else {
       return -1;
     }
   }
 #undef MAX_SIZE
-  return 0;
+  return i;
 }
 
