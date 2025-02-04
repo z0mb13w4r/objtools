@@ -153,7 +153,7 @@ static convert_t NHDRTYPECORE[] = {
   {0, 0}
 };
 
-static convert_t RELATYPE[] = {
+static convert_t RELTYPE[] = {
   {"R_X86_64_NONE",                R_X86_64_NONE},
   {"R_X86_64_64",                  R_X86_64_64},
   {"R_X86_64_PC32",                R_X86_64_PC32},
@@ -371,11 +371,28 @@ static const char* get_shdrtype64(Elf64_Shdr *s) {
   return NULL;
 }
 
+static const char* get_reltype(Elf64_Rel *r) {
+  static char buff[32];
+
+  if (r) {
+    for (pconvert_t x = RELTYPE; 0 != x->text; ++x) {
+      if (x->type == (r->r_info & 0xff)) {
+        return x->text;
+      }
+    }
+
+    snprintf(buff, sizeof (buff), "<unknown: %lx>", r->r_info);
+    return buff;
+  }
+
+  return NULL;
+}
+
 static const char* get_relatype(Elf64_Rela *r) {
   static char buff[32];
 
   if (r) {
-    for (pconvert_t x = RELATYPE; 0 != x->text; ++x) {
+    for (pconvert_t x = RELTYPE; 0 != x->text; ++x) {
       if (x->type == (r->r_info & 0xff)) {
         return x->text;
       }
@@ -607,7 +624,7 @@ int readelf(const pbuffer_t p, const poptions_t o) {
                   if (r) {
                     printf_nice(r->r_offset, USE_LHEX48);
                     printf_nice(r->r_info, USE_LHEX48);
-                    printf(" %-20s", get_relatype(r));
+                    printf(" %-20s", get_reltype(r));
                   }
                 } else if (SHT_RELA == shdr->sh_type) {
                   Elf64_Rela *r = rr + (j * sizeof(Elf64_Rela));
@@ -615,6 +632,22 @@ int readelf(const pbuffer_t p, const poptions_t o) {
                     printf_nice(r->r_offset, USE_LHEX48);
                     printf_nice(r->r_info, USE_LHEX48);
                     printf(" %-20s", get_relatype(r));
+		    switch (r->r_info & 0xff) {
+                    case R_X86_64_8:
+                    case R_X86_64_16:
+                    case R_X86_64_32:
+                    case R_X86_64_32S:
+                    case R_X86_64_64:
+                      break;
+                    case R_X86_64_RELATIVE:
+                      printf_nice(r->r_addend, USE_HEX);
+                      break;
+                    case R_X86_64_GLOB_DAT:
+                    case R_X86_64_JUMP_SLOT:
+                      printf_nice(r->r_addend, USE_LHEX64);
+                      //printf_data(getp(p, r->r_offset, 20), 20, 0, USE_STR);
+                      break;
+                    }
                   }
                 } else if (SHT_RELR == shdr->sh_type) {
                 }

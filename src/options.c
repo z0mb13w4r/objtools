@@ -3,6 +3,30 @@
 #include "buffer.h"
 #include "options.h"
 
+typedef struct args_s {
+  char  option1;
+  char *option2;
+  int   actions;
+} args_t, *pargs_t;
+
+static const args_t READELFARGS[] = {
+  {'a', "--all", OPTREADELF_ALL},
+  {'g', "--section-groups",  OPTREADELF_SECTIONGROUPS},
+  {'e', "--headers",         OPTREADELF_FILEHEADER | OPTREADELF_SECTIONHEADERS | OPTREADELF_PROGRAMHEADERS},
+  {'A', "--arch-specific",   OPTREADELF_ARCH},
+  {'r', "--relocs",          OPTREADELF_RELOCS},
+  {'u', "--unwind",          OPTREADELF_UNWIND},
+  {'h', "--file-header",     OPTREADELF_FILEHEADER},
+  {'l', "--program-headers", OPTREADELF_PROGRAMHEADERS},
+  {'s', "--symbols",         OPTREADELF_SYMBOLS},
+  {'S', "--section-headers", OPTREADELF_SECTIONHEADERS},
+  {'d', "--dynamic",         OPTREADELF_DYNAMIC},
+  {'I', "--histogram",       OPTREADELF_HISTOGRAM},
+  {'n', "--notes",           OPTREADELF_NOTES},
+  {'V', NULL,                OPTREADELF_VERSION},
+  {0, 0}
+};
+
 int get_options_readelf(poptions_t o, int argc, char** argv) {
   if (argc < 2) {
     return -1;
