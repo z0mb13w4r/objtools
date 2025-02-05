@@ -13,6 +13,8 @@ int printf_nice(const uint64_t value, const int mode) {
   case USE_LHEX8:                   return printf(" %2.2" PRIx64, value);
   case USE_FHEX16:                  return printf(" 0x%4.4" PRIx64, value);
   case USE_LHEX16:                  return printf(" %4.4" PRIx64, value);
+  case USE_FHEX24:                  return printf(" 0x%6.6" PRIx64, value);
+  case USE_LHEX24:                  return printf(" %6.6" PRIx64, value);
   case USE_FHEX32:                  return printf(" 0x%8.8" PRIx64, value);
   case USE_LHEX32:                  return printf(" %8.8" PRIx64, value);
   case USE_FHEX48:                  return printf(" 0x%12.12" PRIx64, value);

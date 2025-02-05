@@ -4,6 +4,9 @@
 #include "buffer.h"
 #include "options.h"
 
+#define ELF_ALIGN_UP(addr, boundary) \
+  (((addr) + ((boundary) - 1)) & ~ ((boundary) -1))
+
 static int ismode(void *p, const int mode) {
   if (p) {
     const char* pc = p;
@@ -173,9 +176,6 @@ const char* get_nhdrname64byindex(const pbuffer_t p, const int index) {
 
   return NULL;
 }
-
-#define ELF_ALIGN_UP(addr, boundary) \
-  (((addr) + ((boundary) - 1)) & ~ ((boundary) -1))
 
 const char* get_nhdrdesc64byindex(const pbuffer_t p, const int index) {
   Elf64_Nhdr *n = get_nhdr64byindex(p, index);
