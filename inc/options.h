@@ -23,8 +23,18 @@
                                            | OPTREADELF_SECTIONGROUPS | OPTREADELF_PROGRAMHEADERS | OPTREADELF_VERSION \
                                            | OPTREADELF_HISTOGRAM | OPTREADELF_ARCH | OPTREADELF_NOTES)
 
+#define OPTOBJDUMP_DISADDEMBLEALL      (1 << 0)
+#define OPTOBJDUMP_SOURCECODE          (1 << 1)
+#define OPTOBJDUMP_DYNAMICSYMBOLS      (1 << 2)
+#define OPTOBJDUMP_DISASSEMBLE         (1 << 3)
+#define OPTOBJDUMP_DEBUGGING           (1 << 4)
+#define OPTOBJDUMP_SECTIONS            (1 << 5)
+#define OPTOBJDUMP_SYMBOLS             (1 << 6)
+#define OPTOBJDUMP_LINENUMBERS         (1 << 7)
+
 #define ACT_HEXDUMP                    (0)
 #define ACT_STRDUMP                    (1)
+#define ACT_RELDUMP                    (2)
 
 typedef struct action_s {
   char mode[3];

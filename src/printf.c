@@ -79,7 +79,7 @@ int printf_data(const void* data, const size_t size, const int addr, const int m
       ++p;
       ++i;
     } else if (USE_HEX == mode) {
-      printf("%2x", *p);
+      printf("%02x", *p);
       ++p;
       ++i;
     } else {

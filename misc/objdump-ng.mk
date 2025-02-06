@@ -14,10 +14,9 @@ SRCS_C = \
 	buffer.c \
 	printf.c \
 	elfcode.c \
-	objtool.c \
 	options.c \
 	objdump.c \
-	readelf.c
+	objdump-ng.c
 
 # Name of cpp source files to be included in build.
 #---------------------------------------------------------------------
@@ -25,7 +24,7 @@ SRCS_CPP =
 
 # Name of target and map file to be built.
 #---------------------------------------------------------------------
-TARGETBASE = objtool
+TARGETBASE = objdump-ng
 
 ifeq ($(CROSS),ARM)
 else

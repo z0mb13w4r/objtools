@@ -680,6 +680,7 @@ int readelf(const pbuffer_t p, const poptions_t o) {
                 }
                 printf("\n");
               }
+              printf("\n");
             }
           }
         }
@@ -729,6 +730,7 @@ int readelf(const pbuffer_t p, const poptions_t o) {
               printf(" (%s)", get_secname64byindex(p, shdr->sh_link));
               for (size_t j = 0; j < shdr->sh_info; ++j) {
               }
+              printf("\n");
 // TBD
               printf("\n");
             }
@@ -833,5 +835,4 @@ int readelf(const pbuffer_t p, const poptions_t o) {
 
   return 0;
 }
-
 
