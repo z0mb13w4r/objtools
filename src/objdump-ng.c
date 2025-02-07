@@ -6,7 +6,7 @@ int main(int argc, char* argv[]) {
   int r = -1;
   poptions_t o = create(MODE_OPTIONS);
   if (o) {
-    if (0 == get_options_objdump(o, argc, argv)) {
+    if (0 == get_options_objdump(o, argc, argv, argv[0])) {
       pbuffer_t p = open(o->inpname);
       if (p) {
         if (OPT_OBJDUMP == o->option) {

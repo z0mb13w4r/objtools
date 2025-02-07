@@ -31,6 +31,9 @@
 #define OPTOBJDUMP_SECTIONS            (1 << 5)
 #define OPTOBJDUMP_SYMBOLS             (1 << 6)
 #define OPTOBJDUMP_LINENUMBERS         (1 << 7)
+#define OPTOBJDUMP_FILEHEADER          (1 << 8)
+#define OPTOBJDUMP_PRIVATEHEADER       (1 << 9)
+#define OPTOBJDUMP_SECTIONHEADER       (1 << 10)
 
 #define ACT_HEXDUMP                    (0)
 #define ACT_STRDUMP                    (1)
@@ -48,14 +51,15 @@ typedef struct options_s {
   int  option;
   char inpname[1024];
   char outname[1024];
+  char prgname[1024];
 
   int  action;
   paction_t actions;
 } options_t, *poptions_t;
 
-int get_options_readelf(poptions_t o, int argc, char** argv);
-int get_options_objcopy(poptions_t o, int argc, char** argv);
-int get_options_objdump(poptions_t o, int argc, char** argv);
+int get_options_readelf(poptions_t o, int argc, char** argv, char* name);
+int get_options_objcopy(poptions_t o, int argc, char** argv, char* name);
+int get_options_objdump(poptions_t o, int argc, char** argv, char* name);
 
 int get_options(poptions_t o, int argc, char** argv);
 

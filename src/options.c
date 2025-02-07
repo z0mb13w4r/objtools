@@ -28,13 +28,17 @@ static const args_t READELFARGS[] = {
 };
 
 static const args_t OBJDUMPARGS1[] = {
-  {'D', "--disassemble-all", OPTOBJDUMP_DISADDEMBLEALL},
-  {'S', "--source",          OPTOBJDUMP_SOURCECODE},
+  {'D', "--disassemble-all", OPTOBJDUMP_DISADDEMBLEALL | OPTOBJDUMP_DISASSEMBLE},
+  {'S', "--source",          OPTOBJDUMP_SOURCECODE | OPTOBJDUMP_DISASSEMBLE},
   {'T', "--dynamic-symbols", OPTOBJDUMP_DYNAMICSYMBOLS},
   {'d', "--disassemble",     OPTOBJDUMP_DISASSEMBLE},
   {'g', "--debugging",       OPTOBJDUMP_DEBUGGING},
   {'s', "--full-contents",   OPTOBJDUMP_SECTIONS},
   {'t', "--symbols",         OPTOBJDUMP_SYMBOLS},
+  {'f', "--file-headers",    OPTOBJDUMP_FILEHEADER},
+  {'p', "--private-headers", OPTOBJDUMP_PRIVATEHEADER},
+  {'h', "--section-headers", OPTOBJDUMP_SECTIONHEADER},
+  {'x', "--all-headers",     OPTOBJDUMP_FILEHEADER | OPTOBJDUMP_PRIVATEHEADER | OPTOBJDUMP_SECTIONHEADER},
   {0, 0}
 };
 
@@ -67,12 +71,13 @@ static int get_options2(poptions_t o, const args_t args[], const char *argv) {
   return -1;
 }
 
-int get_options_readelf(poptions_t o, int argc, char** argv) {
+int get_options_readelf(poptions_t o, int argc, char** argv, char* name) {
   if (argc < 2) {
     return -1;
   }
 
   o->option = OPT_READELF;
+  strcpy(o->prgname, name);
 
   for (int i = 0; i < argc; ++i) {
     if ('-' == argv[i][0] && '-' == argv[i][1]) {
@@ -96,11 +101,6 @@ int get_options_readelf(poptions_t o, int argc, char** argv) {
         o->actions = p;
       } else {
         get_options2(o, READELFARGS, argv[i]);
-        //for (int j = 0; 0 != READELFARGS[j].option1; ++j) {
-        //  if (0 == strcmp(argv[i], READELFARGS[j].option2)) {
-        //    o->action |= READELFARGS[j].action;
-        //  }
-        //}
       }
     } else if ('-' == argv[i][0]) {
       if (0 == strcmp(argv[i], "-x")) {
@@ -123,13 +123,6 @@ int get_options_readelf(poptions_t o, int argc, char** argv) {
         o->actions = p;
       } else {
         get_options1(o, READELFARGS, argv[i]);
-        //for (int k = 1; k < strlen(argv[i]); ++k) {
-        //  for (int j = 0; 0 != READELFARGS[j].option1; ++j) {
-        //    if (argv[i][k] == READELFARGS[j].option1) {
-        //      o->action |= READELFARGS[j].action;
-        //    }
-        //  }
-        //}
       }
     } else {
       strcpy(o->inpname, argv[i]);
@@ -139,12 +132,13 @@ int get_options_readelf(poptions_t o, int argc, char** argv) {
   return 0;
 }
 
-int get_options_objcopy(poptions_t o, int argc, char** argv) {
+int get_options_objcopy(poptions_t o, int argc, char** argv, char* name) {
   if (argc < 2) {
     return -1;
   }
 
   o->option = OPT_OBJCOPY;
+  strcpy(o->prgname, name);
 
   for (int i = 0; i < argc; ++i) {
   }
@@ -152,12 +146,13 @@ int get_options_objcopy(poptions_t o, int argc, char** argv) {
   return 0;
 }
 
-int get_options_objdump(poptions_t o, int argc, char** argv) {
+int get_options_objdump(poptions_t o, int argc, char** argv, char* name) {
   if (argc < 2) {
     return -1;
   }
 
   o->option = OPT_OBJDUMP;
+  strcpy(o->prgname, name);
 
   for (int i = 0; i < argc; ++i) {
     if ('-' == argv[i][0] && '-' == argv[i][1]) {
@@ -182,11 +177,11 @@ int get_options(poptions_t o, int argc, char** argv) {
   }
 
   if (0 == strcmp("--readelf", argv[1])) {
-    return get_options_readelf(o, argc - 2, argv + 2);
+    return get_options_readelf(o, argc - 2, argv + 2, argv[0]);
   } else if (0 == strcmp("--objcopy", argv[1])) {
-    return get_options_objcopy(o, argc - 2, argv + 2);
+    return get_options_objcopy(o, argc - 2, argv + 2, argv[0]);
   } else if (0 == strcmp("--objdump", argv[1])) {
-    return get_options_objdump(o, argc - 2, argv + 2);
+    return get_options_objdump(o, argc - 2, argv + 2, argv[0]);
   }
 
   return -1;
