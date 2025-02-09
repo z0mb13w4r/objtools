@@ -7,13 +7,26 @@
 #define ELF_ALIGN_UP(addr, boundary) \
   (((addr) + ((boundary) - 1)) & ~ ((boundary) -1))
 
-static int ismode(void *p, const int mode) {
+static int ismode0(void *p, const int mode) {
   if (p) {
     const char* pc = p;
-    if (MODE_GET0(mode) != pc[0]) return 0;
+    if (MODE_GET0(mode) != pc[0])      return 0;
     else if (MODE_GET1(mode) != pc[1]) return 0;
     else if (MODE_GET2(mode) != pc[2]) return 0;
     else return 1;
+  }
+
+  return 0;
+}
+
+int ismode(void *p, const int mode) {
+  if (p) {
+    const char* pc = p;
+    if (MODE_GET0(mode) != pc[0]) return 0;
+    if (MODE_GET1(mode) != pc[1]) return 0;
+    if (MODE_GET2(mode) != pc[2]) return 0;
+    if (MODE_GET3(mode) != pc[3]) return 0;
+    return 1;
   }
 
   return 0;
@@ -25,6 +38,7 @@ static void* setmode(void *p, const int mode) {
     pc[0] = MODE_GET0(mode);
     pc[1] = MODE_GET1(mode);
     pc[2] = MODE_GET2(mode);
+    pc[3] = MODE_GET3(mode);
   }
 
   return p;
@@ -39,13 +53,13 @@ void* mallocx(const size_t size) {
 }
 
 void* create(const int mode) {
-  if (MODE_BUFFER == mode) {
+  if (MODE_BUFFER == (mode & MODE_MASK0)) {
     pbuffer_t p = mallocx(sizeof(buffer_t));
     return setmode(p, mode);
-  } else if (MODE_OPTIONS == mode) {
+  } else if (MODE_OPTIONS == (mode & MODE_MASK0)) {
     poptions_t p = mallocx(sizeof(options_t));
     return setmode(p, mode);
-  } else if (MODE_ACTIONS == mode) {
+  } else if (MODE_ACTIONS == (mode & MODE_MASK0)) {
     paction_t p = mallocx(sizeof(action_t));
     return setmode(p, mode);
   }
@@ -53,15 +67,29 @@ void* create(const int mode) {
   return NULL;
 }
 
+void* createx(const pbuffer_t p, const int mode) {
+  pbuffer_t pp = p;
+  while (pp) {
+    if (ismode(pp, mode)) return pp;
+    if (NULL == pp->next) pp->next = create(mode);
+
+    pp = pp->next;
+  }
+
+  return create(mode);
+}
+
 void* destroy(void* p) {
   if (p) {
-    if (ismode(p, MODE_BUFFER)) {
+    if (ismode0(p, MODE_BUFFER)) {
+      destroy(((pbuffer_t)p)->next);
       free(((pbuffer_t)p)->data);
-    } else if (ismode(p, MODE_OPTIONS)) {
+    } else if (ismode0(p, MODE_OPTIONS)) {
       destroy(((poptions_t)p)->actions);
-    } else if (ismode(p, MODE_ACTIONS)) {
+    } else if (ismode0(p, MODE_ACTIONS)) {
       destroy(((paction_t)p)->actions);
     }
+
     free(p);
   }
 

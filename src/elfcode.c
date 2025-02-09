@@ -63,7 +63,7 @@ uint64_t getLE(const void *p, const size_t siz) {
       x |= ((uint64_t) ((unsigned char*)p)[siz - i - 1]);
     }
   } else {
-    printf("Unhandled data length: %ld\n", siz);
+    printf("ERROR: unhandled data length: %ld\n", siz);
     abort ();
   }
 
@@ -79,7 +79,7 @@ uint64_t getBE(const void *p, const size_t siz) {
       x |= ((uint64_t) ((unsigned char*)p)[i]);
     }
   } else {
-    printf("Unhandled data length: %ld\n", siz);
+    printf("ERROR: unhandled data length: %ld\n", siz);
     abort ();
   }
 

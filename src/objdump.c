@@ -4,6 +4,9 @@
 #include "printf.h"
 #include "objdump.h"
 
+static bfd_vma saddress = (bfd_vma) -1; /* --start-address */
+static bfd_vma eaddress = (bfd_vma) -1; /* --stop-address */
+
 static char* get_format(bfd *p) {
   if (bfd_check_format(p, bfd_archive))       return "BFD_ARCHIVE";
   else if (bfd_check_format(p, bfd_object))   return "BFD_OBJECT";
@@ -26,11 +29,51 @@ static void do_section(bfd *abfd, const char *name) {
   }
 }
 
+static pbuffer_t get_symbols(const pbuffer_t p, bfd *f, const int mode) {
+  pbuffer_t ps = createx(p, mode);
+  if (ps) {
+    if (0 == ps->size) {
+      if (ismode(ps, MODE_SYMBOLS)) {
+        if (bfd_get_file_flags(f) & HAS_SYMS) {
+          printf("TBD: got some symbols\n");
+          //long size = bfd_get_symtab_upper_bound(f);
+          //if (size > 0) {
+          //  printf("%ld\n", size);
+          //  asymbol **sy = (asymbol **) mallocx(size);
+          //  long count = bfd_canonicalize_symtab(f, sy);
+          //  printf("%ld\n", count);
+          //  ps->data = sy;
+          //  ps->size = count;
+          //}
+        }
+      } else if (ismode(ps, MODE_SYMBOLS_DYNAMIC)) {
+        if (bfd_get_file_flags(f) & DYNAMIC) {
+          printf("TBD: got some dynamic symbols\n");
+          //long size = bfd_get_dynamic_symtab_upper_bound(f);
+          //if (size > 0) {
+          //  printf("%ld\n", size);
+          //  asymbol **sy = (asymbol **) mallocx(size);
+          //  long count = bfd_canonicalize_dynamic_symtab(f, sy);
+          //  printf("%ld\n", count);
+          //  ps->data = sy;
+          //  ps->size = count;
+          //}
+        }
+      }
+    }
+
+    return ps;
+  }
+
+  return NULL;
+}
+
 static int dump_header(const pbuffer_t p, const poptions_t o, bfd *f) {
-  printf("Architecture:   %s\n",
+  printf("FILE HEADER:\n");
+  printf("  Architecture:   %s\n",
     bfd_printable_arch_mach (bfd_get_arch(f), bfd_get_mach(f)));
 
-  printf("Flags:         ");
+  printf("  Flags:         ");
   printf_nice(f->flags & ~BFD_FLAGS_FOR_BFD_USE_MASK, USE_FHEX32);
   printf(": ");
   if (f->flags & HAS_RELOC)         printf(" HAS_RELOC");
@@ -44,7 +87,7 @@ static int dump_header(const pbuffer_t p, const poptions_t o, bfd *f) {
   if (f->flags & D_PAGED)           printf(" D_PAGED");
   if (f->flags & BFD_IS_RELAXABLE)  printf(" BFD_IS_RELAXABLE");
   printf("\n");
-  printf("Start Address: ");
+  printf("  Start Address: ");
   printf_nice(f->start_address, USE_FHEX64);
   printf("\n\n");
 
@@ -60,13 +103,50 @@ static int dump_privatehdr(const pbuffer_t p, const poptions_t o, bfd *f) {
   return 0;
 }
 
+static void callback_section_data(bfd *f, asection *s, void *p) {
+  if ((s->flags & SEC_HAS_CONTENTS) == 0) return;
+
+  bfd_size_type dsize;
+  if ((dsize = bfd_section_size(s)) == 0) return;
+
+  /* Compute the address range to display. */
+  size_t opb = bfd_octets_per_byte(f, s);
+
+  bfd_vma soffset, eoffset;
+  if (saddress == (bfd_vma) -1 || saddress < s->vma) soffset = 0;
+  else soffset = saddress - s->vma;
+
+  if (eaddress == (bfd_vma) -1) eoffset = dsize / opb;
+  else {
+    if (eaddress < s->vma) eoffset = 0;
+    else eoffset = eaddress - s->vma;
+
+    if (eoffset > dsize / opb) eoffset = dsize / opb;
+  }
+
+  if (soffset >= eoffset) return;
+
+  printf(" Contents of section %s:", s->name);
+  printf("  (Starting at file offset: 0x%lx)", (unsigned long) (s->filepos + soffset));
+  printf("\n");
+
+  bfd_byte *data = NULL;
+  if (bfd_get_full_section_contents(f, s, &data)) {
+    printf_data(data, dsize, soffset + s->vma, USE_HEXDUMP);
+  } else {
+    printf("WARNING: reading section %s failed because: %s\n", s->name, bfd_errmsg(bfd_get_error()));
+  }
+
+  printf("\n");
+}
+
 static void callback_section_header(bfd *f, asection *s, void *p) {
   size_t name_size = *((size_t *) p);
 
   /* Ignore linker created section.  See elfNN_ia64_object_p in bfd/elfxx-ia64.c.  */
   if (s->flags & SEC_LINKER_CREATED) return;
 
-  printf("%3d %-*s", s->index, (int)name_size, bfd_section_name(s));
+  printf("  %3d %-*s", s->index, (int)name_size, bfd_section_name(s));
   printf_nice(bfd_section_size(s) / bfd_octets_per_byte(f, s), USE_LHEX32);
   printf_nice(bfd_section_vma(s), USE_LHEX64);
   printf_nice(s->lma, USE_LHEX64);
@@ -133,13 +213,58 @@ static void callback_find_longest_section_name(bfd *f ATTRIBUTE_UNUSED, asection
 static int dump_sectionhdr(const pbuffer_t p, const poptions_t o, bfd *f) {
   size_t max_name_size = 20;
 
-  printf("Sections:\n");
+  printf("SECTIONS:\n");
   bfd_map_over_sections(f, callback_find_longest_section_name, &max_name_size);
 
-  printf("Idx %-*s Size     VMA              LMA              File Off Algn Flags\n", (int)max_name_size, "Name");
+  printf("  Idx %-*s Size     VMA              LMA              File Off Algn Flags\n", (int)max_name_size, "Name");
 
   bfd_map_over_sections(f, callback_section_header, &max_name_size);
 
+  printf("\n");
+  return 0;
+}
+
+static int dump_symbols(const pbuffer_t p, const poptions_t o, bfd *f, const int mode) {
+  if (MODE_SYMBOLS_DYNAMIC == mode) {
+    printf("DYNAMIC SYMBOL TABLE:\n");
+  } else if (MODE_SYMBOLS == mode) {
+    printf ("SYMBOL TABLE:\n");
+  } else {
+    return -1;
+  }
+
+  pbuffer_t ps = get_symbols(p,  f, mode);
+  if (NULL == ps || 0 == ps->size) {
+    printf("no symbols\n");
+  } else {
+    asymbol **cs = ps->data;
+    for (size_t i = 0; i < ps->size; ++i) {
+      bfd *cf = NULL;
+
+      if (NULL == *cs) {
+        printf("WARNING: no information for symbol number %ld\n", i);
+      } else if ((cf = bfd_asymbol_bfd(*cs)) == NULL) {
+        printf("WARNING: could not determine the type of symbol number %ld\n", i);
+      } else {
+        bfd_print_symbol(cf, stdout, *cs, bfd_print_symbol_all);
+        printf ("\n");
+      }
+
+      ++cs;
+    }
+  }
+
+  printf("\n");
+  return 0;
+}
+
+static int dump_sections(const pbuffer_t p, const poptions_t o, bfd *f) {
+  printf("SECTION CONTENTS\n");
+  bfd_map_over_sections(f, callback_section_data, NULL);
+  return 0;
+}
+
+static int dump_disassemble(const pbuffer_t p, const poptions_t o, bfd *f) {
   return 0;
 }
 
@@ -154,13 +279,21 @@ static int do_object(const pbuffer_t p, const poptions_t o, bfd *f) {
   if (o->action & OPTOBJDUMP_PRIVATEHEADER) {
     dump_privatehdr(p, o, f);
   }
-  if (o->action & (OPTOBJDUMP_SYMBOLS | OPTOBJDUMP_DISASSEMBLE | OPTOBJDUMP_DEBUGGING)) {
-
-  }
   if (o->action & OPTOBJDUMP_SECTIONHEADER) {
     dump_sectionhdr(p, o, f);
   }
-
+  if (o->action & OPTOBJDUMP_SYMBOLS) {
+    dump_symbols(p, o, f, MODE_SYMBOLS);
+  }
+  if (o->action & OPTOBJDUMP_DYNAMICSYMBOLS) {
+    dump_symbols(p, o, f, MODE_SYMBOLS_DYNAMIC);
+  }
+  if (o->action & OPTOBJDUMP_SECTIONS) {
+    dump_sections(p, o, f);
+  }
+  if (o->action & OPTOBJDUMP_DISASSEMBLE) {
+    dump_disassemble(p, o, f);
+  }
   return -1;
 }
 

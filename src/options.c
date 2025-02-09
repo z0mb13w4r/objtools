@@ -38,7 +38,7 @@ static const args_t OBJDUMPARGS1[] = {
   {'f', "--file-headers",    OPTOBJDUMP_FILEHEADER},
   {'p', "--private-headers", OPTOBJDUMP_PRIVATEHEADER},
   {'h', "--section-headers", OPTOBJDUMP_SECTIONHEADER},
-  {'x', "--all-headers",     OPTOBJDUMP_FILEHEADER | OPTOBJDUMP_PRIVATEHEADER | OPTOBJDUMP_SECTIONHEADER},
+  {'x', "--all-headers",     OPTOBJDUMP_FILEHEADER | OPTOBJDUMP_PRIVATEHEADER | OPTOBJDUMP_SECTIONHEADER | OPTOBJDUMP_SYMBOLS},
   {0, 0}
 };
 
@@ -52,12 +52,12 @@ static int get_options1(poptions_t o, const args_t args[], const char *argv) {
     for (int j = 0; 0 != args[j].option1; ++j) {
       if (argv[k] == args[j].option1) {
         o->action |= args[j].action;
-        return 0;
+        break;
       }
     }
   }
 
-  return -1;
+  return 0;
 }
 
 static int get_options2(poptions_t o, const args_t args[], const char *argv) {
