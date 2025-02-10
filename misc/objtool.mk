@@ -35,7 +35,7 @@ ifeq ($(DEBUG),y)
 else
 	DIR_OBJ = release$(CROSS)/
 	TARGET = $(TARGETBASE)
-	DEBUG = y
+	DEBUG = n
 endif
 
 MAP_FILE = $(TARGET).map
@@ -81,11 +81,11 @@ endif
 
 # Set profile flags, dependant on PROFILE flag being set.
 
-ifeq ($(PROFILE),TRUE)
+ifeq ($(PROFILE),y)
 	CFLAGS += -pg
 	LFLAGS += -pg
 else
-	PROFILE = FALSE
+	PROFILE = n
 endif
 
 KPROF_FILE = $(TARGET).kprof

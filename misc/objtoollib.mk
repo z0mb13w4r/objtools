@@ -39,7 +39,7 @@ ifeq ($(DEBUG),y)
 	DIR_OBJ = debug$(CROSS)/
 else
 	DIR_OBJ = release$(CROSS)/
-	DEBUG = y
+	DEBUG = n
 endif
 
 TARGET = $(BIN_ROOT)$(DIR_OBJ)lib$(TARGETBASE).a
@@ -70,10 +70,10 @@ endif
 
 # Set profile flags, dependant on PROFILE flag being set.
 
-ifeq ($(PROFILE),TRUE)
+ifeq ($(PROFILE),y)
 	CFLAGS += -pg
 else
-	PROFILE = FALSE
+	PROFILE = n
 endif
 
 # GNU toolchain definitions

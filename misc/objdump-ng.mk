@@ -11,11 +11,6 @@ DIR_CXX = ../$(DIR_SRC)
 # Name of c source files to be included in build.
 #---------------------------------------------------------------------
 SRCS_C = \
-	buffer.c \
-	printf.c \
-	elfcode.c \
-	options.c \
-	objdump.c \
 	objdump-ng.c
 
 # Name of cpp source files to be included in build.
@@ -40,7 +35,7 @@ ifeq ($(DEBUG),y)
 else
 	DIR_OBJ = release$(CROSS)/
 	TARGET = $(TARGETBASE)
-	DEBUG = y
+	DEBUG = n
 endif
 
 MAP_FILE = $(TARGET).map
@@ -65,7 +60,8 @@ SYS_OBJS = \
 	-lrt
 endif
 
-LIB_OBJS =
+LIB_OBJS = \
+	-lobjtool
 
 LIB_PATHS = \
 	-L../bin/$(DIR_OBJ)
@@ -85,11 +81,11 @@ endif
 
 # Set profile flags, dependant on PROFILE flag being set.
 
-ifeq ($(PROFILE),TRUE)
+ifeq ($(PROFILE),y)
 	CFLAGS += -pg
 	LFLAGS += -pg
 else
-	PROFILE = FALSE
+	PROFILE = n
 endif
 
 KPROF_FILE = $(TARGET).kprof
@@ -279,10 +275,13 @@ clean:
 # Clean all dependents
 #---------------------------------------------------------------------
 checkall:
+	$(MAKE) -f objtoollib.mk DEBUG=$(DEBUG) CROSS=$(CROSS) PROFILE=$(PROFILE) check
 
 clean_dependents:
+	$(MAKE) -f objtoollib.mk DEBUG=$(DEBUG) CROSS=$(CROSS) PROFILE=$(PROFILE) clean
 
 build_dependants:
+	$(MAKE) -f objtoollib.mk DEBUG=$(DEBUG) CROSS=$(CROSS) PROFILE=$(PROFILE) all
 
 # Generate profile for KProf
 kprof:
