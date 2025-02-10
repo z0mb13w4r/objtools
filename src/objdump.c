@@ -1,33 +1,17 @@
 #include <bfd.h>
 #include <string.h>
+#include <dis-asm.h>
 
 #include "printf.h"
 #include "objdump.h"
 
+typedef struct objdump_info_s {
+  int  action;
+
+} objdump_info_t, *pobjdump_info_t;
+
 static bfd_vma saddress = (bfd_vma) -1; /* --start-address */
 static bfd_vma eaddress = (bfd_vma) -1; /* --stop-address */
-
-static char* get_format(bfd *p) {
-  if (bfd_check_format(p, bfd_archive))       return "BFD_ARCHIVE";
-  else if (bfd_check_format(p, bfd_object))   return "BFD_OBJECT";
-  else if (bfd_check_format(p, bfd_core))     return "BFD_CORE";
-
-  return "BFD_UNK";
-}
-
-static void do_section(bfd *abfd, const char *name) {
-  printf("-- %s\n", name);
-  asection *osec = bfd_get_section_by_name(abfd, name);
-  if (osec) {
-    printf("got section\n");
-    if ((bfd_section_flags(osec) & SEC_HAS_CONTENTS) == 0) {
-      printf("no contents\n");
-    } else {
-      bfd_size_type size = bfd_section_size(osec);
-      printf("section size: %lu\n", size);
-    }
-  }
-}
 
 static pbuffer_t get_symbols(const pbuffer_t p, bfd *f, const int mode) {
   pbuffer_t ps = createx(p, mode);
@@ -35,29 +19,23 @@ static pbuffer_t get_symbols(const pbuffer_t p, bfd *f, const int mode) {
     if (0 == ps->size) {
       if (ismode(ps, MODE_SYMBOLS)) {
         if (bfd_get_file_flags(f) & HAS_SYMS) {
-          printf("TBD: got some symbols\n");
-          //long size = bfd_get_symtab_upper_bound(f);
-          //if (size > 0) {
-          //  printf("%ld\n", size);
-          //  asymbol **sy = (asymbol **) mallocx(size);
-          //  long count = bfd_canonicalize_symtab(f, sy);
-          //  printf("%ld\n", count);
-          //  ps->data = sy;
-          //  ps->size = count;
-          //}
+          long size = bfd_get_symtab_upper_bound(f);
+          if (size > 0) {
+            asymbol **sy = (asymbol **) mallocx(size);
+            long count = bfd_canonicalize_symtab(f, sy);
+            ps->data = sy;
+            ps->size = count;
+          }
         }
       } else if (ismode(ps, MODE_SYMBOLS_DYNAMIC)) {
         if (bfd_get_file_flags(f) & DYNAMIC) {
-          printf("TBD: got some dynamic symbols\n");
-          //long size = bfd_get_dynamic_symtab_upper_bound(f);
-          //if (size > 0) {
-          //  printf("%ld\n", size);
-          //  asymbol **sy = (asymbol **) mallocx(size);
-          //  long count = bfd_canonicalize_dynamic_symtab(f, sy);
-          //  printf("%ld\n", count);
-          //  ps->data = sy;
-          //  ps->size = count;
-          //}
+          long size = bfd_get_dynamic_symtab_upper_bound(f);
+          if (size > 0) {
+            asymbol **sy = (asymbol **) mallocx(size);
+            long count = bfd_canonicalize_dynamic_symtab(f, sy);
+            ps->data = sy;
+            ps->size = count;
+          }
         }
       }
     }
@@ -68,39 +46,37 @@ static pbuffer_t get_symbols(const pbuffer_t p, bfd *f, const int mode) {
   return NULL;
 }
 
-static int dump_header(const pbuffer_t p, const poptions_t o, bfd *f) {
-  printf("FILE HEADER:\n");
-  printf("  Architecture:   %s\n",
-    bfd_printable_arch_mach (bfd_get_arch(f), bfd_get_mach(f)));
+static void callback_disassemble(bfd *f, asection *s, void *p) {
+  struct disassemble_info *pdi = (struct disassemble_info *)p;
+  pobjdump_info_t poi = pdi->application_data;
 
-  printf("  Flags:         ");
-  printf_nice(f->flags & ~BFD_FLAGS_FOR_BFD_USE_MASK, USE_FHEX32);
-  printf(": ");
-  if (f->flags & HAS_RELOC)         printf(" HAS_RELOC");
-  if (f->flags & EXEC_P)            printf(" EXEC_P");
-  if (f->flags & HAS_LINENO)        printf(" HAS_LINENO");
-  if (f->flags & HAS_DEBUG)         printf(" HAS_DEBUG");
-  if (f->flags & HAS_SYMS)          printf(" HAS_SYMS");
-  if (f->flags & HAS_LOCALS)        printf(" HAS_LOCALS");
-  if (f->flags & DYNAMIC)           printf(" DYNAMIC");
-  if (f->flags & WP_TEXT)           printf(" WP_TEXT");
-  if (f->flags & D_PAGED)           printf(" D_PAGED");
-  if (f->flags & BFD_IS_RELAXABLE)  printf(" BFD_IS_RELAXABLE");
-  printf("\n");
-  printf("  Start Address: ");
-  printf_nice(f->start_address, USE_FHEX64);
-  printf("\n\n");
+  /* Sections that do not contain machine code are not normally disassembled. */
+  if ((s->flags & SEC_HAS_CONTENTS) == 0) return;
+  if (0 == (poi->action & OPTOBJDUMP_DISADDEMBLEALL) && 0 == (s->flags & SEC_CODE)) return;
 
-  return 0;
-}
+  bfd_size_type dsize;
+  if ((dsize = bfd_section_size(s)) == 0) return;
 
-static int dump_privatehdr(const pbuffer_t p, const poptions_t o, bfd *f) {
-  if (!bfd_print_private_bfd_data(f, stdout)) {
-    printf("WARNING: private Headers incomplete: %s", bfd_errmsg(bfd_get_error()));
-    return 1;
+  /* Compute the address range to display. */
+  size_t opb = bfd_octets_per_byte(f, s);
+
+  bfd_vma soffset, eoffset;
+  if (saddress == (bfd_vma) -1 || saddress < s->vma) soffset = 0;
+  else soffset = saddress - s->vma;
+
+  if (eaddress == (bfd_vma) -1) eoffset = dsize / opb;
+  else {
+    if (eaddress < s->vma) eoffset = 0;
+    else eoffset = eaddress - s->vma;
+
+    if (eoffset > dsize / opb) eoffset = dsize / opb;
   }
 
-  return 0;
+  if (soffset >= eoffset) return;
+
+  printf("Disassembly of section %s:\n", s->name);
+
+  printf("\n");
 }
 
 static void callback_section_data(bfd *f, asection *s, void *p) {
@@ -210,6 +186,42 @@ static void callback_find_longest_section_name(bfd *f ATTRIBUTE_UNUSED, asection
   }
 }
 
+static int dump_header(const pbuffer_t p, const poptions_t o, bfd *f) {
+  printf("FILE HEADER:\n");
+  printf("  Architecture:   %s\n",
+    bfd_printable_arch_mach (bfd_get_arch(f), bfd_get_mach(f)));
+
+  printf("  Flags:         ");
+  printf_nice(f->flags & ~BFD_FLAGS_FOR_BFD_USE_MASK, USE_FHEX32);
+  printf(": ");
+  if (f->flags & HAS_RELOC)         printf(" HAS_RELOC");
+  if (f->flags & EXEC_P)            printf(" EXEC_P");
+  if (f->flags & HAS_LINENO)        printf(" HAS_LINENO");
+  if (f->flags & HAS_DEBUG)         printf(" HAS_DEBUG");
+  if (f->flags & HAS_SYMS)          printf(" HAS_SYMS");
+  if (f->flags & HAS_LOCALS)        printf(" HAS_LOCALS");
+  if (f->flags & DYNAMIC)           printf(" DYNAMIC");
+  if (f->flags & WP_TEXT)           printf(" WP_TEXT");
+  if (f->flags & D_PAGED)           printf(" D_PAGED");
+  if (f->flags & BFD_IS_RELAXABLE)  printf(" BFD_IS_RELAXABLE");
+  printf("\n");
+  printf("  Start Address: ");
+  printf_nice(f->start_address, USE_FHEX64);
+  printf("\n");
+
+  return 0;
+}
+
+static int dump_privatehdr(const pbuffer_t p, const poptions_t o, bfd *f) {
+  if (!bfd_print_private_bfd_data(f, stdout)) {
+    printf("WARNING: private Headers incomplete: %s", bfd_errmsg(bfd_get_error()));
+    return 1;
+  }
+  printf("\n");
+
+  return 0;
+}
+
 static int dump_sectionhdr(const pbuffer_t p, const poptions_t o, bfd *f) {
   size_t max_name_size = 20;
 
@@ -265,6 +277,17 @@ static int dump_sections(const pbuffer_t p, const poptions_t o, bfd *f) {
 }
 
 static int dump_disassemble(const pbuffer_t p, const poptions_t o, bfd *f) {
+  struct disassemble_info di;
+  objdump_info_t oi;
+
+  memset(&di, 0, sizeof(struct disassemble_info));
+  memset(&oi, 0, sizeof(objdump_info_t));
+
+  di.application_data = &oi;
+
+  oi.action = o->action;
+
+  bfd_map_over_sections(f, callback_disassemble, &di);
   return 0;
 }
 
@@ -329,7 +352,6 @@ static int do_archive(const pbuffer_t p, const poptions_t o, bfd *f) {
 }
 
 int objdump(const pbuffer_t p, const poptions_t o) {
-#if 1
   int r = 0;
 
   bfd_set_error_program_name(o->prgname);
@@ -364,38 +386,7 @@ int objdump(const pbuffer_t p, const poptions_t o) {
     }
     bfd_close(f);
   }
-#else
-  bfd_vma start;
-  enum bfd_architecture iarch;
-  unsigned int imach;
 
-  if (o) {
-    bfd* ibfd = bfd_openr(o->inpname, NULL);
-    if (ibfd) {
-      printf("size: %lu\n", bfd_get_size(ibfd));
-      printf("format: %s\n", get_format(ibfd));
-      printf("format: %s\n", bfd_format_string(ibfd->format));
-      if (ibfd->sections == NULL) {
-        printf("missing sections\n");
-      }
-      start = bfd_get_start_address (ibfd);
-      printf("start: %lu\n", start);
-
-      iarch = bfd_get_arch (ibfd);
-      imach = bfd_get_mach (ibfd);
-      printf("%d %d\n", iarch, imach);
-
-      do_section(ibfd, ".data");
-      do_section(ibfd, ".symtab");
-      do_section(ibfd, ".strtab");
-      do_section(ibfd, ".shstrtab");
-
-      bfd_close(ibfd);
-
-      return 0;
-    }
-  }
-#endif
   return r;
 }
 
