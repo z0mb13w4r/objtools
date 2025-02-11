@@ -706,18 +706,32 @@ static int dump_version64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
         printf(" contains");
         printf_nice(cnt, USE_DEC);
         printf(" %s\n", 1 == cnt ? "entry:" : "entries:");
-        printf("  Addr:");
+        printf(" Addr:");
         printf_nice(shdr->sh_addr, USE_FHEX64);
         printf("  Offset:");
         printf_nice(shdr->sh_offset, USE_FHEX24);
         printf("  Link:");
         printf_nice(shdr->sh_link, USE_DEC);
         printf(" (%s)", get_secname64byindex(p, shdr->sh_link));
-        for (size_t j = 0; j < cnt; ++j) {
-        }
-        Elf64_Sym *sym = get64s(p, get_shdr64byindex(p, shdr->sh_link));
-
         printf("\n");
+
+        //unsigned short* cc = getp(p, shdr->sh_offset, cnt);
+        for (size_t j = 0; j < cnt; j += 4) {
+          printf_nice(j, USE_LHEX16);
+          printf(": ");
+          //for (size_t k = 0; k < 4; ++k) {
+          //  switch (cc[j + k]) {
+          //  case 0:
+          //    printf("   0 (*local*)    ");
+          //    break;
+          //  case 1:
+          //    printf("   1 (*global*)   ");
+          //    break;
+          //  }
+          //}
+          printf("\n");
+        }
+        //Elf64_Sym *sym = get64s(p, get_shdr64byindex(p, shdr->sh_link));
 // TBD
         printf("\n");
       } else if (SHT_GNU_verneed == shdr->sh_type) {
@@ -733,9 +747,14 @@ static int dump_version64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
         printf("  Link:");
         printf_nice(shdr->sh_link, USE_DEC);
         printf(" (%s)", get_secname64byindex(p, shdr->sh_link));
-        for (size_t j = 0; j < shdr->sh_info; ++j) {
-        }
         printf("\n");
+        size_t k = 0;
+printf("** %ld **\n", shdr->sh_info);
+        for (size_t j = 0; j < shdr->sh_info; ++j) {
+          printf_nice(k, USE_FHEX16);
+          printf("\n");
+          k += 0x10;
+        }
 // TBD
         printf("\n");
       }
@@ -864,6 +883,8 @@ int readelf(const pbuffer_t p, const poptions_t o) {
         if (o->action & OPTREADELF_NOTES)            dump_notes64(p, o, ehdr);
       }
     }
+  } else {
+    printf("%s: ERROR: not an ELF file - it has the wrong magic bytes at the start.\n", o->prgname);
   }
 
   return 0;

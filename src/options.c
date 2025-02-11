@@ -2,6 +2,7 @@
 
 #include "buffer.h"
 #include "options.h"
+#include "objutils.h"
 
 typedef struct args_s {
   char  option1;
@@ -77,7 +78,7 @@ int get_options_readelf(poptions_t o, int argc, char** argv, char* name) {
   }
 
   o->option = OPT_READELF;
-  strcpy(o->prgname, name);
+  strname(o->prgname, name);
 
   for (int i = 0; i < argc; ++i) {
     if ('-' == argv[i][0] && '-' == argv[i][1]) {
@@ -138,7 +139,7 @@ int get_options_objcopy(poptions_t o, int argc, char** argv, char* name) {
   }
 
   o->option = OPT_OBJCOPY;
-  strcpy(o->prgname, name);
+  strname(o->prgname, name);
 
   for (int i = 0; i < argc; ++i) {
   }
@@ -152,7 +153,7 @@ int get_options_objdump(poptions_t o, int argc, char** argv, char* name) {
   }
 
   o->option = OPT_OBJDUMP;
-  strcpy(o->prgname, name);
+  strname(o->prgname, name);
 
   for (int i = 0; i < argc; ++i) {
     if ('-' == argv[i][0] && '-' == argv[i][1]) {

@@ -22,14 +22,10 @@ SRCS_CPP =
 TARGETBASE = example
 
 ifeq ($(CROSS),ARM)
-else
-ifeq ($(CROSS),WIN32)
-else
-ifeq ($(CROSS),LINUX32)
+else ifeq ($(CROSS),WIN32)
+else ifeq ($(CROSS),LINUX32)
 else
 	CROSS = LINUX64
-endif
-endif
 endif
 
 ifeq ($(DEBUG),y)
@@ -99,14 +95,12 @@ ifeq ($(CROSS),ARM)
 	DFLAGS += -DENV_LINUX -DLINUX -DTARGET_ARM
 	EFLAGS  = -Wl,--no-enum-size-warning
 	LFLAGS +=
-else
-ifeq ($(CROSS),WIN32)
+else ifeq ($(CROSS),WIN32)
 	CROSS_COMPILE = x86_64-w64-mingw32-
 	DFLAGS += -DWIN32
 	EFLAGS  =
 	LFLAGS += -static-libgcc -static-libstdc++
-else
-ifeq ($(CROSS),LINUX32)
+else ifeq ($(CROSS),LINUX32)
 	CROSS_COMPILE =
 	CFLAGS += -m32
 	DFLAGS += -DENV_LINUX -DLINUX
@@ -118,8 +112,6 @@ else
 	DFLAGS += -DENV_LINUX -DLINUX
 	EFLAGS  =
 	LFLAGS +=
-endif
-endif
 endif
 
 AS		= $(CROSS_COMPILE)as
@@ -260,16 +252,12 @@ ifeq ($(DEBUG),y)
 else
 ifeq ($(CROSS),WIN32)
 	-$(CP) $(TARGET).exe ../bin/$(TARGET).exe
-else
-ifeq ($(CROSS),ARM)
+else ifeq ($(CROSS),ARM)
 	-$(CP) $(TARGET) ../bin/$(TARGET)-arm
-else
-ifeq ($(CROSS),LINUX32)
+else ifeq ($(CROSS),LINUX32)
 	-$(CP) $(TARGET) ../bin/$(TARGET)-32
 else
 	-$(CP) $(TARGET) ../bin/$(TARGET)-64
-endif
-endif
 endif
 	@echo 'Finished copying target: $@'
 endif

@@ -22,11 +22,9 @@ SRCS_CPP =
 TARGETBASE = objtool
 
 ifeq ($(CROSS),ARM)
-else
-ifeq ($(CROSS),WIN)
+else ifeq ($(CROSS),WIN)
 else
 	CROSS = I386
-endif
 endif
 
 ifeq ($(DEBUG),y)
@@ -98,8 +96,7 @@ ifeq ($(CROSS),ARM)
 	DFLAGS += -DENV_LINUX -DLINUX -DTARGET_ARM
 	EFLAGS  = -Wl,--no-enum-size-warning
 	LFLAGS +=
-else
-ifeq ($(CROSS),WIN)
+else ifeq ($(CROSS),WIN)
 	CROSS_COMPILE = x86_64-w64-mingw32-
 	DFLAGS += -DWIN32
 	EFLAGS  =
@@ -109,7 +106,6 @@ else
 	DFLAGS += -DENV_LINUX -DLINUX
 	EFLAGS  =
 	LFLAGS +=
-endif
 endif
 
 AS		= $(CROSS_COMPILE)as
@@ -249,12 +245,10 @@ ifeq ($(DEBUG),y)
 else
 ifeq ($(CROSS),WIN)
 	-$(CP) $(TARGET) ../bin/$(TARGET).exe
-else
-ifeq ($(CROSS),ARM)
+else ifeq ($(CROSS),ARM)
 	-$(CP) $(TARGET) ../bin/$(TARGET)-arm
 else
 	-$(CP) $(TARGET) ../bin/
-endif
 endif
 	@echo 'Finished copying target: $@'
 endif

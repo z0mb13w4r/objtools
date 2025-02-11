@@ -18,8 +18,9 @@ int main(int argc, char* argv[]) {
         } if (OPT_OBJDUMP == o->option) {
           r = objdump(p, o);
         }
+      } else {
+        printf("%s: ERROR: '%s': no such file.\n", o->prgname, o->inpname);
       }
-
       destroy(p);
     }
   }
