@@ -58,6 +58,8 @@ const char* get_nhdrdesc64byindex(const pbuffer_t p, const int index);
 
 Elf64_Phdr* get_phdr64byindex(const pbuffer_t p, const int index);
 
+const char* get_name64byoffset(const pbuffer_t p, const int index, const int offset);
+const char* get_secname64byshdr(const pbuffer_t p, Elf64_Shdr *s);
 const char* get_secname64byindex(const pbuffer_t p, const int index);
 
 int is32(const pbuffer_t p);

@@ -227,6 +227,18 @@ Elf64_Phdr* get_phdr64byindex(const pbuffer_t p, const int index) {
   return NULL;
 }
 
+const char* get_name64byoffset(const pbuffer_t p, const int index, const int offset) {
+  Elf64_Ehdr *e = get_ehdr64(p);
+  if (e) {
+    Elf64_Shdr *s = get_shdr64byindex(p, index);
+    if (s) {
+      return getp(p, s->sh_offset + offset, s->sh_size - offset);
+    }
+  }
+
+  return NULL;
+}
+
 const char* get_secname64byindex(const pbuffer_t p, const int index) {
   char *s0 = NULL;
 
@@ -247,6 +259,25 @@ const char* get_secname64byindex(const pbuffer_t p, const int index) {
 
   return NULL;
 }
+
+const char* get_secname64byshdr(const pbuffer_t p, Elf64_Shdr *s) {
+  char *s0 = NULL;
+
+  Elf64_Ehdr *e = get_ehdr64(p);
+  if (e) {
+    Elf64_Shdr *s1 = get_shdr64byindex(p, e->e_shstrndx);
+    if (s1) {
+      s0 = getp(p, s1->sh_offset, s1->sh_size);
+    }
+
+    if (s0 && s) {
+      return s0 + s->sh_name;
+    }
+  }
+
+  return NULL;
+}
+
 
 int is32(const pbuffer_t p) {
   if (issafe(p)) {

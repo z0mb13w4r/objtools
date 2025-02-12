@@ -695,30 +695,26 @@ static int dump_unwind64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr
   return 0;
 }
 
-static int dump_version64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
-  for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
-    Elf64_Shdr *shdr = get_shdr64byindex(p, i);
-    if (shdr) {
-      if (SHT_GNU_versym == shdr->sh_type) {
-        size_t cnt = shdr->sh_size / shdr->sh_entsize;
-        printf("Version symbols section");
-        printf(" '%s'", get_secname64byindex(p, i));
-        printf(" contains");
-        printf_nice(cnt, USE_DEC);
-        printf(" %s\n", 1 == cnt ? "entry:" : "entries:");
-        printf(" Addr:");
-        printf_nice(shdr->sh_addr, USE_FHEX64);
-        printf("  Offset:");
-        printf_nice(shdr->sh_offset, USE_FHEX24);
-        printf("  Link:");
-        printf_nice(shdr->sh_link, USE_DEC);
-        printf(" (%s)", get_secname64byindex(p, shdr->sh_link));
-        printf("\n");
+static int dump_versionsym64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *shdr) {
+  size_t cnt = shdr->sh_size / shdr->sh_entsize;
+  printf("Version symbols section");
+  printf(" '%s'", get_secname64byshdr(p, shdr));
+  printf(" contains");
+  printf_nice(cnt, USE_DEC);
+  printf(" %s\n", 1 == cnt ? "entry:" : "entries:");
+  printf(" Addr:");
+  printf_nice(shdr->sh_addr, USE_FHEX64);
+  printf("  Offset:");
+  printf_nice(shdr->sh_offset, USE_FHEX24);
+  printf("  Link:");
+  printf_nice(shdr->sh_link, USE_DEC);
+  printf(" (%s)", get_secname64byindex(p, shdr->sh_link));
+  printf("\n");
 
         //unsigned short* cc = getp(p, shdr->sh_offset, cnt);
-        for (size_t j = 0; j < cnt; j += 4) {
-          printf_nice(j, USE_LHEX16);
-          printf(": ");
+  for (size_t j = 0; j < cnt; j += 4) {
+    printf_nice(j, USE_LHEX16);
+    printf(": ");
           //for (size_t k = 0; k < 4; ++k) {
           //  switch (cc[j + k]) {
           //  case 0:
@@ -729,34 +725,74 @@ static int dump_version64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
           //    break;
           //  }
           //}
-          printf("\n");
-        }
+    printf("\n");
+  }
         //Elf64_Sym *sym = get64s(p, get_shdr64byindex(p, shdr->sh_link));
 // TBD
-        printf("\n");
-      } else if (SHT_GNU_verneed == shdr->sh_type) {
-        printf("Version needs section");
-        printf(" '%s'", get_secname64byindex(p, i));
-        printf(" contains");
-        printf_nice(shdr->sh_info, USE_DEC);
-        printf(" %s\n", 1 == shdr->sh_info ? "entry:" : "entries:");
-        printf("  Addr:");
-        printf_nice(shdr->sh_addr, USE_FHEX64);
-        printf("  Offset:");
-        printf_nice(shdr->sh_offset, USE_FHEX24);
-        printf("  Link:");
-        printf_nice(shdr->sh_link, USE_DEC);
-        printf(" (%s)", get_secname64byindex(p, shdr->sh_link));
-        printf("\n");
-        size_t k = 0;
-printf("** %ld **\n", shdr->sh_info);
-        for (size_t j = 0; j < shdr->sh_info; ++j) {
-          printf_nice(k, USE_FHEX16);
+  printf("\n");
+
+  return 0;
+}
+
+static int dump_versionneed64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *shdr) {
+  printf("Version needs section");
+  printf(" '%s'", get_secname64byshdr(p, shdr));
+  printf(" contains");
+  printf_nice(shdr->sh_info, USE_DEC);
+  printf(" %s\n", 1 == shdr->sh_info ? "entry:" : "entries:");
+
+  printf(" Addr:");
+  printf_nice(shdr->sh_addr, USE_FHEX64);
+  printf("  Offset:");
+  printf_nice(shdr->sh_offset, USE_FHEX24);
+  printf("  Link:");
+  printf_nice(shdr->sh_link, USE_DEC);
+  printf(" (%s)", get_secname64byindex(p, shdr->sh_link));
+  printf("\n");
+
+  Elf64_Word offset = 0;
+  for (Elf64_Word j = 0; j < shdr->sh_info; ++j) {
+    Elf64_Verneed *vn = getp(p, shdr->sh_offset, sizeof(Elf64_Verneed));
+    if (vn) {
+      printf_nice(offset, USE_LHEX24);
+      printf(": Version: %d  File: %s  Cnt: %d\n",
+        vn->vn_version, get_name64byoffset(p, shdr->sh_link, vn->vn_file), vn->vn_cnt);
+
+      Elf64_Word xoffset = offset + vn->vn_aux;
+      for (Elf64_Half k = 0; k < vn->vn_cnt; ++k) {
+        Elf64_Vernaux *va = getp(p, shdr->sh_offset + xoffset, sizeof(Elf64_Vernaux));
+        if (va) {
+          printf_nice(xoffset, USE_FHEX16);
+          printf(":   Name: %s", get_name64byoffset(p, shdr->sh_link, va->vna_name));
+
+          printf("  Flags:");
+          if (0 == va->vna_flags)              printf(" none");
+          if (va->vna_flags & VER_FLG_BASE)    printf(" BASE");
+          if (va->vna_flags & VER_FLG_WEAK)    printf(" WEAK");
+          printf("  Version: %d", va->vna_other);
           printf("\n");
-          k += 0x10;
+
+	  xoffset += va->vna_next;
         }
-// TBD
-        printf("\n");
+      }
+    }
+
+    offset += vn->vn_next;
+  }
+
+  printf("\n");
+
+  return 0;
+}
+
+static int dump_version64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
+  for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
+    Elf64_Shdr *shdr = get_shdr64byindex(p, i);
+    if (shdr) {
+      if (SHT_GNU_versym == shdr->sh_type) {
+        dump_versionsym64(p, o, shdr);
+      } else if (SHT_GNU_verneed == shdr->sh_type) {
+        dump_versionneed64(p, o, shdr);
       }
     }
   }
@@ -775,7 +811,7 @@ static int dump_actions64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
         if (0 != shdr->sh_size && shdr->sh_type != SHT_NOBITS) {
           printf_data(getp(p, shdr->sh_offset, shdr->sh_size), shdr->sh_size, shdr->sh_addr, USE_HEXDUMP);
         } else {
-          printf("readelf: Warning: Section '%s' has no data to dump!\n", x->secname);
+          printf("%s: WARNING: section '%s' has no data to dump!\n", o->prgname, x->secname);
         }
       } else if (ACT_STRDUMP == x->action) {
         printf("String dump of section '%s':\n", x->secname);
@@ -783,13 +819,13 @@ static int dump_actions64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
         if (0 != shdr->sh_size && shdr->sh_type != SHT_NOBITS) {
           printf_data(getp(p, shdr->sh_offset, shdr->sh_size), shdr->sh_size, shdr->sh_addr, USE_STRDUMP);
         } else {
-          printf("readelf: Warning: Section '%s' has no data to dump!\n", x->secname);
+          printf("%s: WARNING: section '%s' has no data to dump!\n", o->prgname, x->secname);
         }
       }
 
       printf("\n");
     } else {
-      printf("readelf: Warning: Section '%s' was not dumped because it does not exist!\n", x->secname);
+      printf("%s: WARNING: section '%s' was not dumped because it does not exist!\n", o->prgname, x->secname);
     }
 
     x = x->actions;
