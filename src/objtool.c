@@ -14,7 +14,11 @@ int main(int argc, char* argv[]) {
       pbuffer_t p = open(o->inpname);
       if (p) {
         if (OPT_READELF == o->option) {
-          r = readelf(p, o);
+          if (isPE(p)) {
+            r = readpe(p, o);
+          } else if (isELF(p)) {
+            r = readelf(p, o);
+          }
         } if (OPT_OBJDUMP == o->option) {
           r = objdump(p, o);
         }

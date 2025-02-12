@@ -35,6 +35,11 @@
 *.i*86
 *.x86_64
 *.hex
+example
+objtool
+objcopy-ng
+objdump-ng
+readelf-ng
 
 # Debug files
 *.dSYM/
@@ -50,3 +55,8 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# Temporary Files
+bin/
+*.swp
+

@@ -264,14 +264,6 @@ int is64(const pbuffer_t p) {
   return -1;
 }
 
-int isELF(const pbuffer_t p) {
-  if (issafe(p)) {
-    return 0x7f == get(p, EI_MAG0) && 'E' == get(p, EI_MAG1) && 'L' == get(p, EI_MAG2) && 'F' == get(p, EI_MAG3) ? 1 : 0;
-  }
-
-  return -1;
-}
-
 int isBigEndian(const pbuffer_t p) {
   if (issafe(p)) {
     return ELFDATA2MSB == get(p, EI_DATA);

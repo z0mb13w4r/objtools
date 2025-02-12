@@ -14,9 +14,11 @@ DIR_CXX = ../$(DIR_SRC)
 SRCS_C = \
 	buffer.c \
 	printf.c \
-	elfcode.c \
+	pecode.c \
+	readpe.c \
 	options.c \
 	objdump.c \
+	elfcode.c \
 	readelf.c \
 	objutils.c
 

@@ -86,3 +86,11 @@ uint64_t getBE(const void *p, const size_t siz) {
   return x;
 }
 
+int isELF(const pbuffer_t p) {
+  if (issafe(p)) {
+    return 0x7f == get(p, EI_MAG0) && 'E' == get(p, EI_MAG1) && 'L' == get(p, EI_MAG2) && 'F' == get(p, EI_MAG3) ? 1 : 0;
+  }
+
+  return -1;
+}
+

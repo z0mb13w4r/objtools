@@ -868,7 +868,7 @@ int readelf(const pbuffer_t p, const poptions_t o) {
     }
 
     if (is32(p)) {
-      Elf32_Ehdr *e = get_ehdr32(p);
+      Elf32_Ehdr *ehdr = get_ehdr32(p);
     } else if (is64(p)) {
       Elf64_Ehdr *ehdr = get_ehdr64(p);
       if (ehdr) {
