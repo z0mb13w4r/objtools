@@ -1,3 +1,5 @@
+#include <string.h>
+
 #include "printf.h"
 #include "readelf.h"
 #include "elfcode.h"
@@ -12,6 +14,12 @@ static convert_t EHDRTYPE[] = {
   {"REL (Relocatable file)",       ET_REL},
   {"EXEC (Executable file)",       ET_EXEC},
   {"DYN (Shared object file)",     ET_DYN},
+  {0, 0}
+};
+
+static convert_t EHDRMACHINE[] = {
+  {"None",                         EM_NONE},
+  {"AMD x86-64",                   EM_X86_64},
   {0, 0}
 };
 
@@ -268,6 +276,23 @@ static const char* get_ehdrtype64(Elf64_Ehdr *e) {
   return NULL;
 }
 
+static const char* get_ehdrmachine64(Elf64_Ehdr *e) {
+  static char buff[32];
+
+  if (e) {
+    for (pconvert_t x = EHDRMACHINE; 0 != x->text; ++x) {
+      if (x->type == e->e_machine) {
+        return x->text;
+      }
+    }
+
+    snprintf(buff, sizeof (buff), "<unknown: %x>", e->e_machine);
+    return buff;
+  }
+
+  return NULL;
+}
+
 static const char* get_ehdrosabi(pbuffer_t p) {
   static char buff[32];
 
@@ -489,6 +514,7 @@ static int dump_elfheader(const pbuffer_t p, const poptions_t o) {
 
 static int dump_fileheader64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
   printf("  Type:                              %s\n",                    get_ehdrtype64(ehdr));
+  printf("  Machine:                           %s\n",                    get_ehdrmachine64(ehdr));
 
   printf("  Version:                           0x%x\n",                  ehdr->e_version);
   printf("  Entry point address:               0x%04lx\n",               ehdr->e_entry);
@@ -597,6 +623,17 @@ static int dump_programheaders64(const pbuffer_t p, const poptions_t o, Elf64_Eh
 }
 
 static int dump_dynamic64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
+  for (Elf64_Half i = 0; i < ehdr->e_phnum; ++i) {
+    Elf64_Phdr *phdr = get_phdr64byindex(p, i);
+    if (phdr && PT_DYNAMIC == phdr->p_type) {
+      printf("Dynamic section at offset");
+      printf_nice(phdr->p_offset, USE_FHEX16);
+      printf(" contains 27 entries:\n");
+      printf("Tag        Type                         Name/Value\n");
+// TBD
+    }
+  }
+
   return 0;
 }
 
@@ -692,10 +729,41 @@ static int dump_relocs64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr
 }
 
 static int dump_unwind64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
+  printf("\n%s: WARNING: The decoding of unwind sections for machine type %s is not currently supported.\n",
+    o->prgname, get_ehdrmachine64(ehdr));
+
   return 0;
 }
 
-static int dump_versionsym64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *shdr) {
+static int dump_versionsym64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr, Elf64_Shdr *shdr) {
+  MALLOCA(Elf64_Word, vnames, 1024);
+
+  for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
+    Elf64_Shdr *shdr = get_shdr64byindex(p, i);
+    if (shdr) {
+      if (SHT_GNU_verneed == shdr->sh_type) {
+        Elf64_Word offset = 0;
+        vnames[0] = shdr->sh_link;
+
+        for (Elf64_Word j = 0; j < shdr->sh_info; ++j) {
+          Elf64_Verneed *vn = getp(p, shdr->sh_offset, sizeof(Elf64_Verneed));
+          if (vn) {
+            Elf64_Word xoffset = offset + vn->vn_aux;
+            for (Elf64_Half k = 0; k < vn->vn_cnt; ++k) {
+              Elf64_Vernaux *va = getp(p, shdr->sh_offset + xoffset, sizeof(Elf64_Vernaux));
+              if (va) {
+                vnames[va->vna_other] = va->vna_name;
+	        xoffset += va->vna_next;
+              }
+            }
+          }
+
+          offset += vn->vn_next;
+        }
+      }
+    }
+  }
+
   size_t cnt = shdr->sh_size / shdr->sh_entsize;
   printf("Version symbols section");
   printf(" '%s'", get_secname64byshdr(p, shdr));
@@ -709,26 +777,32 @@ static int dump_versionsym64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *
   printf("  Link:");
   printf_nice(shdr->sh_link, USE_DEC);
   printf(" (%s)", get_secname64byindex(p, shdr->sh_link));
-  printf("\n");
 
-        //unsigned short* cc = getp(p, shdr->sh_offset, cnt);
-  for (size_t j = 0; j < cnt; j += 4) {
-    printf_nice(j, USE_LHEX16);
-    printf(": ");
-          //for (size_t k = 0; k < 4; ++k) {
-          //  switch (cc[j + k]) {
-          //  case 0:
-          //    printf("   0 (*local*)    ");
-          //    break;
-          //  case 1:
-          //    printf("   1 (*global*)   ");
-          //    break;
-          //  }
-          //}
-    printf("\n");
+  for (size_t j = 0; j < cnt; ++j) {
+    Elf64_Versym *vs = getp(p, shdr->sh_offset + (j * sizeof(Elf64_Versym)), sizeof(Elf64_Versym));
+    if (vs) {
+      if (j % 4 == 0) {
+        printf("\n");
+        printf_nice(j, USE_LHEX16);
+        printf(": ");
+      }
+
+      int n = 0;
+      if (0 == *vs)        n += printf("   0 (*local*)    ");
+      else if (1 == *vs)   n += printf("   1 (*global*)   ");
+      else {
+        n += printf("%4x%c", *vs & VERSYM_VERSION, *vs & VERSYM_HIDDEN ? 'h' : ' ');
+        if (vnames[*vs & VERSYM_VERSION] && (*vs & VERSYM_VERSION) < NELEMENTS(vnames)) {
+          n += printf("(%s)", get_name64byoffset(p, vnames[0], vnames[*vs & VERSYM_VERSION]));
+        } else {
+          n += printf("???");
+        }
+      }
+      printf("%*s", MAX(0, 20 - n), " ");
+    }
   }
-        //Elf64_Sym *sym = get64s(p, get_shdr64byindex(p, shdr->sh_link));
-// TBD
+
+  if (cnt) printf("\n");
   printf("\n");
 
   return 0;
@@ -763,9 +837,9 @@ static int dump_versionneed64(const pbuffer_t p, const poptions_t o, Elf64_Shdr 
         Elf64_Vernaux *va = getp(p, shdr->sh_offset + xoffset, sizeof(Elf64_Vernaux));
         if (va) {
           printf_nice(xoffset, USE_FHEX16);
-          printf(":   Name: %s", get_name64byoffset(p, shdr->sh_link, va->vna_name));
+          printf(":  Name: %-12s", get_name64byoffset(p, shdr->sh_link, va->vna_name));
 
-          printf("  Flags:");
+          printf(" Flags:");
           if (0 == va->vna_flags)              printf(" none");
           if (va->vna_flags & VER_FLG_BASE)    printf(" BASE");
           if (va->vna_flags & VER_FLG_WEAK)    printf(" WEAK");
@@ -790,7 +864,7 @@ static int dump_version64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
     Elf64_Shdr *shdr = get_shdr64byindex(p, i);
     if (shdr) {
       if (SHT_GNU_versym == shdr->sh_type) {
-        dump_versionsym64(p, o, shdr);
+        dump_versionsym64(p, o, ehdr, shdr);
       } else if (SHT_GNU_verneed == shdr->sh_type) {
         dump_versionneed64(p, o, shdr);
       }

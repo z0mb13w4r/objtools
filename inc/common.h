@@ -5,9 +5,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "defines.h"
+
 #define ELFOSABI_OPENVMS       13 /* OpenVMS */
-#define ELFOSABI_NSK	       14 /* Hewlett-Packard Non-Stop Kernel */
-#define ELFOSABI_AROS	       15 /* AROS */
+#define ELFOSABI_NSK           14 /* Hewlett-Packard Non-Stop Kernel */
+#define ELFOSABI_AROS          15 /* AROS */
 #define ELFOSABI_FENIXOS       16 /* FenixOS */
 #define ELFOSABI_CLOUDABI      17 /* Nuxi CloudABI */
 #define ELFOSABI_OPENVOS       18 /* Stratus Technologies OpenVOS */
