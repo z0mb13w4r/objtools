@@ -794,7 +794,7 @@ static int dump_dynamic64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
                      dyn->d_tag == DT_REL || dyn->d_tag == DT_DEBUG || dyn->d_tag == DT_TEXTREL ||
                      dyn->d_tag == DT_JMPREL || dyn->d_tag == DT_RUNPATH) {
 
-            const char* name = "george of the jungle"; // TBD
+            const char *name = get_name64byoffset(p, shdr->sh_link, dyn->d_un.d_val);
             if (name) {
               if (dyn->d_tag == DT_NEEDED) {
                 printf(" Shared library: [%s]", name);

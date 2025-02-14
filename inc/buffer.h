@@ -42,8 +42,8 @@ pbuffer_t open(const char* name);
 int issafe(pbuffer_t p);
 int ismode(void *p, const int mode);
 
-void* get64byshdr(const pbuffer_t p, Elf64_Shdr *shdr);
-void* get64byphdr(const pbuffer_t p, Elf64_Phdr *phdr);
+void* get64byshdr(const pbuffer_t p, Elf64_Shdr *shdr); // not safe - remove
+void* get64byphdr(const pbuffer_t p, Elf64_Phdr *phdr); // not safe - remove
 
 void* getp(const pbuffer_t p, const int offset, const size_t size);
 int   get(const pbuffer_t p, const int offset);
