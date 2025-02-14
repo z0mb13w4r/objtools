@@ -5,12 +5,12 @@
 #include "elfcode.h"
 #include "objutils.h"
 
-#include "dt_flags.ci"
-#include "dt_flags_1.ci"
-#include "dt_posflag_1.ci"
-#include "gnu_property_x86_feature_1_and.ci"
-#include "nhdrtype.ci"
-#include "vna_flags.ci"
+#include "static/dt_flags.ci"
+#include "static/dt_flags_1.ci"
+#include "static/dt_posflag_1.ci"
+#include "static/gnu_property_x86_feature_1_and.ci"
+#include "static/nhdrtype.ci"
+#include "static/vna_flags.ci"
 
 static convert_t DYNTAG[] = {
   {"NULL",            DT_NULL},
@@ -799,6 +799,16 @@ static int dump_unwind64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr
   return 0;
 }
 
+static int dump_symbols64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
+  // TBD
+  return 0;
+}
+
+static int dump_histogram64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
+  // TBD
+  return 0;
+}
+
 static int dump_versionsym64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr, Elf64_Shdr *shdr) {
   MALLOCA(Elf64_Word, vnames, 1024);
 
@@ -1052,6 +1062,8 @@ int readelf(const pbuffer_t p, const poptions_t o) {
         if (o->action & OPTREADELF_DYNAMIC)          dump_dynamic64(p, o, ehdr);
         if (o->action & OPTREADELF_RELOCS)           dump_relocs64(p, o, ehdr);
         if (o->action & OPTREADELF_UNWIND)           dump_unwind64(p, o, ehdr);
+        if (o->action & OPTREADELF_SYMBOLS)          dump_symbols64(p, o, ehdr);
+        if (o->action & OPTREADELF_HISTOGRAM)        dump_histogram64(p, o, ehdr);
         if (o->action & OPTREADELF_VERSION)          dump_version64(p, o, ehdr);
         if (o->actions)                              dump_actions64(p, o, ehdr);
         if (o->action & OPTREADELF_NOTES)            dump_notes64(p, o, ehdr);
