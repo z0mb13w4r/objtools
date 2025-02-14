@@ -1,6 +1,7 @@
 #include <malloc.h>
 
 #include "buffer.h"
+#include "readpe.h"
 #include "readelf.h"
 #include "objdump.h"
 #include "options.h"

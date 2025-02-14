@@ -21,9 +21,6 @@
 #define ELFOSABI_ARM_FDPIC     65 /* ARM FDPIC */
 #define ELFOSABI_AMDGPU_MESA3D 66 /* AMD Mesa3D Runtime */
 
-/* MSP430 magic number.  Written in the absense of everything.  */
-#define EM_MSP430_OLD          0x1059
-
 #define SHT_RELR               19 /* RELR relative relocations */
 
 #define PT_GNU_PROPERTY        (PT_LOOS + 0x474e553) /* GNU property */

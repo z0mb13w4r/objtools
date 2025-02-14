@@ -1,3 +1,4 @@
+#include <time.h>
 #include <ctype.h>
 #include <inttypes.h>
 
@@ -21,6 +22,18 @@ int printf_nice(const uint64_t value, const int mode) {
   case USE_LHEX48:                  return printf(" %12.12" PRIx64, value);
   case USE_FHEX64:                  return printf(" 0x%16.16" PRIx64, value);
   case USE_LHEX64:                  return printf(" %16.16" PRIx64, value);
+  case USE_TIMEDATE: {
+    struct tm * tmp;
+    time_t atime = value;
+
+    tmp = gmtime (&atime);
+    if (tmp == NULL)                return printf("<corrupt time val: %" PRIx64, (uint64_t) atime);
+
+    return printf("%04u-%02u-%02uT%02u:%02u:%02u",
+                   tmp->tm_year + 1900, tmp->tm_mon + 1, tmp->tm_mday,
+                   tmp->tm_hour, tmp->tm_min, tmp->tm_sec);
+    }
+    break;
   default:
     break;
   }

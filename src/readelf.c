@@ -9,6 +9,76 @@ typedef struct convert_s {
   const int   type;
 } convert_t, *pconvert_t;
 
+static convert_t DYNTAG[] = {
+  {"NULL",            DT_NULL},
+  {"NEEDED",          DT_NEEDED},
+  {"PLTRELSZ",        DT_PLTRELSZ},
+  {"PLTGOT",          DT_PLTGOT},
+  {"HASH",            DT_HASH},
+  {"STRTAB",          DT_STRTAB},
+  {"SYMTAB",          DT_SYMTAB},
+  {"RELA",            DT_RELA},
+  {"RELASZ",          DT_RELASZ},
+  {"RELAENT",         DT_RELAENT},
+  {"STRSZ",           DT_STRSZ},
+  {"SYMENT",          DT_SYMENT},
+  {"INIT",            DT_INIT},
+  {"FINI",            DT_FINI},
+  {"SONAME",          DT_SONAME},
+  {"RPATH",           DT_RPATH},
+  {"SYMBOLIC",        DT_SYMBOLIC},
+  {"REL",             DT_REL},
+  {"RELSZ",           DT_RELSZ},
+  {"RELENT",          DT_RELENT},
+  {"PLTREL",          DT_PLTREL},
+  {"DEBUG",           DT_DEBUG},
+  {"TEXTREL",         DT_TEXTREL},
+  {"JMPREL",          DT_JMPREL},
+  {"BIND_NOW",        DT_BIND_NOW},
+  {"INIT_ARRAY",      DT_INIT_ARRAY},
+  {"FINI_ARRAY",      DT_FINI_ARRAY},
+  {"INIT_ARRAYSZ",    DT_INIT_ARRAYSZ},
+  {"FINI_ARRAYSZ",    DT_FINI_ARRAYSZ},
+  {"RUNPATH",         DT_RUNPATH},
+  {"FLAGS",           DT_FLAGS},
+  {"PREINIT_ARRAY",   DT_PREINIT_ARRAY},
+  {"PREINIT_ARRAYSZ", DT_PREINIT_ARRAYSZ},
+  {"SYMTAB_SHNDX",    DT_SYMTAB_SHNDX},
+  {"CHECKSUM",        DT_CHECKSUM},
+  {"PLTPADSZ",        DT_PLTPADSZ},
+  {"MOVEENT",         DT_MOVEENT},
+  {"MOVESZ",          DT_MOVESZ},
+  {"POSFLAG_1",       DT_POSFLAG_1},
+  {"SYMINSZ",         DT_SYMINSZ},
+  {"SYMINENT",        DT_SYMINENT},
+  {"ADDRRNGLO",       DT_ADDRRNGLO},
+  {"CONFIG",          DT_CONFIG},
+  {"DEPAUDIT",        DT_DEPAUDIT},
+  {"AUDIT",           DT_AUDIT},
+  {"PLTPAD",          DT_PLTPAD},
+  {"MOVETAB",         DT_MOVETAB},
+  {"SYMINFO",         DT_SYMINFO},
+  {"VERSYM",          DT_VERSYM},
+  {"TLSDESC_GOT",     DT_TLSDESC_GOT},
+  {"TLSDESC_PLT",     DT_TLSDESC_PLT},
+  {"RELACOUNT",       DT_RELACOUNT},
+  {"RELCOUNT",        DT_RELCOUNT},
+  {"FLAGS_1",         DT_FLAGS_1},
+  {"VERDEF",          DT_VERDEF},
+  {"VERDEFNUM",       DT_VERDEFNUM},
+  {"VERNEED",         DT_VERNEED},
+  {"VERNEEDNUM",      DT_VERNEEDNUM},
+  {"AUXILIARY",       DT_AUXILIARY},
+  {"FILTER",          DT_FILTER},
+  {"GNU_PRELINKED",   DT_GNU_PRELINKED},
+  {"GNU_CONFLICT",    DT_GNU_CONFLICT},
+  {"GNU_CONFLICTSZ",  DT_GNU_CONFLICTSZ},
+  {"GNU_LIBLIST",     DT_GNU_LIBLIST},
+  {"GNU_LIBLISTSZ",   DT_GNU_LIBLISTSZ},
+  {"GNU_HASH",        DT_GNU_HASH},
+  {0, 0}
+};
+
 static convert_t EHDRTYPE[] = {
   {"NONE (No file type)",          ET_NONE},
   {"REL (Relocatable file)",       ET_REL},
@@ -259,6 +329,19 @@ static const char *get_gnuproperty64(const int y) {
   return buff;
 }
 
+static const char* get_dyntag64(const int y) {
+  static char buff[32];
+
+  for (pconvert_t x = DYNTAG; 0 != x->text; ++x) {
+    if (x->type == y) {
+      return x->text;
+    }
+  }
+
+  snprintf(buff, sizeof (buff), "<unknown: %x>", y);
+  return buff;
+}
+
 static const char* get_ehdrtype64(Elf64_Ehdr *e) {
   static char buff[32];
 
@@ -328,7 +411,6 @@ static const char* get_ehdrosabi(pbuffer_t p) {
       break;
 
       case EM_MSP430:
-      case EM_MSP430_OLD:
       case EM_VISIUM:
         switch (osabi) {
           case ELFOSABI_STANDALONE:    return "Standalone App";
@@ -623,14 +705,131 @@ static int dump_programheaders64(const pbuffer_t p, const poptions_t o, Elf64_Eh
 }
 
 static int dump_dynamic64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
-  for (Elf64_Half i = 0; i < ehdr->e_phnum; ++i) {
-    Elf64_Phdr *phdr = get_phdr64byindex(p, i);
-    if (phdr && PT_DYNAMIC == phdr->p_type) {
-      printf("Dynamic section at offset");
-      printf_nice(phdr->p_offset, USE_FHEX16);
-      printf(" contains 27 entries:\n");
-      printf("Tag        Type                         Name/Value\n");
-// TBD
+  for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
+    Elf64_Shdr *shdr = get_shdr64byindex(p, i);
+    if (shdr) {
+      if (shdr && SHT_DYNAMIC == shdr->sh_type) {
+        size_t cnt = shdr->sh_size / shdr->sh_entsize;
+
+        printf("Dynamic section at offset");
+        printf_nice(shdr->sh_offset, USE_FHEX16);
+        printf(" contains");
+        printf_nice(cnt, USE_DEC);
+        printf(" %s\n", 1 == cnt ? "entry:" : "entries:");
+        printf(" Tag                Type                Name/Value\n");
+
+        Elf64_Dyn *dyn = get64byshdr(p, shdr);
+        for (size_t j = 0; j < cnt; j++) {
+          int n = 0;
+
+          printf_nice(dyn->d_tag, USE_FHEX64);
+          n = printf (" (%s) ", get_dyntag64(dyn->d_tag));
+          printf("%*s", MAX(0, 20 - n), " ");
+
+          if (dyn->d_tag == DT_FLAGS_1) {
+            printf(" Flags:");
+            if (0 == dyn->d_un.d_val)  printf(" NONE");
+            else {
+              Elf64_Xword v = dyn->d_un.d_val;
+              if (v & DF_1_NOW)              { printf(" NOW"); v ^= DF_1_NOW; }
+              if (v & DF_1_GLOBAL)           { printf(" GLOBAL"); v ^= DF_1_GLOBAL; }
+              if (v & DF_1_GROUP)            { printf(" GROUP"); v ^= DF_1_GROUP; }
+              if (v & DF_1_NODELETE)         { printf(" NODELETE"); v ^= DF_1_NODELETE; }
+              if (v & DF_1_LOADFLTR)         { printf(" LOADFLTR"); v ^= DF_1_LOADFLTR; }
+              if (v & DF_1_INITFIRST)        { printf(" INITFIRST"); v ^= DF_1_INITFIRST; }
+              if (v & DF_1_NOOPEN)           { printf(" NOOPEN"); v ^= DF_1_NOOPEN; }
+              if (v & DF_1_ORIGIN)           { printf(" ORIGIN"); v ^= DF_1_ORIGIN; }
+              if (v & DF_1_DIRECT)           { printf(" DIRECT"); v ^= DF_1_DIRECT; }
+              if (v & DF_1_TRANS)            { printf(" TRANS"); v ^= DF_1_TRANS; }
+              if (v & DF_1_INTERPOSE)        { printf(" INTERPOSE"); v ^= DF_1_INTERPOSE; }
+              if (v & DF_1_NODEFLIB)         { printf(" NODEFLIB"); v ^= DF_1_NODEFLIB; }
+              if (v & DF_1_NODUMP)           { printf(" NODUMP"); v ^= DF_1_NODUMP; }
+              if (v & DF_1_CONFALT)          { printf(" CONFALT"); v ^= DF_1_CONFALT; }
+              if (v & DF_1_ENDFILTEE)        { printf(" ENDFILTEE"); v ^= DF_1_ENDFILTEE; }
+              if (v & DF_1_DISPRELDNE)       { printf(" DISPRELDNE"); v ^= DF_1_DISPRELDNE; }
+              if (v & DF_1_DISPRELPND)       { printf(" DISPRELPND"); v ^= DF_1_DISPRELPND; }
+              if (v & DF_1_NODIRECT)         { printf(" NODIRECT"); v ^= DF_1_NODIRECT; }
+              if (v & DF_1_IGNMULDEF)        { printf(" IGNMULDEF"); v ^= DF_1_IGNMULDEF; }
+              if (v & DF_1_NOKSYMS)          { printf(" NOKSYMS"); v ^= DF_1_NOKSYMS; }
+              if (v & DF_1_NOHDR)            { printf(" NOHDR"); v ^= DF_1_NOHDR; }
+              if (v & DF_1_EDITED)           { printf(" EDITED"); v ^= DF_1_EDITED; }
+              if (v & DF_1_NORELOC)          { printf(" NORELOC"); v ^= DF_1_NORELOC; }
+              if (v & DF_1_SYMINTPOSE)       { printf(" SYMINTPOSE"); v ^= DF_1_SYMINTPOSE; }
+              if (v & DF_1_GLOBAUDIT)        { printf(" GLOBAUDIT"); v ^= DF_1_GLOBAUDIT; }
+              if (v & DF_1_SINGLETON)        { printf(" SINGLETON"); v ^= DF_1_SINGLETON; }
+              if (v & DF_1_STUB)             { printf(" STUB"); v ^= DF_1_STUB; }
+              if (v & DF_1_PIE)              { printf(" PIE"); v ^= DF_1_PIE; }
+              if (v & DF_1_KMOD)             { printf(" KMOD"); v ^= DF_1_KMOD; }
+              if (v & DF_1_WEAKFILTER)       { printf(" WEAKFILTER"); v ^= DF_1_WEAKFILTER; }
+              if (v & DF_1_NOCOMMON)         { printf(" NOCOMMON"); v ^= DF_1_NOCOMMON; }
+              if (v != 0)                    printf_nice(v, USE_FHEX);
+            }
+	  } else if (dyn->d_tag == DT_POSFLAG_1) {
+            printf(" Flags:");
+            if (0 == dyn->d_un.d_val)  printf(" NONE");
+            else {
+              Elf64_Xword v = dyn->d_un.d_val;
+              if (v & DF_P1_LAZYLOAD)        { printf(" LAZYLOAD"); v ^= DF_P1_LAZYLOAD; }
+              if (v & DF_P1_GROUPPERM)       { printf(" GROUPPERM"); v ^= DF_P1_GROUPPERM; }
+              if (v != 0)                    printf_nice(v, USE_FHEX);
+            }
+          } else if (dyn->d_tag == DT_FLAGS) {
+            printf(" Flags:");
+            if (0 == dyn->d_un.d_val)  printf(" NONE");
+            else {
+              Elf64_Xword v = dyn->d_un.d_val;
+              if (v & DF_ORIGIN)             { printf(" ORIGIN"); v ^= DF_ORIGIN; }
+              if (v & DF_SYMBOLIC)           { printf(" SYMBOLIC"); v ^= DF_SYMBOLIC; }
+              if (v & DF_TEXTREL)            { printf(" TEXTREL"); v ^= DF_TEXTREL; }
+              if (v & DF_BIND_NOW)           { printf(" BIND_NOW"); v ^= DF_BIND_NOW; }
+              if (v & DF_STATIC_TLS)         { printf(" STATIC_TLS"); v ^= DF_STATIC_TLS; }
+              if (v != 0)                    printf_nice(v, USE_FHEX);
+            }
+          } else if (dyn->d_tag == DT_PLTREL) {
+            printf(" %s", get_dyntag64(dyn->d_un.d_val));
+          } else if (dyn->d_tag == DT_NULL || dyn->d_tag == DT_NEEDED || dyn->d_tag == DT_PLTGOT ||
+                     dyn->d_tag == DT_HASH || dyn->d_tag == DT_STRTAB || dyn->d_tag == DT_SYMTAB ||
+                     dyn->d_tag == DT_RELA || dyn->d_tag == DT_INIT || dyn->d_tag == DT_FINI ||
+                     dyn->d_tag == DT_SONAME || dyn->d_tag == DT_RPATH || dyn->d_tag ==  DT_SYMBOLIC ||
+                     dyn->d_tag == DT_REL || dyn->d_tag == DT_DEBUG || dyn->d_tag == DT_TEXTREL ||
+                     dyn->d_tag == DT_JMPREL || dyn->d_tag == DT_RUNPATH) {
+
+            const char* name = "george of the jungle"; // TBD
+            if (name) {
+              if (dyn->d_tag == DT_NEEDED) {
+                printf(" Shared library: [%s]", name);
+                // TBD
+              } else if (dyn->d_tag == DT_SONAME)        printf(" Library soname: [%s]", name);
+                else if (dyn->d_tag == DT_RPATH)         printf(" Library rpath: [%s]", name);
+                else if (dyn->d_tag == DT_RUNPATH)       printf(" Library runpath: [%s]", name);
+	        else                                     printf_nice(dyn->d_un.d_val, USE_FHEX);
+            }
+          } else if (dyn->d_tag == DT_PLTRELSZ || dyn->d_tag == DT_RELASZ || dyn->d_tag == DT_STRSZ ||
+                     dyn->d_tag == DT_RELSZ || dyn->d_tag == DT_RELAENT || dyn->d_tag == DT_SYMENT ||
+                     dyn->d_tag == DT_RELENT || dyn->d_tag == DT_PLTPADSZ || dyn->d_tag == DT_MOVEENT ||
+                     dyn->d_tag == DT_MOVESZ || dyn->d_tag == DT_PREINIT_ARRAYSZ || dyn->d_tag == DT_INIT_ARRAYSZ ||
+                     dyn->d_tag == DT_FINI_ARRAYSZ || dyn->d_tag == DT_GNU_CONFLICTSZ || dyn->d_tag == DT_GNU_LIBLISTSZ) {
+            printf_nice(dyn->d_un.d_val, USE_DEC);
+            printf(" (bytes)");
+          } else if (dyn->d_tag == DT_VERDEFNUM || dyn->d_tag == DT_VERNEEDNUM ||
+                     dyn->d_tag == DT_RELACOUNT || dyn->d_tag == DT_RELCOUNT) {
+            printf_nice(dyn->d_un.d_val, USE_DEC);
+          } else if (dyn->d_tag == DT_SYMINSZ || dyn->d_tag == DT_SYMINENT || dyn->d_tag == DT_SYMINFO ||
+                     dyn->d_tag == DT_INIT_ARRAY || dyn->d_tag == DT_FINI_ARRAY) {
+            printf_nice(dyn->d_un.d_val, USE_FHEX);
+          } else if (dyn->d_tag == DT_GNU_PRELINKED) {
+            printf_nice(dyn->d_un.d_val, USE_TIMEDATE);
+          } else if (dyn->d_tag == DT_GNU_HASH) {
+            printf_nice(dyn->d_un.d_val, USE_FHEX);
+          } else if (dyn->d_tag >= DT_VERSYM && dyn->d_tag <= DT_VERNEEDNUM) {
+            printf_nice(dyn->d_un.d_val, USE_FHEX);
+          }
+
+          printf("\n");
+          ++dyn;
+        }
+        printf("\n");
+      }
     }
   }
 
@@ -657,7 +856,7 @@ static int dump_relocs64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr
           printf(" Offset       Info         Type                 Symbol's Value   Symbol's Name\n");
         }
 
-        void *rr = get64s(p, shdr);
+        void *rr = get64byshdr(p, shdr);
         for (size_t j = 0; j < cnt; j++) {
           if (SHT_REL == shdr->sh_type) {
             Elf64_Rel *r = rr + (j * sizeof(Elf64_Rel));
@@ -729,7 +928,7 @@ static int dump_relocs64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr
 }
 
 static int dump_unwind64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
-  printf("\n%s: WARNING: The decoding of unwind sections for machine type %s is not currently supported.\n",
+  printf("%s: WARNING: The decoding of unwind sections for machine type %s is not currently supported.\n\n",
     o->prgname, get_ehdrmachine64(ehdr));
 
   return 0;

@@ -21,6 +21,7 @@
 #define USE_LHEX48        (13)
 #define USE_FHEX64        (14)
 #define USE_LHEX64        (15)
+#define USE_TIMEDATE      (16)
 
 #define USE_HEXDUMP       (0)
 #define USE_STRDUMP       (1)

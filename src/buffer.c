@@ -123,9 +123,17 @@ int issafe(pbuffer_t p) {
   return p && p->data;
 }
 
-void* get64s(const pbuffer_t p, Elf64_Shdr *s) {
-  if (s) {
-    return getp(p, s->sh_offset, s->sh_size);
+void* get64byshdr(const pbuffer_t p, Elf64_Shdr *shdr) {
+  if (shdr) {
+    return getp(p, shdr->sh_offset, shdr->sh_size);
+  }
+
+  return NULL;
+}
+
+void* get64byphdr(const pbuffer_t p, Elf64_Phdr *phdr) {
+  if (phdr) {
+    return getp(p, phdr->p_offset, phdr->p_filesz);
   }
 
   return NULL;
