@@ -9,46 +9,14 @@
 #include "static/dt_flags_1.ci"
 #include "static/dt_posflag_1.ci"
 #include "static/dyntag.ci"
+#include "static/ehdrmachine.ci"
+#include "static/ehdrosabi.ci"
+#include "static/ehdrtype.ci"
 #include "static/gnu_property_x86_feature_1_and.ci"
 #include "static/nhdrtype.ci"
 #include "static/phdrtype.ci"
 #include "static/shdrtype.ci"
 #include "static/vna_flags.ci"
-
-static convert_t EHDRTYPE[] = {
-  {"NONE (No file type)",          ET_NONE},
-  {"REL (Relocatable file)",       ET_REL},
-  {"EXEC (Executable file)",       ET_EXEC},
-  {"DYN (Shared object file)",     ET_DYN},
-  {0, 0}
-};
-
-static convert_t EHDRMACHINE[] = {
-  {"None",                         EM_NONE},
-  {"AMD x86-64",                   EM_X86_64},
-  {0, 0}
-};
-
-static convert_t EHDROSABI[] = {
-  {"UNIX - System V",              ELFOSABI_NONE},
-  {"UNIX - HP-UX",                 ELFOSABI_HPUX},
-  {"UNIX - NetBSD",                ELFOSABI_NETBSD},
-  {"UNIX - GNU",                   ELFOSABI_GNU},
-  {"UNIX - Solaris",               ELFOSABI_SOLARIS},
-  {"UNIX - AIX",                   ELFOSABI_AIX},
-  {"UNIX - IRIX",                  ELFOSABI_IRIX},
-  {"UNIX - FreeBSD",               ELFOSABI_FREEBSD},
-  {"UNIX - TRU64",                 ELFOSABI_TRU64},
-  {"Novell - Modesto",             ELFOSABI_MODESTO},
-  {"UNIX - OpenBSD",               ELFOSABI_OPENBSD},
-  {"VMS - OpenVMS",                ELFOSABI_OPENVMS},
-  {"HP - Non-Stop Kernel",         ELFOSABI_NSK},
-  {"AROS",                         ELFOSABI_AROS},
-  {"FenixOS",                      ELFOSABI_FENIXOS},
-  {"Nuxi CloudABI",                ELFOSABI_CLOUDABI},
-  {"Stratus Technologies OpenVOS", ELFOSABI_OPENVOS},
-  {0, 0}
-};
 
 static convert_t EHDRFLAGS[] = {
   {"W",                            SHF_WRITE},
@@ -146,34 +114,16 @@ static const char* get_dyntag64(const unsigned int y) {
 }
 
 static const char* get_ehdrtype64(Elf64_Ehdr *e) {
-  static char buff[32];
-
   if (e) {
-    for (pconvert_t x = EHDRTYPE; 0 != x->text; ++x) {
-      if (x->type == e->e_type) {
-        return x->text;
-      }
-    }
-
-    snprintf(buff, sizeof (buff), "<unknown: %x>", e->e_type);
-    return buff;
+    return get_string(zEHDRTYPE, e->e_type);
   }
 
   return NULL;
 }
 
 static const char* get_ehdrmachine64(Elf64_Ehdr *e) {
-  static char buff[32];
-
   if (e) {
-    for (pconvert_t x = EHDRMACHINE; 0 != x->text; ++x) {
-      if (x->type == e->e_machine) {
-        return x->text;
-      }
-    }
-
-    snprintf(buff, sizeof (buff), "<unknown: %x>", e->e_machine);
-    return buff;
+    return get_string(zEHDRMACHINE, e->e_machine);
   }
 
   return NULL;
@@ -183,12 +133,9 @@ static const char* get_ehdrosabi(pbuffer_t p) {
   static char buff[32];
 
   if (p) {
-    unsigned int osabi = get(p, EI_OSABI);
-    for (pconvert_t x = EHDROSABI; 0 != x->text; ++x) {
-      if (x->type == osabi) {
-        return x->text;
-      }
-    }
+    const unsigned int osabi = get(p, EI_OSABI);
+    const char* s = get_stringnull(zEHDROSABI, osabi);
+    if (s) return s;
 
     Elf64_Ehdr *e = get_ehdr64(p);
 

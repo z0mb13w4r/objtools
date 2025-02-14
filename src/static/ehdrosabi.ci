@@ -1,0 +1,21 @@
+static convert_t zEHDROSABI[] = {
+  {"UNIX - System V",              ELFOSABI_NONE},
+  {"UNIX - HP-UX",                 ELFOSABI_HPUX},
+  {"UNIX - NetBSD",                ELFOSABI_NETBSD},
+  {"UNIX - GNU",                   ELFOSABI_GNU},
+  {"UNIX - Solaris",               ELFOSABI_SOLARIS},
+  {"UNIX - AIX",                   ELFOSABI_AIX},
+  {"UNIX - IRIX",                  ELFOSABI_IRIX},
+  {"UNIX - FreeBSD",               ELFOSABI_FREEBSD},
+  {"UNIX - TRU64",                 ELFOSABI_TRU64},
+  {"Novell - Modesto",             ELFOSABI_MODESTO},
+  {"UNIX - OpenBSD",               ELFOSABI_OPENBSD},
+  {"VMS - OpenVMS",                ELFOSABI_OPENVMS},
+  {"HP - Non-Stop Kernel",         ELFOSABI_NSK},
+  {"AROS",                         ELFOSABI_AROS},
+  {"FenixOS",                      ELFOSABI_FENIXOS},
+  {"Nuxi CloudABI",                ELFOSABI_CLOUDABI},
+  {"Stratus Technologies OpenVOS", ELFOSABI_OPENVOS},
+  {0, 0}
+};
+

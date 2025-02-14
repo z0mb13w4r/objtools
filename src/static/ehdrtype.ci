@@ -1,0 +1,8 @@
+static convert_t zEHDRTYPE[] = {
+  {"NONE (No file type)",          ET_NONE},
+  {"REL (Relocatable file)",       ET_REL},
+  {"EXEC (Executable file)",       ET_EXEC},
+  {"DYN (Shared object file)",     ET_DYN},
+  {0, 0}
+};
+

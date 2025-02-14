@@ -1,0 +1,6 @@
+static convert_t zEHDRMACHINE[] = {
+  {"None",                         EM_NONE},
+  {"AMD x86-64",                   EM_X86_64},
+  {0, 0}
+};
+
