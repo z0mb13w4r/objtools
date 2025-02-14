@@ -8,79 +8,12 @@
 #include "static/dt_flags.ci"
 #include "static/dt_flags_1.ci"
 #include "static/dt_posflag_1.ci"
+#include "static/dyntag.ci"
 #include "static/gnu_property_x86_feature_1_and.ci"
 #include "static/nhdrtype.ci"
+#include "static/phdrtype.ci"
+#include "static/shdrtype.ci"
 #include "static/vna_flags.ci"
-
-static convert_t DYNTAG[] = {
-  {"NULL",            DT_NULL},
-  {"NEEDED",          DT_NEEDED},
-  {"PLTRELSZ",        DT_PLTRELSZ},
-  {"PLTGOT",          DT_PLTGOT},
-  {"HASH",            DT_HASH},
-  {"STRTAB",          DT_STRTAB},
-  {"SYMTAB",          DT_SYMTAB},
-  {"RELA",            DT_RELA},
-  {"RELASZ",          DT_RELASZ},
-  {"RELAENT",         DT_RELAENT},
-  {"STRSZ",           DT_STRSZ},
-  {"SYMENT",          DT_SYMENT},
-  {"INIT",            DT_INIT},
-  {"FINI",            DT_FINI},
-  {"SONAME",          DT_SONAME},
-  {"RPATH",           DT_RPATH},
-  {"SYMBOLIC",        DT_SYMBOLIC},
-  {"REL",             DT_REL},
-  {"RELSZ",           DT_RELSZ},
-  {"RELENT",          DT_RELENT},
-  {"PLTREL",          DT_PLTREL},
-  {"DEBUG",           DT_DEBUG},
-  {"TEXTREL",         DT_TEXTREL},
-  {"JMPREL",          DT_JMPREL},
-  {"BIND_NOW",        DT_BIND_NOW},
-  {"INIT_ARRAY",      DT_INIT_ARRAY},
-  {"FINI_ARRAY",      DT_FINI_ARRAY},
-  {"INIT_ARRAYSZ",    DT_INIT_ARRAYSZ},
-  {"FINI_ARRAYSZ",    DT_FINI_ARRAYSZ},
-  {"RUNPATH",         DT_RUNPATH},
-  {"FLAGS",           DT_FLAGS},
-  {"PREINIT_ARRAY",   DT_PREINIT_ARRAY},
-  {"PREINIT_ARRAYSZ", DT_PREINIT_ARRAYSZ},
-  {"SYMTAB_SHNDX",    DT_SYMTAB_SHNDX},
-  {"CHECKSUM",        DT_CHECKSUM},
-  {"PLTPADSZ",        DT_PLTPADSZ},
-  {"MOVEENT",         DT_MOVEENT},
-  {"MOVESZ",          DT_MOVESZ},
-  {"POSFLAG_1",       DT_POSFLAG_1},
-  {"SYMINSZ",         DT_SYMINSZ},
-  {"SYMINENT",        DT_SYMINENT},
-  {"ADDRRNGLO",       DT_ADDRRNGLO},
-  {"CONFIG",          DT_CONFIG},
-  {"DEPAUDIT",        DT_DEPAUDIT},
-  {"AUDIT",           DT_AUDIT},
-  {"PLTPAD",          DT_PLTPAD},
-  {"MOVETAB",         DT_MOVETAB},
-  {"SYMINFO",         DT_SYMINFO},
-  {"VERSYM",          DT_VERSYM},
-  {"TLSDESC_GOT",     DT_TLSDESC_GOT},
-  {"TLSDESC_PLT",     DT_TLSDESC_PLT},
-  {"RELACOUNT",       DT_RELACOUNT},
-  {"RELCOUNT",        DT_RELCOUNT},
-  {"FLAGS_1",         DT_FLAGS_1},
-  {"VERDEF",          DT_VERDEF},
-  {"VERDEFNUM",       DT_VERDEFNUM},
-  {"VERNEED",         DT_VERNEED},
-  {"VERNEEDNUM",      DT_VERNEEDNUM},
-  {"AUXILIARY",       DT_AUXILIARY},
-  {"FILTER",          DT_FILTER},
-  {"GNU_PRELINKED",   DT_GNU_PRELINKED},
-  {"GNU_CONFLICT",    DT_GNU_CONFLICT},
-  {"GNU_CONFLICTSZ",  DT_GNU_CONFLICTSZ},
-  {"GNU_LIBLIST",     DT_GNU_LIBLIST},
-  {"GNU_LIBLISTSZ",   DT_GNU_LIBLISTSZ},
-  {"GNU_HASH",        DT_GNU_HASH},
-  {0, 0}
-};
 
 static convert_t EHDRTYPE[] = {
   {"NONE (No file type)",          ET_NONE},
@@ -182,53 +115,6 @@ static convert_t RELTYPE[] = {
   {0, 0}
 };
 
-static convert_t SHDRTYPE[] = {
-  {"NULL",                         SHT_NULL},
-  {"PROGBITS",                     SHT_PROGBITS},
-  {"SYMTAB",                       SHT_SYMTAB},
-  {"STRTAB",                       SHT_STRTAB},
-  {"RELA",                         SHT_RELA},
-  {"RELR",                         SHT_RELR},
-  {"HASH",                         SHT_HASH},
-  {"DYNAMIC",                      SHT_DYNAMIC},
-  {"NOTE",                         SHT_NOTE},
-  {"NOBITS",                       SHT_NOBITS},
-  {"REL",                          SHT_REL},
-  {"SHLIB",                        SHT_SHLIB},
-  {"DYNSYM",                       SHT_DYNSYM},
-  {"INIT_ARRAY",                   SHT_INIT_ARRAY},
-  {"FINI_ARRAY",                   SHT_FINI_ARRAY},
-  {"PREINIT_ARRAY",                SHT_PREINIT_ARRAY},
-  {"GNU_HASH",                     SHT_GNU_HASH},
-  {"GROUP",                        SHT_GROUP},
-  {"SYMTAB SECTION INDICES",       SHT_SYMTAB_SHNDX},
-  {"VERDEF",                       SHT_GNU_verdef},
-  {"VERNEED",                      SHT_GNU_verneed},
-  {"VERSYM",                       SHT_GNU_versym},
-  {0, 0}
-};
-
-static convert_t PHDRTYPE[] = {
-  {"NULL",                         PT_NULL},
-  {"LOAD",                         PT_LOAD},
-  {"DYNAMIC",                      PT_DYNAMIC},
-  {"INTERP",                       PT_INTERP},
-  {"NOTE",                         PT_NOTE},
-  {"SHLIB",                        PT_SHLIB},
-  {"PHDR",                         PT_PHDR},
-  {"TLS",                          PT_TLS},
-  {"GNU_EH_FRAME",                 PT_GNU_EH_FRAME},
-  {"GNU_STACK",                    PT_GNU_STACK},
-  {"GNU_RELRO",                    PT_GNU_RELRO},
-  {"GNU_PROPERTY",                 PT_GNU_PROPERTY},
-  {"GNU_SFRAME",                   PT_GNU_SFRAME},
-  {"OPENBSD_MUTABLE",              PT_OPENBSD_MUTABLE},
-  {"OPENBSD_RANDOMIZE",            PT_OPENBSD_RANDOMIZE},
-  {"OPENBSD_WXNEEDED",             PT_OPENBSD_WXNEEDED},
-  {"OPENBSD_BOOTDATA",             PT_OPENBSD_BOOTDATA},
-  {0, 0}
-};
-
 static const char* get_gnuabitab(const int y) {
   static char buff[32];
 
@@ -255,17 +141,8 @@ static const char *get_gnuproperty64(const int y) {
   return buff;
 }
 
-static const char* get_dyntag64(const int y) {
-  static char buff[32];
-
-  for (pconvert_t x = DYNTAG; 0 != x->text; ++x) {
-    if (x->type == y) {
-      return x->text;
-    }
-  }
-
-  snprintf(buff, sizeof (buff), "<unknown: %x>", y);
-  return buff;
+static const char* get_dyntag64(const unsigned int y) {
+  return get_string(zDYNTAG, y);
 }
 
 static const char* get_ehdrtype64(Elf64_Ehdr *e) {
@@ -388,17 +265,8 @@ static const char* get_shdrflags64(Elf64_Shdr *s) {
 }
 
 static const char* get_shdrtype64(Elf64_Shdr *s) {
-  static char buff[32];
-
   if (s) {
-    for (pconvert_t x = SHDRTYPE; 0 != x->text; ++x) {
-      if (x->type == s->sh_type) {
-        return x->text;
-      }
-    }
-
-    snprintf(buff, sizeof (buff), "<unknown: %x>", s->sh_type);
-    return buff;
+    return get_string(zSHDRTYPE, s->sh_type);
   }
 
   return NULL;
@@ -454,17 +322,8 @@ static const char* get_nhdrtype64(const pbuffer_t p, Elf64_Nhdr *n) {
 }
 
 static const char* get_phdrtype64(Elf64_Phdr *p) {
-  static char buff[32];
-
   if (p) {
-    for (pconvert_t x = PHDRTYPE; 0 != x->text; ++x) {
-      if (x->type == p->p_type) {
-        return x->text;
-      }
-    }
-
-    snprintf(buff, sizeof (buff), "<unknown: %x>", p->p_type);
-    return buff;
+    return get_string(zPHDRTYPE, p->p_type);
   }
 
   return NULL;

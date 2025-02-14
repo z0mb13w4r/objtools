@@ -1,0 +1,26 @@
+static convert_t zSHDRTYPE[] = {
+  {"NULL",                         SHT_NULL},
+  {"PROGBITS",                     SHT_PROGBITS},
+  {"SYMTAB",                       SHT_SYMTAB},
+  {"STRTAB",                       SHT_STRTAB},
+  {"RELA",                         SHT_RELA},
+  {"RELR",                         SHT_RELR},
+  {"HASH",                         SHT_HASH},
+  {"DYNAMIC",                      SHT_DYNAMIC},
+  {"NOTE",                         SHT_NOTE},
+  {"NOBITS",                       SHT_NOBITS},
+  {"REL",                          SHT_REL},
+  {"SHLIB",                        SHT_SHLIB},
+  {"DYNSYM",                       SHT_DYNSYM},
+  {"INIT_ARRAY",                   SHT_INIT_ARRAY},
+  {"FINI_ARRAY",                   SHT_FINI_ARRAY},
+  {"PREINIT_ARRAY",                SHT_PREINIT_ARRAY},
+  {"GNU_HASH",                     SHT_GNU_HASH},
+  {"GROUP",                        SHT_GROUP},
+  {"SYMTAB SECTION INDICES",       SHT_SYMTAB_SHNDX},
+  {"VERDEF",                       SHT_GNU_verdef},
+  {"VERNEED",                      SHT_GNU_verneed},
+  {"VERSYM",                       SHT_GNU_versym},
+  {0, 0}
+};
+

@@ -1,0 +1,21 @@
+static convert_t zPHDRTYPE[] = {
+  {"NULL",                         PT_NULL},
+  {"LOAD",                         PT_LOAD},
+  {"DYNAMIC",                      PT_DYNAMIC},
+  {"INTERP",                       PT_INTERP},
+  {"NOTE",                         PT_NOTE},
+  {"SHLIB",                        PT_SHLIB},
+  {"PHDR",                         PT_PHDR},
+  {"TLS",                          PT_TLS},
+  {"GNU_EH_FRAME",                 PT_GNU_EH_FRAME},
+  {"GNU_STACK",                    PT_GNU_STACK},
+  {"GNU_RELRO",                    PT_GNU_RELRO},
+  {"GNU_PROPERTY",                 PT_GNU_PROPERTY},
+  {"GNU_SFRAME",                   PT_GNU_SFRAME},
+  {"OPENBSD_MUTABLE",              PT_OPENBSD_MUTABLE},
+  {"OPENBSD_RANDOMIZE",            PT_OPENBSD_RANDOMIZE},
+  {"OPENBSD_WXNEEDED",             PT_OPENBSD_WXNEEDED},
+  {"OPENBSD_BOOTDATA",             PT_OPENBSD_BOOTDATA},
+  {0, 0}
+};
+
