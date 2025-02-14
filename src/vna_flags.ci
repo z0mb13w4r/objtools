@@ -1,0 +1,6 @@
+static convert_t zVNA_FLAGS[] = {
+  {"BASE", VER_FLG_BASE},
+  {"WEAK", VER_FLG_WEAK},
+  {0, 0}
+};
+

@@ -218,7 +218,7 @@ const char* get_nhdrdesc64byindex(const pbuffer_t p, const int index) {
   if (n && n->n_namesz && n->n_descsz) {
     Elf64_Shdr *s = get_shdr64byindex(p, index);
     if (s) {
-      return getp(p, s->sh_offset + sizeof(Elf64_Nhdr) + ELF_ALIGN_UP(n->n_namesz, s->sh_addralign), n->n_descsz);
+      return getp(p, s->sh_offset + sizeof(Elf64_Nhdr) + n->n_namesz, n->n_descsz);
     }
   }
 

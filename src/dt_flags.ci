@@ -1,0 +1,9 @@
+static convert_t zDT_FLAGS[] = {
+  {"ORIGIN", DF_ORIGIN},
+  {"SYMBOLIC", DF_SYMBOLIC},
+  {"TEXTREL", DF_TEXTREL},
+  {"BIND_NOW", DF_BIND_NOW},
+  {"STATIC_TLS", DF_STATIC_TLS},
+  {0, 0}
+};
+

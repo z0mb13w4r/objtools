@@ -103,3 +103,28 @@ int printf_data(const void* data, const size_t size, const int addr, const int m
   return i;
 }
 
+int printf_mask(const pconvert_t p, const unsigned int mask) {
+  int n = 0;
+  unsigned int v = mask;
+  for (pconvert_t x = p; 0 != x->text; ++x) {
+    if (x->type & v) {
+      n += printf(" %s", x->text);
+      v &= ~x->type;
+    }
+  }
+
+  if (v) {
+    n += printf(" <unknown: %x>", v);
+  }
+
+  return n;
+}
+
+int printf_masknone(const pconvert_t p, const unsigned int mask) {
+  if (0 == mask) {
+    return printf(" NONE");
+  }
+
+  return printf_mask(p, mask);
+}
+

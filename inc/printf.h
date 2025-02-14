@@ -4,6 +4,7 @@
 #include <stdint.h>
 
 #include "common.h"
+#include "objutils.h"
 
 #define USE_DEC           (0)
 #define USE_DEC2          (1)
@@ -30,6 +31,9 @@
 
 int printf_nice(const uint64_t value, const int mode);
 int printf_data(const void* data, const size_t size, const int addr, const int mode);
+
+int printf_mask(const pconvert_t p, const unsigned int mask);
+int printf_masknone(const pconvert_t p, const unsigned int mask);
 
 #endif
 

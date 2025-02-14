@@ -3,11 +3,14 @@
 #include "printf.h"
 #include "readelf.h"
 #include "elfcode.h"
+#include "objutils.h"
 
-typedef struct convert_s {
-  const char* text;
-  const int   type;
-} convert_t, *pconvert_t;
+#include "dt_flags.ci"
+#include "dt_flags_1.ci"
+#include "dt_posflag_1.ci"
+#include "gnu_property_x86_feature_1_and.ci"
+#include "nhdrtype.ci"
+#include "vna_flags.ci"
 
 static convert_t DYNTAG[] = {
   {"NULL",            DT_NULL},
@@ -151,83 +154,6 @@ static convert_t GNUPROPERTY[] = {
   {"x86 ISA needed: ",             GNU_PROPERTY_X86_COMPAT_ISA_1_NEEDED},
   {"x86 ISA used: ",               GNU_PROPERTY_X86_COMPAT_2_ISA_1_USED},
   {"x86 ISA needed: ",             GNU_PROPERTY_X86_COMPAT_2_ISA_1_NEEDED},
-  {0, 0}
-};
-
-static convert_t NHDRTYPE[] = {
-  {"NT_GNU_ABI_TAG (ABI version tag)",                                       NT_GNU_ABI_TAG},
-  {"NT_GNU_HWCAP (DSO-supplied software HWCAP info)",                        NT_GNU_HWCAP},
-  {"NT_GNU_BUILD_ID (unique build ID bitstring)",                            NT_GNU_BUILD_ID},
-  {"NT_GNU_GOLD_VERSION (gold version)",                                     NT_GNU_GOLD_VERSION},
-  {"NT_GNU_PROPERTY_TYPE_0",                                                 NT_GNU_PROPERTY_TYPE_0},
-  {"NT_GNU_BUILD_ATTRIBUTE_OPEN",                                            NT_GNU_BUILD_ATTRIBUTE_OPEN},
-  {"NT_GNU_BUILD_ATTRIBUTE_FUNC",                                            NT_GNU_BUILD_ATTRIBUTE_FUNC},
-  {0, 0}
-};
-
-static convert_t NHDRTYPECORE[] = {
-  {"NT_AUXV (auxiliary vector)",                                             NT_AUXV},
-  {"NT_PRSTATUS (prstatus structure)",                                       NT_PRSTATUS},
-  {"NT_FPREGSET (floating point registers)",                                 NT_FPREGSET},
-  {"NT_PRPSINFO (prpsinfo structure)",                                       NT_PRPSINFO},
-  {"NT_TASKSTRUCT (task structure)",                                         NT_TASKSTRUCT},
-  {"NT_GDB_TDESC (GDB XML target description)",                              NT_GDB_TDESC},
-  {"NT_PRXFPREG (user_xfpregs structure)",                                   NT_PRXFPREG},
-  {"NT_PPC_VMX (ppc Altivec registers)",                                     NT_PPC_VMX},
-  {"NT_PPC_VSX (ppc VSX registers)",                                         NT_PPC_VSX},
-  {"NT_PPC_TAR (ppc TAR register)",                                          NT_PPC_TAR},
-  {"NT_PPC_PPR (ppc PPR register)",                                          NT_PPC_PPR},
-  {"NT_PPC_DSCR (ppc DSCR register)",                                        NT_PPC_DSCR},
-  {"NT_PPC_EBB (ppc EBB registers)",                                         NT_PPC_EBB},
-  {"NT_PPC_PMU (ppc PMU registers)",                                         NT_PPC_PMU},
-  {"NT_PPC_TM_CGPR (ppc checkpointed GPR registers)",                        NT_PPC_TM_CGPR},
-  {"NT_PPC_TM_CFPR (ppc checkpointed floating point registers)",             NT_PPC_TM_CFPR},
-  {"NT_PPC_TM_CVMX (ppc checkpointed Altivec registers)",                    NT_PPC_TM_CVMX},
-  {"NT_PPC_TM_CVSX (ppc checkpointed VSX registers)",                        NT_PPC_TM_CVSX},
-  {"NT_PPC_TM_SPR (ppc TM special purpose registers)",                       NT_PPC_TM_SPR},
-  {"NT_PPC_TM_CTAR (ppc checkpointed TAR register)",                         NT_PPC_TM_CTAR},
-  {"NT_PPC_TM_CPPR (ppc checkpointed PPR register)",                         NT_PPC_TM_CPPR},
-  {"NT_PPC_TM_CDSCR (ppc checkpointed DSCR register)",                       NT_PPC_TM_CDSCR},
-  {"NT_386_TLS (x86 TLS information)",                                       NT_386_TLS},
-  {"NT_386_IOPERM (x86 I/O permissions)",                                    NT_386_IOPERM},
-  {"NT_X86_XSTATE (x86 XSAVE extended state)",                               NT_X86_XSTATE},
-  {"NT_X86_CET (x86 CET state)",                                             NT_X86_CET},
-  {"NT_S390_HIGH_GPRS (s390 upper register halves)",                         NT_S390_HIGH_GPRS},
-  {"NT_S390_TIMER (s390 timer register)",                                    NT_S390_TIMER},
-  {"NT_S390_TODCMP (s390 TOD comparator register)",                          NT_S390_TODCMP},
-  {"NT_S390_TODPREG (s390 TOD programmable register)",                       NT_S390_TODPREG},
-  {"NT_S390_CTRS (s390 control registers)",                                  NT_S390_CTRS},
-  {"NT_S390_PREFIX (s390 prefix register)",                                  NT_S390_PREFIX},
-  {"NT_S390_LAST_BREAK (s390 last breaking event address)",                  NT_S390_LAST_BREAK},
-  {"NT_S390_SYSTEM_CALL (s390 system call restart data)",                    NT_S390_SYSTEM_CALL},
-  {"NT_S390_TDB (s390 transaction diagnostic block)",                        NT_S390_TDB},
-  {"NT_S390_VXRS_LOW (s390 vector registers 0-15 upper half)",               NT_S390_VXRS_LOW},
-  {"NT_S390_VXRS_HIGH (s390 vector registers 16-31)",                        NT_S390_VXRS_HIGH},
-  {"NT_S390_GS_CB (s390 guarded-storage registers)",                         NT_S390_GS_CB},
-  {"NT_S390_GS_BC (s390 guarded-storage broadcast control)",                 NT_S390_GS_BC},
-  {"NT_ARM_VFP (arm VFP registers)",                                         NT_ARM_VFP},
-  {"NT_ARM_TLS (AArch TLS registers)",                                       NT_ARM_TLS},
-  {"NT_ARM_HW_BREAK (AArch hardware breakpoint registers)",                  NT_ARM_HW_BREAK},
-  {"NT_ARM_HW_WATCH (AArch hardware watchpoint registers)",                  NT_ARM_HW_WATCH},
-  {"NT_ARM_SYSTEM_CALL (AArch system call number)",                          NT_ARM_SYSTEM_CALL},
-  {"NT_ARM_SVE (AArch SVE registers)",                                       NT_ARM_SVE},
-  {"NT_ARM_PAC_MASK (AArch pointer authentication code masks)",              NT_ARM_PAC_MASK},
-  {"NT_ARM_PACA_KEYS (ARM pointer authentication address keys)",             NT_ARM_PACA_KEYS},
-  {"NT_ARM_PACG_KEYS (ARM pointer authentication generic keys)",             NT_ARM_PACG_KEYS},
-  {"NT_ARM_TAGGED_ADDR_CTRL (AArch tagged address control)",                 NT_ARM_TAGGED_ADDR_CTRL},
-  {"NT_ARM_SSVE (AArch64 streaming SVE registers)",                          NT_ARM_SSVE},
-  {"NT_ARM_ZA (AArch64 SME ZA register)",                                    NT_ARM_ZA},
-  {"NT_ARM_PAC_ENABLED_KEYS (AArch64 pointer authentication enabled keys)",  NT_ARM_PAC_ENABLED_KEYS},
-  {"NT_ARC_V2 (ARC HS accumulator/extra registers)",                         NT_ARC_V2},
-  {"NT_RISCV_CSR (RISC-V control and status registers)",                     NT_RISCV_CSR},
-  {"NT_PSTATUS (pstatus structure)",                                         NT_PSTATUS},
-  {"NT_FPREGS (floating point registers)",                                   NT_FPREGS},
-  {"NT_PSINFO (psinfo structure)",                                           NT_PSINFO},
-  {"NT_LWPSTATUS (lwpstatus_t structure)",                                   NT_LWPSTATUS},
-  {"NT_LWPSINFO (lwpsinfo_t structure)",                                     NT_LWPSINFO},
-  {"NT_WIN32PSTATUS (win32_pstatus structure)",                              NT_WIN32PSTATUS},
-  {"NT_SIGINFO (siginfo_t data)",                                            NT_SIGINFO},
-  {"NT_FILE (mapped files)",                                                 NT_FILE},
   {0, 0}
 };
 
@@ -513,26 +439,15 @@ static const char* get_relatype(Elf64_Rela *r) {
 }
 
 static const char* get_nhdrtype64(const pbuffer_t p, Elf64_Nhdr *n) {
-  static char buff[32];
-
   if (n) {
     Elf32_Ehdr *e = get_ehdr32(p);
-    if (ET_CORE == e->e_type) {
-      for (pconvert_t x = NHDRTYPECORE; 0 != x->text; ++x) {
-        if (x->type == n->n_type) {
-          return x->text;
-        }
-      }
-    } else {
-      for (pconvert_t x = NHDRTYPE; 0 != x->text; ++x) {
-        if (x->type == n->n_type) {
-          return x->text;
-        }
+    if (e) {
+      if (ET_CORE == e->e_type) {
+        return get_string(zNHDRTYPECORE, n->n_type);
+      } else {
+        return get_string(zNHDRTYPE, n->n_type);
       }
     }
-
-    snprintf(buff, sizeof (buff), "<unknown: %x>", n->n_type);
-    return buff;
   }
 
   return NULL;
@@ -728,63 +643,13 @@ static int dump_dynamic64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
 
           if (dyn->d_tag == DT_FLAGS_1) {
             printf(" Flags:");
-            if (0 == dyn->d_un.d_val)  printf(" NONE");
-            else {
-              Elf64_Xword v = dyn->d_un.d_val;
-              if (v & DF_1_NOW)              { printf(" NOW"); v ^= DF_1_NOW; }
-              if (v & DF_1_GLOBAL)           { printf(" GLOBAL"); v ^= DF_1_GLOBAL; }
-              if (v & DF_1_GROUP)            { printf(" GROUP"); v ^= DF_1_GROUP; }
-              if (v & DF_1_NODELETE)         { printf(" NODELETE"); v ^= DF_1_NODELETE; }
-              if (v & DF_1_LOADFLTR)         { printf(" LOADFLTR"); v ^= DF_1_LOADFLTR; }
-              if (v & DF_1_INITFIRST)        { printf(" INITFIRST"); v ^= DF_1_INITFIRST; }
-              if (v & DF_1_NOOPEN)           { printf(" NOOPEN"); v ^= DF_1_NOOPEN; }
-              if (v & DF_1_ORIGIN)           { printf(" ORIGIN"); v ^= DF_1_ORIGIN; }
-              if (v & DF_1_DIRECT)           { printf(" DIRECT"); v ^= DF_1_DIRECT; }
-              if (v & DF_1_TRANS)            { printf(" TRANS"); v ^= DF_1_TRANS; }
-              if (v & DF_1_INTERPOSE)        { printf(" INTERPOSE"); v ^= DF_1_INTERPOSE; }
-              if (v & DF_1_NODEFLIB)         { printf(" NODEFLIB"); v ^= DF_1_NODEFLIB; }
-              if (v & DF_1_NODUMP)           { printf(" NODUMP"); v ^= DF_1_NODUMP; }
-              if (v & DF_1_CONFALT)          { printf(" CONFALT"); v ^= DF_1_CONFALT; }
-              if (v & DF_1_ENDFILTEE)        { printf(" ENDFILTEE"); v ^= DF_1_ENDFILTEE; }
-              if (v & DF_1_DISPRELDNE)       { printf(" DISPRELDNE"); v ^= DF_1_DISPRELDNE; }
-              if (v & DF_1_DISPRELPND)       { printf(" DISPRELPND"); v ^= DF_1_DISPRELPND; }
-              if (v & DF_1_NODIRECT)         { printf(" NODIRECT"); v ^= DF_1_NODIRECT; }
-              if (v & DF_1_IGNMULDEF)        { printf(" IGNMULDEF"); v ^= DF_1_IGNMULDEF; }
-              if (v & DF_1_NOKSYMS)          { printf(" NOKSYMS"); v ^= DF_1_NOKSYMS; }
-              if (v & DF_1_NOHDR)            { printf(" NOHDR"); v ^= DF_1_NOHDR; }
-              if (v & DF_1_EDITED)           { printf(" EDITED"); v ^= DF_1_EDITED; }
-              if (v & DF_1_NORELOC)          { printf(" NORELOC"); v ^= DF_1_NORELOC; }
-              if (v & DF_1_SYMINTPOSE)       { printf(" SYMINTPOSE"); v ^= DF_1_SYMINTPOSE; }
-              if (v & DF_1_GLOBAUDIT)        { printf(" GLOBAUDIT"); v ^= DF_1_GLOBAUDIT; }
-              if (v & DF_1_SINGLETON)        { printf(" SINGLETON"); v ^= DF_1_SINGLETON; }
-              if (v & DF_1_STUB)             { printf(" STUB"); v ^= DF_1_STUB; }
-              if (v & DF_1_PIE)              { printf(" PIE"); v ^= DF_1_PIE; }
-              if (v & DF_1_KMOD)             { printf(" KMOD"); v ^= DF_1_KMOD; }
-              if (v & DF_1_WEAKFILTER)       { printf(" WEAKFILTER"); v ^= DF_1_WEAKFILTER; }
-              if (v & DF_1_NOCOMMON)         { printf(" NOCOMMON"); v ^= DF_1_NOCOMMON; }
-              if (v != 0)                    printf_nice(v, USE_FHEX);
-            }
+            printf_masknone(zDT_FLAGS_1, dyn->d_un.d_val);
 	  } else if (dyn->d_tag == DT_POSFLAG_1) {
             printf(" Flags:");
-            if (0 == dyn->d_un.d_val)  printf(" NONE");
-            else {
-              Elf64_Xword v = dyn->d_un.d_val;
-              if (v & DF_P1_LAZYLOAD)        { printf(" LAZYLOAD"); v ^= DF_P1_LAZYLOAD; }
-              if (v & DF_P1_GROUPPERM)       { printf(" GROUPPERM"); v ^= DF_P1_GROUPPERM; }
-              if (v != 0)                    printf_nice(v, USE_FHEX);
-            }
+            printf_masknone(zDT_POSFLAG_1, dyn->d_un.d_val);
           } else if (dyn->d_tag == DT_FLAGS) {
             printf(" Flags:");
-            if (0 == dyn->d_un.d_val)  printf(" NONE");
-            else {
-              Elf64_Xword v = dyn->d_un.d_val;
-              if (v & DF_ORIGIN)             { printf(" ORIGIN"); v ^= DF_ORIGIN; }
-              if (v & DF_SYMBOLIC)           { printf(" SYMBOLIC"); v ^= DF_SYMBOLIC; }
-              if (v & DF_TEXTREL)            { printf(" TEXTREL"); v ^= DF_TEXTREL; }
-              if (v & DF_BIND_NOW)           { printf(" BIND_NOW"); v ^= DF_BIND_NOW; }
-              if (v & DF_STATIC_TLS)         { printf(" STATIC_TLS"); v ^= DF_STATIC_TLS; }
-              if (v != 0)                    printf_nice(v, USE_FHEX);
-            }
+            printf_masknone(zDT_FLAGS, dyn->d_un.d_val);
           } else if (dyn->d_tag == DT_PLTREL) {
             printf(" %s", get_dyntag64(dyn->d_un.d_val));
           } else if (dyn->d_tag == DT_NULL || dyn->d_tag == DT_NEEDED || dyn->d_tag == DT_PLTGOT ||
@@ -1039,9 +904,7 @@ static int dump_versionneed64(const pbuffer_t p, const poptions_t o, Elf64_Shdr 
           printf(":  Name: %-12s", get_name64byoffset(p, shdr->sh_link, va->vna_name));
 
           printf(" Flags:");
-          if (0 == va->vna_flags)              printf(" none");
-          if (va->vna_flags & VER_FLG_BASE)    printf(" BASE");
-          if (va->vna_flags & VER_FLG_WEAK)    printf(" WEAK");
+          printf_masknone(zVNA_FLAGS, va->vna_flags);
           printf("  Version: %d", va->vna_other);
           printf("\n");
 
@@ -1130,24 +993,26 @@ static int dump_notes64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr)
           // TBD
         } else if (NT_GNU_PROPERTY_TYPE_0 == nhdr->n_type) {
           printf("  Properties: ");
+
           for (Elf64_Word i = 0; i < nhdr->n_descsz; i += 8) {
             if ((nhdr->n_descsz - i) < 8) {
               printf("<corrupt descsz: %#x\n", nhdr->n_descsz);
               break;
             } else {
-              // TBD
               unsigned int x = getLE(cc + i, 4);
-              unsigned int y = getLE(cc + i + 4, 4);
-              if ((nhdr->n_descsz - i + 1) < x) {
-                printf("<corrupt type (%#x) datasz: %#x>\n", x, y);
+              unsigned int datasz = getLE(cc + i + 4, 4);
+              if ((nhdr->n_descsz - i + 1) < datasz) {
+                printf("<corrupt type (%#x) datasz: %#x>\n", x, datasz);
                 break;
               } else {
-//printf("A %x %x\n", x, y);
                 if (x >= GNU_PROPERTY_LOPROC && x <= GNU_PROPERTY_HIPROC) {
-//printf("B\n");
                   if (ehdr->e_machine == EM_X86_64 || ehdr->e_machine == EM_IAMCU || ehdr->e_machine == EM_386) {
-//printf("C\n");
-                    printf("%s", get_gnuproperty64(x));
+                    if (4 != datasz)       printf("%s <corrupt length: %#x> ", get_gnuproperty64(x), datasz);
+                    else                   printf("%s", get_gnuproperty64(x));
+
+                    if (x == GNU_PROPERTY_X86_FEATURE_1_AND) {
+                      printf_mask(zGNU_PROPERTY_X86_FEATURE_1_AND, getLE(cc + i + 8, 4));
+                    }
                   }
                 }
               }
@@ -1159,7 +1024,7 @@ static int dump_notes64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr)
             get_gnuabitab(getLE(cc, 4)), getLE(cc + 4, 4), getLE(cc + 8, 4), getLE(cc + 12, 4));
         } else {
           printf("  Description Data: ");
-          printf_data(cc, nhdr->n_descsz, 0, USE_STR);
+          printf_data(cc, nhdr->n_descsz, 0, USE_HEX);
           printf ("\n");
         }
         printf("\n");
