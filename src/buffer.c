@@ -4,9 +4,6 @@
 #include "buffer.h"
 #include "options.h"
 
-#define ELF_ALIGN_UP(addr, boundary) \
-  (((addr) + ((boundary) - 1)) & ~ ((boundary) -1))
-
 static int ismode0(void *p, const int mode) {
   if (p) {
     const char* pc = p;
@@ -14,19 +11,6 @@ static int ismode0(void *p, const int mode) {
     else if (MODE_GET1(mode) != pc[1]) return 0;
     else if (MODE_GET2(mode) != pc[2]) return 0;
     else return 1;
-  }
-
-  return 0;
-}
-
-int ismode(void *p, const int mode) {
-  if (p) {
-    const char* pc = p;
-    if (MODE_GET0(mode) != pc[0]) return 0;
-    if (MODE_GET1(mode) != pc[1]) return 0;
-    if (MODE_GET2(mode) != pc[2]) return 0;
-    if (MODE_GET3(mode) != pc[3]) return 0;
-    return 1;
   }
 
   return 0;
@@ -114,6 +98,19 @@ pbuffer_t open(const char* name) {
     }
 
     return p;
+  }
+
+  return 0;
+}
+
+int ismode(void *p, const int mode) {
+  if (p) {
+    const char* pc = p;
+    if (MODE_GET0(mode) != pc[0]) return 0;
+    if (MODE_GET1(mode) != pc[1]) return 0;
+    if (MODE_GET2(mode) != pc[2]) return 0;
+    if (MODE_GET3(mode) != pc[3]) return 0;
+    return 1;
   }
 
   return 0;
@@ -284,23 +281,6 @@ const char* get_secname64byshdr(const pbuffer_t p, Elf64_Shdr *s) {
   }
 
   return NULL;
-}
-
-
-int is32(const pbuffer_t p) {
-  if (issafe(p)) {
-    return 1 == get(p, EI_CLASS) ? 1 : 0;
-  }
-
-  return -1;
-}
-
-int is64(const pbuffer_t p) {
-  if (issafe(p)) {
-    return 2 == get(p, EI_CLASS) ? 1 : 0;
-  }
-
-  return -1;
 }
 
 int isBigEndian(const pbuffer_t p) {

@@ -64,8 +64,6 @@ const char* get_name64byoffset(const pbuffer_t p, const int index, const int off
 const char* get_secname64byshdr(const pbuffer_t p, Elf64_Shdr *s);
 const char* get_secname64byindex(const pbuffer_t p, const int index);
 
-int is32(const pbuffer_t p);
-int is64(const pbuffer_t p);
 int isBigEndian(const pbuffer_t p);
 int isLittleEndian(const pbuffer_t p);
 

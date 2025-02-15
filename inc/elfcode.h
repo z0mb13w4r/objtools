@@ -9,6 +9,8 @@
 int shdrinphdr64(Elf64_Shdr *s, Elf64_Phdr *p);
 
 int isELF(const pbuffer_t p);
+int is32(const pbuffer_t p);
+int is64(const pbuffer_t p);
 
 uint64_t getLE(const void *p, const size_t siz);
 uint64_t getBE(const void *p, const size_t siz);

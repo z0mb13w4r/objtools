@@ -1,0 +1,11 @@
+static convert_t zGNUABITAB[] = {
+  {"Linux",                        GNU_ABI_TAG_LINUX},
+  {"Hurd",                         GNU_ABI_TAG_HURD},
+  {"Solaris",                      GNU_ABI_TAG_SOLARIS},
+  {"FreeBSD",                      GNU_ABI_TAG_FREEBSD},
+  {"NetBSD",                       GNU_ABI_TAG_NETBSD},
+  {"Syllable",                     GNU_ABI_TAG_SYLLABLE},
+  {"NaCl",                         GNU_ABI_TAG_NACL},
+  {0, 0},
+};
+

@@ -94,3 +94,19 @@ int isELF(const pbuffer_t p) {
   return -1;
 }
 
+int is32(const pbuffer_t p) {
+  if (issafe(p)) {
+    return 1 == get(p, EI_CLASS) ? 1 : 0;
+  }
+
+  return -1;
+}
+
+int is64(const pbuffer_t p) {
+  if (issafe(p)) {
+    return 2 == get(p, EI_CLASS) ? 1 : 0;
+  }
+
+  return -1;
+}
+

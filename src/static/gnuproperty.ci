@@ -1,0 +1,20 @@
+static convert_t zGNUPROPERTY[] = {
+  {"x86 ISA used",               GNU_PROPERTY_X86_ISA_1_USED},
+  {"x86 ISA needed",             GNU_PROPERTY_X86_ISA_1_NEEDED},
+  {"x86 feature",                GNU_PROPERTY_X86_FEATURE_1_AND},
+  {"x86 feature used",           GNU_PROPERTY_X86_FEATURE_2_USED},
+  {"x86 feature needed",         GNU_PROPERTY_X86_FEATURE_2_NEEDED},
+  {"x86 ISA used",               GNU_PROPERTY_X86_COMPAT_ISA_1_USED},
+  {"x86 ISA needed",             GNU_PROPERTY_X86_COMPAT_ISA_1_NEEDED},
+  {"x86 ISA used",               GNU_PROPERTY_X86_COMPAT_2_ISA_1_USED},
+  {"x86 ISA needed",             GNU_PROPERTY_X86_COMPAT_2_ISA_1_NEEDED},
+  {0, 0}
+};
+
+static convert_t zGNUPROPERTY_X86_FEATURE_1_AND[] = {
+  {"IBT",   GNU_PROPERTY_X86_FEATURE_1_IBT},
+  {"SHSTK", GNU_PROPERTY_X86_FEATURE_1_SHSTK},
+  {0, 0}
+};
+
+

@@ -1,6 +1,0 @@
-static convert_t zGNU_PROPERTY_X86_FEATURE_1_AND[] = {
-  {"IBT",   GNU_PROPERTY_X86_FEATURE_1_IBT},
-  {"SHSTK", GNU_PROPERTY_X86_FEATURE_1_SHSTK},
-  {0, 0}
-};
-

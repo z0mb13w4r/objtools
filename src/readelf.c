@@ -12,9 +12,11 @@
 #include "static/ehdrmachine.ci"
 #include "static/ehdrosabi.ci"
 #include "static/ehdrtype.ci"
-#include "static/gnu_property_x86_feature_1_and.ci"
+#include "static/gnuabitab.ci"
+#include "static/gnuproperty.ci"
 #include "static/nhdrtype.ci"
 #include "static/phdrtype.ci"
+#include "static/reltype.ci"
 #include "static/shdrtype.ci"
 #include "static/vna_flags.ci"
 
@@ -34,83 +36,16 @@ static convert_t EHDRFLAGS[] = {
   {0, 0}
 };
 
-static convert_t GNUABITAB[] = {
-  {"Linux",                        GNU_ABI_TAG_LINUX},
-  {"Hurd",                         GNU_ABI_TAG_HURD},
-  {"Solaris",                      GNU_ABI_TAG_SOLARIS},
-  {"FreeBSD",                      GNU_ABI_TAG_FREEBSD},
-  {"NetBSD",                       GNU_ABI_TAG_NETBSD},
-  {"Syllable",                     GNU_ABI_TAG_SYLLABLE},
-  {"NaCl",                         GNU_ABI_TAG_NACL},
-  {0, 0},
-};
-
-static convert_t GNUPROPERTY[] = {
-  {"x86 ISA used: ",               GNU_PROPERTY_X86_ISA_1_USED},
-  {"x86 ISA needed: ",             GNU_PROPERTY_X86_ISA_1_NEEDED},
-  {"x86 feature: ",                GNU_PROPERTY_X86_FEATURE_1_AND},
-  {"x86 feature used: ",           GNU_PROPERTY_X86_FEATURE_2_USED},
-  {"x86 feature needed: ",         GNU_PROPERTY_X86_FEATURE_2_NEEDED},
-  {"x86 ISA used: ",               GNU_PROPERTY_X86_COMPAT_ISA_1_USED},
-  {"x86 ISA needed: ",             GNU_PROPERTY_X86_COMPAT_ISA_1_NEEDED},
-  {"x86 ISA used: ",               GNU_PROPERTY_X86_COMPAT_2_ISA_1_USED},
-  {"x86 ISA needed: ",             GNU_PROPERTY_X86_COMPAT_2_ISA_1_NEEDED},
-  {0, 0}
-};
-
-static convert_t RELTYPE[] = {
-  {"R_X86_64_NONE",                R_X86_64_NONE},
-  {"R_X86_64_64",                  R_X86_64_64},
-  {"R_X86_64_PC32",                R_X86_64_PC32},
-  {"R_X86_64_GOT32",               R_X86_64_GOT32},
-  {"R_X86_64_PLT32",               R_X86_64_PLT32},
-  {"R_X86_64_COPY",                R_X86_64_COPY},
-  {"R_X86_64_GLOB_DAT",            R_X86_64_GLOB_DAT},
-  {"R_X86_64_JUMP_SLOT",           R_X86_64_JUMP_SLOT},
-  {"R_X86_64_RELATIVE",            R_X86_64_RELATIVE},
-  {"R_X86_64_GOTPCREL",            R_X86_64_GOTPCREL},
-  {"R_X86_64_32",                  R_X86_64_32},
-  {"R_X86_64_32S",                 R_X86_64_32S},
-  {"R_X86_64_16",                  R_X86_64_16},
-  {"R_X86_64_PC16",                R_X86_64_PC16},
-  {"R_X86_64_8",                   R_X86_64_8},
-  {"R_X86_64_PC8",                 R_X86_64_PC8},
-  {"R_X86_64_PC64",                R_X86_64_PC64},
-  {"R_X86_64_GOTOFF64",            R_X86_64_GOTOFF64},
-  {"R_X86_64_GOTPC32",             R_X86_64_GOTPC32},
-  {"R_X86_64_SIZE32",              R_X86_64_SIZE32},
-  {"R_X86_64_SIZE64",              R_X86_64_SIZE64},
-  {0, 0}
-};
-
-static const char* get_gnuabitab(const int y) {
-  static char buff[32];
-
-  for (pconvert_t x = GNUABITAB; 0 != x->text; ++x) {
-    if (x->type == y) {
-      return x->text;
-    }
-  }
-
-  snprintf(buff, sizeof (buff), "<unknown: %x>", y);
-  return buff;
+static const char* get_gnuabitab64(const unsigned int x) {
+  return get_string(zGNUABITAB, x);
 }
 
-static const char *get_gnuproperty64(const int y) {
-  static char buff[32];
-
-  for (pconvert_t x = GNUPROPERTY; 0 != x->text; ++x) {
-    if (x->type == y) {
-      return x->text;
-    }
-  }
-
-  snprintf(buff, sizeof (buff), "<unknown: %x>", y);
-  return buff;
+static const char *get_gnuproperty64(const unsigned int x) {
+  return get_string(zGNUPROPERTY, x);
 }
 
-static const char* get_dyntag64(const unsigned int y) {
-  return get_string(zDYNTAG, y);
+static const char* get_dyntag64(const unsigned int x) {
+  return get_string(zDYNTAG, x);
 }
 
 static const char* get_ehdrtype64(Elf64_Ehdr *e) {
@@ -220,34 +155,16 @@ static const char* get_shdrtype64(Elf64_Shdr *s) {
 }
 
 static const char* get_reltype(Elf64_Rel *r) {
-  static char buff[32];
-
   if (r) {
-    for (pconvert_t x = RELTYPE; 0 != x->text; ++x) {
-      if (x->type == (r->r_info & 0xff)) {
-        return x->text;
-      }
-    }
-
-    snprintf(buff, sizeof (buff), "<unknown: %lx>", r->r_info);
-    return buff;
+    return get_string(zRELTYPE, r->r_info & 0xff);
   }
 
   return NULL;
 }
 
 static const char* get_relatype(Elf64_Rela *r) {
-  static char buff[32];
-
   if (r) {
-    for (pconvert_t x = RELTYPE; 0 != x->text; ++x) {
-      if (x->type == (r->r_info & 0xff)) {
-        return x->text;
-      }
-    }
-
-    snprintf(buff, sizeof (buff), "<unknown: %lx>", r->r_info);
-    return buff;
+    return get_string(zRELTYPE, r->r_info & 0xff);
   }
 
   return NULL;
@@ -824,10 +741,10 @@ static int dump_notes64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr)
                 if (x >= GNU_PROPERTY_LOPROC && x <= GNU_PROPERTY_HIPROC) {
                   if (ehdr->e_machine == EM_X86_64 || ehdr->e_machine == EM_IAMCU || ehdr->e_machine == EM_386) {
                     if (4 != datasz)       printf("%s <corrupt length: %#x> ", get_gnuproperty64(x), datasz);
-                    else                   printf("%s", get_gnuproperty64(x));
+                    else                   printf("%s:", get_gnuproperty64(x));
 
                     if (x == GNU_PROPERTY_X86_FEATURE_1_AND) {
-                      printf_mask(zGNU_PROPERTY_X86_FEATURE_1_AND, getLE(cc + i + 8, 4));
+                      printf_mask(zGNUPROPERTY_X86_FEATURE_1_AND, getLE(cc + i + 8, 4));
                     }
                   }
                 }
@@ -837,7 +754,7 @@ static int dump_notes64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr)
           printf ("\n");
         } else if (NT_GNU_ABI_TAG == nhdr->n_type) {
           printf("  OS: %s, ABI: %ld.%ld.%ld\n",
-            get_gnuabitab(getLE(cc, 4)), getLE(cc + 4, 4), getLE(cc + 8, 4), getLE(cc + 12, 4));
+            get_gnuabitab64(getLE(cc, 4)), getLE(cc + 4, 4), getLE(cc + 8, 4), getLE(cc + 12, 4));
         } else {
           printf("  Description Data: ");
           printf_data(cc, nhdr->n_descsz, 0, USE_HEX);
