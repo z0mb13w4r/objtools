@@ -424,6 +424,98 @@ static int dump_dynamic64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
   return 0;
 }
 
+static int dump_relocsrel64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *shdr) {
+  printf(" Offset       Info         Type                 Symbol's Value   Symbol's Name\n");
+
+  size_t cnt = shdr->sh_size / shdr->sh_entsize;
+
+  Elf64_Rel *rr = get64byshdr(p, shdr);
+  if (rr) {
+    for (size_t j = 0; j < cnt; j++) {
+      Elf64_Rel *r = rr + j;
+
+      printf_nice(r->r_offset, USE_LHEX48);
+      printf_nice(r->r_info, USE_LHEX48);
+      printf(" %-20s", get_reltype(r));
+      // TBD
+      printf("\n");
+    }
+  }
+
+  return 0;
+}
+
+static int dump_relocsrela64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *shdr) {
+  printf(" Offset       Info         Type                 Symbol's Value   Symbol's Name + Addend\n");
+
+  size_t cnt = shdr->sh_size / shdr->sh_entsize;
+
+  Elf64_Rela *rr = get64byshdr(p, shdr);
+  if (rr) {
+    for (size_t j = 0; j < cnt; j++) {
+      Elf64_Rela *r = rr + j;
+
+      printf_nice(r->r_offset, USE_LHEX48);
+      printf_nice(r->r_info, USE_LHEX48);
+      printf(" %-20s", get_relatype(r));
+
+      switch (r->r_info & 0xff) {
+      case R_X86_64_NONE:
+        break;
+      case R_X86_64_8:
+      case R_X86_64_16:
+      case R_X86_64_32:
+      case R_X86_64_32S:
+      case R_X86_64_64:        // S + A
+        break;
+      case R_X86_64_RELATIVE:  // B + A
+        printf("                 ");
+        printf_nice(r->r_addend, USE_HEX);
+        break;
+      case R_X86_64_GLOB_DAT:
+      case R_X86_64_JUMP_SLOT: // S
+        printf_nice(r->r_addend, USE_LHEX64);
+        //printf_data(getp(p, r->r_offset, 20), 20, 0, USE_STR);
+        break;
+      case R_X86_64_PC8:
+      case R_X86_64_PC16:
+      case R_X86_64_PC32:
+      case R_X86_64_PC64:      // S + A - P
+        break;
+      case R_X86_64_GOT32:     // G + A
+        break;
+      case R_X86_64_PLT32:     // L + A - P
+        break;
+      case R_X86_64_SIZE32:
+      case R_X86_64_SIZE64:    // Z + A
+        break;
+      case R_X86_64_GOTPC32:   // GOT + A - P
+        break;
+      case R_X86_64_GOTPCREL:  // G + GOT + A - P
+        break;
+      case R_X86_64_GOTOFF64:  // S + A - GOT
+        break;
+      case R_X86_64_COPY:
+        break;
+      default:
+        break;
+      }
+
+      printf("\n");
+    }
+  }
+
+  return 0;
+}
+
+static int dump_relocsrelr64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *shdr) {
+  printf(" Offset       Info         Type                 Symbol's Value   Symbol's Name\n");
+  // TBD
+  printf("\n");
+
+  return 0;
+}
+
 static int dump_relocs64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
   for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
     Elf64_Shdr *shdr = get_shdr64byindex(p, i);
@@ -438,74 +530,13 @@ static int dump_relocs64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr
         printf(" contains");
         printf_nice(cnt, USE_DEC);
         printf(" %s\n", 1 == cnt ? "entry:" : "entries:");
-        if (SHT_RELA == shdr->sh_type) {
-          printf(" Offset       Info         Type                 Symbol's Value   Symbol's Name + Addend\n");
-        } else {
-          printf(" Offset       Info         Type                 Symbol's Value   Symbol's Name\n");
-        }
 
-        void *rr = get64byshdr(p, shdr);
-        for (size_t j = 0; j < cnt; j++) {
-          if (SHT_REL == shdr->sh_type) {
-            Elf64_Rel *r = rr + (j * sizeof(Elf64_Rel));
-            if (r) {
-              printf_nice(r->r_offset, USE_LHEX48);
-              printf_nice(r->r_info, USE_LHEX48);
-              printf(" %-20s", get_reltype(r));
-              // TBD
-            }
-          } else if (SHT_RELA == shdr->sh_type) {
-            Elf64_Rela *r = rr + (j * sizeof(Elf64_Rela));
-            if (r) {
-              printf_nice(r->r_offset, USE_LHEX48);
-              printf_nice(r->r_info, USE_LHEX48);
-              printf(" %-20s", get_relatype(r));
-              // TBD
-              switch (r->r_info & 0xff) {
-              case R_X86_64_NONE:
-                break;
-              case R_X86_64_8:
-              case R_X86_64_16:
-              case R_X86_64_32:
-              case R_X86_64_32S:
-              case R_X86_64_64:        // S + A
-                break;
-              case R_X86_64_RELATIVE:  // B + A
-                printf("                 ");
-                printf_nice(r->r_addend, USE_HEX);
-                break;
-              case R_X86_64_GLOB_DAT:
-              case R_X86_64_JUMP_SLOT: // S
-                printf_nice(r->r_addend, USE_LHEX64);
-                //printf_data(getp(p, r->r_offset, 20), 20, 0, USE_STR);
-                break;
-              case R_X86_64_PC8:
-              case R_X86_64_PC16:
-              case R_X86_64_PC32:
-              case R_X86_64_PC64:      // S + A - P
-                break;
-              case R_X86_64_GOT32:     // G + A
-                break;
-              case R_X86_64_PLT32:     // L + A - P
-                break;
-              case R_X86_64_SIZE32:
-              case R_X86_64_SIZE64:    // Z + A
-                break;
-              case R_X86_64_GOTPC32:   // GOT + A - P
-                break;
-              case R_X86_64_GOTPCREL:  // G + GOT + A - P
-                break;
-              case R_X86_64_GOTOFF64:  // S + A - GOT
-                break;
-              case R_X86_64_COPY:
-                break;
-              default:
-                break;
-              }
-            }
-          } else if (SHT_RELR == shdr->sh_type) {
-          }
-          printf("\n");
+        if (SHT_REL == shdr->sh_type) {
+          dump_relocsrel64(p, o, shdr);
+        } else if (SHT_RELA == shdr->sh_type) {
+          dump_relocsrela64(p, o, shdr);
+        } else if (SHT_RELR == shdr->sh_type) {
+          dump_relocsrelr64(p, o, shdr);
         }
         printf("\n");
       }
