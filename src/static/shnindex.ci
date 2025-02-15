@@ -1,0 +1,7 @@
+static convert_t zSHNINDEX[] = {
+  {"UND",  SHN_UNDEF},
+  {"ABS",  SHN_ABS},
+  {"COM",  SHN_COMMON},
+  {0, 0}
+};
+

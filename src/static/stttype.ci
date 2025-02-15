@@ -1,0 +1,13 @@
+static convert_t zSTTTYPE[] = {
+  {"NOTYPE",  STT_NOTYPE},
+  {"OBJECT",  STT_OBJECT},
+  {"FUNC",    STT_FUNC},
+  {"SECTION", STT_SECTION},
+  {"FILE",    STT_FILE},
+  {"COMMON",  STT_COMMON},
+  {"TLS",     STT_TLS},
+//  {"RELC",    STT_RELC},
+//  {"SRELC",   STT_SRELC},
+  {0, 0}
+};
+

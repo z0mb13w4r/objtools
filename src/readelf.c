@@ -18,6 +18,10 @@
 #include "static/phdrtype.ci"
 #include "static/reltype.ci"
 #include "static/shdrtype.ci"
+#include "static/shnindex.ci"
+#include "static/stbbind.ci"
+#include "static/stttype.ci"
+#include "static/stvvisibility.ci"
 #include "static/vna_flags.ci"
 
 static convert_t EHDRFLAGS[] = {
@@ -46,6 +50,30 @@ static const char *get_gnuproperty64(const unsigned int x) {
 
 static const char* get_dyntag64(const unsigned int x) {
   return get_string(zDYNTAG, x);
+}
+
+static const char* get_symboltype64(const unsigned int x) {
+  return get_string(zSTTTYPE, x);
+}
+
+static const char* get_symbolbinding64(const unsigned int x) {
+  return get_string(zSTBBIND, x);
+}
+
+static const char* get_symbolvisibility64(const unsigned int x) {
+  return get_string(zSTVVISIBILITY, x);
+}
+
+static const char* get_symbolindex64(const unsigned int x) {
+  char* def = get_stringnull(zSHNINDEX, x);
+  if (NULL == def) {
+    static char buff[32];
+
+    snprintf(buff, sizeof(buff), "%3d", x);
+    return buff;
+  }
+
+  return def;
 }
 
 static const char* get_ehdrtype64(Elf64_Ehdr *e) {
@@ -156,7 +184,7 @@ static const char* get_shdrtype64(Elf64_Shdr *s) {
 
 static const char* get_reltype(Elf64_Rel *r) {
   if (r) {
-    return get_string(zRELTYPE, r->r_info & 0xff);
+    return get_string(zRELTYPE, r->r_info & 0xffff);
   }
 
   return NULL;
@@ -164,7 +192,7 @@ static const char* get_reltype(Elf64_Rel *r) {
 
 static const char* get_relatype(Elf64_Rela *r) {
   if (r) {
-    return get_string(zRELTYPE, r->r_info & 0xff);
+    return get_string(zRELTYPE, r->r_info & 0xffff);
   }
 
   return NULL;
@@ -452,14 +480,14 @@ static int dump_relocsrela64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *
 
   Elf64_Rela *rr = get64byshdr(p, shdr);
   if (rr) {
-    for (size_t j = 0; j < cnt; j++) {
+    for (size_t j = 0; j < cnt; ++j) {
       Elf64_Rela *r = rr + j;
 
       printf_nice(r->r_offset, USE_LHEX48);
       printf_nice(r->r_info, USE_LHEX48);
       printf(" %-20s", get_relatype(r));
-
-      switch (r->r_info & 0xff) {
+// TBD
+      switch (r->r_info & 0xffff) {
       case R_X86_64_NONE:
         break;
       case R_X86_64_8:
@@ -475,7 +503,13 @@ static int dump_relocsrela64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *
       case R_X86_64_GLOB_DAT:
       case R_X86_64_JUMP_SLOT: // S
         printf_nice(r->r_addend, USE_LHEX64);
-        //printf_data(getp(p, r->r_offset, 20), 20, 0, USE_STR);
+
+// shdr->sh_link -> .dynsym
+// (r->r_info >> 32) & 0xffff) -> indexes into .dynsym some how. then into .dynstr.
+printf(" *** %ld -> %s ***", (r->r_info >> 32) & 0xffff, get_secname64byindex(p, shdr->sh_link));
+
+        printf(" +");
+        printf_nice(r->r_addend, USE_DEC);
         break;
       case R_X86_64_PC8:
       case R_X86_64_PC16:
@@ -554,7 +588,45 @@ static int dump_unwind64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr
 }
 
 static int dump_symbols64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
+  for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
+    Elf64_Shdr *shdr = get_shdr64byindex(p, i);
+    if (shdr) {
+      if (SHT_SYMTAB == shdr->sh_type || SHT_DYNSYM == shdr->sh_type) {
+        size_t cnt = shdr->sh_size / shdr->sh_entsize;
+
+        printf("Symbol table");
+        printf(" '%s'", get_secname64byindex(p, i));
+        printf(" at offset");
+        printf_nice(shdr->sh_offset, USE_FHEX16);
+        printf(" contains");
+        printf_nice(cnt, USE_DEC);
+        printf(" %s\n", 1 == cnt ? "entry:" : "entries:");
+
+        printf("  Num:    Value          Size Type    Bind   Vis      Ndx Name\n");
   // TBD
+        Elf64_Sym *ss = get64byshdr(p, shdr);
+        if (ss) {
+          for (size_t j = 0; j < cnt; ++j) {
+            Elf64_Sym *s = ss + j;
+            printf_nice(j, USE_DEC5);
+            printf_nice(s->st_value, USE_LHEX64);
+            printf_nice(s->st_size, USE_DEC5);
+            printf(" %-7s", get_symboltype64(ELF_ST_TYPE(s->st_info)));
+            printf(" %-6s", get_symbolbinding64(ELF_ST_BIND(s->st_info)));
+
+            unsigned int vis = ELF_ST_VISIBILITY(s->st_other);
+            printf (" %-7s", get_symbolvisibility64(vis));
+            printf (" %4s", get_symbolindex64(s->st_shndx));
+
+            printf("\n");
+          }
+        }
+
+        printf("\n");
+      }
+    }
+  }
+
   return 0;
 }
 
