@@ -19,3 +19,27 @@ static convert_t zEHDROSABI[] = {
   {0, 0}
 };
 
+static convert_t zEHDROSABIAMDGPU[] = {
+  {"AMD HSA",    ELFOSABI_AMDGPU_HSA},
+  {"AMD PAL",    ELFOSABI_AMDGPU_PAL},
+  {"AMD Mesa3D", ELFOSABI_AMDGPU_MESA3D},
+  {0, 0}
+};
+
+static convert_t zEHDROSABIARM[] = {
+  {"ARM",        ELFOSABI_ARM},
+  {"ARM FDPIC",  ELFOSABI_ARM_FDPIC},
+  {0, 0}
+};
+
+static convert_t zEHDROSABIMSP430[] = {
+  {"Standalone App",   ELFOSABI_STANDALONE},
+  {0, 0}
+};
+
+static convert_t zEHDROSABIC6000[] = {
+  {"Bare-metal C6000", ELFOSABI_C6000_ELFABI},
+  {"Linux C6000",      ELFOSABI_C6000_LINUX},
+  {0, 0}
+};
+

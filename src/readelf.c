@@ -65,7 +65,7 @@ static const char* get_symbolvisibility64(const unsigned int x) {
 }
 
 static const char* get_symbolindex64(const unsigned int x) {
-  char* def = get_stringnull(zSHNINDEX, x);
+  const char* def = get_stringnull(zSHNINDEX, x);
   if (NULL == def) {
     static char buff[32];
 
@@ -93,61 +93,36 @@ static const char* get_ehdrmachine64(Elf64_Ehdr *e) {
 }
 
 static const char* get_ehdrosabi(pbuffer_t p) {
-  static char buff[32];
-
   if (p) {
     const unsigned int osabi = get(p, EI_OSABI);
     const char* s = get_stringnull(zEHDROSABI, osabi);
-    if (s) return s;
+    if (NULL == s) {
+      Elf64_Ehdr *e = get_ehdr64(p);
 
-    Elf64_Ehdr *e = get_ehdr64(p);
+      if (e && osabi >= 64) {
+        switch (e->e_machine) {
+        case EM_AMDGPU:
+          return get_string(zEHDROSABIAMDGPU, osabi);
 
-    if (e && osabi >= 64) {
-      switch (e->e_machine) {
-      case EM_AMDGPU:
-        switch (osabi) {
-          case ELFOSABI_AMDGPU_HSA:    return "AMD HSA";
-          case ELFOSABI_AMDGPU_PAL:    return "AMD PAL";
-          case ELFOSABI_AMDGPU_MESA3D: return "AMD Mesa3D";
-          default:
-            break;
-        }
-        break;
+        case EM_ARM:
+          return get_string(zEHDROSABIARM, osabi);
 
-      case EM_ARM:
-      switch (osabi) {
-        case ELFOSABI_ARM:             return "ARM";
-        case ELFOSABI_ARM_FDPIC:       return "ARM FDPIC";
+        case EM_MSP430:
+        case EM_VISIUM:
+          return get_string(zEHDROSABIMSP430, osabi);
+
+        case EM_TI_C6000:
+          return get_string(zEHDROSABIC6000, osabi);
+
         default:
           break;
-      }
-      break;
-
-      case EM_MSP430:
-      case EM_VISIUM:
-        switch (osabi) {
-          case ELFOSABI_STANDALONE:    return "Standalone App";
-          default:
-            break;
         }
-        break;
-
-      case EM_TI_C6000:
-        switch (osabi) {
-          case ELFOSABI_C6000_ELFABI:  return "Bare-metal C6000";
-          case ELFOSABI_C6000_LINUX:   return "Linux C6000";
-          default:
-            break;
-        }
-        break;
-
-      default:
-        break;
       }
+
+      return get_stringunknown(osabi);
     }
 
-    snprintf(buff, sizeof (buff), "<unknown: %x>", e->e_type);
-    return buff;
+    return s;
   }
 
   return NULL;

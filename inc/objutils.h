@@ -8,8 +8,9 @@ typedef struct convert_s {
 
 char* strname(char* dst, const char* src);
 
-const char* get_string(const pconvert_t p, const unsigned int type);
-const char* get_stringnull(const pconvert_t p, const unsigned int type);
+const char* get_string(const pconvert_t p, const unsigned int x);
+const char* get_stringnull(const pconvert_t p, const unsigned int x);
+const char* get_stringunknown(const unsigned int x);
 
 #endif
 
