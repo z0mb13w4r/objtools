@@ -640,18 +640,18 @@ static int dump_versionsym64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *
   }
 
   size_t cnt = shdr->sh_size / shdr->sh_entsize;
-  printf("Version symbols section");
-  printf(" '%s'", get_secname64byshdr(p, shdr));
-  printf(" contains");
+  printf_text("Version symbols section", USE_LT);
+  printf_text(get_secname64byshdr(p, shdr), USE_LTSQ | USE_SPACE);
+  printf_text("contains", USE_SPACE);
   printf_nice(cnt, USE_DEC);
-  printf(" %s\n", 1 == cnt ? "entry:" : "entries:");
-  printf(" Addr:");
+  printf_text(1 == cnt ? "entry" : "entries", USE_SPACE | USE_COLON | USE_EOL);
+  printf_text(" Addr", USE_COLON);
   printf_nice(shdr->sh_addr, USE_FHEX64);
-  printf("  Offset:");
+  printf_text("  Offset", USE_COLON);
   printf_nice(shdr->sh_offset, USE_FHEX24);
-  printf("  Link:");
+  printf_text("  Link", USE_COLON);
   printf_nice(shdr->sh_link, USE_DEC);
-  printf(" (%s)", get_secname64byindex(p, shdr->sh_link));
+  printf_text(get_secname64byindex(p, shdr->sh_link), USE_LTRB | USE_SPACE);
 
   for (size_t j = 0; j < cnt; ++j) {
     Elf64_Versym *vs = getp(p, shdr->sh_offset + (j * sizeof(Elf64_Versym)), sizeof(Elf64_Versym));
@@ -663,12 +663,12 @@ static int dump_versionsym64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *
       }
 
       int n = 0;
-      if (0 == *vs)        n += printf("   0 (*local*)    ");
-      else if (1 == *vs)   n += printf("   1 (*global*)   ");
+      if (0 == *vs)        n += printf_text("   0  (*local*)", USE_LT);
+      else if (1 == *vs)   n += printf_text("   1  (*global*)", USE_LT);
       else {
         n += printf("%4x%c", *vs & VERSYM_VERSION, *vs & VERSYM_HIDDEN ? 'h' : ' ');
         if (vnames[*vs & VERSYM_VERSION] && (*vs & VERSYM_VERSION) < NELEMENTS(vnames)) {
-          n += printf("(%s)", get_name64byoffset(p, vnames[0], vnames[*vs & VERSYM_VERSION]));
+          n += printf_text(get_name64byoffset(p, vnames[0], vnames[*vs & VERSYM_VERSION]), USE_LTRB | USE_SPACE);
         } else {
           n += printf("???");
         }
@@ -677,8 +677,8 @@ static int dump_versionsym64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *
     }
   }
 
-  if (cnt) printf("\n");
-  printf("\n");
+  if (cnt) printf_eol();
+  printf_eol();
 
   return 0;
 }
