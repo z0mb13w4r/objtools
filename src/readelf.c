@@ -641,7 +641,7 @@ static int dump_versionsym64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *
 
   size_t cnt = shdr->sh_size / shdr->sh_entsize;
   printf_text("Version symbols section", USE_LT);
-  printf_text(get_secname64byshdr(p, shdr), USE_LTSQ | USE_SPACE);
+  printf_text(get_secname64byshdr(p, shdr), USE_LT | USE_SQ | USE_SPACE);
   printf_text("contains", USE_SPACE);
   printf_nice(cnt, USE_DEC);
   printf_text(1 == cnt ? "entry" : "entries", USE_SPACE | USE_COLON | USE_EOL);
@@ -651,29 +651,28 @@ static int dump_versionsym64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *
   printf_nice(shdr->sh_offset, USE_FHEX24);
   printf_text("  Link", USE_COLON);
   printf_nice(shdr->sh_link, USE_DEC);
-  printf_text(get_secname64byindex(p, shdr->sh_link), USE_LTRB | USE_SPACE);
+  printf_text(get_secname64byindex(p, shdr->sh_link), USE_LT | USE_RB | USE_SPACE);
 
   for (size_t j = 0; j < cnt; ++j) {
     Elf64_Versym *vs = getp(p, shdr->sh_offset + (j * sizeof(Elf64_Versym)), sizeof(Elf64_Versym));
     if (vs) {
       if (j % 4 == 0) {
-        printf("\n");
+        printf_eol();
         printf_nice(j, USE_LHEX16);
         printf(": ");
       }
 
       int n = 0;
-      if (0 == *vs)        n += printf_text("   0  (*local*)", USE_LT);
-      else if (1 == *vs)   n += printf_text("   1  (*global*)", USE_LT);
+      if (0 == *vs)        n += printf_text("   0  (*local*)", USE_LT | SET_PAD(20));
+      else if (1 == *vs)   n += printf_text("   1  (*global*)", USE_LT | SET_PAD(20));
       else {
         n += printf("%4x%c", *vs & VERSYM_VERSION, *vs & VERSYM_HIDDEN ? 'h' : ' ');
         if (vnames[*vs & VERSYM_VERSION] && (*vs & VERSYM_VERSION) < NELEMENTS(vnames)) {
-          n += printf_text(get_name64byoffset(p, vnames[0], vnames[*vs & VERSYM_VERSION]), USE_LTRB | USE_SPACE);
+          n += printf_text(get_name64byoffset(p, vnames[0], vnames[*vs & VERSYM_VERSION]), USE_LT | USE_RB | USE_SPACE | SET_PAD(MAX(0, 20 - n)));
         } else {
-          n += printf("???");
+          n += printf_text("???", USE_SPACE | SET_PAD(MAX(0, 20 - n)));
         }
       }
-      printf("%*s", MAX(0, 20 - n), " ");
     }
   }
 
@@ -807,7 +806,7 @@ static int dump_notes64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr)
 
           for (Elf64_Word i = 0; i < nhdr->n_descsz; i += 8) {
             if ((nhdr->n_descsz - i) < 8) {
-              printf("<corrupt descsz: %#x\n", nhdr->n_descsz);
+              printf_nice(nhdr->n_descsz, USE_CORRUPT);
               break;
             } else {
               unsigned int x = getLE(cc + i, 4);

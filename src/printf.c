@@ -8,35 +8,37 @@ int printf_eol() {
   return printf("\n");
 }
 
-int printf_nice(const uint64_t v, const int mode) {
-  switch (mode) {
-  case USE_DEC:                     return printf(" %" PRId64, v);
-  case USE_DEC2:                    return printf(" %2" PRId64, v);
-  case USE_DEC5:                    return printf(" %5" PRId64, v);
-  case USE_OCT:                     return printf(" %" PRIo64, v);
-  case USE_OCT2:                    return printf(" %2" PRIo64, v);
-  case USE_OCT5:                    return printf(" %5" PRIo64, v);
-  case USE_FHEX:                    return printf(" 0x%" PRIx64, v);
-  case USE_LHEX:                    return printf(" %" PRIx64, v);
-  case USE_FHEX8:                   return printf(" 0x%2.2" PRIx64, v);
-  case USE_LHEX8:                   return printf(" %2.2" PRIx64, v);
-  case USE_FHEX16:                  return printf(" 0x%4.4" PRIx64, v);
-  case USE_LHEX16:                  return printf(" %4.4" PRIx64, v);
-  case USE_FHEX24:                  return printf(" 0x%6.6" PRIx64, v);
-  case USE_LHEX24:                  return printf(" %6.6" PRIx64, v);
-  case USE_FHEX32:                  return printf(" 0x%8.8" PRIx64, v);
-  case USE_LHEX32:                  return printf(" %8.8" PRIx64, v);
-  case USE_FHEX48:                  return printf(" 0x%12.12" PRIx64, v);
-  case USE_LHEX48:                  return printf(" %12.12" PRIx64, v);
-  case USE_FHEX64:                  return printf(" 0x%16.16" PRIx64, v);
-  case USE_LHEX64:                  return printf(" %16.16" PRIx64, v);
-  case USE_CORRUPT:                 return printf(" <corrupt: %" PRIx64 ">", v);
-  case USE_UNKNOWN:                 return printf(" <unknown: %" PRIx64 ">", v);
+int printf_nice(const uint64_t v, const modez_t mode) {
+  int n = 0;
+  switch (mode & ~USE_FLAGMASK) {
+  case USE_DEC:                     n += printf(" %" PRId64, v);               break;
+  case USE_DEC2:                    n += printf(" %2" PRId64, v);              break;
+  case USE_DEC5:                    n += printf(" %5" PRId64, v);              break;
+  case USE_OCT:                     n += printf(" %" PRIo64, v);               break;
+  case USE_OCT2:                    n += printf(" %2" PRIo64, v);              break;
+  case USE_OCT5:                    n += printf(" %5" PRIo64, v);              break;
+  case USE_FHEX:                    n += printf(" 0x%" PRIx64, v);             break;
+  case USE_LHEX:                    n += printf(" %" PRIx64, v);               break;
+  case USE_FHEX8:                   n += printf(" 0x%2.2" PRIx64, v);          break;
+  case USE_LHEX8:                   n += printf(" %2.2" PRIx64, v);            break;
+  case USE_FHEX16:                  n += printf(" 0x%4.4" PRIx64, v);          break;
+  case USE_LHEX16:                  n += printf(" %4.4" PRIx64, v);            break;
+  case USE_FHEX24:                  n += printf(" 0x%6.6" PRIx64, v);          break;
+  case USE_LHEX24:                  n += printf(" %6.6" PRIx64, v);            break;
+  case USE_FHEX32:                  n += printf(" 0x%8.8" PRIx64, v);          break;
+  case USE_LHEX32:                  n += printf(" %8.8" PRIx64, v);            break;
+  case USE_FHEX48:                  n += printf(" 0x%12.12" PRIx64, v);        break;
+  case USE_LHEX48:                  n += printf(" %12.12" PRIx64, v);          break;
+  case USE_FHEX64:                  n += printf(" 0x%16.16" PRIx64, v);        break;
+  case USE_LHEX64:                  n += printf(" %16.16" PRIx64, v);          break;
+  case USE_CORRUPT:                 n += printf(" <corrupt: %" PRIx64 ">", v); break;
+  case USE_UNKNOWN:                 n += printf(" <unknown: %" PRIx64 ">", v); break;
 
   case USE_CHARCTRL:
-    if (iscntrl(v))                 return printf("^%c", CAST(int, v) + 0x40);
-    if (isprint(v))                 return printf("%c", CAST(int, v));
-    return printf(".");
+    if (iscntrl(v))                 n += printf("^%c", CAST(int, v) + 0x40);
+    else if (isprint(v))            n += printf("%c", CAST(int, v));
+    else                            n += printf(".");
+    break;
 
   case USE_TIMEDATE: {
     struct tm * tmp;
@@ -55,10 +57,12 @@ int printf_nice(const uint64_t v, const int mode) {
     break;
   }
 
-  return -1;
+  if (mode & USE_EOL)               n += printf("\n");
+
+  return n;
 }
 
-int printf_text(const char* p, const int mode) {
+int printf_text(const char* p, const modez_t mode) {
   if (p) {
     int n = 0;
 
@@ -68,8 +72,10 @@ int printf_text(const char* p, const int mode) {
     }
 
     switch (GET_BRACKET(mode)) {
+    case USE_CB:             n += printf("{%s}", p);   break;
     case USE_RB:             n += printf("(%s)", p);   break;
     case USE_SB:             n += printf("[%s]", p);   break;
+    case USE_TB:             n += printf("<%s>", p);   break;
     case USE_SQ:             n += printf("'%s'", p);   break;
     case USE_DQ:             n += printf("\"%s\"", p); break;
     default:                 break;
@@ -88,6 +94,7 @@ int printf_text(const char* p, const int mode) {
     default:                 break;
     }
 
+    if (GET_PAD(mode))       n += printf("%*s", MAX(0, CAST(int, GET_PAD(mode)) - n), " ");
     if (mode & USE_EOL)      n += printf_eol();
 
     return n;
@@ -96,9 +103,9 @@ int printf_text(const char* p, const int mode) {
   return -1;
 }
 
-int printf_data(const void* p, const size_t size, const int addr, const int mode) {
+int printf_data(const void* p, const size_t size, const addrz_t addr, const modez_t mode) {
 #define MAX_SIZE (16)
-  int x = addr;
+  addrz_t x = addr;
   size_t i = 0;
   const unsigned char *pp = p;
   for (i = 0; i < size; ) {
@@ -156,9 +163,9 @@ int printf_data(const void* p, const size_t size, const int addr, const int mode
   return i;
 }
 
-int printf_mask(const pconvert_t p, const unsigned int mask) {
+int printf_mask(const pconvert_t p, const maskz_t mask) {
   int n = 0;
-  unsigned int v = mask;
+  maskz_t v = mask;
   for (pconvert_t x = p; 0 != x->text; ++x) {
     if (x->type & v) {
       n += printf(" %s", x->text);
@@ -173,7 +180,7 @@ int printf_mask(const pconvert_t p, const unsigned int mask) {
   return n;
 }
 
-int printf_masknone(const pconvert_t p, const unsigned int mask) {
+int printf_masknone(const pconvert_t p, const maskz_t mask) {
   if (0 == mask) {
     return printf(" NONE");
   }

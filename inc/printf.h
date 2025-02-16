@@ -36,44 +36,51 @@
 #define USE_STR           (2)
 #define USE_HEX           (3)
 
-#define SET_FLAG(x)       ((x) << 16)
+#define GET_XX3(x,y)      ((x) & (0x07 << (y)))
+#define SET_XX3(x,y)      (((x) & 0x07) << (y))
+#define GET_XX4(x,y)      ((x) & (0x0f << (y)))
+#define SET_XX4(x,y)      (((x) & 0x0f) << (y))
+#define GET_XX8(x,y)      ((x) & (0xff << (y)))
+#define SET_XX8(x,y)      (((x) & 0xff) << (y))
 
-#define GET_FORMAT(x)     ((x) & (0x03 << 20))
-#define SET_FORMAT(x)     ((x) << 20)
-#define GET_BRACKET(x)    ((x) & (0x03 << 23))
-#define SET_BRACKET(x)    ((x) << 23)
-#define GET_POSTFIX(x)    ((x) & (0x03 << 26))
-#define SET_POSTFIX(x)    ((x) << 26)
-#define GET_PREFIX(x)     ((x) & (0x03 << 29))
-#define SET_PREFIX(x)     ((x) << 29)
+#define GET_PAD(x)        GET_XX8(x, 0)
+#define SET_PAD(x)        SET_XX8(x, 0)
+#define GET_FORMAT(x)     GET_XX3(x, 8)
+#define SET_FORMAT(x)     SET_XX3(x, 8)
+#define GET_BRACKET(x)    GET_XX3(x, 12)
+#define SET_BRACKET(x)    SET_XX3(x, 12)
+#define GET_POSTFIX(x)    GET_XX3(x, 16)
+#define SET_POSTFIX(x)    SET_XX3(x, 16)
+#define GET_PREFIX(x)     GET_XX3(x, 20)
+#define SET_PREFIX(x)     SET_XX3(x, 20)
 
-#define USE_EOL           SET_FLAG(1)
+#define SET_FLAG(x)       SET_XX4(x, 28)
+
+#define USE_EOL           SET_FLAG(0x1)
+#define USE_FLAGMASK      SET_FLAG(0xf)
 
 #define USE_NONE          SET_FORMAT(0)
 #define USE_LT            SET_FORMAT(1)
 #define USE_RT            SET_FORMAT(2)
 
-#define USE_RB            SET_BRACKET(1)
-#define USE_SB            SET_BRACKET(2)
-#define USE_SQ            SET_BRACKET(3)
-#define USE_DQ            SET_BRACKET(4)
+#define USE_CB            SET_BRACKET(1)
+#define USE_RB            SET_BRACKET(2)
+#define USE_SB            SET_BRACKET(3)
+#define USE_TB            SET_BRACKET(4)
+#define USE_SQ            SET_BRACKET(5)
+#define USE_DQ            SET_BRACKET(6)
 
 #define USE_COLON         SET_POSTFIX(1)
 
 #define USE_SPACE         SET_PREFIX(1)
 
-#define USE_LTRB          (USE_LT | USE_RB)
-#define USE_LTSB          (USE_LT | USE_SB)
-#define USE_LTSQ          (USE_LT | USE_SQ)
-#define USE_LTDQ          (USE_LT | USE_DQ)
-
 int printf_eol();
-int printf_nice(const uint64_t v, const int mode);
-int printf_data(const void* p, const size_t size, const int addr, const int mode);
-int printf_text(const char* p, const int mode);
+int printf_nice(const uint64_t v, const modez_t mode);
+int printf_data(const void* p, const size_t size, const addrz_t addr, const modez_t mode);
+int printf_text(const char* p, const modez_t mode);
 
-int printf_mask(const pconvert_t p, const unsigned int mask);
-int printf_masknone(const pconvert_t p, const unsigned int mask);
+int printf_mask(const pconvert_t p, const maskz_t mask);
+int printf_masknone(const pconvert_t p, const maskz_t mask);
 
 #endif
 

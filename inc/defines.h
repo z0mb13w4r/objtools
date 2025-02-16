@@ -45,5 +45,9 @@
 #define LIMIT(x,b,t) MAX(b, MIN(x, t))
 #endif
 
+typedef uint64_t addrz_t;
+typedef uint64_t maskz_t;
+typedef uint64_t modez_t;
+
 #endif
 
