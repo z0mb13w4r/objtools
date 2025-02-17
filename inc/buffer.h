@@ -43,7 +43,9 @@ int issafe(pbuffer_t p);
 int ismode(void *p, const int mode);
 
 void* get64byshdr(const pbuffer_t p, Elf64_Shdr *shdr); // not safe - remove
-void* get64byphdr(const pbuffer_t p, Elf64_Phdr *phdr); // not safe - remove
+                                                        // replace by get64_xxxx & next64_xxxx
+                                                        // return variantelf64_t mode[4] spos, epos, size
+void* get64byphdr(const pbuffer_t p, Elf64_Phdr *phdr); // not safe - remove (dead code)
 
 void* getp(const pbuffer_t p, const int offset, const size_t size);
 int   get(const pbuffer_t p, const int offset);
@@ -51,8 +53,9 @@ int   get(const pbuffer_t p, const int offset);
 Elf32_Ehdr* get_ehdr32(const pbuffer_t p);
 Elf64_Ehdr* get_ehdr64(const pbuffer_t p);
 
-Elf64_Shdr* get_shdr64byindex(const pbuffer_t p, const int index);
+Elf64_Shdr* get_shdr64bytype(const pbuffer_t p, const int type);
 Elf64_Shdr* get_shdr64byname(const pbuffer_t p, const char* name);
+Elf64_Shdr* get_shdr64byindex(const pbuffer_t p, const int index);
 
 Elf64_Nhdr* get_nhdr64byindex(const pbuffer_t p, const int index);
 const char* get_nhdrname64byindex(const pbuffer_t p, const int index);

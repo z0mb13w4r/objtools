@@ -10,7 +10,7 @@ int printf_eol() {
 
 int printf_nice(const uint64_t v, const modez_t mode) {
   int n = 0;
-  switch (mode & ~USE_FLAGMASK) {
+  switch (mode & ~(USE_FLAGMASK | USE_POS1MASK)) {
   case USE_DEC:                     n += printf(" %" PRId64, v);               break;
   case USE_DEC2:                    n += printf(" %2" PRId64, v);              break;
   case USE_DEC5:                    n += printf(" %5" PRId64, v);              break;
@@ -57,6 +57,12 @@ int printf_nice(const uint64_t v, const modez_t mode) {
     break;
   }
 
+  switch (mode & USE_POS1MASK) {
+  case USE_COLON:                  n += printf(":");
+  default:
+    break;
+  }
+
   if (mode & USE_EOL)               n += printf("\n");
 
   return n;
@@ -68,6 +74,7 @@ int printf_text(const char* p, const modez_t mode) {
 
     switch (GET_PREFIX(mode)) {
     case USE_SPACE:          n += printf(" ");         break;
+    case USE_SPACE2:         n += printf("  ");        break;
     default:                 break;
     }
 
@@ -89,7 +96,7 @@ int printf_text(const char* p, const modez_t mode) {
       }
     }
 
-    switch (GET_POSTFIX(mode)) {
+    switch (GET_POS1(mode)) {
     case USE_COLON:          n += printf(":");         break;
     default:                 break;
     }
@@ -163,28 +170,28 @@ int printf_data(const void* p, const size_t size, const addrz_t addr, const mode
   return i;
 }
 
-int printf_mask(const pconvert_t p, const maskz_t mask) {
+int printf_mask(const pconvert_t p, const maskz_t mask, const modez_t mode) {
   int n = 0;
   maskz_t v = mask;
   for (pconvert_t x = p; 0 != x->text; ++x) {
     if (x->type & v) {
-      n += printf(" %s", x->text);
+      n += printf_text(x->text, mode | USE_SPACE);
       v &= ~x->type;
     }
   }
 
   if (v) {
-    n += printf_nice(v, USE_UNKNOWN);
+    n += printf_nice(v, USE_UNKNOWN | USE_SPACE | mode);
   }
 
   return n;
 }
 
-int printf_masknone(const pconvert_t p, const maskz_t mask) {
+int printf_masknone(const pconvert_t p, const maskz_t mask, const modez_t mode) {
   if (0 == mask) {
-    return printf(" NONE");
+    return printf_text("NONE", USE_SPACE | mode);
   }
 
-  return printf_mask(p, mask);
+  return printf_mask(p, mask, USE_SPACE | mode);
 }
 

@@ -49,8 +49,8 @@
 #define SET_FORMAT(x)     SET_XX3(x, 8)
 #define GET_BRACKET(x)    GET_XX3(x, 12)
 #define SET_BRACKET(x)    SET_XX3(x, 12)
-#define GET_POSTFIX(x)    GET_XX3(x, 16)
-#define SET_POSTFIX(x)    SET_XX3(x, 16)
+#define GET_POS1(x)       GET_XX3(x, 16)
+#define SET_POS1(x)       SET_XX3(x, 16)
 #define GET_PREFIX(x)     GET_XX3(x, 20)
 #define SET_PREFIX(x)     SET_XX3(x, 20)
 
@@ -70,17 +70,19 @@
 #define USE_SQ            SET_BRACKET(5)
 #define USE_DQ            SET_BRACKET(6)
 
-#define USE_COLON         SET_POSTFIX(1)
+#define USE_COLON         SET_POS1(1)
+#define USE_POS1MASK      SET_POS1(7)
 
 #define USE_SPACE         SET_PREFIX(1)
+#define USE_SPACE2        SET_PREFIX(2)
 
 int printf_eol();
 int printf_nice(const uint64_t v, const modez_t mode);
 int printf_data(const void* p, const size_t size, const addrz_t addr, const modez_t mode);
 int printf_text(const char* p, const modez_t mode);
 
-int printf_mask(const pconvert_t p, const maskz_t mask);
-int printf_masknone(const pconvert_t p, const maskz_t mask);
+int printf_mask(const pconvert_t p, const maskz_t mask, const modez_t mode);
+int printf_masknone(const pconvert_t p, const maskz_t mask, const modez_t mode);
 
 #endif
 

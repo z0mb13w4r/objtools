@@ -170,15 +170,27 @@ Elf64_Shdr* get_shdr64byindex(const pbuffer_t p, const int index) {
   return NULL;
 }
 
+Elf64_Shdr* get_shdr64bytype(const pbuffer_t p, const int type) {
+  Elf64_Ehdr *e = get_ehdr64(p);
+  if (e) {
+    for (Elf64_Half i = 0; i < e->e_shnum; ++i) {
+      Elf64_Shdr *s = get_shdr64byindex(p, i);
+      if (s && s->sh_type == type){
+        return s;
+      }
+    }
+  }
+
+  return NULL;
+}
+
 Elf64_Shdr* get_shdr64byname(const pbuffer_t p, const char* name) {
   Elf64_Ehdr *e = get_ehdr64(p);
   if (e) {
     for (Elf64_Half i = 0; i < e->e_shnum; ++i) {
       Elf64_Shdr *s = get_shdr64byindex(p, i);
-      if (s) {
-        if (0 == strcmp(name, get_secname64byindex(p, i))) {
-	  return s;
-	}
+      if (s && 0 == strcmp(name, get_secname64byindex(p, i))) {
+        return s;
       }
     }
   }

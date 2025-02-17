@@ -65,15 +65,16 @@ static const char* get_symbolvisibility64(const unsigned int x) {
 }
 
 static const char* get_symbolindex64(const unsigned int x) {
+  static char buff[32];
+
   const char* def = get_stringnull(zSHNINDEX, x);
   if (NULL == def) {
-    static char buff[32];
-
     snprintf(buff, sizeof(buff), "%3d", x);
-    return buff;
+  } else {
+    snprintf(buff, sizeof(buff), "%3s", def);
   }
 
-  return def;
+  return buff;
 }
 
 static const char* get_ehdrtype64(Elf64_Ehdr *e) {
@@ -194,6 +195,34 @@ static const char* get_phdrtype64(Elf64_Phdr *p) {
   }
 
   return NULL;
+}
+
+static int make_versionnames64(const pbuffer_t p, Elf64_Word *vnames, const size_t size) {
+  Elf64_Shdr *vh = get_shdr64bytype(p, SHT_GNU_verneed);
+  if (vh) {
+    Elf64_Word offset = 0;
+    vnames[0] = vh->sh_link;
+
+    for (Elf64_Word j = 0; j < vh->sh_info; ++j) {
+      Elf64_Verneed *vn = getp(p, vh->sh_offset, sizeof(Elf64_Verneed));
+      if (vn) {
+        Elf64_Word xoffset = offset + vn->vn_aux;
+        for (Elf64_Half k = 0; k < vn->vn_cnt; ++k) {
+          Elf64_Vernaux *va = getp(p, vh->sh_offset + xoffset, sizeof(Elf64_Vernaux));
+          if (va) {
+            if (va->vna_other < size) {
+              vnames[va->vna_other] = va->vna_name;
+            }
+            xoffset += va->vna_next;
+          }
+        }
+      }
+
+      offset += vn->vn_next;
+    }
+  }
+
+  return 0;
 }
 
 static int dump_elfheader(const pbuffer_t p, const poptions_t o) {
@@ -369,13 +398,13 @@ static int dump_dynamic64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
 
           if (dyn->d_tag == DT_FLAGS_1) {
             printf(" Flags:");
-            printf_masknone(zDT_FLAGS_1, dyn->d_un.d_val);
+            printf_masknone(zDT_FLAGS_1, dyn->d_un.d_val, USE_NONE);
 	  } else if (dyn->d_tag == DT_POSFLAG_1) {
             printf(" Flags:");
-            printf_masknone(zDT_POSFLAG_1, dyn->d_un.d_val);
+            printf_masknone(zDT_POSFLAG_1, dyn->d_un.d_val, USE_NONE);
           } else if (dyn->d_tag == DT_FLAGS) {
             printf(" Flags:");
-            printf_masknone(zDT_FLAGS, dyn->d_un.d_val);
+            printf_masknone(zDT_FLAGS, dyn->d_un.d_val, USE_NONE);
           } else if (dyn->d_tag == DT_PLTREL) {
             printf(" %s", get_dyntag64(dyn->d_un.d_val));
           } else if (dyn->d_tag == DT_NULL || dyn->d_tag == DT_NEEDED || dyn->d_tag == DT_PLTGOT ||
@@ -563,41 +592,64 @@ static int dump_unwind64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr
 }
 
 static int dump_symbols64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
+  MALLOCA(Elf64_Word, vnames, 1024);
+  make_versionnames64(p, vnames, NELEMENTS(vnames));
+
   for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
     Elf64_Shdr *shdr = get_shdr64byindex(p, i);
     if (shdr) {
       if (SHT_SYMTAB == shdr->sh_type || SHT_DYNSYM == shdr->sh_type) {
         size_t cnt = shdr->sh_size / shdr->sh_entsize;
 
-        printf("Symbol table");
-        printf(" '%s'", get_secname64byindex(p, i));
-        printf(" at offset");
+        printf_text("Symbol table", USE_LT);
+        printf(get_secname64byindex(p, i), USE_LT | USE_SQ | USE_SPACE);
+        printf_text("at offset", USE_SPACE);
         printf_nice(shdr->sh_offset, USE_FHEX16);
-        printf(" contains");
+        printf_text("contains", USE_SPACE);
         printf_nice(cnt, USE_DEC);
-        printf(" %s\n", 1 == cnt ? "entry:" : "entries:");
+        printf_text(1 == cnt ? "entry" : "entries", USE_LT | USE_SPACE | USE_COLON | USE_EOL);
+        printf_text("   Num: Value             Size Type    Bind   Vis      Ndx Name", USE_LT | USE_EOL);
 
-        printf("  Num:    Value          Size Type    Bind   Vis      Ndx Name\n");
-  // TBD
         Elf64_Sym *ss = get64byshdr(p, shdr);
         if (ss) {
           for (size_t j = 0; j < cnt; ++j) {
             Elf64_Sym *s = ss + j;
-            printf_nice(j, USE_DEC5);
+            printf_nice(j, USE_DEC5 | USE_COLON);
             printf_nice(s->st_value, USE_LHEX64);
             printf_nice(s->st_size, USE_DEC5);
             printf(" %-7s", get_symboltype64(ELF_ST_TYPE(s->st_info)));
             printf(" %-6s", get_symbolbinding64(ELF_ST_BIND(s->st_info)));
 
             unsigned int vis = ELF_ST_VISIBILITY(s->st_other);
-            printf (" %-7s", get_symbolvisibility64(vis));
-            printf (" %4s", get_symbolindex64(s->st_shndx));
+            printf_text(get_symbolvisibility64(vis), USE_LT | USE_SPACE | SET_PAD(9));
+            printf_text(get_symbolindex64(s->st_shndx), USE_LT | USE_SPACE);
 
-            printf("\n");
+            const char* name = get_name64byoffset(p, shdr->sh_link, s->st_name);
+            if (name && 0 != name[0]) {
+              printf_text(name, USE_LT | USE_SPACE);
+
+              if (SHT_DYNSYM == shdr->sh_type) {
+                Elf64_Shdr *vshdr = get_shdr64bytype(p, SHT_GNU_versym);
+                if (vshdr) {
+                  Elf64_Versym *vs = getp(p, vshdr->sh_offset + (j * vshdr->sh_entsize), vshdr->sh_entsize);
+                  if (vs) {
+                    *vs = *vs & VERSYM_VERSION;
+                    if (*vs && *vs < NELEMENTS(vnames)) {
+                      const char* namevs = get_name64byoffset(p, vnames[0], vnames[*vs]);
+                      if (namevs) {
+                        if (SHN_UNDEF == s->st_shndx)    printf("@%s (%d)", namevs, *vs);
+                        else if (STV_HIDDEN == vis)      printf("@%s", namevs);
+                        else                             printf("@@%s", namevs);
+                      }
+                    }
+                  }
+                }
+              }
+            }
+            printf_eol();
           }
         }
-
-        printf("\n");
+        printf_eol();
       }
     }
   }
@@ -612,54 +664,30 @@ static int dump_histogram64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *e
 
 static int dump_versionsym64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr, Elf64_Shdr *shdr) {
   MALLOCA(Elf64_Word, vnames, 1024);
-
-  for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
-    Elf64_Shdr *shdr = get_shdr64byindex(p, i);
-    if (shdr) {
-      if (SHT_GNU_verneed == shdr->sh_type) {
-        Elf64_Word offset = 0;
-        vnames[0] = shdr->sh_link;
-
-        for (Elf64_Word j = 0; j < shdr->sh_info; ++j) {
-          Elf64_Verneed *vn = getp(p, shdr->sh_offset, sizeof(Elf64_Verneed));
-          if (vn) {
-            Elf64_Word xoffset = offset + vn->vn_aux;
-            for (Elf64_Half k = 0; k < vn->vn_cnt; ++k) {
-              Elf64_Vernaux *va = getp(p, shdr->sh_offset + xoffset, sizeof(Elf64_Vernaux));
-              if (va) {
-                vnames[va->vna_other] = va->vna_name;
-	        xoffset += va->vna_next;
-              }
-            }
-          }
-
-          offset += vn->vn_next;
-        }
-      }
-    }
-  }
+  make_versionnames64(p, vnames, NELEMENTS(vnames));
 
   size_t cnt = shdr->sh_size / shdr->sh_entsize;
   printf_text("Version symbols section", USE_LT);
   printf_text(get_secname64byshdr(p, shdr), USE_LT | USE_SQ | USE_SPACE);
   printf_text("contains", USE_SPACE);
   printf_nice(cnt, USE_DEC);
-  printf_text(1 == cnt ? "entry" : "entries", USE_SPACE | USE_COLON | USE_EOL);
-  printf_text(" Addr", USE_COLON);
+  printf_text(1 == cnt ? "entry" : "entries", USE_LT | USE_SPACE | USE_COLON | USE_EOL);
+
+  printf_text("Addr", USE_SPACE | USE_COLON);
   printf_nice(shdr->sh_addr, USE_FHEX64);
-  printf_text("  Offset", USE_COLON);
+  printf_text("Offset", USE_SPACE | USE_COLON);
   printf_nice(shdr->sh_offset, USE_FHEX24);
-  printf_text("  Link", USE_COLON);
+  printf_text("Link", USE_SPACE | USE_COLON);
   printf_nice(shdr->sh_link, USE_DEC);
   printf_text(get_secname64byindex(p, shdr->sh_link), USE_LT | USE_RB | USE_SPACE);
 
   for (size_t j = 0; j < cnt; ++j) {
-    Elf64_Versym *vs = getp(p, shdr->sh_offset + (j * sizeof(Elf64_Versym)), sizeof(Elf64_Versym));
+    Elf64_Versym *vs = getp(p, shdr->sh_offset + (j * shdr->sh_entsize), shdr->sh_entsize);
     if (vs) {
       if (j % 4 == 0) {
         printf_eol();
-        printf_nice(j, USE_LHEX16);
-        printf(": ");
+        printf_nice(j, USE_LHEX16 | USE_COLON);
+        printf(" ");
       }
 
       int n = 0;
@@ -683,40 +711,43 @@ static int dump_versionsym64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *
 }
 
 static int dump_versionneed64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *shdr) {
-  printf("Version needs section");
-  printf(" '%s'", get_secname64byshdr(p, shdr));
-  printf(" contains");
+  printf_text("Version needs section", USE_LT);
+  printf_text(get_secname64byshdr(p, shdr),  USE_LT | USE_SQ | USE_SPACE);
+  printf_text("contains", USE_SPACE);
   printf_nice(shdr->sh_info, USE_DEC);
-  printf(" %s\n", 1 == shdr->sh_info ? "entry:" : "entries:");
+  printf_text(1 == shdr->sh_info ? "entry" : "entries", USE_LT | USE_SPACE | USE_COLON | USE_EOL);
 
-  printf(" Addr:");
+  printf_text("Addr", USE_SPACE | USE_COLON);
   printf_nice(shdr->sh_addr, USE_FHEX64);
-  printf("  Offset:");
+  printf_text("Offset", USE_SPACE | USE_COLON);
   printf_nice(shdr->sh_offset, USE_FHEX24);
-  printf("  Link:");
+  printf_text("Link", USE_SPACE | USE_COLON);
   printf_nice(shdr->sh_link, USE_DEC);
-  printf(" (%s)", get_secname64byindex(p, shdr->sh_link));
-  printf("\n");
+  printf_text(get_secname64byindex(p, shdr->sh_link), USE_LT | USE_RB | USE_SPACE | USE_EOL);
 
   Elf64_Word offset = 0;
   for (Elf64_Word j = 0; j < shdr->sh_info; ++j) {
     Elf64_Verneed *vn = getp(p, shdr->sh_offset, sizeof(Elf64_Verneed));
     if (vn) {
-      printf_nice(offset, USE_LHEX24);
-      printf(": Version: %d  File: %s  Cnt: %d\n",
-        vn->vn_version, get_name64byoffset(p, shdr->sh_link, vn->vn_file), vn->vn_cnt);
+      printf_nice(offset, USE_LHEX24 | USE_COLON);
+      printf_text("Version", USE_SPACE | USE_COLON);
+      printf_nice(vn->vn_version, USE_DEC);
+      printf_text("File", USE_SPACE | USE_COLON);
+      printf_text(get_name64byoffset(p, shdr->sh_link, vn->vn_file), USE_LT | USE_SPACE);
+      printf_text("Cnt", USE_SPACE | USE_COLON);
+      printf_nice(vn->vn_cnt, USE_DEC | USE_EOL);
 
       Elf64_Word xoffset = offset + vn->vn_aux;
       for (Elf64_Half k = 0; k < vn->vn_cnt; ++k) {
         Elf64_Vernaux *va = getp(p, shdr->sh_offset + xoffset, sizeof(Elf64_Vernaux));
         if (va) {
-          printf_nice(xoffset, USE_FHEX16);
-          printf(":  Name: %-12s", get_name64byoffset(p, shdr->sh_link, va->vna_name));
-
-          printf(" Flags:");
-          printf_masknone(zVNA_FLAGS, va->vna_flags);
-          printf("  Version: %d", va->vna_other);
-          printf("\n");
+          printf_nice(xoffset, USE_FHEX16 | USE_COLON);
+          printf_text("Name", USE_SPACE2 | USE_COLON);
+          printf_text(get_name64byoffset(p, shdr->sh_link, va->vna_name), USE_LT | USE_SPACE | SET_PAD(14));
+          printf_text("Flags", USE_SPACE | USE_COLON);
+          printf_masknone(zVNA_FLAGS, va->vna_flags, USE_NONE);
+          printf_text("Version", USE_SPACE2 | USE_COLON);
+          printf_nice(va->vna_other, USE_DEC | USE_EOL);
 
 	  xoffset += va->vna_next;
         }
@@ -726,7 +757,7 @@ static int dump_versionneed64(const pbuffer_t p, const poptions_t o, Elf64_Shdr 
     offset += vn->vn_next;
   }
 
-  printf("\n");
+  printf_eol();
 
   return 0;
 }
@@ -821,7 +852,7 @@ static int dump_notes64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr)
                     else                   printf("%s:", get_gnuproperty64(x));
 
                     if (x == GNU_PROPERTY_X86_FEATURE_1_AND) {
-                      printf_mask(zGNUPROPERTY_X86_FEATURE_1_AND, getLE(cc + i + 8, 4));
+                      printf_mask(zGNUPROPERTY_X86_FEATURE_1_AND, getLE(cc + i + 8, 4), USE_NONE);
                     }
                   }
                 }
