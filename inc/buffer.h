@@ -44,7 +44,6 @@ int ismode(void *p, const int mode);
 
 void* get64byshdr(const pbuffer_t p, Elf64_Shdr *shdr); // not safe - remove
                                                         // replace by get64_xxxx & next64_xxxx
-                                                        // return variantelf64_t mode[4] spos, epos, size
 void* get64byphdr(const pbuffer_t p, Elf64_Phdr *phdr); // not safe - remove (dead code)
 
 void* getp(const pbuffer_t p, const int offset, const size_t size);

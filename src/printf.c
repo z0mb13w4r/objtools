@@ -31,8 +31,10 @@ int printf_nice(const uint64_t v, const modez_t mode) {
   case USE_LHEX48:                  n += printf(" %12.12" PRIx64, v);          break;
   case USE_FHEX64:                  n += printf(" 0x%16.16" PRIx64, v);        break;
   case USE_LHEX64:                  n += printf(" %16.16" PRIx64, v);          break;
+  case USE_ERROR:                   n += printf(" <error: %" PRIx64 ">", v);   break;
   case USE_CORRUPT:                 n += printf(" <corrupt: %" PRIx64 ">", v); break;
   case USE_UNKNOWN:                 n += printf(" <unknown: %" PRIx64 ">", v); break;
+  case USE_WARNING:                 n += printf(" <warning: %" PRIx64 ">", v); break;
 
   case USE_CHARCTRL:
     if (iscntrl(v))                 n += printf("^%c", CAST(int, v) + 0x40);
@@ -72,9 +74,10 @@ int printf_text(const char* p, const modez_t mode) {
   if (p) {
     int n = 0;
 
-    switch (GET_PREFIX(mode)) {
+    switch (GET_POS0(mode)) {
+    case USE_AT:             n += printf("@");         break;
     case USE_SPACE:          n += printf(" ");         break;
-    case USE_SPACE2:         n += printf("  ");        break;
+    case USE_TAB:            n += printf("  ");        break;
     default:                 break;
     }
 

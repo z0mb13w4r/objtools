@@ -28,8 +28,10 @@
 #define USE_LHEX64        (19)
 #define USE_CHARCTRL      (20)
 #define USE_TIMEDATE      (21)
-#define USE_CORRUPT       (22)
-#define USE_UNKNOWN       (23)
+#define USE_ERROR         (22)
+#define USE_CORRUPT       (23)
+#define USE_UNKNOWN       (24)
+#define USE_WARNING       (25)
 
 #define USE_HEXDUMP       (0)
 #define USE_STRDUMP       (1)
@@ -51,8 +53,8 @@
 #define SET_BRACKET(x)    SET_XX3(x, 12)
 #define GET_POS1(x)       GET_XX3(x, 16)
 #define SET_POS1(x)       SET_XX3(x, 16)
-#define GET_PREFIX(x)     GET_XX3(x, 20)
-#define SET_PREFIX(x)     SET_XX3(x, 20)
+#define GET_POS0(x)       GET_XX3(x, 20)
+#define SET_POS0(x)       SET_XX3(x, 20)
 
 #define SET_FLAG(x)       SET_XX4(x, 28)
 
@@ -73,8 +75,9 @@
 #define USE_COLON         SET_POS1(1)
 #define USE_POS1MASK      SET_POS1(7)
 
-#define USE_SPACE         SET_PREFIX(1)
-#define USE_SPACE2        SET_PREFIX(2)
+#define USE_SPACE         SET_POS0(1)
+#define USE_TAB           SET_POS0(2)
+#define USE_AT            SET_POS0(3)
 
 int printf_eol();
 int printf_nice(const uint64_t v, const modez_t mode);

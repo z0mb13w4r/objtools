@@ -17,6 +17,20 @@
    the st_other field.  The STV_ defines specify the actual visibility.  */
 #define ELF_ST_VISIBILITY(x)       ((x) & 0x03)
 
+typedef struct elf64_s {
+  modez_t mode;
+  size_t  spos, epos, size;
+  union {
+    Elf64_Ehdr ehdr;
+    Elf64_Nhdr nhdr;
+    Elf64_Phdr phdr;
+    Elf64_Shdr shdr;
+    Elf64_Vernaux vernaux;
+    Elf64_Verneed verneed;
+    Elf64_Versym  versym;
+  };
+} elf64_t;
+
 int shdrinphdr64(Elf64_Shdr *s, Elf64_Phdr *p);
 
 int isELF(const pbuffer_t p);

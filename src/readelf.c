@@ -220,6 +220,8 @@ static int make_versionnames64(const pbuffer_t p, Elf64_Word *vnames, const size
 
       offset += vn->vn_next;
     }
+
+    return vh->sh_link;
   }
 
   return 0;
@@ -318,19 +320,36 @@ static int dump_sectionheaders64(const pbuffer_t p, const poptions_t o, Elf64_Eh
   return 0;
 }
 
+static int dump_sectiongroups(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
+  /* Scan the sections for the group section. */
+  Elf64_Half cnt = 0;
+  for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
+    Elf64_Shdr *shdr = get_shdr64byindex(p, i);
+    if (shdr && SHT_GROUP == shdr->sh_type) ++cnt;
+  }
+
+  if (0 == cnt) {
+    printf("%s: WARNING: There are no section groups in this file.\n\n", o->prgname);
+  } else {
+    // TBD
+  }
+
+  return 0;
+}
+
 static int dump_programheaders64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
   printf("PROGRAM HEADERS:\n");
-  printf("  Type            Offset VirtAddr           PhysAddr           FileSiz MemSiz Flg  Align\n");
+  printf("  Type            Offset   VirtAddr           PhysAddr           FileSiz   MemSiz   Flg  Align\n");
   for (Elf64_Half i = 0; i < ehdr->e_phnum; ++i) {
     Elf64_Phdr *phdr = get_phdr64byindex(p, i);
     if (phdr) {
       printf ("  %-14s ", get_phdrtype64(phdr));
-      printf_nice(phdr->p_offset, USE_FHEX16);
+      printf_nice(phdr->p_offset, USE_FHEX24);
       printf_nice(phdr->p_vaddr,  USE_FHEX64);
       printf_nice(phdr->p_paddr,  USE_FHEX64);
-      printf_nice(phdr->p_filesz, USE_FHEX16);
+      printf_nice(phdr->p_filesz, USE_FHEX24);
       printf(" ");
-      printf_nice(phdr->p_memsz,  USE_FHEX16);
+      printf_nice(phdr->p_memsz,  USE_FHEX24);
 
       printf(" %c%c%c ",
             (phdr->p_flags & PF_R ? 'R' : ' '),
@@ -348,7 +367,7 @@ static int dump_programheaders64(const pbuffer_t p, const poptions_t o, Elf64_Eh
     }
   }
 
-  printf("\n");
+  printf_eol();
 
   printf("Section to Segment mapping:\n");
   printf(" Segment Sections...\n");
@@ -377,79 +396,76 @@ static int dump_programheaders64(const pbuffer_t p, const poptions_t o, Elf64_Eh
 static int dump_dynamic64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
   for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
     Elf64_Shdr *shdr = get_shdr64byindex(p, i);
-    if (shdr) {
-      if (shdr && SHT_DYNAMIC == shdr->sh_type) {
-        size_t cnt = shdr->sh_size / shdr->sh_entsize;
+    if (shdr && SHT_DYNAMIC == shdr->sh_type) {
+      size_t cnt = shdr->sh_size / shdr->sh_entsize;
 
-        printf("Dynamic section at offset");
-        printf_nice(shdr->sh_offset, USE_FHEX16);
-        printf(" contains");
-        printf_nice(cnt, USE_DEC);
-        printf(" %s\n", 1 == cnt ? "entry:" : "entries:");
-        printf(" Tag                Type                Name/Value\n");
+      printf("Dynamic section at offset");
+      printf_nice(shdr->sh_offset, USE_FHEX16);
+      printf(" contains");
+      printf_nice(cnt, USE_DEC);
+      printf(" %s\n", 1 == cnt ? "entry:" : "entries:");
+      printf(" Tag                Type                Name/Value\n");
 
-        Elf64_Dyn *dyn = get64byshdr(p, shdr);
-        for (size_t j = 0; j < cnt; j++) {
-          int n = 0;
+      Elf64_Dyn *dyn = get64byshdr(p, shdr);
+      for (size_t j = 0; j < cnt; j++) {
+        int n = 0;
 
-          printf_nice(dyn->d_tag, USE_FHEX64);
-          n = printf (" (%s) ", get_dyntag64(dyn->d_tag));
-          printf("%*s", MAX(0, 20 - n), " ");
+        printf_nice(dyn->d_tag, USE_FHEX64);
+        n = printf (" (%s) ", get_dyntag64(dyn->d_tag));
+        printf("%*s", MAX(0, 20 - n), " ");
 
-          if (dyn->d_tag == DT_FLAGS_1) {
-            printf(" Flags:");
-            printf_masknone(zDT_FLAGS_1, dyn->d_un.d_val, USE_NONE);
-	  } else if (dyn->d_tag == DT_POSFLAG_1) {
-            printf(" Flags:");
-            printf_masknone(zDT_POSFLAG_1, dyn->d_un.d_val, USE_NONE);
-          } else if (dyn->d_tag == DT_FLAGS) {
-            printf(" Flags:");
-            printf_masknone(zDT_FLAGS, dyn->d_un.d_val, USE_NONE);
-          } else if (dyn->d_tag == DT_PLTREL) {
-            printf(" %s", get_dyntag64(dyn->d_un.d_val));
-          } else if (dyn->d_tag == DT_NULL || dyn->d_tag == DT_NEEDED || dyn->d_tag == DT_PLTGOT ||
-                     dyn->d_tag == DT_HASH || dyn->d_tag == DT_STRTAB || dyn->d_tag == DT_SYMTAB ||
-                     dyn->d_tag == DT_RELA || dyn->d_tag == DT_INIT || dyn->d_tag == DT_FINI ||
-                     dyn->d_tag == DT_SONAME || dyn->d_tag == DT_RPATH || dyn->d_tag ==  DT_SYMBOLIC ||
-                     dyn->d_tag == DT_REL || dyn->d_tag == DT_DEBUG || dyn->d_tag == DT_TEXTREL ||
-                     dyn->d_tag == DT_JMPREL || dyn->d_tag == DT_RUNPATH) {
+        if (dyn->d_tag == DT_FLAGS_1) {
+          printf(" Flags:");
+          printf_masknone(zDT_FLAGS_1, dyn->d_un.d_val, USE_NONE);
+        } else if (dyn->d_tag == DT_POSFLAG_1) {
+          printf(" Flags:");
+          printf_masknone(zDT_POSFLAG_1, dyn->d_un.d_val, USE_NONE);
+        } else if (dyn->d_tag == DT_FLAGS) {
+          printf(" Flags:");
+          printf_masknone(zDT_FLAGS, dyn->d_un.d_val, USE_NONE);
+        } else if (dyn->d_tag == DT_PLTREL) {
+          printf(" %s", get_dyntag64(dyn->d_un.d_val));
+        } else if (dyn->d_tag == DT_NULL || dyn->d_tag == DT_NEEDED || dyn->d_tag == DT_PLTGOT ||
+                   dyn->d_tag == DT_HASH || dyn->d_tag == DT_STRTAB || dyn->d_tag == DT_SYMTAB ||
+                   dyn->d_tag == DT_RELA || dyn->d_tag == DT_INIT || dyn->d_tag == DT_FINI ||
+                   dyn->d_tag == DT_SONAME || dyn->d_tag == DT_RPATH || dyn->d_tag ==  DT_SYMBOLIC ||
+                   dyn->d_tag == DT_REL || dyn->d_tag == DT_DEBUG || dyn->d_tag == DT_TEXTREL ||
+                   dyn->d_tag == DT_JMPREL || dyn->d_tag == DT_RUNPATH) {
 
-            const char *name = get_name64byoffset(p, shdr->sh_link, dyn->d_un.d_val);
-            if (name) {
-              if (dyn->d_tag == DT_NEEDED) {
-                printf(" Shared library: [%s]", name);
-                // TBD
-              } else if (dyn->d_tag == DT_SONAME)        printf(" Library soname: [%s]", name);
-                else if (dyn->d_tag == DT_RPATH)         printf(" Library rpath: [%s]", name);
-                else if (dyn->d_tag == DT_RUNPATH)       printf(" Library runpath: [%s]", name);
-	        else                                     printf_nice(dyn->d_un.d_val, USE_FHEX);
-            }
-          } else if (dyn->d_tag == DT_PLTRELSZ || dyn->d_tag == DT_RELASZ || dyn->d_tag == DT_STRSZ ||
-                     dyn->d_tag == DT_RELSZ || dyn->d_tag == DT_RELAENT || dyn->d_tag == DT_SYMENT ||
-                     dyn->d_tag == DT_RELENT || dyn->d_tag == DT_PLTPADSZ || dyn->d_tag == DT_MOVEENT ||
-                     dyn->d_tag == DT_MOVESZ || dyn->d_tag == DT_PREINIT_ARRAYSZ || dyn->d_tag == DT_INIT_ARRAYSZ ||
-                     dyn->d_tag == DT_FINI_ARRAYSZ || dyn->d_tag == DT_GNU_CONFLICTSZ || dyn->d_tag == DT_GNU_LIBLISTSZ) {
-            printf_nice(dyn->d_un.d_val, USE_DEC);
-            printf(" (bytes)");
-          } else if (dyn->d_tag == DT_VERDEFNUM || dyn->d_tag == DT_VERNEEDNUM ||
-                     dyn->d_tag == DT_RELACOUNT || dyn->d_tag == DT_RELCOUNT) {
-            printf_nice(dyn->d_un.d_val, USE_DEC);
-          } else if (dyn->d_tag == DT_SYMINSZ || dyn->d_tag == DT_SYMINENT || dyn->d_tag == DT_SYMINFO ||
-                     dyn->d_tag == DT_INIT_ARRAY || dyn->d_tag == DT_FINI_ARRAY) {
-            printf_nice(dyn->d_un.d_val, USE_FHEX);
-          } else if (dyn->d_tag == DT_GNU_PRELINKED) {
-            printf_nice(dyn->d_un.d_val, USE_TIMEDATE);
-          } else if (dyn->d_tag == DT_GNU_HASH) {
-            printf_nice(dyn->d_un.d_val, USE_FHEX);
-          } else if (dyn->d_tag >= DT_VERSYM && dyn->d_tag <= DT_VERNEEDNUM) {
-            printf_nice(dyn->d_un.d_val, USE_FHEX);
+          const char *name = get_name64byoffset(p, shdr->sh_link, dyn->d_un.d_val);
+          if (name) {
+            if (dyn->d_tag == DT_NEEDED) {
+              printf(" Shared library: [%s]", name);
+              // TBD
+            } else if (dyn->d_tag == DT_SONAME)        printf(" Library soname: [%s]", name);
+              else if (dyn->d_tag == DT_RPATH)         printf(" Library rpath: [%s]", name);
+              else if (dyn->d_tag == DT_RUNPATH)       printf(" Library runpath: [%s]", name);
+              else                                     printf_nice(dyn->d_un.d_val, USE_FHEX);
           }
-
-          printf("\n");
-          ++dyn;
+        } else if (dyn->d_tag == DT_PLTRELSZ || dyn->d_tag == DT_RELASZ || dyn->d_tag == DT_STRSZ ||
+                   dyn->d_tag == DT_RELSZ || dyn->d_tag == DT_RELAENT || dyn->d_tag == DT_SYMENT ||
+                   dyn->d_tag == DT_RELENT || dyn->d_tag == DT_PLTPADSZ || dyn->d_tag == DT_MOVEENT ||
+                   dyn->d_tag == DT_MOVESZ || dyn->d_tag == DT_PREINIT_ARRAYSZ || dyn->d_tag == DT_INIT_ARRAYSZ ||
+                   dyn->d_tag == DT_FINI_ARRAYSZ || dyn->d_tag == DT_GNU_CONFLICTSZ || dyn->d_tag == DT_GNU_LIBLISTSZ) {
+          printf_nice(dyn->d_un.d_val, USE_DEC);
+          printf(" (bytes)");
+        } else if (dyn->d_tag == DT_VERDEFNUM || dyn->d_tag == DT_VERNEEDNUM ||
+                   dyn->d_tag == DT_RELACOUNT || dyn->d_tag == DT_RELCOUNT) {
+          printf_nice(dyn->d_un.d_val, USE_DEC);
+        } else if (dyn->d_tag == DT_SYMINSZ || dyn->d_tag == DT_SYMINENT || dyn->d_tag == DT_SYMINFO ||
+                   dyn->d_tag == DT_INIT_ARRAY || dyn->d_tag == DT_FINI_ARRAY) {
+          printf_nice(dyn->d_un.d_val, USE_FHEX);
+        } else if (dyn->d_tag == DT_GNU_PRELINKED) {
+          printf_nice(dyn->d_un.d_val, USE_TIMEDATE);
+        } else if (dyn->d_tag == DT_GNU_HASH) {
+          printf_nice(dyn->d_un.d_val, USE_FHEX);
+        } else if (dyn->d_tag >= DT_VERSYM && dyn->d_tag <= DT_VERNEEDNUM) {
+          printf_nice(dyn->d_un.d_val, USE_FHEX);
         }
-        printf("\n");
+        printf_eol();
+        ++dyn;
       }
+      printf_eol();
     }
   }
 
@@ -478,9 +494,14 @@ static int dump_relocsrel64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *s
 }
 
 static int dump_relocsrela64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *shdr) {
-  printf(" Offset       Info         Type                 Symbol's Value   Symbol's Name + Addend\n");
+  MALLOCA(Elf64_Word, vnames, 1024);
+  make_versionnames64(p, vnames, NELEMENTS(vnames));
+
+  printf(" Offset       Info         Type                Symbol's Value   Symbol's Name + Addend\n");
 
   size_t cnt = shdr->sh_size / shdr->sh_entsize;
+
+  Elf64_Shdr *dshdr = get_shdr64byindex(p, shdr->sh_link);
 
   Elf64_Rela *rr = get64byshdr(p, shdr);
   if (rr) {
@@ -489,7 +510,8 @@ static int dump_relocsrela64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *
 
       printf_nice(r->r_offset, USE_LHEX48);
       printf_nice(r->r_info, USE_LHEX48);
-      printf(" %-20s", get_relatype(r));
+      printf_text(get_relatype(r), USE_LT | USE_SPACE | SET_PAD(20));
+
 // TBD
       switch (r->r_info & 0xffff) {
       case R_X86_64_NONE:
@@ -499,47 +521,68 @@ static int dump_relocsrela64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *
       case R_X86_64_32:
       case R_X86_64_32S:
       case R_X86_64_64:        // S + A
+        printf_nice(r->r_info & 0xffff, USE_WARNING);
         break;
       case R_X86_64_RELATIVE:  // B + A
         printf("                 ");
-        printf_nice(r->r_addend, USE_HEX);
+        printf_nice(r->r_addend, USE_LHEX);
         break;
       case R_X86_64_GLOB_DAT:
       case R_X86_64_JUMP_SLOT: // S
         printf_nice(r->r_addend, USE_LHEX64);
 
-// shdr->sh_link -> .dynsym
-// (r->r_info >> 32) & 0xffff) -> indexes into .dynsym some how. then into .dynstr.
-printf(" *** %ld -> %s ***", (r->r_info >> 32) & 0xffff, get_secname64byindex(p, shdr->sh_link));
+        if (dshdr) {
+          Elf64_Off  k = (r->r_info >> 32) & 0xffff;
+          Elf64_Sym *s = getp(p, dshdr->sh_offset + (k * dshdr->sh_entsize), dshdr->sh_entsize);
+          if (s) {
+            printf_text(get_name64byoffset(p, dshdr->sh_link, s->st_name), USE_LT | USE_SPACE);
 
-        printf(" +");
+            Elf64_Shdr *vshdr = get_shdr64bytype(p, SHT_GNU_versym);
+            if (vshdr) {
+              Elf64_Versym *vs = getp(p, vshdr->sh_offset + (k * vshdr->sh_entsize), vshdr->sh_entsize);
+              if (vs) {
+                *vs = *vs & VERSYM_VERSION;
+                if (*vs && *vs < NELEMENTS(vnames)) {
+                  const char* namevs = get_name64byoffset(p, vnames[0], vnames[*vs]);
+                  if (namevs) {
+                    printf_text(namevs, USE_LT | USE_AT);
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        printf_text("+", USE_SPACE);
         printf_nice(r->r_addend, USE_DEC);
         break;
       case R_X86_64_PC8:
       case R_X86_64_PC16:
       case R_X86_64_PC32:
       case R_X86_64_PC64:      // S + A - P
-        break;
+//        break;
       case R_X86_64_GOT32:     // G + A
-        break;
+//        break;
       case R_X86_64_PLT32:     // L + A - P
-        break;
+//        break;
       case R_X86_64_SIZE32:
       case R_X86_64_SIZE64:    // Z + A
-        break;
+//        break;
       case R_X86_64_GOTPC32:   // GOT + A - P
-        break;
+//        break;
       case R_X86_64_GOTPCREL:  // G + GOT + A - P
-        break;
+//        break;
       case R_X86_64_GOTOFF64:  // S + A - GOT
-        break;
+//        break;
       case R_X86_64_COPY:
+        printf_nice(r->r_info & 0xffff, USE_WARNING);
         break;
       default:
+        printf_nice(r->r_info & 0xffff, USE_UNKNOWN);
         break;
       }
 
-      printf("\n");
+      printf_eol();
     }
   }
 
@@ -742,11 +785,11 @@ static int dump_versionneed64(const pbuffer_t p, const poptions_t o, Elf64_Shdr 
         Elf64_Vernaux *va = getp(p, shdr->sh_offset + xoffset, sizeof(Elf64_Vernaux));
         if (va) {
           printf_nice(xoffset, USE_FHEX16 | USE_COLON);
-          printf_text("Name", USE_SPACE2 | USE_COLON);
+          printf_text("Name", USE_TAB | USE_COLON);
           printf_text(get_name64byoffset(p, shdr->sh_link, va->vna_name), USE_LT | USE_SPACE | SET_PAD(14));
           printf_text("Flags", USE_SPACE | USE_COLON);
           printf_masknone(zVNA_FLAGS, va->vna_flags, USE_NONE);
-          printf_text("Version", USE_SPACE2 | USE_COLON);
+          printf_text("Version", USE_TAB | USE_COLON);
           printf_nice(va->vna_other, USE_DEC | USE_EOL);
 
 	  xoffset += va->vna_next;
@@ -889,6 +932,7 @@ int readelf(const pbuffer_t p, const poptions_t o) {
       if (ehdr) {
         if (o->action & OPTREADELF_FILEHEADER)       dump_fileheader64(p, o, ehdr);
         if (o->action & OPTREADELF_SECTIONHEADERS)   dump_sectionheaders64(p, o, ehdr);
+        if (o->action & OPTREADELF_SECTIONGROUPS)    dump_sectiongroups(p, o, ehdr);
         if (o->action & OPTREADELF_PROGRAMHEADERS)   dump_programheaders64(p, o, ehdr);
         if (o->action & OPTREADELF_DYNAMIC)          dump_dynamic64(p, o, ehdr);
         if (o->action & OPTREADELF_RELOCS)           dump_relocs64(p, o, ehdr);
