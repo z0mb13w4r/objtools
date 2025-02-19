@@ -5,6 +5,9 @@
 #include "printf.h"
 #include "objdump.h"
 
+#include "static/has_flags.ci"
+#include "static/sectionhdr_flags.ci"
+
 typedef struct objdump_info_s {
   int  action;
 
@@ -113,10 +116,10 @@ static void callback_section_data(bfd *f, asection *s, void *p) {
     printf("WARNING: reading section %s failed because: %s\n", s->name, bfd_errmsg(bfd_get_error()));
   }
 
-  printf("\n");
+  printf_eol();
 }
 
-static void callback_section_header(bfd *f, asection *s, void *p) {
+static void callback_sectionhdr(bfd *f, asection *s, void *p) {
   size_t name_size = *((size_t *) p);
 
   /* Ignore linker created section.  See elfNN_ia64_object_p in bfd/elfxx-ia64.c.  */
@@ -129,41 +132,28 @@ static void callback_section_header(bfd *f, asection *s, void *p) {
   printf_nice(s->filepos, USE_LHEX32);
   printf(" 2**%u", bfd_section_alignment(s));
 
-  if (s->flags & SEC_HAS_CONTENTS)     printf(" CONTENTS");
-  if (s->flags & SEC_ALLOC)            printf(" ALLOC");
-  if (s->flags & SEC_CONSTRUCTOR)      printf(" CONSTRUCTOR");
-  if (s->flags & SEC_LOAD)             printf(" LOAD");
-  if (s->flags & SEC_RELOC)            printf(" RELOC");
-  if (s->flags & SEC_READONLY)         printf(" READONLY");
-  if (s->flags & SEC_CODE)             printf(" CODE");
-  if (s->flags & SEC_DATA)             printf(" DATA");
-  if (s->flags & SEC_ROM)              printf(" ROM");
-  if (s->flags & SEC_DEBUGGING)        printf(" DEBUGGING");
-  if (s->flags & SEC_NEVER_LOAD)       printf(" NEVER_LOAD");
-  if (s->flags & SEC_EXCLUDE)          printf(" EXCLUDE");
-  if (s->flags & SEC_SORT_ENTRIES)     printf(" SORT_ENTRIES");
+  printf_mask(zSECTIONHDR1_FLAGS, s->flags, USE_NONE);
+
   if (bfd_get_arch(f) == bfd_arch_tic54x) {
-    if (s->flags & SEC_TIC54X_BLOCK)   printf(" BLOCK");
-    if (s->flags & SEC_TIC54X_CLINK)   printf(" CLINK");
+    printf_mask(zSECTIONHDRTIC54X_FLAGS, s->flags, USE_NONE);
   }
-  if (s->flags & SEC_SMALL_DATA)       printf(" SMALL_DATA");
+
+  printf_mask(zSECTIONHDR2_FLAGS, s->flags, USE_NONE);
+
   if (bfd_get_flavour(f) == bfd_target_coff_flavour) {
-    if (s->flags & SEC_COFF_SHARED)    printf(" SHARED");
-    if (s->flags & SEC_COFF_NOREAD)    printf(" NOREAD");
+    printf_mask(zSECTIONHDRCOFF_FLAGS, s->flags, USE_NONE);
   } else if (bfd_get_flavour(f) == bfd_target_elf_flavour) {
-    if (s->flags & SEC_ELF_OCTETS)     printf(" OCTETS");
-    if (s->flags & SEC_ELF_PURECODE)   printf(" PURECODE");
+    printf_mask(zSECTIONHDRELF_FLAGS, s->flags, USE_NONE);
   }
-  if (s->flags & SEC_THREAD_LOCAL)     printf(" THREAD_LOCAL");
-  if (s->flags & SEC_GROUP)            printf(" GROUP");
+
+  printf_mask(zSECTIONHDR3_FLAGS, s->flags, USE_NONE);
+
   if (bfd_get_arch(f) == bfd_arch_mep) {
-    if (s->flags & SEC_MEP_VLIW)       printf(" VLIW");
+    printf_mask(zSECTIONHDRARCHMEP_FLAGS, s->flags, USE_NONE);
   }
+
   if (s->flags & SEC_LINK_ONCE) {
-    if ((s->flags & SEC_LINK_DUPLICATES) == SEC_LINK_DUPLICATES_DISCARD)        printf(" LINK_ONCE_DISCARD");
-    if ((s->flags & SEC_LINK_DUPLICATES) == SEC_LINK_DUPLICATES_ONE_ONLY)       printf(" LINK_ONCE_ONE_ONLY");
-    if ((s->flags & SEC_LINK_DUPLICATES) == SEC_LINK_DUPLICATES_SAME_SIZE)      printf(" LINK_ONCE_SAME_SIZE");
-    if ((s->flags & SEC_LINK_DUPLICATES) == SEC_LINK_DUPLICATES_SAME_CONTENTS)  printf(" LINK_ONCE_SAME_CONTENTS");
+    printf_pick(zSECTIONHDRLINKDUP, s->flags & SEC_LINK_DUPLICATES, USE_NONE);
 
     // TBD
     //struct coff_comdat_info* c = bfd_coff_get_comdat_section(f, s);
@@ -171,7 +161,7 @@ static void callback_section_header(bfd *f, asection *s, void *p) {
     //  printf(" (COMDAT %s %ld)", c->name, c->symbol);
     //}
   }
-  printf("\n");
+  printf_eol();
 }
 
 static void callback_find_longest_section_name(bfd *f ATTRIBUTE_UNUSED, asection *s, void *p) {
@@ -187,37 +177,26 @@ static void callback_find_longest_section_name(bfd *f ATTRIBUTE_UNUSED, asection
 }
 
 static int dump_header(const pbuffer_t p, const poptions_t o, bfd *f) {
-  printf("FILE HEADER:\n");
-  printf("  Architecture:   %s\n",
-    bfd_printable_arch_mach (bfd_get_arch(f), bfd_get_mach(f)));
+  printf_text("FILE HEADER", USE_LT | USE_COLON | USE_EOL);
 
-  printf("  Flags:         ");
-  printf_nice(f->flags & ~BFD_FLAGS_FOR_BFD_USE_MASK, USE_FHEX32);
-  printf(": ");
-  if (f->flags & HAS_RELOC)         printf(" HAS_RELOC");
-  if (f->flags & EXEC_P)            printf(" EXEC_P");
-  if (f->flags & HAS_LINENO)        printf(" HAS_LINENO");
-  if (f->flags & HAS_DEBUG)         printf(" HAS_DEBUG");
-  if (f->flags & HAS_SYMS)          printf(" HAS_SYMS");
-  if (f->flags & HAS_LOCALS)        printf(" HAS_LOCALS");
-  if (f->flags & DYNAMIC)           printf(" DYNAMIC");
-  if (f->flags & WP_TEXT)           printf(" WP_TEXT");
-  if (f->flags & D_PAGED)           printf(" D_PAGED");
-  if (f->flags & BFD_IS_RELAXABLE)  printf(" BFD_IS_RELAXABLE");
-  printf("\n");
-  printf("  Start Address: ");
-  printf_nice(f->start_address, USE_FHEX64);
-  printf("\n");
+  printf_text("Architecture", USE_LT | USE_TAB | USE_COLON | SET_PAD(18));
+  printf_text(bfd_printable_arch_mach (bfd_get_arch(f), bfd_get_mach(f)), USE_SPACE | USE_EOL);
+
+  printf_text("Flags", USE_LT | USE_TAB | USE_COLON | SET_PAD(18));
+  printf_nice(f->flags & ~BFD_FLAGS_FOR_BFD_USE_MASK, USE_FHEX32 | USE_COLON);
+  printf_mask(zHAS_FLAGS, f->flags, USE_EOL);
+  printf_text("Start Address", USE_LT | USE_TAB | USE_COLON | SET_PAD(18));
+  printf_nice(f->start_address, USE_FHEX64 | USE_EOL);
 
   return 0;
 }
 
 static int dump_privatehdr(const pbuffer_t p, const poptions_t o, bfd *f) {
   if (!bfd_print_private_bfd_data(f, stdout)) {
-    printf("WARNING: private Headers incomplete: %s", bfd_errmsg(bfd_get_error()));
+    printf("%s: WARNING: private Headers incomplete: %s", o->prgname, bfd_errmsg(bfd_get_error()));
     return 1;
   }
-  printf("\n");
+  printf_eol();
 
   return 0;
 }
@@ -230,9 +209,9 @@ static int dump_sectionhdr(const pbuffer_t p, const poptions_t o, bfd *f) {
 
   printf("  Idx %-*s Size     VMA              LMA              File Off Algn Flags\n", (int)max_name_size, "Name");
 
-  bfd_map_over_sections(f, callback_section_header, &max_name_size);
+  bfd_map_over_sections(f, callback_sectionhdr, &max_name_size);
 
-  printf("\n");
+  printf_eol();
   return 0;
 }
 
@@ -254,12 +233,12 @@ static int dump_symbols(const pbuffer_t p, const poptions_t o, bfd *f, const int
       bfd *cf = NULL;
 
       if (NULL == *cs) {
-        printf("WARNING: no information for symbol number %ld\n", i);
+        printf("%s: WARNING: no information for symbol number %ld\n", o->prgname, i);
       } else if ((cf = bfd_asymbol_bfd(*cs)) == NULL) {
-        printf("WARNING: could not determine the type of symbol number %ld\n", i);
+        printf("%s: WARNING: could not determine the type of symbol number %ld\n", o->prgname, i);
       } else {
         bfd_print_symbol(cf, stdout, *cs, bfd_print_symbol_all);
-        printf ("\n");
+        printf_eol();
       }
 
       ++cs;
@@ -296,9 +275,12 @@ static int dump_debugging(const pbuffer_t p, const poptions_t o, bfd *f) {
 }
 
 static int do_object(const pbuffer_t p, const poptions_t o, bfd *f) {
-  printf("File Name:      %s\n", bfd_get_filename(f));
-  printf("File Format:    %s\n", f->xvec->name);
-  printf("\n");
+  printf_text("FILE DETAILS", USE_LT | USE_COLON | USE_EOL);
+  printf_text("File Name", USE_LT | USE_TAB | USE_COLON | SET_PAD(18));
+  printf_text(bfd_get_filename(f), USE_SPACE | USE_EOL);
+  printf_text("File Format", USE_LT | USE_TAB | USE_COLON | SET_PAD(18));
+  printf_text(f->xvec->name, USE_SPACE | USE_EOL);
+  printf_eol();
 
   if (o->action & OPTOBJDUMP_FILEHEADER)        dump_header(p, o, f);
   if (o->action & OPTOBJDUMP_PRIVATEHEADER)     dump_privatehdr(p, o, f);
@@ -329,7 +311,7 @@ static int do_archive(const pbuffer_t p, const poptions_t o, bfd *f) {
       bfd_close(lf);
 
       if (bfd_get_error() != bfd_error_no_more_archived_files) {
-        printf("%s\n", bfd_errmsg(bfd_get_error()));
+        printf("%s: FATAL: %s\n", o->prgname, bfd_errmsg(bfd_get_error()));
         return -1;
       }
 
@@ -349,14 +331,14 @@ int objdump(const pbuffer_t p, const poptions_t o) {
   bfd_set_error_program_name(o->prgname);
 
   if (BFD_INIT_MAGIC != bfd_init()) {
-    printf("FATAL: libbfd ABI mismatch");
+    printf("%s: FATAL: libbfd ABI mismatch", o->prgname);
     exit(1);
   }
 
   const char *target = "x86_64-pc-linux-gnu";
 
   if (!bfd_set_default_target(target)) {
-    printf("FATAL: can't set BFD default target to '%s': %s", target, bfd_errmsg(bfd_get_error()));
+    printf("%s: FATAL: can't set BFD default target to '%s': %s", o->prgname, target, bfd_errmsg(bfd_get_error()));
     exit(1);
   }
 
@@ -374,7 +356,7 @@ int objdump(const pbuffer_t p, const poptions_t o) {
     } else if (bfd_check_format(f, bfd_core)) {
       r = do_coredump(p, o, f);
     } else {
-      printf("%s is an unknown format!\n", o->inpname);
+      printf("%s: WARNING: %s is an unknown format!\n", o->prgname, o->inpname);
     }
     bfd_close(f);
   }

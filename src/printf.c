@@ -180,13 +180,17 @@ int printf_mask(const pconvert_t p, const maskz_t mask, const modez_t mode) {
   maskz_t v = mask;
   for (pconvert_t x = p; 0 != x->text; ++x) {
     if (x->type & v) {
-      n += printf_text(x->text, mode | USE_SPACE);
+      n += printf_text(x->text, (mode & ~USE_EOL) | USE_SPACE);
       v &= ~x->type;
     }
   }
 
   if (v) {
-    n += printf_nice(v, USE_UNKNOWN | USE_SPACE | mode);
+    n += printf_nice(v, USE_UNKNOWN | USE_SPACE | (mode & ~USE_EOL));
+  }
+
+  if (mode & USE_EOL) {
+    n += printf_eol();
   }
 
   return n;
@@ -198,5 +202,9 @@ int printf_masknone(const pconvert_t p, const maskz_t mask, const modez_t mode) 
   }
 
   return printf_mask(p, mask, USE_SPACE | mode);
+}
+
+int printf_pick(const pconvert_t p, const pick_t x, const modez_t mode) {
+  return printf_text(get_string(p, x), mode);
 }
 

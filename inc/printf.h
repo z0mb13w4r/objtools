@@ -1,8 +1,6 @@
 #ifndef __PRINT_H_
 #define __PRINT_H_
 
-#include <stdint.h>
-
 #include "common.h"
 #include "objutils.h"
 
@@ -88,6 +86,8 @@ int printf_text(const char* p, const modez_t mode);
 
 int printf_mask(const pconvert_t p, const maskz_t mask, const modez_t mode);
 int printf_masknone(const pconvert_t p, const maskz_t mask, const modez_t mode);
+
+int printf_pick(const pconvert_t p, const pick_t x, const modez_t mode);
 
 #endif
 

@@ -1,0 +1,59 @@
+static convert_t zSECTIONHDR1_FLAGS[] = {
+  {"CONTENTS",         SEC_HAS_CONTENTS},
+  {"ALLOC",            SEC_ALLOC},
+  {"CONSTRUCTOR",      SEC_CONSTRUCTOR},
+  {"LOAD",             SEC_LOAD},
+  {"RELOC",            SEC_RELOC},
+  {"READONLY",         SEC_READONLY},
+  {"CODE",             SEC_CODE},
+  {"DATA",             SEC_DATA},
+  {"ROM",              SEC_ROM},
+  {"DEBUGGING",        SEC_DEBUGGING},
+  {"NEVER_LOAD",       SEC_NEVER_LOAD},
+  {"EXCLUDE",          SEC_EXCLUDE},
+  {"SORT_ENTRIES",     SEC_SORT_ENTRIES},
+  {0, 0}
+};
+
+static convert_t zSECTIONHDR2_FLAGS[] = {
+  {"SMALL_DATA",       SEC_SMALL_DATA},
+  {0, 0}
+};
+
+static convert_t zSECTIONHDR3_FLAGS[] = {
+  {"THREAD_LOCAL",     SEC_THREAD_LOCAL},
+  {"GROUP",            SEC_GROUP},
+  {0, 0}
+};
+
+static convert_t zSECTIONHDRTIC54X_FLAGS[] = {
+  {"BLOCK",            SEC_TIC54X_BLOCK},
+  {"CLINK",            SEC_TIC54X_CLINK},
+  {0, 0}
+};
+
+static convert_t zSECTIONHDRCOFF_FLAGS[] = {
+  {"SHARED",           SEC_COFF_SHARED},
+  {"NOREAD",           SEC_COFF_NOREAD},
+  {0, 0}
+};
+
+static convert_t zSECTIONHDRELF_FLAGS[] = {
+  {"OCTETS",           SEC_ELF_OCTETS},
+  {"PURECODE",         SEC_ELF_PURECODE},
+  {0, 0}
+};
+
+static convert_t zSECTIONHDRARCHMEP_FLAGS[] = {
+  {"VLIW",             SEC_MEP_VLIW},
+  {0, 0}
+};
+
+static convert_t zSECTIONHDRLINKDUP[] = {
+  {"LINK_ONCE_DISCARD",       SEC_LINK_DUPLICATES_DISCARD},
+  {"LINK_ONCE_ONE_ONLY",      SEC_LINK_DUPLICATES_ONE_ONLY},
+  {"LINK_ONCE_SAME_SIZE",     SEC_LINK_DUPLICATES_SAME_SIZE},
+  {"LINK_ONCE_SAME_CONTENTS", SEC_LINK_DUPLICATES_SAME_CONTENTS},
+  {0, 0}
+};
+

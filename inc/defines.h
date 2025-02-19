@@ -1,6 +1,8 @@
 #ifndef __DEFINES_H_
 #define __DEFINES_H_
 
+#include <stdint.h>
+
 #ifndef CAST
 #define CAST(x,y)    ((x)(y))
 #endif
@@ -48,6 +50,8 @@
 typedef uint64_t addrz_t;
 typedef uint64_t maskz_t;
 typedef uint64_t modez_t;
+
+typedef uint32_t pick_t;
 
 #endif
 
