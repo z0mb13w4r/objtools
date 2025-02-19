@@ -11,7 +11,7 @@ DIR_CXX = ../$(DIR_SRC)
 # Name of c source files to be included in build.
 #---------------------------------------------------------------------
 SRCS_C = \
-	objdump-ng.c
+	objhash-ng.c
 
 # Name of cpp source files to be included in build.
 #---------------------------------------------------------------------
@@ -19,7 +19,7 @@ SRCS_CPP =
 
 # Name of target and map file to be built.
 #---------------------------------------------------------------------
-TARGETBASE = objdump-ng
+TARGETBASE = objhash-ng
 
 ifeq ($(CROSS),ARM)
 else ifeq ($(CROSS),WIN)

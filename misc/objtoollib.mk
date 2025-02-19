@@ -18,6 +18,7 @@ SRCS_C = \
 	readpe.c \
 	options.c \
 	objdump.c \
+	objhash.c \
 	elfcode.c \
 	readelf.c \
 	objutils.c

@@ -172,6 +172,27 @@ int get_options_objdump(poptions_t o, int argc, char** argv, char* name) {
   return 0;
 }
 
+int get_options_objhash(poptions_t o, int argc, char** argv, char* name) {
+  if (argc < 2) {
+    return -1;
+  }
+
+  o->option = OPT_OBJHASH;
+  strname(o->prgname, name);
+
+  for (int i = 0; i < argc; ++i) {
+    if ('-' == argv[i][0] && '-' == argv[i][1]) {
+
+    } else if ('-' == argv[i][0]) {
+
+    } else {
+      strcpy(o->inpname, argv[i]);
+    }
+  }
+
+  return 0;
+}
+
 int get_options(poptions_t o, int argc, char** argv) {
   if (argc < 4) {
     return -1;
@@ -183,6 +204,8 @@ int get_options(poptions_t o, int argc, char** argv) {
     return get_options_objcopy(o, argc - 2, argv + 2, argv[0]);
   } else if (0 == strcmp("--objdump", argv[1])) {
     return get_options_objdump(o, argc - 2, argv + 2, argv[0]);
+  } else if (0 == strcmp("--objhash", argv[1])) {
+    return get_options_objhash(o, argc - 2, argv + 2, argv[0]);
   }
 
   return -1;
