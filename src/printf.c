@@ -10,32 +10,39 @@ int printf_eol() {
 
 int printf_nice(const uint64_t v, const modez_t mode) {
   int n = 0;
-  switch (mode & ~(USE_FLAGMASK | USE_POS1MASK)) {
-  case USE_DEC:                     n += printf(" %" PRId64, v);               break;
-  case USE_DEC2:                    n += printf(" %2" PRId64, v);              break;
-  case USE_DEC5:                    n += printf(" %5" PRId64, v);              break;
-  case USE_OCT:                     n += printf(" %" PRIo64, v);               break;
-  case USE_OCT2:                    n += printf(" %2" PRIo64, v);              break;
-  case USE_OCT5:                    n += printf(" %5" PRIo64, v);              break;
-  case USE_FHEX:                    n += printf(" 0x%" PRIx64, v);             break;
-  case USE_LHEX:                    n += printf(" %" PRIx64, v);               break;
-  case USE_FHEX8:                   n += printf(" 0x%2.2" PRIx64, v);          break;
-  case USE_LHEX8:                   n += printf(" %2.2" PRIx64, v);            break;
-  case USE_FHEX16:                  n += printf(" 0x%4.4" PRIx64, v);          break;
-  case USE_LHEX16:                  n += printf(" %4.4" PRIx64, v);            break;
-  case USE_FHEX24:                  n += printf(" 0x%6.6" PRIx64, v);          break;
-  case USE_LHEX24:                  n += printf(" %6.6" PRIx64, v);            break;
-  case USE_FHEX32:                  n += printf(" 0x%8.8" PRIx64, v);          break;
-  case USE_LHEX32:                  n += printf(" %8.8" PRIx64, v);            break;
-  case USE_FHEX48:                  n += printf(" 0x%12.12" PRIx64, v);        break;
-  case USE_LHEX48:                  n += printf(" %12.12" PRIx64, v);          break;
-  case USE_FHEX64:                  n += printf(" 0x%16.16" PRIx64, v);        break;
-  case USE_LHEX64:                  n += printf(" %16.16" PRIx64, v);          break;
-  case USE_PERCENT:                 n += printf(" %3.1f%%", CAST(double, v) / 10); break;
-  case USE_ERROR:                   n += printf(" <error: %" PRIx64 ">", v);   break;
-  case USE_CORRUPT:                 n += printf(" <corrupt: %" PRIx64 ">", v); break;
-  case USE_UNKNOWN:                 n += printf(" <unknown: %" PRIx64 ">", v); break;
-  case USE_WARNING:                 n += printf(" <warning: %" PRIx64 ">", v); break;
+
+  switch (GET_POS0(mode)) {
+  case USE_TAB:                  n += printf(" ");
+  default:
+    break;
+  }
+
+  switch (mode & ~(USE_FLAGMASK | USE_POS0MASK | USE_POS1MASK)) {
+  case USE_DEC:                     n += printf(" %" PRId64, v);                     break;
+  case USE_DEC2:                    n += printf(" %2" PRId64, v);                    break;
+  case USE_DEC5:                    n += printf(" %5" PRId64, v);                    break;
+  case USE_OCT:                     n += printf(" %" PRIo64, v);                     break;
+  case USE_OCT2:                    n += printf(" %2" PRIo64, v);                    break;
+  case USE_OCT5:                    n += printf(" %5" PRIo64, v);                    break;
+  case USE_FHEX:                    n += printf(" 0x%" PRIx64, v);                   break;
+  case USE_LHEX:                    n += printf(" %" PRIx64, v);                     break;
+  case USE_FHEX8:                   n += printf(" 0x%2.2" PRIx64, v);                break;
+  case USE_LHEX8:                   n += printf(" %2.2" PRIx64, v);                  break;
+  case USE_FHEX16:                  n += printf(" 0x%4.4" PRIx64, v);                break;
+  case USE_LHEX16:                  n += printf(" %4.4" PRIx64, v);                  break;
+  case USE_FHEX24:                  n += printf(" 0x%6.6" PRIx64, v);                break;
+  case USE_LHEX24:                  n += printf(" %6.6" PRIx64, v);                  break;
+  case USE_FHEX32:                  n += printf(" 0x%8.8" PRIx64, v);                break;
+  case USE_LHEX32:                  n += printf(" %8.8" PRIx64, v);                  break;
+  case USE_FHEX48:                  n += printf(" 0x%12.12" PRIx64, v);              break;
+  case USE_LHEX48:                  n += printf(" %12.12" PRIx64, v);                break;
+  case USE_FHEX64:                  n += printf(" 0x%16.16" PRIx64, v);              break;
+  case USE_LHEX64:                  n += printf(" %16.16" PRIx64, v);                break;
+  case USE_PERCENT:                 n += printf(" %3.1f%%", CAST(double, v) / 10);   break;
+  case USE_ERROR:                   n += printf(" <error: %" PRIx64 ">", v);         break;
+  case USE_CORRUPT:                 n += printf(" <corrupt: %" PRIx64 ">", v);       break;
+  case USE_UNKNOWN:                 n += printf(" <unknown: %" PRIx64 ">", v);       break;
+  case USE_WARNING:                 n += printf(" <warning: %" PRIx64 ">", v);       break;
 
   case USE_CHARCTRL:
     if (iscntrl(v))                 n += printf("^%c", CAST(int, v) + 0x40);
@@ -60,13 +67,13 @@ int printf_nice(const uint64_t v, const modez_t mode) {
     break;
   }
 
-  switch (mode & USE_POS1MASK) {
+  switch (GET_POS1(mode)) {
   case USE_COLON:                  n += printf(":");
   default:
     break;
   }
 
-  if (mode & USE_EOL)               n += printf("\n");
+  if (mode & USE_EOL)               n += printf_eol();
 
   return n;
 }
@@ -187,6 +194,21 @@ int printf_mask(const pconvert_t p, const maskz_t mask, const modez_t mode) {
 
   if (v) {
     n += printf_nice(v, USE_UNKNOWN | USE_SPACE | (mode & ~USE_EOL));
+  }
+
+  if (mode & USE_EOL) {
+    n += printf_eol();
+  }
+
+  return n;
+}
+
+int printf_maskmute(const pconvert_t p, const maskz_t mask, const modez_t mode) {
+  int n = 0;
+  for (pconvert_t x = p; 0 != x->text; ++x) {
+    if (x->type & mask) {
+      n += printf_text(x->text, (mode & ~USE_EOL) | USE_SPACE);
+    }
   }
 
   if (mode & USE_EOL) {

@@ -17,6 +17,8 @@ static convert_t zSECTIONHDR1_FLAGS[] = {
 
 static convert_t zSECTIONHDR2_FLAGS[] = {
   {"SMALL_DATA",       SEC_SMALL_DATA},
+  {"MERGE",            SEC_MERGE},
+  {"STRINGS",          SEC_STRINGS},
   {0, 0}
 };
 

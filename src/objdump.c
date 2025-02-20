@@ -125,31 +125,32 @@ static void callback_sectionhdr(bfd *f, asection *s, void *p) {
   /* Ignore linker created section.  See elfNN_ia64_object_p in bfd/elfxx-ia64.c.  */
   if (s->flags & SEC_LINKER_CREATED) return;
 
-  printf("  %3d %-*s", s->index, (int)name_size, bfd_section_name(s));
+  printf_nice(s->index, USE_TAB | USE_DEC2);
+  printf_text(bfd_section_name(s), USE_LT | USE_SPACE | SET_PAD(name_size));
   printf_nice(bfd_section_size(s) / bfd_octets_per_byte(f, s), USE_LHEX32);
   printf_nice(bfd_section_vma(s), USE_LHEX64);
   printf_nice(s->lma, USE_LHEX64);
   printf_nice(s->filepos, USE_LHEX32);
   printf(" 2**%u", bfd_section_alignment(s));
 
-  printf_mask(zSECTIONHDR1_FLAGS, s->flags, USE_NONE);
+  printf_maskmute(zSECTIONHDR1_FLAGS, s->flags, USE_NONE);
 
   if (bfd_get_arch(f) == bfd_arch_tic54x) {
-    printf_mask(zSECTIONHDRTIC54X_FLAGS, s->flags, USE_NONE);
+    printf_maskmute(zSECTIONHDRTIC54X_FLAGS, s->flags, USE_NONE);
   }
 
-  printf_mask(zSECTIONHDR2_FLAGS, s->flags, USE_NONE);
+  printf_maskmute(zSECTIONHDR2_FLAGS, s->flags, USE_NONE);
 
   if (bfd_get_flavour(f) == bfd_target_coff_flavour) {
-    printf_mask(zSECTIONHDRCOFF_FLAGS, s->flags, USE_NONE);
+    printf_maskmute(zSECTIONHDRCOFF_FLAGS, s->flags, USE_NONE);
   } else if (bfd_get_flavour(f) == bfd_target_elf_flavour) {
-    printf_mask(zSECTIONHDRELF_FLAGS, s->flags, USE_NONE);
+    printf_maskmute(zSECTIONHDRELF_FLAGS, s->flags, USE_NONE);
   }
 
-  printf_mask(zSECTIONHDR3_FLAGS, s->flags, USE_NONE);
+  printf_maskmute(zSECTIONHDR3_FLAGS, s->flags, USE_NONE);
 
   if (bfd_get_arch(f) == bfd_arch_mep) {
-    printf_mask(zSECTIONHDRARCHMEP_FLAGS, s->flags, USE_NONE);
+    printf_maskmute(zSECTIONHDRARCHMEP_FLAGS, s->flags, USE_NONE);
   }
 
   if (s->flags & SEC_LINK_ONCE) {
@@ -207,7 +208,14 @@ static int dump_sectionhdr(const pbuffer_t p, const poptions_t o, bfd *f) {
   printf("SECTIONS:\n");
   bfd_map_over_sections(f, callback_find_longest_section_name, &max_name_size);
 
-  printf("  Idx %-*s Size     VMA              LMA              File Off Algn Flags\n", (int)max_name_size, "Name");
+  printf_text("Idx", USE_LT | USE_SPACE);
+  printf_text("Name", USE_LT | USE_SPACE | SET_PAD(max_name_size));
+  printf_text("Size", USE_LT | USE_SPACE | SET_PAD(9));
+  printf_text("VMA", USE_LT | USE_SPACE | SET_PAD(17));
+  printf_text("LMA", USE_LT | USE_SPACE | SET_PAD(17));
+  printf_text("File Off", USE_LT | USE_SPACE);
+  printf_text("Algn", USE_LT | USE_SPACE);
+  printf_text("Flags", USE_LT | USE_SPACE | USE_EOL);
 
   bfd_map_over_sections(f, callback_sectionhdr, &max_name_size);
 

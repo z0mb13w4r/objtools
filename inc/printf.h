@@ -60,7 +60,7 @@
 #define USE_EOL           SET_FLAG(1)
 #define USE_FLAGMASK      SET_FLAG(15)
 
-#define USE_NONE          SET_FORMAT(0)
+#define USE_NONE          SET_FORMAT(0)    // remove too complex
 #define USE_LT            SET_FORMAT(1)
 #define USE_RT            SET_FORMAT(2)
 
@@ -78,6 +78,7 @@
 #define USE_SPACE         SET_POS0(1)
 #define USE_TAB           SET_POS0(2)
 #define USE_AT            SET_POS0(3)
+#define USE_POS0MASK      SET_POS0(15)
 
 int printf_eol();
 int printf_nice(const uint64_t v, const modez_t mode);
@@ -85,6 +86,7 @@ int printf_data(const void* p, const size_t size, const addrz_t addr, const mode
 int printf_text(const char* p, const modez_t mode);
 
 int printf_mask(const pconvert_t p, const maskz_t mask, const modez_t mode);
+int printf_maskmute(const pconvert_t p, const maskz_t mask, const modez_t mode);
 int printf_masknone(const pconvert_t p, const maskz_t mask, const modez_t mode);
 
 int printf_pick(const pconvert_t p, const pick_t x, const modez_t mode);
