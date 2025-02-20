@@ -105,9 +105,10 @@ static void callback_section_data(bfd *f, asection *s, void *p) {
 
   if (soffset >= eoffset) return;
 
-  printf(" Contents of section %s:", s->name);
-  printf("  (Starting at file offset: 0x%lx)", (unsigned long) (s->filepos + soffset));
-  printf("\n");
+  printf_text("Contexts of section", USE_LT | USE_SPACE);
+  printf_text(s->name, USE_LT | USE_SPACE | USE_SQ);
+  printf_text("at offset", USE_LT | USE_SPACE);
+  printf_nice(s->filepos + soffset, USE_FHEX16 | USE_COLON | USE_EOL);
 
   bfd_byte *data = NULL;
   if (bfd_get_full_section_contents(f, s, &data)) {
@@ -165,7 +166,7 @@ static void callback_sectionhdr(bfd *f, asection *s, void *p) {
   printf_eol();
 }
 
-static void callback_find_longest_section_name(bfd *f ATTRIBUTE_UNUSED, asection *s, void *p) {
+static void callback_find_max_sectionhdr_name(bfd *f ATTRIBUTE_UNUSED, asection *s, void *p) {
   /* Ignore linker created section. */
   if (s->flags & SEC_LINKER_CREATED) return;
 
@@ -205,8 +206,8 @@ static int dump_privatehdr(const pbuffer_t p, const poptions_t o, bfd *f) {
 static int dump_sectionhdr(const pbuffer_t p, const poptions_t o, bfd *f) {
   size_t max_name_size = 20;
 
-  printf("SECTIONS:\n");
-  bfd_map_over_sections(f, callback_find_longest_section_name, &max_name_size);
+  printf_text("SECTIONS", USE_LT | USE_COLON | USE_EOL);
+  bfd_map_over_sections(f, callback_find_max_sectionhdr_name, &max_name_size);
 
   printf_text("Idx", USE_LT | USE_SPACE);
   printf_text("Name", USE_LT | USE_SPACE | SET_PAD(max_name_size));
@@ -225,16 +226,16 @@ static int dump_sectionhdr(const pbuffer_t p, const poptions_t o, bfd *f) {
 
 static int dump_symbols(const pbuffer_t p, const poptions_t o, bfd *f, const int mode) {
   if (MODE_SYMBOLS_DYNAMIC == mode) {
-    printf("DYNAMIC SYMBOL TABLE:\n");
+    printf_text("DYNAMIC SYMBOL TABLE", USE_LT | USE_COLON | USE_EOL);
   } else if (MODE_SYMBOLS == mode) {
-    printf ("SYMBOL TABLE:\n");
+    printf_text("SYMBOL TABLE", USE_LT | USE_COLON | USE_EOL);
   } else {
     return -1;
   }
 
   pbuffer_t ps = get_symbols(p,  f, mode);
   if (NULL == ps || 0 == ps->size) {
-    printf("no symbols\n");
+    printf_text("no symbols", USE_LT | USE_EOL);
   } else {
     asymbol **cs = ps->data;
     for (size_t i = 0; i < ps->size; ++i) {
@@ -253,12 +254,12 @@ static int dump_symbols(const pbuffer_t p, const poptions_t o, bfd *f, const int
     }
   }
 
-  printf("\n");
+  printf_eol();
   return 0;
 }
 
 static int dump_sections(const pbuffer_t p, const poptions_t o, bfd *f) {
-  printf("SECTION CONTENTS\n");
+  printf_text("SECTION CONTENTS", USE_LT | USE_COLON | USE_EOL);
   bfd_map_over_sections(f, callback_section_data, NULL);
   return 0;
 }

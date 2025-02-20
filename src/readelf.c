@@ -131,8 +131,8 @@ static const char* get_ehdrosabi(pbuffer_t p) {
 }
 
 static const char* get_shdrflags64(Elf64_Shdr *s) {
-  static char buff[32];
-  char *p = buff;
+  static char buff0[32], buff1[32];
+  char *p = buff0;
 
   if (s) {
     for (pconvert_t x = EHDRFLAGS; 0 != x->text; ++x) {
@@ -144,7 +144,8 @@ static const char* get_shdrflags64(Elf64_Shdr *s) {
 
     *p = '\0';
 
-    return buff;
+    snprintf(buff1, sizeof(buff1), "%3s", buff0);
+    return buff1;
   }
 
   return NULL;
@@ -288,34 +289,34 @@ static int dump_fileheader64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *
 }
 
 static int dump_sectionheaders64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
-  printf("SECTION HEADERS:\n");
+  printf_text("SECTION HEADERS", USE_LT | USE_COLON | USE_EOL);
   printf("  [Nr] Name                 Type            Address          Off      Size     ES Flg Lk Inf  Al\n");
 
   for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
-    printf("  [%2d]", i);
+    printf_nice(i, USE_DEC2 | USE_TAB | USE_SB);
 
     Elf64_Shdr *shdr = get_shdr64byindex(p, i);
     if (shdr) {
-      printf(" %-20s", get_secname64byindex(p, i));
-      printf(" %-15s", get_shdrtype64(shdr));
-
+      printf_text(get_secname64byindex(p, i), USE_LT | USE_SPACE | SET_PAD(21));
+      printf_text(get_shdrtype64(shdr), USE_LT | USE_SPACE | SET_PAD(16));
       printf_nice(shdr->sh_addr, USE_LHEX64);
       printf_nice(shdr->sh_offset, USE_LHEX32);
       printf_nice(shdr->sh_size, USE_LHEX32);
       printf_nice(shdr->sh_entsize, USE_LHEX8);
-      printf(" %3s", get_shdrflags64(shdr));
-      printf(" %2u %3u ", shdr->sh_link, shdr->sh_info);
+      printf_text(get_shdrflags64(shdr), USE_LT | USE_SPACE | SET_PAD(4));
+      printf_nice(shdr->sh_link, USE_DEC2);
+      printf_nice(shdr->sh_info, USE_DEC3);
       printf_nice(shdr->sh_addralign, USE_DEC2);
     }
     printf("\n");
   }
 
-  printf("Key to Flags:\n");
-  printf("  W (write), A (alloc), X (execute), M (merge), S (strings), I (info),\n");
-  printf("  L (link order), O (extra OS processing required), G (group), T (TLS),\n");
-  printf("  C (compressed), x (unknown), o (OS specific), E (exclude),\n");
-  printf("  l (large), p (processor specific)\n");
-  printf("\n");
+  printf_text("Key to Flags", USE_LT | USE_COLON | USE_EOL);
+  printf_text("W (write), A (alloc), X (execute), M (merge), S (strings), I (info),", USE_LT | USE_TAB | USE_EOL);
+  printf_text("L (link order), O (extra OS processing required), G (group), T (TLS),", USE_LT | USE_TAB | USE_EOL);
+  printf_text("C (compressed), x (unknown), o (OS specific), E (exclude),", USE_LT | USE_TAB | USE_EOL);
+  printf_text("l (large), p (processor specific)", USE_LT | USE_TAB | USE_EOL);
+  printf_eol();
 
   return 0;
 }

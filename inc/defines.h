@@ -2,6 +2,7 @@
 #define __DEFINES_H_
 
 #include <stdint.h>
+#include <string.h>
 
 #ifndef CAST
 #define CAST(x,y)    ((x)(y))
