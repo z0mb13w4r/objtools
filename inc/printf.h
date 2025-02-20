@@ -61,7 +61,6 @@
 #define USE_EOL           SET_FLAG(1)
 #define USE_FLAGMASK      SET_FLAG(15)
 
-#define USE_NONE          SET_FORMAT(0)    // remove too complex
 #define USE_LT            SET_FORMAT(1)
 #define USE_RT            SET_FORMAT(2)
 

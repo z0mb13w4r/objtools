@@ -104,46 +104,50 @@ int printf_nice(const uint64_t v, const modez_t mode) {
 }
 
 int printf_text(const char* p, const modez_t mode) {
+  MALLOCA(char, data, 1024);
+#define PRINT1(x)    snprintf(data + n, sizeof(data) - n, x)
+#define PRINT2(x,y)  snprintf(data + n, sizeof(data) - n, x, y)
   if (p) {
     int n = 0;
+    int b = GET_BRACKET(mode);
+    int e = mode & USE_EOL;
+    int p0 = GET_POS0(mode);
+    int p1 = GET_POS1(mode);
+    int ss = CAST(int, GET_PAD(mode));
+    int rt = USE_RT == GET_FORMAT(mode);
 
-    switch (GET_POS0(mode)) {
-    case USE_AT:             n += printf("@");         break;
-    case USE_SPACE:          n += printf(" ");         break;
-    case USE_TAB:            n += printf("  ");        break;
+    switch (p0) {
+    case USE_AT:             n += PRINT1("@");         break;
+    case USE_SPACE:          n += PRINT1(" ");         break;
+    case USE_TAB:            n += PRINT1("  ");        break;
     default:                 break;
     }
 
-    switch (GET_BRACKET(mode)) {
-    case USE_CB:             n += printf("{%s}", p);   break;
-    case USE_RB:             n += printf("(%s)", p);   break;
-    case USE_SB:             n += printf("[%s]", p);   break;
-    case USE_TB:             n += printf("<%s>", p);   break;
-    case USE_DRTB:           n += printf(">>%s<<", p); break;
-    case USE_SQ:             n += printf("'%s'", p);   break;
-    case USE_DQ:             n += printf("\"%s\"", p); break;
+    switch (b) {
+    case USE_CB:             n += PRINT2("{%s}", p);   break;
+    case USE_RB:             n += PRINT2("(%s)", p);   break;
+    case USE_SB:             n += PRINT2("[%s]", p);   break;
+    case USE_TB:             n += PRINT2("<%s>", p);   break;
+    case USE_DRTB:           n += PRINT2(">>%s<<", p); break;
+    case USE_SQ:             n += PRINT2("'%s'", p);   break;
+    case USE_DQ:             n += PRINT2("\"%s\"", p); break;
+    default:                 n += PRINT2("%s", p);     break;
+    }
+
+    switch (p1) {
+    case USE_COLON:          n += PRINT1(":");         break;
     default:                 break;
     }
 
-    if (0 == GET_BRACKET(mode)) {
-      switch (GET_FORMAT(mode)) {
-      case USE_NONE:
-      case USE_LT:           n += printf("%s", p);     break;
-      default:               break;
-      }
-    }
-
-    switch (GET_POS1(mode)) {
-    case USE_COLON:          n += printf(":");         break;
-    default:                 break;
-    }
-
-    if (GET_PAD(mode))       n += printf("%*s", MAX(0, CAST(int, GET_PAD(mode)) - n), " ");
-    if (mode & USE_EOL)      n += printf_eol();
+    if (!rt)                      printf("%s", data);
+    if (ss)                  n += printf("%*s", MAX(0, ss - n), " ");
+    if (rt)                       printf("%s", data);
+    if (e)                   n += printf_eol();
 
     return n;
   }
-
+#undef PRINT2
+#undef PRINT1
   return -1;
 }
 

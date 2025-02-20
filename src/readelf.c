@@ -131,8 +131,8 @@ static const char* get_ehdrosabi(pbuffer_t p) {
 }
 
 static const char* get_shdrflags64(Elf64_Shdr *s) {
-  static char buff0[32], buff1[32];
-  char *p = buff0;
+  static char buff[32];
+  char *p = buff;
 
   if (s) {
     for (pconvert_t x = EHDRFLAGS; 0 != x->text; ++x) {
@@ -143,9 +143,7 @@ static const char* get_shdrflags64(Elf64_Shdr *s) {
     }
 
     *p = '\0';
-
-    snprintf(buff1, sizeof(buff1), "%3s", buff0);
-    return buff1;
+    return buff;
   }
 
   return NULL;
@@ -303,7 +301,7 @@ static int dump_sectionheaders64(const pbuffer_t p, const poptions_t o, Elf64_Eh
       printf_nice(shdr->sh_offset, USE_LHEX32);
       printf_nice(shdr->sh_size, USE_LHEX32);
       printf_nice(shdr->sh_entsize, USE_LHEX8);
-      printf_text(get_shdrflags64(shdr), USE_LT | USE_SPACE | SET_PAD(4));
+      printf_text(get_shdrflags64(shdr), USE_RT | USE_SPACE | SET_PAD(4));
       printf_nice(shdr->sh_link, USE_DEC2);
       printf_nice(shdr->sh_info, USE_DEC3);
       printf_nice(shdr->sh_addralign, USE_DEC2);
@@ -417,13 +415,13 @@ static int dump_dynamic64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
 
         if (dyn->d_tag == DT_FLAGS_1) {
           printf(" Flags:");
-          printf_masknone(zDT_FLAGS_1, dyn->d_un.d_val, USE_NONE);
+          printf_masknone(zDT_FLAGS_1, dyn->d_un.d_val, USE_LT);
         } else if (dyn->d_tag == DT_POSFLAG_1) {
           printf(" Flags:");
-          printf_masknone(zDT_POSFLAG_1, dyn->d_un.d_val, USE_NONE);
+          printf_masknone(zDT_POSFLAG_1, dyn->d_un.d_val, USE_LT);
         } else if (dyn->d_tag == DT_FLAGS) {
           printf(" Flags:");
-          printf_masknone(zDT_FLAGS, dyn->d_un.d_val, USE_NONE);
+          printf_masknone(zDT_FLAGS, dyn->d_un.d_val, USE_LT);
         } else if (dyn->d_tag == DT_PLTREL) {
           printf(" %s", get_dyntag64(dyn->d_un.d_val));
         } else if (dyn->d_tag == DT_NULL || dyn->d_tag == DT_NEEDED || dyn->d_tag == DT_PLTGOT ||
@@ -876,7 +874,7 @@ static int dump_versionneed64(const pbuffer_t p, const poptions_t o, Elf64_Shdr 
           printf_text("Name", USE_TAB | USE_COLON);
           printf_text(get_name64byoffset(p, shdr->sh_link, va->vna_name), USE_LT | USE_SPACE | SET_PAD(14));
           printf_text("Flags", USE_SPACE | USE_COLON);
-          printf_masknone(zVNA_FLAGS, va->vna_flags, USE_NONE);
+          printf_masknone(zVNA_FLAGS, va->vna_flags, USE_LT);
           printf_text("Version", USE_TAB | USE_COLON);
           printf_nice(va->vna_other, USE_DEC | USE_EOL);
 
@@ -983,7 +981,7 @@ static int dump_notes64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr)
                     else                   printf("%s:", get_gnuproperty64(x));
 
                     if (x == GNU_PROPERTY_X86_FEATURE_1_AND) {
-                      printf_mask(zGNUPROPERTY_X86_FEATURE_1_AND, getLE(cc + i + 8, 4), USE_NONE);
+                      printf_mask(zGNUPROPERTY_X86_FEATURE_1_AND, getLE(cc + i + 8, 4), USE_LT);
                     }
                   }
                 }

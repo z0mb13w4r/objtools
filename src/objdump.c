@@ -134,28 +134,28 @@ static void callback_sectionhdr(bfd *f, asection *s, void *p) {
   printf_nice(s->filepos, USE_LHEX32);
   printf(" 2**%u", bfd_section_alignment(s));
 
-  printf_maskmute(zSECTIONHDR1_FLAGS, s->flags, USE_NONE);
+  printf_maskmute(zSECTIONHDR1_FLAGS, s->flags, USE_LT);
 
   if (bfd_get_arch(f) == bfd_arch_tic54x) {
-    printf_maskmute(zSECTIONHDRTIC54X_FLAGS, s->flags, USE_NONE);
+    printf_maskmute(zSECTIONHDRTIC54X_FLAGS, s->flags, USE_LT);
   }
 
-  printf_maskmute(zSECTIONHDR2_FLAGS, s->flags, USE_NONE);
+  printf_maskmute(zSECTIONHDR2_FLAGS, s->flags, USE_LT);
 
   if (bfd_get_flavour(f) == bfd_target_coff_flavour) {
-    printf_maskmute(zSECTIONHDRCOFF_FLAGS, s->flags, USE_NONE);
+    printf_maskmute(zSECTIONHDRCOFF_FLAGS, s->flags, USE_LT);
   } else if (bfd_get_flavour(f) == bfd_target_elf_flavour) {
-    printf_maskmute(zSECTIONHDRELF_FLAGS, s->flags, USE_NONE);
+    printf_maskmute(zSECTIONHDRELF_FLAGS, s->flags, USE_LT);
   }
 
-  printf_maskmute(zSECTIONHDR3_FLAGS, s->flags, USE_NONE);
+  printf_maskmute(zSECTIONHDR3_FLAGS, s->flags, USE_LT);
 
   if (bfd_get_arch(f) == bfd_arch_mep) {
-    printf_maskmute(zSECTIONHDRARCHMEP_FLAGS, s->flags, USE_NONE);
+    printf_maskmute(zSECTIONHDRARCHMEP_FLAGS, s->flags, USE_LT);
   }
 
   if (s->flags & SEC_LINK_ONCE) {
-    printf_pick(zSECTIONHDRLINKDUP, s->flags & SEC_LINK_DUPLICATES, USE_NONE);
+    printf_pick(zSECTIONHDRLINKDUP, s->flags & SEC_LINK_DUPLICATES, USE_LT);
 
     // TBD
     //struct coff_comdat_info* c = bfd_coff_get_comdat_section(f, s);
