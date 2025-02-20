@@ -2,8 +2,8 @@
 #define __OPTIONS_H_
 
 #define OPT_READELF                    (0)
-#define OPT_OBJDUMP                    (1)
-#define OPT_OBJCOPY                    (2)
+#define OPT_OBJCOPY                    (1)
+#define OPT_OBJDUMP                    (2)
 #define OPT_OBJHASH                    (3)
 
 #define OPTREADELF_FILEHEADER          (1 << 0)

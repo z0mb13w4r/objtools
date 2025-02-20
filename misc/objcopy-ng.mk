@@ -2,7 +2,6 @@
 # Define Include Paths
 #---------------------------------------------------------------------
 LIB_ROOT = ../libs/
-BIN_ROOT = ../bin/
 
 # Define Source Directories.
 #---------------------------------------------------------------------
@@ -12,17 +11,7 @@ DIR_CXX = ../$(DIR_SRC)
 # Name of c source files to be included in build.
 #---------------------------------------------------------------------
 SRCS_C = \
-	buffer.c \
-	printf.c \
-	pecode.c \
-	readpe.c \
-	options.c \
-	objcopy.c \
-	objdump.c \
-	objhash.c \
-	elfcode.c \
-	readelf.c \
-	objutils.c
+	objcopy-ng.c
 
 # Name of cpp source files to be included in build.
 #---------------------------------------------------------------------
@@ -30,7 +19,7 @@ SRCS_CPP =
 
 # Name of target and map file to be built.
 #---------------------------------------------------------------------
-TARGETBASE = objtool
+TARGETBASE = objcopy-ng
 
 ifeq ($(CROSS),ARM)
 else ifeq ($(CROSS),WIN)
@@ -40,12 +29,15 @@ endif
 
 ifeq ($(DEBUG),y)
 	DIR_OBJ = debug$(CROSS)/
+	TARGET = $(TARGETBASE)d
 else
 	DIR_OBJ = release$(CROSS)/
+	TARGET = $(TARGETBASE)
 	DEBUG = n
 endif
 
-TARGET = $(BIN_ROOT)$(DIR_OBJ)lib$(TARGETBASE).a
+MAP_FILE = $(TARGET).map
+STRIPPED_FILE = $(TARGET)-stripped
 
 #=====================================================================================================================================
 # Library Section of Makefile
@@ -57,6 +49,20 @@ TARGET = $(BIN_ROOT)$(DIR_OBJ)lib$(TARGETBASE).a
 #---------------------------------------------------------------------
 LIB_INCS = \
 	-I../inc/
+
+ifeq ($(CROSS),WIN)
+SYS_OBJS =
+else
+SYS_OBJS = \
+	-lbfd \
+	-lrt
+endif
+
+LIB_OBJS = \
+	-lobjtool
+
+LIB_PATHS = \
+	-L../bin/$(DIR_OBJ)
 
 #=====================================================================================================================================
 # Command Section of Makefile
@@ -75,21 +81,31 @@ endif
 
 ifeq ($(PROFILE),y)
 	CFLAGS += -pg
+	LFLAGS += -pg
 else
 	PROFILE = n
 endif
+
+KPROF_FILE = $(TARGET).kprof
+PROFILE_FILE = gmon.out
 
 # GNU toolchain definitions
 #---------------------------------------------------------------------
 ifeq ($(CROSS),ARM)
 	CROSS_COMPILE = /home/WF_3.02/wrlinux-3.0/sysroots/arm-mm6-glibc-small/x86-linux2/arm-wrs-linux-gnueabi-arm_iwmmxt_el-glibc_small-
 	DFLAGS += -DENV_LINUX -DLINUX -DTARGET_ARM
+	EFLAGS  = -Wl,--no-enum-size-warning
+	LFLAGS +=
 else ifeq ($(CROSS),WIN)
 	CROSS_COMPILE = x86_64-w64-mingw32-
 	DFLAGS += -DWIN32
+	EFLAGS  =
+	LFLAGS += -static-libgcc -static-libstdc++
 else
 	CROSS_COMPILE =
 	DFLAGS += -DENV_LINUX -DLINUX
+	EFLAGS  =
+	LFLAGS +=
 endif
 
 AS		= $(CROSS_COMPILE)as
@@ -98,6 +114,8 @@ CPP		= $(CROSS_COMPILE)g++
 CC		= $(CROSS_COMPILE)gcc
 AR		= $(CROSS_COMPILE)ar
 GDB		= $(CROSS_COMPILE)gdb
+STRIP		= $(CROSS_COMPILE)strip
+CP		= cp
 SCP		= scp
 SSH		= ssh
 GPROF		= gprof -b
@@ -108,7 +126,7 @@ RM		= rm -rf
 OBJS_CPP = $(addprefix $(DIR_OBJ), $(SRCS_CPP:.cpp=.o))
 OBJS_C = $(addprefix $(DIR_OBJ), $(SRCS_C:.c=.o))
 OBJS   = $(sort $(OBJS_CPP) $(OBJS_C))
-DEPS   = $(OBJS_LIB:.o=.d)
+DEPS   = $(OBJS:.o=.d)
 
 #
 #=====================================================================================================================================
@@ -154,7 +172,7 @@ help:
 	@echo ' set CROSS=WIN to build Windows version.'
 	@echo ' set CROSS=I386 to build native version.'
 	@echo ' '
-	@echo ' e.g. make -f $(TARGETBASE)lib.mk DEBUG=y CROSS=ARM all.'
+	@echo ' e.g. make -f $(TARGETBASE).mk DEBUG=y CROSS=ARM all.'
 	@echo '-----------------------------------------------------------------------------------'
 	@echo ' '
 
@@ -164,39 +182,42 @@ check:
 	@echo '-----------------------------------------------------------------------------------'
 	@echo '----------- ################# Makefile configuration ################# ------------'
 	@echo '-----------------------------------------------------------------------------------'
-	@echo 'TARGET  = $(TARGET)'
+	@echo 'TARGET    = $(TARGET)'
 	@echo '-----------------------------------------------------------------------------------'
-	@echo 'DIR SRC = $(DIR_SRC)'
-	@echo 'DIR OBJ = $(DIR_OBJ)'
-	@echo 'DIR CXX = $(DIR_CXX)'
+	@echo 'DIR SRC   = $(DIR_SRC)'
+	@echo 'DIR OBJ   = $(DIR_OBJ)'
+	@echo 'DIR CXX   = $(DIR_CXX)'
 	@echo '-----------------------------------------------------------------------------------'
-	@echo 'SRC C   = $(SRCS_C)'
-	@echo 'SRC CPP = $(SRCS_CPP)'
+	@echo 'SRC C     = $(SRCS_C)'
+	@echo 'SRC CPP   = $(SRCS_CPP)'
 	@echo '-----------------------------------------------------------------------------------'
-	@echo 'OBJ C   = $(OBJS_C)'
-	@echo 'OBJ CPP = $(OBJS_CPP)'
+	@echo 'OBJ C     = $(OBJS_C)'
+	@echo 'OBJ CPP   = $(OBJS_CPP)'
 	@echo '-----------------------------------------------------------------------------------'
-	@echo 'ALL OBJ = $(OBJS)'
+	@echo 'ALL OBJ   = $(OBJS)'
 	@echo '-----------------------------------------------------------------------------------'
-	@echo 'DEPS    = $(DEPS)'
+	@echo 'DEPS      = $(DEPS)'
 	@echo '-----------------------------------------------------------------------------------'
-	@echo 'G++     = $(CPP)'
-	@echo 'GCC     = $(CC)'
-	@echo 'CFLAGS  = $(CFLAGS)'
-	@echo 'DFLAGS  = $(DFLAGS)'
+	@echo 'G++       = $(CPP)'
+	@echo 'GCC       = $(CC)'
+	@echo 'CFLAGS    = $(CFLAGS)'
+	@echo 'DFLAGS    = $(DFLAGS)'
+	@echo 'LFLAGS    = $(LFLAGS)'
 	@echo '-----------------------------------------------------------------------------------'
-	@echo 'INCLUDE = $(LIB_INCS)'
+	@echo 'LIB_INCS  = $(LIB_INCS)'
+	@echo 'LIB_OBJS  = $(LIB_OBJS)'
+	@echo 'LIB_PATHS = $(LIB_PATHS)'
 	@echo ' '
 
 # All Target
 #---------------------------------------------------------------------
-all: rm_lib dir_creation $(TARGET)
+all: rm_exe dir_creation build_dependants $(TARGET)
 
 # Remove any previously build executable - to force build.
 #---------------------------------------------------------------------
-rm_lib:
-	@echo 'Removing library.'
-	-$(RM) $(TARGET)
+rm_exe:
+	@echo 'Removing executable.'
+	-$(RM) $(TARGET) $(MAP_FILE) $(PROFILE_FILE)
 	@echo 'Removed.'
 	@echo ' '
 
@@ -208,8 +229,7 @@ build: $(OBJS_CPP) $(OBJS_C)
 #---------------------------------------------------------------------
 dir_creation:
 	@echo -n 'Directory' $$PWD"/"$(DIR_OBJ)
-	@if test -d $(DIR_OBJ); then echo " exists"; else mkdir $(DIR_OBJ); echo "created";  fi
-	@if test -d $(BIN_ROOT)$(DIR_OBJ); then echo " exists"; else mkdir -p $(BIN_ROOT)$(DIR_OBJ); echo "created";  fi
+	@if test -d $(DIR_OBJ); then echo " exists"; else mkdir -p $(DIR_OBJ); echo "created";  fi
 	@echo ' '
 
 # Build target
@@ -217,27 +237,55 @@ dir_creation:
 $(TARGET): build
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC Linker'
-	-$(AR) -r $(TARGET) $(OBJS)
+	-$(CPP) -o $(TARGET) $(OBJS) $(LFLAGS) $(LIB_PATHS) -Wl,--start-group $(LIB_OBJS) $(SYS_OBJS) -Wl,--end-group $(EFLAGS) -Wl,-Map=$(MAP_FILE)
 	@echo 'Finished building target: $@'
-	@echo ' '
+ifeq ($(DEBUG),y)
+	-$(STRIP) -o $(STRIPPED_FILE) -s $(TARGET)
+	@echo 'Finished stripping target: $@'
+else
+ifeq ($(CROSS),WIN)
+	-$(CP) $(TARGET) ../bin/$(TARGET).exe
+else ifeq ($(CROSS),ARM)
+	-$(CP) $(TARGET) ../bin/$(TARGET)-arm
+else
+	-$(CP) $(TARGET) ../bin/
+endif
+	@echo 'Finished copying target: $@'
+endif
 
 # Clean external module attributes
 #---------------------------------------------------------------------
-cleanall: clean
+cleanall: clean clean_dependents
 
 # Clean all - called from eclipse
 #---------------------------------------------------------------------
 clean:
 	@echo 'Removing Object Files'
-	-$(RM) $(OBJS) $(TARGET)
+	-$(RM) $(OBJS) $(TARGET) $(MAP_FILE) $(STRIPPED_FILE) $(PROFILE_FILE) $(KPROF_FILE)
 	@echo 'Removing Temporary Directories'
 	-$(RM) $(DIR_OBJ)
 	-@echo ' '
 
+# Clean all dependents
+#---------------------------------------------------------------------
+checkall:
+	$(MAKE) -f objtoollib.mk DEBUG=$(DEBUG) CROSS=$(CROSS) PROFILE=$(PROFILE) check
+
+clean_dependents:
+	$(MAKE) -f objtoollib.mk DEBUG=$(DEBUG) CROSS=$(CROSS) PROFILE=$(PROFILE) clean
+
+build_dependants:
+	$(MAKE) -f objtoollib.mk DEBUG=$(DEBUG) CROSS=$(CROSS) PROFILE=$(PROFILE) all
+
+# Generate profile for KProf
+kprof:
+	@echo 'Converting for KProf'
+	-$(GPROF) $(TARGET) $(PROFILE_FILE) > $(KPROF_FILE)
+
 # Phony command definitions
 #---------------------------------------------------------------------
 #Phony
-.PHONY: dir_creation clean build check checkall rm_lib help
+.PHONY: dir_creation clean build check checkall rm_exe help
 
 .SECONDARY:
 
