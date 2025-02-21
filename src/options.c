@@ -25,7 +25,41 @@ static const args_t READELFARGS[] = {
   {'r', "--relocs",          OPTREADELF_RELOCS},
   {'s', "--symbols",         OPTREADELF_SYMBOLS},
   {'u', "--unwind",          OPTREADELF_UNWIND},
-  {0, 0}
+  {0, NULL}
+};
+
+static const args_t OBJCOPYARGS[] = {
+  {0,   "--adjust-warnings",                OPTOBJCOPY_CHANGE_WARNINGS},
+  {0,   "--change-warnings",                OPTOBJCOPY_CHANGE_WARNINGS},
+  {0,   "--debugging",                      OPTOBJCOPY_DEBUGGING},
+  {0,   "--decompress-debug-sections",      OPTOBJCOPY_DECOMPRESS_DEBUG_SECTIONS},
+  {'U', "--disable-deterministic-archives", OPTOBJCOPY_DISABLE_DETERMINISTIC_ARCHIVES},
+  {'x', "--discard-all",                    OPTOBJCOPY_DISCARD_ALL},
+  {'X', "--discard-locals",                 OPTOBJCOPY_DISCARD_LOCALS},
+  {'D', "--enable-deterministic-archives",  OPTOBJCOPY_ENABLE_DETERMINISTIC_ARCHIVES},
+  {0,   "--extract-dwo",                    OPTOBJCOPY_EXTRACT_DWO},
+  {0,   "--extract-symbol",                 OPTOBJCOPY_EXTRACT_SYMBOL},
+  {0,   "--impure",                         OPTOBJCOPY_IMPURE},
+  {0,   "--keep-file-symbols",              OPTOBJCOPY_KEEP_FILE_SYMBOLS},
+  {0,   "--localize-hidden",                OPTOBJCOPY_LOCALIZE_HIDDEN},
+  {'M', "--merge-notes",                    OPTOBJCOPY_MERGE_NOTES},
+  {0,   "--no-merge-notes",                 OPTOBJCOPY_NO_MERGE_NOTES},
+  {0,   "--no-adjust-warnings",             OPTOBJCOPY_NO_CHANGE_WARNINGS},
+  {0,   "--no-change-warnings",             OPTOBJCOPY_NO_CHANGE_WARNINGS},
+  {0,   "--only-keep-debug",                OPTOBJCOPY_ONLY_KEEP_DEBUG},
+  {'p', "--preserve-dates",                 OPTOBJCOPY_PRESERVE_DATES},
+  {0,   "--pure",                           OPTOBJCOPY_PURE},
+  {0,   "--readonly-text",                  OPTOBJCOPY_READONLY_TEXT},
+  {0,   "--strip-section-headers",          OPTOBJCOPY_STRIP_SECTION_HEADERS},
+  {'S', "--strip-all",                      OPTOBJCOPY_STRIP_ALL},
+  {'g', "--strip-debug",                    OPTOBJCOPY_STRIP_DEBUG},
+  {0,   "--strip-dwo",                      OPTOBJCOPY_STRIP_DWO},
+  {0,   "--strip-unneeded",                 OPTOBJCOPY_STRIP_UNNEEDED},
+  {'v', "--verbose",                        OPTOBJCOPY_VERBOSE},
+  {0,   "--weaken",                         OPTOBJCOPY_WEAKEN},
+  {0,   "--writable-text",                  OPTOBJCOPY_WRITABLE_TEXT},
+  {0,   "--dump-sections-all",              OPTOBJCOPY_DUMP_SECTIONS_ALL},
+  {0, NULL},
 };
 
 static const args_t OBJDUMPARGS1[] = {
@@ -40,17 +74,17 @@ static const args_t OBJDUMPARGS1[] = {
   {'p', "--private-headers", OPTOBJDUMP_PRIVATEHEADER},
   {'h', "--section-headers", OPTOBJDUMP_SECTIONHEADER},
   {'x', "--all-headers",     OPTOBJDUMP_FILEHEADER | OPTOBJDUMP_PRIVATEHEADER | OPTOBJDUMP_SECTIONHEADER | OPTOBJDUMP_SYMBOLS},
-  {0, 0}
+  {0, NULL}
 };
 
 static const args_t OBJDUMPARGS2[] = {
   {'l', NULL,                OPTOBJDUMP_LINENUMBERS},
-  {0, 0}
+  {0, NULL}
 };
 
 static int get_options1(poptions_t o, const args_t args[], const char *argv) {
   for (int k = 1; k < strlen(argv); ++k) {
-    for (int j = 0; 0 != args[j].option1; ++j) {
+    for (int j = 0; (0 != args[j].option1) || (0 != args[j].option2); ++j) {
       if (argv[k] == args[j].option1) {
         o->action |= args[j].action;
         break;
@@ -62,13 +96,29 @@ static int get_options1(poptions_t o, const args_t args[], const char *argv) {
 }
 
 static int get_options2(poptions_t o, const args_t args[], const char *argv) {
-  for (int j = 0; 0 != args[j].option1; ++j) {
+  for (int j = 0; (0 != args[j].option1) || (0 != args[j].option2); ++j) {
     if (0 == strcmp(argv, args[j].option2)) {
       o->action |= args[j].action;
-      return 0;
     }
   }
 
+  return -1;
+}
+
+static int breakup_args(paction_t p, char *src) {
+  MALLOCA(char, buf, 1024);
+  strncpy(buf, src, NELEMENTS(buf));
+
+  const char DELIMITS[] = "=";
+  char* token = strtok(buf, DELIMITS);
+  if (token) {
+    strncpy(p->secname, token, NELEMENTS(p->secname));
+    token = strtok(NULL, DELIMITS);
+    if (token) {
+      strncpy(p->outname, token, NELEMENTS(p->outname));
+      return 0;
+    }
+  }
   return -1;
 }
 
@@ -142,6 +192,36 @@ int get_options_objcopy(poptions_t o, int argc, char** argv, char* name) {
   strname(o->prgname, name);
 
   for (int i = 0; i < argc; ++i) {
+    if ('-' == argv[i][0] && '-' == argv[i][1]) {
+      if (0 == strcmp(argv[i], "--add-section")) {
+        paction_t p = create(MODE_ACTIONS);
+        if (0 == breakup_args(p, argv[++i])) {
+          p->action = ACT_ADDSECTION;
+          p->actions = o->actions;
+          o->actions = p;
+        }
+      } else if (0 == strcmp(argv[i], "--dump-section")) {
+        paction_t p = create(MODE_ACTIONS);
+        if (0 == breakup_args(p, argv[++i])) {
+          p->action = ACT_DUMPSECTION;
+          p->actions = o->actions;
+          o->actions = p;
+        }
+      } else if (0 == strcmp(argv[i], "--update-section")) {
+        paction_t p = create(MODE_ACTIONS);
+        if (0 == breakup_args(p, argv[++i])) {
+          p->action = ACT_UPDATESECTION;
+          p->actions = o->actions;
+          o->actions = p;
+        }
+      } else {
+        get_options2(o, OBJCOPYARGS, argv[i]);
+      }
+    } else if ('-' == argv[i][0]) {
+      get_options1(o, OBJCOPYARGS, argv[i]);
+    } else {
+      strcpy(o->inpname, argv[i]);
+    }
   }
 
   return 0;

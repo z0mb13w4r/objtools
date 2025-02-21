@@ -44,10 +44,6 @@ static const char* get_gnuabitab64(const unsigned int x) {
   return get_string(zGNUABITAB, x);
 }
 
-static const char *get_gnuproperty64(const unsigned int x) {
-  return get_string(zGNUPROPERTY, x);
-}
-
 static const char* get_dyntag64(const unsigned int x) {
   return get_string(zDYNTAG, x);
 }
@@ -929,7 +925,7 @@ static int dump_actions64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
         }
       }
 
-      printf("\n");
+      printf_eol();
     } else {
       printf("%s: WARNING: section '%s' was not dumped because it does not exist!\n", o->prgname, x->secname);
     }
@@ -951,18 +947,18 @@ static int dump_notes64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr)
 
         const char* cc = get_nhdrdesc64byindex(p, i);
         if (NT_GNU_BUILD_ID == nhdr->n_type) {
-          printf("  Build ID: ");
+          printf_text("Build ID", USE_LT | USE_TAB | USE_COLON);
           printf_data(cc, nhdr->n_descsz, 0, USE_HEX);
-          printf ("\n");
+          printf_eol();
         } else if (NT_GNU_GOLD_VERSION == nhdr->n_type) {
-          printf("  Version: ");
+          printf_text("Version", USE_LT | USE_TAB | USE_COLON);
           printf_data(cc, nhdr->n_descsz, 0, USE_STR);
-          printf ("\n");
+          printf_eol();
         } else if (NT_GNU_HWCAP == nhdr->n_type) {
           printf("  Hardware Capabilities: ");
           // TBD
         } else if (NT_GNU_PROPERTY_TYPE_0 == nhdr->n_type) {
-          printf("  Properties: ");
+          printf_text("Properties", USE_LT | USE_TAB | USE_COLON);
 
           for (Elf64_Word i = 0; i < nhdr->n_descsz; i += 8) {
             if ((nhdr->n_descsz - i) < 8) {
@@ -977,8 +973,12 @@ static int dump_notes64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr)
               } else {
                 if (x >= GNU_PROPERTY_LOPROC && x <= GNU_PROPERTY_HIPROC) {
                   if (ehdr->e_machine == EM_X86_64 || ehdr->e_machine == EM_IAMCU || ehdr->e_machine == EM_386) {
-                    if (4 != datasz)       printf("%s <corrupt length: %#x> ", get_gnuproperty64(x), datasz);
-                    else                   printf("%s:", get_gnuproperty64(x));
+                    if (4 != datasz) {
+                      printf_pick(zGNUPROPERTY, x, USE_LT | USE_SPACE);
+                      printf_nice(datasz, USE_CORRUPT | USE_COLON);
+                    } else {
+                      printf_pick(zGNUPROPERTY, x, USE_LT | USE_SPACE | USE_COLON);
+                    }
 
                     if (x == GNU_PROPERTY_X86_FEATURE_1_AND) {
                       printf_mask(zGNUPROPERTY_X86_FEATURE_1_AND, getLE(cc + i + 8, 4), USE_LT);
@@ -988,7 +988,7 @@ static int dump_notes64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr)
               }
             }
           }
-          printf ("\n");
+          printf_eol();
         } else if (NT_GNU_ABI_TAG == nhdr->n_type) {
           printf("  OS: %s, ABI: %ld.%ld.%ld\n",
             get_gnuabitab64(getLE(cc, 4)), getLE(cc + 4, 4), getLE(cc + 8, 4), getLE(cc + 12, 4));
