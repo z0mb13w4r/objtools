@@ -41,29 +41,29 @@ static convert_t EHDRFLAGS[] = {
 };
 
 static const char* get_gnuabitab64(const unsigned int x) {
-  return get_string(zGNUABITAB, x);
+  return strpick(zGNUABITAB, x);
 }
 
 static const char* get_dyntag64(const unsigned int x) {
-  return get_string(zDYNTAG, x);
+  return strpick(zDYNTAG, x);
 }
 
 static const char* get_symboltype64(const unsigned int x) {
-  return get_string(zSTTTYPE, x);
+  return strpick(zSTTTYPE, x);
 }
 
 static const char* get_symbolbinding64(const unsigned int x) {
-  return get_string(zSTBBIND, x);
+  return strpick(zSTBBIND, x);
 }
 
 static const char* get_symbolvisibility64(const unsigned int x) {
-  return get_string(zSTVVISIBILITY, x);
+  return strpick(zSTVVISIBILITY, x);
 }
 
 static const char* get_symbolindex64(const unsigned int x) {
   static char buff[32];
 
-  const char* def = get_stringnull(zSHNINDEX, x);
+  const char* def = strpicknull(zSHNINDEX, x);
   if (NULL == def) {
     snprintf(buff, sizeof(buff), "%3d", x);
   } else {
@@ -75,7 +75,7 @@ static const char* get_symbolindex64(const unsigned int x) {
 
 static const char* get_ehdrtype64(Elf64_Ehdr *e) {
   if (e) {
-    return get_string(zEHDRTYPE, e->e_type);
+    return strpick(zEHDRTYPE, e->e_type);
   }
 
   return NULL;
@@ -83,7 +83,7 @@ static const char* get_ehdrtype64(Elf64_Ehdr *e) {
 
 static const char* get_ehdrmachine64(Elf64_Ehdr *e) {
   if (e) {
-    return get_string(zEHDRMACHINE, e->e_machine);
+    return strpick(zEHDRMACHINE, e->e_machine);
   }
 
   return NULL;
@@ -92,31 +92,31 @@ static const char* get_ehdrmachine64(Elf64_Ehdr *e) {
 static const char* get_ehdrosabi(pbuffer_t p) {
   if (p) {
     const unsigned int osabi = get(p, EI_OSABI);
-    const char* s = get_stringnull(zEHDROSABI, osabi);
+    const char* s = strpicknull(zEHDROSABI, osabi);
     if (NULL == s) {
       Elf64_Ehdr *e = get_ehdr64(p);
 
       if (e && osabi >= 64) {
         switch (e->e_machine) {
         case EM_AMDGPU:
-          return get_string(zEHDROSABIAMDGPU, osabi);
+          return strpick(zEHDROSABIAMDGPU, osabi);
 
         case EM_ARM:
-          return get_string(zEHDROSABIARM, osabi);
+          return strpick(zEHDROSABIARM, osabi);
 
         case EM_MSP430:
         case EM_VISIUM:
-          return get_string(zEHDROSABIMSP430, osabi);
+          return strpick(zEHDROSABIMSP430, osabi);
 
         case EM_TI_C6000:
-          return get_string(zEHDROSABIC6000, osabi);
+          return strpick(zEHDROSABIC6000, osabi);
 
         default:
           break;
         }
       }
 
-      return get_stringunknown(osabi);
+      return strpickunknown(osabi);
     }
 
     return s;
@@ -147,7 +147,7 @@ static const char* get_shdrflags64(Elf64_Shdr *s) {
 
 static const char* get_shdrtype64(Elf64_Shdr *s) {
   if (s) {
-    return get_string(zSHDRTYPE, s->sh_type);
+    return strpick(zSHDRTYPE, s->sh_type);
   }
 
   return NULL;
@@ -155,7 +155,7 @@ static const char* get_shdrtype64(Elf64_Shdr *s) {
 
 static const char* get_reltype(Elf64_Rel *r) {
   if (r) {
-    return get_string(zRELTYPE, r->r_info & 0xffff);
+    return strpick(zRELTYPE, r->r_info & 0xffff);
   }
 
   return NULL;
@@ -163,7 +163,7 @@ static const char* get_reltype(Elf64_Rel *r) {
 
 static const char* get_relatype(Elf64_Rela *r) {
   if (r) {
-    return get_string(zRELTYPE, r->r_info & 0xffff);
+    return strpick(zRELTYPE, r->r_info & 0xffff);
   }
 
   return NULL;
@@ -174,19 +174,11 @@ static const char* get_nhdrtype64(const pbuffer_t p, Elf64_Nhdr *n) {
     Elf32_Ehdr *e = get_ehdr32(p);
     if (e) {
       if (ET_CORE == e->e_type) {
-        return get_string(zNHDRTYPECORE, n->n_type);
+        return strpick(zNHDRTYPECORE, n->n_type);
       } else {
-        return get_string(zNHDRTYPE, n->n_type);
+        return strpick(zNHDRTYPE, n->n_type);
       }
     }
-  }
-
-  return NULL;
-}
-
-static const char* get_phdrtype64(Elf64_Phdr *p) {
-  if (p) {
-    return get_string(zPHDRTYPE, p->p_type);
   }
 
   return NULL;
@@ -223,7 +215,9 @@ static int make_versionnames64(const pbuffer_t p, Elf64_Word *vnames, const size
 }
 
 static int dump_elfheader(const pbuffer_t p, const poptions_t o) {
-  printf("ELF HEADER:\n");
+  int MAXSIZE = 36;
+
+  printf_text("ELF HEADER", USE_LT | USE_COLON | USE_EOL);
 
   printf("  Magic: %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x\n",
             get(p,  0), get(p,  1), get(p,  2), get(p,  3),
@@ -231,53 +225,71 @@ static int dump_elfheader(const pbuffer_t p, const poptions_t o) {
             get(p,  8), get(p,  9), get(p, 10), get(p, 11),
             get(p, 12), get(p, 13), get(p, 14), get(p, 15));
 
+  printf_text("Class", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   if (is32(p)) {
-    printf("  Class:                             ELF32\n");
+    printf_text("ELF32", USE_LT | USE_SPACE | USE_EOL);
   } else if (is64(p)) {
-    printf("  Class:                             ELF64\n");
+    printf_text("ELF64", USE_LT | USE_SPACE | USE_EOL);
   } else {
     return -1;
   }
 
+  printf_text("Data", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   if (isLittleEndian(p)) {
-    printf("  Data:                              2's complement, little endian\n");
+    printf_text("2's complement, little endian", USE_LT | USE_SPACE | USE_EOL);
   } else if (isBigEndian(p)) {
-    printf("  Data:                              2's complement, big endian\n");
+    printf_text("2's complement, big endian", USE_LT | USE_SPACE | USE_EOL);
   } else {
-    printf("  Data:                              none\n");
+    printf_text("none", USE_LT | USE_SPACE | USE_EOL);
   }
 
+  printf_text("Version", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   if (EV_CURRENT == get(p, EI_VERSION)) {
-    printf("  Version:                           1 (current)\n");
+    printf_text("1 (current)", USE_LT | USE_SPACE | USE_EOL);
   } else if (EV_NONE == get(p, EI_VERSION)) {
-    printf("  Version:                           0\n");
+    printf_text("0", USE_LT | USE_SPACE | USE_EOL);
   } else {
-    printf("  Version:                           %d <unknown>\n", get(p, EI_VERSION));
+    printf_nice(get(p, EI_VERSION), USE_UNKNOWN | USE_EOL);
   }
 
-  printf("  OS/ABI:                            %s\n", get_ehdrosabi(p));
-  printf("  ABI Version:                       %d\n", get(p, EI_ABIVERSION));
+  printf_text("OS/ABI", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  printf_text(get_ehdrosabi(p), USE_LT | USE_SPACE | USE_EOL);
+  printf_text("ABI Version", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  printf_nice(get(p, EI_ABIVERSION), USE_DEC | USE_EOL);
 
   return 0;
 }
 
 static int dump_fileheader64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
-  printf("  Type:                              %s\n",                    get_ehdrtype64(ehdr));
-  printf("  Machine:                           %s\n",                    get_ehdrmachine64(ehdr));
+  int MAXSIZE = 36;
 
-  printf("  Version:                           0x%x\n",                  ehdr->e_version);
-  printf("  Entry point address:               0x%04lx\n",               ehdr->e_entry);
-  printf("  Start of program headers:          %lu (bytes into file)\n", ehdr->e_phoff);
-  printf("  Start of section headers:          %lu (bytes into file)\n", ehdr->e_shoff);
-  printf("  Flags:                             0x%x\n",                  ehdr->e_flags);
-
-  printf("  Size of this header:               %d (bytes)\n",            ehdr->e_ehsize);
-  printf("  Size of program headers:           %d (bytes)\n",            ehdr->e_phentsize);
-  printf("  Number of program headers:         %d\n",                    ehdr->e_phnum);
-  printf("  Size of section headers:           %d (bytes)\n",            ehdr->e_shentsize);
-  printf("  Number of section headers:         %d\n",                    ehdr->e_shnum);
-  printf("  Section header string table index: %d\n",                    ehdr->e_shstrndx);
-  printf("\n");
+  printf_text("Type", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  printf_text(get_ehdrtype64(ehdr), USE_LT | USE_SPACE | USE_EOL);
+  printf_text("Machine", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  printf_text(get_ehdrmachine64(ehdr), USE_LT | USE_SPACE | USE_EOL);
+  printf_text("Version", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  printf_nice(ehdr->e_version, USE_FHEX | USE_EOL);
+  printf_text("Entry point address", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  printf_nice(ehdr->e_entry, USE_FHEX16 | USE_EOL);
+  printf_text("Start of program headers", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  printf_nice(ehdr->e_phoff, USE_DEC | USE_BYTES | USE_EOL);
+  printf_text("Start of section headers", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  printf_nice(ehdr->e_shoff, USE_DEC | USE_BYTES | USE_EOL);
+  printf_text("Flags", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  printf_nice(ehdr->e_flags, USE_FHEX | USE_EOL);
+  printf_text("Size of this header", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  printf_nice(ehdr->e_ehsize, USE_DEC | USE_BYTES | USE_EOL);
+  printf_text("Size of program headers", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  printf_nice(ehdr->e_phentsize, USE_DEC | USE_BYTES | USE_EOL);
+  printf_text("Number of program headers", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  printf_nice(ehdr->e_phnum, USE_DEC | USE_EOL);
+  printf_text("Size of section headers", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  printf_nice(ehdr->e_shentsize, USE_DEC | USE_BYTES | USE_EOL);
+  printf_text("Number of section headers", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  printf_nice(ehdr->e_shnum, USE_DEC | USE_EOL);
+  printf_text("Section header string table index", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  printf_nice(ehdr->e_shstrndx, USE_DEC | USE_EOL);
+  printf_eol();
 
   return 0;
 }
@@ -333,17 +345,16 @@ static int dump_sectiongroups(const pbuffer_t p, const poptions_t o, Elf64_Ehdr 
 }
 
 static int dump_programheaders64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
-  printf("PROGRAM HEADERS:\n");
-  printf("  Type            Offset   VirtAddr           PhysAddr           FileSiz   MemSiz   Flg  Align\n");
+  printf_text("PROGRAM HEADERS", USE_LT | USE_COLON | USE_EOL);
+  printf("  Type            Offset   VirtAddr           PhysAddr           FileSiz  MemSiz   Flg  Align\n");
   for (Elf64_Half i = 0; i < ehdr->e_phnum; ++i) {
     Elf64_Phdr *phdr = get_phdr64byindex(p, i);
     if (phdr) {
-      printf ("  %-14s ", get_phdrtype64(phdr));
+      printf_pick(zPHDRTYPE, phdr->p_type, USE_LT | USE_TAB | SET_PAD(17));
       printf_nice(phdr->p_offset, USE_FHEX24);
       printf_nice(phdr->p_vaddr,  USE_FHEX64);
       printf_nice(phdr->p_paddr,  USE_FHEX64);
       printf_nice(phdr->p_filesz, USE_FHEX24);
-      printf(" ");
       printf_nice(phdr->p_memsz,  USE_FHEX24);
 
       printf(" %c%c%c ",
@@ -352,7 +363,7 @@ static int dump_programheaders64(const pbuffer_t p, const poptions_t o, Elf64_Eh
             (phdr->p_flags & PF_X ? 'E' : ' '));
 
       printf_nice(phdr->p_align, USE_FHEX);
-      printf("\n");
+      printf_eol();
 
       if (PT_INTERP == phdr->p_type) {
         printf("    [Requesting program interpreter:" );
@@ -364,10 +375,10 @@ static int dump_programheaders64(const pbuffer_t p, const poptions_t o, Elf64_Eh
 
   printf_eol();
 
-  printf("Section to Segment mapping:\n");
-  printf(" Segment Sections...\n");
+  printf_text("Section to Segment mapping", USE_LT | USE_COLON | USE_EOL);
+  printf_text("Segment Sections...", USE_LT | USE_SPACE | USE_EOL);
   for (Elf64_Half i = 0; i < ehdr->e_phnum; ++i) {
-    printf("  %2.2d", i);
+    printf_nice(i, USE_TAB | USE_DEC2Z);
 
     Elf64_Phdr *phdr = get_phdr64byindex(p, i);
     if (phdr) {

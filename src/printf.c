@@ -34,8 +34,11 @@ int printf_nice(const uint64_t v, const modez_t mode) {
   switch (xmode) {
   case USE_DEC:                  n += printf("%" PRId64, v);                     break;
   case USE_DEC2:                 n += printf("%2" PRId64, v);                    break;
+  case USE_DEC2Z:                n += printf("%2.2" PRId64, v);                  break;
   case USE_DEC3:                 n += printf("%3" PRId64, v);                    break;
+  case USE_DEC3Z:                n += printf("%3.3" PRId64, v);                  break;
   case USE_DEC5:                 n += printf("%5" PRId64, v);                    break;
+  case USE_DEC5Z:                n += printf("%5.5" PRId64, v);                  break;
   case USE_OCT:                  n += printf("%" PRIo64, v);                     break;
   case USE_OCT2:                 n += printf("%2" PRIo64, v);                    break;
   case USE_OCT5:                 n += printf("%5" PRIo64, v);                    break;
@@ -83,18 +86,19 @@ int printf_nice(const uint64_t v, const modez_t mode) {
   }
 
   switch (GET_BRACKET(mode)) {
-  case USE_CB:                   n += printf("}");     break;
-  case USE_RB:                   n += printf(")");     break;
-  case USE_SB:                   n += printf("]");     break;
-  case USE_TB:                   n += printf(">");     break;
-  case USE_DRTB:                 n += printf("<<");    break;
-  case USE_SQ:                   n += printf("'");     break;
-  case USE_DQ:                   n += printf("\"");    break;
+  case USE_CB:                   n += printf("}");         break;
+  case USE_RB:                   n += printf(")");         break;
+  case USE_SB:                   n += printf("]");         break;
+  case USE_TB:                   n += printf(">");         break;
+  case USE_DRTB:                 n += printf("<<");        break;
+  case USE_SQ:                   n += printf("'");         break;
+  case USE_DQ:                   n += printf("\"");        break;
   default:                       break;
   }
 
   switch (GET_POS1(mode)) {
-  case USE_COLON:                n += printf(":");     break;
+  case USE_COLON:                n += printf(":");         break;
+  case USE_BYTES:                n += printf(" (bytes)");  break;
   default:                       break;
   }
 
@@ -136,11 +140,12 @@ int printf_text(const char* p, const modez_t mode) {
 
     switch (p1) {
     case USE_COLON:          n += PRINT1(":");         break;
+    case USE_BYTES:          n += PRINT1(" (bytes)");  break;
     default:                 break;
     }
 
     if (!rt)                      printf("%s", data);
-    if (ss)                  n += printf("%*s", MAX(0, ss - n), " ");
+    if (ss && n < ss)        n += printf("%*s", MAX(0, ss - n), " ");
     if (rt)                       printf("%s", data);
     if (e)                   n += printf_eol();
 
@@ -256,6 +261,6 @@ int printf_masknone(const pconvert_t p, const maskz_t mask, const modez_t mode) 
 }
 
 int printf_pick(const pconvert_t p, const pick_t x, const modez_t mode) {
-  return printf_text(get_string(p, x), mode);
+  return printf_text(strpick(p, x), mode);
 }
 

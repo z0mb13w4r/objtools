@@ -10,9 +10,11 @@ typedef struct convert_s {
 
 char* strname(char* dst, const char* src);
 
-const char* get_string(const pconvert_t p, const pick_t x);
-const char* get_stringnull(const pconvert_t p, const pick_t x);
-const char* get_stringunknown(const pick_t x);
+const char* strpick(const pconvert_t p, const pick_t x);
+const char* strpicknull(const pconvert_t p, const pick_t x);
+const char* strpickunknown(const pick_t x);
+
+size_t      strlenpick(const pconvert_t p);
 
 #endif
 
