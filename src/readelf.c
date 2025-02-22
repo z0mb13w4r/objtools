@@ -44,10 +44,6 @@ static const char* get_gnuabitab64(const unsigned int x) {
   return strpick(zGNUABITAB, x);
 }
 
-static const char* get_dyntag64(const unsigned int x) {
-  return strpick(zDYNTAG, x);
-}
-
 static const char* get_symboltype64(const unsigned int x) {
   return strpick(zSTTTYPE, x);
 }
@@ -386,7 +382,7 @@ static int dump_programheaders64(const pbuffer_t p, const poptions_t o, Elf64_Eh
         Elf64_Shdr *shdr = get_shdr64byindex(p, j);
         if (shdr) {
           if (shdrinphdr64(shdr, phdr)) {
-            printf(" %s", get_secname64byindex(p, j));
+            printf_text(get_secname64byindex(p, j), USE_SPACE);
           }
         }
       }
@@ -405,32 +401,29 @@ static int dump_dynamic64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
     if (shdr && SHT_DYNAMIC == shdr->sh_type) {
       size_t cnt = shdr->sh_size / shdr->sh_entsize;
 
-      printf("Dynamic section at offset");
+      printf_text("Dynamic section at offset", USE_LT);
       printf_nice(shdr->sh_offset, USE_FHEX16);
-      printf(" contains");
+      printf_text("contains", USE_LT | USE_SPACE);
       printf_nice(cnt, USE_DEC);
-      printf(" %s\n", 1 == cnt ? "entry:" : "entries:");
+      printf_text(1 == cnt ? "entry" : "entries", USE_LT | USE_SPACE | USE_COLON | USE_EOL);
       printf(" Tag                Type                Name/Value\n");
 
       Elf64_Dyn *dyn = get64byshdr(p, shdr);
       for (size_t j = 0; j < cnt; j++) {
-        int n = 0;
-
         printf_nice(dyn->d_tag, USE_FHEX64);
-        n = printf (" (%s) ", get_dyntag64(dyn->d_tag));
-        printf("%*s", MAX(0, 20 - n), " ");
+        printf_pick(zDYNTAG, dyn->d_tag, USE_SPACE | USE_RB | SET_PAD(20));
 
         if (dyn->d_tag == DT_FLAGS_1) {
-          printf(" Flags:");
+          printf_text("Flags", USE_LT | USE_SPACE | USE_COLON);
           printf_masknone(zDT_FLAGS_1, dyn->d_un.d_val, USE_LT);
         } else if (dyn->d_tag == DT_POSFLAG_1) {
-          printf(" Flags:");
+          printf_text("Flags", USE_LT | USE_SPACE | USE_COLON);
           printf_masknone(zDT_POSFLAG_1, dyn->d_un.d_val, USE_LT);
         } else if (dyn->d_tag == DT_FLAGS) {
-          printf(" Flags:");
+          printf_text("Flags", USE_LT | USE_SPACE | USE_COLON);
           printf_masknone(zDT_FLAGS, dyn->d_un.d_val, USE_LT);
         } else if (dyn->d_tag == DT_PLTREL) {
-          printf(" %s", get_dyntag64(dyn->d_un.d_val));
+          printf_pick(zDYNTAG, dyn->d_un.d_val, USE_SPACE);
         } else if (dyn->d_tag == DT_NULL || dyn->d_tag == DT_NEEDED || dyn->d_tag == DT_PLTGOT ||
                    dyn->d_tag == DT_HASH || dyn->d_tag == DT_STRTAB || dyn->d_tag == DT_SYMTAB ||
                    dyn->d_tag == DT_RELA || dyn->d_tag == DT_INIT || dyn->d_tag == DT_FINI ||
@@ -453,8 +446,7 @@ static int dump_dynamic64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
                    dyn->d_tag == DT_RELENT || dyn->d_tag == DT_PLTPADSZ || dyn->d_tag == DT_MOVEENT ||
                    dyn->d_tag == DT_MOVESZ || dyn->d_tag == DT_PREINIT_ARRAYSZ || dyn->d_tag == DT_INIT_ARRAYSZ ||
                    dyn->d_tag == DT_FINI_ARRAYSZ || dyn->d_tag == DT_GNU_CONFLICTSZ || dyn->d_tag == DT_GNU_LIBLISTSZ) {
-          printf_nice(dyn->d_un.d_val, USE_DEC);
-          printf(" (bytes)");
+          printf_nice(dyn->d_un.d_val, USE_DEC | USE_BYTES);
         } else if (dyn->d_tag == DT_VERDEFNUM || dyn->d_tag == DT_VERNEEDNUM ||
                    dyn->d_tag == DT_RELACOUNT || dyn->d_tag == DT_RELCOUNT) {
           printf_nice(dyn->d_un.d_val, USE_DEC);
@@ -610,13 +602,13 @@ static int dump_relocs64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr
       if (SHT_RELA == shdr->sh_type || SHT_REL == shdr->sh_type || SHT_RELR == shdr->sh_type) {
         size_t cnt = shdr->sh_size / shdr->sh_entsize;
 
-        printf("Relocation section");
-        printf(" '%s'", get_secname64byindex(p, i));
-        printf(" at offset");
+        printf_text("Relocation section", USE_LT);
+        printf_text(get_secname64byindex(p, i), USE_LT | USE_SPACE | USE_SQ);
+        printf_text("at offset", USE_LT | USE_SPACE);
         printf_nice(shdr->sh_offset, USE_FHEX16);
-        printf(" contains");
+        printf_text("contains", USE_LT | USE_SPACE);
         printf_nice(cnt, USE_DEC);
-        printf(" %s\n", 1 == cnt ? "entry:" : "entries:");
+        printf_text(1 == cnt ? "entry" : "entries", USE_LT | USE_SPACE | USE_COLON | USE_EOL);
 
         if (SHT_REL == shdr->sh_type) {
           dump_relocsrel64(p, o, shdr);

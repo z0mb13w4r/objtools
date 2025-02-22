@@ -57,6 +57,7 @@ static int dump_actions(const pbuffer_t p, const poptions_t o, bfd *f) {
           }
 
           fclose(fp);
+          free(data);
         }
       }
     }
