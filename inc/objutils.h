@@ -14,7 +14,12 @@ const char* strpick(const pconvert_t p, const pick_t x);
 const char* strpicknull(const pconvert_t p, const pick_t x);
 const char* strpickunknown(const pick_t x);
 
-size_t      strlenpick(const pconvert_t p);
+size_t strlenpick(const pconvert_t p);
+
+size_t fsize(FILE *f);
+
+int sha256(const void* p, const size_t size, unsigned char* md);
+int sha512(const void* p, const size_t size, unsigned char* md);
 
 #endif
 

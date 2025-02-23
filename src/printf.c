@@ -198,7 +198,7 @@ int printf_data(const void* p, const size_t size, const addrz_t addr, const mode
       ++pp;
       ++i;
 
-      printf("\n");
+      printf_eol();
     } else if (USE_STR == mode) {
       if (0 == *pp) return i;
       printf_nice(*pp, USE_CHARCTRL);

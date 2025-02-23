@@ -85,11 +85,9 @@ pbuffer_t open(const char* name) {
   if (f) {
     pbuffer_t p = create(MODE_BUFFER);
     if (p) {
-      fseek(f, 0, SEEK_END);
-      p->size = ftell(f);
-      fseek(f, 0, SEEK_SET);
-
-      p->data = malloc(p->size);
+      strname(p->note, name);
+      p->size = fsize(f);
+      p->data = mallocx(p->size);
       if (p->size != fread(p->data, 1, p->size, f)) {
         p = destroy(p);
       }

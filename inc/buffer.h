@@ -26,8 +26,11 @@
 
 typedef struct buffer_s {
   char   mode[4];
+  char   note[256];
+
   size_t size;
   void  *data;
+
   struct buffer_s *next;
 
 } buffer_t, *pbuffer_t;

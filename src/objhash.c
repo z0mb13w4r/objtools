@@ -1,18 +1,53 @@
 #include <bfd.h>
 #include <errno.h>
 #include <string.h>
-#include <dis-asm.h>
+#include <openssl/sha.h>
 
 #include "printf.h"
 #include "objhash.h"
 
+static void callback_hashsections(bfd *f, asection *s, void *p) {
+  pbuffer_t pp = CAST(pbuffer_t, p);
+
+  /* Ignore linker created section.  See elfNN_ia64_object_p in bfd/elfxx-ia64.c.  */
+  if (s->flags & SEC_LINKER_CREATED) return;
+
+  bfd_byte *data = NULL;
+  if (bfd_malloc_and_get_section(f, s, &data)) {
+    unsigned char md[SHA256_DIGEST_LENGTH]; // 32 bytes
+    if (!sha256(data, bfd_section_size(s), md)) {
+      for (int i = 0; i < SHA256_DIGEST_LENGTH; ++i) {
+        printf("%02x", md[i]);
+      }
+      //printf_data(md, SHA256_DIGEST_LENGTH, 0, USE_HEX);
+    }
+  } else {
+    printf("WARNING: could not retrieve section '%s' contents from '%s'.\n", bfd_section_name(s), pp->note);
+  }
+
+  free(data);
+
+
+  size_t max_name_size = 20;
+
+  printf_nice(s->index, USE_TAB | USE_DEC2);
+  printf_text(bfd_section_name(s), USE_LT | USE_SPACE | SET_PAD(max_name_size));
+  printf_nice(bfd_section_size(s) / bfd_octets_per_byte(f, s), USE_LHEX32);
+  printf_nice(bfd_section_vma(s), USE_LHEX64);
+  printf_nice(s->lma, USE_LHEX64);
+  printf_nice(s->filepos, USE_LHEX32);
+  printf_nice(bfd_section_alignment(s), USE_DEC2);
+  printf_nice(s->flags, USE_LHEX32);
+
+  printf_text(pp->note, USE_LT | USE_SPACE | USE_EOL);
+}
+
 static int dump_create(const pbuffer_t p, const poptions_t o, bfd *f) {
+  bfd_map_over_sections(f, callback_hashsections, p);
   return 0;
 }
 
 int objhash(const pbuffer_t p0, const poptions_t o) {
-  printf("'%s' == '%s'\n", o->inpname0, o->inpname1);
-
   const char *target = "x86_64-pc-linux-gnu";
 
   int r = 0;

@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <string.h>
+#include <openssl/sha.h>
+
 #include "objutils.h"
 
 char* strname(char* dst, const char* src) {
@@ -44,5 +46,43 @@ size_t strlenpick(const pconvert_t p) {
   }
 
   return siz;
+}
+
+size_t fsize(FILE *f) {
+  size_t siz = 0;
+  if (f) {
+    fseek(f, 0, SEEK_END);
+    siz = ftell(f);
+    fseek(f, 0, SEEK_SET);
+  }
+  return siz;
+}
+
+int sha256(const void* p, const size_t size, unsigned char* md) {
+  SHA256_CTX context;
+  if (!SHA256_Init(&context))
+    return -1;
+
+  if (!SHA256_Update(&context, p, size))
+    return -1;
+
+  if (!SHA256_Final(md, &context))
+    return -1;
+
+  return 0;
+}
+
+int sha512(const void* p, const size_t size, unsigned char* md) {
+  SHA512_CTX context;
+  if (!SHA512_Init(&context))
+    return -1;
+
+  if (!SHA512_Update(&context, p, size))
+    return -1;
+
+  if (!SHA512_Final(md, &context))
+    return -1;
+
+  return 0;
 }
 
