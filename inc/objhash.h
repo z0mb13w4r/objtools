@@ -4,7 +4,7 @@
 #include "buffer.h"
 #include "options.h"
 
-int objhash(const pbuffer_t p, const poptions_t o);
+int objhash(const pbuffer_t p0, const poptions_t o);
 
 #endif
 

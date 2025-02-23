@@ -25,6 +25,8 @@ int main(int argc, char* argv[]) {
           r = objcopy(p, o);
         } else if (OPT_OBJDUMP == o->option) {
           r = objdump(p, o);
+        } else if (OPT_OBJHASH == o->option) {
+          r = objhash(p, o);
         }
       } else {
         printf("%s: ERROR: '%s': no such file.\n", o->prgname, o->inpname);

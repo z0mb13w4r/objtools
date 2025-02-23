@@ -86,8 +86,14 @@ typedef struct action_s {
 typedef struct options_s {
   char mode[3];
   int  option;
-  char inpname[PATH_MAX];
-  char outname[PATH_MAX];
+  union {
+    char inpname[PATH_MAX];
+    char inpname0[PATH_MAX];
+  };
+  union {
+    char outname[PATH_MAX];
+    char inpname1[PATH_MAX];
+  };
   char prgname[256];
 
   int  action;

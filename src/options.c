@@ -253,7 +253,7 @@ int get_options_objdump(poptions_t o, int argc, char** argv, char* name) {
 }
 
 int get_options_objhash(poptions_t o, int argc, char** argv, char* name) {
-  if (argc < 2) {
+  if (argc < 1) {
     return -1;
   }
 
@@ -265,8 +265,10 @@ int get_options_objhash(poptions_t o, int argc, char** argv, char* name) {
 
     } else if ('-' == argv[i][0]) {
 
-    } else {
-      strcpy(o->inpname, argv[i]);
+    } else if (0 == o->inpname0[0]) {
+      strcpy(o->inpname0, argv[i]);
+    } else if (0 == o->inpname1[0]) {
+      strcpy(o->inpname1, argv[i]);
     }
   }
 
@@ -274,7 +276,7 @@ int get_options_objhash(poptions_t o, int argc, char** argv, char* name) {
 }
 
 int get_options(poptions_t o, int argc, char** argv) {
-  if (argc < 4) {
+  if (argc < 3) {
     return -1;
   }
 
