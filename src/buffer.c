@@ -3,6 +3,8 @@
 
 #include "buffer.h"
 #include "options.h"
+#include "memlink.h"
+#include "objutils.h"
 
 static int ismode0(void *p, const int mode) {
   if (p) {
@@ -36,7 +38,7 @@ void* mallocx(const size_t size) {
   return p;
 }
 
-void* create(const int mode) {
+handle_t create(const int mode) {
   if (MODE_BUFFER == (mode & MODE_MASK0)) {
     pbuffer_t p = mallocx(sizeof(buffer_t));
     return setmode(p, mode);
@@ -45,6 +47,9 @@ void* create(const int mode) {
     return setmode(p, mode);
   } else if (MODE_ACTIONS == (mode & MODE_MASK0)) {
     paction_t p = mallocx(sizeof(action_t));
+    return setmode(p, mode);
+  } else if (MODE_LINKS == (mode & MODE_MASK0)) {
+    paction_t p = mallocx(sizeof(node_t));
     return setmode(p, mode);
   }
 
@@ -63,17 +68,27 @@ void* createx(const pbuffer_t p, const int mode) {
   return create(mode);
 }
 
-void* destroy(void* p) {
+handle_t destroy(handle_t p) {
   if (p) {
     if (ismode0(p, MODE_BUFFER)) {
-      destroy(((pbuffer_t)p)->next);
-      free(((pbuffer_t)p)->data);
+      destroy(CAST(pbuffer_t, p)->next);
+      free(CAST(pbuffer_t, p)->data);
     } else if (ismode0(p, MODE_OPTIONS)) {
-      destroy(((poptions_t)p)->actions);
+      destroy(CAST(poptions_t, p)->actions);
     } else if (ismode0(p, MODE_ACTIONS)) {
-      destroy(((paction_t)p)->actions);
+      destroy(CAST(paction_t, p)->actions);
+    } else if (ismode0(p, MODE_LINKS)) {
+      destroy(CAST(pnode_t, p)->item);
     }
 
+    free(p);
+  }
+
+  return NULL;
+}
+
+handle_t release(handle_t p) {
+  if (ismode0(p, MODE_LINKS)) {
     free(p);
   }
 
@@ -101,7 +116,7 @@ pbuffer_t open(const char* name) {
   return 0;
 }
 
-int ismode(void *p, const int mode) {
+int ismode(handle_t p, const int mode) {
   if (p) {
     const char* pc = p;
     if (MODE_GET0(mode) != pc[0]) return 0;
@@ -121,14 +136,6 @@ int issafe(pbuffer_t p) {
 void* get64byshdr(const pbuffer_t p, Elf64_Shdr *shdr) {
   if (shdr) {
     return getp(p, shdr->sh_offset, shdr->sh_size);
-  }
-
-  return NULL;
-}
-
-void* get64byphdr(const pbuffer_t p, Elf64_Phdr *phdr) {
-  if (phdr) {
-    return getp(p, phdr->p_offset, phdr->p_filesz);
   }
 
   return NULL;

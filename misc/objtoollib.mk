@@ -16,11 +16,12 @@ SRCS_C = \
 	printf.c \
 	pecode.c \
 	readpe.c \
-	options.c \
+	elfcode.c \
+	memlink.c \
 	objcopy.c \
 	objdump.c \
 	objhash.c \
-	elfcode.c \
+	options.c \
 	readelf.c \
 	objutils.c
 

@@ -76,16 +76,16 @@
 #define ACT_UPDATESECTION              (5)
 
 typedef struct action_s {
-  char mode[3];
-  int  action;
-  char secname[256];
-  char outname[PATH_MAX];
+  modex_t mode;
+  int     action;
+  char    secname[256];
+  char    outname[PATH_MAX];
   struct action_s *actions;
 } action_t, *paction_t;
 
 typedef struct options_s {
-  char mode[3];
-  int  option;
+  modex_t mode;
+  int     option;
   union {
     char inpname[PATH_MAX];
     char inpname0[PATH_MAX];

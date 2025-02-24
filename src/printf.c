@@ -16,7 +16,8 @@ int printf_nice(const uint64_t v, const modez_t mode) {
   default:                       break;
   }
 
-  modez_t xmode = mode & ~(USE_FLAGMASK | USE_POS0MASK | USE_POS1MASK | USE_BRACKETMASK);
+  const modez_t xmode = mode & ~(USE_FLAGMASK | USE_POS0MASK | USE_POS1MASK | USE_BRACKETMASK);
+  const int usespace = USE_CHARCTRL != xmode && USE_LHEX8NS != xmode;
 
   switch (GET_BRACKET(mode)) {
   case USE_CB:                   n += printf(" {");    break;
@@ -27,7 +28,7 @@ int printf_nice(const uint64_t v, const modez_t mode) {
   case USE_SQ:                   n += printf(" '");    break;
   case USE_DQ:                   n += printf(" \"");   break;
   default:
-    if (USE_CHARCTRL != xmode)   n += printf(" ");
+    if (usespace)                n += printf(" ");
     break;
   }
 
@@ -46,6 +47,7 @@ int printf_nice(const uint64_t v, const modez_t mode) {
   case USE_LHEX:                 n += printf("%" PRIx64, v);                     break;
   case USE_FHEX8:                n += printf("0x%2.2" PRIx64, v);                break;
   case USE_LHEX8:                n += printf("%2.2" PRIx64, v);                  break;
+  case USE_LHEX8NS:              n += printf("%2.2" PRIx64, v);                  break;
   case USE_FHEX16:               n += printf("0x%4.4" PRIx64, v);                break;
   case USE_LHEX16:               n += printf("%4.4" PRIx64, v);                  break;
   case USE_FHEX24:               n += printf("0x%6.6" PRIx64, v);                break;
@@ -205,7 +207,7 @@ int printf_data(const void* p, const size_t size, const addrz_t addr, const mode
       ++pp;
       ++i;
     } else if (USE_HEX == mode) {
-      printf_nice(*pp, USE_LHEX8);
+      printf_nice(*pp, USE_LHEX8NS);
       ++pp;
       ++i;
     } else {
@@ -262,5 +264,9 @@ int printf_masknone(const pconvert_t p, const maskz_t mask, const modez_t mode) 
 
 int printf_pick(const pconvert_t p, const pick_t x, const modez_t mode) {
   return printf_text(strpick(p, x), mode);
+}
+
+int printf_pack(const size_t size) {
+  return printf_text(" ", SET_PAD(size));
 }
 

@@ -20,34 +20,37 @@
 #define MODE_BUFFER             (MODE_PUT0('B') | MODE_PUT1('U') | MODE_PUT2('F'))
 #define MODE_OPTIONS            (MODE_PUT0('O') | MODE_PUT1('P') | MODE_PUT2('T'))
 #define MODE_ACTIONS            (MODE_PUT0('A') | MODE_PUT1('C') | MODE_PUT2('T'))
+#define MODE_LINKS              (MODE_PUT0('L') | MODE_PUT1('N') | MODE_PUT2('K'))
 
 #define MODE_SYMBOLS            (MODE_BUFFER | MODE_PUT3('S'))
 #define MODE_SYMBOLS_DYNAMIC    (MODE_BUFFER | MODE_PUT3('D'))
 
 typedef struct buffer_s {
-  char   mode[4];
-  char   note[256];
+  modex_t  mode;
+  char     note[256];
 
-  size_t size;
-  void  *data;
+  size_t   size;
+  void    *data;
 
   struct buffer_s *next;
 
 } buffer_t, *pbuffer_t;
 
-void* create(const int mode);
+handle_t create(const int mode);
+handle_t destroy(handle_t p);
+handle_t release(handle_t p);
+
+int ismode(handle_t p, const int mode);
+
 void* createx(const pbuffer_t p, const int mode);
 void* mallocx(const size_t size);
-void* destroy(void* p);
 
 pbuffer_t open(const char* name);
 
 int issafe(pbuffer_t p);
-int ismode(void *p, const int mode);
 
 void* get64byshdr(const pbuffer_t p, Elf64_Shdr *shdr); // not safe - remove
                                                         // replace by get64_xxxx & next64_xxxx
-void* get64byphdr(const pbuffer_t p, Elf64_Phdr *phdr); // not safe - remove (dead code)
 
 void* getp(const pbuffer_t p, const int offset, const size_t size);
 int   get(const pbuffer_t p, const int offset);

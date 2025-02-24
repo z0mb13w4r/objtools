@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <string.h>
-#include <openssl/sha.h>
 
 #include "objutils.h"
 
@@ -81,6 +80,20 @@ int sha512(const void* p, const size_t size, unsigned char* md) {
     return -1;
 
   if (!SHA512_Final(md, &context))
+    return -1;
+
+  return 0;
+}
+
+int ripemd160(const void* p, const size_t size, unsigned char* md) {
+  RIPEMD160_CTX context;
+  if (!RIPEMD160_Init(&context))
+    return -1;
+
+  if (!RIPEMD160_Update(&context, p, size))
+    return -1;
+
+  if (!RIPEMD160_Final(md, &context))
     return -1;
 
   return 0;

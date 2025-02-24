@@ -18,23 +18,24 @@
 #define USE_LHEX          (11)
 #define USE_FHEX8         (12)
 #define USE_LHEX8         (13)
-#define USE_FHEX16        (14)
-#define USE_LHEX16        (15)
-#define USE_FHEX24        (16)
-#define USE_LHEX24        (17)
-#define USE_FHEX32        (18)
-#define USE_LHEX32        (19)
-#define USE_FHEX48        (20)
-#define USE_LHEX48        (21)
-#define USE_FHEX64        (22)
-#define USE_LHEX64        (23)
-#define USE_PERCENT       (24)
-#define USE_CHARCTRL      (25)
-#define USE_TIMEDATE      (26)
-#define USE_ERROR         (27)
-#define USE_CORRUPT       (28)
-#define USE_UNKNOWN       (29)
-#define USE_WARNING       (30)
+#define USE_LHEX8NS       (14)
+#define USE_FHEX16        (15)
+#define USE_LHEX16        (16)
+#define USE_FHEX24        (17)
+#define USE_LHEX24        (18)
+#define USE_FHEX32        (19)
+#define USE_LHEX32        (20)
+#define USE_FHEX48        (21)
+#define USE_LHEX48        (22)
+#define USE_FHEX64        (23)
+#define USE_LHEX64        (24)
+#define USE_PERCENT       (25)
+#define USE_CHARCTRL      (26)
+#define USE_TIMEDATE      (27)
+#define USE_ERROR         (28)
+#define USE_CORRUPT       (29)
+#define USE_UNKNOWN       (30)
+#define USE_WARNING       (31)
 
 #define USE_HEXDUMP       (0)
 #define USE_STRDUMP       (1)
@@ -95,6 +96,7 @@ int printf_maskmute(const pconvert_t p, const maskz_t mask, const modez_t mode);
 int printf_masknone(const pconvert_t p, const maskz_t mask, const modez_t mode);
 
 int printf_pick(const pconvert_t p, const pick_t x, const modez_t mode);
+int printf_pack(const size_t size);
 
 #endif
 

@@ -1,7 +1,6 @@
 #include <bfd.h>
 #include <errno.h>
 #include <string.h>
-#include <openssl/sha.h>
 
 #include "printf.h"
 #include "objhash.h"
@@ -16,10 +15,7 @@ static void callback_hashsections(bfd *f, asection *s, void *p) {
   if (bfd_malloc_and_get_section(f, s, &data)) {
     unsigned char md[SHA256_DIGEST_LENGTH]; // 32 bytes
     if (!sha256(data, bfd_section_size(s), md)) {
-      for (int i = 0; i < SHA256_DIGEST_LENGTH; ++i) {
-        printf("%02x", md[i]);
-      }
-      //printf_data(md, SHA256_DIGEST_LENGTH, 0, USE_HEX);
+      printf_data(md, SHA256_DIGEST_LENGTH, 0, USE_HEX);
     }
   } else {
     printf("WARNING: could not retrieve section '%s' contents from '%s'.\n", bfd_section_name(s), pp->note);
@@ -87,7 +83,7 @@ int objhash(const pbuffer_t p0, const poptions_t o) {
         !bfd_check_format(f0, bfd_object) &&
         !bfd_check_format(f0, bfd_core)) {
       printf("%s: FATAL: %s is an unknown format!\n", o->prgname, o->inpname0);
-      goto objhash_die;
+      goto objhash_die0;
     }
   }
 
@@ -96,14 +92,14 @@ int objhash(const pbuffer_t p0, const poptions_t o) {
     f1 = bfd_openr(o->inpname1, NULL);
     if (NULL == f1) {
       printf("%s: FATAL: BFD can't load into memory '%s': %s", o->prgname, o->inpname1, bfd_errmsg(bfd_get_error()));
-      goto objhash_die;
+      goto objhash_die0;
     }
 
     if (!bfd_check_format(f1, bfd_archive) &&
         !bfd_check_format(f1, bfd_object) &&
         !bfd_check_format(f1, bfd_core)) {
       printf("%s: FATAL: %s is an unknown format!\n", o->prgname, o->inpname1);
-      goto objhash_die;
+      goto objhash_die1;
     }
   }
 
@@ -116,10 +112,13 @@ int objhash(const pbuffer_t p0, const poptions_t o) {
 
   return r;
 
-objhash_die:
-
-  if (f0) bfd_close(f0);
+objhash_die1:
   if (f1) bfd_close(f1);
+
+objhash_die0:
+  if (f0) bfd_close(f0);
+
+objhash_die:
   destroy(p1);
 
   return -1;
