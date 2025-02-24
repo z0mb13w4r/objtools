@@ -10,6 +10,8 @@ typedef struct node_s {
   struct node_s* next;
 } node_t, *pnode_t;
 
+typedef int (*lcallback_t)(handle_t p, handle_t x);
+
 int islink(handle_t p);
 int islnext(handle_t p);
 

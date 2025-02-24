@@ -18,6 +18,16 @@ int islnext(handle_t p) {
   return 0;
 }
 
+int ldo(handle_t p, lcallback_t callback, handle_t args) {
+  int r = 0;
+  while (islink(p)) {
+    if (0 != (r = callback(p, args))) return r;
+    p = lnext(p);
+  }
+
+  return 0;
+}
+
 handle_t lget(handle_t p) {
   if (islink(p)) {
     return CAST(pnode_t, p)->item;
