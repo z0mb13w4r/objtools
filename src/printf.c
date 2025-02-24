@@ -17,7 +17,7 @@ int printf_nice(const uint64_t v, const modez_t mode) {
   }
 
   const modez_t xmode = mode & ~(USE_FLAGMASK | USE_POS0MASK | USE_POS1MASK | USE_BRACKETMASK);
-  const int usespace = USE_CHARCTRL != xmode && USE_LHEX8NS != xmode;
+  const int usespace = USE_CHARCTRL != xmode && USE_LHEX8NS != xmode && USE_CHAR != xmode;
 
   switch (GET_BRACKET(mode)) {
   case USE_CB:                   n += printf(" {");    break;
@@ -63,6 +63,11 @@ int printf_nice(const uint64_t v, const modez_t mode) {
   case USE_CORRUPT:              n += printf("<corrupt: %" PRIx64 ">", v);       break;
   case USE_UNKNOWN:              n += printf("<unknown: %" PRIx64 ">", v);       break;
   case USE_WARNING:              n += printf("<warning: %" PRIx64 ">", v);       break;
+
+  case USE_CHAR:
+    if (isprint(v))              n += printf("%c", CAST(int, v));
+    else                         n += printf(".");
+    break;
 
   case USE_CHARCTRL:
     if (iscntrl(v))              n += printf("^%c", CAST(int, v) + 0x40);
@@ -159,27 +164,29 @@ int printf_text(const char* p, const modez_t mode) {
 }
 
 int printf_data(const void* p, const size_t size, const addrz_t addr, const modez_t mode) {
-#define MAX_SIZE (16)
+  const size_t MAX_SIZE = 16;
+
   addrz_t x = addr;
+  int n = 0;
   size_t i = 0;
-  const unsigned char *pp = p;
+  const unsigned char *pp = CAST(unsigned char*, p);
   for (i = 0; i < size; ) {
     if (USE_HEXDUMP == mode) {
-      printf_nice(x, USE_FHEX32);
+      n += printf_nice(x, USE_FHEX32);
 
       size_t siz = (size - i) > MAX_SIZE ? MAX_SIZE : (size - i);
       for (size_t j = 0; j < MAX_SIZE; j++) {
-        if (j < siz) printf_nice(pp[j], USE_LHEX8);
-        else printf("   ");
+        if (j < siz) n += printf_nice(pp[j], USE_LHEX8);
+        else n += printf_pack(3);
       }
 
-      printf("  ");
+      n += printf_pack(3);
 
       for (size_t k = 0; k < siz; ++k) {
-        printf("%c", isprint(pp[k]) ? pp[k] : '.');
+        n += printf_nice(pp[k], USE_CHAR);
       }
 
-      printf_eol();
+      n += printf_eol();
 
       pp += siz;
       i += siz;
@@ -190,32 +197,33 @@ int printf_data(const void* p, const size_t size, const addrz_t addr, const mode
         ++i;
       }
 
-      printf ("  [%6lx]  ", i);
+      n += printf_nice(i, USE_TAB | USE_SB | USE_DEC5);
+      n += printf_pack(2);
 
       while (0 != *pp && i < size) {
-        printf_nice(*pp, USE_CHARCTRL);
+        n += printf_nice(*pp, USE_CHARCTRL);
         ++pp;
         ++i;
       }
+
+      n += printf_eol();
       ++pp;
       ++i;
-
-      printf_eol();
     } else if (USE_STR == mode) {
-      if (0 == *pp) return i;
-      printf_nice(*pp, USE_CHARCTRL);
+      if (0 == *pp) return n;
+      n += printf_nice(*pp, USE_CHARCTRL);
       ++pp;
       ++i;
     } else if (USE_HEX == mode) {
-      printf_nice(*pp, USE_LHEX8NS);
+      n += printf_nice(*pp, USE_LHEX8NS);
       ++pp;
       ++i;
     } else {
       return -1;
     }
   }
-#undef MAX_SIZE
-  return i;
+
+  return n;
 }
 
 int printf_mask(const pconvert_t p, const maskz_t mask, const modez_t mode) {
