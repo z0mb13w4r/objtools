@@ -40,5 +40,14 @@ int is64(const pbuffer_t p);
 uint64_t getLE(const void *p, const size_t siz);
 uint64_t getBE(const void *p, const size_t siz);
 
+Elf32_Ehdr* get_ehdr32(const pbuffer_t p);
+Elf64_Ehdr* get_ehdr64(const pbuffer_t p);
+
+Elf32_Shdr* get_shdr32byindex(const pbuffer_t p, const int index);
+Elf64_Shdr* get_shdr64byindex(const pbuffer_t p, const int index);
+
+const char* get_secname32byindex(const pbuffer_t p, const int index);
+const char* get_secname64byindex(const pbuffer_t p, const int index);
+
 #endif
 

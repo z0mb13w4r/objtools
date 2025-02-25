@@ -2,6 +2,7 @@
 #include <malloc.h>
 
 #include "buffer.h"
+#include "elfcode.h"
 #include "options.h"
 #include "memlink.h"
 #include "objutils.h"
@@ -158,23 +159,6 @@ int get(const pbuffer_t p, const int offset) {
   return -1;
 }
 
-Elf32_Ehdr* get_ehdr32(const pbuffer_t p) {
-  return (Elf32_Ehdr*)getp(p, 0, sizeof(Elf32_Ehdr));
-}
-
-Elf64_Ehdr* get_ehdr64(const pbuffer_t p) {
-  return (Elf64_Ehdr*)getp(p, 0, sizeof(Elf64_Ehdr));
-}
-
-Elf64_Shdr* get_shdr64byindex(const pbuffer_t p, const int index) {
-  Elf64_Ehdr *e = get_ehdr64(p);
-  if (e) {
-    return (Elf64_Shdr*)getp(p, e->e_shoff + (e->e_shentsize * index), e->e_shentsize);
-  }
-
-  return NULL;
-}
-
 Elf64_Shdr* get_shdr64bytype(const pbuffer_t p, const int type) {
   Elf64_Ehdr *e = get_ehdr64(p);
   if (e) {
@@ -255,27 +239,6 @@ const char* get_name64byoffset(const pbuffer_t p, const int index, const int off
     Elf64_Shdr *s = get_shdr64byindex(p, index);
     if (s) {
       return getp(p, s->sh_offset + offset, s->sh_size - offset);
-    }
-  }
-
-  return NULL;
-}
-
-const char* get_secname64byindex(const pbuffer_t p, const int index) {
-  char *s0 = NULL;
-
-  Elf64_Ehdr *e = get_ehdr64(p);
-  if (e) {
-    Elf64_Shdr *s1 = get_shdr64byindex(p, e->e_shstrndx);
-    if (s1) {
-      s0 = getp(p, s1->sh_offset, s1->sh_size);
-    }
-
-    if (s0) {
-      Elf64_Shdr *s2 = get_shdr64byindex(p, index);
-      if (s2) {
-        return s0 + s2->sh_name;
-      }
     }
   }
 

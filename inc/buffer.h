@@ -55,12 +55,8 @@ void* get64byshdr(const pbuffer_t p, Elf64_Shdr *shdr); // not safe - remove
 void* getp(const pbuffer_t p, const int offset, const size_t size);
 int   get(const pbuffer_t p, const int offset);
 
-Elf32_Ehdr* get_ehdr32(const pbuffer_t p);
-Elf64_Ehdr* get_ehdr64(const pbuffer_t p);
-
 Elf64_Shdr* get_shdr64bytype(const pbuffer_t p, const int type);
 Elf64_Shdr* get_shdr64byname(const pbuffer_t p, const char* name);
-Elf64_Shdr* get_shdr64byindex(const pbuffer_t p, const int index);
 
 Elf64_Nhdr* get_nhdr64byindex(const pbuffer_t p, const int index);
 const char* get_nhdrname64byindex(const pbuffer_t p, const int index);
@@ -70,7 +66,6 @@ Elf64_Phdr* get_phdr64byindex(const pbuffer_t p, const int index);
 
 const char* get_name64byoffset(const pbuffer_t p, const int index, const int offset);
 const char* get_secname64byshdr(const pbuffer_t p, Elf64_Shdr *s);
-const char* get_secname64byindex(const pbuffer_t p, const int index);
 
 int isBigEndian(const pbuffer_t p);
 int isLittleEndian(const pbuffer_t p);

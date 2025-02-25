@@ -69,14 +69,6 @@ static const char* get_symbolindex64(const unsigned int x) {
   return buff;
 }
 
-static const char* get_ehdrtype64(Elf64_Ehdr *e) {
-  if (e) {
-    return strpick(zEHDRTYPE, e->e_type);
-  }
-
-  return NULL;
-}
-
 static const char* get_ehdrmachine64(Elf64_Ehdr *e) {
   if (e) {
     return strpick(zEHDRMACHINE, e->e_machine);
@@ -256,13 +248,13 @@ static int dump_elfheader(const pbuffer_t p, const poptions_t o) {
   return 0;
 }
 
-static int dump_fileheader64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
+static int dump_fileheader32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
   int MAXSIZE = 36;
 
   printf_text("Type", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  printf_text(get_ehdrtype64(ehdr), USE_LT | USE_SPACE | USE_EOL);
+  printf_pick(zEHDRTYPE, ehdr->e_type, USE_LT | USE_SPACE | USE_EOL);
   printf_text("Machine", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  printf_text(get_ehdrmachine64(ehdr), USE_LT | USE_SPACE | USE_EOL);
+  printf_pick(zEHDRMACHINE, ehdr->e_machine, USE_LT | USE_SPACE | USE_EOL);
   printf_text("Version", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   printf_nice(ehdr->e_version, USE_FHEX | USE_EOL);
   printf_text("Entry point address", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
@@ -290,6 +282,73 @@ static int dump_fileheader64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *
   return 0;
 }
 
+static int dump_fileheader64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
+  int MAXSIZE = 36;
+
+  printf_text("Type", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  printf_pick(zEHDRTYPE, ehdr->e_type, USE_LT | USE_SPACE | USE_EOL);
+  printf_text("Machine", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  printf_pick(zEHDRMACHINE, ehdr->e_machine, USE_LT | USE_SPACE | USE_EOL);
+  printf_text("Version", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  printf_nice(ehdr->e_version, USE_FHEX | USE_EOL);
+  printf_text("Entry point address", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  printf_nice(ehdr->e_entry, USE_FHEX16 | USE_EOL);
+  printf_text("Start of program headers", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  printf_nice(ehdr->e_phoff, USE_DEC | USE_BYTES | USE_EOL);
+  printf_text("Start of section headers", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  printf_nice(ehdr->e_shoff, USE_DEC | USE_BYTES | USE_EOL);
+  printf_text("Flags", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  printf_nice(ehdr->e_flags, USE_FHEX | USE_EOL);
+  printf_text("Size of this header", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  printf_nice(ehdr->e_ehsize, USE_DEC | USE_BYTES | USE_EOL);
+  printf_text("Size of program headers", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  printf_nice(ehdr->e_phentsize, USE_DEC | USE_BYTES | USE_EOL);
+  printf_text("Number of program headers", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  printf_nice(ehdr->e_phnum, USE_DEC | USE_EOL);
+  printf_text("Size of section headers", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  printf_nice(ehdr->e_shentsize, USE_DEC | USE_BYTES | USE_EOL);
+  printf_text("Number of section headers", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  printf_nice(ehdr->e_shnum, USE_DEC | USE_EOL);
+  printf_text("Section header string table index", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  printf_nice(ehdr->e_shstrndx, USE_DEC | USE_EOL);
+  printf_eol();
+
+  return 0;
+}
+
+static int dump_sectionheaders32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
+  printf_text("SECTION HEADERS", USE_LT | USE_COLON | USE_EOL);
+  printf("  [Nr] Name                 Type            Address          Off      Size     ES Flg Lk Inf  Al\n");
+
+  for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
+    printf_nice(i, USE_DEC2 | USE_TAB | USE_SB);
+
+    Elf32_Shdr *shdr = get_shdr32byindex(p, i);
+    if (shdr) {
+      printf_text(get_secname32byindex(p, i), USE_LT | USE_SPACE | SET_PAD(21));
+      printf_pick(zSHDRTYPE, shdr->sh_type, USE_LT | USE_SPACE | SET_PAD(16));
+      printf_nice(shdr->sh_addr, USE_LHEX64);
+      printf_nice(shdr->sh_offset, USE_LHEX32);
+      printf_nice(shdr->sh_size, USE_LHEX32);
+      printf_nice(shdr->sh_entsize, USE_LHEX8);
+//      printf_text(get_shdrflags64(shdr), USE_RT | USE_SPACE | SET_PAD(4));
+      printf_nice(shdr->sh_link, USE_DEC2);
+      printf_nice(shdr->sh_info, USE_DEC3);
+      printf_nice(shdr->sh_addralign, USE_DEC2);
+    }
+    printf("\n");
+  }
+
+  printf_text("Key to Flags", USE_LT | USE_COLON | USE_EOL);
+  printf_text("W (write), A (alloc), X (execute), M (merge), S (strings), I (info),", USE_LT | USE_TAB | USE_EOL);
+  printf_text("L (link order), O (extra OS processing required), G (group), T (TLS),", USE_LT | USE_TAB | USE_EOL);
+  printf_text("C (compressed), x (unknown), o (OS specific), E (exclude),", USE_LT | USE_TAB | USE_EOL);
+  printf_text("l (large), p (processor specific)", USE_LT | USE_TAB | USE_EOL);
+  printf_eol();
+
+  return 0;
+}
+
 static int dump_sectionheaders64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
   printf_text("SECTION HEADERS", USE_LT | USE_COLON | USE_EOL);
   printf("  [Nr] Name                 Type            Address          Off      Size     ES Flg Lk Inf  Al\n");
@@ -300,7 +359,7 @@ static int dump_sectionheaders64(const pbuffer_t p, const poptions_t o, Elf64_Eh
     Elf64_Shdr *shdr = get_shdr64byindex(p, i);
     if (shdr) {
       printf_text(get_secname64byindex(p, i), USE_LT | USE_SPACE | SET_PAD(21));
-      printf_text(get_shdrtype64(shdr), USE_LT | USE_SPACE | SET_PAD(16));
+      printf_pick(zSHDRTYPE, shdr->sh_type, USE_LT | USE_SPACE | SET_PAD(16));
       printf_nice(shdr->sh_addr, USE_LHEX64);
       printf_nice(shdr->sh_offset, USE_LHEX32);
       printf_nice(shdr->sh_size, USE_LHEX32);
@@ -1016,6 +1075,10 @@ int readelf(const pbuffer_t p, const poptions_t o) {
 
     if (is32(p)) {
       Elf32_Ehdr *ehdr = get_ehdr32(p);
+      if (ehdr) {
+        if (o->action & OPTREADELF_FILEHEADER)       dump_fileheader32(p, o, ehdr);
+        if (o->action & OPTREADELF_SECTIONHEADERS)   dump_sectionheaders32(p, o, ehdr);
+      }
     } else if (is64(p)) {
       Elf64_Ehdr *ehdr = get_ehdr64(p);
       if (ehdr) {
