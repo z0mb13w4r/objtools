@@ -76,6 +76,8 @@
 #define USE_DRTB          SET_BRACKET(5)
 #define USE_SQ            SET_BRACKET(6)
 #define USE_DQ            SET_BRACKET(7)
+#define USE_PLUS          SET_BRACKET(8)
+#define USE_DASH          SET_BRACKET(9)
 #define USE_BRACKETMASK   SET_BRACKET(15)
 
 #define USE_COLON         SET_POS1(1)
@@ -88,15 +90,15 @@
 #define USE_POS0MASK      SET_POS0(15)
 
 int printf_eol();
-int printf_nice(const uint64_t v, const modez_t mode);
-int printf_data(const void* p, const size_t size, const addrz_t addr, const modez_t mode);
-int printf_text(const char* p, const modez_t mode);
+int printf_nice(const uint64_t v, const imode_t mode);
+int printf_data(const void* p, const size_t size, const addrz_t addr, const imode_t mode);
+int printf_text(const char* p, const imode_t mode);
 
-int printf_mask(const pconvert_t p, const maskz_t mask, const modez_t mode);
-int printf_maskmute(const pconvert_t p, const maskz_t mask, const modez_t mode);
-int printf_masknone(const pconvert_t p, const maskz_t mask, const modez_t mode);
+int printf_mask(const pconvert_t p, const maskz_t mask, const imode_t mode);
+int printf_maskmute(const pconvert_t p, const maskz_t mask, const imode_t mode);
+int printf_masknone(const pconvert_t p, const maskz_t mask, const imode_t mode);
 
-int printf_pick(const pconvert_t p, const pick_t x, const modez_t mode);
+int printf_pick(const pconvert_t p, const pick_t x, const imode_t mode);
 int printf_pack(const size_t size);
 
 #endif

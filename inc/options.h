@@ -3,23 +3,25 @@
 
 #include <limits.h>
 
-#define OPT_READELF                    (0)
-#define OPT_OBJCOPY                    (1)
-#define OPT_OBJDUMP                    (2)
-#define OPT_OBJHASH                    (3)
+#define OPT_READELF                                (0)
+#define OPT_OBJCOPY                                (1)
+#define OPT_OBJDUMP                                (2)
+#define OPT_OBJHASH                                (3)
 
-#define OPTREADELF_FILEHEADER          (1 << 0)
-#define OPTREADELF_SECTIONGROUPS       (1 << 1)
-#define OPTREADELF_SECTIONHEADERS      (1 << 2)
-#define OPTREADELF_PROGRAMHEADERS      (1 << 3)
-#define OPTREADELF_SYMBOLS             (1 << 4)
-#define OPTREADELF_RELOCS              (1 << 5)
-#define OPTREADELF_UNWIND              (1 << 6)
-#define OPTREADELF_DYNAMIC             (1 << 7)
-#define OPTREADELF_HISTOGRAM           (1 << 8)
-#define OPTREADELF_ARCH                (1 << 9)
-#define OPTREADELF_NOTES               (1 << 10)
-#define OPTREADELF_VERSION             (1 << 11)
+#define OPTPROGRAM_HELP                            (1ULL << 48)
+
+#define OPTREADELF_FILEHEADER                      (1 << 0)
+#define OPTREADELF_SECTIONGROUPS                   (1 << 1)
+#define OPTREADELF_SECTIONHEADERS                  (1 << 2)
+#define OPTREADELF_PROGRAMHEADERS                  (1 << 3)
+#define OPTREADELF_SYMBOLS                         (1 << 4)
+#define OPTREADELF_RELOCS                          (1 << 5)
+#define OPTREADELF_UNWIND                          (1 << 6)
+#define OPTREADELF_DYNAMIC                         (1 << 7)
+#define OPTREADELF_HISTOGRAM                       (1 << 8)
+#define OPTREADELF_ARCH                            (1 << 9)
+#define OPTREADELF_NOTES                           (1 << 10)
+#define OPTREADELF_VERSION                         (1 << 11)
 
 #define OPTREADELF_ALL                 (OPTREADELF_SYMBOLS | OPTREADELF_RELOCS | OPTREADELF_UNWIND \
                                            | OPTREADELF_DYNAMIC | OPTREADELF_FILEHEADER | OPTREADELF_SECTIONHEADERS \
@@ -56,27 +58,27 @@
 #define OPTOBJCOPY_WRITABLE_TEXT                   (1 << 26)
 #define OPTOBJCOPY_DUMP_SECTIONS_ALL               (1 << 27)
 
-#define OPTOBJDUMP_DISADDEMBLEALL      (1 << 0)
-#define OPTOBJDUMP_SOURCECODE          (1 << 1)
-#define OPTOBJDUMP_DYNAMICSYMBOLS      (1 << 2)
-#define OPTOBJDUMP_DISASSEMBLE         (1 << 3)
-#define OPTOBJDUMP_DEBUGGING           (1 << 4)
-#define OPTOBJDUMP_SECTIONS            (1 << 5)
-#define OPTOBJDUMP_SYMBOLS             (1 << 6)
-#define OPTOBJDUMP_LINENUMBERS         (1 << 7)
-#define OPTOBJDUMP_FILEHEADER          (1 << 8)
-#define OPTOBJDUMP_PRIVATEHEADER       (1 << 9)
-#define OPTOBJDUMP_SECTIONHEADER       (1 << 10)
+#define OPTOBJDUMP_DISADDEMBLEALL                  (1 << 0)
+#define OPTOBJDUMP_SOURCECODE                      (1 << 1)
+#define OPTOBJDUMP_DYNAMICSYMBOLS                  (1 << 2)
+#define OPTOBJDUMP_DISASSEMBLE                     (1 << 3)
+#define OPTOBJDUMP_DEBUGGING                       (1 << 4)
+#define OPTOBJDUMP_SECTIONS                        (1 << 5)
+#define OPTOBJDUMP_SYMBOLS                         (1 << 6)
+#define OPTOBJDUMP_LINENUMBERS                     (1 << 7)
+#define OPTOBJDUMP_FILEHEADER                      (1 << 8)
+#define OPTOBJDUMP_PRIVATEHEADER                   (1 << 9)
+#define OPTOBJDUMP_SECTIONHEADER                   (1 << 10)
 
-#define ACT_HEXDUMP                    (0)
-#define ACT_STRDUMP                    (1)
-#define ACT_RELDUMP                    (2)
-#define ACT_ADDSECTION                 (3)
-#define ACT_DUMPSECTION                (4)
-#define ACT_UPDATESECTION              (5)
+#define ACT_HEXDUMP                                (0)
+#define ACT_STRDUMP                                (1)
+#define ACT_RELDUMP                                (2)
+#define ACT_ADDSECTION                             (3)
+#define ACT_DUMPSECTION                            (4)
+#define ACT_UPDATESECTION                          (5)
 
 typedef struct action_s {
-  modex_t mode;
+  smode_t mode;
   int     action;
   char    secname[256];
   char    outname[PATH_MAX];
@@ -84,8 +86,10 @@ typedef struct action_s {
 } action_t, *paction_t;
 
 typedef struct options_s {
-  modex_t mode;
-  int     option;
+  smode_t mode;
+  imode_t option;
+  imode_t action;
+
   union {
     char inpname[PATH_MAX];
     char inpname0[PATH_MAX];
@@ -96,7 +100,6 @@ typedef struct options_s {
   };
   char prgname[256];
 
-  int  action;
   paction_t actions;
 } options_t, *poptions_t;
 

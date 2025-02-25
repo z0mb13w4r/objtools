@@ -8,7 +8,7 @@ int printf_eol() {
   return printf("\n");
 }
 
-int printf_nice(const uint64_t v, const modez_t mode) {
+int printf_nice(const uint64_t v, const imode_t mode) {
   int n = 0;
 
   switch (GET_POS0(mode)) {
@@ -16,7 +16,7 @@ int printf_nice(const uint64_t v, const modez_t mode) {
   default:                       break;
   }
 
-  const modez_t xmode = mode & ~(USE_FLAGMASK | USE_POS0MASK | USE_POS1MASK | USE_BRACKETMASK);
+  const imode_t xmode = mode & ~(USE_FLAGMASK | USE_POS0MASK | USE_POS1MASK | USE_BRACKETMASK);
   const int usespace = USE_CHARCTRL != xmode && USE_LHEX8NS != xmode && USE_CHAR != xmode;
 
   switch (GET_BRACKET(mode)) {
@@ -27,6 +27,8 @@ int printf_nice(const uint64_t v, const modez_t mode) {
   case USE_DRTB:                 n += printf( ">>");   break;
   case USE_SQ:                   n += printf(" '");    break;
   case USE_DQ:                   n += printf(" \"");   break;
+  case USE_PLUS:                 n += printf(" +");    break;
+  case USE_DASH:                 n += printf(" -");    break;
   default:
     if (usespace)                n += printf(" ");
     break;
@@ -114,7 +116,7 @@ int printf_nice(const uint64_t v, const modez_t mode) {
   return n;
 }
 
-int printf_text(const char* p, const modez_t mode) {
+int printf_text(const char* p, const imode_t mode) {
   MALLOCA(char, data, 1024);
 #define PRINT1(x)    snprintf(data + n, sizeof(data) - n, x)
 #define PRINT2(x,y)  snprintf(data + n, sizeof(data) - n, x, y)
@@ -142,6 +144,8 @@ int printf_text(const char* p, const modez_t mode) {
     case USE_DRTB:           n += PRINT2(">>%s<<", p); break;
     case USE_SQ:             n += PRINT2("'%s'", p);   break;
     case USE_DQ:             n += PRINT2("\"%s\"", p); break;
+    case USE_PLUS:           n += PRINT2(" +%s", p);   break;
+    case USE_DASH:           n += PRINT2(" -%s", p);   break;
     default:                 n += PRINT2("%s", p);     break;
     }
 
@@ -163,7 +167,7 @@ int printf_text(const char* p, const modez_t mode) {
   return -1;
 }
 
-int printf_data(const void* p, const size_t size, const addrz_t addr, const modez_t mode) {
+int printf_data(const void* p, const size_t size, const addrz_t addr, const imode_t mode) {
   const size_t MAX_SIZE = 16;
 
   addrz_t x = addr;
@@ -226,7 +230,7 @@ int printf_data(const void* p, const size_t size, const addrz_t addr, const mode
   return n;
 }
 
-int printf_mask(const pconvert_t p, const maskz_t mask, const modez_t mode) {
+int printf_mask(const pconvert_t p, const maskz_t mask, const imode_t mode) {
   int n = 0;
   maskz_t v = mask;
   for (pconvert_t x = p; 0 != x->text; ++x) {
@@ -247,7 +251,7 @@ int printf_mask(const pconvert_t p, const maskz_t mask, const modez_t mode) {
   return n;
 }
 
-int printf_maskmute(const pconvert_t p, const maskz_t mask, const modez_t mode) {
+int printf_maskmute(const pconvert_t p, const maskz_t mask, const imode_t mode) {
   int n = 0;
   for (pconvert_t x = p; 0 != x->text; ++x) {
     if (x->type & mask) {
@@ -262,7 +266,7 @@ int printf_maskmute(const pconvert_t p, const maskz_t mask, const modez_t mode) 
   return n;
 }
 
-int printf_masknone(const pconvert_t p, const maskz_t mask, const modez_t mode) {
+int printf_masknone(const pconvert_t p, const maskz_t mask, const imode_t mode) {
   if (0 == mask) {
     return printf_text("NONE", USE_SPACE | mode);
   }
@@ -270,7 +274,7 @@ int printf_masknone(const pconvert_t p, const maskz_t mask, const modez_t mode) 
   return printf_mask(p, mask, USE_SPACE | mode);
 }
 
-int printf_pick(const pconvert_t p, const pick_t x, const modez_t mode) {
+int printf_pick(const pconvert_t p, const pick_t x, const imode_t mode) {
   return printf_text(strpick(p, x), mode);
 }
 

@@ -1,13 +1,14 @@
 #include <string.h>
 
 #include "buffer.h"
+#include "printf.h"
 #include "options.h"
 #include "objutils.h"
 
 typedef struct args_s {
-  char  option1;
-  char *option2;
-  int   action;
+  char    option1;
+  char   *option2;
+  imode_t action;
 } args_t, *pargs_t;
 
 static const args_t READELFARGS[] = {
@@ -25,6 +26,7 @@ static const args_t READELFARGS[] = {
   {'r', "--relocs",          OPTREADELF_RELOCS},
   {'s', "--symbols",         OPTREADELF_SYMBOLS},
   {'u', "--unwind",          OPTREADELF_UNWIND},
+  {'H', "--help",            OPTPROGRAM_HELP},
   {0, NULL}
 };
 
@@ -59,6 +61,7 @@ static const args_t OBJCOPYARGS[] = {
   {0,   "--weaken",                         OPTOBJCOPY_WEAKEN},
   {0,   "--writable-text",                  OPTOBJCOPY_WRITABLE_TEXT},
   {0,   "--dump-sections-all",              OPTOBJCOPY_DUMP_SECTIONS_ALL},
+  {'H', "--help",                           OPTPROGRAM_HELP},
   {0, NULL},
 };
 
@@ -74,6 +77,7 @@ static const args_t OBJDUMPARGS1[] = {
   {'p', "--private-headers", OPTOBJDUMP_PRIVATEHEADER},
   {'h', "--section-headers", OPTOBJDUMP_SECTIONHEADER},
   {'x', "--all-headers",     OPTOBJDUMP_FILEHEADER | OPTOBJDUMP_PRIVATEHEADER | OPTOBJDUMP_SECTIONHEADER | OPTOBJDUMP_SYMBOLS},
+  {'H', "--help",            OPTPROGRAM_HELP},
   {0, NULL}
 };
 
@@ -81,6 +85,70 @@ static const args_t OBJDUMPARGS2[] = {
   {'l', NULL,                OPTOBJDUMP_LINENUMBERS},
   {0, NULL}
 };
+
+static int usage(const char* name, const args_t args[]) {
+  MALLOCA(char, buf, 1024);
+
+  printf_text("NAME", USE_LT | USE_EOL);
+  printf_text(name, USE_LT | USE_TAB | USE_COLON | USE_EOL);
+  printf_eol();
+
+  printf_text("SYNOPSIS", USE_LT | USE_EOL);
+  int n = printf_text(name, USE_LT | USE_TAB);
+  if (args[0].option1 && args[0].option2) {
+    snprintf(buf, sizeof(buf), "-%c|%s", args[0].option1, args[0].option2);
+  } else if (args[0].option1) {
+    snprintf(buf, sizeof(buf), "-%c", args[0].option1);
+  } else if (args[0].option2) {
+    snprintf(buf, sizeof(buf), "%s", args[0].option2);
+  }
+  printf_text(buf, USE_LT | USE_SPACE | USE_SB | USE_EOL);
+
+  for (int j = 1; (0 != args[j].option1) || (0 != args[j].option2); ++j) {
+    if (args[j].option1 && args[j].option2) {
+       snprintf(buf, sizeof(buf), "-%c|%s", args[j].option1, args[j].option2);
+    } else if (args[j].option1) {
+      snprintf(buf, sizeof(buf), "-%c", args[j].option1);
+    } else if (args[j].option2) {
+      snprintf(buf, sizeof(buf), "%s", args[j].option2);
+    }
+    printf_pack(n);
+    printf_text(buf, USE_LT | USE_SPACE | USE_SB | USE_EOL);
+  }
+  printf_eol();
+
+  printf_text("DESCRIPTION", USE_LT | USE_EOL);
+  printf_eol();
+
+  printf_text("OPTIONS", USE_LT | USE_EOL);
+  for (int j = 0; (0 != args[j].option1) || (0 != args[j].option2); ++j) {
+    if (args[j].option1) {
+      printf_nice(args[j].option1, USE_CHAR | USE_TAB | USE_DASH | USE_EOL);
+    }
+    if (args[j].option2) {
+      printf_text(args[j].option2, USE_LT | USE_TAB | USE_EOL);
+    }
+    if (isbits(args[j].action)) {
+      printf_pack(4);
+      printf_text("Equivalent to specifying", USE_LT | USE_COLON);
+      for (int k = 0; (0 != args[k].option1) || (0 != args[k].option2); ++k) {
+        if (k != j && !isbits(args[k].action) && (args[k].action & args[j].action)) {
+          printf_text(args[k].option2, USE_LT | USE_SPACE);
+        }
+      }
+      printf_eol();
+    }
+    printf_eol();
+  }
+
+  printf_text("SEE ALSO", USE_LT | USE_EOL);
+  printf_eol();
+
+  printf_text("COPYRIGHT", USE_LT | USE_EOL);
+  printf_eol();
+
+  return 1;
+}
 
 static int get_options1(poptions_t o, const args_t args[], const char *argv) {
   for (int k = 1; k < strlen(argv); ++k) {
@@ -123,7 +191,7 @@ static int breakup_args(paction_t p, char *src) {
 }
 
 int get_options_readelf(poptions_t o, int argc, char** argv, char* name) {
-  if (argc < 2) {
+  if (argc < 1) {
     return -1;
   }
 
@@ -180,11 +248,15 @@ int get_options_readelf(poptions_t o, int argc, char** argv, char* name) {
     }
   }
 
+  if (o->action & OPTPROGRAM_HELP) {
+    return usage("readelf-ng", READELFARGS);
+  }
+
   return 0;
 }
 
 int get_options_objcopy(poptions_t o, int argc, char** argv, char* name) {
-  if (argc < 2) {
+  if (argc < 1) {
     return -1;
   }
 
@@ -224,11 +296,15 @@ int get_options_objcopy(poptions_t o, int argc, char** argv, char* name) {
     }
   }
 
+  if (o->action & OPTPROGRAM_HELP) {
+    return usage("objcopy-ng", OBJCOPYARGS);
+  }
+
   return 0;
 }
 
 int get_options_objdump(poptions_t o, int argc, char** argv, char* name) {
-  if (argc < 2) {
+  if (argc < 1) {
     return -1;
   }
 
@@ -247,6 +323,10 @@ int get_options_objdump(poptions_t o, int argc, char** argv, char* name) {
     } else {
       strcpy(o->inpname, argv[i]);
     }
+  }
+
+  if (o->action & OPTPROGRAM_HELP) {
+    return usage("objdump-ng", OBJDUMPARGS1);
   }
 
   return 0;
@@ -271,6 +351,10 @@ int get_options_objhash(poptions_t o, int argc, char** argv, char* name) {
       strcpy(o->inpname1, argv[i]);
     }
   }
+
+//  if (o->action & OPTPROGRAM_HELP) {
+//    return usage("objhash-ng", READELFARGS);
+//  }
 
   return 0;
 }

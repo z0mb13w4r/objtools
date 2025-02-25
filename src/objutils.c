@@ -3,6 +3,10 @@
 
 #include "objutils.h"
 
+int isbits(const imode_t x) {
+  return x & (x -1);
+}
+
 char* strname(char* dst, const char* src) {
   char *p = strrchr(src, '/');
   if (p) {

@@ -4,7 +4,7 @@
 #include "defines.h"
 
 typedef struct node_s {
-  modex_t  mode;
+  smode_t  mode;
   handle_t item;
 
   struct node_s* next;

@@ -18,7 +18,7 @@
 #define ELF_ST_VISIBILITY(x)       ((x) & 0x03)
 
 typedef struct elf64_s {
-  modez_t mode;
+  imode_t mode;
   size_t  spos, epos, size;
   union {
     Elf64_Ehdr ehdr;

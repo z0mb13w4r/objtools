@@ -5,6 +5,7 @@
 #include "readelf.h"
 #include "objcopy.h"
 #include "objdump.h"
+#include "objhash.h"
 #include "options.h"
 
 int main(int argc, char* argv[]) {
@@ -12,7 +13,8 @@ int main(int argc, char* argv[]) {
 
   poptions_t o = create(MODE_OPTIONS);
   if (o) {
-    if (0 == get_options(o, argc, argv)) {
+    r = get_options(o, argc, argv);
+    if (0 == r) {
       pbuffer_t p = open(o->inpname);
       if (p) {
         if (OPT_READELF == o->option) {

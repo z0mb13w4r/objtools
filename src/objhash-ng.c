@@ -6,7 +6,8 @@ int main(int argc, char* argv[]) {
   int r = -1;
   poptions_t o = create(MODE_OPTIONS);
   if (o) {
-    if (0 == get_options_objhash(o, argc, argv, argv[0])) {
+    r = get_options_objhash(o, argc, argv, argv[0]);
+    if (0 == r) {
       pbuffer_t p = open(o->inpname);
       if (p) {
         if (OPT_OBJHASH == o->option) {

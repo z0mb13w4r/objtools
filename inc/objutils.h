@@ -11,6 +11,8 @@ typedef struct convert_s {
   const unsigned int type;
 } convert_t, *pconvert_t;
 
+int isbits(const imode_t x);
+
 char* strname(char* dst, const char* src);
 
 const char* strpick(const pconvert_t p, const pick_t x);

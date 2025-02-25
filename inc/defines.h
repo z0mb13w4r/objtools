@@ -50,8 +50,8 @@
 
 typedef uint64_t addrz_t;
 typedef uint64_t maskz_t;
-typedef uint64_t modez_t;
-typedef char     modex_t[4];
+typedef uint64_t imode_t;
+typedef char     smode_t[4];
 
 typedef void*    handle_t;
 

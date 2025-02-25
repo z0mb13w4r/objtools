@@ -26,7 +26,7 @@
 #define MODE_SYMBOLS_DYNAMIC    (MODE_BUFFER | MODE_PUT3('D'))
 
 typedef struct buffer_s {
-  modex_t  mode;
+  smode_t  mode;
   char     note[256];
 
   size_t   size;
