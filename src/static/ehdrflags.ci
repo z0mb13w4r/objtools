@@ -1,0 +1,16 @@
+static convert_t EHDRFLAGS[] = {
+  {"W",                            SHF_WRITE},
+  {"A",                            SHF_ALLOC},
+  {"X",                            SHF_EXECINSTR},
+  {"M",                            SHF_MERGE},
+  {"S",                            SHF_STRINGS},
+  {"I",                            SHF_INFO_LINK},
+  {"L",                            SHF_LINK_ORDER},
+  {"O",                            SHF_OS_NONCONFORMING},
+  {"G",                            SHF_GROUP},
+  {"T",                            SHF_TLS},
+  {"E",                            SHF_EXCLUDE},
+  {"C",                            SHF_COMPRESSED},
+  {0, 0}
+};
+

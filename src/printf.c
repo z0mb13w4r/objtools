@@ -4,9 +4,10 @@
 
 #include "printf.h"
 
-int printf_work(char* o, const size_t size, const char* p, const imode_t mode) {
 #define PRINT1(x)    snprintf(o + n, size - n, x)
 #define PRINT2(x,y)  snprintf(o + n, size - n, x, y)
+
+int printf_work(char* o, const size_t size, const char* p, const imode_t mode) {
   int n = 0;
   if (o && p) {
     int b = GET_BRACKET(mode);
@@ -39,9 +40,115 @@ int printf_work(char* o, const size_t size, const char* p, const imode_t mode) {
     default:                 break;
     }
   }
-#undef PRINT2
-#undef PRINT1
+
   return n;
+}
+
+int printf_neat(char* o, const size_t size, const uint64_t v, const imode_t mode) {
+  int n = 0;
+  if (o) {
+    switch (GET_POS0(mode)) {
+    case USE_TAB:                  n += PRINT1(" ");     break;
+    default:                       break;
+    }
+
+    const imode_t xmode = mode & ~(USE_FLAGMASK | USE_POS0MASK | USE_POS1MASK | USE_BRACKETMASK);
+    const int usespace = USE_CHARCTRL != xmode && USE_LHEX8NS != xmode && USE_CHAR != xmode;
+
+    switch (GET_BRACKET(mode)) {
+    case USE_CB:                   n += PRINT1(" {");    break;
+    case USE_RB:                   n += PRINT1(" (");    break;
+    case USE_SB:                   n += PRINT1(" [");    break;
+    case USE_TB:                   n += PRINT1(" <");    break;
+    case USE_DRTB:                 n += PRINT1( ">>");   break;
+    case USE_SQ:                   n += PRINT1(" '");    break;
+    case USE_DQ:                   n += PRINT1(" \"");   break;
+    case USE_PLUS:                 n += PRINT1(" +");    break;
+    case USE_DASH:                 n += PRINT1(" -");    break;
+    default:
+      if (usespace)                n += PRINT1(" ");
+      break;
+    }
+
+    switch (xmode) {
+    case USE_DEC:                  n += PRINT2("%" PRId64, v);                     break;
+    case USE_DEC2:                 n += PRINT2("%2" PRId64, v);                    break;
+    case USE_DEC2Z:                n += PRINT2("%2.2" PRId64, v);                  break;
+    case USE_DEC3:                 n += PRINT2("%3" PRId64, v);                    break;
+    case USE_DEC3Z:                n += PRINT2("%3.3" PRId64, v);                  break;
+    case USE_DEC5:                 n += PRINT2("%5" PRId64, v);                    break;
+    case USE_DEC5Z:                n += PRINT2("%5.5" PRId64, v);                  break;
+    case USE_OCT:                  n += PRINT2("%" PRIo64, v);                     break;
+    case USE_OCT2:                 n += PRINT2("%2" PRIo64, v);                    break;
+    case USE_OCT5:                 n += PRINT2("%5" PRIo64, v);                    break;
+    case USE_FHEX:                 n += PRINT2("0x%" PRIx64, v);                   break;
+    case USE_LHEX:                 n += PRINT2("%" PRIx64, v);                     break;
+    case USE_FHEX8:                n += PRINT2("0x%2.2" PRIx64, v);                break;
+    case USE_LHEX8:                n += PRINT2("%2.2" PRIx64, v);                  break;
+    case USE_LHEX8NS:              n += PRINT2("%2.2" PRIx64, v);                  break;
+    case USE_FHEX16:               n += PRINT2("0x%4.4" PRIx64, v);                break;
+    case USE_LHEX16:               n += PRINT2("%4.4" PRIx64, v);                  break;
+    case USE_FHEX24:               n += PRINT2("0x%6.6" PRIx64, v);                break;
+    case USE_LHEX24:               n += PRINT2("%6.6" PRIx64, v);                  break;
+    case USE_FHEX32:               n += PRINT2("0x%8.8" PRIx64, v);                break;
+    case USE_LHEX32:               n += PRINT2("%8.8" PRIx64, v);                  break;
+    case USE_FHEX48:               n += PRINT2("0x%12.12" PRIx64, v);              break;
+    case USE_LHEX48:               n += PRINT2("%12.12" PRIx64, v);                break;
+    case USE_FHEX64:               n += PRINT2("0x%16.16" PRIx64, v);              break;
+    case USE_LHEX64:               n += PRINT2("%16.16" PRIx64, v);                break;
+    case USE_PERCENT:              n += PRINT2("%3.1f%%", CAST(double, v) / 10);   break;
+    case USE_ERROR:                n += PRINT2("<error: %" PRIx64 ">", v);         break;
+    case USE_CORRUPT:              n += PRINT2("<corrupt: %" PRIx64 ">", v);       break;
+    case USE_UNKNOWN:              n += PRINT2("<unknown: %" PRIx64 ">", v);       break;
+    case USE_WARNING:              n += PRINT2("<warning: %" PRIx64 ">", v);       break;
+
+    case USE_CHAR:
+      if (isprint(v))              n += PRINT2("%c", CAST(int, v));
+      else                         n += PRINT1(".");
+      break;
+
+    case USE_CHARCTRL:
+      if (iscntrl(v))              n += PRINT2("^%c", CAST(int, v) + 0x40);
+      else if (isprint(v))         n += PRINT2("%c", CAST(int, v));
+      else                         n += PRINT1(".");
+      break;
+
+    case USE_TIMEDATE: {
+      struct tm * tmp;
+      time_t atime = v;
+
+      tmp = gmtime (&atime);
+      if (tmp == NULL)             return printf_nice(atime, USE_CORRUPT);
+
+      return printf("%04u-%02u-%02uT%02u:%02u:%02u",
+                     tmp->tm_year + 1900, tmp->tm_mon + 1, tmp->tm_mday,
+                     tmp->tm_hour, tmp->tm_min, tmp->tm_sec);
+      }
+      break;
+
+    default:
+      break;
+    }
+
+    switch (GET_BRACKET(mode)) {
+    case USE_CB:                   n += PRINT1("}");         break;
+    case USE_RB:                   n += PRINT1(")");         break;
+    case USE_SB:                   n += PRINT1("]");         break;
+    case USE_TB:                   n += PRINT1(">");         break;
+    case USE_DRTB:                 n += PRINT1("<<");        break;
+    case USE_SQ:                   n += PRINT1("'");         break;
+    case USE_DQ:                   n += PRINT1("\"");        break;
+    default:                       break;
+    }
+
+    switch (GET_POS1(mode)) {
+    case USE_COLON:                n += PRINT1(":");         break;
+    case USE_BYTES:                n += PRINT1(" (bytes)");  break;
+    default:                       break;
+    }
+  }
+
+  return 0;
 }
 
 int printf_eol() {
@@ -49,116 +156,20 @@ int printf_eol() {
 }
 
 int printf_nice(const uint64_t v, const imode_t mode) {
-  int n = 0;
+  MALLOCA(char, data, 1024);
+  int n = printf_neat(data, sizeof(data), v, mode);
 
-  switch (GET_POS0(mode)) {
-  case USE_TAB:                  n += printf(" ");     break;
-  default:                       break;
+  printf("%s", data);
+  if (mode & USE_EOL) {
+    n += printf_eol();
   }
-
-  const imode_t xmode = mode & ~(USE_FLAGMASK | USE_POS0MASK | USE_POS1MASK | USE_BRACKETMASK);
-  const int usespace = USE_CHARCTRL != xmode && USE_LHEX8NS != xmode && USE_CHAR != xmode;
-
-  switch (GET_BRACKET(mode)) {
-  case USE_CB:                   n += printf(" {");    break;
-  case USE_RB:                   n += printf(" (");    break;
-  case USE_SB:                   n += printf(" [");    break;
-  case USE_TB:                   n += printf(" <");    break;
-  case USE_DRTB:                 n += printf( ">>");   break;
-  case USE_SQ:                   n += printf(" '");    break;
-  case USE_DQ:                   n += printf(" \"");   break;
-  case USE_PLUS:                 n += printf(" +");    break;
-  case USE_DASH:                 n += printf(" -");    break;
-  default:
-    if (usespace)                n += printf(" ");
-    break;
-  }
-
-  switch (xmode) {
-  case USE_DEC:                  n += printf("%" PRId64, v);                     break;
-  case USE_DEC2:                 n += printf("%2" PRId64, v);                    break;
-  case USE_DEC2Z:                n += printf("%2.2" PRId64, v);                  break;
-  case USE_DEC3:                 n += printf("%3" PRId64, v);                    break;
-  case USE_DEC3Z:                n += printf("%3.3" PRId64, v);                  break;
-  case USE_DEC5:                 n += printf("%5" PRId64, v);                    break;
-  case USE_DEC5Z:                n += printf("%5.5" PRId64, v);                  break;
-  case USE_OCT:                  n += printf("%" PRIo64, v);                     break;
-  case USE_OCT2:                 n += printf("%2" PRIo64, v);                    break;
-  case USE_OCT5:                 n += printf("%5" PRIo64, v);                    break;
-  case USE_FHEX:                 n += printf("0x%" PRIx64, v);                   break;
-  case USE_LHEX:                 n += printf("%" PRIx64, v);                     break;
-  case USE_FHEX8:                n += printf("0x%2.2" PRIx64, v);                break;
-  case USE_LHEX8:                n += printf("%2.2" PRIx64, v);                  break;
-  case USE_LHEX8NS:              n += printf("%2.2" PRIx64, v);                  break;
-  case USE_FHEX16:               n += printf("0x%4.4" PRIx64, v);                break;
-  case USE_LHEX16:               n += printf("%4.4" PRIx64, v);                  break;
-  case USE_FHEX24:               n += printf("0x%6.6" PRIx64, v);                break;
-  case USE_LHEX24:               n += printf("%6.6" PRIx64, v);                  break;
-  case USE_FHEX32:               n += printf("0x%8.8" PRIx64, v);                break;
-  case USE_LHEX32:               n += printf("%8.8" PRIx64, v);                  break;
-  case USE_FHEX48:               n += printf("0x%12.12" PRIx64, v);              break;
-  case USE_LHEX48:               n += printf("%12.12" PRIx64, v);                break;
-  case USE_FHEX64:               n += printf("0x%16.16" PRIx64, v);              break;
-  case USE_LHEX64:               n += printf("%16.16" PRIx64, v);                break;
-  case USE_PERCENT:              n += printf("%3.1f%%", CAST(double, v) / 10);   break;
-  case USE_ERROR:                n += printf("<error: %" PRIx64 ">", v);         break;
-  case USE_CORRUPT:              n += printf("<corrupt: %" PRIx64 ">", v);       break;
-  case USE_UNKNOWN:              n += printf("<unknown: %" PRIx64 ">", v);       break;
-  case USE_WARNING:              n += printf("<warning: %" PRIx64 ">", v);       break;
-
-  case USE_CHAR:
-    if (isprint(v))              n += printf("%c", CAST(int, v));
-    else                         n += printf(".");
-    break;
-
-  case USE_CHARCTRL:
-    if (iscntrl(v))              n += printf("^%c", CAST(int, v) + 0x40);
-    else if (isprint(v))         n += printf("%c", CAST(int, v));
-    else                         n += printf(".");
-    break;
-
-  case USE_TIMEDATE: {
-    struct tm * tmp;
-    time_t atime = v;
-
-    tmp = gmtime (&atime);
-    if (tmp == NULL)             return printf_nice(atime, USE_CORRUPT);
-
-    return printf("%04u-%02u-%02uT%02u:%02u:%02u",
-                   tmp->tm_year + 1900, tmp->tm_mon + 1, tmp->tm_mday,
-                   tmp->tm_hour, tmp->tm_min, tmp->tm_sec);
-    }
-    break;
-
-  default:
-    break;
-  }
-
-  switch (GET_BRACKET(mode)) {
-  case USE_CB:                   n += printf("}");         break;
-  case USE_RB:                   n += printf(")");         break;
-  case USE_SB:                   n += printf("]");         break;
-  case USE_TB:                   n += printf(">");         break;
-  case USE_DRTB:                 n += printf("<<");        break;
-  case USE_SQ:                   n += printf("'");         break;
-  case USE_DQ:                   n += printf("\"");        break;
-  default:                       break;
-  }
-
-  switch (GET_POS1(mode)) {
-  case USE_COLON:                n += printf(":");         break;
-  case USE_BYTES:                n += printf(" (bytes)");  break;
-  default:                       break;
-  }
-
-  if (mode & USE_EOL)            n += printf_eol();
 
   return n;
 }
 
 int printf_text(const char* p, const imode_t mode) {
   MALLOCA(char, data, 1024);
-  int n = printf_work(data, 1024, p, mode);
+  int n = printf_work(data, sizeof(data), p, mode);
   if (p) {
     int e = mode & USE_EOL;
     int ss = CAST(int, GET_PAD(mode));
@@ -246,13 +257,13 @@ int printf_mask(const pconvert_t p, const maskz_t mask, const imode_t mode) {
   imode_t s = mode & USE_NOSPACE ? 0 : USE_SPACE;
   for (pconvert_t x = p; 0 != x->text; ++x) {
     if (x->type & v) {
-      n += printf_work(data + n, 1024, x->text, (mode & ~USE_EOL) | s);
+      n += printf_work(data + n, sizeof(data) - n, x->text, (mode & ~USE_EOL) | s);
       v &= ~x->type;
     }
   }
 
   if (v) {
-    n += printf_nice(v, USE_UNKNOWN | USE_SPACE | (mode & ~USE_EOL));  // TBD
+    n += printf_neat(data + n, sizeof(data) - n, v, USE_UNKNOWN | USE_SPACE | (mode & ~USE_EOL));
   }
 
   return printf_text(data, mode);
