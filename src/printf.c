@@ -4,6 +4,46 @@
 
 #include "printf.h"
 
+int printf_work(char* o, const size_t size, const char* p, const imode_t mode) {
+#define PRINT1(x)    snprintf(o + n, size - n, x)
+#define PRINT2(x,y)  snprintf(o + n, size - n, x, y)
+  int n = 0;
+  if (o && p) {
+    int b = GET_BRACKET(mode);
+    int p0 = GET_POS0(mode);
+    int p1 = GET_POS1(mode);
+
+    switch (p0) {
+    case USE_AT:             n += PRINT1("@");         break;
+    case USE_SPACE:          n += PRINT1(" ");         break;
+    case USE_TAB:            n += PRINT1("  ");        break;
+    default:                 break;
+    }
+
+    switch (b) {
+    case USE_CB:             n += PRINT2("{%s}", p);   break;
+    case USE_RB:             n += PRINT2("(%s)", p);   break;
+    case USE_SB:             n += PRINT2("[%s]", p);   break;
+    case USE_TB:             n += PRINT2("<%s>", p);   break;
+    case USE_DRTB:           n += PRINT2(">>%s<<", p); break;
+    case USE_SQ:             n += PRINT2("'%s'", p);   break;
+    case USE_DQ:             n += PRINT2("\"%s\"", p); break;
+    case USE_PLUS:           n += PRINT2(" +%s", p);   break;
+    case USE_DASH:           n += PRINT2(" -%s", p);   break;
+    default:                 n += PRINT2("%s", p);     break;
+    }
+
+    switch (p1) {
+    case USE_COLON:          n += PRINT1(":");         break;
+    case USE_BYTES:          n += PRINT1(" (bytes)");  break;
+    default:                 break;
+    }
+  }
+#undef PRINT2
+#undef PRINT1
+  return n;
+}
+
 int printf_eol() {
   return printf("\n");
 }
@@ -118,42 +158,11 @@ int printf_nice(const uint64_t v, const imode_t mode) {
 
 int printf_text(const char* p, const imode_t mode) {
   MALLOCA(char, data, 1024);
-#define PRINT1(x)    snprintf(data + n, sizeof(data) - n, x)
-#define PRINT2(x,y)  snprintf(data + n, sizeof(data) - n, x, y)
+  int n = printf_work(data, 1024, p, mode);
   if (p) {
-    int n = 0;
-    int b = GET_BRACKET(mode);
     int e = mode & USE_EOL;
-    int p0 = GET_POS0(mode);
-    int p1 = GET_POS1(mode);
     int ss = CAST(int, GET_PAD(mode));
     int rt = USE_RT == GET_FORMAT(mode);
-
-    switch (p0) {
-    case USE_AT:             n += PRINT1("@");         break;
-    case USE_SPACE:          n += PRINT1(" ");         break;
-    case USE_TAB:            n += PRINT1("  ");        break;
-    default:                 break;
-    }
-
-    switch (b) {
-    case USE_CB:             n += PRINT2("{%s}", p);   break;
-    case USE_RB:             n += PRINT2("(%s)", p);   break;
-    case USE_SB:             n += PRINT2("[%s]", p);   break;
-    case USE_TB:             n += PRINT2("<%s>", p);   break;
-    case USE_DRTB:           n += PRINT2(">>%s<<", p); break;
-    case USE_SQ:             n += PRINT2("'%s'", p);   break;
-    case USE_DQ:             n += PRINT2("\"%s\"", p); break;
-    case USE_PLUS:           n += PRINT2(" +%s", p);   break;
-    case USE_DASH:           n += PRINT2(" -%s", p);   break;
-    default:                 n += PRINT2("%s", p);     break;
-    }
-
-    switch (p1) {
-    case USE_COLON:          n += PRINT1(":");         break;
-    case USE_BYTES:          n += PRINT1(" (bytes)");  break;
-    default:                 break;
-    }
 
     if (!rt)                      printf("%s", data);
     if (ss && n < ss)        n += printf("%*s", MAX(0, ss - n), " ");
@@ -162,8 +171,7 @@ int printf_text(const char* p, const imode_t mode) {
 
     return n;
   }
-#undef PRINT2
-#undef PRINT1
+
   return -1;
 }
 
@@ -231,24 +239,23 @@ int printf_data(const void* p, const size_t size, const addrz_t addr, const imod
 }
 
 int printf_mask(const pconvert_t p, const maskz_t mask, const imode_t mode) {
+  MALLOCA(char, data, 1024);
+
   int n = 0;
   maskz_t v = mask;
+  imode_t s = mode & USE_NOSPACE ? 0 : USE_SPACE;
   for (pconvert_t x = p; 0 != x->text; ++x) {
     if (x->type & v) {
-      n += printf_text(x->text, (mode & ~USE_EOL) | USE_SPACE);
+      n += printf_work(data + n, 1024, x->text, (mode & ~USE_EOL) | s);
       v &= ~x->type;
     }
   }
 
   if (v) {
-    n += printf_nice(v, USE_UNKNOWN | USE_SPACE | (mode & ~USE_EOL));
+    n += printf_nice(v, USE_UNKNOWN | USE_SPACE | (mode & ~USE_EOL));  // TBD
   }
 
-  if (mode & USE_EOL) {
-    n += printf_eol();
-  }
-
-  return n;
+  return printf_text(data, mode);
 }
 
 int printf_maskmute(const pconvert_t p, const maskz_t mask, const imode_t mode) {

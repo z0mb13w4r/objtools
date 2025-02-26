@@ -9,6 +9,7 @@
 #include "static/dt_flags_1.ci"
 #include "static/dt_posflag_1.ci"
 #include "static/dyntag.ci"
+#include "static/ehdrflags.ci"
 #include "static/ehdrmachine.ci"
 #include "static/ehdrosabi.ci"
 #include "static/ehdrtype.ci"
@@ -23,22 +24,6 @@
 #include "static/stttype.ci"
 #include "static/stvvisibility.ci"
 #include "static/vna_flags.ci"
-
-static convert_t EHDRFLAGS[] = {
-  {"W",                            SHF_WRITE},
-  {"A",                            SHF_ALLOC},
-  {"X",                            SHF_EXECINSTR},
-  {"M",                            SHF_MERGE},
-  {"S",                            SHF_STRINGS},
-  {"I",                            SHF_INFO_LINK},
-  {"L",                            SHF_LINK_ORDER},
-  {"O",                            SHF_OS_NONCONFORMING},
-  {"G",                            SHF_GROUP},
-  {"T",                            SHF_TLS},
-  {"E",                            SHF_EXCLUDE},
-  {"C",                            SHF_COMPRESSED},
-  {0, 0}
-};
 
 static const char* get_gnuabitab64(const unsigned int x) {
   return strpick(zGNUABITAB, x);
@@ -112,33 +97,6 @@ static const char* get_ehdrosabi(pbuffer_t p) {
 
   return NULL;
 
-}
-
-static const char* get_shdrflags64(Elf64_Shdr *s) {
-  static char buff[32];
-  char *p = buff;
-
-  if (s) {
-    for (pconvert_t x = EHDRFLAGS; 0 != x->text; ++x) {
-      if (x->type & s->sh_flags) {
-        *p = x->text[0];
-	++p;
-      }
-    }
-
-    *p = '\0';
-    return buff;
-  }
-
-  return NULL;
-}
-
-static const char* get_shdrtype64(Elf64_Shdr *s) {
-  if (s) {
-    return strpick(zSHDRTYPE, s->sh_type);
-  }
-
-  return NULL;
 }
 
 static const char* get_reltype(Elf64_Rel *r) {
@@ -331,12 +289,12 @@ static int dump_sectionheaders32(const pbuffer_t p, const poptions_t o, Elf32_Eh
       printf_nice(shdr->sh_offset, USE_LHEX32);
       printf_nice(shdr->sh_size, USE_LHEX32);
       printf_nice(shdr->sh_entsize, USE_LHEX8);
-//      printf_text(get_shdrflags64(shdr), USE_RT | USE_SPACE | SET_PAD(4));
+      printf_mask(EHDRFLAGS, shdr->sh_flags, USE_RT | USE_NOSPACE | SET_PAD(4));
       printf_nice(shdr->sh_link, USE_DEC2);
       printf_nice(shdr->sh_info, USE_DEC3);
-      printf_nice(shdr->sh_addralign, USE_DEC2);
+      printf_nice(shdr->sh_addralign, USE_DEC3);
     }
-    printf("\n");
+    printf_eol();
   }
 
   printf_text("Key to Flags", USE_LT | USE_COLON | USE_EOL);
@@ -364,12 +322,12 @@ static int dump_sectionheaders64(const pbuffer_t p, const poptions_t o, Elf64_Eh
       printf_nice(shdr->sh_offset, USE_LHEX32);
       printf_nice(shdr->sh_size, USE_LHEX32);
       printf_nice(shdr->sh_entsize, USE_LHEX8);
-      printf_text(get_shdrflags64(shdr), USE_RT | USE_SPACE | SET_PAD(4));
+      printf_mask(EHDRFLAGS, shdr->sh_flags, USE_RT | USE_NOSPACE | SET_PAD(4));
       printf_nice(shdr->sh_link, USE_DEC2);
       printf_nice(shdr->sh_info, USE_DEC3);
-      printf_nice(shdr->sh_addralign, USE_DEC2);
+      printf_nice(shdr->sh_addralign, USE_DEC3);
     }
-    printf("\n");
+    printf_eol();
   }
 
   printf_text("Key to Flags", USE_LT | USE_COLON | USE_EOL);
@@ -382,7 +340,24 @@ static int dump_sectionheaders64(const pbuffer_t p, const poptions_t o, Elf64_Eh
   return 0;
 }
 
-static int dump_sectiongroups(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
+static int dump_sectiongroups32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
+  /* Scan the sections for the group section. */
+  Elf32_Half cnt = 0;
+  for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
+    Elf32_Shdr *shdr = get_shdr32byindex(p, i);
+    if (shdr && SHT_GROUP == shdr->sh_type) ++cnt;
+  }
+
+  if (0 == cnt) {
+    printf("%s: WARNING: There are no section groups in this file.\n\n", o->prgname);
+  } else {
+    // TBD
+  }
+
+  return 0;
+}
+
+static int dump_sectiongroups64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
   /* Scan the sections for the group section. */
   Elf64_Half cnt = 0;
   for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
@@ -1078,13 +1053,14 @@ int readelf(const pbuffer_t p, const poptions_t o) {
       if (ehdr) {
         if (o->action & OPTREADELF_FILEHEADER)       dump_fileheader32(p, o, ehdr);
         if (o->action & OPTREADELF_SECTIONHEADERS)   dump_sectionheaders32(p, o, ehdr);
+        if (o->action & OPTREADELF_SECTIONGROUPS)    dump_sectiongroups32(p, o, ehdr);
       }
     } else if (is64(p)) {
       Elf64_Ehdr *ehdr = get_ehdr64(p);
       if (ehdr) {
         if (o->action & OPTREADELF_FILEHEADER)       dump_fileheader64(p, o, ehdr);
         if (o->action & OPTREADELF_SECTIONHEADERS)   dump_sectionheaders64(p, o, ehdr);
-        if (o->action & OPTREADELF_SECTIONGROUPS)    dump_sectiongroups(p, o, ehdr);
+        if (o->action & OPTREADELF_SECTIONGROUPS)    dump_sectiongroups64(p, o, ehdr);
         if (o->action & OPTREADELF_PROGRAMHEADERS)   dump_programheaders64(p, o, ehdr);
         if (o->action & OPTREADELF_DYNAMIC)          dump_dynamic64(p, o, ehdr);
         if (o->action & OPTREADELF_RELOCS)           dump_relocs64(p, o, ehdr);

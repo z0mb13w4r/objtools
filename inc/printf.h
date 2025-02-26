@@ -64,6 +64,7 @@
 #define SET_FLAG(x)       SET_XX4(x, 28)
 
 #define USE_EOL           SET_FLAG(1)
+#define USE_NOSPACE       SET_FLAG(2)
 #define USE_FLAGMASK      SET_FLAG(15)
 
 #define USE_LT            SET_FORMAT(1)
@@ -90,9 +91,11 @@
 #define USE_POS0MASK      SET_POS0(15)
 
 int printf_eol();
+
+int printf_text(const char* p, const imode_t mode);
 int printf_nice(const uint64_t v, const imode_t mode);
 int printf_data(const void* p, const size_t size, const addrz_t addr, const imode_t mode);
-int printf_text(const char* p, const imode_t mode);
+int printf_work(char* o, const size_t size, const char* p, const imode_t mode);
 
 int printf_mask(const pconvert_t p, const maskz_t mask, const imode_t mode);
 int printf_maskmute(const pconvert_t p, const maskz_t mask, const imode_t mode);
