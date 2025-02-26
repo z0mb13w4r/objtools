@@ -19,13 +19,13 @@ static int ismode0(void *p, const int mode) {
   return 0;
 }
 
-static void* setmode(void *p, const int mode) {
+handle_t setmode(handle_t p, const int mode) {
   if (p) {
-    char* pc = p;
-    pc[0] = MODE_GET0(mode);
-    pc[1] = MODE_GET1(mode);
-    pc[2] = MODE_GET2(mode);
-    pc[3] = MODE_GET3(mode);
+    char* p0 = CAST(char*, p);
+    p0[0] = MODE_GET0(mode);
+    p0[1] = MODE_GET1(mode);
+    p0[2] = MODE_GET2(mode);
+    p0[3] = MODE_GET3(mode);
   }
 
   return p;
@@ -50,8 +50,7 @@ handle_t create(const int mode) {
     paction_t p = mallocx(sizeof(action_t));
     return setmode(p, mode);
   } else if (MODE_LINKS == (mode & MODE_MASK0)) {
-    paction_t p = mallocx(sizeof(node_t));
-    return setmode(p, mode);
+    return lmalloc();
   }
 
   return NULL;
@@ -80,6 +79,7 @@ handle_t destroy(handle_t p) {
       destroy(CAST(paction_t, p)->actions);
     } else if (ismode0(p, MODE_LINKS)) {
       destroy(CAST(pnode_t, p)->item);
+      return lfree(p);
     }
 
     free(p);
@@ -90,7 +90,7 @@ handle_t destroy(handle_t p) {
 
 handle_t release(handle_t p) {
   if (ismode0(p, MODE_LINKS)) {
-    free(p);
+    lfree(p);
   }
 
   return NULL;
@@ -218,16 +218,6 @@ const char* get_nhdrdesc64byindex(const pbuffer_t p, const int index) {
     if (s) {
       return getp(p, s->sh_offset + sizeof(Elf64_Nhdr) + n->n_namesz, n->n_descsz);
     }
-  }
-
-  return NULL;
-}
-
-
-Elf64_Phdr* get_phdr64byindex(const pbuffer_t p, const int index) {
-  Elf64_Ehdr *e = get_ehdr64(p);
-  if (e) {
-    return (Elf64_Phdr*)getp(p, e->e_phoff + (e->e_phentsize * index), e->e_phentsize);
   }
 
   return NULL;

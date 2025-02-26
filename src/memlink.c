@@ -158,3 +158,17 @@ handle_t ldestroye(handle_t p) {
   return p;
 }
 
+handle_t lmalloc() {
+  pnode_t p = mallocx(sizeof(node_t));
+  return setmode(p, MODE_LINKS);
+}
+
+handle_t lfree(handle_t p) {
+  if (islink(p)) {
+    free(p);
+    return NULL;
+  }
+
+  return p;
+}
+

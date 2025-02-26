@@ -1,6 +1,5 @@
-#include <malloc.h>
-
 #include "buffer.h"
+#include "printf.h"
 #include "readpe.h"
 #include "readelf.h"
 #include "objcopy.h"
@@ -31,7 +30,7 @@ int main(int argc, char* argv[]) {
           r = objhash(p, o);
         }
       } else {
-        printf("%s: ERROR: '%s': no such file.\n", o->prgname, o->inpname);
+        printf_e("'%s': no such file.", o->inpname);
       }
       destroy(p);
     }

@@ -54,14 +54,6 @@ static const char* get_symbolindex64(const unsigned int x) {
   return buff;
 }
 
-static const char* get_ehdrmachine64(Elf64_Ehdr *e) {
-  if (e) {
-    return strpick(zEHDRMACHINE, e->e_machine);
-  }
-
-  return NULL;
-}
-
 static const char* get_ehdrosabi(pbuffer_t p) {
   if (p) {
     const unsigned int osabi = get(p, EI_OSABI);
@@ -161,7 +153,7 @@ static int make_versionnames64(const pbuffer_t p, Elf64_Word *vnames, const size
 }
 
 static int dump_elfheader(const pbuffer_t p, const poptions_t o) {
-  int MAXSIZE = 36;
+  const int MAXSIZE = 36;
 
   printf_text("ELF HEADER", USE_LT | USE_COLON | USE_EOL);
 
@@ -172,9 +164,9 @@ static int dump_elfheader(const pbuffer_t p, const poptions_t o) {
             get(p, 12), get(p, 13), get(p, 14), get(p, 15));
 
   printf_text("Class", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  if (is32(p)) {
+  if (isELF32(p)) {
     printf_text("ELF32", USE_LT | USE_SPACE | USE_EOL);
-  } else if (is64(p)) {
+  } else if (isELF64(p)) {
     printf_text("ELF64", USE_LT | USE_SPACE | USE_EOL);
   } else {
     return -1;
@@ -207,7 +199,7 @@ static int dump_elfheader(const pbuffer_t p, const poptions_t o) {
 }
 
 static int dump_fileheader32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
-  int MAXSIZE = 36;
+  const int MAXSIZE = 36;
 
   printf_text("Type", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   printf_pick(zEHDRTYPE, ehdr->e_type, USE_LT | USE_SPACE | USE_EOL);
@@ -241,7 +233,7 @@ static int dump_fileheader32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *
 }
 
 static int dump_fileheader64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
-  int MAXSIZE = 36;
+  const int MAXSIZE = 36;
 
   printf_text("Type", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   printf_pick(zEHDRTYPE, ehdr->e_type, USE_LT | USE_SPACE | USE_EOL);
@@ -275,15 +267,19 @@ static int dump_fileheader64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *
 }
 
 static int dump_sectionheaders32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
+  const int MAXSIZE = MAX(get_secname32maxsize(p) + 2, 21);
+
   printf_text("SECTION HEADERS", USE_LT | USE_COLON | USE_EOL);
-  printf("  [Nr] Name                 Type            Address          Off      Size     ES Flg Lk Inf  Al\n");
+  printf_text("[Nr]", USE_LT | USE_TAB);
+  printf_text("Name", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+  printf_text("Type            Address          Off      Size     ES Flg Lk Inf  Al", USE_LT | USE_SPACE | USE_EOL);
 
   for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
     printf_nice(i, USE_DEC2 | USE_TAB | USE_SB);
 
     Elf32_Shdr *shdr = get_shdr32byindex(p, i);
     if (shdr) {
-      printf_text(get_secname32byindex(p, i), USE_LT | USE_SPACE | SET_PAD(21));
+      printf_text(get_secname32byindex(p, i), USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
       printf_pick(zSHDRTYPE, shdr->sh_type, USE_LT | USE_SPACE | SET_PAD(16));
       printf_nice(shdr->sh_addr, USE_LHEX64);
       printf_nice(shdr->sh_offset, USE_LHEX32);
@@ -308,15 +304,19 @@ static int dump_sectionheaders32(const pbuffer_t p, const poptions_t o, Elf32_Eh
 }
 
 static int dump_sectionheaders64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
+  const int MAXSIZE = MAX(get_secname64maxsize(p) + 2, 21);
+
   printf_text("SECTION HEADERS", USE_LT | USE_COLON | USE_EOL);
-  printf("  [Nr] Name                 Type            Address          Off      Size     ES Flg Lk Inf  Al\n");
+  printf_text("[Nr]", USE_LT | USE_TAB);
+  printf_text("Name", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+  printf_text("Type            Address          Off      Size     ES Flg Lk Inf  Al", USE_LT | USE_SPACE | USE_EOL);
 
   for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
     printf_nice(i, USE_DEC2 | USE_TAB | USE_SB);
 
     Elf64_Shdr *shdr = get_shdr64byindex(p, i);
     if (shdr) {
-      printf_text(get_secname64byindex(p, i), USE_LT | USE_SPACE | SET_PAD(21));
+      printf_text(get_secname64byindex(p, i), USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
       printf_pick(zSHDRTYPE, shdr->sh_type, USE_LT | USE_SPACE | SET_PAD(16));
       printf_nice(shdr->sh_addr, USE_LHEX64);
       printf_nice(shdr->sh_offset, USE_LHEX32);
@@ -349,7 +349,7 @@ static int dump_sectiongroups32(const pbuffer_t p, const poptions_t o, Elf32_Ehd
   }
 
   if (0 == cnt) {
-    printf("%s: WARNING: There are no section groups in this file.\n\n", o->prgname);
+    printf_w("There are no section groups in this file.");
   } else {
     // TBD
   }
@@ -366,7 +366,7 @@ static int dump_sectiongroups64(const pbuffer_t p, const poptions_t o, Elf64_Ehd
   }
 
   if (0 == cnt) {
-    printf("%s: WARNING: There are no section groups in this file.\n\n", o->prgname);
+    printf_w("There are no section groups in this file.");
   } else {
     // TBD
   }
@@ -374,9 +374,77 @@ static int dump_sectiongroups64(const pbuffer_t p, const poptions_t o, Elf64_Ehd
   return 0;
 }
 
+static int dump_programheaders32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
+  if (0 != ehdr->e_phnum) {
+    printf_text("PROGRAM HEADERS", USE_LT | USE_COLON | USE_EOL);
+    printf("  Type            Offset   VirtAddr           PhysAddr           FileSiz  MemSiz   Flg  Align\n");
+  }
+
+  for (Elf32_Half i = 0; i < ehdr->e_phnum; ++i) {
+    Elf32_Phdr *phdr = get_phdr32byindex(p, i);
+    if (phdr) {
+      printf_pick(zPHDRTYPE, phdr->p_type, USE_LT | USE_TAB | SET_PAD(17));
+      printf_nice(phdr->p_offset, USE_FHEX24);
+      printf_nice(phdr->p_vaddr,  USE_FHEX64);
+      printf_nice(phdr->p_paddr,  USE_FHEX64);
+      printf_nice(phdr->p_filesz, USE_FHEX24);
+      printf_nice(phdr->p_memsz,  USE_FHEX24);
+
+      printf(" %c%c%c ",
+            (phdr->p_flags & PF_R ? 'R' : ' '),
+            (phdr->p_flags & PF_W ? 'W' : ' '),
+            (phdr->p_flags & PF_X ? 'E' : ' '));
+
+      printf_nice(phdr->p_align, USE_FHEX);
+      printf_eol();
+
+      if (PT_INTERP == phdr->p_type) {
+        printf("    [Requesting program interpreter:" );
+        printf_data(getp(p, phdr->p_offset, phdr->p_filesz), phdr->p_filesz, 0, USE_STR);
+        printf("]\n");
+      }
+    }
+  }
+
+  if (0 != ehdr->e_phnum) {
+    printf_eol();
+
+    printf_text("Section to Segment mapping", USE_LT | USE_COLON | USE_EOL);
+    printf_text("Segment Sections...", USE_LT | USE_SPACE | USE_EOL);
+  }
+
+  for (Elf32_Half i = 0; i < ehdr->e_phnum; ++i) {
+    printf_nice(i, USE_TAB | USE_DEC2Z);
+
+    Elf32_Phdr *phdr = get_phdr32byindex(p, i);
+    if (phdr) {
+      for (Elf32_Half j = 1; j < ehdr->e_shnum; ++j) {
+        Elf32_Shdr *shdr = get_shdr32byindex(p, j);
+        if (shdr) {
+          if (isshdrinphdr32(shdr, phdr)) {
+            printf_text(get_secname32byindex(p, j), USE_SPACE);
+          }
+        }
+      }
+    }
+    printf_eol();
+  }
+
+  if (0 == ehdr->e_phnum) {
+    printf_w("There are no program headers in this file.");
+  } else {
+    printf_eol();
+  }
+
+  return 0;
+}
+
 static int dump_programheaders64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
-  printf_text("PROGRAM HEADERS", USE_LT | USE_COLON | USE_EOL);
-  printf("  Type            Offset   VirtAddr           PhysAddr           FileSiz  MemSiz   Flg  Align\n");
+  if (0 != ehdr->e_phnum) {
+    printf_text("PROGRAM HEADERS", USE_LT | USE_COLON | USE_EOL);
+    printf("  Type            Offset   VirtAddr           PhysAddr           FileSiz  MemSiz   Flg  Align\n");
+  }
+
   for (Elf64_Half i = 0; i < ehdr->e_phnum; ++i) {
     Elf64_Phdr *phdr = get_phdr64byindex(p, i);
     if (phdr) {
@@ -403,10 +471,13 @@ static int dump_programheaders64(const pbuffer_t p, const poptions_t o, Elf64_Eh
     }
   }
 
-  printf_eol();
+  if (0 != ehdr->e_phnum) {
+    printf_eol();
 
-  printf_text("Section to Segment mapping", USE_LT | USE_COLON | USE_EOL);
-  printf_text("Segment Sections...", USE_LT | USE_SPACE | USE_EOL);
+    printf_text("Section to Segment mapping", USE_LT | USE_COLON | USE_EOL);
+    printf_text("Segment Sections...", USE_LT | USE_SPACE | USE_EOL);
+  }
+
   for (Elf64_Half i = 0; i < ehdr->e_phnum; ++i) {
     printf_nice(i, USE_TAB | USE_DEC2Z);
 
@@ -415,7 +486,7 @@ static int dump_programheaders64(const pbuffer_t p, const poptions_t o, Elf64_Eh
       for (Elf64_Half j = 1; j < ehdr->e_shnum; ++j) {
         Elf64_Shdr *shdr = get_shdr64byindex(p, j);
         if (shdr) {
-          if (shdrinphdr64(shdr, phdr)) {
+          if (isshdrinphdr64(shdr, phdr)) {
             printf_text(get_secname64byindex(p, j), USE_SPACE);
           }
         }
@@ -424,7 +495,11 @@ static int dump_programheaders64(const pbuffer_t p, const poptions_t o, Elf64_Eh
     printf_eol();
   }
 
-  printf_eol();
+  if (0 == ehdr->e_phnum) {
+    printf_w("There are no program headers in this file.");
+  } else {
+    printf_eol();
+  }
 
   return 0;
 }
@@ -659,9 +734,14 @@ static int dump_relocs64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr
   return 0;
 }
 
+static int dump_unwind32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
+  printf_w("The decoding of unwind sections for machine type %s is not currently supported.", strpick(zEHDRMACHINE, ehdr->e_machine));
+
+  return 0;
+}
+
 static int dump_unwind64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
-  printf("%s: WARNING: The decoding of unwind sections for machine type %s is not currently supported.\n\n",
-    o->prgname, get_ehdrmachine64(ehdr));
+  printf_w("The decoding of unwind sections for machine type %s is not currently supported.", strpick(zEHDRMACHINE, ehdr->e_machine));
 
   return 0;
 }
@@ -738,7 +818,7 @@ static int dump_gnuhash64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
   if (pb) {
     Elf32_Word nbucket  = pb[0];
     Elf32_Word symbias  = pb[1];
-    Elf32_Word sbitmask = is32(p) ? pb[2] : 2 * pb[2];
+    Elf32_Word sbitmask = isELF32(p) ? pb[2] : 2 * pb[2];
     //Elf32_Word shift    = pb[3];
     Elf32_Word *bitmask = &pb[4];
     Elf32_Word *bucket  = &pb[4 + sbitmask];
@@ -950,7 +1030,7 @@ static int dump_actions64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
         if (0 != shdr->sh_size && shdr->sh_type != SHT_NOBITS) {
           printf_data(getp(p, shdr->sh_offset, shdr->sh_size), shdr->sh_size, shdr->sh_addr, USE_HEXDUMP);
         } else {
-          printf("%s: WARNING: section '%s' has no data to dump!\n", o->prgname, x->secname);
+          printf_w("section '%s' has no data to dump!", x->secname);
         }
       } else if (ACT_STRDUMP == x->action) {
         printf("String dump of section '%s':\n", x->secname);
@@ -958,13 +1038,13 @@ static int dump_actions64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
         if (0 != shdr->sh_size && shdr->sh_type != SHT_NOBITS) {
           printf_data(getp(p, shdr->sh_offset, shdr->sh_size), shdr->sh_size, shdr->sh_addr, USE_STRDUMP);
         } else {
-          printf("%s: WARNING: section '%s' has no data to dump!\n", o->prgname, x->secname);
+          printf_w("section '%s' has no data to dump!", x->secname);
         }
       }
 
       printf_eol();
     } else {
-      printf("%s: WARNING: section '%s' was not dumped because it does not exist!\n", o->prgname, x->secname);
+      printf_w("section '%s' was not dumped because it does not exist!", x->secname);
     }
 
     x = x->actions;
@@ -1048,14 +1128,17 @@ int readelf(const pbuffer_t p, const poptions_t o) {
       dump_elfheader(p, o);
     }
 
-    if (is32(p)) {
+    if (isELF32(p)) {
       Elf32_Ehdr *ehdr = get_ehdr32(p);
       if (ehdr) {
         if (o->action & OPTREADELF_FILEHEADER)       dump_fileheader32(p, o, ehdr);
         if (o->action & OPTREADELF_SECTIONHEADERS)   dump_sectionheaders32(p, o, ehdr);
         if (o->action & OPTREADELF_SECTIONGROUPS)    dump_sectiongroups32(p, o, ehdr);
+        if (o->action & OPTREADELF_PROGRAMHEADERS)   dump_programheaders32(p, o, ehdr);
+
+        if (o->action & OPTREADELF_UNWIND)           dump_unwind32(p, o, ehdr);
       }
-    } else if (is64(p)) {
+    } else if (isELF64(p)) {
       Elf64_Ehdr *ehdr = get_ehdr64(p);
       if (ehdr) {
         if (o->action & OPTREADELF_FILEHEADER)       dump_fileheader64(p, o, ehdr);
@@ -1073,7 +1156,7 @@ int readelf(const pbuffer_t p, const poptions_t o) {
       }
     }
   } else {
-    printf("%s: ERROR: not an ELF file - it has the wrong magic bytes at the start.\n", o->prgname);
+    printf_e("not an ELF file - it has the wrong magic bytes at the start.");
   }
 
   return 0;

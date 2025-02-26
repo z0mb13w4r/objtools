@@ -17,25 +17,15 @@
    the st_other field.  The STV_ defines specify the actual visibility.  */
 #define ELF_ST_VISIBILITY(x)       ((x) & 0x03)
 
-typedef struct elf64_s {
-  imode_t mode;
-  size_t  spos, epos, size;
-  union {
-    Elf64_Ehdr ehdr;
-    Elf64_Nhdr nhdr;
-    Elf64_Phdr phdr;
-    Elf64_Shdr shdr;
-    Elf64_Vernaux vernaux;
-    Elf64_Verneed verneed;
-    Elf64_Versym  versym;
-  };
-} elf64_t;
+int isTBSS32(Elf64_Shdr *s, Elf64_Phdr *p);
+int isTBSS64(Elf64_Shdr *s, Elf64_Phdr *p);
 
-int shdrinphdr64(Elf64_Shdr *s, Elf64_Phdr *p);
+int isshdrinphdr32(Elf32_Shdr *s, Elf32_Phdr *p);
+int isshdrinphdr64(Elf64_Shdr *s, Elf64_Phdr *p);
 
 int isELF(const pbuffer_t p);
-int is32(const pbuffer_t p);
-int is64(const pbuffer_t p);
+int isELF32(const pbuffer_t p);
+int isELF64(const pbuffer_t p);
 
 uint64_t getLE(const void *p, const size_t siz);
 uint64_t getBE(const void *p, const size_t siz);
@@ -43,8 +33,14 @@ uint64_t getBE(const void *p, const size_t siz);
 Elf32_Ehdr* get_ehdr32(const pbuffer_t p);
 Elf64_Ehdr* get_ehdr64(const pbuffer_t p);
 
+Elf32_Phdr* get_phdr32byindex(const pbuffer_t p, const int index);
+Elf64_Phdr* get_phdr64byindex(const pbuffer_t p, const int index);
+
 Elf32_Shdr* get_shdr32byindex(const pbuffer_t p, const int index);
 Elf64_Shdr* get_shdr64byindex(const pbuffer_t p, const int index);
+
+size_t get_secname32maxsize(const pbuffer_t p);
+size_t get_secname64maxsize(const pbuffer_t p);
 
 const char* get_secname32byindex(const pbuffer_t p, const int index);
 const char* get_secname64byindex(const pbuffer_t p, const int index);

@@ -29,5 +29,8 @@ handle_t ldetache(handle_t p);
 handle_t ldestroy(handle_t p);
 handle_t ldestroye(handle_t p);
 
+handle_t lmalloc();
+handle_t lfree(handle_t p);
+
 #endif
 

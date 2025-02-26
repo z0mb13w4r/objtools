@@ -1,11 +1,20 @@
 #include <time.h>
 #include <ctype.h>
+#include <stdarg.h>
 #include <inttypes.h>
 
 #include "printf.h"
 
+#define MAX_BUFFER_SIZE (1024)
+
 #define PRINT1(x)    snprintf(o + n, size - n, x)
 #define PRINT2(x,y)  snprintf(o + n, size - n, x, y)
+
+static char errname[256] = {0};
+
+void set_errname(const char* name) {
+  strncpy(errname, name, sizeof(errname));
+}
 
 int printf_work(char* o, const size_t size, const char* p, const imode_t mode) {
   int n = 0;
@@ -168,7 +177,7 @@ int printf_nice(const uint64_t v, const imode_t mode) {
 }
 
 int printf_text(const char* p, const imode_t mode) {
-  MALLOCA(char, data, 1024);
+  MALLOCA(char, data, MAX_BUFFER_SIZE);
   int n = printf_work(data, sizeof(data), p, mode);
   if (p) {
     int e = mode & USE_EOL;
@@ -250,7 +259,7 @@ int printf_data(const void* p, const size_t size, const addrz_t addr, const imod
 }
 
 int printf_mask(const pconvert_t p, const maskz_t mask, const imode_t mode) {
-  MALLOCA(char, data, 1024);
+  MALLOCA(char, data, MAX_BUFFER_SIZE);
 
   int n = 0;
   maskz_t v = mask;
@@ -298,5 +307,81 @@ int printf_pick(const pconvert_t p, const pick_t x, const imode_t mode) {
 
 int printf_pack(const size_t size) {
   return printf_text(" ", SET_PAD(size));
+}
+
+int printf_d(const char* format, ...) {
+  MALLOCA(char, data, MAX_BUFFER_SIZE);
+
+  va_list pVAList;
+  va_start(pVAList, format);
+  vsnprintf(data, sizeof(data), format, pVAList);
+  va_end(pVAList);
+
+  if (errname[0]) {
+    return fprintf(stdout, "%s: DEBUG: %s\n\n", errname, data);
+  }
+
+  return fprintf(stdout, "DEBUG: %s\n\n", data);
+}
+
+int printf_e(const char* format, ...) {
+  MALLOCA(char, data, MAX_BUFFER_SIZE);
+
+  va_list pVAList;
+  va_start(pVAList, format);
+  vsnprintf(data, sizeof(data), format, pVAList);
+  va_end(pVAList);
+
+  if (errname[0]) {
+    return fprintf(stderr, "%s: ERROR: %s\n\n", errname, data);
+  }
+
+  return fprintf(stderr, "ERROR: %s\n\n", data);
+}
+
+int printf_i(const char* format, ...) {
+  MALLOCA(char, data, MAX_BUFFER_SIZE);
+
+  va_list pVAList;
+  va_start(pVAList, format);
+  vsnprintf(data, sizeof(data), format, pVAList);
+  va_end(pVAList);
+
+  if (errname[0]) {
+    return fprintf(stdout, "%s: INFO: %s\n\n", errname, data);
+  }
+
+  return fprintf(stdout, "INFO: %s\n\n", data);
+}
+
+int printf_w(const char* format, ...) {
+  MALLOCA(char, data, MAX_BUFFER_SIZE);
+
+  va_list pVAList;
+  va_start(pVAList, format);
+  vsnprintf(data, sizeof(data), format, pVAList);
+  va_end(pVAList);
+
+  if (errname[0]) {
+    return fprintf(stdout, "%s: WARNING: %s\n\n", errname, data);
+  }
+
+  return fprintf(stdout, "WARNING: %s\n\n", data);
+}
+
+void printf_x(const char* format, ...) {
+  MALLOCA(char, data, MAX_BUFFER_SIZE);
+
+  va_list pVAList;
+  va_start(pVAList, format);
+  vsnprintf(data, sizeof(data), format, pVAList);
+  va_end(pVAList);
+
+  if (errname[0]) {
+    fprintf(stderr, "%s: FAIL: %s\n\n", errname, data);
+  } else {
+    fprintf(stderr, "ERROR: %s\n\n", data);
+  }
+  abort();
 }
 

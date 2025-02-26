@@ -114,7 +114,7 @@ static void callback_section_data(bfd *f, asection *s, void *p) {
   if (bfd_get_full_section_contents(f, s, &data)) {
     printf_data(data, dsize, soffset + s->vma, USE_HEXDUMP);
   } else {
-    printf("WARNING: reading section %s failed because: %s\n", s->name, bfd_errmsg(bfd_get_error()));
+    printf_w("reading section %s failed because: %s.", s->name, bfd_errmsg(bfd_get_error()));
   }
 
   printf_eol();
@@ -195,7 +195,7 @@ static int dump_header(const pbuffer_t p, const poptions_t o, bfd *f) {
 
 static int dump_privatehdr(const pbuffer_t p, const poptions_t o, bfd *f) {
   if (!bfd_print_private_bfd_data(f, stdout)) {
-    printf("%s: WARNING: private Headers incomplete: %s", o->prgname, bfd_errmsg(bfd_get_error()));
+    printf_w("private Headers incomplete: %s.", bfd_errmsg(bfd_get_error()));
     return 1;
   }
   printf_eol();
@@ -242,9 +242,9 @@ static int dump_symbols(const pbuffer_t p, const poptions_t o, bfd *f, const int
       bfd *cf = NULL;
 
       if (NULL == *cs) {
-        printf("%s: WARNING: no information for symbol number %ld\n", o->prgname, i);
+        printf_w("no information for symbol number %ld.", i);
       } else if ((cf = bfd_asymbol_bfd(*cs)) == NULL) {
-        printf("%s: WARNING: could not determine the type of symbol number %ld\n", o->prgname, i);
+        printf_w("could not determine the type of symbol number %ld.", i);
       } else {
         bfd_print_symbol(cf, stdout, *cs, bfd_print_symbol_all);
         printf_eol();
@@ -320,7 +320,7 @@ static int do_archive(const pbuffer_t p, const poptions_t o, bfd *f) {
       bfd_close(lf);
 
       if (bfd_get_error() != bfd_error_no_more_archived_files) {
-        printf("%s: FATAL: %s\n", o->prgname, bfd_errmsg(bfd_get_error()));
+        printf_e("%s", bfd_errmsg(bfd_get_error()));
         return -1;
       }
 
@@ -340,15 +340,13 @@ int objdump(const pbuffer_t p, const poptions_t o) {
   bfd_set_error_program_name(o->prgname);
 
   if (BFD_INIT_MAGIC != bfd_init()) {
-    printf("%s: FATAL: libbfd ABI mismatch", o->prgname);
-    exit(1);
+    printf_x("libbfd ABI mismatch.");
   }
 
   const char *target = "x86_64-pc-linux-gnu";
 
   if (!bfd_set_default_target(target)) {
-    printf("%s: FATAL: can't set BFD default target to '%s': %s", o->prgname, target, bfd_errmsg(bfd_get_error()));
-    exit(1);
+    printf_x("can't set BFD default target to '%s': %s", target, bfd_errmsg(bfd_get_error()));
   }
 
   bfd *f = bfd_openr(o->inpname, NULL);
@@ -365,7 +363,7 @@ int objdump(const pbuffer_t p, const poptions_t o) {
     } else if (bfd_check_format(f, bfd_core)) {
       r = do_coredump(p, o, f);
     } else {
-      printf("%s: WARNING: %s is an unknown format!\n", o->prgname, o->inpname);
+      printf_w("%s is an unknown format!", o->inpname);
     }
     bfd_close(f);
   }

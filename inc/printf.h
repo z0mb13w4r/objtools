@@ -104,5 +104,13 @@ int printf_masknone(const pconvert_t p, const maskz_t mask, const imode_t mode);
 int printf_pick(const pconvert_t p, const pick_t x, const imode_t mode);
 int printf_pack(const size_t size);
 
+void set_errname(const char* name);
+
+int  printf_d(const char* format, ...);
+int  printf_e(const char* format, ...);
+int  printf_i(const char* format, ...);
+int  printf_w(const char* format, ...);
+void printf_x(const char* format, ...);
+
 #endif
 

@@ -36,6 +36,7 @@ typedef struct buffer_s {
 
 } buffer_t, *pbuffer_t;
 
+handle_t setmode(handle_t p, const int mode);
 handle_t create(const int mode);
 handle_t destroy(handle_t p);
 handle_t release(handle_t p);
@@ -61,8 +62,6 @@ Elf64_Shdr* get_shdr64byname(const pbuffer_t p, const char* name);
 Elf64_Nhdr* get_nhdr64byindex(const pbuffer_t p, const int index);
 const char* get_nhdrname64byindex(const pbuffer_t p, const int index);
 const char* get_nhdrdesc64byindex(const pbuffer_t p, const int index);
-
-Elf64_Phdr* get_phdr64byindex(const pbuffer_t p, const int index);
 
 const char* get_name64byoffset(const pbuffer_t p, const int index, const int offset);
 const char* get_secname64byshdr(const pbuffer_t p, Elf64_Shdr *s);

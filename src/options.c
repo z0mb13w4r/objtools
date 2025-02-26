@@ -197,6 +197,7 @@ int get_options_readelf(poptions_t o, int argc, char** argv, char* name) {
 
   o->option = OPT_READELF;
   strname(o->prgname, name);
+  set_errname(o->prgname);
 
   for (int i = 0; i < argc; ++i) {
     if ('-' == argv[i][0] && '-' == argv[i][1]) {
@@ -262,6 +263,7 @@ int get_options_objcopy(poptions_t o, int argc, char** argv, char* name) {
 
   o->option = OPT_OBJCOPY;
   strname(o->prgname, name);
+  set_errname(o->prgname);
 
   for (int i = 0; i < argc; ++i) {
     if ('-' == argv[i][0] && '-' == argv[i][1]) {
@@ -310,6 +312,7 @@ int get_options_objdump(poptions_t o, int argc, char** argv, char* name) {
 
   o->option = OPT_OBJDUMP;
   strname(o->prgname, name);
+  set_errname(o->prgname);
 
   for (int i = 0; i < argc; ++i) {
     if ('-' == argv[i][0] && '-' == argv[i][1]) {
@@ -339,6 +342,7 @@ int get_options_objhash(poptions_t o, int argc, char** argv, char* name) {
 
   o->option = OPT_OBJHASH;
   strname(o->prgname, name);
+  set_errname(o->prgname);
 
   for (int i = 0; i < argc; ++i) {
     if ('-' == argv[i][0] && '-' == argv[i][1]) {

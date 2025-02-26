@@ -37,23 +37,23 @@ static int dump_actions(const pbuffer_t p, const poptions_t o, bfd *f) {
 
       asection *osec = bfd_get_section_by_name(f, x->secname);
       if (NULL == osec) {
-        printf("%s: WARNING: can't dump section '%s' - it does not exist.\n", o->prgname, x->secname);
+        printf_w("can't dump section '%s' - it does not exist.", x->secname);
       } else if (0 == (bfd_section_flags(osec) & SEC_HAS_CONTENTS)) {
-        printf("%s: WARNING: can't dump section '%s' - it has no contents.\n", o->prgname, x->secname);
+        printf_w("can't dump section '%s' - it has no contents.", x->secname);
       } else {
         bfd_size_type size = bfd_section_size(osec);
 
         FILE *fp = fopen(x->outname, "wb");
         if (NULL == fp) {
-          printf("%s: WARNING: could not create section '%s' dump file '%s'.\n", o->prgname, x->secname, o->outname);
+          printf_w("could not create section '%s' dump file '%s'.", x->secname, o->outname);
         } else {
           bfd_byte *data = NULL;
 	  if (bfd_malloc_and_get_section(f, osec, &data)) {
             if (size != fwrite(data, 1, size, fp)) {
-              printf("%s: ERROR: writing section '%s' contents to '%s' (%s)\n", o->prgname, x->secname, o->outname, strerror(errno));
+              printf_e("writing section '%s' contents to '%s' (%s)", x->secname, o->outname, strerror(errno));
             }
           } else {
-            printf("%s: WARNING: could not retrieve section '%s' contents.\n", o->prgname, x->secname);
+            printf_w("could not retrieve section '%s' contents.", x->secname);
           }
 
           fclose(fp);
@@ -90,15 +90,13 @@ int objcopy(const pbuffer_t p, const poptions_t o) {
   bfd_set_error_program_name(o->prgname);
 
   if (BFD_INIT_MAGIC != bfd_init()) {
-    printf("%s: FATAL: libbfd ABI mismatch", o->prgname);
-    exit(1);
+    printf_x("libbfd ABI mismatch.");
   }
 
   const char *target = "x86_64-pc-linux-gnu";
 
   if (!bfd_set_default_target(target)) {
-    printf("%s: FATAL: can't set BFD default target to '%s': %s", o->prgname, target, bfd_errmsg(bfd_get_error()));
-    exit(1);
+    printf_x("can't set BFD default target to '%s': %s.", target, bfd_errmsg(bfd_get_error()));
   }
 
   bfd *f = bfd_openr(o->inpname, NULL);
@@ -110,7 +108,7 @@ int objcopy(const pbuffer_t p, const poptions_t o) {
     } else if (bfd_check_format(f, bfd_core)) {
       r = do_coredump(p, o, f);
     } else {
-      printf("%s: WARNING: %s is an unknown format!\n", o->prgname, o->inpname);
+      printf_w("%s is an unknown format!", o->inpname);
     }
     bfd_close(f);
   }

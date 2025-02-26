@@ -18,7 +18,7 @@ static void callback_hashsections(bfd *f, asection *s, void *p) {
       printf_data(md, SHA256_DIGEST_LENGTH, 0, USE_HEX);
     }
   } else {
-    printf("WARNING: could not retrieve section '%s' contents from '%s'.\n", bfd_section_name(s), pp->note);
+    printf_w("could not retrieve section '%s' contents from '%s'.", bfd_section_name(s), pp->note);
   }
 
   free(data);
@@ -52,7 +52,7 @@ int objhash(const pbuffer_t p0, const poptions_t o) {
     p1 = open(o->inpname1);
     if (p1) {
     } else {
-      printf("%s: ERROR: '%s': no such file.\n", o->prgname, o->inpname1);
+      printf_e("'%s': no such file.", o->inpname1);
       goto objhash_die;
     }
   }
@@ -61,12 +61,12 @@ int objhash(const pbuffer_t p0, const poptions_t o) {
     bfd_set_error_program_name(o->prgname);
 
     if (BFD_INIT_MAGIC != bfd_init()) {
-      printf("%s: FATAL: libbfd ABI mismatch", o->prgname);
+      printf_e("libbfd ABI mismatch.");
       goto objhash_die;
     }
 
     if (!bfd_set_default_target(target)) {
-      printf("%s: FATAL: can't set BFD default target to '%s': %s", o->prgname, target, bfd_errmsg(bfd_get_error()));
+      printf_e("can't set BFD default target to '%s': %s.", target, bfd_errmsg(bfd_get_error()));
       goto objhash_die;
     }
   }
@@ -75,14 +75,14 @@ int objhash(const pbuffer_t p0, const poptions_t o) {
   if (p0) {
     f0 = bfd_openr(o->inpname0, NULL);
     if (NULL == f0) {
-      printf("%s: FATAL: BFD can't load into memory '%s': %s", o->prgname, o->inpname0, bfd_errmsg(bfd_get_error()));
+      printf_e("BFD can't load into memory '%s': %s.", o->inpname0, bfd_errmsg(bfd_get_error()));
       goto objhash_die;
     }
 
     if (!bfd_check_format(f0, bfd_archive) &&
         !bfd_check_format(f0, bfd_object) &&
         !bfd_check_format(f0, bfd_core)) {
-      printf("%s: FATAL: %s is an unknown format!\n", o->prgname, o->inpname0);
+      printf_e("%s is an unknown format!", o->inpname0);
       goto objhash_die0;
     }
   }
@@ -91,14 +91,14 @@ int objhash(const pbuffer_t p0, const poptions_t o) {
   if (p1) {
     f1 = bfd_openr(o->inpname1, NULL);
     if (NULL == f1) {
-      printf("%s: FATAL: BFD can't load into memory '%s': %s", o->prgname, o->inpname1, bfd_errmsg(bfd_get_error()));
+      printf_e("BFD can't load into memory '%s': %s.", o->inpname1, bfd_errmsg(bfd_get_error()));
       goto objhash_die0;
     }
 
     if (!bfd_check_format(f1, bfd_archive) &&
         !bfd_check_format(f1, bfd_object) &&
         !bfd_check_format(f1, bfd_core)) {
-      printf("%s: FATAL: %s is an unknown format!\n", o->prgname, o->inpname1);
+      printf_e("%s is an unknown format!", o->inpname1);
       goto objhash_die1;
     }
   }
