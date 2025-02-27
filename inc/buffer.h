@@ -63,7 +63,6 @@ Elf64_Nhdr* get_nhdr64byindex(const pbuffer_t p, const int index);
 const char* get_nhdrname64byindex(const pbuffer_t p, const int index);
 const char* get_nhdrdesc64byindex(const pbuffer_t p, const int index);
 
-const char* get_name64byoffset(const pbuffer_t p, const int index, const int offset);
 const char* get_secname64byshdr(const pbuffer_t p, Elf64_Shdr *s);
 
 int isBigEndian(const pbuffer_t p);

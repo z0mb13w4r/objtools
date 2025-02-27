@@ -75,3 +75,33 @@ static convert_t zNHDRTYPECORE[] = {
   {0, 0}
 };
 
+static const char* get_NHDRTYPE32(const pbuffer_t p, Elf32_Nhdr *n) {
+  if (n) {
+    Elf32_Ehdr *e = get_ehdr32(p);
+    if (e) {
+      if (ET_CORE == e->e_type) {
+        return strpick(zNHDRTYPECORE, n->n_type);
+      } else {
+        return strpick(zNHDRTYPE, n->n_type);
+      }
+    }
+  }
+
+  return NULL;
+}
+
+static const char* get_NHDRTYPE64(const pbuffer_t p, Elf64_Nhdr *n) {
+  if (n) {
+    Elf64_Ehdr *e = get_ehdr64(p);
+    if (e) {
+      if (ET_CORE == e->e_type) {
+        return strpick(zNHDRTYPECORE, n->n_type);
+      } else {
+        return strpick(zNHDRTYPE, n->n_type);
+      }
+    }
+  }
+
+  return NULL;
+}
+

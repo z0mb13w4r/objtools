@@ -43,3 +43,39 @@ static convert_t zEHDROSABIC6000[] = {
   {0, 0}
 };
 
+static const char* get_EHDROSABI(pbuffer_t p) {
+  if (p) {
+    const unsigned int osabi = get(p, EI_OSABI);
+    const char* s = strpicknull(zEHDROSABI, osabi);
+    if (NULL == s) {
+      Elf64_Ehdr *e = get_ehdr64(p);
+
+      if (e && osabi >= 64) {
+        switch (e->e_machine) {
+        case EM_AMDGPU:
+          return strpick(zEHDROSABIAMDGPU, osabi);
+
+        case EM_ARM:
+          return strpick(zEHDROSABIARM, osabi);
+
+        case EM_MSP430:
+        case EM_VISIUM:
+          return strpick(zEHDROSABIMSP430, osabi);
+
+        case EM_TI_C6000:
+          return strpick(zEHDROSABIC6000, osabi);
+
+        default:
+          break;
+        }
+      }
+
+      return strpickunknown(osabi);
+    }
+
+    return s;
+  }
+
+  return NULL;
+}
+

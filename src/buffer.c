@@ -223,18 +223,6 @@ const char* get_nhdrdesc64byindex(const pbuffer_t p, const int index) {
   return NULL;
 }
 
-const char* get_name64byoffset(const pbuffer_t p, const int index, const int offset) {
-  Elf64_Ehdr *e = get_ehdr64(p);
-  if (e) {
-    Elf64_Shdr *s = get_shdr64byindex(p, index);
-    if (s) {
-      return getp(p, s->sh_offset + offset, s->sh_size - offset);
-    }
-  }
-
-  return NULL;
-}
-
 const char* get_secname64byshdr(const pbuffer_t p, Elf64_Shdr *s) {
   char *s0 = NULL;
 

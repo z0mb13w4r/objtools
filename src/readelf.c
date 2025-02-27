@@ -41,82 +41,9 @@ static const char* get_symbolvisibility64(const unsigned int x) {
   return strpick(zSTVVISIBILITY, x);
 }
 
-static const char* get_symbolindex64(const unsigned int x) {
-  static char buff[32];
-
-  const char* def = strpicknull(zSHNINDEX, x);
-  if (NULL == def) {
-    snprintf(buff, sizeof(buff), "%3d", x);
-  } else {
-    snprintf(buff, sizeof(buff), "%3s", def);
-  }
-
-  return buff;
-}
-
-static const char* get_ehdrosabi(pbuffer_t p) {
-  if (p) {
-    const unsigned int osabi = get(p, EI_OSABI);
-    const char* s = strpicknull(zEHDROSABI, osabi);
-    if (NULL == s) {
-      Elf64_Ehdr *e = get_ehdr64(p);
-
-      if (e && osabi >= 64) {
-        switch (e->e_machine) {
-        case EM_AMDGPU:
-          return strpick(zEHDROSABIAMDGPU, osabi);
-
-        case EM_ARM:
-          return strpick(zEHDROSABIARM, osabi);
-
-        case EM_MSP430:
-        case EM_VISIUM:
-          return strpick(zEHDROSABIMSP430, osabi);
-
-        case EM_TI_C6000:
-          return strpick(zEHDROSABIC6000, osabi);
-
-        default:
-          break;
-        }
-      }
-
-      return strpickunknown(osabi);
-    }
-
-    return s;
-  }
-
-  return NULL;
-
-}
-
 static const char* get_reltype(Elf64_Rel *r) {
   if (r) {
     return strpick(zRELTYPE, r->r_info & 0xffff);
-  }
-
-  return NULL;
-}
-
-static const char* get_relatype(Elf64_Rela *r) {
-  if (r) {
-    return strpick(zRELTYPE, r->r_info & 0xffff);
-  }
-
-  return NULL;
-}
-
-static const char* get_nhdrtype64(const pbuffer_t p, Elf64_Nhdr *n) {
-  if (n) {
-    Elf32_Ehdr *e = get_ehdr32(p);
-    if (e) {
-      if (ET_CORE == e->e_type) {
-        return strpick(zNHDRTYPECORE, n->n_type);
-      } else {
-        return strpick(zNHDRTYPE, n->n_type);
-      }
-    }
   }
 
   return NULL;
@@ -191,7 +118,7 @@ static int dump_elfheader(const pbuffer_t p, const poptions_t o) {
   }
 
   printf_text("OS/ABI", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  printf_text(get_ehdrosabi(p), USE_LT | USE_SPACE | USE_EOL);
+  printf_text(get_EHDROSABI(p), USE_LT | USE_SPACE | USE_EOL);
   printf_text("ABI Version", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   printf_nice(get(p, EI_ABIVERSION), USE_DEC | USE_EOL);
 
@@ -600,6 +527,59 @@ static int dump_relocsrel64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *s
   return 0;
 }
 
+static int dump_relocsdef64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *shdr, Elf64_Rela *rela, const imode_t mode) {
+  if (shdr && rela) {
+    Elf64_Shdr *dshdr = get_shdr64byindex(p, shdr->sh_link);
+    if (dshdr) {
+      Elf64_Off k = ELF64_R_SYM(rela->r_info);
+      Elf64_Sym *sym = getp(p, dshdr->sh_offset + (k * dshdr->sh_entsize), dshdr->sh_entsize);
+      if (sym) {
+        printf_nice(sym->st_value, USE_LHEX64);
+
+        const char* symname = get_name64byoffset(p, dshdr->sh_link, sym->st_name);
+        const char* secname = get_secname64byindex(p, sym->st_shndx);
+        if (symname && symname[0])         printf_text(symname, USE_LT | USE_SPACE);
+        else if (secname && secname[0])    printf_text(secname, USE_LT | USE_SPACE);
+
+        printf_nice(rela->r_addend, mode);
+      }
+    }
+  }
+
+  return 0;
+}
+
+static int dump_relocsver64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *shdr, Elf64_Rela *rela, Elf64_Word vnames[], const size_t maxvnames, const imode_t mode) {
+  if (shdr && rela) {
+    Elf64_Shdr *dshdr = get_shdr64byindex(p, shdr->sh_link);
+    if (dshdr) {
+      Elf64_Off k = ELF64_R_SYM(rela->r_info);
+      Elf64_Sym *sym = getp(p, dshdr->sh_offset + (k * dshdr->sh_entsize), dshdr->sh_entsize);
+      if (sym) {
+        printf_nice(sym->st_value, USE_LHEX64);
+
+        printf_text(get_name64byoffset(p, dshdr->sh_link, sym->st_name), USE_LT | USE_SPACE);
+
+        Elf64_Shdr *vshdr = get_shdr64bytype(p, SHT_GNU_versym);
+        if (vshdr) {
+          Elf64_Versym *vs = getp(p, vshdr->sh_offset + (k * vshdr->sh_entsize), vshdr->sh_entsize);
+          if (vs) {
+            *vs = *vs & VERSYM_VERSION;
+            if (*vs && *vs < maxvnames) {
+              const char* namevs = get_name64byoffset(p, vnames[0], vnames[*vs]);
+              if (namevs) {
+                printf_text(namevs, USE_LT | USE_AT);
+              }
+            }
+          }
+        }
+
+        printf_nice(rela->r_addend, mode);
+      }
+    }
+  }
+}
+
 static int dump_relocsrela64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *shdr) {
   MALLOCA(Elf64_Word, vnames, 1024);
   make_versionnames64(p, vnames, NELEMENTS(vnames));
@@ -608,8 +588,6 @@ static int dump_relocsrela64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *
 
   size_t cnt = shdr->sh_size / shdr->sh_entsize;
 
-  Elf64_Shdr *dshdr = get_shdr64byindex(p, shdr->sh_link);
-
   Elf64_Rela *rr = get64byshdr(p, shdr);
   if (rr) {
     for (size_t j = 0; j < cnt; ++j) {
@@ -617,17 +595,16 @@ static int dump_relocsrela64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *
 
       printf_nice(r->r_offset, USE_LHEX48);
       printf_nice(r->r_info, USE_LHEX48);
-      printf_text(get_relatype(r), USE_LT | USE_SPACE | SET_PAD(20));
+      printf_pick(zRELTYPE, r->r_info & 0xffff, USE_LT | USE_SPACE | SET_PAD(20));
 
 // TBD
       switch (r->r_info & 0xffff) {
       case R_X86_64_NONE:
         break;
-      case R_X86_64_8:
+      case R_X86_64_8:         // S + A
       case R_X86_64_16:
       case R_X86_64_32:
       case R_X86_64_32S:
-      case R_X86_64_64:        // S + A
         printf_nice(r->r_info & 0xffff, USE_WARNING);
         break;
       case R_X86_64_RELATIVE:  // B + A
@@ -636,41 +613,27 @@ static int dump_relocsrela64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *
         break;
       case R_X86_64_GLOB_DAT:
       case R_X86_64_JUMP_SLOT: // S
-        printf_nice(r->r_addend, USE_LHEX64);
-
-        if (dshdr) {
-          Elf64_Off  k = (r->r_info >> 32) & 0xffff;
-          Elf64_Sym *s = getp(p, dshdr->sh_offset + (k * dshdr->sh_entsize), dshdr->sh_entsize);
-          if (s) {
-            printf_text(get_name64byoffset(p, dshdr->sh_link, s->st_name), USE_LT | USE_SPACE);
-
-            Elf64_Shdr *vshdr = get_shdr64bytype(p, SHT_GNU_versym);
-            if (vshdr) {
-              Elf64_Versym *vs = getp(p, vshdr->sh_offset + (k * vshdr->sh_entsize), vshdr->sh_entsize);
-              if (vs) {
-                *vs = *vs & VERSYM_VERSION;
-                if (*vs && *vs < NELEMENTS(vnames)) {
-                  const char* namevs = get_name64byoffset(p, vnames[0], vnames[*vs]);
-                  if (namevs) {
-                    printf_text(namevs, USE_LT | USE_AT);
-                  }
-                }
-              }
-            }
-          }
-        }
-
-        printf_text("+", USE_SPACE);
-        printf_nice(r->r_addend, USE_DEC);
+        dump_relocsver64(p, o, shdr, r, vnames, NELEMENTS(vnames), USE_SHEX32);
         break;
-      case R_X86_64_PC8:
-      case R_X86_64_PC16:
-      case R_X86_64_PC32:
+      case R_X86_64_64:        // S + A
+        dump_relocsdef64(p, o, shdr, r, USE_SHEX64);
+        break;
+      case R_X86_64_PC8:       // S + A - P
+        printf_nice(r->r_addend, USE_SHEX8);
+        break;
+      case R_X86_64_PC16:      // S + A - P
+        printf_nice(r->r_addend, USE_SHEX16);
+        break;
+      case R_X86_64_PC32:      // S + A - P
+        dump_relocsdef64(p, o, shdr, r, USE_SHEX32);
+        break;
       case R_X86_64_PC64:      // S + A - P
-//        break;
-      case R_X86_64_GOT32:     // G + A
-//        break;
+        printf_nice(r->r_addend, USE_SHEX64);
+        break;
       case R_X86_64_PLT32:     // L + A - P
+        dump_relocsdef64(p, o, shdr, r, USE_SHEX32);
+        break;
+      case R_X86_64_GOT32:     // G + A
 //        break;
       case R_X86_64_SIZE32:
       case R_X86_64_SIZE64:    // Z + A
@@ -680,9 +643,10 @@ static int dump_relocsrela64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *
       case R_X86_64_GOTPCREL:  // G + GOT + A - P
 //        break;
       case R_X86_64_GOTOFF64:  // S + A - GOT
-//        break;
-      case R_X86_64_COPY:
         printf_nice(r->r_info & 0xffff, USE_WARNING);
+        break;
+      case R_X86_64_COPY:
+        dump_relocsver64(p, o, shdr, r, vnames, NELEMENTS(vnames), USE_SHEX32);
         break;
       default:
         printf_nice(r->r_info & 0xffff, USE_UNKNOWN);
@@ -777,7 +741,7 @@ static int dump_symbols64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
 
             unsigned int vis = ELF_ST_VISIBILITY(s->st_other);
             printf_text(get_symbolvisibility64(vis), USE_LT | USE_SPACE | SET_PAD(9));
-            printf_text(get_symbolindex64(s->st_shndx), USE_LT | USE_SPACE);
+            printf_text(get_SHNINDEX(s->st_shndx), USE_LT | USE_SPACE);
 
             const char* name = get_name64byoffset(p, shdr->sh_link, s->st_name);
             if (name && 0 != name[0]) {
@@ -1060,7 +1024,7 @@ static int dump_notes64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr)
       if (nhdr) {
         printf("Displaying notes found in: %s\n", get_secname64byindex(p, i));
         printf("  Owner                Data size        Description\n");
-        printf("  %-20s 0x%08x       %-10s\n", get_nhdrname64byindex(p, i), nhdr->n_descsz, get_nhdrtype64(p, nhdr));
+        printf("  %-20s 0x%08x       %-10s\n", get_nhdrname64byindex(p, i), nhdr->n_descsz, get_NHDRTYPE64(p, nhdr));
 
         const char* cc = get_nhdrdesc64byindex(p, i);
         if (NT_GNU_BUILD_ID == nhdr->n_type) {

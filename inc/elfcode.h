@@ -45,5 +45,8 @@ size_t get_secname64maxsize(const pbuffer_t p);
 const char* get_secname32byindex(const pbuffer_t p, const int index);
 const char* get_secname64byindex(const pbuffer_t p, const int index);
 
+const char* get_name32byoffset(const pbuffer_t p, const int index, const int offset);
+const char* get_name64byoffset(const pbuffer_t p, const int index, const int offset);
+
 #endif
 

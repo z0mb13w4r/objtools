@@ -1,5 +1,6 @@
 #include <time.h>
 #include <ctype.h>
+#include <limits.h>
 #include <stdarg.h>
 #include <inttypes.h>
 
@@ -110,6 +111,26 @@ int printf_neat(char* o, const size_t size, const uint64_t v, const imode_t mode
     case USE_CORRUPT:              n += PRINT2("<corrupt: %" PRIx64 ">", v);       break;
     case USE_UNKNOWN:              n += PRINT2("<unknown: %" PRIx64 ">", v);       break;
     case USE_WARNING:              n += PRINT2("<warning: %" PRIx64 ">", v);       break;
+
+    case USE_SHEX8:
+      if (v < CHAR_MAX)            n += PRINT2("+ %" PRIx64, v);
+      else                         n += PRINT2("- %" PRIx64, (~v) + 1);
+      break;
+
+    case USE_SHEX16:
+      if (v < SHRT_MAX)            n += PRINT2("+ %" PRIx64, v);
+      else                         n += PRINT2("- %" PRIx64, (~v) + 1);
+      break;
+
+    case USE_SHEX32:
+      if (v < INT_MAX)             n += PRINT2("+ %" PRIx64, v);
+      else                         n += PRINT2("- %" PRIx64, (~v) + 1);
+      break;
+
+    case USE_SHEX64:
+      if (v < LONG_MAX)            n += PRINT2("+ %" PRIx64, v);
+      else                         n += PRINT2("- %" PRIx64, (~v) + 1);
+      break;
 
     case USE_CHAR:
       if (isprint(v))              n += PRINT2("%c", CAST(int, v));

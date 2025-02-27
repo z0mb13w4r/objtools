@@ -5,3 +5,16 @@ static convert_t zSHNINDEX[] = {
   {0, 0}
 };
 
+static const char* get_SHNINDEX(const pick_t x) {
+  static char buff[32];
+
+  const char* def = strpicknull(zSHNINDEX, x);
+  if (NULL == def) {
+    snprintf(buff, sizeof(buff), "%3d", x);
+  } else {
+    snprintf(buff, sizeof(buff), "%3s", def);
+  }
+
+  return buff;
+}
+
