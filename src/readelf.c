@@ -27,18 +27,6 @@ static const char* get_gnuabitab64(const unsigned int x) {
   return strpick(zGNUABITAB, x);
 }
 
-static const char* get_symboltype64(const unsigned int x) {
-  return strpick(zSTTTYPE, x);
-}
-
-static const char* get_symbolbinding64(const unsigned int x) {
-  return strpick(zSTBBIND, x);
-}
-
-static const char* get_symbolvisibility64(const unsigned int x) {
-  return strpick(zSTVVISIBILITY, x);
-}
-
 static int make_versionnames32(const pbuffer_t p, Elf32_Word *vnames, const size_t size) {
   Elf32_Shdr *vh = get_shdr32bytype(p, SHT_GNU_verneed);
   if (vh) {
@@ -934,7 +922,7 @@ static int dump_symbols64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
         size_t cnt = shdr->sh_size / shdr->sh_entsize;
 
         printf_text("Symbol table", USE_LT);
-        printf(get_secname64byindex(p, i), USE_LT | USE_SQ | USE_SPACE);
+        printf_text(get_secnamebyindex(p, i), USE_LT | USE_SQ | USE_SPACE);
         printf_text("at offset", USE_SPACE);
         printf_nice(shdr->sh_offset, USE_FHEX16);
         printf_text("contains", USE_SPACE);
@@ -942,21 +930,20 @@ static int dump_symbols64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
         printf_text(1 == cnt ? "entry" : "entries", USE_LT | USE_SPACE | USE_COLON | USE_EOL);
         printf_text("   Num: Value             Size Type    Bind   Vis      Ndx Name", USE_LT | USE_EOL);
 
-        Elf64_Sym *ss = get64byshdr(p, shdr);
-        if (ss) {
-          for (size_t j = 0; j < cnt; ++j) {
-            Elf64_Sym *s = ss + j;
+        Elf64_Sym *s = get64byshdr(p, shdr);
+        if (s) {
+          for (size_t j = 0; j < cnt; ++j, ++s) {
             printf_nice(j, USE_DEC5 | USE_COLON);
             printf_nice(s->st_value, USE_LHEX64);
             printf_nice(s->st_size, USE_DEC5);
-            printf(" %-7s", get_symboltype64(ELF_ST_TYPE(s->st_info)));
-            printf(" %-6s", get_symbolbinding64(ELF_ST_BIND(s->st_info)));
+            printf_pick(zSTTTYPE, ELF_ST_TYPE(s->st_info), USE_LT | USE_SPACE | SET_PAD(8));
+            printf_pick(zSTBBIND, ELF_ST_BIND(s->st_info), USE_LT | USE_SPACE | SET_PAD(7));
 
             unsigned int vis = ELF_ST_VISIBILITY(s->st_other);
-            printf_text(get_symbolvisibility64(vis), USE_LT | USE_SPACE | SET_PAD(9));
+            printf_pick(zSTVVISIBILITY, vis, USE_LT | USE_SPACE | SET_PAD(9));
             printf_text(get_SHNINDEX(s->st_shndx), USE_LT | USE_SPACE);
 
-            const char* name = get_name64byoffset(p, shdr->sh_link, s->st_name);
+            const char* name = get_namebyoffset(p, shdr->sh_link, s->st_name);
             if (name && 0 != name[0]) {
               printf_text(name, USE_LT | USE_SPACE);
 
@@ -967,7 +954,7 @@ static int dump_symbols64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
                   if (vs) {
                     *vs = *vs & VERSYM_VERSION;
                     if (*vs && *vs < NELEMENTS(vnames)) {
-                      const char* namevs = get_name64byoffset(p, vnames[0], vnames[*vs]);
+                      const char* namevs = get_namebyoffset(p, vnames[0], vnames[*vs]);
                       if (namevs) {
                         if (SHN_UNDEF == s->st_shndx)    printf("@%s (%d)", namevs, *vs);
                         else if (STV_HIDDEN == vis)      printf("@%s", namevs);
