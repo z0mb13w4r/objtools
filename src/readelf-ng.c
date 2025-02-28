@@ -1,4 +1,5 @@
 #include "buffer.h"
+#include "readar.h"
 #include "readpe.h"
 #include "readelf.h"
 #include "options.h"
@@ -12,7 +13,9 @@ int main(int argc, char* argv[]) {
       pbuffer_t p = open(o->inpname);
       if (p) {
         if (OPT_READELF == o->option) {
-          if (isPE(p)) {
+          if (isAR(p)) {
+            r = readar(p, o);
+          } else if (isPE(p)) {
             r = readpe(p, o);
           } else if (isELF(p)) {
             r = readelf(p, o);

@@ -1,5 +1,3 @@
-#include <string.h>
-
 #include "printf.h"
 #include "readelf.h"
 #include "elfcode.h"
@@ -578,6 +576,8 @@ static int dump_relocsver64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *s
       }
     }
   }
+
+  return 0;
 }
 
 static int dump_relocsrela64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *shdr) {

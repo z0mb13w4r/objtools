@@ -5,6 +5,6 @@ int isPE(const pbuffer_t p) {
     return 'M' == get(p, 0) && 'Z' == get(p, 1) ? 1 : 0;
   }
 
-  return -1;
+  return 0;
 }
 

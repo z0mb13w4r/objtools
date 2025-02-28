@@ -12,9 +12,11 @@ DIR_CXX = ../$(DIR_SRC)
 # Name of c source files to be included in build.
 #---------------------------------------------------------------------
 SRCS_C = \
+	arcode.c \
 	buffer.c \
 	printf.c \
 	pecode.c \
+	readar.c \
 	readpe.c \
 	elfcode.c \
 	memlink.c \

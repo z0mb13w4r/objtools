@@ -201,7 +201,7 @@ int isELF(const pbuffer_t p) {
     return 0x7f == get(p, EI_MAG0) && 'E' == get(p, EI_MAG1) && 'L' == get(p, EI_MAG2) && 'F' == get(p, EI_MAG3) ? 1 : 0;
   }
 
-  return -1;
+  return 0;
 }
 
 int isELF32(const pbuffer_t p) {
@@ -209,7 +209,7 @@ int isELF32(const pbuffer_t p) {
     return 1 == get(p, EI_CLASS) ? 1 : 0;
   }
 
-  return -1;
+  return 0;
 }
 
 int isELF64(const pbuffer_t p) {
@@ -217,7 +217,7 @@ int isELF64(const pbuffer_t p) {
     return 2 == get(p, EI_CLASS) ? 1 : 0;
   }
 
-  return -1;
+  return 0;
 }
 
 Elf32_Ehdr* get_ehdr32(const pbuffer_t p) {
