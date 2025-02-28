@@ -246,6 +246,34 @@ Elf64_Phdr* get_phdr64byindex(const pbuffer_t p, const int index) {
   return NULL;
 }
 
+Elf32_Shdr* get_shdr32bytype(const pbuffer_t p, const int type) {
+  Elf32_Ehdr *e = get_ehdr32(p);
+  if (e) {
+    for (Elf32_Half i = 0; i < e->e_shnum; ++i) {
+      Elf32_Shdr *s = get_shdr32byindex(p, i);
+      if (s && s->sh_type == type){
+        return s;
+      }
+    }
+  }
+
+  return NULL;
+}
+
+Elf64_Shdr* get_shdr64bytype(const pbuffer_t p, const int type) {
+  Elf64_Ehdr *e = get_ehdr64(p);
+  if (e) {
+    for (Elf64_Half i = 0; i < e->e_shnum; ++i) {
+      Elf64_Shdr *s = get_shdr64byindex(p, i);
+      if (s && s->sh_type == type){
+        return s;
+      }
+    }
+  }
+
+  return NULL;
+}
+
 Elf32_Shdr* get_shdr32byindex(const pbuffer_t p, const int index) {
   Elf32_Ehdr *e = get_ehdr32(p);
   if (e) {
@@ -312,6 +340,15 @@ size_t get_secname64maxsize(const pbuffer_t p) {
   return siz;
 }
 
+size_t get_secnamemaxsize(const pbuffer_t p) {
+  if (isELF(p)) {
+    if (isELF32(p))        return get_secname32maxsize(p);
+    else if (isELF64(p))   return get_secname64maxsize(p);
+  }
+
+  return 0;
+}
+
 const char* get_secname32byindex(const pbuffer_t p, const int index) {
   char *s0 = NULL;
 
@@ -354,6 +391,15 @@ const char* get_secname64byindex(const pbuffer_t p, const int index) {
   return NULL;
 }
 
+const char* get_secnamebyindex(const pbuffer_t p, const int index) {
+  if (isELF(p)) {
+    if (isELF32(p))        return get_secname32byindex(p, index);
+    else if (isELF64(p))   return get_secname64byindex(p, index);
+  }
+
+  return NULL;
+}
+
 const char* get_name32byoffset(const pbuffer_t p, const int index, const int offset) {
   Elf32_Ehdr *e = get_ehdr32(p);
   if (e) {
@@ -373,6 +419,15 @@ const char* get_name64byoffset(const pbuffer_t p, const int index, const int off
     if (s) {
       return getp(p, s->sh_offset + offset, s->sh_size - offset);
     }
+  }
+
+  return NULL;
+}
+
+const char* get_namebyoffset(const pbuffer_t p, const int index, const int offset) {
+  if (isELF(p)) {
+    if (isELF32(p))        return get_name32byoffset(p, index, offset);
+    else if (isELF64(p))   return get_name64byoffset(p, index, offset);
   }
 
   return NULL;

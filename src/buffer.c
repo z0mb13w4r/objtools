@@ -134,6 +134,14 @@ int issafe(pbuffer_t p) {
   return p && p->data;
 }
 
+void* get32byshdr(const pbuffer_t p, Elf32_Shdr *shdr) {
+  if (shdr) {
+    return getp(p, shdr->sh_offset, shdr->sh_size);
+  }
+
+  return NULL;
+}
+
 void* get64byshdr(const pbuffer_t p, Elf64_Shdr *shdr) {
   if (shdr) {
     return getp(p, shdr->sh_offset, shdr->sh_size);
@@ -157,20 +165,6 @@ int get(const pbuffer_t p, const int offset) {
   }
 
   return -1;
-}
-
-Elf64_Shdr* get_shdr64bytype(const pbuffer_t p, const int type) {
-  Elf64_Ehdr *e = get_ehdr64(p);
-  if (e) {
-    for (Elf64_Half i = 0; i < e->e_shnum; ++i) {
-      Elf64_Shdr *s = get_shdr64byindex(p, i);
-      if (s && s->sh_type == type){
-        return s;
-      }
-    }
-  }
-
-  return NULL;
 }
 
 Elf64_Shdr* get_shdr64byname(const pbuffer_t p, const char* name) {

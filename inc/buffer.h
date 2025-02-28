@@ -50,13 +50,12 @@ pbuffer_t bopen(const char* name);
 
 int issafe(pbuffer_t p);
 
-void* get64byshdr(const pbuffer_t p, Elf64_Shdr *shdr); // not safe - remove
-                                                        // replace by get64_xxxx & next64_xxxx
+void* get32byshdr(const pbuffer_t p, Elf32_Shdr *shdr); // not safe - remove
+void* get64byshdr(const pbuffer_t p, Elf64_Shdr *shdr); // replace by getXX_YYYY & nextXX_YYYY
 
 void* getp(const pbuffer_t p, const int offset, const size_t size);
 int   get(const pbuffer_t p, const int offset);
 
-Elf64_Shdr* get_shdr64bytype(const pbuffer_t p, const int type);
 Elf64_Shdr* get_shdr64byname(const pbuffer_t p, const char* name);
 
 Elf64_Nhdr* get_nhdr64byindex(const pbuffer_t p, const int index);
