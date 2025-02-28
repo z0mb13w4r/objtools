@@ -96,7 +96,7 @@ handle_t release(handle_t p) {
   return NULL;
 }
 
-pbuffer_t open(const char* name) {
+pbuffer_t bopen(const char* name) {
   FILE* f = fopen(name, "rb");
   if (f) {
     pbuffer_t p = create(MODE_BUFFER);

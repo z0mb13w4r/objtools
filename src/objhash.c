@@ -49,7 +49,7 @@ int objhash(const pbuffer_t p0, const poptions_t o) {
   int r = 0;
   pbuffer_t p1 = NULL;
   if (o->inpname1[0]) {
-    p1 = open(o->inpname1);
+    p1 = bopen(o->inpname1);
     if (p1) {
     } else {
       printf_e("'%s': no such file.", o->inpname1);

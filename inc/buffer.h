@@ -46,7 +46,7 @@ int ismode(handle_t p, const int mode);
 void* createx(const pbuffer_t p, const int mode);
 void* mallocx(const size_t size);
 
-pbuffer_t open(const char* name);
+pbuffer_t bopen(const char* name);
 
 int issafe(pbuffer_t p);
 
