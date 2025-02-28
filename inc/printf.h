@@ -96,10 +96,14 @@
 
 int printf_eol();
 
-int printf_text(const char* p, const imode_t mode);
-int printf_nice(const uint64_t v, const imode_t mode);
-int printf_data(const void* p, const size_t size, const addrz_t addr, const imode_t mode);
 int printf_work(char* o, const size_t size, const char* p, const imode_t mode);
+int printf_book(const char* p[], const imode_t mode);
+int printf_text(const char* p, const imode_t mode);
+
+int printf_neat(char* o, const size_t size, const uint64_t v, const imode_t mode);
+int printf_nice(const uint64_t v, const imode_t mode);
+
+int printf_data(const void* p, const size_t size, const addrz_t addr, const imode_t mode);
 
 int printf_mask(const pconvert_t p, const maskz_t mask, const imode_t mode);
 int printf_maskmute(const pconvert_t p, const maskz_t mask, const imode_t mode);

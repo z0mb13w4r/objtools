@@ -216,6 +216,20 @@ int printf_text(const char* p, const imode_t mode) {
   return -1;
 }
 
+int printf_book(const char* p[], const imode_t mode) {
+  if (p) {
+    int n = 0;
+
+    for (int i = 0; 0 != p[i]; ++i) {
+      n += printf_text(p[i], mode);
+    }
+
+    return n;
+  }
+
+  return -1;
+}
+
 int printf_data(const void* p, const size_t size, const addrz_t addr, const imode_t mode) {
   const size_t MAX_SIZE = 16;
 

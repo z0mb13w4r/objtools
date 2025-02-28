@@ -5,6 +5,8 @@
 #include "options.h"
 #include "objutils.h"
 
+#include "static/usage.ci"
+
 typedef struct args_s {
   char    option1;
   char   *option2;
@@ -86,12 +88,16 @@ static const args_t OBJDUMPARGS2[] = {
   {0, NULL}
 };
 
-static int usage(const char* name, const args_t args[]) {
-  MALLOCA(char, buf, 1024);
-
+static int usage_name(poptions_t o, const char* name, const args_t args[]) {
   printf_text("NAME", USE_LT | USE_EOL);
   printf_text(name, USE_LT | USE_TAB | USE_COLON | USE_EOL);
   printf_eol();
+
+  return 0;
+}
+
+static int usage_synopsis(poptions_t o, const char* name, const args_t args[]) {
+  MALLOCA(char, buf, 1024);
 
   printf_text("SYNOPSIS", USE_LT | USE_EOL);
   int n = printf_text(name, USE_LT | USE_TAB);
@@ -117,9 +123,17 @@ static int usage(const char* name, const args_t args[]) {
   }
   printf_eol();
 
+  return 0;
+}
+
+static int usage_description(poptions_t o, const char* name, const args_t args[]) {
   printf_text("DESCRIPTION", USE_LT | USE_EOL);
   printf_eol();
 
+  return 0;
+}
+
+static int usage_options(poptions_t o, const char* name, const args_t args[]) {
   printf_text("OPTIONS", USE_LT | USE_EOL);
   for (int j = 0; (0 != args[j].option1) || (0 != args[j].option2); ++j) {
     if (args[j].option1) {
@@ -141,11 +155,32 @@ static int usage(const char* name, const args_t args[]) {
     printf_eol();
   }
 
+  return 0;
+}
+
+static int usage_seealso(poptions_t o, const char* name, const args_t args[]) {
   printf_text("SEE ALSO", USE_LT | USE_EOL);
+  printf_book(ALLSEE, USE_LT | USE_TAB | USE_EOL);
   printf_eol();
 
+  return 0;
+}
+
+static int usage_copyright(poptions_t o, const char* name, const args_t args[]) {
   printf_text("COPYRIGHT", USE_LT | USE_EOL);
+  printf_book(LICENSE, USE_LT | USE_TAB | USE_EOL);
   printf_eol();
+
+  return 0;
+}
+
+static int usage(poptions_t o, const char* name, const args_t args[]) {
+  usage_name(o, name, args);
+  usage_synopsis(o, name, args);
+  usage_description(o, name, args);
+  usage_options(o, name, args);
+  usage_seealso(o, name, args);
+  usage_copyright(o, name, args);
 
   return 1;
 }
@@ -250,7 +285,7 @@ int get_options_readelf(poptions_t o, int argc, char** argv, char* name) {
   }
 
   if (o->action & OPTPROGRAM_HELP) {
-    return usage("readelf-ng", READELFARGS);
+    return usage(o, "readelf-ng", READELFARGS);
   }
 
   return 0;
@@ -299,7 +334,7 @@ int get_options_objcopy(poptions_t o, int argc, char** argv, char* name) {
   }
 
   if (o->action & OPTPROGRAM_HELP) {
-    return usage("objcopy-ng", OBJCOPYARGS);
+    return usage(o, "objcopy-ng", OBJCOPYARGS);
   }
 
   return 0;
@@ -329,7 +364,7 @@ int get_options_objdump(poptions_t o, int argc, char** argv, char* name) {
   }
 
   if (o->action & OPTPROGRAM_HELP) {
-    return usage("objdump-ng", OBJDUMPARGS1);
+    return usage(o, "objdump-ng", OBJDUMPARGS1);
   }
 
   return 0;
@@ -357,7 +392,7 @@ int get_options_objhash(poptions_t o, int argc, char** argv, char* name) {
   }
 
 //  if (o->action & OPTPROGRAM_HELP) {
-//    return usage("objhash-ng", READELFARGS);
+//    return usage(o, "objhash-ng", READELFARGS);
 //  }
 
   return 0;
