@@ -912,6 +912,34 @@ static int dump_unwind64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr
   return 0;
 }
 
+static int dump_symbols0(const pbuffer_t p, const poptions_t o,
+                         const uint64_t secindex, const uint64_t count, const uint64_t sh_offset) {
+  printf_text("Symbol table", USE_LT);
+  printf_text(get_secnamebyindex(p, secindex), USE_LT | USE_SQ | USE_SPACE);
+  printf_text("at offset", USE_SPACE);
+  printf_nice(sh_offset, USE_FHEX16);
+  printf_text("contains", USE_SPACE);
+  printf_nice(count, USE_DEC);
+  printf_text(1 == count ? "entry" : "entries", USE_LT | USE_SPACE | USE_COLON | USE_EOL);
+  printf_text("   Num: Value             Size Type    Bind   Vis      Ndx Name", USE_LT | USE_EOL);
+
+  return 0;
+}
+
+static int dump_symbols1(const pbuffer_t p, const poptions_t o, const uint64_t symindex,
+                         const uint64_t st_value, const uint64_t st_size, const uint64_t st_info, const uint64_t st_other, const uint64_t st_shndx) {
+  printf_nice(symindex, USE_DEC5 | USE_COLON);
+  printf_nice(st_value, USE_LHEX64);
+  printf_nice(st_size, USE_DEC5);
+  printf_pick(zSTTTYPE, ELF_ST_TYPE(st_info), USE_LT | USE_SPACE | SET_PAD(8));
+  printf_pick(zSTBBIND, ELF_ST_BIND(st_info), USE_LT | USE_SPACE | SET_PAD(7));
+
+  printf_pick(zSTVVISIBILITY, ELF_ST_VISIBILITY(st_other), USE_LT | USE_SPACE | SET_PAD(9));
+  printf_text(get_SHNINDEX(st_shndx), USE_LT | USE_SPACE);
+
+  return 0;
+}
+
 static int dump_symbols32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
   MALLOCA(Elf32_Word, vnames, 1024);
   make_versionnames32(p, vnames, NELEMENTS(vnames));
@@ -921,30 +949,14 @@ static int dump_symbols32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehd
     if (shdr) {
       if (SHT_SYMTAB == shdr->sh_type || SHT_DYNSYM == shdr->sh_type) {
         size_t cnt = shdr->sh_size / shdr->sh_entsize;
-
-        printf_text("Symbol table", USE_LT);
-        printf_text(get_secnamebyindex(p, i), USE_LT | USE_SQ | USE_SPACE);
-        printf_text("at offset", USE_SPACE);
-        printf_nice(shdr->sh_offset, USE_FHEX16);
-        printf_text("contains", USE_SPACE);
-        printf_nice(cnt, USE_DEC);
-        printf_text(1 == cnt ? "entry" : "entries", USE_LT | USE_SPACE | USE_COLON | USE_EOL);
-        printf_text("   Num: Value             Size Type    Bind   Vis      Ndx Name", USE_LT | USE_EOL);
+        dump_symbols0(p, o, i, cnt, shdr->sh_offset);
 
         handle_t f = fget32byshdr(p, shdr);
         if (f) {
           for (size_t j = 0; j < cnt; ++j) {
             Elf32_Sym *s = fget(f);
             if (s) {
-              printf_nice(j, USE_DEC5 | USE_COLON);
-              printf_nice(s->st_value, USE_LHEX64);
-              printf_nice(s->st_size, USE_DEC5);
-              printf_pick(zSTTTYPE, ELF_ST_TYPE(s->st_info), USE_LT | USE_SPACE | SET_PAD(8));
-              printf_pick(zSTBBIND, ELF_ST_BIND(s->st_info), USE_LT | USE_SPACE | SET_PAD(7));
-
-              unsigned int vis = ELF_ST_VISIBILITY(s->st_other);
-              printf_pick(zSTVVISIBILITY, vis, USE_LT | USE_SPACE | SET_PAD(9));
-              printf_text(get_SHNINDEX(s->st_shndx), USE_LT | USE_SPACE);
+              dump_symbols1(p, o, j, s->st_value, s->st_size, s->st_info, s->st_other, s->st_shndx);
 
               const char* name = get_namebyoffset(p, shdr->sh_link, s->st_name);
               if (name && 0 != name[0]) {
@@ -962,7 +974,7 @@ static int dump_symbols32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehd
                           if (SHN_UNDEF == s->st_shndx) {
                             printf_text(namevs, USE_LT | USE_AT);
                             printf_nice(*vs, USE_RB | USE_DEC);
-                          } else if (STV_HIDDEN == vis) {
+                          } else if (STV_HIDDEN == ELF_ST_VISIBILITY(s->st_other)) {
                             printf_text(namevs, USE_LT | USE_AT);
                           } else {
                             printf_text(namevs, USE_LT | USE_ATAT);
@@ -996,29 +1008,14 @@ static int dump_symbols64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
       if (SHT_SYMTAB == shdr->sh_type || SHT_DYNSYM == shdr->sh_type) {
         size_t cnt = shdr->sh_size / shdr->sh_entsize;
 
-        printf_text("Symbol table", USE_LT);
-        printf_text(get_secnamebyindex(p, i), USE_LT | USE_SQ | USE_SPACE);
-        printf_text("at offset", USE_SPACE);
-        printf_nice(shdr->sh_offset, USE_FHEX16);
-        printf_text("contains", USE_SPACE);
-        printf_nice(cnt, USE_DEC);
-        printf_text(1 == cnt ? "entry" : "entries", USE_LT | USE_SPACE | USE_COLON | USE_EOL);
-        printf_text("   Num: Value             Size Type    Bind   Vis      Ndx Name", USE_LT | USE_EOL);
+        dump_symbols0(p, o, i, cnt, shdr->sh_offset);
 
         handle_t f = fget64byshdr(p, shdr);
         if (f) {
           for (size_t j = 0; j < cnt; ++j) {
             Elf64_Sym *s = fget(f);
             if (s) {
-              printf_nice(j, USE_DEC5 | USE_COLON);
-              printf_nice(s->st_value, USE_LHEX64);
-              printf_nice(s->st_size, USE_DEC5);
-              printf_pick(zSTTTYPE, ELF_ST_TYPE(s->st_info), USE_LT | USE_SPACE | SET_PAD(8));
-              printf_pick(zSTBBIND, ELF_ST_BIND(s->st_info), USE_LT | USE_SPACE | SET_PAD(7));
-
-              unsigned int vis = ELF_ST_VISIBILITY(s->st_other);
-              printf_pick(zSTVVISIBILITY, vis, USE_LT | USE_SPACE | SET_PAD(9));
-              printf_text(get_SHNINDEX(s->st_shndx), USE_LT | USE_SPACE);
+              dump_symbols1(p, o, j, s->st_value, s->st_size, s->st_info, s->st_other, s->st_shndx);
 
               const char* name = get_namebyoffset(p, shdr->sh_link, s->st_name);
               if (name && 0 != name[0]) {
@@ -1036,7 +1033,7 @@ static int dump_symbols64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
                           if (SHN_UNDEF == s->st_shndx) {
                             printf_text(namevs, USE_LT | USE_AT);
                             printf_nice(*vs, USE_RB | USE_DEC);
-                          } else if (STV_HIDDEN == vis) {
+                          } else if (STV_HIDDEN == ELF_ST_VISIBILITY(s->st_other)) {
                             printf_text(namevs, USE_LT | USE_AT);
                           } else {
                             printf_text(namevs, USE_LT | USE_ATAT);
