@@ -19,6 +19,7 @@ SRCS_C = \
 	readar.c \
 	readpe.c \
 	elfcode.c \
+	memfind.c \
 	memlink.c \
 	objcopy.c \
 	objdump.c \

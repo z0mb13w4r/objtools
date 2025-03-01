@@ -1,6 +1,7 @@
 #include "printf.h"
-#include "readelf.h"
 #include "elfcode.h"
+#include "memfind.h"
+#include "readelf.h"
 #include "objutils.h"
 
 #include "static/dt_flags.ci"
@@ -911,6 +912,80 @@ static int dump_unwind64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr
   return 0;
 }
 
+static int dump_symbols32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
+  MALLOCA(Elf32_Word, vnames, 1024);
+  make_versionnames32(p, vnames, NELEMENTS(vnames));
+
+  for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
+    Elf32_Shdr *shdr = get_shdr32byindex(p, i);
+    if (shdr) {
+      if (SHT_SYMTAB == shdr->sh_type || SHT_DYNSYM == shdr->sh_type) {
+        size_t cnt = shdr->sh_size / shdr->sh_entsize;
+
+        printf_text("Symbol table", USE_LT);
+        printf_text(get_secnamebyindex(p, i), USE_LT | USE_SQ | USE_SPACE);
+        printf_text("at offset", USE_SPACE);
+        printf_nice(shdr->sh_offset, USE_FHEX16);
+        printf_text("contains", USE_SPACE);
+        printf_nice(cnt, USE_DEC);
+        printf_text(1 == cnt ? "entry" : "entries", USE_LT | USE_SPACE | USE_COLON | USE_EOL);
+        printf_text("   Num: Value             Size Type    Bind   Vis      Ndx Name", USE_LT | USE_EOL);
+
+        handle_t f = fget32byshdr(p, shdr);
+        if (f) {
+          for (size_t j = 0; j < cnt; ++j) {
+            Elf32_Sym *s = fget(f);
+            if (s) {
+              printf_nice(j, USE_DEC5 | USE_COLON);
+              printf_nice(s->st_value, USE_LHEX64);
+              printf_nice(s->st_size, USE_DEC5);
+              printf_pick(zSTTTYPE, ELF_ST_TYPE(s->st_info), USE_LT | USE_SPACE | SET_PAD(8));
+              printf_pick(zSTBBIND, ELF_ST_BIND(s->st_info), USE_LT | USE_SPACE | SET_PAD(7));
+
+              unsigned int vis = ELF_ST_VISIBILITY(s->st_other);
+              printf_pick(zSTVVISIBILITY, vis, USE_LT | USE_SPACE | SET_PAD(9));
+              printf_text(get_SHNINDEX(s->st_shndx), USE_LT | USE_SPACE);
+
+              const char* name = get_namebyoffset(p, shdr->sh_link, s->st_name);
+              if (name && 0 != name[0]) {
+                printf_text(name, USE_LT | USE_SPACE);
+
+                if (SHT_DYNSYM == shdr->sh_type) {
+                  Elf32_Shdr *vshdr = get_shdr32bytype(p, SHT_GNU_versym);
+                  if (vshdr) {
+                    Elf32_Versym *vs = getp(p, vshdr->sh_offset + (j * vshdr->sh_entsize), vshdr->sh_entsize);
+                    if (vs) {
+                      *vs = *vs & VERSYM_VERSION;
+                      if (*vs && *vs < NELEMENTS(vnames)) {
+                        const char* namevs = get_namebyoffset(p, vnames[0], vnames[*vs]);
+                        if (namevs && namevs[0]) {
+                          if (SHN_UNDEF == s->st_shndx) {
+                            printf_text(namevs, USE_LT | USE_AT);
+                            printf_nice(*vs, USE_RB | USE_DEC);
+                          } else if (STV_HIDDEN == vis) {
+                            printf_text(namevs, USE_LT | USE_AT);
+                          } else {
+                            printf_text(namevs, USE_LT | USE_ATAT);
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+              f = fnext(f);
+              printf_eol();
+            }
+          }
+        }
+        printf_eol();
+      }
+    }
+  }
+
+  return 0;
+}
+
 static int dump_symbols64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
   MALLOCA(Elf64_Word, vnames, 1024);
   make_versionnames64(p, vnames, NELEMENTS(vnames));
@@ -930,42 +1005,51 @@ static int dump_symbols64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
         printf_text(1 == cnt ? "entry" : "entries", USE_LT | USE_SPACE | USE_COLON | USE_EOL);
         printf_text("   Num: Value             Size Type    Bind   Vis      Ndx Name", USE_LT | USE_EOL);
 
-        Elf64_Sym *s = get64byshdr(p, shdr);
-        if (s) {
-          for (size_t j = 0; j < cnt; ++j, ++s) {
-            printf_nice(j, USE_DEC5 | USE_COLON);
-            printf_nice(s->st_value, USE_LHEX64);
-            printf_nice(s->st_size, USE_DEC5);
-            printf_pick(zSTTTYPE, ELF_ST_TYPE(s->st_info), USE_LT | USE_SPACE | SET_PAD(8));
-            printf_pick(zSTBBIND, ELF_ST_BIND(s->st_info), USE_LT | USE_SPACE | SET_PAD(7));
+        handle_t f = fget64byshdr(p, shdr);
+        if (f) {
+          for (size_t j = 0; j < cnt; ++j) {
+            Elf64_Sym *s = fget(f);
+            if (s) {
+              printf_nice(j, USE_DEC5 | USE_COLON);
+              printf_nice(s->st_value, USE_LHEX64);
+              printf_nice(s->st_size, USE_DEC5);
+              printf_pick(zSTTTYPE, ELF_ST_TYPE(s->st_info), USE_LT | USE_SPACE | SET_PAD(8));
+              printf_pick(zSTBBIND, ELF_ST_BIND(s->st_info), USE_LT | USE_SPACE | SET_PAD(7));
 
-            unsigned int vis = ELF_ST_VISIBILITY(s->st_other);
-            printf_pick(zSTVVISIBILITY, vis, USE_LT | USE_SPACE | SET_PAD(9));
-            printf_text(get_SHNINDEX(s->st_shndx), USE_LT | USE_SPACE);
+              unsigned int vis = ELF_ST_VISIBILITY(s->st_other);
+              printf_pick(zSTVVISIBILITY, vis, USE_LT | USE_SPACE | SET_PAD(9));
+              printf_text(get_SHNINDEX(s->st_shndx), USE_LT | USE_SPACE);
 
-            const char* name = get_namebyoffset(p, shdr->sh_link, s->st_name);
-            if (name && 0 != name[0]) {
-              printf_text(name, USE_LT | USE_SPACE);
+              const char* name = get_namebyoffset(p, shdr->sh_link, s->st_name);
+              if (name && 0 != name[0]) {
+                printf_text(name, USE_LT | USE_SPACE);
 
-              if (SHT_DYNSYM == shdr->sh_type) {
-                Elf64_Shdr *vshdr = get_shdr64bytype(p, SHT_GNU_versym);
-                if (vshdr) {
-                  Elf64_Versym *vs = getp(p, vshdr->sh_offset + (j * vshdr->sh_entsize), vshdr->sh_entsize);
-                  if (vs) {
-                    *vs = *vs & VERSYM_VERSION;
-                    if (*vs && *vs < NELEMENTS(vnames)) {
-                      const char* namevs = get_namebyoffset(p, vnames[0], vnames[*vs]);
-                      if (namevs) {
-                        if (SHN_UNDEF == s->st_shndx)    printf("@%s (%d)", namevs, *vs);
-                        else if (STV_HIDDEN == vis)      printf("@%s", namevs);
-                        else                             printf("@@%s", namevs);
+                if (SHT_DYNSYM == shdr->sh_type) {
+                  Elf64_Shdr *vshdr = get_shdr64bytype(p, SHT_GNU_versym);
+                  if (vshdr) {
+                    Elf64_Versym *vs = getp(p, vshdr->sh_offset + (j * vshdr->sh_entsize), vshdr->sh_entsize);
+                    if (vs) {
+                      *vs = *vs & VERSYM_VERSION;
+                      if (*vs && *vs < NELEMENTS(vnames)) {
+                        const char* namevs = get_namebyoffset(p, vnames[0], vnames[*vs]);
+                        if (namevs && namevs[0]) {
+                          if (SHN_UNDEF == s->st_shndx) {
+                            printf_text(namevs, USE_LT | USE_AT);
+                            printf_nice(*vs, USE_RB | USE_DEC);
+                          } else if (STV_HIDDEN == vis) {
+                            printf_text(namevs, USE_LT | USE_AT);
+                          } else {
+                            printf_text(namevs, USE_LT | USE_ATAT);
+                          }
+                        }
                       }
                     }
                   }
                 }
               }
+              f = fnext(f);
+              printf_eol();
             }
-            printf_eol();
           }
         }
         printf_eol();
@@ -1302,6 +1386,7 @@ int readelf(const pbuffer_t p, const poptions_t o) {
         if (o->action & OPTREADELF_DYNAMIC)          dump_dynamic32(p, o, ehdr);
         if (o->action & OPTREADELF_RELOCS)           dump_relocs32(p, o, ehdr);
         if (o->action & OPTREADELF_UNWIND)           dump_unwind32(p, o, ehdr);
+        if (o->action & OPTREADELF_SYMBOLS)          dump_symbols32(p, o, ehdr);
       }
     } else if (isELF64(p)) {
       Elf64_Ehdr *ehdr = get_ehdr64(p);

@@ -1,5 +1,6 @@
 #include "printf.h"
 #include "elfcode.h"
+#include "memfind.h"
 
 /* .tbss is special. It doesn't contribute memory space to normal
    segments and it doesn't take file space in normal segments. */
@@ -428,6 +429,39 @@ const char* get_namebyoffset(const pbuffer_t p, const int index, const int offse
   if (isELF(p)) {
     if (isELF32(p))        return get_name32byoffset(p, index, offset);
     else if (isELF64(p))   return get_name64byoffset(p, index, offset);
+  }
+
+  return NULL;
+}
+
+
+void* get32byshdr(const pbuffer_t p, Elf32_Shdr *shdr) {
+  if (shdr) {
+    return getp(p, shdr->sh_offset, shdr->sh_size);
+  }
+
+  return NULL;
+}
+
+void* get64byshdr(const pbuffer_t p, Elf64_Shdr *shdr) {
+  if (shdr) {
+    return getp(p, shdr->sh_offset, shdr->sh_size);
+  }
+
+  return NULL;
+}
+
+handle_t fget32byshdr(const pbuffer_t p, Elf32_Shdr *shdr) {
+  if (shdr) {
+    return fmalloc(getp(p, shdr->sh_offset, shdr->sh_size), shdr->sh_size, shdr->sh_entsize);
+  }
+
+  return NULL;
+}
+
+handle_t fget64byshdr(const pbuffer_t p, Elf64_Shdr *shdr) {
+  if (shdr) {
+    return fmalloc(getp(p, shdr->sh_offset, shdr->sh_size), shdr->sh_size, shdr->sh_entsize);
   }
 
   return NULL;

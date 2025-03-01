@@ -49,7 +49,7 @@ handle_t create(const int mode) {
   } else if (MODE_ACTIONS == (mode & MODE_MASK0)) {
     paction_t p = mallocx(sizeof(action_t));
     return setmode(p, mode);
-  } else if (MODE_LINKS == (mode & MODE_MASK0)) {
+  } else if (MODE_LINK == (mode & MODE_MASK0)) {
     return lmalloc();
   }
 
@@ -77,7 +77,7 @@ handle_t destroy(handle_t p) {
       destroy(CAST(poptions_t, p)->actions);
     } else if (ismode0(p, MODE_ACTIONS)) {
       destroy(CAST(paction_t, p)->actions);
-    } else if (ismode0(p, MODE_LINKS)) {
+    } else if (ismode0(p, MODE_LINK)) {
       destroy(CAST(pnode_t, p)->item);
       return lfree(p);
     }
@@ -89,7 +89,7 @@ handle_t destroy(handle_t p) {
 }
 
 handle_t release(handle_t p) {
-  if (ismode0(p, MODE_LINKS)) {
+  if (ismode0(p, MODE_LINK)) {
     lfree(p);
   }
 
@@ -132,22 +132,6 @@ int ismode(handle_t p, const int mode) {
 
 int issafe(pbuffer_t p) {
   return p && p->data;
-}
-
-void* get32byshdr(const pbuffer_t p, Elf32_Shdr *shdr) {
-  if (shdr) {
-    return getp(p, shdr->sh_offset, shdr->sh_size);
-  }
-
-  return NULL;
-}
-
-void* get64byshdr(const pbuffer_t p, Elf64_Shdr *shdr) {
-  if (shdr) {
-    return getp(p, shdr->sh_offset, shdr->sh_size);
-  }
-
-  return NULL;
 }
 
 void* getp(const pbuffer_t p, const int offset, const size_t size) {

@@ -54,5 +54,11 @@ const char* get_namebyoffset(const pbuffer_t p, const int index, const int offse
 const char* get_name32byoffset(const pbuffer_t p, const int index, const int offset);
 const char* get_name64byoffset(const pbuffer_t p, const int index, const int offset);
 
+void* get32byshdr(const pbuffer_t p, Elf32_Shdr *shdr); // not safe - remove
+void* get64byshdr(const pbuffer_t p, Elf64_Shdr *shdr); // replace by fgetXXbyYYYY & fnext
+
+handle_t fget32byshdr(const pbuffer_t p, Elf32_Shdr *shdr);
+handle_t fget64byshdr(const pbuffer_t p, Elf64_Shdr *shdr);
+
 #endif
 

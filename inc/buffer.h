@@ -20,7 +20,6 @@
 #define MODE_BUFFER             (MODE_PUT0('B') | MODE_PUT1('U') | MODE_PUT2('F'))
 #define MODE_OPTIONS            (MODE_PUT0('O') | MODE_PUT1('P') | MODE_PUT2('T'))
 #define MODE_ACTIONS            (MODE_PUT0('A') | MODE_PUT1('C') | MODE_PUT2('T'))
-#define MODE_LINKS              (MODE_PUT0('L') | MODE_PUT1('N') | MODE_PUT2('K'))
 
 #define MODE_SYMBOLS            (MODE_BUFFER | MODE_PUT3('S'))
 #define MODE_SYMBOLS_DYNAMIC    (MODE_BUFFER | MODE_PUT3('D'))
@@ -49,9 +48,6 @@ void* mallocx(const size_t size);
 pbuffer_t bopen(const char* name);
 
 int issafe(pbuffer_t p);
-
-void* get32byshdr(const pbuffer_t p, Elf32_Shdr *shdr); // not safe - remove
-void* get64byshdr(const pbuffer_t p, Elf64_Shdr *shdr); // replace by getXX_YYYY & nextXX_YYYY
 
 void* getp(const pbuffer_t p, const int offset, const size_t size);
 int   get(const pbuffer_t p, const int offset);

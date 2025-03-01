@@ -26,6 +26,7 @@ int printf_work(char* o, const size_t size, const char* p, const imode_t mode) {
 
     switch (p0) {
     case USE_AT:             n += PRINT1("@");         break;
+    case USE_ATAT:           n += PRINT1("@@");        break;
     case USE_SPACE:          n += PRINT1(" ");         break;
     case USE_TAB:            n += PRINT1("  ");        break;
     default:                 break;

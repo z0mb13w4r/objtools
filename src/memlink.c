@@ -1,9 +1,8 @@
-#include "buffer.h"
 #include "memlink.h"
 
 int islink(handle_t p) {
   if (p) {
-    return ismode(p, MODE_LINKS);
+    return ismode(p, MODE_LINK);
   }
 
   return 0;
@@ -58,7 +57,7 @@ handle_t lattach(handle_t p, handle_t item) {
   if (p && item) {
     if (islink(p)) {
       pnode_t p0 = CAST(pnode_t, p);
-      pnode_t p1 = create(MODE_LINKS);
+      pnode_t p1 = lmalloc();
       if (p1) {
         p1->item = item;
         p1->next = p0;
@@ -66,7 +65,7 @@ handle_t lattach(handle_t p, handle_t item) {
       }
     }
   } else if (item) {
-    pnode_t pp = create(MODE_LINKS);
+    pnode_t pp = lmalloc();
     if (pp) {
       pp->item = item;
       return pp;
@@ -85,7 +84,7 @@ handle_t lattache(handle_t p, handle_t item) {
       }
 
       if (p0) {
-        pnode_t p1 = create(MODE_LINKS);
+        pnode_t p1 = lmalloc();
         if (p1) {
           p0->next = p1;
           p1->item = item;
@@ -94,7 +93,7 @@ handle_t lattache(handle_t p, handle_t item) {
       }
     }
   } else if (item) {
-    pnode_t pp = create(MODE_LINKS);
+    pnode_t pp = lmalloc();
     if (pp) {
       pp->item = item;
       return pp;
@@ -160,7 +159,7 @@ handle_t ldestroye(handle_t p) {
 
 handle_t lmalloc() {
   pnode_t p = mallocx(sizeof(node_t));
-  return setmode(p, MODE_LINKS);
+  return setmode(p, MODE_LINK);
 }
 
 handle_t lfree(handle_t p) {

@@ -1,7 +1,9 @@
 #ifndef __MEMLINK_H_
 #define __MEMLINK_H_
 
-#include "defines.h"
+#include "buffer.h"
+
+#define MODE_LINK               (MODE_PUT0('L') | MODE_PUT1('N') | MODE_PUT2('K'))
 
 typedef struct node_s {
   smode_t  mode;
