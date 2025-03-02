@@ -929,9 +929,25 @@ static int dump_symbols1(const pbuffer_t p, const poptions_t o, const uint64_t s
   printf_nice(st_size, USE_DEC5);
   printf_pick(zSTTTYPE, ELF_ST_TYPE(st_info), USE_LT | USE_SPACE | SET_PAD(8));
   printf_pick(zSTBBIND, ELF_ST_BIND(st_info), USE_LT | USE_SPACE | SET_PAD(7));
-
   printf_pick(zSTVVISIBILITY, ELF_ST_VISIBILITY(st_other), USE_LT | USE_SPACE | SET_PAD(9));
   printf_text(get_SHNINDEX(st_shndx), USE_LT | USE_SPACE);
+
+  return 0;
+}
+
+static int dump_symbols2(const pbuffer_t p, const poptions_t o,
+                         const uint64_t sh_link, const uint64_t vna_name, const uint64_t vna_other, const uint64_t st_shndx, const uint64_t st_other) {
+  const char* namevs = get_namebyoffset(p, sh_link, vna_name);
+  if (namevs && namevs[0]) {
+    if (SHN_UNDEF == st_shndx) {
+      printf_text(namevs, USE_LT | USE_AT);
+      printf_nice(vna_other, USE_RB | USE_DEC);
+    } else if (STV_HIDDEN == ELF_ST_VISIBILITY(st_other)) {
+      printf_text(namevs, USE_LT | USE_AT);
+    } else {
+      printf_text(namevs, USE_LT | USE_ATAT);
+    }
+  }
 
   return 0;
 }
@@ -962,21 +978,8 @@ static int dump_symbols32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehd
                   Elf32_Shdr *vshdr = get_shdr32bytype(p, SHT_GNU_versym);
                   if (vshdr) {
                     Elf32_Versym *vs = getp(p, vshdr->sh_offset + (j * vshdr->sh_entsize), vshdr->sh_entsize);
-                    if (vs) {
-                      *vs = *vs & VERSYM_VERSION;
-                      if (*vs && *vs < NELEMENTS(vnames)) {
-                        const char* namevs = get_namebyoffset(p, vnames[0], vnames[*vs]);
-                        if (namevs && namevs[0]) {
-                          if (SHN_UNDEF == s->st_shndx) {
-                            printf_text(namevs, USE_LT | USE_AT);
-                            printf_nice(*vs, USE_RB | USE_DEC);
-                          } else if (STV_HIDDEN == ELF_ST_VISIBILITY(s->st_other)) {
-                            printf_text(namevs, USE_LT | USE_AT);
-                          } else {
-                            printf_text(namevs, USE_LT | USE_ATAT);
-                          }
-                        }
-                      }
+                    if (vs && *vs && *vs < NELEMENTS(vnames)) {
+                        dump_symbols2(p, o, vnames[0], vnames[*vs & VERSYM_VERSION], *vs & VERSYM_VERSION, s->st_shndx, s->st_other);
                     }
                   }
                 }
@@ -1021,21 +1024,8 @@ static int dump_symbols64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
                   Elf64_Shdr *vshdr = get_shdr64bytype(p, SHT_GNU_versym);
                   if (vshdr) {
                     Elf64_Versym *vs = getp(p, vshdr->sh_offset + (j * vshdr->sh_entsize), vshdr->sh_entsize);
-                    if (vs) {
-                      *vs = *vs & VERSYM_VERSION;
-                      if (*vs && *vs < NELEMENTS(vnames)) {
-                        const char* namevs = get_namebyoffset(p, vnames[0], vnames[*vs]);
-                        if (namevs && namevs[0]) {
-                          if (SHN_UNDEF == s->st_shndx) {
-                            printf_text(namevs, USE_LT | USE_AT);
-                            printf_nice(*vs, USE_RB | USE_DEC);
-                          } else if (STV_HIDDEN == ELF_ST_VISIBILITY(s->st_other)) {
-                            printf_text(namevs, USE_LT | USE_AT);
-                          } else {
-                            printf_text(namevs, USE_LT | USE_ATAT);
-                          }
-                        }
-                      }
+                    if (vs && *vs && *vs < NELEMENTS(vnames)) {
+                        dump_symbols2(p, o, vnames[0], vnames[*vs & VERSYM_VERSION], *vs & VERSYM_VERSION, s->st_shndx, s->st_other);
                     }
                   }
                 }
