@@ -117,8 +117,8 @@ static int dump_relocsdef64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *s
       if (sym) {
         printf_nice(sym->st_value, USE_LHEX64);
 
-        const char* symname = get_name64byoffset(p, dshdr->sh_link, sym->st_name);
-        const char* secname = get_secname64byindex(p, sym->st_shndx);
+        const char* symname = get_namebyoffset(p, dshdr->sh_link, sym->st_name);
+        const char* secname = get_secnamebyindex(p, sym->st_shndx);
         if (symname && symname[0])         printf_text(symname, USE_LT | USE_SPACE);
         else if (secname && secname[0])    printf_text(secname, USE_LT | USE_SPACE);
       }
@@ -305,7 +305,7 @@ static int dump_fileheader64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *
 }
 
 static int dump_sectionheaders32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
-  const int MAXSIZE = MAX(get_secname32maxsize(p) + 2, 21);
+  const int MAXSIZE = MAX(get_secnamemaxsize(p) + 2, 21);
 
   printf_text("SECTION HEADERS", USE_LT | USE_COLON | USE_EOL);
   printf_text("[Nr]", USE_LT | USE_TAB);
@@ -317,7 +317,7 @@ static int dump_sectionheaders32(const pbuffer_t p, const poptions_t o, Elf32_Eh
 
     Elf32_Shdr *shdr = get_shdr32byindex(p, i);
     if (shdr) {
-      printf_text(get_secname32byindex(p, i), USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+      printf_text(get_secnamebyindex(p, i), USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
       printf_pick(zSHDRTYPE, shdr->sh_type, USE_LT | USE_SPACE | SET_PAD(16));
       printf_nice(shdr->sh_addr, USE_LHEX64);
       printf_nice(shdr->sh_offset, USE_LHEX32);
@@ -342,7 +342,7 @@ static int dump_sectionheaders32(const pbuffer_t p, const poptions_t o, Elf32_Eh
 }
 
 static int dump_sectionheaders64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
-  const int MAXSIZE = MAX(get_secname64maxsize(p) + 2, 21);
+  const int MAXSIZE = MAX(get_secnamemaxsize(p) + 2, 21);
 
   printf_text("SECTION HEADERS", USE_LT | USE_COLON | USE_EOL);
   printf_text("[Nr]", USE_LT | USE_TAB);
@@ -354,7 +354,7 @@ static int dump_sectionheaders64(const pbuffer_t p, const poptions_t o, Elf64_Eh
 
     Elf64_Shdr *shdr = get_shdr64byindex(p, i);
     if (shdr) {
-      printf_text(get_secname64byindex(p, i), USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+      printf_text(get_secnamebyindex(p, i), USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
       printf_pick(zSHDRTYPE, shdr->sh_type, USE_LT | USE_SPACE | SET_PAD(16));
       printf_nice(shdr->sh_addr, USE_LHEX64);
       printf_nice(shdr->sh_offset, USE_LHEX32);
@@ -460,7 +460,7 @@ static int dump_programheaders32(const pbuffer_t p, const poptions_t o, Elf32_Eh
         Elf32_Shdr *shdr = get_shdr32byindex(p, j);
         if (shdr) {
           if (isshdrinphdr32(shdr, phdr)) {
-            printf_text(get_secname32byindex(p, j), USE_SPACE);
+            printf_text(get_secnamebyindex(p, j), USE_SPACE);
           }
         }
       }
@@ -525,7 +525,7 @@ static int dump_programheaders64(const pbuffer_t p, const poptions_t o, Elf64_Eh
         Elf64_Shdr *shdr = get_shdr64byindex(p, j);
         if (shdr) {
           if (isshdrinphdr64(shdr, phdr)) {
-            printf_text(get_secname64byindex(p, j), USE_SPACE);
+            printf_text(get_secnamebyindex(p, j), USE_SPACE);
           }
         }
       }
@@ -614,7 +614,7 @@ static int dump_dynamic32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehd
       printf_text(1 == cnt ? "entry" : "entries", USE_LT | USE_SPACE | USE_COLON | USE_EOL);
       printf_text("Tag                Type                Name/Value", USE_LT | USE_SPACE | USE_EOL);
 
-      Elf32_Dyn *dyn = get32byshdr(p, shdr);
+      Elf32_Dyn *dyn = _get32byshdr(p, shdr);
       for (size_t j = 0; j < cnt; ++j, ++dyn) {
         dump_dynamic(p, o, dyn->d_tag, dyn->d_un.d_val, shdr->sh_link);
       }
@@ -639,7 +639,7 @@ static int dump_dynamic64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
       printf_text(1 == cnt ? "entry" : "entries", USE_LT | USE_SPACE | USE_COLON | USE_EOL);
       printf_text("Tag                Type                Name/Value", USE_LT | USE_SPACE | USE_EOL);
 
-      Elf64_Dyn *dyn = get64byshdr(p, shdr);
+      Elf64_Dyn *dyn = _get64byshdr(p, shdr);
       for (size_t j = 0; j < cnt; ++j, ++dyn) {
         dump_dynamic(p, o, dyn->d_tag, dyn->d_un.d_val, shdr->sh_link);
       }
@@ -659,7 +659,7 @@ static int dump_relocsrel32(const pbuffer_t p, const poptions_t o, Elf32_Shdr *s
 
   size_t cnt = shdr->sh_size / shdr->sh_entsize;
 
-  Elf32_Rel *r = get32byshdr(p, shdr);
+  Elf32_Rel *r = _get32byshdr(p, shdr);
   if (r) {
     for (size_t j = 0; j < cnt; ++j, ++r) {
       printf_nice(r->r_offset, USE_LHEX48);
@@ -708,11 +708,9 @@ static int dump_relocsrel64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *s
 
   size_t cnt = shdr->sh_size / shdr->sh_entsize;
 
-  Elf64_Rel *rr = get64byshdr(p, shdr);
-  if (rr) {
-    for (size_t j = 0; j < cnt; j++) {
-      Elf64_Rel *r = rr + j;
-
+  Elf64_Rel *r = _get64byshdr(p, shdr);
+  if (r) {
+    for (size_t j = 0; j < cnt; ++j, ++r) {
       printf_nice(r->r_offset, USE_LHEX48);
       printf_nice(r->r_info, USE_LHEX48);
       printf_pick(zRELTYPE64, r->r_info & 0xffff, USE_LT | USE_SPACE | SET_PAD(20));
@@ -729,11 +727,9 @@ static int dump_relocsrela32(const pbuffer_t p, const poptions_t o, Elf32_Shdr *
 
   size_t cnt = shdr->sh_size / shdr->sh_entsize;
 
-  Elf32_Rela *rr = get32byshdr(p, shdr);
-  if (rr) {
-    for (size_t j = 0; j < cnt; ++j) {
-      Elf32_Rela *r = rr + j;
-
+  Elf32_Rela *r = _get32byshdr(p, shdr);
+  if (r) {
+    for (size_t j = 0; j < cnt; ++j, ++r) {
       printf_nice(r->r_offset, USE_LHEX48);
       printf_nice(r->r_info, USE_LHEX48);
       printf_pick(zRELTYPE32, r->r_info & 0x00ff, USE_LT | USE_SPACE | SET_PAD(20));
@@ -753,7 +749,7 @@ static int dump_relocsrela64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *
 
   size_t cnt = shdr->sh_size / shdr->sh_entsize;
 
-  Elf64_Rela *r = get64byshdr(p, shdr);
+  Elf64_Rela *r = _get64byshdr(p, shdr);
   if (r) {
     for (size_t j = 0; j < cnt; ++j, ++r) {
       printf_nice(r->r_offset, USE_LHEX48);
@@ -1058,7 +1054,7 @@ static int dump_symbols64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
 }
 
 static int dump_gnuhash64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr, Elf64_Shdr *shdr) {
-  Elf32_Word *pb = get64byshdr(p, shdr);
+  Elf32_Word *pb = _get64byshdr(p, shdr);
 
   if (pb) {
     Elf32_Word nbucket  = pb[0];
@@ -1166,7 +1162,7 @@ static int dump_versionsym64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *
   printf_nice(shdr->sh_offset, USE_FHEX24);
   printf_text("Link", USE_SPACE | USE_COLON);
   printf_nice(shdr->sh_link, USE_DEC);
-  printf_text(get_secname64byindex(p, shdr->sh_link), USE_LT | USE_RB | USE_SPACE);
+  printf_text(get_secnamebyindex(p, shdr->sh_link), USE_LT | USE_RB | USE_SPACE);
 
   for (size_t j = 0; j < cnt; ++j) {
     Elf64_Versym *vs = getp(p, shdr->sh_offset + (j * shdr->sh_entsize), shdr->sh_entsize);
@@ -1183,7 +1179,7 @@ static int dump_versionsym64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *
       else {
         n += printf("%4x%c", *vs & VERSYM_VERSION, *vs & VERSYM_HIDDEN ? 'h' : ' ');
         if (vnames[*vs & VERSYM_VERSION] && (*vs & VERSYM_VERSION) < NELEMENTS(vnames)) {
-          n += printf_text(get_name64byoffset(p, vnames[0], vnames[*vs & VERSYM_VERSION]), USE_LT | USE_RB | USE_SPACE | SET_PAD(MAX(0, 20 - n)));
+          n += printf_text(get_namebyoffset(p, vnames[0], vnames[*vs & VERSYM_VERSION]), USE_LT | USE_RB | USE_SPACE | SET_PAD(MAX(0, 20 - n)));
         } else {
           n += printf_text("???", USE_SPACE | SET_PAD(MAX(0, 20 - n)));
         }
@@ -1210,7 +1206,7 @@ static int dump_versionneed64(const pbuffer_t p, const poptions_t o, Elf64_Shdr 
   printf_nice(shdr->sh_offset, USE_FHEX24);
   printf_text("Link", USE_SPACE | USE_COLON);
   printf_nice(shdr->sh_link, USE_DEC);
-  printf_text(get_secname64byindex(p, shdr->sh_link), USE_LT | USE_RB | USE_SPACE | USE_EOL);
+  printf_text(get_secnamebyindex(p, shdr->sh_link), USE_LT | USE_RB | USE_SPACE | USE_EOL);
 
   Elf64_Word offset = 0;
   for (Elf64_Word j = 0; j < shdr->sh_info; ++j) {
@@ -1220,7 +1216,7 @@ static int dump_versionneed64(const pbuffer_t p, const poptions_t o, Elf64_Shdr 
       printf_text("Version", USE_SPACE | USE_COLON);
       printf_nice(vn->vn_version, USE_DEC);
       printf_text("File", USE_SPACE | USE_COLON);
-      printf_text(get_name64byoffset(p, shdr->sh_link, vn->vn_file), USE_LT | USE_SPACE);
+      printf_text(get_namebyoffset(p, shdr->sh_link, vn->vn_file), USE_LT | USE_SPACE);
       printf_text("Cnt", USE_SPACE | USE_COLON);
       printf_nice(vn->vn_cnt, USE_DEC | USE_EOL);
 
@@ -1230,7 +1226,7 @@ static int dump_versionneed64(const pbuffer_t p, const poptions_t o, Elf64_Shdr 
         if (va) {
           printf_nice(xoffset, USE_FHEX16 | USE_COLON);
           printf_text("Name", USE_TAB | USE_COLON);
-          printf_text(get_name64byoffset(p, shdr->sh_link, va->vna_name), USE_LT | USE_SPACE | SET_PAD(14));
+          printf_text(get_namebyoffset(p, shdr->sh_link, va->vna_name), USE_LT | USE_SPACE | SET_PAD(14));
           printf_text("Flags", USE_SPACE | USE_COLON);
           printf_masknone(zVNA_FLAGS, va->vna_flags, USE_LT);
           printf_text("Version", USE_TAB | USE_COLON);
@@ -1303,11 +1299,11 @@ static int dump_notes64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr)
     for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
       Elf64_Nhdr *nhdr = get_nhdr64byindex(p, i);
       if (nhdr) {
-        printf("Displaying notes found in: %s\n", get_secname64byindex(p, i));
+        printf("Displaying notes found in: %s\n", get_secnamebyindex(p, i));
         printf("  Owner                Data size        Description\n");
-        printf("  %-20s 0x%08x       %-10s\n", get_nhdrname64byindex(p, i), nhdr->n_descsz, get_NHDRTYPE64(p, nhdr));
+        printf("  %-20s 0x%08x       %-10s\n", get_nhdrnamebyindex(p, i), nhdr->n_descsz, get_NHDRTYPE64(p, nhdr));
 
-        const char* cc = get_nhdrdesc64byindex(p, i);
+        const char* cc = get_nhdrdescbyindex(p, i);
         if (NT_GNU_BUILD_ID == nhdr->n_type) {
           printf_text("Build ID", USE_LT | USE_TAB | USE_COLON);
           printf_data(cc, nhdr->n_descsz, 0, USE_HEX);

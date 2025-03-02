@@ -52,14 +52,6 @@ int issafe(pbuffer_t p);
 void* getp(const pbuffer_t p, const int offset, const size_t size);
 int   get(const pbuffer_t p, const int offset);
 
-Elf64_Shdr* get_shdr64byname(const pbuffer_t p, const char* name);
-
-Elf64_Nhdr* get_nhdr64byindex(const pbuffer_t p, const int index);
-const char* get_nhdrname64byindex(const pbuffer_t p, const int index);
-const char* get_nhdrdesc64byindex(const pbuffer_t p, const int index);
-
-const char* get_secname64byshdr(const pbuffer_t p, Elf64_Shdr *s);
-
 int isBigEndian(const pbuffer_t p);
 int isLittleEndian(const pbuffer_t p);
 

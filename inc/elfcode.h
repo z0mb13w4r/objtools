@@ -33,29 +33,46 @@ uint64_t getBE(const void *p, const size_t siz);
 Elf32_Ehdr* get_ehdr32(const pbuffer_t p);
 Elf64_Ehdr* get_ehdr64(const pbuffer_t p);
 
+Elf32_Nhdr* get_nhdr32byindex(const pbuffer_t p, const int index);
+Elf64_Nhdr* get_nhdr64byindex(const pbuffer_t p, const int index);
+
 Elf32_Phdr* get_phdr32byindex(const pbuffer_t p, const int index);
 Elf64_Phdr* get_phdr64byindex(const pbuffer_t p, const int index);
 
 Elf32_Shdr* get_shdr32bytype(const pbuffer_t p, const int type);
 Elf64_Shdr* get_shdr64bytype(const pbuffer_t p, const int type);
 
+Elf32_Shdr* get_shdr32byname(const pbuffer_t p, const char* name);
+Elf64_Shdr* get_shdr64byname(const pbuffer_t p, const char* name);
+
 Elf32_Shdr* get_shdr32byindex(const pbuffer_t p, const int index);
 Elf64_Shdr* get_shdr64byindex(const pbuffer_t p, const int index);
 
 size_t get_secnamemaxsize(const pbuffer_t p);
-size_t get_secname32maxsize(const pbuffer_t p);
-size_t get_secname64maxsize(const pbuffer_t p);
+size_t _get_secname32maxsize(const pbuffer_t p);
+size_t _get_secname64maxsize(const pbuffer_t p);
 
 const char* get_secnamebyindex(const pbuffer_t p, const int index);
-const char* get_secname32byindex(const pbuffer_t p, const int index);
-const char* get_secname64byindex(const pbuffer_t p, const int index);
+const char* _get_secname32byindex(const pbuffer_t p, const int index);
+const char* _get_secname64byindex(const pbuffer_t p, const int index);
 
 const char* get_namebyoffset(const pbuffer_t p, const int index, const int offset);
-const char* get_name32byoffset(const pbuffer_t p, const int index, const int offset);
-const char* get_name64byoffset(const pbuffer_t p, const int index, const int offset);
+const char* _get_name32byoffset(const pbuffer_t p, const int index, const int offset);
+const char* _get_name64byoffset(const pbuffer_t p, const int index, const int offset);
 
-void* get32byshdr(const pbuffer_t p, Elf32_Shdr *shdr); // not safe - remove
-void* get64byshdr(const pbuffer_t p, Elf64_Shdr *shdr); // replace by fgetXXbyYYYY & fnext
+const char* get_nhdrnamebyindex(const pbuffer_t p, const int index);
+const char* _get_nhdrname32byindex(const pbuffer_t p, const int index);
+const char* _get_nhdrname64byindex(const pbuffer_t p, const int index);
+
+const char* get_nhdrdescbyindex(const pbuffer_t p, const int index);
+const char* _get_nhdrdesc32byindex(const pbuffer_t p, const int index);
+const char* _get_nhdrdesc64byindex(const pbuffer_t p, const int index);
+
+const char* get_secname32byshdr(const pbuffer_t p, Elf32_Shdr *s);
+const char* get_secname64byshdr(const pbuffer_t p, Elf64_Shdr *s);
+
+void* _get32byshdr(const pbuffer_t p, Elf32_Shdr *shdr); // not safe - remove
+void* _get64byshdr(const pbuffer_t p, Elf64_Shdr *shdr); // replace by fgetXXbyYYYY & fnext
 
 handle_t fget32byshdr(const pbuffer_t p, Elf32_Shdr *shdr);
 handle_t fget64byshdr(const pbuffer_t p, Elf64_Shdr *shdr);
