@@ -55,7 +55,7 @@ static void callback_disassemble(bfd *f, asection *s, void *p) {
 
   /* Sections that do not contain machine code are not normally disassembled. */
   if ((s->flags & SEC_HAS_CONTENTS) == 0) return;
-  if (0 == (poi->action & OPTOBJDUMP_DISADDEMBLEALL) && 0 == (s->flags & SEC_CODE)) return;
+  if (0 == (poi->action & OPTOBJDUMP_DISASSEMBLE_ALL) && 0 == (s->flags & SEC_CODE)) return;
 
   bfd_size_type dsize;
   if ((dsize = bfd_section_size(s)) == 0) return;
@@ -291,14 +291,14 @@ static int do_object(const pbuffer_t p, const poptions_t o, bfd *f) {
   printf_text(f->xvec->name, USE_SPACE | USE_EOL);
   printf_eol();
 
-  if (o->action & OPTOBJDUMP_FILEHEADER)        dump_header(p, o, f);
-  if (o->action & OPTOBJDUMP_PRIVATEHEADER)     dump_privatehdr(p, o, f);
-  if (o->action & OPTOBJDUMP_SECTIONHEADER)     dump_sectionhdr(p, o, f);
-  if (o->action & OPTOBJDUMP_SYMBOLS)           dump_symbols(p, o, f, MODE_SYMBOLS);
-  if (o->action & OPTOBJDUMP_DYNAMICSYMBOLS)    dump_symbols(p, o, f, MODE_SYMBOLS_DYNAMIC);
-  if (o->action & OPTOBJDUMP_SECTIONS)          dump_sections(p, o, f);
-  if (o->action & OPTOBJDUMP_DISASSEMBLE)       dump_disassemble(p, o, f);
-  if (o->action & OPTOBJDUMP_DEBUGGING)         dump_debugging(p, o, f);
+  if (o->action & OPTOBJDUMP_FILE_HEADER)        dump_header(p, o, f);
+  if (o->action & OPTOBJDUMP_PRIVATE_HEADER)     dump_privatehdr(p, o, f);
+  if (o->action & OPTOBJDUMP_SECTION_HEADER)     dump_sectionhdr(p, o, f);
+  if (o->action & OPTOBJDUMP_SYMBOLS)            dump_symbols(p, o, f, MODE_SYMBOLS);
+  if (o->action & OPTOBJDUMP_DYNAMIC_SYMBOLS)    dump_symbols(p, o, f, MODE_SYMBOLS_DYNAMIC);
+  if (o->action & OPTOBJDUMP_SECTIONS)           dump_sections(p, o, f);
+  if (o->action & OPTOBJDUMP_DISASSEMBLE)        dump_disassemble(p, o, f);
+  if (o->action & OPTOBJDUMP_DEBUGGING)          dump_debugging(p, o, f);
 
   return 0;
 }

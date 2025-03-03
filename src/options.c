@@ -14,6 +14,7 @@ typedef struct args_s {
 } args_t, *pargs_t;
 
 static const args_t READELFARGS[] = {
+  {'H', "--help",            OPTPROGRAM_HELP},
   {'A', "--arch-specific",   OPTREADELF_ARCH},
   {'I', "--histogram",       OPTREADELF_HISTOGRAM},
   {'S', "--section-headers", OPTREADELF_SECTIONHEADERS},
@@ -28,11 +29,11 @@ static const args_t READELFARGS[] = {
   {'r', "--relocs",          OPTREADELF_RELOCS},
   {'s', "--symbols",         OPTREADELF_SYMBOLS},
   {'u', "--unwind",          OPTREADELF_UNWIND},
-  {'H', "--help",            OPTPROGRAM_HELP},
   {0, NULL}
 };
 
 static const args_t OBJCOPYARGS[] = {
+  {'H', "--help",                           OPTPROGRAM_HELP},
   {0,   "--adjust-warnings",                OPTOBJCOPY_CHANGE_WARNINGS},
   {0,   "--change-warnings",                OPTOBJCOPY_CHANGE_WARNINGS},
   {0,   "--debugging",                      OPTOBJCOPY_DEBUGGING},
@@ -63,28 +64,48 @@ static const args_t OBJCOPYARGS[] = {
   {0,   "--weaken",                         OPTOBJCOPY_WEAKEN},
   {0,   "--writable-text",                  OPTOBJCOPY_WRITABLE_TEXT},
   {0,   "--dump-sections-all",              OPTOBJCOPY_DUMP_SECTIONS_ALL},
-  {'H', "--help",                           OPTPROGRAM_HELP},
   {0, NULL},
 };
 
 static const args_t OBJDUMPARGS1[] = {
-  {'D', "--disassemble-all", OPTOBJDUMP_DISADDEMBLEALL | OPTOBJDUMP_DISASSEMBLE},
-  {'S', "--source",          OPTOBJDUMP_SOURCECODE | OPTOBJDUMP_DISASSEMBLE},
-  {'T', "--dynamic-symbols", OPTOBJDUMP_DYNAMICSYMBOLS},
-  {'d', "--disassemble",     OPTOBJDUMP_DISASSEMBLE},
-  {'g', "--debugging",       OPTOBJDUMP_DEBUGGING},
-  {'s', "--full-contents",   OPTOBJDUMP_SECTIONS},
-  {'t', "--symbols",         OPTOBJDUMP_SYMBOLS},
-  {'f', "--file-headers",    OPTOBJDUMP_FILEHEADER},
-  {'p', "--private-headers", OPTOBJDUMP_PRIVATEHEADER},
-  {'h', "--section-headers", OPTOBJDUMP_SECTIONHEADER},
-  {'x', "--all-headers",     OPTOBJDUMP_FILEHEADER | OPTOBJDUMP_PRIVATEHEADER | OPTOBJDUMP_SECTIONHEADER | OPTOBJDUMP_SYMBOLS},
-  {'H', "--help",            OPTPROGRAM_HELP},
+  {'H', "--help",              OPTPROGRAM_HELP},
+  {'D', "--disassemble-all",   OPTOBJDUMP_DISASSEMBLE_ALL | OPTOBJDUMP_DISASSEMBLE},
+  {'S', "--source",            OPTOBJDUMP_SOURCE_CODE | OPTOBJDUMP_DISASSEMBLE},
+  {'T', "--dynamic-symbols",   OPTOBJDUMP_DYNAMIC_SYMBOLS},
+  {'d', "--disassemble",       OPTOBJDUMP_DISASSEMBLE},
+  {'g', "--debugging",         OPTOBJDUMP_DEBUGGING},
+  {'s', "--full-contents",     OPTOBJDUMP_SECTIONS},
+  {'t', "--symbols",           OPTOBJDUMP_SYMBOLS},
+  {'f', "--file-headers",      OPTOBJDUMP_FILE_HEADER},
+  {'p', "--private-headers",   OPTOBJDUMP_PRIVATE_HEADER},
+  {'h', "--section-headers",   OPTOBJDUMP_SECTION_HEADER},
+  {'x', "--all-headers",       OPTOBJDUMP_FILE_HEADER | OPTOBJDUMP_PRIVATE_HEADER | OPTOBJDUMP_SECTION_HEADER | OPTOBJDUMP_SYMBOLS},
+  {'l', "--line-numbers",      OPTOBJDUMP_LINE_NUMBERS},
   {0, NULL}
 };
 
 static const args_t OBJDUMPARGS2[] = {
-  {'l', NULL,                OPTOBJDUMP_LINENUMBERS},
+  {'a', "=debug_abbrev",       OPTOBJDUMP_DEBUG_ABBREV},
+  {'A', "=debug_addr",         OPTOBJDUMP_DEBUG_ADDR},
+  {'c', "=debug_cu_index",     OPTOBJDUMP_DEBUG_CU_INDEX},
+  {'f', "=debug_frame",        OPTOBJDUMP_DEBUG_FRAME},
+  {'F', "=debug_frame_interp", OPTOBJDUMP_DEBUG_FRAME_INTERP},
+  {'i', "=debug_info",         OPTOBJDUMP_DEBUG_INFO},
+  {'k', "=debug_links",        OPTOBJDUMP_DEBUG_LINK},
+  {'K', "=debug_links_follow", OPTOBJDUMP_DEBUG_LINK_FOLLOW},
+  {'l', "=debug_line_raw",     OPTOBJDUMP_DEBUG_LINE_RAW},
+  {'L', "=debug_line_decoded", OPTOBJDUMP_DEBUG_LINE_DECODED},
+  {'m', "=debug_macro",        OPTOBJDUMP_DEBUG_MACRO},
+  {'o', "=debug_loc",          OPTOBJDUMP_DEBUG_LOC},
+  {'r', "=debug_aranges",      OPTOBJDUMP_DEBUG_ARANGES},
+  {'R', "=debug_ranges",       OPTOBJDUMP_DEBUG_RANGES},
+  {'s', "=debug_str",          OPTOBJDUMP_DEBUG_STR},
+  {'p', "=debug_pubnames",     OPTOBJDUMP_DEBUG_PUBNAMES},
+  {'t', "=debug_pubtype",      OPTOBJDUMP_DEBUG_PUBTYPES},
+  {'T', "=trace_aranges",      OPTOBJDUMP_TRACE_ARANGES},
+  {'u', "=trace_abbrev",       OPTOBJDUMP_TRACE_ABBREV},
+  {'U', "=trace_info",         OPTOBJDUMP_TRACE_INFO},
+  {'g', "=gdb_index",          OPTOBJDUMP_GDB_INDEX},
   {0, NULL}
 };
 
@@ -96,31 +117,55 @@ static int usage_name(poptions_t o, const char* name, const args_t args[]) {
   return 0;
 }
 
-static int usage_synopsis(poptions_t o, const char* name, const args_t args[]) {
+static int usage_synopsis(poptions_t o, const char* name, const args_t args0[],
+                                        const char* more0, const char* more1, const args_t args1[]) {
   MALLOCA(char, buf, 1024);
 
   printf_text("SYNOPSIS", USE_LT | USE_EOL);
   int n = printf_text(name, USE_LT | USE_TAB);
-  if (args[0].option1 && args[0].option2) {
-    snprintf(buf, sizeof(buf), "-%c|%s", args[0].option1, args[0].option2);
-  } else if (args[0].option1) {
-    snprintf(buf, sizeof(buf), "-%c", args[0].option1);
-  } else if (args[0].option2) {
-    snprintf(buf, sizeof(buf), "%s", args[0].option2);
+  if (args0[0].option1 && args0[0].option2) {
+    snprintf(buf, sizeof(buf), "-%c|%s", args0[0].option1, args0[0].option2);
+  } else if (args0[0].option1) {
+    snprintf(buf, sizeof(buf), "-%c", args0[0].option1);
+  } else if (args0[0].option2) {
+    snprintf(buf, sizeof(buf), "%s", args0[0].option2);
   }
   printf_text(buf, USE_LT | USE_SPACE | USE_SB | USE_EOL);
 
-  for (int j = 1; (0 != args[j].option1) || (0 != args[j].option2); ++j) {
-    if (args[j].option1 && args[j].option2) {
-       snprintf(buf, sizeof(buf), "-%c|%s", args[j].option1, args[j].option2);
-    } else if (args[j].option1) {
-      snprintf(buf, sizeof(buf), "-%c", args[j].option1);
-    } else if (args[j].option2) {
-      snprintf(buf, sizeof(buf), "%s", args[j].option2);
+  for (int j = 1; (0 != args0[j].option1) || (0 != args0[j].option2); ++j) {
+    if (args0[j].option1 && args0[j].option2) {
+       snprintf(buf, sizeof(buf), "-%c|%s", args0[j].option1, args0[j].option2);
+    } else if (args0[j].option1) {
+      snprintf(buf, sizeof(buf), "-%c", args0[j].option1);
+    } else if (args0[j].option2) {
+      snprintf(buf, sizeof(buf), "%s", args0[j].option2);
     }
     printf_pack(n);
     printf_text(buf, USE_LT | USE_SPACE | USE_SB | USE_EOL);
   }
+
+  if (more0 && args1) {
+    int x = snprintf(buf, sizeof(buf), "%s|[", more0);
+    for (int j = 0; (0 != args1[j].option1) || (0 != args1[j].option2); ++j) {
+      x += snprintf(buf + x, sizeof(buf) - x, "%c", args1[j].option1);
+    }
+
+    x += snprintf(buf + x, sizeof(buf) - x, "]|");
+    printf_pack(n);
+    printf_text(buf, USE_LT | USE_SPACE | USE_SBLT | USE_EOL);
+  }
+
+  if (more1 && args1) {
+    int x = snprintf(buf, sizeof(buf), "%s|[%s", more1, args1[0].option2);
+    for (int j = 1; (0 != args1[j].option1) || (0 != args1[j].option2); ++j) {
+      x += snprintf(buf + x, sizeof(buf) - x, ",%s", args1[j].option2);
+    }
+
+    x += snprintf(buf + x, sizeof(buf) - x, "]");
+    printf_pack(n + 2);
+    printf_text(buf, USE_LT | USE_SPACE | USE_SBRT | USE_EOL);
+  }
+
   printf_eol();
 
   return 0;
@@ -133,26 +178,63 @@ static int usage_description(poptions_t o, const char* name, const args_t args[]
   return 0;
 }
 
-static int usage_options(poptions_t o, const char* name, const args_t args[]) {
+static int usage_options(poptions_t o, const char* name, const args_t args0[],
+                                       const char* more0, const char* more1, const args_t args1[]) {
+  MALLOCA(char, buf, 1024);
+
   printf_text("OPTIONS", USE_LT | USE_EOL);
-  for (int j = 0; (0 != args[j].option1) || (0 != args[j].option2); ++j) {
-    if (args[j].option1) {
-      printf_nice(args[j].option1, USE_CHAR | USE_TAB | USE_DASH | USE_EOL);
+  for (int j = 0; (0 != args0[j].option1) || (0 != args0[j].option2); ++j) {
+    if (args0[j].option1) {
+      printf_nice(args0[j].option1, USE_CHAR | USE_TAB | USE_DASH | USE_EOL);
     }
-    if (args[j].option2) {
-      printf_text(args[j].option2, USE_LT | USE_TAB | USE_EOL);
+    if (args0[j].option2) {
+      printf_text(args0[j].option2, USE_LT | USE_TAB | USE_EOL);
     }
-    if (isbits(args[j].action)) {
+    if (isbits(args0[j].action)) {
       printf_pack(4);
       printf_text("Equivalent to specifying", USE_LT | USE_COLON);
-      for (int k = 0; (0 != args[k].option1) || (0 != args[k].option2); ++k) {
-        if (k != j && !isbits(args[k].action) && (args[k].action & args[j].action)) {
-          printf_text(args[k].option2, USE_LT | USE_SPACE);
+      for (int k = 0; (0 != args0[k].option1) || (0 != args0[k].option2); ++k) {
+        if (k != j && !isbits(args0[k].action) && (args0[k].action & args0[j].action)) {
+          printf_text(args0[k].option2, USE_LT | USE_SPACE);
         }
       }
       printf_eol();
     }
     printf_eol();
+  }
+
+  if (more0 && args1) {
+    int x = snprintf(buf, sizeof(buf), "%s|[", more0);
+    for (int j = 0; (0 != args1[j].option1) || (0 != args1[j].option2); ++j) {
+      x += snprintf(buf + x, sizeof(buf) - x, "%c", args1[j].option1);
+    }
+
+    x += snprintf(buf + x, sizeof(buf) - x, "]");
+    printf_text(buf, USE_LT | USE_TAB | USE_EOL);
+  }
+
+  if (more1 && args1) {
+    int x = snprintf(buf, sizeof(buf), "%s|[%s", more1, args1[0].option2);
+    for (int j = 1; (0 != args1[j].option1) || (0 != args1[j].option2); ++j) {
+      x += snprintf(buf + x, sizeof(buf) - x, ",%s", args1[j].option2);
+    }
+
+    x += snprintf(buf + x, sizeof(buf) - x, "]");
+    printf_text(buf, USE_LT | USE_TAB | USE_EOL);
+    printf_eol();
+  }
+
+  if (args0) {
+    for (int j = 0; (0 != args1[j].option1) || (0 != args1[j].option2); ++j) {
+      if (args1[j].option1) {
+        printf_nice(args1[j].option1, USE_CHAR | USE_TAB | USE_DQ | USE_EOL);
+      }
+      if (args1[j].option2) {
+        printf_text(args1[j].option2, USE_LT | USE_TAB | USE_DQ | USE_EOL);
+      }
+      printf_eol();
+    }
+
   }
 
   return 0;
@@ -174,13 +256,24 @@ static int usage_copyright(poptions_t o, const char* name, const args_t args[]) 
   return 0;
 }
 
-static int usage(poptions_t o, const char* name, const args_t args[]) {
+static int usage0(poptions_t o, const char* name, const args_t args[]) {
   usage_name(o, name, args);
-  usage_synopsis(o, name, args);
+  usage_synopsis(o, name, args, NULL, NULL, NULL);
   usage_description(o, name, args);
-  usage_options(o, name, args);
+  usage_options(o, name, args, NULL, NULL, NULL);
   usage_seealso(o, name, args);
   usage_copyright(o, name, args);
+
+  return 1;
+}
+
+static int usage1(poptions_t o, const char* name, const args_t args0[], const char* more0, const char* more1, const args_t args1[]) {
+  usage_name(o, name, args0);
+  usage_synopsis(o, name, args0, more0, more1, args1);
+  usage_description(o, name, args0);
+  usage_options(o, name, args0, more0, more1, args1);
+  usage_seealso(o, name, args0);
+  usage_copyright(o, name, args0);
 
   return 1;
 }
@@ -285,7 +378,7 @@ int get_options_readelf(poptions_t o, int argc, char** argv, char* name) {
   }
 
   if (o->action & OPTPROGRAM_HELP) {
-    return usage(o, "readelf-ng", READELFARGS);
+    return usage0(o, "readelf-ng", READELFARGS);
   }
 
   return 0;
@@ -334,7 +427,7 @@ int get_options_objcopy(poptions_t o, int argc, char** argv, char* name) {
   }
 
   if (o->action & OPTPROGRAM_HELP) {
-    return usage(o, "objcopy-ng", OBJCOPYARGS);
+    return usage0(o, "objcopy-ng", OBJCOPYARGS);
   }
 
   return 0;
@@ -364,7 +457,7 @@ int get_options_objdump(poptions_t o, int argc, char** argv, char* name) {
   }
 
   if (o->action & OPTPROGRAM_HELP) {
-    return usage(o, "objdump-ng", OBJDUMPARGS1);
+    return usage1(o, "objdump-ng", OBJDUMPARGS1, "-W", "--dwarf", OBJDUMPARGS2);
   }
 
   return 0;

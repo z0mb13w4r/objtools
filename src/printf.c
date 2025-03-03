@@ -33,6 +33,8 @@ int printf_work(char* o, const size_t size, const char* p, const imode_t mode) {
     }
 
     switch (b) {
+    case USE_SBLT:           n += PRINT2("[%s",  p);   break;
+    case USE_SBRT:           n += PRINT2("%s]",  p);   break;
     case USE_CB:             n += PRINT2("{%s}", p);   break;
     case USE_RB:             n += PRINT2("(%s)", p);   break;
     case USE_SB:             n += PRINT2("[%s]", p);   break;
