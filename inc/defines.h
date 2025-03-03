@@ -1,6 +1,7 @@
 #ifndef __DEFINES_H_
 #define __DEFINES_H_
 
+#include <limits.h>
 #include <stdint.h>
 #include <string.h>
 
@@ -10,6 +11,10 @@
 
 #ifndef MALLOCA
 #define MALLOCA(x,y,z) x y[z]; memset(y, 0, sizeof(y))
+#endif
+
+#ifndef MALLOCS
+#define MALLOCS(x,y) x y; x* p##y = &y; memset(p##y, 0, sizeof(y))
 #endif
 
 #ifndef MALLOCX
@@ -46,6 +51,10 @@
 
 #ifndef LIMIT
 #define LIMIT(x,b,t) MAX(b, MIN(x, t))
+#endif
+
+#ifndef U64MASK
+#define U64MASK(x)   (1ULL << (x))
 #endif
 
 typedef uint64_t addrz_t;

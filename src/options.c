@@ -74,6 +74,8 @@ static const args_t OBJDUMPARGS1[] = {
   {'T', "--dynamic-symbols",   OPTOBJDUMP_DYNAMIC_SYMBOLS},
   {'d', "--disassemble",       OPTOBJDUMP_DISASSEMBLE},
   {'g', "--debugging",         OPTOBJDUMP_DEBUGGING},
+  {'e', "--debugging-tags",    OPTOBJDUMP_DEBUGGING_TAGS | OPTOBJDUMP_DEBUGGING | OPTOBJDUMP_DEMANGLE},
+  {'C', "--demangle",          OPTOBJDUMP_DEMANGLE},
   {'s', "--full-contents",     OPTOBJDUMP_SECTIONS},
   {'t', "--symbols",           OPTOBJDUMP_SYMBOLS},
   {'f', "--file-headers",      OPTOBJDUMP_FILE_HEADER},

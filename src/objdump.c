@@ -8,13 +8,67 @@
 #include "static/has_flags.ci"
 #include "static/sectionhdr_flags.ci"
 
+#define DEFAULT_SKIP_ZEROES            (8)
+#define DEFAULT_SKIP_ZEROES_AT_END     (3)
+
 typedef struct objdump_info_s {
-  int  action;
+  imode_t  action;
 
 } objdump_info_t, *pobjdump_info_t;
 
 static bfd_vma saddress = (bfd_vma) -1; /* --start-address */
 static bfd_vma eaddress = (bfd_vma) -1; /* --stop-address */
+
+static bfd_vma get_soffset(bfd *f, asection *s) {
+  bfd_vma soffset = 0;
+
+  if (f && s) {
+    if (saddress == (bfd_vma) -1 || saddress < s->vma) soffset = 0;
+    else soffset = saddress - s->vma;
+  }
+
+  return soffset;
+}
+
+static bfd_vma get_eoffset(bfd *f, asection *s) {
+  bfd_vma eoffset = 0;
+
+  if (f && s) {
+    bfd_size_type dsize = bfd_section_size(s);
+    if (0 != dsize) {
+      /* Compute the address range to display. */
+      size_t opb = bfd_octets_per_byte(f, s);
+
+      if (eaddress == (bfd_vma) -1) eoffset = dsize / opb;
+      else {
+        if (eaddress < s->vma) eoffset = 0;
+        else eoffset = eaddress - s->vma;
+
+        if (eoffset > dsize / opb) eoffset = dsize / opb;
+      }
+    }
+  }
+
+  return eoffset;
+}
+
+//static bfd_vma get_signadjustment(bfd *f) {
+//  /* If the target used signed addresses then we must make
+//     sure that we sign extend the value that we calculate. */
+//  bfd_vma sign_adjust = 0;
+//  const struct elf_backend_data *b = CAST(const struct elf_backend_data*, f->xvec->backend_data);
+//  if (b) {
+//    if (bfd_get_flavour(f) == bfd_target_elf_flavour && b->sign_extend_vma) {
+//      sign_adjust = (bfd_vma) 1 << (b->s->arch_size - 1);
+//    }
+//  }
+//
+//  return sign_adjust;
+//}
+
+//static bfd_vma fix_signadjustment(bfd_vma addr, bfd_vma sign_adjust) {
+//  return ((addr & ((sign_adjust << 1) - 1)) ^ sign_adjust) - sign_adjust;
+//}
 
 static pbuffer_t get_symbols(const pbuffer_t p, bfd *f, const int mode) {
   pbuffer_t ps = createx(p, mode);
@@ -50,59 +104,49 @@ static pbuffer_t get_symbols(const pbuffer_t p, bfd *f, const int mode) {
 }
 
 static void callback_disassemble(bfd *f, asection *s, void *p) {
-  struct disassemble_info *pdi = (struct disassemble_info *)p;
+  struct disassemble_info *pdi = CAST(struct disassemble_info *, p);
   pobjdump_info_t poi = pdi->application_data;
 
   /* Sections that do not contain machine code are not normally disassembled. */
   if ((s->flags & SEC_HAS_CONTENTS) == 0) return;
   if (0 == (poi->action & OPTOBJDUMP_DISASSEMBLE_ALL) && 0 == (s->flags & SEC_CODE)) return;
+  if (0 == bfd_section_size(s)) return;
 
-  bfd_size_type dsize;
-  if ((dsize = bfd_section_size(s)) == 0) return;
-
-  /* Compute the address range to display. */
-  size_t opb = bfd_octets_per_byte(f, s);
-
-  bfd_vma soffset, eoffset;
-  if (saddress == (bfd_vma) -1 || saddress < s->vma) soffset = 0;
-  else soffset = saddress - s->vma;
-
-  if (eaddress == (bfd_vma) -1) eoffset = dsize / opb;
-  else {
-    if (eaddress < s->vma) eoffset = 0;
-    else eoffset = eaddress - s->vma;
-
-    if (eoffset > dsize / opb) eoffset = dsize / opb;
-  }
-
+  bfd_vma soffset = get_soffset(f, s);
+  bfd_vma eoffset = get_eoffset(f, s);
   if (soffset >= eoffset) return;
 
-  printf("Disassembly of section %s:\n", s->name);
+//  bfd_vma sign_adjust = get_signadjustment(f);
 
-  printf("\n");
+  printf_text("Disassembly of section", USE_LT);
+  printf_text(s->name, USE_LT | USE_SPACE | USE_SQ);
+  printf_text("at offset", USE_LT | USE_SPACE);
+  printf_nice(s->filepos + soffset, USE_FHEX16 | USE_COLON | USE_EOL);
+
+//  while (soffset < eoffset) {
+//    bfd_vma addr = fix_signadjustment(s->vma + soffset, sign_adjust);
+//
+//    bfd_vma noffset = eoffset;
+//    if (sym && bfd_asymbol_value(sym) > addr)      noffset = bfd_asymbol_value(sym) - s->vma;
+//    else if (NULL == nextsym)                      noffset = eoffset;
+//    else                                           noffset = bfd_asymbol_value(nextsym) - s->vma;
+//
+//    if (noffset > eoffset || noffset <= soffset)   noffset = eoffset;
+//
+//    soffset = noffset;
+//  }
+
+  printf_eol();
 }
 
 static void callback_section_data(bfd *f, asection *s, void *p) {
   if ((s->flags & SEC_HAS_CONTENTS) == 0) return;
 
-  bfd_size_type dsize;
-  if ((dsize = bfd_section_size(s)) == 0) return;
+  bfd_size_type dsize = bfd_section_size(s);
+  if (0 == dsize) return;
 
-  /* Compute the address range to display. */
-  size_t opb = bfd_octets_per_byte(f, s);
-
-  bfd_vma soffset, eoffset;
-  if (saddress == (bfd_vma) -1 || saddress < s->vma) soffset = 0;
-  else soffset = saddress - s->vma;
-
-  if (eaddress == (bfd_vma) -1) eoffset = dsize / opb;
-  else {
-    if (eaddress < s->vma) eoffset = 0;
-    else eoffset = eaddress - s->vma;
-
-    if (eoffset > dsize / opb) eoffset = dsize / opb;
-  }
-
+  bfd_vma soffset = get_soffset(f, s);
+  bfd_vma eoffset = get_eoffset(f, s);
   if (soffset >= eoffset) return;
 
   printf_text("Contexts of section", USE_LT | USE_SPACE);
@@ -265,15 +309,26 @@ static int dump_sections(const pbuffer_t p, const poptions_t o, bfd *f) {
 }
 
 static int dump_disassemble(const pbuffer_t p, const poptions_t o, bfd *f) {
-  struct disassemble_info di;
-  objdump_info_t oi;
-
-  memset(&di, 0, sizeof(struct disassemble_info));
-  memset(&oi, 0, sizeof(objdump_info_t));
-
-  di.application_data = &oi;
+  MALLOCS(struct disassemble_info, di);
+  MALLOCS(objdump_info_t, oi);
 
   oi.action = o->action;
+
+  di.application_data = &oi;
+//  di.dynrelbuf = NULL;
+//  di.dynrelcount = 0;
+  di.arch = bfd_get_arch(f);
+  di.mach = bfd_get_mach(f);
+  di.flavour = bfd_get_flavour(f);
+  di.octets_per_byte = bfd_octets_per_byte(f, NULL);
+  di.skip_zeroes = DEFAULT_SKIP_ZEROES;
+  di.skip_zeroes_at_end = DEFAULT_SKIP_ZEROES_AT_END;
+  di.disassembler_options = NULL;  // -M options, --disassembler-options=options
+  di.disassembler_needs_relocs = FALSE;
+
+  if (bfd_big_endian(f))               di.endian_code = di.display_endian = di.endian = BFD_ENDIAN_BIG;
+  else if (bfd_little_endian(f))       di.endian_code = di.display_endian = di.endian = BFD_ENDIAN_LITTLE;
+  else                                 di.endian_code = di.endian = BFD_ENDIAN_UNKNOWN;
 
   bfd_map_over_sections(f, callback_disassemble, &di);
   return 0;
