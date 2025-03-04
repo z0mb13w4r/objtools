@@ -63,6 +63,7 @@ typedef uint64_t imode_t;
 typedef char     smode_t[4];
 
 typedef void*    handle_t;
+typedef void*    unknown_t;
 
 typedef uint32_t pick_t;
 

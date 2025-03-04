@@ -7,7 +7,7 @@
 #include "memlink.h"
 #include "objutils.h"
 
-static int ismode0(void *p, const int mode) {
+static int ismode0(unknown_t p, const int mode) {
   if (p) {
     const char* pc = p;
     if (MODE_GET0(mode) != pc[0])      return 0;
@@ -31,8 +31,8 @@ handle_t setmode(handle_t p, const int mode) {
   return p;
 }
 
-void* mallocx(const size_t size) {
-  void* p = malloc(size);
+unknown_t mallocx(const size_t size) {
+  unknown_t p = malloc(size);
   if (p) {
     memset(p, 0, size);
   }
@@ -72,7 +72,7 @@ handle_t destroy(handle_t p) {
   if (p) {
     if (ismode0(p, MODE_BUFFER)) {
       destroy(CAST(pbuffer_t, p)->next);
-      free(CAST(pbuffer_t, p)->data);
+      return bfree(p);
     } else if (ismode0(p, MODE_OPTIONS)) {
       destroy(CAST(poptions_t, p)->actions);
     } else if (ismode0(p, MODE_ACTIONS)) {
@@ -96,7 +96,22 @@ handle_t release(handle_t p) {
   return NULL;
 }
 
-pbuffer_t bopen(const char* name) {
+handle_t bmalloc() {
+  handle_t p = mallocx(sizeof(buffer_t));
+  return setmode(p, MODE_BUFFER);
+}
+
+handle_t bfree(handle_t p) {
+  if (ismode(p, MODE_BUFFER)) {
+    free(CAST(pbuffer_t, p)->data);
+    free(p);
+    return NULL;
+  }
+
+  return p;
+}
+
+handle_t bopen(const char* name) {
   FILE* f = fopen(name, "rb");
   if (f) {
     pbuffer_t p = create(MODE_BUFFER);

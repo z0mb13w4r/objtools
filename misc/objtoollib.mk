@@ -14,8 +14,9 @@ DIR_CXX = ../$(DIR_SRC)
 SRCS_C = \
 	arcode.c \
 	buffer.c \
-	printf.c \
+	opcode.c \
 	pecode.c \
+	printf.c \
 	readar.c \
 	readpe.c \
 	elfcode.c \
@@ -26,7 +27,8 @@ SRCS_C = \
 	objhash.c \
 	options.c \
 	readelf.c \
-	objutils.c
+	objutils.c \
+	x86decoder.c
 
 # Name of cpp source files to be included in build.
 #---------------------------------------------------------------------

@@ -52,23 +52,20 @@ static bfd_vma get_eoffset(bfd *f, asection *s) {
   return eoffset;
 }
 
-//static bfd_vma get_signadjustment(bfd *f) {
-//  /* If the target used signed addresses then we must make
-//     sure that we sign extend the value that we calculate. */
-//  bfd_vma sign_adjust = 0;
-//  const struct elf_backend_data *b = CAST(const struct elf_backend_data*, f->xvec->backend_data);
-//  if (b) {
-//    if (bfd_get_flavour(f) == bfd_target_elf_flavour && b->sign_extend_vma) {
-//      sign_adjust = (bfd_vma) 1 << (b->s->arch_size - 1);
-//    }
-//  }
-//
-//  return sign_adjust;
-//}
+static bfd_vma get_signadjustment(bfd *f) {
+  /* If the target used signed addresses then we must make
+     sure that we sign extend the value that we calculate. */
+  bfd_vma sign_adjust = 0;
+  if (1 == bfd_get_sign_extend_vma(f)) {
+    sign_adjust = (bfd_vma) 1 << (bfd_get_arch_size(f) - 1);
+  }
 
-//static bfd_vma fix_signadjustment(bfd_vma addr, bfd_vma sign_adjust) {
-//  return ((addr & ((sign_adjust << 1) - 1)) ^ sign_adjust) - sign_adjust;
-//}
+  return sign_adjust;
+}
+
+static bfd_vma fix_signadjustment(bfd_vma addr, bfd_vma sign_adjust) {
+  return ((addr & ((sign_adjust << 1) - 1)) ^ sign_adjust) - sign_adjust;
+}
 
 static pbuffer_t get_symbols(const pbuffer_t p, bfd *f, const int mode) {
   pbuffer_t ps = createx(p, mode);
@@ -116,7 +113,7 @@ static void callback_disassemble(bfd *f, asection *s, void *p) {
   bfd_vma eoffset = get_eoffset(f, s);
   if (soffset >= eoffset) return;
 
-//  bfd_vma sign_adjust = get_signadjustment(f);
+  bfd_vma sign_adjust = get_signadjustment(f);
 
   printf_text("Disassembly of section", USE_LT);
   printf_text(s->name, USE_LT | USE_SPACE | USE_SQ);
