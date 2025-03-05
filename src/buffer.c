@@ -41,8 +41,7 @@ unknown_t mallocx(const size_t size) {
 
 handle_t create(const int mode) {
   if (MODE_BUFFER == (mode & MODE_MASK0)) {
-    pbuffer_t p = mallocx(sizeof(buffer_t));
-    return setmode(p, mode);
+    return bmalloc();
   } else if (MODE_OPTIONS == (mode & MODE_MASK0)) {
     poptions_t p = mallocx(sizeof(options_t));
     return setmode(p, mode);
@@ -56,22 +55,9 @@ handle_t create(const int mode) {
   return NULL;
 }
 
-void* createx(const pbuffer_t p, const int mode) {
-  pbuffer_t pp = p;
-  while (pp) {
-    if (ismode(pp, mode)) return pp;
-    if (NULL == pp->next) pp->next = create(mode);
-
-    pp = pp->next;
-  }
-
-  return create(mode);
-}
-
 handle_t destroy(handle_t p) {
   if (p) {
     if (ismode0(p, MODE_BUFFER)) {
-      destroy(CAST(pbuffer_t, p)->next);
       return bfree(p);
     } else if (ismode0(p, MODE_OPTIONS)) {
       destroy(CAST(poptions_t, p)->actions);

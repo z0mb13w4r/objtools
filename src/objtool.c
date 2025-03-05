@@ -4,7 +4,6 @@
 #include "readpe.h"
 #include "readelf.h"
 #include "objcopy.h"
-#include "objdump.h"
 #include "objhash.h"
 #include "options.h"
 
@@ -27,8 +26,6 @@ int main(int argc, char* argv[]) {
           }
         } else if (OPT_OBJCOPY == o->option) {
           r = objcopy(p, o);
-        } else if (OPT_OBJDUMP == o->option) {
-          r = objdump(p, o);
         } else if (OPT_OBJHASH == o->option) {
           r = objhash(p, o);
         }

@@ -21,17 +21,12 @@
 #define MODE_OPTIONS            (MODE_PUT0('O') | MODE_PUT1('P') | MODE_PUT2('T'))
 #define MODE_ACTIONS            (MODE_PUT0('A') | MODE_PUT1('C') | MODE_PUT2('T'))
 
-#define MODE_SYMBOLS            (MODE_BUFFER | MODE_PUT3('S'))
-#define MODE_SYMBOLS_DYNAMIC    (MODE_BUFFER | MODE_PUT3('D'))
-
 typedef struct buffer_s {
   smode_t  mode;
   char     note[256];
 
   size_t   size;
   void    *data;
-
-  struct buffer_s *next;
 
 } buffer_t, *pbuffer_t;
 
@@ -42,7 +37,6 @@ handle_t release(handle_t p);
 
 int ismode(handle_t p, const int mode);
 
-void* createx(const pbuffer_t p, const int mode);
 unknown_t mallocx(const size_t size);
 
 handle_t bmalloc();

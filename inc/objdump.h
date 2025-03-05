@@ -1,10 +1,10 @@
 #ifndef __OBJDUMP_H_
 #define __OBJDUMP_H_
 
-#include "buffer.h"
+#include "opcode.h"
 #include "options.h"
 
-int objdump(const pbuffer_t p, const poptions_t o);
+int objdump(const handle_t p, const poptions_t o);
 
 #endif
 

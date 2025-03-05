@@ -1,4 +1,4 @@
-#include "buffer.h"
+#include "opcode.h"
 #include "objdump.h"
 #include "options.h"
 
@@ -8,14 +8,16 @@ int main(int argc, char* argv[]) {
   if (o) {
     r = get_options_objdump(o, argc, argv, argv[0]);
     if (0 == r) {
-      pbuffer_t p = bopen(o->inpname);
+      occonfig(o->prgname, "x86_64-pc-linux-gnu");
+
+      handle_t p = ocopen(o->inpname);
       if (p) {
         if (OPT_OBJDUMP == o->option) {
           r = objdump(p, o);
         }
       }
 
-      destroy(p);
+      occlose(p);
     }
   }
 

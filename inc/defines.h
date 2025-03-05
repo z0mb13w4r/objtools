@@ -17,6 +17,10 @@
 #define MALLOCS(x,y) x y; x* p##y = &y; memset(p##y, 0, sizeof(y))
 #endif
 
+#ifndef MALLOCSMODE
+#define MALLOCSMODE(x,y,z) x y; x* p##y = &y; memset(p##y, 0, sizeof(y)); setmode(p##y, z)
+#endif
+
 #ifndef MALLOCX
 #define MALLOCX(x,y) CAST(x, mallocx(y))
 #endif
