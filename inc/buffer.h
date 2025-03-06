@@ -18,8 +18,6 @@
 #define MODE_PUT3(x)            ((x) << 24)
 
 #define MODE_BUFFER             (MODE_PUT0('B') | MODE_PUT1('U') | MODE_PUT2('F'))
-#define MODE_OPTIONS            (MODE_PUT0('O') | MODE_PUT1('P') | MODE_PUT2('T'))
-#define MODE_ACTIONS            (MODE_PUT0('A') | MODE_PUT1('C') | MODE_PUT2('T'))
 
 typedef struct buffer_s {
   smode_t  mode;

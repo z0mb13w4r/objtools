@@ -1,6 +1,9 @@
 #ifndef __OPCODE_H_
 #define __OPCODE_H_
 
+#include <bfd.h>
+#include <dis-asm.h>
+
 #include "buffer.h"
 
 #define MODE_OPCODE                (MODE_PUT0('O') | MODE_PUT1('P') | MODE_PUT2('C'))
@@ -11,7 +14,8 @@
 #define OPCODE_BFD                 (0)
 #define OPCODE_SYMBOLS             (1)
 #define OPCODE_SYMBOLS_DYNAMIC     (2)
-#define OPCODE_MAXITEMS            (3)
+#define OPCODE_DISASSEMBLER        (3)
+#define OPCODE_MAXITEMS            (4)
 
 #define ocgetbfd(x)                CAST(bfd*, ocget(x, OPCODE_BFD))
 #define ocgetsec(x)                CAST(asection*, ocget(x, MODE_OPSECTION))
@@ -20,10 +24,12 @@ typedef void (*opcbfunc_t)(handle_t p, handle_t item, unknown_t param);
 
 typedef struct opcode_s {
   smode_t    mode;
+  imode_t    action;
   handle_t   data;
   unknown_t  items[OPCODE_MAXITEMS];
   uint64_t   saddress; /* --start-address */
   uint64_t   eaddress; /* --stop-address */
+  disassembler_ftype disfunc;
 } opcode_t, *popcode_t;
 
 typedef struct opwrap_s {
@@ -56,7 +62,7 @@ size_t ocget_maxsectionnamesize(handle_t p);
 uint64_t ocget_flags(handle_t p);
 
 uint64_t ocget_size(handle_t p);
-uint64_t ocget_positon(handle_t p);
+uint64_t ocget_position(handle_t p);
 uint64_t ocget_alignment(handle_t p);
 
 uint64_t ocget_saddress(handle_t p);
@@ -73,6 +79,9 @@ const char* ocget_fileformat(handle_t p);
 void occonfig(const char* name, const char* target);
 
 int ocdo_sections(handle_t p, opcbfunc_t cbfunc, unknown_t param);
+
+int ocdisassemble_default(handle_t p, handle_t o);
+int ocdisassemble_run(handle_t p, handle_t s);
 
 #endif
 

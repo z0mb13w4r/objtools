@@ -8,14 +8,6 @@
 #include "static/has_flags.ci"
 #include "static/sectionhdr_flags.ci"
 
-#define DEFAULT_SKIP_ZEROES            (8)
-#define DEFAULT_SKIP_ZEROES_AT_END     (3)
-
-typedef struct objdump_info_s {
-  imode_t  action;
-
-} objdump_info_t, *pobjdump_info_t;
-
 static bfd_vma get_signadjustment(bfd *f) {
   /* If the target used signed addresses then we must make
      sure that we sign extend the value that we calculate. */
@@ -32,7 +24,6 @@ static bfd_vma fix_signadjustment(bfd_vma addr, bfd_vma sign_adjust) {
 }
 
 static void callback_disassemble(handle_t p, handle_t section, unknown_t param) {
-//  struct disassemble_info *pdi = CAST(struct disassemble_info *, p);
   const poptions_t o = CAST(poptions_t, param);
 
   /* Sections that do not contain machine code are not normally disassembled. */
@@ -44,25 +35,12 @@ static void callback_disassemble(handle_t p, handle_t section, unknown_t param) 
   uint64_t eoffset = ocget_eoffset(p, section);
   if (soffset >= eoffset) return;
 
-//  bfd_vma sign_adjust = get_signadjustment(f);
-
   printf_text("Disassembly of section", USE_LT);
   printf_text(ocget_name(section), USE_LT | USE_SPACE | USE_SQ);
   printf_text("at offset", USE_LT | USE_SPACE);
-  printf_nice(ocget_positon(section) + soffset, USE_FHEX16 | USE_COLON | USE_EOL);
+  printf_nice(ocget_position(section) + soffset, USE_FHEX16 | USE_COLON | USE_EOL);
 
-//  while (soffset < eoffset) {
-//    bfd_vma addr = fix_signadjustment(s->vma + soffset, sign_adjust);
-//
-//    bfd_vma noffset = eoffset;
-//    if (sym && bfd_asymbol_value(sym) > addr)      noffset = bfd_asymbol_value(sym) - s->vma;
-//    else if (NULL == nextsym)                      noffset = eoffset;
-//    else                                           noffset = bfd_asymbol_value(nextsym) - s->vma;
-//
-//    if (noffset > eoffset || noffset <= soffset)   noffset = eoffset;
-//
-//    soffset = noffset;
-//  }
+  ocdisassemble_run(p, section);
 
   printf_eol();
 }
@@ -80,7 +58,7 @@ static void callback_sections(handle_t p, handle_t section, unknown_t param) {
   printf_text("Contexts of section", USE_LT | USE_SPACE);
   printf_text(ocget_name(section), USE_LT | USE_SPACE | USE_SQ);
   printf_text("at offset", USE_LT | USE_SPACE);
-  printf_nice(ocget_positon(section) + soffset, USE_FHEX16 | USE_COLON | USE_EOL);
+  printf_nice(ocget_position(section) + soffset, USE_FHEX16 | USE_COLON | USE_EOL);
 
   bfd_byte *data = NULL;
   if (bfd_get_full_section_contents(ocgetbfd(p), ocgetsec(section), &data)) {
@@ -106,7 +84,7 @@ static void callback_sectionhdr(handle_t p, handle_t section, unknown_t param) {
   printf_nice(ocget_size(section) / ocget_opb(p, section), USE_LHEX32);
   printf_nice(ocget_vmaddress(section), USE_LHEX64);
   printf_nice(ocget_lmaddress(section), USE_LHEX64);
-  printf_nice(ocget_positon(section), USE_LHEX32);
+  printf_nice(ocget_position(section), USE_LHEX32);
   printf(" 2**%lu", ocget_alignment(section));
 
   printf_maskmute(zSECTIONHDR1_FLAGS, flags, USE_LT);
@@ -226,25 +204,7 @@ static int dump_sections(const handle_t p, const poptions_t o) {
 }
 
 static int dump_disassemble(const handle_t p, const poptions_t o) {
-//  MALLOCS(struct disassemble_info, di);
-//  MALLOCS(objdump_info_t, oi);
-
-//  oi.action = o->action;
-
-//  di.application_data = &oi;
-//  di.arch = bfd_get_arch(f);
-//  di.mach = bfd_get_mach(f);
-//  di.flavour = bfd_get_flavour(f);
-//  di.octets_per_byte = bfd_octets_per_byte(f, NULL);
-//  di.skip_zeroes = DEFAULT_SKIP_ZEROES;
-//  di.skip_zeroes_at_end = DEFAULT_SKIP_ZEROES_AT_END;
-//  di.disassembler_options = NULL;  // -M options, --disassembler-options=options
-//  di.disassembler_needs_relocs = FALSE;
-
-//  if (bfd_big_endian(f))               di.endian_code = di.display_endian = di.endian = BFD_ENDIAN_BIG;
-//  else if (bfd_little_endian(f))       di.endian_code = di.display_endian = di.endian = BFD_ENDIAN_LITTLE;
-//  else                                 di.endian_code = di.endian = BFD_ENDIAN_UNKNOWN;
-
+  ocdisassemble_default(p, o);
   ocdo_sections(p, callback_disassemble, o);
   return 0;
 }

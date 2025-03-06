@@ -320,6 +320,10 @@ static int breakup_args(paction_t p, char *src) {
   return -1;
 }
 
+int isoptions(handle_t p) {
+  return ismode(p, MODE_OPTIONS);
+}
+
 int get_options_readelf(poptions_t o, int argc, char** argv, char* name) {
   if (argc < 1) {
     return -1;

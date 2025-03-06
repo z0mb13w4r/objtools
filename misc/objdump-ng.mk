@@ -54,6 +54,7 @@ ifeq ($(CROSS),WIN)
 SYS_OBJS =
 else
 SYS_OBJS = \
+	-lopcodes \
 	-lcrypto \
 	-lbfd \
 	-lrt
