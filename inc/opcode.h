@@ -73,6 +73,7 @@ uint64_t ocget_flags(handle_t p);
 uint64_t ocget_size(handle_t p);
 uint64_t ocget_position(handle_t p);
 uint64_t ocget_alignment(handle_t p);
+uint64_t ocget_archsize(handle_t p);
 
 uint64_t ocget_saddress(handle_t p);
 uint64_t ocget_lmaddress(handle_t p);

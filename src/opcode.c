@@ -146,6 +146,15 @@ uint64_t ocget_size(handle_t p) {
   return 0;
 }
 
+uint64_t ocget_archsize(handle_t p) {
+  bfd* p0 = ocget(p, OPCODE_BFD);
+  if (p0) {
+    int size = bfd_get_arch_size(p0);
+    return -1 == size ? bfd_arch_bits_per_address(p0) : size;
+  }
+  return 0;
+}
+
 uint64_t ocget_position(handle_t p) {
   if (isopsection(p)) {
     asection* s = ocget(p, MODE_OPSECTION);

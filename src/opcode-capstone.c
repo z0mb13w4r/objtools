@@ -7,14 +7,18 @@ static int get_csarch(handle_t p) {
 }
 
 static int get_csmode(handle_t p) {
-  return CS_MODE_64; // TBD
+  const uint64_t size = ocget_archsize(p);
+  if (16 == size) return CS_MODE_16;
+  else if (32 == size) return CS_MODE_32;
+
+  return CS_MODE_64;
 }
 
 int capstone_open(handle_t p, handle_t o) {
   if (isopcode(p)) {
     popcode_t oc = CAST(popcode_t, p);
     if (CS_ERR_OK == cs_open(get_csarch(p), get_csmode(p), &oc->cs)) {
-//    cs_option(oc->cs, CS_OPT_SYNTAX, CS_OPT_SYNTAX_ATT);
+//    cs_option(oc->cs, CS_OPT_SYNTAX, CS_OPT_SYNTAX_ATT); // -M
 //    cs_option(oc->cs, CS_OPT_SYNTAX, CS_OPT_SYNTAX_INTEL); // default
 //    cs_option(oc->cs, CS_OPT_DETAIL, CS_OPT_ON);
       return 0;
