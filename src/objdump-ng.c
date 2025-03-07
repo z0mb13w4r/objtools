@@ -1,4 +1,5 @@
 #include "opcode.h"
+#include "printf.h"
 #include "objdump.h"
 #include "options.h"
 
@@ -15,6 +16,8 @@ int main(int argc, char* argv[]) {
         if (OPT_OBJDUMP == o->option) {
           r = objdump(p, o);
         }
+      } else {
+        printf_e("'%s': no such file.", o->inpname);
       }
 
       occlose(p);

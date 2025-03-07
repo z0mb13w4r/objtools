@@ -69,10 +69,10 @@ static const args_t OBJCOPYARGS[] = {
 
 static const args_t OBJDUMPARGS1[] = {
   {'H', "--help",              OPTPROGRAM_HELP},
-  {'D', "--disassemble-all",   OPTOBJDUMP_DISASSEMBLE_ALL | OPTOBJDUMP_DISASSEMBLE},
-  {'S', "--source",            OPTOBJDUMP_SOURCE_CODE | OPTOBJDUMP_DISASSEMBLE},
+  {'D', "--disassemble-all",   OPTOBJDUMP_DISASSEMBLE_ALL | OPTPROGRAM_DISASSEMBLE},
+  {'S', "--source",            OPTOBJDUMP_SOURCE_CODE | OPTPROGRAM_DISASSEMBLE},
   {'T', "--dynamic-symbols",   OPTOBJDUMP_DYNAMIC_SYMBOLS},
-  {'d', "--disassemble",       OPTOBJDUMP_DISASSEMBLE},
+  {'d', "--disassemble",       OPTPROGRAM_DISASSEMBLE},
   {'g', "--debugging",         OPTOBJDUMP_DEBUGGING},
   {'e', "--debugging-tags",    OPTOBJDUMP_DEBUGGING_TAGS | OPTOBJDUMP_DEBUGGING | OPTOBJDUMP_DEMANGLE},
   {'C', "--demangle",          OPTOBJDUMP_DEMANGLE},
@@ -83,6 +83,7 @@ static const args_t OBJDUMPARGS1[] = {
   {'h', "--section-headers",   OPTOBJDUMP_SECTION_HEADER},
   {'x', "--all-headers",       OPTOBJDUMP_FILE_HEADER | OPTOBJDUMP_PRIVATE_HEADER | OPTOBJDUMP_SECTION_HEADER | OPTOBJDUMP_SYMBOLS},
   {'l', "--line-numbers",      OPTOBJDUMP_LINE_NUMBERS},
+  {'c', "--capstone",          OPTPROGRAM_CAPSTONE},
   {0, NULL}
 };
 

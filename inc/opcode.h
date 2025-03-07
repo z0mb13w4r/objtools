@@ -3,6 +3,7 @@
 
 #include <bfd.h>
 #include <dis-asm.h>
+#include "capstone/capstone.h"
 
 #include "buffer.h"
 
@@ -29,12 +30,18 @@ typedef struct opcode_s {
   unknown_t  items[OPCODE_MAXITEMS];
   uint64_t   saddress; /* --start-address */
   uint64_t   eaddress; /* --stop-address */
-  disassembler_ftype disfunc;
+  union {
+    csh                cs;
+    disassembler_ftype ocfunc;
+  };
 } opcode_t, *popcode_t;
 
 typedef struct opwrap_s {
   smode_t    mode;
-  unknown_t  item;
+  union {
+    unknown_t item;
+    uint64_t  value;
+  };
 } opwrap_t, *popwrap_t;
 
 typedef struct opfunc_s {
@@ -45,6 +52,8 @@ typedef struct opfunc_s {
 } opfunc_t, *popfunc_t;
 
 int isopcode(handle_t p);
+int isopsection(handle_t p);
+
 int isobject(handle_t p);
 int isarchive(handle_t p);
 int iscoredump(handle_t p);
@@ -80,7 +89,9 @@ void occonfig(const char* name, const char* target);
 
 int ocdo_sections(handle_t p, opcbfunc_t cbfunc, unknown_t param);
 
-int ocdisassemble_default(handle_t p, handle_t o);
+int ocdisassemble_open(handle_t p, handle_t o);
+int ocdisassemble_close(handle_t p);
+
 int ocdisassemble_run(handle_t p, handle_t s);
 
 #endif

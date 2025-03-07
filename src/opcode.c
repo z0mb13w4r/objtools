@@ -3,6 +3,8 @@
 #include "opcode.h"
 #include "printf.h"
 #include "options.h"
+#include "opcode-lib.h"
+#include "opcode-capstone.h"
 
 static void callback_find_max_sectionhdr_name(bfd *f ATTRIBUTE_UNUSED, asection *s, void *p) {
   /* Ignore linker created section. */
@@ -348,85 +350,44 @@ int ocdo_sections(handle_t p, opcbfunc_t cbfunc, unknown_t param) {
   return -1;
 }
 
-#define DEFAULT_SKIP_ZEROES            (8)
-#define DEFAULT_SKIP_ZEROES_AT_END     (3)
-
-int ocdisassemble_default(handle_t p, handle_t o) {
+int ocdisassemble_open(handle_t p, handle_t o) {
   if (isopcode(p)) {
-    popcode_t p1 = CAST(popcode_t, p);
+    popcode_t oc = CAST(popcode_t, p);
     if (isoptions(o)) {
-      poptions_t p5 = CAST(poptions_t, o);
-      p1->action = p5->action;
+      poptions_t op = CAST(poptions_t, o);
+      oc->action = op->action;
     }
 
-    bfd* p0 = ocget(p, OPCODE_BFD);
-    if (p0) {
-      struct disassemble_info* p2 = ocget(p, OPCODE_DISASSEMBLER);
-      if (NULL == p2) {
-        p2 = mallocx(sizeof(struct disassemble_info));
-        p1->items[OPCODE_DISASSEMBLER] = p2;
-      }
-      if (p2) {
-        /* Construct and configure the disassembler_info class using stdout */
-        init_disassemble_info(p2, stdout, (fprintf_ftype)fprintf);
-
-        p2->application_data = p1;
-        p2->arch = bfd_get_arch(p0);
-        p2->mach = bfd_get_mach(p0);
-        p2->flavour = bfd_get_flavour(p0);
-        p2->octets_per_byte = bfd_octets_per_byte(p0, NULL);
-        p2->skip_zeroes = DEFAULT_SKIP_ZEROES;
-        p2->skip_zeroes_at_end = DEFAULT_SKIP_ZEROES_AT_END;
-        p2->disassembler_options = NULL;  // -M options, --disassembler-options=options
-
-        if (bfd_big_endian(p0))          p2->endian_code = p2->display_endian = p2->endian = BFD_ENDIAN_BIG;
-        else if (bfd_little_endian(p0))  p2->endian_code = p2->display_endian = p2->endian = BFD_ENDIAN_LITTLE;
-        else                             p2->endian_code = p2->endian = BFD_ENDIAN_UNKNOWN;
-
-        /* Construct disassembler_ftype class */
-        p1->disfunc = disassembler(p2->arch, bfd_big_endian(p0), p2->mach, p0);
-
-        disassemble_init_for_target(p2);
-      }
+    if (oc->action & OPTPROGRAM_CAPSTONE) {
+      return capstone_open(p, o);
+    } else {
+      return opcodelib_open(p, o);
     }
   }
 
-  return 0;
+  return -1;
+}
+
+int ocdisassemble_close(handle_t p) {
+  if (isopcode(p)) {
+    popcode_t oc = CAST(popcode_t, p);
+    if (oc->action & OPTPROGRAM_CAPSTONE) {
+      return capstone_close(p);
+    } else {
+      return opcodelib_close(p);
+    }
+  }
+
+  return -1;
 }
 
 int ocdisassemble_run(handle_t p, handle_t s) {
   if (isopcode(p) && isopsection(s)) {
-//    uint64_t soffset = ocget_soffset(p, s);
-//    uint64_t eoffset = ocget_eoffset(p, s);
-
-//    uint64_t soffset = ocget_saddress(p);
-//    uint64_t eoffset = ocget_saddress(p) + ocget_size(s);
-
-    uint64_t soffset = ocget_vmaddress(s);
-    uint64_t eoffset = ocget_vmaddress(s) + ocget_size(s);
-
-    popcode_t p0 = CAST(popcode_t, p);
-    struct disassemble_info* p1 = p0->items[OPCODE_DISASSEMBLER];
-    if (p1) {
-      p1->buffer_vma    = ocget_vmaddress(s);
-      p1->buffer_length = ocget_size(s);
-      p1->section       = ocget(s, MODE_OPSECTION);
-      p1->buffer        = mallocx(p1->buffer_length);
-
-      if (bfd_get_section_contents(p0->items[OPCODE_BFD], p1->section, p1->buffer, 0, p1->buffer_length)) {
-        while (soffset < eoffset) {
-          printf("%4lx: ", soffset);
-          int siz = p0->disfunc(soffset, p1);
-          if (siz <= 0) return -1;
-          soffset += siz;
-          printf("\n");
-        }
-      }
-
-      free(p1->buffer);
-      p1->buffer = NULL;
-
-      return 0;
+    popcode_t oc = CAST(popcode_t, p);
+    if (oc->action & OPTPROGRAM_CAPSTONE) {
+      return capstone_run(p, s);
+    } else {
+      return opcodelib_run(p, s);
     }
   }
 

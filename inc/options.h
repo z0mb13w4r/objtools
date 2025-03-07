@@ -11,6 +11,8 @@
 #define OPT_OBJDUMP                                (2)
 #define OPT_OBJHASH                                (3)
 
+#define OPTPROGRAM_DISASSEMBLE                     U64MASK(46)
+#define OPTPROGRAM_CAPSTONE                        U64MASK(47)
 #define OPTPROGRAM_HELP                            U64MASK(48)
 
 #define OPTREADELF_FILEHEADER                      U64MASK(0)
@@ -62,7 +64,6 @@
 #define OPTOBJCOPY_DUMP_SECTIONS_ALL               U64MASK(27)
 
 #define OPTOBJDUMP_DISASSEMBLE_ALL                 U64MASK(0)
-#define OPTOBJDUMP_DISASSEMBLE                     U64MASK(1)
 #define OPTOBJDUMP_SOURCE_CODE                     U64MASK(2)
 #define OPTOBJDUMP_DYNAMIC_SYMBOLS                 U64MASK(3)
 #define OPTOBJDUMP_DEBUGGING                       U64MASK(4)

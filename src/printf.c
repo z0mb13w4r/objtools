@@ -181,7 +181,7 @@ int printf_neat(char* o, const size_t size, const uint64_t v, const imode_t mode
     }
   }
 
-  return 0;
+  return n;
 }
 
 int printf_eol() {
@@ -236,12 +236,15 @@ int printf_book(const char* p[], const imode_t mode) {
 int printf_data(const void* p, const size_t size, const addrz_t addr, const imode_t mode) {
   const size_t MAX_SIZE = 16;
 
+  const imode_t xmode = mode & ~USE_POS0MASK;
+  const int usespace = mode & USE_SPACE;
+
   addrz_t x = addr;
   int n = 0;
   size_t i = 0;
   const unsigned char *pp = CAST(unsigned char*, p);
   for (i = 0; i < size; ) {
-    if (USE_HEXDUMP == mode) {
+    if (USE_HEXDUMP == xmode) {
       n += printf_nice(x, USE_FHEX32);
 
       size_t siz = (size - i) > MAX_SIZE ? MAX_SIZE : (size - i);
@@ -261,7 +264,7 @@ int printf_data(const void* p, const size_t size, const addrz_t addr, const imod
       pp += siz;
       i += siz;
       x += siz;
-    } else if (USE_STRDUMP == mode) {
+    } else if (USE_STRDUMP == xmode) {
       while (!isprint(*pp) && i < size) {
         ++pp;
         ++i;
@@ -279,13 +282,13 @@ int printf_data(const void* p, const size_t size, const addrz_t addr, const imod
       n += printf_eol();
       ++pp;
       ++i;
-    } else if (USE_STR == mode) {
+    } else if (USE_STR == xmode) {
       if (0 == *pp) return n;
       n += printf_nice(*pp, USE_CHARCTRL);
       ++pp;
       ++i;
-    } else if (USE_HEX == mode) {
-      n += printf_nice(*pp, USE_LHEX8NS);
+    } else if (USE_HEX == xmode) {
+      n += printf_nice(*pp, usespace ? USE_LHEX8 : USE_LHEX8NS);
       ++pp;
       ++i;
     } else {

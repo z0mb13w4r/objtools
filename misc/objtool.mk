@@ -48,7 +48,8 @@ STRIPPED_FILE = $(TARGET)-stripped
 # Include Paths List
 #---------------------------------------------------------------------
 LIB_INCS = \
-	-I../inc/
+	-I../inc/ \
+	-I../inc/capstone/
 
 ifeq ($(CROSS),WIN)
 SYS_OBJS =

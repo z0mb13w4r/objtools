@@ -204,8 +204,9 @@ static int dump_sections(const handle_t p, const poptions_t o) {
 }
 
 static int dump_disassemble(const handle_t p, const poptions_t o) {
-  ocdisassemble_default(p, o);
+  ocdisassemble_open(p, o);
   ocdo_sections(p, callback_disassemble, o);
+  ocdisassemble_close(p);
   return 0;
 }
 
@@ -227,7 +228,7 @@ static int do_object(const handle_t p, const poptions_t o) {
   if (o->action & OPTOBJDUMP_SYMBOLS)            dump_symbols(p, o, OPCODE_SYMBOLS);
   if (o->action & OPTOBJDUMP_DYNAMIC_SYMBOLS)    dump_symbols(p, o, OPCODE_SYMBOLS_DYNAMIC);
   if (o->action & OPTOBJDUMP_SECTIONS)           dump_sections(p, o);
-  if (o->action & OPTOBJDUMP_DISASSEMBLE)        dump_disassemble(p, o);
+  if (o->action & OPTPROGRAM_DISASSEMBLE)        dump_disassemble(p, o);
   if (o->action & OPTOBJDUMP_DEBUGGING)          dump_debugging(p, o);
 
   return 0;

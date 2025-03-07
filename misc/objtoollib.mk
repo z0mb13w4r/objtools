@@ -28,7 +28,8 @@ SRCS_C = \
 	options.c \
 	readelf.c \
 	objutils.c \
-	x86decoder.c
+	opcode-lib.c \
+	opcode-capstone.c
 
 # Name of cpp source files to be included in build.
 #---------------------------------------------------------------------
@@ -62,7 +63,8 @@ TARGET = $(BIN_ROOT)$(DIR_OBJ)lib$(TARGETBASE).a
 # Include Paths List
 #---------------------------------------------------------------------
 LIB_INCS = \
-	-I../inc/
+	-I../inc/ \
+	-I../inc/capstone/
 
 #=====================================================================================================================================
 # Command Section of Makefile

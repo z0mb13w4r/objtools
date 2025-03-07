@@ -48,12 +48,14 @@ STRIPPED_FILE = $(TARGET)-stripped
 # Include Paths List
 #---------------------------------------------------------------------
 LIB_INCS = \
-	-I../inc/
+	-I../inc/ \
+	-I../inc/capstone/
 
 ifeq ($(CROSS),WIN)
 SYS_OBJS =
 else
 SYS_OBJS = \
+	-lcapstone \
 	-lopcodes \
 	-lcrypto \
 	-lbfd \
@@ -64,7 +66,8 @@ LIB_OBJS = \
 	-lobjtool
 
 LIB_PATHS = \
-	-L../bin/$(DIR_OBJ)
+	-L../bin/$(DIR_OBJ) \
+	-L../libs/capstone/build
 
 #=====================================================================================================================================
 # Command Section of Makefile
