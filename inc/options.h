@@ -19,7 +19,7 @@
 #define OPTDEBUGELF_DEBUG_INFO                     U64MASK(35)
 #define OPTDEBUGELF_DEBUG_LINK                     U64MASK(36)
 #define OPTDEBUGELF_DEBUG_LINK_FOLLOW              U64MASK(37)
-#define OPTDEBUGELF_DEBUG_LINE_RAW                 U64MASK(38)
+#define OPTDEBUGELF_DEBUG_LINE                     U64MASK(38)
 #define OPTDEBUGELF_DEBUG_LINE_DECODED             U64MASK(39)
 #define OPTDEBUGELF_DEBUG_MACRO                    U64MASK(40)
 #define OPTDEBUGELF_DEBUG_LOC                      U64MASK(41)

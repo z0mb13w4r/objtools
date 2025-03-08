@@ -3,20 +3,6 @@
 
 #include "common.h"
 
-#define MODE_MASK0              (0x00FFFFFF)
-#define MODE_MASK1              (0xFF000000)
-#define MODE_MASK               (MODE_MASK0 | MODE_MASK1)
-
-#define MODE_GET0(x)            (((x) >>  0) & 0xFF)
-#define MODE_GET1(x)            (((x) >>  8) & 0xFF)
-#define MODE_GET2(x)            (((x) >> 16) & 0xFF)
-#define MODE_GET3(x)            (((x) >> 24) & 0xFF)
-
-#define MODE_PUT0(x)            ((x) <<  0)
-#define MODE_PUT1(x)            ((x) <<  8)
-#define MODE_PUT2(x)            ((x) << 16)
-#define MODE_PUT3(x)            ((x) << 24)
-
 #define MODE_BUFFER             (MODE_PUT0('B') | MODE_PUT1('U') | MODE_PUT2('F'))
 
 typedef struct buffer_s {
