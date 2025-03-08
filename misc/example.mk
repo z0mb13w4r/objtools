@@ -70,7 +70,7 @@ LIB_PATHS = \
 #---------------------------------------------------------------------
 
 ifeq ($(DEBUG),y)
-	CFLAGS = -g3 -O0 -Wall -Wno-unknown-pragmas -c -fmessage-length=0 -fshort-enums -MMD -MP -ggdb
+	CFLAGS = -O0 -Wall -Wno-unknown-pragmas -c -fmessage-length=0 -fshort-enums -MMD -MP -ggdb -g3
 else
 	CFLAGS = -O0 -Wall -c -fmessage-length=0 -fshort-enums -MMD -MP
 	DFLAGS += -DNDEBUG

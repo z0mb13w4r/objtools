@@ -13,6 +13,31 @@ typedef struct args_s {
   imode_t action;
 } args_t, *pargs_t;
 
+static const args_t DEBUGELFARGS[] = {
+  {'a', "=debug_abbrev",       OPTDEBUGELF_DEBUG_ABBREV},
+  {'A', "=debug_addr",         OPTDEBUGELF_DEBUG_ADDR},
+  {'c', "=debug_cu_index",     OPTDEBUGELF_DEBUG_CU_INDEX},
+  {'f', "=debug_frame",        OPTDEBUGELF_DEBUG_FRAME},
+  {'F', "=debug_frame_interp", OPTDEBUGELF_DEBUG_FRAME_INTERP},
+  {'i', "=debug_info",         OPTDEBUGELF_DEBUG_INFO},
+  {'k', "=debug_links",        OPTDEBUGELF_DEBUG_LINK},
+  {'K', "=debug_links_follow", OPTDEBUGELF_DEBUG_LINK_FOLLOW},
+  {'l', "=debug_line_raw",     OPTDEBUGELF_DEBUG_LINE_RAW},
+  {'L', "=debug_line_decoded", OPTDEBUGELF_DEBUG_LINE_DECODED},
+  {'m', "=debug_macro",        OPTDEBUGELF_DEBUG_MACRO},
+  {'o', "=debug_loc",          OPTDEBUGELF_DEBUG_LOC},
+  {'r', "=debug_aranges",      OPTDEBUGELF_DEBUG_ARANGES},
+  {'R', "=debug_ranges",       OPTDEBUGELF_DEBUG_RANGES},
+  {'s', "=debug_str",          OPTDEBUGELF_DEBUG_STR},
+  {'p', "=debug_pubnames",     OPTDEBUGELF_DEBUG_PUBNAMES},
+  {'t', "=debug_pubtype",      OPTDEBUGELF_DEBUG_PUBTYPES},
+  {'T', "=trace_aranges",      OPTDEBUGELF_TRACE_ARANGES},
+  {'u', "=trace_abbrev",       OPTDEBUGELF_TRACE_ABBREV},
+  {'U', "=trace_info",         OPTDEBUGELF_TRACE_INFO},
+  {'g', "=gdb_index",          OPTDEBUGELF_GDB_INDEX},
+  {0, NULL}
+};
+
 static const args_t READELFARGS[] = {
   {'H', "--help",            OPTPROGRAM_HELP},
   {'A', "--arch-specific",   OPTREADELF_ARCH},
@@ -67,48 +92,23 @@ static const args_t OBJCOPYARGS[] = {
   {0, NULL},
 };
 
-static const args_t OBJDUMPARGS1[] = {
+static const args_t OBJDUMPARGS[] = {
   {'H', "--help",              OPTPROGRAM_HELP},
   {'D', "--disassemble-all",   OPTOBJDUMP_DISASSEMBLE_ALL | OPTPROGRAM_DISASSEMBLE},
-  {'S', "--source",            OPTOBJDUMP_SOURCE_CODE | OPTPROGRAM_DISASSEMBLE},
+  {'S', "--source",            OPTPROGRAM_SOURCE_CODE | OPTPROGRAM_DISASSEMBLE},
   {'T', "--dynamic-symbols",   OPTOBJDUMP_DYNAMIC_SYMBOLS},
   {'d', "--disassemble",       OPTPROGRAM_DISASSEMBLE},
-  {'g', "--debugging",         OPTOBJDUMP_DEBUGGING},
-  {'e', "--debugging-tags",    OPTOBJDUMP_DEBUGGING_TAGS | OPTOBJDUMP_DEBUGGING | OPTOBJDUMP_DEMANGLE},
-  {'C', "--demangle",          OPTOBJDUMP_DEMANGLE},
+  {'g', "--debugging",         OPTPROGRAM_DEBUGGING},
+  {'e', "--debugging-tags",    OPTPROGRAM_DEBUGGING_TAGS | OPTPROGRAM_DEBUGGING | OPTPROGRAM_DEMANGLE},
+  {'C', "--demangle",          OPTPROGRAM_DEMANGLE},
   {'s', "--full-contents",     OPTOBJDUMP_SECTIONS},
   {'t', "--symbols",           OPTOBJDUMP_SYMBOLS},
   {'f', "--file-headers",      OPTOBJDUMP_FILE_HEADER},
   {'p', "--private-headers",   OPTOBJDUMP_PRIVATE_HEADER},
   {'h', "--section-headers",   OPTOBJDUMP_SECTION_HEADER},
   {'x', "--all-headers",       OPTOBJDUMP_FILE_HEADER | OPTOBJDUMP_PRIVATE_HEADER | OPTOBJDUMP_SECTION_HEADER | OPTOBJDUMP_SYMBOLS},
-  {'l', "--line-numbers",      OPTOBJDUMP_LINE_NUMBERS},
-  {'c', "--capstone",          OPTPROGRAM_CAPSTONE},
-  {0, NULL}
-};
-
-static const args_t OBJDUMPARGS2[] = {
-  {'a', "=debug_abbrev",       OPTOBJDUMP_DEBUG_ABBREV},
-  {'A', "=debug_addr",         OPTOBJDUMP_DEBUG_ADDR},
-  {'c', "=debug_cu_index",     OPTOBJDUMP_DEBUG_CU_INDEX},
-  {'f', "=debug_frame",        OPTOBJDUMP_DEBUG_FRAME},
-  {'F', "=debug_frame_interp", OPTOBJDUMP_DEBUG_FRAME_INTERP},
-  {'i', "=debug_info",         OPTOBJDUMP_DEBUG_INFO},
-  {'k', "=debug_links",        OPTOBJDUMP_DEBUG_LINK},
-  {'K', "=debug_links_follow", OPTOBJDUMP_DEBUG_LINK_FOLLOW},
-  {'l', "=debug_line_raw",     OPTOBJDUMP_DEBUG_LINE_RAW},
-  {'L', "=debug_line_decoded", OPTOBJDUMP_DEBUG_LINE_DECODED},
-  {'m', "=debug_macro",        OPTOBJDUMP_DEBUG_MACRO},
-  {'o', "=debug_loc",          OPTOBJDUMP_DEBUG_LOC},
-  {'r', "=debug_aranges",      OPTOBJDUMP_DEBUG_ARANGES},
-  {'R', "=debug_ranges",       OPTOBJDUMP_DEBUG_RANGES},
-  {'s', "=debug_str",          OPTOBJDUMP_DEBUG_STR},
-  {'p', "=debug_pubnames",     OPTOBJDUMP_DEBUG_PUBNAMES},
-  {'t', "=debug_pubtype",      OPTOBJDUMP_DEBUG_PUBTYPES},
-  {'T', "=trace_aranges",      OPTOBJDUMP_TRACE_ARANGES},
-  {'u', "=trace_abbrev",       OPTOBJDUMP_TRACE_ABBREV},
-  {'U', "=trace_info",         OPTOBJDUMP_TRACE_INFO},
-  {'g', "=gdb_index",          OPTOBJDUMP_GDB_INDEX},
+  {'l', "--line-numbers",      OPTPROGRAM_LINE_NUMBERS},
+  {'c', "--capstone",          OPTPROGRAM_CAPSTONE_ALL},
   {0, NULL}
 };
 
@@ -281,27 +281,41 @@ static int usage1(poptions_t o, const char* name, const args_t args0[], const ch
   return 1;
 }
 
-static int get_options1(poptions_t o, const args_t args[], const char *argv) {
+static imode_t get_options1(poptions_t o, const args_t args[], const char *argv) {
+  imode_t action = 0;
   for (int k = 1; k < strlen(argv); ++k) {
     for (int j = 0; (0 != args[j].option1) || (0 != args[j].option2); ++j) {
       if (argv[k] == args[j].option1) {
-        o->action |= args[j].action;
+        action |= args[j].action;
         break;
       }
     }
   }
 
-  return 0;
+  o->action |= action;
+  return action;
 }
 
-static int get_options2(poptions_t o, const args_t args[], const char *argv) {
+static imode_t set_options1(poptions_t o, const args_t args[]) {
+  imode_t action = 0;
+  for (int j = 0; (0 != args[j].option1) || (0 != args[j].option2); ++j) {
+      action |= args[j].action;
+  }
+
+  o->action |= action;
+  return action;
+}
+
+static imode_t get_options2(poptions_t o, const args_t args[], const char *argv) {
+  imode_t action = 0;
   for (int j = 0; (0 != args[j].option1) || (0 != args[j].option2); ++j) {
     if (0 == strcmp(argv, args[j].option2)) {
       o->action |= args[j].action;
     }
   }
 
-  return -1;
+  o->action |= action;
+  return action;
 }
 
 static int breakup_args(paction_t p, char *src) {
@@ -358,7 +372,11 @@ int get_options_readelf(poptions_t o, int argc, char** argv, char* name) {
         get_options2(o, READELFARGS, argv[i]);
       }
     } else if ('-' == argv[i][0]) {
-      if (0 == strcmp(argv[i], "-x")) {
+      if (0 == strcmp(argv[i], "-w")) {
+        if (0 == get_options1(o, DEBUGELFARGS, argv[i] + 1)) {
+          set_options1(o, DEBUGELFARGS);
+        }
+      } else if (0 == strcmp(argv[i], "-x")) {
         paction_t p = create(MODE_ACTIONS);
 	strcpy(p->secname, argv[++i]);
         p->action = ACT_HEXDUMP;
@@ -385,7 +403,7 @@ int get_options_readelf(poptions_t o, int argc, char** argv, char* name) {
   }
 
   if (o->action & OPTPROGRAM_HELP) {
-    return usage0(o, "readelf-ng", READELFARGS);
+    return usage1(o, "readelf-ng", READELFARGS, "-w", "--debug-dump", DEBUGELFARGS);
   }
 
   return 0;
@@ -451,12 +469,14 @@ int get_options_objdump(poptions_t o, int argc, char** argv, char* name) {
 
   for (int i = 0; i < argc; ++i) {
     if ('-' == argv[i][0] && '-' == argv[i][1]) {
-      get_options2(o, OBJDUMPARGS1, argv[i]);
+      get_options2(o, OBJDUMPARGS, argv[i]);
     } else if ('-' == argv[i][0]) {
       if (0 == strcmp(argv[i], "-W")) {
-        get_options1(o, OBJDUMPARGS2, argv[i] + 1);
+        if (0 == get_options1(o, DEBUGELFARGS, argv[i] + 1)) {
+          set_options1(o, DEBUGELFARGS);
+        }
       } else {
-        get_options1(o, OBJDUMPARGS1, argv[i]);
+        get_options1(o, OBJDUMPARGS, argv[i]);
       }
     } else {
       strcpy(o->inpname, argv[i]);
@@ -464,7 +484,7 @@ int get_options_objdump(poptions_t o, int argc, char** argv, char* name) {
   }
 
   if (o->action & OPTPROGRAM_HELP) {
-    return usage1(o, "objdump-ng", OBJDUMPARGS1, "-W", "--dwarf", OBJDUMPARGS2);
+    return usage1(o, "objdump-ng", OBJDUMPARGS, "-W", "--dwarf", DEBUGELFARGS);
   }
 
   return 0;

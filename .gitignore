@@ -40,6 +40,8 @@
 *-stripped
 example
 exampled
+example-*
+exampled-*
 objtool
 objtoold
 
@@ -60,5 +62,6 @@ dkms.conf
 
 # Temporary Files
 bin/
+samples/
 *.swp
 

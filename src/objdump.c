@@ -229,7 +229,7 @@ static int do_object(const handle_t p, const poptions_t o) {
   if (o->action & OPTOBJDUMP_DYNAMIC_SYMBOLS)    dump_symbols(p, o, OPCODE_SYMBOLS_DYNAMIC);
   if (o->action & OPTOBJDUMP_SECTIONS)           dump_sections(p, o);
   if (o->action & OPTPROGRAM_DISASSEMBLE)        dump_disassemble(p, o);
-  if (o->action & OPTOBJDUMP_DEBUGGING)          dump_debugging(p, o);
+  if (o->action & OPTPROGRAM_DEBUGGING)          dump_debugging(p, o);
 
   return 0;
 }
