@@ -43,11 +43,9 @@ handle_t create(const int mode) {
   if (MODE_BUFFER == (mode & MODE_MASK0)) {
     return bmalloc();
   } else if (MODE_OPTIONS == (mode & MODE_MASK0)) {
-    poptions_t p = mallocx(sizeof(options_t));
-    return setmode(p, mode);
+    return omalloc();
   } else if (MODE_ACTIONS == (mode & MODE_MASK0)) {
-    paction_t p = mallocx(sizeof(action_t));
-    return setmode(p, mode);
+    return amalloc();
   } else if (MODE_LINK == (mode & MODE_MASK0)) {
     return lmalloc();
   }
@@ -60,9 +58,9 @@ handle_t destroy(handle_t p) {
     if (ismode0(p, MODE_BUFFER)) {
       return bfree(p);
     } else if (ismode0(p, MODE_OPTIONS)) {
-      destroy(CAST(poptions_t, p)->actions);
+      return ofree(p);
     } else if (ismode0(p, MODE_ACTIONS)) {
-      destroy(CAST(paction_t, p)->actions);
+      return afree(p);
     } else if (ismode0(p, MODE_LINK)) {
       destroy(CAST(pnode_t, p)->item);
       return lfree(p);

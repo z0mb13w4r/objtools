@@ -318,6 +318,17 @@ static imode_t get_options2(poptions_t o, const args_t args[], const char *argv)
   return action;
 }
 
+static int insert(poption_t o, paction_t p, const int action) {
+  if (isoptions(o) && isactions(p)) {
+    p->action  = action;
+    p->actions = o->actions;
+    o->actions = p;
+    return 0;
+  }
+
+  return -1;
+}
+
 static int breakup_args(paction_t p, char *src) {
   MALLOCA(char, buf, 1024);
   strncpy(buf, src, NELEMENTS(buf));
@@ -332,11 +343,8 @@ static int breakup_args(paction_t p, char *src) {
       return 0;
     }
   }
-  return -1;
-}
 
-int isoptions(handle_t p) {
-  return ismode(p, MODE_OPTIONS);
+  return -1;
 }
 
 int get_options_readelf(poptions_t o, int argc, char** argv, char* name) {
@@ -351,23 +359,17 @@ int get_options_readelf(poptions_t o, int argc, char** argv, char* name) {
   for (int i = 0; i < argc; ++i) {
     if ('-' == argv[i][0] && '-' == argv[i][1]) {
       if (0 == strncmp(argv[i], "--hex-dump=", 11)) {
-        paction_t p = create(MODE_ACTIONS);
+        paction_t p = amalloc();
         strcpy(p->secname, argv[i] + 11);
-        p->action = ACT_HEXDUMP;
-        p->actions = o->actions;
-        o->actions = p;
+        insert(o, p, ACT_HEXDUMP);
       } else if (0 == strncmp(argv[i], "--string-dump=", 14)) {
-        paction_t p = create(MODE_ACTIONS);
+        paction_t p = amalloc();
         strcpy(p->secname, argv[i] + 14);
-        p->action = ACT_STRDUMP;
-        p->actions = o->actions;
-        o->actions = p;
+        insert(o, p, ACT_STRDUMP);
       } else if (0 == strncmp(argv[i], "--relocated-dump=", 17)) {
-        paction_t p = create(MODE_ACTIONS);
+        paction_t p = amalloc();
         strcpy(p->secname, argv[i] + 17);
-        p->action = ACT_RELDUMP;
-        p->actions = o->actions;
-        o->actions = p;
+        insert(o, p, ACT_RELDUMP);
       } else {
         get_options2(o, READELFARGS, argv[i]);
       }
@@ -377,23 +379,17 @@ int get_options_readelf(poptions_t o, int argc, char** argv, char* name) {
           set_options1(o, DEBUGELFARGS);
         }
       } else if (0 == strcmp(argv[i], "-x")) {
-        paction_t p = create(MODE_ACTIONS);
+        paction_t p = amalloc();
 	strcpy(p->secname, argv[++i]);
-        p->action = ACT_HEXDUMP;
-        p->actions = o->actions;
-        o->actions = p;
+        insert(o, p, ACT_HEXDUMP);
       } else if (0 == strcmp(argv[i], "-p")) {
-        paction_t p = create(MODE_ACTIONS);
+        paction_t p = amalloc();
         strcpy(p->secname, argv[++i]);
-        p->action = ACT_STRDUMP;
-        p->actions = o->actions;
-        o->actions = p;
+        insert(o, p, ACT_STRDUMP);
       } else if (0 == strcmp(argv[i], "-R")) {
-        paction_t p = create(MODE_ACTIONS);
+        paction_t p = amalloc();
         strcpy(p->secname, argv[++i]);
-        p->action = ACT_RELDUMP;
-        p->actions = o->actions;
-        o->actions = p;
+        insert(o, p, ACT_RELDUMP);
       } else {
         get_options1(o, READELFARGS, argv[i]);
       }
@@ -421,25 +417,19 @@ int get_options_objcopy(poptions_t o, int argc, char** argv, char* name) {
   for (int i = 0; i < argc; ++i) {
     if ('-' == argv[i][0] && '-' == argv[i][1]) {
       if (0 == strcmp(argv[i], "--add-section")) {
-        paction_t p = create(MODE_ACTIONS);
+        paction_t p = amalloc();
         if (0 == breakup_args(p, argv[++i])) {
-          p->action = ACT_ADDSECTION;
-          p->actions = o->actions;
-          o->actions = p;
+          insert(o, p, ACT_ADDSECTION);
         }
       } else if (0 == strcmp(argv[i], "--dump-section")) {
-        paction_t p = create(MODE_ACTIONS);
+        paction_t p = amalloc();
         if (0 == breakup_args(p, argv[++i])) {
-          p->action = ACT_DUMPSECTION;
-          p->actions = o->actions;
-          o->actions = p;
+          insert(o, p, ACT_DUMPSECTION);
         }
       } else if (0 == strcmp(argv[i], "--update-section")) {
-        paction_t p = create(MODE_ACTIONS);
+        paction_t p = amalloc();
         if (0 == breakup_args(p, argv[++i])) {
-          p->action = ACT_UPDATESECTION;
-          p->actions = o->actions;
-          o->actions = p;
+          insert(o, p, ACT_UPDATESECTION);
         }
       } else {
         get_options2(o, OBJCOPYARGS, argv[i]);
@@ -534,5 +524,43 @@ int get_options(poptions_t o, int argc, char** argv) {
   }
 
   return -1;
+}
+
+int isactions(handle_t p) {
+  return ismode(p, MODE_ACTIONS);
+}
+
+int isoptions(handle_t p) {
+  return ismode(p, MODE_OPTIONS);
+}
+
+handle_t amalloc() {
+  paction_t p = mallocx(sizeof(action_t));
+  return setmode(p, MODE_ACTIONS);
+}
+
+handle_t omalloc() {
+  poptions_t p = mallocx(sizeof(options_t));
+  return setmode(p, MODE_OPTIONS);
+}
+
+handle_t afree(handle_t p) {
+  if (isactions(p)) {
+    afree(CAST(paction_t, p)->actions);
+    free(p);
+    return NULL;
+  }
+
+  return p;
+}
+
+handle_t ofree(handle_t p) {
+  if (isoptions(p)) {
+    afree(CAST(poptions_t, p)->actions);
+    free(p);
+    return NULL;
+  }
+
+  return p;
 }
 

@@ -1,11 +1,7 @@
 #include "memlink.h"
 
 int islink(handle_t p) {
-  if (p) {
-    return ismode(p, MODE_LINK);
-  }
-
-  return 0;
+  return ismode(p, MODE_LINK);
 }
 
 int islnext(handle_t p) {

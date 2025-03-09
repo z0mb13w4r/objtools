@@ -134,14 +134,20 @@ typedef struct options_s {
   paction_t actions;
 } options_t, *poptions_t;
 
-int isoptions(handle_t p);
-
 int get_options_readelf(poptions_t o, int argc, char** argv, char* name);
 int get_options_objcopy(poptions_t o, int argc, char** argv, char* name);
 int get_options_objdump(poptions_t o, int argc, char** argv, char* name);
 int get_options_objhash(poptions_t o, int argc, char** argv, char* name);
 
 int get_options(poptions_t o, int argc, char** argv);
+
+int isactions(handle_t p);
+int isoptions(handle_t p);
+
+handle_t amalloc();
+handle_t omalloc();
+handle_t afree(handle_t p);
+handle_t ofree(handle_t p);
 
 #endif
 
