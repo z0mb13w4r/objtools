@@ -50,9 +50,7 @@ static void callback_disassemble(handle_t p, handle_t section, unknown_t param) 
 static void callback_dwarf(handle_t p, handle_t section, unknown_t param) {
   const poptions_t o = CAST(poptions_t, param);
 
-  /* Sections that do not contain machine code are not normally disassembled. */
-  if ((ocget_flags(section) & SEC_HAS_CONTENTS) == 0) return;
-  if (0 == ocget_size(section)) return;
+  if (!ocdwarf_isneeded(section, param)) return;
 
   uint64_t soffset = ocget_soffset(p, section);
   uint64_t eoffset = ocget_eoffset(p, section);

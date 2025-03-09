@@ -67,6 +67,8 @@ typedef struct dwarf_display_s {
   imode_t         action;
 } dwarf_display_t;
 
+int ocdwarf_isneeded(handle_t s, handle_t o);
+
 int ocdwarf_open(handle_t p, handle_t o);
 int ocdwarf_close(handle_t p);
 
