@@ -84,8 +84,9 @@
 #define USE_DRTB          SET_BRACKET(7)
 #define USE_SQ            SET_BRACKET(8)
 #define USE_DQ            SET_BRACKET(9)
-#define USE_PLUS          SET_BRACKET(10)
-#define USE_DASH          SET_BRACKET(11)
+#define USE_DQEQ          SET_BRACKET(10)
+#define USE_PLUS          SET_BRACKET(11)
+#define USE_DASH          SET_BRACKET(12)
 #define USE_BRACKETMASK   SET_BRACKET(15)
 
 #define USE_COLON         SET_POS1(1)

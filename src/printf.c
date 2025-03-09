@@ -25,31 +25,32 @@ int printf_work(char* o, const size_t size, const char* p, const imode_t mode) {
     int p1 = GET_POS1(mode);
 
     switch (p0) {
-    case USE_AT:             n += PRINT1("@");         break;
-    case USE_ATAT:           n += PRINT1("@@");        break;
-    case USE_SPACE:          n += PRINT1(" ");         break;
-    case USE_TAB:            n += PRINT1("  ");        break;
+    case USE_AT:             n += PRINT1("@");          break;
+    case USE_ATAT:           n += PRINT1("@@");         break;
+    case USE_SPACE:          n += PRINT1(" ");          break;
+    case USE_TAB:            n += PRINT1("  ");         break;
     default:                 break;
     }
 
     switch (b) {
-    case USE_SBLT:           n += PRINT2("[%s",  p);   break;
-    case USE_SBRT:           n += PRINT2("%s]",  p);   break;
-    case USE_CB:             n += PRINT2("{%s}", p);   break;
-    case USE_RB:             n += PRINT2("(%s)", p);   break;
-    case USE_SB:             n += PRINT2("[%s]", p);   break;
-    case USE_TB:             n += PRINT2("<%s>", p);   break;
-    case USE_DRTB:           n += PRINT2(">>%s<<", p); break;
-    case USE_SQ:             n += PRINT2("'%s'", p);   break;
-    case USE_DQ:             n += PRINT2("\"%s\"", p); break;
-    case USE_PLUS:           n += PRINT2(" +%s", p);   break;
-    case USE_DASH:           n += PRINT2(" -%s", p);   break;
-    default:                 n += PRINT2("%s", p);     break;
+    case USE_SBLT:           n += PRINT2("[%s",  p);    break;
+    case USE_SBRT:           n += PRINT2("%s]",  p);    break;
+    case USE_CB:             n += PRINT2("{%s}", p);    break;
+    case USE_RB:             n += PRINT2("(%s)", p);    break;
+    case USE_SB:             n += PRINT2("[%s]", p);    break;
+    case USE_TB:             n += PRINT2("<%s>", p);    break;
+    case USE_DRTB:           n += PRINT2(">>%s<<", p);  break;
+    case USE_SQ:             n += PRINT2("'%s'", p);    break;
+    case USE_DQ:             n += PRINT2("\"%s\"", p);  break;
+    case USE_DQEQ:           n += PRINT2("\"=%s\"", p); break;
+    case USE_PLUS:           n += PRINT2(" +%s", p);    break;
+    case USE_DASH:           n += PRINT2(" -%s", p);    break;
+    default:                 n += PRINT2("%s", p);      break;
     }
 
     switch (p1) {
-    case USE_COLON:          n += PRINT1(":");         break;
-    case USE_BYTES:          n += PRINT1(" (bytes)");  break;
+    case USE_COLON:          n += PRINT1(":");          break;
+    case USE_BYTES:          n += PRINT1(" (bytes)");   break;
     default:                 break;
     }
   }
