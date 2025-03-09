@@ -3,6 +3,8 @@
 #include <dis-asm.h>
 
 #include "printf.h"
+#include "opcode.h"
+#include "ocdwarf.h"
 #include "objdump.h"
 
 #include "static/has_flags.ci"
@@ -41,6 +43,27 @@ static void callback_disassemble(handle_t p, handle_t section, unknown_t param) 
   printf_nice(ocget_position(section) + soffset, USE_FHEX16 | USE_COLON | USE_EOL);
 
   ocdisassemble_run(p, section);
+
+  printf_eol();
+}
+
+static void callback_dwarf(handle_t p, handle_t section, unknown_t param) {
+  const poptions_t o = CAST(poptions_t, param);
+
+  /* Sections that do not contain machine code are not normally disassembled. */
+  if ((ocget_flags(section) & SEC_HAS_CONTENTS) == 0) return;
+  if (0 == ocget_size(section)) return;
+
+  uint64_t soffset = ocget_soffset(p, section);
+  uint64_t eoffset = ocget_eoffset(p, section);
+  if (soffset >= eoffset) return;
+
+  printf_text("Contents of section", USE_LT);
+  printf_text(ocget_name(section), USE_LT | USE_SPACE | USE_SQ);
+  printf_text("at offset", USE_LT | USE_SPACE);
+  printf_nice(ocget_position(section) + soffset, USE_FHEX16 | USE_COLON | USE_EOL);
+
+  ocdwarf_run(p, section);
 
   printf_eol();
 }
@@ -210,7 +233,10 @@ static int dump_disassemble(const handle_t p, const poptions_t o) {
   return 0;
 }
 
-static int dump_debugging(const handle_t p, const poptions_t o) {
+static int dump_dwarf(const handle_t p, const poptions_t o) {
+  ocdwarf_open(p, o);
+  ocdo_sections(p, callback_dwarf, o);
+  ocdwarf_close(p);
   return 0;
 }
 
@@ -229,7 +255,7 @@ static int do_object(const handle_t p, const poptions_t o) {
   if (o->action & OPTOBJDUMP_DYNAMIC_SYMBOLS)    dump_symbols(p, o, OPCODE_SYMBOLS_DYNAMIC);
   if (o->action & OPTOBJDUMP_SECTIONS)           dump_sections(p, o);
   if (o->action & OPTPROGRAM_DISASSEMBLE)        dump_disassemble(p, o);
-  if (o->action & OPTPROGRAM_DEBUGGING)          dump_debugging(p, o);
+  if (o->action & OPTDEBUGELF_DEBUGGING)         dump_dwarf(p, o);
 
   return 0;
 }

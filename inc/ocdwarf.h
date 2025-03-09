@@ -1,5 +1,5 @@
-#ifndef __DWARF_H_
-#define __DWARF_H_
+#ifndef __OCDWARF_H_
+#define __OCDWARF_H_
 
 #include "defines.h"
 
@@ -66,6 +66,11 @@ typedef struct dwarf_display_s {
   dwarf_section_t section;
   imode_t         action;
 } dwarf_display_t;
+
+int ocdwarf_open(handle_t p, handle_t o);
+int ocdwarf_close(handle_t p);
+
+int ocdwarf_run(handle_t p, handle_t s);
 
 #endif
 

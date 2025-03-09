@@ -32,18 +32,17 @@
 #define OPTDEBUGELF_TRACE_ABBREV                   U64MASK(48)
 #define OPTDEBUGELF_TRACE_INFO                     U64MASK(49)
 #define OPTDEBUGELF_GDB_INDEX                      U64MASK(50)
+#define OPTDEBUGELF_DEBUGGING                      (0x1FFFFFULL << 30)
 
 #define OPTPROGRAM_DEMANGLE                        U64MASK(56)
 #define OPTPROGRAM_LINE_NUMBERS                    U64MASK(57)
-#define OPTPROGRAM_DEBUGGING                       U64MASK(58)
-#define OPTPROGRAM_DEBUGGING_TAGS                  U64MASK(59)
-#define OPTPROGRAM_SOURCE_CODE                     U64MASK(60)
-#define OPTPROGRAM_DISASSEMBLE                     U64MASK(61)
-#define OPTPROGRAM_CAPSTONE                        U64MASK(62)
-#define OPTPROGRAM_HELP                            U64MASK(63)
+#define OPTPROGRAM_DEBUGGING_TAGS                  U64MASK(58)
+#define OPTPROGRAM_SOURCE_CODE                     U64MASK(59)
+#define OPTPROGRAM_DISASSEMBLE                     U64MASK(60)
+#define OPTPROGRAM_CAPSTONE                        U64MASK(61)
+#define OPTPROGRAM_HELP                            U64MASK(62)
 
-#define OPTPROGRAM_CAPSTONE_ALL        (OPTPROGRAM_CAPSTONE | OPTPROGRAM_DISASSEMBLE | OPTPROGRAM_SOURCE_CODE \
-                                           | OPTPROGRAM_DEBUGGING | OPTPROGRAM_DEBUGGING_TAGS | OPTPROGRAM_DEMANGLE)
+#define OPTPROGRAM_CAPSTONE_ALL        (OPTPROGRAM_CAPSTONE | OPTPROGRAM_DISASSEMBLE | OPTPROGRAM_SOURCE_CODE | OPTPROGRAM_DEMANGLE)
 
 #define OPTREADELF_FILEHEADER                      U64MASK(0)
 #define OPTREADELF_SECTIONGROUPS                   U64MASK(1)

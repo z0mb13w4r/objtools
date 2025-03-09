@@ -12,7 +12,6 @@ DIR_CXX = ../$(DIR_SRC)
 # Name of c source files to be included in build.
 #---------------------------------------------------------------------
 SRCS_C = \
-	dwarf.c \
 	arcode.c \
 	buffer.c \
 	opcode.c \
@@ -23,6 +22,7 @@ SRCS_C = \
 	elfcode.c \
 	memfind.c \
 	memlink.c \
+	ocdwarf.c \
 	objcopy.c \
 	objdump.c \
 	objhash.c \
