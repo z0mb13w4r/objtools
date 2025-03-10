@@ -66,6 +66,7 @@ typedef struct dwarf_section_s {
 typedef struct dwarf_display_s {
   dwarf_section_t section;
   imode_t         action;
+  int             (*func)(handle_t p, handle_t s, handle_t d);
 } dwarf_display_t, *pdwarf_display_t;
 
 pdwarf_display_t ocdwarf_get(handle_t s);

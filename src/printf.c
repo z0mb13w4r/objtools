@@ -67,7 +67,7 @@ int printf_neat(char* o, const size_t size, const uint64_t v, const imode_t mode
     }
 
     const imode_t xmode = mode & ~(USE_FLAGMASK | USE_POS0MASK | USE_POS1MASK | USE_BRACKETMASK);
-    const int usespace = USE_CHARCTRL != xmode && USE_LHEX8NS != xmode && USE_CHAR != xmode;
+    const int usespace = (USE_CHARCTRL != xmode && USE_LHEX8NS != xmode && USE_CHAR != xmode) || mode & USE_SPACE;
 
     switch (GET_BRACKET(mode)) {
     case USE_CB:                   n += PRINT1(" {");    break;
@@ -237,7 +237,7 @@ int printf_book(const char* p[], const imode_t mode) {
 int printf_data(const void* p, const size_t size, const addrz_t addr, const imode_t mode) {
   const size_t MAX_SIZE = 16;
 
-  const imode_t xmode = mode & ~USE_POS0MASK;
+  const imode_t xmode = mode & ~(USE_POS0MASK | USE_FLAGMASK);
   const int usespace = mode & USE_SPACE;
 
   addrz_t x = addr;
@@ -295,6 +295,10 @@ int printf_data(const void* p, const size_t size, const addrz_t addr, const imod
     } else {
       return -1;
     }
+  }
+
+  if (mode & USE_EOL) {
+    n += printf_eol();
   }
 
   return n;

@@ -194,12 +194,8 @@ static int dump_elfheader(const pbuffer_t p, const poptions_t o) {
   const int MAXSIZE = 36;
 
   printf_text("ELF HEADER", USE_LT | USE_COLON | USE_EOL);
-
-  printf("  Magic: %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x\n",
-            get(p,  0), get(p,  1), get(p,  2), get(p,  3),
-            get(p,  4), get(p,  5), get(p,  6), get(p,  7),
-            get(p,  8), get(p,  9), get(p, 10), get(p, 11),
-            get(p, 12), get(p, 13), get(p, 14), get(p, 15));
+  printf_text("Magic", USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  printf_data(getp(p, 0, 16), 16, 0, USE_HEX | USE_SPACE | USE_EOL);
 
   printf_text("Class", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   if (isELF32(p)) {
@@ -412,29 +408,33 @@ static int dump_sectiongroups64(const pbuffer_t p, const poptions_t o, Elf64_Ehd
   return 0;
 }
 
+static int dump_programheaders(const uint64_t p_type, const uint64_t p_offset,
+                               const uint64_t p_vaddr, const uint64_t p_paddr, const uint64_t p_filesz, const uint64_t p_memsz,
+                               const uint64_t p_flags, const uint64_t p_align) {
+  int n = 0;
+  n += printf_pick(zPHDRTYPE, p_type, USE_LT | USE_TAB | SET_PAD(17));
+  n += printf_nice(p_offset, USE_FHEX24);
+  n += printf_nice(p_vaddr,  USE_FHEX64);
+  n += printf_nice(p_paddr,  USE_FHEX64);
+  n += printf_nice(p_filesz, USE_FHEX24);
+  n += printf_nice(p_memsz,  USE_FHEX24);
+  n += printf_nice(p_flags & PF_R ? 'R' : ' ', USE_CHAR | USE_SPACE);
+  n += printf_nice(p_flags & PF_W ? 'W' : ' ', USE_CHAR);
+  n += printf_nice(p_flags & PF_X ? 'E' : ' ', USE_CHAR);
+  n += printf_nice(p_align, USE_FHEX | USE_EOL);
+  return n;
+}
+
 static int dump_programheaders32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
   if (0 != ehdr->e_phnum) {
     printf_text("PROGRAM HEADERS", USE_LT | USE_COLON | USE_EOL);
-    printf("  Type            Offset   VirtAddr           PhysAddr           FileSiz  MemSiz   Flg  Align\n");
+    printf_text("Type            Offset   VirtAddr           PhysAddr           FileSiz  MemSiz   Flg  Align", USE_LT | USE_TAB | USE_EOL);
   }
 
   for (Elf32_Half i = 0; i < ehdr->e_phnum; ++i) {
     Elf32_Phdr *phdr = get_phdr32byindex(p, i);
     if (phdr) {
-      printf_pick(zPHDRTYPE, phdr->p_type, USE_LT | USE_TAB | SET_PAD(17));
-      printf_nice(phdr->p_offset, USE_FHEX24);
-      printf_nice(phdr->p_vaddr,  USE_FHEX64);
-      printf_nice(phdr->p_paddr,  USE_FHEX64);
-      printf_nice(phdr->p_filesz, USE_FHEX24);
-      printf_nice(phdr->p_memsz,  USE_FHEX24);
-
-      printf(" %c%c%c ",
-            (phdr->p_flags & PF_R ? 'R' : ' '),
-            (phdr->p_flags & PF_W ? 'W' : ' '),
-            (phdr->p_flags & PF_X ? 'E' : ' '));
-
-      printf_nice(phdr->p_align, USE_FHEX);
-      printf_eol();
+      dump_programheaders(phdr->p_type, phdr->p_offset, phdr->p_vaddr, phdr->p_paddr, phdr->p_filesz, phdr->p_memsz, phdr->p_flags, phdr->p_align);
 
       if (PT_INTERP == phdr->p_type) {
         printf("    [Requesting program interpreter:" );
@@ -480,27 +480,13 @@ static int dump_programheaders32(const pbuffer_t p, const poptions_t o, Elf32_Eh
 static int dump_programheaders64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
   if (0 != ehdr->e_phnum) {
     printf_text("PROGRAM HEADERS", USE_LT | USE_COLON | USE_EOL);
-    printf("  Type            Offset   VirtAddr           PhysAddr           FileSiz  MemSiz   Flg  Align\n");
+    printf_text("Type            Offset   VirtAddr           PhysAddr           FileSiz  MemSiz   Flg  Align", USE_LT | USE_TAB | USE_EOL);
   }
 
   for (Elf64_Half i = 0; i < ehdr->e_phnum; ++i) {
     Elf64_Phdr *phdr = get_phdr64byindex(p, i);
     if (phdr) {
-      printf_pick(zPHDRTYPE, phdr->p_type, USE_LT | USE_TAB | SET_PAD(17));
-      printf_nice(phdr->p_offset, USE_FHEX24);
-      printf_nice(phdr->p_vaddr,  USE_FHEX64);
-      printf_nice(phdr->p_paddr,  USE_FHEX64);
-      printf_nice(phdr->p_filesz, USE_FHEX24);
-      printf_nice(phdr->p_memsz,  USE_FHEX24);
-
-      printf(" %c%c%c ",
-            (phdr->p_flags & PF_R ? 'R' : ' '),
-            (phdr->p_flags & PF_W ? 'W' : ' '),
-            (phdr->p_flags & PF_X ? 'E' : ' '));
-
-      printf_nice(phdr->p_align, USE_FHEX);
-      printf_eol();
-
+      dump_programheaders(phdr->p_type, phdr->p_offset, phdr->p_vaddr, phdr->p_paddr, phdr->p_filesz, phdr->p_memsz, phdr->p_flags, phdr->p_align);
       if (PT_INTERP == phdr->p_type) {
         printf("    [Requesting program interpreter:" );
         printf_data(getp(p, phdr->p_offset, phdr->p_filesz), phdr->p_filesz, 0, USE_STR);
@@ -543,20 +529,21 @@ static int dump_programheaders64(const pbuffer_t p, const poptions_t o, Elf64_Eh
 }
 
 static int dump_dynamic(const pbuffer_t p, const poptions_t o, const uint64_t d_tag, const uint64_t d_un_d_val, const uint64_t sh_link) {
-  printf_nice(d_tag, USE_FHEX64);
-  printf_pick(zDYNTAG, d_tag, USE_SPACE | USE_RB | SET_PAD(20));
+  int n = 0;
+  n += printf_nice(d_tag, USE_FHEX64);
+  n += printf_pick(zDYNTAG, d_tag, USE_SPACE | USE_RB | SET_PAD(20));
 
   if (d_tag == DT_FLAGS_1) {
-    printf_text("Flags", USE_LT | USE_SPACE | USE_COLON);
-    printf_masknone(zDT_FLAGS_1, d_un_d_val, USE_LT);
+    n += printf_text("Flags", USE_LT | USE_SPACE | USE_COLON);
+    n += printf_masknone(zDT_FLAGS_1, d_un_d_val, USE_LT);
   } else if (d_tag == DT_POSFLAG_1) {
-    printf_text("Flags", USE_LT | USE_SPACE | USE_COLON);
-    printf_masknone(zDT_POSFLAG_1, d_un_d_val, USE_LT);
+    n += printf_text("Flags", USE_LT | USE_SPACE | USE_COLON);
+    n += printf_masknone(zDT_POSFLAG_1, d_un_d_val, USE_LT);
   } else if (d_tag == DT_FLAGS) {
-    printf_text("Flags", USE_LT | USE_SPACE | USE_COLON);
-    printf_masknone(zDT_FLAGS,d_un_d_val, USE_LT);
+    n += printf_text("Flags", USE_LT | USE_SPACE | USE_COLON);
+    n += printf_masknone(zDT_FLAGS,d_un_d_val, USE_LT);
   } else if (d_tag == DT_PLTREL) {
-    printf_pick(zDYNTAG, d_un_d_val, USE_SPACE);
+    n += printf_pick(zDYNTAG, d_un_d_val, USE_SPACE);
   } else if (d_tag == DT_NULL || d_tag == DT_NEEDED || d_tag == DT_PLTGOT ||
              d_tag == DT_HASH || d_tag == DT_STRTAB || d_tag == DT_SYMTAB ||
              d_tag == DT_RELA || d_tag == DT_INIT || d_tag == DT_FINI ||
@@ -567,38 +554,38 @@ static int dump_dynamic(const pbuffer_t p, const poptions_t o, const uint64_t d_
     const char *name = get_namebyoffset(p, sh_link, d_un_d_val);
     if (name && name[0]) {
       if (d_tag == DT_NEEDED) {
-        printf(" Shared library: [%s]", name);
+        n += printf(" Shared library: [%s]", name);
         // TBD
-      } else if (d_tag == DT_SONAME)        printf(" Library soname: [%s]", name);
-        else if (d_tag == DT_RPATH)         printf(" Library rpath: [%s]", name);
-        else if (d_tag == DT_RUNPATH)       printf(" Library runpath: [%s]", name);
-        else                                printf_nice(d_un_d_val, USE_FHEX);
+      } else if (d_tag == DT_SONAME)        n += printf(" Library soname: [%s]", name);
+        else if (d_tag == DT_RPATH)         n += printf(" Library rpath: [%s]", name);
+        else if (d_tag == DT_RUNPATH)       n += printf(" Library runpath: [%s]", name);
+        else                                n += printf_nice(d_un_d_val, USE_FHEX);
     } else {
-      printf_nice(d_un_d_val, USE_FHEX);
+      n += printf_nice(d_un_d_val, USE_FHEX);
     }
   } else if (d_tag == DT_PLTRELSZ || d_tag == DT_RELASZ || d_tag == DT_STRSZ ||
              d_tag == DT_RELSZ || d_tag == DT_RELAENT || d_tag == DT_SYMENT ||
              d_tag == DT_RELENT || d_tag == DT_PLTPADSZ || d_tag == DT_MOVEENT ||
              d_tag == DT_MOVESZ || d_tag == DT_PREINIT_ARRAYSZ || d_tag == DT_INIT_ARRAYSZ ||
              d_tag == DT_FINI_ARRAYSZ || d_tag == DT_GNU_CONFLICTSZ || d_tag == DT_GNU_LIBLISTSZ) {
-    printf_nice(d_un_d_val, USE_DEC | USE_BYTES);
+    n += printf_nice(d_un_d_val, USE_DEC | USE_BYTES);
   } else if (d_tag == DT_VERDEFNUM || d_tag == DT_VERNEEDNUM ||
              d_tag == DT_RELACOUNT || d_tag == DT_RELCOUNT) {
-    printf_nice(d_un_d_val, USE_DEC);
+    n += printf_nice(d_un_d_val, USE_DEC);
   } else if (d_tag == DT_SYMINSZ || d_tag == DT_SYMINENT || d_tag == DT_SYMINFO ||
              d_tag == DT_INIT_ARRAY || d_tag == DT_FINI_ARRAY) {
-    printf_nice(d_un_d_val, USE_FHEX);
+    n += printf_nice(d_un_d_val, USE_FHEX);
   } else if (d_tag == DT_GNU_PRELINKED) {
-    printf_nice(d_un_d_val, USE_TIMEDATE);
+    n += printf_nice(d_un_d_val, USE_TIMEDATE);
   } else if (d_tag == DT_GNU_HASH) {
-    printf_nice(d_un_d_val, USE_FHEX);
+    n += printf_nice(d_un_d_val, USE_FHEX);
   } else if (d_tag >= DT_VERSYM && d_tag <= DT_VERNEEDNUM) {
-    printf_nice(d_un_d_val, USE_FHEX);
+    n += printf_nice(d_un_d_val, USE_FHEX);
   }
 
-  printf_eol();
+  n += printf_eol();
 
-  return 0;
+  return n;
 }
 
 static int dump_dynamic32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
@@ -910,46 +897,46 @@ static int dump_unwind64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr
 
 static int dump_symbols0(const pbuffer_t p, const poptions_t o,
                          const uint64_t secindex, const uint64_t count, const uint64_t sh_offset) {
-  printf_text("Symbol table", USE_LT);
-  printf_text(get_secnamebyindex(p, secindex), USE_LT | USE_SQ | USE_SPACE);
-  printf_text("at offset", USE_SPACE);
-  printf_nice(sh_offset, USE_FHEX16);
-  printf_text("contains", USE_SPACE);
-  printf_nice(count, USE_DEC);
-  printf_text(1 == count ? "entry" : "entries", USE_LT | USE_SPACE | USE_COLON | USE_EOL);
-  printf_text("   Num: Value             Size Type    Bind   Vis      Ndx Name", USE_LT | USE_EOL);
-
-  return 0;
+  int n = 0;
+  n += printf_text("Symbol table", USE_LT);
+  n += printf_text(get_secnamebyindex(p, secindex), USE_LT | USE_SQ | USE_SPACE);
+  n += printf_text("at offset", USE_SPACE);
+  n += printf_nice(sh_offset, USE_FHEX16);
+  n += printf_text("contains", USE_SPACE);
+  n += printf_nice(count, USE_DEC);
+  n += printf_text(1 == count ? "entry" : "entries", USE_LT | USE_SPACE | USE_COLON | USE_EOL);
+  n += printf_text("   Num: Value             Size Type    Bind   Vis      Ndx Name", USE_LT | USE_EOL);
+  return n;
 }
 
 static int dump_symbols1(const pbuffer_t p, const poptions_t o, const uint64_t symindex,
                          const uint64_t st_value, const uint64_t st_size, const uint64_t st_info, const uint64_t st_other, const uint64_t st_shndx) {
-  printf_nice(symindex, USE_DEC5 | USE_COLON);
-  printf_nice(st_value, USE_LHEX64);
-  printf_nice(st_size, USE_DEC5);
-  printf_pick(zSTTTYPE, ELF_ST_TYPE(st_info), USE_LT | USE_SPACE | SET_PAD(8));
-  printf_pick(zSTBBIND, ELF_ST_BIND(st_info), USE_LT | USE_SPACE | SET_PAD(7));
-  printf_pick(zSTVVISIBILITY, ELF_ST_VISIBILITY(st_other), USE_LT | USE_SPACE | SET_PAD(9));
-  printf_text(get_SHNINDEX(st_shndx), USE_LT | USE_SPACE);
-
-  return 0;
+  int n = 0;
+  n += printf_nice(symindex, USE_DEC5 | USE_COLON);
+  n += printf_nice(st_value, USE_LHEX64);
+  n += printf_nice(st_size, USE_DEC5);
+  n += printf_pick(zSTTTYPE, ELF_ST_TYPE(st_info), USE_LT | USE_SPACE | SET_PAD(8));
+  n += printf_pick(zSTBBIND, ELF_ST_BIND(st_info), USE_LT | USE_SPACE | SET_PAD(7));
+  n += printf_pick(zSTVVISIBILITY, ELF_ST_VISIBILITY(st_other), USE_LT | USE_SPACE | SET_PAD(9));
+  n += printf_text(get_SHNINDEX(st_shndx), USE_LT | USE_SPACE);
+  return n;
 }
 
 static int dump_symbols2(const pbuffer_t p, const poptions_t o,
                          const uint64_t sh_link, const uint64_t vna_name, const uint64_t vna_other, const uint64_t st_shndx, const uint64_t st_other) {
+  int n = 0;
   const char* namevs = get_namebyoffset(p, sh_link, vna_name);
   if (namevs && namevs[0]) {
     if (SHN_UNDEF == st_shndx) {
-      printf_text(namevs, USE_LT | USE_AT);
-      printf_nice(vna_other, USE_RB | USE_DEC);
+      n += printf_text(namevs, USE_LT | USE_AT);
+      n += printf_nice(vna_other, USE_RB | USE_DEC);
     } else if (STV_HIDDEN == ELF_ST_VISIBILITY(st_other)) {
-      printf_text(namevs, USE_LT | USE_AT);
+      n += printf_text(namevs, USE_LT | USE_AT);
     } else {
-      printf_text(namevs, USE_LT | USE_ATAT);
+      n += printf_text(namevs, USE_LT | USE_ATAT);
     }
   }
-
-  return 0;
+  return n;
 }
 
 static int dump_symbols32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {

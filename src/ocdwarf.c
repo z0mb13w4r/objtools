@@ -4,7 +4,27 @@
 #include "ocdwarf.h"
 #include "options.h"
 
+static int ocdwarf_dodebug_abbrev(handle_t p, handle_t s, handle_t d);
+static int ocdwarf_dodebug_aranges(handle_t p, handle_t s, handle_t d);
+static int ocdwarf_dodebug_info(handle_t p, handle_t s, handle_t d);
+static int ocdwarf_dodebug_line(handle_t p, handle_t s, handle_t d);
+static int ocdwarf_dodebug_macroinfo(handle_t p, handle_t s, handle_t d);
+static int ocdwarf_dodebug_str(handle_t p, handle_t s, handle_t d);
+static int ocdwarf_dodebug_stroffset(handle_t p, handle_t s, handle_t d);
+static int ocdwarf_dodebug_types(handle_t p, handle_t s, handle_t d);
+static int ocdwarf_doeh_frame(handle_t p, handle_t s, handle_t d);
+
 #include "static/dwarf.ci"
+
+static int ocdwarf_dodebug_abbrev(handle_t p, handle_t s, handle_t d) { return 0; }
+static int ocdwarf_dodebug_aranges(handle_t p, handle_t s, handle_t d) { return 0; }
+static int ocdwarf_dodebug_info(handle_t p, handle_t s, handle_t d) { return 0; }
+static int ocdwarf_dodebug_line(handle_t p, handle_t s, handle_t d) { return 0; }
+static int ocdwarf_dodebug_macroinfo(handle_t p, handle_t s, handle_t d) { return 0; }
+static int ocdwarf_dodebug_str(handle_t p, handle_t s, handle_t d) { return 0; }
+static int ocdwarf_dodebug_stroffset(handle_t p, handle_t s, handle_t d) { return 0; }
+static int ocdwarf_dodebug_types(handle_t p, handle_t s, handle_t d) { return 0; }
+static int ocdwarf_doeh_frame(handle_t p, handle_t s, handle_t d) { return 0; }
 
 pdwarf_display_t ocdwarf_get(handle_t s) {
   if (isopsection(s)) {
@@ -43,6 +63,11 @@ int ocdwarf_close(handle_t p) {
 }
 
 int ocdwarf_run(handle_t p, handle_t s) {
-  return 0;
+  if (isopcode(p) && isopsection(s)) {
+    pdwarf_display_t d = ocdwarf_get(s);
+    return d && d->func ? d->func(p, s, &d->section) : -1;
+  }
+
+  return -1;
 }
 

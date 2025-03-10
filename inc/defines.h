@@ -61,6 +61,14 @@
 #define U64MASK(x)   (1ULL << (x))
 #endif
 
+#ifndef TRUE
+#define TRUE         (1)
+#endif
+
+#ifndef FALSE
+#define FALSE        (0)
+#endif
+
 #define MODE_MASK0              (0x00FFFFFF)
 #define MODE_MASK1              (0xFF000000)
 #define MODE_MASK               (MODE_MASK0 | MODE_MASK1)
@@ -84,6 +92,8 @@ typedef void*    handle_t;
 typedef void*    unknown_t;
 
 typedef uint32_t pick_t;
+
+typedef int      bool_t;
 
 #endif
 

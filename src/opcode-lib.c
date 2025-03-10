@@ -1,4 +1,5 @@
 #include "opcode.h"
+#include "printf.h"
 #include "opcode-lib.h"
 
 #define DEFAULT_SKIP_ZEROES            (8)
@@ -72,7 +73,7 @@ int opcodelib_run(handle_t p, handle_t s) {
           int siz = oc->ocfunc(soffset, di);
           if (siz <= 0) return -1;
           soffset += siz;
-          printf("\n");
+          printf_eol();
         }
       }
 

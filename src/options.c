@@ -60,9 +60,6 @@ static const args_t READELFARGS[] = {
   {0, NULL}
 };
 
-static const char OBJCOPYARGS0[] = "-W";
-static const char OBJCOPYARGS1[] = "--dwarf";
-
 static const args_t OBJCOPYARGS[] = {
   {'H', "--help",                           OPTPROGRAM_HELP},
   {0,   "--adjust-warnings",                OPTOBJCOPY_CHANGE_WARNINGS},
@@ -97,6 +94,9 @@ static const args_t OBJCOPYARGS[] = {
   {0,   "--dump-sections-all",              OPTOBJCOPY_DUMP_SECTIONS_ALL},
   {0, NULL},
 };
+
+static const char OBJDUMPARGS0[] = "-W";
+static const char OBJDUMPARGS1[] = "--dwarf";
 
 static const args_t OBJDUMPARGS[] = {
   {'H', "--help",              OPTPROGRAM_HELP},
@@ -290,11 +290,17 @@ static int usage1(poptions_t o, const char* name, const args_t args0[], const ch
 static imode_t get_options1(poptions_t o, const args_t args[], const char *argv) {
   imode_t action = 0;
   for (int k = 1; k < strlen(argv); ++k) {
+    bool_t notfound = TRUE;
     for (int j = 0; (0 != args[j].option1) || (0 != args[j].option2); ++j) {
       if (argv[k] == args[j].option1) {
         action |= args[j].action;
+        notfound = FALSE;
         break;
       }
+    }
+
+    if (notfound) {
+      printf_w("unknown argument '-%c'", argv[k]);
     }
   }
 
@@ -314,10 +320,16 @@ static imode_t set_options1(poptions_t o, const args_t args[]) {
 
 static imode_t get_options2(poptions_t o, const args_t args[], const char *argv) {
   imode_t action = 0;
+  bool_t notfound = TRUE;
   for (int j = 0; (0 != args[j].option1) || (0 != args[j].option2); ++j) {
     if (args[j].option2 && 0 == strcmp(argv, args[j].option2)) {
       o->action |= args[j].action;
+      notfound = FALSE;
     }
+  }
+
+  if (notfound) {
+    printf_w("unknown argument '%s'", argv);
   }
 
   o->action |= action;
@@ -476,14 +488,14 @@ int get_options_objdump(poptions_t o, int argc, char** argv, char* name) {
       MALLOCA(char, arg1, 1024);
 
       if (0 == breakup_args(argv[i], arg0, NELEMENTS(arg0), arg1, NELEMENTS(arg1))) {
-        if (0 == strcmp(arg0, OBJCOPYARGS1)) {
+        if (0 == strcmp(arg0, OBJDUMPARGS1)) {
           get_options2(o, DEBUGELFARGS, arg1);
         }
       } else {
         get_options2(o, OBJDUMPARGS, argv[i]);
       }
     } else if ('-' == argv[i][0]) {
-      if (0 == strcmp(argv[i], OBJCOPYARGS0)) {
+      if (0 == strcmp(argv[i], OBJDUMPARGS0)) {
         if (0 == get_options1(o, DEBUGELFARGS, argv[i] + 1)) {
           set_options1(o, DEBUGELFARGS);
         }
@@ -496,7 +508,7 @@ int get_options_objdump(poptions_t o, int argc, char** argv, char* name) {
   }
 
   if (o->action & OPTPROGRAM_HELP) {
-    return usage1(o, "objdump-ng", OBJDUMPARGS, OBJCOPYARGS0, OBJCOPYARGS1, DEBUGELFARGS);
+    return usage1(o, "objdump-ng", OBJDUMPARGS, OBJDUMPARGS0, OBJDUMPARGS1, DEBUGELFARGS);
   }
 
   return 0;
