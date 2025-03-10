@@ -51,7 +51,8 @@ typedef enum {
   eDWARF_GNU_DEBUGLINK,
   eDWARF_TRACE_ABBREV,
   eDWARF_TRACE_ARANGES,
-  eDWARF_TRACE_INFO
+  eDWARF_TRACE_INFO,
+  eDWARF_MAX
 } dwarfid_t;
 
 typedef struct dwarf_section_s {
@@ -60,12 +61,14 @@ typedef struct dwarf_section_s {
   const char* compressed_name;
   const char* xcoff_name;
   dwarfid_t   id;
-} dwarf_section_t, pdwarf_section_t;
+} dwarf_section_t, *pdwarf_section_t;
 
 typedef struct dwarf_display_s {
   dwarf_section_t section;
   imode_t         action;
-} dwarf_display_t;
+} dwarf_display_t, *pdwarf_display_t;
+
+pdwarf_display_t ocdwarf_get(handle_t s);
 
 int ocdwarf_isneeded(handle_t s, handle_t o);
 
