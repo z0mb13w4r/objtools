@@ -89,22 +89,27 @@ static void callback_sections(handle_t p, handle_t section, unknown_t param) {
   printf_eol();
 }
 
-static void callback_sectionhdr(handle_t p, handle_t section, unknown_t param) {
+static void callback_programhdr(handle_t p, handle_t phdr, unknown_t param) {
   size_t name_size = *CAST(size_t*, param);
-  asection* s = ocget(section, MODE_OPSECTION);
 
-  uint64_t flags = ocget_flags(section);
+}
+
+static void callback_sectionhdr(handle_t p, handle_t shdr, unknown_t param) {
+  size_t name_size = *CAST(size_t*, param);
+  asection* s = ocget(shdr, MODE_OPSECTION);
+
+  uint64_t flags = ocget_flags(shdr);
 
   /* Ignore linker created section.  See elfNN_ia64_object_p in bfd/elfxx-ia64.c.  */
   if (flags & SEC_LINKER_CREATED) return;
 
   printf_nice(s->index, USE_TAB | USE_DEC2);
-  printf_text(ocget_name(section), USE_LT | USE_SPACE | SET_PAD(name_size));
-  printf_nice(ocget_size(section) / ocget_opb(p, section), USE_LHEX32);
-  printf_nice(ocget_vmaddress(section), USE_LHEX64);
-  printf_nice(ocget_lmaddress(section), USE_LHEX64);
-  printf_nice(ocget_position(section), USE_LHEX32);
-  printf(" 2**%lu", ocget_alignment(section));
+  printf_text(ocget_name(shdr), USE_LT | USE_SPACE | SET_PAD(name_size));
+  printf_nice(ocget_size(shdr) / ocget_opb(p, shdr), USE_LHEX32);
+  printf_nice(ocget_vmaddress(shdr), USE_LHEX64);
+  printf_nice(ocget_lmaddress(shdr), USE_LHEX64);
+  printf_nice(ocget_position(shdr), USE_LHEX32);
+  printf(" 2**%lu", ocget_alignment(shdr));
 
   printf_maskmute(zSECTIONHDR1_FLAGS, flags, USE_LT);
 
@@ -154,6 +159,14 @@ static int dump_header(const handle_t p, const poptions_t o) {
 }
 
 static int dump_privatehdr(const handle_t p, const poptions_t o) {
+  size_t max_name_size = 20;
+// bfd/elf.c:1648:_bfd_elf_print_private_bfd_data (bfd *abfd, void *farg)
+
+  //printf_text("PROGRAM HEADER", USE_LT | USE_COLON | USE_EOL);
+
+  //ocdo_programs(p, callback_programhdr, &max_name_size);
+
+
   if (!bfd_print_private_bfd_data(ocgetbfd(p), stdout)) {
     printf_w("private Headers incomplete: %s.", bfd_errmsg(bfd_get_error()));
     return 1;

@@ -333,6 +333,10 @@ void occonfig(const char* name, const char* target) {
   }
 }
 
+int ocdo_programs(handle_t p, opcbfunc_t cbfunc, unknown_t param) {
+  return -1;
+}
+
 static void callback_section(bfd *f, asection *s, void *p) {
   popfunc_t pcb = CAST(popfunc_t, p);
   if (pcb && pcb->cbfunc) {

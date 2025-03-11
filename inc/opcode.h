@@ -88,6 +88,7 @@ const char* ocget_fileformat(handle_t p);
 
 void occonfig(const char* name, const char* target);
 
+int ocdo_programs(handle_t p, opcbfunc_t cbfunc, unknown_t param);
 int ocdo_sections(handle_t p, opcbfunc_t cbfunc, unknown_t param);
 
 int ocdisassemble_open(handle_t p, handle_t o);

@@ -3,8 +3,16 @@
 
 #include "objutils.h"
 
-int isbits(const imode_t x) {
+bool_t isbits(const imode_t x) {
   return x & (x -1);
+}
+
+bool_t isused(pick_t* p, const pick_t x) {
+  for ( ; PICK_END != *p; ++p) {
+    if (x == *p) return TRUE;
+  }
+
+  return FALSE;
 }
 
 char* strname(char* dst, const char* src) {

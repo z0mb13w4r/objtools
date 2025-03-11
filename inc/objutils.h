@@ -6,12 +6,15 @@
 
 #include "defines.h"
 
+#define PICK_END               (~0)
+
 typedef struct convert_s {
-  const char*        text;
-  const unsigned int type;
+  const char*  text;
+  const pick_t type;
 } convert_t, *pconvert_t;
 
-int isbits(const imode_t x);
+bool_t isbits(const imode_t x);
+bool_t isused(pick_t* p, const pick_t x);
 
 char* strname(char* dst, const char* src);
 

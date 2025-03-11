@@ -45,3 +45,64 @@ static convert_t zRELTYPE64[] = {
   {0, 0}
 };
 
+static pick_t zRELTYPE32DEF[] = {
+  R_386_32,
+  R_386_PC32,
+  R_386_GOT32X,
+  R_386_GOTPC,
+  R_386_PLT32,
+  R_386_GOTOFF,
+  PICK_END
+};
+
+static pick_t zRELTYPE64DEF[] = {
+  R_X86_64_8,
+  R_X86_64_16,
+  R_X86_64_32,
+  R_X86_64_64,
+  R_X86_64_PC32,
+  R_X86_64_PLT32,
+  PICK_END
+};
+
+static pick_t zRELTYPE32VER[] = {
+  R_386_GLOB_DAT,
+  R_386_JMP_SLOT,
+  PICK_END
+};
+
+static pick_t zRELTYPE64VER[] = {
+  R_X86_64_GLOB_DAT,
+  R_X86_64_JUMP_SLOT,
+  R_X86_64_COPY,
+  PICK_END
+};
+
+static pick_t zRELTYPE64SHEX8[] = {
+  R_X86_64_8,
+  R_X86_64_PC8,
+  PICK_END
+};
+
+static pick_t zRELTYPE64SHEX16[] = {
+  R_X86_64_16,
+  R_X86_64_PC16,
+  PICK_END
+};
+
+static pick_t zRELTYPE64SHEX32[] = {
+  R_X86_64_32,
+  R_X86_64_GLOB_DAT,
+  R_X86_64_JUMP_SLOT,
+  R_X86_64_PC32,
+  R_X86_64_PLT32,
+  R_X86_64_COPY,
+  PICK_END
+};
+
+static pick_t zRELTYPE64SHEX64[] = {
+  R_X86_64_64,
+  R_X86_64_PC64,
+  PICK_END
+};
+

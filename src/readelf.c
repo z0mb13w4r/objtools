@@ -88,6 +88,19 @@ static int make_versionnames64(const pbuffer_t p, Elf64_Word *vnames, const size
   return 0;
 }
 
+static int dump_relocsdef(const pbuffer_t p, const uint64_t sh_link,
+                          const uint64_t st_value, const uint64_t st_name, const uint64_t st_shndx) {
+  const char* symname = get_namebyoffset(p, sh_link, st_name);
+  const char* secname = get_secnamebyindex(p, st_shndx);
+
+  int n = 0;
+  n += printf_nice(st_value, isELF32(p) ? USE_LHEX32: USE_LHEX64);
+  if (symname && symname[0])         n += printf_text(symname, USE_LT | USE_SPACE);
+  else if (secname && secname[0])    n += printf_text(secname, USE_LT | USE_SPACE);
+
+  return n;
+}
+
 static int dump_relocsdef32(const pbuffer_t p, const poptions_t o, Elf32_Shdr *shdr, const uint64_t r_info) {
   if (shdr) {
     Elf32_Shdr *dshdr = get_shdr32byindex(p, shdr->sh_link);
@@ -95,12 +108,7 @@ static int dump_relocsdef32(const pbuffer_t p, const poptions_t o, Elf32_Shdr *s
       Elf32_Off k = ELF32_R_SYM(r_info);
       Elf32_Sym *sym = getp(p, dshdr->sh_offset + (k * dshdr->sh_entsize), dshdr->sh_entsize);
       if (sym) {
-        printf_nice(sym->st_value, USE_LHEX64);
-
-        const char* symname = get_namebyoffset(p, dshdr->sh_link, sym->st_name);
-        const char* secname = get_secnamebyindex(p, sym->st_shndx);
-        if (symname && symname[0])         printf_text(symname, USE_LT | USE_SPACE);
-        else if (secname && secname[0])    printf_text(secname, USE_LT | USE_SPACE);
+        return dump_relocsdef(p, dshdr->sh_link, sym->st_value, sym->st_name, sym->st_shndx);
       }
     }
   }
@@ -115,12 +123,7 @@ static int dump_relocsdef64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *s
       Elf64_Off k = ELF64_R_SYM(r_info);
       Elf64_Sym *sym = getp(p, dshdr->sh_offset + (k * dshdr->sh_entsize), dshdr->sh_entsize);
       if (sym) {
-        printf_nice(sym->st_value, USE_LHEX64);
-
-        const char* symname = get_namebyoffset(p, dshdr->sh_link, sym->st_name);
-        const char* secname = get_secnamebyindex(p, sym->st_shndx);
-        if (symname && symname[0])         printf_text(symname, USE_LT | USE_SPACE);
-        else if (secname && secname[0])    printf_text(secname, USE_LT | USE_SPACE);
+        return dump_relocsdef(p, dshdr->sh_link, sym->st_value, sym->st_name, sym->st_shndx);
       }
     }
   }
@@ -135,7 +138,7 @@ static int dump_relocsver32(const pbuffer_t p, const poptions_t o, Elf32_Shdr *s
       Elf32_Off k = ELF32_R_SYM(r_info);
       Elf32_Sym *sym = getp(p, dshdr->sh_offset + (k * dshdr->sh_entsize), dshdr->sh_entsize);
       if (sym) {
-        printf_nice(sym->st_value, USE_LHEX64);
+        printf_nice(sym->st_value, USE_LHEX32);
 
         printf_text(get_namebyoffset(p, dshdr->sh_link, sym->st_name), USE_LT | USE_SPACE);
 
@@ -528,9 +531,20 @@ static int dump_programheaders64(const pbuffer_t p, const poptions_t o, Elf64_Eh
   return 0;
 }
 
-static int dump_dynamic(const pbuffer_t p, const poptions_t o, const uint64_t d_tag, const uint64_t d_un_d_val, const uint64_t sh_link) {
+static int dump_dynamic0(const pbuffer_t p, const uint64_t sh_offset, const uint64_t count) {
   int n = 0;
-  n += printf_nice(d_tag, USE_FHEX64);
+  n += printf_text("Dynamic section at offset", USE_LT);
+  n += printf_nice(sh_offset, USE_FHEX16);
+  n += printf_text("contains", USE_LT | USE_SPACE);
+  n += printf_nice(count, USE_DEC);
+  n += printf_text(1 == count ? "entry" : "entries", USE_LT | USE_SPACE | USE_COLON | USE_EOL);
+  n += printf_text("Tag                Type                Name/Value", USE_LT | USE_SPACE | USE_EOL);
+  return n;
+}
+
+static int dump_dynamic1(const pbuffer_t p, const poptions_t o, const uint64_t d_tag, const uint64_t d_un_d_val, const uint64_t sh_link) {
+  int n = 0;
+  n += printf_nice(d_tag, isELF32(p) ? USE_FHEX32 : USE_FHEX64);
   n += printf_pick(zDYNTAG, d_tag, USE_SPACE | USE_RB | SET_PAD(20));
 
   if (d_tag == DT_FLAGS_1) {
@@ -544,13 +558,7 @@ static int dump_dynamic(const pbuffer_t p, const poptions_t o, const uint64_t d_
     n += printf_masknone(zDT_FLAGS,d_un_d_val, USE_LT);
   } else if (d_tag == DT_PLTREL) {
     n += printf_pick(zDYNTAG, d_un_d_val, USE_SPACE);
-  } else if (d_tag == DT_NULL || d_tag == DT_NEEDED || d_tag == DT_PLTGOT ||
-             d_tag == DT_HASH || d_tag == DT_STRTAB || d_tag == DT_SYMTAB ||
-             d_tag == DT_RELA || d_tag == DT_INIT || d_tag == DT_FINI ||
-             d_tag == DT_SONAME || d_tag == DT_RPATH || d_tag ==  DT_SYMBOLIC ||
-             d_tag == DT_REL || d_tag == DT_DEBUG || d_tag == DT_TEXTREL ||
-             d_tag == DT_JMPREL || d_tag == DT_RUNPATH) {
-
+  } else if (d_tag == DT_NULL || isused(zDYNTAGNAME, d_tag)) {
     const char *name = get_namebyoffset(p, sh_link, d_un_d_val);
     if (name && name[0]) {
       if (d_tag == DT_NEEDED) {
@@ -563,22 +571,14 @@ static int dump_dynamic(const pbuffer_t p, const poptions_t o, const uint64_t d_
     } else {
       n += printf_nice(d_un_d_val, USE_FHEX);
     }
-  } else if (d_tag == DT_PLTRELSZ || d_tag == DT_RELASZ || d_tag == DT_STRSZ ||
-             d_tag == DT_RELSZ || d_tag == DT_RELAENT || d_tag == DT_SYMENT ||
-             d_tag == DT_RELENT || d_tag == DT_PLTPADSZ || d_tag == DT_MOVEENT ||
-             d_tag == DT_MOVESZ || d_tag == DT_PREINIT_ARRAYSZ || d_tag == DT_INIT_ARRAYSZ ||
-             d_tag == DT_FINI_ARRAYSZ || d_tag == DT_GNU_CONFLICTSZ || d_tag == DT_GNU_LIBLISTSZ) {
+  } else if (isused(zDYNTAGBYTES, d_tag)) {
     n += printf_nice(d_un_d_val, USE_DEC | USE_BYTES);
-  } else if (d_tag == DT_VERDEFNUM || d_tag == DT_VERNEEDNUM ||
-             d_tag == DT_RELACOUNT || d_tag == DT_RELCOUNT) {
+  } else if (isused(zDYNTAGDEC, d_tag)) {
     n += printf_nice(d_un_d_val, USE_DEC);
-  } else if (d_tag == DT_SYMINSZ || d_tag == DT_SYMINENT || d_tag == DT_SYMINFO ||
-             d_tag == DT_INIT_ARRAY || d_tag == DT_FINI_ARRAY) {
+  } else if (isused(zDYNTAGFHEX, d_tag)) {
     n += printf_nice(d_un_d_val, USE_FHEX);
   } else if (d_tag == DT_GNU_PRELINKED) {
     n += printf_nice(d_un_d_val, USE_TIMEDATE);
-  } else if (d_tag == DT_GNU_HASH) {
-    n += printf_nice(d_un_d_val, USE_FHEX);
   } else if (d_tag >= DT_VERSYM && d_tag <= DT_VERNEEDNUM) {
     n += printf_nice(d_un_d_val, USE_FHEX);
   }
@@ -593,17 +593,11 @@ static int dump_dynamic32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehd
     Elf32_Shdr *shdr = get_shdr32byindex(p, i);
     if (shdr && SHT_DYNAMIC == shdr->sh_type) {
       size_t cnt = shdr->sh_size / shdr->sh_entsize;
-
-      printf_text("Dynamic section at offset", USE_LT);
-      printf_nice(shdr->sh_offset, USE_FHEX16);
-      printf_text("contains", USE_LT | USE_SPACE);
-      printf_nice(cnt, USE_DEC);
-      printf_text(1 == cnt ? "entry" : "entries", USE_LT | USE_SPACE | USE_COLON | USE_EOL);
-      printf_text("Tag                Type                Name/Value", USE_LT | USE_SPACE | USE_EOL);
+      dump_dynamic0(p, shdr->sh_offset, cnt);
 
       Elf32_Dyn *dyn = _get32byshdr(p, shdr);
       for (size_t j = 0; j < cnt; ++j, ++dyn) {
-        dump_dynamic(p, o, dyn->d_tag, dyn->d_un.d_val, shdr->sh_link);
+        dump_dynamic1(p, o, dyn->d_tag, dyn->d_un.d_val, shdr->sh_link);
       }
 
       printf_eol();
@@ -618,17 +612,11 @@ static int dump_dynamic64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
     Elf64_Shdr *shdr = get_shdr64byindex(p, i);
     if (shdr && SHT_DYNAMIC == shdr->sh_type) {
       size_t cnt = shdr->sh_size / shdr->sh_entsize;
-
-      printf_text("Dynamic section at offset", USE_LT);
-      printf_nice(shdr->sh_offset, USE_FHEX16);
-      printf_text("contains", USE_LT | USE_SPACE);
-      printf_nice(cnt, USE_DEC);
-      printf_text(1 == cnt ? "entry" : "entries", USE_LT | USE_SPACE | USE_COLON | USE_EOL);
-      printf_text("Tag                Type                Name/Value", USE_LT | USE_SPACE | USE_EOL);
+      dump_dynamic0(p, shdr->sh_offset, cnt);
 
       Elf64_Dyn *dyn = _get64byshdr(p, shdr);
       for (size_t j = 0; j < cnt; ++j, ++dyn) {
-        dump_dynamic(p, o, dyn->d_tag, dyn->d_un.d_val, shdr->sh_link);
+        dump_dynamic1(p, o, dyn->d_tag, dyn->d_un.d_val, shdr->sh_link);
       }
 
       printf_eol();
@@ -649,38 +637,17 @@ static int dump_relocsrel32(const pbuffer_t p, const poptions_t o, Elf32_Shdr *s
   Elf32_Rel *r = _get32byshdr(p, shdr);
   if (r) {
     for (size_t j = 0; j < cnt; ++j, ++r) {
-      printf_nice(r->r_offset, USE_LHEX48);
-      printf_nice(r->r_info, USE_LHEX48);
-      printf_pick(zRELTYPE32, r->r_info & 0x00ff, USE_LT | USE_SPACE | SET_PAD(20));
-      // TBD
-      switch (r->r_info & 0x00ff) {
-      case R_386_NONE:
-        break;
-      case R_386_GLOB_DAT:
-      case R_386_JMP_SLOT:
-        dump_relocsver32(p, o, shdr, r->r_info, vnames, NELEMENTS(vnames));
-        break;
-      case R_386_RELATIVE:
-        break;
-      case R_386_32:
-      case R_386_PC32:
-      case R_386_GOT32X:
-      case R_386_GOTPC:
-      case R_386_PLT32:
-      case R_386_GOTOFF:
+      printf_nice(r->r_offset, USE_LHEX32);
+      printf_nice(r->r_info, USE_LHEX32);
+      printf_pick(zRELTYPE32, ELF32_R_TYPE(r->r_info), USE_LT | USE_SPACE | SET_PAD(20));
+
+      if (isused(zRELTYPE32DEF, ELF32_R_TYPE(r->r_info))) {
         dump_relocsdef32(p, o, shdr, r->r_info);
-        break;
-      case R_386_GOT32:
-      case R_386_COPY:
-      case R_386_32PLT:
-      case R_386_16:
-      case R_386_PC16:
-      case R_386_8:
-      case R_386_PC8:
-      case R_386_SIZE32:
-      default:
-        printf_nice(r->r_info & 0x00ff, USE_UNKNOWN);
-        break;
+      } else if (isused(zRELTYPE32VER, ELF32_R_TYPE(r->r_info))) {
+        dump_relocsver32(p, o, shdr, r->r_info, vnames, NELEMENTS(vnames));
+      } else if (R_386_NONE != ELF32_R_TYPE(r->r_info) && R_386_RELATIVE != ELF32_R_TYPE(r->r_info)) {
+        // TBD
+        printf_nice(ELF32_R_TYPE(r->r_info), USE_UNKNOWN);
       }
 
       printf_eol();
@@ -701,7 +668,7 @@ static int dump_relocsrel64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *s
       printf_nice(r->r_offset, USE_LHEX48);
       printf_nice(r->r_info, USE_LHEX48);
       printf_pick(zRELTYPE64, r->r_info & 0xffff, USE_LT | USE_SPACE | SET_PAD(20));
-      // TBD
+// TBD
       printf_eol();
     }
   }
@@ -741,61 +708,28 @@ static int dump_relocsrela64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *
     for (size_t j = 0; j < cnt; ++j, ++r) {
       printf_nice(r->r_offset, USE_LHEX48);
       printf_nice(r->r_info, USE_LHEX48);
-      printf_pick(zRELTYPE64, r->r_info & 0xffff, USE_LT | USE_SPACE | SET_PAD(20));
+      printf_pick(zRELTYPE64, ELF64_R_TYPE(r->r_info), USE_LT | USE_SPACE | SET_PAD(20));
 
-// TBD
-      switch (r->r_info & 0xffff) {
-      case R_X86_64_NONE:
-        break;
-      case R_X86_64_8:         // S + A
-      case R_X86_64_16:
-      case R_X86_64_32:
-      case R_X86_64_32S:
-        printf_nice(r->r_info & 0xffff, USE_WARNING);
-        break;
-      case R_X86_64_RELATIVE:  // B + A
-        printf("                 ");
-        printf_nice(r->r_addend, USE_LHEX);
-        break;
-      case R_X86_64_GLOB_DAT:
-      case R_X86_64_JUMP_SLOT: // S
-        dump_relocsver64(p, o, shdr, r->r_info, vnames, NELEMENTS(vnames));
-        printf_nice(r->r_addend, USE_SHEX32);
-        break;
-      case R_X86_64_64:        // S + A
+      if (isused(zRELTYPE64DEF, ELF64_R_TYPE(r->r_info))) {
         dump_relocsdef64(p, o, shdr, r->r_info);
-        printf_nice(r->r_addend, USE_SHEX64);
-        break;
-      case R_X86_64_PC8:       // S + A - P
+      } else if (isused(zRELTYPE64VER, ELF64_R_TYPE(r->r_info))) {
+        dump_relocsver64(p, o, shdr, r->r_info, vnames, NELEMENTS(vnames));
+      }
+
+      if (isused(zRELTYPE64SHEX8, ELF64_R_TYPE(r->r_info))) {
         printf_nice(r->r_addend, USE_SHEX8);
-        break;
-      case R_X86_64_PC16:      // S + A - P
+      } else if (isused(zRELTYPE64SHEX16, ELF64_R_TYPE(r->r_info))) {
         printf_nice(r->r_addend, USE_SHEX16);
-        break;
-      case R_X86_64_PC32:      // S + A - P
-        dump_relocsdef64(p, o, shdr, r->r_info);
+      } else if (isused(zRELTYPE64SHEX32, ELF64_R_TYPE(r->r_info))) {
         printf_nice(r->r_addend, USE_SHEX32);
-        break;
-      case R_X86_64_PC64:      // S + A - P
+      } else if (isused(zRELTYPE64SHEX64, ELF64_R_TYPE(r->r_info))) {
         printf_nice(r->r_addend, USE_SHEX64);
-        break;
-      case R_X86_64_PLT32:     // L + A - P
-        dump_relocsdef64(p, o, shdr, r->r_info);
-        printf_nice(r->r_addend, USE_SHEX32);
-        break;
-      case R_X86_64_COPY:
-        dump_relocsver64(p, o, shdr, r->r_info, vnames, NELEMENTS(vnames));
-        printf_nice(r->r_addend, USE_SHEX32);
-        break;
-      case R_X86_64_GOT32:     // G + A
-      case R_X86_64_SIZE32:
-      case R_X86_64_SIZE64:    // Z + A
-      case R_X86_64_GOTPC32:   // GOT + A - P
-      case R_X86_64_GOTOFF64:  // S + A - GOT
-      case R_X86_64_GOTPCREL:  // G + GOT + A - P
-      default:
+      } else if (R_X86_64_RELATIVE == ELF64_R_TYPE(r->r_info)) {
+        printf_pack(17);
+        printf_nice(r->r_addend, USE_LHEX);
+      } else if (R_X86_64_NONE != ELF64_R_TYPE(r->r_info)) {
+// TBD
         printf_nice(r->r_info & 0xffff, USE_UNKNOWN);
-        break;
       }
 
       printf_eol();
