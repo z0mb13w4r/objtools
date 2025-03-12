@@ -29,6 +29,7 @@ SRCS_C = \
 	options.c \
 	readelf.c \
 	objutils.c \
+	opcode-bfd.c \
 	opcode-lib.c \
 	opcode-capstone.c
 

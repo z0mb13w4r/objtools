@@ -46,7 +46,7 @@ int capstone_run(handle_t p, handle_t s) {
     void*  data = mallocx(data_size);
 
     if (data) {
-      if (bfd_get_section_contents(oc->items[OPCODE_BFD], ocget(s, MODE_OPSECTION), data, 0, data_size)) {
+      if (bfd_get_section_contents(oc->items[OPCODE_BFD], ocget(s, MODE_OCSECTION), data, 0, data_size)) {
 
         cs_insn *insn = NULL;
         size_t count = cs_disasm(oc->cs, data, data_size, ocget_vmaddress(s), 0, &insn);

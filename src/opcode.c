@@ -3,8 +3,23 @@
 #include "opcode.h"
 #include "printf.h"
 #include "options.h"
+#include "opcode-bfd.h"
 #include "opcode-lib.h"
 #include "opcode-capstone.h"
+
+uint64_t oclog2(uint64_t  x)
+{
+  uint64_t y = 0;
+
+  if (x <= 1) return 0;
+
+  --x;
+  do {
+    ++y;
+  } while ((x >>= 1) != 0);
+
+  return y;
+}
 
 static void callback_find_max_sectionhdr_name(bfd *f ATTRIBUTE_UNUSED, asection *s, void *p) {
   /* Ignore linker created section. */
@@ -62,39 +77,49 @@ static handle_t create_symbols_dynamic(bfd *f) {
   return NULL;
 }
 
-int isopcode(handle_t p) {
+static bool_t ismodeopwrap(const imode_t mode) {
+  return MODE_OCSECTION == mode ||
+         MODE_OCPHDR == mode ||
+         MODE_OPWRAP == mode;
+}
+
+bool_t isopcode(handle_t p) {
   return ismode(p, MODE_OPCODE);
 }
 
-int isopsection(handle_t p) {
-  return ismode(p, MODE_OPSECTION);
+bool_t isopsection(handle_t p) {
+  return ismode(p, MODE_OCSECTION);
 }
 
-int isobject(handle_t p) {
+bool_t isopphdr(handle_t p) {
+  return ismode(p, MODE_OCPHDR);
+}
+
+bool_t isobject(handle_t p) {
   if (isopcode(p)) {
     popcode_t p0 = CAST(popcode_t, p);
     return p0->items[OPCODE_BFD] && bfd_check_format(p0->items[OPCODE_BFD], bfd_object);
   }
 
-  return 0;
+  return FALSE;
 }
 
-int isarchive(handle_t p) {
+bool_t isarchive(handle_t p) {
   if (isopcode(p)) {
     popcode_t p0 = CAST(popcode_t, p);
     return p0->items[OPCODE_BFD] && bfd_check_format(p0->items[OPCODE_BFD], bfd_archive);
   }
 
-  return 0;
+  return FALSE;
 }
 
-int iscoredump(handle_t p) {
+bool_t iscoredump(handle_t p) {
   if (isopcode(p)) {
     popcode_t p0 = CAST(popcode_t, p);
     return p0->items[OPCODE_BFD] && bfd_check_format(p0->items[OPCODE_BFD], bfd_core);
   }
 
-  return 0;
+  return FALSE;
 }
 
 unknown_t ocget(handle_t p, const imode_t mode) {
@@ -107,7 +132,7 @@ unknown_t ocget(handle_t p, const imode_t mode) {
     }
     return p0->items[mode];
   } else if (ismode(p, mode)) {
-    if (MODE_OPSECTION == mode || MODE_OPWRAP == mode) {
+    if (ismodeopwrap(mode)) {
       popwrap_t p0 = CAST(popwrap_t, p);
       return p0->item;
     }
@@ -127,12 +152,15 @@ size_t ocget_maxsectionnamesize(handle_t p) {
 }
 
 uint64_t ocget_flags(handle_t p) {
-  bfd* p0 = ocget(p, OPCODE_BFD);
-  if (p0) {
-    return bfd_get_file_flags(p0);
+  if (isopcode(p)) {
+    bfd* p0 = ocget(p, OPCODE_BFD);
+    return p0 ? bfd_get_file_flags(p0) : 0;
   } else if (isopsection(p)) {
-    asection* s = ocget(p, MODE_OPSECTION);
+    asection* s = ocget(p, MODE_OCSECTION);
     return s ? s->flags : 0;
+  } else if (isopphdr(p)) {
+    pbfd_phdr_t p0 = ocget(p, MODE_OCPHDR);
+    return p0 ? p0->p_flags : 0;
   }
 
   return 0;
@@ -140,7 +168,7 @@ uint64_t ocget_flags(handle_t p) {
 
 uint64_t ocget_size(handle_t p) {
   if (isopsection(p)) {
-    return bfd_section_size(ocget(p, MODE_OPSECTION));
+    return bfd_section_size(ocget(p, MODE_OCSECTION));
   }
 
   return 0;
@@ -157,8 +185,8 @@ uint64_t ocget_archsize(handle_t p) {
 
 uint64_t ocget_position(handle_t p) {
   if (isopsection(p)) {
-    asection* s = ocget(p, MODE_OPSECTION);
-    return s ? s->filepos : 0;
+    asection* p0 = ocget(p, MODE_OCSECTION);
+    return p0 ? p0->filepos : 0;
   }
 
   return 0;
@@ -166,15 +194,29 @@ uint64_t ocget_position(handle_t p) {
 
 uint64_t ocget_alignment(handle_t p) {
   if (isopsection(p)) {
-    return bfd_section_alignment(ocget(p, MODE_OPSECTION));
+    asection* p0 = ocget(p, MODE_OCSECTION);
+    return p0 ? bfd_section_alignment(p0) : 0;
+  } else if (isopphdr(p)) {
+    pbfd_phdr_t p0 = ocget(p, MODE_OCPHDR);
+    return p0 ? oclog2(p0->p_align) : 0;
   }
 
   return 0;
 }
 
-uint64_t ocget_lmaddress(handle_t p) {
-  if (isopsection(p)) {
-    return bfd_section_lma(ocget(p, MODE_OPSECTION));
+uint64_t ocget_offset(handle_t p) {
+ if (isopphdr(p)) {
+    pbfd_phdr_t p0 = ocget(p, MODE_OCPHDR);
+    return p0 ? p0->p_offset : 0;
+  }
+
+  return 0;
+}
+
+uint64_t ocget_paddress(handle_t p) {
+ if (isopphdr(p)) {
+    pbfd_phdr_t p0 = ocget(p, MODE_OCPHDR);
+    return p0 ? p0->p_paddr : 0;
   }
 
   return 0;
@@ -189,9 +231,20 @@ uint64_t ocget_saddress(handle_t p) {
   return 0;
 }
 
+uint64_t ocget_lmaddress(handle_t p) {
+  if (isopsection(p)) {
+    return bfd_section_lma(ocget(p, MODE_OCSECTION));
+  }
+
+  return 0;
+}
+
 uint64_t ocget_vmaddress(handle_t p) {
   if (isopsection(p)) {
-    return bfd_section_vma(ocget(p, MODE_OPSECTION));
+    return bfd_section_vma(ocget(p, MODE_OCSECTION));
+  } else if (isopphdr(p)) {
+    pbfd_phdr_t p0 = ocget(p, MODE_OCPHDR);
+    return p0 ? p0->p_vaddr : 0;
   }
 
   return 0;
@@ -201,7 +254,7 @@ uint64_t ocget_opb(handle_t p, handle_t s) {
   uint64_t opb = 1;
 
   if (isopcode(p) && isopsection(s)) {
-    opb = bfd_octets_per_byte(ocget(p, OPCODE_BFD), ocget(p, MODE_OPSECTION));
+    opb = bfd_octets_per_byte(ocget(p, OPCODE_BFD), ocget(p, MODE_OCSECTION));
   }
 
   return opb;
@@ -249,7 +302,7 @@ const char* ocget_name(handle_t p) {
   if (p0) {
     return bfd_get_filename(p0);
   } else if (isopsection(p)) {
-    return bfd_section_name(ocget(p, MODE_OPSECTION));
+    return bfd_section_name(ocget(p, MODE_OCSECTION));
   }
 
   return NULL;
@@ -334,20 +387,24 @@ void occonfig(const char* name, const char* target) {
 }
 
 int ocdo_programs(handle_t p, opcbfunc_t cbfunc, unknown_t param) {
+  if (isopcode(p) && cbfunc) {
+    return opcodebfd_programs(p, cbfunc, param);
+  }
+
   return -1;
 }
 
 static void callback_section(bfd *f, asection *s, void *p) {
   popfunc_t pcb = CAST(popfunc_t, p);
   if (pcb && pcb->cbfunc) {
-    MALLOCSMODE(opwrap_t, sec, MODE_OPSECTION);
+    MALLOCSMODE(opwrap_t, sec, MODE_OCSECTION);
     psec->item = s;
     pcb->cbfunc(pcb->handle, psec, pcb->param);
   }
 }
 
 int ocdo_sections(handle_t p, opcbfunc_t cbfunc, unknown_t param) {
-  if (isopcode(p)) {
+  if (isopcode(p) && cbfunc) {
     bfd* p0 = ocget(p, OPCODE_BFD);
     if (p0) {
       MALLOCSMODE(opfunc_t, cb, MODE_OPCBFUNC);

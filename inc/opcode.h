@@ -10,7 +10,8 @@
 #define MODE_OPCODE                (MODE_PUT0('O') | MODE_PUT1('P') | MODE_PUT2('C'))
 #define MODE_OPWRAP                (MODE_PUT0('W') | MODE_PUT1('R') | MODE_PUT2('P'))
 #define MODE_OPCBFUNC              (MODE_PUT0('C') | MODE_PUT1('B') | MODE_PUT2('F'))
-#define MODE_OPSECTION             (MODE_PUT0('S') | MODE_PUT1('E') | MODE_PUT2('C'))
+#define MODE_OCSECTION             (MODE_PUT0('S') | MODE_PUT1('E') | MODE_PUT2('C'))
+#define MODE_OCPHDR                (MODE_PUT0('P') | MODE_PUT1('H') | MODE_PUT2('R'))
 
 #define OPCODE_BFD                 (0)
 #define OPCODE_SYMBOLS             (1)
@@ -19,7 +20,7 @@
 #define OPCODE_MAXITEMS            (4)
 
 #define ocgetbfd(x)                CAST(bfd*, ocget(x, OPCODE_BFD))
-#define ocgetsec(x)                CAST(asection*, ocget(x, MODE_OPSECTION))
+#define ocgetsec(x)                CAST(asection*, ocget(x, MODE_OCSECTION))
 
 typedef void (*opcbfunc_t)(handle_t p, handle_t item, unknown_t param);
 
@@ -51,12 +52,13 @@ typedef struct opfunc_s {
   opcbfunc_t cbfunc;
 } opfunc_t, *popfunc_t;
 
-int isopcode(handle_t p);
-int isopsection(handle_t p);
+bool_t isopcode(handle_t p);
+bool_t isopsection(handle_t p);
+bool_t isopphdr(handle_t p);
 
-int isobject(handle_t p);
-int isarchive(handle_t p);
-int iscoredump(handle_t p);
+bool_t isobject(handle_t p);
+bool_t isarchive(handle_t p);
+bool_t iscoredump(handle_t p);
 
 handle_t ocmalloc();
 handle_t ocfree(handle_t p);
@@ -75,6 +77,8 @@ uint64_t ocget_position(handle_t p);
 uint64_t ocget_alignment(handle_t p);
 uint64_t ocget_archsize(handle_t p);
 
+uint64_t ocget_offset(handle_t p);
+uint64_t ocget_paddress(handle_t p);
 uint64_t ocget_saddress(handle_t p);
 uint64_t ocget_lmaddress(handle_t p);
 uint64_t ocget_vmaddress(handle_t p);

@@ -95,5 +95,10 @@ typedef uint32_t pick_t;
 
 typedef int      bool_t;
 
+typedef unsigned int   uint_t;
+typedef unsigned char  uchar_t;
+typedef unsigned long  ulong_t;
+typedef unsigned short ushort_t;
+
 #endif
 

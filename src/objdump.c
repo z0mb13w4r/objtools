@@ -91,12 +91,22 @@ static void callback_sections(handle_t p, handle_t section, unknown_t param) {
 
 static void callback_programhdr(handle_t p, handle_t phdr, unknown_t param) {
   size_t name_size = *CAST(size_t*, param);
+  printf_nice(ocget_offset(phdr), USE_LHEX64);
+  printf_nice(ocget_vmaddress(phdr), USE_LHEX64);
+  printf_nice(ocget_paddress(phdr), USE_LHEX64);
 
+  printf(" 2**%lu", ocget_alignment(phdr));
+
+  printf_nice(ocget_flags(phdr) & PF_R ? 'r' : '-', USE_SPACE | USE_CHAR);
+  printf_nice(ocget_flags(phdr) & PF_W ? 'w' : '-', USE_CHAR);
+  printf_nice(ocget_flags(phdr) & PF_X ? 'x' : '-', USE_CHAR);
+
+  printf_eol();
 }
 
 static void callback_sectionhdr(handle_t p, handle_t shdr, unknown_t param) {
   size_t name_size = *CAST(size_t*, param);
-  asection* s = ocget(shdr, MODE_OPSECTION);
+  asection* s = ocget(shdr, MODE_OCSECTION);
 
   uint64_t flags = ocget_flags(shdr);
 
@@ -161,11 +171,8 @@ static int dump_header(const handle_t p, const poptions_t o) {
 static int dump_privatehdr(const handle_t p, const poptions_t o) {
   size_t max_name_size = 20;
 // bfd/elf.c:1648:_bfd_elf_print_private_bfd_data (bfd *abfd, void *farg)
-
-  //printf_text("PROGRAM HEADER", USE_LT | USE_COLON | USE_EOL);
-
-  //ocdo_programs(p, callback_programhdr, &max_name_size);
-
+//  printf_text("PROGRAM HEADER", USE_LT | USE_COLON | USE_EOL);
+//  ocdo_programs(p, callback_programhdr, &max_name_size);
 
   if (!bfd_print_private_bfd_data(ocgetbfd(p), stdout)) {
     printf_w("private Headers incomplete: %s.", bfd_errmsg(bfd_get_error()));
