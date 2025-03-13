@@ -1,4 +1,4 @@
-static convert_t zPHDRTYPE[] = {
+convert_t zPHDRTYPE[] = {
   {"NULL",                         PT_NULL},
   {"LOAD",                         PT_LOAD},
   {"DYNAMIC",                      PT_DYNAMIC},

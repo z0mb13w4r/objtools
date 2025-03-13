@@ -10,6 +10,8 @@
 #include "static/has_flags.ci"
 #include "static/sectionhdr_flags.ci"
 
+extern convert_t zPHDRTYPE[];
+
 static bfd_vma get_signadjustment(bfd *f) {
   /* If the target used signed addresses then we must make
      sure that we sign extend the value that we calculate. */
@@ -91,17 +93,21 @@ static void callback_sections(handle_t p, handle_t section, unknown_t param) {
 
 static void callback_programhdr(handle_t p, handle_t phdr, unknown_t param) {
   size_t name_size = *CAST(size_t*, param);
-  printf_nice(ocget_offset(phdr), USE_LHEX64);
-  printf_nice(ocget_vmaddress(phdr), USE_LHEX64);
-  printf_nice(ocget_paddress(phdr), USE_LHEX64);
+  int n = 0;
+  n += printf_pick(zPHDRTYPE, ocget_type(phdr), USE_LT | USE_TAB | SET_PAD(17));
 
-  printf(" 2**%lu", ocget_alignment(phdr));
+  n += printf_nice(ocget_offset(phdr), USE_LHEX64);
+  n += printf_nice(ocget_vmaddress(phdr), USE_LHEX64);
+  n += printf_nice(ocget_paddress(phdr), USE_LHEX64);
+  n += printf_nice(ocget_alignment(phdr), USE_POWER2);
+  n += printf_nice(ocget_size(phdr), USE_LHEX64);
+  n += printf_nice(ocget_memsize(phdr), USE_LHEX64);
 
-  printf_nice(ocget_flags(phdr) & PF_R ? 'r' : '-', USE_SPACE | USE_CHAR);
-  printf_nice(ocget_flags(phdr) & PF_W ? 'w' : '-', USE_CHAR);
-  printf_nice(ocget_flags(phdr) & PF_X ? 'x' : '-', USE_CHAR);
+  n += printf_nice(ocget_flags(phdr) & PF_R ? 'r' : '-', USE_SPACE | USE_CHAR);
+  n += printf_nice(ocget_flags(phdr) & PF_W ? 'w' : '-', USE_CHAR);
+  n += printf_nice(ocget_flags(phdr) & PF_X ? 'x' : '-', USE_CHAR);
 
-  printf_eol();
+  n += printf_eol();
 }
 
 static void callback_sectionhdr(handle_t p, handle_t shdr, unknown_t param) {
@@ -119,7 +125,7 @@ static void callback_sectionhdr(handle_t p, handle_t shdr, unknown_t param) {
   printf_nice(ocget_vmaddress(shdr), USE_LHEX64);
   printf_nice(ocget_lmaddress(shdr), USE_LHEX64);
   printf_nice(ocget_position(shdr), USE_LHEX32);
-  printf(" 2**%lu", ocget_alignment(shdr));
+  printf_nice(ocget_alignment(shdr), USE_POWER2);
 
   printf_maskmute(zSECTIONHDR1_FLAGS, flags, USE_LT);
 
@@ -172,7 +178,14 @@ static int dump_privatehdr(const handle_t p, const poptions_t o) {
   size_t max_name_size = 20;
 // bfd/elf.c:1648:_bfd_elf_print_private_bfd_data (bfd *abfd, void *farg)
 //  printf_text("PROGRAM HEADER", USE_LT | USE_COLON | USE_EOL);
+//  printf_text("Type            Offset           VirtAddr         PhysAddr         Align FileSiz          MemSiz           Flg", USE_LT | USE_TAB | USE_EOL);
 //  ocdo_programs(p, callback_programhdr, &max_name_size);
+//  printf_eol();
+
+//  printf_text("DYNAMIC SECTION", USE_LT | USE_COLON | USE_EOL);
+//  printf_eol();
+
+//  printf_text("VERSION REFERENCES", USE_LT | USE_COLON | USE_EOL);
 
   if (!bfd_print_private_bfd_data(ocgetbfd(p), stdout)) {
     printf_w("private Headers incomplete: %s.", bfd_errmsg(bfd_get_error()));
@@ -193,7 +206,7 @@ static int dump_sectionhdr(const handle_t p, const poptions_t o) {
   printf_text("VMA", USE_LT | USE_SPACE | SET_PAD(17));
   printf_text("LMA", USE_LT | USE_SPACE | SET_PAD(17));
   printf_text("File Off", USE_LT | USE_SPACE);
-  printf_text("Algn", USE_LT | USE_SPACE);
+  printf_text("Algn", USE_LT | USE_SPACE | SET_PAD(6));
   printf_text("Flags", USE_LT | USE_SPACE | USE_EOL);
 
   ocdo_sections(p, callback_sectionhdr, &max_name_size);

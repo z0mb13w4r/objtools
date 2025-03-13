@@ -70,12 +70,17 @@ unknown_t ocget(handle_t p, const imode_t mode);
 
 size_t ocget_maxsectionnamesize(handle_t p);
 
+bool_t   ochas_phdr(handle_t p);
+bool_t   ochas_shdr(handle_t p);
+
+uint64_t ocget_type(handle_t p);
 uint64_t ocget_flags(handle_t p);
 
 uint64_t ocget_size(handle_t p);
+uint64_t ocget_memsize(handle_t p);
+uint64_t ocget_archsize(handle_t p);
 uint64_t ocget_position(handle_t p);
 uint64_t ocget_alignment(handle_t p);
-uint64_t ocget_archsize(handle_t p);
 
 uint64_t ocget_offset(handle_t p);
 uint64_t ocget_paddress(handle_t p);

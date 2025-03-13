@@ -110,6 +110,7 @@ int printf_neat(char* o, const size_t size, const uint64_t v, const imode_t mode
     case USE_LHEX48:               n += PRINT2("%12.12" PRIx64, v);                break;
     case USE_FHEX64:               n += PRINT2("0x%16.16" PRIx64, v);              break;
     case USE_LHEX64:               n += PRINT2("%16.16" PRIx64, v);                break;
+    case USE_POWER2:               n += PRINT2("2**%-2" PRId64, v);                break;
     case USE_PERCENT:              n += PRINT2("%3.1f%%", CAST(double, v) / 10);   break;
     case USE_ERROR:                n += PRINT2("<error: %" PRIx64 ">", v);         break;
     case USE_CORRUPT:              n += PRINT2("<corrupt: %" PRIx64 ">", v);       break;
@@ -194,6 +195,7 @@ int printf_nice(const uint64_t v, const imode_t mode) {
   int n = printf_neat(data, sizeof(data), v, mode);
 
   printf("%s", data);
+
   if (mode & USE_EOL) {
     n += printf_eol();
   }
@@ -210,7 +212,7 @@ int printf_text(const char* p, const imode_t mode) {
     int rt = USE_RT == GET_FORMAT(mode);
 
     if (!rt)                      printf("%s", data);
-    if (ss && n < ss)        n += printf("%*s", MAX(0, ss - n), " ");
+    if (ss && n < ss)        n += printf_pack(MAX(0, ss - n));
     if (rt)                       printf("%s", data);
     if (e)                   n += printf_eol();
 
@@ -351,8 +353,8 @@ int printf_pick(const pconvert_t p, const pick_t x, const imode_t mode) {
   return printf_text(strpick(p, x), mode);
 }
 
-int printf_pack(const size_t size) {
-  return printf_text(" ", SET_PAD(size));
+int printf_pack(const int size) {
+  return size <= 0 ? 0 : printf("%*s", size, " ");
 }
 
 int printf_d(const char* format, ...) {

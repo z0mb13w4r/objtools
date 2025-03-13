@@ -33,14 +33,15 @@
 #define USE_FHEX64        (26)
 #define USE_LHEX64        (27)
 #define USE_SHEX64        (28)
-#define USE_PERCENT       (29)
-#define USE_CHAR          (30)
-#define USE_CHARCTRL      (31)
-#define USE_TIMEDATE      (32)
-#define USE_ERROR         (33)
-#define USE_CORRUPT       (34)
-#define USE_UNKNOWN       (35)
-#define USE_WARNING       (36)
+#define USE_POWER2        (29)
+#define USE_PERCENT       (30)
+#define USE_CHAR          (31)
+#define USE_CHARCTRL      (32)
+#define USE_TIMEDATE      (33)
+#define USE_ERROR         (34)
+#define USE_CORRUPT       (35)
+#define USE_UNKNOWN       (36)
+#define USE_WARNING       (37)
 
 #define USE_HEXDUMP       (0)
 #define USE_STRDUMP       (1)
@@ -115,7 +116,7 @@ int printf_maskmute(const pconvert_t p, const maskz_t mask, const imode_t mode);
 int printf_masknone(const pconvert_t p, const maskz_t mask, const imode_t mode);
 
 int printf_pick(const pconvert_t p, const pick_t x, const imode_t mode);
-int printf_pack(const size_t size);
+int printf_pack(const int size);
 
 void set_errname(const char* name);
 

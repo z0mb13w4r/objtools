@@ -3,23 +3,10 @@
 #include "opcode.h"
 #include "printf.h"
 #include "options.h"
+#include "objutils.h"
 #include "opcode-bfd.h"
 #include "opcode-lib.h"
 #include "opcode-capstone.h"
-
-uint64_t oclog2(uint64_t  x)
-{
-  uint64_t y = 0;
-
-  if (x <= 1) return 0;
-
-  --x;
-  do {
-    ++y;
-  } while ((x >>= 1) != 0);
-
-  return y;
-}
 
 static void callback_find_max_sectionhdr_name(bfd *f ATTRIBUTE_UNUSED, asection *s, void *p) {
   /* Ignore linker created section. */
@@ -151,13 +138,40 @@ size_t ocget_maxsectionnamesize(handle_t p) {
   return maxsize;
 }
 
+bool_t ochas_phdr(handle_t p) {
+  bfd* p0 = ocget(p, OPCODE_BFD);
+  if (p0) {
+      return bfdget_ehdr(p0)->e_phnum ? TRUE : FALSE;
+  }
+
+  return FALSE;
+}
+
+bool_t ochas_shdr(handle_t p) {
+  bfd* p0 = ocget(p, OPCODE_BFD);
+  if (p0) {
+      return bfdget_ehdr(p0)->e_shnum ? TRUE : FALSE;
+  }
+
+  return FALSE;
+}
+
+uint64_t ocget_type(handle_t p) {
+  if (isopphdr(p)) {
+    pbfd_phdr_t p0 = ocget(p, MODE_OCPHDR);
+    return p0 ? p0->p_type : 0;
+  }
+
+  return 0;
+}
+
 uint64_t ocget_flags(handle_t p) {
   if (isopcode(p)) {
     bfd* p0 = ocget(p, OPCODE_BFD);
     return p0 ? bfd_get_file_flags(p0) : 0;
   } else if (isopsection(p)) {
-    asection* s = ocget(p, MODE_OCSECTION);
-    return s ? s->flags : 0;
+    asection* p0 = ocget(p, MODE_OCSECTION);
+    return p0 ? p0->flags : 0;
   } else if (isopphdr(p)) {
     pbfd_phdr_t p0 = ocget(p, MODE_OCPHDR);
     return p0 ? p0->p_flags : 0;
@@ -168,7 +182,20 @@ uint64_t ocget_flags(handle_t p) {
 
 uint64_t ocget_size(handle_t p) {
   if (isopsection(p)) {
-    return bfd_section_size(ocget(p, MODE_OCSECTION));
+    asection* p0 = ocget(p, MODE_OCSECTION);
+    return p0 ? bfd_section_size(p0) : 0;
+  } else if (isopphdr(p)) {
+    pbfd_phdr_t p0 = ocget(p, MODE_OCPHDR);
+    return p0 ? p0->p_filesz : 0;
+  }
+
+  return 0;
+}
+
+uint64_t ocget_memsize(handle_t p) {
+  if (isopphdr(p)) {
+    pbfd_phdr_t p0 = ocget(p, MODE_OCPHDR);
+    return p0 ? p0->p_memsz : 0;
   }
 
   return 0;
@@ -198,7 +225,7 @@ uint64_t ocget_alignment(handle_t p) {
     return p0 ? bfd_section_alignment(p0) : 0;
   } else if (isopphdr(p)) {
     pbfd_phdr_t p0 = ocget(p, MODE_OCPHDR);
-    return p0 ? oclog2(p0->p_align) : 0;
+    return p0 ? ulog2(p0->p_align) : 0;
   }
 
   return 0;

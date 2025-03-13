@@ -88,7 +88,7 @@ static int make_versionnames64(const pbuffer_t p, Elf64_Word *vnames, const size
   return 0;
 }
 
-static int dump_relocsdef(const pbuffer_t p, const uint64_t sh_link,
+static int dump_relocsdef0(const pbuffer_t p, const uint64_t sh_link,
                           const uint64_t st_value, const uint64_t st_name, const uint64_t st_shndx) {
   const char* symname = get_namebyoffset(p, sh_link, st_name);
   const char* secname = get_secnamebyindex(p, st_shndx);
@@ -108,7 +108,7 @@ static int dump_relocsdef32(const pbuffer_t p, const poptions_t o, Elf32_Shdr *s
       Elf32_Off k = ELF32_R_SYM(r_info);
       Elf32_Sym *sym = getp(p, dshdr->sh_offset + (k * dshdr->sh_entsize), dshdr->sh_entsize);
       if (sym) {
-        return dump_relocsdef(p, dshdr->sh_link, sym->st_value, sym->st_name, sym->st_shndx);
+        return dump_relocsdef0(p, dshdr->sh_link, sym->st_value, sym->st_name, sym->st_shndx);
       }
     }
   }
@@ -123,7 +123,7 @@ static int dump_relocsdef64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *s
       Elf64_Off k = ELF64_R_SYM(r_info);
       Elf64_Sym *sym = getp(p, dshdr->sh_offset + (k * dshdr->sh_entsize), dshdr->sh_entsize);
       if (sym) {
-        return dump_relocsdef(p, dshdr->sh_link, sym->st_value, sym->st_name, sym->st_shndx);
+        return dump_relocsdef0(p, dshdr->sh_link, sym->st_value, sym->st_name, sym->st_shndx);
       }
     }
   }
@@ -303,76 +303,79 @@ static int dump_fileheader64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *
   return 0;
 }
 
+static int dump_sectionheaders0(const pbuffer_t p, const int maxsize) {
+  int n = 0;
+  n += printf_text("SECTION HEADERS", USE_LT | USE_COLON | USE_EOL);
+  n += printf_text("[Nr]", USE_LT | USE_TAB);
+  n += printf_text("Name", USE_LT | USE_SPACE | SET_PAD(maxsize));
+  n += printf_text("Type            Address          Off      Size     ES Flg Lk Inf  Al", USE_LT | USE_SPACE | USE_EOL);
+
+  return n;
+}
+
+static int dump_sectionheaders1(const pbuffer_t p, const int index, const int maxsize, const uint64_t sh_type,
+                                const uint64_t sh_addr, const uint64_t sh_offset, const uint64_t sh_size, const uint64_t sh_entsize,
+                                const uint64_t sh_flags, const uint64_t sh_link, const uint64_t sh_info, const uint64_t sh_addralign) {
+  int n = 0;
+  n += printf_nice(index, USE_DEC2 | USE_TAB | USE_SB);
+  n += printf_text(get_secnamebyindex(p, index), USE_LT | USE_SPACE | SET_PAD(maxsize));
+  n += printf_pick(zSHDRTYPE, sh_type, USE_LT | USE_SPACE | SET_PAD(16));
+  n += printf_nice(sh_addr, USE_LHEX64);
+  n += printf_nice(sh_offset, USE_LHEX32);
+  n += printf_nice(sh_size, USE_LHEX32);
+  n += printf_nice(sh_entsize, USE_LHEX8);
+  n += printf_mask(EHDRFLAGS, sh_flags, USE_RT | USE_NOSPACE | SET_PAD(4));
+  n += printf_nice(sh_link, USE_DEC2);
+  n += printf_nice(sh_info, USE_DEC3);
+  n += printf_nice(sh_addralign, USE_DEC3);
+  n += printf_eol();
+
+  return n;
+}
+
+static int dump_sectionheaders2(const pbuffer_t p) {
+  int n = 0;
+  n += printf_text("Key to Flags", USE_LT | USE_COLON | USE_EOL);
+  n += printf_text("W (write), A (alloc), X (execute), M (merge), S (strings), I (info),", USE_LT | USE_TAB | USE_EOL);
+  n += printf_text("L (link order), O (extra OS processing required), G (group), T (TLS),", USE_LT | USE_TAB | USE_EOL);
+  n += printf_text("C (compressed), x (unknown), o (OS specific), E (exclude),", USE_LT | USE_TAB | USE_EOL);
+  n += printf_text("l (large), p (processor specific)", USE_LT | USE_TAB | USE_EOL);
+
+  return n;
+}
+
 static int dump_sectionheaders32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
   const int MAXSIZE = MAX(get_secnamemaxsize(p) + 2, 21);
-
-  printf_text("SECTION HEADERS", USE_LT | USE_COLON | USE_EOL);
-  printf_text("[Nr]", USE_LT | USE_TAB);
-  printf_text("Name", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
-  printf_text("Type            Address          Off      Size     ES Flg Lk Inf  Al", USE_LT | USE_SPACE | USE_EOL);
+  dump_sectionheaders0(p, MAXSIZE);
 
   for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
-    printf_nice(i, USE_DEC2 | USE_TAB | USE_SB);
-
     Elf32_Shdr *shdr = get_shdr32byindex(p, i);
     if (shdr) {
-      printf_text(get_secnamebyindex(p, i), USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
-      printf_pick(zSHDRTYPE, shdr->sh_type, USE_LT | USE_SPACE | SET_PAD(16));
-      printf_nice(shdr->sh_addr, USE_LHEX64);
-      printf_nice(shdr->sh_offset, USE_LHEX32);
-      printf_nice(shdr->sh_size, USE_LHEX32);
-      printf_nice(shdr->sh_entsize, USE_LHEX8);
-      printf_mask(EHDRFLAGS, shdr->sh_flags, USE_RT | USE_NOSPACE | SET_PAD(4));
-      printf_nice(shdr->sh_link, USE_DEC2);
-      printf_nice(shdr->sh_info, USE_DEC3);
-      printf_nice(shdr->sh_addralign, USE_DEC3);
+      dump_sectionheaders1(p, i, MAXSIZE, shdr->sh_type,
+           shdr->sh_addr, shdr->sh_offset, shdr->sh_size, shdr->sh_entsize,
+           shdr->sh_flags, shdr->sh_link, shdr->sh_info, shdr->sh_addralign);
     }
-    printf_eol();
   }
 
-  printf_text("Key to Flags", USE_LT | USE_COLON | USE_EOL);
-  printf_text("W (write), A (alloc), X (execute), M (merge), S (strings), I (info),", USE_LT | USE_TAB | USE_EOL);
-  printf_text("L (link order), O (extra OS processing required), G (group), T (TLS),", USE_LT | USE_TAB | USE_EOL);
-  printf_text("C (compressed), x (unknown), o (OS specific), E (exclude),", USE_LT | USE_TAB | USE_EOL);
-  printf_text("l (large), p (processor specific)", USE_LT | USE_TAB | USE_EOL);
-  printf_eol();
+  dump_sectionheaders2(p);
 
   return 0;
 }
 
 static int dump_sectionheaders64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
   const int MAXSIZE = MAX(get_secnamemaxsize(p) + 2, 21);
-
-  printf_text("SECTION HEADERS", USE_LT | USE_COLON | USE_EOL);
-  printf_text("[Nr]", USE_LT | USE_TAB);
-  printf_text("Name", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
-  printf_text("Type            Address          Off      Size     ES Flg Lk Inf  Al", USE_LT | USE_SPACE | USE_EOL);
+  dump_sectionheaders0(p, MAXSIZE);
 
   for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
-    printf_nice(i, USE_DEC2 | USE_TAB | USE_SB);
-
     Elf64_Shdr *shdr = get_shdr64byindex(p, i);
     if (shdr) {
-      printf_text(get_secnamebyindex(p, i), USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
-      printf_pick(zSHDRTYPE, shdr->sh_type, USE_LT | USE_SPACE | SET_PAD(16));
-      printf_nice(shdr->sh_addr, USE_LHEX64);
-      printf_nice(shdr->sh_offset, USE_LHEX32);
-      printf_nice(shdr->sh_size, USE_LHEX32);
-      printf_nice(shdr->sh_entsize, USE_LHEX8);
-      printf_mask(EHDRFLAGS, shdr->sh_flags, USE_RT | USE_NOSPACE | SET_PAD(4));
-      printf_nice(shdr->sh_link, USE_DEC2);
-      printf_nice(shdr->sh_info, USE_DEC3);
-      printf_nice(shdr->sh_addralign, USE_DEC3);
+      dump_sectionheaders1(p, i, MAXSIZE, shdr->sh_type,
+           shdr->sh_addr, shdr->sh_offset, shdr->sh_size, shdr->sh_entsize,
+           shdr->sh_flags, shdr->sh_link, shdr->sh_info, shdr->sh_addralign);
     }
-    printf_eol();
   }
 
-  printf_text("Key to Flags", USE_LT | USE_COLON | USE_EOL);
-  printf_text("W (write), A (alloc), X (execute), M (merge), S (strings), I (info),", USE_LT | USE_TAB | USE_EOL);
-  printf_text("L (link order), O (extra OS processing required), G (group), T (TLS),", USE_LT | USE_TAB | USE_EOL);
-  printf_text("C (compressed), x (unknown), o (OS specific), E (exclude),", USE_LT | USE_TAB | USE_EOL);
-  printf_text("l (large), p (processor specific)", USE_LT | USE_TAB | USE_EOL);
-  printf_eol();
+  dump_sectionheaders2(p);
 
   return 0;
 }
@@ -411,7 +414,39 @@ static int dump_sectiongroups64(const pbuffer_t p, const poptions_t o, Elf64_Ehd
   return 0;
 }
 
-static int dump_programheaders(const uint64_t p_type, const uint64_t p_offset,
+static int dump_programheaders0(const uint64_t e_phnum) {
+  int n = 0;
+  if (0 != e_phnum) {
+    n += printf_text("PROGRAM HEADERS", USE_LT | USE_COLON | USE_EOL);
+    n += printf_text("Type            Offset   VirtAddr           PhysAddr           FileSiz  MemSiz   Flg Align", USE_LT | USE_TAB | USE_EOL);
+  }
+
+  return n;
+}
+
+static int dump_programheaders1(const uint64_t e_phnum) {
+  int n = 0;
+  if (0 != e_phnum) {
+    n += printf_eol();
+    n += printf_text("Section to Segment mapping", USE_LT | USE_COLON | USE_EOL);
+    n += printf_text("Segment Sections...", USE_LT | USE_SPACE | USE_EOL);
+  }
+
+  return n;
+}
+
+static int dump_programheaders2(const uint64_t e_phnum) {
+  int n = 0;
+  if (0 == e_phnum) {
+    n += printf_w("There are no program headers in this file.");
+  } else {
+    n += printf_eol();
+  }
+
+  return n;
+}
+
+static int dump_programheaders3(const pbuffer_t p, const uint64_t p_type, const uint64_t p_offset,
                                const uint64_t p_vaddr, const uint64_t p_paddr, const uint64_t p_filesz, const uint64_t p_memsz,
                                const uint64_t p_flags, const uint64_t p_align) {
   int n = 0;
@@ -425,34 +460,27 @@ static int dump_programheaders(const uint64_t p_type, const uint64_t p_offset,
   n += printf_nice(p_flags & PF_W ? 'W' : ' ', USE_CHAR);
   n += printf_nice(p_flags & PF_X ? 'E' : ' ', USE_CHAR);
   n += printf_nice(p_align, USE_FHEX | USE_EOL);
+
+  if (PT_INTERP == p_type) {
+    n += printf("    [Requesting program interpreter:" );
+    n += printf_data(getp(p, p_offset, p_filesz), p_filesz, 0, USE_STR);
+    n += printf("]\n");
+  }
+
   return n;
 }
 
 static int dump_programheaders32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
-  if (0 != ehdr->e_phnum) {
-    printf_text("PROGRAM HEADERS", USE_LT | USE_COLON | USE_EOL);
-    printf_text("Type            Offset   VirtAddr           PhysAddr           FileSiz  MemSiz   Flg  Align", USE_LT | USE_TAB | USE_EOL);
-  }
+  dump_programheaders0(ehdr->e_phnum);
 
   for (Elf32_Half i = 0; i < ehdr->e_phnum; ++i) {
     Elf32_Phdr *phdr = get_phdr32byindex(p, i);
     if (phdr) {
-      dump_programheaders(phdr->p_type, phdr->p_offset, phdr->p_vaddr, phdr->p_paddr, phdr->p_filesz, phdr->p_memsz, phdr->p_flags, phdr->p_align);
-
-      if (PT_INTERP == phdr->p_type) {
-        printf("    [Requesting program interpreter:" );
-        printf_data(getp(p, phdr->p_offset, phdr->p_filesz), phdr->p_filesz, 0, USE_STR);
-        printf("]\n");
-      }
+      dump_programheaders3(p, phdr->p_type, phdr->p_offset, phdr->p_vaddr, phdr->p_paddr, phdr->p_filesz, phdr->p_memsz, phdr->p_flags, phdr->p_align);
     }
   }
 
-  if (0 != ehdr->e_phnum) {
-    printf_eol();
-
-    printf_text("Section to Segment mapping", USE_LT | USE_COLON | USE_EOL);
-    printf_text("Segment Sections...", USE_LT | USE_SPACE | USE_EOL);
-  }
+  dump_programheaders1(ehdr->e_phnum);
 
   for (Elf32_Half i = 0; i < ehdr->e_phnum; ++i) {
     printf_nice(i, USE_TAB | USE_DEC2Z);
@@ -471,39 +499,22 @@ static int dump_programheaders32(const pbuffer_t p, const poptions_t o, Elf32_Eh
     printf_eol();
   }
 
-  if (0 == ehdr->e_phnum) {
-    printf_w("There are no program headers in this file.");
-  } else {
-    printf_eol();
-  }
+  dump_programheaders2(ehdr->e_phnum);
 
   return 0;
 }
 
 static int dump_programheaders64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
-  if (0 != ehdr->e_phnum) {
-    printf_text("PROGRAM HEADERS", USE_LT | USE_COLON | USE_EOL);
-    printf_text("Type            Offset   VirtAddr           PhysAddr           FileSiz  MemSiz   Flg  Align", USE_LT | USE_TAB | USE_EOL);
-  }
+  dump_programheaders0(ehdr->e_phnum);
 
   for (Elf64_Half i = 0; i < ehdr->e_phnum; ++i) {
     Elf64_Phdr *phdr = get_phdr64byindex(p, i);
     if (phdr) {
-      dump_programheaders(phdr->p_type, phdr->p_offset, phdr->p_vaddr, phdr->p_paddr, phdr->p_filesz, phdr->p_memsz, phdr->p_flags, phdr->p_align);
-      if (PT_INTERP == phdr->p_type) {
-        printf("    [Requesting program interpreter:" );
-        printf_data(getp(p, phdr->p_offset, phdr->p_filesz), phdr->p_filesz, 0, USE_STR);
-        printf("]\n");
-      }
+      dump_programheaders3(p, phdr->p_type, phdr->p_offset, phdr->p_vaddr, phdr->p_paddr, phdr->p_filesz, phdr->p_memsz, phdr->p_flags, phdr->p_align);
     }
   }
 
-  if (0 != ehdr->e_phnum) {
-    printf_eol();
-
-    printf_text("Section to Segment mapping", USE_LT | USE_COLON | USE_EOL);
-    printf_text("Segment Sections...", USE_LT | USE_SPACE | USE_EOL);
-  }
+  dump_programheaders1(ehdr->e_phnum);
 
   for (Elf64_Half i = 0; i < ehdr->e_phnum; ++i) {
     printf_nice(i, USE_TAB | USE_DEC2Z);
@@ -522,11 +533,7 @@ static int dump_programheaders64(const pbuffer_t p, const poptions_t o, Elf64_Eh
     printf_eol();
   }
 
-  if (0 == ehdr->e_phnum) {
-    printf_w("There are no program headers in this file.");
-  } else {
-    printf_eol();
-  }
+  dump_programheaders2(ehdr->e_phnum);
 
   return 0;
 }
@@ -757,20 +764,26 @@ static int dump_relocsrelr64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *
   return 0;
 }
 
+static int dump_relocs0(const pbuffer_t p, const int index, const uint64_t sh_offset, const uint64_t count) {
+  int n = 0;
+  n += printf_text("Relocation section", USE_LT);
+  n += printf_text(get_secnamebyindex(p, index), USE_LT | USE_SPACE | USE_SQ);
+  n += printf_text("at offset", USE_LT | USE_SPACE);
+  n += printf_nice(sh_offset, USE_FHEX16);
+  n += printf_text("contains", USE_LT | USE_SPACE);
+  n += printf_nice(count, USE_DEC);
+  n += printf_text(1 == count ? "entry" : "entries", USE_LT | USE_SPACE | USE_COLON | USE_EOL);
+
+  return n;
+}
+
 static int dump_relocs32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
   for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
     Elf32_Shdr *shdr = get_shdr32byindex(p, i);
     if (shdr) {
       if (SHT_RELA == shdr->sh_type || SHT_REL == shdr->sh_type || SHT_RELR == shdr->sh_type) {
         size_t cnt = shdr->sh_size / shdr->sh_entsize;
-
-        printf_text("Relocation section", USE_LT);
-        printf_text(get_secnamebyindex(p, i), USE_LT | USE_SPACE | USE_SQ);
-        printf_text("at offset", USE_LT | USE_SPACE);
-        printf_nice(shdr->sh_offset, USE_FHEX16);
-        printf_text("contains", USE_LT | USE_SPACE);
-        printf_nice(cnt, USE_DEC);
-        printf_text(1 == cnt ? "entry" : "entries", USE_LT | USE_SPACE | USE_COLON | USE_EOL);
+        dump_relocs0(p, i, shdr->sh_offset, cnt);
 
         if (SHT_REL == shdr->sh_type) {
           dump_relocsrel32(p, o, shdr);
@@ -793,14 +806,7 @@ static int dump_relocs64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr
     if (shdr) {
       if (SHT_RELA == shdr->sh_type || SHT_REL == shdr->sh_type || SHT_RELR == shdr->sh_type) {
         size_t cnt = shdr->sh_size / shdr->sh_entsize;
-
-        printf_text("Relocation section", USE_LT);
-        printf_text(get_secnamebyindex(p, i), USE_LT | USE_SPACE | USE_SQ);
-        printf_text("at offset", USE_LT | USE_SPACE);
-        printf_nice(shdr->sh_offset, USE_FHEX16);
-        printf_text("contains", USE_LT | USE_SPACE);
-        printf_nice(cnt, USE_DEC);
-        printf_text(1 == cnt ? "entry" : "entries", USE_LT | USE_SPACE | USE_COLON | USE_EOL);
+        dump_relocs0(p, i, shdr->sh_offset, cnt);
 
         if (SHT_REL == shdr->sh_type) {
           dump_relocsrel64(p, o, shdr);

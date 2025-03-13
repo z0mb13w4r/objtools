@@ -15,6 +15,19 @@ bool_t isused(pick_t* p, const pick_t x) {
   return FALSE;
 }
 
+uint64_t ulog2(uint64_t  x) {
+  uint64_t y = 0;
+
+  if (x > 1) {
+    --x;
+    do {
+      ++y;
+    } while (0 != (x >>= 1));
+  }
+
+  return y;
+}
+
 char* strname(char* dst, const char* src) {
   char *p = strrchr(src, '/');
   if (p) {

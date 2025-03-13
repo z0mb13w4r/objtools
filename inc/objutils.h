@@ -16,6 +16,8 @@ typedef struct convert_s {
 bool_t isbits(const imode_t x);
 bool_t isused(pick_t* p, const pick_t x);
 
+uint64_t ulog2(uint64_t  x);
+
 char* strname(char* dst, const char* src);
 
 const char* strpick(const pconvert_t p, const pick_t x);
