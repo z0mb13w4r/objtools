@@ -98,6 +98,7 @@
 #define USE_TAB           SET_POS0(2)
 #define USE_AT            SET_POS0(3)
 #define USE_ATAT          SET_POS0(4)
+#define USE_DOT           SET_POS0(5)
 #define USE_POS0MASK      SET_POS0(15)
 
 int printf_eol();

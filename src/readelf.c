@@ -24,10 +24,6 @@
 #include "static/stvvisibility.ci"
 #include "static/vna_flags.ci"
 
-static const char* get_gnuabitab64(const unsigned int x) {
-  return strpick(zGNUABITAB, x);
-}
-
 static int make_versionnames32(const pbuffer_t p, Elf32_Word *vnames, const size_t size) {
   Elf32_Shdr *vh = get_shdr32bytype(p, SHT_GNU_verneed);
   if (vh) {
@@ -438,7 +434,7 @@ static int dump_programheaders1(const uint64_t e_phnum) {
 static int dump_programheaders2(const uint64_t e_phnum) {
   int n = 0;
   if (0 == e_phnum) {
-    n += printf_w("There are no program headers in this file.");
+    printf_w("There are no program headers in this file.");
   } else {
     n += printf_eol();
   }
@@ -1177,30 +1173,40 @@ static int dump_version64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
   return 0;
 }
 
-static int dump_actions64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
+static int dump_actions0(const pbuffer_t p, const char* name, const int action,
+                         const uint64_t sh_type, const uint64_t sh_offset, const uint64_t sh_size, const uint64_t sh_addr) {
+  int n = 0;
+  if (ACT_HEXDUMP == action) {
+    printf_text("Hex dump of section", USE_LT);
+    printf_text(name, USE_LT | USE_SQ | USE_COLON | USE_EOL);
+
+    if (0 != sh_size && sh_type != SHT_NOBITS) {
+      n += printf_data(getp(p, sh_offset, sh_size), sh_size, sh_addr, USE_HEXDUMP);
+    } else {
+      printf_w("section '%s' has no data to dump!", name);
+    }
+  } else if (ACT_STRDUMP == action) {
+    printf_text("String dump of section", USE_LT);
+    printf_text(name, USE_LT | USE_SQ | USE_COLON | USE_EOL);
+
+    if (0 != sh_size && sh_type != SHT_NOBITS) {
+      n += printf_data(getp(p, sh_offset, sh_size), sh_size, sh_addr, USE_STRDUMP);
+    } else {
+      printf_w("section '%s' has no data to dump!", name);
+    }
+  }
+
+  n += printf_eol();
+
+  return n;
+}
+
+static int dump_actions32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
   paction_t x = o->actions;
   while (x) {
-    Elf64_Shdr* shdr = get_shdr64byname(p, x->secname);
+    Elf32_Shdr* shdr = get_shdr32byname(p, x->secname);
     if (shdr) {
-      if (ACT_HEXDUMP == x->action) {
-        printf("Hex dump of section '%s':\n", x->secname);
-
-        if (0 != shdr->sh_size && shdr->sh_type != SHT_NOBITS) {
-          printf_data(getp(p, shdr->sh_offset, shdr->sh_size), shdr->sh_size, shdr->sh_addr, USE_HEXDUMP);
-        } else {
-          printf_w("section '%s' has no data to dump!", x->secname);
-        }
-      } else if (ACT_STRDUMP == x->action) {
-        printf("String dump of section '%s':\n", x->secname);
-
-        if (0 != shdr->sh_size && shdr->sh_type != SHT_NOBITS) {
-          printf_data(getp(p, shdr->sh_offset, shdr->sh_size), shdr->sh_size, shdr->sh_addr, USE_STRDUMP);
-        } else {
-          printf_w("section '%s' has no data to dump!", x->secname);
-        }
-      }
-
-      printf_eol();
+      dump_actions0(p, x->secname, x->action, shdr->sh_type, shdr->sh_offset, shdr->sh_size, shdr->sh_addr);
     } else {
       printf_w("section '%s' was not dumped because it does not exist!", x->secname);
     }
@@ -1211,68 +1217,122 @@ static int dump_actions64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
   return 0;
 }
 
+static int dump_actions64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
+  paction_t x = o->actions;
+  while (x) {
+    Elf64_Shdr* shdr = get_shdr64byname(p, x->secname);
+    if (shdr) {
+      dump_actions0(p, x->secname, x->action, shdr->sh_type, shdr->sh_offset, shdr->sh_size, shdr->sh_addr);
+    } else {
+      printf_w("section '%s' was not dumped because it does not exist!", x->secname);
+    }
+
+    x = x->actions;
+  }
+
+  return 0;
+}
+
+static int dump_notes0(const pbuffer_t p, const int index, const char* name, const uint64_t e_machine,
+                       const uint64_t n_descsz, const uint64_t n_type, const unknown_t data) {
+  int n = 0;
+  n += printf_text("Displaying notes found in", USE_LT);
+  n += printf_text(get_secnamebyindex(p, index), USE_LT | USE_SPACE | USE_SQ | USE_COLON | USE_EOL);
+
+  n += printf_text("Owner", USE_LT | USE_TAB | SET_PAD(22));
+  n += printf_text("Data size", USE_LT | USE_SPACE | SET_PAD(11));
+  n += printf_text("Description", USE_LT | USE_SPACE | USE_EOL);
+
+  n += printf_text(get_nhdrnamebyindex(p, index), USE_LT | USE_TAB | SET_PAD(22));
+  n += printf_nice(n_descsz, USE_FHEX32);
+  n += printf_text(name, USE_LT | USE_SPACE | USE_EOL);
+
+  uint32_t* pc = CAST(uint32_t*, data);
+
+  if (NT_GNU_BUILD_ID == n_type) {
+    n += printf_text("Build ID", USE_LT | USE_TAB | USE_COLON);
+    n += printf_data(data, n_descsz, 0, USE_HEX | USE_TAB);
+    n += printf_eol();
+  } else if (NT_GNU_GOLD_VERSION == n_type) {
+    n += printf_text("Version", USE_LT | USE_TAB | USE_COLON);
+    n += printf_data(data, n_descsz, 0, USE_STR);
+    n += printf_eol();
+  } else if (NT_GNU_ABI_TAG == n_type) {
+    n += printf_text("OS", USE_LT | USE_TAB | USE_COLON);
+    n += printf_pick(zGNUABITAB, pc[0], USE_LT | USE_SPACE);
+    n += printf_text("ABI", USE_LT | USE_TAB | USE_COLON);
+    n += printf_nice(pc[1], USE_DEC);
+    n += printf_nice(pc[2], USE_DEC | USE_DOT);
+    n += printf_nice(pc[3], USE_DEC | USE_DOT | USE_EOL);
+  } else if (NT_GNU_PROPERTY_TYPE_0 == n_type) {
+    n += printf_text("Properties", USE_LT | USE_TAB | USE_COLON);
+
+    const uint32_t size0 = sizeof(uint32_t);
+    const uint32_t size1 = size0 + size0;
+
+    uint32_t i = 0;
+    for (uint32_t j = 0; j < n_descsz; j += size1) {
+      if ((n_descsz - j) < size1) {
+//        n += printf_nice(n_descsz, USE_CORRUPT);
+        break;
+      } else {
+        uint32_t x = pc[i++];
+        uint32_t datasz = pc[i++];
+        if ((n_descsz - j) <= datasz) {
+//          n += printf("<corrupt type (%#x) datasz: %#x>\n", x, datasz);
+          break;
+        } else {
+          if (x >= GNU_PROPERTY_LOPROC && x <= GNU_PROPERTY_HIPROC) {
+            if (e_machine == EM_X86_64 || e_machine == EM_IAMCU || e_machine == EM_386) {
+              if (size0 != datasz) {
+                n += printf_pick(zGNUPROPERTY, x, USE_LT | USE_SPACE);
+                n += printf_nice(datasz, USE_CORRUPT | USE_COLON);
+              } else {
+                n += printf_pick(zGNUPROPERTY, x, USE_LT | USE_SPACE | USE_COLON);
+              }
+
+              if (x == GNU_PROPERTY_X86_FEATURE_1_AND) {
+                n += printf_mask(zGNUPROPERTY_X86_FEATURE_1_AND, pc[i++], USE_LT);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    n += printf_eol();
+  } else {
+    n += printf_text("Description Data", USE_LT | USE_TAB | USE_COLON);
+    n += printf_data(pc, n_descsz, 0, USE_HEX | USE_TAB);
+    n += printf_eol();
+  }
+
+  n += printf_eol();
+
+  return n;
+}
+
+static int dump_notes32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
+  if (ET_CORE != ehdr->e_type) {
+    for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
+      Elf32_Nhdr *nhdr = get_nhdr32byindex(p, i);
+      if (nhdr) {
+        Elf32_Word *pc = get_nhdrdesc32byindex(p, i);
+        dump_notes0(p, i, get_NHDRTYPE32(p, nhdr), ehdr->e_machine, nhdr->n_descsz, nhdr->n_type, pc);
+      }
+    }
+  }
+
+  return 0;
+}
+
 static int dump_notes64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
   if (ET_CORE != ehdr->e_type) {
     for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
       Elf64_Nhdr *nhdr = get_nhdr64byindex(p, i);
       if (nhdr) {
-        printf("Displaying notes found in: %s\n", get_secnamebyindex(p, i));
-        printf("  Owner                Data size        Description\n");
-        printf("  %-20s 0x%08x       %-10s\n", get_nhdrnamebyindex(p, i), nhdr->n_descsz, get_NHDRTYPE64(p, nhdr));
-
-        const char* cc = get_nhdrdescbyindex(p, i);
-        if (NT_GNU_BUILD_ID == nhdr->n_type) {
-          printf_text("Build ID", USE_LT | USE_TAB | USE_COLON);
-          printf_data(cc, nhdr->n_descsz, 0, USE_HEX);
-          printf_eol();
-        } else if (NT_GNU_GOLD_VERSION == nhdr->n_type) {
-          printf_text("Version", USE_LT | USE_TAB | USE_COLON);
-          printf_data(cc, nhdr->n_descsz, 0, USE_STR);
-          printf_eol();
-        } else if (NT_GNU_HWCAP == nhdr->n_type) {
-          printf("  Hardware Capabilities: ");
-          // TBD
-        } else if (NT_GNU_PROPERTY_TYPE_0 == nhdr->n_type) {
-          printf_text("Properties", USE_LT | USE_TAB | USE_COLON);
-
-          for (Elf64_Word i = 0; i < nhdr->n_descsz; i += 8) {
-            if ((nhdr->n_descsz - i) < 8) {
-              printf_nice(nhdr->n_descsz, USE_CORRUPT);
-              break;
-            } else {
-              unsigned int x = getLE(cc + i, 4);
-              unsigned int datasz = getLE(cc + i + 4, 4);
-              if ((nhdr->n_descsz - i + 1) < datasz) {
-                printf("<corrupt type (%#x) datasz: %#x>\n", x, datasz);
-                break;
-              } else {
-                if (x >= GNU_PROPERTY_LOPROC && x <= GNU_PROPERTY_HIPROC) {
-                  if (ehdr->e_machine == EM_X86_64 || ehdr->e_machine == EM_IAMCU || ehdr->e_machine == EM_386) {
-                    if (4 != datasz) {
-                      printf_pick(zGNUPROPERTY, x, USE_LT | USE_SPACE);
-                      printf_nice(datasz, USE_CORRUPT | USE_COLON);
-                    } else {
-                      printf_pick(zGNUPROPERTY, x, USE_LT | USE_SPACE | USE_COLON);
-                    }
-
-                    if (x == GNU_PROPERTY_X86_FEATURE_1_AND) {
-                      printf_mask(zGNUPROPERTY_X86_FEATURE_1_AND, getLE(cc + i + 8, 4), USE_LT);
-                    }
-                  }
-                }
-              }
-            }
-          }
-          printf_eol();
-        } else if (NT_GNU_ABI_TAG == nhdr->n_type) {
-          printf("  OS: %s, ABI: %ld.%ld.%ld\n",
-            get_gnuabitab64(getLE(cc, 4)), getLE(cc + 4, 4), getLE(cc + 8, 4), getLE(cc + 12, 4));
-        } else {
-          printf("  Description Data: ");
-          printf_data(cc, nhdr->n_descsz, 0, USE_HEX);
-          printf_eol();
-        }
-        printf_eol();
+        Elf64_Word *pc = get_nhdrdesc64byindex(p, i);
+        dump_notes0(p, i, get_NHDRTYPE64(p, nhdr), ehdr->e_machine, nhdr->n_descsz, nhdr->n_type, pc);
       }
     }
   }
@@ -1297,6 +1357,9 @@ int readelf(const pbuffer_t p, const poptions_t o) {
         if (o->action & OPTREADELF_RELOCS)           dump_relocs32(p, o, ehdr);
         if (o->action & OPTREADELF_UNWIND)           dump_unwind32(p, o, ehdr);
         if (o->action & OPTREADELF_SYMBOLS)          dump_symbols32(p, o, ehdr);
+
+        if (o->actions)                              dump_actions32(p, o, ehdr);
+        if (o->action & OPTREADELF_NOTES)            dump_notes32(p, o, ehdr);
       }
     } else if (isELF64(p)) {
       Elf64_Ehdr *ehdr = get_ehdr64(p);

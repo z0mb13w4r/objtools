@@ -64,9 +64,8 @@ const char* get_nhdrnamebyindex(const pbuffer_t p, const int index);
 const char* _get_nhdrname32byindex(const pbuffer_t p, const int index);
 const char* _get_nhdrname64byindex(const pbuffer_t p, const int index);
 
-const char* get_nhdrdescbyindex(const pbuffer_t p, const int index);
-const char* _get_nhdrdesc32byindex(const pbuffer_t p, const int index);
-const char* _get_nhdrdesc64byindex(const pbuffer_t p, const int index);
+Elf32_Word* get_nhdrdesc32byindex(const pbuffer_t p, const int index);
+Elf64_Word* get_nhdrdesc64byindex(const pbuffer_t p, const int index);
 
 const char* get_secname32byshdr(const pbuffer_t p, Elf32_Shdr *s);
 const char* get_secname64byshdr(const pbuffer_t p, Elf64_Shdr *s);

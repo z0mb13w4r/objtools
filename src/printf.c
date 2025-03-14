@@ -29,6 +29,7 @@ int printf_work(char* o, const size_t size, const char* p, const imode_t mode) {
     case USE_ATAT:           n += PRINT1("@@");         break;
     case USE_SPACE:          n += PRINT1(" ");          break;
     case USE_TAB:            n += PRINT1("  ");         break;
+    case USE_DOT:            n += PRINT1(".");          break;
     default:                 break;
     }
 
@@ -61,13 +62,19 @@ int printf_work(char* o, const size_t size, const char* p, const imode_t mode) {
 int printf_neat(char* o, const size_t size, const uint64_t v, const imode_t mode) {
   int n = 0;
   if (o) {
-    switch (GET_POS0(mode)) {
+    const imode_t pos0 = GET_POS0(mode);
+
+    switch (pos0) {
+    case USE_AT:                   n += PRINT1("@");     break;
+    case USE_ATAT:                 n += PRINT1("@@");    break;
+    case USE_DOT:                  n += PRINT1(".");     break;
     case USE_TAB:                  n += PRINT1(" ");     break;
     default:                       break;
     }
 
     const imode_t xmode = mode & ~(USE_FLAGMASK | USE_POS0MASK | USE_POS1MASK | USE_BRACKETMASK);
-    const int usespace = (USE_CHARCTRL != xmode && USE_LHEX8NS != xmode && USE_CHAR != xmode) || mode & USE_SPACE;
+    const int usespace = (!pos0 && USE_CHARCTRL != xmode && USE_LHEX8NS != xmode && USE_CHAR != xmode)
+                        || USE_SPACE == pos0 || USE_TAB == pos0;
 
     switch (GET_BRACKET(mode)) {
     case USE_CB:                   n += PRINT1(" {");    break;
@@ -240,10 +247,14 @@ int printf_data(const void* p, const size_t size, const addrz_t addr, const imod
   const size_t MAX_SIZE = 16;
 
   const imode_t xmode = mode & ~(USE_POS0MASK | USE_FLAGMASK);
-  const int usespace = mode & USE_SPACE;
+  const int usespace = GET_POS0(mode) == USE_SPACE;
+
+  int n = 0;
+  if (USE_TAB == GET_POS0(mode)) {
+    n += printf_pack(1);
+  }
 
   addrz_t x = addr;
-  int n = 0;
   size_t i = 0;
   const unsigned char *pp = CAST(unsigned char*, p);
   for (i = 0; i < size; ) {
@@ -273,7 +284,7 @@ int printf_data(const void* p, const size_t size, const addrz_t addr, const imod
         ++i;
       }
 
-      n += printf_nice(i, USE_TAB | USE_SB | USE_DEC5);
+      n += printf_nice(i, USE_TAB | USE_SB | USE_LHEX16);
       n += printf_pack(2);
 
       while (0 != *pp && i < size) {

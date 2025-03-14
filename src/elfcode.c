@@ -519,7 +519,7 @@ const char* get_nhdrnamebyindex(const pbuffer_t p, const int index) {
   return NULL;
 }
 
-const char* _get_nhdrdesc32byindex(const pbuffer_t p, const int index) {
+Elf32_Word* get_nhdrdesc32byindex(const pbuffer_t p, const int index) {
   Elf32_Nhdr *n = get_nhdr32byindex(p, index);
   if (n && n->n_namesz && n->n_descsz) {
     Elf32_Shdr *s = get_shdr32byindex(p, index);
@@ -531,22 +531,13 @@ const char* _get_nhdrdesc32byindex(const pbuffer_t p, const int index) {
   return NULL;
 }
 
-const char* _get_nhdrdesc64byindex(const pbuffer_t p, const int index) {
+Elf64_Word* get_nhdrdesc64byindex(const pbuffer_t p, const int index) {
   Elf64_Nhdr *n = get_nhdr64byindex(p, index);
   if (n && n->n_namesz && n->n_descsz) {
     Elf64_Shdr *s = get_shdr64byindex(p, index);
     if (s) {
       return getp(p, s->sh_offset + sizeof(Elf64_Nhdr) + n->n_namesz, n->n_descsz);
     }
-  }
-
-  return NULL;
-}
-
-const char* get_nhdrdescbyindex(const pbuffer_t p, const int index) {
-  if (isELF(p)) {
-    if (isELF32(p))        return _get_nhdrdesc32byindex(p, index);
-    else if (isELF64(p))   return _get_nhdrdesc64byindex(p, index);
   }
 
   return NULL;
