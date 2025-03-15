@@ -24,7 +24,9 @@
 #include "static/stvvisibility.ci"
 #include "static/vna_flags.ci"
 
-static int make_versionnames32(const pbuffer_t p, Elf32_Word *vnames, const size_t size) {
+typedef unsigned short version_t, *pversion_t;
+
+static int make_versionnames32(const pbuffer_t p, pversion_t vnames, const size_t size) {
   Elf32_Shdr *vh = get_shdr32bytype(p, SHT_GNU_verneed);
   if (vh) {
     Elf32_Word offset = 0;
@@ -54,7 +56,7 @@ static int make_versionnames32(const pbuffer_t p, Elf32_Word *vnames, const size
   return 0;
 }
 
-static int make_versionnames64(const pbuffer_t p, Elf64_Word *vnames, const size_t size) {
+static int make_versionnames64(const pbuffer_t p, pversion_t vnames, const size_t size) {
   Elf64_Shdr *vh = get_shdr64bytype(p, SHT_GNU_verneed);
   if (vh) {
     Elf64_Word offset = 0;
@@ -127,7 +129,7 @@ static int dump_relocsdef64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *s
   return 0;
 }
 
-static int dump_relocsver32(const pbuffer_t p, const poptions_t o, Elf32_Shdr *shdr, const uint64_t r_info, Elf32_Word vnames[], const size_t maxvnames) {
+static int dump_relocsver32(const pbuffer_t p, const poptions_t o, Elf32_Shdr *shdr, const uint64_t r_info, pversion_t vnames, const size_t maxvnames) {
   if (shdr) {
     Elf32_Shdr *dshdr = get_shdr32byindex(p, shdr->sh_link);
     if (dshdr) {
@@ -158,7 +160,7 @@ static int dump_relocsver32(const pbuffer_t p, const poptions_t o, Elf32_Shdr *s
   return 0;
 }
 
-static int dump_relocsver64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *shdr, const uint64_t r_info, Elf64_Word vnames[], const size_t maxvnames) {
+static int dump_relocsver64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *shdr, const uint64_t r_info, pversion_t vnames, const size_t maxvnames) {
   if (shdr) {
     Elf64_Shdr *dshdr = get_shdr64byindex(p, shdr->sh_link);
     if (dshdr) {
@@ -630,7 +632,7 @@ static int dump_dynamic64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
 }
 
 static int dump_relocsrel32(const pbuffer_t p, const poptions_t o, Elf32_Shdr *shdr) {
-  MALLOCA(Elf32_Word, vnames, 1024);
+  MALLOCA(version_t, vnames, 1024);
   make_versionnames32(p, vnames, NELEMENTS(vnames));
 
   printf_text("Offset       Info         Type                 Symbol's Value   Symbol's Name", USE_LT | USE_SPACE | USE_EOL);
@@ -699,7 +701,7 @@ static int dump_relocsrela32(const pbuffer_t p, const poptions_t o, Elf32_Shdr *
 }
 
 static int dump_relocsrela64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *shdr) {
-  MALLOCA(Elf64_Word, vnames, 1024);
+  MALLOCA(version_t, vnames, 1024);
   make_versionnames64(p, vnames, NELEMENTS(vnames));
 
   printf_text("Offset       Info         Type                Symbol's Value   Symbol's Name + Addend", USE_LT | USE_SPACE | USE_EOL);
@@ -876,7 +878,7 @@ static int dump_symbols2(const pbuffer_t p, const poptions_t o,
 }
 
 static int dump_symbols32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
-  MALLOCA(Elf32_Word, vnames, 1024);
+  MALLOCA(version_t, vnames, 1024);
   make_versionnames32(p, vnames, NELEMENTS(vnames));
 
   for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
@@ -921,7 +923,7 @@ static int dump_symbols32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehd
 }
 
 static int dump_symbols64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
-  MALLOCA(Elf64_Word, vnames, 1024);
+  MALLOCA(version_t, vnames, 1024);
   make_versionnames64(p, vnames, NELEMENTS(vnames));
 
   for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
@@ -1059,11 +1061,14 @@ static int dump_histogram64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *e
 }
 
 static int dump_versionsym32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr, Elf32_Shdr *shdr) {
+  MALLOCA(version_t, vnames, 1024);
+  make_versionnames32(p, vnames, NELEMENTS(vnames));
+
   return 0;
 }
 
 static int dump_versionsym64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr, Elf64_Shdr *shdr) {
-  MALLOCA(Elf64_Word, vnames, 1024);
+  MALLOCA(version_t, vnames, 1024);
   make_versionnames64(p, vnames, NELEMENTS(vnames));
 
   size_t cnt = shdr->sh_size / shdr->sh_entsize;
