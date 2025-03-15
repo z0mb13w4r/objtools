@@ -579,6 +579,51 @@ const char* get_secname64byshdr(const pbuffer_t p, Elf64_Shdr *s) {
   return NULL;
 }
 
+const char* get_secnamebyoffset(const pbuffer_t p, const int offset) {
+  if (isELF(p)) {
+    if (isELF32(p))        return _get_secname32byoffset(p, offset);
+    else if (isELF64(p))   return _get_secname64byoffset(p, offset);
+  }
+
+  return NULL;
+}
+
+const char* _get_secname32byoffset(const pbuffer_t p, const int offset) {
+  char *s0 = NULL;
+
+  Elf32_Ehdr *e = get_ehdr32(p);
+  if (e) {
+    Elf32_Shdr *s1 = get_shdr32byindex(p, e->e_shstrndx);
+    if (s1) {
+      s0 = getp(p, s1->sh_offset, s1->sh_size);
+    }
+
+    if (s0) {
+      return s0 + offset;
+    }
+  }
+
+  return NULL;
+}
+
+const char* _get_secname64byoffset(const pbuffer_t p, const int offset) {
+  char *s0 = NULL;
+
+  Elf64_Ehdr *e = get_ehdr64(p);
+  if (e) {
+    Elf64_Shdr *s1 = get_shdr64byindex(p, e->e_shstrndx);
+    if (s1) {
+      s0 = getp(p, s1->sh_offset, s1->sh_size);
+    }
+
+    if (s0) {
+      return s0 + offset;
+    }
+  }
+
+  return NULL;
+}
+
 void* _get32byshdr(const pbuffer_t p, Elf32_Shdr *shdr) {
   if (shdr) {
     return getp(p, shdr->sh_offset, shdr->sh_size);

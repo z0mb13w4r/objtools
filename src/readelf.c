@@ -1058,6 +1058,10 @@ static int dump_histogram64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *e
   return 0;
 }
 
+static int dump_versionsym32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr, Elf32_Shdr *shdr) {
+  return 0;
+}
+
 static int dump_versionsym64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr, Elf64_Shdr *shdr) {
   MALLOCA(Elf64_Word, vnames, 1024);
   make_versionnames64(p, vnames, NELEMENTS(vnames));
@@ -1106,45 +1110,68 @@ static int dump_versionsym64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *
   return 0;
 }
 
-static int dump_versionneed64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *shdr) {
-  printf_text("Version needs section", USE_LT);
-  printf_text(get_secname64byshdr(p, shdr),  USE_LT | USE_SQ | USE_SPACE);
-  printf_text("contains", USE_SPACE);
-  printf_nice(shdr->sh_info, USE_DEC);
-  printf_text(1 == shdr->sh_info ? "entry" : "entries", USE_LT | USE_SPACE | USE_COLON | USE_EOL);
+static int dump_versionneed0(const pbuffer_t p, const uint64_t sh_name, const uint64_t sh_info,
+                             const uint64_t sh_addr, const uint64_t sh_offset, const uint64_t sh_link) {
+  int n = 0;
+  n += printf_text("Version needs section", USE_LT);
+  n += printf_text(get_secnamebyoffset(p, sh_name),  USE_LT | USE_SQ | USE_SPACE);
+  n += printf_text("contains", USE_SPACE);
+  n += printf_nice(sh_info, USE_DEC);
+  n += printf_text(1 == sh_info ? "entry" : "entries", USE_LT | USE_SPACE | USE_COLON | USE_EOL);
 
-  printf_text("Addr", USE_SPACE | USE_COLON);
-  printf_nice(shdr->sh_addr, USE_FHEX64);
-  printf_text("Offset", USE_SPACE | USE_COLON);
-  printf_nice(shdr->sh_offset, USE_FHEX24);
-  printf_text("Link", USE_SPACE | USE_COLON);
-  printf_nice(shdr->sh_link, USE_DEC);
-  printf_text(get_secnamebyindex(p, shdr->sh_link), USE_LT | USE_RB | USE_SPACE | USE_EOL);
+  n += printf_text("Addr", USE_SPACE | USE_COLON);
+  n += printf_nice(sh_addr, USE_FHEX64);
+  n += printf_text("Offset", USE_SPACE | USE_COLON);
+  n += printf_nice(sh_offset, USE_FHEX24);
+  n += printf_text("Link", USE_SPACE | USE_COLON);
+  n += printf_nice(sh_link, USE_DEC);
+  n += printf_text(get_secnamebyindex(p, sh_link), USE_LT | USE_RB | USE_SPACE | USE_EOL);
 
-  Elf64_Word offset = 0;
-  for (Elf64_Word j = 0; j < shdr->sh_info; ++j) {
-    Elf64_Verneed *vn = getp(p, shdr->sh_offset, sizeof(Elf64_Verneed));
+  return n;
+}
+
+static int dump_versionneed1(const pbuffer_t p, const int offset, const uint64_t sh_link,
+                             const uint64_t vn_version, const uint64_t vn_file, const uint64_t vn_cnt) {
+  int n = 0;
+  n += printf_nice(offset, USE_LHEX24 | USE_COLON);
+  n += printf_text("Version", USE_SPACE | USE_COLON);
+  n += printf_nice(vn_version, USE_DEC);
+  n += printf_text("File", USE_SPACE | USE_COLON);
+  n += printf_text(get_namebyoffset(p, sh_link, vn_file), USE_LT | USE_SPACE);
+  n += printf_text("Cnt", USE_SPACE | USE_COLON);
+  n += printf_nice(vn_cnt, USE_DEC | USE_EOL);
+
+  return n;
+}
+
+static int dump_versionneed2(const pbuffer_t p, const int offset, const uint64_t sh_link,
+                             const uint64_t vna_name, const uint64_t vna_flags, const uint64_t vna_other) {
+  int n = 0;
+  n += printf_nice(offset, USE_FHEX16 | USE_COLON);
+  n += printf_text("Name", USE_TAB | USE_COLON);
+  n += printf_text(get_namebyoffset(p, sh_link, vna_name), USE_LT | USE_SPACE | SET_PAD(14));
+  n += printf_text("Flags", USE_SPACE | USE_COLON);
+  n += printf_masknone(zVNA_FLAGS, vna_flags, USE_LT);
+  n += printf_text("Version", USE_TAB | USE_COLON);
+  n += printf_nice(vna_other, USE_DEC | USE_EOL);
+
+  return n;
+}
+
+static int dump_versionneed32(const pbuffer_t p, const poptions_t o, Elf32_Shdr *shdr) {
+  dump_versionneed0(p, shdr->sh_name, shdr->sh_info, shdr->sh_addr, shdr->sh_offset, shdr->sh_link);
+
+  Elf32_Word offset = 0;
+  for (Elf32_Word j = 0; j < shdr->sh_info; ++j) {
+    Elf32_Verneed *vn = getp(p, shdr->sh_offset, sizeof(Elf32_Verneed));
     if (vn) {
-      printf_nice(offset, USE_LHEX24 | USE_COLON);
-      printf_text("Version", USE_SPACE | USE_COLON);
-      printf_nice(vn->vn_version, USE_DEC);
-      printf_text("File", USE_SPACE | USE_COLON);
-      printf_text(get_namebyoffset(p, shdr->sh_link, vn->vn_file), USE_LT | USE_SPACE);
-      printf_text("Cnt", USE_SPACE | USE_COLON);
-      printf_nice(vn->vn_cnt, USE_DEC | USE_EOL);
+      dump_versionneed1(p, offset, shdr->sh_link, vn->vn_version, vn->vn_file, vn->vn_cnt);
 
-      Elf64_Word xoffset = offset + vn->vn_aux;
-      for (Elf64_Half k = 0; k < vn->vn_cnt; ++k) {
-        Elf64_Vernaux *va = getp(p, shdr->sh_offset + xoffset, sizeof(Elf64_Vernaux));
+      Elf32_Word xoffset = offset + vn->vn_aux;
+      for (Elf32_Half k = 0; k < vn->vn_cnt; ++k) {
+        Elf32_Vernaux *va = getp(p, shdr->sh_offset + xoffset, sizeof(Elf32_Vernaux));
         if (va) {
-          printf_nice(xoffset, USE_FHEX16 | USE_COLON);
-          printf_text("Name", USE_TAB | USE_COLON);
-          printf_text(get_namebyoffset(p, shdr->sh_link, va->vna_name), USE_LT | USE_SPACE | SET_PAD(14));
-          printf_text("Flags", USE_SPACE | USE_COLON);
-          printf_masknone(zVNA_FLAGS, va->vna_flags, USE_LT);
-          printf_text("Version", USE_TAB | USE_COLON);
-          printf_nice(va->vna_other, USE_DEC | USE_EOL);
-
+          dump_versionneed2(p, xoffset, shdr->sh_link, va->vna_name, va->vna_flags, va->vna_other);
 	  xoffset += va->vna_next;
         }
       }
@@ -1154,6 +1181,48 @@ static int dump_versionneed64(const pbuffer_t p, const poptions_t o, Elf64_Shdr 
   }
 
   printf_eol();
+
+  return 0;
+}
+
+static int dump_versionneed64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *shdr) {
+  dump_versionneed0(p, shdr->sh_name, shdr->sh_info, shdr->sh_addr, shdr->sh_offset, shdr->sh_link);
+
+  Elf64_Word offset = 0;
+  for (Elf64_Word j = 0; j < shdr->sh_info; ++j) {
+    Elf64_Verneed *vn = getp(p, shdr->sh_offset, sizeof(Elf64_Verneed));
+    if (vn) {
+      dump_versionneed1(p, offset, shdr->sh_link, vn->vn_version, vn->vn_file, vn->vn_cnt);
+
+      Elf64_Word xoffset = offset + vn->vn_aux;
+      for (Elf64_Half k = 0; k < vn->vn_cnt; ++k) {
+        Elf64_Vernaux *va = getp(p, shdr->sh_offset + xoffset, sizeof(Elf64_Vernaux));
+        if (va) {
+          dump_versionneed2(p, xoffset, shdr->sh_link, va->vna_name, va->vna_flags, va->vna_other);
+	  xoffset += va->vna_next;
+        }
+      }
+    }
+
+    offset += vn->vn_next;
+  }
+
+  printf_eol();
+
+  return 0;
+}
+
+static int dump_version32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
+  for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
+    Elf32_Shdr *shdr = get_shdr32byindex(p, i);
+    if (shdr) {
+      if (SHT_GNU_versym == shdr->sh_type) {
+        dump_versionsym32(p, o, ehdr, shdr);
+      } else if (SHT_GNU_verneed == shdr->sh_type) {
+        dump_versionneed32(p, o, shdr);
+      }
+    }
+  }
 
   return 0;
 }
@@ -1358,6 +1427,7 @@ int readelf(const pbuffer_t p, const poptions_t o) {
         if (o->action & OPTREADELF_UNWIND)           dump_unwind32(p, o, ehdr);
         if (o->action & OPTREADELF_SYMBOLS)          dump_symbols32(p, o, ehdr);
 
+        if (o->action & OPTREADELF_VERSION)          dump_version32(p, o, ehdr);
         if (o->actions)                              dump_actions32(p, o, ehdr);
         if (o->action & OPTREADELF_NOTES)            dump_notes32(p, o, ehdr);
       }

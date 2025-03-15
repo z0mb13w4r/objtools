@@ -20,9 +20,9 @@ void set_errname(const char* name) {
 int printf_work(char* o, const size_t size, const char* p, const imode_t mode) {
   int n = 0;
   if (o && p) {
-    int b = GET_BRACKET(mode);
-    int p0 = GET_POS0(mode);
-    int p1 = GET_POS1(mode);
+    const imode_t b = GET_BRACKET(mode);
+    const imode_t p0 = GET_POS0(mode);
+    const imode_t p1 = GET_POS1(mode);
 
     switch (p0) {
     case USE_AT:             n += PRINT1("@");          break;
@@ -73,7 +73,7 @@ int printf_neat(char* o, const size_t size, const uint64_t v, const imode_t mode
     }
 
     const imode_t xmode = mode & ~(USE_FLAGMASK | USE_POS0MASK | USE_POS1MASK | USE_BRACKETMASK);
-    const int usespace = (!pos0 && USE_CHARCTRL != xmode && USE_LHEX8NS != xmode && USE_CHAR != xmode)
+    const bool_t usespace = (!pos0 && USE_CHARCTRL != xmode && USE_LHEX8NS != xmode && USE_CHAR != xmode)
                         || USE_SPACE == pos0 || USE_TAB == pos0;
 
     switch (GET_BRACKET(mode)) {
@@ -247,7 +247,7 @@ int printf_data(const void* p, const size_t size, const addrz_t addr, const imod
   const size_t MAX_SIZE = 16;
 
   const imode_t xmode = mode & ~(USE_POS0MASK | USE_FLAGMASK);
-  const int usespace = GET_POS0(mode) == USE_SPACE;
+  const bool_t usespace = GET_POS0(mode) == USE_SPACE;
 
   int n = 0;
   if (USE_TAB == GET_POS0(mode)) {

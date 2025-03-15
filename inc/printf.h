@@ -52,6 +52,8 @@
 #define SET_XX3(x,y)      (((x) & 0x07) << (y))
 #define GET_XX4(x,y)      ((x) & (0x0f << (y)))
 #define SET_XX4(x,y)      (((x) & 0x0f) << (y))
+#define GET_XX6(x,y)      ((x) & (0x3f << (y)))
+#define SET_XX6(x,y)      (((x) & 0x3f) << (y))
 #define GET_XX8(x,y)      ((x) & (0xff << (y)))
 #define SET_XX8(x,y)      (((x) & 0xff) << (y))
 
