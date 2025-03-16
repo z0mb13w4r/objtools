@@ -42,6 +42,12 @@ static convert_t zRELTYPE64[] = {
   {"R_X86_64_GOTPC32",             R_X86_64_GOTPC32},
   {"R_X86_64_SIZE32",              R_X86_64_SIZE32},
   {"R_X86_64_SIZE64",              R_X86_64_SIZE64},
+
+  {"R_AARCH64_COPY",               R_AARCH64_COPY},
+  {"R_AARCH64_GLOB_DAT",           R_AARCH64_GLOB_DAT},
+  {"R_AARCH64_JUMP_SLOT",          R_AARCH64_JUMP_SLOT},
+  {"R_AARCH64_RELATIVE",           R_AARCH64_RELATIVE},
+
   {0, 0}
 };
 
@@ -75,6 +81,15 @@ static pick_t zRELTYPE64VER[] = {
   R_X86_64_GLOB_DAT,
   R_X86_64_JUMP_SLOT,
   R_X86_64_COPY,
+
+  R_AARCH64_GLOB_DAT,
+  R_AARCH64_JUMP_SLOT,
+  PICK_END
+};
+
+static pick_t zRELTYPE64PACK[] = {
+  R_X86_64_RELATIVE,
+  R_AARCH64_RELATIVE,
   PICK_END
 };
 
@@ -97,6 +112,9 @@ static pick_t zRELTYPE64SHEX32[] = {
   R_X86_64_PC32,
   R_X86_64_PLT32,
   R_X86_64_COPY,
+
+  R_AARCH64_GLOB_DAT,
+  R_AARCH64_JUMP_SLOT,
   PICK_END
 };
 

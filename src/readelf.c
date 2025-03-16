@@ -713,7 +713,7 @@ static int dump_relocsrela64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *
         printf_nice(r->r_addend, USE_SHEX32);
       } else if (isused(zRELTYPE64SHEX64, ELF64_R_TYPE(r->r_info))) {
         printf_nice(r->r_addend, USE_SHEX64);
-      } else if (R_X86_64_RELATIVE == ELF64_R_TYPE(r->r_info)) {
+      } else if (isused(zRELTYPE64PACK, ELF64_R_TYPE(r->r_info))) {
         printf_pack(17);
         printf_nice(r->r_addend, USE_LHEX);
       } else if (R_X86_64_NONE != ELF64_R_TYPE(r->r_info)) {
