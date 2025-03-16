@@ -233,70 +233,54 @@ static int dump_elfheader(const pbuffer_t p, const poptions_t o) {
   return 0;
 }
 
-static int dump_fileheader32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
+static int dump_fileheader0(const pbuffer_t p, const uint64_t e_type, const uint64_t e_machine, const uint64_t e_version,
+                            const uint64_t e_entry, const uint64_t e_phoff, const uint64_t e_shoff, const uint64_t e_flags,
+                            const uint64_t e_ehsize, const uint64_t e_phentsize, const uint64_t e_phnum, const uint64_t e_shentsize,
+                            const uint64_t e_shnum, const uint64_t e_shstrndx) {
   const int MAXSIZE = 36;
 
-  printf_text("Type", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  printf_pick(zEHDRTYPE, ehdr->e_type, USE_LT | USE_SPACE | USE_EOL);
-  printf_text("Machine", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  printf_pick(zEHDRMACHINE, ehdr->e_machine, USE_LT | USE_SPACE | USE_EOL);
-  printf_text("Version", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  printf_nice(ehdr->e_version, USE_FHEX | USE_EOL);
-  printf_text("Entry point address", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  printf_nice(ehdr->e_entry, USE_FHEX16 | USE_EOL);
-  printf_text("Start of program headers", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  printf_nice(ehdr->e_phoff, USE_DEC | USE_BYTES | USE_EOL);
-  printf_text("Start of section headers", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  printf_nice(ehdr->e_shoff, USE_DEC | USE_BYTES | USE_EOL);
-  printf_text("Flags", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  printf_nice(ehdr->e_flags, USE_FHEX | USE_EOL);
-  printf_text("Size of this header", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  printf_nice(ehdr->e_ehsize, USE_DEC | USE_BYTES | USE_EOL);
-  printf_text("Size of program headers", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  printf_nice(ehdr->e_phentsize, USE_DEC | USE_BYTES | USE_EOL);
-  printf_text("Number of program headers", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  printf_nice(ehdr->e_phnum, USE_DEC | USE_EOL);
-  printf_text("Size of section headers", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  printf_nice(ehdr->e_shentsize, USE_DEC | USE_BYTES | USE_EOL);
-  printf_text("Number of section headers", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  printf_nice(ehdr->e_shnum, USE_DEC | USE_EOL);
-  printf_text("Section header string table index", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  printf_nice(ehdr->e_shstrndx, USE_DEC | USE_EOL);
-  printf_eol();
+  int n = 0;
+  n += printf_text("Type", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_pick(zEHDRTYPE, e_type, USE_LT | USE_SPACE | USE_EOL);
+  n += printf_text("Machine", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_pick(zEHDRMACHINE, e_machine, USE_LT | USE_SPACE | USE_EOL);
+  n += printf_text("Version", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(e_version, USE_FHEX | USE_EOL);
+  n += printf_text("Entry point address", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(e_entry, USE_FHEX16 | USE_EOL);
+  n += printf_text("Start of program headers", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(e_phoff, USE_DEC | USE_BYTES | USE_EOL);
+  n += printf_text("Start of section headers", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(e_shoff, USE_DEC | USE_BYTES | USE_EOL);
+  n += printf_text("Flags", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(e_flags, USE_FHEX | USE_EOL);
+  n += printf_text("Size of this header", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(e_ehsize, USE_DEC | USE_BYTES | USE_EOL);
+  n += printf_text("Size of program headers", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(e_phentsize, USE_DEC | USE_BYTES | USE_EOL);
+  n += printf_text("Number of program headers", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(e_phnum, USE_DEC | USE_EOL);
+  n += printf_text("Size of section headers", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(e_shentsize, USE_DEC | USE_BYTES | USE_EOL);
+  n += printf_text("Number of section headers", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(e_shnum, USE_DEC | USE_EOL);
+  n += printf_text("Section header string table index", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(e_shstrndx, USE_DEC | USE_EOL);
+  n += printf_eol();
+
+  return n;
+}
+
+static int dump_fileheader32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
+  dump_fileheader0(p, ehdr->e_type, ehdr->e_machine, ehdr->e_version, ehdr->e_entry, ehdr->e_phoff, ehdr->e_shoff, ehdr->e_flags,
+                      ehdr->e_ehsize, ehdr->e_phentsize, ehdr->e_phnum, ehdr->e_shentsize, ehdr->e_shnum, ehdr->e_shstrndx);
 
   return 0;
 }
 
 static int dump_fileheader64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
-  const int MAXSIZE = 36;
-
-  printf_text("Type", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  printf_pick(zEHDRTYPE, ehdr->e_type, USE_LT | USE_SPACE | USE_EOL);
-  printf_text("Machine", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  printf_pick(zEHDRMACHINE, ehdr->e_machine, USE_LT | USE_SPACE | USE_EOL);
-  printf_text("Version", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  printf_nice(ehdr->e_version, USE_FHEX | USE_EOL);
-  printf_text("Entry point address", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  printf_nice(ehdr->e_entry, USE_FHEX16 | USE_EOL);
-  printf_text("Start of program headers", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  printf_nice(ehdr->e_phoff, USE_DEC | USE_BYTES | USE_EOL);
-  printf_text("Start of section headers", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  printf_nice(ehdr->e_shoff, USE_DEC | USE_BYTES | USE_EOL);
-  printf_text("Flags", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  printf_nice(ehdr->e_flags, USE_FHEX | USE_EOL);
-  printf_text("Size of this header", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  printf_nice(ehdr->e_ehsize, USE_DEC | USE_BYTES | USE_EOL);
-  printf_text("Size of program headers", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  printf_nice(ehdr->e_phentsize, USE_DEC | USE_BYTES | USE_EOL);
-  printf_text("Number of program headers", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  printf_nice(ehdr->e_phnum, USE_DEC | USE_EOL);
-  printf_text("Size of section headers", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  printf_nice(ehdr->e_shentsize, USE_DEC | USE_BYTES | USE_EOL);
-  printf_text("Number of section headers", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  printf_nice(ehdr->e_shnum, USE_DEC | USE_EOL);
-  printf_text("Section header string table index", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  printf_nice(ehdr->e_shstrndx, USE_DEC | USE_EOL);
-  printf_eol();
+  dump_fileheader0(p, ehdr->e_type, ehdr->e_machine, ehdr->e_version, ehdr->e_entry, ehdr->e_phoff, ehdr->e_shoff, ehdr->e_flags,
+                      ehdr->e_ehsize, ehdr->e_phentsize, ehdr->e_phnum, ehdr->e_shentsize, ehdr->e_shnum, ehdr->e_shstrndx);
 
   return 0;
 }
