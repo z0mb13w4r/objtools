@@ -952,80 +952,93 @@ static int dump_symbols64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
   return 0;
 }
 
-static int dump_gnuhash64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr, Elf64_Shdr *shdr) {
-  Elf32_Word *pb = _get64byshdr(p, shdr);
+static int dump_gnuhash0(const pbuffer_t p, uint32_t *pb, const uint64_t sh_name) {
+  uint32_t nbucket  = pb[0];
+  uint32_t symbias  = pb[1];
+  uint32_t sbitmask = isELF32(p) ? pb[2] : 2 * pb[2];
+//uint32_t shift    = pb[3];
+  uint32_t *bitmask = &pb[4];
+  uint32_t *bucket  = &pb[4 + sbitmask];
+  uint32_t *chain   = &pb[4 + sbitmask + nbucket];
 
-  if (pb) {
-    Elf32_Word nbucket  = pb[0];
-    Elf32_Word symbias  = pb[1];
-    Elf32_Word sbitmask = isELF32(p) ? pb[2] : 2 * pb[2];
-    //Elf32_Word shift    = pb[3];
-    Elf32_Word *bitmask = &pb[4];
-    Elf32_Word *bucket  = &pb[4 + sbitmask];
-    Elf32_Word *chain   = &pb[4 + sbitmask + nbucket];
+  MALLOCA(uint32_t, size, nbucket);
 
-    MALLOCA(uint32_t, size, nbucket);
+  /* compute distribution of chain lengths. */
+  uint_fast32_t msize = 0;
+  uint_fast32_t nsyms = 0;
+  for (uint32_t k = 0; k < nbucket; ++k) {
+    if (bucket[k] != 0) {
+      uint32_t x = bucket[k] - symbias;
+      do {
+        ++nsyms;
+        if (msize < ++size[k]) ++msize;
+      } while ((chain[x++] & 1) == 0);
+    }
+  }
 
-    /* compute distribution of chain lengths. */
-    uint_fast32_t msize = 0;
-    uint_fast32_t nsyms = 0;
-    for (Elf32_Word k = 0; k < nbucket; ++k) {
-      if (bucket[k] != 0) {
-        Elf32_Word x = bucket[k] - symbias;
-        do {
-          ++nsyms;
-          if (msize < ++size[k]) ++msize;
-        } while ((chain[x++] & 1) == 0);
+  /* count bits in bitmask. */
+  uint_fast32_t nbits = 0;
+  for (uint32_t k = 0; k < sbitmask; ++k) {
+    uint_fast32_t x = bitmask[k];
+
+    x = (x & 0x55555555) + ((x >> 1) & 0x55555555);
+    x = (x & 0x33333333) + ((x >> 2) & 0x33333333);
+    x = (x & 0x0f0f0f0f) + ((x >> 4) & 0x0f0f0f0f);
+    x = (x & 0x00ff00ff) + ((x >> 8) & 0x00ff00ff);
+    nbits += (x & 0x0000ffff) + ((x >> 16) & 0x0000ffff);
+  }
+
+  MALLOCA(uint32_t, counts, msize + 1);
+
+  for (uint32_t k = 0; k < nbucket; ++k) {
+    ++counts[size[k]];
+  }
+
+  int n = 0;
+  n += printf_text("Histogram for", USE_LT);
+  n += printf_text(get_secnamebyoffset(p, sh_name), USE_LT | USE_DRTB | USE_SPACE);
+  n += printf_text("bucket list length (total of", USE_LT | USE_SPACE);
+  n += printf_nice(nbucket, USE_DEC);
+  n += printf_text(nbucket == 1 ? "bucket)" : "buckets)", USE_LT | USE_SPACE | USE_COLON | USE_EOL);
+
+  n += printf_text(" Length Number       % of total  Coverage", USE_LT | USE_EOL);
+
+  n += printf("     0 ");
+  n += printf_nice(counts[0], USE_DEC5);
+  n += printf("         ");
+  n += printf_nice((counts[0] * 1000.0) / nbucket, USE_PERCENT);
+  n += printf_eol();
+
+  uint32_t nzeros = 0;
+  for (uint32_t i = 1; i < nbucket; ++i) {
+    nzeros += counts[i] * i;
+
+    n += printf_nice(i, USE_DEC5);
+    n += printf_pack(1);
+    n += printf_nice(counts[i], USE_DEC5);
+    n += printf_pack(9);
+    n += printf_nice((counts[i] * 1000.0) / nbucket, USE_PERCENT);
+    n += printf_pack(4);
+    n += printf_nice((nzeros * 1000.0) / nsyms, USE_PERCENT);
+    n += printf_eol();
+  }
+
+  n += printf_eol();
+
+  return n;
+}
+
+static int dump_histogram32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
+  for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
+    Elf32_Shdr *shdr = get_shdr32byindex(p, i);
+    if (shdr && SHT_GNU_HASH == shdr->sh_type) {
+      uint32_t *pb = _get32byshdr(p, shdr);
+      if (pb) {
+        dump_gnuhash0(p, pb, shdr->sh_name);
       }
+    } if (shdr && SHT_HASH == shdr->sh_type) {
+      // TBD
     }
-
-    /* count bits in bitmask. */
-    uint_fast32_t nbits = 0;
-    for (Elf32_Word k = 0; k < sbitmask; ++k) {
-      uint_fast32_t x = bitmask[k];
-
-      x = (x & 0x55555555) + ((x >> 1) & 0x55555555);
-      x = (x & 0x33333333) + ((x >> 2) & 0x33333333);
-      x = (x & 0x0f0f0f0f) + ((x >> 4) & 0x0f0f0f0f);
-      x = (x & 0x00ff00ff) + ((x >> 8) & 0x00ff00ff);
-      nbits += (x & 0x0000ffff) + ((x >> 16) & 0x0000ffff);
-    }
-
-    MALLOCA(uint32_t, counts, msize + 1);
-
-    for (Elf32_Word k = 0; k < nbucket; ++k) {
-      ++counts[size[k]];
-    }
-
-    printf_text("Histogram for", USE_LT);
-    printf_text(get_secname64byshdr(p, shdr), USE_LT | USE_DRTB | USE_SPACE);
-    printf_text("bucket list length (total of", USE_LT | USE_SPACE);
-    printf_nice(nbucket, USE_DEC);
-    printf_text(nbucket == 1 ? "bucket)" : "buckets)", USE_LT | USE_SPACE | USE_COLON | USE_EOL);
-
-    printf_text(" Length Number       % of total  Coverage", USE_LT | USE_EOL);
-
-    printf("     0 ");
-    printf_nice(counts[0], USE_DEC5);
-    printf("         ");
-    printf_nice((counts[0] * 1000.0) / nbucket, USE_PERCENT);
-    printf_eol();
-
-    uint64_t nzeros = 0;
-    for (Elf32_Word i = 1; i < nbucket; ++i) {
-      nzeros += counts[i] * i;
-
-      printf_nice(i, USE_DEC5);
-      printf(" ");
-      printf_nice(counts[i], USE_DEC5);
-      printf("         ");
-      printf_nice((counts[i] * 1000.0) / nbucket, USE_PERCENT);
-      printf("    ");
-      printf_nice((nzeros * 1000.0) / nsyms, USE_PERCENT);
-      printf_eol();
-    }
-
-    printf_eol();
   }
 
   return 0;
@@ -1035,7 +1048,10 @@ static int dump_histogram64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *e
   for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
     Elf64_Shdr *shdr = get_shdr64byindex(p, i);
     if (shdr && SHT_GNU_HASH == shdr->sh_type) {
-      dump_gnuhash64(p, o, ehdr, shdr);
+      uint32_t *pb = _get64byshdr(p, shdr);
+      if (pb) {
+        dump_gnuhash0(p, pb, shdr->sh_name);
+      }
     } if (shdr && SHT_HASH == shdr->sh_type) {
       // TBD
     }
@@ -1454,7 +1470,7 @@ int readelf(const pbuffer_t p, const poptions_t o) {
         if (o->action & OPTREADELF_RELOCS)           dump_relocs32(p, o, ehdr);
         if (o->action & OPTREADELF_UNWIND)           dump_unwind32(p, o, ehdr);
         if (o->action & OPTREADELF_SYMBOLS)          dump_symbols32(p, o, ehdr);
-
+        if (o->action & OPTREADELF_HISTOGRAM)        dump_histogram32(p, o, ehdr);
         if (o->action & OPTREADELF_VERSION)          dump_version32(p, o, ehdr);
         if (o->actions)                              dump_actions32(p, o, ehdr);
         if (o->action & OPTREADELF_NOTES)            dump_notes32(p, o, ehdr);
