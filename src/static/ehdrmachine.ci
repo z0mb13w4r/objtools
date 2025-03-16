@@ -3,6 +3,7 @@ static convert_t zEHDRMACHINE[] = {
   {"Intel 80386",                  EM_386},
   {"AMD x86-64",                   EM_X86_64},
   {"AArch64",                      EM_AARCH64},
+  {"ARM",                          EM_ARM},
   {0, 0}
 };
 
