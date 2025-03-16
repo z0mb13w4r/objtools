@@ -619,7 +619,13 @@ static int dump_relocsrel32(const pbuffer_t p, const poptions_t o, Elf32_Shdr *s
   MALLOCA(version_t, vnames, 1024);
   make_versionnames32(p, vnames, NELEMENTS(vnames));
 
-  printf_text("Offset       Info         Type                 Symbol's Value   Symbol's Name", USE_LT | USE_SPACE | USE_EOL);
+  const int MAXSIZE = strlenpick(zRELTYPE32) + 2;
+
+  printf_text("Offset", USE_LT | USE_SPACE | SET_PAD(10));
+  printf_text("Info", USE_LT | SET_PAD(9));
+  printf_text("Type", USE_LT | SET_PAD(MAXSIZE));
+  printf_text("Sym Val", USE_LT | SET_PAD(9));
+  printf_text("Sym Name", USE_LT | USE_EOL);
 
   size_t cnt = shdr->sh_size / shdr->sh_entsize;
 
@@ -628,7 +634,7 @@ static int dump_relocsrel32(const pbuffer_t p, const poptions_t o, Elf32_Shdr *s
     for (size_t j = 0; j < cnt; ++j, ++r) {
       printf_nice(r->r_offset, USE_LHEX32);
       printf_nice(r->r_info, USE_LHEX32);
-      printf_pick(zRELTYPE32, ELF32_R_TYPE(r->r_info), USE_LT | USE_SPACE | SET_PAD(20));
+      printf_pick(zRELTYPE32, ELF32_R_TYPE(r->r_info), USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
 
       if (isused(zRELTYPE32DEF, ELF32_R_TYPE(r->r_info))) {
         dump_relocsdef32(p, o, shdr, r->r_info);
@@ -647,7 +653,13 @@ static int dump_relocsrel32(const pbuffer_t p, const poptions_t o, Elf32_Shdr *s
 }
 
 static int dump_relocsrel64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *shdr) {
-  printf_text("Offset       Info         Type                 Symbol's Value   Symbol's Name", USE_LT | USE_SPACE | USE_EOL);
+  const int MAXSIZE = strlenpick(zRELTYPE64) + 2;
+
+  printf_text("Offset", USE_LT | USE_SPACE | SET_PAD(14));
+  printf_text("Info", USE_LT | SET_PAD(13));
+  printf_text("Type", USE_LT | SET_PAD(MAXSIZE));
+  printf_text("Symbol's Value", USE_LT | SET_PAD(17));
+  printf_text("Symbol's Name", USE_LT | USE_EOL);
 
   size_t cnt = shdr->sh_size / shdr->sh_entsize;
 
@@ -656,7 +668,7 @@ static int dump_relocsrel64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *s
     for (size_t j = 0; j < cnt; ++j, ++r) {
       printf_nice(r->r_offset, USE_LHEX48);
       printf_nice(r->r_info, USE_LHEX48);
-      printf_pick(zRELTYPE64, r->r_info & 0xffff, USE_LT | USE_SPACE | SET_PAD(20));
+      printf_pick(zRELTYPE64, ELF64_R_TYPE(r->r_info), USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
 // TBD
       printf_eol();
     }
@@ -666,7 +678,13 @@ static int dump_relocsrel64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *s
 }
 
 static int dump_relocsrela32(const pbuffer_t p, const poptions_t o, Elf32_Shdr *shdr) {
-  printf_text("Offset       Info         Type                Symbol's Value   Symbol's Name + Addend", USE_LT | USE_SPACE | USE_EOL);
+  const int MAXSIZE = strlenpick(zRELTYPE32) + 2;
+
+  printf_text("Offset", USE_LT | USE_SPACE | SET_PAD(10));
+  printf_text("Info", USE_LT | SET_PAD(9));
+  printf_text("Type", USE_LT | SET_PAD(MAXSIZE));
+  printf_text("Sym Val", USE_LT | SET_PAD(9));
+  printf_text("Sym Name + Addend", USE_LT | USE_EOL);
 
   size_t cnt = shdr->sh_size / shdr->sh_entsize;
 
@@ -675,7 +693,7 @@ static int dump_relocsrela32(const pbuffer_t p, const poptions_t o, Elf32_Shdr *
     for (size_t j = 0; j < cnt; ++j, ++r) {
       printf_nice(r->r_offset, USE_LHEX48);
       printf_nice(r->r_info, USE_LHEX48);
-      printf_pick(zRELTYPE32, r->r_info & 0x00ff, USE_LT | USE_SPACE | SET_PAD(20));
+      printf_pick(zRELTYPE32, ELF32_R_TYPE(r->r_info), USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
 
       printf_eol();
     }
@@ -688,7 +706,13 @@ static int dump_relocsrela64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *
   MALLOCA(version_t, vnames, 1024);
   make_versionnames64(p, vnames, NELEMENTS(vnames));
 
-  printf_text("Offset       Info         Type                Symbol's Value   Symbol's Name + Addend", USE_LT | USE_SPACE | USE_EOL);
+  const int MAXSIZE = strlenpick(zRELTYPE64) + 2;
+
+  printf_text("Offset", USE_LT | USE_SPACE | SET_PAD(14));
+  printf_text("Info", USE_LT | SET_PAD(13));
+  printf_text("Type", USE_LT | SET_PAD(MAXSIZE));
+  printf_text("Symbol's Value", USE_LT | SET_PAD(17));
+  printf_text("Symbol's Name + Addend", USE_LT | USE_EOL);
 
   size_t cnt = shdr->sh_size / shdr->sh_entsize;
 
@@ -697,7 +721,7 @@ static int dump_relocsrela64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *
     for (size_t j = 0; j < cnt; ++j, ++r) {
       printf_nice(r->r_offset, USE_LHEX48);
       printf_nice(r->r_info, USE_LHEX48);
-      printf_pick(zRELTYPE64, ELF64_R_TYPE(r->r_info), USE_LT | USE_SPACE | SET_PAD(20));
+      printf_pick(zRELTYPE64, ELF64_R_TYPE(r->r_info), USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
 
       if (isused(zRELTYPE64DEF, ELF64_R_TYPE(r->r_info))) {
         dump_relocsdef64(p, o, shdr, r->r_info);
