@@ -26,7 +26,7 @@
 
 typedef unsigned short version_t, *pversion_t;
 
-static int make_versionnames32(const pbuffer_t p, pversion_t vnames, const size_t size) {
+static int make_versionnames32(const pbuffer_t p, pversion_t vnames, const size_t maxvnames) {
   Elf32_Shdr *vh = get_shdr32bytype(p, SHT_GNU_verneed);
   if (vh) {
     Elf32_Word offset = 0;
@@ -39,7 +39,7 @@ static int make_versionnames32(const pbuffer_t p, pversion_t vnames, const size_
         for (Elf64_Half k = 0; k < vn->vn_cnt; ++k) {
           Elf32_Vernaux *va = getp(p, vh->sh_offset + xoffset, sizeof(Elf32_Vernaux));
           if (va) {
-            if (va->vna_other < size) {
+            if (va->vna_other < maxvnames) {
               vnames[va->vna_other] = va->vna_name;
             }
             xoffset += va->vna_next;
@@ -56,7 +56,7 @@ static int make_versionnames32(const pbuffer_t p, pversion_t vnames, const size_
   return 0;
 }
 
-static int make_versionnames64(const pbuffer_t p, pversion_t vnames, const size_t size) {
+static int make_versionnames64(const pbuffer_t p, pversion_t vnames, const size_t maxvnames) {
   Elf64_Shdr *vh = get_shdr64bytype(p, SHT_GNU_verneed);
   if (vh) {
     Elf64_Word offset = 0;
@@ -69,7 +69,7 @@ static int make_versionnames64(const pbuffer_t p, pversion_t vnames, const size_
         for (Elf64_Half k = 0; k < vn->vn_cnt; ++k) {
           Elf64_Vernaux *va = getp(p, vh->sh_offset + xoffset, sizeof(Elf64_Vernaux));
           if (va) {
-            if (va->vna_other < size) {
+            if (va->vna_other < maxvnames) {
               vnames[va->vna_other] = va->vna_name;
             }
             xoffset += va->vna_next;
@@ -1060,9 +1060,77 @@ static int dump_histogram64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *e
   return 0;
 }
 
+static int dump_versionsym0(const pbuffer_t p, const uint64_t count, const uint64_t sh_name, const uint64_t sh_addr, const uint64_t sh_offset, const uint64_t sh_link) {
+  int n = 0;
+  n += printf_text("Version symbols section", USE_LT);
+  n += printf_text(get_secnamebyoffset(p, sh_name), USE_LT | USE_SQ | USE_SPACE);
+  n += printf_text("contains", USE_SPACE);
+  n += printf_nice(count, USE_DEC);
+  n += printf_text(1 == count ? "entry" : "entries", USE_LT | USE_SPACE | USE_COLON | USE_EOL);
+
+  n += printf_text("Addr", USE_SPACE | USE_COLON);
+  n += printf_nice(sh_addr, USE_FHEX64);
+  n += printf_text("Offset", USE_SPACE | USE_COLON);
+  n += printf_nice(sh_offset, USE_FHEX24);
+  n += printf_text("Link", USE_SPACE | USE_COLON);
+  n += printf_nice(sh_link, USE_DEC);
+  n += printf_text(get_secnamebyindex(p, sh_link), USE_LT | USE_RB | USE_SPACE);
+
+  return n;
+}
+
+static int dump_versionsym1(const pbuffer_t p, const int index, const version_t vs, pversion_t vnames, const size_t maxvnames) {
+  const int MAXSIZE = 20;
+
+  int n0 = 0;
+  if (index % 4 == 0) {
+    n0 += printf_eol();
+    n0 += printf_nice(index, USE_LHEX16 | USE_COLON);
+    n0 += printf_pack(1);
+  }
+
+  const version_t vsh = vs & VERSYM_HIDDEN;
+  const version_t vsx = vs & VERSYM_VERSION;
+
+  int n1 = 0;
+  if (0 == vs)         n1 += printf_text("   0  (*local*)", USE_LT | SET_PAD(MAXSIZE));
+  else if (1 == vs)    n1 += printf_text("   1  (*global*)", USE_LT | SET_PAD(MAXSIZE));
+  else {
+    n1 += printf_nice(vsx, USE_HEX4);
+    n1 += printf_nice(vsh ? 'h' : ' ', USE_CHAR);
+    if (vsx < maxvnames && vnames[vsx]) {
+      n1 += printf_text(get_namebyoffset(p, vnames[0], vnames[vsx]), USE_LT | USE_RB | USE_SPACE | SET_PAD(MAX(0, MAXSIZE - n1)));
+    } else {
+      n1 += printf_text("???", USE_SPACE | SET_PAD(MAX(0, MAXSIZE - n1)));
+    }
+  }
+
+  return n0 + n1;
+}
+
+static int dump_versionsym2(const pbuffer_t p, const uint64_t count) {
+  int n = 0;
+  if (count) n += printf_eol();
+  n += printf_eol();
+
+  return n;
+}
+
 static int dump_versionsym32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr, Elf32_Shdr *shdr) {
   MALLOCA(version_t, vnames, 1024);
   make_versionnames32(p, vnames, NELEMENTS(vnames));
+
+  size_t cnt = shdr->sh_size / shdr->sh_entsize;
+  dump_versionsym0(p, cnt, shdr->sh_name, shdr->sh_addr, shdr->sh_offset, shdr->sh_link);
+
+  for (size_t j = 0; j < cnt; ++j) {
+    Elf64_Versym *vs = getp(p, shdr->sh_offset + (j * shdr->sh_entsize), shdr->sh_entsize);
+    if (vs) {
+      dump_versionsym1(p, j, *vs, vnames, NELEMENTS(vnames));
+    }
+  }
+
+  dump_versionsym2(p, cnt);
 
   return 0;
 }
@@ -1072,45 +1140,16 @@ static int dump_versionsym64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *
   make_versionnames64(p, vnames, NELEMENTS(vnames));
 
   size_t cnt = shdr->sh_size / shdr->sh_entsize;
-  printf_text("Version symbols section", USE_LT);
-  printf_text(get_secname64byshdr(p, shdr), USE_LT | USE_SQ | USE_SPACE);
-  printf_text("contains", USE_SPACE);
-  printf_nice(cnt, USE_DEC);
-  printf_text(1 == cnt ? "entry" : "entries", USE_LT | USE_SPACE | USE_COLON | USE_EOL);
-
-  printf_text("Addr", USE_SPACE | USE_COLON);
-  printf_nice(shdr->sh_addr, USE_FHEX64);
-  printf_text("Offset", USE_SPACE | USE_COLON);
-  printf_nice(shdr->sh_offset, USE_FHEX24);
-  printf_text("Link", USE_SPACE | USE_COLON);
-  printf_nice(shdr->sh_link, USE_DEC);
-  printf_text(get_secnamebyindex(p, shdr->sh_link), USE_LT | USE_RB | USE_SPACE);
+  dump_versionsym0(p, cnt, shdr->sh_name, shdr->sh_addr, shdr->sh_offset, shdr->sh_link);
 
   for (size_t j = 0; j < cnt; ++j) {
     Elf64_Versym *vs = getp(p, shdr->sh_offset + (j * shdr->sh_entsize), shdr->sh_entsize);
     if (vs) {
-      if (j % 4 == 0) {
-        printf_eol();
-        printf_nice(j, USE_LHEX16 | USE_COLON);
-        printf(" ");
-      }
-
-      int n = 0;
-      if (0 == *vs)        n += printf_text("   0  (*local*)", USE_LT | SET_PAD(20));
-      else if (1 == *vs)   n += printf_text("   1  (*global*)", USE_LT | SET_PAD(20));
-      else {
-        n += printf("%4x%c", *vs & VERSYM_VERSION, *vs & VERSYM_HIDDEN ? 'h' : ' ');
-        if (vnames[*vs & VERSYM_VERSION] && (*vs & VERSYM_VERSION) < NELEMENTS(vnames)) {
-          n += printf_text(get_namebyoffset(p, vnames[0], vnames[*vs & VERSYM_VERSION]), USE_LT | USE_RB | USE_SPACE | SET_PAD(MAX(0, 20 - n)));
-        } else {
-          n += printf_text("???", USE_SPACE | SET_PAD(MAX(0, 20 - n)));
-        }
-      }
+      dump_versionsym1(p, j, *vs, vnames, NELEMENTS(vnames));
     }
   }
 
-  if (cnt) printf_eol();
-  printf_eol();
+  dump_versionsym2(p, cnt);
 
   return 0;
 }

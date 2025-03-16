@@ -99,6 +99,8 @@ int printf_neat(char* o, const size_t size, const uint64_t v, const imode_t mode
     case USE_DEC3Z:                n += PRINT2("%3.3" PRId64, v);                  break;
     case USE_DEC5:                 n += PRINT2("%5" PRId64, v);                    break;
     case USE_DEC5Z:                n += PRINT2("%5.5" PRId64, v);                  break;
+    case USE_HEX2:                 n += PRINT2("%2" PRIx64, v);                    break;
+    case USE_HEX4:                 n += PRINT2("%4" PRIx64, v);                    break;
     case USE_OCT:                  n += PRINT2("%" PRIo64, v);                     break;
     case USE_OCT2:                 n += PRINT2("%2" PRIo64, v);                    break;
     case USE_OCT5:                 n += PRINT2("%5" PRIo64, v);                    break;
