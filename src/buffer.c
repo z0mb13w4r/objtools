@@ -7,16 +7,16 @@
 #include "memlink.h"
 #include "objutils.h"
 
-static int ismode0(unknown_t p, const int mode) {
+static bool_t ismode0(unknown_t p, const int mode) {
   if (p) {
     const char* pc = p;
-    if (MODE_GET0(mode) != pc[0])      return 0;
-    else if (MODE_GET1(mode) != pc[1]) return 0;
-    else if (MODE_GET2(mode) != pc[2]) return 0;
-    else return 1;
+    if (MODE_GET0(mode) != pc[0])      return FALSE;
+    else if (MODE_GET1(mode) != pc[1]) return FALSE;
+    else if (MODE_GET2(mode) != pc[2]) return FALSE;
+    return TRUE;
   }
 
-  return 0;
+  return FALSE;
 }
 
 handle_t setmode(handle_t p, const int mode) {
@@ -116,21 +116,25 @@ handle_t bopen(const char* name) {
   return 0;
 }
 
-int ismode(handle_t p, const int mode) {
+bool_t ismode(handle_t p, const int mode) {
   if (p) {
     const char* pc = p;
-    if (MODE_GET0(mode) != pc[0]) return 0;
-    if (MODE_GET1(mode) != pc[1]) return 0;
-    if (MODE_GET2(mode) != pc[2]) return 0;
-    if (MODE_GET3(mode) != pc[3]) return 0;
-    return 1;
+    if (MODE_GET0(mode) != pc[0]) return FALSE;
+    if (MODE_GET1(mode) != pc[1]) return FALSE;
+    if (MODE_GET2(mode) != pc[2]) return FALSE;
+    if (MODE_GET3(mode) != pc[3]) return FALSE;
+    return TRUE;
   }
 
-  return 0;
+  return FALSE;
 }
 
-int issafe(pbuffer_t p) {
-  return p && p->data;
+bool_t issafe(pbuffer_t p) {
+  return p && p->data ? TRUE : FALSE;
+}
+
+bool_t isbuffer(handle_t p) {
+  return ismode(p, MODE_BUFFER) && issafe(p);
 }
 
 void* getp(const pbuffer_t p, const int offset, const size_t size) {

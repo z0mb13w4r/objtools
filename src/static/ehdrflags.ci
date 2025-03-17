@@ -1,16 +1,62 @@
-static convert_t EHDRFLAGS[] = {
-  {"W",                            SHF_WRITE},
-  {"A",                            SHF_ALLOC},
-  {"X",                            SHF_EXECINSTR},
-  {"M",                            SHF_MERGE},
-  {"S",                            SHF_STRINGS},
-  {"I",                            SHF_INFO_LINK},
-  {"L",                            SHF_LINK_ORDER},
-  {"O",                            SHF_OS_NONCONFORMING},
-  {"G",                            SHF_GROUP},
-  {"T",                            SHF_TLS},
-  {"E",                            SHF_EXCLUDE},
-  {"C",                            SHF_COMPRESSED},
+
+static convert_t zEHDRFLAGS32ARMv1[] = {
+  {"EABIv1",                             EF_ARM_EABI_VER1},
+  {"sorted symbol tables",               EF_ARM_SYMSARESORTED},
   {0, 0}
 };
+
+static convert_t zEHDRFLAGS32ARMv2[] = {
+  {"EABIv2",                             EF_ARM_EABI_VER2},
+  {"sorted symbol tables",               EF_ARM_SYMSARESORTED},
+  {"dynamic symbols use segment index",  EF_ARM_DYNSYMSUSESEGIDX},
+  {"mapping symbols precede others",     EF_ARM_MAPSYMSFIRST},
+  {0, 0}
+};
+
+static convert_t zEHDRFLAGS32ARMv3[] = {
+  {"EABIv3",                             EF_ARM_EABI_VER3},
+  {"relocatable executable",             EF_ARM_RELEXEC},
+  {"position independent",   EF_ARM_PIC},
+  {0, 0}
+};
+
+static convert_t zEHDRFLAGS32ARMv4[] = {
+  {"EABIv4",                 EF_ARM_EABI_VER4},
+  {"BE8",                    EF_ARM_BE8},
+  {"LE8",                    EF_ARM_LE8},
+  {"relocatable executable", EF_ARM_RELEXEC},
+  {"position independent",   EF_ARM_PIC},
+  {0, 0}
+};
+
+static convert_t zEHDRFLAGS32ARMv5[] = {
+  {"EABIv5",                 EF_ARM_EABI_VER5},
+  {"BE8",                    EF_ARM_BE8},
+  {"LE8",                    EF_ARM_LE8},
+  {"soft-float ABI",         EF_ARM_ABI_FLOAT_SOFT},
+  {"hard-float ABI",         EF_ARM_ABI_FLOAT_HARD},
+  {"relocatable executable", EF_ARM_RELEXEC},
+  {"position independent",   EF_ARM_PIC},
+  {0, 0}
+};
+
+pconvert_t get_EHDRFLAGS(const pbuffer_t p) {
+  switch (get_emachine(p)) {
+  case EM_ARM:
+    switch (EF_ARM_EABI_VERSION(get_eflags(p))) {
+    case EF_ARM_EABI_VER1:   return zEHDRFLAGS32ARMv1;
+    case EF_ARM_EABI_VER2:   return zEHDRFLAGS32ARMv2;
+    case EF_ARM_EABI_VER3:   return zEHDRFLAGS32ARMv3;
+    case EF_ARM_EABI_VER4:   return zEHDRFLAGS32ARMv4;
+    case EF_ARM_EABI_VER5:   return zEHDRFLAGS32ARMv5;
+    default:
+      break;
+     }
+     break;
+  default:
+    break;
+  }
+
+  return NULL;
+}
 

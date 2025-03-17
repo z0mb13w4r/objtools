@@ -17,15 +17,19 @@
    the st_other field.  The STV_ defines specify the actual visibility.  */
 #define ELF_ST_VISIBILITY(x)       ((x) & 0x03)
 
-int isTBSS32(Elf64_Shdr *s, Elf64_Phdr *p);
-int isTBSS64(Elf64_Shdr *s, Elf64_Phdr *p);
+bool_t isTBSS32(Elf64_Shdr *s, Elf64_Phdr *p);
+bool_t isTBSS64(Elf64_Shdr *s, Elf64_Phdr *p);
 
-int isshdrinphdr32(Elf32_Shdr *s, Elf32_Phdr *p);
-int isshdrinphdr64(Elf64_Shdr *s, Elf64_Phdr *p);
+bool_t isshdrinphdr32(Elf32_Shdr *s, Elf32_Phdr *p);
+bool_t isshdrinphdr64(Elf64_Shdr *s, Elf64_Phdr *p);
 
-int isELF(const pbuffer_t p);
-int isELF32(const pbuffer_t p);
-int isELF64(const pbuffer_t p);
+bool_t isELF(const pbuffer_t p);
+bool_t isELF32(const pbuffer_t p);
+bool_t isELF64(const pbuffer_t p);
+
+uint64_t get_etype(const pbuffer_t p);
+uint64_t get_eflags(const pbuffer_t p);
+uint64_t get_emachine(const pbuffer_t p);
 
 uint64_t getLE(const void *p, const size_t siz);
 uint64_t getBE(const void *p, const size_t siz);

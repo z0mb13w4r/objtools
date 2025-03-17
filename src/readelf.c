@@ -17,6 +17,7 @@
 #include "static/nhdrtype.ci"
 #include "static/phdrtype.ci"
 #include "static/reltype.ci"
+#include "static/shdrflags.ci"
 #include "static/shdrtype.ci"
 #include "static/shnindex.ci"
 #include "static/stbbind.ci"
@@ -252,8 +253,11 @@ static int dump_fileheader0(const pbuffer_t p, const uint64_t e_type, const uint
   n += printf_nice(e_phoff, USE_DEC | USE_BYTES | USE_EOL);
   n += printf_text("Start of section headers", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(e_shoff, USE_DEC | USE_BYTES | USE_EOL);
+
   n += printf_text("Flags", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  n += printf_nice(e_flags, USE_FHEX | USE_EOL);
+  n += printf_nice(e_flags, USE_FHEX);
+  n += printf_mask(get_EHDRFLAGS(p), e_flags, USE_EOL);
+
   n += printf_text("Size of this header", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(e_ehsize, USE_DEC | USE_BYTES | USE_EOL);
   n += printf_text("Size of program headers", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
@@ -306,7 +310,7 @@ static int dump_sectionheaders1(const pbuffer_t p, const int index, const int ma
   n += printf_nice(sh_offset, USE_LHEX32);
   n += printf_nice(sh_size, USE_LHEX32);
   n += printf_nice(sh_entsize, USE_LHEX8);
-  n += printf_mask(EHDRFLAGS, sh_flags, USE_RT | USE_NOSPACE | SET_PAD(4));
+  n += printf_mask(zSHDRFLAGS, sh_flags, USE_RT | USE_NOSPACE | SET_PAD(4));
   n += printf_nice(sh_link, USE_DEC2);
   n += printf_nice(sh_info, USE_DEC3);
   n += printf_nice(sh_addralign, USE_DEC3);
@@ -619,7 +623,7 @@ static int dump_relocsrel32(const pbuffer_t p, const poptions_t o, Elf32_Shdr *s
   MALLOCA(version_t, vnames, 1024);
   make_versionnames32(p, vnames, NELEMENTS(vnames));
 
-  const int MAXSIZE = strlenpick(zRELTYPE32) + 2;
+  const int MAXSIZE = strlenpick(get_RELTYPE(p)) + 2;
 
   printf_text("Offset", USE_LT | USE_SPACE | SET_PAD(10));
   printf_text("Info", USE_LT | SET_PAD(9));
@@ -634,14 +638,13 @@ static int dump_relocsrel32(const pbuffer_t p, const poptions_t o, Elf32_Shdr *s
     for (size_t j = 0; j < cnt; ++j, ++r) {
       printf_nice(r->r_offset, USE_LHEX32);
       printf_nice(r->r_info, USE_LHEX32);
-      printf_pick(zRELTYPE32, ELF32_R_TYPE(r->r_info), USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+      printf_pick(get_RELTYPE(p), ELF32_R_TYPE(r->r_info), USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
 
-      if (isused(zRELTYPE32DEF, ELF32_R_TYPE(r->r_info))) {
+      if (isused(get_RELTYPEDEF(p), ELF32_R_TYPE(r->r_info))) {
         dump_relocsdef32(p, o, shdr, r->r_info);
-      } else if (isused(zRELTYPE32VER, ELF32_R_TYPE(r->r_info))) {
+      } else if (isused(get_RELTYPEVER(p), ELF32_R_TYPE(r->r_info))) {
         dump_relocsver32(p, o, shdr, r->r_info, vnames, NELEMENTS(vnames));
-      } else if (R_386_NONE != ELF32_R_TYPE(r->r_info) && R_386_RELATIVE != ELF32_R_TYPE(r->r_info)) {
-        // TBD
+      } else if (!isused(get_RELTYPESAFE(p), ELF32_R_TYPE(r->r_info))) {
         printf_nice(ELF32_R_TYPE(r->r_info), USE_UNKNOWN);
       }
 
@@ -678,7 +681,7 @@ static int dump_relocsrel64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *s
 }
 
 static int dump_relocsrela32(const pbuffer_t p, const poptions_t o, Elf32_Shdr *shdr) {
-  const int MAXSIZE = strlenpick(zRELTYPE32) + 2;
+  const int MAXSIZE = strlenpick(get_RELTYPE(p)) + 2;
 
   printf_text("Offset", USE_LT | USE_SPACE | SET_PAD(10));
   printf_text("Info", USE_LT | SET_PAD(9));
@@ -693,7 +696,7 @@ static int dump_relocsrela32(const pbuffer_t p, const poptions_t o, Elf32_Shdr *
     for (size_t j = 0; j < cnt; ++j, ++r) {
       printf_nice(r->r_offset, USE_LHEX48);
       printf_nice(r->r_info, USE_LHEX48);
-      printf_pick(zRELTYPE32, ELF32_R_TYPE(r->r_info), USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+      printf_pick(get_RELTYPE(p), ELF32_R_TYPE(r->r_info), USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
 
       printf_eol();
     }
@@ -706,7 +709,7 @@ static int dump_relocsrela64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *
   MALLOCA(version_t, vnames, 1024);
   make_versionnames64(p, vnames, NELEMENTS(vnames));
 
-  const int MAXSIZE = strlenpick(zRELTYPE64) + 2;
+  const int MAXSIZE = strlenpick(get_RELTYPE(p)) + 2;
 
   printf_text("Offset", USE_LT | USE_SPACE | SET_PAD(14));
   printf_text("Info", USE_LT | SET_PAD(13));
@@ -721,27 +724,26 @@ static int dump_relocsrela64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *
     for (size_t j = 0; j < cnt; ++j, ++r) {
       printf_nice(r->r_offset, USE_LHEX48);
       printf_nice(r->r_info, USE_LHEX48);
-      printf_pick(zRELTYPE64, ELF64_R_TYPE(r->r_info), USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+      printf_pick(get_RELTYPE(p), ELF64_R_TYPE(r->r_info), USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
 
-      if (isused(zRELTYPE64DEF, ELF64_R_TYPE(r->r_info))) {
+      if (isused(get_RELTYPEDEF(p), ELF64_R_TYPE(r->r_info))) {
         dump_relocsdef64(p, o, shdr, r->r_info);
-      } else if (isused(zRELTYPE64VER, ELF64_R_TYPE(r->r_info))) {
+      } else if (isused(get_RELTYPEVER(p), ELF64_R_TYPE(r->r_info))) {
         dump_relocsver64(p, o, shdr, r->r_info, vnames, NELEMENTS(vnames));
       }
 
-      if (isused(zRELTYPE64SHEX8, ELF64_R_TYPE(r->r_info))) {
+      if (isused(get_RELTYPESHEX8(p), ELF64_R_TYPE(r->r_info))) {
         printf_nice(r->r_addend, USE_SHEX8);
-      } else if (isused(zRELTYPE64SHEX16, ELF64_R_TYPE(r->r_info))) {
+      } else if (isused(get_RELTYPESHEX16(p), ELF64_R_TYPE(r->r_info))) {
         printf_nice(r->r_addend, USE_SHEX16);
-      } else if (isused(zRELTYPE64SHEX32, ELF64_R_TYPE(r->r_info))) {
+      } else if (isused(get_RELTYPESHEX32(p), ELF64_R_TYPE(r->r_info))) {
         printf_nice(r->r_addend, USE_SHEX32);
-      } else if (isused(zRELTYPE64SHEX64, ELF64_R_TYPE(r->r_info))) {
+      } else if (isused(get_RELTYPESHEX64(p), ELF64_R_TYPE(r->r_info))) {
         printf_nice(r->r_addend, USE_SHEX64);
-      } else if (isused(zRELTYPE64PACK, ELF64_R_TYPE(r->r_info))) {
+      } else if (isused(get_RELTYPEPACK(p), ELF64_R_TYPE(r->r_info))) {
         printf_pack(17);
         printf_nice(r->r_addend, USE_LHEX);
-      } else if (R_X86_64_NONE != ELF64_R_TYPE(r->r_info)) {
-// TBD
+      } else if (!isused(get_RELTYPESAFE(p), ELF64_R_TYPE(r->r_info))) {
         printf_nice(r->r_info & 0xffff, USE_UNKNOWN);
       }
 
@@ -1370,7 +1372,7 @@ static int dump_actions64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
   return 0;
 }
 
-static int dump_notes0(const pbuffer_t p, const int index, const char* name, const uint64_t e_machine,
+static int dump_notes0(const pbuffer_t p, const int index, const uint64_t e_machine,
                        const uint64_t n_descsz, const uint64_t n_type, const unknown_t data) {
   int n = 0;
   n += printf_text("Displaying notes found in", USE_LT);
@@ -1382,7 +1384,7 @@ static int dump_notes0(const pbuffer_t p, const int index, const char* name, con
 
   n += printf_text(get_nhdrnamebyindex(p, index), USE_LT | USE_TAB | SET_PAD(22));
   n += printf_nice(n_descsz, USE_FHEX32);
-  n += printf_text(name, USE_LT | USE_SPACE | USE_EOL);
+  n += printf_pick(get_NHDRTYPE(p), n_type, USE_LT | USE_SPACE | USE_EOL);
 
   uint32_t* pc = CAST(uint32_t*, data);
 
@@ -1455,7 +1457,7 @@ static int dump_notes32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr)
       Elf32_Nhdr *nhdr = get_nhdr32byindex(p, i);
       if (nhdr) {
         Elf32_Word *pc = get_nhdrdesc32byindex(p, i);
-        dump_notes0(p, i, get_NHDRTYPE32(p, nhdr), ehdr->e_machine, nhdr->n_descsz, nhdr->n_type, pc);
+        dump_notes0(p, i, ehdr->e_machine, nhdr->n_descsz, nhdr->n_type, pc);
       }
     }
   }
@@ -1469,7 +1471,7 @@ static int dump_notes64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr)
       Elf64_Nhdr *nhdr = get_nhdr64byindex(p, i);
       if (nhdr) {
         Elf64_Word *pc = get_nhdrdesc64byindex(p, i);
-        dump_notes0(p, i, get_NHDRTYPE64(p, nhdr), ehdr->e_machine, nhdr->n_descsz, nhdr->n_type, pc);
+        dump_notes0(p, i, ehdr->e_machine, nhdr->n_descsz, nhdr->n_type, pc);
       }
     }
   }

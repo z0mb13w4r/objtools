@@ -48,10 +48,8 @@ static const char* get_EHDROSABI(pbuffer_t p) {
     const unsigned int osabi = get(p, EI_OSABI);
     const char* s = strpicknull(zEHDROSABI, osabi);
     if (NULL == s) {
-      Elf64_Ehdr *e = get_ehdr64(p);
-
-      if (e && osabi >= 64) {
-        switch (e->e_machine) {
+      if (osabi >= 64) {
+        switch (get_emachine(p)) {
         case EM_AMDGPU:
           return strpick(zEHDROSABIAMDGPU, osabi);
 

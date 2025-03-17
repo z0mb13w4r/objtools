@@ -19,7 +19,9 @@ handle_t create(const int mode);
 handle_t destroy(handle_t p);
 handle_t release(handle_t p);
 
-int ismode(handle_t p, const int mode);
+bool_t issafe(pbuffer_t p);
+bool_t ismode(handle_t p, const int mode);
+bool_t isbuffer(handle_t p);
 
 unknown_t mallocx(const size_t size);
 
@@ -27,7 +29,6 @@ handle_t bmalloc();
 handle_t bfree(handle_t p);
 handle_t bopen(const char* name);
 
-int issafe(pbuffer_t p);
 
 void* getp(const pbuffer_t p, const int offset, const size_t size);
 int   get(const pbuffer_t p, const int offset);

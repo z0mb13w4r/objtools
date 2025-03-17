@@ -4,7 +4,7 @@
 
 /* .tbss is special. It doesn't contribute memory space to normal
    segments and it doesn't take file space in normal segments. */
-static int check_tbss(const uint64_t sh_flags, const uint64_t sh_type, const uint64_t p_type) {
+static bool_t check_tbss(const uint64_t sh_flags, const uint64_t sh_type, const uint64_t p_type) {
   return ((sh_flags & SHF_TLS) != 0)
       && ((sh_type == SHT_NOBITS) && (p_type != PT_TLS));
 }
@@ -14,24 +14,24 @@ static size_t get_size(const uint64_t sh_flags, const uint64_t sh_type, const ui
 }
 
 /* Only PT_LOAD, PT_GNU_RELRO and PT_TLS segments can contain SHF_TLS sections. */
-static int check_x0a(const uint64_t sh_flags, const uint64_t sh_type, const uint64_t p_type) {
+static bool_t check_x0a(const uint64_t sh_flags, const uint64_t sh_type, const uint64_t p_type) {
   return ((sh_flags & SHF_TLS) != 0) &&
          ((p_type == PT_TLS) || (p_type == PT_GNU_RELRO) || (p_type == PT_LOAD));
 }
 
 /* PT_TLS segment contains only SHF_TLS sections, PT_PHDR no sections at all. */
-static int check_x0b(const uint64_t sh_flags, const uint64_t sh_type, const uint64_t p_type) {
+static bool_t check_x0b(const uint64_t sh_flags, const uint64_t sh_type, const uint64_t p_type) {
   return ((sh_flags & SHF_TLS) == 0) &&
          (p_type != PT_TLS) &&
          (p_type != PT_PHDR);
 }
 
 /* PT_LOAD and similar segments only have SHF_ALLOC sections. */
-static int check_x1a(const uint64_t sh_flags, const uint64_t sh_type, const uint64_t p_type) {
+static bool_t check_x1a(const uint64_t sh_flags, const uint64_t sh_type, const uint64_t p_type) {
   return (sh_flags & SHF_ALLOC) == 0;
 }
 
-static int check_x1b(const uint64_t sh_flags, const uint64_t sh_type, const uint64_t p_type) {
+static bool_t check_x1b(const uint64_t sh_flags, const uint64_t sh_type, const uint64_t p_type) {
   return (p_type == PT_LOAD) ||
          (p_type == PT_DYNAMIC) ||
          (p_type == PT_GNU_EH_FRAME) ||
@@ -42,11 +42,11 @@ static int check_x1b(const uint64_t sh_flags, const uint64_t sh_type, const uint
 }
 
 /* Any section besides one of type SHT_NOBITS must have file offsets within the segment. */
-static int check_x2a(const uint64_t sh_flags, const uint64_t sh_type, const uint64_t p_type) {
+static bool_t check_x2a(const uint64_t sh_flags, const uint64_t sh_type, const uint64_t p_type) {
   return sh_type == SHT_NOBITS;
 }
 
-static int check_x2b(const uint64_t sh_flags, const uint64_t sh_type, const uint64_t sh_addr, const uint64_t sh_offset, const uint64_t sh_size,
+static bool_t check_x2b(const uint64_t sh_flags, const uint64_t sh_type, const uint64_t sh_addr, const uint64_t sh_offset, const uint64_t sh_size,
                      const uint64_t p_type, const uint64_t p_vaddr, const uint64_t p_offset, const uint64_t p_memsz, const uint64_t p_filesz) {
   return (sh_offset >= p_offset) &&
          (sh_offset - p_offset <= p_filesz - 1) &&
@@ -54,11 +54,11 @@ static int check_x2b(const uint64_t sh_flags, const uint64_t sh_type, const uint
 }
 
 /* SHF_ALLOC sections must have VMAs within the segment. */
-static int check_x3a(const uint64_t sh_flags, const uint64_t sh_type, const uint64_t p_type) {
+static bool_t check_x3a(const uint64_t sh_flags, const uint64_t sh_type, const uint64_t p_type) {
   return (sh_flags & SHF_ALLOC) == 0;
 }
 
-static int check_x3b(const uint64_t sh_flags, const uint64_t sh_type, const uint64_t sh_addr, const uint64_t sh_offset, const uint64_t sh_size,
+static bool_t check_x3b(const uint64_t sh_flags, const uint64_t sh_type, const uint64_t sh_addr, const uint64_t sh_offset, const uint64_t sh_size,
                      const uint64_t p_type, const uint64_t p_vaddr, const uint64_t p_offset, const uint64_t p_memsz, const uint64_t p_filesz) {
   return (sh_addr >= p_vaddr) &&
          ((sh_addr - p_vaddr) <= (p_memsz - 1)) &&
@@ -66,30 +66,30 @@ static int check_x3b(const uint64_t sh_flags, const uint64_t sh_type, const uint
 }
 
 /* No zero size sections at start or end of PT_DYNAMIC nor PT_NOTE. */
-static int check_x4a(const uint64_t sh_flags, const uint64_t sh_type, const uint64_t p_type) {
+static bool_t check_x4a(const uint64_t sh_flags, const uint64_t sh_type, const uint64_t p_type) {
   return p_type != PT_DYNAMIC && p_type != PT_NOTE;
 }
 
-static int check_x4b(const uint64_t sh_flags, const uint64_t sh_type, const uint64_t sh_addr, const uint64_t sh_offset, const uint64_t sh_size,
+static bool_t check_x4b(const uint64_t sh_flags, const uint64_t sh_type, const uint64_t sh_addr, const uint64_t sh_offset, const uint64_t sh_size,
                      const uint64_t p_type, const uint64_t p_vaddr, const uint64_t p_offset, const uint64_t p_memsz, const uint64_t p_filesz) {
   return sh_size != 0 || p_memsz == 0;
 }
 
-static int check_x4c(const uint64_t sh_flags, const uint64_t sh_type, const uint64_t sh_addr, const uint64_t sh_offset, const uint64_t sh_size,
+static bool_t check_x4c(const uint64_t sh_flags, const uint64_t sh_type, const uint64_t sh_addr, const uint64_t sh_offset, const uint64_t sh_size,
                      const uint64_t p_type, const uint64_t p_vaddr, const uint64_t p_offset, const uint64_t p_memsz, const uint64_t p_filesz) {
   return (sh_type == SHT_NOBITS || (sh_offset > p_offset && (sh_offset - p_offset < p_filesz))) &&
          ((sh_flags & SHF_ALLOC) == 0 || (sh_addr > p_vaddr && (sh_addr - p_vaddr < p_memsz)));
 }
 
-int isTBSS32(Elf64_Shdr *s, Elf64_Phdr *p) {
+bool_t isTBSS32(Elf64_Shdr *s, Elf64_Phdr *p) {
   return s && p && check_tbss(s->sh_flags, s->sh_type, p->p_type);
 }
 
-int isTBSS64(Elf64_Shdr *s, Elf64_Phdr *p) {
+bool_t isTBSS64(Elf64_Shdr *s, Elf64_Phdr *p) {
   return s && p && check_tbss(s->sh_flags, s->sh_type, p->p_type);
 }
 
-int isshdrinphdr32(Elf32_Shdr *s, Elf32_Phdr *p) {
+bool_t isshdrinphdr32(Elf32_Shdr *s, Elf32_Phdr *p) {
   if (s && p) {
     /* Only PT_LOAD, PT_GNU_RELRO and PT_TLS segments can contain SHF_TLS sections. */
     int x0a = check_x0a(s->sh_flags, s->sh_type, p->p_type);
@@ -125,10 +125,10 @@ int isshdrinphdr32(Elf32_Shdr *s, Elf32_Phdr *p) {
            (x4a || x4b || x4c);
   }
 
-  return 0;
+  return FALSE;
 }
 
-int isshdrinphdr64(Elf64_Shdr *s, Elf64_Phdr *p) {
+bool_t isshdrinphdr64(Elf64_Shdr *s, Elf64_Phdr *p) {
   if (s && p) {
     /* Only PT_LOAD, PT_GNU_RELRO and PT_TLS segments can contain SHF_TLS sections. */
     int x0a = check_x0a(s->sh_flags, s->sh_type, p->p_type);
@@ -164,7 +164,7 @@ int isshdrinphdr64(Elf64_Shdr *s, Elf64_Phdr *p) {
            (x4a || x4b || x4c);
   }
 
-  return 0;
+  return FALSE;
 }
 
 uint64_t getLE(const void *p, const size_t siz) {
@@ -197,28 +197,64 @@ uint64_t getBE(const void *p, const size_t siz) {
   return x;
 }
 
-int isELF(const pbuffer_t p) {
+uint64_t get_eflags(const pbuffer_t p) {
+  if (isELF32(p)) {
+    Elf32_Ehdr *e = get_ehdr32(p);
+    return e ? e->e_flags : 0;
+  } else if (isELF64(p)) {
+    Elf64_Ehdr *e = get_ehdr64(p);
+    return e ? e->e_flags : 0;
+  }
+
+  return 0;
+}
+
+uint64_t get_etype(const pbuffer_t p) {
+  if (isELF32(p)) {
+    Elf32_Ehdr *e = get_ehdr32(p);
+    return e ? e->e_type : 0;
+  } else if (isELF64(p)) {
+    Elf64_Ehdr *e = get_ehdr64(p);
+    return e ? e->e_type : 0;
+  }
+
+  return 0;
+}
+
+uint64_t get_emachine(const pbuffer_t p) {
+  if (isELF32(p)) {
+    Elf32_Ehdr *e = get_ehdr32(p);
+    return e ? e->e_machine : 0;
+  } else if (isELF64(p)) {
+    Elf64_Ehdr *e = get_ehdr64(p);
+    return e ? e->e_machine : 0;
+  }
+
+  return 0;
+}
+
+bool_t isELF(const pbuffer_t p) {
   if (issafe(p)) {
-    return 0x7f == get(p, EI_MAG0) && 'E' == get(p, EI_MAG1) && 'L' == get(p, EI_MAG2) && 'F' == get(p, EI_MAG3) ? 1 : 0;
+    return 0x7f == get(p, EI_MAG0) && 'E' == get(p, EI_MAG1) && 'L' == get(p, EI_MAG2) && 'F' == get(p, EI_MAG3) ? TRUE : FALSE;
   }
 
-  return 0;
+  return FALSE;
 }
 
-int isELF32(const pbuffer_t p) {
+bool_t isELF32(const pbuffer_t p) {
   if (isELF(p)) {
-    return 1 == get(p, EI_CLASS) ? 1 : 0;
+    return 1 == get(p, EI_CLASS) ? TRUE : FALSE;
   }
 
-  return 0;
+  return FALSE;
 }
 
-int isELF64(const pbuffer_t p) {
+bool_t isELF64(const pbuffer_t p) {
   if (isELF(p)) {
-    return 2 == get(p, EI_CLASS) ? 1 : 0;
+    return 2 == get(p, EI_CLASS) ? TRUE : FALSE;
   }
 
-  return 0;
+  return FALSE;
 }
 
 Elf32_Ehdr* get_ehdr32(const pbuffer_t p) {

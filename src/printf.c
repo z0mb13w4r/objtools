@@ -323,27 +323,37 @@ int printf_mask(const pconvert_t p, const maskz_t mask, const imode_t mode) {
   MALLOCA(char, data, MAX_BUFFER_SIZE);
 
   int n = 0;
-  maskz_t v = mask;
-  imode_t s = mode & USE_NOSPACE ? 0 : USE_SPACE;
-  for (pconvert_t x = p; 0 != x->text; ++x) {
-    if (x->type & v) {
-      n += printf_work(data + n, sizeof(data) - n, x->text, (mode & ~USE_EOL) | s);
-      v &= ~x->type;
+  if (p) {
+    maskz_t v = mask;
+    imode_t s = mode & USE_NOSPACE ? 0 : USE_SPACE;
+    for (pconvert_t x = p; 0 != x->text; ++x) {
+      if (x->type & v) {
+        n += printf_work(data + n, sizeof(data) - n, x->text, (mode & ~USE_EOL) | s);
+        v &= ~x->type;
+      }
     }
+
+    if (v) {
+      n += printf_neat(data + n, sizeof(data) - n, v, USE_UNKNOWN | USE_SPACE | (mode & ~USE_EOL));
+    }
+
+    return printf_text(data, mode);
   }
 
-  if (v) {
-    n += printf_neat(data + n, sizeof(data) - n, v, USE_UNKNOWN | USE_SPACE | (mode & ~USE_EOL));
+  if (mode & USE_EOL) {
+    n += printf_eol();
   }
 
-  return printf_text(data, mode);
+  return n;
 }
 
 int printf_maskmute(const pconvert_t p, const maskz_t mask, const imode_t mode) {
   int n = 0;
-  for (pconvert_t x = p; 0 != x->text; ++x) {
-    if (x->type & mask) {
-      n += printf_text(x->text, (mode & ~USE_EOL) | USE_SPACE);
+  if (p) {
+    for (pconvert_t x = p; 0 != x->text; ++x) {
+      if (x->type & mask) {
+        n += printf_text(x->text, (mode & ~USE_EOL) | USE_SPACE);
+      }
     }
   }
 

@@ -8,8 +8,10 @@ bool_t isbits(const imode_t x) {
 }
 
 bool_t isused(pick_t* p, const pick_t x) {
-  for ( ; PICK_END != *p; ++p) {
-    if (x == *p) return TRUE;
+  if (p) {
+    for ( ; PICK_END != *p; ++p) {
+      if (x == *p) return TRUE;
+    }
   }
 
   return FALSE;

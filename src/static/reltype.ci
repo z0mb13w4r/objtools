@@ -20,6 +20,23 @@ static convert_t zRELTYPE32[] = {
   {0, 0}
 };
 
+#define R_ARM_THM_CALL             (10)
+#define R_ARM_BASE_PREL            (25)
+#define R_ARM_GOT_BREL             (26)
+
+static convert_t zRELTYPE32ARM[] = {
+  {"R_ARM_ABS32",                  R_ARM_ABS32},
+  {"R_ARM_REL32",                  R_ARM_REL32},
+  {"R_ARM_THM_CALL",               R_ARM_THM_CALL},
+  {"R_ARM_BASE_PREL",              R_ARM_BASE_PREL},
+  {"R_ARM_GOT_BREL",               R_ARM_GOT_BREL},
+  {"R_ARM_GOT_BREL12",             R_ARM_GOT_BREL12},
+  {"R_ARM_RELATIVE",               R_ARM_RELATIVE},
+  {"R_ARM_GLOB_DAT",               R_ARM_GLOB_DAT},
+  {"R_ARM_JUMP_SLOT",              R_ARM_JUMP_SLOT},
+  {0, 0}
+};
+
 static convert_t zRELTYPE64[] = {
   {"R_X86_64_NONE",                R_X86_64_NONE},
   {"R_X86_64_64",                  R_X86_64_64},
@@ -42,7 +59,10 @@ static convert_t zRELTYPE64[] = {
   {"R_X86_64_GOTPC32",             R_X86_64_GOTPC32},
   {"R_X86_64_SIZE32",              R_X86_64_SIZE32},
   {"R_X86_64_SIZE64",              R_X86_64_SIZE64},
+  {0, 0}
+};
 
+static convert_t zRELTYPE64ARM[] = {
   {"R_AARCH64_JUMP26",              R_AARCH64_JUMP26},
   {"R_AARCH64_CALL26",              R_AARCH64_CALL26},
   {"R_AARCH64_ADR_PREL_LO21",       R_AARCH64_ADR_PREL_LO21},
@@ -76,6 +96,15 @@ static pick_t zRELTYPE32DEF[] = {
   PICK_END
 };
 
+static pick_t zRELTYPE32ARMDEF[] = {
+  R_ARM_ABS32,
+  R_ARM_REL32,
+  R_ARM_GOT_BREL,
+  R_ARM_THM_CALL,
+  R_ARM_BASE_PREL,
+  PICK_END
+};
+
 static pick_t zRELTYPE64DEF[] = {
   R_X86_64_8,
   R_X86_64_16,
@@ -83,7 +112,10 @@ static pick_t zRELTYPE64DEF[] = {
   R_X86_64_64,
   R_X86_64_PC32,
   R_X86_64_PLT32,
+  PICK_END
+};
 
+static pick_t zRELTYPE64ARMDEF[] = {
   R_AARCH64_LD64_GOT_LO12_NC,
   R_AARCH64_ADR_PREL_PG_HI21,
   R_AARCH64_ADD_ABS_LO12_NC,
@@ -100,18 +132,52 @@ static pick_t zRELTYPE32VER[] = {
   PICK_END
 };
 
+static pick_t zRELTYPE32ARMVER[] = {
+  R_ARM_GLOB_DAT,
+  R_ARM_JUMP_SLOT,
+  PICK_END
+};
+
+static pick_t zRELTYPE32SAFE[] = {
+  R_386_NONE,
+  R_386_RELATIVE,
+  PICK_END
+};
+
+static pick_t zRELTYPE32ARMSAFE[] = {
+  R_ARM_NONE,
+  R_ARM_RELATIVE,
+  PICK_END
+};
+
 static pick_t zRELTYPE64VER[] = {
   R_X86_64_GLOB_DAT,
   R_X86_64_JUMP_SLOT,
   R_X86_64_COPY,
+  PICK_END
+};
 
+static pick_t zRELTYPE64ARMVER[] = {
   R_AARCH64_GLOB_DAT,
   R_AARCH64_JUMP_SLOT,
   PICK_END
 };
 
+static pick_t zRELTYPE64SAFE[] = {
+  R_X86_64_NONE,
+  PICK_END
+};
+
+static pick_t zRELTYPE64ARMSAFE[] = {
+  PICK_END
+};
+
 static pick_t zRELTYPE64PACK[] = {
   R_X86_64_RELATIVE,
+  PICK_END
+};
+
+static pick_t zRELTYPE64ARMPACK[] = {
   R_AARCH64_RELATIVE,
   PICK_END
 };
@@ -135,7 +201,10 @@ static pick_t zRELTYPE64SHEX32[] = {
   R_X86_64_PC32,
   R_X86_64_PLT32,
   R_X86_64_COPY,
+  PICK_END
+};
 
+static pick_t zRELTYPE64SHEX32ARM[] = {
   R_AARCH64_GLOB_DAT,
   R_AARCH64_JUMP_SLOT,
   R_AARCH64_LD64_GOT_LO12_NC,
@@ -150,8 +219,117 @@ static pick_t zRELTYPE64SHEX32[] = {
 static pick_t zRELTYPE64SHEX64[] = {
   R_X86_64_64,
   R_X86_64_PC64,
+  PICK_END
+};
 
+static pick_t zRELTYPE64SHEX64ARM[] = {
   R_AARCH64_ABS64,
   PICK_END
 };
+
+static pconvert_t get_RELTYPE(const pbuffer_t p) {
+  switch (get_emachine(p)) {
+  case EM_386:               return zRELTYPE32;
+  case EM_ARM:               return zRELTYPE32ARM;
+  case EM_X86_64:            return zRELTYPE64;
+  case EM_AARCH64:           return zRELTYPE64ARM;
+  default:
+    break;
+  }
+
+  return NULL;
+}
+
+static ppick_t get_RELTYPEDEF(const pbuffer_t p) {
+  switch (get_emachine(p)) {
+  case EM_386:               return zRELTYPE32DEF;
+  case EM_ARM:               return zRELTYPE32ARMDEF;
+  case EM_X86_64:            return zRELTYPE64DEF;
+  case EM_AARCH64:           return zRELTYPE64ARMDEF;
+  default:
+    break;
+  }
+
+  return NULL;
+}
+
+static ppick_t get_RELTYPEVER(const pbuffer_t p) {
+  switch (get_emachine(p)) {
+  case EM_386:               return zRELTYPE32VER;
+  case EM_ARM:               return zRELTYPE32ARMVER;
+  case EM_X86_64:            return zRELTYPE64VER;
+  case EM_AARCH64:           return zRELTYPE64ARMVER;
+  default:
+    break;
+  }
+
+  return NULL;
+}
+
+static ppick_t get_RELTYPESAFE(const pbuffer_t p) {
+  switch (get_emachine(p)) {
+  case EM_386:               return zRELTYPE32SAFE;
+  case EM_ARM:               return zRELTYPE32ARMSAFE;
+  case EM_X86_64:            return zRELTYPE64SAFE;
+  case EM_AARCH64:           return zRELTYPE64ARMSAFE;
+  default:
+    break;
+  }
+
+  return NULL;
+}
+
+static ppick_t get_RELTYPESHEX8(const pbuffer_t p) {
+  switch (get_emachine(p)) {
+  case EM_X86_64:            return zRELTYPE64SHEX8;
+  default:
+    break;
+  }
+
+  return NULL;
+}
+
+static ppick_t get_RELTYPESHEX16(const pbuffer_t p) {
+  switch (get_emachine(p)) {
+  case EM_X86_64:            return zRELTYPE64SHEX16;
+  default:
+    break;
+  }
+
+  return NULL;
+}
+
+static ppick_t get_RELTYPESHEX32(const pbuffer_t p) {
+  switch (get_emachine(p)) {
+  case EM_X86_64:            return zRELTYPE64SHEX32;
+  case EM_AARCH64:           return zRELTYPE64SHEX32ARM;
+  default:
+    break;
+  }
+
+  return NULL;
+}
+
+static ppick_t get_RELTYPESHEX64(const pbuffer_t p) {
+  switch (get_emachine(p)) {
+  case EM_X86_64:            return zRELTYPE64SHEX64;
+  case EM_AARCH64:           return zRELTYPE64SHEX64ARM;
+  default:
+    break;
+  }
+
+  return NULL;
+}
+
+
+static ppick_t get_RELTYPEPACK(const pbuffer_t p) {
+  switch (get_emachine(p)) {
+  case EM_X86_64:            return zRELTYPE64PACK;
+  case EM_AARCH64:           return zRELTYPE64ARMPACK;
+  default:
+    break;
+  }
+
+  return NULL;
+}
 
