@@ -1,6 +1,7 @@
 #ifndef __ELFCODE_H_
 #define __ELFCODE_H_
 
+#include <elf.h>
 #include "buffer.h"
 
 #define VERSYM_HIDDEN              (0x8000)

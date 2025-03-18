@@ -1481,9 +1481,7 @@ static int dump_notes64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr)
 
 int readelf(const pbuffer_t p, const poptions_t o) {
   if (isELF(p)) {
-    if (o->action & OPTREADELF_FILEHEADER) {
-      dump_elfheader(p, o);
-    }
+    if (o->action & OPTREADELF_FILEHEADER)           dump_elfheader(p, o);
 
     if (isELF32(p)) {
       Elf32_Ehdr *ehdr = get_ehdr32(p);

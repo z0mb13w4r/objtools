@@ -100,5 +100,12 @@ typedef unsigned char  uchar_t;
 typedef unsigned long  ulong_t;
 typedef unsigned short ushort_t;
 
+typedef int32_t        LONG;
+
+typedef uint8_t        BYTE;
+typedef uint16_t       WORD;
+typedef uint32_t       DWORD;
+typedef uint64_t       ULONGLONG;
+
 #endif
 

@@ -7,20 +7,6 @@
 
 #include "defines.h"
 
-#define ELFOSABI_OPENVMS       13 /* OpenVMS */
-#define ELFOSABI_NSK           14 /* Hewlett-Packard Non-Stop Kernel */
-#define ELFOSABI_AROS          15 /* AROS */
-#define ELFOSABI_FENIXOS       16 /* FenixOS */
-#define ELFOSABI_CLOUDABI      17 /* Nuxi CloudABI */
-#define ELFOSABI_OPENVOS       18 /* Stratus Technologies OpenVOS */
-
-#define ELFOSABI_C6000_ELFABI  64 /* Bare-metal TMS320C6000 */
-#define ELFOSABI_AMDGPU_HSA    64 /* AMD HSA Runtime */
-#define ELFOSABI_C6000_LINUX   65 /* Linux TMS320C6000 */
-#define ELFOSABI_AMDGPU_PAL    65 /* AMD PAL Runtime */
-#define ELFOSABI_ARM_FDPIC     65 /* ARM FDPIC */
-#define ELFOSABI_AMDGPU_MESA3D 66 /* AMD Mesa3D Runtime */
-
 #define SHT_RELR               19 /* RELR relative relocations */
 
 #define PT_GNU_PROPERTY        (PT_LOOS + 0x474e553) /* GNU property */
@@ -35,15 +21,6 @@
 #define PT_OPENBSD_RANDOMIZE   (PT_LOOS + 0x5a3dbe6) /* Fill with random data.  */
 #define PT_OPENBSD_WXNEEDED    (PT_LOOS + 0x5a3dbe7) /* Program does W^X violations.  */
 #define PT_OPENBSD_BOOTDATA    (PT_LOOS + 0x5a41be6) /* Section for boot arguments.  */
-
-/* Values used in GNU .note.ABI-tag notes (NT_GNU_ABI_TAG).  */
-#define GNU_ABI_TAG_LINUX	0
-#define GNU_ABI_TAG_HURD	1
-#define GNU_ABI_TAG_SOLARIS	2
-#define GNU_ABI_TAG_FREEBSD	3
-#define GNU_ABI_TAG_NETBSD	4
-#define GNU_ABI_TAG_SYLLABLE	5
-#define GNU_ABI_TAG_NACL	6
 
 #define NT_GNU_BUILD_ATTRIBUTE_OPEN     0x100
 #define NT_GNU_BUILD_ATTRIBUTE_FUNC     0x101

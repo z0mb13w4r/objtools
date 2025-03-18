@@ -299,7 +299,7 @@ int printf_data(const void* p, const size_t size, const addrz_t addr, const imod
       ++pp;
       ++i;
     } else if (USE_STR == xmode) {
-      if (0 == *pp) return n;
+      if (0 == *pp) break;
       n += printf_nice(*pp, USE_CHARCTRL);
       ++pp;
       ++i;

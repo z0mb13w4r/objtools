@@ -22,7 +22,6 @@ SRCS_CPP =
 TARGETBASE = readelf-ng
 
 ifeq ($(CROSS),ARM)
-else ifeq ($(CROSS),WIN)
 else
 	CROSS = I386
 endif
@@ -101,11 +100,6 @@ ifeq ($(CROSS),ARM)
 	DFLAGS += -DENV_LINUX -DLINUX -DTARGET_ARM
 	EFLAGS  = -Wl,--no-enum-size-warning
 	LFLAGS +=
-else ifeq ($(CROSS),WIN)
-	CROSS_COMPILE = x86_64-w64-mingw32-
-	DFLAGS += -DWIN32
-	EFLAGS  =
-	LFLAGS += -static-libgcc -static-libstdc++
 else
 	CROSS_COMPILE =
 	DFLAGS += -DENV_LINUX -DLINUX
@@ -174,7 +168,6 @@ help:
 	@echo ' set DEBUG=n to build release version.'
 	@echo ' '
 	@echo ' set CROSS=ARM to build ARM version.'
-	@echo ' set CROSS=WIN to build Windows version.'
 	@echo ' set CROSS=I386 to build native version.'
 	@echo ' '
 	@echo ' e.g. make -f $(TARGETBASE).mk DEBUG=y CROSS=ARM all.'
@@ -248,9 +241,7 @@ ifeq ($(DEBUG),y)
 	-$(STRIP) -o $(STRIPPED_FILE) -s $(TARGET)
 	@echo 'Finished stripping target: $@'
 else
-ifeq ($(CROSS),WIN)
-	-$(CP) $(TARGET) ../bin/$(TARGET).exe
-else ifeq ($(CROSS),ARM)
+ifeq ($(CROSS),ARM)
 	-$(CP) $(TARGET) ../bin/$(TARGET)-arm
 else
 	-$(CP) $(TARGET) ../bin/
