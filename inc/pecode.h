@@ -128,15 +128,81 @@ typedef struct _IMAGE_SECTION_HEADER {
     DWORD PhysicalAddress;
     DWORD VirtualSize;
   } Misc;
-  DWORD VirtualAddress;
-  DWORD SizeOfRawData;
-  DWORD PointerToRawData;
-  DWORD PointerToRelocations;
-  DWORD PointerToLinenumbers;
-  WORD  NumberOfRelocations;
-  WORD  NumberOfLinenumbers;
-  DWORD Characteristics;
+  DWORD   VirtualAddress;
+  DWORD   SizeOfRawData;
+  DWORD   PointerToRawData;
+  DWORD   PointerToRelocations;
+  DWORD   PointerToLinenumbers;
+  WORD    NumberOfRelocations;
+  WORD    NumberOfLinenumbers;
+  DWORD   Characteristics;
 } IMAGE_SECTION_HEADER, *PIMAGE_SECTION_HEADER;
+
+typedef struct _IMAGE_IMPORT_DESCRIPTOR {
+  union {
+    DWORD Characteristics;
+    DWORD OriginalFirstThunk;
+  };
+  DWORD   TimeDateStamp;
+  DWORD   ForwarderChain;
+  DWORD   Name;
+  DWORD   FirstThunk;
+} IMAGE_IMPORT_DESCRIPTOR, *PIMAGE_IMPORT_DESCRIPTOR;
+
+typedef struct _IMAGE_RESOURCE_DIRECTORY {
+  DWORD Characteristics;
+  DWORD TimeDateStamp;
+  WORD  MajorVersion;
+  WORD  MinorVersion;
+  WORD  NumberOfNamedEntries;
+  WORD  NumberOfIdEntries;
+} IMAGE_RESOURCE_DIRECTORY, *PIMAGE_RESOURCE_DIRECTORY;
+
+typedef struct {
+  DWORD Size;
+  DWORD TimeDateStamp;
+  WORD  MajorVersion;
+  WORD  MinorVersion;
+  DWORD GlobalFlagsClear;
+  DWORD GlobalFlagsSet;
+  DWORD CriticalSectionDefaultTimeout;
+  DWORD DeCommitFreeBlockThreshold;
+  DWORD DeCommitTotalFreeThreshold;
+  DWORD LockPrefixTable;
+  DWORD MaximumAllocationSize;
+  DWORD VirtualMemoryThreshold;
+  DWORD ProcessHeapFlags;
+  DWORD ProcessAffinityMask;
+  WORD  CSDVersion;
+  WORD  Reserved1;
+  DWORD EditList;
+  DWORD SecurityCookie;
+  DWORD SEHandlerTable;
+  DWORD SEHandlerCount;
+} IMAGE_LOAD_CONFIG_DIRECTORY32, *PIMAGE_LOAD_CONFIG_DIRECTORY32;
+
+typedef struct {
+  DWORD     Size;
+  DWORD     TimeDateStamp;
+  WORD      MajorVersion;
+  WORD      MinorVersion;
+  DWORD     GlobalFlagsClear;
+  DWORD     GlobalFlagsSet;
+  DWORD     CriticalSectionDefaultTimeout;
+  ULONGLONG DeCommitFreeBlockThreshold;
+  ULONGLONG DeCommitTotalFreeThreshold;
+  ULONGLONG LockPrefixTable;
+  ULONGLONG MaximumAllocationSize;
+  ULONGLONG VirtualMemoryThreshold;
+  ULONGLONG ProcessAffinityMask;
+  DWORD     ProcessHeapFlags;
+  WORD      CSDVersion;
+  WORD      Reserved1;
+  ULONGLONG EditList;
+  ULONGLONG SecurityCookie;
+  ULONGLONG SEHandlerTable;
+  ULONGLONG SEHandlerCount;
+} IMAGE_LOAD_CONFIG_DIRECTORY64, *PIMAGE_LOAD_CONFIG_DIRECTORY64;
 
 bool_t isPE(const pbuffer_t p);
 bool_t isPE32(const pbuffer_t p);

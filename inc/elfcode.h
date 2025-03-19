@@ -4,6 +4,9 @@
 #include <elf.h>
 #include "buffer.h"
 
+#define PT_GNU_PROPERTY            (PT_LOOS + 0x474e553) /* GNU property */
+#define PT_GNU_SFRAME              (PT_LOOS + 0x474e554) /* SFrame stack trace information */
+
 #define VERSYM_HIDDEN              (0x8000)
 #define VERSYM_VERSION             (0x7fff)
 

@@ -2,6 +2,8 @@
 #include "printf.h"
 
 #include "static/filehdr.ci"
+#include "static/opthdr.ci"
+#include "static/sechdr.ci"
 
 int dump_dosheader(const pbuffer_t p, const poptions_t o) {
   const int MAXSIZE = 36;
@@ -89,7 +91,8 @@ int dump_ntheader32(const pbuffer_t p, const poptions_t o) {
     PIMAGE_OPTIONAL_HEADER32 op = &nt->OptionalHeader;
     printf_text("OPTIONAL HEADER", USE_LT | USE_COLON | USE_EOL);
     printf_text("Magic", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-    printf_nice(op->Magic, USE_FHEX16 | USE_EOL);
+    printf_nice(op->Magic, USE_FHEX16);
+    printf_pick(zOPTHDRMAGIC, op->Magic, USE_LT | USE_SPACE | USE_EOL);
     printf_text("MajorLinkerVersion", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     printf_nice(op->MajorLinkerVersion, USE_FHEX8 | USE_EOL);
     printf_text("MinorLinkerVersion", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
@@ -131,9 +134,11 @@ int dump_ntheader32(const pbuffer_t p, const poptions_t o) {
     printf_text("CheckSum", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     printf_nice(op->CheckSum, USE_FHEX32 | USE_EOL);
     printf_text("Subsystem", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-    printf_nice(op->Subsystem, USE_FHEX16 | USE_EOL);
+    printf_nice(op->Subsystem, USE_FHEX16);
+    printf_pick(zOPTHDRSUBSYSTEM, op->Subsystem, USE_LT | USE_SPACE | USE_EOL);
     printf_text("DllCharacteristics", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-    printf_nice(op->DllCharacteristics, USE_FHEX16 | USE_EOL);
+    printf_nice(op->DllCharacteristics, USE_FHEX16);
+    printf_mask(zOPTHDRCHARACTERISTICS, op->DllCharacteristics, USE_LT | USE_EOL);
     printf_text("SizeOfStackReserve", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     printf_nice(op->SizeOfStackReserve, USE_FHEX32 | USE_EOL);
     printf_text("SizeOfStackCommit", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
@@ -184,9 +189,32 @@ int dump_sectionheaders32(const pbuffer_t p, const poptions_t o) {
         printf_text("NumberOfLinenumbers", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
         printf_nice(sec->NumberOfLinenumbers, USE_FHEX16 | USE_EOL);
         printf_text("Characteristics", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-        printf_nice(sec->Characteristics, USE_FHEX32 | USE_EOL);
+        printf_nice(sec->Characteristics, USE_FHEX32);
+        printf_mask(zSECTIONHDR, sec->Characteristics, USE_LT | USE_EOL);
         printf_eol();
       }
+    }
+  }
+
+  return 0;
+}
+
+int dump_sectiongroups32(const pbuffer_t p, const poptions_t o) {
+  const int MAXSIZE = 36;
+
+  PIMAGE_NT_HEADERS32 nt = get_nt32hdr(p);
+  if (nt) {
+    PIMAGE_OPTIONAL_HEADER32 op = &nt->OptionalHeader;
+    PIMAGE_DATA_DIRECTORY dd = op->DataDirectory;
+
+    for (size_t i = 0; i < op->NumberOfRvaAndSizes; ++i, ++dd) {
+      printf_pick(zOPTHDRENTRY, i, USE_LT | USE_EOL);
+      printf_text("VirtualAddress", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      printf_nice(dd->VirtualAddress, USE_FHEX32 | USE_EOL);
+      printf_text("Size", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      printf_nice(dd->Size, USE_FHEX32 | USE_EOL);
+
+      printf_eol();
     }
   }
 
@@ -200,6 +228,8 @@ int readpe(const pbuffer_t p, const poptions_t o) {
     if (isPE32(p)) {
       if (o->action & OPTREADELF_FILEHEADER)       dump_ntheader32(p, o);
       if (o->action & OPTREADELF_SECTIONHEADERS)   dump_sectionheaders32(p, o);
+      if (o->action & OPTREADELF_SECTIONGROUPS)    dump_sectiongroups32(p, o);
+
     } else if (isPE64(p)) {
     }
   } else {

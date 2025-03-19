@@ -1,3 +1,17 @@
+#define NT_GNU_BUILD_ATTRIBUTE_OPEN     0x100
+#define NT_GNU_BUILD_ATTRIBUTE_FUNC     0x101
+
+#define NT_X86_CET                      0x203 /* x86 CET state. */
+#define NT_ARM_TAGGED_ADDR_CTRL         0x409 /* AArch64 tagged address control (prctl()) */
+#define NT_ARM_PAC_ENABLED_KEYS         0x40a /* AArch64 pointer authentication enabled keys (prctl()) */
+#define NT_ARM_SSVE                     0x40b /* AArch64 SME streaming SVE registers. */
+#define NT_ARM_ZA                       0x40c /* AArch64 SME ZA register. */
+#define NT_ARC_V2                       0x600 /* ARC HS accumulator/extra registers. */
+#define NT_RISCV_CSR                    0x900 /* RISC-V Control and Status Registers */
+
+#define NT_FPREGS                       12 /* Has a struct fpregset */
+#define NT_WIN32PSTATUS                 18 /* Has a struct win32_pstatus */
+
 static convert_t zNHDRTYPE[] = {
   {"NT_GNU_ABI_TAG (ABI version tag)",                                       NT_GNU_ABI_TAG},
   {"NT_GNU_HWCAP (DSO-supplied software HWCAP info)",                        NT_GNU_HWCAP},
