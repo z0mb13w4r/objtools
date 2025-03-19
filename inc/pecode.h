@@ -123,7 +123,7 @@ typedef struct _IMAGE_NT_HEADERS64 {
 } IMAGE_NT_HEADERS64, *PIMAGE_NT_HEADERS64;
 
 typedef struct _IMAGE_SECTION_HEADER {
-  BYTE  Name[IMAGE_SIZEOF_SHORT_NAME];
+  BYTE    Name[IMAGE_SIZEOF_SHORT_NAME];
   union {
     DWORD PhysicalAddress;
     DWORD VirtualSize;
