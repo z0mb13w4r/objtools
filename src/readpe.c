@@ -76,7 +76,8 @@ int dump_ntheader32(const pbuffer_t p, const poptions_t o) {
     printf_text("NumberOfSections", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     printf_nice(fp->NumberOfSections, USE_FHEX16 | USE_EOL);
     printf_text("TimeDateStamp", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-    printf_nice(fp->TimeDateStamp, USE_FHEX32 | USE_EOL);
+    printf_nice(fp->TimeDateStamp, USE_FHEX32);
+    printf_nice(fp->TimeDateStamp, USE_TIMEDATE | USE_SB | USE_EOL);
     printf_text("PointerToSymbolTable", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     printf_nice(fp->PointerToSymbolTable, USE_FHEX32 | USE_EOL);
     printf_text("NumberOfSymbols", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
@@ -93,10 +94,9 @@ int dump_ntheader32(const pbuffer_t p, const poptions_t o) {
     printf_text("Magic", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     printf_nice(op->Magic, USE_FHEX16);
     printf_pick(zOPTHDRMAGIC, op->Magic, USE_LT | USE_SPACE | USE_EOL);
-    printf_text("MajorLinkerVersion", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-    printf_nice(op->MajorLinkerVersion, USE_FHEX8 | USE_EOL);
-    printf_text("MinorLinkerVersion", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-    printf_nice(op->MinorLinkerVersion, USE_FHEX8 | USE_EOL);
+    printf_text("LinkerVersion", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    printf_nice(op->MajorLinkerVersion, USE_DEC);
+    printf_nice(op->MinorLinkerVersion, USE_DEC | USE_DOT | USE_EOL);
     printf_text("SizeOfCode", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     printf_nice(op->SizeOfCode, USE_FHEX32 | USE_EOL);
     printf_text("SizeOfInitializedData", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
@@ -113,18 +113,15 @@ int dump_ntheader32(const pbuffer_t p, const poptions_t o) {
     printf_nice(op->SectionAlignment, USE_FHEX32 | USE_EOL);
     printf_text("FileAlignment", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     printf_nice(op->FileAlignment, USE_FHEX32 | USE_EOL);
-    printf_text("MajorOperatingSystemVersion", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-    printf_nice(op->MajorOperatingSystemVersion, USE_FHEX16 | USE_EOL);
-    printf_text("MinorOperatingSystemVersion", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-    printf_nice(op->MinorOperatingSystemVersion, USE_FHEX16 | USE_EOL);
-    printf_text("MajorImageVersion", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-    printf_nice(op->MajorImageVersion, USE_FHEX16 | USE_EOL);
-    printf_text("MinorImageVersion", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-    printf_nice(op->MinorImageVersion, USE_FHEX16 | USE_EOL);
-    printf_text("MajorSubsystemVersion", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-    printf_nice(op->MajorSubsystemVersion, USE_FHEX16 | USE_EOL);
-    printf_text("MinorSubsystemVersion", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-    printf_nice(op->MinorSubsystemVersion, USE_FHEX16 | USE_EOL);
+    printf_text("OperatingSystemVersion", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    printf_nice(op->MajorOperatingSystemVersion, USE_DEC);
+    printf_nice(op->MinorOperatingSystemVersion, USE_DEC | USE_DOT | USE_EOL);
+    printf_text("ImageVersion", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    printf_nice(op->MajorImageVersion, USE_DEC);
+    printf_nice(op->MinorImageVersion, USE_DEC | USE_DOT | USE_EOL);
+    printf_text("SubsystemVersion", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    printf_nice(op->MajorSubsystemVersion, USE_DEC);
+    printf_nice(op->MinorSubsystemVersion, USE_DEC | USE_DOT | USE_EOL);
     printf_text("Win32VersionValue", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     printf_nice(op->Win32VersionValue, USE_FHEX32 | USE_EOL);
     printf_text("SizeOfImage", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
@@ -200,21 +197,24 @@ int dump_sectionheaders32(const pbuffer_t p, const poptions_t o) {
 }
 
 int dump_sectiongroups32(const pbuffer_t p, const poptions_t o) {
-  const int MAXSIZE = 36;
+  const int MAXSIZE = strlenpick(zOPTHDRENTRY) + 2;
 
   PIMAGE_NT_HEADERS32 nt = get_nt32hdr(p);
   if (nt) {
     PIMAGE_OPTIONAL_HEADER32 op = &nt->OptionalHeader;
     PIMAGE_DATA_DIRECTORY dd = op->DataDirectory;
 
-    for (size_t i = 0; i < op->NumberOfRvaAndSizes; ++i, ++dd) {
-      printf_pick(zOPTHDRENTRY, i, USE_LT | USE_EOL);
-      printf_text("VirtualAddress", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-      printf_nice(dd->VirtualAddress, USE_FHEX32 | USE_EOL);
-      printf_text("Size", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-      printf_nice(dd->Size, USE_FHEX32 | USE_EOL);
+    printf_text("DATA DIRECTORY", USE_LT | USE_COLON | USE_EOL);
+    printf_text("Name", USE_LT | USE_TAB | SET_PAD(MAXSIZE));
+    printf_text("RVA", USE_LT | USE_SPACE | SET_PAD(11));
+    printf_text("Size", USE_LT | USE_SPACE | USE_EOL);
 
-      printf_eol();
+    for (size_t i = 0; i < op->NumberOfRvaAndSizes; ++i, ++dd) {
+      printf_pick(zOPTHDRENTRY, i, USE_LT | USE_TAB | SET_PAD(MAXSIZE));
+      if (0 != dd->VirtualAddress) printf_nice(dd->VirtualAddress, USE_FHEX32);
+      else                         printf_text("NONE", USE_LT | USE_SPACE | SET_PAD(11));
+      if (0 != dd->Size)           printf_nice(dd->Size, USE_FHEX32 | USE_EOL);
+      else                         printf_text("NONE", USE_LT | USE_SPACE | USE_EOL);
     }
   }
 

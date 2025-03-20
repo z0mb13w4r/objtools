@@ -162,11 +162,10 @@ int printf_neat(char* o, const size_t size, const uint64_t v, const imode_t mode
       time_t atime = v;
 
       tmp = gmtime (&atime);
-      if (tmp == NULL)             return printf_nice(atime, USE_CORRUPT);
-
-      return printf("%04u-%02u-%02uT%02u:%02u:%02u",
-                     tmp->tm_year + 1900, tmp->tm_mon + 1, tmp->tm_mday,
-                     tmp->tm_hour, tmp->tm_min, tmp->tm_sec);
+      if (tmp == NULL)             n += printf_nice(atime, USE_CORRUPT);
+      else                         n += snprintf(o + n, size - n, "%04u-%02u-%02uT%02u:%02u:%02u",
+                                                tmp->tm_year + 1900, tmp->tm_mon + 1, tmp->tm_mday,
+                                                tmp->tm_hour, tmp->tm_min, tmp->tm_sec);
       }
       break;
 
