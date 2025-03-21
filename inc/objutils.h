@@ -2,6 +2,7 @@
 #define __OBJUTILS_H_
 
 #include <openssl/sha.h>
+#include <openssl/md5.h>
 #include <openssl/ripemd.h>
 
 #include "defines.h"
@@ -28,9 +29,11 @@ size_t strlenpick(const pconvert_t p);
 
 size_t fsize(FILE *f);
 
-int sha256(const void* p, const size_t size, unsigned char* md);
-int sha512(const void* p, const size_t size, unsigned char* md);
-int ripemd160(const void* p, const size_t size, unsigned char* md);
+int md5(const unknown_t p, const size_t size, puchar_t md);
+int sha1(const unknown_t p, const size_t size, puchar_t md);
+int sha256(const unknown_t p, const size_t size, puchar_t md);
+int sha512(const unknown_t p, const size_t size, puchar_t md);
+int ripemd160(const unknown_t p, const size_t size, puchar_t md);
 
 #endif
 

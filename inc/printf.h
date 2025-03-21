@@ -49,6 +49,11 @@
 #define USE_STRDUMP       (1)
 #define USE_STR           (2)
 #define USE_HEX           (3)
+#define USE_MD5           (4)
+#define USE_SHA1          (5)
+#define USE_SHA256        (6)
+#define USE_SHA512        (7)
+#define USE_HASHALL       (8)
 
 #define GET_XX3(x,y)      ((x) & (0x07 << (y)))
 #define SET_XX3(x,y)      (((x) & 0x07) << (y))
@@ -115,6 +120,7 @@ int printf_neat(char* o, const size_t size, const uint64_t v, const imode_t mode
 int printf_nice(const uint64_t v, const imode_t mode);
 
 int printf_data(const void* p, const size_t size, const addrz_t addr, const imode_t mode);
+int printf_sore(const void* p, const size_t size, const imode_t mode);
 
 int printf_mask(const pconvert_t p, const maskz_t mask, const imode_t mode);
 int printf_maskmute(const pconvert_t p, const maskz_t mask, const imode_t mode);

@@ -244,6 +244,65 @@ int printf_book(const char* p[], const imode_t mode) {
   return -1;
 }
 
+int printf_sore(const void* p, const size_t size, const imode_t mode) {
+  const imode_t xmode = mode & ~(USE_POS0MASK | USE_FLAGMASK);
+  const imode_t zmode = mode &   USE_POS0MASK;
+
+  int n = 0;
+  if (USE_HASHALL == xmode) {
+    n += printf_sore(p, size, USE_MD5 | zmode);
+    n += printf_sore(p, size, USE_SHA1 | zmode);
+    n += printf_sore(p, size, USE_SHA256 | zmode);
+    n += printf_sore(p, size, USE_SHA512 | zmode);
+  }
+
+  puchar_t p0 = CAST(puchar_t, p);
+  if (USE_STR == xmode) {
+    for (size_t i = 0; i < size; ++i, ++p0) {
+      if (0 == *p0) break;
+      n += printf_nice(*p0, USE_CHARCTRL);
+    }
+  } else if (USE_HEX == xmode) {
+    if (USE_TAB == GET_POS0(mode)) {
+      n += printf_pack(USE_SPACE == GET_POS0(mode) ? 1 : 2);
+    }
+
+    for (size_t i = 0; i < size; ++i, ++p0) {
+      n += printf_nice(*p0, USE_SPACE == GET_POS0(mode) ? USE_LHEX8 : USE_LHEX8NS);
+    }
+  } else if (USE_MD5 == xmode) {
+    uchar_t md[MD5_DIGEST_LENGTH];
+    if (!md5(p0, size, md)) {
+      printf_text("MD5", USE_LT | USE_COLON | zmode | SET_PAD(10));
+      printf_sore(md, MD5_DIGEST_LENGTH, USE_HEX | USE_EOL);
+    }
+  } else if (USE_SHA1 == xmode) {
+    uchar_t md[SHA_DIGEST_LENGTH];
+    if (!sha1(p0, size, md)) {
+      printf_text("SHA1", USE_LT | USE_COLON | zmode | SET_PAD(10));
+      printf_sore(md, SHA_DIGEST_LENGTH, USE_HEX | USE_EOL);
+    }
+  } else if (USE_SHA256 == xmode) {
+    uchar_t md[SHA256_DIGEST_LENGTH];
+    if (!sha256(p0, size, md)) {
+      printf_text("SHA256", USE_LT | USE_COLON | zmode | SET_PAD(10));
+      printf_sore(md, SHA256_DIGEST_LENGTH, USE_HEX | USE_EOL);
+    }
+  } else if (USE_SHA512 == xmode) {
+    uchar_t md[SHA512_DIGEST_LENGTH];
+    if (!sha512(p0, size, md)) {
+      printf_text("SHA512", USE_LT | USE_COLON | zmode | SET_PAD(10));
+      printf_sore(md, SHA512_DIGEST_LENGTH, USE_HEX | USE_EOL);
+    }
+  }
+
+  if (mode & USE_EOL) {
+    n += printf_eol();
+  }
+
+  return n;
+}
+
 int printf_data(const void* p, const size_t size, const addrz_t addr, const imode_t mode) {
   const size_t MAX_SIZE = 16;
 

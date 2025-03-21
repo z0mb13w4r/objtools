@@ -5,6 +5,14 @@
 #include "static/opthdr.ci"
 #include "static/sechdr.ci"
 
+int dump_peheader(const pbuffer_t p, const poptions_t o) {
+  if (issafe(p)) {
+    printf_sore(p->data, p->size, USE_HASHALL | USE_TAB | USE_EOL);
+  }
+
+  return 0;
+}
+
 int dump_dosheader(const pbuffer_t p, const poptions_t o) {
   const int MAXSIZE = 36;
 
@@ -223,6 +231,7 @@ int dump_sectiongroups32(const pbuffer_t p, const poptions_t o) {
 
 int readpe(const pbuffer_t p, const poptions_t o) {
   if (isPE(p)) {
+    if (o->action & OPTREADELF_FILEHEADER)         dump_peheader(p, o);
     if (o->action & OPTREADELF_FILEHEADER)         dump_dosheader(p, o);
 
     if (isPE32(p)) {

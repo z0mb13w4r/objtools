@@ -100,6 +100,10 @@ typedef unsigned char  uchar_t;
 typedef unsigned long  ulong_t;
 typedef unsigned short ushort_t;
 
+typedef unsigned char  *puchar_t;
+typedef unsigned long  *pulong_t;
+typedef unsigned short *pushort_t;
+
 typedef int32_t        LONG;
 
 typedef uint8_t        BYTE;

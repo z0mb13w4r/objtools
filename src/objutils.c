@@ -84,7 +84,35 @@ size_t fsize(FILE *f) {
   return siz;
 }
 
-int sha256(const void* p, const size_t size, unsigned char* md) {
+int md5(const unknown_t p, const size_t size, puchar_t md) {
+  MD5_CTX context;
+  if (!MD5_Init(&context))
+    return -1;
+
+  if (!MD5_Update(&context, p, size))
+    return -1;
+
+  if (!MD5_Final(md, &context))
+    return -1;
+
+  return 0;
+}
+
+int sha1(const unknown_t p, const size_t size, puchar_t md) {
+  SHA_CTX context;
+  if (!SHA1_Init(&context))
+    return -1;
+
+  if (!SHA1_Update(&context, p, size))
+    return -1;
+
+  if (!SHA1_Final(md, &context))
+    return -1;
+
+  return 0;
+}
+
+int sha256(const unknown_t p, const size_t size, puchar_t md) {
   SHA256_CTX context;
   if (!SHA256_Init(&context))
     return -1;
@@ -98,7 +126,7 @@ int sha256(const void* p, const size_t size, unsigned char* md) {
   return 0;
 }
 
-int sha512(const void* p, const size_t size, unsigned char* md) {
+int sha512(const unknown_t p, const size_t size, puchar_t md) {
   SHA512_CTX context;
   if (!SHA512_Init(&context))
     return -1;
@@ -112,7 +140,7 @@ int sha512(const void* p, const size_t size, unsigned char* md) {
   return 0;
 }
 
-int ripemd160(const void* p, const size_t size, unsigned char* md) {
+int ripemd160(const unknown_t p, const size_t size, puchar_t md) {
   RIPEMD160_CTX context;
   if (!RIPEMD160_Init(&context))
     return -1;
