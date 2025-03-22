@@ -111,6 +111,10 @@
 #define USE_POS0MASK      SET_POS0(15)
 
 int printf_eol();
+int printf_post(char* o);
+
+int printf_spos(char* o, const size_t size, const imode_t mode, const bool_t usespace);
+int printf_epos(char* o, const size_t size, const imode_t mode);
 
 int printf_work(char* o, const size_t size, const char* p, const imode_t mode);
 int printf_book(const char* p[], const imode_t mode);

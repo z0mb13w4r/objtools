@@ -17,6 +17,60 @@ void set_errname(const char* name) {
   strncpy(errname, name, sizeof(errname));
 }
 
+int printf_spos(char* o, const size_t size, const imode_t mode, const bool_t usespace) {
+  int n = 0;
+  if (o) {
+    switch (GET_POS0(mode)) {
+    case USE_AT:                   n += PRINT1("@");     break;
+    case USE_ATAT:                 n += PRINT1("@@");    break;
+    case USE_DOT:                  n += PRINT1(".");     break;
+    case USE_TAB:                  n += PRINT1(" ");     break;
+    default:                       break;
+    }
+
+    switch (GET_BRACKET(mode)) {
+    case USE_CB:                   n += PRINT1(" {");    break;
+    case USE_RB:                   n += PRINT1(" (");    break;
+    case USE_SB:                   n += PRINT1(" [");    break;
+    case USE_TB:                   n += PRINT1(" <");    break;
+    case USE_DRTB:                 n += PRINT1( ">>");   break;
+    case USE_SQ:                   n += PRINT1(" '");    break;
+    case USE_DQ:                   n += PRINT1(" \"");   break;
+    case USE_PLUS:                 n += PRINT1(" +");    break;
+    case USE_DASH:                 n += PRINT1(" -");    break;
+    default:
+      if (usespace)                n += PRINT1(" ");
+      break;
+    }
+  }
+
+  return n;
+}
+
+int printf_epos(char* o, const size_t size, const imode_t mode) {
+  int n = 0;
+  if (o) {
+    switch (GET_BRACKET(mode)) {
+    case USE_CB:                   n += PRINT1("}");         break;
+    case USE_RB:                   n += PRINT1(")");         break;
+    case USE_SB:                   n += PRINT1("]");         break;
+    case USE_TB:                   n += PRINT1(">");         break;
+    case USE_DRTB:                 n += PRINT1("<<");        break;
+    case USE_SQ:                   n += PRINT1("'");         break;
+    case USE_DQ:                   n += PRINT1("\"");        break;
+    default:                       break;
+    }
+
+    switch (GET_POS1(mode)) {
+    case USE_COLON:                n += PRINT1(":");         break;
+    case USE_BYTES:                n += PRINT1(" (bytes)");  break;
+    default:                       break;
+    }
+  }
+
+  return n;
+}
+
 int printf_work(char* o, const size_t size, const char* p, const imode_t mode) {
   int n = 0;
   if (o && p) {
@@ -63,33 +117,11 @@ int printf_neat(char* o, const size_t size, const uint64_t v, const imode_t mode
   int n = 0;
   if (o) {
     const imode_t pos0 = GET_POS0(mode);
-
-    switch (pos0) {
-    case USE_AT:                   n += PRINT1("@");     break;
-    case USE_ATAT:                 n += PRINT1("@@");    break;
-    case USE_DOT:                  n += PRINT1(".");     break;
-    case USE_TAB:                  n += PRINT1(" ");     break;
-    default:                       break;
-    }
-
     const imode_t xmode = mode & ~(USE_FLAGMASK | USE_POS0MASK | USE_POS1MASK | USE_BRACKETMASK);
-    const bool_t usespace = (!pos0 && USE_CHARCTRL != xmode && USE_LHEX8NS != xmode && USE_CHAR != xmode)
+    const bool_t  usespace = (!pos0 && USE_CHARCTRL != xmode && USE_LHEX8NS != xmode && USE_CHAR != xmode)
                         || USE_SPACE == pos0 || USE_TAB == pos0;
 
-    switch (GET_BRACKET(mode)) {
-    case USE_CB:                   n += PRINT1(" {");    break;
-    case USE_RB:                   n += PRINT1(" (");    break;
-    case USE_SB:                   n += PRINT1(" [");    break;
-    case USE_TB:                   n += PRINT1(" <");    break;
-    case USE_DRTB:                 n += PRINT1( ">>");   break;
-    case USE_SQ:                   n += PRINT1(" '");    break;
-    case USE_DQ:                   n += PRINT1(" \"");   break;
-    case USE_PLUS:                 n += PRINT1(" +");    break;
-    case USE_DASH:                 n += PRINT1(" -");    break;
-    default:
-      if (usespace)                n += PRINT1(" ");
-      break;
-    }
+    n += printf_spos(o + n, size - n, mode, usespace);
 
     switch (xmode) {
     case USE_DEC:                  n += PRINT2("%" PRId64, v);                     break;
@@ -173,36 +205,29 @@ int printf_neat(char* o, const size_t size, const uint64_t v, const imode_t mode
       break;
     }
 
-    switch (GET_BRACKET(mode)) {
-    case USE_CB:                   n += PRINT1("}");         break;
-    case USE_RB:                   n += PRINT1(")");         break;
-    case USE_SB:                   n += PRINT1("]");         break;
-    case USE_TB:                   n += PRINT1(">");         break;
-    case USE_DRTB:                 n += PRINT1("<<");        break;
-    case USE_SQ:                   n += PRINT1("'");         break;
-    case USE_DQ:                   n += PRINT1("\"");        break;
-    default:                       break;
-    }
-
-    switch (GET_POS1(mode)) {
-    case USE_COLON:                n += PRINT1(":");         break;
-    case USE_BYTES:                n += PRINT1(" (bytes)");  break;
-    default:                       break;
-    }
+    n += printf_epos(o + n, size - n, mode);
   }
 
   return n;
 }
 
 int printf_eol() {
-  return printf("\n");
+  return printf_post("\n");
+}
+
+int printf_post(char* o) {
+  return printf("%s", o);
+}
+
+int printf_pack(const int size) {
+  return size <= 0 ? 0 : printf("%*s", size, " ");
 }
 
 int printf_nice(const uint64_t v, const imode_t mode) {
   MALLOCA(char, data, 1024);
   int n = printf_neat(data, sizeof(data), v, mode);
 
-  printf("%s", data);
+  printf_post(data);
 
   if (mode & USE_EOL) {
     n += printf_eol();
@@ -219,9 +244,9 @@ int printf_text(const char* p, const imode_t mode) {
     int ss = CAST(int, GET_PAD(mode));
     int rt = USE_RT == GET_FORMAT(mode);
 
-    if (!rt)                      printf("%s", data);
+    if (!rt)                      printf_post(data);
     if (ss && n < ss)        n += printf_pack(MAX(0, ss - n));
-    if (rt)                       printf("%s", data);
+    if (rt)                       printf_post(data);
     if (e)                   n += printf_eol();
 
     return n;
@@ -256,20 +281,28 @@ int printf_sore(const void* p, const size_t size, const imode_t mode) {
     n += printf_sore(p, size, USE_SHA512 | zmode);
   }
 
+  MALLOCA(char, o, 1024);
+
   puchar_t p0 = CAST(puchar_t, p);
   if (USE_STR == xmode) {
-    for (size_t i = 0; i < size; ++i, ++p0) {
-      if (0 == *p0) break;
-      n += printf_nice(*p0, USE_CHARCTRL);
-    }
-  } else if (USE_HEX == xmode) {
-    if (USE_TAB == GET_POS0(mode)) {
-      n += printf_pack(USE_SPACE == GET_POS0(mode) ? 1 : 2);
-    }
+    n += printf_spos(o, sizeof(o), mode, USE_SPACE == GET_POS0(mode) || USE_TAB == GET_POS0(mode));
 
     for (size_t i = 0; i < size; ++i, ++p0) {
-      n += printf_nice(*p0, USE_SPACE == GET_POS0(mode) ? USE_LHEX8 : USE_LHEX8NS);
+      if (0 == *p0) break;
+      n += printf_neat(o + n, sizeof(o) - n, *p0, USE_CHARCTRL);
     }
+
+    n += printf_epos(o, sizeof(o), mode);
+         printf_post(o);
+  } else if (USE_HEX == xmode) {
+    n += printf_spos(o, sizeof(o), mode, USE_SPACE == GET_POS0(mode) || USE_TAB == GET_POS0(mode));
+
+    for (size_t i = 0; i < size; ++i, ++p0) {
+      n += printf_neat(o + n, sizeof(o) - n, *p0, USE_SPACE == GET_POS0(mode) ? USE_LHEX8 : USE_LHEX8NS);
+    }
+
+    n += printf_epos(o, sizeof(o), mode);
+         printf_post(o);
   } else if (USE_MD5 == xmode) {
     uchar_t md[MD5_DIGEST_LENGTH];
     if (!md5(p0, size, md)) {
@@ -432,10 +465,6 @@ int printf_masknone(const pconvert_t p, const maskz_t mask, const imode_t mode) 
 
 int printf_pick(const pconvert_t p, const pick_t x, const imode_t mode) {
   return printf_text(strpick(p, x), mode);
-}
-
-int printf_pack(const int size) {
-  return size <= 0 ? 0 : printf("%*s", size, " ");
 }
 
 int printf_d(const char* format, ...) {
