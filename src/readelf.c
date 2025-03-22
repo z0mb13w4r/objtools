@@ -234,7 +234,7 @@ static int dump_elfheader(const pbuffer_t p, const poptions_t o) {
   return 0;
 }
 
-static int dump_fileheader0(const pbuffer_t p, const uint64_t e_type, const uint64_t e_machine, const uint64_t e_version,
+static int dump_fileheader0(const pbuffer_t p, const poptions_t o, const uint64_t e_type, const uint64_t e_machine, const uint64_t e_version,
                             const uint64_t e_entry, const uint64_t e_phoff, const uint64_t e_shoff, const uint64_t e_flags,
                             const uint64_t e_ehsize, const uint64_t e_phentsize, const uint64_t e_phnum, const uint64_t e_shentsize,
                             const uint64_t e_shnum, const uint64_t e_shstrndx) {
@@ -272,18 +272,20 @@ static int dump_fileheader0(const pbuffer_t p, const uint64_t e_type, const uint
   n += printf_nice(e_shstrndx, USE_DEC | USE_EOL);
   n += printf_eol();
 
+  if (o->action & OPTPROGRAM_HASH)   n += printf_sore(p->data, p->size, USE_HASHALL | USE_EOL);
+
   return n;
 }
 
 static int dump_fileheader32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
-  dump_fileheader0(p, ehdr->e_type, ehdr->e_machine, ehdr->e_version, ehdr->e_entry, ehdr->e_phoff, ehdr->e_shoff, ehdr->e_flags,
+  dump_fileheader0(p, o, ehdr->e_type, ehdr->e_machine, ehdr->e_version, ehdr->e_entry, ehdr->e_phoff, ehdr->e_shoff, ehdr->e_flags,
                       ehdr->e_ehsize, ehdr->e_phentsize, ehdr->e_phnum, ehdr->e_shentsize, ehdr->e_shnum, ehdr->e_shstrndx);
 
   return 0;
 }
 
 static int dump_fileheader64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
-  dump_fileheader0(p, ehdr->e_type, ehdr->e_machine, ehdr->e_version, ehdr->e_entry, ehdr->e_phoff, ehdr->e_shoff, ehdr->e_flags,
+  dump_fileheader0(p, o, ehdr->e_type, ehdr->e_machine, ehdr->e_version, ehdr->e_entry, ehdr->e_phoff, ehdr->e_shoff, ehdr->e_flags,
                       ehdr->e_ehsize, ehdr->e_phentsize, ehdr->e_phnum, ehdr->e_shentsize, ehdr->e_shnum, ehdr->e_shstrndx);
 
   return 0;
@@ -1312,7 +1314,7 @@ static int dump_version64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
   return 0;
 }
 
-static int dump_actions0(const pbuffer_t p, const char* name, const int action,
+static int dump_actions0(const pbuffer_t p, const poptions_t o, const char* name, const int action,
                          const uint64_t sh_type, const uint64_t sh_offset, const uint64_t sh_size, const uint64_t sh_addr) {
   int n = 0;
   if (ACT_HEXDUMP == action) {
@@ -1321,8 +1323,12 @@ static int dump_actions0(const pbuffer_t p, const char* name, const int action,
 
     if (0 != sh_size && sh_type != SHT_NOBITS) {
       n += printf_data(getp(p, sh_offset, sh_size), sh_size, sh_addr, USE_HEXDUMP);
+      n += printf_eol();
+
+      if (o->action & OPTPROGRAM_HASH)   n += printf_sore(getp(p, sh_offset, sh_size), sh_size, USE_HASHALL | USE_EOL);
     } else {
       printf_w("section '%s' has no data to dump!", name);
+      n += printf_eol();
     }
   } else if (ACT_STRDUMP == action) {
     printf_text("String dump of section", USE_LT);
@@ -1330,12 +1336,12 @@ static int dump_actions0(const pbuffer_t p, const char* name, const int action,
 
     if (0 != sh_size && sh_type != SHT_NOBITS) {
       n += printf_data(getp(p, sh_offset, sh_size), sh_size, sh_addr, USE_STRDUMP);
+      n += printf_eol();
     } else {
       printf_w("section '%s' has no data to dump!", name);
+      n += printf_eol();
     }
   }
-
-  n += printf_eol();
 
   return n;
 }
@@ -1345,7 +1351,7 @@ static int dump_actions32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehd
   while (x) {
     Elf32_Shdr* shdr = get_shdr32byname(p, x->secname);
     if (shdr) {
-      dump_actions0(p, x->secname, x->action, shdr->sh_type, shdr->sh_offset, shdr->sh_size, shdr->sh_addr);
+      dump_actions0(p, o, x->secname, x->action, shdr->sh_type, shdr->sh_offset, shdr->sh_size, shdr->sh_addr);
     } else {
       printf_w("section '%s' was not dumped because it does not exist!", x->secname);
     }
@@ -1361,7 +1367,7 @@ static int dump_actions64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
   while (x) {
     Elf64_Shdr* shdr = get_shdr64byname(p, x->secname);
     if (shdr) {
-      dump_actions0(p, x->secname, x->action, shdr->sh_type, shdr->sh_offset, shdr->sh_size, shdr->sh_addr);
+      dump_actions0(p, o, x->secname, x->action, shdr->sh_type, shdr->sh_offset, shdr->sh_size, shdr->sh_addr);
     } else {
       printf_w("section '%s' was not dumped because it does not exist!", x->secname);
     }

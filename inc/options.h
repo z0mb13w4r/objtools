@@ -34,6 +34,7 @@
 #define OPTDEBUGELF_GDB_INDEX                      U64MASK(50)
 #define OPTDEBUGELF_DEBUGGING                      (0x1FFFFFULL << 30)
 
+#define OPTPROGRAM_HASH                            U64MASK(55)
 #define OPTPROGRAM_DEMANGLE                        U64MASK(56)
 #define OPTPROGRAM_LINE_NUMBERS                    U64MASK(57)
 #define OPTPROGRAM_DEBUGGING_TAGS                  U64MASK(58)

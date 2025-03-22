@@ -7,7 +7,7 @@
 
 int dump_peheader(const pbuffer_t p, const poptions_t o) {
   if (issafe(p)) {
-    printf_sore(p->data, p->size, USE_HASHALL | USE_TAB | USE_EOL);
+    if (o->action & OPTPROGRAM_HASH)   printf_sore(p->data, p->size, USE_HASHALL | USE_EOL);
   }
 
   return 0;

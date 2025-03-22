@@ -57,6 +57,7 @@ static const args_t READELFARGS[] = {
   {'r', "--relocs",          OPTREADELF_RELOCS},
   {'s', "--symbols",         OPTREADELF_SYMBOLS},
   {'u', "--unwind",          OPTREADELF_UNWIND},
+  {'X', "--hash",            OPTPROGRAM_HASH},
   {0, NULL}
 };
 
@@ -115,6 +116,7 @@ static const args_t OBJDUMPARGS[] = {
   {'x', "--all-headers",       OPTOBJDUMP_FILE_HEADER | OPTOBJDUMP_PRIVATE_HEADER | OPTOBJDUMP_SECTION_HEADER | OPTOBJDUMP_SYMBOLS},
   {'l', "--line-numbers",      OPTPROGRAM_LINE_NUMBERS},
   {'c', "--capstone",          OPTPROGRAM_CAPSTONE_ALL},
+  {'X', "--hash",              OPTPROGRAM_HASH},
   {0, NULL}
 };
 

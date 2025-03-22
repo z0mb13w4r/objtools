@@ -275,10 +275,11 @@ int printf_sore(const void* p, const size_t size, const imode_t mode) {
 
   int n = 0;
   if (USE_HASHALL == xmode) {
-    n += printf_sore(p, size, USE_MD5 | zmode);
-    n += printf_sore(p, size, USE_SHA1 | zmode);
-    n += printf_sore(p, size, USE_SHA256 | zmode);
-    n += printf_sore(p, size, USE_SHA512 | zmode);
+    n += printf_text("HASHES", USE_LT | USE_COLON | USE_EOL);
+    n += printf_sore(p, size, USE_MD5 | USE_TAB | zmode);
+    n += printf_sore(p, size, USE_SHA1 | USE_TAB | zmode);
+    n += printf_sore(p, size, USE_SHA256 | USE_TAB | zmode);
+    n += printf_sore(p, size, USE_SHA512 | USE_TAB | zmode);
   }
 
   MALLOCA(char, o, 1024);
