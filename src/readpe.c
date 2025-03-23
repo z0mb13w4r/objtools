@@ -250,7 +250,7 @@ int dump_iat32(const pbuffer_t p, const poptions_t o) {
     }
 
     PIMAGE_IMPORT_DESCRIPTOR p0 = (PIMAGE_IMPORT_DESCRIPTOR)
-      getp(p, dd->VirtualAddress - isec->VirtualAddress + isec->PointerToRawData, sizeof(IMAGE_IMPORT_DESCRIPTOR));
+      getp(p, RVA2VA(isec, dd->VirtualAddress), sizeof(IMAGE_IMPORT_DESCRIPTOR));
 
     while (p0 && p0->FirstThunk) {
       printf_text("Characteristics", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
@@ -267,13 +267,18 @@ int dump_iat32(const pbuffer_t p, const poptions_t o) {
       printf_text("FirstThunk", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
       printf_nice(p0->FirstThunk, USE_FHEX32 | USE_EOL);
 
-      printf_text(getp(p, p0->Name - isec->VirtualAddress + isec->PointerToRawData, 1), USE_LT | USE_TAB | USE_EOL);
+      printf_text(getp(p, RVA2VA(isec, p0->Name), 1), USE_LT | USE_TAB | USE_EOL);
       PIMAGE_THUNK_DATA32 p1 = (PIMAGE_THUNK_DATA32)
-        getp(p, p0->OriginalFirstThunk - isec->VirtualAddress + isec->PointerToRawData, sizeof(IMAGE_THUNK_DATA32));
+        getp(p, RVA2VA(isec, p0->OriginalFirstThunk), sizeof(IMAGE_THUNK_DATA32));
 
       while (p1 && p1->AddressOfData) {
         if (p1->AddressOfData < 0x80000000) {
-          printf_text(getp(p, p1->AddressOfData - isec->VirtualAddress + isec->PointerToRawData + 2, 1), USE_LT | USE_TAB2 | USE_EOL);
+          PIMAGE_IMPORT_BY_NAME p2 = getp(p, RVA2VA(isec, p1->AddressOfData), sizeof(IMAGE_IMPORT_BY_NAME));
+          printf_text(p2->Name, USE_LT | USE_TAB2);
+          printf_nice(p2->Hint, USE_DEC | USE_SB | USE_EOL);
+        } else {
+          printf_text("Ordinal", USE_LT | USE_TAB2 | USE_COLON);
+          printf_nice(p1->Ordinal, USE_DEC | USE_SB | USE_EOL);
         }
         ++p1;
       }

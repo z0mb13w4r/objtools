@@ -6,6 +6,8 @@
 #define IMAGE_NUMBEROF_DIRECTORY_ENTRIES     (16)
 #define IMAGE_SIZEOF_SHORT_NAME              (8)
 
+#define RVA2VA(x,y)                          ((y) - (x)->VirtualAddress + (x)->PointerToRawData)
+
 typedef struct _IMAGE_DOS_HEADER {
   WORD e_magic;
   WORD e_cblp;
@@ -148,6 +150,11 @@ typedef struct _IMAGE_IMPORT_DESCRIPTOR {
   DWORD   Name;
   DWORD   FirstThunk;
 } IMAGE_IMPORT_DESCRIPTOR, *PIMAGE_IMPORT_DESCRIPTOR;
+
+typedef struct _IMAGE_IMPORT_BY_NAME {
+  WORD Hint;
+  CHAR Name[1];
+} IMAGE_IMPORT_BY_NAME, *PIMAGE_IMPORT_BY_NAME;
 
 typedef struct _IMAGE_THUNK_DATA32 {
   union {

@@ -96,20 +96,17 @@ typedef uint32_t pick_t, *ppick_t;
 typedef int      bool_t;
 
 typedef unsigned int   uint_t;
-typedef unsigned char  uchar_t;
-typedef unsigned long  ulong_t;
-typedef unsigned short ushort_t;
+typedef unsigned char  uchar_t, *puchar_t;
+typedef unsigned long  ulong_t, *pulong_t;
+typedef unsigned short ushort_t, *pushort_t;
 
-typedef unsigned char  *puchar_t;
-typedef unsigned long  *pulong_t;
-typedef unsigned short *pushort_t;
+typedef char           CHAR, *PCHAR;
+typedef int32_t        LONG, *PLONG;
 
-typedef int32_t        LONG;
-
-typedef uint8_t        BYTE;
-typedef uint16_t       WORD;
-typedef uint32_t       DWORD;
-typedef uint64_t       ULONGLONG;
+typedef uint8_t        BYTE, *PBYTE;
+typedef uint16_t       WORD, *PWORD;
+typedef uint32_t       DWORD, *PDWORD;
+typedef uint64_t       ULONGLONG, *PULONGULONG;
 
 #endif
 
