@@ -2,6 +2,7 @@
 #include <malloc.h>
 
 #include "buffer.h"
+#include "printf.h"
 #include "elfcode.h"
 #include "options.h"
 #include "memlink.h"
@@ -137,9 +138,11 @@ bool_t isbuffer(handle_t p) {
   return ismode(p, MODE_BUFFER) && issafe(p);
 }
 
-void* getp(const pbuffer_t p, const int offset, const size_t size) {
+unknown_t getp(const pbuffer_t p, const int offset, const size_t size) {
   if (issafe(p) && (offset + size - 1) < p->size) {
-    return ((unsigned char*)p->data) + offset;
+    return CAST(puchar_t, p->data) + offset;
+  } else if(issafe(p)) {
+    printf_e("datasize = %d, offset = %d, size = %d\n", p->size, offset, size);
   }
 
   return NULL;

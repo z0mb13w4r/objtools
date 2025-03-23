@@ -25,6 +25,7 @@ int printf_spos(char* o, const size_t size, const imode_t mode, const bool_t use
     case USE_ATAT:                 n += PRINT1("@@");    break;
     case USE_DOT:                  n += PRINT1(".");     break;
     case USE_TAB:                  n += PRINT1(" ");     break;
+    case USE_TAB2:                 n += PRINT1("   ");   break;
     default:                       break;
     }
 
@@ -83,6 +84,7 @@ int printf_work(char* o, const size_t size, const char* p, const imode_t mode) {
     case USE_ATAT:           n += PRINT1("@@");         break;
     case USE_SPACE:          n += PRINT1(" ");          break;
     case USE_TAB:            n += PRINT1("  ");         break;
+    case USE_TAB2:           n += PRINT1("    ");       break;
     case USE_DOT:            n += PRINT1(".");          break;
     default:                 break;
     }

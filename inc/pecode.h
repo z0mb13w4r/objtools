@@ -149,6 +149,24 @@ typedef struct _IMAGE_IMPORT_DESCRIPTOR {
   DWORD   FirstThunk;
 } IMAGE_IMPORT_DESCRIPTOR, *PIMAGE_IMPORT_DESCRIPTOR;
 
+typedef struct _IMAGE_THUNK_DATA32 {
+  union {
+    DWORD ForwarderString;
+    DWORD Function;
+    DWORD Ordinal;
+    DWORD AddressOfData;
+  };
+} IMAGE_THUNK_DATA32, *PIMAGE_THUNK_DATA32;
+
+typedef struct _IMAGE_THUNK_DATA64 {
+  union {
+    ULONGLONG ForwarderString;
+    ULONGLONG Function;
+    ULONGLONG Ordinal;
+    ULONGLONG AddressOfData;
+  };
+} IMAGE_THUNK_DATA64, *PIMAGE_THUNK_DATA64;
+
 typedef struct _IMAGE_RESOURCE_DIRECTORY {
   DWORD Characteristics;
   DWORD TimeDateStamp;

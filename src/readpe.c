@@ -229,6 +229,62 @@ int dump_sectiongroups32(const pbuffer_t p, const poptions_t o) {
   return 0;
 }
 
+int dump_iat32(const pbuffer_t p, const poptions_t o) {
+  const int MAXSIZE = 36;
+
+  PIMAGE_NT_HEADERS32 nt = get_nt32hdr(p);
+  if (nt) {
+    PIMAGE_OPTIONAL_HEADER32 op = &nt->OptionalHeader;
+    PIMAGE_DATA_DIRECTORY dd = &op->DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT];
+    PIMAGE_SECTION_HEADER isec = NULL;
+
+    for (int i = 0; i < nt->FileHeader.NumberOfSections; ++i) {
+      PIMAGE_SECTION_HEADER sec = get_sectionhdrbyindex(p, i);
+      if (sec) {
+        // Locate the RVA of the IAT (Import Address Table)
+        if (sec->VirtualAddress <= dd->VirtualAddress && sec->VirtualAddress + sec->SizeOfRawData > dd->VirtualAddress)
+        {
+          isec = sec;
+        }
+      }
+    }
+
+    PIMAGE_IMPORT_DESCRIPTOR p0 = (PIMAGE_IMPORT_DESCRIPTOR)
+      getp(p, dd->VirtualAddress - isec->VirtualAddress + isec->PointerToRawData, sizeof(IMAGE_IMPORT_DESCRIPTOR));
+
+    while (p0 && p0->FirstThunk) {
+      printf_text("Characteristics", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      printf_nice(p0->Characteristics, USE_FHEX32 | USE_EOL);
+      printf_text("OriginalFirstThunk", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      printf_nice(p0->OriginalFirstThunk, USE_FHEX32 | USE_EOL);
+      printf_text("TimeDateStamp", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      printf_nice(p0->TimeDateStamp, USE_FHEX32);
+      printf_nice(p0->TimeDateStamp, USE_TIMEDATE | USE_SB | USE_EOL);
+      printf_text("ForwarderChain", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      printf_nice(p0->ForwarderChain, USE_FHEX32 | USE_EOL);
+      printf_text("Name", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      printf_nice(p0->Name, USE_FHEX32 | USE_EOL);
+      printf_text("FirstThunk", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      printf_nice(p0->FirstThunk, USE_FHEX32 | USE_EOL);
+
+      printf_text(getp(p, p0->Name - isec->VirtualAddress + isec->PointerToRawData, 1), USE_LT | USE_TAB | USE_EOL);
+      PIMAGE_THUNK_DATA32 p1 = (PIMAGE_THUNK_DATA32)
+        getp(p, p0->OriginalFirstThunk - isec->VirtualAddress + isec->PointerToRawData, sizeof(IMAGE_THUNK_DATA32));
+
+      while (p1 && p1->AddressOfData) {
+        if (p1->AddressOfData < 0x80000000) {
+          printf_text(getp(p, p1->AddressOfData - isec->VirtualAddress + isec->PointerToRawData + 2, 1), USE_LT | USE_TAB2 | USE_EOL);
+        }
+        ++p1;
+      }
+
+      ++p0;
+    }
+  }
+
+  return 0;
+}
+
 int readpe(const pbuffer_t p, const poptions_t o) {
   if (isPE(p)) {
     if (o->action & OPTREADELF_FILEHEADER)         dump_peheader(p, o);
@@ -238,6 +294,8 @@ int readpe(const pbuffer_t p, const poptions_t o) {
       if (o->action & OPTREADELF_FILEHEADER)       dump_ntheader32(p, o);
       if (o->action & OPTREADELF_SECTIONHEADERS)   dump_sectionheaders32(p, o);
       if (o->action & OPTREADELF_SECTIONGROUPS)    dump_sectiongroups32(p, o);
+
+      if (o->action & OPTREADELF_SYMBOLS)          dump_iat32(p, o);
 
     } else if (isPE64(p)) {
     }

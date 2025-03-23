@@ -30,7 +30,7 @@ handle_t bfree(handle_t p);
 handle_t bopen(const char* name);
 
 
-void* getp(const pbuffer_t p, const int offset, const size_t size);
+unknown_t getp(const pbuffer_t p, const int offset, const size_t size);
 int   get(const pbuffer_t p, const int offset);
 
 int isBigEndian(const pbuffer_t p);
