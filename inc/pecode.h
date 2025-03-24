@@ -3,10 +3,27 @@
 
 #include "buffer.h"
 
-#define IMAGE_NUMBEROF_DIRECTORY_ENTRIES     (16)
-#define IMAGE_SIZEOF_SHORT_NAME              (8)
+#define IMAGE_NUMBEROF_DIRECTORY_ENTRIES         (16)
+#define IMAGE_SIZEOF_SHORT_NAME                  (8)
 
-#define RVA2VA(x,y)                          ((y) - (x)->VirtualAddress + (x)->PointerToRawData)
+#define IMAGE_DIRECTORY_ENTRY_EXPORT             (0)
+#define IMAGE_DIRECTORY_ENTRY_IMPORT             (1)
+#define IMAGE_DIRECTORY_ENTRY_RESOURCE           (2)
+#define IMAGE_DIRECTORY_ENTRY_EXCEPTION          (3)
+#define IMAGE_DIRECTORY_ENTRY_SECURITY           (4)
+#define IMAGE_DIRECTORY_ENTRY_BASERELOC          (5)
+#define IMAGE_DIRECTORY_ENTRY_DEBUG              (6)
+#define IMAGE_DIRECTORY_ENTRY_ARCHITECTURE       (7)
+#define IMAGE_DIRECTORY_ENTRY_GLOBALPTR          (8)
+#define IMAGE_DIRECTORY_ENTRY_TLS                (9)
+#define IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG        (10)
+#define IMAGE_DIRECTORY_ENTRY_BOUND_IMPORT       (11)
+#define IMAGE_DIRECTORY_ENTRY_IAT                (12)
+#define IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT       (13)
+#define IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR     (14)
+#define IMAGE_DIRECTORY_ENTRY_RESERVED           (15)
+
+#define peconvert2va(x,y)                        ((y) - (x)->VirtualAddress + (x)->PointerToRawData)
 
 typedef struct _IMAGE_DOS_HEADER {
   WORD e_magic;
@@ -236,7 +253,10 @@ bool_t isPE64(const pbuffer_t p);
 PIMAGE_DOS_HEADER get_doshdr(const pbuffer_t p);
 PIMAGE_NT_HEADERS32 get_nt32hdr(const pbuffer_t p);
 PIMAGE_NT_HEADERS64 get_nt64hdr(const pbuffer_t p);
+
+PIMAGE_DATA_DIRECTORY get_datadirbyentry(const pbuffer_t p, const int index);
 PIMAGE_SECTION_HEADER get_sectionhdrbyindex(const pbuffer_t p, const int index);
+PIMAGE_SECTION_HEADER get_sectionhdrbyentry(const pbuffer_t p, const int index);
 
 #endif
 

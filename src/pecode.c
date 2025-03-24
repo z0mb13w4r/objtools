@@ -78,6 +78,20 @@ PIMAGE_NT_HEADERS64 get_nt64hdr(const pbuffer_t p) {
   return NULL;
 }
 
+PIMAGE_DATA_DIRECTORY get_datadirbyentry(const pbuffer_t p, const int index) {
+  if (index >= IMAGE_DIRECTORY_ENTRY_EXPORT && index <= IMAGE_DIRECTORY_ENTRY_RESERVED) {
+    if (isPE32(p)) {
+      PIMAGE_NT_HEADERS32 p0 = get_nt32hdr(p);
+      return p0 ? &p0->OptionalHeader.DataDirectory[index] : NULL;
+    } else if (isPE64(p)) {
+      PIMAGE_NT_HEADERS64 p0 = get_nt64hdr(p);
+      return p0 ? &p0->OptionalHeader.DataDirectory[index] : NULL;
+    }
+  }
+
+  return NULL;
+}
+
 PIMAGE_SECTION_HEADER get_sectionhdrbyindex(const pbuffer_t p, const int index) {
   if (isPE32(p)) {
     PIMAGE_DOS_HEADER p0 = get_doshdr(p);
@@ -94,6 +108,36 @@ PIMAGE_SECTION_HEADER get_sectionhdrbyindex(const pbuffer_t p, const int index) 
       const size_t spos = p0->e_lfanew + sizeof(DWORD) + sizeof(IMAGE_FILE_HEADER) + p1->FileHeader.SizeOfOptionalHeader;
       const size_t size = sizeof(IMAGE_SECTION_HEADER);
       return CAST(PIMAGE_SECTION_HEADER, getp(p, spos + (index * size), size));
+    }
+  }
+
+  return NULL;
+}
+
+PIMAGE_SECTION_HEADER get_sectionhdrbyentry(const pbuffer_t p, const int index) {
+  if (index >= IMAGE_DIRECTORY_ENTRY_EXPORT && index <= IMAGE_DIRECTORY_ENTRY_RESERVED) {
+    if (isPE32(p)) {
+      PIMAGE_NT_HEADERS32 p0 = get_nt32hdr(p);
+      PIMAGE_DATA_DIRECTORY p1 = get_datadirbyentry(p, index);
+      if (p0 && p1) {
+        for (int i = 0; i < p0->FileHeader.NumberOfSections; ++i) {
+          PIMAGE_SECTION_HEADER p2 = get_sectionhdrbyindex(p, i);
+          if (p2 && p2->VirtualAddress <= p1->VirtualAddress && p2->VirtualAddress + p2->SizeOfRawData > p1->VirtualAddress) {
+            return p2;
+          }
+        }
+      }
+    } else if (isPE64(p)) {
+      PIMAGE_NT_HEADERS64 p0 = get_nt64hdr(p);
+      PIMAGE_DATA_DIRECTORY p1 = get_datadirbyentry(p, index);
+      if (p0 && p1) {
+        for (int i = 0; i < p0->FileHeader.NumberOfSections; ++i) {
+          PIMAGE_SECTION_HEADER p2 = get_sectionhdrbyindex(p, i);
+          if (p2 && p2->VirtualAddress <= p1->VirtualAddress && p2->VirtualAddress + p2->SizeOfRawData > p1->VirtualAddress) {
+            return p2;
+          }
+        }
+      }
     }
   }
 

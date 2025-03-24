@@ -232,58 +232,46 @@ int dump_sectiongroups32(const pbuffer_t p, const poptions_t o) {
 int dump_iat32(const pbuffer_t p, const poptions_t o) {
   const int MAXSIZE = 36;
 
-  PIMAGE_NT_HEADERS32 nt = get_nt32hdr(p);
-  if (nt) {
-    PIMAGE_OPTIONAL_HEADER32 op = &nt->OptionalHeader;
-    PIMAGE_DATA_DIRECTORY dd = &op->DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT];
-    PIMAGE_SECTION_HEADER isec = NULL;
+  PIMAGE_DATA_DIRECTORY p0 = get_datadirbyentry(p, IMAGE_DIRECTORY_ENTRY_IMPORT);
+  PIMAGE_SECTION_HEADER s0 = get_sectionhdrbyentry(p, IMAGE_DIRECTORY_ENTRY_IMPORT);
 
-    for (int i = 0; i < nt->FileHeader.NumberOfSections; ++i) {
-      PIMAGE_SECTION_HEADER sec = get_sectionhdrbyindex(p, i);
-      if (sec) {
-        // Locate the RVA of the IAT (Import Address Table)
-        if (sec->VirtualAddress <= dd->VirtualAddress && sec->VirtualAddress + sec->SizeOfRawData > dd->VirtualAddress)
-        {
-          isec = sec;
-        }
-      }
-    }
+  if (p0 && s0) {
 
-    PIMAGE_IMPORT_DESCRIPTOR p0 = (PIMAGE_IMPORT_DESCRIPTOR)
-      getp(p, RVA2VA(isec, dd->VirtualAddress), sizeof(IMAGE_IMPORT_DESCRIPTOR));
+    PIMAGE_IMPORT_DESCRIPTOR p1 = (PIMAGE_IMPORT_DESCRIPTOR)
+      getp(p, peconvert2va(s0, p0->VirtualAddress), sizeof(IMAGE_IMPORT_DESCRIPTOR));
 
-    while (p0 && p0->FirstThunk) {
+    while (p1 && p1->FirstThunk) {
       printf_text("Characteristics", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-      printf_nice(p0->Characteristics, USE_FHEX32 | USE_EOL);
+      printf_nice(p1->Characteristics, USE_FHEX32 | USE_EOL);
       printf_text("OriginalFirstThunk", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-      printf_nice(p0->OriginalFirstThunk, USE_FHEX32 | USE_EOL);
+      printf_nice(p1->OriginalFirstThunk, USE_FHEX32 | USE_EOL);
       printf_text("TimeDateStamp", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-      printf_nice(p0->TimeDateStamp, USE_FHEX32);
-      printf_nice(p0->TimeDateStamp, USE_TIMEDATE | USE_SB | USE_EOL);
+      printf_nice(p1->TimeDateStamp, USE_FHEX32);
+      printf_nice(p1->TimeDateStamp, USE_TIMEDATE | USE_SB | USE_EOL);
       printf_text("ForwarderChain", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-      printf_nice(p0->ForwarderChain, USE_FHEX32 | USE_EOL);
+      printf_nice(p1->ForwarderChain, USE_FHEX32 | USE_EOL);
       printf_text("Name", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-      printf_nice(p0->Name, USE_FHEX32 | USE_EOL);
+      printf_nice(p1->Name, USE_FHEX32 | USE_EOL);
       printf_text("FirstThunk", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-      printf_nice(p0->FirstThunk, USE_FHEX32 | USE_EOL);
+      printf_nice(p1->FirstThunk, USE_FHEX32 | USE_EOL);
 
-      printf_text(getp(p, RVA2VA(isec, p0->Name), 1), USE_LT | USE_TAB | USE_EOL);
-      PIMAGE_THUNK_DATA32 p1 = (PIMAGE_THUNK_DATA32)
-        getp(p, RVA2VA(isec, p0->OriginalFirstThunk), sizeof(IMAGE_THUNK_DATA32));
+      printf_text(getp(p, peconvert2va(s0, p1->Name), 1), USE_LT | USE_TAB | USE_EOL);
+      PIMAGE_THUNK_DATA32 p2 = (PIMAGE_THUNK_DATA32)
+        getp(p, peconvert2va(s0, p1->OriginalFirstThunk), sizeof(IMAGE_THUNK_DATA32));
 
-      while (p1 && p1->AddressOfData) {
-        if (p1->AddressOfData < 0x80000000) {
-          PIMAGE_IMPORT_BY_NAME p2 = getp(p, RVA2VA(isec, p1->AddressOfData), sizeof(IMAGE_IMPORT_BY_NAME));
-          printf_text(p2->Name, USE_LT | USE_TAB2);
-          printf_nice(p2->Hint, USE_DEC | USE_SB | USE_EOL);
+      while (p2 && p2->AddressOfData) {
+        if (p2->AddressOfData < 0x80000000) {
+          PIMAGE_IMPORT_BY_NAME p3 = getp(p, peconvert2va(s0, p2->AddressOfData), sizeof(IMAGE_IMPORT_BY_NAME));
+          printf_text(p3->Name, USE_LT | USE_TAB2);
+          printf_nice(p3->Hint, USE_DEC | USE_SB | USE_EOL);
         } else {
           printf_text("Ordinal", USE_LT | USE_TAB2 | USE_COLON);
-          printf_nice(p1->Ordinal, USE_DEC | USE_SB | USE_EOL);
+          printf_nice(p2->Ordinal, USE_DEC | USE_SB | USE_EOL);
         }
-        ++p1;
+        ++p2;
       }
 
-      ++p0;
+      ++p1;
     }
   }
 
