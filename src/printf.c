@@ -147,7 +147,7 @@ int printf_neat(char* o, const size_t size, const uint64_t v, const imode_t mode
   int n = 0;
   if (o) {
     const imode_t pos0 = GET_POS0(mode);
-    const imode_t xmode = mode & ~(USE_FLAGMASK | USE_POS0MASK | USE_POS1MASK | USE_BRACKETMASK);
+    const imode_t xmode = mode & ~(USE_FLAGMASK | USE_POS0MASK | USE_POS1MASK | USE_BRACKETMASK | USE_COLORMASK);
     const bool_t  usespace = (!pos0 && USE_CHARCTRL != xmode && USE_LHEX8NS != xmode && USE_CHAR != xmode)
                         || USE_SPACE == pos0 || USE_TAB == pos0;
 
@@ -293,7 +293,7 @@ int printf_book(const char* p[], const imode_t mode) {
 }
 
 int printf_sore(const void* p, const size_t size, const imode_t mode) {
-  const imode_t xmode = mode & ~(USE_POS0MASK | USE_FLAGMASK);
+  const imode_t xmode = mode & ~(USE_POS0MASK | USE_FLAGMASK | USE_COLORMASK);
   const imode_t zmode = mode &   USE_POS0MASK;
 
   int n = 0;
