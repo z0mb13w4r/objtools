@@ -8,7 +8,8 @@
 
 #include "static/color.ci"
 
-#define MAX_BUFFER_SIZE (1024)
+#define MAX_BUFFER_SIZE  (1024)
+#define MAX_PADDING_SIZE (256)
 
 #define PRINT1(x)    snprintf(o + n, size - n, x)
 #define PRINT2(x,y)  snprintf(o + n, size - n, x, y)
@@ -259,20 +260,26 @@ int printf_nice(const uint64_t v, const imode_t mode) {
 }
 
 int printf_text(const char* p, const imode_t mode) {
-  MALLOCA(char, data, MAX_BUFFER_SIZE);
+  MALLOCA(char, o1, MAX_BUFFER_SIZE);
+  MALLOCA(char, o2, MAX_BUFFER_SIZE + MAX_PADDING_SIZE);
+
   int n = 0;
 
   if (p) {
-    int e = mode & USE_EOL;
-    int ss = CAST(int, GET_PAD(mode));
-    int rt = USE_RT == GET_FORMAT(mode);
+    n += printf_work(o1, sizeof(o1), p, mode);
 
-    n += printf_work(data, sizeof(data), p, mode);
+    int sz = MIN(MAX(0, CAST(int, GET_PAD(mode)) - n), MAX_PADDING_SIZE);
+    if (sz) {
+      if (USE_RT == GET_FORMAT(mode)) {
+        snprintf(o2, sizeof(o2), "%*s%s", sz, " ", o1);
+      } else {
+        snprintf(o2, sizeof(o2), "%s%*s", o1, sz, " ");
+      }
 
-    if (!rt)                      printf("%s", data);
-    if (ss && n < ss)        n += printf_pack(MAX(0, ss - n));
-    if (rt)                       printf("%s", data);
-    if (e)                   n += printf_eol();
+      n += printf_post(o2, mode) + sz;
+    } else {
+      n += printf_post(o1, mode);
+    }
   }
 
   return n;
