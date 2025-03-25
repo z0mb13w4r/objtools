@@ -55,6 +55,8 @@
 #define USE_SHA512        (7)
 #define USE_HASHALL       (8)
 
+#define GET_XX2(x,y)      ((x) & (0x03 << (y)))
+#define SET_XX2(x,y)      (((x) & 0x03) << (y))
 #define GET_XX3(x,y)      ((x) & (0x07 << (y)))
 #define SET_XX3(x,y)      (((x) & 0x07) << (y))
 #define GET_XX4(x,y)      ((x) & (0x0f << (y)))
@@ -66,20 +68,17 @@
 
 #define GET_PAD(x)        GET_XX8(x, 0)
 #define SET_PAD(x)        SET_XX8(x, 0)
-#define GET_FORMAT(x)     GET_XX4(x, 8)
-#define SET_FORMAT(x)     SET_XX4(x, 8)
-#define GET_BRACKET(x)    GET_XX4(x, 12)
-#define SET_BRACKET(x)    SET_XX4(x, 12)
-#define GET_POS1(x)       GET_XX4(x, 16)
-#define SET_POS1(x)       SET_XX4(x, 16)
-#define GET_POS0(x)       GET_XX4(x, 20)
-#define SET_POS0(x)       SET_XX4(x, 20)
-
+#define GET_FORMAT(x)     GET_XX2(x, 8)
+#define SET_FORMAT(x)     SET_XX2(x, 8)
+#define GET_BRACKET(x)    GET_XX6(x, 10)
+#define SET_BRACKET(x)    SET_XX6(x, 10)
+#define GET_POS0(x)       GET_XX4(x, 16)
+#define SET_POS0(x)       SET_XX4(x, 16)
+#define GET_POS1(x)       GET_XX4(x, 20)
+#define SET_POS1(x)       SET_XX4(x, 20)
+#define GET_COLOR(x)      GET_XX4(x, 24)
+#define SET_COLOR(x)      SET_XX4(x, 24)
 #define SET_FLAG(x)       SET_XX4(x, 28)
-
-#define USE_EOL           SET_FLAG(1)
-#define USE_NOSPACE       SET_FLAG(2)
-#define USE_FLAGMASK      SET_FLAG(15)
 
 #define USE_LT            SET_FORMAT(1)
 #define USE_RT            SET_FORMAT(2)
@@ -97,11 +96,7 @@
 #define USE_DQEQ          SET_BRACKET(10)
 #define USE_PLUS          SET_BRACKET(11)
 #define USE_DASH          SET_BRACKET(12)
-#define USE_BRACKETMASK   SET_BRACKET(15)
-
-#define USE_COLON         SET_POS1(1)
-#define USE_BYTES         SET_POS1(2)
-#define USE_POS1MASK      SET_POS1(15)
+#define USE_BRACKETMASK   SET_BRACKET(63)
 
 #define USE_SPACE         SET_POS0(1)
 #define USE_TAB           SET_POS0(2)
@@ -111,11 +106,31 @@
 #define USE_DOT           SET_POS0(6)
 #define USE_POS0MASK      SET_POS0(15)
 
+#define USE_COLON         SET_POS1(1)
+#define USE_BYTES         SET_POS1(2)
+#define USE_POS1MASK      SET_POS1(15)
+
+#define USE_RESET         SET_COLOR(1)
+#define USE_BLACK         SET_COLOR(2)
+#define USE_RED           SET_COLOR(3)
+#define USE_GREEN         SET_COLOR(4)
+#define USE_YELLOW        SET_COLOR(5)
+#define USE_BLUE          SET_COLOR(6)
+#define USE_PURPLE        SET_COLOR(7)
+#define USE_CYAN          SET_COLOR(8)
+#define USE_WHITE         SET_COLOR(9)
+#define USE_COLORMASK     SET_COLOR(15)
+
+#define USE_EOL           SET_FLAG(1)
+#define USE_NOSPACE       SET_FLAG(2)
+#define USE_FLAGMASK      SET_FLAG(15)
+
 int printf_eol();
-int printf_post(char* o);
 
 int printf_spos(char* o, const size_t size, const imode_t mode, const bool_t usespace);
 int printf_epos(char* o, const size_t size, const imode_t mode);
+
+int printf_color(const imode_t mode);
 
 int printf_work(char* o, const size_t size, const char* p, const imode_t mode);
 int printf_book(const char* p[], const imode_t mode);

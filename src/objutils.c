@@ -59,9 +59,9 @@ const char* strpicknull(const pconvert_t p, const pick_t x) {
 }
 
 const char* strpickunknown(const pick_t x) {
-  static char buff[32];
-  snprintf(buff, sizeof (buff), "<unknown: %x>", x);
-  return buff;
+  static char o[32];
+  snprintf(o, sizeof(o), "<unknown: %x>", x);
+  return o;
 }
 
 size_t strlenpick(const pconvert_t p) {

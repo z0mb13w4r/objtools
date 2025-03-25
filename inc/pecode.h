@@ -157,6 +157,20 @@ typedef struct _IMAGE_SECTION_HEADER {
   DWORD   Characteristics;
 } IMAGE_SECTION_HEADER, *PIMAGE_SECTION_HEADER;
 
+typedef struct _IMAGE_EXPORT_DIRECTORY {
+  DWORD Characteristics;
+  DWORD TimeDateStamp;
+  WORD  MajorVersion;
+  WORD  MinorVersion;
+  DWORD Name;
+  DWORD Base;
+  DWORD NumberOfFunctions;
+  DWORD NumberOfNames;
+  DWORD AddressOfFunctions;
+  DWORD AddressOfNames;
+  DWORD AddressOfNameOrdinals;
+} IMAGE_EXPORT_DIRECTORY, *PIMAGE_EXPORT_DIRECTORY;
+
 typedef struct _IMAGE_IMPORT_DESCRIPTOR {
   union {
     DWORD Characteristics;

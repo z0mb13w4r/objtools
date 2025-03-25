@@ -6,12 +6,30 @@
 
 #include "printf.h"
 
+#include "static/color.ci"
+
 #define MAX_BUFFER_SIZE (1024)
 
 #define PRINT1(x)    snprintf(o + n, size - n, x)
 #define PRINT2(x,y)  snprintf(o + n, size - n, x, y)
 
 static char errname[256] = {0};
+
+static int printf_post(const char* o, const imode_t mode) {
+  int n = 0;
+
+  if (o) {
+    n += printf_color(mode);
+    fprintf(stdout, "%s", o);
+    n += printf_color(GET_COLOR(mode) ? USE_RESET : 0);
+  }
+
+  if (mode & USE_EOL) {
+    n += printf_eol();
+  }
+
+  return n;
+}
 
 void set_errname(const char* name) {
   strncpy(errname, name, sizeof(errname));
@@ -67,6 +85,16 @@ int printf_epos(char* o, const size_t size, const imode_t mode) {
     case USE_BYTES:                n += PRINT1(" (bytes)");  break;
     default:                       break;
     }
+  }
+
+  return n;
+}
+
+int printf_color(const imode_t mode) {
+  int n = 0;
+  const char* p = NULL;
+  if (GET_COLOR(mode) && (p = strpicknull(zCOLORS, GET_COLOR(mode)))) {
+    n += printf("%s", p);
   }
 
   return n;
@@ -214,47 +242,40 @@ int printf_neat(char* o, const size_t size, const uint64_t v, const imode_t mode
 }
 
 int printf_eol() {
-  return printf_post("\n");
-}
-
-int printf_post(char* o) {
-  return printf("%s", o);
+  return fprintf(stdout, "\n");
 }
 
 int printf_pack(const int size) {
-  return size <= 0 ? 0 : printf("%*s", size, " ");
+  return size <= 0 ? 0 : fprintf(stdout, "%*s", size, " ");
 }
 
 int printf_nice(const uint64_t v, const imode_t mode) {
   MALLOCA(char, data, 1024);
   int n = printf_neat(data, sizeof(data), v, mode);
 
-  printf_post(data);
-
-  if (mode & USE_EOL) {
-    n += printf_eol();
-  }
+  printf_post(data, mode);
 
   return n;
 }
 
 int printf_text(const char* p, const imode_t mode) {
   MALLOCA(char, data, MAX_BUFFER_SIZE);
-  int n = printf_work(data, sizeof(data), p, mode);
+  int n = 0;
+
   if (p) {
     int e = mode & USE_EOL;
     int ss = CAST(int, GET_PAD(mode));
     int rt = USE_RT == GET_FORMAT(mode);
 
-    if (!rt)                      printf_post(data);
-    if (ss && n < ss)        n += printf_pack(MAX(0, ss - n));
-    if (rt)                       printf_post(data);
-    if (e)                   n += printf_eol();
+    n += printf_work(data, sizeof(data), p, mode);
 
-    return n;
+    if (!rt)                      printf("%s", data);
+    if (ss && n < ss)        n += printf_pack(MAX(0, ss - n));
+    if (rt)                       printf("%s", data);
+    if (e)                   n += printf_eol();
   }
 
-  return -1;
+  return n;
 }
 
 int printf_book(const char* p[], const imode_t mode) {
@@ -282,6 +303,7 @@ int printf_sore(const void* p, const size_t size, const imode_t mode) {
     n += printf_sore(p, size, USE_SHA1 | USE_TAB | zmode);
     n += printf_sore(p, size, USE_SHA256 | USE_TAB | zmode);
     n += printf_sore(p, size, USE_SHA512 | USE_TAB | zmode);
+    n += printf_eol();
   }
 
   MALLOCA(char, o, 1024);
@@ -296,7 +318,7 @@ int printf_sore(const void* p, const size_t size, const imode_t mode) {
     }
 
     n += printf_epos(o, sizeof(o), mode);
-         printf_post(o);
+         printf_post(o, mode);
   } else if (USE_HEX == xmode) {
     n += printf_spos(o, sizeof(o), mode, USE_SPACE == GET_POS0(mode) || USE_TAB == GET_POS0(mode));
 
@@ -305,7 +327,7 @@ int printf_sore(const void* p, const size_t size, const imode_t mode) {
     }
 
     n += printf_epos(o, sizeof(o), mode);
-         printf_post(o);
+         printf_post(o, mode);
   } else if (USE_MD5 == xmode) {
     uchar_t md[MD5_DIGEST_LENGTH];
     if (!md5(p0, size, md)) {
@@ -330,10 +352,6 @@ int printf_sore(const void* p, const size_t size, const imode_t mode) {
       printf_text("SHA512", USE_LT | USE_COLON | zmode | SET_PAD(10));
       printf_sore(md, SHA512_DIGEST_LENGTH, USE_HEX | USE_EOL);
     }
-  }
-
-  if (mode & USE_EOL) {
-    n += printf_eol();
   }
 
   return n;

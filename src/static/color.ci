@@ -1,0 +1,13 @@
+static convert_t zCOLORS[] = {
+  {"\033[0;0m",  USE_RESET},
+  {"\033[0;30m", USE_BLACK},
+  {"\033[0;31m", USE_RED},
+  {"\033[0;32m", USE_GREEN},
+  {"\033[0;33m", USE_YELLOW},
+  {"\033[0;34m", USE_BLUE},
+  {"\033[0;35m", USE_PURPLE},
+  {"\033[0;36m", USE_CYAN},
+  {"\033[0;37m", USE_WHITE},
+  {0, 0}
+};
+

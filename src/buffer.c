@@ -142,7 +142,7 @@ unknown_t getp(const pbuffer_t p, const int offset, const size_t size) {
   if (issafe(p) && (offset + size - 1) < p->size) {
     return CAST(puchar_t, p->data) + offset;
   } else if(issafe(p)) {
-    printf_e("datasize = %d, offset = %d, size = %d\n", p->size, offset, size);
+//    printf_e("datasize = %d, offset = %d, size = %d\n", p->size, offset, size);
   }
 
   return NULL;
