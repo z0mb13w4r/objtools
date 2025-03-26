@@ -272,5 +272,8 @@ PIMAGE_DATA_DIRECTORY get_datadirbyentry(const pbuffer_t p, const int index);
 PIMAGE_SECTION_HEADER get_sectionhdrbyindex(const pbuffer_t p, const int index);
 PIMAGE_SECTION_HEADER get_sectionhdrbyentry(const pbuffer_t p, const int index);
 
+unknown_t get_chunkbyRVA(const pbuffer_t p, const int index, const uint64_t vaddr, const size_t size);
+unknown_t get_chunkbyentry(const pbuffer_t p, const int index);
+
 #endif
 

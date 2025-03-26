@@ -144,3 +144,25 @@ PIMAGE_SECTION_HEADER get_sectionhdrbyentry(const pbuffer_t p, const int index) 
   return NULL;
 }
 
+unknown_t get_chunkbyRVA(const pbuffer_t p, const int index, const uint64_t vaddr, const size_t size) {
+  PIMAGE_SECTION_HEADER s0 = get_sectionhdrbyentry(p, index);
+  if (s0) {
+    return getp(p, peconvert2va(s0, vaddr), size);
+  }
+
+  return NULL;
+}
+
+unknown_t get_chunkbyentry(const pbuffer_t p, const int index) {
+  PIMAGE_DATA_DIRECTORY p0 = get_datadirbyentry(p, index);
+  if (p0) {
+    if (IMAGE_DIRECTORY_ENTRY_IMPORT == index) {
+      return get_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_IMPORT, p0->VirtualAddress, sizeof(PIMAGE_IMPORT_DESCRIPTOR));
+    } else if (IMAGE_DIRECTORY_ENTRY_EXPORT == index) {
+      return get_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_EXPORT, p0->VirtualAddress, sizeof(IMAGE_EXPORT_DIRECTORY));
+    }
+  }
+
+  return NULL;
+}
+
