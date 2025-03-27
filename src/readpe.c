@@ -102,65 +102,69 @@ int dump_ntheader1(const pbuffer_t p, const uint64_t Magic, const uint64_t Major
                    const uint64_t Subsystem, const uint64_t DllCharacteristics, const uint64_t SizeOfStackReserve, const uint64_t SizeOfStackCommit,
                    const uint64_t SizeOfHeapReserve, const uint64_t SizeOfHeapCommit, const uint64_t LoaderFlags, const uint64_t NumberOfRvaAndSizes) {
   int n = 0;
-  n += printf_text("OPTIONAL HEADER", USE_LT | USE_COLON | USE_EOL);
-  n += printf_text("Magic", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  n += printf_nice(Magic, USE_FHEX16);
-  n += printf_pick(zOPTHDRMAGIC, Magic, USE_LT | USE_SPACE | USE_EOL);
-  n += printf_text("LinkerVersion", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  n += printf_nice(MajorLinkerVersion, USE_DEC);
-  n += printf_nice(MinorLinkerVersion, USE_DEC | USE_DOT | USE_EOL);
-  n += printf_text("SizeOfCode", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  n += printf_nice(SizeOfCode, USE_FHEX32 | USE_EOL);
-  n += printf_text("SizeOfInitializedData", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  n += printf_nice(SizeOfInitializedData, USE_FHEX32 | USE_EOL);
-  n += printf_text("SizeOfUninitializedData", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  n += printf_nice(SizeOfUninitializedData, USE_FHEX32 | USE_EOL);
-  n += printf_text("AddressOfEntryPoint", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  n += printf_nice(AddressOfEntryPoint, USE_FHEX32 | USE_EOL);
-  n += printf_text("BaseOfCode", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  n += printf_nice(BaseOfCode, USE_FHEX32 | USE_EOL);
-  n += printf_text("ImageBase", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  n += printf_nice(ImageBase, USE_FHEX32 | USE_EOL);
-  n += printf_text("SectionAlignment", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  n += printf_nice(SectionAlignment, USE_FHEX32 | USE_EOL);
-  n += printf_text("FileAlignment", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  n += printf_nice(FileAlignment, USE_FHEX32 | USE_EOL);
-  n += printf_text("OperatingSystemVersion", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  n += printf_nice(MajorOperatingSystemVersion, USE_DEC);
-  n += printf_nice(MinorOperatingSystemVersion, USE_DEC | USE_DOT | USE_EOL);
-  n += printf_text("ImageVersion", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  n += printf_nice(MajorImageVersion, USE_DEC);
-  n += printf_nice(MinorImageVersion, USE_DEC | USE_DOT | USE_EOL);
-  n += printf_text("SubsystemVersion", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  n += printf_nice(MajorSubsystemVersion, USE_DEC);
-  n += printf_nice(MinorSubsystemVersion, USE_DEC | USE_DOT | USE_EOL);
-  n += printf_text("Win32VersionValue", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  n += printf_nice(Win32VersionValue, USE_FHEX32 | USE_EOL);
-  n += printf_text("SizeOfImage", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  n += printf_nice(SizeOfImage, USE_FHEX32 | USE_EOL);
-  n += printf_text("SizeOfHeaders", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  n += printf_nice(SizeOfHeaders, USE_FHEX32 | USE_EOL);
-  n += printf_text("CheckSum", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  n += printf_nice(CheckSum, USE_FHEX32 | USE_EOL);
-  n += printf_text("Subsystem", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  n += printf_nice(Subsystem, USE_FHEX16);
-  n += printf_pick(zOPTHDRSUBSYSTEM, Subsystem, USE_LT | USE_SPACE | USE_EOL);
-  n += printf_text("DllCharacteristics", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  n += printf_nice(DllCharacteristics, USE_FHEX16);
-  n += printf_mask(zOPTHDRCHARACTERISTICS, DllCharacteristics, USE_LT | USE_EOL);
-  n += printf_text("SizeOfStackReserve", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  n += printf_nice(SizeOfStackReserve, USE_FHEX32 | USE_EOL);
-  n += printf_text("SizeOfStackCommit", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  n += printf_nice(SizeOfStackCommit, USE_FHEX32 | USE_EOL);
-  n += printf_text("SizeOfHeapReserve", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  n += printf_nice(SizeOfHeapReserve, USE_FHEX32 | USE_EOL);
-  n += printf_text("SizeOfHeapCommit", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  n += printf_nice(SizeOfHeapCommit, USE_FHEX32 | USE_EOL);
-  n += printf_text("LoaderFlags", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  n += printf_nice(LoaderFlags, USE_FHEX32 | USE_EOL);
-  n += printf_text("NumberOfRvaAndSizes", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  n += printf_nice(NumberOfRvaAndSizes, USE_FHEX32 | USE_EOL);
-  n += printf_eol();
+  if (p) {
+    const imode_t USE_FHEXNN = (isPE64(p) ? USE_FHEX64 : USE_FHEX32) | USE_EOL;
+
+    n += printf_text("OPTIONAL HEADER", USE_LT | USE_COLON | USE_EOL);
+    n += printf_text("Magic", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(Magic, USE_FHEX16);
+    n += printf_pick(zOPTHDRMAGIC, Magic, USE_LT | USE_SPACE | USE_EOL);
+    n += printf_text("LinkerVersion", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(MajorLinkerVersion, USE_DEC);
+    n += printf_nice(MinorLinkerVersion, USE_DEC | USE_DOT | USE_EOL);
+    n += printf_text("SizeOfCode", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(SizeOfCode, USE_FHEX32 | USE_EOL);
+    n += printf_text("SizeOfInitializedData", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(SizeOfInitializedData, USE_FHEX32 | USE_EOL);
+    n += printf_text("SizeOfUninitializedData", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(SizeOfUninitializedData, USE_FHEX32 | USE_EOL);
+    n += printf_text("AddressOfEntryPoint", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(AddressOfEntryPoint, USE_FHEX32 | USE_EOL);
+    n += printf_text("BaseOfCode", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(BaseOfCode, USE_FHEX32 | USE_EOL);
+    n += printf_text("ImageBase", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(ImageBase, USE_FHEXNN);
+    n += printf_text("SectionAlignment", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(SectionAlignment, USE_FHEX32 | USE_EOL);
+    n += printf_text("FileAlignment", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(FileAlignment, USE_FHEX32 | USE_EOL);
+    n += printf_text("OperatingSystemVersion", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(MajorOperatingSystemVersion, USE_DEC);
+    n += printf_nice(MinorOperatingSystemVersion, USE_DEC | USE_DOT | USE_EOL);
+    n += printf_text("ImageVersion", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(MajorImageVersion, USE_DEC);
+    n += printf_nice(MinorImageVersion, USE_DEC | USE_DOT | USE_EOL);
+    n += printf_text("SubsystemVersion", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(MajorSubsystemVersion, USE_DEC);
+    n += printf_nice(MinorSubsystemVersion, USE_DEC | USE_DOT | USE_EOL);
+    n += printf_text("Win32VersionValue", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(Win32VersionValue, USE_FHEX32 | USE_EOL);
+    n += printf_text("SizeOfImage", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(SizeOfImage, USE_FHEX32 | USE_EOL);
+    n += printf_text("SizeOfHeaders", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(SizeOfHeaders, USE_FHEX32 | USE_EOL);
+    n += printf_text("CheckSum", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(CheckSum, USE_FHEX32 | USE_EOL);
+    n += printf_text("Subsystem", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(Subsystem, USE_FHEX16);
+    n += printf_pick(zOPTHDRSUBSYSTEM, Subsystem, USE_LT | USE_SPACE | USE_EOL);
+    n += printf_text("DllCharacteristics", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(DllCharacteristics, USE_FHEX16);
+    n += printf_mask(zOPTHDRCHARACTERISTICS, DllCharacteristics, USE_LT | USE_EOL);
+    n += printf_text("SizeOfStackReserve", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(SizeOfStackReserve, USE_FHEXNN);
+    n += printf_text("SizeOfStackCommit", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(SizeOfStackCommit, USE_FHEXNN);
+    n += printf_text("SizeOfHeapReserve", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(SizeOfHeapReserve, USE_FHEXNN);
+    n += printf_text("SizeOfHeapCommit", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(SizeOfHeapCommit, USE_FHEXNN);
+    n += printf_text("LoaderFlags", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(LoaderFlags, USE_FHEX32 | USE_EOL);
+    n += printf_text("NumberOfRvaAndSizes", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(NumberOfRvaAndSizes, USE_FHEX32 | USE_EOL);
+    n += printf_eol();
+  }
 
   return n;
 }
@@ -499,6 +503,7 @@ static int dump_resource0(const pbuffer_t p, const uint64_t Characteristics, con
   n += printf_nice(NumberOfNamedEntries, USE_DEC | USE_EOL);
   n += printf_text("NumberOfIdEntries", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(NumberOfIdEntries, USE_DEC | USE_EOL);
+  n += printf_eol();
 
   return 0;
 }
@@ -515,6 +520,88 @@ static int dump_resourceNN(const pbuffer_t p, const poptions_t o) {
   return 0;
 }
 
+static int dump_config0(const pbuffer_t p, const uint64_t Size, const uint64_t TimeDateStamp,
+                        const uint64_t MajorVersion, const uint64_t MinorVersion, const uint64_t GlobalFlagsClear, const uint64_t GlobalFlagsSet,
+                        const uint64_t CriticalSectionDefaultTimeout, const uint64_t DeCommitFreeBlockThreshold, const uint64_t DeCommitTotalFreeThreshold,
+                        const uint64_t LockPrefixTable, const uint64_t MaximumAllocationSize, const uint64_t VirtualMemoryThreshold,
+                        const uint64_t ProcessAffinityMask, const uint64_t ProcessHeapFlags, const uint64_t CSDVersion, const uint64_t Reserved1,
+                        const uint64_t EditList, const uint64_t SecurityCookie, const uint64_t SEHandlerTable, const uint64_t SEHandlerCount) {
+  int n = 0;
+  if (p) {
+    const imode_t USE_FHEXNN = (isPE64(p) ? USE_FHEX64 : USE_FHEX32) | USE_EOL;
+
+    printf_text("IMAGE DIRECTORY ENTRY LOAD CONFIG", USE_LT | USE_COLON | USE_EOL);
+
+    n += printf_text("Size", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(Size, USE_FHEX32 | USE_EOL);
+    n += printf_text("TimeDateStamp", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(TimeDateStamp, USE_FHEX32);
+    n += printf_nice(TimeDateStamp, USE_TIMEDATE | USE_SB | USE_EOL);
+    n += printf_text("Version", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(MajorVersion, USE_DEC);
+    n += printf_nice(MinorVersion, USE_DEC | USE_DOT | USE_EOL);
+    n += printf_text("GlobalFlagsClear", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(GlobalFlagsClear, USE_FHEX32 | USE_EOL);
+    n += printf_text("GlobalFlagsSet", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(GlobalFlagsSet, USE_FHEX32 | USE_EOL);
+    n += printf_text("CriticalSectionDefaultTimeout", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(CriticalSectionDefaultTimeout, USE_FHEX32 | USE_EOL);
+    n += printf_text("DeCommitFreeBlockThreshold", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(DeCommitFreeBlockThreshold, USE_FHEXNN);
+    n += printf_text("DeCommitTotalFreeThreshold", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(DeCommitTotalFreeThreshold, USE_FHEXNN);
+    n += printf_text("LockPrefixTable", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(LockPrefixTable, USE_FHEXNN);
+    n += printf_text("MaximumAllocationSize", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(MaximumAllocationSize, USE_FHEXNN);
+    n += printf_text("VirtualMemoryThreshold", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(VirtualMemoryThreshold, USE_FHEXNN);
+    n += printf_text("ProcessAffinityMask", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(ProcessAffinityMask, USE_FHEXNN);
+    n += printf_text("ProcessHeapFlags", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(ProcessHeapFlags, USE_FHEX32 | USE_EOL);
+    n += printf_text("CSDVersion", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(CSDVersion, USE_FHEX16 | USE_EOL);
+    n += printf_text("Reserved1", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(Reserved1, USE_FHEX16 | USE_EOL);
+    n += printf_text("EditList", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(EditList, USE_FHEXNN);
+    n += printf_text("SecurityCookie", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(SecurityCookie, USE_FHEXNN);
+    n += printf_text("SEHandlerTable", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(SEHandlerTable, USE_FHEXNN);
+    n += printf_text("SEHandlerCount", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(SEHandlerCount, USE_FHEXNN);
+    n += printf_eol();
+  }
+
+  return n;
+}
+
+static int dump_config32(const pbuffer_t p, const poptions_t o) {
+  PIMAGE_LOAD_CONFIG_DIRECTORY32 p0 = get_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG);
+  if (p0) {
+    dump_config0(p, p0->Size, p0->TimeDateStamp, p0->MajorVersion, p0->MinorVersion, p0->GlobalFlagsClear, p0->GlobalFlagsSet,
+                 p0->CriticalSectionDefaultTimeout, p0->DeCommitFreeBlockThreshold, p0-> DeCommitTotalFreeThreshold, p0->LockPrefixTable,
+                 p0->MaximumAllocationSize, p0->VirtualMemoryThreshold, p0->ProcessAffinityMask, p0->ProcessHeapFlags, p0->CSDVersion,
+                 p0->Reserved1, p0->EditList, p0->SecurityCookie, p0->SEHandlerTable, p0->SEHandlerCount);
+  }
+
+  return 0;
+}
+
+static int dump_config64(const pbuffer_t p, const poptions_t o) {
+  PIMAGE_LOAD_CONFIG_DIRECTORY64 p0 = get_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG);
+  if (p0) {
+    dump_config0(p, p0->Size, p0->TimeDateStamp, p0->MajorVersion, p0->MinorVersion, p0->GlobalFlagsClear, p0->GlobalFlagsSet,
+                 p0->CriticalSectionDefaultTimeout, p0->DeCommitFreeBlockThreshold, p0-> DeCommitTotalFreeThreshold, p0->LockPrefixTable,
+                 p0->MaximumAllocationSize, p0->VirtualMemoryThreshold, p0->ProcessAffinityMask, p0->ProcessHeapFlags, p0->CSDVersion,
+                 p0->Reserved1, p0->EditList, p0->SecurityCookie, p0->SEHandlerTable, p0->SEHandlerCount);
+  }
+
+  return 0;
+}
+
 int readpe(const pbuffer_t p, const poptions_t o) {
   if (isPE(p)) {
     if (o->action & OPTREADELF_FILEHEADER)         dump_peheader(p, o);
@@ -528,6 +615,7 @@ int readpe(const pbuffer_t p, const poptions_t o) {
       if (o->action & OPTREADELF_SYMBOLS)          dump_eatNN(p, o);
       if (o->action & OPTREADELF_SYMBOLS)          dump_iat32(p, o);
       if (o->action & OPTREADELF_SYMBOLS)          dump_resourceNN(p, o);
+      if (o->action & OPTREADELF_SYMBOLS)          dump_config32(p, o);
     } else if (isPE64(p)) {
       if (o->action & OPTREADELF_FILEHEADER)       dump_ntheader64(p, o);
       if (o->action & OPTREADELF_SECTIONHEADERS)   dump_sectionheaders64(p, o);
@@ -536,6 +624,7 @@ int readpe(const pbuffer_t p, const poptions_t o) {
       if (o->action & OPTREADELF_SYMBOLS)          dump_eatNN(p, o);
       if (o->action & OPTREADELF_SYMBOLS)          dump_iat64(p, o);
       if (o->action & OPTREADELF_SYMBOLS)          dump_resourceNN(p, o);
+      if (o->action & OPTREADELF_SYMBOLS)          dump_config64(p, o);
     }
   } else {
     printf_e("not an PE file - it has the wrong magic bytes at the start.");

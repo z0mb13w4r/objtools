@@ -157,11 +157,17 @@ unknown_t get_chunkbyentry(const pbuffer_t p, const int index) {
   PIMAGE_DATA_DIRECTORY p0 = get_datadirbyentry(p, index);
   if (p0) {
     if (IMAGE_DIRECTORY_ENTRY_IMPORT == index) {
-      return get_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_IMPORT, p0->VirtualAddress, sizeof(PIMAGE_IMPORT_DESCRIPTOR));
+      return get_chunkbyRVA(p, index, p0->VirtualAddress, sizeof(PIMAGE_IMPORT_DESCRIPTOR));
     } else if (IMAGE_DIRECTORY_ENTRY_EXPORT == index) {
-      return get_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_EXPORT, p0->VirtualAddress, sizeof(IMAGE_EXPORT_DIRECTORY));
+      return get_chunkbyRVA(p, index, p0->VirtualAddress, sizeof(IMAGE_EXPORT_DIRECTORY));
     } else if (IMAGE_DIRECTORY_ENTRY_RESOURCE == index) {
-      return get_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_RESOURCE, p0->VirtualAddress, sizeof(IMAGE_RESOURCE_DIRECTORY));
+      return get_chunkbyRVA(p, index, p0->VirtualAddress, sizeof(IMAGE_RESOURCE_DIRECTORY));
+    } else if (IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG == index) {
+      if (isPE32(p)) {
+        return get_chunkbyRVA(p, index, p0->VirtualAddress, sizeof(IMAGE_LOAD_CONFIG_DIRECTORY32));
+      } else if (isPE64(p)) {
+        return get_chunkbyRVA(p, index, p0->VirtualAddress, sizeof(IMAGE_LOAD_CONFIG_DIRECTORY64));
+      }
     }
   }
 

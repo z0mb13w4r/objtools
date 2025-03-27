@@ -154,3 +154,7 @@ int ripemd160(const unknown_t p, const size_t size, puchar_t md) {
   return 0;
 }
 
+int crc32(const unknown_t p, const size_t size, pulong_t crc) {
+
+  return 0;
+}

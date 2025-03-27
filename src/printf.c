@@ -359,6 +359,10 @@ int printf_sore(const void* p, const size_t size, const imode_t mode) {
       printf_text("SHA512", USE_LT | USE_COLON | zmode | SET_PAD(10));
       printf_sore(md, SHA512_DIGEST_LENGTH, USE_HEX | USE_EOL);
     }
+  } else if (USE_CRC32 == xmode) {
+
+  } else if (USE_BASE64 == xmode) {
+
   }
 
   return n;

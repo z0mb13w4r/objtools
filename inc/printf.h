@@ -54,6 +54,8 @@
 #define USE_SHA256        (6)
 #define USE_SHA512        (7)
 #define USE_HASHALL       (8)
+#define USE_CRC32         (9)
+#define USE_BASE64        (10)
 
 #define GET_XX2(x,y)      ((x) & (0x03 << (y)))
 #define SET_XX2(x,y)      (((x) & 0x03) << (y))
