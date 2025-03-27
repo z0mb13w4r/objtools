@@ -209,7 +209,7 @@ int dump_ntheader64(const pbuffer_t p, const poptions_t o) {
   return 0;
 }
 
-int dump_sectionheaders0(const pbuffer_t p, const uint64_t NumberOfSections) {
+static int dump_sectionheaders0(const pbuffer_t p, const uint64_t NumberOfSections) {
   int n = 0;
   for (int i = 0; i < NumberOfSections; ++i) {
     PIMAGE_SECTION_HEADER p0 = get_sectionhdrbyindex(p, i);
@@ -247,7 +247,7 @@ int dump_sectionheaders0(const pbuffer_t p, const uint64_t NumberOfSections) {
   return n;
 }
 
-int dump_sectionheaders32(const pbuffer_t p, const poptions_t o) {
+static int dump_sectionheaders32(const pbuffer_t p, const poptions_t o) {
   PIMAGE_NT_HEADERS32 nt = get_nt32hdr(p);
   if (nt) {
     dump_sectionheaders0(p, nt->FileHeader.NumberOfSections);
@@ -256,7 +256,7 @@ int dump_sectionheaders32(const pbuffer_t p, const poptions_t o) {
   return 0;
 }
 
-int dump_sectionheaders64(const pbuffer_t p, const poptions_t o) {
+static int dump_sectionheaders64(const pbuffer_t p, const poptions_t o) {
   PIMAGE_NT_HEADERS64 nt = get_nt64hdr(p);
   if (nt) {
     dump_sectionheaders0(p, nt->FileHeader.NumberOfSections);
@@ -265,7 +265,19 @@ int dump_sectionheaders64(const pbuffer_t p, const poptions_t o) {
   return 0;
 }
 
-int dump_sectiongroups32(const pbuffer_t p, const poptions_t o) {
+static int dump_sectiongroups0(const pbuffer_t p) {
+  const int MAXSIZE = strlenpick(zOPTHDRENTRY) + 2;
+
+  int n = 0;
+  n += printf_text("DATA DIRECTORY", USE_LT | USE_COLON | USE_EOL);
+  n += printf_text("Name", USE_LT | USE_TAB | SET_PAD(MAXSIZE));
+  n += printf_text("RVA", USE_LT | USE_SPACE | SET_PAD(11));
+  n += printf_text("Size", USE_LT | USE_SPACE | USE_EOL);
+
+  return n;
+}
+
+static int dump_sectiongroups32(const pbuffer_t p, const poptions_t o) {
   const int MAXSIZE = strlenpick(zOPTHDRENTRY) + 2;
 
   PIMAGE_NT_HEADERS32 nt = get_nt32hdr(p);
@@ -273,10 +285,7 @@ int dump_sectiongroups32(const pbuffer_t p, const poptions_t o) {
     PIMAGE_OPTIONAL_HEADER32 op = &nt->OptionalHeader;
     PIMAGE_DATA_DIRECTORY dd = op->DataDirectory;
 
-    printf_text("DATA DIRECTORY", USE_LT | USE_COLON | USE_EOL);
-    printf_text("Name", USE_LT | USE_TAB | SET_PAD(MAXSIZE));
-    printf_text("RVA", USE_LT | USE_SPACE | SET_PAD(11));
-    printf_text("Size", USE_LT | USE_SPACE | USE_EOL);
+    dump_sectiongroups0(p);
 
     for (size_t i = 0; i < op->NumberOfRvaAndSizes; ++i, ++dd) {
       printf_pick(zOPTHDRENTRY, i, USE_LT | USE_TAB | SET_PAD(MAXSIZE));
@@ -292,7 +301,7 @@ int dump_sectiongroups32(const pbuffer_t p, const poptions_t o) {
   return 0;
 }
 
-int dump_sectiongroups64(const pbuffer_t p, const poptions_t o) {
+static int dump_sectiongroups64(const pbuffer_t p, const poptions_t o) {
   const int MAXSIZE = strlenpick(zOPTHDRENTRY) + 2;
 
   PIMAGE_NT_HEADERS64 nt = get_nt64hdr(p);
@@ -300,10 +309,7 @@ int dump_sectiongroups64(const pbuffer_t p, const poptions_t o) {
     PIMAGE_OPTIONAL_HEADER64 op = &nt->OptionalHeader;
     PIMAGE_DATA_DIRECTORY dd = op->DataDirectory;
 
-    printf_text("DATA DIRECTORY", USE_LT | USE_COLON | USE_EOL);
-    printf_text("Name", USE_LT | USE_TAB | SET_PAD(MAXSIZE));
-    printf_text("RVA", USE_LT | USE_SPACE | SET_PAD(11));
-    printf_text("Size", USE_LT | USE_SPACE | USE_EOL);
+    dump_sectiongroups0(p);
 
     for (size_t i = 0; i < op->NumberOfRvaAndSizes; ++i, ++dd) {
       printf_pick(zOPTHDRENTRY, i, USE_LT | USE_TAB | SET_PAD(MAXSIZE));
@@ -419,9 +425,9 @@ int dump_iat64(const pbuffer_t p, const poptions_t o) {
   return 0;
 }
 
-int dump_eat0(const pbuffer_t p, const uint64_t Characteristics, const uint64_t TimeDateStamp, const uint64_t MajorVersion, const uint64_t MinorVersion,
-              const uint64_t Name, const char* sname, const uint64_t Base, const uint64_t NumberOfFunctions, const uint64_t NumberOfNames,
-              const uint64_t AddressOfFunctions, const uint64_t AddressOfNames, const uint64_t AddressOfNameOrdinals) {
+static int dump_eat0(const pbuffer_t p, const uint64_t Characteristics, const uint64_t TimeDateStamp, const uint64_t MajorVersion, const uint64_t MinorVersion,
+                     const uint64_t Name, const char* sname, const uint64_t Base, const uint64_t NumberOfFunctions, const uint64_t NumberOfNames,
+                     const uint64_t AddressOfFunctions, const uint64_t AddressOfNames, const uint64_t AddressOfNameOrdinals) {
   int n = 0;
   n += printf_text("Characteristics", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(Characteristics, USE_FHEX32 | USE_EOL);
@@ -450,7 +456,7 @@ int dump_eat0(const pbuffer_t p, const uint64_t Characteristics, const uint64_t 
   return n;
 }
 
-int dump_eat32(const pbuffer_t p, const poptions_t o) {
+static int dump_eatNN(const pbuffer_t p, const poptions_t o) {
   PIMAGE_DATA_DIRECTORY p0 = get_datadirbyentry(p, IMAGE_DIRECTORY_ENTRY_EXPORT);
   PIMAGE_SECTION_HEADER s0 = get_sectionhdrbyentry(p, IMAGE_DIRECTORY_ENTRY_EXPORT);
 
@@ -478,35 +484,36 @@ int dump_eat32(const pbuffer_t p, const poptions_t o) {
   return 0;
 }
 
-int dump_eat64(const pbuffer_t p, const poptions_t o) {
-  PIMAGE_DATA_DIRECTORY p0 = get_datadirbyentry(p, IMAGE_DIRECTORY_ENTRY_EXPORT);
-  PIMAGE_SECTION_HEADER s0 = get_sectionhdrbyentry(p, IMAGE_DIRECTORY_ENTRY_EXPORT);
-
-  if (p0 && s0) {
-    PIMAGE_EXPORT_DIRECTORY p1 = get_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_EXPORT);
-
-    if (p1) {
-      printf_text("IMAGE EXPORT DIRECTORY", USE_LT | USE_COLON | USE_EOL);
-
-      dump_eat0(p, p1->Characteristics, p1->TimeDateStamp, p1->MajorVersion, p1->MinorVersion,
-                p1->Name, getp(p, peconvert2va(s0, p1->Name), 1), p1->Base, p1->NumberOfFunctions, p1->NumberOfNames,
-                p1->AddressOfFunctions, p1->AddressOfNames, p1->AddressOfNameOrdinals);
-
-      PDWORD addrOfNames = get_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_EXPORT, p1->AddressOfNames, sizeof(DWORD) * p1->NumberOfNames);
-      PDWORD addrOfFunctions = get_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_EXPORT, p1->AddressOfFunctions, sizeof(DWORD) * p1->NumberOfFunctions);
-      PWORD  addrOfNameOrdinals = get_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_EXPORT, p1->AddressOfNameOrdinals, sizeof(WORD) * p1->NumberOfFunctions);
-
-      for (int i = 0; i < p1->NumberOfNames; ++i) {
-        printf_nice(addrOfNameOrdinals[i] + 1, USE_DEC5);
-        printf_nice(addrOfFunctions[i], USE_FHEX32);
-        printf_text(getp(p, peconvert2va(s0, addrOfNames[i]), 1), USE_LT | USE_SPACE | USE_EOL);
-      }
-    }
-  }
+static int dump_resource0(const pbuffer_t p, const uint64_t Characteristics, const uint64_t TimeDateStamp,
+                          const uint64_t MajorVersion, const uint64_t MinorVersion, const uint64_t NumberOfNamedEntries, const uint64_t NumberOfIdEntries) {
+  int n = 0;
+  n += printf_text("Characteristics", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(Characteristics, USE_FHEX32 | USE_EOL);
+  n += printf_text("TimeDateStamp", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(TimeDateStamp, USE_FHEX32);
+  n += printf_nice(TimeDateStamp, USE_TIMEDATE | USE_SB | USE_EOL);
+  n += printf_text("Version", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(MajorVersion, USE_DEC);
+  n += printf_nice(MinorVersion, USE_DEC | USE_DOT | USE_EOL);
+  n += printf_text("NumberOfNamedEntries", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(NumberOfNamedEntries, USE_DEC | USE_EOL);
+  n += printf_text("NumberOfIdEntries", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(NumberOfIdEntries, USE_DEC | USE_EOL);
 
   return 0;
 }
 
+static int dump_resourceNN(const pbuffer_t p, const poptions_t o) {
+  PIMAGE_RESOURCE_DIRECTORY p0 = get_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_RESOURCE);
+  if (p0) {
+      printf_text("IMAGE RESOURCE DIRECTORY", USE_LT | USE_COLON | USE_EOL);
+
+      dump_resource0(p, p0->Characteristics, p0->TimeDateStamp,
+                     p0->MajorVersion, p0->MinorVersion, p0->NumberOfNamedEntries, p0->NumberOfIdEntries);
+  }
+  // TBD
+  return 0;
+}
 
 int readpe(const pbuffer_t p, const poptions_t o) {
   if (isPE(p)) {
@@ -518,15 +525,17 @@ int readpe(const pbuffer_t p, const poptions_t o) {
       if (o->action & OPTREADELF_SECTIONHEADERS)   dump_sectionheaders32(p, o);
       if (o->action & OPTREADELF_SECTIONGROUPS)    dump_sectiongroups32(p, o);
 
+      if (o->action & OPTREADELF_SYMBOLS)          dump_eatNN(p, o);
       if (o->action & OPTREADELF_SYMBOLS)          dump_iat32(p, o);
-      if (o->action & OPTREADELF_SYMBOLS)          dump_eat32(p, o);
+      if (o->action & OPTREADELF_SYMBOLS)          dump_resourceNN(p, o);
     } else if (isPE64(p)) {
       if (o->action & OPTREADELF_FILEHEADER)       dump_ntheader64(p, o);
       if (o->action & OPTREADELF_SECTIONHEADERS)   dump_sectionheaders64(p, o);
       if (o->action & OPTREADELF_SECTIONGROUPS)    dump_sectiongroups64(p, o);
 
+      if (o->action & OPTREADELF_SYMBOLS)          dump_eatNN(p, o);
       if (o->action & OPTREADELF_SYMBOLS)          dump_iat64(p, o);
-      if (o->action & OPTREADELF_SYMBOLS)          dump_eat64(p, o);
+      if (o->action & OPTREADELF_SYMBOLS)          dump_resourceNN(p, o);
     }
   } else {
     printf_e("not an PE file - it has the wrong magic bytes at the start.");

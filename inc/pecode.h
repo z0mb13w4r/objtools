@@ -23,6 +23,9 @@
 #define IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR     (14)
 #define IMAGE_DIRECTORY_ENTRY_RESERVED           (15)
 
+#define IMAGE_RESOURCE_NAME_IS_STRING            (0x80000000)
+#define IMAGE_RESOURCE_DATA_IS_DIRECTORY         (0x80000000)
+
 #define peconvert2va(x,y)                        ((y) - (x)->VirtualAddress + (x)->PointerToRawData)
 
 typedef struct _IMAGE_DOS_HEADER {
@@ -213,6 +216,29 @@ typedef struct _IMAGE_RESOURCE_DIRECTORY {
   WORD  NumberOfNamedEntries;
   WORD  NumberOfIdEntries;
 } IMAGE_RESOURCE_DIRECTORY, *PIMAGE_RESOURCE_DIRECTORY;
+
+typedef struct _IMAGE_RESOURCE_DIRECTORY_ENTRY {
+  union {
+    struct {
+      DWORD NameOffset:31;
+      DWORD NameIsString:1;
+    };
+    DWORD Name;
+    WORD  Id;
+  };
+  union {
+    DWORD OffsetToData;
+    struct {
+      DWORD OffsetToDirectory:31;
+      DWORD DataIsDirectory:1;
+    };
+  };
+} IMAGE_RESOURCE_DIRECTORY_ENTRY, *PIMAGE_RESOURCE_DIRECTORY_ENTRY;
+
+typedef struct _IMAGE_RESOURCE_DIRECTORY_STRING {
+  WORD Length;
+  CHAR NameString[1];
+} IMAGE_RESOURCE_DIRECTORY_STRING, *PIMAGE_RESOURCE_DIRECTORY_STRING;
 
 typedef struct {
   DWORD Size;

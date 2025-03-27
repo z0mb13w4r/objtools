@@ -160,6 +160,8 @@ unknown_t get_chunkbyentry(const pbuffer_t p, const int index) {
       return get_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_IMPORT, p0->VirtualAddress, sizeof(PIMAGE_IMPORT_DESCRIPTOR));
     } else if (IMAGE_DIRECTORY_ENTRY_EXPORT == index) {
       return get_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_EXPORT, p0->VirtualAddress, sizeof(IMAGE_EXPORT_DIRECTORY));
+    } else if (IMAGE_DIRECTORY_ENTRY_RESOURCE == index) {
+      return get_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_RESOURCE, p0->VirtualAddress, sizeof(IMAGE_RESOURCE_DIRECTORY));
     }
   }
 
