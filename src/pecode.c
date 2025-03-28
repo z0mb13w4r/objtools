@@ -168,6 +168,8 @@ unknown_t get_chunkbyentry(const pbuffer_t p, const int index) {
       } else if (isPE64(p)) {
         return get_chunkbyRVA(p, index, p0->VirtualAddress, sizeof(IMAGE_LOAD_CONFIG_DIRECTORY64));
       }
+    } else if (IMAGE_DIRECTORY_ENTRY_DEBUG == index) {
+      return get_chunkbyRVA(p, index, p0->VirtualAddress, sizeof(IMAGE_DEBUG_DIRECTORY));
     }
   }
 

@@ -1,0 +1,35 @@
+#define IMAGE_DEBUG_TYPE_UNKNOWN               (0)
+#define IMAGE_DEBUG_TYPE_COFF                  (1)
+#define IMAGE_DEBUG_TYPE_CODEVIEW              (2)
+#define IMAGE_DEBUG_TYPE_FPO                   (3)
+#define IMAGE_DEBUG_TYPE_MISC                  (4)
+#define IMAGE_DEBUG_TYPE_EXCEPTION             (5)
+#define IMAGE_DEBUG_TYPE_FIXUP                 (6)
+#define IMAGE_DEBUG_TYPE_OMAP_TO_SRC           (7)
+#define IMAGE_DEBUG_TYPE_OMAP_FROM_SRC         (8)
+#define IMAGE_DEBUG_TYPE_BORLAND               (9)
+#define IMAGE_DEBUG_TYPE_RESERVED10            (10)
+#define IMAGE_DEBUG_TYPE_CLSID                 (11)
+#define IMAGE_DEBUG_TYPE_REPRO                 (12)
+#define IMAGE_DEBUG_TYPE_EX_DLLCHARACTERISTICS (20)
+
+static convert_t zDEBUGHDR[] = {
+  {"IMAGE_DEBUG_TYPE_UNKNOWN",               IMAGE_DEBUG_TYPE_UNKNOWN},
+  {"IMAGE_DEBUG_TYPE_COFF",                  IMAGE_DEBUG_TYPE_COFF},
+  {"IMAGE_DEBUG_TYPE_CODEVIEW",              IMAGE_DEBUG_TYPE_CODEVIEW},
+  {"IMAGE_DEBUG_TYPE_FPO",                   IMAGE_DEBUG_TYPE_FPO},
+  {"IMAGE_DEBUG_TYPE_MISC",                  IMAGE_DEBUG_TYPE_MISC},
+  {"IMAGE_DEBUG_TYPE_EXCEPTION",             IMAGE_DEBUG_TYPE_EXCEPTION},
+  {"IMAGE_DEBUG_TYPE_FIXUP",                 IMAGE_DEBUG_TYPE_FIXUP},
+  {"IMAGE_DEBUG_TYPE_OMAP_TO_SRC",           IMAGE_DEBUG_TYPE_OMAP_TO_SRC},
+  {"IMAGE_DEBUG_TYPE_OMAP_FROM_SRC",         IMAGE_DEBUG_TYPE_OMAP_FROM_SRC},
+  {"IMAGE_DEBUG_TYPE_BORLAND",               IMAGE_DEBUG_TYPE_BORLAND},
+  {"IMAGE_DEBUG_TYPE_RESERVED10",            IMAGE_DEBUG_TYPE_RESERVED10},
+  {"IMAGE_DEBUG_TYPE_CLSID",                 IMAGE_DEBUG_TYPE_CLSID},
+  {"IMAGE_DEBUG_TYPE_REPRO",                 IMAGE_DEBUG_TYPE_REPRO},
+  {"UNDEFINED_0",                            17},
+  {"UNDEFINED_1",                            18},
+  {"IMAGE_DEBUG_TYPE_EX_DLLCHARACTERISTICS", IMAGE_DEBUG_TYPE_EX_DLLCHARACTERISTICS},
+  {0, 0}
+};
+

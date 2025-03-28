@@ -286,6 +286,17 @@ typedef struct {
   ULONGLONG SEHandlerCount;
 } IMAGE_LOAD_CONFIG_DIRECTORY64, *PIMAGE_LOAD_CONFIG_DIRECTORY64;
 
+typedef struct _IMAGE_DEBUG_DIRECTORY {
+  DWORD Characteristics;
+  DWORD TimeDateStamp;
+  WORD  MajorVersion;
+  WORD  MinorVersion;
+  DWORD Type;
+  DWORD SizeOfData;
+  DWORD AddressOfRawData;
+  DWORD PointerToRawData;
+} IMAGE_DEBUG_DIRECTORY, *PIMAGE_DEBUG_DIRECTORY;
+
 bool_t isPE(const pbuffer_t p);
 bool_t isPE32(const pbuffer_t p);
 bool_t isPE64(const pbuffer_t p);
