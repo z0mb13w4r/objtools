@@ -610,7 +610,7 @@ static int dump_debugNN(const pbuffer_t p, const poptions_t o) {
 
   PIMAGE_DEBUG_DIRECTORY p0 = get_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_DEBUG);
   if (p0) {
-    printf_text("IMAGE LOAD CONFIG DIRECTORY", USE_LT | USE_COLON | USE_EOL);
+    n += printf_text("IMAGE LOAD CONFIG DIRECTORY", USE_LT | USE_COLON | USE_EOL);
 
     n += printf_text("Characteristics", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     n += printf_nice(p0->Characteristics, USE_FHEX32 | USE_EOL);
@@ -629,7 +629,38 @@ static int dump_debugNN(const pbuffer_t p, const poptions_t o) {
     n += printf_nice(p0->AddressOfRawData, USE_FHEX32 | USE_EOL);
     n += printf_text("PointerToRawData", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     n += printf_nice(p0->PointerToRawData, USE_FHEX32 | USE_EOL);
-    // TBD
+    n += printf_eol();
+
+    DWORD p1 = get_dwordbyRVA(p, IMAGE_DIRECTORY_ENTRY_DEBUG, p0->AddressOfRawData);
+    if (p1 == CV_SIGNATURE_RSDS) {
+      PCV_INFO_PDB70 p2 = get_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_DEBUG, p0->AddressOfRawData, sizeof(CV_INFO_PDB70));
+      if (p2) {
+        n += printf_text("PCV INFO PDB70", USE_LT | USE_COLON | USE_EOL);
+        n += printf_text("CvSignature", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        n += printf_nice(p2->CvSignature, USE_FHEX32 | USE_EOL);
+        n += printf_text("Signature", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        n += printf_sore(&p2->Signature, sizeof(p2->Signature), USE_GUID | USE_SPACE | USE_EOL);
+        n += printf_text("Age", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        n += printf_nice(p2->Age, USE_FHEX32 | USE_EOL);
+        n += printf_text("PdbFileName", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        n += printf_text(p2->PdbFileName, USE_LT | USE_SPACE | USE_EOL);
+      }
+    } else if (p1 == CV_SIGNATURE_NB10) {
+      PCV_INFO_PDB20 p2 = get_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_DEBUG, p0->AddressOfRawData, sizeof(CV_INFO_PDB20));
+      if (p2) {
+        n += printf_text("PCV INFO PDB20", USE_LT | USE_COLON | USE_EOL);
+        n += printf_text("CvSignature", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        n += printf_nice(p2->CvHeader.Signature, USE_FHEX32 | USE_EOL);
+        n += printf_text("CvOffset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        n += printf_nice(p2->CvHeader.Offset, USE_FHEX32 | USE_EOL);
+        n += printf_text("Signature", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        n += printf_nice(p2->Signature, USE_FHEX32 | USE_EOL);
+        n += printf_text("Age", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        n += printf_nice(p2->Age, USE_FHEX32 | USE_EOL);
+        n += printf_text("PdbFileName", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        n += printf_text(p2->PdbFileName, USE_LT | USE_SPACE | USE_EOL);
+      }
+    }
   }
 
   return n;

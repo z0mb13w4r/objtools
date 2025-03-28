@@ -26,7 +26,12 @@
 #define IMAGE_RESOURCE_NAME_IS_STRING            (0x80000000)
 #define IMAGE_RESOURCE_DATA_IS_DIRECTORY         (0x80000000)
 
+#define CV_SIGNATURE_NB10                        (0x3031424e)
+#define CV_SIGNATURE_RSDS                        (0x53445352)
+
 #define peconvert2va(x,y)                        ((y) - (x)->VirtualAddress + (x)->PointerToRawData)
+
+typedef BYTE GUID[16];
 
 typedef struct _IMAGE_DOS_HEADER {
   WORD e_magic;
@@ -297,6 +302,25 @@ typedef struct _IMAGE_DEBUG_DIRECTORY {
   DWORD PointerToRawData;
 } IMAGE_DEBUG_DIRECTORY, *PIMAGE_DEBUG_DIRECTORY;
 
+typedef struct _CV_HEADER {
+  DWORD Signature;
+  DWORD Offset;
+} CV_HEADER, *PCV_HEADER;
+
+typedef struct _CV_INFO_PDB20 {
+  CV_HEADER CvHeader;
+  DWORD     Signature;
+  DWORD     Age;
+  BYTE      PdbFileName[];
+} CV_INFO_PDB20, *PCV_INFO_PDB20;
+
+typedef struct _CV_INFO_PDB70 {
+  DWORD CvSignature;
+  GUID  Signature;
+  DWORD Age;
+  BYTE  PdbFileName[];
+} CV_INFO_PDB70, *PCV_INFO_PDB70;
+
 bool_t isPE(const pbuffer_t p);
 bool_t isPE32(const pbuffer_t p);
 bool_t isPE64(const pbuffer_t p);
@@ -311,6 +335,8 @@ PIMAGE_SECTION_HEADER get_sectionhdrbyentry(const pbuffer_t p, const int index);
 
 unknown_t get_chunkbyRVA(const pbuffer_t p, const int index, const uint64_t vaddr, const size_t size);
 unknown_t get_chunkbyentry(const pbuffer_t p, const int index);
+
+DWORD get_dwordbyRVA(const pbuffer_t p, const int index, const uint64_t vaddr);
 
 #endif
 

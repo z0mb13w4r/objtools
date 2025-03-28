@@ -252,9 +252,10 @@ int printf_pack(const int size) {
 
 int printf_nice(const uint64_t v, const imode_t mode) {
   MALLOCA(char, data, 1024);
-  int n = printf_neat(data, sizeof(data), v, mode);
 
-  printf_post(data, mode);
+  int n = 0;
+  n += printf_neat(data, sizeof(data), v, mode);
+  n += printf_post(data, mode);
 
   return n;
 }
@@ -325,7 +326,7 @@ int printf_sore(const void* p, const size_t size, const imode_t mode) {
     }
 
     n += printf_epos(o, sizeof(o), mode);
-         printf_post(o, mode);
+    n += printf_post(o, mode);
   } else if (USE_HEX == xmode) {
     n += printf_spos(o, sizeof(o), mode, USE_SPACE == GET_POS0(mode) || USE_TAB == GET_POS0(mode));
 
@@ -334,7 +335,7 @@ int printf_sore(const void* p, const size_t size, const imode_t mode) {
     }
 
     n += printf_epos(o, sizeof(o), mode);
-         printf_post(o, mode);
+    n += printf_post(o, mode);
   } else if (USE_MD5 == xmode) {
     uchar_t md[MD5_DIGEST_LENGTH];
     if (!md5(p0, size, md)) {
@@ -363,6 +364,19 @@ int printf_sore(const void* p, const size_t size, const imode_t mode) {
 
   } else if (USE_BASE64 == xmode) {
 
+  } else if (USE_GUID == xmode) {
+    n += printf_spos(o, sizeof(o), mode, USE_SPACE == GET_POS0(mode) || USE_TAB == GET_POS0(mode));
+
+    for (size_t i = 0; i < 4; ++i, ++p0) n += printf_neat(o + n, sizeof(o) - n, *p0, USE_LHEX8NS);
+    n += printf_neat(o + n, sizeof(o) - n, '-', USE_CHAR);
+    for (size_t i = 0; i < 2; ++i, ++p0) n += printf_neat(o + n, sizeof(o) - n, *p0, USE_LHEX8NS);
+    n += printf_neat(o + n, sizeof(o) - n, '-', USE_CHAR);
+    for (size_t i = 0; i < 2; ++i, ++p0) n += printf_neat(o + n, sizeof(o) - n, *p0, USE_LHEX8NS);
+    n += printf_neat(o + n, sizeof(o) - n, '-', USE_CHAR);
+    for (size_t i = 0; i < 8; ++i, ++p0) n += printf_neat(o + n, sizeof(o) - n, *p0, USE_LHEX8NS);
+
+    n += printf_epos(o, sizeof(o), mode);
+    n += printf_post(o, mode);
   }
 
   return n;

@@ -176,3 +176,8 @@ unknown_t get_chunkbyentry(const pbuffer_t p, const int index) {
   return NULL;
 }
 
+DWORD get_dwordbyRVA(const pbuffer_t p, const int index, const uint64_t vaddr) {
+  PDWORD p0 = get_chunkbyRVA(p, index, vaddr, sizeof(DWORD));
+  return p0 ? *p0 : 0;
+}
+
