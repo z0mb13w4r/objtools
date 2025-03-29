@@ -333,6 +333,39 @@ typedef struct _IMAGE_BASE_RELOCATION {
   DWORD SizeOfBlock;
 } IMAGE_BASE_RELOCATION, *PIMAGE_BASE_RELOCATION;
 
+typedef struct _IMAGE_RUNTIME_FUNCTION_ENTRY {
+  DWORD BeginAddress;
+  DWORD EndAddress;
+  union {
+    DWORD UnwindInfoAddress;
+    DWORD UnwindData;
+  };
+} IMAGE_RUNTIME_FUNCTION_ENTRY, *PIMAGE_RUNTIME_FUNCTION_ENTRY;
+
+typedef struct _UNWIND_CODE {
+  BYTE OffsetProlog;
+  BYTE UnwindCode:4;
+  BYTE OpInfo:4;
+} UNWIND_CODE, *PUNWIND_CODE;
+
+typedef struct _UNWIND_INFO {
+  BYTE Version:3;
+  BYTE Flags:5;
+  BYTE SizeOfProlog;
+  BYTE CountOfCodes;
+  BYTE FrameRegister:4;
+  BYTE FrameOffset:4;
+  UNWIND_CODE UnwindCode[1];
+  union {
+    // If (Flags & UNW_FLAG_EHANDLER)
+    ULONG ExceptionHandler;
+    // Else if (Flags & UNW_FLAG_CHAININFO)
+    ULONG FunctionEntry;
+  };
+  // If (Flags & UNW_FLAG_EHANDLER)
+  ULONG ExceptionData[];
+} UNWIND_INFO, *PUNWIND_INFO;
+
 bool_t isPE(const pbuffer_t p);
 bool_t isPE32(const pbuffer_t p);
 bool_t isPE64(const pbuffer_t p);

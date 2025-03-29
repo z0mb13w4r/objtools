@@ -192,6 +192,8 @@ unknown_t get_chunkbyentry(const pbuffer_t p, const int index) {
       }
     } else if (IMAGE_DIRECTORY_ENTRY_DEBUG == index) {
       return get_chunkbyRVA(p, index, p0->VirtualAddress, sizeof(IMAGE_DEBUG_DIRECTORY));
+    } else if (IMAGE_DIRECTORY_ENTRY_EXCEPTION == index) {
+      return get_chunkbyRVA(p, index, p0->VirtualAddress, sizeof(IMAGE_RUNTIME_FUNCTION_ENTRY));
     }
   }
 

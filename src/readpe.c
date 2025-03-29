@@ -468,31 +468,30 @@ static int dump_eat0(const pbuffer_t p, const uint64_t Characteristics, const ui
 }
 
 static int dump_eatNN(const pbuffer_t p, const poptions_t o) {
+  int n = 0;
+
   PIMAGE_DATA_DIRECTORY p0 = get_datadirbyentry(p, IMAGE_DIRECTORY_ENTRY_EXPORT);
   PIMAGE_SECTION_HEADER s0 = get_sectionhdrbyentry(p, IMAGE_DIRECTORY_ENTRY_EXPORT);
+  PIMAGE_EXPORT_DIRECTORY p1 = get_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_EXPORT);
 
-  if (p0 && s0) {
-    PIMAGE_EXPORT_DIRECTORY p1 = get_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_EXPORT);
+  if (p0 && p1 && s0) {
+    n += printf_text("IMAGE EXPORT DIRECTORY", USE_LT | USE_COLON | USE_EOL);
+    n += dump_eat0(p, p1->Characteristics, p1->TimeDateStamp, p1->MajorVersion, p1->MinorVersion,
+              p1->Name, getp(p, peconvert2va(s0, p1->Name), 1), p1->Base, p1->NumberOfFunctions, p1->NumberOfNames,
+              p1->AddressOfFunctions, p1->AddressOfNames, p1->AddressOfNameOrdinals);
 
-    if (p1) {
-      printf_text("IMAGE EXPORT DIRECTORY", USE_LT | USE_COLON | USE_EOL);
-      dump_eat0(p, p1->Characteristics, p1->TimeDateStamp, p1->MajorVersion, p1->MinorVersion,
-                p1->Name, getp(p, peconvert2va(s0, p1->Name), 1), p1->Base, p1->NumberOfFunctions, p1->NumberOfNames,
-                p1->AddressOfFunctions, p1->AddressOfNames, p1->AddressOfNameOrdinals);
+    PDWORD addrOfNames = get_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_EXPORT, p1->AddressOfNames, sizeof(DWORD) * p1->NumberOfNames);
+    PDWORD addrOfFunctions = get_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_EXPORT, p1->AddressOfFunctions, sizeof(DWORD) * p1->NumberOfFunctions);
+    PWORD  addrOfNameOrdinals = get_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_EXPORT, p1->AddressOfNameOrdinals, sizeof(WORD) * p1->NumberOfFunctions);
 
-      PDWORD addrOfNames = get_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_EXPORT, p1->AddressOfNames, sizeof(DWORD) * p1->NumberOfNames);
-      PDWORD addrOfFunctions = get_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_EXPORT, p1->AddressOfFunctions, sizeof(DWORD) * p1->NumberOfFunctions);
-      PWORD  addrOfNameOrdinals = get_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_EXPORT, p1->AddressOfNameOrdinals, sizeof(WORD) * p1->NumberOfFunctions);
-
-      for (int i = 0; i < p1->NumberOfNames; ++i) {
-        printf_nice(addrOfNameOrdinals[i] + 1, USE_DEC5);
-        printf_nice(addrOfFunctions[i], USE_FHEX32);
-        printf_text(getp(p, peconvert2va(s0, addrOfNames[i]), 1), USE_LT | USE_SPACE | USE_EOL);
-      }
+    for (int i = 0; i < p1->NumberOfNames; ++i) {
+      n += printf_nice(addrOfNameOrdinals[i] + 1, USE_DEC5);
+      n += printf_nice(addrOfFunctions[i], USE_FHEX32);
+      n += printf_text(getp(p, peconvert2va(s0, addrOfNames[i]), 1), USE_LT | USE_SPACE | USE_EOL);
     }
   }
 
-  return 0;
+  return n;
 }
 
 static int dump_resource0(const pbuffer_t p, const uint64_t Characteristics, const uint64_t TimeDateStamp,
@@ -694,6 +693,49 @@ static int dump_relocNN(const pbuffer_t p, const poptions_t o) {
   return n;
 }
 
+static int dump_runtimeNN(const pbuffer_t p, const poptions_t o) {
+  int n = 0;
+
+  PIMAGE_DATA_DIRECTORY p0 = get_datadirbyentry(p, IMAGE_DIRECTORY_ENTRY_EXCEPTION);
+  PIMAGE_SECTION_HEADER s0 = get_sectionhdrbyentry(p, IMAGE_DIRECTORY_ENTRY_EXCEPTION);
+  PIMAGE_RUNTIME_FUNCTION_ENTRY p1 = get_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_EXCEPTION);
+
+  if (p0 && p1 && s0) {
+    for (DWORD x = 0; x < s0->SizeOfRawData; x += sizeof(IMAGE_RUNTIME_FUNCTION_ENTRY), ++p1) {
+      if (0 != p1->BeginAddress) {
+        n += printf_text("RUNTIME FUNCTION", USE_LT | USE_COLON | USE_EOL);
+        n += printf_text("BeginAddress", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        n += printf_nice(p1->BeginAddress, USE_FHEX32 | USE_EOL);
+        n += printf_text("EndAddress", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        n += printf_nice(p1->EndAddress, USE_FHEX32 | USE_EOL);
+        n += printf_text("UnwindData", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        n += printf_nice(p1->UnwindData, USE_FHEX32 | USE_EOL);
+        n += printf_eol();
+
+        PUNWIND_INFO p2 = get_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_EXCEPTION, p1->UnwindData, sizeof(UNWIND_INFO));
+        if (p2) {
+          n += printf_text("UNWIND INFO", USE_LT | USE_COLON | USE_EOL);
+          n += printf_text("Version", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+          n += printf_nice(p2->Version, USE_FHEX32 | USE_EOL);
+          n += printf_text("Flags", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+          n += printf_nice(p2->Flags, USE_FHEX32 | USE_EOL);
+          n += printf_text("SizeOfProlog", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+          n += printf_nice(p2->SizeOfProlog, USE_FHEX32 | USE_EOL);
+          n += printf_text("CountOfCodes", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+          n += printf_nice(p2->CountOfCodes, USE_FHEX32 | USE_EOL);
+          n += printf_text("FrameRegister", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+          n += printf_nice(p2->FrameRegister, USE_FHEX32 | USE_EOL);
+          n += printf_text("FrameOffset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+          n += printf_nice(p2->FrameOffset, USE_FHEX32 | USE_EOL);
+          n += printf_eol();
+        }
+      }
+    }
+  }
+
+  return n;
+}
+
 int readpe(const pbuffer_t p, const poptions_t o) {
   if (isPE(p)) {
     if (o->action & OPTREADELF_FILEHEADER)         dump_peheader(p, o);
@@ -710,6 +752,7 @@ int readpe(const pbuffer_t p, const poptions_t o) {
       if (o->action & OPTREADELF_SYMBOLS)          dump_config32(p, o);
       if (o->action & OPTREADELF_SYMBOLS)          dump_debugNN(p, o);
       if (o->action & OPTREADELF_SYMBOLS)          dump_relocNN(p, o);
+      if (o->action & OPTREADELF_SYMBOLS)          dump_runtimeNN(p, o);
     } else if (isPE64(p)) {
       if (o->action & OPTREADELF_FILEHEADER)       dump_ntheader64(p, o);
       if (o->action & OPTREADELF_SECTIONHEADERS)   dump_sectionheaders64(p, o);
@@ -721,6 +764,7 @@ int readpe(const pbuffer_t p, const poptions_t o) {
       if (o->action & OPTREADELF_SYMBOLS)          dump_config64(p, o);
       if (o->action & OPTREADELF_SYMBOLS)          dump_debugNN(p, o);
       if (o->action & OPTREADELF_SYMBOLS)          dump_relocNN(p, o);
+      if (o->action & OPTREADELF_SYMBOLS)          dump_runtimeNN(p, o);
     }
   } else {
     printf_e("not an PE file - it has the wrong magic bytes at the start.");
