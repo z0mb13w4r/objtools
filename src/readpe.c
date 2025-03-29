@@ -105,7 +105,7 @@ int dump_ntheader1(const pbuffer_t p, const uint64_t Magic, const uint64_t Major
                    const uint64_t Subsystem, const uint64_t DllCharacteristics, const uint64_t SizeOfStackReserve, const uint64_t SizeOfStackCommit,
                    const uint64_t SizeOfHeapReserve, const uint64_t SizeOfHeapCommit, const uint64_t LoaderFlags, const uint64_t NumberOfRvaAndSizes) {
   int n = 0;
-  if (p) {
+  if (issafe(p)) {
     const imode_t USE_FHEXNN = (isPE64(p) ? USE_FHEX64 : USE_FHEX32) | USE_EOL;
 
     n += printf_text("OPTIONAL HEADER", USE_LT | USE_COLON | USE_EOL);
@@ -530,7 +530,7 @@ static int dump_config0(const pbuffer_t p, const uint64_t Size, const uint64_t T
                         const uint64_t ProcessAffinityMask, const uint64_t ProcessHeapFlags, const uint64_t CSDVersion, const uint64_t Reserved1,
                         const uint64_t EditList, const uint64_t SecurityCookie, const uint64_t SEHandlerTable, const uint64_t SEHandlerCount) {
   int n = 0;
-  if (p) {
+  if (issafe(p)) {
     const imode_t USE_FHEXNN = (isPE64(p) ? USE_FHEX64 : USE_FHEX32) | USE_EOL;
 
     printf_text("IMAGE LOAD CONFIG DIRECTORY", USE_LT | USE_COLON | USE_EOL);
