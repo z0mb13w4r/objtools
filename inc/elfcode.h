@@ -4,6 +4,12 @@
 #include <elf.h>
 #include "buffer.h"
 
+#define SHT_RELR                   (19) /* RELR relative relocations */
+
+#define PT_GNU_MBIND_NUM           (4096)
+#define PT_GNU_MBIND_LO            (PT_LOOS + 0x474e555)
+#define PT_GNU_MBIND_HI            (PT_GNU_MBIND_LO + PT_GNU_MBIND_NUM - 1)
+
 #define PT_GNU_PROPERTY            (PT_LOOS + 0x474e553) /* GNU property */
 #define PT_GNU_SFRAME              (PT_LOOS + 0x474e554) /* SFrame stack trace information */
 
