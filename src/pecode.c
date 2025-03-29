@@ -144,6 +144,28 @@ PIMAGE_SECTION_HEADER get_sectionhdrbyentry(const pbuffer_t p, const int index) 
   return NULL;
 }
 
+PIMAGE_SECTION_HEADER get_sectionhdrbyname(const pbuffer_t p, const char* name) {
+  if (isPE32(p)) {
+    PIMAGE_NT_HEADERS32 p0 = get_nt32hdr(p);
+    if (p0) {
+      for (int i = 0; i < p0->FileHeader.NumberOfSections; ++i) {
+        PIMAGE_SECTION_HEADER p1 = get_sectionhdrbyindex(p, i);
+        if (p1 && 0 == strncmp(p1->Name, name, sizeof(p1->Name))) return p1;
+      }
+    }
+  } else if (isPE64(p)) {
+    PIMAGE_NT_HEADERS64 p0 = get_nt64hdr(p);
+    if (p0) {
+      for (int i = 0; i < p0->FileHeader.NumberOfSections; ++i) {
+        PIMAGE_SECTION_HEADER p1 = get_sectionhdrbyindex(p, i);
+        if (p1 && 0 == strncmp(p1->Name, name, sizeof(p1->Name))) return p1;
+      }
+    }
+  }
+
+  return NULL;
+}
+
 unknown_t get_chunkbyRVA(const pbuffer_t p, const int index, const uint64_t vaddr, const size_t size) {
   PIMAGE_SECTION_HEADER s0 = get_sectionhdrbyentry(p, index);
   if (s0) {
@@ -174,6 +196,11 @@ unknown_t get_chunkbyentry(const pbuffer_t p, const int index) {
   }
 
   return NULL;
+}
+
+unknown_t get_chunkbyname(const pbuffer_t p, const char* name) {
+  PIMAGE_SECTION_HEADER p0 = get_sectionhdrbyname(p, name);
+  return p0 ? getp(p, p0->PointerToRawData, p0->SizeOfRawData) : NULL;
 }
 
 DWORD get_dwordbyRVA(const pbuffer_t p, const int index, const uint64_t vaddr) {

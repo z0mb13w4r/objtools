@@ -3,6 +3,13 @@
 
 #include "buffer.h"
 
+#define SECTION_DATA                             ".data"
+#define SECTION_PDATA                            ".pdata"
+#define SECTION_RDATA                            ".rdata"
+#define SECTION_RELOC                            ".reloc"
+#define SECTION_RSRC                             ".rsrc"
+#define SECTION_TEXT                             ".text"
+
 #define IMAGE_NUMBEROF_DIRECTORY_ENTRIES         (16)
 #define IMAGE_SIZEOF_SHORT_NAME                  (8)
 
@@ -321,6 +328,11 @@ typedef struct _CV_INFO_PDB70 {
   BYTE  PdbFileName[];
 } CV_INFO_PDB70, *PCV_INFO_PDB70;
 
+typedef struct _IMAGE_BASE_RELOCATION {
+  DWORD VirtualAddress;
+  DWORD SizeOfBlock;
+} IMAGE_BASE_RELOCATION, *PIMAGE_BASE_RELOCATION;
+
 bool_t isPE(const pbuffer_t p);
 bool_t isPE32(const pbuffer_t p);
 bool_t isPE64(const pbuffer_t p);
@@ -332,9 +344,11 @@ PIMAGE_NT_HEADERS64 get_nt64hdr(const pbuffer_t p);
 PIMAGE_DATA_DIRECTORY get_datadirbyentry(const pbuffer_t p, const int index);
 PIMAGE_SECTION_HEADER get_sectionhdrbyindex(const pbuffer_t p, const int index);
 PIMAGE_SECTION_HEADER get_sectionhdrbyentry(const pbuffer_t p, const int index);
+PIMAGE_SECTION_HEADER get_sectionhdrbyname(const pbuffer_t p, const char* name);
 
 unknown_t get_chunkbyRVA(const pbuffer_t p, const int index, const uint64_t vaddr, const size_t size);
 unknown_t get_chunkbyentry(const pbuffer_t p, const int index);
+unknown_t get_chunkbyname(const pbuffer_t p, const char* name);
 
 DWORD get_dwordbyRVA(const pbuffer_t p, const int index, const uint64_t vaddr);
 

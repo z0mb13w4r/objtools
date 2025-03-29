@@ -255,21 +255,25 @@ static int dump_sectionheaders0(const pbuffer_t p, const uint64_t NumberOfSectio
 }
 
 static int dump_sectionheaders32(const pbuffer_t p, const poptions_t o) {
-  PIMAGE_NT_HEADERS32 nt = get_nt32hdr(p);
-  if (nt) {
-    dump_sectionheaders0(p, nt->FileHeader.NumberOfSections);
+  int n = 0;
+
+  PIMAGE_NT_HEADERS32 p0 = get_nt32hdr(p);
+  if (p0) {
+    n += dump_sectionheaders0(p, p0->FileHeader.NumberOfSections);
   }
 
-  return 0;
+  return n;
 }
 
 static int dump_sectionheaders64(const pbuffer_t p, const poptions_t o) {
-  PIMAGE_NT_HEADERS64 nt = get_nt64hdr(p);
-  if (nt) {
-    dump_sectionheaders0(p, nt->FileHeader.NumberOfSections);
+  int n = 0;
+
+  PIMAGE_NT_HEADERS64 p0 = get_nt64hdr(p);
+  if (p0) {
+    n += dump_sectionheaders0(p, p0->FileHeader.NumberOfSections);
   }
 
-  return 0;
+  return n;
 }
 
 static int dump_sectiongroups0(const pbuffer_t p) {
@@ -644,6 +648,7 @@ static int dump_debugNN(const pbuffer_t p, const poptions_t o) {
         n += printf_nice(p2->Age, USE_FHEX32 | USE_EOL);
         n += printf_text("PdbFileName", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
         n += printf_text(p2->PdbFileName, USE_LT | USE_SPACE | USE_EOL);
+        n += printf_eol();
       }
     } else if (p1 == CV_SIGNATURE_NB10) {
       PCV_INFO_PDB20 p2 = get_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_DEBUG, p0->AddressOfRawData, sizeof(CV_INFO_PDB20));
@@ -659,7 +664,30 @@ static int dump_debugNN(const pbuffer_t p, const poptions_t o) {
         n += printf_nice(p2->Age, USE_FHEX32 | USE_EOL);
         n += printf_text("PdbFileName", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
         n += printf_text(p2->PdbFileName, USE_LT | USE_SPACE | USE_EOL);
+        n += printf_eol();
       }
+    }
+  }
+
+  return n;
+}
+
+static int dump_relocNN(const pbuffer_t p, const poptions_t o) {
+  int n = 0;
+
+  PIMAGE_SECTION_HEADER p0 = get_sectionhdrbyname(p, SECTION_RELOC);
+  PIMAGE_BASE_RELOCATION p1 = get_chunkbyname(p, SECTION_RELOC);
+  if (p0 && p1) {
+    for (DWORD x = 0; x < p0->SizeOfRawData; ) {
+      n += printf_text("IMAGE BASE RELOCATION", USE_LT | USE_COLON | USE_EOL);
+      n += printf_text("VirtualAddress", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_nice(p1->VirtualAddress, USE_FHEX32 | USE_EOL);
+      n += printf_text("SizeOfBlock", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_nice(p1->SizeOfBlock, USE_FHEX32 | USE_EOL);
+      n += printf_eol();
+
+      x += p1->SizeOfBlock ? p1->SizeOfBlock : sizeof(IMAGE_BASE_RELOCATION);
+      p1 = CAST(PIMAGE_BASE_RELOCATION, CAST(puchar_t, p1) + p1->SizeOfBlock);
     }
   }
 
@@ -681,6 +709,7 @@ int readpe(const pbuffer_t p, const poptions_t o) {
       if (o->action & OPTREADELF_SYMBOLS)          dump_resourceNN(p, o);
       if (o->action & OPTREADELF_SYMBOLS)          dump_config32(p, o);
       if (o->action & OPTREADELF_SYMBOLS)          dump_debugNN(p, o);
+      if (o->action & OPTREADELF_SYMBOLS)          dump_relocNN(p, o);
     } else if (isPE64(p)) {
       if (o->action & OPTREADELF_FILEHEADER)       dump_ntheader64(p, o);
       if (o->action & OPTREADELF_SECTIONHEADERS)   dump_sectionheaders64(p, o);
@@ -691,6 +720,7 @@ int readpe(const pbuffer_t p, const poptions_t o) {
       if (o->action & OPTREADELF_SYMBOLS)          dump_resourceNN(p, o);
       if (o->action & OPTREADELF_SYMBOLS)          dump_config64(p, o);
       if (o->action & OPTREADELF_SYMBOLS)          dump_debugNN(p, o);
+      if (o->action & OPTREADELF_SYMBOLS)          dump_relocNN(p, o);
     }
   } else {
     printf_e("not an PE file - it has the wrong magic bytes at the start.");
