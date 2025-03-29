@@ -1,7 +1,6 @@
 #ifndef __PRINT_H_
 #define __PRINT_H_
 
-#include "common.h"
 #include "objutils.h"
 
 #define USE_DEC           (0)

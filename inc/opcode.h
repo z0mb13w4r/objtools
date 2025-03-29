@@ -2,6 +2,7 @@
 #define __OPCODE_H_
 
 #include <bfd.h>
+#include <elf.h>
 #include <dis-asm.h>
 #include "capstone/capstone.h"
 

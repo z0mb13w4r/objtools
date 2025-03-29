@@ -1,7 +1,7 @@
 #ifndef __BUFFER_H_
 #define __BUFFER_H_
 
-#include "common.h"
+#include "defines.h"
 
 #define MODE_BUFFER             (MODE_PUT0('B') | MODE_PUT1('U') | MODE_PUT2('F'))
 
