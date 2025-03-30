@@ -2,11 +2,8 @@
 
 static int zap(int c0, int c1, int c2, int inc) {
   if (c0 >= c1 && c0 <= c2) {
-//    printf("0 %c %d\n", c0, c0);
     c0 += inc;
-//    printf("1 %c %d\n", c0, c0);
     if (c0 > c2) c0 = c1 + (c0 - c2) - 1;
-//    printf("2 %c %d\n", c0, c0);
   }
 
   return c0;
