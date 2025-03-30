@@ -12,6 +12,7 @@ DIR_CXX = ../$(DIR_SRC)
 # Name of c source files to be included in build.
 #---------------------------------------------------------------------
 SRCS_C = \
+	hash.c \
 	arcode.c \
 	buffer.c \
 	opcode.c \
@@ -42,7 +43,6 @@ SRCS_CPP =
 TARGETBASE = objtool
 
 ifeq ($(CROSS),ARM)
-else ifeq ($(CROSS),WIN)
 else
 	CROSS = I386
 endif
@@ -66,7 +66,8 @@ TARGET = $(BIN_ROOT)$(DIR_OBJ)lib$(TARGETBASE).a
 #---------------------------------------------------------------------
 LIB_INCS = \
 	-I../inc/ \
-	-I../inc/capstone/
+	-I../inc/capstone/ \
+	-I../inc/libdwarf/
 
 #=====================================================================================================================================
 # Command Section of Makefile
@@ -94,12 +95,9 @@ endif
 ifeq ($(CROSS),ARM)
 	CROSS_COMPILE = /home/WF_3.02/wrlinux-3.0/sysroots/arm-mm6-glibc-small/x86-linux2/arm-wrs-linux-gnueabi-arm_iwmmxt_el-glibc_small-
 	DFLAGS += -DENV_LINUX -DLINUX -DTARGET_ARM
-else ifeq ($(CROSS),WIN)
-	CROSS_COMPILE = x86_64-w64-mingw32-
-	DFLAGS += -DWIN32
 else
 	CROSS_COMPILE =
-	DFLAGS += -DENV_LINUX -DLINUX
+	DFLAGS += -DENV_LINUX -DLINUX -DLIBDWARF_STATIC
 endif
 
 AS		= $(CROSS_COMPILE)as
@@ -161,7 +159,6 @@ help:
 	@echo ' set DEBUG=n to build release version.'
 	@echo ' '
 	@echo ' set CROSS=ARM to build ARM version.'
-	@echo ' set CROSS=WIN to build Windows version.'
 	@echo ' set CROSS=I386 to build native version.'
 	@echo ' '
 	@echo ' e.g. make -f $(TARGETBASE)lib.mk DEBUG=y CROSS=ARM all.'
