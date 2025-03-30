@@ -360,8 +360,15 @@ int printf_sore(const void* p, const size_t size, const imode_t mode) {
       printf_text("SHA512", USE_LT | USE_COLON | zmode | SET_PAD(10));
       printf_sore(md, SHA512_DIGEST_LENGTH, USE_HEX | USE_EOL);
     }
+  } else if (USE_CRC8 == xmode) {
+    printf_text("CRC8", USE_LT | USE_COLON | zmode | SET_PAD(10));
+    printf_nice(crc8_calculate(CRC_DEF8, p0, size), USE_FHEX8 | USE_EOL);
+  } else if (USE_CRC16 == xmode) {
+    printf_text("CRC16", USE_LT | USE_COLON | zmode | SET_PAD(10));
+    printf_nice(crc16_calculate(CRC_DEF16, p0, size), USE_FHEX16 | USE_EOL);
   } else if (USE_CRC32 == xmode) {
-
+    printf_text("CRC32", USE_LT | USE_COLON | zmode | SET_PAD(10));
+    printf_nice(crc32_calculate(CRC_DEF32, p0, size), USE_FHEX32 | USE_EOL);
   } else if (USE_BASE64 == xmode) {
 
   } else if (USE_GUID == xmode) {

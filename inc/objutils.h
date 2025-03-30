@@ -1,6 +1,7 @@
 #ifndef __OBJUTILS_H_
 #define __OBJUTILS_H_
 
+#include "crc.h"
 #include "hash.h"
 
 #define PICK_END               (~0)
