@@ -14,6 +14,7 @@ DIR_CXX = ../$(DIR_SRC)
 SRCS_C = \
 	crc.c \
 	hash.c \
+	spin.c \
 	arcode.c \
 	buffer.c \
 	opcode.c \

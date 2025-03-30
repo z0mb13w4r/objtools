@@ -56,8 +56,9 @@
 #define USE_CRC8          (9)
 #define USE_CRC16         (10)
 #define USE_CRC32         (11)
-#define USE_BASE64        (12)
-#define USE_GUID          (13)
+#define USE_CRCALL        (12)
+#define USE_BASE64        (13)
+#define USE_GUID          (14)
 
 #define GET_XX2(x,y)      ((x) & (0x03 << (y)))
 #define SET_XX2(x,y)      (((x) & 0x03) << (y))

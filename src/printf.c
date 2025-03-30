@@ -312,6 +312,12 @@ int printf_sore(const void* p, const size_t size, const imode_t mode) {
     n += printf_sore(p, size, USE_SHA256 | USE_TAB | zmode);
     n += printf_sore(p, size, USE_SHA512 | USE_TAB | zmode);
     n += printf_eol();
+  } else if (USE_CRCALL == xmode) {
+    n += printf_text("CRCS", USE_LT | USE_COLON | USE_EOL);
+    n += printf_sore(p, size, USE_CRC8 | USE_TAB | zmode);
+    n += printf_sore(p, size, USE_CRC16 | USE_TAB | zmode);
+    n += printf_sore(p, size, USE_CRC32 | USE_TAB | zmode);
+    n += printf_eol();
   }
 
   MALLOCA(char, o, 1024);
