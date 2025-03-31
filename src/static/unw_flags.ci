@@ -1,0 +1,58 @@
+#define UNW_FLAG_NHANDLER    (0)
+#define UNW_FLAG_EHANDLER    (1)
+#define UNW_FLAG_UHANDLER    (2)
+#define UNW_FLAG_FHANDLER    (3)
+#define UNW_FLAG_CHAININFO   (4)
+
+static convert_t zUNW_FLAGS[] = {
+  {"UNW_FLAG_NHANDLER",  UNW_FLAG_NHANDLER},
+  {"UNW_FLAG_EHANDLER",  UNW_FLAG_EHANDLER},
+  {"UNW_FLAG_UHANDLER",  UNW_FLAG_UHANDLER},
+  {"UNW_FLAG_FHANDLER",  UNW_FLAG_FHANDLER},
+  {"UNW_FLAG_CHAININFO", UNW_FLAG_CHAININFO},
+  {0, 0}
+};
+
+#define UWOP_PUSH_NONVOL     (0)
+#define UWOP_ALLOC_LARGE     (1)
+#define UWOP_ALLOC_SMALL     (2)
+#define UWOP_SET_FPREG       (3)
+#define UWOP_SAVE_NONVOL     (4)
+#define UWOP_SAVE_NONVOL_FAR (5)
+#define UWOP_SAVE_XMM128     (8)
+#define UWOP_SAVE_XMM128_FAR (9)
+#define UWOP_PUSH_MACHFRAME  (10)
+
+static convert_t zUNW_CODES[] = {
+  {"UWOP_PUSH_NONVOL",     UWOP_PUSH_NONVOL},
+  {"UWOP_ALLOC_LARGE",     UWOP_ALLOC_LARGE},
+  {"UWOP_ALLOC_SMALL",     UWOP_ALLOC_SMALL},
+  {"UWOP_SET_FPREG",       UWOP_SET_FPREG},
+  {"UWOP_SAVE_NONVOL",     UWOP_SAVE_NONVOL},
+  {"UWOP_SAVE_NONVOL_FAR", UWOP_SAVE_NONVOL_FAR},
+  {"UWOP_SAVE_XMM128",     UWOP_SAVE_XMM128},
+  {"UWOP_SAVE_XMM128_FAR", UWOP_SAVE_XMM128_FAR},
+  {"UWOP_PUSH_MACHFRAME",  UWOP_PUSH_MACHFRAME},
+  {0, 0}
+};
+
+static convert_t zUNW_INFO[] = {
+  {"RAX",  0},
+  {"RCX",  1},
+  {"RDX",  2},
+  {"RBX",  3},
+  {"RSP",  4},
+  {"RBP",  5},
+  {"RSI",  6},
+  {"RDI",  7},
+  {"R8",   8},
+  {"R9",   9},
+  {"R10",  10},
+  {"R11",  11},
+  {"R12",  12},
+  {"R13",  13},
+  {"R14",  14},
+  {"R15",  15},
+  {0, 0}
+};
+

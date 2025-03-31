@@ -5,10 +5,11 @@
 #include "static/filehdr.ci"
 #include "static/opthdr.ci"
 #include "static/sechdr.ci"
+#include "static/unw_flags.ci"
 
 const int MAXSIZE = 36;
 
-int dump_peheader(const pbuffer_t p, const poptions_t o) {
+static int dump_peheader(const pbuffer_t p, const poptions_t o) {
   if (issafe(p)) {
     if (o->action & OPTPROGRAM_HASH)   printf_sore(p->data, p->size, USE_HASHALL | USE_EOL);
   }
@@ -16,7 +17,7 @@ int dump_peheader(const pbuffer_t p, const poptions_t o) {
   return 0;
 }
 
-int dump_dosheader(const pbuffer_t p, const poptions_t o) {
+static int dump_dosheaderNN(const pbuffer_t p, const poptions_t o) {
   int n = 0;
 
   PIMAGE_DOS_HEADER dos = get_doshdr(p);
@@ -70,7 +71,7 @@ int dump_dosheader(const pbuffer_t p, const poptions_t o) {
   return n;
 }
 
-int dump_ntheader0(const pbuffer_t p, const uint64_t Machine, const uint64_t NumberOfSections,
+static int dump_ntheader0(const pbuffer_t p, const uint64_t Machine, const uint64_t NumberOfSections,
                    const uint64_t TimeDateStamp, const uint64_t PointerToSymbolTable, const uint64_t NumberOfSymbols,
                    const uint64_t SizeOfOptionalHeader, const uint64_t Characteristics) {
   int n = 0;
@@ -96,7 +97,7 @@ int dump_ntheader0(const pbuffer_t p, const uint64_t Machine, const uint64_t Num
   return n;
 }
 
-int dump_ntheader1(const pbuffer_t p, const uint64_t Magic, const uint64_t MajorLinkerVersion, const uint64_t MinorLinkerVersion,
+static int dump_ntheader1(const pbuffer_t p, const uint64_t Magic, const uint64_t MajorLinkerVersion, const uint64_t MinorLinkerVersion,
                    const uint64_t SizeOfCode, const uint64_t SizeOfInitializedData, const uint64_t SizeOfUninitializedData,
                    const uint64_t AddressOfEntryPoint, const uint64_t BaseOfCode, const uint64_t ImageBase, const uint64_t SectionAlignment,
                    const uint64_t FileAlignment, const uint64_t MajorOperatingSystemVersion, const uint64_t MinorOperatingSystemVersion,
@@ -172,7 +173,7 @@ int dump_ntheader1(const pbuffer_t p, const uint64_t Magic, const uint64_t Major
   return n;
 }
 
-int dump_ntheader32(const pbuffer_t p, const poptions_t o) {
+static int dump_ntheader32(const pbuffer_t p, const poptions_t o) {
   PIMAGE_NT_HEADERS32 nt = get_nt32hdr(p);
   if (nt) {
     printf_text("NT HEADER", USE_LT | USE_COLON | USE_EOL);
@@ -194,7 +195,7 @@ int dump_ntheader32(const pbuffer_t p, const poptions_t o) {
   return 0;
 }
 
-int dump_ntheader64(const pbuffer_t p, const poptions_t o) {
+static int dump_ntheader64(const pbuffer_t p, const poptions_t o) {
   PIMAGE_NT_HEADERS64 nt = get_nt64hdr(p);
   if (nt) {
     printf_text("NT HEADER", USE_LT | USE_COLON | USE_EOL);
@@ -712,13 +713,14 @@ static int dump_runtimeNN(const pbuffer_t p, const poptions_t o) {
         n += printf_nice(p1->UnwindData, USE_FHEX32 | USE_EOL);
         n += printf_eol();
 
-        PUNWIND_INFO p2 = get_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_EXCEPTION, p1->UnwindData, sizeof(UNWIND_INFO));
+        PUNWIND_INFO p2 = get_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_UNKNOWN, p1->UnwindData, sizeof(UNWIND_INFO));
         if (p2) {
           n += printf_text("UNWIND INFO", USE_LT | USE_COLON | USE_EOL);
           n += printf_text("Version", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
           n += printf_nice(p2->Version, USE_FHEX32 | USE_EOL);
           n += printf_text("Flags", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-          n += printf_nice(p2->Flags, USE_FHEX32 | USE_EOL);
+          n += printf_nice(p2->Flags, USE_FHEX32);
+          n += printf_pick(zUNW_FLAGS, p2->Flags, USE_SPACE | USE_EOL);
           n += printf_text("SizeOfProlog", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
           n += printf_nice(p2->SizeOfProlog, USE_FHEX32 | USE_EOL);
           n += printf_text("CountOfCodes", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
@@ -728,8 +730,51 @@ static int dump_runtimeNN(const pbuffer_t p, const poptions_t o) {
           n += printf_text("FrameOffset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
           n += printf_nice(p2->FrameOffset, USE_FHEX32 | USE_EOL);
           n += printf_eol();
+
+          PBYTE x3 = p2->UnwindCode;
+          for (BYTE i = 0; i < p2->CountOfCodes; ++i, x3 += 2) {
+            PUNWIND_CODE p3 = CAST(PUNWIND_CODE, x3);
+            n += printf_text("UNWIND CODE", USE_LT | USE_COLON | USE_EOL);
+            n += printf_text("OffsetProlog", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+            n += printf_nice(p3->OffsetProlog, USE_FHEX8 | USE_EOL);
+            n += printf_text("UnwindCode", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+            n += printf_nice(p3->UnwindCode, USE_FHEX8);
+            n += printf_pick(zUNW_CODES, p3->UnwindCode, USE_SPACE | USE_EOL);
+            n += printf_text("OpInfo", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+            n += printf_nice(p3->OpInfo, USE_FHEX8);
+            if (UWOP_ALLOC_SMALL == p3->UnwindCode) {
+              n += printf_text(".ALLOCSTACK", USE_LT | USE_SPACE);
+              n += printf_nice(p3->OpInfo * 8 + 8, USE_FHEX8 | USE_EOL);
+            } else if (UWOP_ALLOC_LARGE == p3->UnwindCode) {
+              n += printf_text(".ALLOCSTACK", USE_LT | USE_SPACE);
+              if (0 == p3->OpInfo) {
+                n += printf_nice(x3[2] * 8, USE_FHEX16 | USE_EOL);
+                x3 += 2;
+                ++i;
+              }
+            } else if (UWOP_PUSH_NONVOL == p3->UnwindCode) {
+              n += printf_text(".PUSHREG", USE_LT | USE_SPACE);
+              n += printf_pick(zUNW_INFO, p3->OpInfo, USE_SPACE | USE_EOL);
+            } else if (UWOP_SAVE_NONVOL == p3->UnwindCode || UWOP_SAVE_NONVOL_FAR == p3->UnwindCode) {
+              n += printf_text(".SAVEREG", USE_LT | USE_SPACE);
+              n += printf_pick(zUNW_INFO, p3->OpInfo, USE_SPACE);
+              n += printf_nice(x3[2] * 8, USE_FHEX8 | USE_COMMA | USE_EOL);
+              x3 += 2;
+              ++i;
+            } else if (UWOP_SAVE_XMM128 == p3->UnwindCode || UWOP_SAVE_XMM128_FAR == p3->UnwindCode) {
+              n += printf_text(".SAVEXMM128 XMM", USE_LT | USE_SPACE);
+              n += printf_nice(p3->OpInfo, USE_DEC | USE_NOSPACE);
+              n += printf_nice(x3[2] * 16, USE_FHEX16 | USE_COMMA | USE_EOL);
+              x3 += 2;
+              ++i;
+            } else {
+              n += printf_nice(p3->OpInfo, USE_SPACE | USE_UNKNOWN | USE_EOL);
+            }
+            n += printf_eol();
+          }
         }
       }
+//break;  // JUST FOR DEVELOPMENT
     }
   }
 
@@ -739,7 +784,7 @@ static int dump_runtimeNN(const pbuffer_t p, const poptions_t o) {
 int readpe(const pbuffer_t p, const poptions_t o) {
   if (isPE(p)) {
     if (o->action & OPTREADELF_FILEHEADER)         dump_peheader(p, o);
-    if (o->action & OPTREADELF_FILEHEADER)         dump_dosheader(p, o);
+    if (o->action & OPTREADELF_FILEHEADER)         dump_dosheaderNN(p, o);
 
     if (isPE32(p)) {
       if (o->action & OPTREADELF_FILEHEADER)       dump_ntheader32(p, o);
@@ -750,9 +795,6 @@ int readpe(const pbuffer_t p, const poptions_t o) {
       if (o->action & OPTREADELF_SYMBOLS)          dump_iat32(p, o);
       if (o->action & OPTREADELF_SYMBOLS)          dump_resourceNN(p, o);
       if (o->action & OPTREADELF_SYMBOLS)          dump_config32(p, o);
-      if (o->action & OPTREADELF_SYMBOLS)          dump_debugNN(p, o);
-      if (o->action & OPTREADELF_SYMBOLS)          dump_relocNN(p, o);
-      if (o->action & OPTREADELF_SYMBOLS)          dump_runtimeNN(p, o);
     } else if (isPE64(p)) {
       if (o->action & OPTREADELF_FILEHEADER)       dump_ntheader64(p, o);
       if (o->action & OPTREADELF_SECTIONHEADERS)   dump_sectionheaders64(p, o);
@@ -762,10 +804,11 @@ int readpe(const pbuffer_t p, const poptions_t o) {
       if (o->action & OPTREADELF_SYMBOLS)          dump_iat64(p, o);
       if (o->action & OPTREADELF_SYMBOLS)          dump_resourceNN(p, o);
       if (o->action & OPTREADELF_SYMBOLS)          dump_config64(p, o);
-      if (o->action & OPTREADELF_SYMBOLS)          dump_debugNN(p, o);
-      if (o->action & OPTREADELF_SYMBOLS)          dump_relocNN(p, o);
-      if (o->action & OPTREADELF_SYMBOLS)          dump_runtimeNN(p, o);
     }
+
+    if (o->action & OPTREADELF_SYMBOLS)            dump_debugNN(p, o);
+    if (o->action & OPTREADELF_SYMBOLS)            dump_relocNN(p, o);
+    if (o->action & OPTREADELF_SYMBOLS)            dump_runtimeNN(p, o);
   } else {
     printf_e("not an PE file - it has the wrong magic bytes at the start.");
   }

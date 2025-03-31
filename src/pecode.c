@@ -144,13 +144,39 @@ PIMAGE_SECTION_HEADER get_sectionhdrbyentry(const pbuffer_t p, const int index) 
   return NULL;
 }
 
+PIMAGE_SECTION_HEADER get_sectionhdrbyRVA(const pbuffer_t p, const uint64_t vaddr) {
+  if (isPE32(p)) {
+    PIMAGE_NT_HEADERS32 p0 = get_nt32hdr(p);
+    if (p0) {
+      for (int i = 0; i < p0->FileHeader.NumberOfSections; ++i) {
+        PIMAGE_SECTION_HEADER p2 = get_sectionhdrbyindex(p, i);
+        if (p2 && p2->VirtualAddress <= vaddr && p2->VirtualAddress + p2->SizeOfRawData > vaddr) {
+          return p2;
+        }
+      }
+    }
+  } else if (isPE64(p)) {
+    PIMAGE_NT_HEADERS64 p0 = get_nt64hdr(p);
+    if (p0) {
+      for (int i = 0; i < p0->FileHeader.NumberOfSections; ++i) {
+        PIMAGE_SECTION_HEADER p2 = get_sectionhdrbyindex(p, i);
+        if (p2 && p2->VirtualAddress <= vaddr && p2->VirtualAddress + p2->SizeOfRawData > vaddr) {
+          return p2;
+        }
+      }
+    }
+  }
+
+  return NULL;
+}
+
 PIMAGE_SECTION_HEADER get_sectionhdrbyname(const pbuffer_t p, const char* name) {
   if (isPE32(p)) {
     PIMAGE_NT_HEADERS32 p0 = get_nt32hdr(p);
     if (p0) {
       for (int i = 0; i < p0->FileHeader.NumberOfSections; ++i) {
         PIMAGE_SECTION_HEADER p1 = get_sectionhdrbyindex(p, i);
-        if (p1 && 0 == strncmp(p1->Name, name, sizeof(p1->Name))) return p1;
+        if (p1 && 0 == strncmp(CAST(const char*, p1->Name), name, sizeof(p1->Name))) return p1;
       }
     }
   } else if (isPE64(p)) {
@@ -158,7 +184,7 @@ PIMAGE_SECTION_HEADER get_sectionhdrbyname(const pbuffer_t p, const char* name) 
     if (p0) {
       for (int i = 0; i < p0->FileHeader.NumberOfSections; ++i) {
         PIMAGE_SECTION_HEADER p1 = get_sectionhdrbyindex(p, i);
-        if (p1 && 0 == strncmp(p1->Name, name, sizeof(p1->Name))) return p1;
+        if (p1 && 0 == strncmp(CAST(const char*, p1->Name), name, sizeof(p1->Name))) return p1;
       }
     }
   }
@@ -167,9 +193,12 @@ PIMAGE_SECTION_HEADER get_sectionhdrbyname(const pbuffer_t p, const char* name) 
 }
 
 unknown_t get_chunkbyRVA(const pbuffer_t p, const int index, const uint64_t vaddr, const size_t size) {
-  PIMAGE_SECTION_HEADER s0 = get_sectionhdrbyentry(p, index);
-  if (s0) {
-    return getp(p, peconvert2va(s0, vaddr), size);
+  if (IMAGE_DIRECTORY_ENTRY_UNKNOWN == index) {
+    PIMAGE_SECTION_HEADER p0 = get_sectionhdrbyRVA(p, vaddr);
+    return p0 ? getp(p, peconvert2va(p0, vaddr), size) : NULL;
+  } else {
+    PIMAGE_SECTION_HEADER p0 = get_sectionhdrbyentry(p, index);
+    return p0 ? getp(p, peconvert2va(p0, vaddr), size) : NULL;
   }
 
   return NULL;

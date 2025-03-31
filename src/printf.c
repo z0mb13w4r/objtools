@@ -46,6 +46,7 @@ int printf_spos(char* o, const size_t size, const imode_t mode, const bool_t use
     case USE_DOT:                  n += PRINT1(".");     break;
     case USE_TAB:                  n += PRINT1(" ");     break;
     case USE_TAB2:                 n += PRINT1("   ");   break;
+    case USE_COMMA:                n += PRINT1(", ");    break;
     default:                       break;
     }
 
@@ -148,14 +149,14 @@ int printf_work(char* o, const size_t size, const char* p, const imode_t mode) {
 int printf_neat(char* o, const size_t size, const uint64_t v, const imode_t mode) {
   int n = 0;
   if (o) {
-    const imode_t pos0 = GET_POS0(mode);
-    const imode_t xmode = mode & ~(USE_FLAGMASK | USE_POS0MASK | USE_POS1MASK | USE_BRACKETMASK | USE_COLORMASK);
-    const bool_t  usespace = (!pos0 && USE_CHARCTRL != xmode && USE_LHEX8NS != xmode && USE_CHAR != xmode)
-                        || USE_SPACE == pos0 || USE_TAB == pos0;
+    const imode_t mode0 = GET_POS0(mode);
+    const imode_t modex = mode & ~(USE_FLAGMASK | USE_POS0MASK | USE_POS1MASK | USE_BRACKETMASK | USE_COLORMASK);
+    const bool_t  usespace = (0 == (mode & USE_NOSPACE) && 0 == mode0 && USE_CHARCTRL != modex && USE_LHEX8NS != modex && USE_CHAR != modex)
+                        || USE_SPACE == mode0 || USE_TAB == mode0;
 
     n += printf_spos(o + n, size - n, mode, usespace);
 
-    switch (xmode) {
+    switch (modex) {
     case USE_DEC:                  n += PRINT2("%" PRId64, v);                     break;
     case USE_DEC2:                 n += PRINT2("%2" PRId64, v);                    break;
     case USE_DEC2Z:                n += PRINT2("%2.2" PRId64, v);                  break;

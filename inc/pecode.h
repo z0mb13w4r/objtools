@@ -29,6 +29,7 @@
 #define IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT       (13)
 #define IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR     (14)
 #define IMAGE_DIRECTORY_ENTRY_RESERVED           (15)
+#define IMAGE_DIRECTORY_ENTRY_UNKNOWN            (16)
 
 #define IMAGE_RESOURCE_NAME_IS_STRING            (0x80000000)
 #define IMAGE_RESOURCE_DATA_IS_DIRECTORY         (0x80000000)
@@ -356,14 +357,15 @@ typedef struct _UNWIND_INFO {
   BYTE FrameRegister:4;
   BYTE FrameOffset:4;
   UNWIND_CODE UnwindCode[1];
-  union {
-    // If (Flags & UNW_FLAG_EHANDLER)
-    ULONG ExceptionHandler;
-    // Else if (Flags & UNW_FLAG_CHAININFO)
-    ULONG FunctionEntry;
-  };
-  // If (Flags & UNW_FLAG_EHANDLER)
-  ULONG ExceptionData[];
+/*  UNWIND_CODE MoreUnwindCode[((CountOfCodes + 1) & ~1) - 1];
+ *  union {
+ *    If (Flags & UNW_FLAG_EHANDLER)
+ *    OPTIONAL ULONG ExceptionHandler;
+ *    Else if (Flags & UNW_FLAG_CHAININFO)
+ *    OPTIONAL ULONG FunctionEntry;
+ *  };
+ *  If (Flags & UNW_FLAG_EHANDLER)
+ *  OPTIONAL ULONG ExceptionData[]; */
 } UNWIND_INFO, *PUNWIND_INFO;
 
 bool_t isPE(const pbuffer_t p);
@@ -375,9 +377,10 @@ PIMAGE_NT_HEADERS32 get_nt32hdr(const pbuffer_t p);
 PIMAGE_NT_HEADERS64 get_nt64hdr(const pbuffer_t p);
 
 PIMAGE_DATA_DIRECTORY get_datadirbyentry(const pbuffer_t p, const int index);
+PIMAGE_SECTION_HEADER get_sectionhdrbyname(const pbuffer_t p, const char* name);
 PIMAGE_SECTION_HEADER get_sectionhdrbyindex(const pbuffer_t p, const int index);
 PIMAGE_SECTION_HEADER get_sectionhdrbyentry(const pbuffer_t p, const int index);
-PIMAGE_SECTION_HEADER get_sectionhdrbyname(const pbuffer_t p, const char* name);
+PIMAGE_SECTION_HEADER get_sectionhdrbyRVA(const pbuffer_t p, const uint64_t vaddr);
 
 unknown_t get_chunkbyRVA(const pbuffer_t p, const int index, const uint64_t vaddr, const size_t size);
 unknown_t get_chunkbyentry(const pbuffer_t p, const int index);
