@@ -151,7 +151,7 @@ int printf_neat(char* o, const size_t size, const uint64_t v, const imode_t mode
   if (o) {
     const imode_t mode0 = GET_POS0(mode);
     const imode_t modex = mode & ~(USE_FLAGMASK | USE_POS0MASK | USE_POS1MASK | USE_BRACKETMASK | USE_COLORMASK);
-    const bool_t  usespace = (0 == (mode & USE_NOSPACE) && 0 == mode0 && USE_CHARCTRL != modex && USE_LHEX8NS != modex && USE_CHAR != modex)
+    const bool_t  usespace = (0 == (mode & USE_NOSPACE) && 0 == mode0 && USE_CHARCTRL != modex && USE_CHAR != modex)
                         || USE_SPACE == mode0 || USE_TAB == mode0;
 
     n += printf_spos(o + n, size - n, mode, usespace);
@@ -173,7 +173,6 @@ int printf_neat(char* o, const size_t size, const uint64_t v, const imode_t mode
     case USE_LHEX:                 n += PRINT2("%" PRIx64, v);                     break;
     case USE_FHEX8:                n += PRINT2("0x%2.2" PRIx64, v);                break;
     case USE_LHEX8:                n += PRINT2("%2.2" PRIx64, v);                  break;
-    case USE_LHEX8NS:              n += PRINT2("%2.2" PRIx64, v);                  break;
     case USE_FHEX16:               n += PRINT2("0x%4.4" PRIx64, v);                break;
     case USE_LHEX16:               n += PRINT2("%4.4" PRIx64, v);                  break;
     case USE_FHEX24:               n += PRINT2("0x%6.6" PRIx64, v);                break;
@@ -340,7 +339,7 @@ int printf_sore(const void* p, const size_t size, const imode_t mode) {
     n += printf_spos(o, sizeof(o), mode, USE_SPACE == GET_POS0(mode) || USE_TAB == GET_POS0(mode));
 
     for (size_t i = 0; i < size; ++i, ++p0) {
-      n += printf_neat(o + n, sizeof(o) - n, *p0, USE_SPACE == GET_POS0(mode) ? USE_LHEX8 : USE_LHEX8NS);
+      n += printf_neat(o + n, sizeof(o) - n, *p0, USE_SPACE == GET_POS0(mode) ? USE_LHEX8 : USE_LHEX8 | USE_NOSPACE);
     }
 
     n += printf_epos(o, sizeof(o), mode);
@@ -398,13 +397,13 @@ int printf_sore(const void* p, const size_t size, const imode_t mode) {
   } else if (USE_GUID == xmode) {
     n += printf_spos(o, sizeof(o), mode, USE_SPACE == GET_POS0(mode) || USE_TAB == GET_POS0(mode));
 
-    for (size_t i = 0; i < 4; ++i, ++p0) n += printf_neat(o + n, sizeof(o) - n, *p0, USE_LHEX8NS);
+    for (size_t i = 0; i < 4; ++i, ++p0) n += printf_neat(o + n, sizeof(o) - n, *p0, USE_LHEX8 | USE_NOSPACE);
     n += printf_neat(o + n, sizeof(o) - n, '-', USE_CHAR);
-    for (size_t i = 0; i < 2; ++i, ++p0) n += printf_neat(o + n, sizeof(o) - n, *p0, USE_LHEX8NS);
+    for (size_t i = 0; i < 2; ++i, ++p0) n += printf_neat(o + n, sizeof(o) - n, *p0, USE_LHEX8 | USE_NOSPACE);
     n += printf_neat(o + n, sizeof(o) - n, '-', USE_CHAR);
-    for (size_t i = 0; i < 2; ++i, ++p0) n += printf_neat(o + n, sizeof(o) - n, *p0, USE_LHEX8NS);
+    for (size_t i = 0; i < 2; ++i, ++p0) n += printf_neat(o + n, sizeof(o) - n, *p0, USE_LHEX8 | USE_NOSPACE);
     n += printf_neat(o + n, sizeof(o) - n, '-', USE_CHAR);
-    for (size_t i = 0; i < 8; ++i, ++p0) n += printf_neat(o + n, sizeof(o) - n, *p0, USE_LHEX8NS);
+    for (size_t i = 0; i < 8; ++i, ++p0) n += printf_neat(o + n, sizeof(o) - n, *p0, USE_LHEX8 | USE_NOSPACE);
 
     n += printf_epos(o, sizeof(o), mode);
     n += printf_post(o, mode);
@@ -472,7 +471,7 @@ int printf_data(const void* p, const size_t size, const addrz_t addr, const imod
       ++pp;
       ++i;
     } else if (USE_HEX == xmode) {
-      n += printf_nice(*pp, usespace ? USE_LHEX8 : USE_LHEX8NS);
+      n += printf_nice(*pp, usespace ? USE_LHEX8 : USE_LHEX8 | USE_NOSPACE);
       ++pp;
       ++i;
     } else {
