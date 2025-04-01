@@ -141,6 +141,7 @@ int printf_epos(char* o, const size_t size, const imode_t mode);
 int printf_color(const imode_t mode);
 
 int printf_work(char* o, const size_t size, const char* p, const imode_t mode);
+int printf_join(const char* p, const uint64_t v, const imode_t mode);
 int printf_book(const char* p[], const imode_t mode);
 int printf_text(const char* p, const imode_t mode);
 

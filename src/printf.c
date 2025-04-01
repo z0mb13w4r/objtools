@@ -252,11 +252,24 @@ int printf_pack(const int size) {
 }
 
 int printf_nice(const uint64_t v, const imode_t mode) {
-  MALLOCA(char, data, 1024);
+  MALLOCA(char, o, 1024);
 
   int n = 0;
-  n += printf_neat(data, sizeof(data), v, mode);
-  n += printf_post(data, mode);
+  n += printf_neat(o, sizeof(o), v, mode);
+  n += printf_post(o, mode);
+
+  return n;
+}
+
+int printf_join(const char* p, const uint64_t v, const imode_t mode) {
+  MALLOCA(char, o, 1024);
+
+  int n = 0;
+  if (p) {
+    n += printf_work(o, sizeof(o), p, mode);
+    n += printf_neat(o + n, sizeof(o) - n, v, (mode & ~USE_POS0MASK) | USE_NOSPACE);
+    n += printf_post(o, mode);
+  }
 
   return n;
 }

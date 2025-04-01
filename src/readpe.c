@@ -647,7 +647,7 @@ static int dump_debugNN(const pbuffer_t p, const poptions_t o) {
         n += printf_text("Age", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
         n += printf_nice(p2->Age, USE_FHEX32 | USE_EOL);
         n += printf_text("PdbFileName", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-        n += printf_text(p2->PdbFileName, USE_LT | USE_SPACE | USE_EOL);
+        n += printf_text(CAST(const char*, p2->PdbFileName), USE_LT | USE_SPACE | USE_EOL);
         n += printf_eol();
       }
     } else if (p1 == CV_SIGNATURE_NB10) {
@@ -663,7 +663,7 @@ static int dump_debugNN(const pbuffer_t p, const poptions_t o) {
         n += printf_text("Age", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
         n += printf_nice(p2->Age, USE_FHEX32 | USE_EOL);
         n += printf_text("PdbFileName", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-        n += printf_text(p2->PdbFileName, USE_LT | USE_SPACE | USE_EOL);
+        n += printf_text(CAST(const char*, p2->PdbFileName), USE_LT | USE_SPACE | USE_EOL);
         n += printf_eol();
       }
     }
@@ -731,7 +731,7 @@ static int dump_runtimeNN(const pbuffer_t p, const poptions_t o) {
           n += printf_nice(p2->FrameOffset, USE_FHEX32 | USE_EOL);
           n += printf_eol();
 
-          PBYTE x3 = p2->UnwindCode;
+          PBYTE x3 = CAST(PBYTE, p2->UnwindCode);
           for (BYTE i = 0; i < p2->CountOfCodes; ++i, x3 += 2) {
             PUNWIND_CODE p3 = CAST(PUNWIND_CODE, x3);
             n += printf_text("UNWIND CODE", USE_LT | USE_COLON | USE_EOL);
@@ -756,14 +756,18 @@ static int dump_runtimeNN(const pbuffer_t p, const poptions_t o) {
               n += printf_text(".PUSHREG", USE_LT | USE_SPACE);
               n += printf_pick(zUNW_INFO, p3->OpInfo, USE_SPACE | USE_EOL);
             } else if (UWOP_SAVE_NONVOL == p3->UnwindCode || UWOP_SAVE_NONVOL_FAR == p3->UnwindCode) {
+              n += printf_nice(x3[2], USE_FHEX8);
+              n += printf_nice(x3[3], USE_FHEX8);
               n += printf_text(".SAVEREG", USE_LT | USE_SPACE);
               n += printf_pick(zUNW_INFO, p3->OpInfo, USE_SPACE);
               n += printf_nice(x3[2] * 8, USE_FHEX8 | USE_COMMA | USE_EOL);
               x3 += 2;
               ++i;
             } else if (UWOP_SAVE_XMM128 == p3->UnwindCode || UWOP_SAVE_XMM128_FAR == p3->UnwindCode) {
-              n += printf_text(".SAVEXMM128 XMM", USE_LT | USE_SPACE);
-              n += printf_nice(p3->OpInfo, USE_DEC | USE_NOSPACE);
+              n += printf_nice(x3[2], USE_FHEX8);
+              n += printf_nice(x3[3], USE_FHEX8);
+              n += printf_text(".SAVEXMM128", USE_LT | USE_SPACE);
+              n += printf_join("XMM", p3->OpInfo, USE_DEC | USE_SPACE);
               n += printf_nice(x3[2] * 16, USE_FHEX16 | USE_COMMA | USE_EOL);
               x3 += 2;
               ++i;
