@@ -340,20 +340,20 @@ static int dump_sectiongroups64(const pbuffer_t p, const poptions_t o) {
 int dump_iat0(const pbuffer_t p, const uint64_t Characteristics, const uint64_t OriginalFirstThunk,
               const uint64_t TimeDateStamp, const uint64_t ForwarderChain, const uint64_t Name, const char* sname, const uint64_t FirstThunk) {
   int n = 0;
-  n += printf_text("Characteristics", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  n += printf_nice(Characteristics, USE_FHEX32 | USE_EOL);
   n += printf_text("OriginalFirstThunk", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(OriginalFirstThunk, USE_FHEX32 | USE_EOL);
+  n += printf_text("Characteristics", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(Characteristics, USE_FHEX32 | USE_EOL);
   n += printf_text("TimeDateStamp", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(TimeDateStamp, USE_FHEX32);
   n += printf_nice(TimeDateStamp, USE_TIMEDATE | USE_SB | USE_EOL);
   n += printf_text("ForwarderChain", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(ForwarderChain, USE_FHEX32 | USE_EOL);
-  n += printf_text("FirstThunk", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  n += printf_nice(FirstThunk, USE_FHEX32 | USE_EOL);
   n += printf_text("Name", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(Name, USE_FHEX32);
   n += printf_text(sname, USE_LT | USE_SPACE | USE_SB | USE_EOL);
+  n += printf_text("FirstThunk", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(FirstThunk, USE_FHEX32 | USE_EOL);
 
   return n;
 }
@@ -498,6 +498,7 @@ static int dump_eatNN(const pbuffer_t p, const poptions_t o) {
 static int dump_resource0(const pbuffer_t p, const uint64_t Characteristics, const uint64_t TimeDateStamp,
                           const uint64_t MajorVersion, const uint64_t MinorVersion, const uint64_t NumberOfNamedEntries, const uint64_t NumberOfIdEntries) {
   int n = 0;
+  n += printf_text("IMAGE RESOURCE DIRECTORY", USE_LT | USE_COLON | USE_EOL);
   n += printf_text("Characteristics", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(Characteristics, USE_FHEX32 | USE_EOL);
   n += printf_text("TimeDateStamp", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
@@ -516,15 +517,25 @@ static int dump_resource0(const pbuffer_t p, const uint64_t Characteristics, con
 }
 
 static int dump_resourceNN(const pbuffer_t p, const poptions_t o) {
+  int n = 0;
+
   PIMAGE_RESOURCE_DIRECTORY p0 = get_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_RESOURCE);
   if (p0) {
-      printf_text("IMAGE RESOURCE DIRECTORY", USE_LT | USE_COLON | USE_EOL);
+    n += dump_resource0(p, p0->Characteristics, p0->TimeDateStamp,
+                   p0->MajorVersion, p0->MinorVersion, p0->NumberOfNamedEntries, p0->NumberOfIdEntries);
 
-      dump_resource0(p, p0->Characteristics, p0->TimeDateStamp,
-                     p0->MajorVersion, p0->MinorVersion, p0->NumberOfNamedEntries, p0->NumberOfIdEntries);
+    PIMAGE_RESOURCE_DIRECTORY_ENTRY p1 = CAST(PIMAGE_RESOURCE_DIRECTORY_ENTRY, p0 + 1);
+    for (int i = 0; i < (p0->NumberOfNamedEntries + p0->NumberOfIdEntries); ++i, ++p1) {
+      n += printf_text("IMAGE RESOURCE DIRECTORY ENTRY", USE_LT | USE_COLON | USE_EOL);
+      n += printf_text("Name", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_nice(p1->Name, USE_FHEX32 | USE_EOL);
+      n += printf_text("OffsetToData", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_nice(p1->OffsetToData, USE_FHEX32 | USE_EOL);
+// TDB
+    }
   }
-  // TBD
-  return 0;
+
+  return n;
 }
 
 static int dump_config0(const pbuffer_t p, const uint64_t Size, const uint64_t TimeDateStamp,
@@ -540,7 +551,7 @@ static int dump_config0(const pbuffer_t p, const uint64_t Size, const uint64_t T
     printf_text("IMAGE LOAD CONFIG DIRECTORY", USE_LT | USE_COLON | USE_EOL);
 
     n += printf_text("Size", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-    n += printf_nice(Size, USE_FHEX32 | USE_EOL);
+    n += printf_nice(Size, USE_DEC | USE_EOL);
     n += printf_text("TimeDateStamp", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     n += printf_nice(TimeDateStamp, USE_FHEX32);
     n += printf_nice(TimeDateStamp, USE_TIMEDATE | USE_SB | USE_EOL);
@@ -585,13 +596,83 @@ static int dump_config0(const pbuffer_t p, const uint64_t Size, const uint64_t T
   return n;
 }
 
+static int dump_config1(const pbuffer_t p, const uint64_t GuardCFCheckFunctionPointer, const uint64_t GuardCFDispatchFunctionPointer,
+                        const uint64_t GuardCFFunctionTable, const uint64_t GuardCFFunctionCount, const uint64_t GuardFlags) {
+  int n = 0;
+  if (issafe(p)) {
+    const imode_t USE_FHEXNN = (isPE64(p) ? USE_FHEX64 : USE_FHEX32) | USE_EOL;
+
+    n += printf_text("GuardCFCheckFunctionPointer", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(GuardCFCheckFunctionPointer, USE_FHEXNN);
+    n += printf_text("GuardCFDispatchFunctionPointer", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(GuardCFDispatchFunctionPointer, USE_FHEXNN);
+    n += printf_text("GuardCFFunctionTable", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(GuardCFFunctionTable, USE_FHEXNN);
+    n += printf_text("GuardCFFunctionCount", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(GuardCFFunctionCount, USE_FHEXNN);
+    n += printf_text("GuardFlags", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(GuardFlags, USE_FHEX32 | USE_EOL);
+  }
+
+  return n;
+}
+
+static int dump_config2(const pbuffer_t p, const uint64_t CodeIntegrityFlags, const uint64_t CodeIntegrityCatalog,
+                        const uint64_t CodeIntegrityCatalogOffset, const uint64_t CodeIntegrityReserved,
+                        const uint64_t GuardAddressTakenIatEntryTable, const uint64_t GuardAddressTakenIatEntryCount,
+                        const uint64_t GuardLongJumpTargetTable, const uint64_t GuardLongJumpTargetCount,
+                        const uint64_t DynamicValueRelocTable, const uint64_t CHPEMetadataPointer) {
+  int n = 0;
+  if (issafe(p)) {
+    const imode_t USE_FHEXNN = (isPE64(p) ? USE_FHEX64 : USE_FHEX32) | USE_EOL;
+
+    n += printf_text("CodeIntegrityFlags", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(CodeIntegrityFlags, USE_FHEX16 | USE_EOL);
+    n += printf_text("CodeIntegrityCatalog", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(CodeIntegrityCatalog, USE_FHEX16 | USE_EOL);
+    n += printf_text("CodeIntegrityCatalogOffset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(CodeIntegrityCatalogOffset, USE_FHEX32 | USE_EOL);
+    n += printf_text("CodeIntegrityReserved", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(CodeIntegrityReserved, USE_FHEX32 | USE_EOL);
+    n += printf_text("GuardAddressTakenIatEntryTable", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(GuardAddressTakenIatEntryTable, USE_FHEXNN);
+    n += printf_text("GuardAddressTakenIatEntryCount", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(GuardAddressTakenIatEntryCount, USE_FHEXNN);
+    n += printf_text("GuardLongJumpTargetTable", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(GuardLongJumpTargetTable, USE_FHEXNN);
+    n += printf_text("GuardLongJumpTargetCount", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(GuardLongJumpTargetCount, USE_FHEXNN);
+    n += printf_text("DynamicValueRelocTable", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(DynamicValueRelocTable, USE_FHEXNN);
+    n += printf_text("CHPEMetadataPointer", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(CHPEMetadataPointer, USE_FHEXNN);
+  }
+
+  return n;
+}
+
 static int dump_config32(const pbuffer_t p, const poptions_t o) {
+  int n = 0;
+
   PIMAGE_LOAD_CONFIG_DIRECTORY32 p0 = get_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG);
-  if (p0) {
-    dump_config0(p, p0->Size, p0->TimeDateStamp, p0->MajorVersion, p0->MinorVersion, p0->GlobalFlagsClear, p0->GlobalFlagsSet,
+  if (p0 && p0->Size >= 72) {
+    n += dump_config0(p, p0->Size, p0->TimeDateStamp, p0->MajorVersion, p0->MinorVersion, p0->GlobalFlagsClear, p0->GlobalFlagsSet,
                  p0->CriticalSectionDefaultTimeout, p0->DeCommitFreeBlockThreshold, p0-> DeCommitTotalFreeThreshold, p0->LockPrefixTable,
                  p0->MaximumAllocationSize, p0->VirtualMemoryThreshold, p0->ProcessAffinityMask, p0->ProcessHeapFlags, p0->CSDVersion,
                  p0->Reserved1, p0->EditList, p0->SecurityCookie, p0->SEHandlerTable, p0->SEHandlerCount);
+  }
+  if (p0 && p0->Size >= 92) {
+    n += dump_config1(p, p0->GuardCFCheckFunctionPointer, p0->GuardCFDispatchFunctionPointer,
+                 p0->GuardCFFunctionTable, p0->GuardCFFunctionCount, p0->GuardFlags);
+  }
+  if (p0 && p0->Size >= 128) {
+    n += dump_config2(p, p0->CodeIntegrity.Flags, p0->CodeIntegrity.Catalog, p0->CodeIntegrity.CatalogOffset, p0->CodeIntegrity.Reserved,
+                 p0->GuardAddressTakenIatEntryTable, p0->GuardAddressTakenIatEntryCount, p0->GuardLongJumpTargetTable,
+                 p0->GuardLongJumpTargetCount, p0->DynamicValueRelocTable, p0->CHPEMetadataPointer);
+  }
+  if (p0 && p0->Size >= 152) {
+  }
+  if (p0 && p0->Size >= 192) {
   }
 
   return 0;
@@ -614,7 +695,7 @@ static int dump_debugNN(const pbuffer_t p, const poptions_t o) {
 
   PIMAGE_DEBUG_DIRECTORY p0 = get_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_DEBUG);
   if (p0) {
-    n += printf_text("IMAGE LOAD CONFIG DIRECTORY", USE_LT | USE_COLON | USE_EOL);
+    n += printf_text("IMAGE_DEBUG_DIRECTORY", USE_LT | USE_COLON | USE_EOL);
 
     n += printf_text("Characteristics", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     n += printf_nice(p0->Characteristics, USE_FHEX32 | USE_EOL);
@@ -634,7 +715,7 @@ static int dump_debugNN(const pbuffer_t p, const poptions_t o) {
     n += printf_text("PointerToRawData", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     n += printf_nice(p0->PointerToRawData, USE_FHEX32 | USE_EOL);
     n += printf_eol();
-
+// TBD
     DWORD p1 = get_dwordbyRVA(p, IMAGE_DIRECTORY_ENTRY_DEBUG, p0->AddressOfRawData);
     if (p1 == CV_SIGNATURE_RSDS) {
       PCV_INFO_PDB70 p2 = get_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_DEBUG, p0->AddressOfRawData, sizeof(CV_INFO_PDB70));
@@ -679,13 +760,14 @@ static int dump_relocNN(const pbuffer_t p, const poptions_t o) {
   PIMAGE_BASE_RELOCATION p1 = get_chunkbyname(p, SECTION_RELOC);
   if (p0 && p1) {
     for (DWORD x = 0; x < p0->SizeOfRawData; ) {
-      n += printf_text("IMAGE BASE RELOCATION", USE_LT | USE_COLON | USE_EOL);
-      n += printf_text("VirtualAddress", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-      n += printf_nice(p1->VirtualAddress, USE_FHEX32 | USE_EOL);
-      n += printf_text("SizeOfBlock", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-      n += printf_nice(p1->SizeOfBlock, USE_FHEX32 | USE_EOL);
-      n += printf_eol();
-
+      if (0 != p1->SizeOfBlock) {
+        n += printf_text("IMAGE BASE RELOCATION", USE_LT | USE_COLON | USE_EOL);
+        n += printf_text("VirtualAddress", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        n += printf_nice(p1->VirtualAddress, USE_FHEX32 | USE_EOL);
+        n += printf_text("SizeOfBlock", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        n += printf_nice(p1->SizeOfBlock, USE_FHEX32 | USE_EOL);
+        n += printf_eol();
+      }
       x += p1->SizeOfBlock ? p1->SizeOfBlock : sizeof(IMAGE_BASE_RELOCATION);
       p1 = CAST(PIMAGE_BASE_RELOCATION, CAST(puchar_t, p1) + p1->SizeOfBlock);
     }
@@ -778,7 +860,6 @@ static int dump_runtimeNN(const pbuffer_t p, const poptions_t o) {
           }
         }
       }
-//break;  // JUST FOR DEVELOPMENT
     }
   }
 

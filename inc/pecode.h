@@ -253,50 +253,123 @@ typedef struct _IMAGE_RESOURCE_DIRECTORY_STRING {
   CHAR NameString[1];
 } IMAGE_RESOURCE_DIRECTORY_STRING, *PIMAGE_RESOURCE_DIRECTORY_STRING;
 
-typedef struct {
-  DWORD Size;
-  DWORD TimeDateStamp;
-  WORD  MajorVersion;
-  WORD  MinorVersion;
-  DWORD GlobalFlagsClear;
-  DWORD GlobalFlagsSet;
-  DWORD CriticalSectionDefaultTimeout;
-  DWORD DeCommitFreeBlockThreshold;
-  DWORD DeCommitTotalFreeThreshold;
-  DWORD LockPrefixTable;
-  DWORD MaximumAllocationSize;
-  DWORD VirtualMemoryThreshold;
-  DWORD ProcessHeapFlags;
-  DWORD ProcessAffinityMask;
-  WORD  CSDVersion;
-  WORD  Reserved1;
-  DWORD EditList;
-  DWORD SecurityCookie;
-  DWORD SEHandlerTable;
-  DWORD SEHandlerCount;
+typedef struct _IMAGE_LOAD_CONFIG_CODE_INTEGRITY {
+  WORD  Flags;
+  WORD  Catalog;
+  DWORD CatalogOffset;
+  DWORD Reserved;
+} IMAGE_LOAD_CONFIG_CODE_INTEGRITY;
+
+typedef struct _IMAGE_LOAD_CONFIG_DIRECTORY32 {
+  DWORD                            Size;
+  DWORD                            TimeDateStamp;
+  WORD                             MajorVersion;
+  WORD                             MinorVersion;
+  DWORD                            GlobalFlagsClear;
+  DWORD                            GlobalFlagsSet;
+  DWORD                            CriticalSectionDefaultTimeout;
+  DWORD                            DeCommitFreeBlockThreshold;
+  DWORD                            DeCommitTotalFreeThreshold;
+  DWORD                            LockPrefixTable;
+  DWORD                            MaximumAllocationSize;
+  DWORD                            VirtualMemoryThreshold;
+  DWORD                            ProcessHeapFlags;
+  DWORD                            ProcessAffinityMask;
+  WORD                             CSDVersion;
+  WORD                             Reserved1;
+  DWORD                            EditList;
+  DWORD                            SecurityCookie;
+  DWORD                            SEHandlerTable;
+  DWORD                            SEHandlerCount;
+  // Fields available in v8.1+ of the Windows SDK.
+  DWORD                            GuardCFCheckFunctionPointer;
+  DWORD                            GuardCFDispatchFunctionPointer;
+  DWORD                            GuardCFFunctionTable;
+  DWORD                            GuardCFFunctionCount;
+  DWORD                            GuardFlags;
+  // Fields available in v10.0.10586.0+ of the Windows SDK.
+  IMAGE_LOAD_CONFIG_CODE_INTEGRITY CodeIntegrity;
+  DWORD                            GuardAddressTakenIatEntryTable;
+  DWORD                            GuardAddressTakenIatEntryCount;
+  DWORD                            GuardLongJumpTargetTable;
+  DWORD                            GuardLongJumpTargetCount;
+  DWORD                            DynamicValueRelocTable;
+  DWORD                            CHPEMetadataPointer;
+  // Fields available in the v10.0.15063.468+ of the SDK.
+  DWORD                            GuardRFFailureRoutine;
+  DWORD                            GuardRFFailureRoutineFunctionPointer;
+  DWORD                            DynamicValueRelocTableOffset;
+  WORD                             DynamicValueRelocTableSection;
+  WORD                             Reserved2;
+  DWORD                            GuardRFVerifyStackPointerFunctionPointer;
+  DWORD                            HotPatchTableOffset;
+
+  DWORD                            Reserved3;
+  DWORD                            EnclaveConfigurationPointer;
+  DWORD                            VolatileMetadataPointer;
+  DWORD                            GuardEHContinuationTable;
+  DWORD                            GuardEHContinuationCount;
+  DWORD                            GuardXFGCheckFunctionPointer;
+  DWORD                            GuardXFGDispatchFunctionPointer;
+  DWORD                            GuardXFGTableDispatchFunctionPointer;
+  DWORD                            CastGuardOsDeterminedFailureMode;
+  DWORD                            GuardMemcpyFunctionPointer;
 } IMAGE_LOAD_CONFIG_DIRECTORY32, *PIMAGE_LOAD_CONFIG_DIRECTORY32;
 
-typedef struct {
-  DWORD     Size;
-  DWORD     TimeDateStamp;
-  WORD      MajorVersion;
-  WORD      MinorVersion;
-  DWORD     GlobalFlagsClear;
-  DWORD     GlobalFlagsSet;
-  DWORD     CriticalSectionDefaultTimeout;
-  ULONGLONG DeCommitFreeBlockThreshold;
-  ULONGLONG DeCommitTotalFreeThreshold;
-  ULONGLONG LockPrefixTable;
-  ULONGLONG MaximumAllocationSize;
-  ULONGLONG VirtualMemoryThreshold;
-  ULONGLONG ProcessAffinityMask;
-  DWORD     ProcessHeapFlags;
-  WORD      CSDVersion;
-  WORD      Reserved1;
-  ULONGLONG EditList;
-  ULONGLONG SecurityCookie;
-  ULONGLONG SEHandlerTable;
-  ULONGLONG SEHandlerCount;
+typedef struct _IMAGE_LOAD_CONFIG_DIRECTORY64 {
+  DWORD                            Size;
+  DWORD                            TimeDateStamp;
+  WORD                             MajorVersion;
+  WORD                             MinorVersion;
+  DWORD                            GlobalFlagsClear;
+  DWORD                            GlobalFlagsSet;
+  DWORD                            CriticalSectionDefaultTimeout;
+  ULONGLONG                        DeCommitFreeBlockThreshold;
+  ULONGLONG                        DeCommitTotalFreeThreshold;
+  ULONGLONG                        LockPrefixTable;
+  ULONGLONG                        MaximumAllocationSize;
+  ULONGLONG                        VirtualMemoryThreshold;
+  ULONGLONG                        ProcessAffinityMask;
+  DWORD                            ProcessHeapFlags;
+  WORD                             CSDVersion;
+  WORD                             Reserved1;
+  ULONGLONG                        EditList;
+  ULONGLONG                        SecurityCookie;
+  ULONGLONG                        SEHandlerTable;
+  ULONGLONG                        SEHandlerCount;
+  // Fields available in v8.1+ of the Windows SDK.
+  ULONGLONG                        GuardCFCheckFunctionPointer;
+  ULONGLONG                        GuardCFDispatchFunctionPointer;
+  ULONGLONG                        GuardCFFunctionTable;
+  ULONGLONG                        GuardCFFunctionCount;
+  DWORD                            GuardFlags;
+  // Fields available in v10.0.10586.0+ of the Windows SDK.
+  IMAGE_LOAD_CONFIG_CODE_INTEGRITY CodeIntegrity;
+  ULONGLONG                        GuardAddressTakenIatEntryTable;
+  ULONGLONG                        GuardAddressTakenIatEntryCount;
+  ULONGLONG                        GuardLongJumpTargetTable;
+  ULONGLONG                        GuardLongJumpTargetCount;
+  ULONGLONG                        DynamicValueRelocTable;
+  ULONGLONG                        CHPEMetadataPointer;
+  // Fields available in the v10.0.15063.468+ of the SDK.
+  ULONGLONG                        GuardRFFailureRoutine;
+  ULONGLONG                        GuardRFFailureRoutineFunctionPointer;
+  DWORD                            DynamicValueRelocTableOffset;
+  WORD                             DynamicValueRelocTableSection;
+  WORD                             Reserved2;
+  ULONGLONG                        GuardRFVerifyStackPointerFunctionPointer;
+  DWORD                            HotPatchTableOffset;
+
+  DWORD                            Reserved3;
+  ULONGLONG                        EnclaveConfigurationPointer;
+  ULONGLONG                        VolatileMetadataPointer;
+  ULONGLONG                        GuardEHContinuationTable;
+  ULONGLONG                        GuardEHContinuationCount;
+  ULONGLONG                        GuardXFGCheckFunctionPointer;
+  ULONGLONG                        GuardXFGDispatchFunctionPointer;
+  ULONGLONG                        GuardXFGTableDispatchFunctionPointer;
+  ULONGLONG                        CastGuardOsDeterminedFailureMode;
+  ULONGLONG                        GuardMemcpyFunctionPointer;
 } IMAGE_LOAD_CONFIG_DIRECTORY64, *PIMAGE_LOAD_CONFIG_DIRECTORY64;
 
 typedef struct _IMAGE_DEBUG_DIRECTORY {
