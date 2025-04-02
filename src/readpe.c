@@ -24,7 +24,7 @@ static int dump_dosheaderNN(const pbuffer_t p, const poptions_t o) {
   if (dos) {
     size_t i = 0;
 
-    n += printf_text("DOS HEADER", USE_LT | USE_COLON | USE_EOL);
+    n += printf_text("IMAGE DOS HEADER", USE_LT | USE_COLON | USE_EOL);
     n += printf_text("e_magic", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     n += printf_nice(dos->e_magic, USE_FHEX16 | USE_EOL);
     n += printf_text("e_cblp", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
@@ -222,7 +222,7 @@ static int dump_sectionheaders0(const pbuffer_t p, const uint64_t NumberOfSectio
   for (int i = 0; i < NumberOfSections; ++i) {
     PIMAGE_SECTION_HEADER p0 = get_sectionhdrbyindex(p, i);
     if (p0) {
-      n += printf_text("SECTION HEADER", USE_LT | USE_COLON | USE_EOL);
+      n += printf_text("IMAGE SECTION HEADER", USE_LT | USE_COLON | USE_EOL);
       n += printf_text("Name", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
       n += printf_data(p0->Name, sizeof(p0->Name), 0, USE_STR | USE_EOL);
 
@@ -639,7 +639,7 @@ static int dump_debugNN(const pbuffer_t p, const poptions_t o) {
     if (p1 == CV_SIGNATURE_RSDS) {
       PCV_INFO_PDB70 p2 = get_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_DEBUG, p0->AddressOfRawData, sizeof(CV_INFO_PDB70));
       if (p2) {
-        n += printf_text("PCV INFO PDB70", USE_LT | USE_COLON | USE_EOL);
+        n += printf_text("CV INFO PDB70", USE_LT | USE_COLON | USE_EOL);
         n += printf_text("CvSignature", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
         n += printf_nice(p2->CvSignature, USE_FHEX32 | USE_EOL);
         n += printf_text("Signature", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
@@ -653,7 +653,7 @@ static int dump_debugNN(const pbuffer_t p, const poptions_t o) {
     } else if (p1 == CV_SIGNATURE_NB10) {
       PCV_INFO_PDB20 p2 = get_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_DEBUG, p0->AddressOfRawData, sizeof(CV_INFO_PDB20));
       if (p2) {
-        n += printf_text("PCV INFO PDB20", USE_LT | USE_COLON | USE_EOL);
+        n += printf_text("CV INFO PDB20", USE_LT | USE_COLON | USE_EOL);
         n += printf_text("CvSignature", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
         n += printf_nice(p2->CvHeader.Signature, USE_FHEX32 | USE_EOL);
         n += printf_text("CvOffset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
