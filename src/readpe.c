@@ -651,6 +651,65 @@ static int dump_config2(const pbuffer_t p, const uint64_t CodeIntegrityFlags, co
   return n;
 }
 
+static int dump_config3(const pbuffer_t p, const uint64_t GuardRFFailureRoutine, const uint64_t GuardRFFailureRoutineFunctionPointer,
+                        const uint64_t DynamicValueRelocTableOffset, const uint64_t DynamicValueRelocTableSection, const uint64_t Reserved2,
+                        const uint64_t GuardRFVerifyStackPointerFunctionPointer, const uint64_t HotPatchTableOffset) {
+  int n = 0;
+  if (issafe(p)) {
+    const imode_t USE_FHEXNN = (isPE64(p) ? USE_FHEX64 : USE_FHEX32) | USE_EOL;
+
+    n += printf_text("GuardRFFailureRoutine", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(GuardRFFailureRoutine, USE_FHEXNN);
+    n += printf_text("GuardRFFailureRoutineFunctionPointer", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(GuardRFFailureRoutineFunctionPointer, USE_FHEXNN);
+    n += printf_text("DynamicValueRelocTableOffset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(DynamicValueRelocTableOffset, USE_FHEX32 | USE_EOL);
+    n += printf_text("DynamicValueRelocTableSection", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(DynamicValueRelocTableSection, USE_FHEX16 | USE_EOL);
+    n += printf_text("Reserved2", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(Reserved2, USE_FHEX16 | USE_EOL);
+    n += printf_text("GuardRFVerifyStackPointerFunctionPointer", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(GuardRFVerifyStackPointerFunctionPointer, USE_FHEXNN);
+    n += printf_text("HotPatchTableOffset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(HotPatchTableOffset, USE_FHEX32 | USE_EOL);
+  }
+
+  return n;
+}
+
+static int dump_config4(const pbuffer_t p, const uint64_t Reserved3, const uint64_t EnclaveConfigurationPointer, const uint64_t VolatileMetadataPointer,
+                        const uint64_t GuardEHContinuationTable, const uint64_t GuardEHContinuationCount, const uint64_t GuardXFGCheckFunctionPointer,
+                        const uint64_t GuardXFGDispatchFunctionPointer, const uint64_t GuardXFGTableDispatchFunctionPointer,
+                        const uint64_t CastGuardOsDeterminedFailureMode, const uint64_t GuardMemcpyFunctionPointer) {
+  int n = 0;
+  if (issafe(p)) {
+    const imode_t USE_FHEXNN = (isPE64(p) ? USE_FHEX64 : USE_FHEX32) | USE_EOL;
+
+    n += printf_text("Reserved3", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(Reserved3, USE_FHEX32 | USE_EOL);
+    n += printf_text("EnclaveConfigurationPointer", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(EnclaveConfigurationPointer, USE_FHEXNN);
+    n += printf_text("VolatileMetadataPointer", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(VolatileMetadataPointer, USE_FHEXNN);
+    n += printf_text("GuardEHContinuationTable", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(GuardEHContinuationTable, USE_FHEXNN);
+    n += printf_text("GuardEHContinuationCount", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(GuardEHContinuationCount, USE_FHEXNN);
+    n += printf_text("GuardXFGCheckFunctionPointer", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(GuardXFGCheckFunctionPointer, USE_FHEXNN);
+    n += printf_text("GuardXFGDispatchFunctionPointer", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(GuardXFGDispatchFunctionPointer, USE_FHEXNN);
+    n += printf_text("GuardXFGTableDispatchFunctionPointer", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(GuardXFGTableDispatchFunctionPointer, USE_FHEXNN);
+    n += printf_text("CastGuardOsDeterminedFailureMode", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(CastGuardOsDeterminedFailureMode, USE_FHEXNN);
+    n += printf_text("GuardMemcpyFunctionPointer", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(GuardMemcpyFunctionPointer, USE_FHEXNN);
+  }
+
+  return n;
+}
+
 static int dump_config32(const pbuffer_t p, const poptions_t o) {
   int n = 0;
 
@@ -671,23 +730,50 @@ static int dump_config32(const pbuffer_t p, const poptions_t o) {
                  p0->GuardLongJumpTargetCount, p0->DynamicValueRelocTable, p0->CHPEMetadataPointer);
   }
   if (p0 && p0->Size >= 152) {
+    n += dump_config3(p, p0->GuardRFFailureRoutine, p0->GuardRFFailureRoutineFunctionPointer, p0->DynamicValueRelocTableOffset,
+                 p0->DynamicValueRelocTableSection, p0->Reserved2, p0->GuardRFVerifyStackPointerFunctionPointer, p0->HotPatchTableOffset);
   }
   if (p0 && p0->Size >= 192) {
+    n += dump_config4(p, p0->Reserved3, p0->EnclaveConfigurationPointer, p0->VolatileMetadataPointer,
+                 p0->GuardEHContinuationTable, p0->GuardEHContinuationCount, p0->GuardXFGCheckFunctionPointer,
+                 p0->GuardXFGDispatchFunctionPointer, p0->GuardXFGTableDispatchFunctionPointer,
+                 p0->CastGuardOsDeterminedFailureMode, p0->GuardMemcpyFunctionPointer);
   }
 
-  return 0;
+  return n;
 }
 
 static int dump_config64(const pbuffer_t p, const poptions_t o) {
+  int n = 0;
+
   PIMAGE_LOAD_CONFIG_DIRECTORY64 p0 = get_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG);
-  if (p0) {
-    dump_config0(p, p0->Size, p0->TimeDateStamp, p0->MajorVersion, p0->MinorVersion, p0->GlobalFlagsClear, p0->GlobalFlagsSet,
+  if (p0 && p0->Size >= 112) {
+    n += dump_config0(p, p0->Size, p0->TimeDateStamp, p0->MajorVersion, p0->MinorVersion, p0->GlobalFlagsClear, p0->GlobalFlagsSet,
                  p0->CriticalSectionDefaultTimeout, p0->DeCommitFreeBlockThreshold, p0-> DeCommitTotalFreeThreshold, p0->LockPrefixTable,
                  p0->MaximumAllocationSize, p0->VirtualMemoryThreshold, p0->ProcessAffinityMask, p0->ProcessHeapFlags, p0->CSDVersion,
                  p0->Reserved1, p0->EditList, p0->SecurityCookie, p0->SEHandlerTable, p0->SEHandlerCount);
   }
+  if (p0 && p0->Size >= 152) {
+    n += dump_config1(p, p0->GuardCFCheckFunctionPointer, p0->GuardCFDispatchFunctionPointer,
+                 p0->GuardCFFunctionTable, p0->GuardCFFunctionCount, p0->GuardFlags);
+  }
+  if (p0 && p0->Size >= 208) {
+    n += dump_config2(p, p0->CodeIntegrity.Flags, p0->CodeIntegrity.Catalog, p0->CodeIntegrity.CatalogOffset, p0->CodeIntegrity.Reserved,
+                 p0->GuardAddressTakenIatEntryTable, p0->GuardAddressTakenIatEntryCount, p0->GuardLongJumpTargetTable,
+                 p0->GuardLongJumpTargetCount, p0->DynamicValueRelocTable, p0->CHPEMetadataPointer);
+  }
+  if (p0 && p0->Size >= 248) {
+    n += dump_config3(p, p0->GuardRFFailureRoutine, p0->GuardRFFailureRoutineFunctionPointer, p0->DynamicValueRelocTableOffset,
+                 p0->DynamicValueRelocTableSection, p0->Reserved2, p0->GuardRFVerifyStackPointerFunctionPointer, p0->HotPatchTableOffset);
+  }
+  if (p0 && p0->Size >= 320) {
+    n += dump_config4(p, p0->Reserved3, p0->EnclaveConfigurationPointer, p0->VolatileMetadataPointer,
+                 p0->GuardEHContinuationTable, p0->GuardEHContinuationCount, p0->GuardXFGCheckFunctionPointer,
+                 p0->GuardXFGDispatchFunctionPointer, p0->GuardXFGTableDispatchFunctionPointer,
+                 p0->CastGuardOsDeterminedFailureMode, p0->GuardMemcpyFunctionPointer);
+  }
 
-  return 0;
+  return n;
 }
 
 static int dump_debugNN(const pbuffer_t p, const poptions_t o) {
@@ -878,7 +964,7 @@ int readpe(const pbuffer_t p, const poptions_t o) {
 
       if (o->action & OPTREADELF_SYMBOLS)          dump_eatNN(p, o);
       if (o->action & OPTREADELF_SYMBOLS)          dump_iat32(p, o);
-      if (o->action & OPTREADELF_SYMBOLS)          dump_resourceNN(p, o);
+      if (o->action & OPTREADELF_NOTES)            dump_resourceNN(p, o);
       if (o->action & OPTREADELF_SYMBOLS)          dump_config32(p, o);
     } else if (isPE64(p)) {
       if (o->action & OPTREADELF_FILEHEADER)       dump_ntheader64(p, o);
@@ -887,13 +973,13 @@ int readpe(const pbuffer_t p, const poptions_t o) {
 
       if (o->action & OPTREADELF_SYMBOLS)          dump_eatNN(p, o);
       if (o->action & OPTREADELF_SYMBOLS)          dump_iat64(p, o);
-      if (o->action & OPTREADELF_SYMBOLS)          dump_resourceNN(p, o);
+      if (o->action & OPTREADELF_NOTES)            dump_resourceNN(p, o);
       if (o->action & OPTREADELF_SYMBOLS)          dump_config64(p, o);
     }
 
     if (o->action & OPTREADELF_SYMBOLS)            dump_debugNN(p, o);
-    if (o->action & OPTREADELF_SYMBOLS)            dump_relocNN(p, o);
-    if (o->action & OPTREADELF_SYMBOLS)            dump_runtimeNN(p, o);
+    if (o->action & OPTREADELF_RELOCS)             dump_relocNN(p, o);
+    if (o->action & OPTREADELF_UNWIND)             dump_runtimeNN(p, o);
   } else {
     printf_e("not an PE file - it has the wrong magic bytes at the start.");
   }
