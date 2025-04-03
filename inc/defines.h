@@ -105,6 +105,7 @@ typedef unsigned short ushort_t, *pushort_t;
 typedef char           CHAR, *PCHAR;
 typedef int32_t        LONG, *PLONG;
 typedef uint32_t       ULONG, *PULONG;
+typedef wchar_t        WCHAR;
 
 typedef uint8_t        BYTE, *PBYTE;
 typedef uint16_t       WORD, *PWORD;

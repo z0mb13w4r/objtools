@@ -1,0 +1,111 @@
+#define VS_FF_DEBUG        (0x00000001)
+#define VS_FF_PRERELEASE   (0x00000002)
+#define VS_FF_PATCHED      (0x00000004)
+#define VS_FF_PRIVATEBUILD (0x00000008)
+#define VS_FF_INFOINFERRED (0x00000010)
+#define VS_FF_SPECIALBUILD (0x00000020)
+
+static convert_t zVERFILEFLAGS[] = {
+  {"VS_FF_DEBUG",          VS_FF_DEBUG},
+  {"VS_FF_INFOINFERRED",   VS_FF_INFOINFERRED},
+  {"VS_FF_PATCHED",        VS_FF_PATCHED},
+  {"VS_FF_PRERELEASE",     VS_FF_PRERELEASE},
+  {"VS_FF_PRIVATEBUILD",   VS_FF_PRIVATEBUILD},
+  {"VS_FF_SPECIALBUILD",   VS_FF_SPECIALBUILD},
+  {0, 0}
+};
+
+#define VOS_UNKNOWN        (0x00000000)
+#define VOS_WINDOWS16      (0x00000001)
+#define VOS_PM16           (0x00000002)
+#define VOS_PM32           (0x00000003)
+#define VOS_WINDOWS32      (0x00000004)
+#define VOS_DOS            (0x00010000)
+#define VOS_DOS_WINDOWS16  (0x00010001)
+#define VOS_DOS_WINDOWS32  (0x00010004)
+#define VOS_OS216          (0x00020000)
+#define VOS_OS216_PM16     (0x00020002)
+#define VOS_OS232          (0x00030000)
+#define VOS_OS232_PM32     (0x00030003)
+#define VOS_NT             (0x00040000)
+#define VOS_NT_WINDOWS32   (0x00040004)
+
+static convert_t zVERFILEOS[] = {
+  {"VOS_DOS",              VOS_DOS},
+  {"VOS_NT",               VOS_NT},
+  {"VOS_WINDOWS16",        VOS_WINDOWS16},
+  {"VOS_WINDOWS32",        VOS_WINDOWS32},
+  {"VOS_OS216",            VOS_OS216},
+  {"VOS_OS232",            VOS_OS232},
+  {"VOS_PM16",             VOS_PM16},
+  {"VOS_PM32",             VOS_PM32},
+  {"VOS_UNKNOWN",          VOS_UNKNOWN},
+  {"VOS_DOS_WINDOWS16",    VOS_DOS_WINDOWS16},
+  {"VOS_DOS_WINDOWS32",    VOS_DOS_WINDOWS32},
+  {"VOS_NT_WINDOWS32",     VOS_NT_WINDOWS32},
+  {"VOS_OS216_PM16",       VOS_OS216_PM16},
+  {"VOS_OS232_PM32",       VOS_OS232_PM32},
+  {0, 0}
+};
+
+#define VFT_UNKNOWN        (0x00000000)
+#define VFT_APP            (0x00000001)
+#define VFT_DLL            (0x00000002)
+#define VFT_DRV            (0x00000003)
+#define VFT_FONT           (0x00000004)
+#define VFT_VXD            (0x00000005)
+#define VFT_STATIC_LIB     (0x00000007)
+
+static convert_t zVERFILETYPE[] = {
+  {"VFT_APP",              VFT_APP},
+  {"VFT_DLL",              VFT_DLL},
+  {"VFT_DRV",              VFT_DRV},
+  {"VFT_FONT",             VFT_FONT},
+  {"VFT_STATIC_LIB",       VFT_STATIC_LIB},
+  {"VFT_UNKNOWN",          VFT_UNKNOWN},
+  {"VFT_VXD",              VFT_VXD},
+  {0, 0}
+};
+
+#define VFT2_UNKNOWN               (0x00000000)
+#define VFT2_DRV_PRINTER           (0x00000001)
+#define VFT2_DRV_KEYBOARD          (0x00000002)
+#define VFT2_DRV_LANGUAGE          (0x00000003)
+#define VFT2_DRV_DISPLAY           (0x00000004)
+#define VFT2_DRV_MOUSE             (0x00000005)
+#define VFT2_DRV_NETWORK           (0x00000006)
+#define VFT2_DRV_SYSTEM            (0x00000007)
+#define VFT2_DRV_INSTALLABLE       (0x00000008)
+#define VFT2_DRV_SOUND             (0x00000009)
+#define VFT2_DRV_COMM              (0x0000000A)
+#define VFT2_DRV_VERSIONED_PRINTER (0x0000000C)
+
+static convert_t zVERFILESUBTYPEDRV[] = {
+  {"VFT2_DRV_COMM",                VFT2_DRV_COMM},
+  {"VFT2_DRV_DISPLAY",             VFT2_DRV_DISPLAY},
+  {"VFT2_DRV_INSTALLABLE",         VFT2_DRV_INSTALLABLE},
+  {"VFT2_DRV_KEYBOARD",            VFT2_DRV_KEYBOARD},
+  {"VFT2_DRV_LANGUAGE",            VFT2_DRV_LANGUAGE},
+  {"VFT2_DRV_MOUSE",               VFT2_DRV_MOUSE},
+  {"VFT2_DRV_NETWORK",             VFT2_DRV_NETWORK},
+  {"VFT2_DRV_PRINTER",             VFT2_DRV_PRINTER},
+  {"VFT2_DRV_SOUND",               VFT2_DRV_SOUND},
+  {"VFT2_DRV_SYSTEM",              VFT2_DRV_SYSTEM},
+  {"VFT2_DRV_VERSIONED_PRINTER",   VFT2_DRV_VERSIONED_PRINTER},
+  {"VFT2_UNKNOWN",                 VFT2_UNKNOWN},
+  {0, 0}
+};
+
+#define VFT2_UNKNOWN               (0x00000000)
+#define VFT2_FONT_RASTER           (0x00000001)
+#define VFT2_FONT_VECTOR           (0x00000002)
+#define VFT2_FONT_TRUETYPE         (0x00000003)
+
+static convert_t zVERFILESUBTYPEFONT[] = {
+  {"VFT2_FONT_RASTER",             VFT2_FONT_RASTER},
+  {"VFT2_FONT_TRUETYPE",           VFT2_FONT_TRUETYPE},
+  {"VFT2_FONT_VECTOR",             VFT2_FONT_VECTOR},
+  {"VFT2_UNKNOWN",                 VFT2_UNKNOWN},
+  {0, 0}
+};
+

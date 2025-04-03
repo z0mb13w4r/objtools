@@ -6,6 +6,7 @@
 #include "static/opthdr.ci"
 #include "static/sechdr.ci"
 #include "static/unw_flags.ci"
+#include "static/verinfo.ci"
 
 const int MAXSIZE = 36;
 
@@ -289,33 +290,40 @@ static int dump_sectiongroups0(const pbuffer_t p) {
   return n;
 }
 
-static int dump_sectiongroups32(const pbuffer_t p, const poptions_t o) {
+static int dump_sectiongroups1(const pbuffer_t p, const int index, const uint64_t VirtualAddress, const uint64_t Size) {
   const int MAXSIZE = strlenpick(zOPTHDRENTRY) + 2;
 
+  int n = 0;
+  n += printf_pick(zOPTHDRENTRY, index, USE_LT | USE_TAB | SET_PAD(MAXSIZE));
+  if (0 != VirtualAddress) n += printf_nice(VirtualAddress, USE_FHEX32);
+  else                     n += printf_text("NONE", USE_LT | USE_SPACE | SET_PAD(11));
+  if (0 != Size)           n += printf_nice(Size, USE_FHEX32 | USE_EOL);
+  else                     n += printf_text("NONE", USE_LT | USE_SPACE | USE_EOL);
+
+  return n;
+}
+
+static int dump_sectiongroups32(const pbuffer_t p, const poptions_t o) {
+  int n = 0;
   PIMAGE_NT_HEADERS32 nt = get_nt32hdr(p);
   if (nt) {
     PIMAGE_OPTIONAL_HEADER32 op = &nt->OptionalHeader;
     PIMAGE_DATA_DIRECTORY dd = op->DataDirectory;
 
-    dump_sectiongroups0(p);
+    n += dump_sectiongroups0(p);
 
     for (size_t i = 0; i < op->NumberOfRvaAndSizes; ++i, ++dd) {
-      printf_pick(zOPTHDRENTRY, i, USE_LT | USE_TAB | SET_PAD(MAXSIZE));
-      if (0 != dd->VirtualAddress) printf_nice(dd->VirtualAddress, USE_FHEX32);
-      else                         printf_text("NONE", USE_LT | USE_SPACE | SET_PAD(11));
-      if (0 != dd->Size)           printf_nice(dd->Size, USE_FHEX32 | USE_EOL);
-      else                         printf_text("NONE", USE_LT | USE_SPACE | USE_EOL);
+      n += dump_sectiongroups1(p, i, dd->VirtualAddress, dd->Size);
     }
 
-    printf_eol();
+    n += printf_eol();
   }
 
-  return 0;
+  return n;
 }
 
 static int dump_sectiongroups64(const pbuffer_t p, const poptions_t o) {
-  const int MAXSIZE = strlenpick(zOPTHDRENTRY) + 2;
-
+  int n = 0;
   PIMAGE_NT_HEADERS64 nt = get_nt64hdr(p);
   if (nt) {
     PIMAGE_OPTIONAL_HEADER64 op = &nt->OptionalHeader;
@@ -324,20 +332,105 @@ static int dump_sectiongroups64(const pbuffer_t p, const poptions_t o) {
     dump_sectiongroups0(p);
 
     for (size_t i = 0; i < op->NumberOfRvaAndSizes; ++i, ++dd) {
-      printf_pick(zOPTHDRENTRY, i, USE_LT | USE_TAB | SET_PAD(MAXSIZE));
-      if (0 != dd->VirtualAddress) printf_nice(dd->VirtualAddress, USE_FHEX32);
-      else                         printf_text("NONE", USE_LT | USE_SPACE | SET_PAD(11));
-      if (0 != dd->Size)           printf_nice(dd->Size, USE_FHEX32 | USE_EOL);
-      else                         printf_text("NONE", USE_LT | USE_SPACE | USE_EOL);
+      n += dump_sectiongroups1(p, i, dd->VirtualAddress, dd->Size);
     }
 
-    printf_eol();
+    n += printf_eol();
   }
 
-  return 0;
+  return n;
 }
 
-int dump_iat0(const pbuffer_t p, const uint64_t Characteristics, const uint64_t OriginalFirstThunk,
+static int dump_version0(const pbuffer_t p, const uint16_t wLength, const uint16_t wValueLength, const uint16_t wType,
+                         const uint16_t Padding1, const uint16_t Padding2, const uint16_t Children) {
+  int n = 0;
+
+  n += printf_text("VS VERSIONINFO", USE_LT | USE_COLON | USE_EOL);
+  n += printf_text("wLength", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(wLength, USE_FHEX16 | USE_EOL);
+  n += printf_text("wValueLength", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(wValueLength, USE_FHEX16 | USE_EOL);
+  n += printf_text("wType", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(wType, USE_FHEX16 | USE_EOL);
+//  WCHAR            szKey[16];
+  n += printf_text("Padding1", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(Padding1, USE_FHEX16 | USE_EOL);
+  n += printf_text("Padding2", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(Padding2, USE_FHEX16 | USE_EOL);
+  n += printf_text("Children", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(Children, USE_FHEX16 | USE_EOL);
+  n += printf_eol();
+
+  return n;
+}
+
+static int dump_version1(const pbuffer_t p, const uint32_t dwSignature, const uint32_t dwStrucVersion,
+                         const uint32_t dwFileVersionMS, const uint32_t dwFileVersionLS, const uint32_t dwProductVersionMS, const uint32_t dwProductVersionLS,
+                         const uint32_t dwFileFlagsMask, const uint32_t dwFileFlags, const uint32_t dwFileOS,
+                         const uint32_t dwFileType, const uint32_t dwFileSubtype, const uint32_t dwFileDateMS, const uint32_t dwFileDateLS) {
+  int n = 0;
+
+  n += printf_text("VS FIXEDFILEINFO", USE_LT | USE_COLON | USE_EOL);
+  n += printf_text("dwSignature", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(dwSignature, USE_FHEX32 | USE_EOL);
+  n += printf_text("dwStrucVersion", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(dwStrucVersion, USE_FHEX32 | USE_EOL);
+  n += printf_text("dwFileVersionMS", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(dwFileVersionMS, USE_FHEX32 | USE_EOL);
+  n += printf_text("dwFileVersionLS", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(dwFileVersionLS, USE_FHEX32 | USE_EOL);
+  n += printf_text("dwProductVersionMS", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(dwProductVersionMS, USE_FHEX32 | USE_EOL);
+  n += printf_text("dwProductVersionLS", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(dwProductVersionLS, USE_FHEX32 | USE_EOL);
+  n += printf_text("dwFileFlagsMask", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(dwFileFlagsMask, USE_FHEX32 | USE_EOL);
+  n += printf_text("dwFileFlags", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(dwFileFlags, USE_FHEX32);
+  n += printf_mask(zVERFILEFLAGS, dwFileFlags, USE_LT | USE_EOL);
+  n += printf_text("dwFileOS", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(dwFileOS, USE_FHEX32);
+  n += printf_pick(zVERFILEOS, dwFileOS, USE_SPACE | USE_EOL);
+  n += printf_text("dwFileType", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(dwFileType, USE_FHEX32);
+  n += printf_pick(zVERFILETYPE, dwFileType, USE_SPACE | USE_EOL);
+  n += printf_text("dwFileSubtype", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  if (VFT_DRV == dwFileType) {
+    n += printf_nice(dwFileSubtype, USE_FHEX32 | USE_EOL);
+    n += printf_pick(zVERFILESUBTYPEDRV, dwFileSubtype, USE_SPACE | USE_EOL);
+  } else if (VFT_FONT == dwFileType) {
+    n += printf_nice(dwFileSubtype, USE_FHEX32 | USE_EOL);
+    n += printf_pick(zVERFILESUBTYPEFONT, dwFileSubtype, USE_SPACE | USE_EOL);
+  } else if (VFT_VXD == dwFileType) {
+    n += printf_nice(dwFileSubtype, USE_UNKNOWN | USE_EOL);
+  } else {
+    n += printf_nice(dwFileSubtype, USE_FHEX32 | USE_EOL);
+  }
+  n += printf_text("dwFileDateMS", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(dwFileDateMS, USE_FHEX32 | USE_EOL);
+  n += printf_text("dwFileDateLS", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(dwFileDateLS, USE_FHEX32 | USE_EOL);
+  n += printf_eol();
+
+  return n;
+}
+
+static int dump_versionNN(const pbuffer_t p, const poptions_t o) {
+  int n = 0;
+
+  VS_VERSIONINFO x0;
+  PVS_VERSIONINFO p1 = &x0;
+  PVS_FIXEDFILEINFO p2 = &x0.Value;
+  if (p1) {
+    n += dump_version0(p, p1->wLength, p1->wValueLength, p1->wType, p1->Padding1, p1->Padding2, p1->Children);
+    n += dump_version1(p, p2->dwSignature, p2->dwStrucVersion, p2->dwFileVersionMS, p2->dwFileVersionLS, p2->dwProductVersionMS, p2->dwProductVersionLS,
+                       p2->dwFileFlagsMask, p2->dwFileFlags, p2->dwFileOS, p2->dwFileType, p2->dwFileSubtype, p2->dwFileDateMS, p2->dwFileDateLS);
+  }
+
+  return n;
+}
+
+static int dump_iat0(const pbuffer_t p, const uint64_t Characteristics, const uint64_t OriginalFirstThunk,
               const uint64_t TimeDateStamp, const uint64_t ForwarderChain, const uint64_t Name, const char* sname, const uint64_t FirstThunk) {
   int n = 0;
   n += printf_text("OriginalFirstThunk", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
@@ -358,7 +451,7 @@ int dump_iat0(const pbuffer_t p, const uint64_t Characteristics, const uint64_t 
   return n;
 }
 
-int dump_iat32(const pbuffer_t p, const poptions_t o) {
+static int dump_iat32(const pbuffer_t p, const poptions_t o) {
   PIMAGE_DATA_DIRECTORY p0 = get_datadirbyentry(p, IMAGE_DIRECTORY_ENTRY_IMPORT);
   PIMAGE_SECTION_HEADER s0 = get_sectionhdrbyentry(p, IMAGE_DIRECTORY_ENTRY_IMPORT);
 
@@ -398,7 +491,7 @@ int dump_iat32(const pbuffer_t p, const poptions_t o) {
   return 0;
 }
 
-int dump_iat64(const pbuffer_t p, const poptions_t o) {
+static int dump_iat64(const pbuffer_t p, const poptions_t o) {
   PIMAGE_DATA_DIRECTORY p0 = get_datadirbyentry(p, IMAGE_DIRECTORY_ENTRY_IMPORT);
   PIMAGE_SECTION_HEADER s0 = get_sectionhdrbyentry(p, IMAGE_DIRECTORY_ENTRY_IMPORT);
 
@@ -965,7 +1058,7 @@ int readpe(const pbuffer_t p, const poptions_t o) {
       if (o->action & OPTREADELF_FILEHEADER)       dump_ntheader32(p, o);
       if (o->action & OPTREADELF_SECTIONHEADERS)   dump_sectionheaders32(p, o);
       if (o->action & OPTREADELF_SECTIONGROUPS)    dump_sectiongroups32(p, o);
-
+      if (o->action & OPTREADELF_VERSION)          dump_versionNN(p, o);
       if (o->action & OPTREADELF_SYMBOLS)          dump_eatNN(p, o);
       if (o->action & OPTREADELF_SYMBOLS)          dump_iat32(p, o);
       if (o->action & OPTREADELF_NOTES)            dump_resourceNN(p, o);
@@ -974,7 +1067,7 @@ int readpe(const pbuffer_t p, const poptions_t o) {
       if (o->action & OPTREADELF_FILEHEADER)       dump_ntheader64(p, o);
       if (o->action & OPTREADELF_SECTIONHEADERS)   dump_sectionheaders64(p, o);
       if (o->action & OPTREADELF_SECTIONGROUPS)    dump_sectiongroups64(p, o);
-
+      if (o->action & OPTREADELF_VERSION)          dump_versionNN(p, o);
       if (o->action & OPTREADELF_SYMBOLS)          dump_eatNN(p, o);
       if (o->action & OPTREADELF_SYMBOLS)          dump_iat64(p, o);
       if (o->action & OPTREADELF_NOTES)            dump_resourceNN(p, o);

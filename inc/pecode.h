@@ -441,6 +441,33 @@ typedef struct _UNWIND_INFO {
  *  OPTIONAL ULONG ExceptionData[]; */
 } UNWIND_INFO, *PUNWIND_INFO;
 
+typedef struct _VS_FIXEDFILEINFO {
+  DWORD dwSignature;
+  DWORD dwStrucVersion;
+  DWORD dwFileVersionMS;
+  DWORD dwFileVersionLS;
+  DWORD dwProductVersionMS;
+  DWORD dwProductVersionLS;
+  DWORD dwFileFlagsMask;
+  DWORD dwFileFlags;
+  DWORD dwFileOS;
+  DWORD dwFileType;
+  DWORD dwFileSubtype;
+  DWORD dwFileDateMS;
+  DWORD dwFileDateLS;
+} VS_FIXEDFILEINFO, *PVS_FIXEDFILEINFO;
+
+typedef struct _VS_VERSIONINFO {
+  WORD             wLength;
+  WORD             wValueLength;
+  WORD             wType;
+  WCHAR            szKey[16];
+  WORD             Padding1;
+  VS_FIXEDFILEINFO Value;
+  WORD             Padding2;
+  WORD             Children;
+} VS_VERSIONINFO, *PVS_VERSIONINFO;
+
 bool_t isPE(const pbuffer_t p);
 bool_t isPE32(const pbuffer_t p);
 bool_t isPE64(const pbuffer_t p);
