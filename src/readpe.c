@@ -485,6 +485,10 @@ static int dump_eatNN(const pbuffer_t p, const poptions_t o) {
     PDWORD addrOfFunctions = get_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_EXPORT, p1->AddressOfFunctions, sizeof(DWORD) * p1->NumberOfFunctions);
     PWORD  addrOfNameOrdinals = get_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_EXPORT, p1->AddressOfNameOrdinals, sizeof(WORD) * p1->NumberOfFunctions);
 
+    n += printf_text("Ord", USE_RT | SET_PAD(6));
+    n += printf_text("RVA", USE_LT | USE_SPACE | SET_PAD(12));
+    n += printf_text("Name", USE_LT | USE_EOL);
+
     for (int i = 0; i < p1->NumberOfNames; ++i) {
       n += printf_nice(addrOfNameOrdinals[i] + 1, USE_DEC5);
       n += printf_nice(addrOfFunctions[i], USE_FHEX32);
