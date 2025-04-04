@@ -5,6 +5,7 @@
 #include "static/filehdr.ci"
 #include "static/opthdr.ci"
 #include "static/sechdr.ci"
+#include "static/res_types.ci"
 #include "static/unw_flags.ci"
 #include "static/verinfo.ci"
 
@@ -72,9 +73,9 @@ static int dump_dosheaderNN(const pbuffer_t p, const poptions_t o) {
   return n;
 }
 
-static int dump_ntheader0(const pbuffer_t p, const uint64_t Machine, const uint64_t NumberOfSections,
-                   const uint64_t TimeDateStamp, const uint64_t PointerToSymbolTable, const uint64_t NumberOfSymbols,
-                   const uint64_t SizeOfOptionalHeader, const uint64_t Characteristics) {
+static int dump_ntheader0(const pbuffer_t p, const uint16_t Machine, const uint16_t NumberOfSections,
+                   const uint32_t TimeDateStamp, const uint32_t PointerToSymbolTable, const uint32_t NumberOfSymbols,
+                   const uint16_t SizeOfOptionalHeader, const uint16_t Characteristics) {
   int n = 0;
   n += printf_text("FILE HEADER", USE_LT | USE_COLON | USE_EOL);
   n += printf_text("Machine", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
@@ -98,14 +99,15 @@ static int dump_ntheader0(const pbuffer_t p, const uint64_t Machine, const uint6
   return n;
 }
 
-static int dump_ntheader1(const pbuffer_t p, const uint64_t Magic, const uint64_t MajorLinkerVersion, const uint64_t MinorLinkerVersion,
-                   const uint64_t SizeOfCode, const uint64_t SizeOfInitializedData, const uint64_t SizeOfUninitializedData,
-                   const uint64_t AddressOfEntryPoint, const uint64_t BaseOfCode, const uint64_t ImageBase, const uint64_t SectionAlignment,
-                   const uint64_t FileAlignment, const uint64_t MajorOperatingSystemVersion, const uint64_t MinorOperatingSystemVersion,
-                   const uint64_t MajorImageVersion, const uint64_t MinorImageVersion, const uint64_t MajorSubsystemVersion, const uint64_t MinorSubsystemVersion,
-                   const uint64_t Win32VersionValue, const uint64_t SizeOfImage, const uint64_t SizeOfHeaders, const uint64_t CheckSum,
-                   const uint64_t Subsystem, const uint64_t DllCharacteristics, const uint64_t SizeOfStackReserve, const uint64_t SizeOfStackCommit,
-                   const uint64_t SizeOfHeapReserve, const uint64_t SizeOfHeapCommit, const uint64_t LoaderFlags, const uint64_t NumberOfRvaAndSizes) {
+static int dump_ntheader1(const pbuffer_t p, const uint16_t Magic, const uint8_t MajorLinkerVersion, const uint8_t MinorLinkerVersion,
+                   const uint32_t SizeOfCode, const uint32_t SizeOfInitializedData, const uint32_t SizeOfUninitializedData,
+                   const uint32_t AddressOfEntryPoint, const uint32_t BaseOfCode, const uint64_t ImageBase, const uint32_t SectionAlignment,
+                   const uint32_t FileAlignment, const uint16_t MajorOperatingSystemVersion, const uint16_t MinorOperatingSystemVersion,
+                   const uint16_t MajorImageVersion, const uint16_t MinorImageVersion, const uint16_t MajorSubsystemVersion,
+                   const uint16_t MinorSubsystemVersion, const uint32_t Win32VersionValue, const uint32_t SizeOfImage,
+                   const uint32_t SizeOfHeaders, const uint32_t CheckSum, const uint16_t Subsystem, const uint16_t DllCharacteristics,
+                   const uint64_t SizeOfStackReserve, const uint64_t SizeOfStackCommit, const uint64_t SizeOfHeapReserve,
+                   const uint64_t SizeOfHeapCommit, const uint32_t LoaderFlags, const uint32_t NumberOfRvaAndSizes) {
   int n = 0;
   if (issafe(p)) {
     const imode_t USE_FHEXNN = (isPE64(p) ? USE_FHEX64 : USE_FHEX32) | USE_EOL;
@@ -185,11 +187,13 @@ static int dump_ntheader32(const pbuffer_t p, const poptions_t o) {
     PIMAGE_FILE_HEADER fp = &nt->FileHeader;
     PIMAGE_OPTIONAL_HEADER32 op = &nt->OptionalHeader;
 
-    dump_ntheader0(p, fp->Machine, fp->NumberOfSections, fp->TimeDateStamp, fp->PointerToSymbolTable, fp->NumberOfSymbols, fp->SizeOfOptionalHeader, fp->Characteristics);
-    dump_ntheader1(p, op->Magic, op->MajorLinkerVersion, op->MinorLinkerVersion, op->SizeOfCode, op->SizeOfInitializedData, op->SizeOfUninitializedData,
-                   op->AddressOfEntryPoint, op->BaseOfCode, op->ImageBase, op->SectionAlignment, op->FileAlignment, op->MajorOperatingSystemVersion,
-                   op->MinorOperatingSystemVersion, op->MajorImageVersion, op->MinorImageVersion, op->MajorSubsystemVersion, op->MinorSubsystemVersion,
-                   op->Win32VersionValue, op->SizeOfImage, op->SizeOfHeaders, op->CheckSum, op->Subsystem, op->DllCharacteristics, op->SizeOfStackReserve,
+    dump_ntheader0(p, fp->Machine, fp->NumberOfSections, fp->TimeDateStamp, fp->PointerToSymbolTable,
+                   fp->NumberOfSymbols, fp->SizeOfOptionalHeader, fp->Characteristics);
+    dump_ntheader1(p, op->Magic, op->MajorLinkerVersion, op->MinorLinkerVersion, op->SizeOfCode, op->SizeOfInitializedData,
+                   op->SizeOfUninitializedData, op->AddressOfEntryPoint, op->BaseOfCode, op->ImageBase, op->SectionAlignment,
+                   op->FileAlignment, op->MajorOperatingSystemVersion, op->MinorOperatingSystemVersion, op->MajorImageVersion,
+                   op->MinorImageVersion, op->MajorSubsystemVersion, op->MinorSubsystemVersion, op->Win32VersionValue,
+                   op->SizeOfImage, op->SizeOfHeaders, op->CheckSum, op->Subsystem, op->DllCharacteristics, op->SizeOfStackReserve,
                    op->SizeOfStackCommit, op->SizeOfHeapReserve, op->SizeOfHeapCommit, op->LoaderFlags, op->NumberOfRvaAndSizes);
   }
 
@@ -207,20 +211,22 @@ static int dump_ntheader64(const pbuffer_t p, const poptions_t o) {
     PIMAGE_FILE_HEADER fp = &nt->FileHeader;
     PIMAGE_OPTIONAL_HEADER64 op = &nt->OptionalHeader;
 
-    dump_ntheader0(p, fp->Machine, fp->NumberOfSections, fp->TimeDateStamp, fp->PointerToSymbolTable, fp->NumberOfSymbols, fp->SizeOfOptionalHeader, fp->Characteristics);
-    dump_ntheader1(p, op->Magic, op->MajorLinkerVersion, op->MinorLinkerVersion, op->SizeOfCode, op->SizeOfInitializedData, op->SizeOfUninitializedData,
-                   op->AddressOfEntryPoint, op->BaseOfCode, op->ImageBase, op->SectionAlignment, op->FileAlignment, op->MajorOperatingSystemVersion,
-                   op->MinorOperatingSystemVersion, op->MajorImageVersion, op->MinorImageVersion, op->MajorSubsystemVersion, op->MinorSubsystemVersion,
-                   op->Win32VersionValue, op->SizeOfImage, op->SizeOfHeaders, op->CheckSum, op->Subsystem, op->DllCharacteristics, op->SizeOfStackReserve,
+    dump_ntheader0(p, fp->Machine, fp->NumberOfSections, fp->TimeDateStamp, fp->PointerToSymbolTable,
+                  fp->NumberOfSymbols, fp->SizeOfOptionalHeader, fp->Characteristics);
+    dump_ntheader1(p, op->Magic, op->MajorLinkerVersion, op->MinorLinkerVersion, op->SizeOfCode, op->SizeOfInitializedData,
+                   op->SizeOfUninitializedData, op->AddressOfEntryPoint, op->BaseOfCode, op->ImageBase, op->SectionAlignment,
+                   op->FileAlignment, op->MajorOperatingSystemVersion, op->MinorOperatingSystemVersion, op->MajorImageVersion,
+                   op->MinorImageVersion, op->MajorSubsystemVersion, op->MinorSubsystemVersion, op->Win32VersionValue,
+                   op->SizeOfImage, op->SizeOfHeaders, op->CheckSum, op->Subsystem, op->DllCharacteristics, op->SizeOfStackReserve,
                    op->SizeOfStackCommit, op->SizeOfHeapReserve, op->SizeOfHeapCommit, op->LoaderFlags, op->NumberOfRvaAndSizes);
   }
 
   return 0;
 }
 
-static int dump_sectionheaders0(const pbuffer_t p, const uint64_t NumberOfSections) {
+static int dump_sectionheaders0(const pbuffer_t p, const uint16_t NumberOfSections) {
   int n = 0;
-  for (int i = 0; i < NumberOfSections; ++i) {
+  for (uint16_t i = 0; i < NumberOfSections; ++i) {
     PIMAGE_SECTION_HEADER p0 = get_sectionhdrbyindex(p, i);
     if (p0) {
       n += printf_text("IMAGE SECTION HEADER", USE_LT | USE_COLON | USE_EOL);
@@ -614,11 +620,18 @@ static int dump_resource0(const pbuffer_t p, const uint32_t Characteristics, con
   return n;
 }
 
-static int dump_resource1(const pbuffer_t p, const uint32_t Name, const uint32_t OffsetToData) {
+static int dump_resource1(const pbuffer_t p, const uint32_t NameIsString, const uint32_t Name,
+                          const uint32_t OffsetToData, const int z) {
   int n = 0;
-  n += printf_text("IMAGE RESOURCE DIRECTORY ENTRY", USE_LT | USE_COLON | USE_EOL);
+  n += printf_text("IMAGE RESOURCE DIRECTORY ENTRY", USE_LT);
+  n += printf_nice(z, USE_SB | USE_COLON | USE_EOL);
   n += printf_text("Name", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  n += printf_nice(Name, USE_FHEX32 | USE_EOL);
+  if (NameIsString || 1 != z) {
+    n += printf_nice(Name, USE_FHEX32 | USE_EOL);
+  } else {
+    n += printf_nice(Name, USE_FHEX32);
+    n += printf_pick(zRESOURCETYPE, Name, USE_SPACE | USE_EOL);
+  }
   n += printf_text("OffsetToData", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(OffsetToData, USE_FHEX32 | USE_EOL);
   n += printf_eol();
@@ -626,7 +639,34 @@ static int dump_resource1(const pbuffer_t p, const uint32_t Name, const uint32_t
   return n;
 }
 
-static int dump_resourceZ(const pbuffer_t p, PIMAGE_RESOURCE_DIRECTORY p0) {
+static int dump_resource2(const pbuffer_t p, const uint32_t OffsetToData, const uint32_t Size,
+                          const uint32_t CodePage, const uint32_t Reserved) {
+  int n = 0;
+  n += printf_text("IMAGE RESOURCE DATA ENTRY", USE_LT | USE_COLON | USE_EOL);
+  n += printf_text("OffsetToData", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(OffsetToData, USE_FHEX32 | USE_EOL);
+  n += printf_text("Size", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(Size, USE_FHEX32 | USE_EOL);
+  n += printf_text("CodePage", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(CodePage, USE_FHEX32 | USE_EOL);
+  n += printf_text("Reserved", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(Reserved, USE_FHEX32 | USE_EOL);
+  n += printf_eol();
+
+  return n;
+}
+
+static int dump_resourceY(const pbuffer_t p, PIMAGE_RESOURCE_DATA_ENTRY p0) {
+  int n = 0;
+
+  if (p0) {
+    n += dump_resource2(p, p0->OffsetToData, p0->Size, p0->CodePage, p0->Reserved);
+  }
+
+  return n;
+}
+
+static int dump_resourceZ(const pbuffer_t p, PIMAGE_RESOURCE_DIRECTORY p0, const int z) {
   int n = 0;
 
   if (p0) {
@@ -635,9 +675,11 @@ static int dump_resourceZ(const pbuffer_t p, PIMAGE_RESOURCE_DIRECTORY p0) {
 
     PIMAGE_RESOURCE_DIRECTORY_ENTRY p1 = CAST(PIMAGE_RESOURCE_DIRECTORY_ENTRY, p0 + 1);
     for (int i = 0; i < (p0->NumberOfNamedEntries + p0->NumberOfIdEntries); ++i, ++p1) {
-      n += dump_resource1(p, p1->Name, p1->OffsetToData);
+      n += dump_resource1(p, p1->NameIsString, p1->Name, p1->OffsetToData, z);
       if (p1->DataIsDirectory) {
-        n += dump_resourceZ(p, get_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_RESOURCE) + p1->OffsetToDirectory);
+        n += dump_resourceZ(p, get_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_RESOURCE) + p1->OffsetToDirectory, z + 1);
+      } else {
+        n += dump_resourceY(p, get_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_RESOURCE) + p1->OffsetToDirectory);
       }
     }
   }
@@ -648,7 +690,7 @@ static int dump_resourceZ(const pbuffer_t p, PIMAGE_RESOURCE_DIRECTORY p0) {
 static int dump_resourceNN(const pbuffer_t p, const poptions_t o) {
   int n = 0;
 
-  n += dump_resourceZ(p, get_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_RESOURCE));
+  n += dump_resourceZ(p, get_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_RESOURCE), 1);
 
   return n;
 }
@@ -707,7 +749,6 @@ static int dump_config0(const pbuffer_t p, const uint32_t Size, const uint32_t T
     n += printf_nice(SEHandlerTable, USE_FHEXNN);
     n += printf_text("SEHandlerCount", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     n += printf_nice(SEHandlerCount, USE_FHEXNN);
-    n += printf_eol();
   }
 
   return n;
@@ -856,6 +897,9 @@ static int dump_config32(const pbuffer_t p, const poptions_t o) {
                  p0->GuardEHContinuationTable, p0->GuardEHContinuationCount, p0->GuardXFGCheckFunctionPointer,
                  p0->GuardXFGDispatchFunctionPointer, p0->GuardXFGTableDispatchFunctionPointer,
                  p0->CastGuardOsDeterminedFailureMode, p0->GuardMemcpyFunctionPointer);
+  }
+  if (p0) {
+    n += printf_eol();
   }
 
   return n;

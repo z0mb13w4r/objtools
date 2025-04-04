@@ -78,7 +78,7 @@ typedef struct _IMAGE_DATA_DIRECTORY {
   DWORD Size;
 } IMAGE_DATA_DIRECTORY, *PIMAGE_DATA_DIRECTORY;
 
-typedef struct _IMAGE_OPTIONAL_HEADER {
+typedef struct _IMAGE_OPTIONAL_HEADER32 {
   WORD                 Magic;
   BYTE                 MajorLinkerVersion;
   BYTE                 MinorLinkerVersion;
