@@ -592,8 +592,9 @@ static int dump_eatNN(const pbuffer_t p, const poptions_t o) {
   return n;
 }
 
-static int dump_resource0(const pbuffer_t p, const uint64_t Characteristics, const uint64_t TimeDateStamp,
-                          const uint64_t MajorVersion, const uint64_t MinorVersion, const uint64_t NumberOfNamedEntries, const uint64_t NumberOfIdEntries) {
+static int dump_resource0(const pbuffer_t p, const uint32_t Characteristics, const uint32_t TimeDateStamp,
+                          const uint16_t MajorVersion, const uint16_t MinorVersion,
+                          const uint16_t NumberOfNamedEntries, const uint16_t NumberOfIdEntries) {
   int n = 0;
   n += printf_text("IMAGE RESOURCE DIRECTORY", USE_LT | USE_COLON | USE_EOL);
   n += printf_text("Characteristics", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
@@ -610,37 +611,56 @@ static int dump_resource0(const pbuffer_t p, const uint64_t Characteristics, con
   n += printf_nice(NumberOfIdEntries, USE_DEC | USE_EOL);
   n += printf_eol();
 
-  return 0;
+  return n;
 }
 
-static int dump_resourceNN(const pbuffer_t p, const poptions_t o) {
+static int dump_resource1(const pbuffer_t p, const uint32_t Name, const uint32_t OffsetToData) {
+  int n = 0;
+  n += printf_text("IMAGE RESOURCE DIRECTORY ENTRY", USE_LT | USE_COLON | USE_EOL);
+  n += printf_text("Name", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(Name, USE_FHEX32 | USE_EOL);
+  n += printf_text("OffsetToData", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(OffsetToData, USE_FHEX32 | USE_EOL);
+  n += printf_eol();
+
+  return n;
+}
+
+static int dump_resourceZ(const pbuffer_t p, PIMAGE_RESOURCE_DIRECTORY p0) {
   int n = 0;
 
-  PIMAGE_RESOURCE_DIRECTORY p0 = get_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_RESOURCE);
   if (p0) {
     n += dump_resource0(p, p0->Characteristics, p0->TimeDateStamp,
                    p0->MajorVersion, p0->MinorVersion, p0->NumberOfNamedEntries, p0->NumberOfIdEntries);
 
     PIMAGE_RESOURCE_DIRECTORY_ENTRY p1 = CAST(PIMAGE_RESOURCE_DIRECTORY_ENTRY, p0 + 1);
     for (int i = 0; i < (p0->NumberOfNamedEntries + p0->NumberOfIdEntries); ++i, ++p1) {
-      n += printf_text("IMAGE RESOURCE DIRECTORY ENTRY", USE_LT | USE_COLON | USE_EOL);
-      n += printf_text("Name", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-      n += printf_nice(p1->Name, USE_FHEX32 | USE_EOL);
-      n += printf_text("OffsetToData", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-      n += printf_nice(p1->OffsetToData, USE_FHEX32 | USE_EOL);
-// TDB
+      n += dump_resource1(p, p1->Name, p1->OffsetToData);
+      if (p1->DataIsDirectory) {
+        n += dump_resourceZ(p, get_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_RESOURCE) + p1->OffsetToDirectory);
+      }
     }
   }
 
   return n;
 }
 
-static int dump_config0(const pbuffer_t p, const uint64_t Size, const uint64_t TimeDateStamp,
-                        const uint64_t MajorVersion, const uint64_t MinorVersion, const uint64_t GlobalFlagsClear, const uint64_t GlobalFlagsSet,
-                        const uint64_t CriticalSectionDefaultTimeout, const uint64_t DeCommitFreeBlockThreshold, const uint64_t DeCommitTotalFreeThreshold,
+static int dump_resourceNN(const pbuffer_t p, const poptions_t o) {
+  int n = 0;
+
+  n += dump_resourceZ(p, get_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_RESOURCE));
+
+  return n;
+}
+
+static int dump_config0(const pbuffer_t p, const uint32_t Size, const uint32_t TimeDateStamp,
+                        const uint16_t MajorVersion, const uint16_t MinorVersion,
+                        const uint32_t GlobalFlagsClear, const uint32_t GlobalFlagsSet, const uint32_t CriticalSectionDefaultTimeout,
+                        const uint64_t DeCommitFreeBlockThreshold, const uint64_t DeCommitTotalFreeThreshold,
                         const uint64_t LockPrefixTable, const uint64_t MaximumAllocationSize, const uint64_t VirtualMemoryThreshold,
-                        const uint64_t ProcessAffinityMask, const uint64_t ProcessHeapFlags, const uint64_t CSDVersion, const uint64_t Reserved1,
-                        const uint64_t EditList, const uint64_t SecurityCookie, const uint64_t SEHandlerTable, const uint64_t SEHandlerCount) {
+                        const uint64_t ProcessAffinityMask, const uint32_t ProcessHeapFlags, const uint16_t CSDVersion,
+                        const uint16_t Reserved1,const uint64_t EditList, const uint64_t SecurityCookie,
+                        const uint64_t SEHandlerTable, const uint64_t SEHandlerCount) {
   int n = 0;
   if (issafe(p)) {
     const imode_t USE_FHEXNN = (isPE64(p) ? USE_FHEX64 : USE_FHEX32) | USE_EOL;
@@ -694,7 +714,7 @@ static int dump_config0(const pbuffer_t p, const uint64_t Size, const uint64_t T
 }
 
 static int dump_config1(const pbuffer_t p, const uint64_t GuardCFCheckFunctionPointer, const uint64_t GuardCFDispatchFunctionPointer,
-                        const uint64_t GuardCFFunctionTable, const uint64_t GuardCFFunctionCount, const uint64_t GuardFlags) {
+                        const uint64_t GuardCFFunctionTable, const uint64_t GuardCFFunctionCount, const uint32_t GuardFlags) {
   int n = 0;
   if (issafe(p)) {
     const imode_t USE_FHEXNN = (isPE64(p) ? USE_FHEX64 : USE_FHEX32) | USE_EOL;
@@ -714,8 +734,8 @@ static int dump_config1(const pbuffer_t p, const uint64_t GuardCFCheckFunctionPo
   return n;
 }
 
-static int dump_config2(const pbuffer_t p, const uint64_t CodeIntegrityFlags, const uint64_t CodeIntegrityCatalog,
-                        const uint64_t CodeIntegrityCatalogOffset, const uint64_t CodeIntegrityReserved,
+static int dump_config2(const pbuffer_t p, const uint16_t CodeIntegrityFlags, const uint16_t CodeIntegrityCatalog,
+                        const uint32_t CodeIntegrityCatalogOffset, const uint32_t CodeIntegrityReserved,
                         const uint64_t GuardAddressTakenIatEntryTable, const uint64_t GuardAddressTakenIatEntryCount,
                         const uint64_t GuardLongJumpTargetTable, const uint64_t GuardLongJumpTargetCount,
                         const uint64_t DynamicValueRelocTable, const uint64_t CHPEMetadataPointer) {
@@ -749,8 +769,8 @@ static int dump_config2(const pbuffer_t p, const uint64_t CodeIntegrityFlags, co
 }
 
 static int dump_config3(const pbuffer_t p, const uint64_t GuardRFFailureRoutine, const uint64_t GuardRFFailureRoutineFunctionPointer,
-                        const uint64_t DynamicValueRelocTableOffset, const uint64_t DynamicValueRelocTableSection, const uint64_t Reserved2,
-                        const uint64_t GuardRFVerifyStackPointerFunctionPointer, const uint64_t HotPatchTableOffset) {
+                        const uint32_t DynamicValueRelocTableOffset, const uint16_t DynamicValueRelocTableSection, const uint16_t Reserved2,
+                        const uint64_t GuardRFVerifyStackPointerFunctionPointer, const uint32_t HotPatchTableOffset) {
   int n = 0;
   if (issafe(p)) {
     const imode_t USE_FHEXNN = (isPE64(p) ? USE_FHEX64 : USE_FHEX32) | USE_EOL;
@@ -774,8 +794,9 @@ static int dump_config3(const pbuffer_t p, const uint64_t GuardRFFailureRoutine,
   return n;
 }
 
-static int dump_config4(const pbuffer_t p, const uint64_t Reserved3, const uint64_t EnclaveConfigurationPointer, const uint64_t VolatileMetadataPointer,
-                        const uint64_t GuardEHContinuationTable, const uint64_t GuardEHContinuationCount, const uint64_t GuardXFGCheckFunctionPointer,
+static int dump_config4(const pbuffer_t p, const uint32_t Reserved3, const uint64_t EnclaveConfigurationPointer,
+                        const uint64_t VolatileMetadataPointer, const uint64_t GuardEHContinuationTable,
+                        const uint64_t GuardEHContinuationCount, const uint64_t GuardXFGCheckFunctionPointer,
                         const uint64_t GuardXFGDispatchFunctionPointer, const uint64_t GuardXFGTableDispatchFunctionPointer,
                         const uint64_t CastGuardOsDeterminedFailureMode, const uint64_t GuardMemcpyFunctionPointer) {
   int n = 0;
@@ -1062,7 +1083,7 @@ int readpe(const pbuffer_t p, const poptions_t o) {
       if (o->action & OPTREADELF_SYMBOLS)          dump_eatNN(p, o);
       if (o->action & OPTREADELF_SYMBOLS)          dump_iat32(p, o);
       if (o->action & OPTREADELF_NOTES)            dump_resourceNN(p, o);
-      if (o->action & OPTREADELF_SYMBOLS)          dump_config32(p, o);
+      if (o->action & OPTREADELF_NOTES)            dump_config32(p, o);
     } else if (isPE64(p)) {
       if (o->action & OPTREADELF_FILEHEADER)       dump_ntheader64(p, o);
       if (o->action & OPTREADELF_SECTIONHEADERS)   dump_sectionheaders64(p, o);
@@ -1071,10 +1092,10 @@ int readpe(const pbuffer_t p, const poptions_t o) {
       if (o->action & OPTREADELF_SYMBOLS)          dump_eatNN(p, o);
       if (o->action & OPTREADELF_SYMBOLS)          dump_iat64(p, o);
       if (o->action & OPTREADELF_NOTES)            dump_resourceNN(p, o);
-      if (o->action & OPTREADELF_SYMBOLS)          dump_config64(p, o);
+      if (o->action & OPTREADELF_NOTES)            dump_config64(p, o);
     }
 
-    if (o->action & OPTREADELF_SYMBOLS)            dump_debugNN(p, o);
+    if (o->action & OPTREADELF_NOTES)              dump_debugNN(p, o);
     if (o->action & OPTREADELF_RELOCS)             dump_relocNN(p, o);
     if (o->action & OPTREADELF_UNWIND)             dump_runtimeNN(p, o);
   } else {
