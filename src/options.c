@@ -120,6 +120,11 @@ static const args_t OBJDUMPARGS[] = {
   {0, NULL}
 };
 
+static const args_t OBJHASHARGS[] = {
+  {'H', "--help",              OPTPROGRAM_HELP},
+  {0, NULL}
+};
+
 static int usage_name(poptions_t o, const char* name, const args_t args[]) {
   printf_text("NAME", USE_LT | USE_EOL);
   printf_text(name, USE_LT | USE_TAB | USE_COLON | USE_EOL);
@@ -537,9 +542,9 @@ int get_options_objhash(poptions_t o, int argc, char** argv, char* name) {
     }
   }
 
-//  if (o->action & OPTPROGRAM_HELP) {
-//    return usage(o, "objhash-ng", READELFARGS);
-//  }
+  if (o->action & OPTPROGRAM_HELP) {
+    return usage0(o, "objhash-ng", OBJHASHARGS);
+  }
 
   return 0;
 }

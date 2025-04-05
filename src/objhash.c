@@ -1,51 +1,57 @@
-#include <bfd.h>
-#include <errno.h>
 #include <string.h>
 
 #include "printf.h"
+#include "elfcode.h"
 #include "objhash.h"
 
-static void callback_hashsections(bfd *f, asection *s, void *p) {
-  pbuffer_t pp = CAST(pbuffer_t, p);
+static int dump_create0(const pbuffer_t p, const poptions_t o, const char* name,
+                        const uint64_t sh_type, const uint64_t sh_offset, const uint64_t sh_size, const uint64_t sh_addr,
+                        const int maxsize) {
+  int n = 0;
+  n += printf_sore(getp(p, sh_offset, sh_size), sh_size, USE_SHA256 | USE_NOTEXT);
+  n += printf_text(name, USE_LT | USE_SPACE | SET_PAD(maxsize));
+  n += printf_pick(zSHDRTYPE, sh_type, USE_LT | USE_SPACE | SET_PAD(16));
+  n += printf_nice(sh_addr, isELF64(p) ? USE_LHEX64 : USE_LHEX32);
+  n += printf_nice(sh_offset, USE_LHEX32);
+  n += printf_nice(sh_size, USE_LHEX32);
+  n += printf_eol();
 
-  /* Ignore linker created section.  See elfNN_ia64_object_p in bfd/elfxx-ia64.c.  */
-  if (s->flags & SEC_LINKER_CREATED) return;
-
-  bfd_byte *data = NULL;
-  if (bfd_malloc_and_get_section(f, s, &data)) {
-    unsigned char md[SHA256_DIGEST_LENGTH]; // 32 bytes
-    if (!sha256(data, bfd_section_size(s), md)) {
-      printf_data(md, SHA256_DIGEST_LENGTH, 0, USE_HEX);
-    }
-  } else {
-    printf_w("could not retrieve section '%s' contents from '%s'.", bfd_section_name(s), pp->note);
-  }
-
-  free(data);
-
-
-  size_t max_name_size = 20;
-
-  printf_nice(s->index, USE_TAB | USE_DEC2);
-  printf_text(bfd_section_name(s), USE_LT | USE_SPACE | SET_PAD(max_name_size));
-  printf_nice(bfd_section_size(s) / bfd_octets_per_byte(f, s), USE_LHEX32);
-  printf_nice(bfd_section_vma(s), USE_LHEX64);
-  printf_nice(s->lma, USE_LHEX64);
-  printf_nice(s->filepos, USE_LHEX32);
-  printf_nice(bfd_section_alignment(s), USE_DEC2);
-  printf_nice(s->flags, USE_LHEX32);
-
-  printf_text(pp->note, USE_LT | USE_SPACE | USE_EOL);
+  return n;
 }
 
-static int dump_create(const pbuffer_t p, const poptions_t o, bfd *f) {
-  bfd_map_over_sections(f, callback_hashsections, p);
+static int dump_createELF32(const pbuffer_t p, const poptions_t o) {
+  const int MAXSIZE = MAX(get_secnamemaxsize(p) + 2, 21);
+
+  int n = 0;
+  Elf32_Ehdr *ehdr = get_ehdr32(p);
+  if (ehdr) {
+    for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
+      Elf32_Shdr *shdr = get_shdr32byindex(p, i);
+      if (shdr) {
+        n += dump_create0(p, o, get_secnamebyindex(p, i), shdr->sh_type, shdr->sh_offset, shdr->sh_size, shdr->sh_addr, MAXSIZE);
+      }
+    }
+  }
+
+  return 0;
+}
+
+static int dump_createELF64(const pbuffer_t p, const poptions_t o) {
+  const int MAXSIZE = MAX(get_secnamemaxsize(p) + 2, 21);
+
+  Elf64_Ehdr *ehdr = get_ehdr64(p);
+  if (ehdr) {
+    for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
+      Elf64_Shdr *shdr = get_shdr64byindex(p, i);
+      if (shdr) {
+      }
+    }
+  }
+
   return 0;
 }
 
 int objhash(const pbuffer_t p0, const poptions_t o) {
-  const char *target = "x86_64-pc-linux-gnu";
-
   int r = 0;
   pbuffer_t p1 = NULL;
   if (o->inpname1[0]) {
@@ -57,70 +63,19 @@ int objhash(const pbuffer_t p0, const poptions_t o) {
     }
   }
 
-  if (p0) {
-    bfd_set_error_program_name(o->prgname);
-
-    if (BFD_INIT_MAGIC != bfd_init()) {
-      printf_e("libbfd ABI mismatch.");
-      goto objhash_die;
-    }
-
-    if (!bfd_set_default_target(target)) {
-      printf_e("can't set BFD default target to '%s': %s.", target, bfd_errmsg(bfd_get_error()));
-      goto objhash_die;
-    }
+  if (isELF32(p0)) {
+    dump_createELF32(p0, o);
+    dump_createELF32(p1, o);
+  } else if (isELF64(p0)) {
+    dump_createELF64(p0, o);
+    dump_createELF64(p1, o);
   }
 
-  bfd *f0 = NULL;
-  if (p0) {
-    f0 = bfd_openr(o->inpname0, NULL);
-    if (NULL == f0) {
-      printf_e("BFD can't load into memory '%s': %s.", o->inpname0, bfd_errmsg(bfd_get_error()));
-      goto objhash_die;
-    }
-
-    if (!bfd_check_format(f0, bfd_archive) &&
-        !bfd_check_format(f0, bfd_object) &&
-        !bfd_check_format(f0, bfd_core)) {
-      printf_e("%s is an unknown format!", o->inpname0);
-      goto objhash_die0;
-    }
-  }
-
-  bfd *f1 = NULL;
-  if (p1) {
-    f1 = bfd_openr(o->inpname1, NULL);
-    if (NULL == f1) {
-      printf_e("BFD can't load into memory '%s': %s.", o->inpname1, bfd_errmsg(bfd_get_error()));
-      goto objhash_die0;
-    }
-
-    if (!bfd_check_format(f1, bfd_archive) &&
-        !bfd_check_format(f1, bfd_object) &&
-        !bfd_check_format(f1, bfd_core)) {
-      printf_e("%s is an unknown format!", o->inpname1);
-      goto objhash_die1;
-    }
-  }
-
-  if (p0) r = dump_create(p0, o, f0);
-  if (p1) r = dump_create(p1, o, f1);
-
-  if (f0) bfd_close(f0);
-  if (f1) bfd_close(f1);
-  destroy(p1);
-
-  return r;
-
-objhash_die1:
-  if (f1) bfd_close(f1);
-
-objhash_die0:
-  if (f0) bfd_close(f0);
+  bfree(p1);
+  return 0;
 
 objhash_die:
-  destroy(p1);
-
+  bfree(p1);
   return -1;
 }
 

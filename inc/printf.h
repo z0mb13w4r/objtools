@@ -130,7 +130,8 @@
 #define USE_COLORMASK     SET_COLOR(15)
 
 #define USE_EOL           SET_FLAG(1)
-#define USE_NOSPACE       SET_FLAG(2)
+#define USE_NOTEXT        SET_FLAG(2)
+#define USE_NOSPACE       SET_FLAG(3)
 #define USE_FLAGMASK      SET_FLAG(15)
 
 int printf_eol();
