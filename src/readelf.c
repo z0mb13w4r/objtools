@@ -296,7 +296,9 @@ static int dump_sectionheaders0(const pbuffer_t p, const int maxsize) {
   n += printf_text("SECTION HEADERS", USE_LT | USE_COLON | USE_EOL);
   n += printf_text("[Nr]", USE_LT | USE_TAB);
   n += printf_text("Name", USE_LT | USE_SPACE | SET_PAD(maxsize));
-  n += printf_text("Type            Address          Off      Size     ES Flg Lk Inf  Al", USE_LT | USE_SPACE | USE_EOL);
+  n += printf_text("Type", USE_LT | USE_SPACE | SET_PAD(16));
+  n += printf_text("Address", USE_LT | USE_SPACE | SET_PAD(isELF64(p) ? 17 : 9));
+  n += printf_text("Off      Size     ES Flg Lk Inf  Al", USE_LT | USE_SPACE | USE_EOL);
 
   return n;
 }
@@ -308,7 +310,7 @@ static int dump_sectionheaders1(const pbuffer_t p, const int index, const int ma
   n += printf_nice(index, USE_DEC2 | USE_TAB | USE_SB);
   n += printf_text(get_secnamebyindex(p, index), USE_LT | USE_SPACE | SET_PAD(maxsize));
   n += printf_pick(zSHDRTYPE, sh_type, USE_LT | USE_SPACE | SET_PAD(16));
-  n += printf_nice(sh_addr, USE_LHEX64);
+  n += printf_nice(sh_addr, isELF64(p) ? USE_LHEX64 : USE_LHEX32);
   n += printf_nice(sh_offset, USE_LHEX32);
   n += printf_nice(sh_size, USE_LHEX32);
   n += printf_nice(sh_entsize, USE_LHEX8);
@@ -333,7 +335,7 @@ static int dump_sectionheaders2(const pbuffer_t p) {
 }
 
 static int dump_sectionheaders32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
-  const int MAXSIZE = MAX(get_secnamemaxsize(p) + 2, 21);
+  const int MAXSIZE = MAX(get_secnamemaxsize(p) + 1, 21);
   dump_sectionheaders0(p, MAXSIZE);
 
   for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {

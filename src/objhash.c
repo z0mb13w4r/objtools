@@ -33,22 +33,24 @@ static int dump_createELF32(const pbuffer_t p, const poptions_t o) {
     }
   }
 
-  return 0;
+  return n;
 }
 
 static int dump_createELF64(const pbuffer_t p, const poptions_t o) {
   const int MAXSIZE = MAX(get_secnamemaxsize(p) + 2, 21);
 
+  int n = 0;
   Elf64_Ehdr *ehdr = get_ehdr64(p);
   if (ehdr) {
     for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
       Elf64_Shdr *shdr = get_shdr64byindex(p, i);
       if (shdr) {
+        n += dump_create0(p, o, get_secnamebyindex(p, i), shdr->sh_type, shdr->sh_offset, shdr->sh_size, shdr->sh_addr, MAXSIZE);
       }
     }
   }
 
-  return 0;
+  return n;
 }
 
 int objhash(const pbuffer_t p0, const poptions_t o) {

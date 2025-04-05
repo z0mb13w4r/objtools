@@ -558,10 +558,8 @@ int printf_mask(const pconvert_t p, const maskz_t mask, const imode_t mode) {
       n += printf_neat(data + n, sizeof(data) - n, v, USE_UNKNOWN | USE_SPACE | (mode & ~USE_EOL));
     }
 
-    return printf_text(data, mode);
-  }
-
-  if (mode & USE_EOL) {
+    n += printf_text(data, mode);
+  } else if (mode & USE_EOL) {
     n += printf_eol();
   }
 
