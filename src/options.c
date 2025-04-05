@@ -534,7 +534,11 @@ int get_options_objhash(poptions_t o, int argc, char** argv, char* name) {
     if ('-' == argv[i][0] && '-' == argv[i][1]) {
 
     } else if ('-' == argv[i][0]) {
-
+      if (0 == strcmp(argv[i], "-x")) {
+        paction_t p = amalloc();
+	strncpy(p->secname, argv[++i], NELEMENTS(p->secname));
+        insert(o, p, ACT_HEXDUMP);
+      }
     } else if (0 == o->inpname0[0]) {
       strncpy(o->inpname0, argv[i], NELEMENTS(o->inpname0));
     } else if (0 == o->inpname1[0]) {
