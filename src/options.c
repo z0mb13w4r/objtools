@@ -243,7 +243,7 @@ static int usage_options(poptions_t o, const char* name, const args_t args0[],
     printf_eol();
   }
 
-  if (args0) {
+  if (args1) {
     for (int j = 0; (0 != args1[j].option1) || (0 != args1[j].option2); ++j) {
       if (args1[j].option1) {
         printf_nice(args1[j].option1, USE_CHAR | USE_TAB | USE_DQ | USE_EOL);
@@ -253,7 +253,6 @@ static int usage_options(poptions_t o, const char* name, const args_t args0[],
       }
       printf_eol();
     }
-
   }
 
   return 0;
@@ -525,7 +524,7 @@ int get_options_objdump(poptions_t o, int argc, char** argv, char* name) {
 }
 
 int get_options_objhash(poptions_t o, int argc, char** argv, char* name) {
-  if (argc < 2) {
+  if (argc < 1) {
     return -1;
   }
 
