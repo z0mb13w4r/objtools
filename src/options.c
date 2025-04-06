@@ -493,8 +493,8 @@ int get_options_objdump(poptions_t o, int argc, char** argv, char* name) {
 
   for (int i = 0; i < argc; ++i) {
     if ('-' == argv[i][0] && '-' == argv[i][1]) {
-      MALLOCA(char, arg0, 1024);
-      MALLOCA(char, arg1, 1024);
+      MALLOCA(char, arg0, 256);
+      MALLOCA(char, arg1, 256);
 
       if (0 == breakup_args(argv[i], arg0, NELEMENTS(arg0), arg1, NELEMENTS(arg1))) {
         if (0 == strcmp(arg0, OBJDUMPARGS1)) {
@@ -534,12 +534,31 @@ int get_options_objhash(poptions_t o, int argc, char** argv, char* name) {
 
   for (int i = 0; i < argc; ++i) {
     if ('-' == argv[i][0] && '-' == argv[i][1]) {
-      get_options2(o, OBJHASHARGS, argv[i]);
+      MALLOCA(char, arg0, 256);
+      MALLOCA(char, arg1, 256);
+
+      if (0 == breakup_args(argv[i], arg0, NELEMENTS(arg0), arg1, NELEMENTS(arg1))) {
+        if (0 == strcmp(arg0, "--hex-dump")) {
+          paction_t p = amalloc();
+          strncpy(p->secname, arg1, NELEMENTS(p->secname));
+          insert(o, p, ACT_HEXDUMP);
+        } else if (0 == strcmp(arg0, "--string-dump")) {
+          paction_t p = amalloc();
+          strncpy(p->secname, arg1, NELEMENTS(p->secname));
+          insert(o, p, ACT_STRDUMP);
+        }
+      } else {
+        get_options2(o, OBJHASHARGS, argv[i]);
+      }
     } else if ('-' == argv[i][0]) {
       if (0 == strcmp(argv[i], "-x")) {
         paction_t p = amalloc();
 	strncpy(p->secname, argv[++i], NELEMENTS(p->secname));
         insert(o, p, ACT_HEXDUMP);
+      } else if (0 == strcmp(argv[i], "-p")) {
+        paction_t p = amalloc();
+	strncpy(p->secname, argv[++i], NELEMENTS(p->secname));
+        insert(o, p, ACT_STRDUMP);
       } else {
         get_options1(o, OBJHASHARGS, argv[i]);
       }

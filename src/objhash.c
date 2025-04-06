@@ -76,11 +76,24 @@ static int dump_actionsELF0(const pbuffer_t p, const poptions_t o, const char* n
                             const uint64_t sh_type, const uint64_t sh_offset, const uint64_t sh_size, const uint64_t sh_addr) {
   int n = 0;
   if (ACT_HEXDUMP == action) {
-    printf_text("Hex dump of section", USE_LT);
-    printf_text(name, USE_LT | USE_SQ | USE_COLON | USE_EOL);
+    n += printf_text("Hex dump of section", USE_LT);
+    n += printf_text(name, USE_LT | USE_SQ | USE_COLON | USE_EOL);
 
     if (0 != sh_size && sh_type != SHT_NOBITS) {
       n += printf_data(getp(p, sh_offset, sh_size), sh_size, sh_addr, USE_HEXDUMP);
+      n += printf_eol();
+      n += printf_sore(getp(p, sh_offset, sh_size), sh_size, USE_SHA256 | USE_SPACE);
+      n += printf_eol();
+    } else {
+      printf_w("section '%s' has no data to dump!", name);
+      n += printf_eol();
+    }
+  } else if (ACT_STRDUMP == action) {
+    n += printf_text("String dump of section", USE_LT);
+    n += printf_text(name, USE_LT | USE_SQ | USE_COLON | USE_EOL);
+
+    if (0 != sh_size && sh_type != SHT_NOBITS) {
+      n += printf_data(getp(p, sh_offset, sh_size), sh_size, sh_addr, USE_STRDUMP);
       n += printf_eol();
       n += printf_sore(getp(p, sh_offset, sh_size), sh_size, USE_SHA256 | USE_SPACE);
       n += printf_eol();
