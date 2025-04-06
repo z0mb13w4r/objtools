@@ -144,13 +144,13 @@ int objhash(const pbuffer_t p0, const poptions_t o) {
   }
 
   if (isELF32(p0)) {
-    dump_createELF32(p0, o);
-    dump_createELF32(p1, o);
+    if (o->action & OPTOBJHASH_SECTIONS)         dump_createELF32(p0, o);
+    if (o->action & OPTOBJHASH_SECTIONS)         dump_createELF32(p1, o);
     if (o->actions)                              dump_actionsELF32(p0, o);
     if (o->actions)                              dump_actionsELF32(p1, o);
   } else if (isELF64(p0)) {
-    dump_createELF64(p0, o);
-    dump_createELF64(p1, o);
+    if (o->action & OPTOBJHASH_SECTIONS)         dump_createELF64(p0, o);
+    if (o->action & OPTOBJHASH_SECTIONS)         dump_createELF64(p1, o);
     if (o->actions)                              dump_actionsELF64(p0, o);
     if (o->actions)                              dump_actionsELF64(p1, o);
   }

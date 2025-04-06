@@ -58,6 +58,8 @@
 #define OPTREADELF_NOTES                           U64MASK(10)
 #define OPTREADELF_VERSION                         U64MASK(11)
 
+#define OPTREADELF_HEADERS             (OPTREADELF_FILEHEADER | OPTREADELF_SECTIONHEADERS | OPTREADELF_PROGRAMHEADERS)
+
 #define OPTREADELF_ALL                 (OPTREADELF_SYMBOLS | OPTREADELF_RELOCS | OPTREADELF_UNWIND \
                                            | OPTREADELF_DYNAMIC | OPTREADELF_FILEHEADER | OPTREADELF_SECTIONHEADERS \
                                            | OPTREADELF_SECTIONGROUPS | OPTREADELF_PROGRAMHEADERS | OPTREADELF_VERSION \
@@ -100,6 +102,14 @@
 #define OPTOBJDUMP_FILE_HEADER                     U64MASK(4)
 #define OPTOBJDUMP_PRIVATE_HEADER                  U64MASK(5)
 #define OPTOBJDUMP_SECTION_HEADER                  U64MASK(6)
+
+#define OPTOBJDUMP_HEADERS             (OPTOBJDUMP_FILE_HEADER | OPTOBJDUMP_PRIVATE_HEADER | OPTOBJDUMP_SECTION_HEADER \
+                                           | OPTOBJDUMP_SYMBOLS)
+
+#define OPTOBJHASH_SECTIONS                        U64MASK(0)
+#define OPTOBJHASH_HEADERS                         U64MASK(1)
+
+#define OPTOBJHASH_ALL                 (OPTOBJHASH_SECTIONS | OPTOBJHASH_HEADERS)
 
 #define ACT_HEXDUMP                                (0)
 #define ACT_STRDUMP                                (1)

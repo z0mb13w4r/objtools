@@ -49,7 +49,7 @@ static const args_t READELFARGS[] = {
   {'V', NULL,                OPTREADELF_VERSION},
   {'a', "--all",             OPTREADELF_ALL},
   {'d', "--dynamic",         OPTREADELF_DYNAMIC},
-  {'e', "--headers",         OPTREADELF_FILEHEADER | OPTREADELF_SECTIONHEADERS | OPTREADELF_PROGRAMHEADERS},
+  {'e', "--headers",         OPTREADELF_HEADERS},
   {'g', "--section-groups",  OPTREADELF_SECTIONGROUPS},
   {'h', "--file-header",     OPTREADELF_FILEHEADER},
   {'l', "--program-headers", OPTREADELF_PROGRAMHEADERS},
@@ -113,7 +113,7 @@ static const args_t OBJDUMPARGS[] = {
   {'f', "--file-headers",      OPTOBJDUMP_FILE_HEADER},
   {'p', "--private-headers",   OPTOBJDUMP_PRIVATE_HEADER},
   {'h', "--section-headers",   OPTOBJDUMP_SECTION_HEADER},
-  {'x', "--all-headers",       OPTOBJDUMP_FILE_HEADER | OPTOBJDUMP_PRIVATE_HEADER | OPTOBJDUMP_SECTION_HEADER | OPTOBJDUMP_SYMBOLS},
+  {'x', "--all-headers",       OPTOBJDUMP_HEADERS},
   {'l', "--line-numbers",      OPTPROGRAM_LINE_NUMBERS},
   {'c', "--capstone",          OPTPROGRAM_CAPSTONE_ALL},
   {'X', "--hash",              OPTPROGRAM_HASH},
@@ -122,6 +122,9 @@ static const args_t OBJDUMPARGS[] = {
 
 static const args_t OBJHASHARGS[] = {
   {'H', "--help",              OPTPROGRAM_HELP},
+  {'s', "--sections",          OPTOBJHASH_SECTIONS},
+  {'h', "--headers",           OPTOBJHASH_HEADERS},
+  {'a', "--all",               OPTOBJHASH_ALL},
   {0, NULL}
 };
 
@@ -522,7 +525,7 @@ int get_options_objdump(poptions_t o, int argc, char** argv, char* name) {
 }
 
 int get_options_objhash(poptions_t o, int argc, char** argv, char* name) {
-  if (argc < 1) {
+  if (argc < 2) {
     return -1;
   }
 
@@ -532,12 +535,14 @@ int get_options_objhash(poptions_t o, int argc, char** argv, char* name) {
 
   for (int i = 0; i < argc; ++i) {
     if ('-' == argv[i][0] && '-' == argv[i][1]) {
-
+      get_options2(o, OBJHASHARGS, argv[i]);
     } else if ('-' == argv[i][0]) {
       if (0 == strcmp(argv[i], "-x")) {
         paction_t p = amalloc();
 	strncpy(p->secname, argv[++i], NELEMENTS(p->secname));
         insert(o, p, ACT_HEXDUMP);
+      } else {
+        get_options1(o, OBJHASHARGS, argv[i]);
       }
     } else if (0 == o->inpname0[0]) {
       strncpy(o->inpname0, argv[i], NELEMENTS(o->inpname0));
