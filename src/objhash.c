@@ -1,5 +1,6 @@
 #include <string.h>
 
+#include "spin.h"
 #include "printf.h"
 #include "elfcode.h"
 #include "objhash.h"
@@ -75,14 +76,24 @@ static int dump_createELF64(const pbuffer_t p, const poptions_t o) {
 static int dump_actionsELF0(const pbuffer_t p, const poptions_t o, const char* name, const int action,
                             const uint64_t sh_type, const uint64_t sh_offset, const uint64_t sh_size, const uint64_t sh_addr) {
   int n = 0;
+
+  unknown_t p0 = getp(p, sh_offset, sh_size);
+
+  if (OPTFUNCTION_ROT5 == o->convert)            rot5(p0, sh_size);
+  else if (OPTFUNCTION_ROT13 == o->convert)      rot13(p0, sh_size);
+  else if (OPTFUNCTION_ROT18 == o->convert)      rot18(p0, sh_size);
+  else if (OPTFUNCTION_XOR1 <= o->convert && o->convert <= OPTFUNCTION_XOR255) {
+    xor8(p0, o->convert & 0xff, sh_size);
+  }
+
   if (ACT_HEXDUMP == action) {
     n += printf_text("Hex dump of section", USE_LT);
     n += printf_text(name, USE_LT | USE_SQ | USE_COLON | USE_EOL);
 
     if (0 != sh_size && sh_type != SHT_NOBITS) {
-      n += printf_data(getp(p, sh_offset, sh_size), sh_size, sh_addr, USE_HEXDUMP);
+      n += printf_data(p0, sh_size, sh_addr, USE_HEXDUMP);
       n += printf_eol();
-      n += printf_sore(getp(p, sh_offset, sh_size), sh_size, USE_SHA256 | USE_SPACE);
+      n += printf_sore(p0, sh_size, USE_SHA256 | USE_SPACE);
       n += printf_eol();
     } else {
       printf_w("section '%s' has no data to dump!", name);
@@ -93,9 +104,9 @@ static int dump_actionsELF0(const pbuffer_t p, const poptions_t o, const char* n
     n += printf_text(name, USE_LT | USE_SQ | USE_COLON | USE_EOL);
 
     if (0 != sh_size && sh_type != SHT_NOBITS) {
-      n += printf_data(getp(p, sh_offset, sh_size), sh_size, sh_addr, USE_STRDUMP);
+      n += printf_data(p0, sh_size, sh_addr, USE_STRDUMP);
       n += printf_eol();
-      n += printf_sore(getp(p, sh_offset, sh_size), sh_size, USE_SHA256 | USE_SPACE);
+      n += printf_sore(p0, sh_size, USE_SHA256 | USE_SPACE);
       n += printf_eol();
     } else {
       printf_w("section '%s' has no data to dump!", name);

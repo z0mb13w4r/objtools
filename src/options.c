@@ -546,6 +546,8 @@ int get_options_objhash(poptions_t o, int argc, char** argv, char* name) {
           paction_t p = amalloc();
           strncpy(p->secname, arg1, NELEMENTS(p->secname));
           insert(o, p, ACT_STRDUMP);
+        } else if (0 == strcmp(arg0, "--convert")) {
+          o->convert = atol(arg1);
         }
       } else {
         get_options2(o, OBJHASHARGS, argv[i]);
@@ -559,6 +561,8 @@ int get_options_objhash(poptions_t o, int argc, char** argv, char* name) {
         paction_t p = amalloc();
 	strncpy(p->secname, argv[++i], NELEMENTS(p->secname));
         insert(o, p, ACT_STRDUMP);
+      } else if (0 == strcmp(argv[i], "-C")) {
+        o->convert = atol(argv[++i]);
       } else {
         get_options1(o, OBJHASHARGS, argv[i]);
       }

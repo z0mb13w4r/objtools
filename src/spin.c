@@ -51,3 +51,16 @@ int rot18(const unknown_t p, const size_t size) {
   return -1;
 }
 
+int xor8(const unknown_t p, const uchar_t v, const size_t size) {
+  if (p) {
+    uchar_t *p0 = CAST(uchar_t*, p);
+    for (size_t i = 0; i < size; ++i) {
+      p0[i] ^= v;
+    }
+
+    return 0;
+  }
+
+  return -1;
+}
+
