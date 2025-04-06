@@ -30,6 +30,19 @@ uint64_t ulog2(uint64_t  x) {
   return y;
 }
 
+uint64_t atoimode(const char* src) {
+  const size_t siz = strlen(src);
+  if (3 <= siz && '0' == src[0] && ('x' == src[1] || 'X' == src[1])) {
+    return strtol(src + 2, NULL, 16);
+  } else if (2 <= siz && ('h' == src[siz - 1] || 'H' == src[siz - 1])) {
+    return strtol(src, NULL, 16);
+  } else if (2 <= siz && ('b' == src[siz - 1] || 'B' == src[siz - 1])) {
+    return strtol(src, NULL, 2);
+  }
+
+  return atol(src);
+}
+
 char* strname(char* dst, const char* src) {
   char *p = strrchr(src, '/');
   if (p) {

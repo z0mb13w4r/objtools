@@ -15,6 +15,7 @@ bool_t isbits(const imode_t x);
 bool_t isused(pick_t* p, const pick_t x);
 
 uint64_t ulog2(uint64_t  x);
+uint64_t atoimode(const char* src);
 
 char* strname(char* dst, const char* src);
 

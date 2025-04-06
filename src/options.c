@@ -562,7 +562,7 @@ int get_options_objhash(poptions_t o, int argc, char** argv, char* name) {
 	strncpy(p->secname, argv[++i], NELEMENTS(p->secname));
         insert(o, p, ACT_STRDUMP);
       } else if (0 == strcmp(argv[i], "-C")) {
-        o->convert = atol(argv[++i]);
+        o->convert = atoimode(argv[++i]);
       } else {
         get_options1(o, OBJHASHARGS, argv[i]);
       }
