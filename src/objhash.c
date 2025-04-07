@@ -56,6 +56,7 @@ static int dump_createELF32(const pbuffer_t p, const poptions_t o, const imode_t
         } else if (OPTOBJHASH_SECTIONS == mode) {
           n += dump_create1(p, o, shdr->sh_offset, shdr->sh_size);
         }
+
         n += dump_create2(p, o, get_secnamebyindex(p, i), shdr->sh_type, shdr->sh_offset, shdr->sh_size, shdr->sh_addr, MAXSIZE);
       }
     }

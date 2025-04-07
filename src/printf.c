@@ -314,13 +314,13 @@ int printf_book(const char* p[], const imode_t mode) {
   return -1;
 }
 
-int printf_sore(const void* p, const size_t size, const imode_t mode) {
+int printf_sore(const unknown_t p, const size_t size, const imode_t mode) {
   const int MAXSIZE = 10;
   const imode_t xmode = mode & ~(USE_POS0MASK | USE_FLAGMASK | USE_COLORMASK);
   const imode_t ymode = mode &  (USE_POS0MASK | USE_FLAGMASK | USE_COLORMASK);
   const imode_t zmode = mode &   USE_POS0MASK;
-
   int n = 0;
+
   if (USE_HASHALL == xmode) {
     n += printf_text("HASHES", USE_LT | USE_COLON | USE_EOL);
     n += printf_sore(p, size, USE_MD5 | USE_TAB | zmode);
