@@ -5,8 +5,11 @@
 #include "elfcode.h"
 #include "objhash.h"
 
-static int dump_create0(const pbuffer_t p, const int maxsize) {
+static int dump_create0(const pbuffer_t p, const imode_t mode, const int maxsize) {
   int n = 0;
+  if (OPTOBJHASH_HEADERS == mode)       n += printf_text("SECTION HEADERS", USE_LT | USE_COLON | USE_EOL);
+  else if (OPTOBJHASH_SECTIONS == mode) n += printf_text("SECTION DATA", USE_LT | USE_COLON | USE_EOL);
+
   n += printf_text("SHA-256", USE_LT | SET_PAD(64));
   n += printf_text("Name", USE_LT | USE_SPACE | SET_PAD(maxsize));
   n += printf_text("Type", USE_LT | USE_SPACE | SET_PAD(16));
@@ -16,11 +19,17 @@ static int dump_create0(const pbuffer_t p, const int maxsize) {
   return n;
 }
 
-static int dump_create1(const pbuffer_t p, const poptions_t o, const char* name,
+static int dump_create1(const pbuffer_t p, const poptions_t o, const uint64_t sh_offset, const uint64_t sh_size) {
+  int n = 0;
+  n += printf_sore(getp(p, sh_offset, sh_size), sh_size, USE_SHA256 | USE_NOTEXT);
+
+  return n;
+}
+
+static int dump_create2(const pbuffer_t p, const poptions_t o, const char* name,
                         const uint64_t sh_type, const uint64_t sh_offset, const uint64_t sh_size, const uint64_t sh_addr,
                         const int maxsize) {
   int n = 0;
-  n += printf_sore(getp(p, sh_offset, sh_size), sh_size, USE_SHA256 | USE_NOTEXT);
   n += printf_text(name, USE_LT | USE_SPACE | SET_PAD(maxsize));
   n += printf_pick(zSHDRTYPE, sh_type, USE_LT | USE_SPACE | SET_PAD(16));
   n += printf_nice(sh_addr, isELF64(p) ? USE_LHEX64 : USE_LHEX32);
@@ -31,18 +40,23 @@ static int dump_create1(const pbuffer_t p, const poptions_t o, const char* name,
   return n;
 }
 
-static int dump_createELF32(const pbuffer_t p, const poptions_t o) {
+static int dump_createELF32(const pbuffer_t p, const poptions_t o, const imode_t mode) {
   const int MAXSIZE = MAX(get_secnamemaxsize(p) + 1, 21);
 
   int n = 0;
   Elf32_Ehdr *ehdr = get_ehdr32(p);
   if (ehdr) {
-    n += dump_create0(p, MAXSIZE);
+    n += dump_create0(p, mode, MAXSIZE);
 
     for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
       Elf32_Shdr *shdr = get_shdr32byindex(p, i);
       if (shdr) {
-        n += dump_create1(p, o, get_secnamebyindex(p, i), shdr->sh_type, shdr->sh_offset, shdr->sh_size, shdr->sh_addr, MAXSIZE);
+        if (OPTOBJHASH_HEADERS == mode) {
+          n += dump_create1(p, o, ehdr->e_shoff + (ehdr->e_shentsize * i), ehdr->e_shentsize);
+        } else if (OPTOBJHASH_SECTIONS == mode) {
+          n += dump_create1(p, o, shdr->sh_offset, shdr->sh_size);
+        }
+        n += dump_create2(p, o, get_secnamebyindex(p, i), shdr->sh_type, shdr->sh_offset, shdr->sh_size, shdr->sh_addr, MAXSIZE);
       }
     }
 
@@ -52,18 +66,23 @@ static int dump_createELF32(const pbuffer_t p, const poptions_t o) {
   return n;
 }
 
-static int dump_createELF64(const pbuffer_t p, const poptions_t o) {
+static int dump_createELF64(const pbuffer_t p, const poptions_t o, const imode_t mode) {
   const int MAXSIZE = MAX(get_secnamemaxsize(p) + 1, 21);
 
   int n = 0;
   Elf64_Ehdr *ehdr = get_ehdr64(p);
   if (ehdr) {
-    n += dump_create0(p, MAXSIZE);
+    n += dump_create0(p, mode, MAXSIZE);
 
     for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
       Elf64_Shdr *shdr = get_shdr64byindex(p, i);
       if (shdr) {
-        n += dump_create1(p, o, get_secnamebyindex(p, i), shdr->sh_type, shdr->sh_offset, shdr->sh_size, shdr->sh_addr, MAXSIZE);
+        if (OPTOBJHASH_HEADERS == mode) {
+          n += dump_create1(p, o, ehdr->e_shoff + (ehdr->e_shentsize * i), ehdr->e_shentsize);
+        } else if (OPTOBJHASH_SECTIONS == mode) {
+          n += dump_create1(p, o, shdr->sh_offset, shdr->sh_size);
+        }
+        n += dump_create2(p, o, get_secnamebyindex(p, i), shdr->sh_type, shdr->sh_offset, shdr->sh_size, shdr->sh_addr, MAXSIZE);
       }
     }
 
@@ -168,13 +187,17 @@ int objhash(const pbuffer_t p0, const poptions_t o) {
   }
 
   if (isELF32(p0)) {
-    if (o->action & OPTOBJHASH_SECTIONS)         dump_createELF32(p0, o);
-    if (o->action & OPTOBJHASH_SECTIONS)         dump_createELF32(p1, o);
+    if (o->action & OPTOBJHASH_HEADERS)          dump_createELF32(p0, o, OPTOBJHASH_HEADERS);
+    if (o->action & OPTOBJHASH_HEADERS)          dump_createELF32(p1, o, OPTOBJHASH_HEADERS);
+    if (o->action & OPTOBJHASH_SECTIONS)         dump_createELF32(p0, o, OPTOBJHASH_SECTIONS);
+    if (o->action & OPTOBJHASH_SECTIONS)         dump_createELF32(p1, o, OPTOBJHASH_SECTIONS);
     if (o->actions)                              dump_actionsELF32(p0, o);
     if (o->actions)                              dump_actionsELF32(p1, o);
   } else if (isELF64(p0)) {
-    if (o->action & OPTOBJHASH_SECTIONS)         dump_createELF64(p0, o);
-    if (o->action & OPTOBJHASH_SECTIONS)         dump_createELF64(p1, o);
+    if (o->action & OPTOBJHASH_HEADERS)          dump_createELF64(p0, o, OPTOBJHASH_HEADERS);
+    if (o->action & OPTOBJHASH_HEADERS)          dump_createELF64(p1, o, OPTOBJHASH_HEADERS);
+    if (o->action & OPTOBJHASH_SECTIONS)         dump_createELF64(p0, o, OPTOBJHASH_SECTIONS);
+    if (o->action & OPTOBJHASH_SECTIONS)         dump_createELF64(p1, o, OPTOBJHASH_SECTIONS);
     if (o->actions)                              dump_actionsELF64(p0, o);
     if (o->actions)                              dump_actionsELF64(p1, o);
   }

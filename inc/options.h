@@ -112,8 +112,8 @@
 #define OPTOBJDUMP_HEADERS             (OPTOBJDUMP_FILE_HEADER | OPTOBJDUMP_PRIVATE_HEADER | OPTOBJDUMP_SECTION_HEADER \
                                            | OPTOBJDUMP_SYMBOLS)
 
-#define OPTOBJHASH_SECTIONS                        U64MASK(0)
-#define OPTOBJHASH_HEADERS                         U64MASK(1)
+#define OPTOBJHASH_HEADERS                         U64MASK(0)
+#define OPTOBJHASH_SECTIONS                        U64MASK(1)
 
 #define OPTOBJHASH_ALL                 (OPTOBJHASH_SECTIONS | OPTOBJHASH_HEADERS)
 
