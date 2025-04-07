@@ -362,88 +362,96 @@ int printf_sore(const unknown_t p, const size_t size, const imode_t mode) {
     uchar_t md[MD5_DIGEST_LENGTH];
     if (!md5(p0, size, md)) {
       if (0 == (mode & USE_NOTEXT)) {
-        printf_text("MD5", USE_LT | USE_COLON | zmode | SET_PAD(MAXSIZE));
-        printf_sore(md, MD5_DIGEST_LENGTH, USE_HEX | USE_EOL);
+        n += printf_text("MD5", USE_LT | USE_COLON | zmode | SET_PAD(MAXSIZE));
+        n += printf_sore(md, MD5_DIGEST_LENGTH, USE_HEX | USE_EOL);
       } else {
-        printf_sore(md, MD5_DIGEST_LENGTH, USE_HEX | ymode);
+        n += printf_sore(md, MD5_DIGEST_LENGTH, USE_HEX | ymode);
       }
+    } else if (0 != (mode & USE_NOTEXT)) {
+      n += printf_sore(md, MD5_DIGEST_LENGTH, USE_HEX | ymode);
     }
   } else if (USE_SHA1 == xmode) {
     uchar_t md[SHA_DIGEST_LENGTH];
     if (!sha1(p0, size, md)) {
       if (0 == (mode & USE_NOTEXT)) {
-        printf_text("SHA1", USE_LT | USE_COLON | zmode | SET_PAD(MAXSIZE));
-        printf_sore(md, SHA_DIGEST_LENGTH, USE_HEX | USE_EOL);
+        n += printf_text("SHA1", USE_LT | USE_COLON | zmode | SET_PAD(MAXSIZE));
+        n += printf_sore(md, SHA_DIGEST_LENGTH, USE_HEX | USE_EOL);
       } else {
-        printf_sore(md, SHA_DIGEST_LENGTH, USE_HEX | ymode);
+        n += printf_sore(md, SHA_DIGEST_LENGTH, USE_HEX | ymode);
       }
+    } else if (0 != (mode & USE_NOTEXT)) {
+      n += printf_sore(md, SHA_DIGEST_LENGTH, USE_HEX | ymode);
     }
   } else if (USE_SHA256 == xmode) {
     uchar_t md[SHA256_DIGEST_LENGTH];
     if (!sha256(p0, size, md)) {
       if (0 == (mode & USE_NOTEXT)) {
-        printf_text("SHA256", USE_LT | USE_COLON | zmode | SET_PAD(MAXSIZE));
-        printf_sore(md, SHA256_DIGEST_LENGTH, USE_HEX | USE_EOL);
+        n += printf_text("SHA256", USE_LT | USE_COLON | zmode | SET_PAD(MAXSIZE));
+        n += printf_sore(md, SHA256_DIGEST_LENGTH, USE_HEX | USE_EOL);
       } else {
-        printf_sore(md, SHA256_DIGEST_LENGTH, USE_HEX | ymode);
+        n += printf_sore(md, SHA256_DIGEST_LENGTH, USE_HEX | ymode);
       }
+    } else if (0 != (mode & USE_NOTEXT)) {
+      n += printf_sore(md, SHA256_DIGEST_LENGTH, USE_HEX | ymode);
     }
   } else if (USE_SHA512 == xmode) {
     uchar_t md[SHA512_DIGEST_LENGTH];
     if (!sha512(p0, size, md)) {
       if (0 == (mode & USE_NOTEXT)) {
-        printf_text("SHA512", USE_LT | USE_COLON | zmode | SET_PAD(MAXSIZE));
-        printf_sore(md, SHA512_DIGEST_LENGTH, USE_HEX | USE_EOL);
+        n += printf_text("SHA512", USE_LT | USE_COLON | zmode | SET_PAD(MAXSIZE));
+        n += printf_sore(md, SHA512_DIGEST_LENGTH, USE_HEX | USE_EOL);
       } else {
-        printf_sore(md, SHA512_DIGEST_LENGTH, USE_HEX | ymode);
+        n += printf_sore(md, SHA512_DIGEST_LENGTH, USE_HEX | ymode);
       }
+    } else if (0 != (mode & USE_NOTEXT)) {
+      n += printf_sore(md, SHA512_DIGEST_LENGTH, USE_HEX | ymode);
     }
   } else if (USE_CRC8 == xmode) {
     if (0 == (mode & USE_NOTEXT)) {
-      printf_text("CRC8", USE_LT | USE_COLON | zmode | SET_PAD(MAXSIZE));
-      printf_nice(crc8_calculate(CRC_DEF8, p0, size), USE_FHEX8 | USE_EOL);
+      n += printf_text("CRC8", USE_LT | USE_COLON | zmode | SET_PAD(MAXSIZE));
+      n += printf_nice(crc8_calculate(CRC_DEF8, p0, size), USE_FHEX8 | USE_EOL);
     } else {
-      printf_nice(crc8_calculate(CRC_DEF8, p0, size), USE_FHEX8 | ymode);
+      n += printf_nice(crc8_calculate(CRC_DEF8, p0, size), USE_FHEX8 | ymode);
     }
   } else if (USE_CRC16 == xmode) {
     if (0 == (mode & USE_NOTEXT)) {
-      printf_text("CRC16", USE_LT | USE_COLON | zmode | SET_PAD(MAXSIZE));
-      printf_nice(crc16_calculate(CRC_DEF16, p0, size), USE_FHEX16 | USE_EOL);
+      n += printf_text("CRC16", USE_LT | USE_COLON | zmode | SET_PAD(MAXSIZE));
+      n += printf_nice(crc16_calculate(CRC_DEF16, p0, size), USE_FHEX16 | USE_EOL);
     } else {
-      printf_nice(crc16_calculate(CRC_DEF16, p0, size), USE_FHEX16 | ymode);
+      n += printf_nice(crc16_calculate(CRC_DEF16, p0, size), USE_FHEX16 | ymode);
     }
   } else if (USE_CRC32 == xmode) {
     if (0 == (mode & USE_NOTEXT)) {
-      printf_text("CRC32", USE_LT | USE_COLON | zmode | SET_PAD(MAXSIZE));
-      printf_nice(crc32_calculate(CRC_DEF32, p0, size), USE_FHEX32 | USE_EOL);
+      n += printf_text("CRC32", USE_LT | USE_COLON | zmode | SET_PAD(MAXSIZE));
+      n += printf_nice(crc32_calculate(CRC_DEF32, p0, size), USE_FHEX32 | USE_EOL);
     } else {
-      printf_nice(crc32_calculate(CRC_DEF32, p0, size), USE_FHEX32 | ymode);
+      n += printf_nice(crc32_calculate(CRC_DEF32, p0, size), USE_FHEX32 | ymode);
     }
   } else if (USE_ROT5 == xmode) {
     if (!rot5(p0, size)) {
       if (0 == (mode & USE_NOTEXT)) {
-        printf_text("ROT5", USE_LT | USE_COLON | zmode | SET_PAD(MAXSIZE));
-        printf_sore(p0, size, USE_HEX | USE_EOL);
+        n += printf_text("ROT5", USE_LT | USE_COLON | zmode | SET_PAD(MAXSIZE));
+        n += printf_sore(p0, size, USE_HEX | USE_EOL);
       } else {
-        printf_sore(p0, size, USE_HEX | ymode);
+        n += printf_sore(p0, size, USE_HEX | ymode);
       }
     }
   } else if (USE_ROT13 == xmode) {
     if (!rot13(p0, size)) {
       if (0 == (mode & USE_NOTEXT)) {
-        printf_text("ROT13", USE_LT | USE_COLON | zmode | SET_PAD(MAXSIZE));
-        printf_sore(p0, size, USE_HEX | USE_EOL);
+        n += printf_text("ROT13", USE_LT | USE_COLON | zmode | SET_PAD(MAXSIZE));
+        n += printf_sore(p0, size, USE_HEX | USE_EOL);
       } else {
-        printf_sore(p0, size, USE_HEX | ymode);
+        n += printf_sore(p0, size, USE_HEX | ymode);
       }
     }
   } else if (USE_ROT18 == xmode) {
     if (!rot18(p0, size)) {
       if (0 == (mode & USE_NOTEXT)) {
-        printf_text("ROT18", USE_LT | USE_COLON | zmode | SET_PAD(MAXSIZE));
-        printf_sore(p0, size, USE_HEX | USE_EOL);
+        n += printf_text("ROT18", USE_LT | USE_COLON | zmode | SET_PAD(MAXSIZE));
+        n += printf_sore(p0, size, USE_HEX | USE_EOL);
       } else {
-        printf_sore(p0, size, USE_HEX | ymode);
+        n += printf_sore(p0, size, USE_HEX | ymode);
       }
     }
   } else if (USE_BASE64 == xmode) {
