@@ -1,3 +1,4 @@
+#include "decode.h"
 #include "printf.h"
 #include "elfcode.h"
 #include "memfind.h"
@@ -1337,12 +1338,36 @@ static int dump_version64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
   return 0;
 }
 
-static int dump_actions0(const pbuffer_t p, const poptions_t o, const char* name, const int action,
+static int dump_actions0(const pbuffer_t p, const poptions_t o,
+                         const uint64_t sh_type, const uint64_t sh_offset, const uint64_t sh_size) {
+  paction_t x = o->actions;
+  while (x) {
+    if (0 != sh_size && sh_type != SHT_NOBITS) {
+      unknown_t p0 = getp(p, sh_offset, sh_size);
+      switch (x->action) {
+      case ACT_ROT5:   rot5(p0, sh_size);            break;
+      case ACT_ROT13:  rot13(p0, sh_size);           break;
+      case ACT_ROT18:  rot18(p0, sh_size);           break;
+      case ACT_ADD8:   add8(p0, x->value, sh_size);  break;
+      case ACT_SUB8:   sub8(p0, x->value, sh_size);  break;
+      case ACT_XOR8:   xor8(p0, x->value, sh_size);  break;
+      default:
+        break;
+      }
+    }
+
+    x = x->actions;
+  }
+
+  return 0;
+}
+
+static int dump_actions1(const pbuffer_t p, const poptions_t o, const char* name, const int action,
                          const uint64_t sh_type, const uint64_t sh_offset, const uint64_t sh_size, const uint64_t sh_addr) {
   int n = 0;
   if (ACT_HEXDUMP == action) {
-    printf_text("Hex dump of section", USE_LT);
-    printf_text(name, USE_LT | USE_SQ | USE_COLON | USE_EOL);
+    n += printf_text("Hex dump of section", USE_LT);
+    n += printf_text(name, USE_LT | USE_SQ | USE_COLON | USE_EOL);
 
     if (0 != sh_size && sh_type != SHT_NOBITS) {
       unknown_t p0 = getp(p, sh_offset, sh_size);
@@ -1359,8 +1384,8 @@ static int dump_actions0(const pbuffer_t p, const poptions_t o, const char* name
       n += printf_eol();
     }
   } else if (ACT_STRDUMP == action) {
-    printf_text("String dump of section", USE_LT);
-    printf_text(name, USE_LT | USE_SQ | USE_COLON | USE_EOL);
+    n += printf_text("String dump of section", USE_LT);
+    n += printf_text(name, USE_LT | USE_SQ | USE_COLON | USE_EOL);
 
     if (0 != sh_size && sh_type != SHT_NOBITS) {
       unknown_t p0 = getp(p, sh_offset, sh_size);
@@ -1386,7 +1411,8 @@ static int dump_actions32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehd
   while (x) {
     Elf32_Shdr* shdr = get_shdr32byname(p, x->secname);
     if (shdr) {
-      dump_actions0(p, o, x->secname, x->action, shdr->sh_type, shdr->sh_offset, shdr->sh_size, shdr->sh_addr);
+      dump_actions0(p, o, shdr->sh_type, shdr->sh_offset, shdr->sh_size);
+      dump_actions1(p, o, x->secname, x->action, shdr->sh_type, shdr->sh_offset, shdr->sh_size, shdr->sh_addr);
     } else {
       printf_w("section '%s' was not dumped because it does not exist!", x->secname);
     }
@@ -1402,7 +1428,8 @@ static int dump_actions64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
   while (x) {
     Elf64_Shdr* shdr = get_shdr64byname(p, x->secname);
     if (shdr) {
-      dump_actions0(p, o, x->secname, x->action, shdr->sh_type, shdr->sh_offset, shdr->sh_size, shdr->sh_addr);
+      dump_actions0(p, o, shdr->sh_type, shdr->sh_offset, shdr->sh_size);
+      dump_actions1(p, o, x->secname, x->action, shdr->sh_type, shdr->sh_offset, shdr->sh_size, shdr->sh_addr);
     } else {
       printf_w("section '%s' was not dumped because it does not exist!", x->secname);
     }
