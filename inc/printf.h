@@ -150,6 +150,7 @@ int printf_neat(char* o, const size_t size, const uint64_t v, const imode_t mode
 int printf_nice(const uint64_t v, const imode_t mode);
 
 int printf_data(const void* p, const size_t size, const addrz_t addr, const imode_t mode);
+int printf_hurt(const unknown_t p, const size_t size, const imode_t mode);
 int printf_sore(const unknown_t p, const size_t size, const imode_t mode);
 
 int printf_mask(const pconvert_t p, const maskz_t mask, const imode_t mode);

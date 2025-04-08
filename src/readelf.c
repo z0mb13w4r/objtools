@@ -278,27 +278,33 @@ static int dump_fileheader0(const pbuffer_t p, const poptions_t o, const uint64_
 }
 
 static int dump_fileheader32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
-  dump_fileheader0(p, o, ehdr->e_type, ehdr->e_machine, ehdr->e_version, ehdr->e_entry, ehdr->e_phoff, ehdr->e_shoff, ehdr->e_flags,
+  int n = 0;
+  n += dump_fileheader0(p, o, ehdr->e_type, ehdr->e_machine, ehdr->e_version, ehdr->e_entry, ehdr->e_phoff, ehdr->e_shoff, ehdr->e_flags,
                       ehdr->e_ehsize, ehdr->e_phentsize, ehdr->e_phnum, ehdr->e_shentsize, ehdr->e_shnum, ehdr->e_shstrndx);
 
-  return 0;
+  return n;
 }
 
 static int dump_fileheader64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
-  dump_fileheader0(p, o, ehdr->e_type, ehdr->e_machine, ehdr->e_version, ehdr->e_entry, ehdr->e_phoff, ehdr->e_shoff, ehdr->e_flags,
+  int n = 0;
+  n += dump_fileheader0(p, o, ehdr->e_type, ehdr->e_machine, ehdr->e_version, ehdr->e_entry, ehdr->e_phoff, ehdr->e_shoff, ehdr->e_flags,
                       ehdr->e_ehsize, ehdr->e_phentsize, ehdr->e_phnum, ehdr->e_shentsize, ehdr->e_shnum, ehdr->e_shstrndx);
 
-  return 0;
+  return n;
 }
 
-static int dump_sectionheaders0(const pbuffer_t p, const int maxsize) {
+static int dump_sectionheaders0(const pbuffer_t p, const poptions_t o, const int maxsize) {
   int n = 0;
   n += printf_text("SECTION HEADERS", USE_LT | USE_COLON | USE_EOL);
   n += printf_text("[Nr]", USE_LT | USE_TAB);
   n += printf_text("Name", USE_LT | USE_SPACE | SET_PAD(maxsize));
   n += printf_text("Type", USE_LT | USE_SPACE | SET_PAD(16));
   n += printf_text("Address", USE_LT | USE_SPACE | SET_PAD(isELF64(p) ? 17 : 9));
-  n += printf_text("Off      Size     ES Flg Lk Inf  Al", USE_LT | USE_SPACE | USE_EOL);
+  n += printf_text("Off      Size     ES Flg Lk Inf  Al", USE_LT | USE_SPACE);
+  if (o->action & OPTPROGRAM_HASH) {
+    n += printf_text("SHA-256", USE_LT | USE_SPACE);
+  }
+  n += printf_eol();
 
   return n;
 }
@@ -318,7 +324,6 @@ static int dump_sectionheaders1(const pbuffer_t p, const int index, const int ma
   n += printf_nice(sh_link, USE_DEC2);
   n += printf_nice(sh_info, USE_DEC3);
   n += printf_nice(sh_addralign, USE_DEC3);
-  n += printf_eol();
 
   return n;
 }
@@ -336,38 +341,54 @@ static int dump_sectionheaders2(const pbuffer_t p) {
 
 static int dump_sectionheaders32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
   const int MAXSIZE = MAX(get_secnamemaxsize(p) + 1, 21);
-  dump_sectionheaders0(p, MAXSIZE);
+
+  int n = 0;
+  n += dump_sectionheaders0(p, o, MAXSIZE);
 
   for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
     Elf32_Shdr *shdr = get_shdr32byindex(p, i);
     if (shdr) {
-      dump_sectionheaders1(p, i, MAXSIZE, shdr->sh_type,
-           shdr->sh_addr, shdr->sh_offset, shdr->sh_size, shdr->sh_entsize,
-           shdr->sh_flags, shdr->sh_link, shdr->sh_info, shdr->sh_addralign);
+      n += dump_sectionheaders1(p, i, MAXSIZE, shdr->sh_type,
+               shdr->sh_addr, shdr->sh_offset, shdr->sh_size, shdr->sh_entsize,
+               shdr->sh_flags, shdr->sh_link, shdr->sh_info, shdr->sh_addralign);
+
+      if (o->action & OPTPROGRAM_HASH) {
+        n += printf_sore(getp(p, shdr->sh_offset, shdr->sh_size), shdr->sh_size, USE_SHA256 | USE_SPACE | USE_NOTEXT);
+      }
+
+      n += printf_eol();
     }
   }
 
-  dump_sectionheaders2(p);
+  n += dump_sectionheaders2(p);
 
-  return 0;
+  return n;
 }
 
 static int dump_sectionheaders64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
   const int MAXSIZE = MAX(get_secnamemaxsize(p) + 2, 21);
-  dump_sectionheaders0(p, MAXSIZE);
+
+  int n = 0;
+  n += dump_sectionheaders0(p, o, MAXSIZE);
 
   for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
     Elf64_Shdr *shdr = get_shdr64byindex(p, i);
     if (shdr) {
-      dump_sectionheaders1(p, i, MAXSIZE, shdr->sh_type,
-           shdr->sh_addr, shdr->sh_offset, shdr->sh_size, shdr->sh_entsize,
-           shdr->sh_flags, shdr->sh_link, shdr->sh_info, shdr->sh_addralign);
+      n += dump_sectionheaders1(p, i, MAXSIZE, shdr->sh_type,
+               shdr->sh_addr, shdr->sh_offset, shdr->sh_size, shdr->sh_entsize,
+               shdr->sh_flags, shdr->sh_link, shdr->sh_info, shdr->sh_addralign);
+
+      if (o->action & OPTPROGRAM_HASH) {
+        n += printf_sore(getp(p, shdr->sh_offset, shdr->sh_size), shdr->sh_size, USE_SHA256 | USE_SPACE | USE_NOTEXT);
+      }
+
+      n += printf_eol();
     }
   }
 
-  dump_sectionheaders2(p);
+  n += dump_sectionheaders2(p);
 
-  return 0;
+  return n;
 }
 
 static int dump_sectiongroups32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
@@ -1123,8 +1144,8 @@ static int dump_versionsym1(const pbuffer_t p, const int index, const version_t 
   const version_t vsx = vs & VERSYM_VERSION;
 
   int n1 = 0;
-  if (0 == vs)         n1 += printf_text("   0  (*local*)", USE_LT | SET_PAD(MAXSIZE));
-  else if (1 == vs)    n1 += printf_text("   1  (*global*)", USE_LT | SET_PAD(MAXSIZE));
+  if (0 == vs)         n1 += printf_text("    0  (*local*)", USE_LT | SET_PAD(MAXSIZE));
+  else if (1 == vs)    n1 += printf_text("    1  (*global*)", USE_LT | SET_PAD(MAXSIZE));
   else {
     n1 += printf_nice(vsx, USE_HEX4);
     n1 += printf_nice(vsh ? 'h' : ' ', USE_CHAR);
@@ -1324,10 +1345,15 @@ static int dump_actions0(const pbuffer_t p, const poptions_t o, const char* name
     printf_text(name, USE_LT | USE_SQ | USE_COLON | USE_EOL);
 
     if (0 != sh_size && sh_type != SHT_NOBITS) {
-      n += printf_data(getp(p, sh_offset, sh_size), sh_size, sh_addr, USE_HEXDUMP);
+      unknown_t p0 = getp(p, sh_offset, sh_size);
+
+      n += printf_data(p0, sh_size, sh_addr, USE_HEXDUMP);
       n += printf_eol();
 
-      if (o->action & OPTPROGRAM_HASH)   n += printf_sore(getp(p, sh_offset, sh_size), sh_size, USE_HASHALL | USE_EOL);
+      if (o->action & OPTPROGRAM_HASH) {
+        n += printf_sore(p0, sh_size, USE_SHA256 | USE_EOL);
+        n += printf_eol();
+      }
     } else {
       printf_w("section '%s' has no data to dump!", name);
       n += printf_eol();
@@ -1337,8 +1363,15 @@ static int dump_actions0(const pbuffer_t p, const poptions_t o, const char* name
     printf_text(name, USE_LT | USE_SQ | USE_COLON | USE_EOL);
 
     if (0 != sh_size && sh_type != SHT_NOBITS) {
-      n += printf_data(getp(p, sh_offset, sh_size), sh_size, sh_addr, USE_STRDUMP);
+      unknown_t p0 = getp(p, sh_offset, sh_size);
+
+      n += printf_data(p0, sh_size, sh_addr, USE_STRDUMP);
       n += printf_eol();
+
+      if (o->action & OPTPROGRAM_HASH) {
+        n += printf_sore(p0, sh_size, USE_SHA256 | USE_EOL);
+        n += printf_eol();
+      }
     } else {
       printf_w("section '%s' has no data to dump!", name);
       n += printf_eol();

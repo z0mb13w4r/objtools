@@ -314,6 +314,14 @@ int printf_book(const char* p[], const imode_t mode) {
   return -1;
 }
 
+int printf_hurt(const unknown_t p, const size_t size, const imode_t mode) {
+  int n = 0;
+  n += printf_pack(mode & USE_SPACE ? 1 : 0);
+  n += printf_sore(p, size, mode & ~USE_SPACE);
+
+  return n;
+}
+
 int printf_sore(const unknown_t p, const size_t size, const imode_t mode) {
   const int MAXSIZE = 10;
   const imode_t xmode = mode & ~(USE_POS0MASK | USE_FLAGMASK | USE_COLORMASK);
@@ -365,10 +373,10 @@ int printf_sore(const unknown_t p, const size_t size, const imode_t mode) {
         n += printf_text("MD5", USE_LT | USE_COLON | zmode | SET_PAD(MAXSIZE));
         n += printf_sore(md, MD5_DIGEST_LENGTH, USE_HEX | USE_EOL);
       } else {
-        n += printf_sore(md, MD5_DIGEST_LENGTH, USE_HEX | ymode);
+        n += printf_hurt(md, MD5_DIGEST_LENGTH, USE_HEX | ymode);
       }
     } else if (0 != (mode & USE_NOTEXT)) {
-      n += printf_sore(md, MD5_DIGEST_LENGTH, USE_HEX | ymode);
+      n += printf_hurt(md, MD5_DIGEST_LENGTH, USE_HEX | ymode);
     }
   } else if (USE_SHA1 == xmode) {
     uchar_t md[SHA_DIGEST_LENGTH];
@@ -377,10 +385,10 @@ int printf_sore(const unknown_t p, const size_t size, const imode_t mode) {
         n += printf_text("SHA1", USE_LT | USE_COLON | zmode | SET_PAD(MAXSIZE));
         n += printf_sore(md, SHA_DIGEST_LENGTH, USE_HEX | USE_EOL);
       } else {
-        n += printf_sore(md, SHA_DIGEST_LENGTH, USE_HEX | ymode);
+        n += printf_hurt(md, SHA_DIGEST_LENGTH, USE_HEX | ymode);
       }
     } else if (0 != (mode & USE_NOTEXT)) {
-      n += printf_sore(md, SHA_DIGEST_LENGTH, USE_HEX | ymode);
+      n += printf_hurt(md, SHA_DIGEST_LENGTH, USE_HEX | ymode);
     }
   } else if (USE_SHA256 == xmode) {
     uchar_t md[SHA256_DIGEST_LENGTH];
@@ -389,10 +397,10 @@ int printf_sore(const unknown_t p, const size_t size, const imode_t mode) {
         n += printf_text("SHA256", USE_LT | USE_COLON | zmode | SET_PAD(MAXSIZE));
         n += printf_sore(md, SHA256_DIGEST_LENGTH, USE_HEX | USE_EOL);
       } else {
-        n += printf_sore(md, SHA256_DIGEST_LENGTH, USE_HEX | ymode);
+        n += printf_hurt(md, SHA256_DIGEST_LENGTH, USE_HEX | ymode);
       }
     } else if (0 != (mode & USE_NOTEXT)) {
-      n += printf_sore(md, SHA256_DIGEST_LENGTH, USE_HEX | ymode);
+      n += printf_hurt(md, SHA256_DIGEST_LENGTH, USE_HEX | ymode);
     }
   } else if (USE_SHA512 == xmode) {
     uchar_t md[SHA512_DIGEST_LENGTH];
@@ -401,10 +409,10 @@ int printf_sore(const unknown_t p, const size_t size, const imode_t mode) {
         n += printf_text("SHA512", USE_LT | USE_COLON | zmode | SET_PAD(MAXSIZE));
         n += printf_sore(md, SHA512_DIGEST_LENGTH, USE_HEX | USE_EOL);
       } else {
-        n += printf_sore(md, SHA512_DIGEST_LENGTH, USE_HEX | ymode);
+        n += printf_hurt(md, SHA512_DIGEST_LENGTH, USE_HEX | ymode);
       }
     } else if (0 != (mode & USE_NOTEXT)) {
-      n += printf_sore(md, SHA512_DIGEST_LENGTH, USE_HEX | ymode);
+      n += printf_hurt(md, SHA512_DIGEST_LENGTH, USE_HEX | ymode);
     }
   } else if (USE_CRC8 == xmode) {
     if (0 == (mode & USE_NOTEXT)) {
