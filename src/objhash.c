@@ -1,6 +1,6 @@
 #include <string.h>
 
-#include "spin.h"
+#include "decode.h"
 #include "printf.h"
 #include "elfcode.h"
 #include "objhash.h"

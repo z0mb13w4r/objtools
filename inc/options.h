@@ -123,11 +123,20 @@
 #define ACT_ADDSECTION                             (3)
 #define ACT_DUMPSECTION                            (4)
 #define ACT_UPDATESECTION                          (5)
+#define ACT_ROT5                                   (6)
+#define ACT_ROT13                                  (7)
+#define ACT_ROT18                                  (8)
+#define ACT_ADD8                                   (9)
+#define ACT_SUB8                                   (10)
+#define ACT_XOR8                                   (11)
 
 typedef struct action_s {
   smode_t mode;
   int     action;
-  char    secname[256];
+  union {
+    char     secname[256];
+    uint64_t value;
+  };
   char    outname[PATH_MAX];
   struct action_s *actions;
 } action_t, *paction_t;

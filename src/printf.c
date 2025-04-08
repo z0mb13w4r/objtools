@@ -4,7 +4,7 @@
 #include <stdarg.h>
 #include <inttypes.h>
 
-#include "spin.h"
+#include "decode.h"
 #include "printf.h"
 
 #include "static/color.ci"
