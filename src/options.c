@@ -13,6 +13,22 @@ typedef struct args_s {
   imode_t action;
 } args_t, *pargs_t;
 
+static convert_t SCRIPTCOMMANDS[] = {
+  {"rot5",  ACT_ROT5},
+  {"rot13", ACT_ROT13},
+  {"rot18", ACT_ROT18},
+  {"add8",  ACT_ADD8},
+  {"sub8",  ACT_SUB8},
+  {"xor8",  ACT_XOR8},
+  {"add16", ACT_ADD16},
+  {"sub16", ACT_SUB16},
+  {"xor16", ACT_XOR16},
+  {"add32", ACT_ADD32},
+  {"sub32", ACT_SUB32},
+  {"xor32", ACT_XOR32},
+  {0, 0}
+};
+
 static const args_t DEBUGELFARGS[] = {
   {'a', "debug_abbrev",       OPTDEBUGELF_DEBUG_ABBREV},
   {'A', "debug_addr",         OPTDEBUGELF_DEBUG_ADDR},
@@ -57,6 +73,10 @@ static const args_t READELFARGS[] = {
   {'r', "--relocs",          OPTREADELF_RELOCS},
   {'s', "--symbols",         OPTREADELF_SYMBOLS},
   {'u', "--unwind",          OPTREADELF_UNWIND},
+  {'x', "--hex-dump",        0},
+  {'p', "--string-dump",     0},
+  {'R', "--relocated-dump",  0},
+  {'T', "--script",          0},
   {'X', "--hash",            OPTPROGRAM_HASH},
   {0, NULL}
 };
@@ -345,6 +365,53 @@ static imode_t get_options2(poptions_t o, const args_t args[], const char *argv)
   return action;
 }
 
+static int breakup_args(char* args, char* dst0, const size_t dst0size, char* dst1, const size_t dst1size) {
+  MALLOCA(char, tmp, 1024);
+  strncpy(tmp, args, NELEMENTS(tmp));
+
+  const char DELIMITS[] = "=";
+  char* tok = strtok(tmp, DELIMITS);
+  if (tok) {
+    strncpy(dst0, tok, dst0size);
+    tok = strtok(NULL, DELIMITS);
+    if (tok) {
+      strncpy(dst1, tok, dst1size);
+      return 0;
+    }
+  }
+
+  return -1;
+}
+
+static int breakup_script(const pconvert_t p, const char *name, uint64_t *value) {
+  MALLOCA(char, tmp, 1024);
+
+  int x = -1;
+  if (p && name && value) {
+    strncpy(tmp, name, NELEMENTS(tmp));
+
+    const char DELIMITS[] = "(),";
+    char* tok = strtok(tmp, DELIMITS);
+    if (tok) {
+      for (pconvert_t pp = p; 0 != pp->text; ++pp) {
+        if (0 == strcmp(pp->text, tok)) {
+          x = pp->type;
+          break;
+        }
+      }
+
+      if (-1 != x) {
+        tok = strtok(NULL, DELIMITS);
+        if (tok) {
+          *value = atovalue(tok);
+        }
+      }
+    }
+  }
+
+  return x;
+}
+
 static int insert(poptions_t o, paction_t p, const int action) {
   if (isoptions(o) && isactions(p)) {
     p->action  = action;
@@ -356,19 +423,50 @@ static int insert(poptions_t o, paction_t p, const int action) {
   return -1;
 }
 
-static int breakup_args(char* args, char* dst0, const size_t dst0size, char* dst1, const size_t dst1size) {
-  MALLOCA(char, tmp, 1024);
-  strncpy(tmp, args, NELEMENTS(tmp));
+static int insertsecname(poptions_t o, const int action, const char *secname) {
+  paction_t p = amalloc();
+  if (isactions(p)) {
+    strncpy(p->secname, secname, NELEMENTS(p->secname));
+    insert(o, p, action);
+    return 0;
+  }
 
-  const char DELIMITS[] = "=";
-  char* token = strtok(tmp, DELIMITS);
-  if (token) {
-    strncpy(dst0, token, dst0size);
-    token = strtok(NULL, DELIMITS);
-    if (token) {
-      strncpy(dst1, token, dst1size);
-      return 0;
+  return -1;
+}
+
+static int insertvalue(poptions_t o, const int action, const uint64_t value) {
+  paction_t p = amalloc();
+  if (isactions(p)) {
+    p->value = value;
+    insert(o, p, action);
+    return 0;
+  }
+
+  return -1;
+}
+
+static int insertscript(poptions_t o, const char *script) {
+  MALLOCA(char, tmp, 1024);
+  strncpy(tmp, script, NELEMENTS(tmp));
+
+  const char DELIMIT = ';';
+
+  char *p0 = tmp;
+  char *p1 = strchr(p0, DELIMIT);
+  if (p1) {
+    while (p1) {
+      *p1 = 0;
+      uint64_t v = 0;
+      const int x = breakup_script(SCRIPTCOMMANDS, p0, &v);
+      if (-1 != x) {
+        insertvalue(o, x, v);
+      }
+
+      p0 = p1 + 1;
+      p1 = strchr(p0, DELIMIT);
     }
+
+    return 0;
   }
 
   return -1;
@@ -392,17 +490,13 @@ int get_options_readelf(poptions_t o, int argc, char** argv, char* name) {
         if (0 == strcmp(arg0, READELFARGS1)) {
           get_options2(o, DEBUGELFARGS, arg1);
         } else if (0 == strcmp(arg0, "--hex-dump")) {
-          paction_t p = amalloc();
-          strncpy(p->secname, arg1, NELEMENTS(p->secname));
-          insert(o, p, ACT_HEXDUMP);
+          insertsecname(o, ACT_HEXDUMP, arg1);
         } else if (0 == strcmp(arg0, "--string-dump")) {
-          paction_t p = amalloc();
-          strncpy(p->secname, arg1, NELEMENTS(p->secname));
-          insert(o, p, ACT_STRDUMP);
+          insertsecname(o, ACT_STRDUMP, arg1);
         } else if (0 == strcmp(arg0, "--relocated-dump")) {
-          paction_t p = amalloc();
-          strncpy(p->secname, arg1, NELEMENTS(p->secname));
-          insert(o, p, ACT_RELDUMP);
+          insertsecname(o, ACT_RELDUMP, arg1);
+        } else if (0 == strcmp(arg0, "--script")) {
+          insertscript(o, arg1);
         }
       } else {
         get_options2(o, READELFARGS, argv[i]);
@@ -413,17 +507,13 @@ int get_options_readelf(poptions_t o, int argc, char** argv, char* name) {
           set_options1(o, DEBUGELFARGS);
         }
       } else if (0 == strcmp(argv[i], "-x")) {
-        paction_t p = amalloc();
-	strncpy(p->secname, argv[++i], NELEMENTS(p->secname));
-        insert(o, p, ACT_HEXDUMP);
+        insertsecname(o, ACT_HEXDUMP, argv[++i]);
       } else if (0 == strcmp(argv[i], "-p")) {
-        paction_t p = amalloc();
-        strncpy(p->secname, argv[++i], NELEMENTS(p->secname));
-        insert(o, p, ACT_STRDUMP);
+        insertsecname(o, ACT_STRDUMP, argv[++i]);
       } else if (0 == strcmp(argv[i], "-R")) {
-        paction_t p = amalloc();
-        strncpy(p->secname, argv[++i], NELEMENTS(p->secname));
-        insert(o, p, ACT_RELDUMP);
+        insertsecname(o, ACT_RELDUMP, argv[++i]);
+      } else if (0 == strcmp(argv[i], "-T")) {
+        insertscript(o, argv[++i]);
       } else {
         get_options1(o, READELFARGS, argv[i]);
       }
@@ -539,13 +629,9 @@ int get_options_objhash(poptions_t o, int argc, char** argv, char* name) {
 
       if (0 == breakup_args(argv[i], arg0, NELEMENTS(arg0), arg1, NELEMENTS(arg1))) {
         if (0 == strcmp(arg0, "--hex-dump")) {
-          paction_t p = amalloc();
-          strncpy(p->secname, arg1, NELEMENTS(p->secname));
-          insert(o, p, ACT_HEXDUMP);
+          insertsecname(o, ACT_HEXDUMP, arg1);
         } else if (0 == strcmp(arg0, "--string-dump")) {
-          paction_t p = amalloc();
-          strncpy(p->secname, arg1, NELEMENTS(p->secname));
-          insert(o, p, ACT_STRDUMP);
+          insertsecname(o, ACT_STRDUMP, arg1);
         } else if (0 == strcmp(arg0, "--convert")) {
           o->convert = atol(arg1);
         }
@@ -554,13 +640,9 @@ int get_options_objhash(poptions_t o, int argc, char** argv, char* name) {
       }
     } else if ('-' == argv[i][0]) {
       if (0 == strcmp(argv[i], "-x")) {
-        paction_t p = amalloc();
-	strncpy(p->secname, argv[++i], NELEMENTS(p->secname));
-        insert(o, p, ACT_HEXDUMP);
+        insertsecname(o, ACT_HEXDUMP, argv[++i]);
       } else if (0 == strcmp(argv[i], "-p")) {
-        paction_t p = amalloc();
-	strncpy(p->secname, argv[++i], NELEMENTS(p->secname));
-        insert(o, p, ACT_STRDUMP);
+        insertsecname(o, ACT_STRDUMP, argv[++i]);
       } else if (0 == strcmp(argv[i], "-C")) {
         o->convert = atoimode(argv[++i]);
       } else {

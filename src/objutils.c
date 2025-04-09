@@ -31,6 +31,10 @@ uint64_t ulog2(uint64_t  x) {
 }
 
 uint64_t atoimode(const char* src) {
+  return atovalue(src);
+}
+
+uint64_t atovalue(const char* src) {
   const size_t siz = strlen(src);
   if (3 <= siz && '0' == src[0] && ('x' == src[1] || 'X' == src[1])) {
     return strtol(src + 2, NULL, 16);
@@ -62,9 +66,11 @@ const char* strpick(const pconvert_t p, const pick_t x) {
 }
 
 const char* strpicknull(const pconvert_t p, const pick_t x) {
-  for (pconvert_t pp = p; 0 != pp->text; ++pp) {
-    if (pp->type == x) {
-      return pp->text;
+  if (p) {
+    for (pconvert_t pp = p; 0 != pp->text; ++pp) {
+      if (pp->type == x) {
+        return pp->text;
+      }
     }
   }
 
@@ -97,7 +103,3 @@ size_t fsize(FILE *f) {
   return siz;
 }
 
-int crc32(const unknown_t p, const size_t size, pulong_t crc) {
-
-  return 0;
-}

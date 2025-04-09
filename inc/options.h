@@ -129,15 +129,19 @@
 #define ACT_ADD8                                   (9)
 #define ACT_SUB8                                   (10)
 #define ACT_XOR8                                   (11)
+#define ACT_ADD16                                  (12)
+#define ACT_SUB16                                  (13)
+#define ACT_XOR16                                  (14)
+#define ACT_ADD32                                  (15)
+#define ACT_SUB32                                  (16)
+#define ACT_XOR32                                  (17)
 
 typedef struct action_s {
-  smode_t mode;
-  int     action;
-  union {
-    char     secname[256];
-    uint64_t value;
-  };
-  char    outname[PATH_MAX];
+  smode_t  mode;
+  int      action;
+  char     secname[256];
+  char     outname[PATH_MAX];
+  uint64_t value;
   struct action_s *actions;
 } action_t, *paction_t;
 

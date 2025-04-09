@@ -1351,6 +1351,12 @@ static int dump_actions0(const pbuffer_t p, const poptions_t o,
       case ACT_ADD8:   add8(p0, x->value, sh_size);  break;
       case ACT_SUB8:   sub8(p0, x->value, sh_size);  break;
       case ACT_XOR8:   xor8(p0, x->value, sh_size);  break;
+      case ACT_ADD16:  add16(p0, x->value, sh_size); break;
+      case ACT_SUB16:  sub16(p0, x->value, sh_size); break;
+      case ACT_XOR16:  xor16(p0, x->value, sh_size); break;
+      case ACT_ADD32:  add32(p0, x->value, sh_size); break;
+      case ACT_SUB32:  sub32(p0, x->value, sh_size); break;
+      case ACT_XOR32:  xor32(p0, x->value, sh_size); break;
       default:
         break;
       }
@@ -1409,12 +1415,14 @@ static int dump_actions1(const pbuffer_t p, const poptions_t o, const char* name
 static int dump_actions32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
   paction_t x = o->actions;
   while (x) {
-    Elf32_Shdr* shdr = get_shdr32byname(p, x->secname);
-    if (shdr) {
-      dump_actions0(p, o, shdr->sh_type, shdr->sh_offset, shdr->sh_size);
-      dump_actions1(p, o, x->secname, x->action, shdr->sh_type, shdr->sh_offset, shdr->sh_size, shdr->sh_addr);
-    } else {
-      printf_w("section '%s' was not dumped because it does not exist!", x->secname);
+    if (x->secname[0]) {
+      Elf32_Shdr* shdr = get_shdr32byname(p, x->secname);
+      if (shdr) {
+        dump_actions0(p, o, shdr->sh_type, shdr->sh_offset, shdr->sh_size);
+        dump_actions1(p, o, x->secname, x->action, shdr->sh_type, shdr->sh_offset, shdr->sh_size, shdr->sh_addr);
+      } else {
+        printf_w("section '%s' was not dumped because it does not exist!", x->secname);
+      }
     }
 
     x = x->actions;
@@ -1426,12 +1434,14 @@ static int dump_actions32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehd
 static int dump_actions64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
   paction_t x = o->actions;
   while (x) {
-    Elf64_Shdr* shdr = get_shdr64byname(p, x->secname);
-    if (shdr) {
-      dump_actions0(p, o, shdr->sh_type, shdr->sh_offset, shdr->sh_size);
-      dump_actions1(p, o, x->secname, x->action, shdr->sh_type, shdr->sh_offset, shdr->sh_size, shdr->sh_addr);
-    } else {
-      printf_w("section '%s' was not dumped because it does not exist!", x->secname);
+    if (x->secname[0]) {
+      Elf64_Shdr* shdr = get_shdr64byname(p, x->secname);
+      if (shdr) {
+        dump_actions0(p, o, shdr->sh_type, shdr->sh_offset, shdr->sh_size);
+        dump_actions1(p, o, x->secname, x->action, shdr->sh_type, shdr->sh_offset, shdr->sh_size, shdr->sh_addr);
+      } else {
+        printf_w("section '%s' was not dumped because it does not exist!", x->secname);
+      }
     }
 
     x = x->actions;
