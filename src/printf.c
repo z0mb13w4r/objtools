@@ -85,6 +85,7 @@ int printf_epos(char* o, const size_t size, const imode_t mode) {
 
     switch (GET_POS1(mode)) {
     case USE_COLON:                n += PRINT1(":");         break;
+    case USE_SEMICOLON:            n += PRINT1(";");         break;
     case USE_BYTES:                n += PRINT1(" (bytes)");  break;
     default:                       break;
     }
@@ -486,10 +487,11 @@ int printf_data(const void* p, const size_t size, const addrz_t addr, const imod
   const size_t MAX_SIZE = 16;
 
   const imode_t xmode = mode & ~(USE_POS0MASK | USE_FLAGMASK);
-  const bool_t usespace = GET_POS0(mode) == USE_SPACE;
 
   int n = 0;
-  if (USE_TAB == GET_POS0(mode)) {
+  if (USE_CODEDUMP == xmode) {
+    n += printf_text("unsigned char shell_code[] = {", USE_LT | USE_EOL);
+  } else if (USE_TAB == GET_POS0(mode)) {
     n += printf_pack(1);
   }
 
@@ -535,18 +537,26 @@ int printf_data(const void* p, const size_t size, const addrz_t addr, const imod
       n += printf_eol();
       ++pp;
       ++i;
-    } else if (USE_STR == xmode) {
-      if (0 == *pp) break;
-      n += printf_nice(*pp, USE_CHARCTRL);
-      ++pp;
-      ++i;
-    } else if (USE_HEX == xmode) {
-      n += printf_nice(*pp, usespace ? USE_LHEX8 : USE_LHEX8 | USE_NOSPACE);
-      ++pp;
-      ++i;
+    } else if (USE_CODEDUMP == xmode) {
+      size_t siz = MIN(size - i, MAX_SIZE);
+      for (size_t j = 0; j < MAX_SIZE; j++) {
+        n += printf_nice(pp[j], USE_FHEX8);
+        if (j < (siz - 1))  n += printf_nice(',', USE_CHAR);
+        else break;
+      }
+
+      n += printf_eol();
+      pp += siz;
+      i += siz;
     } else {
       return -1;
     }
+  }
+
+  if (USE_CODEDUMP == xmode) {
+    n += printf_text("};", USE_LT | USE_EOL);
+    n += printf_text("unsigned int shell_code_size =", USE_LT);
+    n += printf_nice(size, USE_DEC | USE_SEMICOLON | USE_EOL);
   }
 
   if (mode & USE_EOL) {

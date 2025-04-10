@@ -197,8 +197,8 @@ static int dump_elfheader(const pbuffer_t p, const poptions_t o) {
   const int MAXSIZE = 36;
 
   printf_text("ELF HEADER", USE_LT | USE_COLON | USE_EOL);
-  printf_text("Magic", USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  printf_data(getp(p, 0, 16), 16, 0, USE_HEX | USE_SPACE | USE_EOL);
+  printf_text("Magic", USE_TAB | USE_COLON | SET_PAD(MAXSIZE - 1));
+  printf_sore(getp(p, 0, 16), 16, USE_HEX | USE_SPACE | USE_EOL);
 
   printf_text("Class", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   if (isELF32(p)) {
@@ -475,7 +475,7 @@ static int dump_programheaders3(const pbuffer_t p, const uint64_t p_type, const 
 
   if (PT_INTERP == p_type) {
     n += printf("    [Requesting program interpreter:" );
-    n += printf_data(getp(p, p_offset, p_filesz), p_filesz, 0, USE_STR);
+    n += printf_sore(getp(p, p_offset, p_filesz), p_filesz, USE_STR);
     n += printf("]\n");
   }
 
@@ -1374,29 +1374,20 @@ static int dump_actions1(const pbuffer_t p, const poptions_t o, const char* name
   if (ACT_HEXDUMP == action) {
     n += printf_text("Hex dump of section", USE_LT);
     n += printf_text(name, USE_LT | USE_SQ | USE_COLON | USE_EOL);
-
-    if (0 != sh_size && sh_type != SHT_NOBITS) {
-      unknown_t p0 = getp(p, sh_offset, sh_size);
-
-      n += printf_data(p0, sh_size, sh_addr, USE_HEXDUMP);
-      n += printf_eol();
-
-      if (o->action & OPTPROGRAM_HASH) {
-        n += printf_sore(p0, sh_size, USE_SHA256 | USE_EOL);
-        n += printf_eol();
-      }
-    } else {
-      printf_w("section '%s' has no data to dump!", name);
-      n += printf_eol();
-    }
   } else if (ACT_STRDUMP == action) {
     n += printf_text("String dump of section", USE_LT);
     n += printf_text(name, USE_LT | USE_SQ | USE_COLON | USE_EOL);
+  } else if (ACT_CODEDUMP == action) {
+  }
 
+  if (ACT_HEXDUMP == action || ACT_STRDUMP == action || ACT_CODEDUMP == action) {
     if (0 != sh_size && sh_type != SHT_NOBITS) {
       unknown_t p0 = getp(p, sh_offset, sh_size);
 
-      n += printf_data(p0, sh_size, sh_addr, USE_STRDUMP);
+      if (ACT_HEXDUMP == action)       n += printf_data(p0, sh_size, sh_addr, USE_HEXDUMP);
+      else if (ACT_STRDUMP == action)  n += printf_data(p0, sh_size, sh_addr, USE_STRDUMP);
+      else if (ACT_CODEDUMP == action) n += printf_data(p0, sh_size, sh_addr, USE_CODEDUMP);
+
       n += printf_eol();
 
       if (o->action & OPTPROGRAM_HASH) {
@@ -1468,11 +1459,11 @@ static int dump_notes0(const pbuffer_t p, const int index, const uint64_t e_mach
 
   if (NT_GNU_BUILD_ID == n_type) {
     n += printf_text("Build ID", USE_LT | USE_TAB | USE_COLON);
-    n += printf_data(data, n_descsz, 0, USE_HEX | USE_TAB);
+    n += printf_sore(data, n_descsz, USE_HEX | USE_TAB);
     n += printf_eol();
   } else if (NT_GNU_GOLD_VERSION == n_type) {
     n += printf_text("Version", USE_LT | USE_TAB | USE_COLON);
-    n += printf_data(data, n_descsz, 0, USE_STR);
+    n += printf_sore(data, n_descsz, USE_STR);
     n += printf_eol();
   } else if (NT_GNU_ABI_TAG == n_type) {
     n += printf_text("OS", USE_LT | USE_TAB | USE_COLON);
@@ -1520,7 +1511,7 @@ static int dump_notes0(const pbuffer_t p, const int index, const uint64_t e_mach
     n += printf_eol();
   } else {
     n += printf_text("Description Data", USE_LT | USE_TAB | USE_COLON);
-    n += printf_data(pc, n_descsz, 0, USE_HEX | USE_TAB);
+    n += printf_sore(pc, n_descsz, USE_HEX | USE_TAB);
     n += printf_eol();
   }
 
