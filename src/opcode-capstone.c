@@ -32,27 +32,27 @@ int capstone_close(handle_t p) {
   if (isopcode(p)) {
     popcode_t oc = CAST(popcode_t, p);
     cs_close(&oc->cs);
+    return 0;
   }
 
   return -1;
 }
 
 int capstone_run(handle_t p, handle_t s) {
-  int r = -1;
+  int n = 0;
   if (isopcode(p) && isopsection(s)) {
     popcode_t oc = CAST(popcode_t, p);
 
-    size_t data_size = ocget_size(s);
-    void*  data = mallocx(data_size);
+    size_t s0size = ocget_size(s);
+    void*  s0data = mallocx(s0size);
 
-    if (data) {
-      if (bfd_get_section_contents(oc->items[OPCODE_BFD], ocget(s, MODE_OCSECTION), data, 0, data_size)) {
+    if (s0data) {
+      if (bfd_get_section_contents(oc->items[OPCODE_BFD], ocget(s, MODE_OCSECTION), s0data, 0, s0size)) {
 
         cs_insn *insn = NULL;
-        size_t count = cs_disasm(oc->cs, data, data_size, ocget_vmaddress(s), 0, &insn);
+        size_t count = cs_disasm(oc->cs, s0data, s0size, ocget_vmaddress(s), 0, &insn);
         if (count > 0) {
           for (size_t j = 0; j < count; ++j) {
-            int n = 0;
             n += printf_nice(insn[j].address, USE_LHEX16 | USE_COLON);
             n += printf_data(insn[j].bytes, insn[j].size, 0, USE_HEX | USE_SPACE);
             n += printf_pack(40 - n);
@@ -61,16 +61,15 @@ int capstone_run(handle_t p, handle_t s) {
           }
 
           cs_free(insn, count);
-          r = 0;
         } else {
           printf_e("Failed to disassemble given code!");
         }
       }
 
-      free(data);
+      free(s0data);
     }
   }
 
-  return r;
+  return n;
 }
 

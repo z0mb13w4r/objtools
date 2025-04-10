@@ -53,14 +53,14 @@ Elf64_Nhdr* get_nhdr64byindex(const pbuffer_t p, const int index);
 Elf32_Phdr* get_phdr32byindex(const pbuffer_t p, const int index);
 Elf64_Phdr* get_phdr64byindex(const pbuffer_t p, const int index);
 
-Elf32_Shdr* get_shdr32bytype(const pbuffer_t p, const int type);
-Elf64_Shdr* get_shdr64bytype(const pbuffer_t p, const int type);
+Elf32_Shdr* get_shdr32byindex(const pbuffer_t p, const int index);
+Elf64_Shdr* get_shdr64byindex(const pbuffer_t p, const int index);
 
 Elf32_Shdr* get_shdr32byname(const pbuffer_t p, const char* name);
 Elf64_Shdr* get_shdr64byname(const pbuffer_t p, const char* name);
 
-Elf32_Shdr* get_shdr32byindex(const pbuffer_t p, const int index);
-Elf64_Shdr* get_shdr64byindex(const pbuffer_t p, const int index);
+Elf32_Shdr* get_shdr32bytype(const pbuffer_t p, const int type);
+Elf64_Shdr* get_shdr64bytype(const pbuffer_t p, const int type);
 
 size_t get_secnamemaxsize(const pbuffer_t p);
 size_t _get_secname32maxsize(const pbuffer_t p);

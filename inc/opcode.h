@@ -14,6 +14,9 @@
 #define MODE_OCSECTION             (MODE_PUT0('S') | MODE_PUT1('E') | MODE_PUT2('C'))
 #define MODE_OCPHDR                (MODE_PUT0('P') | MODE_PUT1('H') | MODE_PUT2('R'))
 
+#define MODE_OCSHDR32              (MODE_PUT0('S') | MODE_PUT1('H') | MODE_PUT2(0x32))
+#define MODE_OCSHDR64              (MODE_PUT0('S') | MODE_PUT1('H') | MODE_PUT2(0x64))
+
 #define OPCODE_BFD                 (0)
 #define OPCODE_SYMBOLS             (1)
 #define OPCODE_SYMBOLS_DYNAMIC     (2)
@@ -22,6 +25,9 @@
 
 #define ocgetbfd(x)                CAST(bfd*, ocget(x, OPCODE_BFD))
 #define ocgetsec(x)                CAST(asection*, ocget(x, MODE_OCSECTION))
+
+#define MALLOCSWRAP(x,y,z,v)       MALLOCSMODE(x,y,z); (p##y)->item = v
+#define MALLOCSCBFUNC(x,y,z,a,b,c) MALLOCSMODE(x,y,z); (p##y)->param = a; (p##y)->cbfunc = b; (p##y)->handle = c
 
 typedef void (*opcbfunc_t)(handle_t p, handle_t item, unknown_t param);
 
@@ -60,11 +66,13 @@ bool_t isopphdr(handle_t p);
 bool_t isobject(handle_t p);
 bool_t isarchive(handle_t p);
 bool_t iscoredump(handle_t p);
+bool_t isattached(handle_t p);
 
 handle_t ocmalloc();
 handle_t ocfree(handle_t p);
 
 handle_t ocopen(const char* name);
+handle_t ocattach(handle_t p);
 int occlose(handle_t p);
 
 unknown_t ocget(handle_t p, const imode_t mode);

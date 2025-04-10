@@ -1,4 +1,5 @@
 #include "decode.h"
+#include "opcode.h"
 #include "printf.h"
 #include "elfcode.h"
 #include "memfind.h"
@@ -1368,16 +1369,23 @@ static int dump_actions0(const pbuffer_t p, const poptions_t o,
   return 0;
 }
 
-static int dump_actions1(const pbuffer_t p, const poptions_t o, const char* name, const int action,
+static int dump_actions1(const pbuffer_t p, const poptions_t o, const handle_t sec, const char* name, const int action,
                          const uint64_t sh_type, const uint64_t sh_offset, const uint64_t sh_size, const uint64_t sh_addr) {
   int n = 0;
+
+  handle_t oc = ocattach(p);
+
   if (ACT_HEXDUMP == action) {
     n += printf_text("Hex dump of section", USE_LT);
     n += printf_text(name, USE_LT | USE_SQ | USE_COLON | USE_EOL);
   } else if (ACT_STRDUMP == action) {
     n += printf_text("String dump of section", USE_LT);
     n += printf_text(name, USE_LT | USE_SQ | USE_COLON | USE_EOL);
-  } else if (ACT_CODEDUMP == action) {
+  } else if (ACT_DISASSEMBLE == action) {
+    n += printf_text("Disassemble of section", USE_LT);
+    n += printf_text(name, USE_LT | USE_SQ | USE_COLON | USE_EOL);
+
+    ocdisassemble_open(oc, o);
   }
 
   if (ACT_HEXDUMP == action || ACT_STRDUMP == action || ACT_CODEDUMP == action) {
@@ -1387,6 +1395,8 @@ static int dump_actions1(const pbuffer_t p, const poptions_t o, const char* name
       if (ACT_HEXDUMP == action)       n += printf_data(p0, sh_size, sh_addr, USE_HEXDUMP);
       else if (ACT_STRDUMP == action)  n += printf_data(p0, sh_size, sh_addr, USE_STRDUMP);
       else if (ACT_CODEDUMP == action) n += printf_data(p0, sh_size, sh_addr, USE_CODEDUMP);
+      else if (ACT_DISASSEMBLE == action) {
+      }
 
       n += printf_eol();
 
@@ -1400,6 +1410,11 @@ static int dump_actions1(const pbuffer_t p, const poptions_t o, const char* name
     }
   }
 
+  if (ACT_DISASSEMBLE == action) {
+    ocdisassemble_close(p);
+  }
+
+  occlose(oc);
   return n;
 }
 
@@ -1409,8 +1424,10 @@ static int dump_actions32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehd
     if (x->secname[0]) {
       Elf32_Shdr* shdr = get_shdr32byname(p, x->secname);
       if (shdr) {
+        MALLOCSWRAP(opwrap_t, s, MODE_OCSHDR32, shdr);
+
         dump_actions0(p, o, shdr->sh_type, shdr->sh_offset, shdr->sh_size);
-        dump_actions1(p, o, x->secname, x->action, shdr->sh_type, shdr->sh_offset, shdr->sh_size, shdr->sh_addr);
+        dump_actions1(p, o, ps, x->secname, x->action, shdr->sh_type, shdr->sh_offset, shdr->sh_size, shdr->sh_addr);
       } else {
         printf_w("section '%s' was not dumped because it does not exist!", x->secname);
       }
@@ -1428,8 +1445,10 @@ static int dump_actions64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
     if (x->secname[0]) {
       Elf64_Shdr* shdr = get_shdr64byname(p, x->secname);
       if (shdr) {
+        MALLOCSWRAP(opwrap_t, s, MODE_OCSHDR64, shdr);
+
         dump_actions0(p, o, shdr->sh_type, shdr->sh_offset, shdr->sh_size);
-        dump_actions1(p, o, x->secname, x->action, shdr->sh_type, shdr->sh_offset, shdr->sh_size, shdr->sh_addr);
+        dump_actions1(p, o, ps, x->secname, x->action, shdr->sh_type, shdr->sh_offset, shdr->sh_size, shdr->sh_addr);
       } else {
         printf_w("section '%s' was not dumped because it does not exist!", x->secname);
       }

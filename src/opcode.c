@@ -109,6 +109,15 @@ bool_t iscoredump(handle_t p) {
   return FALSE;
 }
 
+bool_t isattached(handle_t p) {
+  if (isopcode(p)) {
+    popcode_t p0 = CAST(popcode_t, p);
+    return !p0->items[OPCODE_BFD];
+  }
+
+  return FALSE;
+}
+
 unknown_t ocget(handle_t p, const imode_t mode) {
   if (isopcode(p) && mode < OPCODE_MAXITEMS) {
     popcode_t p0 = CAST(popcode_t, p);
@@ -357,7 +366,9 @@ handle_t ocmalloc() {
 handle_t ocfree(handle_t p) {
   if (isopcode(p)) {
     popcode_t p0 = CAST(popcode_t, p);
-    bfree(p0->data);
+    if (!isattached(p)) {
+      bfree(p0->data);
+    }
     bfree(p0->items[OPCODE_SYMBOLS]);
     bfree(p0->items[OPCODE_SYMBOLS_DYNAMIC]);
     bfree(p0->items[OPCODE_DISASSEMBLER]);
@@ -376,9 +387,22 @@ handle_t ocopen(const char* name) {
       popcode_t p2 = CAST(popcode_t, p1);
       p2->data = p0;
       p2->items[OPCODE_BFD] = bfd_openr(name, NULL);
-      return p2;
+      return p1;
     } else {
       bfree(p0);
+    }
+  }
+
+  return NULL;
+}
+
+handle_t ocattach(handle_t p) {
+  if (isbuffer(p)) {
+    handle_t p1 = ocmalloc();
+    if (p1) {
+      popcode_t p2 = CAST(popcode_t, p1);
+      p2->data = p;
+      return p1;
     }
   }
 
@@ -388,7 +412,9 @@ handle_t ocopen(const char* name) {
 int occlose(handle_t p) {
   if (isopcode(p)) {
     popcode_t p0 = CAST(popcode_t, p);
-    bfd_close(p0->items[OPCODE_BFD]);
+    if (p0->items[OPCODE_BFD]) {
+      bfd_close(p0->items[OPCODE_BFD]);
+    }
     ocfree(p);
     return 0;
   }
@@ -424,8 +450,7 @@ int ocdo_programs(handle_t p, opcbfunc_t cbfunc, unknown_t param) {
 static void callback_section(bfd *f, asection *s, void *p) {
   popfunc_t pcb = CAST(popfunc_t, p);
   if (pcb && pcb->cbfunc) {
-    MALLOCSMODE(opwrap_t, sec, MODE_OCSECTION);
-    psec->item = s;
+    MALLOCSWRAP(opwrap_t, sec, MODE_OCSECTION, s);
     pcb->cbfunc(pcb->handle, psec, pcb->param);
   }
 }
@@ -434,11 +459,7 @@ int ocdo_sections(handle_t p, opcbfunc_t cbfunc, unknown_t param) {
   if (isopcode(p) && cbfunc) {
     bfd* p0 = ocget(p, OPCODE_BFD);
     if (p0) {
-      MALLOCSMODE(opfunc_t, cb, MODE_OPCBFUNC);
-      pcb->param = param;
-      pcb->cbfunc = cbfunc;
-      pcb->handle = p;
-
+      MALLOCSCBFUNC(opfunc_t, cb, MODE_OPCBFUNC, param, cbfunc, p);
       bfd_map_over_sections(p0, callback_section, pcb);
       return 0;
     }
@@ -455,7 +476,7 @@ int ocdisassemble_open(handle_t p, handle_t o) {
       oc->action = op->action;
     }
 
-    if (oc->action & OPTPROGRAM_CAPSTONE) {
+    if (oc->action & OPTPROGRAM_CAPSTONE || isattached(p)) {
       return capstone_open(p, o);
     } else {
       return opcodelib_open(p, o);
@@ -468,7 +489,7 @@ int ocdisassemble_open(handle_t p, handle_t o) {
 int ocdisassemble_close(handle_t p) {
   if (isopcode(p)) {
     popcode_t oc = CAST(popcode_t, p);
-    if (oc->action & OPTPROGRAM_CAPSTONE) {
+    if (oc->action & OPTPROGRAM_CAPSTONE || isattached(p)) {
       return capstone_close(p);
     } else {
       return opcodelib_close(p);
@@ -481,7 +502,7 @@ int ocdisassemble_close(handle_t p) {
 int ocdisassemble_run(handle_t p, handle_t s) {
   if (isopcode(p) && isopsection(s)) {
     popcode_t oc = CAST(popcode_t, p);
-    if (oc->action & OPTPROGRAM_CAPSTONE) {
+    if (oc->action & OPTPROGRAM_CAPSTONE || isattached(p)) {
       return capstone_run(p, s);
     } else {
       return opcodelib_run(p, s);
