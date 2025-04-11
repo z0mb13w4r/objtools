@@ -12,7 +12,7 @@ typedef struct convert_s {
 } convert_t, *pconvert_t;
 
 bool_t isbits(const imode_t x);
-bool_t isused(pick_t* p, const pick_t x);
+bool_t isused(ppick_t p, const pick_t x);
 
 uint64_t ulog2(uint64_t  x);
 uint64_t atoimode(const char* src);

@@ -69,24 +69,20 @@ int capstone_raw(handle_t p, handle_t s, unknown_t data, const size_t size, cons
 int capstone_run(handle_t p, handle_t s) {
   int n = 0;
   if (isopcode(p) && isopshdr(s)) {
-    popcode_t oc = CAST(popcode_t, p);
-
     const size_t sz = ocget_size(s);
     unknown_t    p0 = mallocx(sz);
 
     if (p0) {
-      if (bfd_get_section_contents(oc->items[OPCODE_BFD], ocget(s, MODE_OCSHDR), p0, 0, sz)) {
+      if (bfd_get_section_contents(ocget(p, OPCODE_BFD), ocget(s, MODE_OCSHDR), p0, 0, sz)) {
         n += capstone_raw(p, s, p0, sz, ocget_vmaddress(s));
       }
 
       free(p0);
     }
   } else if (isopcode(p) && isopshdrNN(s)) {
-    popcode_t oc = CAST(popcode_t, p);
-
     const size_t sz = ocget_size(s);
     if (0 != sz && ocget_type(s) != SHT_NOBITS) {
-      n += capstone_raw(p, s, getp(oc->data, ocget_offset(s), sz), sz, ocget_vmaddress(s));
+      n += capstone_raw(p, s, getp(ocget(p, OPCODE_RAWDATA), ocget_offset(s), sz), sz, ocget_vmaddress(s));
     }
   }
 

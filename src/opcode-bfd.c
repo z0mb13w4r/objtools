@@ -1,5 +1,12 @@
-#include "opcode.h"
 #include "opcode-bfd.h"
+
+static void callback_section(bfd *f, asection *s, void *p) {
+  popfunc_t pcb = CAST(popfunc_t, p);
+  if (pcb && pcb->cbfunc) {
+    MALLOCSWRAP(opwrap_t, sec, MODE_OCSHDR, s);
+    pcb->cbfunc(pcb->handle, psec, pcb->param);
+  }
+}
 
 int opcodebfd_programs(handle_t p, opcbfunc_t cbfunc, unknown_t param) {
   bfd* p0 = ocget(p, OPCODE_BFD);
@@ -14,6 +21,17 @@ int opcodebfd_programs(handle_t p, opcbfunc_t cbfunc, unknown_t param) {
       }
       return 0;
     }
+  }
+
+  return -1;
+}
+
+int opcodebfd_sections(handle_t p, opcbfunc_t cbfunc, unknown_t param) {
+  bfd* p0 = ocget(p, OPCODE_BFD);
+  if (p0) {
+    MALLOCSCBFUNC(opfunc_t, cb, MODE_OPCBFUNC, param, cbfunc, p);
+    bfd_map_over_sections(p0, callback_section, pcb);
+    return 0;
   }
 
   return -1;

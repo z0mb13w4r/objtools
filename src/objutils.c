@@ -7,7 +7,7 @@ bool_t isbits(const imode_t x) {
   return x & (x -1);
 }
 
-bool_t isused(pick_t* p, const pick_t x) {
+bool_t isused(ppick_t p, const pick_t x) {
   if (p) {
     for ( ; PICK_END != *p; ++p) {
       if (x == *p) return TRUE;

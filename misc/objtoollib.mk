@@ -33,6 +33,7 @@ SRCS_C = \
 	readelf.c \
 	objutils.c \
 	opcode-bfd.c \
+	opcode-elf.c \
 	opcode-lib.c \
 	opcode-capstone.c
 

@@ -163,6 +163,9 @@ typedef struct options_s {
   };
   char prgname[256];
 
+  uint64_t  saddress; /* --start-address */
+  uint64_t  eaddress; /* --stop-address */
+
   paction_t actions;
 } options_t, *poptions_t;
 

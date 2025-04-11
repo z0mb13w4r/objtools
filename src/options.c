@@ -705,6 +705,11 @@ handle_t amalloc() {
 
 handle_t omalloc() {
   poptions_t p = mallocx(sizeof(options_t));
+  if (p) {
+    p->saddress = CAST(uint64_t, -1); /* --start-address */
+    p->eaddress = CAST(uint64_t, -1); /* --stop-address */
+  }
+
   return setmode(p, MODE_OPTIONS);
 }
 
