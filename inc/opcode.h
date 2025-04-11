@@ -73,7 +73,7 @@ typedef struct opfunc_s {
 
 bool_t isopcode(handle_t p);
 
-bool_t isopsection(handle_t p);
+bool_t isopshdr(handle_t p);
 bool_t isopphdr(handle_t p);
 
 bool_t isopehdrNN(handle_t p);
@@ -130,6 +130,7 @@ int ocdisassemble_open(handle_t p, handle_t o);
 int ocdisassemble_close(handle_t p);
 
 int ocdisassemble_run(handle_t p, handle_t s);
+int ocdisassemble_raw(handle_t p, handle_t s, unknown_t data, const size_t size, const uint64_t vaddr);
 
 #endif
 

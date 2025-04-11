@@ -554,7 +554,7 @@ static int dump_programheaders64(const pbuffer_t p, const poptions_t o, Elf64_Eh
 static int dump_dynamic0(const pbuffer_t p, const uint64_t sh_offset, const uint64_t count) {
   int n = 0;
   n += printf_text("Dynamic section at offset", USE_LT);
-  n += printf_nice(sh_offset, USE_FHEX16);
+  n += printf_nice(sh_offset, isELF64(p) ? USE_LHEX64 : USE_LHEX32);
   n += printf_text("contains", USE_LT | USE_SPACE);
   n += printf_nice(count, USE_DEC);
   n += printf_text(1 == count ? "entry" : "entries", USE_LT | USE_SPACE | USE_COLON | USE_EOL);
@@ -804,7 +804,7 @@ static int dump_relocs0(const pbuffer_t p, const int index, const uint64_t sh_of
   n += printf_text("Relocation section", USE_LT);
   n += printf_text(get_secnamebyindex(p, index), USE_LT | USE_SPACE | USE_SQ);
   n += printf_text("at offset", USE_LT | USE_SPACE);
-  n += printf_nice(sh_offset, USE_FHEX16);
+  n += printf_nice(sh_offset, isELF64(p) ? USE_LHEX64 : USE_LHEX32);
   n += printf_text("contains", USE_LT | USE_SPACE);
   n += printf_nice(count, USE_DEC);
   n += printf_text(1 == count ? "entry" : "entries", USE_LT | USE_SPACE | USE_COLON | USE_EOL);
@@ -876,7 +876,7 @@ static int dump_symbols0(const pbuffer_t p, const poptions_t o,
   n += printf_text("Symbol table", USE_LT);
   n += printf_text(get_secnamebyindex(p, secindex), USE_LT | USE_SQ | USE_SPACE);
   n += printf_text("at offset", USE_SPACE);
-  n += printf_nice(sh_offset, USE_FHEX16);
+  n += printf_nice(sh_offset, isELF64(p) ? USE_LHEX64 : USE_LHEX32);
   n += printf_text("contains", USE_SPACE);
   n += printf_nice(count, USE_DEC);
   n += printf_text(1 == count ? "entry" : "entries", USE_LT | USE_SPACE | USE_COLON | USE_EOL);
@@ -1369,7 +1369,7 @@ static int dump_actions0(const pbuffer_t p, const poptions_t o,
   return 0;
 }
 
-static int dump_actions1(const pbuffer_t p, const poptions_t o, const handle_t sec, const char* name, const int action,
+static int dump_actions1(const pbuffer_t p, const poptions_t o, const handle_t s, const char* name, const int action,
                          const uint64_t sh_type, const uint64_t sh_offset, const uint64_t sh_size, const uint64_t sh_addr) {
   int n = 0;
 
@@ -1377,26 +1377,25 @@ static int dump_actions1(const pbuffer_t p, const poptions_t o, const handle_t s
 
   if (ACT_HEXDUMP == action) {
     n += printf_text("Hex dump of section", USE_LT);
-    n += printf_text(name, USE_LT | USE_SQ | USE_COLON | USE_EOL);
+    n += printf_text(name, USE_LT | USE_SPACE | USE_SQ | USE_COLON | USE_EOL);
   } else if (ACT_STRDUMP == action) {
     n += printf_text("String dump of section", USE_LT);
-    n += printf_text(name, USE_LT | USE_SQ | USE_COLON | USE_EOL);
+    n += printf_text(name, USE_LT | USE_SPACE | USE_SQ | USE_COLON | USE_EOL);
   } else if (ACT_DISASSEMBLE == action) {
     n += printf_text("Disassemble of section", USE_LT);
-    n += printf_text(name, USE_LT | USE_SQ | USE_COLON | USE_EOL);
+    n += printf_text(name, USE_LT | USE_SPACE | USE_SQ | USE_COLON | USE_EOL);
 
     ocdisassemble_open(oc, o);
   }
 
-  if (ACT_HEXDUMP == action || ACT_STRDUMP == action || ACT_CODEDUMP == action) {
+  if (ACT_HEXDUMP == action || ACT_STRDUMP == action || ACT_CODEDUMP == action || ACT_DISASSEMBLE == action) {
     if (0 != sh_size && sh_type != SHT_NOBITS) {
       unknown_t p0 = getp(p, sh_offset, sh_size);
 
-      if (ACT_HEXDUMP == action)       n += printf_data(p0, sh_size, sh_addr, USE_HEXDUMP);
-      else if (ACT_STRDUMP == action)  n += printf_data(p0, sh_size, sh_addr, USE_STRDUMP);
-      else if (ACT_CODEDUMP == action) n += printf_data(p0, sh_size, sh_addr, USE_CODEDUMP);
-      else if (ACT_DISASSEMBLE == action) {
-      }
+      if (ACT_HEXDUMP == action)          n += printf_data(p0, sh_size, sh_addr, USE_HEXDUMP);
+      else if (ACT_STRDUMP == action)     n += printf_data(p0, sh_size, sh_addr, USE_STRDUMP);
+      else if (ACT_CODEDUMP == action)    n += printf_data(p0, sh_size, sh_addr, USE_CODEDUMP);
+      else if (ACT_DISASSEMBLE == action) n += ocdisassemble_run(oc, s);
 
       n += printf_eol();
 

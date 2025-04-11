@@ -38,37 +38,56 @@ int capstone_close(handle_t p) {
   return -1;
 }
 
-int capstone_run(handle_t p, handle_t s) {
+int capstone_raw(handle_t p, handle_t s, unknown_t data, const size_t size, const uint64_t vaddr) {
   int n = 0;
-  if (isopcode(p) && isopsection(s)) {
+  if (data && isopcode(p) && isopshdrNN(s)) {
     popcode_t oc = CAST(popcode_t, p);
 
-    size_t s0size = ocget_size(s);
-    void*  s0data = mallocx(s0size);
+    cs_insn *insn = NULL;
+    size_t count = cs_disasm(oc->cs, data, size, vaddr, 0, &insn);
+    if (count > 0) {
+      for (size_t j = 0; j < count; ++j) {
+        int n1 = 0;
+        n1 += printf_nice(insn[j].address, USE_LHEX32 | USE_COLON);
+        n1 += printf_sore(insn[j].bytes, insn[j].size, USE_HEX | USE_SPACE);
+        n1 += printf_pack(40 - n1);
+        n1 += printf_text(insn[j].mnemonic, USE_LT | USE_SPACE);
+        n1 += printf_text(insn[j].op_str, USE_LT | USE_SPACE | USE_EOL);
 
-    if (s0data) {
-      if (bfd_get_section_contents(oc->items[OPCODE_BFD], ocget(s, MODE_OCSHDR), s0data, 0, s0size)) {
-
-        cs_insn *insn = NULL;
-        size_t count = cs_disasm(oc->cs, s0data, s0size, ocget_vmaddress(s), 0, &insn);
-        if (count > 0) {
-          for (size_t j = 0; j < count; ++j) {
-            n += printf_nice(insn[j].address, USE_LHEX16 | USE_COLON);
-            n += printf_data(insn[j].bytes, insn[j].size, 0, USE_HEX | USE_SPACE);
-            n += printf_pack(40 - n);
-            n += printf_text(insn[j].mnemonic, USE_LT | USE_SPACE);
-            n += printf_text(insn[j].op_str, USE_LT | USE_SPACE | USE_EOL);
-          }
-
-          cs_free(insn, count);
-        } else {
-          printf_e("Failed to disassemble given code!");
-        }
+        n += n1;
       }
 
-      free(s0data);
+      cs_free(insn, count);
+    } else {
+      printf_e("Failed to disassemble given code!");
+    }
+  }
+
+  return n;
+}
+
+int capstone_run(handle_t p, handle_t s) {
+  int n = 0;
+  if (isopcode(p) && isopshdr(s)) {
+    popcode_t oc = CAST(popcode_t, p);
+
+    const size_t sz = ocget_size(s);
+    unknown_t    p0 = mallocx(sz);
+
+    if (p0) {
+      if (bfd_get_section_contents(oc->items[OPCODE_BFD], ocget(s, MODE_OCSHDR), p0, 0, sz)) {
+        n += capstone_raw(p, s, p0, sz, ocget_vmaddress(s));
+      }
+
+      free(p0);
     }
   } else if (isopcode(p) && isopshdrNN(s)) {
+    popcode_t oc = CAST(popcode_t, p);
+
+    const size_t sz = ocget_size(s);
+    if (0 != sz && ocget_type(s) != SHT_NOBITS) {
+      n += capstone_raw(p, s, getp(oc->data, ocget_offset(s), sz), sz, ocget_vmaddress(s));
+    }
   }
 
   return n;

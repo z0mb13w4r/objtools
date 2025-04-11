@@ -48,8 +48,15 @@ int opcodelib_close(handle_t p) {
   return 0;
 }
 
+int opcodelib_raw(handle_t p, handle_t s, unknown_t data, const size_t size, const uint64_t vaddr) {
+  int n = 0;
+
+  return n;
+}
+
 int opcodelib_run(handle_t p, handle_t s) {
-  if (isopcode(p) && isopsection(s)) {
+  int n = 0;
+  if (isopcode(p) && isopshdr(s)) {
 //    uint64_t soffset = ocget_soffset(p, s);
 //    uint64_t eoffset = ocget_eoffset(p, s);
 
@@ -79,11 +86,9 @@ int opcodelib_run(handle_t p, handle_t s) {
 
       free(di->buffer);
       di->buffer = NULL;
-
-      return 0;
     }
   }
 
-  return -1;
+  return n;
 }
 

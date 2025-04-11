@@ -7,6 +7,7 @@ int capstone_open(handle_t p, handle_t o);
 int capstone_close(handle_t p);
 
 int capstone_run(handle_t p, handle_t s);
+int capstone_raw(handle_t p, handle_t s, unknown_t data, const size_t size, const uint64_t vaddr);
 
 #endif
 
