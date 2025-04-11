@@ -64,7 +64,7 @@ int opcodelib_run(handle_t p, handle_t s) {
     if (di) {
       di->buffer_vma    = ocget_vmaddress(s);
       di->buffer_length = ocget_size(s);
-      di->section       = ocget(s, MODE_OCSECTION);
+      di->section       = ocget(s, MODE_OCSHDR);
       di->buffer        = mallocx(di->buffer_length);
 
       if (bfd_get_section_contents(oc->items[OPCODE_BFD], di->section, di->buffer, 0, di->buffer_length)) {

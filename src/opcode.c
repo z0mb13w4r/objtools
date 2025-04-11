@@ -65,9 +65,12 @@ static handle_t create_symbols_dynamic(bfd *f) {
 }
 
 static bool_t ismodeopwrap(const imode_t mode) {
-  return MODE_OCSECTION == mode ||
+  return MODE_OCSHDR == mode ||
          MODE_OCPHDR == mode ||
-         MODE_OPWRAP == mode;
+         MODE_OPWRAP == mode ||
+         MODE_OCEHDR32 == mode || MODE_OCEHDR64 == mode ||
+         MODE_OCPHDR32 == mode || MODE_OCPHDR64 == mode ||
+         MODE_OCSHDR32 == mode || MODE_OCSHDR64 == mode;
 }
 
 bool_t isopcode(handle_t p) {
@@ -75,11 +78,23 @@ bool_t isopcode(handle_t p) {
 }
 
 bool_t isopsection(handle_t p) {
-  return ismode(p, MODE_OCSECTION);
+  return ismode(p, MODE_OCSHDR);
 }
 
 bool_t isopphdr(handle_t p) {
   return ismode(p, MODE_OCPHDR);
+}
+
+bool_t isopehdrNN(handle_t p) {
+  return ismode(p, MODE_OCEHDR32) || ismode(p, MODE_OCEHDR64);
+}
+
+bool_t isopphdrNN(handle_t p) {
+  return ismode(p, MODE_OCPHDR32) || ismode(p, MODE_OCPHDR64);
+}
+
+bool_t isopshdrNN(handle_t p) {
+  return ismode(p, MODE_OCSHDR32) || ismode(p, MODE_OCSHDR64);
 }
 
 bool_t isobject(handle_t p) {
@@ -127,11 +142,9 @@ unknown_t ocget(handle_t p, const imode_t mode) {
       p0->items[mode] = create_symbols_dynamic(p0->items[OPCODE_BFD]);
     }
     return p0->items[mode];
-  } else if (ismode(p, mode)) {
-    if (ismodeopwrap(mode)) {
-      popwrap_t p0 = CAST(popwrap_t, p);
-      return p0->item;
-    }
+  } else if (ismode(p, mode) && ismodeopwrap(mode)) {
+    popwrap_t p0 = CAST(popwrap_t, p);
+    return p0->item;
   }
 
   return NULL;
@@ -179,7 +192,7 @@ uint64_t ocget_flags(handle_t p) {
     bfd* p0 = ocget(p, OPCODE_BFD);
     return p0 ? bfd_get_file_flags(p0) : 0;
   } else if (isopsection(p)) {
-    asection* p0 = ocget(p, MODE_OCSECTION);
+    asection* p0 = ocget(p, MODE_OCSHDR);
     return p0 ? p0->flags : 0;
   } else if (isopphdr(p)) {
     pbfd_phdr_t p0 = ocget(p, MODE_OCPHDR);
@@ -191,7 +204,7 @@ uint64_t ocget_flags(handle_t p) {
 
 uint64_t ocget_size(handle_t p) {
   if (isopsection(p)) {
-    asection* p0 = ocget(p, MODE_OCSECTION);
+    asection* p0 = ocget(p, MODE_OCSHDR);
     return p0 ? bfd_section_size(p0) : 0;
   } else if (isopphdr(p)) {
     pbfd_phdr_t p0 = ocget(p, MODE_OCPHDR);
@@ -221,7 +234,7 @@ uint64_t ocget_archsize(handle_t p) {
 
 uint64_t ocget_position(handle_t p) {
   if (isopsection(p)) {
-    asection* p0 = ocget(p, MODE_OCSECTION);
+    asection* p0 = ocget(p, MODE_OCSHDR);
     return p0 ? p0->filepos : 0;
   }
 
@@ -230,7 +243,7 @@ uint64_t ocget_position(handle_t p) {
 
 uint64_t ocget_alignment(handle_t p) {
   if (isopsection(p)) {
-    asection* p0 = ocget(p, MODE_OCSECTION);
+    asection* p0 = ocget(p, MODE_OCSHDR);
     return p0 ? bfd_section_alignment(p0) : 0;
   } else if (isopphdr(p)) {
     pbfd_phdr_t p0 = ocget(p, MODE_OCPHDR);
@@ -269,7 +282,7 @@ uint64_t ocget_saddress(handle_t p) {
 
 uint64_t ocget_lmaddress(handle_t p) {
   if (isopsection(p)) {
-    return bfd_section_lma(ocget(p, MODE_OCSECTION));
+    return bfd_section_lma(ocget(p, MODE_OCSHDR));
   }
 
   return 0;
@@ -277,7 +290,7 @@ uint64_t ocget_lmaddress(handle_t p) {
 
 uint64_t ocget_vmaddress(handle_t p) {
   if (isopsection(p)) {
-    return bfd_section_vma(ocget(p, MODE_OCSECTION));
+    return bfd_section_vma(ocget(p, MODE_OCSHDR));
   } else if (isopphdr(p)) {
     pbfd_phdr_t p0 = ocget(p, MODE_OCPHDR);
     return p0 ? p0->p_vaddr : 0;
@@ -290,7 +303,7 @@ uint64_t ocget_opb(handle_t p, handle_t s) {
   uint64_t opb = 1;
 
   if (isopcode(p) && isopsection(s)) {
-    opb = bfd_octets_per_byte(ocget(p, OPCODE_BFD), ocget(p, MODE_OCSECTION));
+    opb = bfd_octets_per_byte(ocget(p, OPCODE_BFD), ocget(p, MODE_OCSHDR));
   }
 
   return opb;
@@ -338,7 +351,7 @@ const char* ocget_name(handle_t p) {
   if (p0) {
     return bfd_get_filename(p0);
   } else if (isopsection(p)) {
-    return bfd_section_name(ocget(p, MODE_OCSECTION));
+    return bfd_section_name(ocget(p, MODE_OCSHDR));
   }
 
   return NULL;
@@ -450,7 +463,7 @@ int ocdo_programs(handle_t p, opcbfunc_t cbfunc, unknown_t param) {
 static void callback_section(bfd *f, asection *s, void *p) {
   popfunc_t pcb = CAST(popfunc_t, p);
   if (pcb && pcb->cbfunc) {
-    MALLOCSWRAP(opwrap_t, sec, MODE_OCSECTION, s);
+    MALLOCSWRAP(opwrap_t, sec, MODE_OCSHDR, s);
     pcb->cbfunc(pcb->handle, psec, pcb->param);
   }
 }

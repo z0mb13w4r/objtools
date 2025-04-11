@@ -47,7 +47,7 @@ int capstone_run(handle_t p, handle_t s) {
     void*  s0data = mallocx(s0size);
 
     if (s0data) {
-      if (bfd_get_section_contents(oc->items[OPCODE_BFD], ocget(s, MODE_OCSECTION), s0data, 0, s0size)) {
+      if (bfd_get_section_contents(oc->items[OPCODE_BFD], ocget(s, MODE_OCSHDR), s0data, 0, s0size)) {
 
         cs_insn *insn = NULL;
         size_t count = cs_disasm(oc->cs, s0data, s0size, ocget_vmaddress(s), 0, &insn);
@@ -68,6 +68,7 @@ int capstone_run(handle_t p, handle_t s) {
 
       free(s0data);
     }
+  } else if (isopcode(p) && isopshdrNN(s)) {
   }
 
   return n;

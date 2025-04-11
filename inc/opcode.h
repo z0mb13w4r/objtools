@@ -11,9 +11,9 @@
 #define MODE_OPCODE                (MODE_PUT0('O') | MODE_PUT1('P') | MODE_PUT2('C'))
 #define MODE_OPWRAP                (MODE_PUT0('W') | MODE_PUT1('R') | MODE_PUT2('P'))
 
-#define MODE_OPCBFUNC              (MODE_PUT0('C') | MODE_PUT1('B') | MODE_PUT2('F'))
-#define MODE_OCSECTION             (MODE_PUT0('S') | MODE_PUT1('E') | MODE_PUT2('C'))
+#define MODE_OCSHDR                (MODE_PUT0('S') | MODE_PUT1('H') | MODE_PUT2('R'))
 #define MODE_OCPHDR                (MODE_PUT0('P') | MODE_PUT1('H') | MODE_PUT2('R'))
+#define MODE_OPCBFUNC              (MODE_PUT0('C') | MODE_PUT1('B') | MODE_PUT2('F'))
 
 #define MODE_OCEHDR32              (MODE_PUT0('E') | MODE_PUT1('H') | MODE_PUT2(0x32))
 #define MODE_OCEHDR64              (MODE_PUT0('E') | MODE_PUT1('H') | MODE_PUT2(0x64))
@@ -29,7 +29,14 @@
 #define OPCODE_MAXITEMS            (4)
 
 #define ocgetbfd(x)                CAST(bfd*, ocget(x, OPCODE_BFD))
-#define ocgetsec(x)                CAST(asection*, ocget(x, MODE_OCSECTION))
+#define ocgetshdr(x)               CAST(asection*, ocget(x, MODE_OCSHDR))
+
+#define ocgetehdr32(x)             CAST(Elf32_Ehdr*, ocget(x, MODE_OCEHDR32))
+#define ocgetehdr64(x)             CAST(Elf64_Ehdr*, ocget(x, MODE_OCEHDR64))
+#define ocgetphdr32(x)             CAST(Elf32_Phdr*, ocget(x, MODE_OCPHDR32))
+#define ocgetphdr64(x)             CAST(Elf64_Phdr*, ocget(x, MODE_OCPHDR64))
+#define ocgetshdr32(x)             CAST(Elf32_Shdr*, ocget(x, MODE_OCPSDR32))
+#define ocgetshdr64(x)             CAST(Elf64_Shdr*, ocget(x, MODE_OCPSDR64))
 
 #define MALLOCSWRAP(x,y,z,v)       MALLOCSMODE(x,y,z); (p##y)->item = v
 #define MALLOCSCBFUNC(x,y,z,a,b,c) MALLOCSMODE(x,y,z); (p##y)->param = a; (p##y)->cbfunc = b; (p##y)->handle = c
@@ -65,8 +72,13 @@ typedef struct opfunc_s {
 } opfunc_t, *popfunc_t;
 
 bool_t isopcode(handle_t p);
+
 bool_t isopsection(handle_t p);
 bool_t isopphdr(handle_t p);
+
+bool_t isopehdrNN(handle_t p);
+bool_t isopphdrNN(handle_t p);
+bool_t isopshdrNN(handle_t p);
 
 bool_t isobject(handle_t p);
 bool_t isarchive(handle_t p);

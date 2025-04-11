@@ -82,7 +82,7 @@ static void callback_sections(handle_t p, handle_t section, unknown_t param) {
   printf_nice(ocget_position(section) + soffset, USE_FHEX16 | USE_COLON | USE_EOL);
 
   bfd_byte *data = NULL;
-  if (bfd_get_full_section_contents(ocgetbfd(p), ocgetsec(section), &data)) {
+  if (bfd_get_full_section_contents(ocgetbfd(p), ocgetshdr(section), &data)) {
     printf_data(data, dsize, soffset + ocget_vmaddress(section), USE_HEXDUMP);
   } else {
     printf_w("reading section %s failed because: %s.", ocget_name(section), bfd_errmsg(bfd_get_error()));
@@ -112,7 +112,7 @@ static void callback_programhdr(handle_t p, handle_t phdr, unknown_t param) {
 
 static void callback_sectionhdr(handle_t p, handle_t shdr, unknown_t param) {
   size_t name_size = *CAST(size_t*, param);
-  asection* s = ocget(shdr, MODE_OCSECTION);
+  asection* s = ocget(shdr, MODE_OCSHDR);
 
   uint64_t flags = ocget_flags(shdr);
 
