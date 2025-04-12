@@ -68,12 +68,7 @@ static handle_t create_symbols_dynamic(bfd *f) {
 }
 
 static bool_t ismodeopwrap(const imode_t mode) {
-  return MODE_OCSHDR == mode ||
-         MODE_OCPHDR == mode ||
-         MODE_OPWRAP == mode ||
-         MODE_OCEHDR32 == mode || MODE_OCEHDR64 == mode ||
-         MODE_OCPHDR32 == mode || MODE_OCPHDR64 == mode ||
-         MODE_OCSHDR32 == mode || MODE_OCSHDR64 == mode;
+  return MODE_GET3(mode) == MODE_OPWRAP;
 }
 
 bool_t isopcode(handle_t p) {

@@ -50,7 +50,7 @@ int capstone_raw(handle_t p, handle_t s, unknown_t data, const size_t size, cons
         int n1 = 0;
         n1 += printf_nice(insn[j].address, USE_LHEX32 | USE_COLON);
         n1 += printf_sore(insn[j].bytes, insn[j].size, USE_HEX | USE_SPACE);
-        n1 += printf_pack(40 - n1);
+        n1 += printf_pack(42 - n1);
         n1 += printf_text(insn[j].mnemonic, USE_LT | USE_SPACE);
         n1 += printf_text(insn[j].op_str, USE_LT | USE_SPACE | USE_EOL);
 

@@ -8,19 +8,20 @@
 
 #include "buffer.h"
 
+#define MODE_OPWRAP                'W'
+
 #define MODE_OPCODE                (MODE_PUT0('O') | MODE_PUT1('P') | MODE_PUT2('C'))
-#define MODE_OPWRAP                (MODE_PUT0('W') | MODE_PUT1('R') | MODE_PUT2('P'))
 
-#define MODE_OCSHDR                (MODE_PUT0('S') | MODE_PUT1('H') | MODE_PUT2('R'))
-#define MODE_OCPHDR                (MODE_PUT0('P') | MODE_PUT1('H') | MODE_PUT2('R'))
-#define MODE_OPCBFUNC              (MODE_PUT0('C') | MODE_PUT1('B') | MODE_PUT2('F'))
+#define MODE_OCSHDR                (MODE_PUT0('S') | MODE_PUT1('H') | MODE_PUT2('R') | MODE_PUT3(MODE_OPWRAP))
+#define MODE_OCPHDR                (MODE_PUT0('P') | MODE_PUT1('H') | MODE_PUT2('R') | MODE_PUT3(MODE_OPWRAP))
+#define MODE_OPCBFUNC              (MODE_PUT0('C') | MODE_PUT1('B') | MODE_PUT2('F') | MODE_PUT3(MODE_OPWRAP))
 
-#define MODE_OCEHDR32              (MODE_PUT0('E') | MODE_PUT1('H') | MODE_PUT2(0x32))
-#define MODE_OCEHDR64              (MODE_PUT0('E') | MODE_PUT1('H') | MODE_PUT2(0x64))
-#define MODE_OCPHDR32              (MODE_PUT0('P') | MODE_PUT1('H') | MODE_PUT2(0x32))
-#define MODE_OCPHDR64              (MODE_PUT0('P') | MODE_PUT1('H') | MODE_PUT2(0x64))
-#define MODE_OCSHDR32              (MODE_PUT0('S') | MODE_PUT1('H') | MODE_PUT2(0x32))
-#define MODE_OCSHDR64              (MODE_PUT0('S') | MODE_PUT1('H') | MODE_PUT2(0x64))
+#define MODE_OCEHDR32              (MODE_PUT0('E') | MODE_PUT1('H') | MODE_PUT2(0x32) | MODE_PUT3(MODE_OPWRAP))
+#define MODE_OCEHDR64              (MODE_PUT0('E') | MODE_PUT1('H') | MODE_PUT2(0x64) | MODE_PUT3(MODE_OPWRAP))
+#define MODE_OCPHDR32              (MODE_PUT0('P') | MODE_PUT1('H') | MODE_PUT2(0x32) | MODE_PUT3(MODE_OPWRAP))
+#define MODE_OCPHDR64              (MODE_PUT0('P') | MODE_PUT1('H') | MODE_PUT2(0x64) | MODE_PUT3(MODE_OPWRAP))
+#define MODE_OCSHDR32              (MODE_PUT0('S') | MODE_PUT1('H') | MODE_PUT2(0x32) | MODE_PUT3(MODE_OPWRAP))
+#define MODE_OCSHDR64              (MODE_PUT0('S') | MODE_PUT1('H') | MODE_PUT2(0x64) | MODE_PUT3(MODE_OPWRAP))
 
 #define OPCODE_BFD                 (0)
 #define OPCODE_SYMBOLS             (1)
