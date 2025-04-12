@@ -32,12 +32,12 @@ int main(int argc, char* argv[]) {
       } else {
         printf_e("'%s': no such file.", o->inpname);
       }
-      destroy(p);
+
+      xfree(p);
     }
   }
 
-  destroy(o);
-
+  xfree(o);
   return r;
 }
 

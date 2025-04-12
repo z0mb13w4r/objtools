@@ -102,7 +102,7 @@ handle_t lattache(handle_t p, handle_t item) {
 handle_t ldetach(handle_t p) {
   if (islink(p)) {
     pnode_t p1 = lnext(p);
-    release(p);
+    xdump(p);
     return p1;
   }
 
@@ -112,7 +112,7 @@ handle_t ldetach(handle_t p) {
 handle_t ldestroy(handle_t p) {
   if (islink(p)) {
     pnode_t p1 = lnext(p);
-    destroy(p);
+    xfree(p);
     return p1;
   }
 
@@ -128,7 +128,7 @@ handle_t ldetache(handle_t p) {
     }
 
     if (islnext(p1)) {
-      release(lnext(p1));
+      xdump(lnext(p1));
       p1->next = NULL;
     }
   }
@@ -145,7 +145,7 @@ handle_t ldestroye(handle_t p) {
     }
 
     if (islnext(p1)) {
-      destroy(lnext(p1));
+      xfree(lnext(p1));
       p1->next = NULL;
     }
   }
@@ -154,7 +154,7 @@ handle_t ldestroye(handle_t p) {
 }
 
 handle_t lmalloc() {
-  pnode_t p = mallocx(sizeof(node_t));
+  pnode_t p = xmalloc(sizeof(node_t));
   return setmode(p, MODE_LINK);
 }
 

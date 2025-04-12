@@ -32,7 +32,7 @@ handle_t setmode(handle_t p, const int mode) {
   return p;
 }
 
-unknown_t mallocx(const size_t size) {
+unknown_t xmalloc(const size_t size) {
   unknown_t p = malloc(size);
   if (p) {
     memset(p, 0, size);
@@ -40,7 +40,15 @@ unknown_t mallocx(const size_t size) {
   return p;
 }
 
-handle_t destroy(handle_t p) {
+unknown_t xdump(unknown_t p) {
+  if (ismode0(p, MODE_LINK)) {
+    lfree(p);
+  }
+
+  return NULL;
+}
+
+unknown_t xfree(unknown_t p) {
   if (p) {
     if (ismode0(p, MODE_BUFFER)) {
       return bfree(p);
@@ -49,7 +57,7 @@ handle_t destroy(handle_t p) {
     } else if (ismode0(p, MODE_ACTIONS)) {
       return afree(p);
     } else if (ismode0(p, MODE_LINK)) {
-      destroy(CAST(pnode_t, p)->item);
+      xfree(CAST(pnode_t, p)->item);
       return lfree(p);
     }
 
@@ -59,16 +67,8 @@ handle_t destroy(handle_t p) {
   return NULL;
 }
 
-handle_t release(handle_t p) {
-  if (ismode0(p, MODE_LINK)) {
-    lfree(p);
-  }
-
-  return NULL;
-}
-
 handle_t bmalloc() {
-  handle_t p = mallocx(sizeof(buffer_t));
+  handle_t p = xmalloc(sizeof(buffer_t));
   return setmode(p, MODE_BUFFER);
 }
 
@@ -82,6 +82,21 @@ handle_t bfree(handle_t p) {
   return p;
 }
 
+handle_t bclone(handle_t p, const int offset, const size_t size) {
+  if (ismode(p, MODE_BUFFER)) {
+    unknown_t p0 = getp(p, offset, size);
+    if (p0) {
+      pbuffer_t p1 = bmalloc(size);
+      if (issafe(p1)) {
+        memcpy(p1->data, p0, size);
+        return p1;
+      }
+    }
+  }
+
+  return NULL;
+}
+
 handle_t bopen(const char* name) {
   FILE* f = fopen(name, "rb");
   if (f) {
@@ -89,9 +104,9 @@ handle_t bopen(const char* name) {
     if (p) {
       strname(p->note, name);
       p->size = fsize(f);
-      p->data = mallocx(p->size);
+      p->data = xmalloc(p->size);
       if (p->size != fread(p->data, 1, p->size, f)) {
-        p = destroy(p);
+        p = xfree(p);
       }
 
       fclose(f);

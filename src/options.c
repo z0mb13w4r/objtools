@@ -699,12 +699,12 @@ int isoptions(handle_t p) {
 }
 
 handle_t amalloc() {
-  paction_t p = mallocx(sizeof(action_t));
+  paction_t p = xmalloc(sizeof(action_t));
   return setmode(p, MODE_ACTIONS);
 }
 
 handle_t omalloc() {
-  poptions_t p = mallocx(sizeof(options_t));
+  poptions_t p = xmalloc(sizeof(options_t));
   if (p) {
     p->saddress = CAST(uint64_t, -1); /* --start-address */
     p->eaddress = CAST(uint64_t, -1); /* --stop-address */

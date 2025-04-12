@@ -24,7 +24,7 @@ int main(int argc, char* argv[]) {
     }
   }
 
-  destroy(o);
+  xfree(o);
   return r;
 }
 

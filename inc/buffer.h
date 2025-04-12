@@ -15,19 +15,19 @@ typedef struct buffer_s {
 } buffer_t, *pbuffer_t;
 
 handle_t setmode(handle_t p, const int mode);
-handle_t destroy(handle_t p);
-handle_t release(handle_t p);
 
 bool_t issafe(pbuffer_t p);
 bool_t ismode(handle_t p, const int mode);
 bool_t isbuffer(handle_t p);
 
-unknown_t mallocx(const size_t size);
+unknown_t xmalloc(const size_t size);
+unknown_t xdump(unknown_t p);
+unknown_t xfree(unknown_t p);
 
 handle_t bmalloc();
 handle_t bfree(handle_t p);
 handle_t bopen(const char* name);
-
+handle_t bclone(handle_t p, const int offset, const size_t size);
 
 unknown_t getp(const pbuffer_t p, const int offset, const size_t size);
 int   get(const pbuffer_t p, const int offset);

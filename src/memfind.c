@@ -34,7 +34,7 @@ handle_t fnext(handle_t p) {
 
 handle_t fmalloc(unknown_t data, const size_t size, const size_t chunksize) {
   if (data) {
-    pfind_t p = mallocx(sizeof(find_t));
+    pfind_t p = xmalloc(sizeof(find_t));
     if (p) {
       p->cpos = 0;
       p->epos = size;

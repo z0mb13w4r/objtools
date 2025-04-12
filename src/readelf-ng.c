@@ -23,11 +23,11 @@ int main(int argc, char* argv[]) {
         }
       }
 
-      destroy(p);
+      xfree(p);
     }
   }
 
-  destroy(o);
+  xfree(o);
   return r;
 }
 

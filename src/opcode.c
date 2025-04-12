@@ -29,7 +29,7 @@ static handle_t create_symbols(bfd *f) {
     if (size > 0) {
       pbuffer_t bsy = bmalloc();
       if (bsy) {
-        asymbol **asy = (asymbol **) mallocx(size);
+        asymbol **asy = (asymbol **) xmalloc(size);
         if (asy) {
           long count = bfd_canonicalize_symtab(f, asy);
           bsy->data = asy;
@@ -51,7 +51,7 @@ static handle_t create_symbols_dynamic(bfd *f) {
     if (size > 0) {
       pbuffer_t bsy = bmalloc();
       if (bsy) {
-        asymbol **asy = (asymbol **) mallocx(size);
+        asymbol **asy = (asymbol **) xmalloc(size);
         if (asy) {
           long count = bfd_canonicalize_dynamic_symtab(f, asy);
           bsy->data = asy;
@@ -467,7 +467,7 @@ const char* ocget_fileformat(handle_t p) {
 }
 
 handle_t ocmalloc() {
-  popcode_t p = mallocx(sizeof(opcode_t));
+  popcode_t p = xmalloc(sizeof(opcode_t));
   if (p) {
     p->saddress = CAST(uint64_t, -1); /* --start-address */
     p->eaddress = CAST(uint64_t, -1); /* --stop-address */
