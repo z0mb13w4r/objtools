@@ -59,7 +59,7 @@ static convert_t zEHDROSABIC6000[] = {
 
 static const char* get_EHDROSABI(pbuffer_t p) {
   if (p) {
-    const unsigned int osabi = get(p, EI_OSABI);
+    const unsigned int osabi = getb(p, EI_OSABI);
     const char* s = strpicknull(zEHDROSABI, osabi);
     if (NULL == s) {
       if (osabi >= 64) {

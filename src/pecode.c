@@ -23,8 +23,8 @@ static bool_t checkbytes(const pbuffer_t p, const pmachine_t m) {
   if (m && isPE(p)) {
     PIMAGE_DOS_HEADER p0 = get_doshdr(p);
     if (p0) {
-      const uchar_t x0 = get(p, p0->e_lfanew + 4);
-      const uchar_t x1 = get(p, p0->e_lfanew + 5);
+      const uchar_t x0 = getb(p, p0->e_lfanew + 4);
+      const uchar_t x1 = getb(p, p0->e_lfanew + 5);
       for (int i = 0; m[i].x0 && m[i].x1; ++i) {
         if (x0 == m[i].x0 && x1 == m[i].x1) return TRUE;
       }
@@ -36,12 +36,12 @@ static bool_t checkbytes(const pbuffer_t p, const pmachine_t m) {
 
 bool_t isPE(const pbuffer_t p) {
   if (issafe(p)) {
-    if ('M' == get(p, 0) && 'Z' == get(p, 1)) {
+    if ('M' == getb(p, 0) && 'Z' == getb(p, 1)) {
       PIMAGE_DOS_HEADER p0 = get_doshdr(p);
-      return p0 && 'P' == get(p, p0->e_lfanew + 0)
-                && 'E' == get(p, p0->e_lfanew + 1)
-                && 0x0 == get(p, p0->e_lfanew + 2)
-                && 0x0 == get(p, p0->e_lfanew + 3) ? TRUE : FALSE;
+      return p0 && 'P' == getb(p, p0->e_lfanew + 0)
+                && 'E' == getb(p, p0->e_lfanew + 1)
+                && 0x0 == getb(p, p0->e_lfanew + 2)
+                && 0x0 == getb(p, p0->e_lfanew + 3) ? TRUE : FALSE;
     }
   }
 

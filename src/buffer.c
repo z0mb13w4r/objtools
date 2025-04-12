@@ -97,6 +97,21 @@ handle_t bclone(handle_t p, const int offset, const size_t size) {
   return NULL;
 }
 
+handle_t bresize(handle_t p, const size_t size) {
+  if (ismode(p, MODE_BUFFER)) {
+    pbuffer_t p0 = CAST(pbuffer_t, p);
+    unknown_t p1 = xmalloc(size);
+    if (p0 && p1) {
+      memcpy(p1, p0->data, size);
+      free(p0->data);
+      p0->data = p1;
+      p0->size = size;
+    }
+  }
+
+  return p;
+}
+
 handle_t bopen(const char* name) {
   FILE* f = fopen(name, "rb");
   if (f) {
@@ -149,18 +164,14 @@ unknown_t getp(const pbuffer_t p, const int offset, const size_t size) {
   return NULL;
 }
 
-int get(const pbuffer_t p, const int offset) {
-  unsigned char *v = getp(p, offset, 1);
-  if (v) {
-    return *v;
-  }
-
-  return -1;
+int getb(const pbuffer_t p, const int offset) {
+  puchar_t v = getp(p, offset, sizeof(uchar_t));
+  return v ? *v : -1;
 }
 
 int isBigEndian(const pbuffer_t p) {
   if (issafe(p)) {
-    return ELFDATA2MSB == get(p, EI_DATA);
+    return ELFDATA2MSB == getb(p, EI_DATA);
   }
 
   return -1;
@@ -168,7 +179,7 @@ int isBigEndian(const pbuffer_t p) {
 
 int isLittleEndian(const pbuffer_t p) {
   if (issafe(p)) {
-    return ELFDATA2LSB == get(p, EI_DATA);
+    return ELFDATA2LSB == getb(p, EI_DATA);
   }
 
   return -1;

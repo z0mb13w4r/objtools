@@ -235,7 +235,7 @@ uint64_t get_emachine(const pbuffer_t p) {
 
 bool_t isELF(const pbuffer_t p) {
   if (issafe(p)) {
-    return 0x7f == get(p, EI_MAG0) && 'E' == get(p, EI_MAG1) && 'L' == get(p, EI_MAG2) && 'F' == get(p, EI_MAG3) ? TRUE : FALSE;
+    return 0x7f == getb(p, EI_MAG0) && 'E' == getb(p, EI_MAG1) && 'L' == getb(p, EI_MAG2) && 'F' == getb(p, EI_MAG3) ? TRUE : FALSE;
   }
 
   return FALSE;
@@ -243,7 +243,7 @@ bool_t isELF(const pbuffer_t p) {
 
 bool_t isELF32(const pbuffer_t p) {
   if (isELF(p)) {
-    return 1 == get(p, EI_CLASS) ? TRUE : FALSE;
+    return 1 == getb(p, EI_CLASS) ? TRUE : FALSE;
   }
 
   return FALSE;
@@ -251,7 +251,7 @@ bool_t isELF32(const pbuffer_t p) {
 
 bool_t isELF64(const pbuffer_t p) {
   if (isELF(p)) {
-    return 2 == get(p, EI_CLASS) ? TRUE : FALSE;
+    return 2 == getb(p, EI_CLASS) ? TRUE : FALSE;
   }
 
   return FALSE;

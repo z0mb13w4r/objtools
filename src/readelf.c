@@ -220,18 +220,18 @@ static int dump_elfheader(const pbuffer_t p, const poptions_t o) {
   }
 
   printf_text("Version", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  if (EV_CURRENT == get(p, EI_VERSION)) {
+  if (EV_CURRENT == getb(p, EI_VERSION)) {
     printf_text("1 (current)", USE_LT | USE_SPACE | USE_EOL);
-  } else if (EV_NONE == get(p, EI_VERSION)) {
+  } else if (EV_NONE == getb(p, EI_VERSION)) {
     printf_text("0", USE_LT | USE_SPACE | USE_EOL);
   } else {
-    printf_nice(get(p, EI_VERSION), USE_UNKNOWN | USE_EOL);
+    printf_nice(getb(p, EI_VERSION), USE_UNKNOWN | USE_EOL);
   }
 
   printf_text("OS/ABI", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   printf_text(get_EHDROSABI(p), USE_LT | USE_SPACE | USE_EOL);
   printf_text("ABI Version", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  printf_nice(get(p, EI_ABIVERSION), USE_DEC | USE_EOL);
+  printf_nice(getb(p, EI_ABIVERSION), USE_DEC | USE_EOL);
 
   return 0;
 }

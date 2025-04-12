@@ -28,9 +28,10 @@ handle_t bmalloc();
 handle_t bfree(handle_t p);
 handle_t bopen(const char* name);
 handle_t bclone(handle_t p, const int offset, const size_t size);
+handle_t bresize(handle_t p, const size_t size);
 
 unknown_t getp(const pbuffer_t p, const int offset, const size_t size);
-int   get(const pbuffer_t p, const int offset);
+int       getb(const pbuffer_t p, const int offset);
 
 int isBigEndian(const pbuffer_t p);
 int isLittleEndian(const pbuffer_t p);
