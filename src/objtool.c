@@ -10,7 +10,7 @@
 int main(int argc, char* argv[]) {
   int r = -1;
 
-  poptions_t o = create(MODE_OPTIONS);
+  poptions_t o = omalloc();
   if (o) {
     r = get_options(o, argc, argv);
     if (0 == r) {

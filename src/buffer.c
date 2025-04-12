@@ -40,20 +40,6 @@ unknown_t mallocx(const size_t size) {
   return p;
 }
 
-handle_t create(const int mode) {
-  if (MODE_BUFFER == (mode & MODE_MASK0)) {
-    return bmalloc();
-  } else if (MODE_OPTIONS == (mode & MODE_MASK0)) {
-    return omalloc();
-  } else if (MODE_ACTIONS == (mode & MODE_MASK0)) {
-    return amalloc();
-  } else if (MODE_LINK == (mode & MODE_MASK0)) {
-    return lmalloc();
-  }
-
-  return NULL;
-}
-
 handle_t destroy(handle_t p) {
   if (p) {
     if (ismode0(p, MODE_BUFFER)) {
@@ -99,7 +85,7 @@ handle_t bfree(handle_t p) {
 handle_t bopen(const char* name) {
   FILE* f = fopen(name, "rb");
   if (f) {
-    pbuffer_t p = create(MODE_BUFFER);
+    pbuffer_t p = bmalloc();
     if (p) {
       strname(p->note, name);
       p->size = fsize(f);

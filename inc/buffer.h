@@ -15,7 +15,6 @@ typedef struct buffer_s {
 } buffer_t, *pbuffer_t;
 
 handle_t setmode(handle_t p, const int mode);
-handle_t create(const int mode);
 handle_t destroy(handle_t p);
 handle_t release(handle_t p);
 
