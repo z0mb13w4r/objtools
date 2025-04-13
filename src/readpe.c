@@ -432,8 +432,9 @@ static int dump_versionNN(const pbuffer_t p, const poptions_t o) {
   PVS_FIXEDFILEINFO p2 = &x0.Value;
   if (p1) {
     n += dump_version0(p, p1->wLength, p1->wValueLength, p1->wType, p1->Padding1, p1->Padding2, p1->Children);
-    n += dump_version1(p, p2->dwSignature, p2->dwStrucVersion, p2->dwFileVersionMS, p2->dwFileVersionLS, p2->dwProductVersionMS, p2->dwProductVersionLS,
-                       p2->dwFileFlagsMask, p2->dwFileFlags, p2->dwFileOS, p2->dwFileType, p2->dwFileSubtype, p2->dwFileDateMS, p2->dwFileDateLS);
+    n += dump_version1(p, p2->dwSignature, p2->dwStrucVersion, p2->dwFileVersionMS, p2->dwFileVersionLS,
+                       p2->dwProductVersionMS, p2->dwProductVersionLS, p2->dwFileFlagsMask, p2->dwFileFlags,
+                       p2->dwFileOS, p2->dwFileType, p2->dwFileSubtype, p2->dwFileDateMS, p2->dwFileDateLS);
   }
 
   return n;
@@ -659,17 +660,27 @@ static int dump_resource2(const pbuffer_t p, const uint32_t OffsetToData, const 
   return n;
 }
 
-static int dump_resourceY(const pbuffer_t p, PIMAGE_RESOURCE_DATA_ENTRY p0) {
+static int dump_resourceY(const pbuffer_t p, PIMAGE_RESOURCE_DATA_ENTRY p0, const uint32_t Name) {
   int n = 0;
 
   if (p0) {
     n += dump_resource2(p, p0->OffsetToData, p0->Size, p0->CodePage, p0->Reserved);
+    if (RT_VERSION == Name) {
+      PVS_VERSIONINFO p1 = get_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_UNKNOWN, p0->OffsetToData, sizeof(VS_VERSIONINFO));
+      if (p1) {
+        PVS_FIXEDFILEINFO p2 = &p1->Value;
+        n += dump_version0(p, p1->wLength, p1->wValueLength, p1->wType, p1->Padding1, p1->Padding2, p1->Children);
+        n += dump_version1(p, p2->dwSignature, p2->dwStrucVersion, p2->dwFileVersionMS, p2->dwFileVersionLS,
+                       p2->dwProductVersionMS, p2->dwProductVersionLS, p2->dwFileFlagsMask, p2->dwFileFlags,
+                       p2->dwFileOS, p2->dwFileType, p2->dwFileSubtype, p2->dwFileDateMS, p2->dwFileDateLS);
+      }
+    }
   }
 
   return n;
 }
 
-static int dump_resourceZ(const pbuffer_t p, PIMAGE_RESOURCE_DIRECTORY p0, const int z) {
+static int dump_resourceZ(const pbuffer_t p, PIMAGE_RESOURCE_DIRECTORY p0, const uint32_t Name, const int z) {
   int n = 0;
 
   if (p0) {
@@ -680,9 +691,10 @@ static int dump_resourceZ(const pbuffer_t p, PIMAGE_RESOURCE_DIRECTORY p0, const
     for (int i = 0; i < (p0->NumberOfNamedEntries + p0->NumberOfIdEntries); ++i, ++p1) {
       n += dump_resource1(p, p1->NameIsString, p1->Name, p1->OffsetToData, z);
       if (p1->DataIsDirectory) {
-        n += dump_resourceZ(p, get_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_RESOURCE) + p1->OffsetToDirectory, z + 1);
+        n += dump_resourceZ(p, get_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_RESOURCE) + p1->OffsetToDirectory,
+	                    !Name && !p1->NameIsString ? p1->Name : Name, z + 1);
       } else {
-        n += dump_resourceY(p, get_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_RESOURCE) + p1->OffsetToDirectory);
+        n += dump_resourceY(p, get_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_RESOURCE) + p1->OffsetToDirectory, Name);
       }
     }
   }
@@ -693,7 +705,7 @@ static int dump_resourceZ(const pbuffer_t p, PIMAGE_RESOURCE_DIRECTORY p0, const
 static int dump_resourceNN(const pbuffer_t p, const poptions_t o) {
   int n = 0;
 
-  n += dump_resourceZ(p, get_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_RESOURCE), 1);
+  n += dump_resourceZ(p, get_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_RESOURCE), 0, 1);
 
   return n;
 }
@@ -752,6 +764,7 @@ static int dump_config0(const pbuffer_t p, const uint32_t Size, const uint32_t T
     n += printf_nice(SEHandlerTable, USE_FHEXNN);
     n += printf_text("SEHandlerCount", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     n += printf_nice(SEHandlerCount, USE_FHEXNN);
+    n += printf_eol();
   }
 
   return n;
