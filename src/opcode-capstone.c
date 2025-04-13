@@ -40,7 +40,7 @@ int capstone_close(handle_t p) {
 
 int capstone_raw(handle_t p, handle_t s, unknown_t data, const size_t size, const uint64_t vaddr) {
   int n = 0;
-  if (data && isopcode(p) && isopshdrNN(s)) {
+  if (data && isopcode(p) && ismodeNXXN(s, MODE_OCSHDRWRAP)) {
     popcode_t oc = CAST(popcode_t, p);
 
     cs_insn *insn = NULL;
@@ -79,9 +79,9 @@ int capstone_run(handle_t p, handle_t s) {
 
       free(p0);
     }
-  } else if (isopcode(p) && isopshdrNN(s)) {
+  } else if (isopcode(p) && ismodeNXXN(s, MODE_OCSHDRWRAP)) {
     const size_t sz = ocget_size(s);
-    if (0 != sz && ocget_type(s) != SHT_NOBITS) {
+    if (0 != sz) {
       n += capstone_raw(p, s, getp(ocget(p, OPCODE_RAWDATA), ocget_offset(s), sz), sz, ocget_vmaddress(s));
     }
   }

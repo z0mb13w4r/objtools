@@ -1,5 +1,8 @@
-#include "readpe.h"
+#include "dump.h"
+#include "decode.h"
+#include "opcode.h"
 #include "printf.h"
+#include "readpe.h"
 
 #include "static/dbghdr.ci"
 #include "static/filehdr.ci"
@@ -1114,6 +1117,26 @@ static int dump_runtimeNN(const pbuffer_t p, const poptions_t o) {
   return n;
 }
 
+static int dump_actionsNN(const pbuffer_t p, const poptions_t o) {
+  paction_t x = o->actions;
+  while (x) {
+    if (x->secname[0]) {
+      PIMAGE_SECTION_HEADER p0 = get_sectionhdrbyname(p, x->secname);
+      if (p0) {
+        MALLOCSWRAP(opwrap_t, s, MODE_OCSHDRPE, p0);
+        dump_actions0(p, o, peconvert2va(p0, p0->VirtualAddress), p0->SizeOfRawData);
+        dump_actions1(p, o, ps, x->secname, x->action, peconvert2va(p0, p0->VirtualAddress), p0->SizeOfRawData, p0->VirtualAddress);
+      } else {
+        printf_w("section '%s' was not dumped because it does not exist!", x->secname);
+      }
+    }
+
+    x = x->actions;
+  }
+
+  return 0;
+}
+
 int readpe(const pbuffer_t p, const poptions_t o) {
   if (isPE(p)) {
     if (o->action & OPTREADELF_FILEHEADER)         dump_peheader(p, o);
@@ -1142,6 +1165,12 @@ int readpe(const pbuffer_t p, const poptions_t o) {
     if (o->action & OPTREADELF_NOTES)              dump_debugNN(p, o);
     if (o->action & OPTREADELF_RELOCS)             dump_relocNN(p, o);
     if (o->action & OPTREADELF_UNWIND)             dump_runtimeNN(p, o);
+
+    if (isPE32(p)) {
+      if (o->actions)                              dump_actionsNN(p, o);
+    } else if (isPE64(p)) {
+      if (o->actions)                              dump_actionsNN(p, o);
+    }
   } else {
     printf_e("not an PE file - it has the wrong magic bytes at the start.");
   }

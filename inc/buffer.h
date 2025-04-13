@@ -14,6 +14,13 @@ typedef struct buffer_s {
 
 } buffer_t, *pbuffer_t;
 
+bool_t ismode0(unknown_t p, const int mode);
+bool_t ismode1(unknown_t p, const int mode);
+bool_t ismode2(unknown_t p, const int mode);
+bool_t ismode3(unknown_t p, const int mode);
+bool_t ismodeNNN(unknown_t p, const int mode);
+bool_t ismodeNXXN(unknown_t p, const int mode);
+
 handle_t setmode(handle_t p, const int mode);
 
 bool_t issafe(pbuffer_t p);

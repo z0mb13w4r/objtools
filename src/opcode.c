@@ -254,6 +254,9 @@ uint64_t ocget_size(handle_t p) {
   } else if (ismode(p, MODE_OCSHDR64)) {
     Elf64_Shdr* p0 = ocget(p, MODE_OCSHDR64);
     return p0 ? p0->sh_size : 0;
+  } else if (ismode(p, MODE_OCSHDRPE)) {
+    PIMAGE_SECTION_HEADER p0 = ocget(p, MODE_OCSHDRPE);
+    return p0 ? p0->SizeOfRawData : 0;
   }
 
   return 0;
@@ -339,6 +342,9 @@ uint64_t ocget_offset(handle_t p) {
   } else if (ismode(p, MODE_OCPHDR64)) {
     Elf64_Phdr* p0 = ocget(p, MODE_OCPHDR64);
     return p0 ? p0->p_offset : 0;
+  } else if (ismode(p, MODE_OCSHDRPE)) {
+    PIMAGE_SECTION_HEADER p0 = ocget(p, MODE_OCSHDRPE);
+    return p0 ? peconvert2va(p0, p0->VirtualAddress): 0;
   }
 
   return 0;
@@ -388,6 +394,9 @@ uint64_t ocget_vmaddress(handle_t p) {
   } else if (ismode(p, MODE_OCSHDR64)) {
     Elf64_Shdr* p0 = ocget(p, MODE_OCSHDR64);
     return p0 ? p0->sh_addr : 0;
+  } else if (ismode(p, MODE_OCSHDRPE)) {
+    PIMAGE_SECTION_HEADER p0 = ocget(p, MODE_OCSHDRPE);
+    return p0 ? p0->VirtualAddress : 0;
   }
 
   return 0;
@@ -611,7 +620,7 @@ int ocdisassemble_close(handle_t p) {
 }
 
 int ocdisassemble_run(handle_t p, handle_t s) {
-  if (isopcode(p) && (isopshdr(s) || isopshdrNN(s))) {
+  if (isopcode(p) && ismodeNXXN(s, MODE_OCSHDRWRAP)) {
     popcode_t oc = CAST(popcode_t, p);
     if (oc->action & OPTPROGRAM_CAPSTONE || isattached(p)) {
       return capstone_run(p, s);
@@ -624,7 +633,7 @@ int ocdisassemble_run(handle_t p, handle_t s) {
 }
 
 int ocdisassemble_raw(handle_t p, handle_t s, unknown_t data, const size_t size, const uint64_t vaddr) {
-  if (isopcode(p) && (isopshdr(s) || isopshdrNN(s))) {
+  if (isopcode(p) && ismodeNXXN(s, MODE_OCSHDRWRAP)) {
     popcode_t oc = CAST(popcode_t, p);
     if (oc->action & OPTPROGRAM_CAPSTONE || isattached(p)) {
       return capstone_raw(p, s, data, size, vaddr);

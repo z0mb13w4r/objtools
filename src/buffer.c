@@ -8,16 +8,52 @@
 #include "memlink.h"
 #include "objutils.h"
 
-static bool_t ismode0(unknown_t p, const int mode) {
+bool_t ismode0(unknown_t p, const int mode) {
   if (p) {
     const char* pc = p;
     if (MODE_GET0(mode) != pc[0])      return FALSE;
-    else if (MODE_GET1(mode) != pc[1]) return FALSE;
-    else if (MODE_GET2(mode) != pc[2]) return FALSE;
     return TRUE;
   }
 
   return FALSE;
+}
+
+bool_t ismode1(unknown_t p, const int mode) {
+  if (p) {
+    const char* pc = p;
+    if (MODE_GET1(mode) != pc[1])      return FALSE;
+    return TRUE;
+  }
+
+  return FALSE;
+}
+
+bool_t ismode2(unknown_t p, const int mode) {
+  if (p) {
+    const char* pc = p;
+    if (MODE_GET2(mode) != pc[2])      return FALSE;
+    return TRUE;
+  }
+
+  return FALSE;
+}
+
+bool_t ismode3(unknown_t p, const int mode) {
+  if (p) {
+    const char* pc = p;
+    if (MODE_GET3(mode) != pc[3])      return FALSE;
+    return TRUE;
+  }
+
+  return FALSE;
+}
+
+bool_t ismodeNNN(unknown_t p, const int mode) {
+  return ismode0(p, mode) && ismode1(p, mode) && ismode2(p, mode);
+}
+
+bool_t ismodeNXXN(unknown_t p, const int mode) {
+  return ismode0(p, mode) && ismode3(p, mode);
 }
 
 handle_t setmode(handle_t p, const int mode) {
@@ -41,7 +77,7 @@ unknown_t xmalloc(const size_t size) {
 }
 
 unknown_t xdump(unknown_t p) {
-  if (ismode0(p, MODE_LINK)) {
+  if (ismodeNNN(p, MODE_LINK)) {
     lfree(p);
   }
 
@@ -50,13 +86,13 @@ unknown_t xdump(unknown_t p) {
 
 unknown_t xfree(unknown_t p) {
   if (p) {
-    if (ismode0(p, MODE_BUFFER)) {
+    if (ismodeNNN(p, MODE_BUFFER)) {
       return bfree(p);
-    } else if (ismode0(p, MODE_OPTIONS)) {
+    } else if (ismodeNNN(p, MODE_OPTIONS)) {
       return ofree(p);
-    } else if (ismode0(p, MODE_ACTIONS)) {
+    } else if (ismodeNNN(p, MODE_ACTIONS)) {
       return afree(p);
-    } else if (ismode0(p, MODE_LINK)) {
+    } else if (ismodeNNN(p, MODE_LINK)) {
       xfree(CAST(pnode_t, p)->item);
       return lfree(p);
     }
