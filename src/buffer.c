@@ -8,7 +8,7 @@
 #include "memlink.h"
 #include "objutils.h"
 
-bool_t ismode0(unknown_t p, const int mode) {
+bool_t ismode0(handle_t p, const nmode_t mode) {
   if (p) {
     const puchar_t p0 = CAST(puchar_t, p);
     if (MODE_GET0(mode) != p0[0])      return FALSE;
@@ -18,7 +18,7 @@ bool_t ismode0(unknown_t p, const int mode) {
   return FALSE;
 }
 
-bool_t ismode1(unknown_t p, const int mode) {
+bool_t ismode1(handle_t p, const nmode_t mode) {
   if (p) {
     const puchar_t p0 = CAST(puchar_t, p);
     if (MODE_GET1(mode) != p0[1])      return FALSE;
@@ -28,7 +28,7 @@ bool_t ismode1(unknown_t p, const int mode) {
   return FALSE;
 }
 
-bool_t ismode2(unknown_t p, const int mode) {
+bool_t ismode2(handle_t p, const nmode_t mode) {
   if (p) {
     const puchar_t p0 = CAST(puchar_t, p);
     if (MODE_GET2(mode) != p0[2])      return FALSE;
@@ -38,7 +38,7 @@ bool_t ismode2(unknown_t p, const int mode) {
   return FALSE;
 }
 
-bool_t ismode3(unknown_t p, const int mode) {
+bool_t ismode3(handle_t p, const nmode_t mode) {
   if (p) {
     const puchar_t p0 = CAST(puchar_t, p);
     if (MODE_GET3(mode) != p0[3])      return FALSE;
@@ -48,15 +48,19 @@ bool_t ismode3(unknown_t p, const int mode) {
   return FALSE;
 }
 
-bool_t ismodeNNN(unknown_t p, const int mode) {
+bool_t ismodeNNN(handle_t p, const nmode_t mode) {
   return ismode0(p, mode) && ismode1(p, mode) && ismode2(p, mode);
 }
 
-bool_t ismodeNXXN(unknown_t p, const int mode) {
+bool_t ismodeNXXN(handle_t p, const nmode_t mode) {
   return ismode0(p, mode) && ismode3(p, mode);
 }
 
-handle_t setmode(handle_t p, const int mode) {
+bool_t ismode(handle_t p, const nmode_t mode) {
+  return ismodeNNN(p, mode) && ismode3(p, mode);
+}
+
+handle_t setmode(handle_t p, const nmode_t mode) {
   if (p) {
     const puchar_t p0 = CAST(puchar_t, p);
     p0[0] = MODE_GET0(mode);
@@ -167,19 +171,6 @@ handle_t bopen(const char* name) {
   }
 
   return 0;
-}
-
-bool_t ismode(handle_t p, const int mode) {
-  if (p) {
-    const char* pc = p;
-    if (MODE_GET0(mode) != pc[0]) return FALSE;
-    if (MODE_GET1(mode) != pc[1]) return FALSE;
-    if (MODE_GET2(mode) != pc[2]) return FALSE;
-    if (MODE_GET3(mode) != pc[3]) return FALSE;
-    return TRUE;
-  }
-
-  return FALSE;
 }
 
 bool_t issafe(pbuffer_t p) {
