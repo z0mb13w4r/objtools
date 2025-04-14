@@ -430,6 +430,24 @@ static int dump_version1(const pbuffer_t p, const uint32_t dwSignature, const ui
   return n;
 }
 
+static int dump_version2(const pbuffer_t p, const uint16_t wLength, const uint16_t wValueLength,
+                         const uint16_t wType, const uint16_t szKey, const uint16_t Padding) {
+  int n = 0;
+  n += printf_text("StringFileInfo", USE_LT | USE_COLON | USE_EOL);
+  n += printf_text("wLength", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(wLength, USE_FHEX16 | USE_EOL);
+  n += printf_text("wValueLength", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(wValueLength, USE_FHEX16 | USE_EOL);
+  n += printf_text("wType", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(wType, USE_FHEX16 | USE_EOL);
+  n += printf_text("szKey", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(szKey, USE_FHEX16 | USE_EOL);
+  n += printf_text("Padding", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(Padding, USE_FHEX16 | USE_EOL);
+
+  return n;
+}
+
 static int dump_versionY(const pbuffer_t p, PIMAGE_RESOURCE_DATA_ENTRY p0) {
   int n = 0;
 
@@ -706,14 +724,7 @@ static int dump_resourceY(const pbuffer_t p, PIMAGE_RESOURCE_DATA_ENTRY p0, cons
   if (p0) {
     n += dump_resource2(p, p0->OffsetToData, p0->Size, p0->CodePage, p0->Reserved);
     if (RT_VERSION == Name) {
-      PVS_VERSIONINFO p1 = get_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_UNKNOWN, p0->OffsetToData, sizeof(VS_VERSIONINFO));
-      if (p1) {
-        PVS_FIXEDFILEINFO p2 = &p1->Value;
-        n += dump_version0(p, p1->wLength, p1->wValueLength, p1->wType, p1->szKey, sizeof(p1->szKey), p1->Padding1, p1->Padding2, p1->Children);
-        n += dump_version1(p, p2->dwSignature, p2->dwStrucVersion, p2->dwFileVersionMS, p2->dwFileVersionLS,
-                       p2->dwProductVersionMS, p2->dwProductVersionLS, p2->dwFileFlagsMask, p2->dwFileFlags,
-                       p2->dwFileOS, p2->dwFileType, p2->dwFileSubtype, p2->dwFileDateMS, p2->dwFileDateLS);
-      }
+      n += dump_versionY(p, p0);
     }
   }
 

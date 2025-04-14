@@ -497,6 +497,51 @@ typedef struct _VS_VERSIONINFO {
   WORD             Children;
 } VS_VERSIONINFO, *PVS_VERSIONINFO;
 
+typedef struct _String {
+  WORD  wLength;
+  WORD  wValueLength;
+  WORD  wType;
+  WCHAR szKey;
+  WORD  Padding;
+  WORD  Value;
+} String;
+
+typedef struct _StringTable {
+  WORD   wLength;
+  WORD   wValueLength;
+  WORD   wType;
+  WCHAR  szKey;
+  WORD   Padding;
+  String Children;
+} StringTable;
+
+typedef struct _StringFileInfo {
+  WORD        wLength;
+  WORD        wValueLength;
+  WORD        wType;
+  WCHAR       szKey;
+  WORD        Padding;
+  StringTable Children;
+} StringFileInfo;
+
+typedef struct _Var {
+  WORD  wLength;
+  WORD  wValueLength;
+  WORD  wType;
+  WCHAR szKey;
+  WORD  Padding;
+  DWORD Value;
+} Var;
+
+typedef struct _VarFileInfo {
+  WORD  wLength;
+  WORD  wValueLength;
+  WORD  wType;
+  WCHAR szKey;
+  WORD  Padding;
+  Var   Children;
+} VarFileInfo;
+
 bool_t isPE(const pbuffer_t p);
 bool_t isPE32(const pbuffer_t p);
 bool_t isPE64(const pbuffer_t p);
