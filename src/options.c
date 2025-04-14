@@ -321,28 +321,21 @@ static int usage1(poptions_t o, const char* name, const args_t args0[], const ch
 static imode_t get_options1(poptions_t o, const args_t args[], const char *argv) {
   imode_t action = 0;
   for (int k = 1; k < strlen(argv); ++k) {
-    bool_t notfound = TRUE;
     for (int j = 0; (0 != args[j].option1) || (0 != args[j].option2); ++j) {
       if (argv[k] == args[j].option1) {
         action |= args[j].action;
-        notfound = FALSE;
         break;
       }
     }
-
-    if (notfound) {
-      printf_w("unknown argument '-%c'", argv[k]);
-    }
   }
 
-  o->action |= action;
   return action;
 }
 
 static imode_t set_options1(poptions_t o, const args_t args[]) {
   imode_t action = 0;
   for (int j = 0; (0 != args[j].option1) || (0 != args[j].option2); ++j) {
-      action |= args[j].action;
+    action |= args[j].action;
   }
 
   o->action |= action;
@@ -351,19 +344,12 @@ static imode_t set_options1(poptions_t o, const args_t args[]) {
 
 static imode_t get_options2(poptions_t o, const args_t args[], const char *argv) {
   imode_t action = 0;
-  bool_t notfound = TRUE;
   for (int j = 0; (0 != args[j].option1) || (0 != args[j].option2); ++j) {
     if (args[j].option2 && 0 == strcmp(argv, args[j].option2)) {
-      o->action |= args[j].action;
-      notfound = FALSE;
+      action |= args[j].action;
     }
   }
 
-  if (notfound) {
-    printf_w("unknown argument '%s'", argv);
-  }
-
-  o->action |= action;
   return action;
 }
 
@@ -490,7 +476,7 @@ int get_options_readelf(poptions_t o, int argc, char** argv, char* name) {
 
       if (0 == breakup_args(argv[i], arg0, NELEMENTS(arg0), arg1, NELEMENTS(arg1))) {
         if (0 == strcmp(arg0, READELFARGS1)) {
-          get_options2(o, DEBUGELFARGS, arg1);
+          o->action |= get_options2(o, DEBUGELFARGS, arg1);
         } else if (0 == strcmp(arg0, "--hex-dump")) {
           insertsecname(o, ACT_HEXDUMP, arg1);
         } else if (0 == strcmp(arg0, "--string-dump")) {
@@ -505,13 +491,12 @@ int get_options_readelf(poptions_t o, int argc, char** argv, char* name) {
           insertscript(o, arg1);
         }
       } else {
-        get_options2(o, READELFARGS, argv[i]);
+        o->action |= get_options2(o, READELFARGS, argv[i]);
       }
     } else if ('-' == argv[i][0]) {
       if (0 == strcmp(argv[i], READELFARGS0)) {
-        if (0 == get_options1(o, DEBUGELFARGS, argv[i] + 1)) {
-          set_options1(o, DEBUGELFARGS);
-        }
+        imode_t action = get_options1(o, DEBUGELFARGS, argv[i] + 1);
+        o->action |= action ? action : set_options1(o, DEBUGELFARGS);
       } else if (0 == strcmp(argv[i], "-x")) {
         insertsecname(o, ACT_HEXDUMP, argv[++i]);
       } else if (0 == strcmp(argv[i], "-p")) {
@@ -525,7 +510,7 @@ int get_options_readelf(poptions_t o, int argc, char** argv, char* name) {
       } else if (0 == strcmp(argv[i], "-T")) {
         insertscript(o, argv[++i]);
       } else {
-        get_options1(o, READELFARGS, argv[i]);
+        o->action |= get_options1(o, READELFARGS, argv[i]);
       }
     } else {
       strncpy(o->inpname, argv[i], NELEMENTS(o->inpname));
@@ -566,10 +551,10 @@ int get_options_objcopy(poptions_t o, int argc, char** argv, char* name) {
           insert(o, p, ACT_UPDATESECTION);
         }
       } else {
-        get_options2(o, OBJCOPYARGS, argv[i]);
+        o->action |= get_options2(o, OBJCOPYARGS, argv[i]);
       }
     } else if ('-' == argv[i][0]) {
-      get_options1(o, OBJCOPYARGS, argv[i]);
+      o->action |= get_options1(o, OBJCOPYARGS, argv[i]);
     } else {
       strncpy(o->inpname, argv[i], NELEMENTS(o->inpname));
     }
@@ -598,18 +583,17 @@ int get_options_objdump(poptions_t o, int argc, char** argv, char* name) {
 
       if (0 == breakup_args(argv[i], arg0, NELEMENTS(arg0), arg1, NELEMENTS(arg1))) {
         if (0 == strcmp(arg0, OBJDUMPARGS1)) {
-          get_options2(o, DEBUGELFARGS, arg1);
+          o->action |= get_options2(o, DEBUGELFARGS, arg1);
         }
       } else {
-        get_options2(o, OBJDUMPARGS, argv[i]);
+        o->action |= get_options2(o, OBJDUMPARGS, argv[i]);
       }
     } else if ('-' == argv[i][0]) {
       if (0 == strcmp(argv[i], OBJDUMPARGS0)) {
-        if (0 == get_options1(o, DEBUGELFARGS, argv[i] + 1)) {
-          set_options1(o, DEBUGELFARGS);
-        }
+        imode_t action = get_options1(o, DEBUGELFARGS, argv[i] + 1);
+        o->action |= action ? action : set_options1(o, DEBUGELFARGS);
       } else {
-        get_options1(o, OBJDUMPARGS, argv[i]);
+        o->action |= get_options1(o, OBJDUMPARGS, argv[i]);
       }
     } else {
       strncpy(o->inpname, argv[i], NELEMENTS(o->inpname));
@@ -646,7 +630,7 @@ int get_options_objhash(poptions_t o, int argc, char** argv, char* name) {
           o->convert = atol(arg1);
         }
       } else {
-        get_options2(o, OBJHASHARGS, argv[i]);
+        o->action |= get_options2(o, OBJHASHARGS, argv[i]);
       }
     } else if ('-' == argv[i][0]) {
       if (0 == strcmp(argv[i], "-x")) {
@@ -656,7 +640,7 @@ int get_options_objhash(poptions_t o, int argc, char** argv, char* name) {
       } else if (0 == strcmp(argv[i], "-C")) {
         o->convert = atoimode(argv[++i]);
       } else {
-        get_options1(o, OBJHASHARGS, argv[i]);
+        o->action |= get_options1(o, OBJHASHARGS, argv[i]);
       }
     } else if (0 == o->inpname0[0]) {
       strncpy(o->inpname0, argv[i], NELEMENTS(o->inpname0));

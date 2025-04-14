@@ -524,7 +524,6 @@ static int dump_iat32(const pbuffer_t p, const poptions_t o) {
   PIMAGE_SECTION_HEADER s0 = get_sectionhdrbyentry(p, IMAGE_DIRECTORY_ENTRY_IMPORT);
 
   if (p0 && s0) {
-
     PIMAGE_IMPORT_DESCRIPTOR p1 = get_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_IMPORT);
 
     if (p1) {
@@ -564,7 +563,6 @@ static int dump_iat64(const pbuffer_t p, const poptions_t o) {
   PIMAGE_SECTION_HEADER s0 = get_sectionhdrbyentry(p, IMAGE_DIRECTORY_ENTRY_IMPORT);
 
   if (p0 && s0) {
-
     PIMAGE_IMPORT_DESCRIPTOR p1 = get_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_IMPORT);
 
     if (p1) {
