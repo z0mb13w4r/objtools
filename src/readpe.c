@@ -430,17 +430,51 @@ static int dump_version1(const pbuffer_t p, const uint32_t dwSignature, const ui
   return n;
 }
 
+static int dump_versionY(const pbuffer_t p, PIMAGE_RESOURCE_DATA_ENTRY p0) {
+  int n = 0;
+
+  if (p0) {
+    PVS_VERSIONINFO p1 = get_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_UNKNOWN, p0->OffsetToData, sizeof(VS_VERSIONINFO));
+    if (p1) {
+      PVS_FIXEDFILEINFO p2 = &p1->Value;
+      n += dump_version0(p, p1->wLength, p1->wValueLength, p1->wType, p1->szKey, sizeof(p1->szKey), p1->Padding1, p1->Padding2, p1->Children);
+      n += dump_version1(p, p2->dwSignature, p2->dwStrucVersion, p2->dwFileVersionMS, p2->dwFileVersionLS,
+                     p2->dwProductVersionMS, p2->dwProductVersionLS, p2->dwFileFlagsMask, p2->dwFileFlags,
+                     p2->dwFileOS, p2->dwFileType, p2->dwFileSubtype, p2->dwFileDateMS, p2->dwFileDateLS);
+    }
+  }
+
+  return n;
+}
+
+static int dump_versionZ(const pbuffer_t p, PIMAGE_RESOURCE_DIRECTORY p0) {
+  int n = 0;
+
+  if (p0) {
+    PIMAGE_RESOURCE_DIRECTORY_ENTRY p1 = CAST(PIMAGE_RESOURCE_DIRECTORY_ENTRY, p0 + 1);
+    for (int i = 0; i < (p0->NumberOfNamedEntries + p0->NumberOfIdEntries); ++i, ++p1) {
+      if (p1->DataIsDirectory) {
+        n += dump_versionZ(p, get_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_RESOURCE) + p1->OffsetToDirectory);
+      } else {
+        n += dump_versionY(p, get_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_RESOURCE) + p1->OffsetToDirectory);
+      }
+    }
+  }
+
+  return n;
+}
+
 static int dump_versionNN(const pbuffer_t p, const poptions_t o) {
   int n = 0;
 
-  VS_VERSIONINFO x0;
-  PVS_VERSIONINFO p1 = &x0;
-  PVS_FIXEDFILEINFO p2 = &x0.Value;
-  if (p1) {
-    n += dump_version0(p, p1->wLength, p1->wValueLength, p1->wType, p1->szKey, sizeof(p1->szKey), p1->Padding1, p1->Padding2, p1->Children);
-    n += dump_version1(p, p2->dwSignature, p2->dwStrucVersion, p2->dwFileVersionMS, p2->dwFileVersionLS,
-                       p2->dwProductVersionMS, p2->dwProductVersionLS, p2->dwFileFlagsMask, p2->dwFileFlags,
-                       p2->dwFileOS, p2->dwFileType, p2->dwFileSubtype, p2->dwFileDateMS, p2->dwFileDateLS);
+  PIMAGE_RESOURCE_DIRECTORY p0 = get_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_RESOURCE);
+  if (p0) {
+    PIMAGE_RESOURCE_DIRECTORY_ENTRY p1 = CAST(PIMAGE_RESOURCE_DIRECTORY_ENTRY, p0 + 1);
+    for (int i = 0; i < (p0->NumberOfNamedEntries + p0->NumberOfIdEntries); ++i, ++p1) {
+      if (p1->DataIsDirectory && !p1->NameIsString && RT_VERSION == p1->Name) {
+        n += dump_versionZ(p, get_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_RESOURCE) + p1->OffsetToDirectory);
+      }
+    }
   }
 
   return n;
