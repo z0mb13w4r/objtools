@@ -76,7 +76,17 @@ static int dump_dosheaderNN(const pbuffer_t p, const poptions_t o) {
   return n;
 }
 
-static int dump_ntheader0(const pbuffer_t p, const uint16_t Machine, const uint16_t NumberOfSections,
+static int dump_ntheader0(const pbuffer_t p, const uint32_t Signature) {
+  int n = 0;
+  n += printf_text("NT HEADER", USE_LT | USE_COLON | USE_EOL);
+  n += printf_text("Signature", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(Signature, USE_FHEX32 | USE_EOL);
+  n += printf_eol();
+
+  return n;
+}
+
+static int dump_ntheader1(const pbuffer_t p, const uint16_t Machine, const uint16_t NumberOfSections,
                    const uint32_t TimeDateStamp, const uint32_t PointerToSymbolTable, const uint32_t NumberOfSymbols,
                    const uint16_t SizeOfOptionalHeader, const uint16_t Characteristics) {
   int n = 0;
@@ -102,7 +112,7 @@ static int dump_ntheader0(const pbuffer_t p, const uint16_t Machine, const uint1
   return n;
 }
 
-static int dump_ntheader1(const pbuffer_t p, const uint16_t Magic, const uint8_t MajorLinkerVersion, const uint8_t MinorLinkerVersion,
+static int dump_ntheader2(const pbuffer_t p, const uint16_t Magic, const uint8_t MajorLinkerVersion, const uint8_t MinorLinkerVersion,
                    const uint32_t SizeOfCode, const uint32_t SizeOfInitializedData, const uint32_t SizeOfUninitializedData,
                    const uint32_t AddressOfEntryPoint, const uint32_t BaseOfCode, const uint64_t ImageBase, const uint32_t SectionAlignment,
                    const uint32_t FileAlignment, const uint16_t MajorOperatingSystemVersion, const uint16_t MinorOperatingSystemVersion,
@@ -180,19 +190,17 @@ static int dump_ntheader1(const pbuffer_t p, const uint16_t Magic, const uint8_t
 }
 
 static int dump_ntheader32(const pbuffer_t p, const poptions_t o) {
+  int n = 0;
   PIMAGE_NT_HEADERS32 nt = get_nt32hdr(p);
   if (nt) {
-    printf_text("NT HEADER", USE_LT | USE_COLON | USE_EOL);
-    printf_text("Signature", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-    printf_nice(nt->Signature, USE_FHEX32 | USE_EOL);
-    printf_eol();
+    n += dump_ntheader0(p, nt->Signature);
 
     PIMAGE_FILE_HEADER fp = &nt->FileHeader;
     PIMAGE_OPTIONAL_HEADER32 op = &nt->OptionalHeader;
 
-    dump_ntheader0(p, fp->Machine, fp->NumberOfSections, fp->TimeDateStamp, fp->PointerToSymbolTable,
+    n += dump_ntheader1(p, fp->Machine, fp->NumberOfSections, fp->TimeDateStamp, fp->PointerToSymbolTable,
                    fp->NumberOfSymbols, fp->SizeOfOptionalHeader, fp->Characteristics);
-    dump_ntheader1(p, op->Magic, op->MajorLinkerVersion, op->MinorLinkerVersion, op->SizeOfCode, op->SizeOfInitializedData,
+    n += dump_ntheader2(p, op->Magic, op->MajorLinkerVersion, op->MinorLinkerVersion, op->SizeOfCode, op->SizeOfInitializedData,
                    op->SizeOfUninitializedData, op->AddressOfEntryPoint, op->BaseOfCode, op->ImageBase, op->SectionAlignment,
                    op->FileAlignment, op->MajorOperatingSystemVersion, op->MinorOperatingSystemVersion, op->MajorImageVersion,
                    op->MinorImageVersion, op->MajorSubsystemVersion, op->MinorSubsystemVersion, op->Win32VersionValue,
@@ -200,23 +208,21 @@ static int dump_ntheader32(const pbuffer_t p, const poptions_t o) {
                    op->SizeOfStackCommit, op->SizeOfHeapReserve, op->SizeOfHeapCommit, op->LoaderFlags, op->NumberOfRvaAndSizes);
   }
 
-  return 0;
+  return n;
 }
 
 static int dump_ntheader64(const pbuffer_t p, const poptions_t o) {
+  int n = 0;
   PIMAGE_NT_HEADERS64 nt = get_nt64hdr(p);
   if (nt) {
-    printf_text("NT HEADER", USE_LT | USE_COLON | USE_EOL);
-    printf_text("Signature", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-    printf_nice(nt->Signature, USE_FHEX32 | USE_EOL);
-    printf_eol();
+    n += dump_ntheader0(p, nt->Signature);
 
     PIMAGE_FILE_HEADER fp = &nt->FileHeader;
     PIMAGE_OPTIONAL_HEADER64 op = &nt->OptionalHeader;
 
-    dump_ntheader0(p, fp->Machine, fp->NumberOfSections, fp->TimeDateStamp, fp->PointerToSymbolTable,
-                  fp->NumberOfSymbols, fp->SizeOfOptionalHeader, fp->Characteristics);
-    dump_ntheader1(p, op->Magic, op->MajorLinkerVersion, op->MinorLinkerVersion, op->SizeOfCode, op->SizeOfInitializedData,
+    n += dump_ntheader1(p, fp->Machine, fp->NumberOfSections, fp->TimeDateStamp, fp->PointerToSymbolTable,
+                   fp->NumberOfSymbols, fp->SizeOfOptionalHeader, fp->Characteristics);
+    n += dump_ntheader2(p, op->Magic, op->MajorLinkerVersion, op->MinorLinkerVersion, op->SizeOfCode, op->SizeOfInitializedData,
                    op->SizeOfUninitializedData, op->AddressOfEntryPoint, op->BaseOfCode, op->ImageBase, op->SectionAlignment,
                    op->FileAlignment, op->MajorOperatingSystemVersion, op->MinorOperatingSystemVersion, op->MajorImageVersion,
                    op->MinorImageVersion, op->MajorSubsystemVersion, op->MinorSubsystemVersion, op->Win32VersionValue,
@@ -224,7 +230,7 @@ static int dump_ntheader64(const pbuffer_t p, const poptions_t o) {
                    op->SizeOfStackCommit, op->SizeOfHeapReserve, op->SizeOfHeapCommit, op->LoaderFlags, op->NumberOfRvaAndSizes);
   }
 
-  return 0;
+  return n;
 }
 
 static int dump_sectionheaders0(const pbuffer_t p, const uint16_t NumberOfSections) {
@@ -267,7 +273,6 @@ static int dump_sectionheaders0(const pbuffer_t p, const uint16_t NumberOfSectio
 
 static int dump_sectionheaders32(const pbuffer_t p, const poptions_t o) {
   int n = 0;
-
   PIMAGE_NT_HEADERS32 p0 = get_nt32hdr(p);
   if (p0) {
     n += dump_sectionheaders0(p, p0->FileHeader.NumberOfSections);
@@ -278,7 +283,6 @@ static int dump_sectionheaders32(const pbuffer_t p, const poptions_t o) {
 
 static int dump_sectionheaders64(const pbuffer_t p, const poptions_t o) {
   int n = 0;
-
   PIMAGE_NT_HEADERS64 p0 = get_nt64hdr(p);
   if (p0) {
     n += dump_sectionheaders0(p, p0->FileHeader.NumberOfSections);
@@ -351,9 +355,9 @@ static int dump_sectiongroups64(const pbuffer_t p, const poptions_t o) {
 }
 
 static int dump_version0(const pbuffer_t p, const uint16_t wLength, const uint16_t wValueLength, const uint16_t wType,
-                         const uint16_t Padding1, const uint16_t Padding2, const uint16_t Children) {
+                         const pushort_t szKey, const size_t szKeySize, const uint16_t Padding1, const uint16_t Padding2,
+                         const uint16_t Children) {
   int n = 0;
-
   n += printf_text("VS VERSIONINFO", USE_LT | USE_COLON | USE_EOL);
   n += printf_text("wLength", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(wLength, USE_FHEX16 | USE_EOL);
@@ -361,7 +365,8 @@ static int dump_version0(const pbuffer_t p, const uint16_t wLength, const uint16
   n += printf_nice(wValueLength, USE_FHEX16 | USE_EOL);
   n += printf_text("wType", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(wType, USE_FHEX16 | USE_EOL);
-//  WCHAR            szKey[16];
+  n += printf_text("szKey", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE + 1));
+  n += printf_sore(szKey, szKeySize, USE_STR16 | USE_EOL);
   n += printf_text("Padding1", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(Padding1, USE_FHEX16 | USE_EOL);
   n += printf_text("Padding2", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
@@ -374,11 +379,12 @@ static int dump_version0(const pbuffer_t p, const uint16_t wLength, const uint16
 }
 
 static int dump_version1(const pbuffer_t p, const uint32_t dwSignature, const uint32_t dwStrucVersion,
-                         const uint32_t dwFileVersionMS, const uint32_t dwFileVersionLS, const uint32_t dwProductVersionMS, const uint32_t dwProductVersionLS,
+                         const uint32_t dwFileVersionMS, const uint32_t dwFileVersionLS,
+                         const uint32_t dwProductVersionMS, const uint32_t dwProductVersionLS,
                          const uint32_t dwFileFlagsMask, const uint32_t dwFileFlags, const uint32_t dwFileOS,
-                         const uint32_t dwFileType, const uint32_t dwFileSubtype, const uint32_t dwFileDateMS, const uint32_t dwFileDateLS) {
+                         const uint32_t dwFileType, const uint32_t dwFileSubtype,
+                         const uint32_t dwFileDateMS, const uint32_t dwFileDateLS) {
   int n = 0;
-
   n += printf_text("VS FIXEDFILEINFO", USE_LT | USE_COLON | USE_EOL);
   n += printf_text("dwSignature", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(dwSignature, USE_FHEX32 | USE_EOL);
@@ -431,7 +437,7 @@ static int dump_versionNN(const pbuffer_t p, const poptions_t o) {
   PVS_VERSIONINFO p1 = &x0;
   PVS_FIXEDFILEINFO p2 = &x0.Value;
   if (p1) {
-    n += dump_version0(p, p1->wLength, p1->wValueLength, p1->wType, p1->Padding1, p1->Padding2, p1->Children);
+    n += dump_version0(p, p1->wLength, p1->wValueLength, p1->wType, p1->szKey, sizeof(p1->szKey), p1->Padding1, p1->Padding2, p1->Children);
     n += dump_version1(p, p2->dwSignature, p2->dwStrucVersion, p2->dwFileVersionMS, p2->dwFileVersionLS,
                        p2->dwProductVersionMS, p2->dwProductVersionLS, p2->dwFileFlagsMask, p2->dwFileFlags,
                        p2->dwFileOS, p2->dwFileType, p2->dwFileSubtype, p2->dwFileDateMS, p2->dwFileDateLS);
@@ -669,7 +675,7 @@ static int dump_resourceY(const pbuffer_t p, PIMAGE_RESOURCE_DATA_ENTRY p0, cons
       PVS_VERSIONINFO p1 = get_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_UNKNOWN, p0->OffsetToData, sizeof(VS_VERSIONINFO));
       if (p1) {
         PVS_FIXEDFILEINFO p2 = &p1->Value;
-        n += dump_version0(p, p1->wLength, p1->wValueLength, p1->wType, p1->Padding1, p1->Padding2, p1->Children);
+        n += dump_version0(p, p1->wLength, p1->wValueLength, p1->wType, p1->szKey, sizeof(p1->szKey), p1->Padding1, p1->Padding2, p1->Children);
         n += dump_version1(p, p2->dwSignature, p2->dwStrucVersion, p2->dwFileVersionMS, p2->dwFileVersionLS,
                        p2->dwProductVersionMS, p2->dwProductVersionLS, p2->dwFileFlagsMask, p2->dwFileFlags,
                        p2->dwFileOS, p2->dwFileType, p2->dwFileSubtype, p2->dwFileDateMS, p2->dwFileDateLS);

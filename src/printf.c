@@ -348,12 +348,23 @@ int printf_sore(const unknown_t p, const size_t size, const imode_t mode) {
   MALLOCA(char, o, 1024);
 
   puchar_t p0 = CAST(puchar_t, p);
-  if (USE_STR == xmode) {
+  if (USE_STR == xmode || USE_STRSIZE == xmode) {
     n += printf_spos(o, sizeof(o), mode, USE_SPACE == GET_POS0(mode) || USE_TAB == GET_POS0(mode));
 
     for (size_t i = 0; i < size; ++i, ++p0) {
-      if (0 == *p0) break;
+      if (USE_STR == xmode && 0 == *p0) break;
       n += printf_neat(o + n, sizeof(o) - n, *p0, USE_CHARCTRL);
+    }
+
+    n += printf_epos(o, sizeof(o), mode);
+    n += printf_post(o, mode);
+  } else if (USE_STR16 == xmode || USE_STR16SIZE == xmode) {
+    n += printf_spos(o, sizeof(o), mode, USE_SPACE == GET_POS0(mode) || USE_TAB == GET_POS0(mode));
+
+    pushort_t p1 = CAST(pushort_t, p);
+    for (size_t i = 0; i < size; i += 2, ++p1) {
+      if (USE_STR16 == xmode && 0 == *p1) break;
+      n += printf_neat(o + n, sizeof(o) - n, *p1, USE_CHARCTRL);
     }
 
     n += printf_epos(o, sizeof(o), mode);
