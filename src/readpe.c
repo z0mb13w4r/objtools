@@ -457,23 +457,53 @@ static int dump_version3(const pbuffer_t p, const uint16_t wLength, const uint16
   return n;
 }
 
+static int dump_version4(const pbuffer_t p, const uint16_t wLength, const uint16_t wValueLength, const uint16_t wType,
+                         const pushort_t szKey, const size_t szKeySize, const pushort_t szValue, const size_t szValueSize) {
+  int n = 0;
+  n += printf_text("String", USE_LT | USE_COLON | USE_EOL);
+  n += printf_text("wLength", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(wLength, USE_FHEX16 | USE_EOL);
+  n += printf_text("wValueLength", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(wValueLength, USE_FHEX16 | USE_EOL);
+  n += printf_text("wType", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(wType, USE_FHEX16 | USE_EOL);
+  n += printf_text("szKey", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE + 1));
+  n += printf_sore(szKey, szKeySize, USE_STR16 | USE_EOL);
+  n += printf_text("szValue", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE + 1));
+  n += printf_sore(szValue, szValueSize, USE_STR16 | USE_EOL);
+  n += printf_eol();
+
+  return n;
+}
+
 static int dump_versionY(const pbuffer_t p, PIMAGE_RESOURCE_DATA_ENTRY p0) {
   int n = 0;
 
   if (p0) {
-    PVS_VERSIONINFO p1 = get_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_UNKNOWN, p0->OffsetToData, sizeof(VS_VERSIONINFO));
-    if (p1) {
+    PBYTE px = get_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_UNKNOWN, p0->OffsetToData, sizeof(VS_VERSIONINFO));
+    if (px) {
+      PVS_VERSIONINFO p1 = CAST(PVS_VERSIONINFO, px);
       n += dump_version0(p, p1->wLength, p1->wValueLength, p1->wType, p1->szKey, sizeof(p1->szKey));
       if (0 != p1->wValueLength) {
-        PVS_FIXEDFILEINFO p2 = CAST(PVS_FIXEDFILEINFO, CAST(PBYTE, p1) + 40);
+        px += BOUND32(sizeof(VS_VERSIONINFO));
+        PVS_FIXEDFILEINFO p2 = CAST(PVS_FIXEDFILEINFO, px);
         n += dump_version1(p, p2->dwSignature, p2->dwStrucVersion, p2->dwFileVersionMS, p2->dwFileVersionLS,
                      p2->dwProductVersionMS, p2->dwProductVersionLS, p2->dwFileFlagsMask, p2->dwFileFlags,
                      p2->dwFileOS, p2->dwFileType, p2->dwFileSubtype, p2->dwFileDateMS, p2->dwFileDateLS);
 
-        StringFileInfo* p3 = CAST(StringFileInfo*, CAST(PBYTE, p1) + 40 + 52);
+        px += BOUND32(sizeof(VS_FIXEDFILEINFO));
+        PSTRING_FILE_INFO p3 = CAST(PSTRING_FILE_INFO, px);
         n += dump_version2(p, p3->wLength, p3->wValueLength, p3->wType, p3->szKey, sizeof(p3->szKey));
-        StringTable* p4 = CAST(StringTable*, CAST(PBYTE, p1) + 40 + 52 + 36);
+
+        px += BOUND32(sizeof(STRING_FILE_INFO));
+        PSTRING_TABLE p4 = CAST(PSTRING_TABLE, px);
         n += dump_version3(p, p4->wLength, p4->wValueLength, p4->wType, p4->szKey, sizeof(p4->szKey));
+
+        px += BOUND32(sizeof(STRING_TABLE));
+        PSTRING p5 = CAST(PSTRING, px);
+        px += BOUND32(sizeof(PSTRING) + p5->wValueLength);
+        PWCHAR w5 = CAST(PWCHAR, px);
+        n += dump_version4(p, p5->wLength, p5->wValueLength, p5->wType, p5->szKey, p5->wValueLength, w5, 50 /* u16 strlen(src, maxsize) */);
       }
     }
   }

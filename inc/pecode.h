@@ -496,32 +496,32 @@ typedef struct _VS_VERSIONINFO {
 //  WORD             Padding2;
 } VS_VERSIONINFO, *PVS_VERSIONINFO;
 
-typedef struct _String {
+typedef struct _STRING {
   WORD  wLength;
   WORD  wValueLength;
   WORD  wType;
-  WCHAR szKey;
-  WORD  Padding;
-  WORD  Value;
-} String;
+  WCHAR szKey[1];
+//  WORD  Padding;
+//  WORD  Value;
+} STRING, *PSTRING;
 
-typedef struct _StringTable {
+typedef struct _STRING_TABLE {
   WORD   wLength;
   WORD   wValueLength;
   WORD   wType;
-  WCHAR  szKey[12];
+  WCHAR  szKey[8];
 //  WORD   Padding;
 //  String Children;
-} StringTable;
+} STRING_TABLE, *PSTRING_TABLE;
 
-typedef struct _StringFileInfo {
+typedef struct _STRING_FILE_INFO {
   WORD        wLength;
   WORD        wValueLength;
   WORD        wType;
   WCHAR       szKey[14];
 //  WORD        Padding;
 //  StringTable Children;
-} StringFileInfo;
+} STRING_FILE_INFO, *PSTRING_FILE_INFO;
 
 typedef struct _Var {
   WORD  wLength;

@@ -59,6 +59,14 @@
 #define LIMIT(x,b,t) MAX(b, MIN(x, t))
 #endif
 
+#ifndef BOUND16
+#define BOUND16(x)   (CAST(size_t, ((x) + 1) / 2) * 2)
+#endif
+
+#ifndef BOUND32
+#define BOUND32(x)   (CAST(size_t, ((x) + 3) / 4) * 4)
+#endif
+
 #ifndef U64MASK
 #define U64MASK(x)   (1ULL << (x))
 #endif
@@ -109,7 +117,7 @@ typedef unsigned short ushort_t, *pushort_t;
 typedef char           CHAR, *PCHAR;
 typedef int32_t        LONG, *PLONG;
 typedef uint32_t       ULONG, *PULONG;
-typedef uint16_t       WCHAR;
+typedef uint16_t       WCHAR, *PWCHAR;
 
 typedef uint8_t        BYTE, *PBYTE;
 typedef uint16_t       WORD, *PWORD;
