@@ -491,10 +491,9 @@ typedef struct _VS_VERSIONINFO {
   WORD             wValueLength;
   WORD             wType;
   WCHAR            szKey[16];
-  WORD             Padding1;
-  VS_FIXEDFILEINFO Value;
-  WORD             Padding2;
-  WORD             Children;
+//  WORD             Padding1;
+//  VS_FIXEDFILEINFO Value;
+//  WORD             Padding2;
 } VS_VERSIONINFO, *PVS_VERSIONINFO;
 
 typedef struct _String {
@@ -510,18 +509,18 @@ typedef struct _StringTable {
   WORD   wLength;
   WORD   wValueLength;
   WORD   wType;
-  WCHAR  szKey;
-  WORD   Padding;
-  String Children;
+  WCHAR  szKey[12];
+//  WORD   Padding;
+//  String Children;
 } StringTable;
 
 typedef struct _StringFileInfo {
   WORD        wLength;
   WORD        wValueLength;
   WORD        wType;
-  WCHAR       szKey;
-  WORD        Padding;
-  StringTable Children;
+  WCHAR       szKey[14];
+//  WORD        Padding;
+//  StringTable Children;
 } StringFileInfo;
 
 typedef struct _Var {
