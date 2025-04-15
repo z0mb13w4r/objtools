@@ -103,3 +103,55 @@ size_t fsize(FILE *f) {
   return siz;
 }
 
+int strlen8(unknown_t s, const size_t maxsize) {
+  if (s) {
+    puchar_t s0 = CAST(puchar_t, s);
+    for (size_t i = 0; i < maxsize; ++i, ++s0) {
+      if (0 == *s0) return i;
+    }
+
+    return maxsize;
+  }
+
+  return -1;
+}
+
+int strlen16(unknown_t s, const size_t maxsize) {
+  if (s) {
+    pushort_t s0 = CAST(pushort_t, s);
+    for (size_t i = 0; i < maxsize; ++i, ++s0) {
+      if (0 == *s0) return i;
+    }
+
+    return maxsize;
+  }
+
+  return -1;
+}
+
+int strsize8(unknown_t s, const size_t maxsize) {
+  if (s) {
+    puchar_t s0 = CAST(puchar_t, s);
+    for (size_t i = 0; i < maxsize; ++i, ++s0) {
+      if (0 == *s0) return i + 1;
+    }
+
+    return maxsize;
+  }
+
+  return -1;
+}
+
+int strsize16(unknown_t s, const size_t maxsize) {
+  if (s) {
+    pushort_t s0 = CAST(pushort_t, s);
+    for (size_t i = 0; i < maxsize; i += 2, ++s0) {
+      if (0 == *s0) return i + 2;
+    }
+
+    return maxsize;
+  }
+
+  return -1;
+}
+

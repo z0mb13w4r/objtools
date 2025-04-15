@@ -28,5 +28,10 @@ size_t strlenpick(const pconvert_t p);
 
 size_t fsize(FILE *f);
 
+int strlen8(unknown_t s, const size_t maxsize);
+int strlen16(unknown_t s, const size_t maxsize);
+int strsize8(unknown_t s, const size_t maxsize);
+int strsize16(unknown_t s, const size_t maxsize);
+
 #endif
 

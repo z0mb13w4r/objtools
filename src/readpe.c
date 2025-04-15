@@ -503,7 +503,7 @@ static int dump_versionY(const pbuffer_t p, PIMAGE_RESOURCE_DATA_ENTRY p0) {
         PSTRING p5 = CAST(PSTRING, px);
         px += BOUND32(sizeof(PSTRING) + p5->wValueLength);
         PWCHAR w5 = CAST(PWCHAR, px);
-        n += dump_version4(p, p5->wLength, p5->wValueLength, p5->wType, p5->szKey, p5->wValueLength, w5, 50 /* u16 strlen(src, maxsize) */);
+        n += dump_version4(p, p5->wLength, p5->wValueLength, p5->wType, p5->szKey, p5->wValueLength, w5, strsize16(w5, 50));
       }
     }
   }
