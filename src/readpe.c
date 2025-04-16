@@ -8,6 +8,7 @@
 #include "static/filehdr.ci"
 #include "static/opthdr.ci"
 #include "static/sechdr.ci"
+#include "static/string_type.ci"
 #include "static/res_types.ci"
 #include "static/unw_flags.ci"
 #include "static/verinfo.ci"
@@ -363,7 +364,8 @@ static int dump_version0(const pbuffer_t p, const uint16_t wLength, const uint16
   n += printf_text("wValueLength", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(wValueLength, USE_FHEX16 | USE_EOL);
   n += printf_text("wType", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  n += printf_nice(wType, USE_FHEX16 | USE_EOL);
+  n += printf_nice(wType, USE_FHEX16);
+  n += printf_pick(zSTRINGTYPE, wType, USE_SPACE | USE_EOL);
   n += printf_text("szKey", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE + 1));
   n += printf_sore(szKey, szKeySize, USE_STR16 | USE_EOL);
   n += printf_eol();
@@ -432,7 +434,8 @@ static int dump_version2(const pbuffer_t p, const uint16_t wLength, const uint16
   n += printf_text("wValueLength", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(wValueLength, USE_FHEX16 | USE_EOL);
   n += printf_text("wType", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  n += printf_nice(wType, USE_FHEX16 | USE_EOL);
+  n += printf_nice(wType, USE_FHEX16);
+  n += printf_pick(zSTRINGTYPE, wType, USE_SPACE | USE_EOL);
   n += printf_text("szKey", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE + 1));
   n += printf_sore(szKey, szKeySize, USE_STR16 | USE_EOL);
   n += printf_eol();
@@ -449,7 +452,8 @@ static int dump_version3(const pbuffer_t p, const uint16_t wLength, const uint16
   n += printf_text("wValueLength", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(wValueLength, USE_FHEX16 | USE_EOL);
   n += printf_text("wType", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  n += printf_nice(wType, USE_FHEX16 | USE_EOL);
+  n += printf_nice(wType, USE_FHEX16);
+  n += printf_pick(zSTRINGTYPE, wType, USE_SPACE | USE_EOL);
   n += printf_text("szKey", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE + 1));
   n += printf_sore(szKey, szKeySize, USE_STR16 | USE_EOL);
   n += printf_eol();
@@ -466,7 +470,8 @@ static int dump_version4(const pbuffer_t p, const uint16_t wLength, const uint16
   n += printf_text("wValueLength", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(wValueLength, USE_FHEX16 | USE_EOL);
   n += printf_text("wType", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  n += printf_nice(wType, USE_FHEX16 | USE_EOL);
+  n += printf_nice(wType, USE_FHEX16);
+  n += printf_pick(zSTRINGTYPE, wType, USE_SPACE | USE_EOL);
   n += printf_text("szKey", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE + 1));
   n += printf_sore(szKey, szKeySize, USE_STR16 | USE_EOL);
   n += printf_text("szValue", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE + 1));
@@ -499,11 +504,21 @@ static int dump_versionY(const pbuffer_t p, PIMAGE_RESOURCE_DATA_ENTRY p0) {
         PSTRING_TABLE p4 = CAST(PSTRING_TABLE, px);
         n += dump_version3(p, p4->wLength, p4->wValueLength, p4->wType, p4->szKey, sizeof(p4->szKey));
 
+        WORD xx = 0;
         px += BOUND32(sizeof(STRING_TABLE));
-        PSTRING p5 = CAST(PSTRING, px);
-        px += BOUND32(sizeof(PSTRING) + p5->wValueLength);
-        PWCHAR w5 = CAST(PWCHAR, px);
-        n += dump_version4(p, p5->wLength, p5->wValueLength, p5->wType, p5->szKey, p5->wValueLength, w5, strsize16(w5, 50));
+        while (xx < p4->wLength) {
+          PSTRING p5 = CAST(PSTRING, px);
+
+          WORD  ksize = strsize16(p5->szKey, 50);
+          px += BOUND32(sizeof(STRING) + ksize - 2);
+
+          WORD   vsize = strsize16(px, 100);
+          WORD   yy = sizeof(STRING) + ksize + vsize;
+          n += dump_version4(p, p5->wLength, p5->wValueLength, p5->wType, p5->szKey, ksize, px, vsize);
+          px += BOUND32(vsize);
+          xx += yy;
+//          break;
+        }
       }
     }
   }
