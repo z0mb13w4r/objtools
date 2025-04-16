@@ -481,6 +481,44 @@ static int dump_version4(const pbuffer_t p, const uint16_t wLength, const uint16
   return n;
 }
 
+static int dump_version5(const pbuffer_t p, const uint16_t wLength, const uint16_t wValueLength, const uint16_t wType,
+                         const pushort_t szKey, const size_t szKeySize) {
+  int n = 0;
+  n += printf_text("VarFileInfo", USE_LT | USE_COLON | USE_EOL);
+  n += printf_text("wLength", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(wLength, USE_FHEX16 | USE_EOL);
+  n += printf_text("wValueLength", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(wValueLength, USE_FHEX16 | USE_EOL);
+  n += printf_text("wType", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(wType, USE_FHEX16);
+  n += printf_pick(zSTRINGTYPE, wType, USE_SPACE | USE_EOL);
+  n += printf_text("szKey", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE + 1));
+  n += printf_sore(szKey, szKeySize, USE_STR16 | USE_EOL);
+  n += printf_eol();
+
+  return n;
+}
+
+static int dump_version6(const pbuffer_t p, const uint16_t wLength, const uint16_t wValueLength, const uint16_t wType,
+                         const pushort_t szKey, const size_t szKeySize, const puchar_t Value, const size_t ValueSize) {
+  int n = 0;
+  n += printf_text("Var", USE_LT | USE_COLON | USE_EOL);
+  n += printf_text("wLength", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(wLength, USE_FHEX16 | USE_EOL);
+  n += printf_text("wValueLength", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(wValueLength, USE_FHEX16 | USE_EOL);
+  n += printf_text("wType", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(wType, USE_FHEX16);
+  n += printf_pick(zSTRINGTYPE, wType, USE_SPACE | USE_EOL);
+  n += printf_text("szKey", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE + 1));
+  n += printf_sore(szKey, szKeySize, USE_STR16 | USE_EOL);
+  n += printf_text("Value", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE + 1));
+  n += printf_sore(Value, ValueSize, USE_HEX | USE_EOL);
+  n += printf_eol();
+
+  return n;
+}
+
 static int dump_versionY(const pbuffer_t p, PIMAGE_RESOURCE_DATA_ENTRY p0) {
   int n = 0;
 
@@ -497,26 +535,38 @@ static int dump_versionY(const pbuffer_t p, PIMAGE_RESOURCE_DATA_ENTRY p0) {
                      p2->dwFileOS, p2->dwFileType, p2->dwFileSubtype, p2->dwFileDateMS, p2->dwFileDateLS);
 
         px += BOUND32(sizeof(VS_FIXEDFILEINFO));
-        PSTRING_FILE_INFO p3 = CAST(PSTRING_FILE_INFO, px);
-        n += dump_version2(p, p3->wLength, p3->wValueLength, p3->wType, p3->szKey, sizeof(p3->szKey));
+        PVERSION_CHUNK p3 = CAST(PVERSION_CHUNK, px);
+        WORD k3 = strsize16(p3->szKey, 50);
+        n += dump_version2(p, p3->wLength, p3->wValueLength, p3->wType, p3->szKey, k3);
 
-        px += BOUND32(sizeof(STRING_FILE_INFO));
-        PSTRING_TABLE p4 = CAST(PSTRING_TABLE, px);
-        n += dump_version3(p, p4->wLength, p4->wValueLength, p4->wType, p4->szKey, sizeof(p4->szKey));
+        px += BOUND32(STRING_FILE_INFO_SIZE);
+        PVERSION_CHUNK p4 = CAST(PVERSION_CHUNK, px);
+        WORD k4 = strsize16(p4->szKey, 50);
+        n += dump_version3(p, p4->wLength, p4->wValueLength, p4->wType, p4->szKey, k4);
 
-        WORD xx = 0;
-        px += BOUND32(sizeof(STRING_TABLE));
+        WORD xx = STRING_TABLE_SIZE;
+        px += STRING_TABLE_SIZE;
         while (xx < p4->wLength) {
-          PSTRING p5 = CAST(PSTRING, px);
+          PVERSION_CHUNK p5 = CAST(PVERSION_CHUNK, px);
 
-          WORD  ksize = strsize16(p5->szKey, 50);
-          px += BOUND32(sizeof(STRING) + ksize - 2);
+          WORD  k5 = strsize16(p5->szKey, 50);
+          px += BOUND32(VERSION_CHUNK_MINSIZE + k5);
 
-          WORD   vsize = strsize16(px, 100);
-          n += dump_version4(p, p5->wLength, p5->wValueLength, p5->wType, p5->szKey, ksize, px, vsize);
-          xx += sizeof(STRING) + ksize + vsize;
-          px += BOUND32(vsize);
+          WORD   v5 = strsize16(px, 100);
+          n += dump_version4(p, p5->wLength, p5->wValueLength, p5->wType, p5->szKey, k5, px, v5);
+          xx += BOUND32(VERSION_CHUNK_MINSIZE + k5 + v5 + 2);
+          px += BOUND32(v5);
         }
+
+        PVERSION_CHUNK p6 = CAST(PVERSION_CHUNK, px);
+        WORD k6 = strsize16(p6->szKey, 50);
+        n += dump_version5(p, p6->wLength, p6->wValueLength, p6->wType, p6->szKey, k6);
+
+        px += BOUND32(VERSION_CHUNK_MINSIZE + k6);
+        PVERSION_CHUNK p7 = CAST(PVERSION_CHUNK, px);
+        WORD k7 = strsize16(p7->szKey, 50);
+        px += BOUND32(VERSION_CHUNK_MINSIZE + k7);
+        n += dump_version6(p, p7->wLength, p7->wValueLength, p7->wType, p7->szKey, k7, px, 4);
       }
     }
   }

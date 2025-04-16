@@ -509,7 +509,7 @@ typedef struct _STRING_TABLE {
   WORD   wLength;
   WORD   wValueLength;
   WORD   wType;
-  WCHAR  szKey[8];
+  WCHAR  szKey[9];
 //  WORD   Padding;
 //  String Children;
 } STRING_TABLE, *PSTRING_TABLE;
@@ -523,23 +523,38 @@ typedef struct _STRING_FILE_INFO {
 //  StringTable Children;
 } STRING_FILE_INFO, *PSTRING_FILE_INFO;
 
-typedef struct _Var {
+typedef struct _VAR {
   WORD  wLength;
   WORD  wValueLength;
   WORD  wType;
-  WCHAR szKey;
-  WORD  Padding;
-  DWORD Value;
-} Var;
+  WCHAR szKey[1];
+//  WORD  Padding;
+//  DWORD Value;
+} VAR, *PVAR;
 
-typedef struct _VarFileInfo {
+typedef struct _VAR_FILE_INFO {
   WORD  wLength;
   WORD  wValueLength;
   WORD  wType;
-  WCHAR szKey;
-  WORD  Padding;
-  Var   Children;
-} VarFileInfo;
+  WCHAR szKey[12];
+//  WORD  Padding;
+//  Var   Children;
+} VAR_FILE_INFO, *PVAR_FILE_INFO;
+
+typedef struct _VERSION_CHUNK {
+  WORD  wLength;
+  WORD  wValueLength;
+  WORD  wType;
+  WCHAR szKey[1];
+} VERSION_CHUNK, *PVERSION_CHUNK;
+
+typedef struct _VERSION_VALUE {
+  WCHAR szValue[1];
+} VERSION_VALUE, *PVERSION_VALUE;
+
+#define STRING_TABLE_SIZE                        BOUND32(sizeof(VERSION_CHUNK) + (8 * sizeof(WCHAR)))
+#define STRING_FILE_INFO_SIZE                    BOUND32(sizeof(VERSION_CHUNK) + (13 * sizeof(WCHAR)))
+#define VERSION_CHUNK_MINSIZE                    (sizeof(VERSION_CHUNK) - sizeof(WCHAR))
 
 bool_t isPE(const pbuffer_t p);
 bool_t isPE32(const pbuffer_t p);

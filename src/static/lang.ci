@@ -1,3 +1,6 @@
+#define CP_WINANSI           (1004)
+#define CP_WINUNICODE        (1200)
+
 static convert_t zLANG[] = {
   {"LANG_NEUTRAL",         0x00},
   {"LANG_INVARIANT",       0x7f},
