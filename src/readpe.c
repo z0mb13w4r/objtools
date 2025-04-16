@@ -513,11 +513,9 @@ static int dump_versionY(const pbuffer_t p, PIMAGE_RESOURCE_DATA_ENTRY p0) {
           px += BOUND32(sizeof(STRING) + ksize - 2);
 
           WORD   vsize = strsize16(px, 100);
-          WORD   yy = sizeof(STRING) + ksize + vsize;
           n += dump_version4(p, p5->wLength, p5->wValueLength, p5->wType, p5->szKey, ksize, px, vsize);
+          xx += sizeof(STRING) + ksize + vsize;
           px += BOUND32(vsize);
-          xx += yy;
-//          break;
         }
       }
     }
