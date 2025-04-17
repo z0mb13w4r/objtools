@@ -524,10 +524,11 @@ static int dump_versionY(const pbuffer_t p, PIMAGE_RESOURCE_DATA_ENTRY p0) {
   if (p0) {
     handle_t p1 = fget_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_UNKNOWN, p0->OffsetToData, p0->Size);
     if (p1) {
-      n += dump_versionV(p, p1);
-      n += dump_versionV(p, p1);
-      n += dump_versionV(p, p1);
-      n += dump_versionV(p, p1);
+      int x = dump_versionV(p, p1);
+      while (x) {
+        n += x;
+        x  = dump_versionV(p, p1);
+      }
     }
   }
 
