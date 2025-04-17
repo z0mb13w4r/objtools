@@ -1,4 +1,5 @@
 #include "pecode.h"
+#include "memfind.h"
 
 typedef struct machine_s {
   uchar_t x0;
@@ -237,5 +238,9 @@ unknown_t get_chunkbyname(const pbuffer_t p, const char* name) {
 DWORD get_dwordbyRVA(const pbuffer_t p, const int index, const uint64_t vaddr) {
   PDWORD p0 = get_chunkbyRVA(p, index, vaddr, sizeof(DWORD));
   return p0 ? *p0 : 0;
+}
+
+handle_t fget_chunkbyRVA(const pbuffer_t p, const int index, const uint64_t vaddr, const size_t size) {
+  return fmalloc(get_chunkbyRVA(p, index, vaddr, size), size, 12345);
 }
 

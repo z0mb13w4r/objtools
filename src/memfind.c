@@ -12,7 +12,7 @@ unknown_t fget(handle_t p) {
   if (isfind(p)) {
     pfind_t p0 = CAST(pfind_t, p);
     if (p0 && p0->item) {
-      return CAST(unsigned char*, p0->item) + p0->cpos;
+      return CAST(puchar_t, p0->item) + p0->cpos;
     }
   }
 

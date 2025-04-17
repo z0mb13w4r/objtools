@@ -3,6 +3,7 @@
 #include "opcode.h"
 #include "printf.h"
 #include "readpe.h"
+#include "memfind.h"
 
 #include "static/dbghdr.ci"
 #include "static/filehdr.ci"
@@ -356,9 +357,9 @@ static int dump_sectiongroups64(const pbuffer_t p, const poptions_t o) {
 }
 
 static int dump_version0(const pbuffer_t p, const uint16_t wLength, const uint16_t wValueLength, const uint16_t wType,
-                         const pushort_t szKey, const size_t szKeySize) {
+                         const pushort_t szKey, const size_t szKeySize, const char* name) {
   int n = 0;
-  n += printf_text("VS VERSIONINFO", USE_LT | USE_COLON | USE_EOL);
+  n += printf_text(name, USE_LT | USE_COLON | USE_EOL);
   n += printf_text("wLength", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(wLength, USE_FHEX16 | USE_EOL);
   n += printf_text("wValueLength", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
@@ -373,7 +374,48 @@ static int dump_version0(const pbuffer_t p, const uint16_t wLength, const uint16
   return n;
 }
 
-static int dump_version1(const pbuffer_t p, const uint32_t dwSignature, const uint32_t dwStrucVersion,
+static int dump_version1(const pbuffer_t p, const uint16_t wLength, const uint16_t wValueLength, const uint16_t wType,
+                         const pushort_t szKey, const size_t szKeySize, const pushort_t szValue, const size_t szValueSize,
+                         const char* name) {
+  int n = 0;
+  n += printf_text(name, USE_LT | USE_COLON | USE_EOL);
+  n += printf_text("wLength", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(wLength, USE_FHEX16 | USE_EOL);
+  n += printf_text("wValueLength", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(wValueLength, USE_FHEX16 | USE_EOL);
+  n += printf_text("wType", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(wType, USE_FHEX16);
+  n += printf_pick(zSTRINGTYPE, wType, USE_SPACE | USE_EOL);
+  n += printf_text("szKey", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE + 1));
+  n += printf_sore(szKey, szKeySize, USE_STR16 | USE_EOL);
+  n += printf_text("szValue", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE + 1));
+  n += printf_sore(szValue, szValueSize, USE_STR16 | USE_EOL);
+  n += printf_eol();
+
+  return n;
+}
+
+static int dump_version2(const pbuffer_t p, const uint16_t wLength, const uint16_t wValueLength, const uint16_t wType,
+                         const pushort_t szKey, const size_t szKeySize, const pushort_t Value, const size_t ValueSize) {
+  int n = 0;
+  n += printf_text("Var", USE_LT | USE_COLON | USE_EOL);
+  n += printf_text("wLength", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(wLength, USE_FHEX16 | USE_EOL);
+  n += printf_text("wValueLength", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(wValueLength, USE_FHEX16 | USE_EOL);
+  n += printf_text("wType", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(wType, USE_FHEX16);
+  n += printf_pick(zSTRINGTYPE, wType, USE_SPACE | USE_EOL);
+  n += printf_text("szKey", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE + 1));
+  n += printf_sore(szKey, szKeySize, USE_STR16 | USE_EOL);
+  n += printf_text("Value", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE + 1));
+  n += printf_sore(Value, ValueSize, USE_HEX | USE_EOL);
+  n += printf_eol();
+
+  return n;
+}
+
+static int dump_version3(const pbuffer_t p, const uint32_t dwSignature, const uint32_t dwStrucVersion,
                          const uint32_t dwFileVersionMS, const uint32_t dwFileVersionLS,
                          const uint32_t dwProductVersionMS, const uint32_t dwProductVersionLS,
                          const uint32_t dwFileFlagsMask, const uint32_t dwFileFlags, const uint32_t dwFileOS,
@@ -425,96 +467,99 @@ static int dump_version1(const pbuffer_t p, const uint32_t dwSignature, const ui
   return n;
 }
 
-static int dump_version2(const pbuffer_t p, const uint16_t wLength, const uint16_t wValueLength, const uint16_t wType,
-                         const pushort_t szKey, const size_t szKeySize) {
-  int n = 0;
-  n += printf_text("StringFileInfo", USE_LT | USE_COLON | USE_EOL);
-  n += printf_text("wLength", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  n += printf_nice(wLength, USE_FHEX16 | USE_EOL);
-  n += printf_text("wValueLength", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  n += printf_nice(wValueLength, USE_FHEX16 | USE_EOL);
-  n += printf_text("wType", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  n += printf_nice(wType, USE_FHEX16);
-  n += printf_pick(zSTRINGTYPE, wType, USE_SPACE | USE_EOL);
-  n += printf_text("szKey", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE + 1));
-  n += printf_sore(szKey, szKeySize, USE_STR16 | USE_EOL);
-  n += printf_eol();
+size_t fget_vchunkkeysize(handle_t p) {
+  if (isfind(p)) {
+    PVERSION_CHUNK p2 = CAST(PVERSION_CHUNK, fget(p));
+    return p2 ? strsize16(p2->szKey, 50) : 0;
+  }
 
-  return n;
+  return 0;
 }
 
-static int dump_version3(const pbuffer_t p, const uint16_t wLength, const uint16_t wValueLength, const uint16_t wType,
-                         const pushort_t szKey, const size_t szKeySize) {
-  int n = 0;
-  n += printf_text("StringTable", USE_LT | USE_COLON | USE_EOL);
-  n += printf_text("wLength", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  n += printf_nice(wLength, USE_FHEX16 | USE_EOL);
-  n += printf_text("wValueLength", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  n += printf_nice(wValueLength, USE_FHEX16 | USE_EOL);
-  n += printf_text("wType", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  n += printf_nice(wType, USE_FHEX16);
-  n += printf_pick(zSTRINGTYPE, wType, USE_SPACE | USE_EOL);
-  n += printf_text("szKey", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE + 1));
-  n += printf_sore(szKey, szKeySize, USE_STR16 | USE_EOL);
-  n += printf_eol();
+handle_t fnext_vchunksize(handle_t p, const size_t chunksize) {
+  if (isfind(p)) {
+    pfind_t p0 = CAST(pfind_t, p);
+    if (p0 && p0->item) {
+      p0->chunksize = BOUND32(chunksize);
+      return fnext(p);
+    }
+  }
 
-  return n;
+  return NULL;
 }
 
-static int dump_version4(const pbuffer_t p, const uint16_t wLength, const uint16_t wValueLength, const uint16_t wType,
-                         const pushort_t szKey, const size_t szKeySize, const pushort_t szValue, const size_t szValueSize) {
-  int n = 0;
-  n += printf_text("String", USE_LT | USE_COLON | USE_EOL);
-  n += printf_text("wLength", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  n += printf_nice(wLength, USE_FHEX16 | USE_EOL);
-  n += printf_text("wValueLength", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  n += printf_nice(wValueLength, USE_FHEX16 | USE_EOL);
-  n += printf_text("wType", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  n += printf_nice(wType, USE_FHEX16);
-  n += printf_pick(zSTRINGTYPE, wType, USE_SPACE | USE_EOL);
-  n += printf_text("szKey", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE + 1));
-  n += printf_sore(szKey, szKeySize, USE_STR16 | USE_EOL);
-  n += printf_text("szValue", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE + 1));
-  n += printf_sore(szValue, szValueSize, USE_STR16 | USE_EOL);
-  n += printf_eol();
-
-  return n;
+handle_t fnext_vchunk(handle_t p) {
+  return fnext_vchunksize(p, VERSION_CHUNK_MINSIZE + fget_vchunkkeysize(p));
 }
 
-static int dump_version5(const pbuffer_t p, const uint16_t wLength, const uint16_t wValueLength, const uint16_t wType,
-                         const pushort_t szKey, const size_t szKeySize) {
-  int n = 0;
-  n += printf_text("VarFileInfo", USE_LT | USE_COLON | USE_EOL);
-  n += printf_text("wLength", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  n += printf_nice(wLength, USE_FHEX16 | USE_EOL);
-  n += printf_text("wValueLength", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  n += printf_nice(wValueLength, USE_FHEX16 | USE_EOL);
-  n += printf_text("wType", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  n += printf_nice(wType, USE_FHEX16);
-  n += printf_pick(zSTRINGTYPE, wType, USE_SPACE | USE_EOL);
-  n += printf_text("szKey", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE + 1));
-  n += printf_sore(szKey, szKeySize, USE_STR16 | USE_EOL);
-  n += printf_eol();
+int strcmp16(const unknown_t s0, const char* s1, const size_t maxsize) {
+  if (s0 && s1) {
+    pushort_t p0 = CAST(pushort_t, s0);
+    puchar_t  p1 = CAST(puchar_t, s1);
+    for (size_t i = 0; i < maxsize; i += 2, ++p0, ++p1) {
+      const uchar_t c0 = *p0 & 0xff;
+      const uchar_t c1 = *p1;
+      if (0 == c0 || 0 == c1 || c0 != c1) return c0 - c1;
+    }
 
-  return n;
+    return 0;
+  }
+
+  return -1;
 }
 
-static int dump_version6(const pbuffer_t p, const uint16_t wLength, const uint16_t wValueLength, const uint16_t wType,
-                         const pushort_t szKey, const size_t szKeySize, const puchar_t Value, const size_t ValueSize) {
+bool_t isvchunkkey(handle_t p, const char* name) {
+  PVERSION_CHUNK p0 = fget(p);
+  return p0 ? 0 == strcmp16(p0->szKey, name, 32) : FALSE;
+}
+
+static int dump_versionV(const pbuffer_t p, handle_t f) {
   int n = 0;
-  n += printf_text("Var", USE_LT | USE_COLON | USE_EOL);
-  n += printf_text("wLength", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  n += printf_nice(wLength, USE_FHEX16 | USE_EOL);
-  n += printf_text("wValueLength", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  n += printf_nice(wValueLength, USE_FHEX16 | USE_EOL);
-  n += printf_text("wType", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  n += printf_nice(wType, USE_FHEX16);
-  n += printf_pick(zSTRINGTYPE, wType, USE_SPACE | USE_EOL);
-  n += printf_text("szKey", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE + 1));
-  n += printf_sore(szKey, szKeySize, USE_STR16 | USE_EOL);
-  n += printf_text("Value", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE + 1));
-  n += printf_sore(Value, ValueSize, USE_HEX | USE_EOL);
-  n += printf_eol();
+  if (isvchunkkey(f, "VS_VERSION_INFO")) {
+    PVERSION_CHUNK v0 = fget(f);
+    n += dump_version0(p, v0->wLength, v0->wValueLength, v0->wType, v0->szKey, fget_vchunkkeysize(f), "VS VERSIONINFO");
+    if (0 != v0->wValueLength) {
+      f = fnext_vchunk(f);
+      PVS_FIXEDFILEINFO v1 = fget(f);
+      n += dump_version3(p, v1->dwSignature, v1->dwStrucVersion, v1->dwFileVersionMS, v1->dwFileVersionLS,
+                   v1->dwProductVersionMS, v1->dwProductVersionLS, v1->dwFileFlagsMask, v1->dwFileFlags,
+                   v1->dwFileOS, v1->dwFileType, v1->dwFileSubtype, v1->dwFileDateMS, v1->dwFileDateLS);
+
+      f = fnext_vchunksize(f, sizeof(VS_FIXEDFILEINFO));
+    }
+  } else if (isvchunkkey(f, "StringFileInfo")) {
+    PVERSION_CHUNK v0 = fget(f);
+    n += dump_version0(p, v0->wLength, v0->wValueLength, v0->wType, v0->szKey, fget_vchunkkeysize(f), "StringFileInfo");
+    f = fnext_vchunksize(f, STRING_FILE_INFO_SIZE);
+
+    PVERSION_CHUNK v1 = fget(f);
+    n += dump_version0(p, v1->wLength, v1->wValueLength, v1->wType, v1->szKey, fget_vchunkkeysize(f), "StringTable");
+
+    WORD xx = STRING_TABLE_SIZE;
+    f = fnext_vchunksize(f, STRING_TABLE_SIZE);
+    while (xx < v1->wLength) {
+      PVERSION_CHUNK v2 = fget(f);
+      f = fnext_vchunk(f);
+      PVERSION_VALUE v3 = fget(f);
+
+      size_t ksiz = strsize16(v2->szKey, 50);
+      size_t vsiz = strsize16(v3->szValue, 100);
+      n += dump_version1(p, v2->wLength,  v2->wValueLength, v2->wType, v2->szKey, ksiz, v3->szValue, vsiz, "String");
+      f = fnext_vchunksize(f, vsiz);
+      xx += BOUND32(VERSION_CHUNK_MINSIZE + ksiz + vsiz + 2);
+    }
+  } else if (isvchunkkey(f, "VarFileInfo")) {
+    PVERSION_CHUNK v0 = fget(f);
+    n += dump_version0(p, v0->wLength, v0->wValueLength, v0->wType, v0->szKey, fget_vchunkkeysize(f), "VarFileInfo");
+    f = fnext_vchunk(f);
+
+    PVERSION_CHUNK v1 = fget(f);
+    f = fnext_vchunk(f);
+
+    PVERSION_VALUE v2 = fget(f);
+    n += dump_version2(p, v1->wLength, v1->wValueLength, v1->wType, v1->szKey, strsize16(v1->szKey, 50), v2->szValue, 4);
+    f = fnext_vchunksize(f, 4);
+  }
 
   return n;
 }
@@ -523,51 +568,12 @@ static int dump_versionY(const pbuffer_t p, PIMAGE_RESOURCE_DATA_ENTRY p0) {
   int n = 0;
 
   if (p0) {
-    PBYTE px = get_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_UNKNOWN, p0->OffsetToData, sizeof(VS_VERSIONINFO));
-    if (px) {
-      PVS_VERSIONINFO p1 = CAST(PVS_VERSIONINFO, px);
-      n += dump_version0(p, p1->wLength, p1->wValueLength, p1->wType, p1->szKey, sizeof(p1->szKey));
-      if (0 != p1->wValueLength) {
-        px += BOUND32(sizeof(VS_VERSIONINFO));
-        PVS_FIXEDFILEINFO p2 = CAST(PVS_FIXEDFILEINFO, px);
-        n += dump_version1(p, p2->dwSignature, p2->dwStrucVersion, p2->dwFileVersionMS, p2->dwFileVersionLS,
-                     p2->dwProductVersionMS, p2->dwProductVersionLS, p2->dwFileFlagsMask, p2->dwFileFlags,
-                     p2->dwFileOS, p2->dwFileType, p2->dwFileSubtype, p2->dwFileDateMS, p2->dwFileDateLS);
-
-        px += BOUND32(sizeof(VS_FIXEDFILEINFO));
-        PVERSION_CHUNK p3 = CAST(PVERSION_CHUNK, px);
-        WORD k3 = strsize16(p3->szKey, 50);
-        n += dump_version2(p, p3->wLength, p3->wValueLength, p3->wType, p3->szKey, k3);
-
-        px += BOUND32(STRING_FILE_INFO_SIZE);
-        PVERSION_CHUNK p4 = CAST(PVERSION_CHUNK, px);
-        WORD k4 = strsize16(p4->szKey, 50);
-        n += dump_version3(p, p4->wLength, p4->wValueLength, p4->wType, p4->szKey, k4);
-
-        WORD xx = STRING_TABLE_SIZE;
-        px += STRING_TABLE_SIZE;
-        while (xx < p4->wLength) {
-          PVERSION_CHUNK p5 = CAST(PVERSION_CHUNK, px);
-
-          WORD  k5 = strsize16(p5->szKey, 50);
-          px += BOUND32(VERSION_CHUNK_MINSIZE + k5);
-
-          WORD   v5 = strsize16(px, 100);
-          n += dump_version4(p, p5->wLength, p5->wValueLength, p5->wType, p5->szKey, k5, px, v5);
-          xx += BOUND32(VERSION_CHUNK_MINSIZE + k5 + v5 + 2);
-          px += BOUND32(v5);
-        }
-
-        PVERSION_CHUNK p6 = CAST(PVERSION_CHUNK, px);
-        WORD k6 = strsize16(p6->szKey, 50);
-        n += dump_version5(p, p6->wLength, p6->wValueLength, p6->wType, p6->szKey, k6);
-
-        px += BOUND32(VERSION_CHUNK_MINSIZE + k6);
-        PVERSION_CHUNK p7 = CAST(PVERSION_CHUNK, px);
-        WORD k7 = strsize16(p7->szKey, 50);
-        px += BOUND32(VERSION_CHUNK_MINSIZE + k7);
-        n += dump_version6(p, p7->wLength, p7->wValueLength, p7->wType, p7->szKey, k7, px, 4);
-      }
+    handle_t p1 = fget_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_UNKNOWN, p0->OffsetToData, p0->Size);
+    if (p1) {
+      n += dump_versionV(p, p1);
+      n += dump_versionV(p, p1);
+      n += dump_versionV(p, p1);
+      n += dump_versionV(p, p1);
     }
   }
 

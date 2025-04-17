@@ -531,5 +531,7 @@ unknown_t get_chunkbyname(const pbuffer_t p, const char* name);
 
 DWORD get_dwordbyRVA(const pbuffer_t p, const int index, const uint64_t vaddr);
 
+handle_t fget_chunkbyRVA(const pbuffer_t p, const int index, const uint64_t vaddr, const size_t size);
+
 #endif
 
