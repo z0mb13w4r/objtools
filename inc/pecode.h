@@ -496,51 +496,6 @@ typedef struct _VS_VERSIONINFO {
 //  WORD             Padding2;
 } VS_VERSIONINFO, *PVS_VERSIONINFO;
 
-typedef struct _STRING {
-  WORD  wLength;
-  WORD  wValueLength;
-  WORD  wType;
-  WCHAR szKey[1];
-//  WORD  Padding;
-//  WORD  Value;
-} STRING, *PSTRING;
-
-typedef struct _STRING_TABLE {
-  WORD   wLength;
-  WORD   wValueLength;
-  WORD   wType;
-  WCHAR  szKey[9];
-//  WORD   Padding;
-//  String Children;
-} STRING_TABLE, *PSTRING_TABLE;
-
-typedef struct _STRING_FILE_INFO {
-  WORD        wLength;
-  WORD        wValueLength;
-  WORD        wType;
-  WCHAR       szKey[14];
-//  WORD        Padding;
-//  StringTable Children;
-} STRING_FILE_INFO, *PSTRING_FILE_INFO;
-
-typedef struct _VAR {
-  WORD  wLength;
-  WORD  wValueLength;
-  WORD  wType;
-  WCHAR szKey[1];
-//  WORD  Padding;
-//  DWORD Value;
-} VAR, *PVAR;
-
-typedef struct _VAR_FILE_INFO {
-  WORD  wLength;
-  WORD  wValueLength;
-  WORD  wType;
-  WCHAR szKey[12];
-//  WORD  Padding;
-//  Var   Children;
-} VAR_FILE_INFO, *PVAR_FILE_INFO;
-
 typedef struct _VERSION_CHUNK {
   WORD  wLength;
   WORD  wValueLength;
