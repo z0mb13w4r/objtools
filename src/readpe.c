@@ -344,7 +344,7 @@ static int dump_sectiongroups64(const pbuffer_t p, const poptions_t o) {
     PIMAGE_OPTIONAL_HEADER64 op = &nt->OptionalHeader;
     PIMAGE_DATA_DIRECTORY dd = op->DataDirectory;
 
-    dump_sectiongroups0(p);
+    n += dump_sectiongroups0(p);
 
     for (size_t i = 0; i < op->NumberOfRvaAndSizes; ++i, ++dd) {
       n += dump_sectiongroups1(p, i, dd->VirtualAddress, dd->Size);
@@ -592,15 +592,16 @@ static int dump_iat32(const pbuffer_t p, const poptions_t o) {
   PIMAGE_DATA_DIRECTORY p0 = get_datadirbyentry(p, IMAGE_DIRECTORY_ENTRY_IMPORT);
   PIMAGE_SECTION_HEADER s0 = get_sectionhdrbyentry(p, IMAGE_DIRECTORY_ENTRY_IMPORT);
 
+  int n = 0;
   if (p0 && s0) {
     PIMAGE_IMPORT_DESCRIPTOR p1 = get_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_IMPORT);
 
     if (p1) {
-      printf_text("IMAGE IMPORT DESCRIPTOR", USE_LT | USE_COLON | USE_EOL);
+      n += printf_text("IMAGE IMPORT DESCRIPTOR", USE_LT | USE_COLON | USE_EOL);
     }
 
     while (p1 && p1->FirstThunk) {
-      dump_iat0(p, p1->Characteristics, p1->OriginalFirstThunk, p1->TimeDateStamp, p1->ForwarderChain,
+      n += dump_iat0(p, p1->Characteristics, p1->OriginalFirstThunk, p1->TimeDateStamp, p1->ForwarderChain,
                 p1->Name, getp(p, peconvert2va(s0, p1->Name), 1), p1->FirstThunk);
 
       PIMAGE_THUNK_DATA32 p2 = (PIMAGE_THUNK_DATA32)
@@ -609,11 +610,11 @@ static int dump_iat32(const pbuffer_t p, const poptions_t o) {
       while (p2 && p2->AddressOfData) {
         if (p2->AddressOfData < 0x80000000) {
           PIMAGE_IMPORT_BY_NAME p3 = getp(p, peconvert2va(s0, p2->AddressOfData), sizeof(IMAGE_IMPORT_BY_NAME));
-          printf_text(p3->Name, USE_LT | USE_TAB2);
-          printf_nice(p3->Hint, USE_DEC | USE_SB | USE_EOL);
+          n += printf_text(p3->Name, USE_LT | USE_TAB2);
+          n += printf_nice(p3->Hint, USE_DEC | USE_SB | USE_EOL);
         } else {
-          printf_text("Ordinal", USE_LT | USE_TAB2 | USE_COLON);
-          printf_nice(p2->Ordinal, USE_DEC | USE_SB | USE_EOL);
+          n += printf_text("Ordinal", USE_LT | USE_TAB2 | USE_COLON);
+          n += printf_nice(p2->Ordinal, USE_DEC | USE_SB | USE_EOL);
         }
         ++p2;
       }
@@ -621,25 +622,26 @@ static int dump_iat32(const pbuffer_t p, const poptions_t o) {
       ++p1;
     }
 
-    printf_eol();
+    n += printf_eol();
   }
 
-  return 0;
+  return n;
 }
 
 static int dump_iat64(const pbuffer_t p, const poptions_t o) {
   PIMAGE_DATA_DIRECTORY p0 = get_datadirbyentry(p, IMAGE_DIRECTORY_ENTRY_IMPORT);
   PIMAGE_SECTION_HEADER s0 = get_sectionhdrbyentry(p, IMAGE_DIRECTORY_ENTRY_IMPORT);
 
+  int n = 0;
   if (p0 && s0) {
     PIMAGE_IMPORT_DESCRIPTOR p1 = get_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_IMPORT);
 
     if (p1) {
-      printf_text("IMAGE IMPORT DESCRIPTOR", USE_LT | USE_COLON | USE_EOL);
+      n += printf_text("IMAGE IMPORT DESCRIPTOR", USE_LT | USE_COLON | USE_EOL);
     }
 
     while (p1 && p1->FirstThunk) {
-      dump_iat0(p, p1->Characteristics, p1->OriginalFirstThunk, p1->TimeDateStamp, p1->ForwarderChain,
+      n += dump_iat0(p, p1->Characteristics, p1->OriginalFirstThunk, p1->TimeDateStamp, p1->ForwarderChain,
                 p1->Name, getp(p, peconvert2va(s0, p1->Name), 1), p1->FirstThunk);
 
       PIMAGE_THUNK_DATA64 p2 = get_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_IMPORT, p1->OriginalFirstThunk, sizeof(PIMAGE_THUNK_DATA64));
@@ -647,11 +649,11 @@ static int dump_iat64(const pbuffer_t p, const poptions_t o) {
       while (p2 && p2->AddressOfData) {
         if (p2->AddressOfData < 0x80000000) {
           PIMAGE_IMPORT_BY_NAME p3 = getp(p, peconvert2va(s0, p2->AddressOfData), sizeof(IMAGE_IMPORT_BY_NAME));
-          printf_text(p3->Name, USE_LT | USE_TAB2);
-          printf_nice(p3->Hint, USE_DEC | USE_SB | USE_EOL);
+          n += printf_text(p3->Name, USE_LT | USE_TAB2);
+          n += printf_nice(p3->Hint, USE_DEC | USE_SB | USE_EOL);
         } else {
-          printf_text("Ordinal", USE_LT | USE_TAB2 | USE_COLON);
-          printf_nice(p2->Ordinal, USE_DEC | USE_SB | USE_EOL);
+          n += printf_text("Ordinal", USE_LT | USE_TAB2 | USE_COLON);
+          n += printf_nice(p2->Ordinal, USE_DEC | USE_SB | USE_EOL);
         }
         ++p2;
       }
@@ -659,10 +661,10 @@ static int dump_iat64(const pbuffer_t p, const poptions_t o) {
       ++p1;
     }
 
-    printf_eol();
+    n += printf_eol();
   }
 
-  return 0;
+  return n;
 }
 
 static int dump_eat0(const pbuffer_t p, const uint64_t Characteristics, const uint64_t TimeDateStamp, const uint64_t MajorVersion, const uint64_t MinorVersion,
@@ -1249,14 +1251,15 @@ static int dump_runtimeNN(const pbuffer_t p, const poptions_t o) {
 }
 
 static int dump_actionsNN(const pbuffer_t p, const poptions_t o) {
+  int n = 0;
   paction_t x = o->actions;
   while (x) {
     if (x->secname[0]) {
       PIMAGE_SECTION_HEADER p0 = get_sectionhdrbyname(p, x->secname);
       if (p0) {
         MALLOCSWRAP(opwrap_t, s, MODE_OCSHDRPE, p0);
-        dump_actions0(p, o, peconvert2va(p0, p0->VirtualAddress), p0->SizeOfRawData);
-        dump_actions1(p, o, ps, x->secname, x->action, peconvert2va(p0, p0->VirtualAddress), p0->SizeOfRawData, p0->VirtualAddress);
+        n += dump_actions0(p, o, peconvert2va(p0, p0->VirtualAddress), p0->SizeOfRawData);
+        n += dump_actions1(p, o, ps, x->secname, x->action, peconvert2va(p0, p0->VirtualAddress), p0->SizeOfRawData, p0->VirtualAddress);
       } else {
         printf_w("section '%s' was not dumped because it does not exist!", x->secname);
       }
@@ -1265,7 +1268,7 @@ static int dump_actionsNN(const pbuffer_t p, const poptions_t o) {
     x = x->actions;
   }
 
-  return 0;
+  return n;
 }
 
 int readpe(const pbuffer_t p, const poptions_t o) {
