@@ -467,52 +467,6 @@ static int dump_version3(const pbuffer_t p, const uint32_t dwSignature, const ui
   return n;
 }
 
-size_t fget_vchunkkeysize(handle_t p) {
-  if (isfind(p)) {
-    PVERSION_CHUNK p2 = CAST(PVERSION_CHUNK, fget(p));
-    return p2 ? strsize16(p2->szKey, 50) : 0;
-  }
-
-  return 0;
-}
-
-handle_t fnext_vchunksize(handle_t p, const size_t chunksize) {
-  if (isfind(p)) {
-    pfind_t p0 = CAST(pfind_t, p);
-    if (p0 && p0->item) {
-      p0->chunksize = BOUND32(chunksize);
-      return fnext(p);
-    }
-  }
-
-  return NULL;
-}
-
-handle_t fnext_vchunk(handle_t p) {
-  return fnext_vchunksize(p, VERSION_CHUNK_MINSIZE + fget_vchunkkeysize(p));
-}
-
-int strcmp16(const unknown_t s0, const char* s1, const size_t maxsize) {
-  if (s0 && s1) {
-    pushort_t p0 = CAST(pushort_t, s0);
-    puchar_t  p1 = CAST(puchar_t, s1);
-    for (size_t i = 0; i < maxsize; i += 2, ++p0, ++p1) {
-      const uchar_t c0 = *p0 & 0xff;
-      const uchar_t c1 = *p1;
-      if (0 == c0 || 0 == c1 || c0 != c1) return c0 - c1;
-    }
-
-    return 0;
-  }
-
-  return -1;
-}
-
-bool_t isvchunkkey(handle_t p, const char* name) {
-  PVERSION_CHUNK p0 = fget(p);
-  return p0 ? 0 == strcmp16(p0->szKey, name, 32) : FALSE;
-}
-
 static int dump_versionV(const pbuffer_t p, handle_t f) {
   int n = 0;
   if (isvchunkkey(f, "VS_VERSION_INFO")) {

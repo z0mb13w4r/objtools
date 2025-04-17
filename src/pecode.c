@@ -1,5 +1,6 @@
 #include "pecode.h"
 #include "memfind.h"
+#include "objutils.h"
 
 typedef struct machine_s {
   uchar_t x0;
@@ -240,7 +241,37 @@ DWORD get_dwordbyRVA(const pbuffer_t p, const int index, const uint64_t vaddr) {
   return p0 ? *p0 : 0;
 }
 
+bool_t isvchunkkey(handle_t p, const char* name) {
+  PVERSION_CHUNK p0 = fget(p);
+  return p0 ? 0 == strcmp16(p0->szKey, name, 32) : FALSE;
+}
+
 handle_t fget_chunkbyRVA(const pbuffer_t p, const int index, const uint64_t vaddr, const size_t size) {
   return fmalloc(get_chunkbyRVA(p, index, vaddr, size), size, 12345);
+}
+
+size_t fget_vchunkkeysize(handle_t p) {
+  if (isfind(p)) {
+    PVERSION_CHUNK p2 = CAST(PVERSION_CHUNK, fget(p));
+    return p2 ? strsize16(p2->szKey, 50) : 0;
+  }
+
+  return 0;
+}
+
+handle_t fnext_vchunksize(handle_t p, const size_t chunksize) {
+  if (isfind(p)) {
+    pfind_t p0 = CAST(pfind_t, p);
+    if (p0 && p0->item) {
+      p0->chunksize = BOUND32(chunksize);
+      return fnext(p);
+    }
+  }
+
+  return NULL;
+}
+
+handle_t fnext_vchunk(handle_t p) {
+  return fnext_vchunksize(p, VERSION_CHUNK_MINSIZE + fget_vchunkkeysize(p));
 }
 
