@@ -305,7 +305,7 @@ static int dump_sectiongroups0(const pbuffer_t p) {
   return n;
 }
 
-static int dump_sectiongroups1(const pbuffer_t p, const int index, const uint64_t VirtualAddress, const uint64_t Size) {
+static int dump_sectiongroups1(const pbuffer_t p, const int index, const uint32_t VirtualAddress, const uint32_t Size) {
   const int MAXSIZE = strlenpick(zOPTHDRENTRY) + 2;
 
   int n = 0;
@@ -529,6 +529,8 @@ static int dump_versionY(const pbuffer_t p, PIMAGE_RESOURCE_DATA_ENTRY p0) {
         n += x;
         x  = dump_versionV(p, p1);
       }
+
+      ffree(p1);
     }
   }
 
@@ -568,8 +570,18 @@ static int dump_versionNN(const pbuffer_t p, const poptions_t o) {
   return n;
 }
 
-static int dump_iat0(const pbuffer_t p, const uint64_t Characteristics, const uint64_t OriginalFirstThunk,
-              const uint64_t TimeDateStamp, const uint64_t ForwarderChain, const uint64_t Name, const char* sname, const uint64_t FirstThunk) {
+static int dump_ia0(const pbuffer_t p, PIMAGE_IMPORT_DESCRIPTOR p0) {
+  int n = 0;
+  if (p0) {
+    n += printf_text("IMAGE IMPORT DESCRIPTOR", USE_LT | USE_COLON | USE_EOL);
+  }
+
+  return n;
+}
+
+static int dump_iat1(const pbuffer_t p, const uint32_t Characteristics, const uint32_t OriginalFirstThunk,
+              const uint32_t TimeDateStamp, const uint32_t ForwarderChain,
+              const uint32_t Name, const char* sname, const uint32_t FirstThunk) {
   int n = 0;
   n += printf_text("OriginalFirstThunk", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(OriginalFirstThunk, USE_FHEX32 | USE_EOL);
@@ -597,12 +609,10 @@ static int dump_iat32(const pbuffer_t p, const poptions_t o) {
   if (p0 && s0) {
     PIMAGE_IMPORT_DESCRIPTOR p1 = get_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_IMPORT);
 
-    if (p1) {
-      n += printf_text("IMAGE IMPORT DESCRIPTOR", USE_LT | USE_COLON | USE_EOL);
-    }
+    n += dump_ia0(p, p1);
 
     while (p1 && p1->FirstThunk) {
-      n += dump_iat0(p, p1->Characteristics, p1->OriginalFirstThunk, p1->TimeDateStamp, p1->ForwarderChain,
+      n += dump_iat1(p, p1->Characteristics, p1->OriginalFirstThunk, p1->TimeDateStamp, p1->ForwarderChain,
                 p1->Name, getp(p, peconvert2va(s0, p1->Name), 1), p1->FirstThunk);
 
       PIMAGE_THUNK_DATA32 p2 = (PIMAGE_THUNK_DATA32)
@@ -637,12 +647,10 @@ static int dump_iat64(const pbuffer_t p, const poptions_t o) {
   if (p0 && s0) {
     PIMAGE_IMPORT_DESCRIPTOR p1 = get_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_IMPORT);
 
-    if (p1) {
-      n += printf_text("IMAGE IMPORT DESCRIPTOR", USE_LT | USE_COLON | USE_EOL);
-    }
+    n += dump_ia0(p, p1);
 
     while (p1 && p1->FirstThunk) {
-      n += dump_iat0(p, p1->Characteristics, p1->OriginalFirstThunk, p1->TimeDateStamp, p1->ForwarderChain,
+      n += dump_iat1(p, p1->Characteristics, p1->OriginalFirstThunk, p1->TimeDateStamp, p1->ForwarderChain,
                 p1->Name, getp(p, peconvert2va(s0, p1->Name), 1), p1->FirstThunk);
 
       PIMAGE_THUNK_DATA64 p2 = get_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_IMPORT, p1->OriginalFirstThunk, sizeof(PIMAGE_THUNK_DATA64));
@@ -668,10 +676,12 @@ static int dump_iat64(const pbuffer_t p, const poptions_t o) {
   return n;
 }
 
-static int dump_eat0(const pbuffer_t p, const uint64_t Characteristics, const uint64_t TimeDateStamp, const uint64_t MajorVersion, const uint64_t MinorVersion,
-                     const uint64_t Name, const char* sname, const uint64_t Base, const uint64_t NumberOfFunctions, const uint64_t NumberOfNames,
-                     const uint64_t AddressOfFunctions, const uint64_t AddressOfNames, const uint64_t AddressOfNameOrdinals) {
+static int dump_eat0(const pbuffer_t p, const uint32_t Characteristics, const uint32_t TimeDateStamp,
+                     const uint16_t MajorVersion, const uint16_t MinorVersion, const uint64_t Name, const char* sname,
+                     const uint32_t Base, const uint32_t NumberOfFunctions, const uint32_t NumberOfNames,
+                     const uint32_t AddressOfFunctions, const uint32_t AddressOfNames, const uint32_t AddressOfNameOrdinals) {
   int n = 0;
+  n += printf_text("IMAGE EXPORT DIRECTORY", USE_LT | USE_COLON | USE_EOL);
   n += printf_text("Characteristics", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(Characteristics, USE_FHEX32 | USE_EOL);
   n += printf_text("TimeDateStamp", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
@@ -702,25 +712,23 @@ static int dump_eat0(const pbuffer_t p, const uint64_t Characteristics, const ui
 static int dump_eatNN(const pbuffer_t p, const poptions_t o) {
   int n = 0;
 
-  PIMAGE_DATA_DIRECTORY p0 = get_datadirbyentry(p, IMAGE_DIRECTORY_ENTRY_EXPORT);
   PIMAGE_SECTION_HEADER s0 = get_sectionhdrbyentry(p, IMAGE_DIRECTORY_ENTRY_EXPORT);
-  PIMAGE_EXPORT_DIRECTORY p1 = get_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_EXPORT);
+  PIMAGE_EXPORT_DIRECTORY p0 = get_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_EXPORT);
 
-  if (p0 && p1 && s0) {
-    n += printf_text("IMAGE EXPORT DIRECTORY", USE_LT | USE_COLON | USE_EOL);
-    n += dump_eat0(p, p1->Characteristics, p1->TimeDateStamp, p1->MajorVersion, p1->MinorVersion,
-              p1->Name, getp(p, peconvert2va(s0, p1->Name), 1), p1->Base, p1->NumberOfFunctions, p1->NumberOfNames,
-              p1->AddressOfFunctions, p1->AddressOfNames, p1->AddressOfNameOrdinals);
+  if (p0 && s0) {
+    n += dump_eat0(p, p0->Characteristics, p0->TimeDateStamp, p0->MajorVersion, p0->MinorVersion,
+              p0->Name, getp(p, peconvert2va(s0, p0->Name), 1), p0->Base, p0->NumberOfFunctions, p0->NumberOfNames,
+              p0->AddressOfFunctions, p0->AddressOfNames, p0->AddressOfNameOrdinals);
 
-    PDWORD addrOfNames = get_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_EXPORT, p1->AddressOfNames, sizeof(DWORD) * p1->NumberOfNames);
-    PDWORD addrOfFunctions = get_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_EXPORT, p1->AddressOfFunctions, sizeof(DWORD) * p1->NumberOfFunctions);
-    PWORD  addrOfNameOrdinals = get_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_EXPORT, p1->AddressOfNameOrdinals, sizeof(WORD) * p1->NumberOfFunctions);
+    PDWORD addrOfNames = get_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_EXPORT, p0->AddressOfNames, sizeof(DWORD) * p0->NumberOfNames);
+    PDWORD addrOfFunctions = get_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_EXPORT, p0->AddressOfFunctions, sizeof(DWORD) * p0->NumberOfFunctions);
+    PWORD  addrOfNameOrdinals = get_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_EXPORT, p0->AddressOfNameOrdinals, sizeof(WORD) * p0->NumberOfFunctions);
 
     n += printf_text("Ord", USE_RT | SET_PAD(6));
     n += printf_text("RVA", USE_LT | USE_SPACE | SET_PAD(12));
     n += printf_text("Name", USE_LT | USE_EOL);
 
-    for (int i = 0; i < p1->NumberOfNames; ++i) {
+    for (int i = 0; i < p0->NumberOfNames; ++i) {
       n += printf_nice(addrOfNameOrdinals[i] + 1, USE_DEC5);
       n += printf_nice(addrOfFunctions[i], USE_FHEX32);
       n += printf_text(getp(p, peconvert2va(s0, addrOfNames[i]), 1), USE_LT | USE_SPACE | USE_EOL);
