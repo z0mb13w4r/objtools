@@ -16,12 +16,18 @@ int dump_actions0(const pbuffer_t p, const poptions_t o, const uint64_t offset, 
       case ACT_ROT18:  rot18(p0, size);           break;
       case ACT_NOT32:  not32(p0, size);           break;
       case ACT_ADD8:   add8(p0, x->value, size);  break;
+      case ACT_SHL8:   shl8(p0, x->value, size);  break;
+      case ACT_SHR8:   shr8(p0, x->value, size);  break;
       case ACT_SUB8:   sub8(p0, x->value, size);  break;
       case ACT_XOR8:   xor8(p0, x->value, size);  break;
       case ACT_ADD16:  add16(p0, x->value, size); break;
+      case ACT_SHL16:  shl16(p0, x->value, size); break;
+      case ACT_SHR16:  shr16(p0, x->value, size); break;
       case ACT_SUB16:  sub16(p0, x->value, size); break;
       case ACT_XOR16:  xor16(p0, x->value, size); break;
       case ACT_ADD32:  add32(p0, x->value, size); break;
+      case ACT_SHL32:  shl32(p0, x->value, size); break;
+      case ACT_SHR32:  shr32(p0, x->value, size); break;
       case ACT_SUB32:  sub32(p0, x->value, size); break;
       case ACT_XOR32:  xor32(p0, x->value, size); break;
       default:

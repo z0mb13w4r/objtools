@@ -35,14 +35,20 @@ int rot13(const unknown_t p, const size_t size);
 int rot18(const unknown_t p, const size_t size);
 
 int add8(const unknown_t p, const uint8_t v, const size_t size);
+int shl8(const unknown_t p, const uint8_t v, const size_t size);
+int shr8(const unknown_t p, const uint8_t v, const size_t size);
 int sub8(const unknown_t p, const uint8_t v, const size_t size);
 int xor8(const unknown_t p, const uint8_t v, const size_t size);
 
 int add16(const unknown_t p, const uint16_t v, const size_t size);
+int shl16(const unknown_t p, const uint16_t v, const size_t size);
+int shr16(const unknown_t p, const uint16_t v, const size_t size);
 int sub16(const unknown_t p, const uint16_t v, const size_t size);
 int xor16(const unknown_t p, const uint16_t v, const size_t size);
 
 int add32(const unknown_t p, const uint32_t v, const size_t size);
+int shl32(const unknown_t p, const uint32_t v, const size_t size);
+int shr32(const unknown_t p, const uint32_t v, const size_t size);
 int sub32(const unknown_t p, const uint32_t v, const size_t size);
 int xor32(const unknown_t p, const uint32_t v, const size_t size);
 
