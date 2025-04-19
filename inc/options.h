@@ -132,12 +132,15 @@
 #define ACT_ADD8                                   (503)
 #define ACT_SUB8                                   (504)
 #define ACT_XOR8                                   (505)
-#define ACT_ADD16                                  (506)
-#define ACT_SUB16                                  (507)
-#define ACT_XOR16                                  (508)
-#define ACT_ADD32                                  (509)
-#define ACT_SUB32                                  (510)
-#define ACT_XOR32                                  (511)
+#define ACT_NOT8                                   (506)
+#define ACT_ADD16                                  (507)
+#define ACT_SUB16                                  (508)
+#define ACT_XOR16                                  (509)
+#define ACT_NOT16                                  (510)
+#define ACT_ADD32                                  (511)
+#define ACT_SUB32                                  (512)
+#define ACT_XOR32                                  (513)
+#define ACT_NOT32                                  (514)
 
 typedef struct action_s {
   smode_t  mode;

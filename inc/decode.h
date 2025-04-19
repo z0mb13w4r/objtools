@@ -26,6 +26,10 @@
 #define AES_MODE_CTR192      (15)
 #define AES_MODE_CTR256      (16)
 
+int not8(const unknown_t p, const size_t size);
+int not16(const unknown_t p, const size_t size);
+int not32(const unknown_t p, const size_t size);
+
 int rot5(const unknown_t p, const size_t size);
 int rot13(const unknown_t p, const size_t size);
 int rot18(const unknown_t p, const size_t size);

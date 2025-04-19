@@ -15,8 +15,11 @@ typedef struct args_s {
 
 static convert_t SCRIPTCOMMANDS[] = {
   {"rot5",  ACT_ROT5},
+  {"not8",  ACT_NOT8},
   {"rot13", ACT_ROT13},
+  {"not16", ACT_NOT16},
   {"rot18", ACT_ROT18},
+  {"not32", ACT_NOT32},
   {"add8",  ACT_ADD8},
   {"sub8",  ACT_SUB8},
   {"xor8",  ACT_XOR8},

@@ -10,8 +10,11 @@ int dump_actions0(const pbuffer_t p, const poptions_t o, const uint64_t offset, 
       unknown_t p0 = getp(p, offset, size);
       switch (x->action) {
       case ACT_ROT5:   rot5(p0, size);            break;
+      case ACT_NOT8:   not8(p0, size);            break;
       case ACT_ROT13:  rot13(p0, size);           break;
+      case ACT_NOT16:  not16(p0, size);           break;
       case ACT_ROT18:  rot18(p0, size);           break;
+      case ACT_NOT32:  not32(p0, size);           break;
       case ACT_ADD8:   add8(p0, x->value, size);  break;
       case ACT_SUB8:   sub8(p0, x->value, size);  break;
       case ACT_XOR8:   xor8(p0, x->value, size);  break;
