@@ -41,7 +41,7 @@ int dump_actions1(const pbuffer_t p, const poptions_t o, const handle_t s, const
   if (ACT_HEXDUMP == action) {
     n += printf_text("Hex dump of section", USE_LT);
     n += printf_text(name, USE_LT | USE_SPACE | USE_SQ | USE_COLON | USE_EOL);
-  } else if (ACT_STRDUMP == action) {
+  } else if (ACT_STRDUMP8 == action || ACT_STRDUMP16 == action) {
     n += printf_text("String dump of section", USE_LT);
     n += printf_text(name, USE_LT | USE_SPACE | USE_SQ | USE_COLON | USE_EOL);
   } else if (ACT_DISASSEMBLE == action) {
@@ -51,12 +51,14 @@ int dump_actions1(const pbuffer_t p, const poptions_t o, const handle_t s, const
     ocdisassemble_open(oc, o);
   }
 
-  if (ACT_HEXDUMP == action || ACT_STRDUMP == action || ACT_CODEDUMP == action || ACT_DISASSEMBLE == action) {
+  if (ACT_HEXDUMP == action || ACT_STRDUMP8 == action || ACT_STRDUMP16 == action ||
+      ACT_CODEDUMP == action || ACT_DISASSEMBLE == action) {
     if (0 != size) {
       unknown_t p0 = getp(p, offset, size);
 
       if (ACT_HEXDUMP == action)          n += printf_data(p0, size, vaddr, USE_HEXDUMP);
-      else if (ACT_STRDUMP == action)     n += printf_data(p0, size, vaddr, USE_STRDUMP);
+      else if (ACT_STRDUMP8 == action)    n += printf_data(p0, size, vaddr, USE_STRDUMP8);
+      else if (ACT_STRDUMP16 == action)   n += printf_data(p0, size, vaddr, USE_STRDUMP16);
       else if (ACT_CODEDUMP == action)    n += printf_data(p0, size, vaddr, USE_CODEDUMP);
       else if (ACT_DISASSEMBLE == action) n += ocdisassemble_run(oc, s);
 

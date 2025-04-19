@@ -508,7 +508,8 @@ int printf_data(const void* p, const size_t size, const addrz_t addr, const imod
 
   addrz_t x = addr;
   size_t i = 0;
-  const unsigned char *pp = CAST(unsigned char*, p);
+  puchar_t pp = CAST(puchar_t, p);
+  pushort_t pu = CAST(pushort_t, p);
   for (i = 0; i < size; ) {
     if (USE_HEXDUMP == xmode) {
       n += printf_nice(x, USE_FHEX32);
@@ -530,7 +531,7 @@ int printf_data(const void* p, const size_t size, const addrz_t addr, const imod
       pp += siz;
       i += siz;
       x += siz;
-    } else if (USE_STRDUMP == xmode) {
+    } else if (USE_STRDUMP8 == xmode) {
       while (!isprint(*pp) && i < size) {
         ++pp;
         ++i;
@@ -548,6 +549,25 @@ int printf_data(const void* p, const size_t size, const addrz_t addr, const imod
       n += printf_eol();
       ++pp;
       ++i;
+    } else if (USE_STRDUMP16 == xmode) {
+      uchar_t pc = *pu & 0xff;
+      while (!isprint(pc) && i < size) {
+        pc = *(++pu) & 0xff;
+        i += 2;
+      }
+
+      n += printf_nice(i, USE_TAB | USE_SB | USE_LHEX16);
+      n += printf_pack(2);
+
+      while (0 != pc && i < size) {
+        n += printf_nice(pc, USE_CHARCTRL);
+        pc = *(++pu) & 0xff;
+        i += 2;
+      }
+
+      n += printf_eol();
+      ++pu;
+      i += 2;
     } else if (USE_CODEDUMP == xmode) {
       size_t siz = MIN(size - i, MAX_SIZE);
       for (size_t j = 0; j < MAX_SIZE; j++) {

@@ -119,12 +119,12 @@ static int dump_actionsELF0(const pbuffer_t p, const poptions_t o, const char* n
       printf_w("section '%s' has no data to dump!", name);
       n += printf_eol();
     }
-  } else if (ACT_STRDUMP == action) {
+  } else if (ACT_STRDUMP8 == action) {
     n += printf_text("String dump of section", USE_LT);
     n += printf_text(name, USE_LT | USE_SQ | USE_COLON | USE_EOL);
 
     if (0 != sh_size && sh_type != SHT_NOBITS) {
-      n += printf_data(p0, sh_size, sh_addr, USE_STRDUMP);
+      n += printf_data(p0, sh_size, sh_addr, USE_STRDUMP8);
       n += printf_eol();
       n += printf_sore(p0, sh_size, USE_SHA256 | USE_SPACE);
       n += printf_eol();

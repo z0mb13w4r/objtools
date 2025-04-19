@@ -76,6 +76,7 @@ static const args_t READELFARGS[] = {
   {'x', "--hex-dump",        0},
   {'Z', "--code-dump",       0},
   {'p', "--string-dump",     0},
+  {'U', "--unicode-dump",    0},
   {'R', "--relocated-dump",  0},
   {'C', "--disassemble",     0},
   {'T', "--script",          0},
@@ -480,7 +481,9 @@ int get_options_readelf(poptions_t o, int argc, char** argv, char* name) {
         } else if (0 == strcmp(arg0, "--hex-dump")) {
           insertsecname(o, ACT_HEXDUMP, arg1);
         } else if (0 == strcmp(arg0, "--string-dump")) {
-          insertsecname(o, ACT_STRDUMP, arg1);
+          insertsecname(o, ACT_STRDUMP8, arg1);
+        } else if (0 == strcmp(arg0, "--unicode-dump")) {
+          insertsecname(o, ACT_STRDUMP16, arg1);
         } else if (0 == strcmp(arg0, "--relocated-dump")) {
           insertsecname(o, ACT_RELDUMP, arg1);
         } else if (0 == strcmp(argv[i], "--code-dump")) {
@@ -500,7 +503,9 @@ int get_options_readelf(poptions_t o, int argc, char** argv, char* name) {
       } else if (0 == strcmp(argv[i], "-x")) {
         insertsecname(o, ACT_HEXDUMP, argv[++i]);
       } else if (0 == strcmp(argv[i], "-p")) {
-        insertsecname(o, ACT_STRDUMP, argv[++i]);
+        insertsecname(o, ACT_STRDUMP8, argv[++i]);
+      } else if (0 == strcmp(argv[i], "-U")) {
+        insertsecname(o, ACT_STRDUMP16, argv[++i]);
       } else if (0 == strcmp(argv[i], "-R")) {
         insertsecname(o, ACT_RELDUMP, argv[++i]);
       } else if (0 == strcmp(argv[i], "-Z")) {
@@ -625,7 +630,7 @@ int get_options_objhash(poptions_t o, int argc, char** argv, char* name) {
         if (0 == strcmp(arg0, "--hex-dump")) {
           insertsecname(o, ACT_HEXDUMP, arg1);
         } else if (0 == strcmp(arg0, "--string-dump")) {
-          insertsecname(o, ACT_STRDUMP, arg1);
+          insertsecname(o, ACT_STRDUMP8, arg1);
         } else if (0 == strcmp(arg0, "--convert")) {
           o->convert = atol(arg1);
         }
@@ -636,7 +641,7 @@ int get_options_objhash(poptions_t o, int argc, char** argv, char* name) {
       if (0 == strcmp(argv[i], "-x")) {
         insertsecname(o, ACT_HEXDUMP, argv[++i]);
       } else if (0 == strcmp(argv[i], "-p")) {
-        insertsecname(o, ACT_STRDUMP, argv[++i]);
+        insertsecname(o, ACT_STRDUMP8, argv[++i]);
       } else if (0 == strcmp(argv[i], "-C")) {
         o->convert = atoimode(argv[++i]);
       } else {
