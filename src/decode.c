@@ -186,6 +186,84 @@ int xor8(const unknown_t p, const uint8_t v, const size_t size) {
   return -1;
 }
 
+int rol8(const unknown_t p, const uint8_t v, const size_t size) {
+  if (p) {
+    uint8_t *p0 = CAST(uint8_t*, p);
+    for (size_t i = 0; i < size; ++i) {
+      p0[i] = (p0[i] << v) | (p0[i] >> (8 - v));
+    }
+
+    return 0;
+  }
+
+  return -1;
+}
+
+int rol16(const unknown_t p, const uint16_t v, const size_t size) {
+  if (p) {
+    uint16_t *p0 = CAST(uint16_t*, p);
+    for (size_t i = 0; i < (size / sizeof(uint16_t)); ++i) {
+      p0[i] = (p0[i] << v) | (p0[i] >> (16 - v));
+    }
+
+    return 0;
+  }
+
+  return -1;
+}
+
+int rol32(const unknown_t p, const uint32_t v, const size_t size) {
+  if (p) {
+    uint32_t *p0 = CAST(uint32_t*, p);
+    for (size_t i = 0; i < (size / sizeof(uint32_t)); ++i) {
+      p0[i] = (p0[i] << v) | (p0[i] >> (32 - v));
+    }
+
+    return 0;
+  }
+
+  return -1;
+}
+
+int ror8(const unknown_t p, const uint8_t v, const size_t size) {
+  if (p) {
+    uint8_t *p0 = CAST(uint8_t*, p);
+    for (size_t i = 0; i < size; ++i) {
+      p0[i] = (p0[i] >> v) | (p0[i] << (8 - v));
+    }
+
+    return 0;
+  }
+
+  return -1;
+}
+
+int ror16(const unknown_t p, const uint16_t v, const size_t size) {
+  if (p) {
+    uint16_t *p0 = CAST(uint16_t*, p);
+    for (size_t i = 0; i < (size / sizeof(uint16_t)); ++i) {
+      p0[i] = (p0[i] >> v) | (p0[i] << (16 - v));
+    }
+
+    return 0;
+  }
+
+  return -1;
+}
+
+int ror32(const unknown_t p, const uint32_t v, const size_t size) {
+  if (p) {
+    uint32_t *p0 = CAST(uint32_t*, p);
+    for (size_t i = 0; i < (size / sizeof(uint32_t)); ++i) {
+      p0[i] = (p0[i] >> v) | (p0[i] << (32 - v));
+    }
+
+    return 0;
+  }
+
+  return -1;
+}
+
 int xor16(const unknown_t p, const uint16_t v, const size_t size) {
   if (p) {
     uint16_t *p0 = CAST(uint16_t*, p);
