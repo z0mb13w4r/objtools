@@ -337,7 +337,7 @@ Elf64_Shdr* get_shdr64bytype(const pbuffer_t p, const int type) {
 
 Elf32_Shdr* get_shdr32byname(const pbuffer_t p, const char* name) {
   Elf32_Ehdr *e = get_ehdr32(p);
-  if (e) {
+  if (e && name && name[0]) {
     for (Elf32_Half i = 0; i < e->e_shnum; ++i) {
       const char* name0 = _get_secname32byindex(p, i);
       if (name0 && 0 == strcmp(name, name0)) {
@@ -351,7 +351,7 @@ Elf32_Shdr* get_shdr32byname(const pbuffer_t p, const char* name) {
 
 Elf64_Shdr* get_shdr64byname(const pbuffer_t p, const char* name) {
   Elf64_Ehdr *e = get_ehdr64(p);
-  if (e) {
+  if (e && name && name[0]) {
     for (Elf64_Half i = 0; i < e->e_shnum; ++i) {
       const char* name0 = _get_secname64byindex(p, i);
       if (name0 && 0 == strcmp(name, name0)) {

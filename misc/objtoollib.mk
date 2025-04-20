@@ -32,6 +32,7 @@ SRCS_C = \
 	objhash.c \
 	options.c \
 	readelf.c \
+	scripts.c \
 	objutils.c \
 	opcode-bfd.c \
 	opcode-elf.c \

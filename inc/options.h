@@ -200,5 +200,9 @@ handle_t omalloc();
 handle_t afree(handle_t p);
 handle_t ofree(handle_t p);
 
+int oinsert(handle_t o, handle_t p, const int action);
+int oinsertvalue(handle_t o, const int action, const uint64_t value);
+int oinsertsecname(handle_t o, const int action, const char *secname);
+
 #endif
 

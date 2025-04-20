@@ -3,6 +3,7 @@
 #include "buffer.h"
 #include "printf.h"
 #include "options.h"
+#include "scripts.h"
 #include "objutils.h"
 
 #include "static/usage.ci"
@@ -12,37 +13,6 @@ typedef struct args_s {
   char   *option2;
   imode_t action;
 } args_t, *pargs_t;
-
-static convert_t SCRIPTCOMMANDS[] = {
-  {"add8",  ACT_ADD8},
-  {"add16", ACT_ADD16},
-  {"add32", ACT_ADD32},
-  {"not8",  ACT_NOT8},
-  {"not16", ACT_NOT16},
-  {"not32", ACT_NOT32},
-  {"rol8",  ACT_ROL8},
-  {"rol16", ACT_ROL16},
-  {"rol32", ACT_ROL32},
-  {"ror8",  ACT_ROR8},
-  {"ror16", ACT_ROR16},
-  {"ror32", ACT_ROR32},
-  {"rot5",  ACT_ROT5},
-  {"rot13", ACT_ROT13},
-  {"rot18", ACT_ROT18},
-  {"shl8",  ACT_SHL8},
-  {"shl16", ACT_SHL16},
-  {"shl32", ACT_SHL32},
-  {"shr8",  ACT_SHR8},
-  {"shr16", ACT_SHR16},
-  {"shr32", ACT_SHR32},
-  {"sub8",  ACT_SUB8},
-  {"sub16", ACT_SUB16},
-  {"sub32", ACT_SUB32},
-  {"xor8",  ACT_XOR8},
-  {"xor16", ACT_XOR16},
-  {"xor32", ACT_XOR32},
-  {0, 0}
-};
 
 static const args_t DEBUGELFARGS[] = {
   {'a', "debug_abbrev",       OPTDEBUGELF_DEBUG_ABBREV},
@@ -387,95 +357,6 @@ static int breakup_args(char* args, char* dst0, const size_t dst0size, char* dst
   return -1;
 }
 
-static int breakup_script(const pconvert_t p, const char *name, uint64_t *value) {
-  MALLOCA(char, tmp, 1024);
-
-  int x = -1;
-  if (p && name && value) {
-    strncpy(tmp, name, NELEMENTS(tmp));
-
-    const char DELIMITS[] = "(),";
-    char* tok = strtok(tmp, DELIMITS);
-    if (tok) {
-      for (pconvert_t pp = p; 0 != pp->text; ++pp) {
-        if (0 == strcmp(pp->text, tok)) {
-          x = pp->type;
-          break;
-        }
-      }
-
-      if (-1 != x) {
-        tok = strtok(NULL, DELIMITS);
-        if (tok) {
-          *value = atovalue(tok);
-        }
-      }
-    }
-  }
-
-  return x;
-}
-
-static int insert(poptions_t o, paction_t p, const int action) {
-  if (isoptions(o) && isactions(p)) {
-    p->action  = action;
-    p->actions = o->actions;
-    o->actions = p;
-    return 0;
-  }
-
-  return -1;
-}
-
-static int insertsecname(poptions_t o, const int action, const char *secname) {
-  paction_t p = amalloc();
-  if (isactions(p)) {
-    strncpy(p->secname, secname, NELEMENTS(p->secname));
-    insert(o, p, action);
-    return 0;
-  }
-
-  return -1;
-}
-
-static int insertvalue(poptions_t o, const int action, const uint64_t value) {
-  paction_t p = amalloc();
-  if (isactions(p)) {
-    p->value = value;
-    insert(o, p, action);
-    return 0;
-  }
-
-  return -1;
-}
-
-static int insertscript(poptions_t o, const char *script) {
-  MALLOCA(char, tmp, 1024);
-  strncpy(tmp, script, NELEMENTS(tmp));
-
-  const char DELIMIT = ';';
-
-  char *p0 = tmp;
-  char *p1 = strchr(p0, DELIMIT);
-  if (p1) {
-    while (p1) {
-      *p1 = 0;
-      uint64_t v = 0;
-      const int x = breakup_script(SCRIPTCOMMANDS, p0, &v);
-      if (-1 != x) {
-        insertvalue(o, x, v);
-      }
-
-      p0 = p1 + 1;
-      p1 = strchr(p0, DELIMIT);
-    }
-
-    return 0;
-  }
-
-  return -1;
-}
-
 int get_options_readelf(poptions_t o, int argc, char** argv, char* name) {
   if (argc < 1) {
     return -1;
@@ -494,17 +375,17 @@ int get_options_readelf(poptions_t o, int argc, char** argv, char* name) {
         if (0 == strcmp(arg0, READELFARGS1)) {
           o->action |= get_options2(o, DEBUGELFARGS, arg1);
         } else if (0 == strcmp(arg0, "--hex-dump")) {
-          insertsecname(o, ACT_HEXDUMP, arg1);
+          oinsertsecname(o, ACT_HEXDUMP, arg1);
         } else if (0 == strcmp(arg0, "--string-dump")) {
-          insertsecname(o, ACT_STRDUMP8, arg1);
+          oinsertsecname(o, ACT_STRDUMP8, arg1);
         } else if (0 == strcmp(arg0, "--unicode-dump")) {
-          insertsecname(o, ACT_STRDUMP16, arg1);
+          oinsertsecname(o, ACT_STRDUMP16, arg1);
         } else if (0 == strcmp(arg0, "--relocated-dump")) {
-          insertsecname(o, ACT_RELDUMP, arg1);
+          oinsertsecname(o, ACT_RELDUMP, arg1);
         } else if (0 == strcmp(argv[i], "--code-dump")) {
-          insertsecname(o, ACT_CODEDUMP, arg1);
+          oinsertsecname(o, ACT_CODEDUMP, arg1);
         } else if (0 == strcmp(argv[i], "--disassemble")) {
-          insertsecname(o, ACT_DISASSEMBLE, arg1);
+          oinsertsecname(o, ACT_DISASSEMBLE, arg1);
         } else if (0 == strcmp(arg0, "--script")) {
           insertscript(o, arg1);
         }
@@ -516,17 +397,17 @@ int get_options_readelf(poptions_t o, int argc, char** argv, char* name) {
         imode_t action = get_options1(o, DEBUGELFARGS, argv[i] + 1);
         o->action |= action ? action : set_options1(o, DEBUGELFARGS);
       } else if (0 == strcmp(argv[i], "-x")) {
-        insertsecname(o, ACT_HEXDUMP, argv[++i]);
+        oinsertsecname(o, ACT_HEXDUMP, argv[++i]);
       } else if (0 == strcmp(argv[i], "-p")) {
-        insertsecname(o, ACT_STRDUMP8, argv[++i]);
+        oinsertsecname(o, ACT_STRDUMP8, argv[++i]);
       } else if (0 == strcmp(argv[i], "-U")) {
-        insertsecname(o, ACT_STRDUMP16, argv[++i]);
+        oinsertsecname(o, ACT_STRDUMP16, argv[++i]);
       } else if (0 == strcmp(argv[i], "-R")) {
-        insertsecname(o, ACT_RELDUMP, argv[++i]);
+        oinsertsecname(o, ACT_RELDUMP, argv[++i]);
       } else if (0 == strcmp(argv[i], "-Z")) {
-        insertsecname(o, ACT_CODEDUMP, argv[++i]);
+        oinsertsecname(o, ACT_CODEDUMP, argv[++i]);
       } else if (0 == strcmp(argv[i], "-C")) {
-        insertsecname(o, ACT_DISASSEMBLE, argv[++i]);
+        oinsertsecname(o, ACT_DISASSEMBLE, argv[++i]);
       } else if (0 == strcmp(argv[i], "-T")) {
         insertscript(o, argv[++i]);
       } else {
@@ -558,17 +439,17 @@ int get_options_objcopy(poptions_t o, int argc, char** argv, char* name) {
       if (0 == strcmp(argv[i], "--add-section")) {
         paction_t p = amalloc();
         if (p && 0 == breakup_args(argv[++i], p->secname, NELEMENTS(p->secname), p->outname, NELEMENTS(p->outname))) {
-          insert(o, p, ACT_ADDSECTION);
+          oinsert(o, p, ACT_ADDSECTION);
         }
       } else if (0 == strcmp(argv[i], "--dump-section")) {
         paction_t p = amalloc();
         if (p && 0 == breakup_args(argv[++i], p->secname, NELEMENTS(p->secname), p->outname, NELEMENTS(p->outname))) {
-          insert(o, p, ACT_DUMPSECTION);
+          oinsert(o, p, ACT_DUMPSECTION);
         }
       } else if (0 == strcmp(argv[i], "--update-section")) {
         paction_t p = amalloc();
         if (p && 0 == breakup_args(argv[++i], p->secname, NELEMENTS(p->secname), p->outname, NELEMENTS(p->outname))) {
-          insert(o, p, ACT_UPDATESECTION);
+          oinsert(o, p, ACT_UPDATESECTION);
         }
       } else {
         o->action |= get_options2(o, OBJCOPYARGS, argv[i]);
@@ -643,9 +524,9 @@ int get_options_objhash(poptions_t o, int argc, char** argv, char* name) {
 
       if (0 == breakup_args(argv[i], arg0, NELEMENTS(arg0), arg1, NELEMENTS(arg1))) {
         if (0 == strcmp(arg0, "--hex-dump")) {
-          insertsecname(o, ACT_HEXDUMP, arg1);
+          oinsertsecname(o, ACT_HEXDUMP, arg1);
         } else if (0 == strcmp(arg0, "--string-dump")) {
-          insertsecname(o, ACT_STRDUMP8, arg1);
+          oinsertsecname(o, ACT_STRDUMP8, arg1);
         } else if (0 == strcmp(arg0, "--convert")) {
           o->convert = atol(arg1);
         }
@@ -654,9 +535,9 @@ int get_options_objhash(poptions_t o, int argc, char** argv, char* name) {
       }
     } else if ('-' == argv[i][0]) {
       if (0 == strcmp(argv[i], "-x")) {
-        insertsecname(o, ACT_HEXDUMP, argv[++i]);
+        oinsertsecname(o, ACT_HEXDUMP, argv[++i]);
       } else if (0 == strcmp(argv[i], "-p")) {
-        insertsecname(o, ACT_STRDUMP8, argv[++i]);
+        oinsertsecname(o, ACT_STRDUMP8, argv[++i]);
       } else if (0 == strcmp(argv[i], "-C")) {
         o->convert = atoimode(argv[++i]);
       } else {
@@ -735,5 +616,44 @@ handle_t ofree(handle_t p) {
   }
 
   return p;
+}
+
+int oinsert(handle_t o, handle_t p, const int action) {
+  if (isoptions(o) && isactions(p)) {
+    poptions_t o0 = CAST(poptions_t, o);
+    paction_t p0 = CAST(paction_t, p);
+    p0->action  = action;
+    p0->actions = o0->actions;
+    o0->actions = p0;
+    return 0;
+  }
+
+  return -1;
+}
+
+int oinsertvalue(handle_t o, const int action, const uint64_t value) {
+  if (isoptions(o)) {
+    paction_t p = amalloc();
+    if (isactions(p)) {
+      p->value = value;
+      oinsert(o, p, action);
+      return 0;
+    }
+  }
+
+  return -1;
+}
+
+int oinsertsecname(handle_t o, const int action, const char *secname) {
+  if (isoptions(o)) {
+    paction_t p = amalloc();
+    if (isactions(p)) {
+      strncpy(p->secname, secname, NELEMENTS(p->secname));
+      oinsert(o, p, action);
+      return 0;
+    }
+  }
+
+  return -1;
 }
 
