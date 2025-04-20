@@ -613,7 +613,7 @@ static int dump_iat32(const pbuffer_t p, const poptions_t o) {
   PIMAGE_SECTION_HEADER s0 = get_sectionhdrbyentry(p, IMAGE_DIRECTORY_ENTRY_IMPORT);
 
   int n = 0;
-  if (p0 && s0) {
+  if (p0 && s0 && 0 != p0->VirtualAddress && 0 != p0->Size) {
     PIMAGE_IMPORT_DESCRIPTOR p1 = get_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_IMPORT);
 
     n += dump_ia0(p, p1);
@@ -651,7 +651,7 @@ static int dump_iat64(const pbuffer_t p, const poptions_t o) {
   PIMAGE_SECTION_HEADER s0 = get_sectionhdrbyentry(p, IMAGE_DIRECTORY_ENTRY_IMPORT);
 
   int n = 0;
-  if (p0 && s0) {
+  if (p0 && s0 && 0 != p0->VirtualAddress && 0 != p0->Size) {
     PIMAGE_IMPORT_DESCRIPTOR p1 = get_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_IMPORT);
 
     n += dump_ia0(p, p1);
