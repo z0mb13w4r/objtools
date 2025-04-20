@@ -80,7 +80,7 @@ static int dump_dosheaderNN(const pbuffer_t p, const poptions_t o) {
 
 static int dump_ntheader0(const pbuffer_t p, const uint32_t Signature) {
   int n = 0;
-  n += printf_text("NT HEADER", USE_LT | USE_COLON | USE_EOL);
+  n += printf_text("IMAGE NT HEADER", USE_LT | USE_COLON | USE_EOL);
   n += printf_text("Signature", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(Signature, USE_FHEX32 | USE_EOL);
   n += printf_eol();
@@ -92,7 +92,7 @@ static int dump_ntheader1(const pbuffer_t p, const uint16_t Machine, const uint1
                    const uint32_t TimeDateStamp, const uint32_t PointerToSymbolTable, const uint32_t NumberOfSymbols,
                    const uint16_t SizeOfOptionalHeader, const uint16_t Characteristics) {
   int n = 0;
-  n += printf_text("FILE HEADER", USE_LT | USE_COLON | USE_EOL);
+  n += printf_text("IMAGE FILE HEADER", USE_LT | USE_COLON | USE_EOL);
   n += printf_text("Machine", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(Machine, USE_FHEX16 | USE_EOL);
   n += printf_text("NumberOfSections", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
@@ -116,8 +116,9 @@ static int dump_ntheader1(const pbuffer_t p, const uint16_t Machine, const uint1
 
 static int dump_ntheader2(const pbuffer_t p, const uint16_t Magic, const uint8_t MajorLinkerVersion, const uint8_t MinorLinkerVersion,
                    const uint32_t SizeOfCode, const uint32_t SizeOfInitializedData, const uint32_t SizeOfUninitializedData,
-                   const uint32_t AddressOfEntryPoint, const uint32_t BaseOfCode, const uint64_t ImageBase, const uint32_t SectionAlignment,
-                   const uint32_t FileAlignment, const uint16_t MajorOperatingSystemVersion, const uint16_t MinorOperatingSystemVersion,
+                   const uint32_t AddressOfEntryPoint, const uint32_t BaseOfCode, const uint32_t BaseOfData, const uint64_t ImageBase,
+                   const uint32_t SectionAlignment,const uint32_t FileAlignment,
+                   const uint16_t MajorOperatingSystemVersion, const uint16_t MinorOperatingSystemVersion,
                    const uint16_t MajorImageVersion, const uint16_t MinorImageVersion, const uint16_t MajorSubsystemVersion,
                    const uint16_t MinorSubsystemVersion, const uint32_t Win32VersionValue, const uint32_t SizeOfImage,
                    const uint32_t SizeOfHeaders, const uint32_t CheckSum, const uint16_t Subsystem, const uint16_t DllCharacteristics,
@@ -127,7 +128,7 @@ static int dump_ntheader2(const pbuffer_t p, const uint16_t Magic, const uint8_t
   if (issafe(p)) {
     const imode_t USE_FHEXNN = (isPE64(p) ? USE_FHEX64 : USE_FHEX32) | USE_EOL;
 
-    n += printf_text("OPTIONAL HEADER", USE_LT | USE_COLON | USE_EOL);
+    n += printf_text("IMAGE OPTIONAL HEADER", USE_LT | USE_COLON | USE_EOL);
     n += printf_text("Magic", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     n += printf_nice(Magic, USE_FHEX16);
     n += printf_pick(zOPTHDRMAGIC, Magic, USE_LT | USE_SPACE | USE_EOL);
@@ -144,6 +145,10 @@ static int dump_ntheader2(const pbuffer_t p, const uint16_t Magic, const uint8_t
     n += printf_nice(AddressOfEntryPoint, USE_FHEX32 | USE_EOL);
     n += printf_text("BaseOfCode", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     n += printf_nice(BaseOfCode, USE_FHEX32 | USE_EOL);
+    if (isPE32(p)) {
+      n += printf_text("BaseOfData", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_nice(BaseOfData, USE_FHEX32 | USE_EOL);
+    }
     n += printf_text("ImageBase", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     n += printf_nice(ImageBase, USE_FHEXNN);
     n += printf_text("SectionAlignment", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
@@ -203,11 +208,12 @@ static int dump_ntheader32(const pbuffer_t p, const poptions_t o) {
     n += dump_ntheader1(p, fp->Machine, fp->NumberOfSections, fp->TimeDateStamp, fp->PointerToSymbolTable,
                    fp->NumberOfSymbols, fp->SizeOfOptionalHeader, fp->Characteristics);
     n += dump_ntheader2(p, op->Magic, op->MajorLinkerVersion, op->MinorLinkerVersion, op->SizeOfCode, op->SizeOfInitializedData,
-                   op->SizeOfUninitializedData, op->AddressOfEntryPoint, op->BaseOfCode, op->ImageBase, op->SectionAlignment,
-                   op->FileAlignment, op->MajorOperatingSystemVersion, op->MinorOperatingSystemVersion, op->MajorImageVersion,
-                   op->MinorImageVersion, op->MajorSubsystemVersion, op->MinorSubsystemVersion, op->Win32VersionValue,
-                   op->SizeOfImage, op->SizeOfHeaders, op->CheckSum, op->Subsystem, op->DllCharacteristics, op->SizeOfStackReserve,
-                   op->SizeOfStackCommit, op->SizeOfHeapReserve, op->SizeOfHeapCommit, op->LoaderFlags, op->NumberOfRvaAndSizes);
+                   op->SizeOfUninitializedData, op->AddressOfEntryPoint, op->BaseOfCode, op->BaseOfData, op->ImageBase,
+                   op->SectionAlignment, op->FileAlignment, op->MajorOperatingSystemVersion, op->MinorOperatingSystemVersion,
+                   op->MajorImageVersion, op->MinorImageVersion, op->MajorSubsystemVersion, op->MinorSubsystemVersion,
+                   op->Win32VersionValue, op->SizeOfImage, op->SizeOfHeaders, op->CheckSum, op->Subsystem, op->DllCharacteristics,
+                   op->SizeOfStackReserve, op->SizeOfStackCommit, op->SizeOfHeapReserve, op->SizeOfHeapCommit,
+                   op->LoaderFlags, op->NumberOfRvaAndSizes);
   }
 
   return n;
@@ -225,11 +231,12 @@ static int dump_ntheader64(const pbuffer_t p, const poptions_t o) {
     n += dump_ntheader1(p, fp->Machine, fp->NumberOfSections, fp->TimeDateStamp, fp->PointerToSymbolTable,
                    fp->NumberOfSymbols, fp->SizeOfOptionalHeader, fp->Characteristics);
     n += dump_ntheader2(p, op->Magic, op->MajorLinkerVersion, op->MinorLinkerVersion, op->SizeOfCode, op->SizeOfInitializedData,
-                   op->SizeOfUninitializedData, op->AddressOfEntryPoint, op->BaseOfCode, op->ImageBase, op->SectionAlignment,
-                   op->FileAlignment, op->MajorOperatingSystemVersion, op->MinorOperatingSystemVersion, op->MajorImageVersion,
-                   op->MinorImageVersion, op->MajorSubsystemVersion, op->MinorSubsystemVersion, op->Win32VersionValue,
-                   op->SizeOfImage, op->SizeOfHeaders, op->CheckSum, op->Subsystem, op->DllCharacteristics, op->SizeOfStackReserve,
-                   op->SizeOfStackCommit, op->SizeOfHeapReserve, op->SizeOfHeapCommit, op->LoaderFlags, op->NumberOfRvaAndSizes);
+                   op->SizeOfUninitializedData, op->AddressOfEntryPoint, op->BaseOfCode, 0L, op->ImageBase,
+                   op->SectionAlignment, op->FileAlignment, op->MajorOperatingSystemVersion, op->MinorOperatingSystemVersion,
+                   op->MajorImageVersion, op->MinorImageVersion, op->MajorSubsystemVersion, op->MinorSubsystemVersion,
+                   op->Win32VersionValue, op->SizeOfImage, op->SizeOfHeaders, op->CheckSum, op->Subsystem, op->DllCharacteristics,
+                   op->SizeOfStackReserve, op->SizeOfStackCommit, op->SizeOfHeapReserve, op->SizeOfHeapCommit,
+                   op->LoaderFlags, op->NumberOfRvaAndSizes);
   }
 
   return n;
