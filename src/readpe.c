@@ -721,8 +721,9 @@ static int dump_eatNN(const pbuffer_t p, const poptions_t o) {
 
   PIMAGE_SECTION_HEADER s0 = get_sectionhdrbyentry(p, IMAGE_DIRECTORY_ENTRY_EXPORT);
   PIMAGE_EXPORT_DIRECTORY p0 = get_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_EXPORT);
+  PIMAGE_DATA_DIRECTORY p1 = get_datadirbyentry(p, IMAGE_DIRECTORY_ENTRY_EXPORT);
 
-  if (p0 && s0) {
+  if (p0 && p1 && s0 && 0 != p1->VirtualAddress && 0 != p1->Size) {
     n += dump_eat0(p, p0->Characteristics, p0->TimeDateStamp, p0->MajorVersion, p0->MinorVersion,
               p0->Name, getp(p, peconvert2va(s0, p0->Name), 1), p0->Base, p0->NumberOfFunctions, p0->NumberOfNames,
               p0->AddressOfFunctions, p0->AddressOfNames, p0->AddressOfNameOrdinals);
