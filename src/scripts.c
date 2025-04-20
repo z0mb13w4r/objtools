@@ -61,28 +61,49 @@ static int breakup_script(const pconvert_t p, const char *name, uint64_t *value)
   return x;
 }
 
-int insertscript(poptions_t o, const char *script) {
+static int process_script(poptions_t o, const char *script) {
   MALLOCA(char, tmp, 1024);
-  strncpy(tmp, script, NELEMENTS(tmp));
+  if (isoptions(o) && script && script[0]) {
+    strncpy(tmp, script, NELEMENTS(tmp));
+    const char DELIMIT = ';';
+    char *p0 = tmp;
 
-  const char DELIMIT = ';';
+    char *p1 = strchr(p0, DELIMIT);
+    if (p1) {
+      while (p1) {
+        *p1 = 0;
+        uint64_t v = 0;
+        const int x = breakup_script(SCRIPTCOMMANDS, p0, &v);
+        if (-1 != x) {
+          oinsertvalue(o, x, v);
+        }
 
-  char *p0 = tmp;
-  char *p1 = strchr(p0, DELIMIT);
-  if (p1) {
-    while (p1) {
-      *p1 = 0;
-      uint64_t v = 0;
-      const int x = breakup_script(SCRIPTCOMMANDS, p0, &v);
-      if (-1 != x) {
-        oinsertvalue(o, x, v);
+        p0 = p1 + 1;
+        p1 = strchr(p0, DELIMIT);
       }
 
-      p0 = p1 + 1;
-      p1 = strchr(p0, DELIMIT);
+      return 0;
     }
+  }
 
-    return 0;
+  return -1;
+}
+
+int insertscript(poptions_t o, const char *script) {
+  MALLOCA(char, tmp, 1024);
+  if (isoptions(o) && script && script[0]) {
+    if ('@' == script[0]) {
+      FILE *fp = fopen(script + 1, "rt");
+      if (fp) {
+        while (fgets(tmp, NELEMENTS(tmp), fp)) {
+          process_script(o, tmp);
+        }
+        fclose(fp);
+        return 0;
+      }
+    } else {
+      return process_script(o, script);
+    }
   }
 
   return -1;
