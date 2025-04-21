@@ -302,7 +302,7 @@ static int dump_sectiongroups0(const pbuffer_t p) {
   const int MAXSIZE = strlenpick(zOPTHDRENTRY) + 2;
 
   int n = 0;
-  n += printf_text("DATA DIRECTORY", USE_LT | USE_COLON | USE_EOL);
+  n += printf_text("IMAGE DIRECTORY", USE_LT | USE_COLON | USE_EOL);
   n += printf_text("Name", USE_LT | USE_TAB | SET_PAD(MAXSIZE));
   n += printf_text("RVA", USE_LT | USE_SPACE | SET_PAD(11));
   n += printf_text("Size", USE_LT | USE_SPACE | USE_EOL);
