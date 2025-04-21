@@ -577,7 +577,7 @@ static int dump_versionNN(const pbuffer_t p, const poptions_t o) {
   return n;
 }
 
-static int dump_ia0(const pbuffer_t p, PIMAGE_IMPORT_DESCRIPTOR p0) {
+static int dump_iat0(const pbuffer_t p, PIMAGE_IMPORT_DESCRIPTOR p0) {
   int n = 0;
   if (p0) {
     n += printf_text("IMAGE IMPORT DESCRIPTOR", USE_LT | USE_COLON | USE_EOL);
@@ -616,9 +616,8 @@ static int dump_iat32(const pbuffer_t p, const poptions_t o) {
   if (p0 && s0 && 0 != p0->VirtualAddress && 0 != p0->Size) {
     PIMAGE_IMPORT_DESCRIPTOR p1 = get_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_IMPORT);
 
-    n += dump_ia0(p, p1);
-
     while (p1 && p1->FirstThunk) {
+      n += dump_iat0(p, p1);
       n += dump_iat1(p, p1->Characteristics, p1->OriginalFirstThunk, p1->TimeDateStamp, p1->ForwarderChain,
                 p1->Name, getp(p, peconvert2va(s0, p1->Name), 1), p1->FirstThunk);
 
@@ -637,10 +636,9 @@ static int dump_iat32(const pbuffer_t p, const poptions_t o) {
         ++p2;
       }
 
+      n += printf_eol();
       ++p1;
     }
-
-    n += printf_eol();
   }
 
   return n;
@@ -654,9 +652,8 @@ static int dump_iat64(const pbuffer_t p, const poptions_t o) {
   if (p0 && s0 && 0 != p0->VirtualAddress && 0 != p0->Size) {
     PIMAGE_IMPORT_DESCRIPTOR p1 = get_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_IMPORT);
 
-    n += dump_ia0(p, p1);
-
     while (p1 && p1->FirstThunk) {
+      n += dump_iat0(p, p1);
       n += dump_iat1(p, p1->Characteristics, p1->OriginalFirstThunk, p1->TimeDateStamp, p1->ForwarderChain,
                 p1->Name, getp(p, peconvert2va(s0, p1->Name), 1), p1->FirstThunk);
 
@@ -674,10 +671,9 @@ static int dump_iat64(const pbuffer_t p, const poptions_t o) {
         ++p2;
       }
 
+      n += printf_eol();
       ++p1;
     }
-
-    n += printf_eol();
   }
 
   return n;
@@ -723,7 +719,7 @@ static int dump_eatNN(const pbuffer_t p, const poptions_t o) {
   PIMAGE_EXPORT_DIRECTORY p0 = get_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_EXPORT);
   PIMAGE_DATA_DIRECTORY p1 = get_datadirbyentry(p, IMAGE_DIRECTORY_ENTRY_EXPORT);
 
-  if (p0 && p1 && s0 && 0 != p1->VirtualAddress && 0 != p1->Size) {
+  if (p0 && p1 && s0 && p0->Name && 0 != p1->VirtualAddress && 0 != p1->Size) {
     n += dump_eat0(p, p0->Characteristics, p0->TimeDateStamp, p0->MajorVersion, p0->MinorVersion,
               p0->Name, getp(p, peconvert2va(s0, p0->Name), 1), p0->Base, p0->NumberOfFunctions, p0->NumberOfNames,
               p0->AddressOfFunctions, p0->AddressOfNames, p0->AddressOfNameOrdinals);
