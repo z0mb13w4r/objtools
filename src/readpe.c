@@ -249,13 +249,11 @@ static int dump_sectionheaders0(const pbuffer_t p, const uint16_t NumberOfSectio
     if (p0) {
       n += printf_text("IMAGE SECTION HEADER", USE_LT | USE_COLON | USE_EOL);
       n += printf_text("Name", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-      n += printf_data(p0->Name, sizeof(p0->Name), 0, USE_STR | USE_EOL);
-
+      n += printf_sore(p0->Name, sizeof(p0->Name), USE_STR | USE_SPACE | USE_EOL);
       n += printf_text("Misc.PhysicalAddress", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
       n += printf_nice(p0->Misc.PhysicalAddress, USE_FHEX32 | USE_EOL);
       n += printf_text("Misc.VirtualSize", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
       n += printf_nice(p0->Misc.VirtualSize, USE_FHEX32 | USE_EOL);
-
       n += printf_text("VirtualAddress", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
       n += printf_nice(p0->VirtualAddress, USE_FHEX32 | USE_EOL);
       n += printf_text("SizeOfRawData", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
