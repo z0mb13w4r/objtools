@@ -623,14 +623,16 @@ static int dump_iat32(const pbuffer_t p, const poptions_t o) {
         getp(p, peconvert2va(s0, p1->OriginalFirstThunk), sizeof(IMAGE_THUNK_DATA32));
 
       while (p2 && p2->AddressOfData) {
-        if (p2->AddressOfData < 0x80000000) {
+        if (p2->AddressOfData & IMAGE_THUNK_DATA_IS_IMPORT_ORDINAL) {
+          n += printf_text("TBD", USE_LT | USE_TAB2 | USE_COLON);
+          n += printf_nice(p2->Ordinal & ~IMAGE_THUNK_DATA_IS_IMPORT_ORDINAL, USE_DEC | USE_SB);
+          n += printf_text("(Imported by Ordinal)", USE_LT | USE_SPACE | USE_EOL);
+        } else {
           PIMAGE_IMPORT_BY_NAME p3 = getp(p, peconvert2va(s0, p2->AddressOfData), sizeof(IMAGE_IMPORT_BY_NAME));
           n += printf_text(p3->Name, USE_LT | USE_TAB2);
           n += printf_nice(p3->Hint, USE_DEC | USE_SB | USE_EOL);
-        } else {
-          n += printf_text("Ordinal", USE_LT | USE_TAB2 | USE_COLON);
-          n += printf_nice(p2->Ordinal, USE_DEC | USE_SB | USE_EOL);
         }
+
         ++p2;
       }
 
@@ -658,14 +660,16 @@ static int dump_iat64(const pbuffer_t p, const poptions_t o) {
       PIMAGE_THUNK_DATA64 p2 = get_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_IMPORT, p1->OriginalFirstThunk, sizeof(PIMAGE_THUNK_DATA64));
 
       while (p2 && p2->AddressOfData) {
-        if (p2->AddressOfData < 0x80000000) {
+        if (p2->AddressOfData & IMAGE_THUNK_DATA_IS_IMPORT_ORDINAL) {
+          n += printf_text("TBD", USE_LT | USE_TAB2 | USE_COLON);
+          n += printf_nice(p2->Ordinal & ~IMAGE_THUNK_DATA_IS_IMPORT_ORDINAL, USE_DEC | USE_SB);
+          n += printf_text("(Imported by Ordinal)", USE_LT | USE_SPACE | USE_EOL);
+        } else {
           PIMAGE_IMPORT_BY_NAME p3 = getp(p, peconvert2va(s0, p2->AddressOfData), sizeof(IMAGE_IMPORT_BY_NAME));
           n += printf_text(p3->Name, USE_LT | USE_TAB2);
           n += printf_nice(p3->Hint, USE_DEC | USE_SB | USE_EOL);
-        } else {
-          n += printf_text("Ordinal", USE_LT | USE_TAB2 | USE_COLON);
-          n += printf_nice(p2->Ordinal, USE_DEC | USE_SB | USE_EOL);
         }
+
         ++p2;
       }
 
