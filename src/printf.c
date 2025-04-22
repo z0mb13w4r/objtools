@@ -156,6 +156,16 @@ int printf_tidy(char* o, const size_t size, const double v, const imode_t mode) 
 
     n += printf_spos(o + n, size - n, mode, usespace);
 
+    switch (modex) {
+    case USE_REALp1:               n += PRINT2("%.1f", v);                         break;
+    case USE_REALp2:               n += PRINT2("%.2f", v);                         break;
+    case USE_REALp4:               n += PRINT2("%.4f", v);                         break;
+    case USE_REALp6:               n += PRINT2("%.6f", v);                         break;
+
+    default:
+      break;
+    }
+
     n += printf_epos(o + n, size - n, mode);
   }
 
@@ -473,11 +483,14 @@ int printf_sore(const unknown_t p, const size_t size, const imode_t mode) {
       n += printf_nice(crc32_calculate(CRC_DEF32, p0, size), USE_FHEX32 | ymode);
     }
   } else if (USE_ENTROPY == xmode) {
-    if (0 == (mode & USE_NOTEXT)) {
-      n += printf_text("ENTROPY", USE_LT | USE_COLON | zmode | SET_PAD(MAXSIZE));
-      n += printf_real(entropy(p0, size), USE_FHEX32 | USE_EOL);
-    } else {
-      n += printf_real(entropy(p0, size), USE_FHEX32 | ymode);
+    double entropy, min, max;
+    if (!entropy_calculate(p0, size, &entropy, &min, &max)) {
+      if (0 == (mode & USE_NOTEXT)) {
+        n += printf_text("ENTROPY", USE_LT | USE_COLON | zmode | SET_PAD(MAXSIZE));
+        n += printf_real(entropy, USE_REALp6 | USE_NOSPACE | USE_EOL);
+      } else {
+        n += printf_real(entropy, USE_REALp6 | ymode);
+      }
     }
   } else if (USE_ROT5 == xmode) {
     if (!rot5(p0, size)) {

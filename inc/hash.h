@@ -16,7 +16,7 @@ int sha256(const unknown_t p, const size_t size, puchar_t md);
 int sha512(const unknown_t p, const size_t size, puchar_t md);
 int ripemd160(const unknown_t p, const size_t size, puchar_t md);
 
-double entropy(const unknown_t p, const size_t size);
+int entropy_calculate(const unknown_t p, const size_t size, double *entropy, double *min, double *max);
 
 #endif
 

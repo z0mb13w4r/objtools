@@ -43,6 +43,11 @@
 #define USE_UNKNOWN       (37)
 #define USE_WARNING       (38)
 
+#define USE_REALp1        (0)
+#define USE_REALp2        (1)
+#define USE_REALp4        (2)
+#define USE_REALp6        (3)
+
 #define USE_HEXDUMP       (0)
 #define USE_STRDUMP8      (1)
 #define USE_STRDUMP16     (2)

@@ -85,6 +85,13 @@ int dump_actions1(const pbuffer_t p, const poptions_t o, const handle_t s, const
 
       if (o->action & OPTPROGRAM_HASH) {
         n += printf_sore(p0, size, USE_SHA256 | USE_EOL);
+      }
+
+      if (o->action & OPTPROGRAM_ENTROPY) {
+        n += printf_sore(p0, size, USE_ENTROPY | USE_EOL);
+      }
+
+      if (o->action & OPTPROGRAM_HASH || o->action & OPTPROGRAM_ENTROPY) {
         n += printf_eol();
       }
     } else {

@@ -1315,9 +1315,7 @@ int readpe(const pbuffer_t p, const poptions_t o) {
     if (o->action & OPTREADELF_RELOCS)             dump_relocNN(p, o);
     if (o->action & OPTREADELF_UNWIND)             dump_runtimeNN(p, o);
 
-    if (isPE32(p)) {
-      if (o->actions)                              dump_actionsNN(p, o);
-    } else if (isPE64(p)) {
+    if (isPE32(p) || isPE64(p)) {
       if (o->actions)                              dump_actionsNN(p, o);
     }
   } else {
