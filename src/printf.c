@@ -147,6 +147,21 @@ int printf_work(char* o, const size_t size, const char* p, const imode_t mode) {
   return n;
 }
 
+int printf_tidy(char* o, const size_t size, const double v, const imode_t mode) {
+  int n = 0;
+  if (o) {
+    const imode_t mode0 = GET_POS0(mode);
+    const imode_t modex = mode & ~(USE_FLAGMASK | USE_POS0MASK | USE_POS1MASK | USE_BRACKETMASK | USE_COLORMASK);
+    const bool_t  usespace = (0 == (mode & USE_NOSPACE) && 0 == mode0) || USE_SPACE == mode0 || USE_TAB == mode0;
+
+    n += printf_spos(o + n, size - n, mode, usespace);
+
+    n += printf_epos(o + n, size - n, mode);
+  }
+
+  return n;
+}
+
 int printf_neat(char* o, const size_t size, const uint64_t v, const imode_t mode) {
   int n = 0;
   if (o) {
@@ -257,6 +272,16 @@ int printf_nice(const uint64_t v, const imode_t mode) {
 
   int n = 0;
   n += printf_neat(o, sizeof(o), v, mode);
+  n += printf_post(o, mode);
+
+  return n;
+}
+
+int printf_real(const double v, const imode_t mode) {
+  MALLOCA(char, o, 1024);
+
+  int n = 0;
+  n += printf_tidy(o, sizeof(o), v, mode);
   n += printf_post(o, mode);
 
   return n;
@@ -446,6 +471,13 @@ int printf_sore(const unknown_t p, const size_t size, const imode_t mode) {
       n += printf_nice(crc32_calculate(CRC_DEF32, p0, size), USE_FHEX32 | USE_EOL);
     } else {
       n += printf_nice(crc32_calculate(CRC_DEF32, p0, size), USE_FHEX32 | ymode);
+    }
+  } else if (USE_ENTROPY == xmode) {
+    if (0 == (mode & USE_NOTEXT)) {
+      n += printf_text("ENTROPY", USE_LT | USE_COLON | zmode | SET_PAD(MAXSIZE));
+      n += printf_real(entropy(p0, size), USE_FHEX32 | USE_EOL);
+    } else {
+      n += printf_real(entropy(p0, size), USE_FHEX32 | ymode);
     }
   } else if (USE_ROT5 == xmode) {
     if (!rot5(p0, size)) {

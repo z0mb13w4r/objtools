@@ -65,7 +65,9 @@ static const args_t READELFARGS[] = {
   {'R', "--relocated-dump",  0},
   {'C', "--disassemble",     0},
   {'T', "--script",          0},
+  {'I', "--info",            OPTPROGRAM_INFO},
   {'X', "--hash",            OPTPROGRAM_HASH},
+  {'E', "--entropy",         OPTPROGRAM_ENTROPY},
   {0, NULL}
 };
 

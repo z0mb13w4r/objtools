@@ -1,3 +1,4 @@
+#include <math.h>
 #include "hash.h"
 
 int md5(const unknown_t p, const size_t size, puchar_t md) {
@@ -56,5 +57,26 @@ int ripemd160(const unknown_t p, const size_t size, puchar_t md) {
   if (!RIPEMD160_Final(md, &context))        return -1;
 
   return 0;
+}
+
+double entropy(const unknown_t p, const size_t size) {
+  MALLOCA(int32_t, counts, 256);
+
+  if (p && 0 != size) {
+    puchar_t p0 = CAST(puchar_t, p);
+    for (size_t i = 0; i < size; ++i) {
+      counts[p0[i]]++;
+    }
+
+    double entropy = 0.0;
+    for (size_t i = 0; i < NELEMENTS(counts); ++i) {
+      double probability = CAST(double, counts[i]) / CAST(double, size);
+      entropy -= probability * log2(probability);
+    }
+
+    return entropy;
+  }
+
+  return 0.0;
 }
 

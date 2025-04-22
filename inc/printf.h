@@ -61,11 +61,12 @@
 #define USE_CRC16         (15)
 #define USE_CRC32         (16)
 #define USE_CRCALL        (17)
-#define USE_ROT5          (18)
-#define USE_ROT13         (19)
-#define USE_ROT18         (20)
-#define USE_BASE64        (21)
-#define USE_GUID          (22)
+#define USE_ENTROPY       (18)
+#define USE_ROT5          (19)
+#define USE_ROT13         (20)
+#define USE_ROT18         (21)
+#define USE_BASE64        (22)
+#define USE_GUID          (23)
 
 #define GET_XX2(x,y)      ((x) & (0x03 << (y)))
 #define SET_XX2(x,y)      (((x) & 0x03) << (y))
@@ -154,6 +155,9 @@ int printf_text(const char* p, const imode_t mode);
 
 int printf_neat(char* o, const size_t size, const uint64_t v, const imode_t mode);
 int printf_nice(const uint64_t v, const imode_t mode);
+
+int printf_tidy(char* o, const size_t size, const double v, const imode_t mode);
+int printf_real(const double v, const imode_t mode);
 
 int printf_data(const void* p, const size_t size, const addrz_t addr, const imode_t mode);
 int printf_hurt(const unknown_t p, const size_t size, const imode_t mode);
