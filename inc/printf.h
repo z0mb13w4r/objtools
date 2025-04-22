@@ -128,6 +128,8 @@
 #define USE_COLON         SET_POS1(1)
 #define USE_SEMICOLON     SET_POS1(2)
 #define USE_BYTES         SET_POS1(3)
+#define USE_MIN           SET_POS1(4)
+#define USE_MAX           SET_POS1(5)
 #define USE_POS1MASK      SET_POS1(15)
 
 #define USE_RESET         SET_COLOR(1)

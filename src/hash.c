@@ -59,8 +59,12 @@ int ripemd160(const unknown_t p, const size_t size, puchar_t md) {
   return 0;
 }
 
+// Shannon Entropy
 int entropy_calculate(const unknown_t p, const size_t size, double *entropy, double *min, double *max) {
   MALLOCA(int32_t, counts, 256);
+  if (min) *min = 0.0;
+  if (max) *max = log2(NELEMENTS(counts));
+  if (entropy) *entropy - 0.0;
 
   if (p && 0 != size && entropy && min && max) {
     puchar_t p0 = CAST(puchar_t, p);
@@ -68,7 +72,6 @@ int entropy_calculate(const unknown_t p, const size_t size, double *entropy, dou
       counts[p0[i]]++;
     }
 
-    *entropy = 0.0;
     for (size_t i = 0; i < NELEMENTS(counts); ++i) {
       if (counts[i]) {
         double probability = CAST(double, counts[i]) / CAST(double, size);

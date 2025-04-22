@@ -87,6 +87,8 @@ int printf_epos(char* o, const size_t size, const imode_t mode) {
     case USE_COLON:                n += PRINT1(":");         break;
     case USE_SEMICOLON:            n += PRINT1(";");         break;
     case USE_BYTES:                n += PRINT1(" (bytes)");  break;
+    case USE_MIN:                  n += PRINT1(" (min)");    break;
+    case USE_MAX:                  n += PRINT1(" (max)");    break;
     default:                       break;
     }
   }
@@ -139,7 +141,10 @@ int printf_work(char* o, const size_t size, const char* p, const imode_t mode) {
 
     switch (p1) {
     case USE_COLON:          n += PRINT1(":");          break;
+    case USE_SEMICOLON:      n += PRINT1(";");          break;
     case USE_BYTES:          n += PRINT1(" (bytes)");   break;
+    case USE_MIN:            n += PRINT1(" (min)");     break;
+    case USE_MAX:            n += PRINT1(" (max)");     break;
     default:                 break;
     }
   }
@@ -487,7 +492,10 @@ int printf_sore(const unknown_t p, const size_t size, const imode_t mode) {
     if (!entropy_calculate(p0, size, &entropy, &min, &max)) {
       if (0 == (mode & USE_NOTEXT)) {
         n += printf_text("ENTROPY", USE_LT | USE_COLON | zmode | SET_PAD(MAXSIZE));
-        n += printf_real(entropy, USE_REALp6 | USE_NOSPACE | USE_EOL);
+        n += printf_real(entropy, USE_REALp6 | USE_NOSPACE);
+        n += printf_real(min, USE_REALp6 | USE_MIN);
+        n += printf_real(max, USE_REALp6 | USE_MAX);
+        n += printf_eol();
       } else {
         n += printf_real(entropy, USE_REALp6 | ymode);
       }
