@@ -2,6 +2,8 @@
 #include "memfind.h"
 #include "objutils.h"
 
+#include "static/ordinals.ci"
+
 typedef struct machine_s {
   uchar_t x0;
   uchar_t x1;
@@ -239,6 +241,10 @@ unknown_t get_chunkbyname(const pbuffer_t p, const char* name) {
 DWORD get_dwordbyRVA(const pbuffer_t p, const int index, const uint64_t vaddr) {
   PDWORD p0 = get_chunkbyRVA(p, index, vaddr, sizeof(DWORD));
   return p0 ? *p0 : 0;
+}
+
+char* get_namebyord(const pbuffer_t p, const char* name, const pick_t x) {
+  return strpick(zKERNEL32, x);
 }
 
 bool_t isvchunkkey(handle_t p, const char* name) {

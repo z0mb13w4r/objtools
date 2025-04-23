@@ -615,17 +615,20 @@ static int dump_iat32(const pbuffer_t p, const poptions_t o) {
     PIMAGE_IMPORT_DESCRIPTOR p1 = get_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_IMPORT);
 
     while (p1 && p1->FirstThunk) {
+      char* Name = getp(p, peconvert2va(s0, p1->Name), 1);
+
       n += dump_iat0(p, p1);
       n += dump_iat1(p, p1->Characteristics, p1->OriginalFirstThunk, p1->TimeDateStamp, p1->ForwarderChain,
-                p1->Name, getp(p, peconvert2va(s0, p1->Name), 1), p1->FirstThunk);
+                p1->Name, Name, p1->FirstThunk);
 
       PIMAGE_THUNK_DATA32 p2 = (PIMAGE_THUNK_DATA32)
         getp(p, peconvert2va(s0, p1->OriginalFirstThunk), sizeof(IMAGE_THUNK_DATA32));
 
       while (p2 && p2->AddressOfData) {
+        uint64_t Ordinal = p2->Ordinal & ~IMAGE_THUNK_DATA_IS_IMPORT_ORDINAL;
         if (p2->AddressOfData & IMAGE_THUNK_DATA_IS_IMPORT_ORDINAL) {
-          n += printf_text("TBD", USE_LT | USE_TAB2 | USE_COLON);
-          n += printf_nice(p2->Ordinal & ~IMAGE_THUNK_DATA_IS_IMPORT_ORDINAL, USE_DEC | USE_SB);
+          n += printf_text(get_namebyord(p, Name, Ordinal), USE_LT | USE_TAB2 | USE_COLON);
+          n += printf_nice(Ordinal, USE_DEC | USE_SB);
           n += printf_text("(Imported by Ordinal)", USE_LT | USE_SPACE | USE_EOL);
         } else {
           PIMAGE_IMPORT_BY_NAME p3 = getp(p, peconvert2va(s0, p2->AddressOfData), sizeof(IMAGE_IMPORT_BY_NAME));
@@ -653,16 +656,19 @@ static int dump_iat64(const pbuffer_t p, const poptions_t o) {
     PIMAGE_IMPORT_DESCRIPTOR p1 = get_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_IMPORT);
 
     while (p1 && p1->FirstThunk) {
+      char* Name = getp(p, peconvert2va(s0, p1->Name), 1);
+
       n += dump_iat0(p, p1);
       n += dump_iat1(p, p1->Characteristics, p1->OriginalFirstThunk, p1->TimeDateStamp, p1->ForwarderChain,
-                p1->Name, getp(p, peconvert2va(s0, p1->Name), 1), p1->FirstThunk);
+                p1->Name, Name, p1->FirstThunk);
 
       PIMAGE_THUNK_DATA64 p2 = get_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_IMPORT, p1->OriginalFirstThunk, sizeof(PIMAGE_THUNK_DATA64));
 
       while (p2 && p2->AddressOfData) {
+        uint64_t Ordinal = p2->Ordinal & ~IMAGE_THUNK_DATA_IS_IMPORT_ORDINAL;
         if (p2->AddressOfData & IMAGE_THUNK_DATA_IS_IMPORT_ORDINAL) {
-          n += printf_text("TBD", USE_LT | USE_TAB2 | USE_COLON);
-          n += printf_nice(p2->Ordinal & ~IMAGE_THUNK_DATA_IS_IMPORT_ORDINAL, USE_DEC | USE_SB);
+          n += printf_text(get_namebyord(p, Name, Ordinal), USE_LT | USE_TAB2 | USE_COLON);
+          n += printf_nice(Ordinal, USE_DEC | USE_SB);
           n += printf_text("(Imported by Ordinal)", USE_LT | USE_SPACE | USE_EOL);
         } else {
           PIMAGE_IMPORT_BY_NAME p3 = getp(p, peconvert2va(s0, p2->AddressOfData), sizeof(IMAGE_IMPORT_BY_NAME));

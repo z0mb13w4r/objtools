@@ -1,0 +1,5 @@
+static convert_t zKERNEL32[] = {
+
+  {0, 0}
+};
+
