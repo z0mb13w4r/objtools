@@ -529,7 +529,7 @@ unknown_t get_chunkbyname(const pbuffer_t p, const char* name);
 
 DWORD get_dwordbyRVA(const pbuffer_t p, const int index, const uint64_t vaddr);
 
-char* get_namebyord(const pbuffer_t p, const char* name, const pick_t x);
+const char* get_namebyord(const pbuffer_t p, const char* name, const pick_t x);
 
 bool_t isvchunkkey(handle_t p, const char* name);
 

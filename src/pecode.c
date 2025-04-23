@@ -243,8 +243,10 @@ DWORD get_dwordbyRVA(const pbuffer_t p, const int index, const uint64_t vaddr) {
   return p0 ? *p0 : 0;
 }
 
-char* get_namebyord(const pbuffer_t p, const char* name, const pick_t x) {
-  return strpick(zKERNEL32, x);
+const char* get_namebyord(const pbuffer_t p, const char* name, const pick_t x) {
+  if (0 == strcmp(name, "WS2_32.dll")) return strpick(zWS2_32, x);
+  else if (0 == strcmp(name, "KERNEL32.dll")) return strpick(zKERNEL32, x);
+  return strpickunknown(x);
 }
 
 bool_t isvchunkkey(handle_t p, const char* name) {
