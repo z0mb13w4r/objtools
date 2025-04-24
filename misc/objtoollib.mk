@@ -20,6 +20,7 @@ SRCS_C = \
 	buffer.c \
 	opcode.c \
 	pecode.c \
+	pefunc.c \
 	printf.c \
 	readar.c \
 	readpe.c \

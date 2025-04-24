@@ -1,6 +1,8 @@
 #include "dump.h"
 #include "decode.h"
 #include "opcode.h"
+#include "pecode.h"
+#include "pefunc.h"
 #include "printf.h"
 #include "readpe.h"
 #include "memfind.h"
