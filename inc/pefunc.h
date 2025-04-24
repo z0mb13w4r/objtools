@@ -3,6 +3,12 @@
 
 #include "buffer.h"
 
+#define PEFUNC_NONE                    U64MASK_NONE
+#define PEFUNC_BLACKLIST               U64MASK(0)
+#define PEFUNC_CRITICAL                U64MASK(1)
+#define PEFUNC_ALERT                   U64MASK(2)
+#define PEFUNC_INFO                    U64MASK(3)
+
 typedef struct pefunc_s {
   const char*   text;
   const pick_t  ords;

@@ -68,6 +68,7 @@
 #endif
 
 #ifndef U64MASK
+#define U64MASK_NONE (0)
 #define U64MASK(x)   (1ULL << (x))
 #endif
 

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "printf.h"
 #include "objutils.h"
 
 bool_t isbits(const imode_t x) {
@@ -79,7 +80,7 @@ const char* strpicknull(const pconvert_t p, const pick_t x) {
 
 const char* strpickunknown(const pick_t x) {
   static char o[32];
-  snprintf(o, sizeof(o), "<unknown: %x>", x);
+  printf_neat(o, sizeof(o), x, USE_LT);
   return o;
 }
 
