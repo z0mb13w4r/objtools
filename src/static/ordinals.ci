@@ -1,9 +1,9 @@
-static convert_t zKERNEL32[] = {
+static pefunc_t zKERNEL32[] = {
 
   {0, 0}
 };
 
-static convert_t zOLEAUT32[] = {
+static pefunc_t zOLEAUT32[] = {
   {"SysAllocString",                   2},
   {"SysReAllocString",                 3},
   {"SysAllocStringLen",                4},
@@ -419,7 +419,7 @@ static convert_t zOLEAUT32[] = {
   {0, 0}
 };
 
-static convert_t zWSOCK32[] = {
+static pefunc_t zWSOCK32[] = {
   {"accept",                      1},
   {"bind",                        2},
   {"closesocket",                 3},
@@ -498,7 +498,7 @@ static convert_t zWSOCK32[] = {
   {0, 0}
 };
 
-static convert_t zWS2_32[] = {
+static pefunc_t zWS2_32[] = {
   {"accept",                               1},
   {"bind",                                 2},
   {"closesocket",                          3},
