@@ -6,6 +6,8 @@ static pefunc_t zADVAPI32[] = {
   {"QueryServiceStatusEx",             -1,   PEFUNC_BLACKLIST},
   {"CreateServiceA",                   -1,   PEFUNC_BLACKLIST},
   {"CreateServiceW",                   -1,   PEFUNC_BLACKLIST},
+  {"CryptAcquireContextA",             -1,   PEFUNC_BLACKLIST},
+  {"CryptAcquireContextW",             -1,   PEFUNC_BLACKLIST},
   {0, 0}
 };
 
@@ -133,9 +135,9 @@ static pefunc_t zCOMCTL32[] = {
 };
 
 static pefunc_t zCRYPT32[] = {
-  {"CertOpenSystemStoreA",             -1,   PEFUNC_CRITICAL},
-  {"CertOpenSystemStoreW",             -1,   PEFUNC_CRITICAL},
-  {"CertOpenStore",                    -1,   PEFUNC_CRITICAL},
+  {"CertOpenSystemStoreA",             -1,   PEFUNC_BLACKLIST},
+  {"CertOpenSystemStoreW",             -1,   PEFUNC_BLACKLIST},
+  {"CertOpenStore",                    -1,   PEFUNC_BLACKLIST},
   {0, 0}
 };
 
@@ -159,6 +161,11 @@ static pefunc_t zKERNEL32[] = {
   {"ConnectNamedPipe",                 -1,   PEFUNC_CRITICAL},
   {"CreateFileMappingA",               -1,   PEFUNC_CRITICAL},
   {"CreateFileMappingW",               -1,   PEFUNC_CRITICAL},
+  {"CreateMutexA",                     -1,   PEFUNC_INFO},
+  {"CreateMutexW",                     -1,   PEFUNC_INFO},
+  {"CreateMutexExA",                   -1,   PEFUNC_INFO},
+  {"CreateMutexExW",                   -1,   PEFUNC_INFO},
+  {"CreateToolhelp32Snapshot",         -1,   PEFUNC_ALERT},
   {0, 0}
 };
 
