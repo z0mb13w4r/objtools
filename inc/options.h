@@ -48,7 +48,8 @@
 #define OPTPROGRAM_SOURCE_CODE                     U64MASK(59)
 #define OPTPROGRAM_DISASSEMBLE                     U64MASK(60)
 #define OPTPROGRAM_CAPSTONE                        U64MASK(61)
-#define OPTPROGRAM_HELP                            U64MASK(62)
+#define OPTPROGRAM_VERSION                         U64MASK(62)
+#define OPTPROGRAM_HELP                            U64MASK(63)
 
 #define OPTPROGRAM_INFO                (OPTPROGRAM_HASH | OPTPROGRAM_ENTROPY)
 #define OPTPROGRAM_CAPSTONE_ALL        (OPTPROGRAM_CAPSTONE | OPTPROGRAM_DISASSEMBLE | OPTPROGRAM_SOURCE_CODE \

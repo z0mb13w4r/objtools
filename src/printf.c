@@ -315,6 +315,19 @@ int printf_join(const char* p, const uint64_t v, const imode_t mode) {
   return n;
 }
 
+int printf_yoke(const char* p, const char* q, const imode_t mode) {
+  MALLOCA(char, o, 1024);
+
+  int n = 0;
+  if (p) {
+    n += printf_work(o, sizeof(o), p, mode);
+    n += printf_work(o + n, sizeof(o) - n, q, (mode & ~USE_POS0MASK) | USE_NOSPACE);
+    n += printf_post(o, mode);
+  }
+
+  return n;
+}
+
 int printf_text(const char* p, const imode_t mode) {
   MALLOCA(char, o1, MAX_BUFFER_SIZE);
   MALLOCA(char, o2, MAX_BUFFER_SIZE + MAX_PADDING_SIZE);

@@ -166,6 +166,7 @@ static pefunc_t zKERNEL32[] = {
   {"CreateMutexExA",                   -1,   PEFUNC_INFO},
   {"CreateMutexExW",                   -1,   PEFUNC_INFO},
   {"CreateToolhelp32Snapshot",         -1,   PEFUNC_ALERT},
+  {"DeviceIoControl",                  -1,   PEFUNC_ALERT},
   {0, 0}
 };
 

@@ -96,6 +96,9 @@
 #define MODE_MASK1              (0xff000000)
 #define MODE_MASK               (MODE_MASK0 | MODE_MASK1)
 
+#define MODE_ISSET(x, y)        ((x) & (y))
+#define MODE_ISLOCKED(x, y)     ((x) == (y))
+
 typedef uint64_t addrz_t;
 typedef uint64_t maskz_t;
 typedef uint64_t imode_t;

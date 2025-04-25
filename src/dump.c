@@ -83,15 +83,15 @@ int dump_actions1(const pbuffer_t p, const poptions_t o, const handle_t s, const
 
       n += printf_eol();
 
-      if (o->action & OPTPROGRAM_HASH) {
+      if (MODE_ISSET(o->action, OPTPROGRAM_HASH)) {
         n += printf_sore(p0, size, USE_SHA256 | USE_EOL);
       }
 
-      if (o->action & OPTPROGRAM_ENTROPY) {
+      if (MODE_ISSET(o->action, OPTPROGRAM_ENTROPY)) {
         n += printf_sore(p0, size, USE_ENTROPY | USE_EOL);
       }
 
-      if (o->action & OPTPROGRAM_HASH || o->action & OPTPROGRAM_ENTROPY) {
+      if (MODE_ISSET(o->action, OPTPROGRAM_HASH) || MODE_ISSET(o->action, OPTPROGRAM_ENTROPY)) {
         n += printf_eol();
       }
     } else {
@@ -105,6 +105,33 @@ int dump_actions1(const pbuffer_t p, const poptions_t o, const handle_t s, const
   }
 
   occlose(oc);
+  return n;
+}
+
+int dump_summary(const pbuffer_t p, const poptions_t o) {
+  const int MAXSIZE = 10;
+  int n = 0;
+  if (o && issafe(p)) {
+    if (MODE_ISSET(o->action, OPTREADELF_FILEHEADER) ||
+        MODE_ISLOCKED(o->action, OPTPROGRAM_HASH) ||
+        MODE_ISLOCKED(o->action, OPTPROGRAM_ENTROPY) ||
+        MODE_ISLOCKED(o->action, OPTPROGRAM_HASH | OPTPROGRAM_ENTROPY)) {
+
+      n += printf_text("FILE", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_text(o->inpname, USE_LT | USE_EOL);
+      n += printf_text("SIZE", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_nice(p->size, USE_DEC | USE_NOSPACE | USE_BYTES | USE_EOL);
+      n += printf_eol();
+
+      if (MODE_ISSET(o->action, OPTPROGRAM_HASH)) {
+        n += printf_sore(p->data, p->size, USE_HASHALL | USE_EOL);
+      }
+      if (MODE_ISSET(o->action, OPTPROGRAM_ENTROPY)) {
+        n += printf_sore(p->data, p->size, USE_ENTROPY | USE_EOL);
+      }
+    }
+  }
+
   return n;
 }
 

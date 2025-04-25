@@ -18,14 +18,6 @@
 
 const int MAXSIZE = 36;
 
-static int dump_peheader(const pbuffer_t p, const poptions_t o) {
-  if (issafe(p)) {
-    if (o->action & OPTPROGRAM_HASH)   printf_sore(p->data, p->size, USE_HASHALL | USE_EOL);
-  }
-
-  return 0;
-}
-
 static int dump_dosheaderNN(const pbuffer_t p, const poptions_t o) {
   int n = 0;
 
@@ -1300,35 +1292,36 @@ static int dump_actionsNN(const pbuffer_t p, const poptions_t o) {
 
 int readpe(const pbuffer_t p, const poptions_t o) {
   if (isPE(p)) {
-    if (o->action & OPTREADELF_FILEHEADER)         dump_peheader(p, o);
-    if (o->action & OPTREADELF_FILEHEADER)         dump_dosheaderNN(p, o);
+    dump_summary(p, o);
+
+    if (MODE_ISSET(o->action, OPTREADELF_FILEHEADER))         dump_dosheaderNN(p, o);
 
     if (isPE32(p)) {
-      if (o->action & OPTREADELF_FILEHEADER)       dump_ntheader32(p, o);
-      if (o->action & OPTREADELF_SECTIONHEADERS)   dump_sectionheaders32(p, o);
-      if (o->action & OPTREADELF_SECTIONGROUPS)    dump_sectiongroups32(p, o);
-      if (o->action & OPTREADELF_VERSION)          dump_versionNN(p, o);
-      if (o->action & OPTREADELF_SYMBOLS)          dump_eatNN(p, o);
-      if (o->action & OPTREADELF_SYMBOLS)          dump_iat32(p, o);
-      if (o->action & OPTREADELF_NOTES)            dump_resourceNN(p, o);
-      if (o->action & OPTREADELF_NOTES)            dump_config32(p, o);
+      if (MODE_ISSET(o->action, OPTREADELF_FILEHEADER))       dump_ntheader32(p, o);
+      if (MODE_ISSET(o->action, OPTREADELF_SECTIONHEADERS))   dump_sectionheaders32(p, o);
+      if (MODE_ISSET(o->action, OPTREADELF_SECTIONGROUPS))    dump_sectiongroups32(p, o);
+      if (MODE_ISSET(o->action, OPTREADELF_VERSION))          dump_versionNN(p, o);
+      if (MODE_ISSET(o->action, OPTREADELF_SYMBOLS))          dump_eatNN(p, o);
+      if (MODE_ISSET(o->action, OPTREADELF_SYMBOLS))          dump_iat32(p, o);
+      if (MODE_ISSET(o->action, OPTREADELF_NOTES))            dump_resourceNN(p, o);
+      if (MODE_ISSET(o->action, OPTREADELF_NOTES))            dump_config32(p, o);
     } else if (isPE64(p)) {
-      if (o->action & OPTREADELF_FILEHEADER)       dump_ntheader64(p, o);
-      if (o->action & OPTREADELF_SECTIONHEADERS)   dump_sectionheaders64(p, o);
-      if (o->action & OPTREADELF_SECTIONGROUPS)    dump_sectiongroups64(p, o);
-      if (o->action & OPTREADELF_VERSION)          dump_versionNN(p, o);
-      if (o->action & OPTREADELF_SYMBOLS)          dump_eatNN(p, o);
-      if (o->action & OPTREADELF_SYMBOLS)          dump_iat64(p, o);
-      if (o->action & OPTREADELF_NOTES)            dump_resourceNN(p, o);
-      if (o->action & OPTREADELF_NOTES)            dump_config64(p, o);
+      if (MODE_ISSET(o->action, OPTREADELF_FILEHEADER))       dump_ntheader64(p, o);
+      if (MODE_ISSET(o->action, OPTREADELF_SECTIONHEADERS))   dump_sectionheaders64(p, o);
+      if (MODE_ISSET(o->action, OPTREADELF_SECTIONGROUPS))    dump_sectiongroups64(p, o);
+      if (MODE_ISSET(o->action, OPTREADELF_VERSION))          dump_versionNN(p, o);
+      if (MODE_ISSET(o->action, OPTREADELF_SYMBOLS))          dump_eatNN(p, o);
+      if (MODE_ISSET(o->action, OPTREADELF_SYMBOLS))          dump_iat64(p, o);
+      if (MODE_ISSET(o->action, OPTREADELF_NOTES))            dump_resourceNN(p, o);
+      if (MODE_ISSET(o->action, OPTREADELF_NOTES))            dump_config64(p, o);
     }
 
-    if (o->action & OPTREADELF_NOTES)              dump_debugNN(p, o);
-    if (o->action & OPTREADELF_RELOCS)             dump_relocNN(p, o);
-    if (o->action & OPTREADELF_UNWIND)             dump_runtimeNN(p, o);
+    if (MODE_ISSET(o->action, OPTREADELF_NOTES))              dump_debugNN(p, o);
+    if (MODE_ISSET(o->action, OPTREADELF_RELOCS))             dump_relocNN(p, o);
+    if (MODE_ISSET(o->action, OPTREADELF_UNWIND))             dump_runtimeNN(p, o);
 
     if (isPE32(p) || isPE64(p)) {
-      if (o->actions)                              dump_actionsNN(p, o);
+      if (o->actions)                                         dump_actionsNN(p, o);
     }
   } else {
     printf_e("not an PE file - it has the wrong magic bytes at the start.");

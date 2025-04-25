@@ -8,6 +8,8 @@
 
 #include "static/usage.ci"
 
+#define VERSION_VALUE "0.0"
+
 typedef struct args_s {
   char    option1;
   char   *option2;
@@ -44,6 +46,7 @@ static const char READELFARGS1[] = "--debug-dump";
 
 static const args_t READELFARGS[] = {
   {'H', "--help",            OPTPROGRAM_HELP},
+  {'v', "--version",         OPTPROGRAM_VERSION},
   {'A', "--arch-specific",   OPTREADELF_ARCH},
   {'I', "--histogram",       OPTREADELF_HISTOGRAM},
   {'S', "--section-headers", OPTREADELF_SECTIONHEADERS},
@@ -73,6 +76,7 @@ static const args_t READELFARGS[] = {
 
 static const args_t OBJCOPYARGS[] = {
   {'H', "--help",                           OPTPROGRAM_HELP},
+  {'V', "--version",                        OPTPROGRAM_VERSION},
   {0,   "--adjust-warnings",                OPTOBJCOPY_CHANGE_WARNINGS},
   {0,   "--change-warnings",                OPTOBJCOPY_CHANGE_WARNINGS},
   {0,   "--debugging",                      OPTOBJCOPY_DEBUGGING},
@@ -111,6 +115,7 @@ static const char OBJDUMPARGS1[] = "--dwarf";
 
 static const args_t OBJDUMPARGS[] = {
   {'H', "--help",              OPTPROGRAM_HELP},
+  {'V', "--version",           OPTPROGRAM_VERSION},
   {'D', "--disassemble-all",   OPTOBJDUMP_DISASSEMBLE_ALL | OPTPROGRAM_DISASSEMBLE},
   {'S', "--source",            OPTPROGRAM_SOURCE_CODE | OPTPROGRAM_DISASSEMBLE},
   {'T', "--dynamic-symbols",   OPTOBJDUMP_DYNAMIC_SYMBOLS},
@@ -132,6 +137,7 @@ static const args_t OBJDUMPARGS[] = {
 
 static const args_t OBJHASHARGS[] = {
   {'H', "--help",              OPTPROGRAM_HELP},
+  {'V', "--version",           OPTPROGRAM_VERSION},
   {'s', "--sections",          OPTOBJHASH_SECTIONS},
   {'h', "--headers",           OPTOBJHASH_HEADERS},
   {'a', "--all",               OPTOBJHASH_ALL},
@@ -146,8 +152,8 @@ static int usage_name(poptions_t o, const char* name, const args_t args[]) {
   return 0;
 }
 
-static int usage_synopsis(poptions_t o, const char* name, const args_t args0[],
-                                        const char* more0, const char* more1, const args_t args1[]) {
+static int usage_synopsis(poptions_t o, const char* name, const args_t args0[], const char* more0,
+                                                          const args_t args1[], const char* more1) {
   MALLOCA(char, buf, 1024);
 
   printf_text("SYNOPSIS", USE_LT | USE_EOL);
@@ -207,8 +213,8 @@ static int usage_description(poptions_t o, const char* name, const args_t args[]
   return 0;
 }
 
-static int usage_options(poptions_t o, const char* name, const args_t args0[],
-                                       const char* more0, const char* more1, const args_t args1[]) {
+static int usage_options(poptions_t o, const char* name, const args_t args0[], const char* more0,
+                                                         const args_t args1[], const char* more1) {
   MALLOCA(char, buf, 1024);
 
   printf_text("OPTIONS", USE_LT | USE_EOL);
@@ -276,6 +282,13 @@ static int usage_seealso(poptions_t o, const char* name, const args_t args[]) {
   return 0;
 }
 
+static int usage_version(poptions_t o, const char* name, const args_t args[]) {
+  printf_yoke(name, " v"VERSION_VALUE, USE_LT | USE_EOL);
+  printf_eol();
+
+  return 0;
+}
+
 static int usage_copyright(poptions_t o, const char* name, const args_t args[]) {
   printf_text("COPYRIGHT", USE_LT | USE_EOL);
   printf_book(LICENSE, USE_LT | USE_TAB | USE_EOL);
@@ -292,18 +305,25 @@ static int usage0(poptions_t o, const char* name, const args_t args[]) {
   usage_seealso(o, name, args);
   usage_copyright(o, name, args);
 
-  return 1;
+  return 0;
 }
 
-static int usage1(poptions_t o, const char* name, const args_t args0[], const char* more0, const char* more1, const args_t args1[]) {
+static int usage1(poptions_t o, const char* name, const args_t args0[], const char* more0, const args_t args1[], const char* more1) {
   usage_name(o, name, args0);
-  usage_synopsis(o, name, args0, more0, more1, args1);
+  usage_synopsis(o, name, args0, more0, args1, more1);
   usage_description(o, name, args0);
-  usage_options(o, name, args0, more0, more1, args1);
+  usage_options(o, name, args0, more0, args1, more1);
   usage_seealso(o, name, args0);
   usage_copyright(o, name, args0);
 
-  return 1;
+  return 0;
+}
+
+static int version0(poptions_t o, const char* name, const args_t args[]) {
+  usage_version(o, name, args);
+  usage_copyright(o, name, args);
+
+  return 0;
 }
 
 static imode_t get_options1(poptions_t o, const args_t args[], const char *argv) {
@@ -420,8 +440,12 @@ int get_options_readelf(poptions_t o, int argc, char** argv, char* name) {
     }
   }
 
+  if (o->action & OPTPROGRAM_VERSION) {
+    return version0(o, "readelf-ng", READELFARGS);
+  }
+
   if (o->action & OPTPROGRAM_HELP) {
-    return usage1(o, "readelf-ng", READELFARGS, READELFARGS0, READELFARGS1, DEBUGELFARGS);
+    return usage1(o, "readelf-ng", READELFARGS, READELFARGS0, DEBUGELFARGS, READELFARGS1);
   }
 
   return 0;
@@ -461,6 +485,10 @@ int get_options_objcopy(poptions_t o, int argc, char** argv, char* name) {
     } else {
       strncpy(o->inpname, argv[i], NELEMENTS(o->inpname));
     }
+  }
+
+  if (o->action & OPTPROGRAM_VERSION) {
+    return version0(o, "objcopy-ng", OBJCOPYARGS);
   }
 
   if (o->action & OPTPROGRAM_HELP) {
@@ -503,8 +531,12 @@ int get_options_objdump(poptions_t o, int argc, char** argv, char* name) {
     }
   }
 
+  if (o->action & OPTPROGRAM_VERSION) {
+    return version0(o, "objdump-ng", OBJDUMPARGS);
+  }
+
   if (o->action & OPTPROGRAM_HELP) {
-    return usage1(o, "objdump-ng", OBJDUMPARGS, OBJDUMPARGS0, OBJDUMPARGS1, DEBUGELFARGS);
+    return usage1(o, "objdump-ng", OBJDUMPARGS, OBJDUMPARGS0, DEBUGELFARGS, OBJDUMPARGS1);
   }
 
   return 0;
@@ -550,6 +582,10 @@ int get_options_objhash(poptions_t o, int argc, char** argv, char* name) {
     } else if (0 == o->inpname1[0]) {
       strncpy(o->inpname1, argv[i], NELEMENTS(o->inpname1));
     }
+  }
+
+  if (o->action & OPTPROGRAM_VERSION) {
+    return version0(o, "objhash-ng", OBJHASHARGS);
   }
 
   if (o->action & OPTPROGRAM_HELP) {

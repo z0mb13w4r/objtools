@@ -275,7 +275,7 @@ static int dump_fileheader0(const pbuffer_t p, const poptions_t o, const uint64_
   n += printf_nice(e_shstrndx, USE_DEC | USE_EOL);
   n += printf_eol();
 
-  if (o->action & OPTPROGRAM_HASH)   n += printf_sore(p->data, p->size, USE_HASHALL | USE_EOL);
+  if (MODE_ISSET(o->action, OPTPROGRAM_HASH))   n += printf_sore(p->data, p->size, USE_HASHALL | USE_EOL);
 
   return n;
 }
@@ -304,7 +304,7 @@ static int dump_sectionheaders0(const pbuffer_t p, const poptions_t o, const int
   n += printf_text("Type", USE_LT | USE_SPACE | SET_PAD(16));
   n += printf_text("Address", USE_LT | USE_SPACE | SET_PAD(isELF64(p) ? 17 : 9));
   n += printf_text("Off      Size     ES Flg Lk Inf  Al", USE_LT | USE_SPACE);
-  if (o->action & OPTPROGRAM_HASH) {
+  if (MODE_ISSET(o->action, OPTPROGRAM_HASH)) {
     n += printf_text("SHA-256", USE_LT | USE_SPACE);
   }
   n += printf_eol();
@@ -355,7 +355,7 @@ static int dump_sectionheaders32(const pbuffer_t p, const poptions_t o, Elf32_Eh
                shdr->sh_addr, shdr->sh_offset, shdr->sh_size, shdr->sh_entsize,
                shdr->sh_flags, shdr->sh_link, shdr->sh_info, shdr->sh_addralign);
 
-      if (o->action & OPTPROGRAM_HASH) {
+      if (MODE_ISSET(o->action, OPTPROGRAM_HASH)) {
         n += printf_sore(getp(p, shdr->sh_offset, shdr->sh_size), shdr->sh_size, USE_SHA256 | USE_SPACE | USE_NOTEXT);
       }
 
@@ -381,7 +381,7 @@ static int dump_sectionheaders64(const pbuffer_t p, const poptions_t o, Elf64_Eh
                shdr->sh_addr, shdr->sh_offset, shdr->sh_size, shdr->sh_entsize,
                shdr->sh_flags, shdr->sh_link, shdr->sh_info, shdr->sh_addralign);
 
-      if (o->action & OPTPROGRAM_HASH) {
+      if (MODE_ISSET(o->action, OPTPROGRAM_HASH)) {
         n += printf_sore(getp(p, shdr->sh_offset, shdr->sh_size), shdr->sh_size, USE_SHA256 | USE_SPACE | USE_NOTEXT);
       }
 
@@ -1362,6 +1362,7 @@ static int dump_actions32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehd
 }
 
 static int dump_actions64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
+  int n = 0;
   paction_t x = o->actions;
   while (x) {
     if (x->secname[0]) {
@@ -1369,8 +1370,8 @@ static int dump_actions64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
       if (shdr) {
         MALLOCSWRAP(opwrap_t, s, MODE_OCSHDR64, shdr);
 
-        dump_actions0(p, o, shdr->sh_offset, shdr->sh_type != SHT_NOBITS ? shdr->sh_size : 0);
-        dump_actions1(p, o, ps, x->secname, x->action, shdr->sh_offset, shdr->sh_type != SHT_NOBITS ? shdr->sh_size : 0, shdr->sh_addr);
+        n += dump_actions0(p, o, shdr->sh_offset, shdr->sh_type != SHT_NOBITS ? shdr->sh_size : 0);
+        n += dump_actions1(p, o, ps, x->secname, x->action, shdr->sh_offset, shdr->sh_type != SHT_NOBITS ? shdr->sh_size : 0, shdr->sh_addr);
       } else {
         printf_w("section '%s' was not dumped because it does not exist!", x->secname);
       }
@@ -1379,7 +1380,7 @@ static int dump_actions64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
     x = x->actions;
   }
 
-  return 0;
+  return n;
 }
 
 static int dump_notes0(const pbuffer_t p, const int index, const uint64_t e_machine,
@@ -1491,39 +1492,41 @@ static int dump_notes64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr)
 
 int readelf(const pbuffer_t p, const poptions_t o) {
   if (isELF(p)) {
-    if (o->action & OPTREADELF_FILEHEADER)           dump_elfheader(p, o);
+    dump_summary(p, o);
+
+    if (MODE_ISSET(o->action, OPTREADELF_FILEHEADER))           dump_elfheader(p, o);
 
     if (isELF32(p)) {
       Elf32_Ehdr *ehdr = get_ehdr32(p);
       if (ehdr) {
-        if (o->action & OPTREADELF_FILEHEADER)       dump_fileheader32(p, o, ehdr);
-        if (o->action & OPTREADELF_SECTIONHEADERS)   dump_sectionheaders32(p, o, ehdr);
-        if (o->action & OPTREADELF_SECTIONGROUPS)    dump_sectiongroups32(p, o, ehdr);
-        if (o->action & OPTREADELF_PROGRAMHEADERS)   dump_programheaders32(p, o, ehdr);
-        if (o->action & OPTREADELF_DYNAMIC)          dump_dynamic32(p, o, ehdr);
-        if (o->action & OPTREADELF_RELOCS)           dump_relocs32(p, o, ehdr);
-        if (o->action & OPTREADELF_UNWIND)           dump_unwind32(p, o, ehdr);
-        if (o->action & OPTREADELF_SYMBOLS)          dump_symbols32(p, o, ehdr);
-        if (o->action & OPTREADELF_HISTOGRAM)        dump_histogram32(p, o, ehdr);
-        if (o->action & OPTREADELF_VERSION)          dump_version32(p, o, ehdr);
-        if (o->actions)                              dump_actions32(p, o, ehdr);
-        if (o->action & OPTREADELF_NOTES)            dump_notes32(p, o, ehdr);
+        if (MODE_ISSET(o->action, OPTREADELF_FILEHEADER))       dump_fileheader32(p, o, ehdr);
+        if (MODE_ISSET(o->action, OPTREADELF_SECTIONHEADERS))   dump_sectionheaders32(p, o, ehdr);
+        if (MODE_ISSET(o->action, OPTREADELF_SECTIONGROUPS))    dump_sectiongroups32(p, o, ehdr);
+        if (MODE_ISSET(o->action, OPTREADELF_PROGRAMHEADERS))   dump_programheaders32(p, o, ehdr);
+        if (MODE_ISSET(o->action, OPTREADELF_DYNAMIC))          dump_dynamic32(p, o, ehdr);
+        if (MODE_ISSET(o->action, OPTREADELF_RELOCS))           dump_relocs32(p, o, ehdr);
+        if (MODE_ISSET(o->action, OPTREADELF_UNWIND))           dump_unwind32(p, o, ehdr);
+        if (MODE_ISSET(o->action, OPTREADELF_SYMBOLS))          dump_symbols32(p, o, ehdr);
+        if (MODE_ISSET(o->action, OPTREADELF_HISTOGRAM))        dump_histogram32(p, o, ehdr);
+        if (MODE_ISSET(o->action, OPTREADELF_VERSION))          dump_version32(p, o, ehdr);
+        if (o->actions)                                         dump_actions32(p, o, ehdr);
+        if (MODE_ISSET(o->action, OPTREADELF_NOTES))            dump_notes32(p, o, ehdr);
       }
     } else if (isELF64(p)) {
       Elf64_Ehdr *ehdr = get_ehdr64(p);
       if (ehdr) {
-        if (o->action & OPTREADELF_FILEHEADER)       dump_fileheader64(p, o, ehdr);
-        if (o->action & OPTREADELF_SECTIONHEADERS)   dump_sectionheaders64(p, o, ehdr);
-        if (o->action & OPTREADELF_SECTIONGROUPS)    dump_sectiongroups64(p, o, ehdr);
-        if (o->action & OPTREADELF_PROGRAMHEADERS)   dump_programheaders64(p, o, ehdr);
-        if (o->action & OPTREADELF_DYNAMIC)          dump_dynamic64(p, o, ehdr);
-        if (o->action & OPTREADELF_RELOCS)           dump_relocs64(p, o, ehdr);
-        if (o->action & OPTREADELF_UNWIND)           dump_unwind64(p, o, ehdr);
-        if (o->action & OPTREADELF_SYMBOLS)          dump_symbols64(p, o, ehdr);
-        if (o->action & OPTREADELF_HISTOGRAM)        dump_histogram64(p, o, ehdr);
-        if (o->action & OPTREADELF_VERSION)          dump_version64(p, o, ehdr);
-        if (o->actions)                              dump_actions64(p, o, ehdr);
-        if (o->action & OPTREADELF_NOTES)            dump_notes64(p, o, ehdr);
+        if (MODE_ISSET(o->action, OPTREADELF_FILEHEADER))       dump_fileheader64(p, o, ehdr);
+        if (MODE_ISSET(o->action, OPTREADELF_SECTIONHEADERS))   dump_sectionheaders64(p, o, ehdr);
+        if (MODE_ISSET(o->action, OPTREADELF_SECTIONGROUPS))    dump_sectiongroups64(p, o, ehdr);
+        if (MODE_ISSET(o->action, OPTREADELF_PROGRAMHEADERS))   dump_programheaders64(p, o, ehdr);
+        if (MODE_ISSET(o->action, OPTREADELF_DYNAMIC))          dump_dynamic64(p, o, ehdr);
+        if (MODE_ISSET(o->action, OPTREADELF_RELOCS))           dump_relocs64(p, o, ehdr);
+        if (MODE_ISSET(o->action, OPTREADELF_UNWIND))           dump_unwind64(p, o, ehdr);
+        if (MODE_ISSET(o->action, OPTREADELF_SYMBOLS))          dump_symbols64(p, o, ehdr);
+        if (MODE_ISSET(o->action, OPTREADELF_HISTOGRAM))        dump_histogram64(p, o, ehdr);
+        if (MODE_ISSET(o->action, OPTREADELF_VERSION))          dump_version64(p, o, ehdr);
+        if (o->actions)                                         dump_actions64(p, o, ehdr);
+        if (MODE_ISSET(o->action, OPTREADELF_NOTES))            dump_notes64(p, o, ehdr);
       }
     }
   } else {
