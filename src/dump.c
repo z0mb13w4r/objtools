@@ -121,6 +121,11 @@ int dump_summary(const pbuffer_t p, const poptions_t o) {
       n += printf_text(o->inpname, USE_LT | USE_EOL);
       n += printf_text("SIZE", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
       n += printf_nice(p->size, USE_DEC | USE_NOSPACE | USE_BYTES | USE_EOL);
+      n += printf_text("FORMAT", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
+      if (isELF32(p))      n += printf_text("ELF32", USE_LT | USE_EOL);
+      else if (isELF64(p)) n += printf_text("ELF64", USE_LT | USE_EOL);
+      else if (isPE32(p))  n += printf_text("PE32",  USE_LT | USE_EOL);
+      else if (isPE64(p))  n += printf_text("PE32+", USE_LT | USE_EOL);
       n += printf_eol();
 
       if (MODE_ISSET(o->action, OPTPROGRAM_HASH)) {
