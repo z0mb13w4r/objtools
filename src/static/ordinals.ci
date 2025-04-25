@@ -1,5 +1,11 @@
 static pefunc_t zADVAPI32[] = {
   {"AdjustTokenPrivileges",            -1,   PEFUNC_BLACKLIST},
+  {"ControlService",                   -1,   PEFUNC_BLACKLIST},
+  {"ControlServiceExA",                -1,   PEFUNC_BLACKLIST},
+  {"ControlServiceExW",                -1,   PEFUNC_BLACKLIST},
+  {"QueryServiceStatusEx",             -1,   PEFUNC_BLACKLIST},
+  {"CreateServiceA",                   -1,   PEFUNC_BLACKLIST},
+  {"CreateServiceW",                   -1,   PEFUNC_BLACKLIST},
   {0, 0}
 };
 
@@ -126,6 +132,13 @@ static pefunc_t zCOMCTL32[] = {
   {0, 0}
 };
 
+static pefunc_t zCRYPT32[] = {
+  {"CertOpenSystemStoreA",             -1,   PEFUNC_CRITICAL},
+  {"CertOpenSystemStoreW",             -1,   PEFUNC_CRITICAL},
+  {"CertOpenStore",                    -1,   PEFUNC_CRITICAL},
+  {0, 0}
+};
+
 static pefunc_t zGDI32[] = {
   {"BitBlt",                           -1,   PEFUNC_ALERT},
   {0, 0}
@@ -143,6 +156,9 @@ static pefunc_t zKERNEL32[] = {
   {"CreateFileA",                      -1,   PEFUNC_INFO},
   {"CreateFileW",                      -1,   PEFUNC_INFO},
   {"GetTickCount",                     -1,   PEFUNC_CRITICAL},
+  {"ConnectNamedPipe",                 -1,   PEFUNC_CRITICAL},
+  {"CreateFileMappingA",               -1,   PEFUNC_CRITICAL},
+  {"CreateFileMappingW",               -1,   PEFUNC_CRITICAL},
   {0, 0}
 };
 
@@ -572,8 +588,15 @@ static pefunc_t zOLEAUT32[] = {
   {0, 0}
 };
 
+static pefunc_t zOLE32[] = {
+  {"CoCreateInstance",                 -1,   PEFUNC_INFO},
+  {"CoCreateInstanceEx",               -1,   PEFUNC_INFO},
+  {0, 0}
+};
+
 static pefunc_t zUSER32[] = {
   {"AttachThreadInput",                -1,   PEFUNC_CRITICAL},
+  {"CallNextHookEx",                   -1,   PEFUNC_ALERT},
   {0, 0}
 };
 
