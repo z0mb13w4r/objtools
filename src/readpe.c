@@ -634,8 +634,10 @@ static int dump_iat32(const pbuffer_t p, const poptions_t o) {
           n += printf_text("(Imported by Ordinal)", USE_LT | USE_SPACE | USE_EOL);
         } else {
           PIMAGE_IMPORT_BY_NAME p3 = getp(p, peconvert2va(s0, p2->AddressOfData), sizeof(IMAGE_IMPORT_BY_NAME));
-          n += printf_text(p3->Name, USE_LT | USE_TAB2);
-          n += printf_nice(p3->Hint, USE_DEC | USE_SB | USE_EOL);
+          if (p3) {
+            n += printf_text(p3->Name, USE_LT | USE_TAB2);
+            n += printf_nice(p3->Hint, USE_DEC | USE_SB | USE_EOL);
+          }
         }
 
         ++p2;
@@ -674,8 +676,10 @@ static int dump_iat64(const pbuffer_t p, const poptions_t o) {
           n += printf_text("(Imported by Ordinal)", USE_LT | USE_SPACE | USE_EOL);
         } else {
           PIMAGE_IMPORT_BY_NAME p3 = getp(p, peconvert2va(s0, p2->AddressOfData), sizeof(IMAGE_IMPORT_BY_NAME));
-          n += printf_text(p3->Name, USE_LT | USE_TAB2);
-          n += printf_nice(p3->Hint, USE_DEC | USE_SB | USE_EOL);
+          if (p3) {
+            n += printf_text(p3->Name, USE_LT | USE_TAB2);
+            n += printf_nice(p3->Hint, USE_DEC | USE_SB | USE_EOL);
+          }
         }
 
         ++p2;
