@@ -146,6 +146,11 @@ static pefunc_t zGDI32[] = {
   {0, 0}
 };
 
+static pefunc_t zIPHLPAPI[] = {
+  {"GetAdaptersInfo",                  -1,   PEFUNC_ALERT},
+  {0, 0}
+};
+
 static pefunc_t zKERNEL32[] = {
   {"LoadLibraryA",                     -1,   PEFUNC_CRITICAL},
   {"LoadLibraryExA",                   -1,   PEFUNC_CRITICAL},
@@ -167,16 +172,23 @@ static pefunc_t zKERNEL32[] = {
   {"CreateMutexExW",                   -1,   PEFUNC_INFO},
   {"CreateToolhelp32Snapshot",         -1,   PEFUNC_ALERT},
   {"DeviceIoControl",                  -1,   PEFUNC_ALERT},
+  {"EnumProcesses",                    -1,   PEFUNC_ALERT},
+  {"FindFirstFileA",                   -1,   PEFUNC_ALERT},
+  {"FindFirstFileW",                   -1,   PEFUNC_ALERT},
+  {"FindFirstFileExA",                 -1,   PEFUNC_ALERT},
+  {"FindFirstFileExW",                 -1,   PEFUNC_ALERT},
+  {"FindNextFileA",                    -1,   PEFUNC_ALERT},
+  {"FindNextFileW",                    -1,   PEFUNC_ALERT},
+  {"FindResourceA",                    -1,   PEFUNC_INFO},
+  {"FindResourceW",                    -1,   PEFUNC_INFO},
+  {"FindResourceExA",                  -1,   PEFUNC_INFO},
+  {"FindResourceExW",                  -1,   PEFUNC_INFO},
   {0, 0}
 };
 
 static pefunc_t zNTDLL[] = {
   {"LdrLoadDll",                       -1,   PEFUNC_BLACKLIST},
   {"LdrGetProcedureAddress",           -1,   PEFUNC_BLACKLIST},
-  {0, 0}
-};
-
-static pefunc_t zWININET[] = {
   {0, 0}
 };
 
@@ -599,12 +611,29 @@ static pefunc_t zOLEAUT32[] = {
 static pefunc_t zOLE32[] = {
   {"CoCreateInstance",                 -1,   PEFUNC_INFO},
   {"CoCreateInstanceEx",               -1,   PEFUNC_INFO},
+  {"DllRegisterServer",                -1,   PEFUNC_INFO},
+  {"DllUnregisterServer",              -1,   PEFUNC_INFO},
+  {0, 0}
+};
+
+static pefunc_t zSHLWAPI[] = {
+  {"DllInstall",                       -1,   PEFUNC_INFO},
   {0, 0}
 };
 
 static pefunc_t zUSER32[] = {
   {"AttachThreadInput",                -1,   PEFUNC_CRITICAL},
   {"CallNextHookEx",                   -1,   PEFUNC_ALERT},
+  {"FindWindowA",                      -1,   PEFUNC_ALERT},
+  {"FindWindowW",                      -1,   PEFUNC_ALERT},
+  {"FindWindowExA",                    -1,   PEFUNC_ALERT},
+  {"FindWindowExW",                    -1,   PEFUNC_ALERT},
+  {0, 0}
+};
+
+static pefunc_t zWININET[] = {
+  {"FtpPutFileA",                      -1,   PEFUNC_CRITICAL},
+  {"FtpPutFileW",                      -1,   PEFUNC_CRITICAL},
   {0, 0}
 };
 
