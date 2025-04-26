@@ -1,7 +1,9 @@
 #include "dump.h"
 #include "decode.h"
 #include "opcode.h"
+#include "pecode.h"
 #include "printf.h"
+#include "elfcode.h"
 
 int dump_actions0(const pbuffer_t p, const poptions_t o, const uint64_t offset, const uint64_t size) {
   paction_t x = o->actions;
