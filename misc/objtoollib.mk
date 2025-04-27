@@ -16,8 +16,9 @@ SRCS_C = \
 	dump.c \
 	hash.c \
 	arcode.c \
-	decode.c \
 	buffer.c \
+	decode.c \
+	encode.c \
 	opcode.c \
 	pecode.c \
 	pefunc.c \
