@@ -6,7 +6,7 @@
 #include "buffer.h"
 #include "decode.h"
 
-static char base46_map[] = {
+uchar_t base64_map[] = {
   'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
   'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f',
   'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
@@ -450,7 +450,7 @@ unknown_t base64_decode(unknown_t src, size_t srcsize, unknown_t dst, size_t dst
       int p = 0, j = 0;
       for (int i = 0; i < srcsize; ++i) {
         uchar_t k;
-        for (k = 0 ; k < 64 && base46_map[k] != psrc[i]; k++);
+        for (k = 0 ; k < 64 && base64_map[k] != psrc[i]; k++);
         tmp[j++] = k;
         if (j == 4) {
           pdst[p++] = (tmp[0] << 2) + (tmp[1] >> 4);
