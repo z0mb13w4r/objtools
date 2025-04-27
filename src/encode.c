@@ -19,7 +19,6 @@ unknown_t base64_encode(unknown_t src, size_t srcsize, unknown_t dst, size_t dst
 
       uchar_t tmp[3];
       int i = 0, c = 0, j = 0;
-
       for (i = 0; i < srcsize; ++i) {
         tmp[j++] = psrc[i];
         if (j == 3) {

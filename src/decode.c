@@ -3,7 +3,15 @@
 #include <openssl/evp.h>
 //#include <openssl/err.h>
 
+#include "buffer.h"
 #include "decode.h"
+
+static char base46_map[] = {
+  'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
+  'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f',
+  'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
+  'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/'
+};
 
 static int zap(int c0, int c1, int c2, int inc) {
   if (c0 >= c1 && c0 <= c2) {
@@ -427,5 +435,36 @@ int aes_encrypt(const int mode, puchar_t src, const size_t srcsize,
   EVP_CIPHER_CTX_free(ctx);
 
   return dstsize;
+}
+
+unknown_t base64_decode(unknown_t src, size_t srcsize, unknown_t dst, size_t dstsize) {
+  if (src && srcsize) {
+    size_t maxsize = srcsize * 3 / 4;
+    if (0 == dstsize || maxsize <= dstsize) {
+      puchar_t psrc = CAST(puchar_t, src);
+      puchar_t pdst = CAST(puchar_t, dst);
+
+      if (NULL == pdst) pdst = xmalloc(maxsize);
+
+      uchar_t tmp[4];
+      int p = 0, j = 0;
+      for (int i = 0; i < srcsize; ++i) {
+        uchar_t k;
+        for (k = 0 ; k < 64 && base46_map[k] != psrc[i]; k++);
+        tmp[j++] = k;
+        if (j == 4) {
+          pdst[p++] = (tmp[0] << 2) + (tmp[1] >> 4);
+          if (tmp[2] != 64)    pdst[p++] = (tmp[1] << 4) + (tmp[2] >> 2);
+          if (tmp[3] != 64)    pdst[p++] = (tmp[2] << 6) + tmp[3];
+          j = 0;
+        }
+      }
+
+      pdst[p] = '\0';   /* string padding character */
+      return pdst;
+    }
+  }
+
+  return NULL;
 }
 
