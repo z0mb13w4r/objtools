@@ -31,10 +31,13 @@ unknown_t xmalloc(const size_t size);
 unknown_t xdump(unknown_t p);
 unknown_t xfree(unknown_t p);
 
+size_t xread(unknown_t p, size_t size, size_t count, FILE *f);
+
 handle_t bmalloc();
 handle_t bfree(handle_t p);
 handle_t bopen(const char* name);
 handle_t bclone(handle_t p, const int offset, const size_t size);
+handle_t bappend(handle_t p, unknown_t px, const size_t size);
 handle_t bresize(handle_t p, const size_t size);
 
 unknown_t getp(const pbuffer_t p, const int offset, const size_t size);

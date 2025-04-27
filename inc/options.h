@@ -6,10 +6,11 @@
 #define MODE_OPTIONS            (MODE_PUT0('O') | MODE_PUT1('P') | MODE_PUT2('T'))
 #define MODE_ACTIONS            (MODE_PUT0('A') | MODE_PUT1('C') | MODE_PUT2('T'))
 
-#define OPT_READELF                                (0)
-#define OPT_OBJCOPY                                (1)
-#define OPT_OBJDUMP                                (2)
-#define OPT_OBJHASH                                (3)
+#define OPT_CONVERT                                (0)
+#define OPT_READELF                                (1)
+#define OPT_OBJCOPY                                (2)
+#define OPT_OBJDUMP                                (3)
+#define OPT_OBJHASH                                (4)
 
 #define OPTDEBUGELF_DEBUG_ABBREV                   U64MASK(30)
 #define OPTDEBUGELF_DEBUG_ADDR                     U64MASK(31)
@@ -189,6 +190,7 @@ typedef struct options_s {
   paction_t actions;
 } options_t, *poptions_t;
 
+int get_options_convert(poptions_t o, int argc, char** argv, char* name);
 int get_options_readelf(poptions_t o, int argc, char** argv, char* name);
 int get_options_objcopy(poptions_t o, int argc, char** argv, char* name);
 int get_options_objdump(poptions_t o, int argc, char** argv, char* name);

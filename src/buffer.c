@@ -107,6 +107,15 @@ unknown_t xfree(unknown_t p) {
   return NULL;
 }
 
+size_t xread(unknown_t p, size_t size, size_t count, FILE *f) {
+  if (p) {
+    memset(p, 0, size * count);
+    return fread(p, size, count, f);
+  }
+
+  return 0;
+}
+
 handle_t bmalloc() {
   handle_t p = xmalloc(sizeof(buffer_t));
   return setmode(p, MODE_BUFFER);
@@ -137,12 +146,25 @@ handle_t bclone(handle_t p, const int offset, const size_t size) {
   return NULL;
 }
 
+handle_t bappend(handle_t p, unknown_t px, const size_t size) {
+  if (ismode(p, MODE_BUFFER) && px) {
+    size_t epos = CAST(pbuffer_t, p)->size;
+    p = bresize(p, epos + size);
+    if (ismode(p, MODE_BUFFER)) {
+      pbuffer_t p0 = CAST(pbuffer_t, p);
+      memcpy(CAST(puchar_t, p0->data) + epos, px, size);
+    }
+  }
+
+  return p;
+}
+
 handle_t bresize(handle_t p, const size_t size) {
   if (ismode(p, MODE_BUFFER)) {
     pbuffer_t p0 = CAST(pbuffer_t, p);
     unknown_t p1 = xmalloc(size);
     if (p0 && p1) {
-      memcpy(p1, p0->data, size);
+      memcpy(p1, p0->data, MIN(p0->size, size));
       free(p0->data);
       p0->data = p1;
       p0->size = size;
@@ -153,24 +175,38 @@ handle_t bresize(handle_t p, const size_t size) {
 }
 
 handle_t bopen(const char* name) {
-  FILE* f = fopen(name, "rb");
-  if (f) {
+  MALLOCA(char, inp, 1024);
+  if (name && '-' == name[0] && 0 == name[1]) {
     pbuffer_t p = bmalloc();
     if (p) {
-      strname(p->note, name);
-      p->size = fsize(f);
-      p->data = xmalloc(p->size);
-      if (p->size != fread(p->data, 1, p->size, f)) {
-        p = xfree(p);
+      size_t size = fread(inp, 1, sizeof(inp), stdin);
+      while (size) {
+        p = bappend(p, inp, size);
+        size = xread(inp, 1, sizeof(inp), stdin);
       }
 
-      fclose(f);
+      return p;
     }
+  } else {
+    FILE* f = fopen(name, "rb");
+    if (f) {
+      pbuffer_t p = bmalloc();
+      if (p) {
+        strname(p->note, name);
+        p->size = fsize(f);
+        p->data = xmalloc(p->size);
+        if (p->size != fread(p->data, 1, p->size, f)) {
+          p = xfree(p);
+        }
 
-    return p;
+        fclose(f);
+      }
+
+      return p;
+    }
   }
 
-  return 0;
+  return NULL;
 }
 
 bool_t issafe(pbuffer_t p) {

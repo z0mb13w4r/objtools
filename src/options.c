@@ -379,6 +379,32 @@ static int breakup_args(char* args, char* dst0, const size_t dst0size, char* dst
   return -1;
 }
 
+int get_options_convert(poptions_t o, int argc, char** argv, char* name) {
+  if (argc < 1) {
+    return -1;
+  }
+
+  o->option = OPT_CONVERT;
+  strname(o->prgname, name);
+  set_errname(o->prgname);
+
+  if (o->action & OPTPROGRAM_VERSION) {
+//    return version0(o, "readelf-ng", READELFARGS);
+  }
+
+  if (o->action & OPTPROGRAM_HELP) {
+//    return usage1(o, "readelf-ng", READELFARGS, READELFARGS0, DEBUGELFARGS, READELFARGS1);
+  }
+
+  for (int i = 0; i < argc; ++i) {
+//    } else {
+      strncpy(o->inpname, argv[i], NELEMENTS(o->inpname));
+//    }
+  }
+
+  return 0;
+}
+
 int get_options_readelf(poptions_t o, int argc, char** argv, char* name) {
   if (argc < 1) {
     return -1;
