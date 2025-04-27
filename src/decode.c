@@ -451,6 +451,7 @@ unknown_t base64_decode(unknown_t src, size_t srcsize, unknown_t dst, size_t dst
       for (int i = 0; i < srcsize; ++i) {
         uchar_t k;
         for (k = 0 ; k < 64 && base64_map[k] != psrc[i]; k++);
+
         tmp[j++] = k;
         if (j == 4) {
           pdst[p++] = (tmp[0] << 2) + (tmp[1] >> 4);

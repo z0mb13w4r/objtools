@@ -158,6 +158,8 @@
 #define ACT_XOR8                                   (524)
 #define ACT_XOR16                                  (525)
 #define ACT_XOR32                                  (526)
+#define ACT_BASE64D                                (600)
+#define ACT_BASE64E                                (601)
 
 typedef struct action_s {
   smode_t  mode;

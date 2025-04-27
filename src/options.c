@@ -388,18 +388,18 @@ int get_options_convert(poptions_t o, int argc, char** argv, char* name) {
   strname(o->prgname, name);
   set_errname(o->prgname);
 
+  for (int i = 0; i < argc; ++i) {
+//    if (0 != sinsert(o, argv[i])) {
+      strncpy(o->inpname, argv[i], NELEMENTS(o->inpname));
+//    }
+  }
+
   if (o->action & OPTPROGRAM_VERSION) {
 //    return version0(o, "readelf-ng", READELFARGS);
   }
 
   if (o->action & OPTPROGRAM_HELP) {
 //    return usage1(o, "readelf-ng", READELFARGS, READELFARGS0, DEBUGELFARGS, READELFARGS1);
-  }
-
-  for (int i = 0; i < argc; ++i) {
-//    } else {
-      strncpy(o->inpname, argv[i], NELEMENTS(o->inpname));
-//    }
   }
 
   return 0;
@@ -435,7 +435,7 @@ int get_options_readelf(poptions_t o, int argc, char** argv, char* name) {
         } else if (0 == strcmp(argv[i], "--disassemble")) {
           oinsertsecname(o, ACT_DISASSEMBLE, arg1);
         } else if (0 == strcmp(arg0, "--script")) {
-          insertscript(o, arg1);
+          sinsert(o, arg1);
         }
       } else {
         o->action |= get_options2(o, READELFARGS, argv[i]);
@@ -457,7 +457,7 @@ int get_options_readelf(poptions_t o, int argc, char** argv, char* name) {
       } else if (0 == strcmp(argv[i], "-C")) {
         oinsertsecname(o, ACT_DISASSEMBLE, argv[++i]);
       } else if (0 == strcmp(argv[i], "-T")) {
-        insertscript(o, argv[++i]);
+        sinsert(o, argv[++i]);
       } else {
         o->action |= get_options1(o, READELFARGS, argv[i]);
       }

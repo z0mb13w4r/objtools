@@ -3,7 +3,8 @@
 
 #include "options.h"
 
-int insertscript(poptions_t o, const char *script);
+int sprocess(poptions_t o, const char *script);
+int sinsert(poptions_t o, const char *script);
 
 #endif
 
