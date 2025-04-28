@@ -49,15 +49,10 @@ size_t bstrsize(handle_t p) {
 
 handle_t bstrcpy(handle_t dst, handle_t src) {
   if (isbstring(dst) && isbstring(src)) {
-    pbstring_t dst0 = CAST(pbstring_t, dst);
-    pbstring_t src0 = CAST(pbstring_t, src);
-    if (src0->size <= dst0->size) {
-      strncpy(dst0->data, src0->data, dst0->size);
-      return dst;
-    }
+    return bstrncpy(dst, src, CAST(pbstring_t, dst)->size);
   }
 
-  return 0;
+  return NULL;
 }
 
 handle_t bstrncpy(handle_t dst, handle_t src, size_t size) {
@@ -70,14 +65,35 @@ handle_t bstrncpy(handle_t dst, handle_t src, size_t size) {
     }
   }
 
-  return 0;
+  return NULL;
+}
+
+handle_t bstrcat(handle_t dst, handle_t src) {
+  if (isbstring(dst) && isbstring(src)) {
+    return bstrncat(dst, src, CAST(pbstring_t, dst)->size);
+  }
+
+  return NULL;
+}
+
+handle_t bstrncat(handle_t dst, handle_t src, size_t size) {
+  if (isbstring(dst) && isbstring(src)) {
+    pbstring_t dst0 = CAST(pbstring_t, dst);
+    pbstring_t src0 = CAST(pbstring_t, src);
+    if (size <= dst0->size) {
+      strncat(dst0->data, src0->data, size);
+      return dst;
+    }
+  }
+
+  return NULL;
 }
 
 int bstrcmp(handle_t s1, handle_t s2) {
   if (isbstring(s1) && isbstring(s2)) {
     pbstring_t s10 = CAST(pbstring_t, s1);
     pbstring_t s20 = CAST(pbstring_t, s2);
-    return strncmp(s10->data, s20->data, MAX(s10->size, s20->size));
+    return strncmp(s10->data, s20->data, MIN(s10->size, s20->size));
   }
 
   return -1;
@@ -88,6 +104,26 @@ int bstrncmp(handle_t s1, handle_t s2, size_t size) {
     pbstring_t s10 = CAST(pbstring_t, s1);
     pbstring_t s20 = CAST(pbstring_t, s2);
     return strncmp(s10->data, s20->data, size);
+  }
+
+  return -1;
+}
+
+int bstrcasecmp(handle_t s1, handle_t s2) {
+  if (isbstring(s1) && isbstring(s2)) {
+    pbstring_t s10 = CAST(pbstring_t, s1);
+    pbstring_t s20 = CAST(pbstring_t, s2);
+    return strncasecmp(s10->data, s20->data, MIN(s10->size, s20->size));
+  }
+
+  return -1;
+}
+
+int bstrncasecmp(handle_t s1, handle_t s2, size_t size) {
+  if (isbstring(s1) && isbstring(s2)) {
+    pbstring_t s10 = CAST(pbstring_t, s1);
+    pbstring_t s20 = CAST(pbstring_t, s2);
+    return strncasecmp(s10->data, s20->data, size);
   }
 
   return -1;

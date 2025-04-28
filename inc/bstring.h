@@ -26,11 +26,15 @@ handle_t bstrfree(handle_t p);
 size_t bstrlen(handle_t p);
 size_t bstrsize(handle_t p);
 
+handle_t bstrcat(handle_t dst, handle_t src);
 handle_t bstrcpy(handle_t dst, handle_t src);
+handle_t bstrncat(handle_t dst, handle_t src, size_t size);
 handle_t bstrncpy(handle_t dst, handle_t src, size_t size);
 
 int bstrcmp(handle_t s1, handle_t s2);
 int bstrncmp(handle_t s1, handle_t s2, size_t size);
+int bstrcasecmp(handle_t s1, handle_t s2);
+int bstrncasecmp(handle_t s1, handle_t s2, size_t size);
 
 #endif
 
