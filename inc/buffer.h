@@ -34,6 +34,7 @@ unknown_t xfree(unknown_t p);
 size_t xread(unknown_t p, size_t size, size_t count, FILE *f);
 
 handle_t bmalloc();
+handle_t bmallocsize(const size_t size);
 handle_t bfree(handle_t p);
 handle_t bopen(const char* name);
 handle_t bclone(handle_t p, const int offset, const size_t size);

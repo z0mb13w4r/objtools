@@ -121,6 +121,17 @@ handle_t bmalloc() {
   return setmode(p, MODE_BUFFER);
 }
 
+handle_t bmallocsize(const size_t size) {
+  handle_t p = bmalloc();
+  if (ismode(p, MODE_BUFFER)) {
+    pbuffer_t p0 = CAST(pbuffer_t, p);
+    p0->data = xmalloc(size);
+    p0->size = size;
+  }
+
+  return p;
+}
+
 handle_t bfree(handle_t p) {
   if (ismode(p, MODE_BUFFER)) {
     free(CAST(pbuffer_t, p)->data);

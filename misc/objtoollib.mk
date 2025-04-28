@@ -25,6 +25,7 @@ SRCS_C = \
 	printf.c \
 	readar.c \
 	readpe.c \
+	bstring.c \
 	elfcode.c \
 	memfind.c \
 	memlink.c \
