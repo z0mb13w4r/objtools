@@ -5,6 +5,7 @@
 
 #include "buffer.h"
 #include "decode.h"
+#include "bstring.h"
 
 uchar_t base64_map[] = {
   'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
@@ -437,15 +438,14 @@ int aes_encrypt(const int mode, puchar_t src, const size_t srcsize,
   return dstsize;
 }
 
-unknown_t base64_decode(unknown_t src, size_t srcsize, unknown_t dst, size_t dstsize) {
+handle_t base64_decode(unknown_t src, size_t srcsize) {
   if (src && srcsize) {
     size_t maxsize = srcsize * 3 / 4;
-    if (0 == dstsize || maxsize <= dstsize) {
-      puchar_t psrc = CAST(puchar_t, src);
-      puchar_t pdst = CAST(puchar_t, dst);
+    puchar_t psrc = CAST(puchar_t, src);
 
-      if (NULL == pdst) pdst = xmalloc(maxsize);
-
+    pbstring_t dst = bstrmallocsize(maxsize);
+    if (dst) {
+      puchar_t pdst = CAST(puchar_t, dst->data);
       uchar_t tmp[4];
       int p = 0, j = 0;
       for (int i = 0; i < srcsize; ++i) {
@@ -462,7 +462,7 @@ unknown_t base64_decode(unknown_t src, size_t srcsize, unknown_t dst, size_t dst
       }
 
       pdst[p] = '\0';   /* string padding character */
-      return pdst;
+      return dst;
     }
   }
 

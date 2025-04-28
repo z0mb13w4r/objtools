@@ -61,7 +61,7 @@ int xor32(const unknown_t p, const uint32_t v, const size_t size);
 int aes_encrypt(const int mode, puchar_t src, const size_t srcsize,
                 puchar_t key, const size_t keysize, puchar_t ivec, puchar_t dst);
 
-unknown_t base64_decode(unknown_t src, size_t srcsize, unknown_t dst, size_t dstsize);
+handle_t base64_decode(unknown_t src, size_t srcsize);
 
 #endif
 

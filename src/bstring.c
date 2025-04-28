@@ -89,6 +89,46 @@ handle_t bstrncat(handle_t dst, handle_t src, size_t size) {
   return NULL;
 }
 
+handle_t bstrclr(handle_t p) {
+  if (isbstring(p)) {
+    pbstring_t p0 = CAST(pbstring_t, p);
+    memset(p0->data, 0, p0->size);
+    return p;
+  }
+
+  return NULL;
+}
+
+handle_t bstrlwr(handle_t p) {
+  if (isbstring(p)) {
+    pbstring_t p0 = CAST(pbstring_t, p);
+    puchar_t p1 = CAST(puchar_t, p0->data);
+    for (size_t i = 0; i < p0->size; ++i) {
+      if (0 == p1[i]) break;
+      else if ('A' <= p1[i] && p1[i] <= 'Z') p1[i] += 32;
+    }
+
+    return p;
+  }
+
+  return NULL;
+}
+
+handle_t bstrupr(handle_t p) {
+  if (isbstring(p)) {
+    pbstring_t p0 = CAST(pbstring_t, p);
+    puchar_t p1 = CAST(puchar_t, p0->data);
+    for (size_t i = 0; i < p0->size; ++i) {
+      if (0 == p1[i]) break;
+      else if ('a' <= p1[i] && p1[i] <= 'z') p1[i] -= 32;
+    }
+
+    return p;
+  }
+
+  return NULL;
+}
+
 int bstrcmp(handle_t s1, handle_t s2) {
   if (isbstring(s1) && isbstring(s2)) {
     pbstring_t s10 = CAST(pbstring_t, s1);

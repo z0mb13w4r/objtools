@@ -26,6 +26,9 @@ handle_t bstrfree(handle_t p);
 size_t bstrlen(handle_t p);
 size_t bstrsize(handle_t p);
 
+handle_t bstrclr(handle_t p);
+handle_t bstrlwr(handle_t p);
+handle_t bstrupr(handle_t p);
 handle_t bstrcat(handle_t dst, handle_t src);
 handle_t bstrcpy(handle_t dst, handle_t src);
 handle_t bstrncat(handle_t dst, handle_t src, size_t size);
