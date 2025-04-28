@@ -1292,8 +1292,8 @@ static int dump_actionsNN(const pbuffer_t p, const poptions_t o) {
       PIMAGE_SECTION_HEADER p0 = get_sectionhdrbyname(p, x->secname);
       if (p0) {
         MALLOCSWRAP(opwrap_t, s, MODE_OCSHDRPE, p0);
-        n += dump_actions0(p, o, peconvert2va(p0, p0->VirtualAddress), p0->SizeOfRawData);
-        n += dump_actions1(p, o, ps, x->secname, x->action, peconvert2va(p0, p0->VirtualAddress), p0->SizeOfRawData, p0->VirtualAddress);
+        n += dump_actions1(p, o, peconvert2va(p0, p0->VirtualAddress), p0->SizeOfRawData);
+        n += dump_actions2(p, o, ps, x->secname, x->action, peconvert2va(p0, p0->VirtualAddress), p0->SizeOfRawData, p0->VirtualAddress);
       } else {
         printf_w("section '%s' was not dumped because it does not exist!", x->secname);
       }

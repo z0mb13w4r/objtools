@@ -67,9 +67,9 @@ int sprocess(poptions_t o, const char *script) {
   MALLOCA(char, tmp, 1024);
   if (isoptions(o) && script && script[0]) {
     strncpy(tmp, script, NELEMENTS(tmp));
+
     const char DELIMIT = ';';
     char *p0 = tmp;
-
     char *p1 = strchr(p0, DELIMIT);
     if (p1) {
       while (p1) {
@@ -85,6 +85,12 @@ int sprocess(poptions_t o, const char *script) {
       }
 
       return 0;
+    } else {
+      uint64_t v = 0;
+      const int x = breakup_script(SCRIPTCOMMANDS, script, &v);
+      if (-1 != x) {
+        return oinsertvalue(o, x, v);
+      }
     }
   }
 

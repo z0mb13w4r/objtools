@@ -389,9 +389,9 @@ int get_options_convert(poptions_t o, int argc, char** argv, char* name) {
   set_errname(o->prgname);
 
   for (int i = 0; i < argc; ++i) {
-//    if (0 != sinsert(o, argv[i])) {
+    if (0 != sinsert(o, argv[i])) {
       strncpy(o->inpname, argv[i], NELEMENTS(o->inpname));
-//    }
+    }
   }
 
   if (o->action & OPTPROGRAM_VERSION) {

@@ -19,6 +19,10 @@ typedef struct bstring_s {
 
 bool_t isbstring(handle_t p);
 
+handle_t bstring1(handle_t p);
+handle_t bstring2(handle_t p, const int offset, const size_t size);
+handle_t bstring4(handle_t dst, handle_t src);
+
 handle_t bstrmalloc();
 handle_t bstrmallocsize(const size_t size);
 handle_t bstrfree(handle_t p);

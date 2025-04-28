@@ -3,6 +3,7 @@
 
 #include "buffer.h"
 #include "printf.h"
+#include "bstring.h"
 #include "elfcode.h"
 #include "options.h"
 #include "memlink.h"
@@ -99,6 +100,8 @@ unknown_t xfree(unknown_t p) {
     } else if (ismodeNNN(p, MODE_LINK)) {
       xfree(CAST(pnode_t, p)->item);
       return lfree(p);
+    } if (ismodeNNN(p, MODE_BSTRING)) {
+      return bstrfree(p);
     }
 
     free(p);

@@ -628,6 +628,7 @@ static pefunc_t zUSER32[] = {
   {"FindWindowW",                      -1,   PEFUNC_ALERT},
   {"FindWindowExA",                    -1,   PEFUNC_ALERT},
   {"FindWindowExW",                    -1,   PEFUNC_ALERT},
+  {"EnumWindows",                      -1,   PEFUNC_ALERT},
   {0, 0}
 };
 

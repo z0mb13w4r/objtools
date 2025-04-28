@@ -34,6 +34,57 @@ handle_t bstrfree(handle_t p) {
   return p;
 }
 
+handle_t bstring1(handle_t p) {
+  if (isbstring(p)) {
+    return bstring2(p, 0, CAST(pbstring_t, p)->size);
+  } else if (isbuffer(p)) {
+    return bstring2(p, 0, CAST(pbuffer_t, p)->size);
+  }
+
+  return NULL;
+}
+
+handle_t bstring2(handle_t p, const int offset, const size_t size) {
+  if (isbstring(p)) {
+    pbstring_t p0 = CAST(pbstring_t, p);
+    if ((offset + size - 1) < p0->size) {
+      pbstring_t p1 = bstrmallocsize(size);
+      if (p1) {
+        memcpy(p1->data, CAST(puchar_t, p0->data) + offset, size);
+      }
+
+      return p1;
+    }
+  } else if (isbuffer(p)) {
+    pbuffer_t p0 = CAST(pbuffer_t, p);
+    if ((offset + size - 1) < p0->size) {
+      pbstring_t p1 = bstrmallocsize(size);
+      if (p1) {
+        memcpy(p1->data, CAST(puchar_t, p0->data) + offset, size);
+      }
+
+      return p1;
+    }
+  }
+
+  return NULL;
+}
+
+handle_t bstring4(handle_t dst, handle_t src) {
+  if (isbstring(dst) && isbstring(src)) {
+    pbstring_t dst0 = CAST(pbstring_t, dst);
+    free(dst0->data);
+
+    pbstring_t src0 = CAST(pbstring_t, src);
+    dst0->data = src0->data;
+    free(src0);
+    return dst;
+  }
+
+  return NULL;
+
+}
+
 size_t bstrlen(handle_t p) {
   if (isbstring(p)) {
     pbstring_t p0 = CAST(pbstring_t, p);
