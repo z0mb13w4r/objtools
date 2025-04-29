@@ -1,20 +1,21 @@
 #include "buffer.h"
 #include "encode.h"
+#include "bstring.h"
 
 extern uchar_t base64_map[];
 
-unknown_t base64_encode(unknown_t src, size_t srcsize, unknown_t dst, size_t dstsize) {
+handle_t base64_encode(unknown_t src, size_t srcsize) {
   if (src && srcsize) {
     size_t maxsize = srcsize * 4 / 3 + 4;
-    if (0 == dstsize || maxsize <= dstsize) {
-      puchar_t psrc = CAST(puchar_t, src);
-      puchar_t pdst = CAST(puchar_t, dst);
+    puchar_t psrc = CAST(puchar_t, src);
 
-      if (NULL == pdst) pdst = xmalloc(maxsize);
+    pbstring_t dst = bstrmallocsize(maxsize);
+    if (dst) {
+      puchar_t pdst = CAST(puchar_t, dst->data);
 
       uchar_t tmp[3];
-      int i = 0, c = 0, j = 0;
-      for (i = 0; i < srcsize; ++i) {
+      int c = 0, j = 0;
+      for (int i = 0; i < srcsize; ++i) {
         tmp[j++] = psrc[i];
         if (j == 3) {
           pdst[c++] = base64_map[tmp[0] >> 2];
@@ -38,7 +39,7 @@ unknown_t base64_encode(unknown_t src, size_t srcsize, unknown_t dst, size_t dst
       }
 
       pdst[c] = '\0';   /* string padding character */
-      return pdst;
+      return dst;
     }
   }
 

@@ -1,6 +1,8 @@
 #include "dump.h"
 #include "buffer.h"
 #include "decode.h"
+#include "encode.h"
+#include "printf.h"
 #include "bstring.h"
 #include "options.h"
 
@@ -20,12 +22,13 @@ int main(int argc, char* argv[]) {
             if (ACT_BASE64D == x->action) {
               b0 = bstring4(b0, base64_decode(b0->data, b0->size));
             } else if (ACT_BASE64E == x->action) {
+              b0 = bstring4(b0, base64_encode(b0->data, b0->size));
             }
 
             x = x->actions;
           }
 
-printf("+++ %d %s\n", __LINE__, b0->data);
+          printf_text(b0->data, USE_LT | USE_EOL);
           xfree(b0);
         }
       }
