@@ -12,7 +12,7 @@
 
 typedef struct bstring_s {
   smode_t  mode;
-  size_t   size, cpos;
+  size_t   size, cpos, spos, epos;
   void    *data;
 
 } bstring_t, *pbstring_t;

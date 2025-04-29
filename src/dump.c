@@ -14,6 +14,7 @@ int dump_actions0(const pbuffer_t p, const paction_t x, const unknown_t p0, cons
     case ACT_NOT16:  not16(p0, p0size);           break;
     case ACT_ROT18:  rot18(p0, p0size);           break;
     case ACT_NOT32:  not32(p0, p0size);           break;
+    case ACT_ROT47:  rot47(p0, p0size);           break;
 
     case ACT_ADD8:   add8(p0, x->value, p0size);  break;
     case ACT_ROL8:   rol8(p0, x->value, p0size);  break;

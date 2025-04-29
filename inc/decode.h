@@ -33,6 +33,7 @@ int not32(const unknown_t p, const size_t size);
 int rot5(const unknown_t p, const size_t size);
 int rot13(const unknown_t p, const size_t size);
 int rot18(const unknown_t p, const size_t size);
+int rot47(const unknown_t p, const size_t size);
 
 int add8(const unknown_t p, const uint8_t v, const size_t size);
 int rol8(const unknown_t p, const uint8_t v, const size_t size);

@@ -17,6 +17,7 @@ static convert_t SCRIPTCOMMANDS[] = {
   {"rot5",     ACT_ROT5},
   {"rot13",    ACT_ROT13},
   {"rot18",    ACT_ROT18},
+  {"rot47",    ACT_ROT47},
   {"shl8",     ACT_SHL8},
   {"shl16",    ACT_SHL16},
   {"shl32",    ACT_SHL32},

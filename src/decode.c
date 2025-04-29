@@ -65,6 +65,19 @@ int rot18(const unknown_t p, const size_t size) {
   return -1;
 }
 
+int rot47(const unknown_t p, const size_t size) {
+  if (p) {
+    char *p0 = CAST(char*, p);
+    for (size_t i = 0; i < size; ++i) {
+      p0[i] = zap(p0[i], 33, 126, 47);
+    }
+
+    return 0;
+  }
+
+  return -1;
+}
+
 int not8(const unknown_t p, const size_t size) {
   if (p) {
     uint8_t *p0 = CAST(uint8_t*, p);
