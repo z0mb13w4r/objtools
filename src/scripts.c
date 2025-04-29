@@ -42,7 +42,7 @@ static int breakup_script(const pconvert_t p, const char *name, uint64_t *value)
   if (p && name && value) {
     strncpy(tmp, name, NELEMENTS(tmp));
 
-    const char DELIMITS[] = "(),";
+    const char DELIMITS[] = "(){},";
     char* tok = strtok(tmp, DELIMITS);
     if (tok) {
       for (pconvert_t pp = p; 0 != pp->text; ++pp) {
