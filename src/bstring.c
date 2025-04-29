@@ -19,6 +19,9 @@ handle_t bstrmallocsize(const size_t size) {
     pbstring_t p0 = CAST(pbstring_t, p);
     p0->data = xmalloc(size);
     p0->size = size;
+    p0->epos = size ? size - 1 : BSTREPOS;
+    p0->cpos = 0;
+    p0->spos = 0;
   }
 
   return p;
@@ -77,12 +80,16 @@ handle_t bstring4(handle_t dst, handle_t src) {
 
     pbstring_t src0 = CAST(pbstring_t, src);
     dst0->data = src0->data;
+    dst0->size = src0->size;
+    dst0->epos = src0->epos;
+    dst0->cpos = src0->cpos;
+    dst0->spos = src0->spos;
+
     free(src0);
     return dst;
   }
 
   return NULL;
-
 }
 
 size_t bstrlen(handle_t p) {
@@ -218,5 +225,75 @@ int bstrncasecmp(handle_t s1, handle_t s2, size_t size) {
   }
 
   return -1;
+}
+
+handle_t bstrcut(handle_t p) {
+  if (isbstring(p)) {
+    pbstring_t p0 = CAST(pbstring_t, p);
+    if (p0->spos < p0->epos && 0 != p0->spos && p0->spos < (p0->size -1)) {
+      unknown_t p1 = xmalloc(p0->epos - p0->spos + 1);
+      if (p1) {
+        p0->size = p0->epos - p0->spos + 1;
+        memcpy(p1, CAST(puchar_t, p0->data) + p0->spos, p0->size);
+        free(p0->data);
+        p0->data = p1;
+
+        p0->epos = p0->size - 1;
+        p0->cpos = 0;
+        p0->spos = 0;
+      }
+    }
+  }
+
+  return p;
+}
+
+handle_t bstrchr(handle_t p, int c) {
+  if (isbstring(p)) {
+    pbstring_t p0 = CAST(pbstring_t, p);
+    char* p1 = CAST(char*, p0->data);
+    if (p1 && BSTREPOS != p0->cpos) {
+      char* p2 = strchr(0 == p0->cpos ? p1 : p1 + p0->cpos + 1, c);
+      p0->cpos = p2 ? CAST(size_t, p2 - p1) : BSTREPOS;
+    }
+  }
+
+  return p;
+}
+
+handle_t bstrtrim(handle_t p, int c) {
+  return bstrtrimr(bstrtriml(p, c), c);
+}
+
+handle_t bstrtriml(handle_t p, int c) {
+  if (isbstring(p)) {
+    pbstring_t p0 = CAST(pbstring_t, p);
+    if (p0->data) {
+      puchar_t p1 = CAST(puchar_t, p0->data);
+      for ( ; p0->spos <= p0->epos; ++p0->spos) {
+        if (p1[p0->spos] != c) break;
+      }
+
+      return bstrcut(p);
+    }
+  }
+
+  return NULL;
+}
+
+handle_t bstrtrimr(handle_t p, int c) {
+  if (isbstring(p)) {
+    pbstring_t p0 = CAST(pbstring_t, p);
+    if (p0->data) {
+      puchar_t p1 = CAST(puchar_t, p0->data);
+      for ( ; p0->spos <= p0->epos; --p0->epos) {
+        if (p1[p0->epos] != c) break;
+      }
+
+      return bstrcut(p);
+    }
+  }
+
+  return NULL;
 }
 

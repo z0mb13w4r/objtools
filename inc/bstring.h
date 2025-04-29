@@ -33,6 +33,13 @@ size_t bstrsize(handle_t p);
 handle_t bstrclr(handle_t p);
 handle_t bstrlwr(handle_t p);
 handle_t bstrupr(handle_t p);
+handle_t bstrcut(handle_t p);
+
+handle_t bstrchr(handle_t p, int c);
+handle_t bstrtrim(handle_t p, int c);
+handle_t bstrtriml(handle_t p, int c);
+handle_t bstrtrimr(handle_t p, int c);
+
 handle_t bstrcat(handle_t dst, handle_t src);
 handle_t bstrcpy(handle_t dst, handle_t src);
 handle_t bstrncat(handle_t dst, handle_t src, size_t size);
