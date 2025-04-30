@@ -9,6 +9,7 @@
 
 #include "static/dbghdr.ci"
 #include "static/filehdr.ci"
+#include "static/lang.ci"
 #include "static/opthdr.ci"
 #include "static/sechdr.ci"
 #include "static/string_type.ci"
@@ -367,7 +368,12 @@ static int dump_version0(const pbuffer_t p, const uint16_t wLength, const uint16
   n += printf_nice(wType, USE_FHEX16);
   n += printf_pick(zSTRINGTYPE, wType, USE_SPACE | USE_EOL);
   n += printf_text("szKey", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE + 1));
-  n += printf_sore(szKey, szKeySize, USE_STR16 | USE_EOL);
+  if (0 == strcmp(name, "StringTable")) {
+    n += printf_sore(szKey, szKeySize, USE_STR16);
+    n += printf_text(get_LANG(szKey), USE_LT | USE_SPACE | USE_EOL);
+  } else {
+    n += printf_sore(szKey, szKeySize, USE_STR16 | USE_EOL);
+  }
   n += printf_eol();
 
   return n;
@@ -799,7 +805,7 @@ static int dump_resource1(const pbuffer_t p, const uint32_t NameIsString, const 
   }
   n += printf_text("OffsetToData", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(OffsetToData, USE_FHEX32 | USE_EOL);
-  n += printf_eol();
+//  n += printf_eol();
 
   return n;
 }

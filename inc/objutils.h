@@ -29,6 +29,9 @@ size_t strlenpick(const pconvert_t p);
 
 size_t fsize(FILE *f);
 
+uint64_t hex8(int x);
+uint64_t hex16(int x0, int x1);
+
 int strlen8(unknown_t s, const size_t maxsize);
 int strlen16(unknown_t s, const size_t maxsize);
 int strsize8(unknown_t s, const size_t maxsize);

@@ -115,6 +115,17 @@ size_t fsize(FILE *f) {
   return siz;
 }
 
+uint64_t hex8(int x) {
+  if ('a' <= x && x <= 'f')      return x - 'a' + 10;
+  else if ('A' <= x && x <= 'F') return x - 'A' + 10;
+  else if ('0' <= x && x <= '9') return x - '0';
+  return 0;
+}
+
+uint64_t hex16(int x0, int x1) {
+  return hex8(x0) << 8 | hex8(x1);
+}
+
 int strlen8(unknown_t s, const size_t maxsize) {
   if (s) {
     puchar_t s0 = CAST(puchar_t, s);
