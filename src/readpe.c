@@ -239,7 +239,7 @@ static int dump_ntheader64(const pbuffer_t p, const poptions_t o) {
 static int dump_sectionheaders0(const pbuffer_t p, const uint16_t NumberOfSections) {
   int n = 0;
   for (uint16_t i = 0; i < NumberOfSections; ++i) {
-    PIMAGE_SECTION_HEADER p0 = get_sectionhdrbyindex(p, i);
+    PIMAGE_SECTION_HEADER p0 = peget_sectionhdrbyindex(p, i);
     if (p0) {
       n += printf_text("IMAGE SECTION HEADER", USE_LT | USE_COLON | USE_EOL);
       n += printf_text("Name", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
@@ -543,9 +543,9 @@ static int dump_versionZ(const pbuffer_t p, PIMAGE_RESOURCE_DIRECTORY p0) {
     PIMAGE_RESOURCE_DIRECTORY_ENTRY p1 = CAST(PIMAGE_RESOURCE_DIRECTORY_ENTRY, p0 + 1);
     for (int i = 0; i < (p0->NumberOfNamedEntries + p0->NumberOfIdEntries); ++i, ++p1) {
       if (p1->DataIsDirectory) {
-        n += dump_versionZ(p, get_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_RESOURCE) + p1->OffsetToDirectory);
+        n += dump_versionZ(p, peget_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_RESOURCE) + p1->OffsetToDirectory);
       } else {
-        n += dump_versionY(p, get_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_RESOURCE) + p1->OffsetToDirectory);
+        n += dump_versionY(p, peget_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_RESOURCE) + p1->OffsetToDirectory);
       }
     }
   }
@@ -556,12 +556,12 @@ static int dump_versionZ(const pbuffer_t p, PIMAGE_RESOURCE_DIRECTORY p0) {
 static int dump_versionNN(const pbuffer_t p, const poptions_t o) {
   int n = 0;
 
-  PIMAGE_RESOURCE_DIRECTORY p0 = get_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_RESOURCE);
+  PIMAGE_RESOURCE_DIRECTORY p0 = peget_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_RESOURCE);
   if (p0) {
     PIMAGE_RESOURCE_DIRECTORY_ENTRY p1 = CAST(PIMAGE_RESOURCE_DIRECTORY_ENTRY, p0 + 1);
     for (int i = 0; i < (p0->NumberOfNamedEntries + p0->NumberOfIdEntries); ++i, ++p1) {
       if (p1->DataIsDirectory && !p1->NameIsString && RT_VERSION == p1->Name) {
-        n += dump_versionZ(p, get_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_RESOURCE) + p1->OffsetToDirectory);
+        n += dump_versionZ(p, peget_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_RESOURCE) + p1->OffsetToDirectory);
       }
     }
   }
@@ -615,12 +615,12 @@ static int dump_iat2(const pbuffer_t p, const uint64_t AddressOfData) {
 }
 
 static int dump_iat32(const pbuffer_t p, const poptions_t o) {
-  PIMAGE_DATA_DIRECTORY p0 = get_datadirbyentry(p, IMAGE_DIRECTORY_ENTRY_IMPORT);
-  PIMAGE_SECTION_HEADER s0 = get_sectionhdrbyentry(p, IMAGE_DIRECTORY_ENTRY_IMPORT);
+  PIMAGE_DATA_DIRECTORY p0 = peget_datadirbyentry(p, IMAGE_DIRECTORY_ENTRY_IMPORT);
+  PIMAGE_SECTION_HEADER s0 = peget_sectionhdrbyentry(p, IMAGE_DIRECTORY_ENTRY_IMPORT);
 
   int n = 0;
   if (p0 && s0 && 0 != p0->VirtualAddress && 0 != p0->Size) {
-    PIMAGE_IMPORT_DESCRIPTOR p1 = get_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_IMPORT);
+    PIMAGE_IMPORT_DESCRIPTOR p1 = peget_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_IMPORT);
 
     while (p1 && p1->FirstThunk) {
       char* Name = getp(p, peconvert2va(s0, p1->Name), 1);
@@ -659,12 +659,12 @@ static int dump_iat32(const pbuffer_t p, const poptions_t o) {
 }
 
 static int dump_iat64(const pbuffer_t p, const poptions_t o) {
-  PIMAGE_DATA_DIRECTORY p0 = get_datadirbyentry(p, IMAGE_DIRECTORY_ENTRY_IMPORT);
-  PIMAGE_SECTION_HEADER s0 = get_sectionhdrbyentry(p, IMAGE_DIRECTORY_ENTRY_IMPORT);
+  PIMAGE_DATA_DIRECTORY p0 = peget_datadirbyentry(p, IMAGE_DIRECTORY_ENTRY_IMPORT);
+  PIMAGE_SECTION_HEADER s0 = peget_sectionhdrbyentry(p, IMAGE_DIRECTORY_ENTRY_IMPORT);
 
   int n = 0;
   if (p0 && s0 && 0 != p0->VirtualAddress && 0 != p0->Size) {
-    PIMAGE_IMPORT_DESCRIPTOR p1 = get_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_IMPORT);
+    PIMAGE_IMPORT_DESCRIPTOR p1 = peget_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_IMPORT);
 
     while (p1 && p1->FirstThunk) {
       char* Name = getp(p, peconvert2va(s0, p1->Name), 1);
@@ -673,7 +673,7 @@ static int dump_iat64(const pbuffer_t p, const poptions_t o) {
       n += dump_iat1(p, p1->Characteristics, p1->OriginalFirstThunk, p1->TimeDateStamp, p1->ForwarderChain,
                 p1->Name, Name, p1->FirstThunk);
 
-      PIMAGE_THUNK_DATA64 p2 = get_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_IMPORT, p1->OriginalFirstThunk, sizeof(PIMAGE_THUNK_DATA64));
+      PIMAGE_THUNK_DATA64 p2 = peget_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_IMPORT, p1->OriginalFirstThunk, sizeof(PIMAGE_THUNK_DATA64));
 
       while (p2 && p2->AddressOfData) {
         uint64_t Ordinal = (p2->AddressOfData & ~IMAGE_THUNK_DATA_IS_IMPORT_ORDINAL) & 0xffff;
@@ -736,18 +736,18 @@ static int dump_eat0(const pbuffer_t p, const uint32_t Characteristics, const ui
 static int dump_eatNN(const pbuffer_t p, const poptions_t o) {
   int n = 0;
 
-  PIMAGE_SECTION_HEADER s0 = get_sectionhdrbyentry(p, IMAGE_DIRECTORY_ENTRY_EXPORT);
-  PIMAGE_EXPORT_DIRECTORY p0 = get_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_EXPORT);
-  PIMAGE_DATA_DIRECTORY p1 = get_datadirbyentry(p, IMAGE_DIRECTORY_ENTRY_EXPORT);
+  PIMAGE_SECTION_HEADER s0 = peget_sectionhdrbyentry(p, IMAGE_DIRECTORY_ENTRY_EXPORT);
+  PIMAGE_EXPORT_DIRECTORY p0 = peget_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_EXPORT);
+  PIMAGE_DATA_DIRECTORY p1 = peget_datadirbyentry(p, IMAGE_DIRECTORY_ENTRY_EXPORT);
 
   if (p0 && p1 && s0 && p0->Name && 0 != p1->VirtualAddress && 0 != p1->Size) {
     n += dump_eat0(p, p0->Characteristics, p0->TimeDateStamp, p0->MajorVersion, p0->MinorVersion,
               p0->Name, getp(p, peconvert2va(s0, p0->Name), 1), p0->Base, p0->NumberOfFunctions, p0->NumberOfNames,
               p0->AddressOfFunctions, p0->AddressOfNames, p0->AddressOfNameOrdinals);
 
-    PDWORD addrOfNames = get_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_EXPORT, p0->AddressOfNames, sizeof(DWORD) * p0->NumberOfNames);
-    PDWORD addrOfFunctions = get_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_EXPORT, p0->AddressOfFunctions, sizeof(DWORD) * p0->NumberOfFunctions);
-    PWORD  addrOfNameOrdinals = get_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_EXPORT, p0->AddressOfNameOrdinals, sizeof(WORD) * p0->NumberOfFunctions);
+    PDWORD addrOfNames = peget_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_EXPORT, p0->AddressOfNames, sizeof(DWORD) * p0->NumberOfNames);
+    PDWORD addrOfFunctions = peget_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_EXPORT, p0->AddressOfFunctions, sizeof(DWORD) * p0->NumberOfFunctions);
+    PWORD  addrOfNameOrdinals = peget_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_EXPORT, p0->AddressOfNameOrdinals, sizeof(WORD) * p0->NumberOfFunctions);
 
     n += printf_text("Ord", USE_RT | SET_PAD(6));
     n += printf_text("RVA", USE_LT | USE_SPACE | SET_PAD(12));
@@ -845,10 +845,10 @@ static int dump_resourceZ(const pbuffer_t p, PIMAGE_RESOURCE_DIRECTORY p0, const
     for (int i = 0; i < (p0->NumberOfNamedEntries + p0->NumberOfIdEntries); ++i, ++p1) {
       n += dump_resource1(p, p1->NameIsString, p1->Name, p1->OffsetToData, z);
       if (p1->DataIsDirectory) {
-        n += dump_resourceZ(p, get_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_RESOURCE) + p1->OffsetToDirectory,
+        n += dump_resourceZ(p, peget_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_RESOURCE) + p1->OffsetToDirectory,
 	                    !Name && !p1->NameIsString ? p1->Name : Name, z + 1);
       } else {
-        n += dump_resourceY(p, get_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_RESOURCE) + p1->OffsetToDirectory, Name);
+        n += dump_resourceY(p, peget_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_RESOURCE) + p1->OffsetToDirectory, Name);
       }
     }
   }
@@ -859,7 +859,7 @@ static int dump_resourceZ(const pbuffer_t p, PIMAGE_RESOURCE_DIRECTORY p0, const
 static int dump_resourceNN(const pbuffer_t p, const poptions_t o) {
   int n = 0;
 
-  n += dump_resourceZ(p, get_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_RESOURCE), 0, 1);
+  n += dump_resourceZ(p, peget_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_RESOURCE), 0, 1);
 
   return n;
 }
@@ -1042,7 +1042,7 @@ static int dump_config4(const pbuffer_t p, const uint32_t Reserved3, const uint6
 static int dump_config32(const pbuffer_t p, const poptions_t o) {
   int n = 0;
 
-  PIMAGE_LOAD_CONFIG_DIRECTORY32 p0 = get_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG);
+  PIMAGE_LOAD_CONFIG_DIRECTORY32 p0 = peget_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG);
   if (p0 && p0->Size >= 72) {
     n += dump_config0(p, p0->Size, p0->TimeDateStamp, p0->MajorVersion, p0->MinorVersion, p0->GlobalFlagsClear, p0->GlobalFlagsSet,
                  p0->CriticalSectionDefaultTimeout, p0->DeCommitFreeBlockThreshold, p0-> DeCommitTotalFreeThreshold, p0->LockPrefixTable,
@@ -1078,7 +1078,7 @@ static int dump_config32(const pbuffer_t p, const poptions_t o) {
 static int dump_config64(const pbuffer_t p, const poptions_t o) {
   int n = 0;
 
-  PIMAGE_LOAD_CONFIG_DIRECTORY64 p0 = get_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG);
+  PIMAGE_LOAD_CONFIG_DIRECTORY64 p0 = peget_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG);
   if (p0 && p0->Size >= 112) {
     n += dump_config0(p, p0->Size, p0->TimeDateStamp, p0->MajorVersion, p0->MinorVersion, p0->GlobalFlagsClear, p0->GlobalFlagsSet,
                  p0->CriticalSectionDefaultTimeout, p0->DeCommitFreeBlockThreshold, p0-> DeCommitTotalFreeThreshold, p0->LockPrefixTable,
@@ -1111,7 +1111,7 @@ static int dump_config64(const pbuffer_t p, const poptions_t o) {
 static int dump_debugNN(const pbuffer_t p, const poptions_t o) {
   int n = 0;
 
-  PIMAGE_DEBUG_DIRECTORY p0 = get_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_DEBUG);
+  PIMAGE_DEBUG_DIRECTORY p0 = peget_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_DEBUG);
   if (p0) {
     n += printf_text("IMAGE_DEBUG_DIRECTORY", USE_LT | USE_COLON | USE_EOL);
 
@@ -1136,7 +1136,7 @@ static int dump_debugNN(const pbuffer_t p, const poptions_t o) {
 // TBD
     DWORD p1 = get_dwordbyRVA(p, IMAGE_DIRECTORY_ENTRY_DEBUG, p0->AddressOfRawData);
     if (p1 == CV_SIGNATURE_RSDS) {
-      PCV_INFO_PDB70 p2 = get_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_DEBUG, p0->AddressOfRawData, sizeof(CV_INFO_PDB70));
+      PCV_INFO_PDB70 p2 = peget_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_DEBUG, p0->AddressOfRawData, sizeof(CV_INFO_PDB70));
       if (p2) {
         n += printf_text("CV INFO PDB70", USE_LT | USE_COLON | USE_EOL);
         n += printf_text("CvSignature", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
@@ -1150,7 +1150,7 @@ static int dump_debugNN(const pbuffer_t p, const poptions_t o) {
         n += printf_eol();
       }
     } else if (p1 == CV_SIGNATURE_NB10) {
-      PCV_INFO_PDB20 p2 = get_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_DEBUG, p0->AddressOfRawData, sizeof(CV_INFO_PDB20));
+      PCV_INFO_PDB20 p2 = peget_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_DEBUG, p0->AddressOfRawData, sizeof(CV_INFO_PDB20));
       if (p2) {
         n += printf_text("CV INFO PDB20", USE_LT | USE_COLON | USE_EOL);
         n += printf_text("CvSignature", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
@@ -1174,8 +1174,8 @@ static int dump_debugNN(const pbuffer_t p, const poptions_t o) {
 static int dump_relocNN(const pbuffer_t p, const poptions_t o) {
   int n = 0;
 
-  PIMAGE_SECTION_HEADER p0 = get_sectionhdrbyname(p, SECTION_RELOC);
-  PIMAGE_BASE_RELOCATION p1 = get_chunkbyname(p, SECTION_RELOC);
+  PIMAGE_SECTION_HEADER p0 = peget_sectionhdrbyname(p, SECTION_RELOC);
+  PIMAGE_BASE_RELOCATION p1 = peget_chunkbyname(p, SECTION_RELOC);
   if (p0 && p1) {
     for (DWORD x = 0; x < p0->SizeOfRawData; ) {
       if (0 != p1->SizeOfBlock) {
@@ -1197,9 +1197,9 @@ static int dump_relocNN(const pbuffer_t p, const poptions_t o) {
 static int dump_runtimeNN(const pbuffer_t p, const poptions_t o) {
   int n = 0;
 
-  PIMAGE_DATA_DIRECTORY p0 = get_datadirbyentry(p, IMAGE_DIRECTORY_ENTRY_EXCEPTION);
-  PIMAGE_SECTION_HEADER s0 = get_sectionhdrbyentry(p, IMAGE_DIRECTORY_ENTRY_EXCEPTION);
-  PIMAGE_RUNTIME_FUNCTION_ENTRY p1 = get_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_EXCEPTION);
+  PIMAGE_DATA_DIRECTORY p0 = peget_datadirbyentry(p, IMAGE_DIRECTORY_ENTRY_EXCEPTION);
+  PIMAGE_SECTION_HEADER s0 = peget_sectionhdrbyentry(p, IMAGE_DIRECTORY_ENTRY_EXCEPTION);
+  PIMAGE_RUNTIME_FUNCTION_ENTRY p1 = peget_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_EXCEPTION);
 
   if (p0 && p1 && s0) {
     for (DWORD x = 0; x < s0->SizeOfRawData; x += sizeof(IMAGE_RUNTIME_FUNCTION_ENTRY), ++p1) {
@@ -1213,7 +1213,7 @@ static int dump_runtimeNN(const pbuffer_t p, const poptions_t o) {
         n += printf_nice(p1->UnwindData, USE_FHEX32 | USE_EOL);
         n += printf_eol();
 
-        PUNWIND_INFO p2 = get_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_UNKNOWN, p1->UnwindData, sizeof(UNWIND_INFO));
+        PUNWIND_INFO p2 = peget_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_UNKNOWN, p1->UnwindData, sizeof(UNWIND_INFO));
         if (p2) {
           n += printf_text("UNWIND INFO", USE_LT | USE_COLON | USE_EOL);
           n += printf_text("Version", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
@@ -1291,7 +1291,7 @@ static int dump_actionsNN(const pbuffer_t p, const poptions_t o) {
   paction_t x = o->actions;
   while (x) {
     if (x->secname[0]) {
-      PIMAGE_SECTION_HEADER p0 = get_sectionhdrbyname(p, x->secname);
+      PIMAGE_SECTION_HEADER p0 = peget_sectionhdrbyname(p, x->secname);
       if (p0) {
         MALLOCSWRAP(opwrap_t, s, MODE_OCSHDRPE, p0);
         if (!isnamedone(secdone, NELEMENTS(secdone), x->secname)) {

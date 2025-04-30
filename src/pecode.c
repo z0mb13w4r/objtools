@@ -86,7 +86,7 @@ PIMAGE_NT_HEADERS64 peget_nt64hdr(const pbuffer_t p) {
   return NULL;
 }
 
-PIMAGE_DATA_DIRECTORY get_datadirbyentry(const pbuffer_t p, const int index) {
+PIMAGE_DATA_DIRECTORY peget_datadirbyentry(const pbuffer_t p, const int index) {
   if (index >= IMAGE_DIRECTORY_ENTRY_EXPORT && index <= IMAGE_DIRECTORY_ENTRY_RESERVED) {
     if (isPE32(p)) {
       PIMAGE_NT_HEADERS32 p0 = peget_nt32hdr(p);
@@ -100,7 +100,7 @@ PIMAGE_DATA_DIRECTORY get_datadirbyentry(const pbuffer_t p, const int index) {
   return NULL;
 }
 
-PIMAGE_SECTION_HEADER get_sectionhdrbyindex(const pbuffer_t p, const int index) {
+PIMAGE_SECTION_HEADER peget_sectionhdrbyindex(const pbuffer_t p, const int index) {
   if (isPE32(p)) {
     PIMAGE_DOS_HEADER p0 = peget_doshdr(p);
     PIMAGE_NT_HEADERS32 p1 = peget_nt32hdr(p);
@@ -122,14 +122,14 @@ PIMAGE_SECTION_HEADER get_sectionhdrbyindex(const pbuffer_t p, const int index) 
   return NULL;
 }
 
-PIMAGE_SECTION_HEADER get_sectionhdrbyentry(const pbuffer_t p, const int index) {
+PIMAGE_SECTION_HEADER peget_sectionhdrbyentry(const pbuffer_t p, const int index) {
   if (index >= IMAGE_DIRECTORY_ENTRY_EXPORT && index <= IMAGE_DIRECTORY_ENTRY_RESERVED) {
     if (isPE32(p)) {
       PIMAGE_NT_HEADERS32 p0 = peget_nt32hdr(p);
-      PIMAGE_DATA_DIRECTORY p1 = get_datadirbyentry(p, index);
+      PIMAGE_DATA_DIRECTORY p1 = peget_datadirbyentry(p, index);
       if (p0 && p1) {
         for (int i = 0; i < p0->FileHeader.NumberOfSections; ++i) {
-          PIMAGE_SECTION_HEADER p2 = get_sectionhdrbyindex(p, i);
+          PIMAGE_SECTION_HEADER p2 = peget_sectionhdrbyindex(p, i);
           if (p2 && p2->VirtualAddress <= p1->VirtualAddress && p2->VirtualAddress + p2->SizeOfRawData > p1->VirtualAddress) {
             return p2;
           }
@@ -137,10 +137,10 @@ PIMAGE_SECTION_HEADER get_sectionhdrbyentry(const pbuffer_t p, const int index) 
       }
     } else if (isPE64(p)) {
       PIMAGE_NT_HEADERS64 p0 = peget_nt64hdr(p);
-      PIMAGE_DATA_DIRECTORY p1 = get_datadirbyentry(p, index);
+      PIMAGE_DATA_DIRECTORY p1 = peget_datadirbyentry(p, index);
       if (p0 && p1) {
         for (int i = 0; i < p0->FileHeader.NumberOfSections; ++i) {
-          PIMAGE_SECTION_HEADER p2 = get_sectionhdrbyindex(p, i);
+          PIMAGE_SECTION_HEADER p2 = peget_sectionhdrbyindex(p, i);
           if (p2 && p2->VirtualAddress <= p1->VirtualAddress && p2->VirtualAddress + p2->SizeOfRawData > p1->VirtualAddress) {
             return p2;
           }
@@ -152,12 +152,12 @@ PIMAGE_SECTION_HEADER get_sectionhdrbyentry(const pbuffer_t p, const int index) 
   return NULL;
 }
 
-PIMAGE_SECTION_HEADER get_sectionhdrbyRVA(const pbuffer_t p, const uint64_t vaddr) {
+PIMAGE_SECTION_HEADER peget_sectionhdrbyRVA(const pbuffer_t p, const uint64_t vaddr) {
   if (isPE32(p)) {
     PIMAGE_NT_HEADERS32 p0 = peget_nt32hdr(p);
     if (p0) {
       for (int i = 0; i < p0->FileHeader.NumberOfSections; ++i) {
-        PIMAGE_SECTION_HEADER p2 = get_sectionhdrbyindex(p, i);
+        PIMAGE_SECTION_HEADER p2 = peget_sectionhdrbyindex(p, i);
         if (p2 && p2->VirtualAddress <= vaddr && p2->VirtualAddress + p2->SizeOfRawData > vaddr) {
           return p2;
         }
@@ -167,7 +167,7 @@ PIMAGE_SECTION_HEADER get_sectionhdrbyRVA(const pbuffer_t p, const uint64_t vadd
     PIMAGE_NT_HEADERS64 p0 = peget_nt64hdr(p);
     if (p0) {
       for (int i = 0; i < p0->FileHeader.NumberOfSections; ++i) {
-        PIMAGE_SECTION_HEADER p2 = get_sectionhdrbyindex(p, i);
+        PIMAGE_SECTION_HEADER p2 = peget_sectionhdrbyindex(p, i);
         if (p2 && p2->VirtualAddress <= vaddr && p2->VirtualAddress + p2->SizeOfRawData > vaddr) {
           return p2;
         }
@@ -178,12 +178,12 @@ PIMAGE_SECTION_HEADER get_sectionhdrbyRVA(const pbuffer_t p, const uint64_t vadd
   return NULL;
 }
 
-PIMAGE_SECTION_HEADER get_sectionhdrbyname(const pbuffer_t p, const char* name) {
+PIMAGE_SECTION_HEADER peget_sectionhdrbyname(const pbuffer_t p, const char* name) {
   if (isPE32(p)) {
     PIMAGE_NT_HEADERS32 p0 = peget_nt32hdr(p);
     if (p0) {
       for (int i = 0; i < p0->FileHeader.NumberOfSections; ++i) {
-        PIMAGE_SECTION_HEADER p1 = get_sectionhdrbyindex(p, i);
+        PIMAGE_SECTION_HEADER p1 = peget_sectionhdrbyindex(p, i);
         if (p1 && 0 == strncmp(CAST(const char*, p1->Name), name, sizeof(p1->Name))) return p1;
       }
     }
@@ -191,7 +191,7 @@ PIMAGE_SECTION_HEADER get_sectionhdrbyname(const pbuffer_t p, const char* name) 
     PIMAGE_NT_HEADERS64 p0 = peget_nt64hdr(p);
     if (p0) {
       for (int i = 0; i < p0->FileHeader.NumberOfSections; ++i) {
-        PIMAGE_SECTION_HEADER p1 = get_sectionhdrbyindex(p, i);
+        PIMAGE_SECTION_HEADER p1 = peget_sectionhdrbyindex(p, i);
         if (p1 && 0 == strncmp(CAST(const char*, p1->Name), name, sizeof(p1->Name))) return p1;
       }
     }
@@ -200,50 +200,50 @@ PIMAGE_SECTION_HEADER get_sectionhdrbyname(const pbuffer_t p, const char* name) 
   return NULL;
 }
 
-unknown_t get_chunkbyRVA(const pbuffer_t p, const int index, const uint64_t vaddr, const size_t size) {
+unknown_t peget_chunkbyRVA(const pbuffer_t p, const int index, const uint64_t vaddr, const size_t size) {
   if (IMAGE_DIRECTORY_ENTRY_UNKNOWN == index) {
-    PIMAGE_SECTION_HEADER p0 = get_sectionhdrbyRVA(p, vaddr);
+    PIMAGE_SECTION_HEADER p0 = peget_sectionhdrbyRVA(p, vaddr);
     return p0 ? getp(p, peconvert2va(p0, vaddr), size) : NULL;
   } else {
-    PIMAGE_SECTION_HEADER p0 = get_sectionhdrbyentry(p, index);
+    PIMAGE_SECTION_HEADER p0 = peget_sectionhdrbyentry(p, index);
     return p0 ? getp(p, peconvert2va(p0, vaddr), size) : NULL;
   }
 
   return NULL;
 }
 
-unknown_t get_chunkbyentry(const pbuffer_t p, const int index) {
-  PIMAGE_DATA_DIRECTORY p0 = get_datadirbyentry(p, index);
+unknown_t peget_chunkbyentry(const pbuffer_t p, const int index) {
+  PIMAGE_DATA_DIRECTORY p0 = peget_datadirbyentry(p, index);
   if (p0) {
     if (IMAGE_DIRECTORY_ENTRY_IMPORT == index) {
-      return get_chunkbyRVA(p, index, p0->VirtualAddress, sizeof(PIMAGE_IMPORT_DESCRIPTOR));
+      return peget_chunkbyRVA(p, index, p0->VirtualAddress, sizeof(IMAGE_IMPORT_DESCRIPTOR));
     } else if (IMAGE_DIRECTORY_ENTRY_EXPORT == index) {
-      return get_chunkbyRVA(p, index, p0->VirtualAddress, sizeof(IMAGE_EXPORT_DIRECTORY));
+      return peget_chunkbyRVA(p, index, p0->VirtualAddress, sizeof(IMAGE_EXPORT_DIRECTORY));
     } else if (IMAGE_DIRECTORY_ENTRY_RESOURCE == index) {
-      return get_chunkbyRVA(p, index, p0->VirtualAddress, sizeof(IMAGE_RESOURCE_DIRECTORY));
+      return peget_chunkbyRVA(p, index, p0->VirtualAddress, sizeof(IMAGE_RESOURCE_DIRECTORY));
     } else if (IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG == index) {
       if (isPE32(p)) {
-        return get_chunkbyRVA(p, index, p0->VirtualAddress, sizeof(IMAGE_LOAD_CONFIG_DIRECTORY32));
+        return peget_chunkbyRVA(p, index, p0->VirtualAddress, sizeof(IMAGE_LOAD_CONFIG_DIRECTORY32));
       } else if (isPE64(p)) {
-        return get_chunkbyRVA(p, index, p0->VirtualAddress, sizeof(IMAGE_LOAD_CONFIG_DIRECTORY64));
+        return peget_chunkbyRVA(p, index, p0->VirtualAddress, sizeof(IMAGE_LOAD_CONFIG_DIRECTORY64));
       }
     } else if (IMAGE_DIRECTORY_ENTRY_DEBUG == index) {
-      return get_chunkbyRVA(p, index, p0->VirtualAddress, sizeof(IMAGE_DEBUG_DIRECTORY));
+      return peget_chunkbyRVA(p, index, p0->VirtualAddress, sizeof(IMAGE_DEBUG_DIRECTORY));
     } else if (IMAGE_DIRECTORY_ENTRY_EXCEPTION == index) {
-      return get_chunkbyRVA(p, index, p0->VirtualAddress, sizeof(IMAGE_RUNTIME_FUNCTION_ENTRY));
+      return peget_chunkbyRVA(p, index, p0->VirtualAddress, sizeof(IMAGE_RUNTIME_FUNCTION_ENTRY));
     }
   }
 
   return NULL;
 }
 
-unknown_t get_chunkbyname(const pbuffer_t p, const char* name) {
-  PIMAGE_SECTION_HEADER p0 = get_sectionhdrbyname(p, name);
+unknown_t peget_chunkbyname(const pbuffer_t p, const char* name) {
+  PIMAGE_SECTION_HEADER p0 = peget_sectionhdrbyname(p, name);
   return p0 ? getp(p, p0->PointerToRawData, p0->SizeOfRawData) : NULL;
 }
 
 DWORD get_dwordbyRVA(const pbuffer_t p, const int index, const uint64_t vaddr) {
-  PDWORD p0 = get_chunkbyRVA(p, index, vaddr, sizeof(DWORD));
+  PDWORD p0 = peget_chunkbyRVA(p, index, vaddr, sizeof(DWORD));
   return p0 ? *p0 : 0;
 }
 
@@ -253,7 +253,7 @@ bool_t isvchunkkey(handle_t p, const char* name) {
 }
 
 handle_t fget_chunkbyRVA(const pbuffer_t p, const int index, const uint64_t vaddr, const size_t size) {
-  return fmalloc(get_chunkbyRVA(p, index, vaddr, size), size, 12345);
+  return fmalloc(peget_chunkbyRVA(p, index, vaddr, size), size, 12345);
 }
 
 size_t fget_vchunkkeysize(handle_t p) {

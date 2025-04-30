@@ -519,15 +519,15 @@ PIMAGE_DOS_HEADER peget_doshdr(const pbuffer_t p);
 PIMAGE_NT_HEADERS32 peget_nt32hdr(const pbuffer_t p);
 PIMAGE_NT_HEADERS64 peget_nt64hdr(const pbuffer_t p);
 
-PIMAGE_DATA_DIRECTORY get_datadirbyentry(const pbuffer_t p, const int index);
-PIMAGE_SECTION_HEADER get_sectionhdrbyname(const pbuffer_t p, const char* name);
-PIMAGE_SECTION_HEADER get_sectionhdrbyindex(const pbuffer_t p, const int index);
-PIMAGE_SECTION_HEADER get_sectionhdrbyentry(const pbuffer_t p, const int index);
-PIMAGE_SECTION_HEADER get_sectionhdrbyRVA(const pbuffer_t p, const uint64_t vaddr);
+PIMAGE_DATA_DIRECTORY peget_datadirbyentry(const pbuffer_t p, const int index);
+PIMAGE_SECTION_HEADER peget_sectionhdrbyname(const pbuffer_t p, const char* name);
+PIMAGE_SECTION_HEADER peget_sectionhdrbyindex(const pbuffer_t p, const int index);
+PIMAGE_SECTION_HEADER peget_sectionhdrbyentry(const pbuffer_t p, const int index);
+PIMAGE_SECTION_HEADER peget_sectionhdrbyRVA(const pbuffer_t p, const uint64_t vaddr);
 
-unknown_t get_chunkbyRVA(const pbuffer_t p, const int index, const uint64_t vaddr, const size_t size);
-unknown_t get_chunkbyentry(const pbuffer_t p, const int index);
-unknown_t get_chunkbyname(const pbuffer_t p, const char* name);
+unknown_t peget_chunkbyRVA(const pbuffer_t p, const int index, const uint64_t vaddr, const size_t size);
+unknown_t peget_chunkbyentry(const pbuffer_t p, const int index);
+unknown_t peget_chunkbyname(const pbuffer_t p, const char* name);
 
 DWORD get_dwordbyRVA(const pbuffer_t p, const int index, const uint64_t vaddr);
 
