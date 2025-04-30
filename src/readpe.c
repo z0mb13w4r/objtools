@@ -1285,6 +1285,10 @@ static int dump_runtimeNN(const pbuffer_t p, const poptions_t o) {
 }
 
 static int dump_actionsNN(const pbuffer_t p, const poptions_t o) {
+  MALLOCA(const char*, secdone, isPE32(p) ?
+    CAST(PIMAGE_NT_HEADERS32, get_nt32hdr(p))->FileHeader.NumberOfSections :
+    CAST(PIMAGE_NT_HEADERS64, get_nt64hdr(p))->FileHeader.NumberOfSections);
+
   int n = 0;
   paction_t x = o->actions;
   while (x) {
@@ -1292,7 +1296,9 @@ static int dump_actionsNN(const pbuffer_t p, const poptions_t o) {
       PIMAGE_SECTION_HEADER p0 = get_sectionhdrbyname(p, x->secname);
       if (p0) {
         MALLOCSWRAP(opwrap_t, s, MODE_OCSHDRPE, p0);
-        n += dump_actions1(p, o, peconvert2va(p0, p0->VirtualAddress), p0->SizeOfRawData);
+        if (!isnamedone(secdone, NELEMENTS(secdone), x->secname)) {
+          n += dump_actions1(p, o, peconvert2va(p0, p0->VirtualAddress), p0->SizeOfRawData);
+        }
         n += dump_actions2(p, o, ps, x->secname, x->action, peconvert2va(p0, p0->VirtualAddress), p0->SizeOfRawData, p0->VirtualAddress);
       } else {
         printf_w("section '%s' was not dumped because it does not exist!", x->secname);

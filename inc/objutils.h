@@ -13,6 +13,7 @@ typedef struct convert_s {
 
 bool_t isbits(const imode_t x);
 bool_t isused(ppick_t p, const pick_t x);
+bool_t isnamedone(const char* names[], const size_t maxnames, const char* check);
 
 uint64_t ulog2(uint64_t  x);
 uint64_t atoimode(const char* src);

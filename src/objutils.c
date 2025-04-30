@@ -18,6 +18,17 @@ bool_t isused(ppick_t p, const pick_t x) {
   return FALSE;
 }
 
+bool_t isnamedone(const char* names[], const size_t maxnames, const char* check) {
+  size_t i = 0;
+  for (i = 0; i < maxnames && names[i]; ++i) {
+    if (0 == strcmp(names[i], check)) return TRUE;
+  }
+
+  if (i < maxnames) names[i] = check;
+
+  return FALSE;
+}
+
 uint64_t ulog2(uint64_t  x) {
   uint64_t y = 0;
 
