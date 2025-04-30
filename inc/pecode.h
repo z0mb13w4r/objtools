@@ -513,9 +513,11 @@ bool_t isPE(const pbuffer_t p);
 bool_t isPE32(const pbuffer_t p);
 bool_t isPE64(const pbuffer_t p);
 
-PIMAGE_DOS_HEADER get_doshdr(const pbuffer_t p);
-PIMAGE_NT_HEADERS32 get_nt32hdr(const pbuffer_t p);
-PIMAGE_NT_HEADERS64 get_nt64hdr(const pbuffer_t p);
+WORD peget_sectioncount(const pbuffer_t p);
+
+PIMAGE_DOS_HEADER peget_doshdr(const pbuffer_t p);
+PIMAGE_NT_HEADERS32 peget_nt32hdr(const pbuffer_t p);
+PIMAGE_NT_HEADERS64 peget_nt64hdr(const pbuffer_t p);
 
 PIMAGE_DATA_DIRECTORY get_datadirbyentry(const pbuffer_t p, const int index);
 PIMAGE_SECTION_HEADER get_sectionhdrbyname(const pbuffer_t p, const char* name);

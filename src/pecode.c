@@ -23,7 +23,7 @@ static machine_t zIS64BIT[] = {
 
 static bool_t checkbytes(const pbuffer_t p, const pmachine_t m) {
   if (m && isPE(p)) {
-    PIMAGE_DOS_HEADER p0 = get_doshdr(p);
+    PIMAGE_DOS_HEADER p0 = peget_doshdr(p);
     if (p0) {
       const uchar_t x0 = getb(p, p0->e_lfanew + 4);
       const uchar_t x1 = getb(p, p0->e_lfanew + 5);
@@ -39,7 +39,7 @@ static bool_t checkbytes(const pbuffer_t p, const pmachine_t m) {
 bool_t isPE(const pbuffer_t p) {
   if (issafe(p)) {
     if ('M' == getb(p, 0) && 'Z' == getb(p, 1)) {
-      PIMAGE_DOS_HEADER p0 = get_doshdr(p);
+      PIMAGE_DOS_HEADER p0 = peget_doshdr(p);
       return p0 && 'P' == getb(p, p0->e_lfanew + 0)
                 && 'E' == getb(p, p0->e_lfanew + 1)
                 && 0x0 == getb(p, p0->e_lfanew + 2)
@@ -58,22 +58,28 @@ bool_t isPE64(const pbuffer_t p) {
   return isPE(p) && checkbytes(p, zIS64BIT);
 }
 
-PIMAGE_DOS_HEADER get_doshdr(const pbuffer_t p) {
+WORD peget_sectioncount(const pbuffer_t p) {
+  if (isPE32(p))       return CAST(PIMAGE_NT_HEADERS32, peget_nt32hdr(p))->FileHeader.NumberOfSections;
+  else if (isPE64(p))  return CAST(PIMAGE_NT_HEADERS64, peget_nt64hdr(p))->FileHeader.NumberOfSections;
+  return 0;
+}
+
+PIMAGE_DOS_HEADER peget_doshdr(const pbuffer_t p) {
   return CAST(PIMAGE_DOS_HEADER, getp(p, 0, sizeof(IMAGE_DOS_HEADER)));
 }
 
-PIMAGE_NT_HEADERS32 get_nt32hdr(const pbuffer_t p) {
+PIMAGE_NT_HEADERS32 peget_nt32hdr(const pbuffer_t p) {
   if (isPE32(p)) {
-    PIMAGE_DOS_HEADER p0 = get_doshdr(p);
+    PIMAGE_DOS_HEADER p0 = peget_doshdr(p);
     return p0 ? CAST(PIMAGE_NT_HEADERS32, getp(p, p0->e_lfanew, sizeof(IMAGE_NT_HEADERS32))) : NULL;
   }
 
   return NULL;
 }
 
-PIMAGE_NT_HEADERS64 get_nt64hdr(const pbuffer_t p) {
+PIMAGE_NT_HEADERS64 peget_nt64hdr(const pbuffer_t p) {
   if (isPE64(p)) {
-    PIMAGE_DOS_HEADER p0 = get_doshdr(p);
+    PIMAGE_DOS_HEADER p0 = peget_doshdr(p);
     return p0 ? CAST(PIMAGE_NT_HEADERS64, getp(p, p0->e_lfanew, sizeof(IMAGE_NT_HEADERS64))) : NULL;
   }
 
@@ -83,10 +89,10 @@ PIMAGE_NT_HEADERS64 get_nt64hdr(const pbuffer_t p) {
 PIMAGE_DATA_DIRECTORY get_datadirbyentry(const pbuffer_t p, const int index) {
   if (index >= IMAGE_DIRECTORY_ENTRY_EXPORT && index <= IMAGE_DIRECTORY_ENTRY_RESERVED) {
     if (isPE32(p)) {
-      PIMAGE_NT_HEADERS32 p0 = get_nt32hdr(p);
+      PIMAGE_NT_HEADERS32 p0 = peget_nt32hdr(p);
       return p0 ? &p0->OptionalHeader.DataDirectory[index] : NULL;
     } else if (isPE64(p)) {
-      PIMAGE_NT_HEADERS64 p0 = get_nt64hdr(p);
+      PIMAGE_NT_HEADERS64 p0 = peget_nt64hdr(p);
       return p0 ? &p0->OptionalHeader.DataDirectory[index] : NULL;
     }
   }
@@ -96,16 +102,16 @@ PIMAGE_DATA_DIRECTORY get_datadirbyentry(const pbuffer_t p, const int index) {
 
 PIMAGE_SECTION_HEADER get_sectionhdrbyindex(const pbuffer_t p, const int index) {
   if (isPE32(p)) {
-    PIMAGE_DOS_HEADER p0 = get_doshdr(p);
-    PIMAGE_NT_HEADERS32 p1 = get_nt32hdr(p);
+    PIMAGE_DOS_HEADER p0 = peget_doshdr(p);
+    PIMAGE_NT_HEADERS32 p1 = peget_nt32hdr(p);
     if (p0 && p1) {
       const size_t spos = p0->e_lfanew + sizeof(DWORD) + sizeof(IMAGE_FILE_HEADER) + p1->FileHeader.SizeOfOptionalHeader;
       const size_t size = sizeof(IMAGE_SECTION_HEADER);
       return CAST(PIMAGE_SECTION_HEADER, getp(p, spos + (index * size), size));
     }
   } else if (isPE64(p)) {
-    PIMAGE_DOS_HEADER p0 = get_doshdr(p);
-    PIMAGE_NT_HEADERS64 p1 = get_nt64hdr(p);
+    PIMAGE_DOS_HEADER p0 = peget_doshdr(p);
+    PIMAGE_NT_HEADERS64 p1 = peget_nt64hdr(p);
     if (p0 && p1) {
       const size_t spos = p0->e_lfanew + sizeof(DWORD) + sizeof(IMAGE_FILE_HEADER) + p1->FileHeader.SizeOfOptionalHeader;
       const size_t size = sizeof(IMAGE_SECTION_HEADER);
@@ -119,7 +125,7 @@ PIMAGE_SECTION_HEADER get_sectionhdrbyindex(const pbuffer_t p, const int index) 
 PIMAGE_SECTION_HEADER get_sectionhdrbyentry(const pbuffer_t p, const int index) {
   if (index >= IMAGE_DIRECTORY_ENTRY_EXPORT && index <= IMAGE_DIRECTORY_ENTRY_RESERVED) {
     if (isPE32(p)) {
-      PIMAGE_NT_HEADERS32 p0 = get_nt32hdr(p);
+      PIMAGE_NT_HEADERS32 p0 = peget_nt32hdr(p);
       PIMAGE_DATA_DIRECTORY p1 = get_datadirbyentry(p, index);
       if (p0 && p1) {
         for (int i = 0; i < p0->FileHeader.NumberOfSections; ++i) {
@@ -130,7 +136,7 @@ PIMAGE_SECTION_HEADER get_sectionhdrbyentry(const pbuffer_t p, const int index) 
         }
       }
     } else if (isPE64(p)) {
-      PIMAGE_NT_HEADERS64 p0 = get_nt64hdr(p);
+      PIMAGE_NT_HEADERS64 p0 = peget_nt64hdr(p);
       PIMAGE_DATA_DIRECTORY p1 = get_datadirbyentry(p, index);
       if (p0 && p1) {
         for (int i = 0; i < p0->FileHeader.NumberOfSections; ++i) {
@@ -148,7 +154,7 @@ PIMAGE_SECTION_HEADER get_sectionhdrbyentry(const pbuffer_t p, const int index) 
 
 PIMAGE_SECTION_HEADER get_sectionhdrbyRVA(const pbuffer_t p, const uint64_t vaddr) {
   if (isPE32(p)) {
-    PIMAGE_NT_HEADERS32 p0 = get_nt32hdr(p);
+    PIMAGE_NT_HEADERS32 p0 = peget_nt32hdr(p);
     if (p0) {
       for (int i = 0; i < p0->FileHeader.NumberOfSections; ++i) {
         PIMAGE_SECTION_HEADER p2 = get_sectionhdrbyindex(p, i);
@@ -158,7 +164,7 @@ PIMAGE_SECTION_HEADER get_sectionhdrbyRVA(const pbuffer_t p, const uint64_t vadd
       }
     }
   } else if (isPE64(p)) {
-    PIMAGE_NT_HEADERS64 p0 = get_nt64hdr(p);
+    PIMAGE_NT_HEADERS64 p0 = peget_nt64hdr(p);
     if (p0) {
       for (int i = 0; i < p0->FileHeader.NumberOfSections; ++i) {
         PIMAGE_SECTION_HEADER p2 = get_sectionhdrbyindex(p, i);
@@ -174,7 +180,7 @@ PIMAGE_SECTION_HEADER get_sectionhdrbyRVA(const pbuffer_t p, const uint64_t vadd
 
 PIMAGE_SECTION_HEADER get_sectionhdrbyname(const pbuffer_t p, const char* name) {
   if (isPE32(p)) {
-    PIMAGE_NT_HEADERS32 p0 = get_nt32hdr(p);
+    PIMAGE_NT_HEADERS32 p0 = peget_nt32hdr(p);
     if (p0) {
       for (int i = 0; i < p0->FileHeader.NumberOfSections; ++i) {
         PIMAGE_SECTION_HEADER p1 = get_sectionhdrbyindex(p, i);
@@ -182,7 +188,7 @@ PIMAGE_SECTION_HEADER get_sectionhdrbyname(const pbuffer_t p, const char* name) 
       }
     }
   } else if (isPE64(p)) {
-    PIMAGE_NT_HEADERS64 p0 = get_nt64hdr(p);
+    PIMAGE_NT_HEADERS64 p0 = peget_nt64hdr(p);
     if (p0) {
       for (int i = 0; i < p0->FileHeader.NumberOfSections; ++i) {
         PIMAGE_SECTION_HEADER p1 = get_sectionhdrbyindex(p, i);

@@ -21,7 +21,7 @@ const int MAXSIZE = 36;
 static int dump_dosheaderNN(const pbuffer_t p, const poptions_t o) {
   int n = 0;
 
-  PIMAGE_DOS_HEADER dos = get_doshdr(p);
+  PIMAGE_DOS_HEADER dos = peget_doshdr(p);
   if (dos) {
     size_t i = 0;
 
@@ -192,7 +192,7 @@ static int dump_ntheader2(const pbuffer_t p, const uint16_t Magic, const uint8_t
 
 static int dump_ntheader32(const pbuffer_t p, const poptions_t o) {
   int n = 0;
-  PIMAGE_NT_HEADERS32 nt = get_nt32hdr(p);
+  PIMAGE_NT_HEADERS32 nt = peget_nt32hdr(p);
   if (nt) {
     n += dump_ntheader0(p, nt->Signature);
 
@@ -215,7 +215,7 @@ static int dump_ntheader32(const pbuffer_t p, const poptions_t o) {
 
 static int dump_ntheader64(const pbuffer_t p, const poptions_t o) {
   int n = 0;
-  PIMAGE_NT_HEADERS64 nt = get_nt64hdr(p);
+  PIMAGE_NT_HEADERS64 nt = peget_nt64hdr(p);
   if (nt) {
     n += dump_ntheader0(p, nt->Signature);
 
@@ -274,7 +274,7 @@ static int dump_sectionheaders0(const pbuffer_t p, const uint16_t NumberOfSectio
 
 static int dump_sectionheaders32(const pbuffer_t p, const poptions_t o) {
   int n = 0;
-  PIMAGE_NT_HEADERS32 p0 = get_nt32hdr(p);
+  PIMAGE_NT_HEADERS32 p0 = peget_nt32hdr(p);
   if (p0) {
     n += dump_sectionheaders0(p, p0->FileHeader.NumberOfSections);
   }
@@ -284,7 +284,7 @@ static int dump_sectionheaders32(const pbuffer_t p, const poptions_t o) {
 
 static int dump_sectionheaders64(const pbuffer_t p, const poptions_t o) {
   int n = 0;
-  PIMAGE_NT_HEADERS64 p0 = get_nt64hdr(p);
+  PIMAGE_NT_HEADERS64 p0 = peget_nt64hdr(p);
   if (p0) {
     n += dump_sectionheaders0(p, p0->FileHeader.NumberOfSections);
   }
@@ -319,7 +319,7 @@ static int dump_sectiongroups1(const pbuffer_t p, const int index, const uint32_
 
 static int dump_sectiongroups32(const pbuffer_t p, const poptions_t o) {
   int n = 0;
-  PIMAGE_NT_HEADERS32 nt = get_nt32hdr(p);
+  PIMAGE_NT_HEADERS32 nt = peget_nt32hdr(p);
   if (nt) {
     PIMAGE_OPTIONAL_HEADER32 op = &nt->OptionalHeader;
     PIMAGE_DATA_DIRECTORY dd = op->DataDirectory;
@@ -338,7 +338,7 @@ static int dump_sectiongroups32(const pbuffer_t p, const poptions_t o) {
 
 static int dump_sectiongroups64(const pbuffer_t p, const poptions_t o) {
   int n = 0;
-  PIMAGE_NT_HEADERS64 nt = get_nt64hdr(p);
+  PIMAGE_NT_HEADERS64 nt = peget_nt64hdr(p);
   if (nt) {
     PIMAGE_OPTIONAL_HEADER64 op = &nt->OptionalHeader;
     PIMAGE_DATA_DIRECTORY dd = op->DataDirectory;
@@ -1285,9 +1285,7 @@ static int dump_runtimeNN(const pbuffer_t p, const poptions_t o) {
 }
 
 static int dump_actionsNN(const pbuffer_t p, const poptions_t o) {
-  MALLOCA(const char*, secdone, isPE32(p) ?
-    CAST(PIMAGE_NT_HEADERS32, get_nt32hdr(p))->FileHeader.NumberOfSections :
-    CAST(PIMAGE_NT_HEADERS64, get_nt64hdr(p))->FileHeader.NumberOfSections);
+  MALLOCA(const char*, secdone, peget_sectioncount(p));
 
   int n = 0;
   paction_t x = o->actions;
