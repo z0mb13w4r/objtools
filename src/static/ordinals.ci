@@ -8,8 +8,15 @@ static pefunc_t zADVAPI32[] = {
   {"CreateServiceW",                   -1,   PEFUNC_BLACKLIST},
   {"CryptAcquireContextA",             -1,   PEFUNC_BLACKLIST},
   {"CryptAcquireContextW",             -1,   PEFUNC_BLACKLIST},
+  {"IsNTAdmin",                        -1,   PEFUNC_BLACKLIST},
   {0, 0}
 };
+
+static pefunc_t zADVPACK[] = {
+  {"IsNTAdmin",                        -1,   PEFUNC_BLACKLIST},
+  {0, 0}
+};
+
 
 static pefunc_t zCOMCTL32[] = {
   {"MenuHelp",                         2},
@@ -152,6 +159,9 @@ static pefunc_t zIPHLPAPI[] = {
 };
 
 static pefunc_t zKERNEL32[] = {
+  {"GetVersion",                       -1,   PEFUNC_CRITICAL},
+  {"GetVersionExA",                    -1,   PEFUNC_CRITICAL},
+  {"GetVersionExW",                    -1,   PEFUNC_CRITICAL},
   {"GetModuleFileNameA",               -1,   PEFUNC_CRITICAL},
   {"GetModuleFileNameW",               -1,   PEFUNC_CRITICAL},
   {"GetModuleFileNameExA",             -1,   PEFUNC_CRITICAL},
@@ -178,6 +188,7 @@ static pefunc_t zKERNEL32[] = {
   {"ConnectNamedPipe",                 -1,   PEFUNC_CRITICAL},
   {"CreateFileMappingA",               -1,   PEFUNC_CRITICAL},
   {"CreateFileMappingW",               -1,   PEFUNC_CRITICAL},
+  {"GetThreadContext",                 -1,   PEFUNC_CRITICAL},
   {"CreateMutexA",                     -1,   PEFUNC_INFO},
   {"CreateMutexW",                     -1,   PEFUNC_INFO},
   {"CreateMutexExA",                   -1,   PEFUNC_INFO},
@@ -191,6 +202,8 @@ static pefunc_t zKERNEL32[] = {
   {"FindFirstFileExW",                 -1,   PEFUNC_ALERT},
   {"FindNextFileA",                    -1,   PEFUNC_ALERT},
   {"FindNextFileW",                    -1,   PEFUNC_ALERT},
+  {"GetWindowsDirectoryA",             -1,   PEFUNC_ALERT},
+  {"GetWindowsDirectoryW",             -1,   PEFUNC_ALERT},
   {"GetTempPathA",                     -1,   PEFUNC_ALERT},
   {"GetTempPathW",                     -1,   PEFUNC_ALERT},
   {"GetTempPath2A",                    -1,   PEFUNC_ALERT},
@@ -656,6 +669,24 @@ static pefunc_t zUSER32[] = {
 static pefunc_t zWININET[] = {
   {"FtpPutFileA",                      -1,   PEFUNC_CRITICAL},
   {"FtpPutFileW",                      -1,   PEFUNC_CRITICAL},
+  {"InternetOpenA",                    -1,   PEFUNC_CRITICAL},
+  {"InternetOpenW",                    -1,   PEFUNC_CRITICAL},
+  {"InternetOpenUrlA",                 -1,   PEFUNC_CRITICAL},
+  {"InternetOpenUrlW",                 -1,   PEFUNC_CRITICAL},
+  {"InternetReadFile",                 -1,   PEFUNC_CRITICAL},
+  {"InternetReadFileExA",              -1,   PEFUNC_CRITICAL},
+  {"InternetReadFileExW",              -1,   PEFUNC_CRITICAL},
+  {"InternetWriteFile",                -1,   PEFUNC_CRITICAL},
+  {"InternetWriteFileExA",             -1,   PEFUNC_CRITICAL},
+  {"InternetWriteFileExW",             -1,   PEFUNC_CRITICAL},
+  {"HttpOpenRequestA",                 -1,   PEFUNC_CRITICAL},
+  {"HttpOpenRequestW",                 -1,   PEFUNC_CRITICAL},
+  {"HttpSendRequestA",                 -1,   PEFUNC_CRITICAL},
+  {"HttpSendRequestW",                 -1,   PEFUNC_CRITICAL},
+  {"HttpSendRequestExA",               -1,   PEFUNC_CRITICAL},
+  {"HttpSendRequestExW",               -1,   PEFUNC_CRITICAL},
+  {"HttpEndRequestA",                  -1,   PEFUNC_CRITICAL},
+  {"HttpEndRequestW",                  -1,   PEFUNC_CRITICAL},
   {0, 0}
 };
 
@@ -670,7 +701,7 @@ static pefunc_t zWSOCK32[] = {
   {"getsockopt",                       7},
   {"htonl",                            8},
   {"htons",                            9},
-  {"inet_addr",                        10},
+  {"inet_addr",                        10,   PEFUNC_CRITICAL},
   {"inet_ntoa",                        11},
   {"ioctlsocket",                      12},
   {"listen",                           13},
@@ -750,7 +781,7 @@ static pefunc_t zWS2_32[] = {
   {"htonl",                            8},
   {"htons",                            9},
   {"ioctlsocket",                      10},
-  {"inet_addr",                        11},
+  {"inet_addr",                        11,   PEFUNC_CRITICAL},
   {"inet_ntoa",                        12},
   {"listen",                           13},
   {"ntohl",                            14},

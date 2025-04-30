@@ -26,6 +26,7 @@ const char* funcpicknull(const ppefunc_t p, const pick_t x) {
 
 const char* get_namebyord(const pbuffer_t p, const char* name, const pick_t x) {
   if (0 == strcasecmp(name, "ADVAPI32.dll"))      return funcpick(zADVAPI32, x);
+  else if (0 == strcasecmp(name, "ADVPACK.dll"))  return funcpick(zADVPACK, x);
   else if (0 == strcasecmp(name, "COMCTL32.dll")) return funcpick(zCOMCTL32, x);
   else if (0 == strcasecmp(name, "CRYPT32.dll"))  return funcpick(zCRYPT32, x);
   else if (0 == strcasecmp(name, "GDI32.dll"))    return funcpick(zGDI32, x);
