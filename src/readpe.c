@@ -634,7 +634,7 @@ static int dump_iat32(const pbuffer_t p, const poptions_t o) {
 
       while (p2 && p2->AddressOfData) {
         n += dump_iat2(p, p2->AddressOfData);
-        uint64_t Ordinal = p2->Ordinal & ~IMAGE_THUNK_DATA_IS_IMPORT_ORDINAL;
+        uint64_t Ordinal = (p2->AddressOfData & ~IMAGE_THUNK_DATA_IS_IMPORT_ORDINAL) & 0xffff;
         if (p2->AddressOfData & IMAGE_THUNK_DATA_IS_IMPORT_ORDINAL) {
           n += printf_text(get_namebyord(p, Name, Ordinal), USE_LT | USE_TAB2);
           n += printf_nice(Ordinal, USE_DEC | USE_SB);
@@ -676,7 +676,7 @@ static int dump_iat64(const pbuffer_t p, const poptions_t o) {
       PIMAGE_THUNK_DATA64 p2 = get_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_IMPORT, p1->OriginalFirstThunk, sizeof(PIMAGE_THUNK_DATA64));
 
       while (p2 && p2->AddressOfData) {
-        uint64_t Ordinal = p2->Ordinal & ~IMAGE_THUNK_DATA_IS_IMPORT_ORDINAL;
+        uint64_t Ordinal = (p2->AddressOfData & ~IMAGE_THUNK_DATA_IS_IMPORT_ORDINAL) & 0xffff;
         if (p2->AddressOfData & IMAGE_THUNK_DATA_IS_IMPORT_ORDINAL) {
           n += printf_text(get_namebyord(p, Name, Ordinal), USE_LT | USE_TAB2);
           n += printf_nice(Ordinal, USE_DEC | USE_SB);
