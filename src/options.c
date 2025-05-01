@@ -47,7 +47,7 @@ static const char READELFARGS1[] = "--debug-dump";
 static const args_t READELFARGS[] = {
   {'H', "--help",            OPTPROGRAM_HELP},
   {'v', "--version",         OPTPROGRAM_VERSION},
-  {'A', "--arch-specific",   OPTREADELF_ARCH},
+  {'A', "--arch-specific",   OPTREADELF_ARCHSPECIFIC},
   {'I', "--histogram",       OPTREADELF_HISTOGRAM},
   {'S', "--section-headers", OPTREADELF_SECTIONHEADERS},
   {'V', NULL,                OPTREADELF_VERSION},

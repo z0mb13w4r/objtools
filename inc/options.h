@@ -65,7 +65,7 @@
 #define OPTREADELF_UNWIND                          U64MASK(6)
 #define OPTREADELF_DYNAMIC                         U64MASK(7)
 #define OPTREADELF_HISTOGRAM                       U64MASK(8)
-#define OPTREADELF_ARCH                            U64MASK(9)
+#define OPTREADELF_ARCHSPECIFIC                    U64MASK(9)
 #define OPTREADELF_NOTES                           U64MASK(10)
 #define OPTREADELF_VERSION                         U64MASK(11)
 
@@ -74,7 +74,7 @@
 #define OPTREADELF_ALL                 (OPTREADELF_SYMBOLS | OPTREADELF_RELOCS | OPTREADELF_UNWIND \
                                            | OPTREADELF_DYNAMIC | OPTREADELF_FILEHEADER | OPTREADELF_SECTIONHEADERS \
                                            | OPTREADELF_SECTIONGROUPS | OPTREADELF_PROGRAMHEADERS | OPTREADELF_VERSION \
-                                           | OPTREADELF_HISTOGRAM | OPTREADELF_ARCH | OPTREADELF_NOTES)
+                                           | OPTREADELF_HISTOGRAM | OPTREADELF_ARCHSPECIFIC | OPTREADELF_NOTES)
 
 
 #define OPTOBJCOPY_CHANGE_WARNINGS                 U64MASK(0)

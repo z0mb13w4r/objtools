@@ -1098,35 +1098,37 @@ static int dump_gnuhash0(const pbuffer_t p, uint32_t *pb, const uint64_t sh_name
 }
 
 static int dump_histogram32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
+  int n = 0;
   for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
     Elf32_Shdr *shdr = get_shdr32byindex(p, i);
     if (shdr && SHT_GNU_HASH == shdr->sh_type) {
       uint32_t *pb = _get32byshdr(p, shdr);
       if (pb) {
-        dump_gnuhash0(p, pb, shdr->sh_name);
+        n += dump_gnuhash0(p, pb, shdr->sh_name);
       }
     } if (shdr && SHT_HASH == shdr->sh_type) {
       // TBD
     }
   }
 
-  return 0;
+  return n;
 }
 
 static int dump_histogram64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
+  int n = 0;
   for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
     Elf64_Shdr *shdr = get_shdr64byindex(p, i);
     if (shdr && SHT_GNU_HASH == shdr->sh_type) {
       uint32_t *pb = _get64byshdr(p, shdr);
       if (pb) {
-        dump_gnuhash0(p, pb, shdr->sh_name);
+        n += dump_gnuhash0(p, pb, shdr->sh_name);
       }
     } if (shdr && SHT_HASH == shdr->sh_type) {
       // TBD
     }
   }
 
-  return 0;
+  return n;
 }
 
 static int dump_versionsym0(const pbuffer_t p, const uint64_t count, const uint64_t sh_name, const uint64_t sh_addr, const uint64_t sh_offset, const uint64_t sh_link) {
@@ -1189,38 +1191,40 @@ static int dump_versionsym32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *
   MALLOCA(version_t, vnames, 1024);
   make_versionnames32(p, vnames, NELEMENTS(vnames));
 
+  int n = 0;
   size_t cnt = shdr->sh_size / shdr->sh_entsize;
-  dump_versionsym0(p, cnt, shdr->sh_name, shdr->sh_addr, shdr->sh_offset, shdr->sh_link);
+  n += dump_versionsym0(p, cnt, shdr->sh_name, shdr->sh_addr, shdr->sh_offset, shdr->sh_link);
 
   for (size_t j = 0; j < cnt; ++j) {
     Elf64_Versym *vs = getp(p, shdr->sh_offset + (j * shdr->sh_entsize), shdr->sh_entsize);
     if (vs) {
-      dump_versionsym1(p, j, *vs, vnames, NELEMENTS(vnames));
+      n += dump_versionsym1(p, j, *vs, vnames, NELEMENTS(vnames));
     }
   }
 
-  dump_versionsym2(p, cnt);
+  n += dump_versionsym2(p, cnt);
 
-  return 0;
+  return n;
 }
 
 static int dump_versionsym64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr, Elf64_Shdr *shdr) {
   MALLOCA(version_t, vnames, 1024);
   make_versionnames64(p, vnames, NELEMENTS(vnames));
 
+  int n = 0;
   size_t cnt = shdr->sh_size / shdr->sh_entsize;
-  dump_versionsym0(p, cnt, shdr->sh_name, shdr->sh_addr, shdr->sh_offset, shdr->sh_link);
+  n += dump_versionsym0(p, cnt, shdr->sh_name, shdr->sh_addr, shdr->sh_offset, shdr->sh_link);
 
   for (size_t j = 0; j < cnt; ++j) {
     Elf64_Versym *vs = getp(p, shdr->sh_offset + (j * shdr->sh_entsize), shdr->sh_entsize);
     if (vs) {
-      dump_versionsym1(p, j, *vs, vnames, NELEMENTS(vnames));
+      n += dump_versionsym1(p, j, *vs, vnames, NELEMENTS(vnames));
     }
   }
 
-  dump_versionsym2(p, cnt);
+  n += dump_versionsym2(p, cnt);
 
-  return 0;
+  return n;
 }
 
 static int dump_versionneed0(const pbuffer_t p, const uint64_t sh_name, const uint64_t sh_info,
@@ -1272,19 +1276,20 @@ static int dump_versionneed2(const pbuffer_t p, const int offset, const uint64_t
 }
 
 static int dump_versionneed32(const pbuffer_t p, const poptions_t o, Elf32_Shdr *shdr) {
-  dump_versionneed0(p, shdr->sh_name, shdr->sh_info, shdr->sh_addr, shdr->sh_offset, shdr->sh_link);
+  int n = 0;
+  n += dump_versionneed0(p, shdr->sh_name, shdr->sh_info, shdr->sh_addr, shdr->sh_offset, shdr->sh_link);
 
   Elf32_Word offset = 0;
   for (Elf32_Word j = 0; j < shdr->sh_info; ++j) {
     Elf32_Verneed *vn = getp(p, shdr->sh_offset, sizeof(Elf32_Verneed));
     if (vn) {
-      dump_versionneed1(p, offset, shdr->sh_link, vn->vn_version, vn->vn_file, vn->vn_cnt);
+      n += dump_versionneed1(p, offset, shdr->sh_link, vn->vn_version, vn->vn_file, vn->vn_cnt);
 
       Elf32_Word xoffset = offset + vn->vn_aux;
       for (Elf32_Half k = 0; k < vn->vn_cnt; ++k) {
         Elf32_Vernaux *va = getp(p, shdr->sh_offset + xoffset, sizeof(Elf32_Vernaux));
         if (va) {
-          dump_versionneed2(p, xoffset, shdr->sh_link, va->vna_name, va->vna_flags, va->vna_other);
+          n += dump_versionneed2(p, xoffset, shdr->sh_link, va->vna_name, va->vna_flags, va->vna_other);
 	  xoffset += va->vna_next;
         }
       }
@@ -1293,25 +1298,26 @@ static int dump_versionneed32(const pbuffer_t p, const poptions_t o, Elf32_Shdr 
     offset += vn->vn_next;
   }
 
-  printf_eol();
+  n += printf_eol();
 
-  return 0;
+  return n;
 }
 
 static int dump_versionneed64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *shdr) {
-  dump_versionneed0(p, shdr->sh_name, shdr->sh_info, shdr->sh_addr, shdr->sh_offset, shdr->sh_link);
+  int n = 0;
+  n += dump_versionneed0(p, shdr->sh_name, shdr->sh_info, shdr->sh_addr, shdr->sh_offset, shdr->sh_link);
 
   Elf64_Word offset = 0;
   for (Elf64_Word j = 0; j < shdr->sh_info; ++j) {
     Elf64_Verneed *vn = getp(p, shdr->sh_offset, sizeof(Elf64_Verneed));
     if (vn) {
-      dump_versionneed1(p, offset, shdr->sh_link, vn->vn_version, vn->vn_file, vn->vn_cnt);
+      n += dump_versionneed1(p, offset, shdr->sh_link, vn->vn_version, vn->vn_file, vn->vn_cnt);
 
       Elf64_Word xoffset = offset + vn->vn_aux;
       for (Elf64_Half k = 0; k < vn->vn_cnt; ++k) {
         Elf64_Vernaux *va = getp(p, shdr->sh_offset + xoffset, sizeof(Elf64_Vernaux));
         if (va) {
-          dump_versionneed2(p, xoffset, shdr->sh_link, va->vna_name, va->vna_flags, va->vna_other);
+          n += dump_versionneed2(p, xoffset, shdr->sh_link, va->vna_name, va->vna_flags, va->vna_other);
 	  xoffset += va->vna_next;
         }
       }
@@ -1320,39 +1326,41 @@ static int dump_versionneed64(const pbuffer_t p, const poptions_t o, Elf64_Shdr 
     offset += vn->vn_next;
   }
 
-  printf_eol();
+  n += printf_eol();
 
-  return 0;
+  return n;
 }
 
 static int dump_version32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
+  int n = 0;
   for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
     Elf32_Shdr *shdr = get_shdr32byindex(p, i);
     if (shdr) {
       if (SHT_GNU_versym == shdr->sh_type) {
-        dump_versionsym32(p, o, ehdr, shdr);
+        n += dump_versionsym32(p, o, ehdr, shdr);
       } else if (SHT_GNU_verneed == shdr->sh_type) {
-        dump_versionneed32(p, o, shdr);
+        n += dump_versionneed32(p, o, shdr);
       }
     }
   }
 
-  return 0;
+  return n;
 }
 
 static int dump_version64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
+  int n = 0;
   for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
     Elf64_Shdr *shdr = get_shdr64byindex(p, i);
     if (shdr) {
       if (SHT_GNU_versym == shdr->sh_type) {
-        dump_versionsym64(p, o, ehdr, shdr);
+        n += dump_versionsym64(p, o, ehdr, shdr);
       } else if (SHT_GNU_verneed == shdr->sh_type) {
-        dump_versionneed64(p, o, shdr);
+        n += dump_versionneed64(p, o, shdr);
       }
     }
   }
 
-  return 0;
+  return n;
 }
 
 static int dump_actions32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
@@ -1484,31 +1492,45 @@ static int dump_notes0(const pbuffer_t p, const int index, const uint64_t e_mach
 }
 
 static int dump_notes32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
+  int n = 0;
   if (ET_CORE != ehdr->e_type) {
     for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
       Elf32_Nhdr *nhdr = get_nhdr32byindex(p, i);
       if (nhdr) {
         Elf32_Word *pc = get_nhdrdesc32byindex(p, i);
-        dump_notes0(p, i, ehdr->e_machine, nhdr->n_descsz, nhdr->n_type, pc);
+        n += dump_notes0(p, i, ehdr->e_machine, nhdr->n_descsz, nhdr->n_type, pc);
       }
     }
   }
 
-  return 0;
+  return n;
 }
 
 static int dump_notes64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
+  int n = 0;
   if (ET_CORE != ehdr->e_type) {
     for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
       Elf64_Nhdr *nhdr = get_nhdr64byindex(p, i);
       if (nhdr) {
         Elf64_Word *pc = get_nhdrdesc64byindex(p, i);
-        dump_notes0(p, i, ehdr->e_machine, nhdr->n_descsz, nhdr->n_type, pc);
+        n += dump_notes0(p, i, ehdr->e_machine, nhdr->n_descsz, nhdr->n_type, pc);
       }
     }
   }
 
-  return 0;
+  return n;
+}
+
+static int dump_archspecific32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
+  int n = 0;
+
+  return n;
+}
+
+static int dump_archspecific64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
+  int n = 0;
+
+  return n;
 }
 
 int readelf(const pbuffer_t p, const poptions_t o) {
@@ -1533,6 +1555,7 @@ int readelf(const pbuffer_t p, const poptions_t o) {
         if (MODE_ISSET(o->action, OPTREADELF_VERSION))          dump_version32(p, o, ehdr);
         if (o->actions)                                         dump_actions32(p, o, ehdr);
         if (MODE_ISSET(o->action, OPTREADELF_NOTES))            dump_notes32(p, o, ehdr);
+        if (MODE_ISSET(o->action, OPTREADELF_ARCHSPECIFIC))     dump_archspecific32(p, o, ehdr);
       }
     } else if (isELF64(p)) {
       Elf64_Ehdr *ehdr = get_ehdr64(p);
@@ -1550,6 +1573,7 @@ int readelf(const pbuffer_t p, const poptions_t o) {
         if (MODE_ISSET(o->action, OPTREADELF_VERSION))          dump_version64(p, o, ehdr);
         if (o->actions)                                         dump_actions64(p, o, ehdr);
         if (MODE_ISSET(o->action, OPTREADELF_NOTES))            dump_notes64(p, o, ehdr);
+        if (MODE_ISSET(o->action, OPTREADELF_ARCHSPECIFIC))     dump_archspecific64(p, o, ehdr);
       }
     }
   } else {
