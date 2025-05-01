@@ -66,6 +66,7 @@ static const args_t READELFARGS[] = {
   {'p', "--string-dump",     0},
   {'U', "--unicode-dump",    0},
   {'R', "--relocated-dump",  0},
+  {'z', "--decompress",      0},
   {'C', "--disassemble",     0},
   {'T', "--script",          0},
   {'I', "--info",            OPTPROGRAM_INFO},
@@ -434,6 +435,8 @@ int get_options_readelf(poptions_t o, int argc, char** argv, char* name) {
           oinsertsecname(o, ACT_CODEDUMP, arg1);
         } else if (0 == strcmp(argv[i], "--disassemble")) {
           oinsertsecname(o, ACT_DISASSEMBLE, arg1);
+        } else if (0 == strcmp(argv[i], "--decompress")) {
+          oinsertsecname(o, ACT_ZLIB, arg1);
         } else if (0 == strcmp(arg0, "--script")) {
           sinsert(o, arg1);
         }
@@ -456,6 +459,8 @@ int get_options_readelf(poptions_t o, int argc, char** argv, char* name) {
         oinsertsecname(o, ACT_CODEDUMP, argv[++i]);
       } else if (0 == strcmp(argv[i], "-C")) {
         oinsertsecname(o, ACT_DISASSEMBLE, argv[++i]);
+      } else if (0 == strcmp(argv[i], "-z")) {
+        oinsertsecname(o, ACT_ZLIB, argv[++i]);
       } else if (0 == strcmp(argv[i], "-T")) {
         sinsert(o, argv[++i]);
       } else {

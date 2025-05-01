@@ -122,7 +122,7 @@ int dump_summary(const pbuffer_t p, const poptions_t o) {
   const int MAXSIZE = 10;
   int n = 0;
   if (o && issafe(p)) {
-    if (MODE_ISSET(o->action, OPTREADELF_FILEHEADER) ||
+    if (MODE_ISSET(o->action, OPTPROGRAM_INFO) ||
         MODE_ISLOCKED(o->action, OPTPROGRAM_HASH) ||
         MODE_ISLOCKED(o->action, OPTPROGRAM_ENTROPY) ||
         MODE_ISLOCKED(o->action, OPTPROGRAM_HASH | OPTPROGRAM_ENTROPY)) {

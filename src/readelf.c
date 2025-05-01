@@ -198,43 +198,58 @@ static int dump_relocsver64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *s
 static int dump_elfheader(const pbuffer_t p, const poptions_t o) {
   const int MAXSIZE = 36;
 
-  printf_text("ELF HEADER", USE_LT | USE_COLON | USE_EOL);
-  printf_text("Magic", USE_TAB | USE_COLON | SET_PAD(MAXSIZE - 1));
-  printf_sore(getp(p, 0, 16), 16, USE_HEX | USE_SPACE | USE_EOL);
+  int n = 0;
+  n += printf_text("ELF HEADER", USE_LT | USE_COLON | USE_EOL);
+  n += printf_text("Magic", USE_TAB | USE_COLON | SET_PAD(MAXSIZE - 1));
+  n += printf_sore(getp(p, 0, 16), 16, USE_HEX | USE_SPACE | USE_EOL);
 
-  printf_text("Class", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("Class", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   if (isELF32(p)) {
-    printf_text("ELF32", USE_LT | USE_SPACE | USE_EOL);
+    n += printf_text("ELF32", USE_LT | USE_SPACE | USE_EOL);
   } else if (isELF64(p)) {
-    printf_text("ELF64", USE_LT | USE_SPACE | USE_EOL);
+    n += printf_text("ELF64", USE_LT | USE_SPACE | USE_EOL);
   } else {
     return -1;
   }
 
-  printf_text("Data", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("Data", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   if (isLittleEndian(p)) {
-    printf_text("2's complement, little endian", USE_LT | USE_SPACE | USE_EOL);
+    n += printf_text("2's complement, little endian", USE_LT | USE_SPACE | USE_EOL);
   } else if (isBigEndian(p)) {
-    printf_text("2's complement, big endian", USE_LT | USE_SPACE | USE_EOL);
+    n += printf_text("2's complement, big endian", USE_LT | USE_SPACE | USE_EOL);
   } else {
-    printf_text("none", USE_LT | USE_SPACE | USE_EOL);
+    n += printf_text("none", USE_LT | USE_SPACE | USE_EOL);
   }
 
-  printf_text("Version", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("Version", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   if (EV_CURRENT == getb(p, EI_VERSION)) {
-    printf_text("1 (current)", USE_LT | USE_SPACE | USE_EOL);
+    n += printf_text("1 (current)", USE_LT | USE_SPACE | USE_EOL);
   } else if (EV_NONE == getb(p, EI_VERSION)) {
-    printf_text("0", USE_LT | USE_SPACE | USE_EOL);
+    n += printf_text("0", USE_LT | USE_SPACE | USE_EOL);
   } else {
-    printf_nice(getb(p, EI_VERSION), USE_UNKNOWN | USE_EOL);
+    n += printf_nice(getb(p, EI_VERSION), USE_UNKNOWN | USE_EOL);
   }
 
-  printf_text("OS/ABI", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  printf_text(get_EHDROSABI(p), USE_LT | USE_SPACE | USE_EOL);
-  printf_text("ABI Version", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  printf_nice(getb(p, EI_ABIVERSION), USE_DEC | USE_EOL);
+  n += printf_text("OS/ABI", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text(get_EHDROSABI(p), USE_LT | USE_SPACE | USE_EOL);
+  n += printf_text("ABI Version", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(getb(p, EI_ABIVERSION), USE_DEC | USE_EOL);
 
-  return 0;
+  return n;
+}
+
+static int dump_information32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
+  int n = 0;
+  n += dump_summary(p, o);
+
+  return n;
+}
+
+static int dump_information64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
+  int n = 0;
+  n += dump_summary(p, o);
+
+  return n;
 }
 
 static int dump_fileheader0(const pbuffer_t p, const poptions_t o, const uint64_t e_type, const uint64_t e_machine, const uint64_t e_version,
@@ -1505,6 +1520,7 @@ int readelf(const pbuffer_t p, const poptions_t o) {
     if (isELF32(p)) {
       Elf32_Ehdr *ehdr = get_ehdr32(p);
       if (ehdr) {
+        if (MODE_ISSET(o->action, OPTPROGRAM_INFO))             dump_information32(p, o, ehdr);
         if (MODE_ISSET(o->action, OPTREADELF_FILEHEADER))       dump_fileheader32(p, o, ehdr);
         if (MODE_ISSET(o->action, OPTREADELF_SECTIONHEADERS))   dump_sectionheaders32(p, o, ehdr);
         if (MODE_ISSET(o->action, OPTREADELF_SECTIONGROUPS))    dump_sectiongroups32(p, o, ehdr);
@@ -1521,6 +1537,7 @@ int readelf(const pbuffer_t p, const poptions_t o) {
     } else if (isELF64(p)) {
       Elf64_Ehdr *ehdr = get_ehdr64(p);
       if (ehdr) {
+        if (MODE_ISSET(o->action, OPTPROGRAM_INFO))             dump_information64(p, o, ehdr);
         if (MODE_ISSET(o->action, OPTREADELF_FILEHEADER))       dump_fileheader64(p, o, ehdr);
         if (MODE_ISSET(o->action, OPTREADELF_SECTIONHEADERS))   dump_sectionheaders64(p, o, ehdr);
         if (MODE_ISSET(o->action, OPTREADELF_SECTIONGROUPS))    dump_sectiongroups64(p, o, ehdr);
