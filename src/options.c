@@ -108,7 +108,8 @@ static const args_t OBJHASHARGS[] = {
 
 static int usage_name(poptions_t o, const char* name, const args_t args[]) {
   printf_text("NAME", USE_LT | USE_EOL);
-  printf_text(name, USE_LT | USE_TAB | USE_COLON | USE_EOL);
+  printf_text(name, USE_LT | USE_TAB | USE_COLON);
+  printf_text(zDESCRIPTION, USE_LT | USE_SPACE | USE_EOL);
   printf_eol();
 
   return 0;

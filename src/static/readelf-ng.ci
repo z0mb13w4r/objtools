@@ -1,3 +1,5 @@
+static const char zDESCRIPTION[] = "display information about ELF and PE files.";
+
 static const char zREADELFARGS0[] = "-w";
 static const char zREADELFARGS1[] = "--debug-dump";
 
