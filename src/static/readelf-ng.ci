@@ -1,0 +1,52 @@
+static const char zREADELFARGS0[] = "-w";
+static const char zREADELFARGS1[] = "--debug-dump";
+
+static char zELFARCHSPECIFIC[]   = "Displays architecture-specific information in the file.";
+static char zELFHISTOGRAM[]      = "Display a histogram of bucket list lengths when displaying the contents of the symbol tables.";
+static char zELFSECTIONHEADERS[] = "Displays the information contained in the file's section headers";
+static char zELFVERSIONINFO[]    = "Displays the contents of the version sections in the file.";
+static char zELFDYNAMIC[]        = "Displays the contents of the file's dynamic section.";
+static char zELFHEADERS[]        = "Display all the headers in the file.";
+static char zELFSECTIONGROUPS[]  = "Displays the information contained in the file's section groups.";
+static char zELFFILEHEADER[]     = "Displays the information contained in the ELF header at the start of the file.";
+static char zELFPROGRAMHEADERS[] = "Displays the information contained in the file's segment headers.";
+static char zELFNOTES[]          = "Displays the contents of the NOTE segments.";
+static char zELFRELOCS[]         = "Displays the contents of the file's relocation section.";
+static char zELFSYMBOLS[]        = "Displays the entries in symbol table section of the file.";
+static char zELFUNWIND[]         = "Displays the contents of the file's unwind section.";
+
+static char zHEXDUMP[]           = "Displays the contents of the indicated section as a hexadecimal bytes.";
+static char zSTRDUMP[]           = "Displays the contents of the indicated section as printable strings.";
+static char zCODEDUMP[]          = "Displays the contents of the indicated section as C Language Shell Code.";
+
+static const args_t zREADELFARGS[] = {
+  {'H', "--help",            OPTPROGRAM_HELP},
+  {'v', "--version",         OPTPROGRAM_VERSION},
+  {'A', "--arch-specific",   OPTREADELF_ARCHSPECIFIC,      zELFARCHSPECIFIC},
+  {'I', "--histogram",       OPTREADELF_HISTOGRAM,         zELFHISTOGRAM},
+  {'S', "--section-headers", OPTREADELF_SECTIONHEADERS,    zELFSECTIONHEADERS},
+  {'V', "--version-info",    OPTREADELF_VERSION,           zELFVERSIONINFO},
+  {'a', "--all",             OPTREADELF_ALL},
+  {'d', "--dynamic",         OPTREADELF_DYNAMIC,           zELFDYNAMIC},
+  {'e', "--headers",         OPTREADELF_HEADERS,           zELFHEADERS},
+  {'g', "--section-groups",  OPTREADELF_SECTIONGROUPS,     zELFSECTIONGROUPS},
+  {'h', "--file-header",     OPTREADELF_FILEHEADER,        zELFFILEHEADER},
+  {'l', "--program-headers", OPTREADELF_PROGRAMHEADERS,    zELFPROGRAMHEADERS},
+  {'n', "--notes",           OPTREADELF_NOTES,             zELFNOTES},
+  {'r', "--relocs",          OPTREADELF_RELOCS,            zELFRELOCS},
+  {'s', "--symbols",         OPTREADELF_SYMBOLS,           zELFSYMBOLS},
+  {'u', "--unwind",          OPTREADELF_UNWIND,            zELFUNWIND},
+  {'x', "--hex-dump",        0,                            zHEXDUMP},
+  {'Z', "--code-dump",       0,                            zCODEDUMP},
+  {'p', "--string-dump",     0,                            zSTRDUMP},
+  {'U', "--unicode-dump",    0,                            zSTRDUMP},
+  {'R', "--relocated-dump",  0,                            zHEXDUMP},
+  {'z', "--decompress",      0},
+  {'C', "--disassemble",     0},
+  {'T', "--script",          0},
+  {'I', "--info",            OPTPROGRAM_INFO},
+  {'X', "--hash",            OPTPROGRAM_HASH},
+  {'E', "--entropy",         OPTPROGRAM_ENTROPY},
+  {0, NULL}
+};
+

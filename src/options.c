@@ -7,14 +7,9 @@
 #include "objutils.h"
 
 #include "static/usage.ci"
+#include "static/readelf-ng.ci"
 
 #define VERSION_VALUE "0.0"
-
-typedef struct args_s {
-  char    option1;
-  char   *option2;
-  imode_t action;
-} args_t, *pargs_t;
 
 static const args_t DEBUGELFARGS[] = {
   {'a', "debug_abbrev",       OPTDEBUGELF_DEBUG_ABBREV},
@@ -38,40 +33,6 @@ static const args_t DEBUGELFARGS[] = {
   {'u', "trace_abbrev",       OPTDEBUGELF_TRACE_ABBREV},
   {'U', "trace_info",         OPTDEBUGELF_TRACE_INFO},
   {'g', "gdb_index",          OPTDEBUGELF_GDB_INDEX},
-  {0, NULL}
-};
-
-static const char READELFARGS0[] = "-w";
-static const char READELFARGS1[] = "--debug-dump";
-
-static const args_t READELFARGS[] = {
-  {'H', "--help",            OPTPROGRAM_HELP},
-  {'v', "--version",         OPTPROGRAM_VERSION},
-  {'A', "--arch-specific",   OPTREADELF_ARCHSPECIFIC},
-  {'I', "--histogram",       OPTREADELF_HISTOGRAM},
-  {'S', "--section-headers", OPTREADELF_SECTIONHEADERS},
-  {'V', NULL,                OPTREADELF_VERSION},
-  {'a', "--all",             OPTREADELF_ALL},
-  {'d', "--dynamic",         OPTREADELF_DYNAMIC},
-  {'e', "--headers",         OPTREADELF_HEADERS},
-  {'g', "--section-groups",  OPTREADELF_SECTIONGROUPS},
-  {'h', "--file-header",     OPTREADELF_FILEHEADER},
-  {'l', "--program-headers", OPTREADELF_PROGRAMHEADERS},
-  {'n', "--notes",           OPTREADELF_NOTES},
-  {'r', "--relocs",          OPTREADELF_RELOCS},
-  {'s', "--symbols",         OPTREADELF_SYMBOLS},
-  {'u', "--unwind",          OPTREADELF_UNWIND},
-  {'x', "--hex-dump",        0},
-  {'Z', "--code-dump",       0},
-  {'p', "--string-dump",     0},
-  {'U', "--unicode-dump",    0},
-  {'R', "--relocated-dump",  0},
-  {'z', "--decompress",      0},
-  {'C', "--disassemble",     0},
-  {'T', "--script",          0},
-  {'I', "--info",            OPTPROGRAM_INFO},
-  {'X', "--hash",            OPTPROGRAM_HASH},
-  {'E', "--entropy",         OPTPROGRAM_ENTROPY},
   {0, NULL}
 };
 
@@ -218,25 +179,29 @@ static int usage_options(poptions_t o, const char* name, const args_t args0[], c
                                                          const args_t args1[], const char* more1) {
   MALLOCA(char, buf, 1024);
 
-  printf_text("OPTIONS", USE_LT | USE_EOL);
+  int n = 0;
+  n += printf_text("OPTIONS", USE_LT | USE_EOL);
   for (int j = 0; (0 != args0[j].option1) || (0 != args0[j].option2); ++j) {
     if (args0[j].option1) {
-      printf_nice(args0[j].option1, USE_CHAR | USE_TAB | USE_DASH | USE_EOL);
+      n += printf_nice(args0[j].option1, USE_CHAR | USE_TAB | USE_DASH | USE_EOL);
     }
     if (args0[j].option2) {
-      printf_text(args0[j].option2, USE_LT | USE_TAB | USE_EOL);
+      n += printf_text(args0[j].option2, USE_LT | USE_TAB | USE_EOL);
     }
     if (isbits(args0[j].action)) {
-      printf_pack(4);
-      printf_text("Equivalent to specifying", USE_LT | USE_COLON);
+      n += printf_pack(4);
+      n += printf_text("Equivalent to specifying", USE_LT | USE_COLON);
       for (int k = 0; (0 != args0[k].option1) || (0 != args0[k].option2); ++k) {
         if (k != j && !isbits(args0[k].action) && (args0[k].action & args0[j].action)) {
-          printf_text(args0[k].option2, USE_LT | USE_SPACE);
+          n += printf_text(args0[k].option2, USE_LT | USE_SPACE);
         }
       }
-      printf_eol();
+      n += printf_eol();
+    } else if (0 != args0[j].content) {
+      n += printf_pack(4);
+      n += printf_text(args0[j].content, USE_LT | USE_EOL);
     }
-    printf_eol();
+    n += printf_eol();
   }
 
   if (more0 && args1) {
@@ -246,7 +211,7 @@ static int usage_options(poptions_t o, const char* name, const args_t args0[], c
     }
 
     x += snprintf(buf + x, sizeof(buf) - x, "]");
-    printf_text(buf, USE_LT | USE_TAB | USE_EOL);
+    n += printf_text(buf, USE_LT | USE_TAB | USE_EOL);
   }
 
   if (more1 && args1) {
@@ -256,23 +221,23 @@ static int usage_options(poptions_t o, const char* name, const args_t args0[], c
     }
 
     x += snprintf(buf + x, sizeof(buf) - x, "]");
-    printf_text(buf, USE_LT | USE_TAB | USE_EOL);
-    printf_eol();
+    n += printf_text(buf, USE_LT | USE_TAB | USE_EOL);
+    n += printf_eol();
   }
 
   if (args1) {
     for (int j = 0; (0 != args1[j].option1) || (0 != args1[j].option2); ++j) {
       if (args1[j].option1) {
-        printf_nice(args1[j].option1, USE_CHAR | USE_TAB | USE_DQ | USE_EOL);
+        n += printf_nice(args1[j].option1, USE_CHAR | USE_TAB | USE_DQ | USE_EOL);
       }
       if (args1[j].option2) {
-        printf_text(args1[j].option2, USE_LT | USE_TAB | USE_DQEQ | USE_EOL);
+        n += printf_text(args1[j].option2, USE_LT | USE_TAB | USE_DQEQ | USE_EOL);
       }
-      printf_eol();
+      n += printf_eol();
     }
   }
 
-  return 0;
+  return n;
 }
 
 static int usage_seealso(poptions_t o, const char* name, const args_t args[]) {
@@ -421,7 +386,7 @@ int get_options_readelf(poptions_t o, int argc, char** argv, char* name) {
       MALLOCA(char, arg1, 1024);
 
       if (0 == breakup_args(argv[i], arg0, NELEMENTS(arg0), arg1, NELEMENTS(arg1))) {
-        if (0 == strcmp(arg0, READELFARGS1)) {
+        if (0 == strcmp(arg0, zREADELFARGS1)) {
           o->action |= get_options2(o, DEBUGELFARGS, arg1);
         } else if (0 == strcmp(arg0, "--hex-dump")) {
           oinsertsecname(o, ACT_HEXDUMP, arg1);
@@ -441,10 +406,10 @@ int get_options_readelf(poptions_t o, int argc, char** argv, char* name) {
           sinsert(o, arg1);
         }
       } else {
-        o->action |= get_options2(o, READELFARGS, argv[i]);
+        o->action |= get_options2(o, zREADELFARGS, argv[i]);
       }
     } else if ('-' == argv[i][0]) {
-      if (0 == strcmp(argv[i], READELFARGS0)) {
+      if (0 == strcmp(argv[i], zREADELFARGS0)) {
         imode_t action = get_options1(o, DEBUGELFARGS, argv[i] + 1);
         o->action |= action ? action : set_options1(o, DEBUGELFARGS);
       } else if (0 == strcmp(argv[i], "-x")) {
@@ -464,7 +429,7 @@ int get_options_readelf(poptions_t o, int argc, char** argv, char* name) {
       } else if (0 == strcmp(argv[i], "-T")) {
         sinsert(o, argv[++i]);
       } else {
-        o->action |= get_options1(o, READELFARGS, argv[i]);
+        o->action |= get_options1(o, zREADELFARGS, argv[i]);
       }
     } else {
       strncpy(o->inpname, argv[i], NELEMENTS(o->inpname));
@@ -472,11 +437,11 @@ int get_options_readelf(poptions_t o, int argc, char** argv, char* name) {
   }
 
   if (o->action & OPTPROGRAM_VERSION) {
-    return version0(o, "readelf-ng", READELFARGS);
+    return version0(o, "readelf-ng", zREADELFARGS);
   }
 
   if (o->action & OPTPROGRAM_HELP) {
-    return usage1(o, "readelf-ng", READELFARGS, READELFARGS0, DEBUGELFARGS, READELFARGS1);
+    return usage1(o, "readelf-ng", zREADELFARGS, zREADELFARGS0, DEBUGELFARGS, zREADELFARGS1);
   }
 
   return 0;

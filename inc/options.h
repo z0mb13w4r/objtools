@@ -194,6 +194,13 @@ typedef struct options_s {
   paction_t actions;
 } options_t, *poptions_t;
 
+typedef struct args_s {
+  char    option1;
+  char   *option2;
+  imode_t action;
+  char   *content;
+} args_t, *pargs_t;
+
 int get_options_convert(poptions_t o, int argc, char** argv, char* name);
 int get_options_readelf(poptions_t o, int argc, char** argv, char* name);
 int get_options_objcopy(poptions_t o, int argc, char** argv, char* name);
