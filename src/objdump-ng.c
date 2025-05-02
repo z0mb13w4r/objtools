@@ -7,8 +7,8 @@ int main(int argc, char* argv[]) {
   int r = -1;
   poptions_t o = omalloc();
   if (o) {
-    r = get_options_objdump(o, argc, argv, argv[0]);
-    if (0 == r) {
+    r = get_options_objdump(o, argc - 1, argv + 1, argv[0]);
+    if (0 == r && o->inpname[0]) {
       occonfig(o->prgname, "x86_64-pc-linux-gnu");
 
       handle_t p = ocopen(o->inpname);

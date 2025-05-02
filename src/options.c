@@ -7,6 +7,7 @@
 #include "objutils.h"
 
 #include "static/usage.ci"
+#include "static/objdump-ng.ci"
 #include "static/readelf-ng.ci"
 
 #define VERSION_VALUE "0.0"
@@ -70,31 +71,6 @@ static const args_t OBJCOPYARGS[] = {
   {0,   "--writable-text",                  OPTOBJCOPY_WRITABLE_TEXT},
   {0,   "--dump-sections-all",              OPTOBJCOPY_DUMP_SECTIONS_ALL},
   {0, NULL},
-};
-
-static const char OBJDUMPARGS0[] = "-W";
-static const char OBJDUMPARGS1[] = "--dwarf";
-
-static const args_t OBJDUMPARGS[] = {
-  {'H', "--help",              OPTPROGRAM_HELP},
-  {'V', "--version",           OPTPROGRAM_VERSION},
-  {'D', "--disassemble-all",   OPTOBJDUMP_DISASSEMBLE_ALL | OPTPROGRAM_DISASSEMBLE},
-  {'S', "--source",            OPTPROGRAM_SOURCE_CODE | OPTPROGRAM_DISASSEMBLE},
-  {'T', "--dynamic-symbols",   OPTOBJDUMP_DYNAMIC_SYMBOLS},
-  {'d', "--disassemble",       OPTPROGRAM_DISASSEMBLE},
-  {'g', "--debugging",         OPTDEBUGELF_DEBUGGING},
-  {'e', "--debugging-tags",    OPTPROGRAM_DEBUGGING_TAGS},
-  {'C', "--demangle",          OPTPROGRAM_DEMANGLE},
-  {'s', "--full-contents",     OPTOBJDUMP_SECTIONS},
-  {'t', "--symbols",           OPTOBJDUMP_SYMBOLS},
-  {'f', "--file-headers",      OPTOBJDUMP_FILE_HEADER},
-  {'p', "--private-headers",   OPTOBJDUMP_PRIVATE_HEADER},
-  {'h', "--section-headers",   OPTOBJDUMP_SECTION_HEADER},
-  {'x', "--all-headers",       OPTOBJDUMP_HEADERS},
-  {'l', "--line-numbers",      OPTPROGRAM_LINE_NUMBERS},
-  {'c', "--capstone",          OPTPROGRAM_CAPSTONE_ALL},
-  {'X', "--hash",              OPTPROGRAM_HASH},
-  {0, NULL}
 };
 
 static const args_t OBJHASHARGS[] = {
@@ -373,7 +349,8 @@ int get_options_convert(poptions_t o, int argc, char** argv, char* name) {
 }
 
 int get_options_readelf(poptions_t o, int argc, char** argv, char* name) {
-  if (argc < 1) {
+  if (0 == argc) {
+    usage1(o, "readelf-ng", zREADELFARGS, zREADELFARGS0, DEBUGELFARGS, zREADELFARGS1);
     return -1;
   }
 
@@ -496,7 +473,8 @@ int get_options_objcopy(poptions_t o, int argc, char** argv, char* name) {
 }
 
 int get_options_objdump(poptions_t o, int argc, char** argv, char* name) {
-  if (argc < 1) {
+  if (0 == argc) {
+    usage1(o, "objdump-ng", OBJDUMPARGS, OBJDUMPARGS0, DEBUGELFARGS, OBJDUMPARGS1);
     return -1;
   }
 

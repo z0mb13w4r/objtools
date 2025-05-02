@@ -166,7 +166,7 @@ static int dump_header(const handle_t p, const poptions_t o) {
   printf_text(bfd_printable_arch_mach(bfd_get_arch(ocgetbfd(p)), bfd_get_mach(ocgetbfd(p))), USE_SPACE | USE_EOL);
 
   printf_text("Flags", USE_LT | USE_TAB | USE_COLON | SET_PAD(18));
-  printf_nice(ocget_flags(p) & ~BFD_FLAGS_FOR_BFD_USE_MASK, USE_FHEX32 | USE_COLON);
+  printf_nice(ocget_flags(p) & ~BFD_FLAGS_FOR_BFD_USE_MASK, USE_FHEX32);
   printf_mask(zHAS_FLAGS, ocget_flags(p), USE_EOL);
   printf_text("Start Address", USE_LT | USE_TAB | USE_COLON | SET_PAD(18));
   printf_nice(ocget_saddress(p), USE_FHEX64 | USE_EOL);
