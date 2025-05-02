@@ -165,6 +165,11 @@ static int usage_options(poptions_t o, const char* name, const args_t args0[], c
     if (args0[j].option2) {
       n += printf_text(args0[j].option2, USE_LT | USE_TAB | USE_EOL);
     }
+    if (0 != args0[j].content) {
+      n += printf_pack(4);
+      n += printf_text(args0[j].content, USE_LT | USE_EOL);
+    }
+
     if (isbits(args0[j].action)) {
       n += printf_pack(4);
       n += printf_text("Equivalent to specifying", USE_LT | USE_COLON);
@@ -174,9 +179,12 @@ static int usage_options(poptions_t o, const char* name, const args_t args0[], c
         }
       }
       n += printf_eol();
-    } else if (0 != args0[j].content) {
-      n += printf_pack(4);
-      n += printf_text(args0[j].content, USE_LT | USE_EOL);
+    } else if (MODE_ISLOCKED(args0[j].action, OPTPROGRAM_HELP)) {
+      snprintf(buf, sizeof(buf), "Print a summary of the options to %s and exit.", name);
+      n += printf_text(buf, USE_LT | USE_TAB | USE_EOL);
+    } else if (MODE_ISLOCKED(args0[j].action, OPTPROGRAM_VERSION)) {
+      snprintf(buf, sizeof(buf), "Print the version number of %s and exit.", name);
+      n += printf_text(buf, USE_LT | USE_TAB | USE_EOL);
     }
     n += printf_eol();
   }
@@ -474,7 +482,7 @@ int get_options_objcopy(poptions_t o, int argc, char** argv, char* name) {
 
 int get_options_objdump(poptions_t o, int argc, char** argv, char* name) {
   if (0 == argc) {
-    usage1(o, "objdump-ng", OBJDUMPARGS, OBJDUMPARGS0, DEBUGELFARGS, OBJDUMPARGS1);
+    usage1(o, "objdump-ng", zOBJDUMPARGS, zOBJDUMPARGS0, DEBUGELFARGS, zOBJDUMPARGS1);
     return -1;
   }
 
@@ -488,18 +496,18 @@ int get_options_objdump(poptions_t o, int argc, char** argv, char* name) {
       MALLOCA(char, arg1, 256);
 
       if (0 == breakup_args(argv[i], arg0, NELEMENTS(arg0), arg1, NELEMENTS(arg1))) {
-        if (0 == strcmp(arg0, OBJDUMPARGS1)) {
+        if (0 == strcmp(arg0, zOBJDUMPARGS1)) {
           o->action |= get_options2(o, DEBUGELFARGS, arg1);
         }
       } else {
-        o->action |= get_options2(o, OBJDUMPARGS, argv[i]);
+        o->action |= get_options2(o, zOBJDUMPARGS, argv[i]);
       }
     } else if ('-' == argv[i][0]) {
-      if (0 == strcmp(argv[i], OBJDUMPARGS0)) {
+      if (0 == strcmp(argv[i], zOBJDUMPARGS0)) {
         imode_t action = get_options1(o, DEBUGELFARGS, argv[i] + 1);
         o->action |= action ? action : set_options1(o, DEBUGELFARGS);
       } else {
-        o->action |= get_options1(o, OBJDUMPARGS, argv[i]);
+        o->action |= get_options1(o, zOBJDUMPARGS, argv[i]);
       }
     } else {
       strncpy(o->inpname, argv[i], NELEMENTS(o->inpname));
@@ -507,11 +515,11 @@ int get_options_objdump(poptions_t o, int argc, char** argv, char* name) {
   }
 
   if (o->action & OPTPROGRAM_VERSION) {
-    return version0(o, "objdump-ng", OBJDUMPARGS);
+    return version0(o, "objdump-ng", zOBJDUMPARGS);
   }
 
   if (o->action & OPTPROGRAM_HELP) {
-    return usage1(o, "objdump-ng", OBJDUMPARGS, OBJDUMPARGS0, DEBUGELFARGS, OBJDUMPARGS1);
+    return usage1(o, "objdump-ng", zOBJDUMPARGS, zOBJDUMPARGS0, DEBUGELFARGS, zOBJDUMPARGS1);
   }
 
   return 0;

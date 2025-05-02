@@ -1,22 +1,26 @@
-static const char OBJDUMPARGS0[] = "-W";
-static const char OBJDUMPARGS1[] = "--dwarf";
+static char zDUMPDYNAMIC[]      = "Print the dynamic symbol table entries of the file.";
+static char zDUMPSYMBOLS[]      = "Print the symbol table entries of the file.";
+static char zDUMPALLHEADERS[]   = "Display all available header information, including the symbol table and relocation entries.";
 
-static const args_t OBJDUMPARGS[] = {
+static const char zOBJDUMPARGS0[] = "-W";
+static const char zOBJDUMPARGS1[] = "--dwarf";
+
+static const args_t zOBJDUMPARGS[] = {
   {'H', "--help",              OPTPROGRAM_HELP},
   {'V', "--version",           OPTPROGRAM_VERSION},
   {'D', "--disassemble-all",   OPTOBJDUMP_DISASSEMBLE_ALL | OPTPROGRAM_DISASSEMBLE},
   {'S', "--source",            OPTPROGRAM_SOURCE_CODE | OPTPROGRAM_DISASSEMBLE},
-  {'T', "--dynamic-symbols",   OPTOBJDUMP_DYNAMIC_SYMBOLS},
+  {'T', "--dynamic-symbols",   OPTOBJDUMP_DYNAMIC_SYMBOLS,                               zDUMPDYNAMIC},
   {'d', "--disassemble",       OPTPROGRAM_DISASSEMBLE},
   {'g', "--debugging",         OPTDEBUGELF_DEBUGGING},
   {'e', "--debugging-tags",    OPTPROGRAM_DEBUGGING_TAGS},
   {'C', "--demangle",          OPTPROGRAM_DEMANGLE},
   {'s', "--full-contents",     OPTOBJDUMP_SECTIONS},
-  {'t', "--symbols",           OPTOBJDUMP_SYMBOLS},
+  {'t', "--symbols",           OPTOBJDUMP_SYMBOLS,                                       zDUMPSYMBOLS},
   {'f', "--file-headers",      OPTOBJDUMP_FILE_HEADER},
   {'p', "--private-headers",   OPTOBJDUMP_PRIVATE_HEADER},
   {'h', "--section-headers",   OPTOBJDUMP_SECTION_HEADER},
-  {'x', "--all-headers",       OPTOBJDUMP_HEADERS},
+  {'x', "--all-headers",       OPTOBJDUMP_HEADERS,                                       zDUMPALLHEADERS},
   {'l', "--line-numbers",      OPTPROGRAM_LINE_NUMBERS},
   {'c', "--capstone",          OPTPROGRAM_CAPSTONE_ALL},
   {'X', "--hash",              OPTPROGRAM_HASH},
