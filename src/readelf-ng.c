@@ -9,7 +9,7 @@ int main(int argc, char* argv[]) {
   poptions_t o = omalloc();
   if (o) {
     r = get_options_readelf(o, argc - 1, argv + 1, argv[0]);
-    if (0 == r) {
+    if (0 == r && o->inpname[0]) {
       pbuffer_t p = bopen(o->inpname);
       if (p) {
         if (OPT_READELF == o->option) {
