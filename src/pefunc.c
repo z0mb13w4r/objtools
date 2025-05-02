@@ -24,7 +24,7 @@ const char* funcpicknull(const ppefunc_t p, const pick_t x) {
   return NULL;
 }
 
-const char* get_namebyord(const pbuffer_t p, const char* name, const pick_t x) {
+const char* peget_namebyord(const pbuffer_t p, const char* name, const pick_t x) {
   if (0 == strcasecmp(name, "ADVAPI32.dll"))      return funcpick(zADVAPI32, x);
   else if (0 == strcasecmp(name, "ADVPACK.dll"))  return funcpick(zADVPACK, x);
   else if (0 == strcasecmp(name, "COMCTL32.dll")) return funcpick(zCOMCTL32, x);
@@ -33,8 +33,10 @@ const char* get_namebyord(const pbuffer_t p, const char* name, const pick_t x) {
   else if (0 == strcasecmp(name, "IPHLPAPI.dll")) return funcpick(zIPHLPAPI, x);
   else if (0 == strcasecmp(name, "KERNEL32.dll")) return funcpick(zKERNEL32, x);
   else if (0 == strcasecmp(name, "NTDLL.dll"))    return funcpick(zNTDLL, x);
+  else if (0 == strcasecmp(name, "NTOSKRNL.exe")) return funcpick(zNTOSKRNL, x);
   else if (0 == strcasecmp(name, "OLE32.dll"))    return funcpick(zOLE32, x);
   else if (0 == strcasecmp(name, "OLEAUT32.dll")) return funcpick(zOLEAUT32, x);
+  else if (0 == strcasecmp(name, "SECUR32.dll"))  return funcpick(zSECUR32, x);
   else if (0 == strcasecmp(name, "SHLWAPI.dll"))  return funcpick(zSHLWAPI, x);
   else if (0 == strcasecmp(name, "USER32.dll"))   return funcpick(zUSER32, x);
   else if (0 == strcasecmp(name, "WININET.dll"))  return funcpick(zWININET, x);

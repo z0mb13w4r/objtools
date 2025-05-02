@@ -182,6 +182,7 @@ static pefunc_t zKERNEL32[] = {
   {"IsDebuggerPresent",                -1,   PEFUNC_CRITICAL},
   {"CheckRemoteDebuggerPresent",       -1,   PEFUNC_CRITICAL},
   {"CreateRemoteThread",               -1,   PEFUNC_CRITICAL},
+  {"IsWow64Process",                   -1,   PEFUNC_CRITICAL},
   {"CreateFileA",                      -1,   PEFUNC_INFO},
   {"CreateFileW",                      -1,   PEFUNC_INFO},
   {"GetTickCount",                     -1,   PEFUNC_CRITICAL},
@@ -189,11 +190,16 @@ static pefunc_t zKERNEL32[] = {
   {"CreateFileMappingA",               -1,   PEFUNC_CRITICAL},
   {"CreateFileMappingW",               -1,   PEFUNC_CRITICAL},
   {"GetThreadContext",                 -1,   PEFUNC_CRITICAL},
+  {"MapViewOfFile",                    -1,   PEFUNC_CRITICAL},
   {"CreateMutexA",                     -1,   PEFUNC_INFO},
   {"CreateMutexW",                     -1,   PEFUNC_INFO},
   {"CreateMutexExA",                   -1,   PEFUNC_INFO},
   {"CreateMutexExW",                   -1,   PEFUNC_INFO},
-  {"CreateToolhelp32Snapshot",         -1,   PEFUNC_ALERT},
+  {"CreateToolhelp32Snapshot",         -1,   PEFUNC_CRITICAL},
+  {"Module32First",                    -1,   PEFUNC_CRITICAL},
+  {"Module32FirstW",                   -1,   PEFUNC_CRITICAL},
+  {"Module32Next",                     -1,   PEFUNC_CRITICAL},
+  {"Module32NextW",                    -1,   PEFUNC_CRITICAL},
   {"DeviceIoControl",                  -1,   PEFUNC_ALERT},
   {"EnumProcesses",                    -1,   PEFUNC_ALERT},
   {"FindFirstFileA",                   -1,   PEFUNC_ALERT},
@@ -208,6 +214,7 @@ static pefunc_t zKERNEL32[] = {
   {"GetTempPathW",                     -1,   PEFUNC_ALERT},
   {"GetTempPath2A",                    -1,   PEFUNC_ALERT},
   {"GetTempPath2W",                    -1,   PEFUNC_ALERT},
+  {"LoadResource",                     -1,   PEFUNC_ALERT},
   {"FindResourceA",                    -1,   PEFUNC_INFO},
   {"FindResourceW",                    -1,   PEFUNC_INFO},
   {"FindResourceExA",                  -1,   PEFUNC_INFO},
@@ -219,6 +226,11 @@ static pefunc_t zNTDLL[] = {
   {"LdrLoadDll",                       -1,   PEFUNC_BLACKLIST},
   {"LdrGetProcedureAddress",           -1,   PEFUNC_BLACKLIST},
   {0, 0}
+};
+
+static pefunc_t zNTOSKRNL[] = {
+  {"MmGetSystemRoutineAddress",        -1,  PEFUNC_BLACKLIST},
+  {0, 0},
 };
 
 static pefunc_t zOLEAUT32[] = {
@@ -645,6 +657,11 @@ static pefunc_t zOLE32[] = {
   {0, 0}
 };
 
+static pefunc_t zSECUR32[] = {
+  {"LsaEnumerateLogonSessions",        -1,   PEFUNC_BLACKLIST},
+  {0, 0}
+};
+
 static pefunc_t zSHLWAPI[] = {
   {"DllInstall",                       -1,   PEFUNC_INFO},
   {0, 0}
@@ -663,6 +680,8 @@ static pefunc_t zUSER32[] = {
   {"EnumWindows",                      -1,   PEFUNC_ALERT},
   {"GetAsyncKeyState",                 -1,   PEFUNC_ALERT},
   {"GetKeyState",                      -1,   PEFUNC_ALERT},
+  {"MapVirtualKeyA",                   -1,   PEFUNC_ALERT},
+  {"MapVirtualKeyW",                   -1,   PEFUNC_ALERT},
   {0, 0}
 };
 

@@ -18,7 +18,7 @@ typedef struct pefunc_s {
 const char* funcpick(const ppefunc_t p, const pick_t x);
 const char* funcpicknull(const ppefunc_t p, const pick_t x);
 
-const char* get_namebyord(const pbuffer_t p, const char* name, const pick_t x);
+const char* peget_namebyord(const pbuffer_t p, const char* name, const pick_t x);
 
 #endif
 
