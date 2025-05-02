@@ -9,33 +9,9 @@
 #include "static/usage.ci"
 #include "static/objdump-ng.ci"
 #include "static/readelf-ng.ci"
+#include "static/objdebug-ng.ci"
 
 #define VERSION_VALUE "0.0"
-
-static const args_t DEBUGELFARGS[] = {
-  {'a', "debug_abbrev",       OPTDEBUGELF_DEBUG_ABBREV},
-  {'A', "debug_addr",         OPTDEBUGELF_DEBUG_ADDR},
-  {'c', "debug_cu_index",     OPTDEBUGELF_DEBUG_CU_INDEX},
-  {'f', "debug_frame",        OPTDEBUGELF_DEBUG_FRAME},
-  {'F', "debug_frame_interp", OPTDEBUGELF_DEBUG_FRAME_INTERP},
-  {'i', "debug_info",         OPTDEBUGELF_DEBUG_INFO},
-  {'k', "debug_links",        OPTDEBUGELF_DEBUG_LINK},
-  {'K', "debug_links_follow", OPTDEBUGELF_DEBUG_LINK_FOLLOW},
-  {'l', "debug_line_raw",     OPTDEBUGELF_DEBUG_LINE},
-  {'L', "debug_line_decoded", OPTDEBUGELF_DEBUG_LINE_DECODED},
-  {'m', "debug_macro",        OPTDEBUGELF_DEBUG_MACRO},
-  {'o', "debug_loc",          OPTDEBUGELF_DEBUG_LOC},
-  {'r', "debug_aranges",      OPTDEBUGELF_DEBUG_ARANGES},
-  {'R', "debug_ranges",       OPTDEBUGELF_DEBUG_RANGES},
-  {'s', "debug_str",          OPTDEBUGELF_DEBUG_STR},
-  {'p', "debug_pubnames",     OPTDEBUGELF_DEBUG_PUBNAMES},
-  {'t', "debug_pubtype",      OPTDEBUGELF_DEBUG_PUBTYPES},
-  {'T', "trace_aranges",      OPTDEBUGELF_TRACE_ARANGES},
-  {'u', "trace_abbrev",       OPTDEBUGELF_TRACE_ABBREV},
-  {'U', "trace_info",         OPTDEBUGELF_TRACE_INFO},
-  {'g', "gdb_index",          OPTDEBUGELF_GDB_INDEX},
-  {0, NULL}
-};
 
 static const args_t OBJCOPYARGS[] = {
   {'H', "--help",                           OPTPROGRAM_HELP},
@@ -82,10 +58,10 @@ static const args_t OBJHASHARGS[] = {
   {0, NULL}
 };
 
-static int usage_name(poptions_t o, const char* name, const args_t args[]) {
+static int usage_name(poptions_t o, const char* name, const args_t args[], const char* desc) {
   printf_text("NAME", USE_LT | USE_EOL);
   printf_text(name, USE_LT | USE_TAB | USE_COLON);
-  printf_text(zDESCRIPTION, USE_LT | USE_SPACE | USE_EOL);
+  printf_text(desc, USE_LT | USE_SPACE | USE_EOL);
   printf_eol();
 
   return 0;
@@ -218,6 +194,10 @@ static int usage_options(poptions_t o, const char* name, const args_t args0[], c
       if (args1[j].option2) {
         n += printf_text(args1[j].option2, USE_LT | USE_TAB | USE_DQEQ | USE_EOL);
       }
+      if (0 != args1[j].content) {
+        n += printf_pack(4);
+        n += printf_text(args1[j].content, USE_LT | USE_EOL);
+      }
       n += printf_eol();
     }
   }
@@ -227,7 +207,7 @@ static int usage_options(poptions_t o, const char* name, const args_t args0[], c
 
 static int usage_seealso(poptions_t o, const char* name, const args_t args[]) {
   printf_text("SEE ALSO", USE_LT | USE_EOL);
-  printf_book(ALLSEE, USE_LT | USE_TAB | USE_EOL);
+  printf_book(zALLSEE, USE_LT | USE_TAB | USE_EOL);
   printf_eol();
 
   return 0;
@@ -242,14 +222,14 @@ static int usage_version(poptions_t o, const char* name, const args_t args[]) {
 
 static int usage_copyright(poptions_t o, const char* name, const args_t args[]) {
   printf_text("COPYRIGHT", USE_LT | USE_EOL);
-  printf_book(LICENSE, USE_LT | USE_TAB | USE_EOL);
+  printf_book(zLICENSE, USE_LT | USE_TAB | USE_EOL);
   printf_eol();
 
   return 0;
 }
 
 static int usage0(poptions_t o, const char* name, const args_t args[]) {
-  usage_name(o, name, args);
+  usage_name(o, name, args, zDESCRIPTION);
   usage_synopsis(o, name, args, NULL, NULL, NULL);
   usage_description(o, name, args);
   usage_options(o, name, args, NULL, NULL, NULL);
@@ -260,7 +240,7 @@ static int usage0(poptions_t o, const char* name, const args_t args[]) {
 }
 
 static int usage1(poptions_t o, const char* name, const args_t args0[], const char* more0, const args_t args1[], const char* more1) {
-  usage_name(o, name, args0);
+  usage_name(o, name, args0, zDESCRIPTION);
   usage_synopsis(o, name, args0, more0, args1, more1);
   usage_description(o, name, args0);
   usage_options(o, name, args0, more0, args1, more1);
@@ -358,7 +338,7 @@ int get_options_convert(poptions_t o, int argc, char** argv, char* name) {
 
 int get_options_readelf(poptions_t o, int argc, char** argv, char* name) {
   if (0 == argc) {
-    usage1(o, "readelf-ng", zREADELFARGS, zREADELFARGS0, DEBUGELFARGS, zREADELFARGS1);
+    usage1(o, "readelf-ng", zREADELFARGS, zREADELFARGS0, zDEBUGELFARGS, zREADELFARGS1);
     return -1;
   }
 
@@ -373,7 +353,7 @@ int get_options_readelf(poptions_t o, int argc, char** argv, char* name) {
 
       if (0 == breakup_args(argv[i], arg0, NELEMENTS(arg0), arg1, NELEMENTS(arg1))) {
         if (0 == strcmp(arg0, zREADELFARGS1)) {
-          o->action |= get_options2(o, DEBUGELFARGS, arg1);
+          o->action |= get_options2(o, zDEBUGELFARGS, arg1);
         } else if (0 == strcmp(arg0, "--hex-dump")) {
           oinsertsecname(o, ACT_HEXDUMP, arg1);
         } else if (0 == strcmp(arg0, "--string-dump")) {
@@ -396,8 +376,8 @@ int get_options_readelf(poptions_t o, int argc, char** argv, char* name) {
       }
     } else if ('-' == argv[i][0]) {
       if (0 == strcmp(argv[i], zREADELFARGS0)) {
-        imode_t action = get_options1(o, DEBUGELFARGS, argv[i] + 1);
-        o->action |= action ? action : set_options1(o, DEBUGELFARGS);
+        imode_t action = get_options1(o, zDEBUGELFARGS, argv[i] + 1);
+        o->action |= action ? action : set_options1(o, zDEBUGELFARGS);
       } else if (0 == strcmp(argv[i], "-x")) {
         oinsertsecname(o, ACT_HEXDUMP, argv[++i]);
       } else if (0 == strcmp(argv[i], "-p")) {
@@ -427,7 +407,7 @@ int get_options_readelf(poptions_t o, int argc, char** argv, char* name) {
   }
 
   if (o->action & OPTPROGRAM_HELP) {
-    return usage1(o, "readelf-ng", zREADELFARGS, zREADELFARGS0, DEBUGELFARGS, zREADELFARGS1);
+    return usage1(o, "readelf-ng", zREADELFARGS, zREADELFARGS0, zDEBUGELFARGS, zREADELFARGS1);
   }
 
   return 0;
@@ -482,7 +462,7 @@ int get_options_objcopy(poptions_t o, int argc, char** argv, char* name) {
 
 int get_options_objdump(poptions_t o, int argc, char** argv, char* name) {
   if (0 == argc) {
-    usage1(o, "objdump-ng", zOBJDUMPARGS, zOBJDUMPARGS0, DEBUGELFARGS, zOBJDUMPARGS1);
+    usage1(o, "objdump-ng", zOBJDUMPARGS, zOBJDUMPARGS0, zDEBUGELFARGS, zOBJDUMPARGS1);
     return -1;
   }
 
@@ -497,15 +477,15 @@ int get_options_objdump(poptions_t o, int argc, char** argv, char* name) {
 
       if (0 == breakup_args(argv[i], arg0, NELEMENTS(arg0), arg1, NELEMENTS(arg1))) {
         if (0 == strcmp(arg0, zOBJDUMPARGS1)) {
-          o->action |= get_options2(o, DEBUGELFARGS, arg1);
+          o->action |= get_options2(o, zDEBUGELFARGS, arg1);
         }
       } else {
         o->action |= get_options2(o, zOBJDUMPARGS, argv[i]);
       }
     } else if ('-' == argv[i][0]) {
       if (0 == strcmp(argv[i], zOBJDUMPARGS0)) {
-        imode_t action = get_options1(o, DEBUGELFARGS, argv[i] + 1);
-        o->action |= action ? action : set_options1(o, DEBUGELFARGS);
+        imode_t action = get_options1(o, zDEBUGELFARGS, argv[i] + 1);
+        o->action |= action ? action : set_options1(o, zDEBUGELFARGS);
       } else {
         o->action |= get_options1(o, zOBJDUMPARGS, argv[i]);
       }
@@ -519,7 +499,7 @@ int get_options_objdump(poptions_t o, int argc, char** argv, char* name) {
   }
 
   if (o->action & OPTPROGRAM_HELP) {
-    return usage1(o, "objdump-ng", zOBJDUMPARGS, zOBJDUMPARGS0, DEBUGELFARGS, zOBJDUMPARGS1);
+    return usage1(o, "objdump-ng", zOBJDUMPARGS, zOBJDUMPARGS0, zDEBUGELFARGS, zOBJDUMPARGS1);
   }
 
   return 0;

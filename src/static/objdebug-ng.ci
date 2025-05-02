@@ -1,0 +1,39 @@
+static char zDEBUGABBREV[]       = "Displays the contents of the .debug_abbrev section.";
+static char zDEBUGADDR[]         = "Displays the contents of the .debug_addr section.";
+static char zDEBUGCUINDEX[]      = "Displays the contents of the .debug_cu_index|.debug_tu_index sections.";
+static char zDEBUGFRAME[]        = "Display the raw contents of a .debug_frame section.";
+static char zDEBUGFRAMEINTERP[]  = "Display the interpreted contents of a .debug_frame section.";
+static char zDEBUGINFO[]         = "Displays the contents of the .debug_info section.";
+static char zDEBUGLINKS[]        = "Displays the contents of the .gnu_debuglink|.gnu_debugaltlink sections.";
+static char zDEBUGMACRO[]        = "Displays the contents of the .debug_macro|.debug_macinfo sections.";
+static char zDEBUGLOC[]          = "Displays the contents of the .debug_loc|.debug_loclists sections.";
+static char zDEBUGARANGES[]      = "Displays the contents of the .debug_aranges section.";
+static char zDEBUGRANGES[]       = "Displays the contents of the .debug_ranges|.debug_rnglists sections.";
+static char zDEBUGSTR[]          = "Displays the contents of the .debug_str|.debug_line_str|.debug_str_offsets sections.";
+static char zDEBUGGDBINDEX[]     = "Displays the contents of the .gdb_index|.debug_names sections.";
+
+static const args_t zDEBUGELFARGS[] = {
+  {'a', "debug_abbrev",       OPTDEBUGELF_DEBUG_ABBREV,        zDEBUGABBREV},
+  {'A', "debug_addr",         OPTDEBUGELF_DEBUG_ADDR,          zDEBUGADDR},
+  {'c', "debug_cu_index",     OPTDEBUGELF_DEBUG_CU_INDEX,      zDEBUGCUINDEX},
+  {'f', "debug_frame",        OPTDEBUGELF_DEBUG_FRAME,         zDEBUGFRAME},
+  {'F', "debug_frame_interp", OPTDEBUGELF_DEBUG_FRAME_INTERP,  zDEBUGFRAMEINTERP},
+  {'i', "debug_info",         OPTDEBUGELF_DEBUG_INFO,          zDEBUGINFO},
+  {'k', "debug_links",        OPTDEBUGELF_DEBUG_LINK,          zDEBUGLINKS},
+  {'K', "debug_links_follow", OPTDEBUGELF_DEBUG_LINK_FOLLOW},
+  {'l', "debug_line_raw",     OPTDEBUGELF_DEBUG_LINE},
+  {'L', "debug_line_decoded", OPTDEBUGELF_DEBUG_LINE_DECODED},
+  {'m', "debug_macro",        OPTDEBUGELF_DEBUG_MACRO,         zDEBUGMACRO},
+  {'o', "debug_loc",          OPTDEBUGELF_DEBUG_LOC,           zDEBUGLOC},
+  {'r', "debug_aranges",      OPTDEBUGELF_DEBUG_ARANGES,       zDEBUGARANGES},
+  {'R', "debug_ranges",       OPTDEBUGELF_DEBUG_RANGES,        zDEBUGRANGES},
+  {'s', "debug_str",          OPTDEBUGELF_DEBUG_STR,           zDEBUGSTR},
+  {'p', "debug_pubnames",     OPTDEBUGELF_DEBUG_PUBNAMES},
+  {'t', "debug_pubtype",      OPTDEBUGELF_DEBUG_PUBTYPES},
+  {'T', "trace_aranges",      OPTDEBUGELF_TRACE_ARANGES},
+  {'u', "trace_abbrev",       OPTDEBUGELF_TRACE_ABBREV},
+  {'U', "trace_info",         OPTDEBUGELF_TRACE_INFO},
+  {'g', "gdb_index",          OPTDEBUGELF_GDB_INDEX,           zDEBUGGDBINDEX},
+  {0, NULL}
+};
+

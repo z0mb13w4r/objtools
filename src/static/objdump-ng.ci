@@ -17,6 +17,7 @@ static const args_t zOBJDUMPARGS[] = {
   {'C', "--demangle",          OPTPROGRAM_DEMANGLE},
   {'s', "--full-contents",     OPTOBJDUMP_SECTIONS},
   {'t', "--symbols",           OPTOBJDUMP_SYMBOLS,                                       zDUMPSYMBOLS},
+  {'r', "--reloc",             OPTOBJDUMP_RELOC},
   {'f', "--file-headers",      OPTOBJDUMP_FILE_HEADER},
   {'p', "--private-headers",   OPTOBJDUMP_PRIVATE_HEADER},
   {'h', "--section-headers",   OPTOBJDUMP_SECTION_HEADER},

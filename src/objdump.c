@@ -66,6 +66,9 @@ static void callback_dwarf(handle_t p, handle_t section, unknown_t param) {
   printf_eol();
 }
 
+static void callback_reloc(handle_t p, handle_t section, unknown_t param) {
+}
+
 static void callback_sections(handle_t p, handle_t section, unknown_t param) {
   if ((ocget_flags(section) & SEC_HAS_CONTENTS) == 0) return;
 
@@ -249,6 +252,11 @@ static int dump_symbols(const handle_t p, const poptions_t o, const imode_t mode
   return 0;
 }
 
+static int dump_reloc(const handle_t p, const poptions_t o) {
+  ocdo_sections(p, callback_reloc, NULL);
+  return 0;
+}
+
 static int dump_sections(const handle_t p, const poptions_t o) {
   printf_text("SECTION CONTENTS", USE_LT | USE_COLON | USE_EOL);
   ocdo_sections(p, callback_sections, NULL);
@@ -277,14 +285,15 @@ static int do_object(const handle_t p, const poptions_t o) {
   printf_text(ocget_fileformat(p), USE_SPACE | USE_EOL);
   printf_eol();
 
-  if (o->action & OPTOBJDUMP_FILE_HEADER)        dump_header(p, o);
-  if (o->action & OPTOBJDUMP_PRIVATE_HEADER)     dump_privatehdr(p, o);
-  if (o->action & OPTOBJDUMP_SECTION_HEADER)     dump_sectionhdr(p, o);
-  if (o->action & OPTOBJDUMP_SYMBOLS)            dump_symbols(p, o, OPCODE_SYMBOLS);
-  if (o->action & OPTOBJDUMP_DYNAMIC_SYMBOLS)    dump_symbols(p, o, OPCODE_SYMBOLS_DYNAMIC);
-  if (o->action & OPTOBJDUMP_SECTIONS)           dump_sections(p, o);
-  if (o->action & OPTPROGRAM_DISASSEMBLE)        dump_disassemble(p, o);
-  if (o->action & OPTDEBUGELF_DEBUGGING)         dump_dwarf(p, o);
+  if (MODE_ISSET(o->action, OPTOBJDUMP_FILE_HEADER))        dump_header(p, o);
+  if (MODE_ISSET(o->action, OPTOBJDUMP_PRIVATE_HEADER))     dump_privatehdr(p, o);
+  if (MODE_ISSET(o->action, OPTOBJDUMP_SECTION_HEADER))     dump_sectionhdr(p, o);
+  if (MODE_ISSET(o->action, OPTOBJDUMP_SYMBOLS))            dump_symbols(p, o, OPCODE_SYMBOLS);
+  if (MODE_ISSET(o->action, OPTOBJDUMP_DYNAMIC_SYMBOLS))    dump_symbols(p, o, OPCODE_SYMBOLS_DYNAMIC);
+  if (MODE_ISSET(o->action, OPTOBJDUMP_RELOC))              dump_reloc(p, o);
+  if (MODE_ISSET(o->action, OPTOBJDUMP_SECTIONS))           dump_sections(p, o);
+  if (MODE_ISSET(o->action, OPTPROGRAM_DISASSEMBLE))        dump_disassemble(p, o);
+  if (MODE_ISSET(o->action, OPTDEBUGELF_DEBUGGING))         dump_dwarf(p, o);
 
   return 0;
 }

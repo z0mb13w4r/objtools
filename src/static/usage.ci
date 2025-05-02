@@ -1,4 +1,6 @@
-const char *ALLSEE[] = {
+static const char zDESCRIPTION[] = "display information about ELF and PE files.";
+
+const char *zALLSEE[] = {
   "convert-ng",
   "readelf-ng",
   "objcopy-ng",
@@ -7,7 +9,7 @@ const char *ALLSEE[] = {
   0
 };
 
-const char *LICENSE[] = {
+const char *zLICENSE[] = {
   "MIT License",
   "",
   "Copyright (c) 2025 Kyle Wickens",
