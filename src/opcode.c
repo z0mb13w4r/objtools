@@ -493,7 +493,8 @@ handle_t ocfree(handle_t p) {
     }
     bfree(p0->items[OPCODE_SYMBOLS]);
     bfree(p0->items[OPCODE_SYMBOLS_DYNAMIC]);
-    bfree(p0->items[OPCODE_DISASSEMBLER]);
+    xfree(p0->items[OPCODE_DISASSEMBLER]);
+    xfree(p0->items[OPCODE_OUTDATA]);
     free(p);
     return NULL;
   }

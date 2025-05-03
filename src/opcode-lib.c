@@ -1,9 +1,29 @@
 #include "opcode.h"
 #include "printf.h"
+#include "bstring.h"
 #include "opcode-lib.h"
 
 #define DEFAULT_SKIP_ZEROES            (8)
 #define DEFAULT_SKIP_ZEROES_AT_END     (3)
+
+static int custom_fprintf(void *p, const char * format, ...) {
+  popcode_t oc = CAST(popcode_t, p);
+  va_list args;
+  char o[1024];
+
+  int n = 0;
+  if (oc->items[OPCODE_OUTDATA]) {
+    pbstring_t ps = CAST(pbstring_t, oc->items[OPCODE_OUTDATA]);
+    if (ps) {
+      va_start(args, format);
+      n = vsnprintf(o, 1024, format, args);
+      va_end(args);
+      bstrcat(ps, o);
+    }
+  }
+
+  return n;
+}
 
 int opcodelib_open(handle_t p, handle_t o) {
   if (isopcode(p)) {
@@ -15,9 +35,12 @@ int opcodelib_open(handle_t p, handle_t o) {
         di = xmalloc(sizeof(struct disassemble_info));
         oc->items[OPCODE_DISASSEMBLER] = di;
       }
+      if (NULL == oc->items[OPCODE_OUTDATA]) {
+        oc->items[OPCODE_OUTDATA] = bstrmallocsize(1024);
+      }
       if (di) {
         /* Construct and configure the disassembler_info class using stdout */
-        init_disassemble_info(di, stdout, (fprintf_ftype)fprintf);
+        init_disassemble_info(di, oc, (fprintf_ftype)custom_fprintf);
 
         di->application_data = oc;
         di->arch = bfd_get_arch(bf);
@@ -45,6 +68,12 @@ int opcodelib_open(handle_t p, handle_t o) {
 }
 
 int opcodelib_close(handle_t p) {
+  if (isopcode(p)) {
+    popcode_t oc = CAST(popcode_t, p);
+    xfree(oc->items[OPCODE_OUTDATA]);
+    oc->items[OPCODE_OUTDATA] = NULL;
+  }
+
   return 0;
 }
 
@@ -74,13 +103,20 @@ int opcodelib_run(handle_t p, handle_t s) {
       di->section       = ocget(s, MODE_OCSHDR);
       di->buffer        = xmalloc(di->buffer_length);
 
+      puchar_t p0 = CAST(puchar_t, di->buffer);
       if (bfd_get_section_contents(oc->items[OPCODE_BFD], di->section, di->buffer, 0, di->buffer_length)) {
         while (soffset < eoffset) {
-          printf("%4lx: ", soffset);
+          pbstring_t ps = CAST(pbstring_t, oc->items[OPCODE_OUTDATA]);
+          bstrclr(ps);
           int siz = oc->ocfunc(soffset, di);
           if (siz <= 0) return -1;
+          printf_nice(soffset, USE_HEX4 | USE_COLON);
+          for (int i = 0; i < siz; ++i) {
+            printf_nice(p0[i], USE_LHEX8);
+          }
+          printf_sore(ps->data, ps->size, USE_STR | USE_SPACE | USE_EOL);
           soffset += siz;
-          printf_eol();
+          p0 += siz;
         }
       }
 
