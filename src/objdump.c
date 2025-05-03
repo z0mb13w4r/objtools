@@ -67,6 +67,12 @@ static void callback_dwarf(handle_t p, handle_t section, unknown_t param) {
 }
 
 static void callback_reloc(handle_t p, handle_t section, unknown_t param) {
+  if ((ocget_flags(section) & SEC_HAS_CONTENTS) == 0) return;
+  if ((ocget_flags(section) & SEC_RELOC) == 0) return;
+
+  printf_text("RELOCATION RECORDS FOR", USE_LT);
+  printf_text(ocget_name(section), USE_LT | USE_SPACE | USE_SB | USE_COLON | USE_EOL);
+  printf_text("OFFSET TYPE VALUE", USE_LT | USE_EOL);
 }
 
 static void callback_sections(handle_t p, handle_t section, unknown_t param) {
