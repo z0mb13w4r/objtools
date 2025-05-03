@@ -9,6 +9,8 @@ static pefunc_t zADVAPI32[] = {
   {"CryptAcquireContextA",             -1,   PEFUNC_BLACKLIST},
   {"CryptAcquireContextW",             -1,   PEFUNC_BLACKLIST},
   {"IsNTAdmin",                        -1,   PEFUNC_BLACKLIST},
+  {"OpenSCManagerA",                   -1,   PEFUNC_BLACKLIST},
+  {"OpenSCManagerW",                   -1,   PEFUNC_BLACKLIST},
   {0, 0}
 };
 
@@ -179,6 +181,11 @@ static pefunc_t zKERNEL32[] = {
   {"LoadLibraryExA",                   -1,   PEFUNC_CRITICAL},
   {"CreateProcessA",                   -1,   PEFUNC_ALERT},
   {"CreateProcessW",                   -1,   PEFUNC_ALERT},
+  {"OpenProcess",                      -1,   PEFUNC_ALERT},
+  {"Process32First",                   -1,   PEFUNC_CRITICAL},
+  {"Process32FirstW",                  -1,   PEFUNC_CRITICAL},
+  {"Process32Next",                    -1,   PEFUNC_CRITICAL},
+  {"Process32NextW",                   -1,   PEFUNC_CRITICAL},
   {"IsDebuggerPresent",                -1,   PEFUNC_CRITICAL},
   {"CheckRemoteDebuggerPresent",       -1,   PEFUNC_CRITICAL},
   {"CreateRemoteThread",               -1,   PEFUNC_CRITICAL},
@@ -191,10 +198,13 @@ static pefunc_t zKERNEL32[] = {
   {"CreateFileMappingW",               -1,   PEFUNC_CRITICAL},
   {"GetThreadContext",                 -1,   PEFUNC_CRITICAL},
   {"MapViewOfFile",                    -1,   PEFUNC_CRITICAL},
+  {"PeekNamedPipe",                    -1,   PEFUNC_CRITICAL},
   {"CreateMutexA",                     -1,   PEFUNC_INFO},
   {"CreateMutexW",                     -1,   PEFUNC_INFO},
   {"CreateMutexExA",                   -1,   PEFUNC_INFO},
   {"CreateMutexExW",                   -1,   PEFUNC_INFO},
+  {"OpenMutexA",                       -1,   PEFUNC_INFO},
+  {"OpenMutexW",                       -1,   PEFUNC_INFO},
   {"CreateToolhelp32Snapshot",         -1,   PEFUNC_CRITICAL},
   {"Module32First",                    -1,   PEFUNC_CRITICAL},
   {"Module32FirstW",                   -1,   PEFUNC_CRITICAL},
@@ -219,17 +229,28 @@ static pefunc_t zKERNEL32[] = {
   {"FindResourceW",                    -1,   PEFUNC_INFO},
   {"FindResourceExA",                  -1,   PEFUNC_INFO},
   {"FindResourceExW",                  -1,   PEFUNC_INFO},
+  {"OutputDebugStringA",               -1,   PEFUNC_ALERT},
+  {"OutputDebugStringW",               -1,   PEFUNC_ALERT},
+  {0, 0}
+};
+
+static pefunc_t zNETAPI32[] = {
+  {"NetScheduleJobAdd",                -1,   PEFUNC_CRITICAL},
+  {"NetShareEnum",                     -1,   PEFUNC_CRITICAL},
   {0, 0}
 };
 
 static pefunc_t zNTDLL[] = {
   {"LdrLoadDll",                       -1,   PEFUNC_BLACKLIST},
   {"LdrGetProcedureAddress",           -1,   PEFUNC_BLACKLIST},
+  {"NtQueryInformationProcess",        -1,   PEFUNC_BLACKLIST},
+  {"NtSetInformationProcess",          -1,   PEFUNC_BLACKLIST},
   {0, 0}
 };
 
 static pefunc_t zNTOSKRNL[] = {
   {"MmGetSystemRoutineAddress",        -1,  PEFUNC_BLACKLIST},
+  {"NtQueryDirectoryFile",             -1,  PEFUNC_BLACKLIST},
   {0, 0},
 };
 
@@ -654,6 +675,7 @@ static pefunc_t zOLE32[] = {
   {"CoCreateInstanceEx",               -1,   PEFUNC_INFO},
   {"DllRegisterServer",                -1,   PEFUNC_INFO},
   {"DllUnregisterServer",              -1,   PEFUNC_INFO},
+  {"OleInitialize",                    -1,   PEFUNC_INFO},
   {0, 0}
 };
 

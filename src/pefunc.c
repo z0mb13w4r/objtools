@@ -32,6 +32,7 @@ const char* peget_namebyord(const pbuffer_t p, const char* name, const pick_t x)
   else if (0 == strcasecmp(name, "GDI32.dll"))    return funcpick(zGDI32, x);
   else if (0 == strcasecmp(name, "IPHLPAPI.dll")) return funcpick(zIPHLPAPI, x);
   else if (0 == strcasecmp(name, "KERNEL32.dll")) return funcpick(zKERNEL32, x);
+  else if (0 == strcasecmp(name, "NETAPI32.dll")) return funcpick(zNETAPI32, x);
   else if (0 == strcasecmp(name, "NTDLL.dll"))    return funcpick(zNTDLL, x);
   else if (0 == strcasecmp(name, "NTOSKRNL.exe")) return funcpick(zNTOSKRNL, x);
   else if (0 == strcasecmp(name, "OLE32.dll"))    return funcpick(zOLE32, x);

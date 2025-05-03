@@ -13,6 +13,7 @@ typedef struct pefunc_s {
   const char*   text;
   const pick_t  ords;
   const imode_t mode;
+  const char*   desc;
 } pefunc_t, *ppefunc_t;
 
 const char* funcpick(const ppefunc_t p, const pick_t x);
