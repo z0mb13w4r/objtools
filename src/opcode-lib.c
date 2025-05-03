@@ -79,6 +79,30 @@ int opcodelib_close(handle_t p) {
 
 int opcodelib_raw(handle_t p, handle_t s, unknown_t data, const size_t size, const uint64_t vaddr) {
   int n = 0;
+  if (isopcode(p) && isopshdr(s)) {
+    popcode_t oc = CAST(popcode_t, p);
+    puchar_t p0 = CAST(puchar_t, data);
+
+    uint64_t soffset = vaddr;
+    uint64_t eoffset = vaddr + size;
+
+    while (soffset < eoffset) {
+      pbstring_t ps = CAST(pbstring_t, oc->items[OPCODE_OUTDATA]);
+      bstrclr(ps);
+
+      struct disassemble_info* di = oc->items[OPCODE_DISASSEMBLER];
+      int siz = oc->ocfunc(soffset, di);
+      if (siz <= 0) return n;
+
+      n += printf_nice(soffset, USE_HEX4 | USE_COLON);
+      for (int i = 0; i < siz; ++i) {
+        n += printf_nice(p0[i], USE_LHEX8);
+      }
+      n += printf_sore(ps->data, ps->size, USE_STR | USE_SPACE | USE_EOL);
+      soffset += siz;
+      p0 += siz;
+    }
+  }
 
   return n;
 }
@@ -86,15 +110,6 @@ int opcodelib_raw(handle_t p, handle_t s, unknown_t data, const size_t size, con
 int opcodelib_run(handle_t p, handle_t s) {
   int n = 0;
   if (isopcode(p) && isopshdr(s)) {
-//    uint64_t soffset = ocget_soffset(p, s);
-//    uint64_t eoffset = ocget_eoffset(p, s);
-
-//    uint64_t soffset = ocget_saddress(p);
-//    uint64_t eoffset = ocget_saddress(p) + ocget_size(s);
-
-    uint64_t soffset = ocget_vmaddress(s);
-    uint64_t eoffset = ocget_vmaddress(s) + ocget_size(s);
-
     popcode_t oc = CAST(popcode_t, p);
     struct disassemble_info* di = oc->items[OPCODE_DISASSEMBLER];
     if (di) {
@@ -103,21 +118,8 @@ int opcodelib_run(handle_t p, handle_t s) {
       di->section       = ocget(s, MODE_OCSHDR);
       di->buffer        = xmalloc(di->buffer_length);
 
-      puchar_t p0 = CAST(puchar_t, di->buffer);
       if (bfd_get_section_contents(oc->items[OPCODE_BFD], di->section, di->buffer, 0, di->buffer_length)) {
-        while (soffset < eoffset) {
-          pbstring_t ps = CAST(pbstring_t, oc->items[OPCODE_OUTDATA]);
-          bstrclr(ps);
-          int siz = oc->ocfunc(soffset, di);
-          if (siz <= 0) return -1;
-          printf_nice(soffset, USE_HEX4 | USE_COLON);
-          for (int i = 0; i < siz; ++i) {
-            printf_nice(p0[i], USE_LHEX8);
-          }
-          printf_sore(ps->data, ps->size, USE_STR | USE_SPACE | USE_EOL);
-          soffset += siz;
-          p0 += siz;
-        }
+        n += opcodelib_raw(p, s, di->buffer, ocget_size(s), ocget_vmaddress(s));
       }
 
       free(di->buffer);
