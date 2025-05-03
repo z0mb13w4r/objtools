@@ -87,6 +87,7 @@ int opcodelib_raw(handle_t p, handle_t s, unknown_t data, const size_t size, con
     uint64_t eoffset = vaddr + size;
 
     while (soffset < eoffset) {
+      int n2 = 0;
       pbstring_t ps = CAST(pbstring_t, oc->items[OPCODE_OUTDATA]);
       bstrclr(ps);
 
@@ -94,13 +95,14 @@ int opcodelib_raw(handle_t p, handle_t s, unknown_t data, const size_t size, con
       int siz = oc->ocfunc(soffset, di);
       if (siz <= 0) return n;
 
-      n += printf_nice(soffset, USE_HEX4 | USE_COLON);
-      for (int i = 0; i < siz; ++i) {
-        n += printf_nice(p0[i], USE_LHEX8);
-      }
-      n += printf_sore(ps->data, ps->size, USE_STR | USE_SPACE | USE_EOL);
+      n2 += printf_nice(soffset, USE_HEX4 | USE_COLON);
+      n2 += printf_sore(p0, siz, USE_HEX | USE_SPACE);
+      n2 += printf_pack(31 - n2);
+      n2 += printf_sore(ps->data, ps->size, USE_STR | USE_SPACE | USE_EOL);
+
       soffset += siz;
       p0 += siz;
+      n += n2;
     }
   }
 
