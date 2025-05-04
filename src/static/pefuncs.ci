@@ -6,6 +6,8 @@ static pefunc_t zADVAPI32[] = {
   {"QueryServiceStatusEx",             -1,   PEFUNC_BLACKLIST},
   {"CreateServiceA",                   -1,   PEFUNC_BLACKLIST},
   {"CreateServiceW",                   -1,   PEFUNC_BLACKLIST},
+  {"StartServiceCtrlDispatcherA",      -1,   PEFUNC_BLACKLIST},
+  {"StartServiceCtrlDispatcherW",      -1,   PEFUNC_BLACKLIST},
   {"CryptAcquireContextA",             -1,   PEFUNC_BLACKLIST},
   {"CryptAcquireContextW",             -1,   PEFUNC_BLACKLIST},
   {"IsNTAdmin",                        -1,   PEFUNC_BLACKLIST},
@@ -180,6 +182,7 @@ static pefunc_t zIPHLPAPI[] = {
 };
 
 static pefunc_t zKERNEL32[] = {
+  {"WinExec",                          -1,   PEFUNC_CRITICAL},
   {"GetVersion",                       -1,   PEFUNC_CRITICAL},
   {"GetVersionExA",                    -1,   PEFUNC_CRITICAL},
   {"GetVersionExW",                    -1,   PEFUNC_CRITICAL},
@@ -211,6 +214,8 @@ static pefunc_t zKERNEL32[] = {
   {"IsWow64Process",                   -1,   PEFUNC_CRITICAL},
   {"CreateFileA",                      -1,   PEFUNC_INFO},
   {"CreateFileW",                      -1,   PEFUNC_INFO},
+  {"WideCharToMultiByte",              -1,   PEFUNC_INFO},
+  {"MultiByteToWideChar",              -1,   PEFUNC_INFO},
   {"GetTickCount",                     -1,   PEFUNC_CRITICAL},
   {"QueryPerformanceCounter",          -1,   PEFUNC_CRITICAL},
   {"QueryPerformanceFrequency",        -1,   PEFUNC_CRITICAL},
@@ -229,9 +234,12 @@ static pefunc_t zKERNEL32[] = {
   {"CreateMutexW",                     -1,   PEFUNC_INFO},
   {"CreateMutexExA",                   -1,   PEFUNC_INFO},
   {"CreateMutexExW",                   -1,   PEFUNC_INFO},
+  {"Thread32First",                    -1,   PEFUNC_CRITICAL},
+  {"Thread32Next",                     -1,   PEFUNC_CRITICAL},
   {"OpenMutexA",                       -1,   PEFUNC_INFO},
   {"OpenMutexW",                       -1,   PEFUNC_INFO},
   {"CreateToolhelp32Snapshot",         -1,   PEFUNC_CRITICAL},
+  {"Toolhelp32ReadProcessMemory",      -1,   PEFUNC_CRITICAL},
   {"Module32First",                    -1,   PEFUNC_CRITICAL},
   {"Module32FirstW",                   -1,   PEFUNC_CRITICAL},
   {"Module32Next",                     -1,   PEFUNC_CRITICAL},
@@ -257,8 +265,21 @@ static pefunc_t zKERNEL32[] = {
   {"FindResourceExW",                  -1,   PEFUNC_INFO},
   {"OutputDebugStringA",               -1,   PEFUNC_ALERT},
   {"OutputDebugStringW",               -1,   PEFUNC_ALERT},
+  {"SetFileTime",                      -1,   PEFUNC_INFO},
+  {"GetFileTime",                      -1,   PEFUNC_INFO},
+  {"GetFileSize",                      -1,   PEFUNC_INFO},
   {"QueueUserAPC",                     -1,   PEFUNC_BLACKLIST},
   {"ReadProcessMemory",                -1,   PEFUNC_BLACKLIST},
+  {"WriteProcessMemory",               -1,   PEFUNC_BLACKLIST},
+  {"VirtualAlloc",                     -1,   PEFUNC_BLACKLIST},
+  {"VirtualAllocEx",                   -1,   PEFUNC_BLACKLIST},
+  {"VirtualProtect",                   -1,   PEFUNC_BLACKLIST},
+  {"VirtualProtectEx",                 -1,   PEFUNC_BLACKLIST},
+  {"VirtualFree",                      -1,   PEFUNC_BLACKLIST},
+  {"VirtualFreeEx",                    -1,   PEFUNC_BLACKLIST},
+  {"VirtualLock",                      -1,   PEFUNC_BLACKLIST},
+  {"VirtualUnlock",                    -1,   PEFUNC_BLACKLIST},
+  {"Wow64DisableWow64FsRedirection",   -1,   PEFUNC_BLACKLIST},
   {0, 0}
 };
 
@@ -279,6 +300,9 @@ static pefunc_t zNTDLL[] = {
 static pefunc_t zNTOSKRNL[] = {
   {"MmGetSystemRoutineAddress",        -1,  PEFUNC_BLACKLIST},
   {"NtQueryDirectoryFile",             -1,  PEFUNC_BLACKLIST},
+  {"RtlCreateRegistryKey",             -1,  PEFUNC_BLACKLIST},
+  {"RtlDeleteRegistryValue",           -1,  PEFUNC_BLACKLIST},
+  {"RtlWriteRegistryValue",            -1,  PEFUNC_BLACKLIST},
   {0, 0},
 };
 
@@ -712,8 +736,19 @@ static pefunc_t zSECUR32[] = {
   {0, 0}
 };
 
+static pefunc_t zSHELL32[] = {
+  {"ShellExecuteA",                    -1,   PEFUNC_BLACKLIST},
+  {"ShellExecuteW",                    -1,   PEFUNC_BLACKLIST},
+  {0, 0}
+};
+
 static pefunc_t zSHLWAPI[] = {
   {"DllInstall",                       -1,   PEFUNC_INFO},
+  {0, 0}
+};
+
+static pefunc_t zURLMON[] = {
+  {"URLDownloadToFile",                -1,   PEFUNC_CRITICAL},
   {0, 0}
 };
 
@@ -723,6 +758,8 @@ static pefunc_t zUSER32[] = {
   {"AttachThreadInput",                -1,   PEFUNC_CRITICAL},
   {"RegisterHotKey",                   -1,   PEFUNC_ALERT},
   {"CallNextHookEx",                   -1,   PEFUNC_ALERT},
+  {"SetWindowsHookExA",                -1,   PEFUNC_ALERT},
+  {"SetWindowsHookExW",                -1,   PEFUNC_ALERT},
   {"GetForegroundWindow",              -1,   PEFUNC_ALERT},
   {"FindWindowA",                      -1,   PEFUNC_ALERT},
   {"FindWindowW",                      -1,   PEFUNC_ALERT},
@@ -807,8 +844,8 @@ static pefunc_t zWSOCK32[] = {
   {"WSASetLastError",                  112},
   {"WSACancelBlockingCall",            113},
   {"WSAIsBlocking",                    114},
-  {"WSAStartup",                       115},
-  {"WSACleanup",                       116},
+  {"WSAStartup",                       115,  PEFUNC_INFO},
+  {"WSACleanup",                       116,  PEFUNC_INFO},
   {"__WSAFDIsSet",                     151},
   {"WEP",                              500},
   {"WSApSetPostRoutine",               1000},
@@ -955,8 +992,8 @@ static pefunc_t zWS2_32[] = {
   {"WSASetLastError",                  112},
   {"WSACancelBlockingCall",            113},
   {"WSAIsBlocking",                    114},
-  {"WSAStartup",                       115},
-  {"WSACleanup",                       116},
+  {"WSAStartup",                       115,  PEFUNC_INFO},
+  {"WSACleanup",                       116,  PEFUNC_INFO},
   {"WSAStringToAddressA",              117},
   {"WSAStringToAddressW",              118},
   {"WSAUnadvertiseProvider",           119},

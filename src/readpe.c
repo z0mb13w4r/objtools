@@ -642,7 +642,7 @@ static int dump_iat32(const pbuffer_t p, const poptions_t o) {
         n += dump_iat2(p, p2->AddressOfData);
         uint64_t Ordinal = (p2->AddressOfData & ~IMAGE_THUNK_DATA_IS_IMPORT_ORDINAL) & 0xffff;
         if (p2->AddressOfData & IMAGE_THUNK_DATA_IS_IMPORT_ORDINAL) {
-          n += printf_text(peget_namebyord(p, Name, Ordinal), USE_LT | USE_TAB2);
+          n += printf_text(get_ORDDLL(p, Name, Ordinal), USE_LT | USE_TAB2);
           n += printf_nice(Ordinal, USE_DEC | USE_SB);
           n += printf_text("(Imported by Ordinal)", USE_LT | USE_SPACE | USE_EOL);
         } else {
@@ -684,7 +684,7 @@ static int dump_iat64(const pbuffer_t p, const poptions_t o) {
       while (p2 && p2->AddressOfData) {
         uint64_t Ordinal = (p2->AddressOfData & ~IMAGE_THUNK_DATA_IS_IMPORT_ORDINAL) & 0xffff;
         if (p2->AddressOfData & IMAGE_THUNK_DATA_IS_IMPORT_ORDINAL) {
-          n += printf_text(peget_namebyord(p, Name, Ordinal), USE_LT | USE_TAB2);
+          n += printf_text(get_ORDDLL(p, Name, Ordinal), USE_LT | USE_TAB2);
           n += printf_nice(Ordinal, USE_DEC | USE_SB);
           n += printf_text("(Imported by Ordinal)", USE_LT | USE_SPACE | USE_EOL);
         } else {

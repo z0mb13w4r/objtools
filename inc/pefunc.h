@@ -3,11 +3,11 @@
 
 #include "buffer.h"
 
-#define PEFUNC_NONE                    U64MASK_NONE
-#define PEFUNC_BLACKLIST               U64MASK(0)
-#define PEFUNC_CRITICAL                U64MASK(1)
-#define PEFUNC_ALERT                   U64MASK(2)
-#define PEFUNC_INFO                    U64MASK(3)
+#define PEFUNC_UNKNOWN                 (0)
+#define PEFUNC_INFO                    (1)
+#define PEFUNC_ALERT                   (2)
+#define PEFUNC_CRITICAL                (3)
+#define PEFUNC_BLACKLIST               (4)
 
 typedef struct pefunc_s {
   const char*   text;
@@ -16,10 +16,14 @@ typedef struct pefunc_s {
   const char*   desc;
 } pefunc_t, *ppefunc_t;
 
+ppefunc_t funcchoice(const ppefunc_t p, const char* name);
+
 const char* funcpick(const ppefunc_t p, const pick_t x);
 const char* funcpicknull(const ppefunc_t p, const pick_t x);
 
-const char* peget_namebyord(const pbuffer_t p, const char* name, const pick_t x);
+const char* get_ORDDLL(const pbuffer_t p, const char* name, const pick_t x);
+
+imode_t get_MODEDLL(const pbuffer_t p, const char* name);
 
 #endif
 

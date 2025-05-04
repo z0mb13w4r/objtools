@@ -1,7 +1,7 @@
 #include "pefunc.h"
 #include "objutils.h"
 
-#include "static/ordinals.ci"
+#include "static/pefuncs.ci"
 
 const char* funcpick(const ppefunc_t p, const pick_t x) {
   const char* s = funcpicknull(p, x);
@@ -24,7 +24,19 @@ const char* funcpicknull(const ppefunc_t p, const pick_t x) {
   return NULL;
 }
 
-const char* peget_namebyord(const pbuffer_t p, const char* name, const pick_t x) {
+ppefunc_t funcchoice(const ppefunc_t p, const char* name) {
+  if (p) {
+    for (ppefunc_t pp = p; 0 != pp->text; ++pp) {
+      if (0 == strcasecmp(pp->text, name)) {
+        return pp;
+      }
+    }
+  }
+
+  return NULL;
+}
+
+const char* get_ORDDLL(const pbuffer_t p, const char* name, const pick_t x) {
   if (0 == strcasecmp(name, "ADVAPI32.dll"))      return funcpick(zADVAPI32, x);
   else if (0 == strcasecmp(name, "ADVPACK.dll"))  return funcpick(zADVPACK, x);
   else if (0 == strcasecmp(name, "COMCTL32.dll")) return funcpick(zCOMCTL32, x);
@@ -37,13 +49,19 @@ const char* peget_namebyord(const pbuffer_t p, const char* name, const pick_t x)
   else if (0 == strcasecmp(name, "NTOSKRNL.exe")) return funcpick(zNTOSKRNL, x);
   else if (0 == strcasecmp(name, "OLE32.dll"))    return funcpick(zOLE32, x);
   else if (0 == strcasecmp(name, "OLEAUT32.dll")) return funcpick(zOLEAUT32, x);
+  else if (0 == strcasecmp(name, "SHELL32.dll"))  return funcpick(zSHELL32, x);
   else if (0 == strcasecmp(name, "SECUR32.dll"))  return funcpick(zSECUR32, x);
   else if (0 == strcasecmp(name, "SHLWAPI.dll"))  return funcpick(zSHLWAPI, x);
+  else if (0 == strcasecmp(name, "URLMON.dll"))   return funcpick(zURLMON, x);
   else if (0 == strcasecmp(name, "USER32.dll"))   return funcpick(zUSER32, x);
   else if (0 == strcasecmp(name, "WININET.dll"))  return funcpick(zWININET, x);
   else if (0 == strcasecmp(name, "WS2_32.dll"))   return funcpick(zWS2_32, x);
   else if (0 == strcasecmp(name, "WSOCK32.dll"))  return funcpick(zWSOCK32, x);
 
   return strpickunknown(x);
+}
+
+imode_t get_MODEDLL(const pbuffer_t p, const char* name) {
+  return PEFUNC_UNKNOWN;
 }
 
