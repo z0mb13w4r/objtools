@@ -23,6 +23,12 @@ int main(int argc, char* argv[]) {
               b0 = bstring4(b0, base64_decode(b0->data, b0->size));
             } else if (ACT_BASE64E == x->action) {
               b0 = bstring4(b0, base64_encode(b0->data, b0->size));
+            } else if (ACT_HEX8E == x->action) {
+              b0 = bstring4(b0, hex8_encode(b0->data, b0->size));
+            } else if (ACT_HEX16E == x->action) {
+              b0 = bstring4(b0, hex16_encode(b0->data, b0->size));
+            } else if (ACT_HEX32E == x->action) {
+              b0 = bstring4(b0, hex32_encode(b0->data, b0->size));
             }
 
             x = x->actions;
