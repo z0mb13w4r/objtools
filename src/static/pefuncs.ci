@@ -1063,3 +1063,27 @@ static pefunc_t zWS2_32[] = {
   {0, 0}
 };
 
+static peobject_t zPEOBJECTS[] = {
+  {"ADVAPI32.dll",   zADVAPI32},
+  {"ADVPACK.dll",    zADVPACK},
+  {"COMCTL32.dll",   zCOMCTL32},
+  {"CRYPT32.dll",    zCRYPT32},
+  {"GDI32.dll",      zGDI32},
+  {"IPHLPAPI.dll",   zIPHLPAPI},
+  {"KERNEL32.dll",   zKERNEL32},
+  {"NETAPI32.dll",   zNETAPI32},
+  {"NTDLL.dll",      zNTDLL},
+  {"NTOSKRNL.exe",   zNTOSKRNL},
+  {"OLE32.dll",      zOLE32},
+  {"OLEAUT32.dll",   zOLEAUT32},
+  {"SHELL32.dll",    zSHELL32},
+  {"SECUR32.dll",    zSECUR32},
+  {"SHLWAPI.dll",    zSHLWAPI},
+  {"URLMON.dll",     zURLMON},
+  {"USER32.dll",     zUSER32},
+  {"WININET.dll",    zWININET},
+  {"WS2_32.dll",     zWS2_32},
+  {"WSOCK32.dll",    zWSOCK32},
+  {0, 0},
+};
+

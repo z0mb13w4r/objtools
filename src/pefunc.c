@@ -37,31 +37,23 @@ ppefunc_t funcchoice(const ppefunc_t p, const char* name) {
 }
 
 const char* get_ORDDLL(const pbuffer_t p, const char* name, const pick_t x) {
-  if (0 == strcasecmp(name, "ADVAPI32.dll"))      return funcpick(zADVAPI32, x);
-  else if (0 == strcasecmp(name, "ADVPACK.dll"))  return funcpick(zADVPACK, x);
-  else if (0 == strcasecmp(name, "COMCTL32.dll")) return funcpick(zCOMCTL32, x);
-  else if (0 == strcasecmp(name, "CRYPT32.dll"))  return funcpick(zCRYPT32, x);
-  else if (0 == strcasecmp(name, "GDI32.dll"))    return funcpick(zGDI32, x);
-  else if (0 == strcasecmp(name, "IPHLPAPI.dll")) return funcpick(zIPHLPAPI, x);
-  else if (0 == strcasecmp(name, "KERNEL32.dll")) return funcpick(zKERNEL32, x);
-  else if (0 == strcasecmp(name, "NETAPI32.dll")) return funcpick(zNETAPI32, x);
-  else if (0 == strcasecmp(name, "NTDLL.dll"))    return funcpick(zNTDLL, x);
-  else if (0 == strcasecmp(name, "NTOSKRNL.exe")) return funcpick(zNTOSKRNL, x);
-  else if (0 == strcasecmp(name, "OLE32.dll"))    return funcpick(zOLE32, x);
-  else if (0 == strcasecmp(name, "OLEAUT32.dll")) return funcpick(zOLEAUT32, x);
-  else if (0 == strcasecmp(name, "SHELL32.dll"))  return funcpick(zSHELL32, x);
-  else if (0 == strcasecmp(name, "SECUR32.dll"))  return funcpick(zSECUR32, x);
-  else if (0 == strcasecmp(name, "SHLWAPI.dll"))  return funcpick(zSHLWAPI, x);
-  else if (0 == strcasecmp(name, "URLMON.dll"))   return funcpick(zURLMON, x);
-  else if (0 == strcasecmp(name, "USER32.dll"))   return funcpick(zUSER32, x);
-  else if (0 == strcasecmp(name, "WININET.dll"))  return funcpick(zWININET, x);
-  else if (0 == strcasecmp(name, "WS2_32.dll"))   return funcpick(zWS2_32, x);
-  else if (0 == strcasecmp(name, "WSOCK32.dll"))  return funcpick(zWSOCK32, x);
+  if (name) {
+    for (ppeobject_t pp = zPEOBJECTS; 0 != pp->name; ++pp) {
+      if (0 == strcasecmp(name, pp->name))      return funcpick(pp->func, x);
+    }
+  }
 
   return strpickunknown(x);
 }
 
-imode_t get_MODEDLL(const pbuffer_t p, const char* name) {
+imode_t get_MODEFUNC(const pbuffer_t p, const char* name) {
+  if (name) {
+    for (ppeobject_t pp = zPEOBJECTS; 0 != pp->name; ++pp) {
+      ppefunc_t p0 = funcchoice(pp->func, name);
+      if (p0) return p0->mode;
+    }
+  }
+
   return PEFUNC_UNKNOWN;
 }
 

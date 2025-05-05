@@ -16,6 +16,11 @@ typedef struct pefunc_s {
   const char*   desc;
 } pefunc_t, *ppefunc_t;
 
+typedef struct peobject_s {
+  const char* name;
+  ppefunc_t   func;
+} peobject_t, *ppeobject_t;
+
 ppefunc_t funcchoice(const ppefunc_t p, const char* name);
 
 const char* funcpick(const ppefunc_t p, const pick_t x);
@@ -23,7 +28,7 @@ const char* funcpicknull(const ppefunc_t p, const pick_t x);
 
 const char* get_ORDDLL(const pbuffer_t p, const char* name, const pick_t x);
 
-imode_t get_MODEDLL(const pbuffer_t p, const char* name);
+imode_t get_MODEFUNC(const pbuffer_t p, const char* name);
 
 #endif
 
