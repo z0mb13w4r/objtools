@@ -1,0 +1,7 @@
+static const args_t zCONVERTARGS[] = {
+  {'H', "--help",              OPTPROGRAM_HELP},
+  {'V', "--version",           OPTPROGRAM_VERSION},
+  {'O', "--output",            0},
+  {0, NULL}
+};
+

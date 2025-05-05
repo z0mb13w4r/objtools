@@ -7,6 +7,7 @@
 #include "objutils.h"
 
 #include "static/usage.ci"
+#include "static/convert-ng.ci"
 #include "static/objdump-ng.ci"
 #include "static/readelf-ng.ci"
 #include "static/objdebug-ng.ci"
@@ -311,7 +312,8 @@ static int breakup_args(char* args, char* dst0, const size_t dst0size, char* dst
 }
 
 int get_options_convert(poptions_t o, int argc, char** argv, char* name) {
-  if (argc < 1) {
+  if (0 == argc) {
+    usage0(o, "convert-ng", zCONVERTARGS);
     return -1;
   }
 
@@ -320,17 +322,34 @@ int get_options_convert(poptions_t o, int argc, char** argv, char* name) {
   set_errname(o->prgname);
 
   for (int i = 0; i < argc; ++i) {
-    if (0 != sinsert(o, argv[i])) {
+    if ('-' == argv[i][0] && '-' == argv[i][1]) {
+      MALLOCA(char, arg0, 1024);
+      MALLOCA(char, arg1, 1024);
+
+      if (0 == breakup_args(argv[i], arg0, NELEMENTS(arg0), arg1, NELEMENTS(arg1))) {
+        if (0 == strcmp(arg0, "--output")) {
+          strncpy(o->outname, arg1, NELEMENTS(o->outname));
+        }
+      } else {
+        o->action |= get_options2(o, zCONVERTARGS, argv[i]);
+      }
+    } else if ('-' == argv[i][0] && 0 != argv[i][1]) {
+      if (0 == strcmp(argv[i], "-O")) {
+        strncpy(o->outname, argv[++i], NELEMENTS(o->outname));
+      } else {
+        o->action |= get_options1(o, zCONVERTARGS, argv[i]);
+      }
+    } else if (0 != sinsert(o, argv[i])) {
       strncpy(o->inpname, argv[i], NELEMENTS(o->inpname));
     }
   }
 
   if (o->action & OPTPROGRAM_VERSION) {
-//    return version0(o, "readelf-ng", READELFARGS);
+    return version0(o, "convert-ng", zCONVERTARGS);
   }
 
   if (o->action & OPTPROGRAM_HELP) {
-//    return usage1(o, "readelf-ng", READELFARGS, READELFARGS0, DEBUGELFARGS, READELFARGS1);
+    return usage0(o, "convert-ng", zCONVERTARGS);
   }
 
   return 0;
@@ -362,11 +381,11 @@ int get_options_readelf(poptions_t o, int argc, char** argv, char* name) {
           oinsertsecname(o, ACT_STRDUMP16, arg1);
         } else if (0 == strcmp(arg0, "--relocated-dump")) {
           oinsertsecname(o, ACT_RELDUMP, arg1);
-        } else if (0 == strcmp(argv[i], "--code-dump")) {
+        } else if (0 == strcmp(arg0, "--code-dump")) {
           oinsertsecname(o, ACT_CODEDUMP, arg1);
-        } else if (0 == strcmp(argv[i], "--disassemble")) {
+        } else if (0 == strcmp(arg0, "--disassemble")) {
           oinsertsecname(o, ACT_DISASSEMBLE, arg1);
-        } else if (0 == strcmp(argv[i], "--decompress")) {
+        } else if (0 == strcmp(arg0, "--decompress")) {
           oinsertsecname(o, ACT_ZLIB, arg1);
         } else if (0 == strcmp(arg0, "--script")) {
           sinsert(o, arg1);

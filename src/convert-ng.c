@@ -10,8 +10,8 @@ int main(int argc, char* argv[]) {
   int r = -1;
   poptions_t o = omalloc();
   if (o) {
-    r = get_options_convert(o, argc, argv, argv[0]);
-    if (0 == r) {
+    r = get_options_convert(o, argc - 1, argv + 1, argv[0]);
+    if (0 == r && o->inpname[0]) {
       pbuffer_t p = bopen(o->inpname);
       if (issafe(p) && OPT_CONVERT == o->option) {
         pbstring_t b0 = bstring1(p);
@@ -33,8 +33,11 @@ int main(int argc, char* argv[]) {
 
             x = x->actions;
           }
-
-          printf_text(b0->data, USE_LT | USE_EOL);
+          if (o->outname[0]) {
+printf("%s\n", o->outname);
+          } else {
+            printf_text(b0->data, USE_LT | USE_EOL);
+          }
           xfree(b0);
         }
       }
