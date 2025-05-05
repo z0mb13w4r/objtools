@@ -40,7 +40,6 @@ static pefunc_t zADVPACK[] = {
   {0, 0}
 };
 
-
 static pefunc_t zCOMCTL32[] = {
   {"MenuHelp",                         2},
   {"ShowHideMenuCtl",                  3},
