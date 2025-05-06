@@ -114,10 +114,18 @@ unknown_t xfree(unknown_t p) {
   return NULL;
 }
 
-size_t xread(unknown_t p, size_t size, size_t count, FILE *f) {
-  if (p) {
+size_t xget(unknown_t p, size_t size, size_t count, unknown_t f) {
+  if (p && f) {
     memset(p, 0, size * count);
     return fread(p, size, count, f);
+  }
+
+  return 0;
+}
+
+size_t xput(unknown_t p, size_t size, size_t count, unknown_t f) {
+  if (p && f) {
+    return fwrite(p, size, count, f);
   }
 
   return 0;
@@ -197,10 +205,10 @@ handle_t bopen(const char* name) {
   if (name && '-' == name[0] && 0 == name[1]) {
     pbuffer_t p = bmalloc();
     if (p) {
-      size_t size = fread(inp, 1, sizeof(inp), stdin);
+      size_t size = xget(inp, 1, sizeof(inp), stdin);
       while (size) {
         p = bappend(p, inp, size);
-        size = xread(inp, 1, sizeof(inp), stdin);
+        size = xget(inp, 1, sizeof(inp), stdin);
       }
 
       return p;
@@ -213,7 +221,7 @@ handle_t bopen(const char* name) {
         strname(p->note, name);
         p->size = fsize(f);
         p->data = xmalloc(p->size);
-        if (p->size != fread(p->data, 1, p->size, f)) {
+        if (p->size != xget(p->data, 1, p->size, f)) {
           p = xfree(p);
         }
 

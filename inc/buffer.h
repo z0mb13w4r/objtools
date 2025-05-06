@@ -31,7 +31,8 @@ unknown_t xmalloc(const size_t size);
 unknown_t xdump(unknown_t p);
 unknown_t xfree(unknown_t p);
 
-size_t xread(unknown_t p, size_t size, size_t count, FILE *f);
+size_t xget(unknown_t p, size_t size, size_t count, unknown_t f);
+size_t xput(unknown_t p, size_t size, size_t count, unknown_t f);
 
 handle_t bmalloc();
 handle_t bmallocsize(const size_t size);

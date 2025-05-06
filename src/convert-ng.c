@@ -34,7 +34,7 @@ int main(int argc, char* argv[]) {
             x = x->actions;
           }
           if (o->outname[0]) {
-printf("%s\n", o->outname);
+            bstrsave(b0, o->outname);
           } else {
             printf_text(b0->data, USE_LT | USE_EOL);
           }

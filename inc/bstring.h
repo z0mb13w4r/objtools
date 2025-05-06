@@ -50,5 +50,7 @@ int bstrncmp(handle_t s1, handle_t s2, size_t size);
 int bstrcasecmp(handle_t s1, handle_t s2);
 int bstrncasecmp(handle_t s1, handle_t s2, size_t size);
 
+bool_t bstrsave(handle_t p, const char* name);
+
 #endif
 

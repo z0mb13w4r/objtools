@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <string.h>
 
 #include "buffer.h"
@@ -301,5 +302,21 @@ handle_t bstrtrimr(handle_t p, int c) {
   }
 
   return NULL;
+}
+
+bool_t bstrsave(handle_t p, const char* name) {
+  bool_t isok = FALSE;
+  if (isbstring(p) && name && name[0]) {
+    pbstring_t p0 = CAST(pbstring_t, p);
+    if (p0->data) {
+      FILE* f = fopen(name, "wb");
+      if (f) {
+        isok = p0->size == xput(p0->data, 1, p0->size, f);
+        fclose(f);
+      }
+    }
+  }
+
+  return isok;
 }
 
