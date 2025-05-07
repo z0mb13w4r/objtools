@@ -1,5 +1,6 @@
 #include "opcode.h"
 #include "printf.h"
+#include "options.h"
 #include "opcode-capstone.h"
 
 static int get_csarch(handle_t p) {
@@ -15,11 +16,18 @@ static int get_csmode(handle_t p) {
 }
 
 int capstone_open(handle_t p, handle_t o) {
-  if (isopcode(p)) {
+  if (isopcode(p) && isoptions(o)) {
+    poptions_t op = CAST(poptions_t, o);
     popcode_t oc = CAST(popcode_t, p);
     if (CS_ERR_OK == cs_open(get_csarch(p), get_csmode(p), &oc->cs)) {
-//    cs_option(oc->cs, CS_OPT_SYNTAX, CS_OPT_SYNTAX_ATT); // -M
-//    cs_option(oc->cs, CS_OPT_SYNTAX, CS_OPT_SYNTAX_INTEL); // default
+      if (MODE_ISSET(op->ocdisassemble, OPTDISASSEMBLE_ATT_MNEMONIC)) {
+        cs_option(oc->cs, CS_OPT_SYNTAX, CS_OPT_SYNTAX_ATT);
+      } else if (MODE_ISSET(op->ocdisassemble, OPTDISASSEMBLE_INTEL_MNEMONIC)) {
+        cs_option(oc->cs, CS_OPT_SYNTAX, CS_OPT_SYNTAX_INTEL);
+      } else {
+        cs_option(oc->cs, CS_OPT_SYNTAX, CS_OPT_SYNTAX_ATT);
+      }
+
 //    cs_option(oc->cs, CS_OPT_DETAIL, CS_OPT_ON);
       return 0;
     }

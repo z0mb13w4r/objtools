@@ -1,6 +1,7 @@
 #include "opcode.h"
 #include "printf.h"
 #include "bstring.h"
+#include "options.h"
 #include "opcode-lib.h"
 
 #define DEFAULT_SKIP_ZEROES            (8)
@@ -25,8 +26,20 @@ static int custom_fprintf(void *p, const char * format, ...) {
   return n;
 }
 
+char* opcodelib_strncat(char* dst, char* src, char* sep, size_t size) {
+  if (dst && src && sep && 0 != size) {
+    if (dst[0]) {
+      dst = strncat(dst, sep, size);
+    }
+    return strncat(dst, src, size);
+  }
+
+  return NULL;
+}
+
 int opcodelib_open(handle_t p, handle_t o) {
-  if (isopcode(p)) {
+  if (isopcode(p) && isoptions(o)) {
+    poptions_t op = CAST(poptions_t, o);
     popcode_t oc = CAST(popcode_t, p);
     bfd* bf = oc->items[OPCODE_BFD];
     if (bf) {
@@ -35,10 +48,14 @@ int opcodelib_open(handle_t p, handle_t o) {
         di = xmalloc(sizeof(struct disassemble_info));
         oc->items[OPCODE_DISASSEMBLER] = di;
       }
+
       if (NULL == oc->items[OPCODE_OUTDATA]) {
         oc->items[OPCODE_OUTDATA] = bstrmallocsize(1024);
       }
+
       if (di) {
+        MALLOCA(char, args, 1024);
+
         /* Construct and configure the disassembler_info class using stdout */
         init_disassemble_info(di, oc, (fprintf_ftype)custom_fprintf);
 
@@ -49,7 +66,41 @@ int opcodelib_open(handle_t p, handle_t o) {
         di->octets_per_byte = bfd_octets_per_byte(bf, NULL);
         di->skip_zeroes = DEFAULT_SKIP_ZEROES;
         di->skip_zeroes_at_end = DEFAULT_SKIP_ZEROES_AT_END;
-        di->disassembler_options = NULL;  // -M options, --disassembler-options=options
+        di->disassembler_options = NULL;
+
+        if (MODE_ISSET(op->ocdisassemble, OPTDISASSEMBLE_ATT_MNEMONIC)) {
+          di->disassembler_options = opcodelib_strncat(args, "att-mnemonic", ",", NELEMENTS(args));
+        } else if (MODE_ISSET(op->ocdisassemble, OPTDISASSEMBLE_INTEL_MNEMONIC)) {
+          di->disassembler_options = opcodelib_strncat(args, "intel-mnemoic", ",", NELEMENTS(args));
+        }
+
+	if (MODE_ISSET(op->ocdisassemble, OPTDISASSEMBLE_X86_64)) {
+          di->disassembler_options = opcodelib_strncat(args, "x86-64", ",", NELEMENTS(args));
+        } else if (MODE_ISSET(op->ocdisassemble, OPTDISASSEMBLE_I386)) {
+          di->disassembler_options = opcodelib_strncat(args, "i386", ",", NELEMENTS(args));
+        } else if (MODE_ISSET(op->ocdisassemble, OPTDISASSEMBLE_I8086)) {
+          di->disassembler_options = opcodelib_strncat(args, "i8086", ",", NELEMENTS(args));
+        }
+
+        if (MODE_ISSET(op->ocdisassemble, OPTDISASSEMBLE_AMD64)) {
+          di->disassembler_options = opcodelib_strncat(args, "amd64", ",", NELEMENTS(args));
+        } else if (MODE_ISSET(op->ocdisassemble, OPTDISASSEMBLE_INTEL64)) {
+          di->disassembler_options = opcodelib_strncat(args, "intel64", ",", NELEMENTS(args));
+        }
+
+	if (MODE_ISSET(op->ocdisassemble, OPTDISASSEMBLE_ADDR16)) {
+          di->disassembler_options = opcodelib_strncat(args, "addr16", ",", NELEMENTS(args));
+        } else if (MODE_ISSET(op->ocdisassemble, OPTDISASSEMBLE_ADDR32)) {
+          di->disassembler_options = opcodelib_strncat(args, "addr32", ",", NELEMENTS(args));
+        } else if (MODE_ISSET(op->ocdisassemble, OPTDISASSEMBLE_ADDR64)) {
+          di->disassembler_options = opcodelib_strncat(args, "addr64", ",", NELEMENTS(args));
+        }
+
+        if (MODE_ISSET(op->ocdisassemble, OPTDISASSEMBLE_DATA16)) {
+          di->disassembler_options = opcodelib_strncat(args, "data16", ",", NELEMENTS(args));
+        } else if (MODE_ISSET(op->ocdisassemble, OPTDISASSEMBLE_DATA32)) {
+          di->disassembler_options = opcodelib_strncat(args, "data32", ",", NELEMENTS(args));
+        }
 
         if (bfd_big_endian(bf))          di->endian_code = di->display_endian = di->endian = BFD_ENDIAN_BIG;
         else if (bfd_little_endian(bf))  di->endian_code = di->display_endian = di->endian = BFD_ENDIAN_LITTLE;

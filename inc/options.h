@@ -37,6 +37,16 @@
 
 #define OPTDISASSEMBLE_ATT_MNEMONIC                U64MASK(0)
 #define OPTDISASSEMBLE_INTEL_MNEMONIC              U64MASK(1)
+#define OPTDISASSEMBLE_X86_64                      U64MASK(2)
+#define OPTDISASSEMBLE_I386                        U64MASK(3)
+#define OPTDISASSEMBLE_I8086                       U64MASK(4)
+#define OPTDISASSEMBLE_AMD64                       U64MASK(5)
+#define OPTDISASSEMBLE_INTEL64                     U64MASK(6)
+#define OPTDISASSEMBLE_ADDR16                      U64MASK(7)
+#define OPTDISASSEMBLE_ADDR32                      U64MASK(8)
+#define OPTDISASSEMBLE_ADDR64                      U64MASK(9)
+#define OPTDISASSEMBLE_DATA16                      U64MASK(10)
+#define OPTDISASSEMBLE_DATA32                      U64MASK(11)
 
 #define OPTFUNCTION_XOR1                           (1)
 #define OPTFUNCTION_XOR255                         (255)
