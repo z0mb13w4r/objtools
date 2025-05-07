@@ -1,0 +1,8 @@
+static const args_t zDISASSEMBLEARGS[] = {
+  {0, "att",                 OPTDISASSEMBLE_ATT_MNEMONIC},
+  {0, "att-mnemonic",        OPTDISASSEMBLE_ATT_MNEMONIC},
+  {0, "intel",               OPTDISASSEMBLE_INTEL_MNEMONIC},
+  {0, "intel-mnemonic",      OPTDISASSEMBLE_INTEL_MNEMONIC},
+  {0, NULL}
+};
+

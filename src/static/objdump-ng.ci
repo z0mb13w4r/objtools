@@ -5,6 +5,9 @@ static char zDUMPALLHEADERS[]   = "Display all available header information, inc
 static const char zOBJDUMPARGS0[] = "-W";
 static const char zOBJDUMPARGS1[] = "--dwarf";
 
+static const char zOBJDUMPARGS2[] = "-M";
+static const char zOBJDUMPARGS3[] = "--disassembler-options";
+
 static const args_t zOBJDUMPARGS[] = {
   {'H', "--help",              OPTPROGRAM_HELP},
   {'V', "--version",           OPTPROGRAM_VERSION},

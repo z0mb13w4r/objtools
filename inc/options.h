@@ -35,6 +35,9 @@
 #define OPTDEBUGELF_GDB_INDEX                      U64MASK(50)
 #define OPTDEBUGELF_DEBUGGING                      (0x1FFFFFULL << 30)
 
+#define OPTDISASSEMBLE_ATT_MNEMONIC                U64MASK(0)
+#define OPTDISASSEMBLE_INTEL_MNEMONIC              U64MASK(1)
+
 #define OPTFUNCTION_XOR1                           (1)
 #define OPTFUNCTION_XOR255                         (255)
 #define OPTFUNCTION_ROT5                           (256)
@@ -181,6 +184,8 @@ typedef struct options_s {
   imode_t option;
   imode_t action;
   imode_t convert;
+  imode_t ocdwarf;
+  imode_t ocdisassemble;
 
   union {
     char inpname[PATH_MAX];

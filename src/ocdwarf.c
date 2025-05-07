@@ -43,17 +43,17 @@ pdwarf_display_t ocdwarf_get(handle_t s) {
   return NULL;
 }
 
-int ocdwarf_isneeded(handle_t s, handle_t o) {
+bool_t ocdwarf_isneeded(handle_t s, handle_t o) {
   if (isopshdr(s) && isoptions(o)) {
-    if (0 == (ocget_flags(s) & SEC_HAS_CONTENTS)) return 0;
-    else if (0 == ocget_size(s)) return 0;
+    if (0 == (ocget_flags(s) & SEC_HAS_CONTENTS)) return FALSE;
+    else if (0 == ocget_size(s)) return FALSE;
 
     poptions_t op = CAST(poptions_t, o);
     pdwarf_display_t p = ocdwarf_get(s);
-    return p && p->action & op->action;
+    return p && MODE_ISSET(p->action, op->ocdwarf);
   }
 
-  return 0;
+  return FALSE;
 }
 
 int ocdwarf_open(handle_t p, handle_t o) {
