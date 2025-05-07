@@ -3,11 +3,25 @@
 #include "options.h"
 #include "opcode-capstone.h"
 
-static int get_csarch(handle_t p) {
+static int get_csarch(handle_t p, handle_t o) {
+  if (isoptions(o)) {
+    poptions_t op = CAST(poptions_t, o);
+    if (MODE_ISSET(op->ocdisassemble, OPTDISASSEMBLE_X86_64 | OPTDISASSEMBLE_I386 | OPTDISASSEMBLE_I8086)) {
+      return CS_ARCH_X86;
+    }
+  }
+
   return CS_ARCH_X86; // TBD
 }
 
-static int get_csmode(handle_t p) {
+static int get_csmode(handle_t p, handle_t o) {
+  if (isoptions(o)) {
+    poptions_t op = CAST(poptions_t, o);
+    if (MODE_ISSET(op->ocdisassemble, OPTDISASSEMBLE_X86_64))      return CS_MODE_64;
+    else if (MODE_ISSET(op->ocdisassemble, OPTDISASSEMBLE_I386))   return CS_MODE_32;
+    else if (MODE_ISSET(op->ocdisassemble, OPTDISASSEMBLE_I8086))  return CS_MODE_16;
+  }
+
   const uint64_t size = ocget_archsize(p);
   if (16 == size) return CS_MODE_16;
   else if (32 == size) return CS_MODE_32;
@@ -19,7 +33,7 @@ int capstone_open(handle_t p, handle_t o) {
   if (isopcode(p) && isoptions(o)) {
     poptions_t op = CAST(poptions_t, o);
     popcode_t oc = CAST(popcode_t, p);
-    if (CS_ERR_OK == cs_open(get_csarch(p), get_csmode(p), &oc->cs)) {
+    if (CS_ERR_OK == cs_open(get_csarch(p, o), get_csmode(p, o), &oc->cs)) {
       if (MODE_ISSET(op->ocdisassemble, OPTDISASSEMBLE_ATT_MNEMONIC)) {
         cs_option(oc->cs, CS_OPT_SYNTAX, CS_OPT_SYNTAX_ATT);
       } else if (MODE_ISSET(op->ocdisassemble, OPTDISASSEMBLE_INTEL_MNEMONIC)) {
