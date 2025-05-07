@@ -373,7 +373,7 @@ int get_options_readelf(poptions_t o, int argc, char** argv, char* name) {
 
       if (0 == breakup_args(argv[i], arg0, NELEMENTS(arg0), arg1, NELEMENTS(arg1))) {
         if (0 == strcmp(arg0, zREADELFARGS1)) {
-          o->ocdwarf |= get_options2(o, zDEBUGELFARGS, arg1);
+          o->ocdump |= get_options2(o, zDEBUGELFARGS, arg1);
         } else if (0 == strcmp(arg0, "--hex-dump")) {
           oinsertsecname(o, ACT_HEXDUMP, arg1);
         } else if (0 == strcmp(arg0, "--string-dump")) {
@@ -396,8 +396,8 @@ int get_options_readelf(poptions_t o, int argc, char** argv, char* name) {
       }
     } else if ('-' == argv[i][0]) {
       if (0 == strcmp(argv[i], zREADELFARGS0)) {
-        imode_t ocdwarf = get_options1(o, zDEBUGELFARGS, argv[i] + 1);
-        o->ocdwarf |= ocdwarf ? ocdwarf : set_options1(o, zDEBUGELFARGS);
+        imode_t ocdump = get_options1(o, zDEBUGELFARGS, argv[i] + 1);
+        o->ocdump |= ocdump ? ocdump : set_options1(o, zDEBUGELFARGS);
       } else if (0 == strcmp(argv[i], "-x")) {
         oinsertsecname(o, ACT_HEXDUMP, argv[++i]);
       } else if (0 == strcmp(argv[i], "-p")) {
@@ -497,19 +497,19 @@ int get_options_objdump(poptions_t o, int argc, char** argv, char* name) {
 
       if (0 == breakup_args(argv[i], arg0, NELEMENTS(arg0), arg1, NELEMENTS(arg1))) {
         if (0 == strcmp(arg0, zOBJDUMPARGS1)) {
-          o->ocdwarf |= get_options2(o, zDEBUGELFARGS, arg1);
+          o->ocdump |= get_options2(o, zDEBUGELFARGS, arg1);
         } else if (0 == strcmp(arg0, zOBJDUMPARGS3)) {
-          o->ocdisassemble |= get_options2(o, zDISASSEMBLEARGS, arg1);
+          o->ocdump |= get_options2(o, zDISASSEMBLEARGS, arg1);
         }
       } else {
         o->action |= get_options2(o, zOBJDUMPARGS, argv[i]);
       }
     } else if ('-' == argv[i][0]) {
       if (0 == strcmp(argv[i], zOBJDUMPARGS0)) {
-        imode_t ocdwarf = get_options1(o, zDEBUGELFARGS, argv[i] + 1);
-        o->ocdwarf |= ocdwarf ? ocdwarf : set_options1(o, zDEBUGELFARGS);
+        imode_t ocdump = get_options1(o, zDEBUGELFARGS, argv[i] + 1);
+        o->ocdump |= ocdump ? ocdump : set_options1(o, zDEBUGELFARGS);
       } else if (0 == strcmp(argv[i], zOBJDUMPARGS2)) {
-        o->ocdisassemble |= get_options2(o, zDISASSEMBLEARGS, argv[++i]);
+        o->ocdump |= get_options2(o, zDISASSEMBLEARGS, argv[++i]);
       } else {
         o->action |= get_options1(o, zOBJDUMPARGS, argv[i]);
       }

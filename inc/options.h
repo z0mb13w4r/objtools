@@ -193,9 +193,8 @@ typedef struct options_s {
   smode_t mode;
   imode_t option;
   imode_t action;
+  imode_t ocdump;
   imode_t convert;
-  imode_t ocdwarf;
-  imode_t ocdisassemble;
 
   union {
     char inpname[PATH_MAX];

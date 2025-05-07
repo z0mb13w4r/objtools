@@ -50,7 +50,7 @@ bool_t ocdwarf_isneeded(handle_t s, handle_t o) {
 
     poptions_t op = CAST(poptions_t, o);
     pdwarf_display_t p = ocdwarf_get(s);
-    return p && MODE_ISSET(p->action, op->ocdwarf);
+    return p && MODE_ISSET(p->action, op->ocdump);
   }
 
   return FALSE;
