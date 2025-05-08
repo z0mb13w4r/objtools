@@ -69,66 +69,67 @@ static int usage_name(poptions_t o, const char* name, const args_t args[], const
   return 0;
 }
 
-static int usage_synopsis0(poptions_t o, const char* name, const args_t args0[]) {
-  MALLOCA(char, buf, 1024);
+static int usage_synopsis0(poptions_t o, const char* name, const args_t args[]) {
+  MALLOCA(char, m, 1024);
 
   int n = 0;
-  if (args0) {
+  if (args) {
     printf_text("SYNOPSIS", USE_LT | USE_EOL);
     n = printf_text(name, USE_LT | USE_TAB);
-    if (args0[0].option1 && args0[0].option2) {
-      snprintf(buf, sizeof(buf), "-%c|%s", args0[0].option1, args0[0].option2);
-    } else if (args0[0].option1) {
-      snprintf(buf, sizeof(buf), "-%c", args0[0].option1);
-    } else if (args0[0].option2) {
-      snprintf(buf, sizeof(buf), "%s", args0[0].option2);
+    if (args[0].option1 && args[0].option2) {
+      snprintf(m, sizeof(m), "-%c|%s", args[0].option1, args[0].option2);
+    } else if (args[0].option1) {
+      snprintf(m, sizeof(m), "-%c", args[0].option1);
+    } else if (args[0].option2) {
+      snprintf(m, sizeof(m), "%s", args[0].option2);
     }
-     printf_text(buf, USE_LT | USE_SPACE | USE_SB | USE_EOL);
+     printf_text(m, USE_LT | USE_SPACE | USE_SB | USE_EOL);
 
-    for (int j = 1; (0 != args0[j].option1) || (0 != args0[j].option2); ++j) {
-      if (args0[j].option1 && args0[j].option2) {
-         snprintf(buf, sizeof(buf), "-%c|%s", args0[j].option1, args0[j].option2);
-      } else if (args0[j].option1) {
-        snprintf(buf, sizeof(buf), "-%c", args0[j].option1);
-      } else if (args0[j].option2) {
-        snprintf(buf, sizeof(buf), "%s", args0[j].option2);
+    for (int j = 1; (0 != args[j].option1) || (0 != args[j].option2); ++j) {
+      if (args[j].option1 && args[j].option2) {
+         snprintf(m, sizeof(m), "-%c|%s", args[j].option1, args[j].option2);
+      } else if (args[j].option1) {
+        snprintf(m, sizeof(m), "-%c", args[j].option1);
+      } else if (args[j].option2) {
+        snprintf(m, sizeof(m), "%s", args[j].option2);
       }
       printf_pack(n);
-      printf_text(buf, USE_LT | USE_SPACE | USE_SB | USE_EOL);
+      printf_text(m, USE_LT | USE_SPACE | USE_SB | USE_EOL);
     }
   }
+
   return n;
 }
 
-static int usage_synopsis1(poptions_t o, const char* name, const args_t args1[], const char* more0, const char* more1) {
-  MALLOCA(char, buf, 1024);
+static int usage_synopsis1(poptions_t o, const char* name, const args_t args[], const char* more0, const char* more1) {
+  MALLOCA(char, m, 1024);
 
   int n = 0;
-  if (more0 && args1) {
-    int x = snprintf(buf, sizeof(buf), "%s|[", more0);
-    for (int j = 0; (0 != args1[j].option1) || (0 != args1[j].option2); ++j) {
-      x += snprintf(buf + x, sizeof(buf) - x, "%c", args1[j].option1);
+  if (more0 && args) {
+    int x = snprintf(m, sizeof(m), "%s|[", more0);
+    for (int j = 0; (0 != args[j].option1) || (0 != args[j].option2); ++j) {
+      x += snprintf(m + x, sizeof(m) - x, "%c", args[j].option1);
     }
 
-    x += snprintf(buf + x, sizeof(buf) - x, "]|");
-    printf_pack(n);
-    printf_text(buf, USE_LT | USE_SPACE | USE_SBLT | USE_EOL);
+    x += snprintf(m + x, sizeof(m) - x, "]|");
+    n += printf_pack(n);
+    n += printf_text(m, USE_LT | USE_SPACE | USE_SBLT | USE_EOL);
   }
 
-  if (more1 && args1) {
-    int x = snprintf(buf, sizeof(buf), "%s|[%s", more1, args1[0].option2);
-    for (int j = 1; (0 != args1[j].option1) || (0 != args1[j].option2); ++j) {
-      x += snprintf(buf + x, sizeof(buf) - x, ",%s", args1[j].option2);
+  if (more1 && args) {
+    int x = snprintf(m, sizeof(m), "%s|[%s", more1, args[0].option2);
+    for (int j = 1; (0 != args[j].option1) || (0 != args[j].option2); ++j) {
+      x += snprintf(m + x, sizeof(m) - x, ",%s", args[j].option2);
     }
 
-    x += snprintf(buf + x, sizeof(buf) - x, "]");
-    printf_pack(n + 2);
-    printf_text(buf, USE_LT | USE_SPACE | USE_SBRT | USE_EOL);
+    x += snprintf(m + x, sizeof(m) - x, "]");
+    n += printf_pack(n + 2);
+    n += printf_text(m, USE_LT | USE_SPACE | USE_SBRT | USE_EOL);
   }
 
   printf_eol();
 
-  return 0;
+  return n;
 }
 
 static int usage_description(poptions_t o, const char* name, const args_t args[]) {
