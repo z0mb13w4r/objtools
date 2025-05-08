@@ -217,6 +217,7 @@ typedef struct args_s {
   char   *option2;
   imode_t action;
   char   *content;
+  imode_t groups;
 } args_t, *pargs_t;
 
 int get_options_convert(poptions_t o, int argc, char** argv, char* name);

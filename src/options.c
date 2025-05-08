@@ -105,6 +105,7 @@ static int usage_synopsis1(poptions_t o, const char* name, const args_t args[], 
   MALLOCA(char, m, 1024);
 
   int n = 0;
+  int z = strlen(name) + 2;
   if (more0 && args) {
     int x = snprintf(m, sizeof(m), "%s|[", more0);
     for (int j = 0; (0 != args[j].option1) || (0 != args[j].option2); ++j) {
@@ -112,7 +113,7 @@ static int usage_synopsis1(poptions_t o, const char* name, const args_t args[], 
     }
 
     x += snprintf(m + x, sizeof(m) - x, "]|");
-    n += printf_pack(n);
+    n += printf_pack(z);
     n += printf_text(m, USE_LT | USE_SPACE | USE_SBLT | USE_EOL);
   }
 
@@ -123,8 +124,22 @@ static int usage_synopsis1(poptions_t o, const char* name, const args_t args[], 
     }
 
     x += snprintf(m + x, sizeof(m) - x, "]");
-    n += printf_pack(n + 2);
+    n += printf_pack(z);
     n += printf_text(m, USE_LT | USE_SPACE | USE_SBRT | USE_EOL);
+  }
+
+  printf_eol();
+
+  return n;
+}
+
+static int usage_synopsis2(poptions_t o, const char* name, const args_t args[], const char* more0, const char* more1) {
+  MALLOCA(char, m, 1024);
+
+  int n = 0;
+  if (more0 && more1 && args) {
+    snprintf(m, sizeof(m), "%s options|%s=options", more0, more1);
+    n += printf_text(m, USE_LT | USE_SPACE | USE_SB | USE_EOL);
   }
 
   printf_eol();
@@ -229,7 +244,27 @@ static int usage_options2(poptions_t o, const char* name, const args_t args[], c
 
   int n = 0;
   if (more0 && args) {
+    n += printf_yoke(more0, " options", USE_LT | USE_TAB | USE_EOL);
+    n += printf_yoke(more1, "=options", USE_LT | USE_TAB | USE_EOL);
+    n += printf_eol();
 
+    for (int j = 0; (0 != args[j].option1) || (0 != args[j].option2); ++j) {
+      if (args[j].option1) {
+        n += printf_nice(args[j].option1, USE_CHAR | USE_TAB | USE_DQ | USE_EOL);
+      }
+      if (args[j].option2) {
+        n += printf_text(args[j].option2, USE_LT | USE_TAB | USE_DQ | USE_EOL);
+      }
+      if (0 != args[j].content) {
+        n += printf_pack(4);
+        n += printf_text(args[j].content, USE_LT | USE_EOL);
+      }
+      if (args[j].groups != args[j + 1].groups) {
+        n += printf_eol();
+      }
+    }
+
+    n += printf_eol();
   }
 
   return n;
@@ -274,6 +309,7 @@ static int usage1(poptions_t o, const char* name, const args_t args0[],
   usage_name(o, name, args0, zDESCRIPTION);
   usage_synopsis0(o, name, args0);
   usage_synopsis1(o, name, zDEBUGELFARGS, more0, more1);
+  usage_synopsis2(o, name, zDISASSEMBLEARGS, more2, more3);
   usage_description(o, name, args0);
   usage_options0(o, name, args0);
   usage_options1(o, name, zDEBUGELFARGS, more0, more1);

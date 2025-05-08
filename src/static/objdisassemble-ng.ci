@@ -1,21 +1,28 @@
+static char zDISASSEMBLEARCH[] = "Select disassembly for the given architecture.";
+static char zDISASSEMBLEATTSYNTAX[] = "Select the AT&T syntax mode.";
+static char zDISASSEMBLEINTELSYNTAX[] = "Select the Intel syntax mode.";
+static char zDISASSEMBLEISA[] = "Select between AMD64 ISA and Intel64 ISA.";
+static char zDISASSEMBLEDATA[] = "Specify the default address size and operand size.";
+
 static const args_t zDISASSEMBLEARGS[] = {
-  {0, "att",                 OPTDISASSEMBLE_ATT_MNEMONIC},
-  {0, "att-mnemonic",        OPTDISASSEMBLE_ATT_MNEMONIC},
-  {0, "intel",               OPTDISASSEMBLE_INTEL_MNEMONIC},
-  {0, "intel-mnemonic",      OPTDISASSEMBLE_INTEL_MNEMONIC},
+  {0, "att",                 OPTDISASSEMBLE_ATT_MNEMONIC,            NULL, 1},
+  {0, "att-mnemonic",        OPTDISASSEMBLE_ATT_MNEMONIC,            zDISASSEMBLEATTSYNTAX, 1},
 
-  {0, "x86-64",              OPTDISASSEMBLE_X86_64},
-  {0, "i386",                OPTDISASSEMBLE_I386},
-  {0, "i8086",               OPTDISASSEMBLE_I8086},
+  {0, "intel",               OPTDISASSEMBLE_INTEL_MNEMONIC,          NULL, 2},
+  {0, "intel-mnemonic",      OPTDISASSEMBLE_INTEL_MNEMONIC,          zDISASSEMBLEINTELSYNTAX, 2},
 
-  {0, "amd64",               OPTDISASSEMBLE_AMD64},
-  {0, "intel64",             OPTDISASSEMBLE_INTEL64},
+  {0, "x86-64",              OPTDISASSEMBLE_X86_64,                  NULL, 3},
+  {0, "i386",                OPTDISASSEMBLE_I386,                    NULL, 3},
+  {0, "i8086",               OPTDISASSEMBLE_I8086,                   zDISASSEMBLEARCH, 3},
 
-  {0, "addr16",              OPTDISASSEMBLE_ADDR16},
-  {0, "addr32",              OPTDISASSEMBLE_ADDR32},
-  {0, "addr64",              OPTDISASSEMBLE_ADDR64},
-  {0, "data16",              OPTDISASSEMBLE_DATA16},
-  {0, "data32",              OPTDISASSEMBLE_DATA32},
+  {0, "amd64",               OPTDISASSEMBLE_AMD64,                   NULL, 4},
+  {0, "intel64",             OPTDISASSEMBLE_INTEL64,                 zDISASSEMBLEISA, 4},
+
+  {0, "addr16",              OPTDISASSEMBLE_ADDR16,                  NULL, 5},
+  {0, "addr32",              OPTDISASSEMBLE_ADDR32,                  NULL, 5},
+  {0, "addr64",              OPTDISASSEMBLE_ADDR64,                  NULL, 5},
+  {0, "data16",              OPTDISASSEMBLE_DATA16,                  NULL, 5},
+  {0, "data32",              OPTDISASSEMBLE_DATA32,                  zDISASSEMBLEDATA, 5},
 
   {0, NULL}
 };
