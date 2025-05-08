@@ -131,7 +131,7 @@ static int usage_description(poptions_t o, const char* name, const args_t args[]
 }
 
 static int usage_options0(poptions_t o, const char* name, const args_t args[]) {
-  MALLOCA(char, buf, 1024);
+  MALLOCA(char, m, 1024);
 
   int n = 0;
   if (args) {
@@ -158,11 +158,11 @@ static int usage_options0(poptions_t o, const char* name, const args_t args[]) {
         }
         n += printf_eol();
       } else if (name && MODE_ISLOCKED(args[j].action, OPTPROGRAM_HELP)) {
-        snprintf(buf, sizeof(buf), "Print a summary of the options to %s and exit.", name);
-        n += printf_text(buf, USE_LT | USE_TAB | USE_EOL);
+        snprintf(m, sizeof(m), "Print a summary of the options to %s and exit.", name);
+        n += printf_text(m, USE_LT | USE_TAB | USE_EOL);
       } else if (name && MODE_ISLOCKED(args[j].action, OPTPROGRAM_VERSION)) {
-        snprintf(buf, sizeof(buf), "Print the version number of %s and exit.", name);
-        n += printf_text(buf, USE_LT | USE_TAB | USE_EOL);
+        snprintf(m, sizeof(m), "Print the version number of %s and exit.", name);
+        n += printf_text(m, USE_LT | USE_TAB | USE_EOL);
       }
       n += printf_eol();
     }
@@ -172,27 +172,27 @@ static int usage_options0(poptions_t o, const char* name, const args_t args[]) {
 }
 
 static int usage_options1(poptions_t o, const char* name, const args_t args[], const char* more0, const char* more1) {
-  MALLOCA(char, buf, 1024);
+  MALLOCA(char, m, 1024);
 
   int n = 0;
   if (more0 && args) {
-    int x = snprintf(buf, sizeof(buf), "%s|[", more0);
+    int x = snprintf(m, sizeof(m), "%s|[", more0);
     for (int j = 0; (0 != args[j].option1) || (0 != args[j].option2); ++j) {
-      x += snprintf(buf + x, sizeof(buf) - x, "%c", args[j].option1);
+      x += snprintf(m + x, sizeof(m) - x, "%c", args[j].option1);
     }
 
-    x += snprintf(buf + x, sizeof(buf) - x, "]");
-    n += printf_text(buf, USE_LT | USE_TAB | USE_EOL);
+    x += snprintf(m + x, sizeof(m) - x, "]");
+    n += printf_text(m, USE_LT | USE_TAB | USE_EOL);
   }
 
   if (more1 && args) {
-    int x = snprintf(buf, sizeof(buf), "%s|[=%s", more1, args[0].option2);
+    int x = snprintf(m, sizeof(m), "%s|[=%s", more1, args[0].option2);
     for (int j = 1; (0 != args[j].option1) || (0 != args[j].option2); ++j) {
-      x += snprintf(buf + x, sizeof(buf) - x, ",=%s", args[j].option2);
+      x += snprintf(m + x, sizeof(m) - x, ",=%s", args[j].option2);
     }
 
-    x += snprintf(buf + x, sizeof(buf) - x, "]");
-    n += printf_text(buf, USE_LT | USE_TAB | USE_EOL);
+    x += snprintf(m + x, sizeof(m) - x, "]");
+    n += printf_text(m, USE_LT | USE_TAB | USE_EOL);
     n += printf_eol();
   }
 
@@ -210,6 +210,17 @@ static int usage_options1(poptions_t o, const char* name, const args_t args[], c
       }
       n += printf_eol();
     }
+  }
+
+  return n;
+}
+
+static int usage_options2(poptions_t o, const char* name, const args_t args[], const char* more0, const char* more1) {
+  MALLOCA(char, m, 1024);
+
+  int n = 0;
+  if (more0 && args) {
+
   }
 
   return n;
