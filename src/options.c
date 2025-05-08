@@ -130,57 +130,65 @@ static int usage_description(poptions_t o, const char* name, const args_t args[]
   return 0;
 }
 
-static int usage_options(poptions_t o, const char* name, const args_t args0[], const char* more0,
-                                                         const args_t args1[], const char* more1) {
+static int usage_options0(poptions_t o, const char* name, const args_t args[]) {
   MALLOCA(char, buf, 1024);
 
   int n = 0;
-  n += printf_text("OPTIONS", USE_LT | USE_EOL);
-  for (int j = 0; (0 != args0[j].option1) || (0 != args0[j].option2); ++j) {
-    if (args0[j].option1) {
-      n += printf_nice(args0[j].option1, USE_CHAR | USE_TAB | USE_DASH | USE_EOL);
-    }
-    if (args0[j].option2) {
-      n += printf_text(args0[j].option2, USE_LT | USE_TAB | USE_EOL);
-    }
-    if (0 != args0[j].content) {
-      n += printf_pack(4);
-      n += printf_text(args0[j].content, USE_LT | USE_EOL);
-    }
+  if (args) {
+    n += printf_text("OPTIONS", USE_LT | USE_EOL);
+    for (int j = 0; (0 != args[j].option1) || (0 != args[j].option2); ++j) {
+      if (args[j].option1) {
+        n += printf_nice(args[j].option1, USE_CHAR | USE_TAB | USE_DASH | USE_EOL);
+      }
+      if (args[j].option2) {
+        n += printf_text(args[j].option2, USE_LT | USE_TAB | USE_EOL);
+      }
+      if (0 != args[j].content) {
+        n += printf_pack(4);
+        n += printf_text(args[j].content, USE_LT | USE_EOL);
+      }
 
-    if (isbits(args0[j].action)) {
-      n += printf_pack(4);
-      n += printf_text("Equivalent to specifying", USE_LT | USE_COLON);
-      for (int k = 0; (0 != args0[k].option1) || (0 != args0[k].option2); ++k) {
-        if (k != j && !isbits(args0[k].action) && (args0[k].action & args0[j].action)) {
-          n += printf_text(args0[k].option2, USE_LT | USE_SPACE);
+      if (isbits(args[j].action)) {
+        n += printf_pack(4);
+        n += printf_text("Equivalent to specifying", USE_LT | USE_COLON);
+        for (int k = 0; (0 != args[k].option1) || (0 != args[k].option2); ++k) {
+          if (k != j && !isbits(args[k].action) && (args[k].action & args[j].action)) {
+            n += printf_text(args[k].option2, USE_LT | USE_SPACE);
+          }
         }
+        n += printf_eol();
+      } else if (name && MODE_ISLOCKED(args[j].action, OPTPROGRAM_HELP)) {
+        snprintf(buf, sizeof(buf), "Print a summary of the options to %s and exit.", name);
+        n += printf_text(buf, USE_LT | USE_TAB | USE_EOL);
+      } else if (name && MODE_ISLOCKED(args[j].action, OPTPROGRAM_VERSION)) {
+        snprintf(buf, sizeof(buf), "Print the version number of %s and exit.", name);
+        n += printf_text(buf, USE_LT | USE_TAB | USE_EOL);
       }
       n += printf_eol();
-    } else if (MODE_ISLOCKED(args0[j].action, OPTPROGRAM_HELP)) {
-      snprintf(buf, sizeof(buf), "Print a summary of the options to %s and exit.", name);
-      n += printf_text(buf, USE_LT | USE_TAB | USE_EOL);
-    } else if (MODE_ISLOCKED(args0[j].action, OPTPROGRAM_VERSION)) {
-      snprintf(buf, sizeof(buf), "Print the version number of %s and exit.", name);
-      n += printf_text(buf, USE_LT | USE_TAB | USE_EOL);
     }
-    n += printf_eol();
   }
 
-  if (more0 && args1) {
+  return n;
+}
+
+static int usage_options1(poptions_t o, const char* name, const args_t args[], const char* more0, const char* more1) {
+  MALLOCA(char, buf, 1024);
+
+  int n = 0;
+  if (more0 && args) {
     int x = snprintf(buf, sizeof(buf), "%s|[", more0);
-    for (int j = 0; (0 != args1[j].option1) || (0 != args1[j].option2); ++j) {
-      x += snprintf(buf + x, sizeof(buf) - x, "%c", args1[j].option1);
+    for (int j = 0; (0 != args[j].option1) || (0 != args[j].option2); ++j) {
+      x += snprintf(buf + x, sizeof(buf) - x, "%c", args[j].option1);
     }
 
     x += snprintf(buf + x, sizeof(buf) - x, "]");
     n += printf_text(buf, USE_LT | USE_TAB | USE_EOL);
   }
 
-  if (more1 && args1) {
-    int x = snprintf(buf, sizeof(buf), "%s|[=%s", more1, args1[0].option2);
-    for (int j = 1; (0 != args1[j].option1) || (0 != args1[j].option2); ++j) {
-      x += snprintf(buf + x, sizeof(buf) - x, ",=%s", args1[j].option2);
+  if (more1 && args) {
+    int x = snprintf(buf, sizeof(buf), "%s|[=%s", more1, args[0].option2);
+    for (int j = 1; (0 != args[j].option1) || (0 != args[j].option2); ++j) {
+      x += snprintf(buf + x, sizeof(buf) - x, ",=%s", args[j].option2);
     }
 
     x += snprintf(buf + x, sizeof(buf) - x, "]");
@@ -188,17 +196,17 @@ static int usage_options(poptions_t o, const char* name, const args_t args0[], c
     n += printf_eol();
   }
 
-  if (args1) {
-    for (int j = 0; (0 != args1[j].option1) || (0 != args1[j].option2); ++j) {
-      if (args1[j].option1) {
-        n += printf_nice(args1[j].option1, USE_CHAR | USE_TAB | USE_DQ | USE_EOL);
+  if (args) {
+    for (int j = 0; (0 != args[j].option1) || (0 != args[j].option2); ++j) {
+      if (args[j].option1) {
+        n += printf_nice(args[j].option1, USE_CHAR | USE_TAB | USE_DQ | USE_EOL);
       }
-      if (args1[j].option2) {
-        n += printf_text(args1[j].option2, USE_LT | USE_TAB | USE_DQEQ | USE_EOL);
+      if (args[j].option2) {
+        n += printf_text(args[j].option2, USE_LT | USE_TAB | USE_DQEQ | USE_EOL);
       }
-      if (0 != args1[j].content) {
+      if (0 != args[j].content) {
         n += printf_pack(4);
-        n += printf_text(args1[j].content, USE_LT | USE_EOL);
+        n += printf_text(args[j].content, USE_LT | USE_EOL);
       }
       n += printf_eol();
     }
@@ -234,7 +242,7 @@ static int usage0(poptions_t o, const char* name, const args_t args[]) {
   usage_name(o, name, args, zDESCRIPTION);
   usage_synopsis(o, name, args, NULL, NULL, NULL);
   usage_description(o, name, args);
-  usage_options(o, name, args, NULL, NULL, NULL);
+  usage_options0(o, name, args);
   usage_seealso(o, name, args);
   usage_copyright(o, name, args);
 
@@ -245,7 +253,8 @@ static int usage1(poptions_t o, const char* name, const args_t args0[], const ch
   usage_name(o, name, args0, zDESCRIPTION);
   usage_synopsis(o, name, args0, more0, args1, more1);
   usage_description(o, name, args0);
-  usage_options(o, name, args0, more0, args1, more1);
+  usage_options0(o, name, args0);
+  usage_options1(o, name, args1, more0, more1);
   usage_seealso(o, name, args0);
   usage_copyright(o, name, args0);
 
