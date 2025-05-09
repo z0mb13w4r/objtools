@@ -7,6 +7,20 @@ function aptcheck() {
   fi
 }
 
+function cdmk() {
+  if [ ! -d ${1} ]; then
+    echo create directory ${1}
+    mkdir ${1}
+  fi
+
+  cdmv ${1}
+}
+
+function cdmv() {
+  echo change directory ${1}
+  cd ${1}
+}
+
 aptcheck git
 aptcheck make
 aptcheck cmake
@@ -26,24 +40,33 @@ aptcheck g++
 aptcheck libssl-dev
 aptcheck binutils-dev
 
-mkdir libs
-cd libs
+LIBDWARF=libdwarf-0.11.1
+
+PWD=$(pwd)
+INC=${PWD}/inc
+LIB=${PWD}/libs
+
+cdmk ${LIB}
 
 git clone https://github.com/capstone-engine/capstone.git
-cd capstone
+cdmv capstone
 cmake -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build
 
-cd ..
+cdmk ${LIB}
 
 wget https://github.com/davea42/libdwarf-code/releases/download/v0.11.1/libdwarf-0.11.1.tar.xz
 tar xf libdwarf-0.11.1.tar.xz
-mkdir libdwarf-0.11.1/build
-cd libdwarf-0.11.1/build
+cdmk ${LIBDWARF}/build
 ../configure
 make
 
-cd ../../../inc
+cdmv ${LIB}
+ln -s ${LIBDWARF}/build/src/lib/libdwarf/ libdwarf
+cdmv libdwarf
+ln -s .libs libs
+
+cdmv ${INC}
 
 ln -s ../libs/capstone/include/ capstone
 ln -s ../libs/libdwarf-0.11.1/src/lib/libdwarf/ libdwarf

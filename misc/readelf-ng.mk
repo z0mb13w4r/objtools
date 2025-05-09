@@ -57,6 +57,7 @@ SYS_OBJS = \
 	-lcapstone \
 	-lopcodes \
 	-lcrypto \
+	-ldwarf \
 	-lbfd \
 	-lrt
 endif
@@ -66,7 +67,8 @@ LIB_OBJS = \
 
 LIB_PATHS = \
 	-L../bin/$(DIR_OBJ) \
-	-L../libs/capstone/build
+	-L../libs/capstone/build \
+	-L../libs/libdwarf/libs
 
 #=====================================================================================================================================
 # Command Section of Makefile
