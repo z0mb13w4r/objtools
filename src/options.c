@@ -586,6 +586,10 @@ int get_options_objdump(poptions_t o, int argc, char** argv, char* name) {
     }
   }
 
+  if (MODE_ISSET(o->action, OPTOBJDUMP_DEBUGGING)) {
+    o->ocdump |= OPTDEBUGELF_DEBUGGING;
+  }
+
   if (o->action & OPTPROGRAM_VERSION) {
     return version0(o, "objdump-ng", zOBJDUMPARGS);
   }
