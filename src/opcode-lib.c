@@ -17,13 +17,25 @@ static int custom_fprintf(void *p, const char * format, ...) {
     pbstring_t ps = CAST(pbstring_t, oc->items[OPCODE_OUTDATA]);
     if (ps) {
       va_start(args, format);
-      n = vsnprintf(o, 1024, format, args);
+      n = vsnprintf(o, sizeof(o), format, args);
       va_end(args);
       bstrcat(ps, o);
     }
   }
 
   return n;
+}
+
+static void custom_fprintf_address(bfd_vma vma, struct disassemble_info *di) {
+  int n = 0;
+  if (di && di->application_data) {
+    popcode_t oc = CAST(popcode_t, di->application_data);
+    if (MODE_ISSET(oc->action, OPTPROGRAM_PREFIX_ADDR)) {
+      n += custom_fprintf(oc, "%8.8" PRIx64, vma);
+    } else {
+      n += custom_fprintf(oc, "%" PRIx64, vma);
+    }
+  }
 }
 
 char* opcodelib_strncat(char* dst, char* src, char* sep, size_t size) {
@@ -57,7 +69,7 @@ int opcodelib_open(handle_t p, handle_t o) {
         MALLOCA(char, args, 1024);
 
         /* Construct and configure the disassembler_info class using stdout */
-        init_disassemble_info(di, oc, (fprintf_ftype)custom_fprintf);
+        init_disassemble_info(di, oc, CAST(fprintf_ftype, custom_fprintf));
 
         di->application_data = oc;
         di->arch = bfd_get_arch(bf);
@@ -67,6 +79,7 @@ int opcodelib_open(handle_t p, handle_t o) {
         di->skip_zeroes = DEFAULT_SKIP_ZEROES;
         di->skip_zeroes_at_end = DEFAULT_SKIP_ZEROES_AT_END;
         di->disassembler_options = NULL;
+        di->print_address_func = custom_fprintf_address;
 
         if (MODE_ISSET(op->ocdump, OPTDISASSEMBLE_ATT_MNEMONIC)) {
           di->disassembler_options = opcodelib_strncat(args, "att-mnemonic", ",", NELEMENTS(args));
@@ -146,9 +159,14 @@ int opcodelib_raw(handle_t p, handle_t s, unknown_t data, const size_t size, con
       int siz = oc->ocfunc(soffset, di);
       if (siz <= 0) return n;
 
-      n2 += printf_nice(soffset, USE_HEX4 | USE_COLON);
-      n2 += printf_sore(p0, siz, USE_HEX | USE_SPACE);
-      n2 += printf_pack(31 - n2);
+      if (MODE_ISSET(oc->action, OPTPROGRAM_PREFIX_ADDR)) {
+        n2 += printf_nice(soffset, USE_LHEX32 | USE_COLON);
+      } else {
+        n2 += printf_nice(soffset, USE_HEX4 | USE_COLON);
+        n2 += printf_sore(p0, siz, USE_HEX | USE_SPACE);
+        n2 += printf_pack(31 - n2);
+      }
+
       n2 += printf_sore(ps->data, ps->size, USE_STR | USE_SPACE | USE_EOL);
 
       soffset += siz;

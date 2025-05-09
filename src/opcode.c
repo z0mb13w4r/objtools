@@ -594,6 +594,7 @@ int ocdisassemble_open(handle_t p, handle_t o) {
     poptions_t op = CAST(poptions_t, o);
 
     oc->action = op->action;
+    oc->ocdump = op->ocdump;
     oc->saddress = op->saddress;
     oc->eaddress = op->eaddress;
 

@@ -54,9 +54,10 @@
 #define OPTFUNCTION_ROT13                          (257)
 #define OPTFUNCTION_ROT18                          (258)
 
-#define OPTPROGRAM_HASH                            U64MASK(54)
-#define OPTPROGRAM_ENTROPY                         U64MASK(55)
-#define OPTPROGRAM_DEMANGLE                        U64MASK(56)
+#define OPTPROGRAM_HASH                            U64MASK(53)
+#define OPTPROGRAM_ENTROPY                         U64MASK(54)
+#define OPTPROGRAM_DEMANGLE                        U64MASK(55)
+#define OPTPROGRAM_PREFIX_ADDR                     U64MASK(56)
 #define OPTPROGRAM_LINE_NUMBERS                    U64MASK(57)
 #define OPTPROGRAM_DEBUGGING_TAGS                  U64MASK(58)
 #define OPTPROGRAM_SOURCE_CODE                     U64MASK(59)

@@ -72,6 +72,7 @@ typedef void (*opcbfunc_t)(handle_t p, handle_t item, unknown_t param);
 typedef struct opcode_s {
   smode_t    mode;
   imode_t    action;
+  imode_t    ocdump;
   handle_t   data;
   unknown_t  items[OPCODE_MAXITEMS];
   uint64_t   saddress; /* --start-address */

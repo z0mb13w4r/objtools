@@ -15,7 +15,7 @@ static const args_t zOBJDUMPARGS[] = {
   {'S', "--source",            OPTPROGRAM_SOURCE_CODE | OPTPROGRAM_DISASSEMBLE},
   {'T', "--dynamic-symbols",   OPTOBJDUMP_DYNAMIC_SYMBOLS,                               zDUMPDYNAMIC},
   {'d', "--disassemble",       OPTPROGRAM_DISASSEMBLE},
-  {'g', "--debugging",         OPTDEBUGELF_DEBUGGING},
+//  {'g', "--debugging",         OPTDEBUGELF_DEBUGGING},
   {'e', "--debugging-tags",    OPTPROGRAM_DEBUGGING_TAGS},
   {'C', "--demangle",          OPTPROGRAM_DEMANGLE},
   {'s', "--full-contents",     OPTOBJDUMP_SECTIONS},
@@ -26,6 +26,7 @@ static const args_t zOBJDUMPARGS[] = {
   {'h', "--section-headers",   OPTOBJDUMP_SECTION_HEADER},
   {'x', "--all-headers",       OPTOBJDUMP_HEADERS,                                       zDUMPALLHEADERS},
   {'l', "--line-numbers",      OPTPROGRAM_LINE_NUMBERS},
+  {0,   "--prefix-addresses",  OPTPROGRAM_PREFIX_ADDR},
   {'c', "--capstone",          OPTPROGRAM_CAPSTONE_ALL},
   {'X', "--hash",              OPTPROGRAM_HASH},
   {0, NULL}
