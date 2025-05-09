@@ -52,6 +52,8 @@ static void callback_disassemble(handle_t p, handle_t section, unknown_t param) 
 static void callback_dwarf(handle_t p, handle_t section, unknown_t param) {
   if (!ocdwarf_isneeded(p, section, param)) return;
 
+  uint64_t soffset = ocget_soffset(p, section);
+
   printf_text("Contents of section", USE_LT);
   printf_text(ocget_name(section), USE_LT | USE_SPACE | USE_SQ);
   printf_text("at offset", USE_LT | USE_SPACE);
