@@ -71,7 +71,7 @@ typedef struct dwarf_display_s {
 
 pdwarf_display_t ocdwarf_get(handle_t s);
 
-bool_t ocdwarf_isneeded(handle_t s, handle_t o);
+bool_t ocdwarf_isneeded(handle_t p, handle_t s, handle_t o);
 
 int ocdwarf_open(handle_t p, handle_t o);
 int ocdwarf_close(handle_t p);
