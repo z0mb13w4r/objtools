@@ -362,6 +362,17 @@ static imode_t get_options2(poptions_t o, const args_t args[], const char *argv)
   return action;
 }
 
+static imode_t get_ocdump(poptions_t o, const imodeswap_t args[], imode_t action) {
+  imode_t ocdump = 0;
+  for (int j = 0; (0 != args[j].mode1) || (0 != args[j].mode2); ++j) {
+    if (MODE_ISSET(args[j].mode1, action)) {
+      ocdump |= args[j].mode2;
+    }
+  }
+
+  return ocdump;
+}
+
 static int breakup_args(char* args, char* dst0, const size_t dst0size, char* dst1, const size_t dst1size) {
   MALLOCA(char, tmp, 1024);
   strncpy(tmp, args, NELEMENTS(tmp));
@@ -586,9 +597,7 @@ int get_options_objdump(poptions_t o, int argc, char** argv, char* name) {
     }
   }
 
-  if (MODE_ISSET(o->action, OPTOBJDUMP_DEBUGGING)) {
-    o->ocdump |= OPTDEBUGELF_DEBUGGING;
-  }
+  o->ocdump |= get_ocdump(o, zOBJDUMPSWAP, o->action);
 
   if (o->action & OPTPROGRAM_VERSION) {
     return version0(o, "objdump-ng", zOBJDUMPARGS);

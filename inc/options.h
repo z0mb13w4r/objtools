@@ -222,6 +222,11 @@ typedef struct args_s {
   imode_t groups;
 } args_t, *pargs_t;
 
+typedef struct imodeswap_s {
+  imode_t mode1;
+  imode_t mode2;
+} imodeswap_t, *pimodeswap_t;
+
 int get_options_convert(poptions_t o, int argc, char** argv, char* name);
 int get_options_readelf(poptions_t o, int argc, char** argv, char* name);
 int get_options_objcopy(poptions_t o, int argc, char** argv, char* name);
