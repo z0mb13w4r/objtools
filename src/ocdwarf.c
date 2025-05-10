@@ -270,99 +270,97 @@ isformstring(Dwarf_Half form)
     return FALSE;
 }
 
-static int
-print_attr(Dwarf_Attribute atr,
-    Dwarf_Signed anumber, Dwarf_Error *error)
-{
-    int res = 0;
-    char *str = 0;
-    const char *attrname = 0;
-    const char *formname = 0;
-    Dwarf_Half form = 0;
-    Dwarf_Half attrnum = 0;
-    res = dwarf_whatform(atr,&form,error);
-    if (res != DW_DLV_OK) {
+static int ocdwarf_print_attr(Dwarf_Attribute attr, Dwarf_Signed anumber, Dwarf_Error *e) {
+  char *str = 0;
+  const char *attrname = 0;
+  const char *formname = 0;
+  Dwarf_Half form = 0;
+  Dwarf_Half attrnum = 0;
+  int res = dwarf_whatform(attr, &form, e);
+  if (res != DW_DLV_OK) {
         printf("dwarf_whatform failed! res %d\n",res);
         return res;
-    }
-    res = dwarf_whatattr(atr,&attrnum,error);
-    if (res != DW_DLV_OK) {
+  }
+  res = dwarf_whatattr(attr, &attrnum, e);
+  if (res != DW_DLV_OK) {
         printf("dwarf_whatattr failed! res %d\n",res);
         return res;
-    }
-    res = dwarf_get_AT_name(attrnum,&attrname);
-    if (res == DW_DLV_NO_ENTRY) {
+  }
+  res = dwarf_get_AT_name(attrnum, &attrname);
+  if (res == DW_DLV_NO_ENTRY) {
         printf("Bogus attrnum 0x%x\n",attrnum);
         attrname = "<internal error ?>";
-    }
-    res = dwarf_get_FORM_name(form,&formname);
-    if (res == DW_DLV_NO_ENTRY) {
+  }
+  res = dwarf_get_FORM_name(form, &formname);
+  if (res == DW_DLV_NO_ENTRY) {
         printf("Bogus form 0x%x\n",attrnum);
         attrname = "<internal error ?>";
-    }
-    if (!isformstring(form)) {
+  }
+  if (!isformstring(form)) {
         printf("  [%2d] Attr: %-15s  Form: %-15s\n",
-            (int)anumber,attrname,formname);
+            (int)anumber,attrname, formname);
         return DW_DLV_OK;
-    }
-    res = dwarf_formstring(atr,&str,error);
-    if (res != DW_DLV_OK) {
+  }
+  res = dwarf_formstring(attr, &str, e);
+  if (res != DW_DLV_OK) {
         printf("dwarf_formstring failed! res %d\n",res);
         return res;
-    }
+  }
     printf("  [%2d] Attr: %-15s  Form: %-15s %s\n",
         (int)anumber,attrname,formname,str);
-    return DW_DLV_OK;
+  return DW_DLV_OK;
 }
 
-static void
-dealloc_list(Dwarf_Debug dbg,
-    Dwarf_Attribute *attrbuf,
-    Dwarf_Signed attrcount,
-    Dwarf_Signed i)
-{
+static void ocdwarf_dealloc(handle_t p, handle_t s, Dwarf_Attribute *attrbuf, Dwarf_Signed attrcount, Dwarf_Signed i) {
+  if (isopcode(p) && isopshdr(s)) {
+    popcode_t oc = CAST(popcode_t, p);
+
     for ( ; i < attrcount; ++i) {
-        dwarf_dealloc_attribute(attrbuf[i]);
+      dwarf_dealloc_attribute(attrbuf[i]);
     }
-    dwarf_dealloc(dbg,attrbuf,DW_DLA_LIST);
+
+    dwarf_dealloc(oc->items[OPCODE_DWARF], attrbuf, DW_DLA_LIST);
+  }
 }
 
-static int
-print_one_die(Dwarf_Debug dbg,Dwarf_Die in_die,int level,
-    Dwarf_Error *error)
-{
+static int ocdwarf_one_die(handle_t p, handle_t s, Dwarf_Die in_die, int level, Dwarf_Error *e) {
+  if (isopcode(p) && isopshdr(s)) {
+    popcode_t oc = CAST(popcode_t, p);
+
     Dwarf_Attribute *attrbuf = 0;
     Dwarf_Signed  attrcount = 0;
     Dwarf_Half tag = 0;
     const char * tagname = 0;
-    int res = 0;
-    Dwarf_Signed i = 0;
 
-    res = dwarf_tag(in_die,&tag,error);
+    int res = dwarf_tag(in_die, &tag, e);
     if (res != DW_DLV_OK) {
         printf("dwarf_tag failed! res %d\n",res);
         return res;
     }
-    res = dwarf_get_TAG_name(tag,&tagname);
+    res = dwarf_get_TAG_name(tag, &tagname);
     if (res != DW_DLV_OK) {
         tagname = "<bogus tag>";
     }
     printf("%3d:  Die: %s\n",level,tagname);
-    res = dwarf_attrlist(in_die,&attrbuf,&attrcount,error);
+    res = dwarf_attrlist(in_die, &attrbuf, &attrcount ,e);
     if (res != DW_DLV_OK) {
         printf("dwarf_attrlist failed! res %d\n",res);
         return res;
     }
-    for (i = 0; i <attrcount;++i) {
-        res  =print_attr(attrbuf[i],i,error);
+    for (Dwarf_Signed i = 0; i < attrcount; ++i) {
+        res = ocdwarf_print_attr(attrbuf[i], i, e);
         if (res != DW_DLV_OK) {
-            dealloc_list(dbg,attrbuf,attrcount,0);
+            ocdwarf_dealloc(p, s, attrbuf, attrcount, 0);
             printf("dwarf_attr print failed! res %d\n",res);
             return res;
         }
     }
-    dealloc_list(dbg,attrbuf,attrcount,0);
+
+    ocdwarf_dealloc(p, s, attrbuf, attrcount, 0);
     return DW_DLV_OK;
+  }
+
+  return DW_DLV_ERROR;
 }
 
 static int ocdwarf_do(handle_t p, handle_t s, Dwarf_Error *e) {
@@ -414,10 +412,10 @@ static int ocdwarf_do(handle_t p, handle_t s, Dwarf_Error *e) {
         }
     }
 
-    res = print_one_die(oc->items[OPCODE_DWARF], cu_die, level, e);
+    res = ocdwarf_one_die(p, s, cu_die, level, e);
     if (res != DW_DLV_OK) {
         dwarf_dealloc_die(cu_die);
-        printf("print_one_die failed! %d\n",res);
+        printf("ocdwarf_one_die failed! %d\n",res);
         return res;
     }
 
