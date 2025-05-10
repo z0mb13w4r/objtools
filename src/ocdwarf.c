@@ -153,49 +153,40 @@ typedef struct special_filedata_s {
 static special_filedata_internals_t base_internals =
 { FALSE,DW_END_little,32,32,200,SECCOUNT, sectiondata };
 
-static
-int gsinfo(void* obj,
-    Dwarf_Unsigned section_index,
-    Dwarf_Obj_Access_Section_a* return_section,
-    int* error )
-{
-    special_filedata_internals_t *internals =
-        (special_filedata_internals_t *)(obj);
-    struct sectiondata_s *finfo = 0;
+static int ocdwarf_secinfo(unknown_t obj, Dwarf_Unsigned idx, Dwarf_Obj_Access_Section_a* sec, int* e) {
+  special_filedata_internals_t *pobj = (special_filedata_internals_t *)(obj);
 
-    *error = 0; /* No error. Avoids unused arg */
-    if (section_index >= SECCOUNT) {
-        return DW_DLV_NO_ENTRY;
-    }
-    finfo = internals->f_sectarray + section_index;
-    return_section->as_name   = finfo->sd_secname;
-    return_section->as_type   = 0;
-    return_section->as_flags  = 0;
-    return_section->as_addr   = finfo->sd_addr;
-    return_section->as_offset = 0;
-    return_section->as_size   = finfo->sd_sectionsize;
-    return_section->as_link   = 0;
-    return_section->as_info   = 0;
-    return_section->as_addralign = 0;
-    return_section->as_entrysize = 1;
-    return DW_DLV_OK;
+  *e = 0; /* No error. Avoids unused arg */
+  if (idx >= SECCOUNT) {
+    return DW_DLV_NO_ENTRY;
+  }
+
+  struct sectiondata_s *finfo = 0;
+  finfo = pobj->f_sectarray + idx;
+
+  sec->as_name   = finfo->sd_secname;
+  sec->as_type   = 0;
+  sec->as_flags  = 0;
+  sec->as_addr   = finfo->sd_addr;
+  sec->as_offset = 0;
+  sec->as_size   = finfo->sd_sectionsize;
+  sec->as_link   = 0;
+  sec->as_info   = 0;
+  sec->as_addralign = 0;
+  sec->as_entrysize = 1;
+  return DW_DLV_OK;
 }
 
-static Dwarf_Small
-gborder(void * obj)
-{
-    special_filedata_internals_t *internals =
-        (special_filedata_internals_t *)(obj);
-    return internals->f_object_endian;
+static Dwarf_Small ocdwarf_border(unknown_t obj) {
+  special_filedata_internals_t *internals = (special_filedata_internals_t *)(obj);
+  return internals->f_object_endian;
 }
-static
-Dwarf_Small glensize(void * obj)
-{
-    /* offset size */
-    special_filedata_internals_t *internals =
-        (special_filedata_internals_t *)(obj);
-    return internals->f_offsetsize/8;
+
+static Dwarf_Small ocdwarf_offsetsize(unknown_t obj) {
+  special_filedata_internals_t *internals = (special_filedata_internals_t *)(obj);
+  return internals->f_offsetsize / 8;
 }
+
 static
 Dwarf_Small gptrsize(void * obj)
 {
@@ -238,9 +229,9 @@ int gloadsec(void * obj,
 }
 
 const Dwarf_Obj_Access_Methods_a methods = {
-    gsinfo,
-    gborder,
-    glensize,
+    ocdwarf_secinfo,
+    ocdwarf_border,
+    ocdwarf_offsetsize,
     gptrsize,
     gfilesize,
     gseccount,
