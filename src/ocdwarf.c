@@ -188,44 +188,46 @@ static Dwarf_Small ocdwarf_offsetsize(unknown_t obj) {
   return pobj->f_offsetsize / 8;
 }
 
-static Dwarf_Small gptrsize(unknown_t obj) {
+static Dwarf_Small ocdwarf_ptrsize(unknown_t obj) {
   pdwarf_data_t pobj = CAST(pdwarf_data_t, obj);
   return pobj->f_pointersize / 8;
 }
 
-static Dwarf_Unsigned gfilesize(unknown_t obj) {
+static Dwarf_Unsigned ocdwarf_filesize(unknown_t obj) {
   pdwarf_data_t pobj = CAST(pdwarf_data_t, obj);
   return pobj->f_filesize;
 }
 
-static Dwarf_Unsigned gseccount(unknown_t obj) {
+static Dwarf_Unsigned ocdwarf_seccount(unknown_t obj) {
   pdwarf_data_t pobj = CAST(pdwarf_data_t, obj);
   return pobj->f_sectioncount;
 }
 
-static int gloadsec(unknown_t obj, Dwarf_Unsigned secindex, Dwarf_Small**rdata, int *e) {
+static int ocdwarf_loadsec(unknown_t obj, Dwarf_Unsigned idx, Dwarf_Small**rdata, int *e) {
   pdwarf_data_t pobj = CAST(pdwarf_data_t, obj);
   struct sectiondata_s *secp = 0;
 
   *e = 0; /* No Error, avoids compiler warning */
-  if (secindex >= pobj->f_sectioncount) {
+  if (idx >= pobj->f_sectioncount) {
     return DW_DLV_NO_ENTRY;
   }
-  secp = secindex + pobj->f_sectarray;
+
+  secp = idx + pobj->f_sectarray;
   *rdata = secp->sd_content;
   return DW_DLV_OK;
 }
 
 const Dwarf_Obj_Access_Methods_a methods = {
-    ocdwarf_secinfo,
-    ocdwarf_border,
-    ocdwarf_offsetsize,
-    gptrsize,
-    gfilesize,
-    gseccount,
-    gloadsec,
-    0 /* no relocating anything */
-    };
+  ocdwarf_secinfo,
+  ocdwarf_border,
+  ocdwarf_offsetsize,
+  ocdwarf_ptrsize,
+  ocdwarf_filesize,
+  ocdwarf_seccount,
+  ocdwarf_loadsec,
+  0 /* no relocating anything */
+};
+
 struct Dwarf_Obj_Access_Interface_a_s dw_interface =
 { &base_internals,&methods };
 
