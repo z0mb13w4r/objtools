@@ -6,6 +6,8 @@
 #include "ocdwarf.h"
 #include "options.h"
 
+static const Dwarf_Sig8 zerosignature;
+
 static int ocdwarf_dodebug_abbrev(handle_t p, handle_t s, handle_t d);
 static int ocdwarf_dodebug_aranges(handle_t p, handle_t s, handle_t d);
 static int ocdwarf_dodebug_info(handle_t p, handle_t s, handle_t d);
@@ -248,7 +250,6 @@ const Dwarf_Obj_Access_Methods_a methods = {
 struct Dwarf_Obj_Access_Interface_a_s dw_interface =
 { &base_internals,&methods };
 
-static const Dwarf_Sig8 zerosignature;
 static int
 isformstring(Dwarf_Half form)
 {
@@ -364,61 +365,47 @@ print_one_die(Dwarf_Debug dbg,Dwarf_Die in_die,int level,
     return DW_DLV_OK;
 }
 
-static int
-print_object_info(Dwarf_Debug dbg,Dwarf_Error *error)
-{
-    Dwarf_Bool is_info = TRUE; /* our data is not DWARF4
-        .debug_types. */
+static int ocdwarf_do(handle_t p, handle_t s, Dwarf_Error *e) {
+  if (isopcode(p) && isopshdr(s)) {
+    popcode_t oc = CAST(popcode_t, p);
+
+    Dwarf_Bool is_info = TRUE; /* our data is not DWARF4 .debug_types. */
+    Dwarf_Unsigned next_cu_header_offset = 0;
     Dwarf_Unsigned cu_header_length = 0;
+    Dwarf_Unsigned typeoffset     = 0;
+    Dwarf_Half     extension_size = 0;
+    Dwarf_Half     header_cu_type = 0;
     Dwarf_Half     version_stamp = 0;
-    Dwarf_Off      abbrev_offset = 0;
     Dwarf_Half     address_size  = 0;
     Dwarf_Half     length_size   = 0;
-    Dwarf_Half     extension_size = 0;
-    Dwarf_Sig8     type_signature;
-    Dwarf_Unsigned typeoffset     = 0;
-    Dwarf_Unsigned next_cu_header_offset = 0;
-    Dwarf_Half     header_cu_type = 0;
-    int res = 0;
-    Dwarf_Die cu_die = 0;
-    int level = 0;
+    Dwarf_Sig8     type_signature = zerosignature;
+    Dwarf_Off      abbrev_offset = 0;
+    Dwarf_Die      cu_die = 0;
+    int            level = 0;
 
-    type_signature = zerosignature;
-    res = dwarf_next_cu_header_d(dbg,
-        is_info,
-        &cu_header_length,
-        &version_stamp,
-        &abbrev_offset,
-        &address_size,
-        &length_size,
-        &extension_size,
-        &type_signature,
-        &typeoffset,
-        &next_cu_header_offset,
-        &header_cu_type,
-        error);
+    int res = dwarf_next_cu_header_d(oc->items[OPCODE_DWARF], is_info,
+                 &cu_header_length, &version_stamp, &abbrev_offset, &address_size, &length_size, &extension_size,
+                 &type_signature, &typeoffset, &next_cu_header_offset, &header_cu_type, e);
     if (res != DW_DLV_OK) {
         printf("Next cu header  result %d. "
             "Something is wrong FAIL, line %d\n",res,__LINE__);
         if (res == DW_DLV_ERROR) {
-            printf("Error is: %s\n",dwarf_errmsg(*error));
+            printf("Error is: %s\n",dwarf_errmsg(*e));
         }
         exit(EXIT_FAILURE);
     }
-    printf("CU header length..........0x%lx\n",
-        (unsigned long)cu_header_length);
+    printf("CU header length..........0x%lx\n", (unsigned long)cu_header_length);
     printf("Version stamp.............%d\n",version_stamp);
     printf("Address size .............%d\n",address_size);
     printf("Offset size...............%d\n",length_size);
-    printf("Next cu header offset.....0x%lx\n",
-        (unsigned long)next_cu_header_offset);
+    printf("Next cu header offset.....0x%lx\n", (unsigned long)next_cu_header_offset);
 
-    res = dwarf_siblingof_b(dbg, NULL,is_info, &cu_die, error);
+    res = dwarf_siblingof_b(oc->items[OPCODE_DWARF], NULL, is_info, &cu_die, e);
     if (res != DW_DLV_OK) {
         /* There is no CU die, which should be impossible. */
         if (res == DW_DLV_ERROR) {
             printf("ERROR: dwarf_siblingof_b failed, no CU die\n");
-            printf("Error is: %s\n",dwarf_errmsg(*error));
+            printf("Error is: %s\n",dwarf_errmsg(*e));
             return res;
         } else {
             printf("ERROR: dwarf_siblingof_b got NO_ENTRY, "
@@ -426,14 +413,19 @@ print_object_info(Dwarf_Debug dbg,Dwarf_Error *error)
             return res;
         }
     }
-    res = print_one_die(dbg,cu_die,level,error);
+
+    res = print_one_die(oc->items[OPCODE_DWARF], cu_die, level, e);
     if (res != DW_DLV_OK) {
         dwarf_dealloc_die(cu_die);
         printf("print_one_die failed! %d\n",res);
         return res;
     }
+
     dwarf_dealloc_die(cu_die);
     return DW_DLV_OK;
+  }
+
+  return DW_DLV_ERROR;
 }
 
 int ocdwarf_run(handle_t p, handle_t s) {
@@ -441,11 +433,8 @@ int ocdwarf_run(handle_t p, handle_t s) {
   if (isopcode(p) && isopshdr(s)) {
     popcode_t oc = CAST(popcode_t, p);
 
-//    Dwarf_Debug dbg = 0;
     Dwarf_Error error = 0;
 
-    /*  Fill in interface before this call.
-        We are using a static area, see above. */
     int res = dwarf_object_init_b(&dw_interface, 0, 0, DW_GROUPNUMBER_ANY,
                                    CAST(Dwarf_Debug*, &oc->items[OPCODE_DWARF]), &error);
     if (res == DW_DLV_NO_ENTRY) {
@@ -457,7 +446,7 @@ int ocdwarf_run(handle_t p, handle_t s) {
         dwarf_dealloc_error(oc->items[OPCODE_DWARF], error);
         exit(EXIT_FAILURE);
     }
-    res = print_object_info(oc->items[OPCODE_DWARF], &error);
+    res = ocdwarf_do(p, s, &error);
     if (res != DW_DLV_OK) {
         if (res == DW_DLV_ERROR) {
             dwarf_dealloc_error(oc->items[OPCODE_DWARF], error);
