@@ -53,8 +53,8 @@ bool_t ocdwarf_isneeded(handle_t p, handle_t s, handle_t o) {
     if (soffset >= eoffset) return FALSE;
 
     poptions_t op = CAST(poptions_t, o);
-    pdwarf_display_t p = ocdwarf_get(s);
-    return p && MODE_ISSET(p->action, op->ocdump);
+    pdwarf_display_t p0 = ocdwarf_get(s);
+    return p0 && MODE_ISSET(p0->action, op->ocdump);
   }
 
   return FALSE;
@@ -436,39 +436,41 @@ print_object_info(Dwarf_Debug dbg,Dwarf_Error *error)
     return DW_DLV_OK;
 }
 
-
 int ocdwarf_run(handle_t p, handle_t s) {
   int n = 0;
   if (isopcode(p) && isopshdr(s)) {
-    Dwarf_Debug dbg = 0;
+    popcode_t oc = CAST(popcode_t, p);
+
+//    Dwarf_Debug dbg = 0;
     Dwarf_Error error = 0;
 
     /*  Fill in interface before this call.
         We are using a static area, see above. */
-    int res = dwarf_object_init_b(&dw_interface,
-        0,0,DW_GROUPNUMBER_ANY,&dbg,
-        &error);
+    int res = dwarf_object_init_b(&dw_interface, 0, 0, DW_GROUPNUMBER_ANY,
+                                   CAST(Dwarf_Debug*, &oc->items[OPCODE_DWARF]), &error);
     if (res == DW_DLV_NO_ENTRY) {
         printf("FAIL Cannot dwarf_object_init_b() NO ENTRY. \n");
         exit(EXIT_FAILURE);
     } else if (res == DW_DLV_ERROR){
         printf("FAIL Cannot dwarf_object_init_b(). \n");
         printf("msg: %s\n",dwarf_errmsg(error));
-        dwarf_dealloc_error(dbg,error);
+        dwarf_dealloc_error(oc->items[OPCODE_DWARF], error);
         exit(EXIT_FAILURE);
     }
-    res = print_object_info(dbg,&error);
+    res = print_object_info(oc->items[OPCODE_DWARF], &error);
     if (res != DW_DLV_OK) {
         if (res == DW_DLV_ERROR) {
-            dwarf_dealloc_error(dbg,error);
+            dwarf_dealloc_error(oc->items[OPCODE_DWARF], error);
         }
         printf("FAIL printing, res %d line %d\n",res,__LINE__);
         exit(EXIT_FAILURE);
     }
-    dwarf_object_finish(dbg);
 
 //    pdwarf_display_t d = ocdwarf_get(s);
 //    n = d && d->func ? d->func(p, s, &d->section) : -1;
+
+    dwarf_object_finish(oc->items[OPCODE_DWARF]);
+    oc->items[OPCODE_DWARF] = NULL;
   }
 
   return n;

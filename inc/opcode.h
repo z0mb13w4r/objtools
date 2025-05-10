@@ -47,11 +47,12 @@
 #define MODE_OCSHDR64              (MODE_OCSHDRWRAP | MODE_PUT1(MODE_OPELF) | MODE_PUT2(MODE_BIT64))
 
 #define OPCODE_BFD                 (0)
-#define OPCODE_SYMBOLS             (1)
-#define OPCODE_SYMBOLS_DYNAMIC     (2)
-#define OPCODE_DISASSEMBLER        (3)
-#define OPCODE_OUTDATA             (4)
-#define OPCODE_MAXITEMS            (5)
+#define OPCODE_DWARF               (1)
+#define OPCODE_SYMBOLS             (2)
+#define OPCODE_SYMBOLS_DYNAMIC     (3)
+#define OPCODE_DISASSEMBLER        (4)
+#define OPCODE_OUTDATA             (5)
+#define OPCODE_MAXITEMS            (6)
 #define OPCODE_RAWDATA             (OPCODE_MAXITEMS + 1)
 
 #define ocgetbfd(x)                CAST(bfd*, ocget(x, OPCODE_BFD))
