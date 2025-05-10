@@ -135,26 +135,27 @@ static struct sectiondata_s sectiondata[SECCOUNT] = {
 {0,32,32,sizeof(strbytes),".debug_str",strbytes}
 };
 
-typedef struct special_filedata_s {
-    int            f_is_64bit;
-    Dwarf_Small    f_object_endian;
-    unsigned       f_pointersize;
-    unsigned       f_offsetsize;
-    Dwarf_Unsigned f_filesize;
-    Dwarf_Unsigned f_sectioncount;
-    struct sectiondata_s * f_sectarray;
-} special_filedata_internals_t;
+typedef struct dwarf_data_s {
+  int            f_is_64bit;
+  Dwarf_Small    f_object_endian;
+  unsigned       f_pointersize;
+  unsigned       f_offsetsize;
+  Dwarf_Unsigned f_filesize;
+  Dwarf_Unsigned f_sectioncount;
+  struct sectiondata_s * f_sectarray;
+} dwarf_data_t, *pdwarf_data_t;
 
 /*  Use DW_END_little.
     Libdwarf finally sets the file-format-specific
     f_object_endianness field to a DW_END_little or
     DW_END_big (see dwarf.h).
     Here we must do that ourselves. */
-static special_filedata_internals_t base_internals =
-{ FALSE,DW_END_little,32,32,200,SECCOUNT, sectiondata };
+static dwarf_data_t base_internals = {
+  FALSE, DW_END_little, 32, 32, 200, SECCOUNT, sectiondata
+};
 
 static int ocdwarf_secinfo(unknown_t obj, Dwarf_Unsigned idx, Dwarf_Obj_Access_Section_a* sec, int* e) {
-  special_filedata_internals_t *pobj = (special_filedata_internals_t *)(obj);
+  pdwarf_data_t pobj = CAST(pdwarf_data_t, obj);
 
   *e = 0; /* No error. Avoids unused arg */
   if (idx >= SECCOUNT) {
@@ -178,54 +179,41 @@ static int ocdwarf_secinfo(unknown_t obj, Dwarf_Unsigned idx, Dwarf_Obj_Access_S
 }
 
 static Dwarf_Small ocdwarf_border(unknown_t obj) {
-  special_filedata_internals_t *internals = (special_filedata_internals_t *)(obj);
-  return internals->f_object_endian;
+  pdwarf_data_t pobj = CAST(pdwarf_data_t, obj);
+  return pobj->f_object_endian;
 }
 
 static Dwarf_Small ocdwarf_offsetsize(unknown_t obj) {
-  special_filedata_internals_t *internals = (special_filedata_internals_t *)(obj);
-  return internals->f_offsetsize / 8;
+  pdwarf_data_t pobj = CAST(pdwarf_data_t, obj);
+  return pobj->f_offsetsize / 8;
 }
 
-static
-Dwarf_Small gptrsize(void * obj)
-{
-    special_filedata_internals_t *internals =
-        (special_filedata_internals_t *)(obj);
-    return internals->f_pointersize/8;
-}
-static
-Dwarf_Unsigned gfilesize(void * obj)
-{
-    special_filedata_internals_t *internals =
-        (special_filedata_internals_t *)(obj);
-    return internals->f_filesize;
-}
-static
-Dwarf_Unsigned gseccount(void* obj)
-{
-    special_filedata_internals_t *internals =
-        (special_filedata_internals_t *)(obj);
-    return internals->f_sectioncount;
+static Dwarf_Small gptrsize(unknown_t obj) {
+  pdwarf_data_t pobj = CAST(pdwarf_data_t, obj);
+  return pobj->f_pointersize / 8;
 }
 
-static
-int gloadsec(void * obj,
-    Dwarf_Unsigned secindex,
-    Dwarf_Small**rdata,
-    int *error)
-{
-    special_filedata_internals_t *internals =
-        (special_filedata_internals_t *)(obj);
-    struct sectiondata_s *secp = 0;
+static Dwarf_Unsigned gfilesize(unknown_t obj) {
+  pdwarf_data_t pobj = CAST(pdwarf_data_t, obj);
+  return pobj->f_filesize;
+}
 
-    *error = 0; /* No Error, avoids compiler warning */
-    if (secindex >= internals->f_sectioncount) {
-        return DW_DLV_NO_ENTRY;
-    }
-    secp = secindex +internals->f_sectarray;
-    *rdata = secp->sd_content;
-    return DW_DLV_OK;
+static Dwarf_Unsigned gseccount(unknown_t obj) {
+  pdwarf_data_t pobj = CAST(pdwarf_data_t, obj);
+  return pobj->f_sectioncount;
+}
+
+static int gloadsec(unknown_t obj, Dwarf_Unsigned secindex, Dwarf_Small**rdata, int *e) {
+  pdwarf_data_t pobj = CAST(pdwarf_data_t, obj);
+  struct sectiondata_s *secp = 0;
+
+  *e = 0; /* No Error, avoids compiler warning */
+  if (secindex >= pobj->f_sectioncount) {
+    return DW_DLV_NO_ENTRY;
+  }
+  secp = secindex + pobj->f_sectarray;
+  *rdata = secp->sd_content;
+  return DW_DLV_OK;
 }
 
 const Dwarf_Obj_Access_Methods_a methods = {
