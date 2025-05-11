@@ -116,7 +116,7 @@ static Dwarf_Small strbytes[] = {
     not directly visible elsewhere. One needs to have one
     of these but  maybe the content here too little
     or useless, this is just an example of sorts.  */
-#define SECCOUNT 4
+//#define SECCOUNT 4
 typedef struct sectiondata_s {
   unsigned int   sd_addr;
   unsigned int   sd_objoffsetlen;
@@ -128,7 +128,7 @@ typedef struct sectiondata_s {
 
 /*  The secname must not be 0 , pass "" if
     there is no name. */
-static sectiondata_t sectiondata[SECCOUNT] = {
+static sectiondata_t sectiondata[] = {
 {0,0,0,0,"",0},
 {0,32,32,sizeof(abbrevbytes),".debug_abbrev",abbrevbytes},
 {0,32,32,sizeof(infobytes),".debug_info",infobytes},
@@ -151,14 +151,14 @@ typedef struct dwarf_data_s {
     DW_END_big (see dwarf.h).
     Here we must do that ourselves. */
 static dwarf_data_t base_internals = {
-  FALSE, DW_END_little, 32, 32, 200, SECCOUNT, sectiondata
+  FALSE, DW_END_little, 32, 32, 200, NELEMENTS(sectiondata), sectiondata
 };
 
 static int ocdwarf_secinfo(unknown_t obj, Dwarf_Unsigned idx, Dwarf_Obj_Access_Section_a* sec, int* e) {
   pdwarf_data_t pobj = CAST(pdwarf_data_t, obj);
 
   *e = 0; /* No error. Avoids unused arg */
-  if (idx >= SECCOUNT) {
+  if (idx >= pobj->f_sectioncount) {
     return DW_DLV_NO_ENTRY;
   }
 
