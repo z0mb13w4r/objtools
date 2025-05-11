@@ -156,24 +156,30 @@ static dwarf_data_t base_internals = {
 static int ocdwarf_secinfo(unknown_t obj, Dwarf_Unsigned idx, Dwarf_Obj_Access_Section_a* sec, int* e) {
   pdwarf_data_t pobj = CAST(pdwarf_data_t, obj);
 
-  *e = 0; /* No error. Avoids unused arg */
-  if (idx >= pobj->f_sectioncount) {
-    return DW_DLV_NO_ENTRY;
+  if (pobj && sec && e) {
+    *e = 0; /* No error. Avoids unused arg */
+    if (idx >= pobj->f_sectioncount) {
+      return DW_DLV_NO_ENTRY;
+    }
+
+    if (pobj->f_sectarray) {
+      struct sectiondata_s *fsect = pobj->f_sectarray + idx;
+
+      sec->as_name   = fsect->sd_secname;
+      sec->as_type   = 0;
+      sec->as_flags  = 0;
+      sec->as_addr   = fsect->sd_addr;
+      sec->as_offset = 0;
+      sec->as_size   = fsect->sd_sectionsize;
+      sec->as_link   = 0;
+      sec->as_info   = 0;
+      sec->as_addralign = 0;
+      sec->as_entrysize = 1;
+      return DW_DLV_OK;
+    }
   }
 
-  struct sectiondata_s *finfo = pobj->f_sectarray + idx;
-
-  sec->as_name   = finfo->sd_secname;
-  sec->as_type   = 0;
-  sec->as_flags  = 0;
-  sec->as_addr   = finfo->sd_addr;
-  sec->as_offset = 0;
-  sec->as_size   = finfo->sd_sectionsize;
-  sec->as_link   = 0;
-  sec->as_info   = 0;
-  sec->as_addralign = 0;
-  sec->as_entrysize = 1;
-  return DW_DLV_OK;
+  return DW_DLV_ERROR;
 }
 
 static Dwarf_Small ocdwarf_byteorder(unknown_t obj) {
