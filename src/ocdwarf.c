@@ -116,7 +116,6 @@ static Dwarf_Small strbytes[] = {
     not directly visible elsewhere. One needs to have one
     of these but  maybe the content here too little
     or useless, this is just an example of sorts.  */
-//#define SECCOUNT 4
 typedef struct sectiondata_s {
   unsigned int   sd_addr;
   unsigned int   sd_objoffsetlen;
@@ -179,40 +178,43 @@ static int ocdwarf_secinfo(unknown_t obj, Dwarf_Unsigned idx, Dwarf_Obj_Access_S
 
 static Dwarf_Small ocdwarf_byteorder(unknown_t obj) {
   pdwarf_data_t pobj = CAST(pdwarf_data_t, obj);
-  return pobj->f_object_endian;
+  return pobj ? pobj->f_object_endian : DW_END_little;
 }
 
 static Dwarf_Small ocdwarf_offsize(unknown_t obj) {
   pdwarf_data_t pobj = CAST(pdwarf_data_t, obj);
-  return pobj->f_offsetsize / 8;
+  return pobj && pobj->f_offsetsize ? pobj->f_offsetsize / 8 : 0;
 }
 
 static Dwarf_Small ocdwarf_ptrsize(unknown_t obj) {
   pdwarf_data_t pobj = CAST(pdwarf_data_t, obj);
-  return pobj->f_pointersize / 8;
+  return pobj && pobj->f_pointersize ? pobj->f_pointersize / 8 : 0;
 }
 
 static Dwarf_Unsigned ocdwarf_filesize(unknown_t obj) {
   pdwarf_data_t pobj = CAST(pdwarf_data_t, obj);
-  return pobj->f_filesize;
+  return pobj ? pobj->f_filesize : 0;
 }
 
 static Dwarf_Unsigned ocdwarf_seccount(unknown_t obj) {
   pdwarf_data_t pobj = CAST(pdwarf_data_t, obj);
-  return pobj->f_sectioncount;
+  return pobj ? pobj->f_sectioncount : 0;
 }
 
-static int ocdwarf_loadsec(unknown_t obj, Dwarf_Unsigned idx, Dwarf_Small**rdata, int *e) {
+static int ocdwarf_loadsec(unknown_t obj, Dwarf_Unsigned idx, Dwarf_Small **rdata, int *e) {
   pdwarf_data_t pobj = CAST(pdwarf_data_t, obj);
+  if (pobj && e && rdata) {
+    *e = 0; /* No Error, avoids compiler warning */
+    if (idx >= pobj->f_sectioncount) {
+      return DW_DLV_NO_ENTRY;
+    }
 
-  *e = 0; /* No Error, avoids compiler warning */
-  if (idx >= pobj->f_sectioncount) {
-    return DW_DLV_NO_ENTRY;
+    struct sectiondata_s *secp = pobj->f_sectarray + idx;
+    *rdata = secp->sd_content;
+    return DW_DLV_OK;
   }
 
-  struct sectiondata_s *secp = pobj->f_sectarray + idx;
-  *rdata = secp->sd_content;
-  return DW_DLV_OK;
+  return DW_DLV_ERROR;
 }
 
 const Dwarf_Obj_Access_Methods_a methods = {
