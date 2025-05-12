@@ -27,6 +27,8 @@ static const args_t zOBJDUMPARGS[] = {
   {'x', "--all-headers",       OPTOBJDUMP_HEADERS,                                       zDUMPALLHEADERS},
   {'l', "--line-numbers",      OPTPROGRAM_LINE_NUMBERS},
   {  0, "--prefix-addresses",  OPTPROGRAM_PREFIX_ADDR},
+  {  0, "--start-address",     0},
+  {  0, "--stop-address",      0},
   {'c', "--capstone",          OPTPROGRAM_CAPSTONE_ALL},
   {'X', "--hash",              OPTPROGRAM_HASH},
   {0, NULL}
