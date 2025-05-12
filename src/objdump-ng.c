@@ -13,9 +13,7 @@ int main(int argc, char* argv[]) {
 
       handle_t p = ocopen(o->inpname);
       if (p) {
-        if (OPT_OBJDUMP == o->option) {
-          r = objdump(p, o);
-        }
+        r = objdump(p, o);
       } else {
         printf_e("'%s': no such file.", o->inpname);
       }

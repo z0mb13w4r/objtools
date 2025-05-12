@@ -10,9 +10,7 @@ int main(int argc, char* argv[]) {
     if (0 == r) {
       pbuffer_t p = bopen(o->inpname);
       if (p) {
-        if (OPT_OBJHASH == o->option) {
-          r = objhash(p, o);
-        }
+        r = objhash(p, o);
       }
 
       xfree(p);

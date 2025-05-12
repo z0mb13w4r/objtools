@@ -6,12 +6,6 @@
 #define MODE_OPTIONS            (MODE_PUT0('O') | MODE_PUT1('P') | MODE_PUT2('T'))
 #define MODE_ACTIONS            (MODE_PUT0('A') | MODE_PUT1('C') | MODE_PUT2('T'))
 
-#define OPT_CONVERT                                (0)
-#define OPT_READELF                                (1)
-#define OPT_OBJCOPY                                (2)
-#define OPT_OBJDUMP                                (3)
-#define OPT_OBJHASH                                (4)
-
 #define OPTDISASSEMBLE_ATT_MNEMONIC                U64MASK(0)
 #define OPTDISASSEMBLE_INTEL_MNEMONIC              U64MASK(1)
 #define OPTDISASSEMBLE_X86_64                      U64MASK(2)
@@ -193,7 +187,6 @@ typedef struct action_s {
 
 typedef struct options_s {
   smode_t mode;
-  imode_t option;
   imode_t action;
   imode_t ocdump;
   imode_t convert;

@@ -397,7 +397,6 @@ int get_options_convert(poptions_t o, int argc, char** argv, char* name) {
     return -1;
   }
 
-  o->option = OPT_CONVERT;
   strname(o->prgname, name);
   set_errname(o->prgname);
 
@@ -441,7 +440,6 @@ int get_options_readelf(poptions_t o, int argc, char** argv, char* name) {
     return -1;
   }
 
-  o->option = OPT_READELF;
   strname(o->prgname, name);
   set_errname(o->prgname);
 
@@ -517,7 +515,6 @@ int get_options_objcopy(poptions_t o, int argc, char** argv, char* name) {
     return -1;
   }
 
-  o->option = OPT_OBJCOPY;
   strname(o->prgname, name);
   set_errname(o->prgname);
 
@@ -565,7 +562,6 @@ int get_options_objdump(poptions_t o, int argc, char** argv, char* name) {
     return -1;
   }
 
-  o->option = OPT_OBJDUMP;
   strname(o->prgname, name);
   set_errname(o->prgname);
 
@@ -615,7 +611,6 @@ int get_options_objhash(poptions_t o, int argc, char** argv, char* name) {
     return -1;
   }
 
-  o->option = OPT_OBJHASH;
   strname(o->prgname, name);
   set_errname(o->prgname);
 

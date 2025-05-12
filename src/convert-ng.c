@@ -13,7 +13,7 @@ int main(int argc, char* argv[]) {
     r = get_options_convert(o, argc - 1, argv + 1, argv[0]);
     if (0 == r && o->inpname[0]) {
       pbuffer_t p = bopen(o->inpname);
-      if (issafe(p) && OPT_CONVERT == o->option) {
+      if (issafe(p)) {
         pbstring_t b0 = bstring1(p);
         if (b0) {
           paction_t x = o->actions;

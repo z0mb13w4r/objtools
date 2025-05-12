@@ -10,9 +10,7 @@ int main(int argc, char* argv[]) {
     if (0 == r) {
       pbuffer_t p = bopen(o->inpname);
       if (p) {
-        if (OPT_OBJCOPY == o->option) {
-          r = objcopy(p, o);
-        }
+        r = objcopy(p, o);
       }
 
       xfree(p);
