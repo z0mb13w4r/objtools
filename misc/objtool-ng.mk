@@ -11,7 +11,7 @@ DIR_CXX = ../$(DIR_SRC)
 # Name of c source files to be included in build.
 #---------------------------------------------------------------------
 SRCS_C = \
-	objtool.c
+	objtool-ng.c
 
 # Name of cpp source files to be included in build.
 #---------------------------------------------------------------------
@@ -19,10 +19,9 @@ SRCS_CPP =
 
 # Name of target and map file to be built.
 #---------------------------------------------------------------------
-TARGETBASE = objtool
+TARGETBASE = objtool-ng
 
 ifeq ($(CROSS),ARM)
-else ifeq ($(CROSS),WIN)
 else
 	CROSS = I386
 endif
@@ -55,7 +54,10 @@ ifeq ($(CROSS),WIN)
 SYS_OBJS =
 else
 SYS_OBJS = \
+	-lcapstone \
+	-lopcodes \
 	-lcrypto \
+	-ldwarf \
 	-lbfd \
 	-lrt
 endif
@@ -64,7 +66,9 @@ LIB_OBJS = \
 	-lobjtool
 
 LIB_PATHS = \
-	-L../bin/$(DIR_OBJ)
+	-L../bin/$(DIR_OBJ) \
+	-L../libs/capstone/build \
+	-L../libs/libdwarf/libs
 
 #=====================================================================================================================================
 # Command Section of Makefile
@@ -98,11 +102,6 @@ ifeq ($(CROSS),ARM)
 	DFLAGS += -DENV_LINUX -DLINUX -DTARGET_ARM
 	EFLAGS  = -Wl,--no-enum-size-warning
 	LFLAGS +=
-else ifeq ($(CROSS),WIN)
-	CROSS_COMPILE = x86_64-w64-mingw32-
-	DFLAGS += -DWIN32
-	EFLAGS  =
-	LFLAGS += -static-libgcc -static-libstdc++
 else
 	CROSS_COMPILE =
 	DFLAGS += -DENV_LINUX -DLINUX
@@ -171,7 +170,6 @@ help:
 	@echo ' set DEBUG=n to build release version.'
 	@echo ' '
 	@echo ' set CROSS=ARM to build ARM version.'
-	@echo ' set CROSS=WIN to build Windows version.'
 	@echo ' set CROSS=I386 to build native version.'
 	@echo ' '
 	@echo ' e.g. make -f $(TARGETBASE).mk DEBUG=y CROSS=ARM all.'
@@ -245,9 +243,7 @@ ifeq ($(DEBUG),y)
 	-$(STRIP) -o $(STRIPPED_FILE) -s $(TARGET)
 	@echo 'Finished stripping target: $@'
 else
-ifeq ($(CROSS),WIN)
-	-$(CP) $(TARGET) ../bin/$(TARGET).exe
-else ifeq ($(CROSS),ARM)
+ifeq ($(CROSS),ARM)
 	-$(CP) $(TARGET) ../bin/$(TARGET)-arm
 else
 	-$(CP) $(TARGET) ../bin/

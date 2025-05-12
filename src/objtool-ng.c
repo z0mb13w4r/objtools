@@ -16,18 +16,12 @@ int main(int argc, char* argv[]) {
     if (0 == r) {
       pbuffer_t p = bopen(o->inpname);
       if (p) {
-        if (OPT_READELF == o->option) {
-          if (isAR(p)) {
-            r = readar(p, o);
-          } else if (isPE(p)) {
-            r = readpe(p, o);
-          } else if (isELF(p)) {
-            r = readelf(p, o);
-          }
-        } else if (OPT_OBJCOPY == o->option) {
-          r = objcopy(p, o);
-        } else if (OPT_OBJHASH == o->option) {
-          r = objhash(p, o);
+        if (isAR(p)) {
+          r = readar(p, o);
+        } else if (isPE(p)) {
+          r = readpe(p, o);
+        } else if (isELF(p)) {
+          r = readelf(p, o);
         }
       } else {
         printf_e("'%s': no such file.", o->inpname);
