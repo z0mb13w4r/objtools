@@ -575,6 +575,10 @@ int get_options_objdump(poptions_t o, int argc, char** argv, char* name) {
           o->ocdump |= get_options2(o, zDEBUGELFARGS, arg1);
         } else if (0 == strcmp(arg0, zOBJDUMPARGS3)) {
           o->ocdump |= get_options2(o, zDISASSEMBLEARGS, arg1);
+        } else if (0 == strcmp(arg0, "--start-address")) {
+          o->saddress = atovalue(arg1);
+        } else if (0 == strcmp(arg0, "--stop-address")) {
+          o->eaddress = atovalue(arg1);
         }
       } else {
         o->action |= get_options2(o, zOBJDUMPARGS, argv[i]);

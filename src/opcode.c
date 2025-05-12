@@ -151,6 +151,18 @@ unknown_t ocget(handle_t p, const imode_t mode) {
   return NULL;
 }
 
+bool_t ocuse_vaddr(handle_t p, uint64_t vaddr) {
+  if (isopcode(p)) {
+    popcode_t p0 = CAST(popcode_t, p);
+    return vaddr == CAST(uint64_t, -1) ||
+           p0->saddress == CAST(uint64_t, -1) ||
+           p0->eaddress == CAST(uint64_t, -1) ||
+           p0->saddress <= vaddr && vaddr <= p0->eaddress;
+  }
+
+  return FALSE;
+}
+
 size_t ocget_maxsectionnamesize(handle_t p) {
   size_t maxsize = 0;
   bfd* p0 = ocget(p, OPCODE_BFD);

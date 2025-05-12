@@ -64,33 +64,34 @@ int capstone_raw(handle_t p, handle_t s, unknown_t data, const size_t size, cons
   int n = 0;
   if (data && isopcode(p) && ismodeNXXN(s, MODE_OCSHDRWRAP)) {
     popcode_t oc = CAST(popcode_t, p);
-
     cs_insn *insn = NULL;
     size_t count = cs_disasm(oc->cs, data, size, vaddr, 0, &insn);
     if (count > 0) {
       bool_t bskip = FALSE;
       uchar_t iskip = 0;
       for (size_t i = 0; i < count; ++i) {
-        int n1 = 0;
-        int n2 = 0;
-        if (bskip && iskip != insn[i].bytes[0]) {
-          n1 += printf_text(">>>>>>>>", USE_LT | USE_SPACE | USE_COLON);
-          n1 += printf_eol();
-          bskip = FALSE;
+        if (ocuse_vaddr(p, insn[i].address)) {
+          int n1 = 0;
+          int n2 = 0;
+          if (bskip && iskip != insn[i].bytes[0]) {
+            n1 += printf_text(">>>>>>>>", USE_LT | USE_SPACE | USE_COLON);
+            n1 += printf_eol();
+            bskip = FALSE;
+          }
+          if (!bskip) {
+            n2 += printf_nice(insn[i].address, USE_LHEX32 | USE_COLON);
+            n2 += printf_sore(insn[i].bytes, insn[i].size, USE_HEX | USE_SPACE);
+            n2 += printf_pack(42 - n2);
+            n2 += printf_text(insn[i].mnemonic, USE_LT | USE_SPACE);
+            n2 += printf_text(insn[i].op_str, USE_LT | USE_SPACE);
+            n2 += printf_eol();
+          }
+          if (0xcc == insn[i].bytes[0] || 0x90 == insn[i].bytes[0]) {
+            iskip = insn[i].bytes[0];
+            bskip = TRUE;
+          }
+          n += n1 + n2;
         }
-        if (!bskip) {
-          n2 += printf_nice(insn[i].address, USE_LHEX32 | USE_COLON);
-          n2 += printf_sore(insn[i].bytes, insn[i].size, USE_HEX | USE_SPACE);
-          n2 += printf_pack(42 - n2);
-          n2 += printf_text(insn[i].mnemonic, USE_LT | USE_SPACE);
-          n2 += printf_text(insn[i].op_str, USE_LT | USE_SPACE);
-          n2 += printf_eol();
-        }
-        if (0xcc == insn[i].bytes[0] || 0x90 == insn[i].bytes[0]) {
-          iskip = insn[i].bytes[0];
-          bskip = TRUE;
-        }
-        n += n1 + n2;
       }
 
       cs_free(insn, count);
