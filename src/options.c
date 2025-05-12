@@ -658,24 +658,6 @@ int get_options_objhash(poptions_t o, int argc, char** argv, char* name) {
   return 0;
 }
 
-int get_options(poptions_t o, int argc, char** argv) {
-  if (argc < 3) {
-    return -1;
-  }
-
-  if (0 == strcmp("--readelf", argv[1])) {
-    return get_options_readelf(o, argc - 2, argv + 2, argv[0]);
-  } else if (0 == strcmp("--objcopy", argv[1])) {
-    return get_options_objcopy(o, argc - 2, argv + 2, argv[0]);
-  } else if (0 == strcmp("--objdump", argv[1])) {
-    return get_options_objdump(o, argc - 2, argv + 2, argv[0]);
-  } else if (0 == strcmp("--objhash", argv[1])) {
-    return get_options_objhash(o, argc - 2, argv + 2, argv[0]);
-  }
-
-  return -1;
-}
-
 int isactions(handle_t p) {
   return ismode(p, MODE_ACTIONS);
 }

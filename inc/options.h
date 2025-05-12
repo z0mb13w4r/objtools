@@ -226,8 +226,6 @@ int get_options_objcopy(poptions_t o, int argc, char** argv, char* name);
 int get_options_objdump(poptions_t o, int argc, char** argv, char* name);
 int get_options_objhash(poptions_t o, int argc, char** argv, char* name);
 
-int get_options(poptions_t o, int argc, char** argv);
-
 int isactions(handle_t p);
 int isoptions(handle_t p);
 
