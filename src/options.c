@@ -2,6 +2,7 @@
 
 #include "buffer.h"
 #include "printf.h"
+#include "opcode.h"
 #include "options.h"
 #include "scripts.h"
 #include "objutils.h"
@@ -678,8 +679,8 @@ handle_t amalloc() {
 handle_t omalloc() {
   poptions_t p = xmalloc(sizeof(options_t));
   if (p) {
-    p->saddress = CAST(uint64_t, -1); /* --start-address */
-    p->eaddress = CAST(uint64_t, -1); /* --stop-address */
+    p->saddress = OPCODE_NULLADDR; /* --start-address */
+    p->eaddress = OPCODE_NULLADDR; /* --stop-address */
   }
 
   return setmode(p, MODE_OPTIONS);

@@ -55,6 +55,8 @@
 #define OPCODE_MAXITEMS            (6)
 #define OPCODE_RAWDATA             (OPCODE_MAXITEMS + 1)
 
+#define OPCODE_NULLADDR            CAST(uint64_t, -1)
+
 #define ocgetbfd(x)                CAST(bfd*, ocget(x, OPCODE_BFD))
 #define ocgetshdr(x)               CAST(asection*, ocget(x, MODE_OCSHDR))
 

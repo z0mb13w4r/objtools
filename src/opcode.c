@@ -154,9 +154,9 @@ unknown_t ocget(handle_t p, const imode_t mode) {
 bool_t ocuse_vaddr(handle_t p, uint64_t vaddr) {
   if (isopcode(p)) {
     popcode_t p0 = CAST(popcode_t, p);
-    return vaddr == CAST(uint64_t, -1) ||
-           p0->saddress == CAST(uint64_t, -1) ||
-           p0->eaddress == CAST(uint64_t, -1) ||
+    return vaddr == OPCODE_NULLADDR ||
+           p0->saddress == OPCODE_NULLADDR ||
+           p0->eaddress == OPCODE_NULLADDR ||
            p0->saddress <= vaddr && vaddr <= p0->eaddress;
   }
 
@@ -432,7 +432,7 @@ uint64_t ocget_soffset(handle_t p, handle_t s) {
   if (isopcode(p)) {
     popcode_t p0 = CAST(popcode_t, p);
 
-    if (p0->saddress == CAST(uint64_t, -1) || p0->saddress < ocget_vmaddress(s)) soffset = 0;
+    if (p0->saddress == OPCODE_NULLADDR || p0->saddress < ocget_vmaddress(s)) soffset = 0;
     else soffset = p0->saddress - ocget_vmaddress(s);
   }
 
@@ -450,7 +450,7 @@ uint64_t ocget_eoffset(handle_t p, handle_t s) {
       /* Compute the address range to display. */
       const uint64_t opb = ocget_opb(p, s);
 
-      if (p0->eaddress == CAST(uint64_t, -1)) eoffset = size / opb;
+      if (p0->eaddress == OPCODE_NULLADDR) eoffset = size / opb;
       else {
         if (p0->eaddress < ocget_vmaddress(s)) eoffset = 0;
         else eoffset = p0->eaddress - ocget_vmaddress(s);
@@ -490,8 +490,8 @@ const char* ocget_fileformat(handle_t p) {
 handle_t ocmalloc() {
   popcode_t p = xmalloc(sizeof(opcode_t));
   if (p) {
-    p->saddress = CAST(uint64_t, -1); /* --start-address */
-    p->eaddress = CAST(uint64_t, -1); /* --stop-address */
+    p->saddress = OPCODE_NULLADDR; /* --start-address */
+    p->eaddress = OPCODE_NULLADDR; /* --stop-address */
   }
 
   return setmode(p, MODE_OPCODE);
