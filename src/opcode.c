@@ -146,6 +146,12 @@ unknown_t ocget(handle_t p, const imode_t mode) {
   } else if (ismode(p, mode) && ismodeopwrap(mode)) {
     popwrap_t p0 = CAST(popwrap_t, p);
     return p0->item;
+  } else if (isopcode(p) && OPCODE_RAWSYMBOLS) {
+    pbuffer_t p0 = ocget(p, OPCODE_SYMBOLS);
+    return p0 && p0->size && p0->data ? p0->data : NULL;
+  } else if (isopcode(p) && OPCODE_RAWSYMBOLS_DYNAMIC) {
+    pbuffer_t p0 = ocget(p, OPCODE_SYMBOLS_DYNAMIC);
+    return p0 && p0->size && p0->data ? p0->data : NULL;
   }
 
   return NULL;

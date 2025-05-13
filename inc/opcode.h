@@ -54,6 +54,8 @@
 #define OPCODE_OUTDATA             (5)
 #define OPCODE_MAXITEMS            (6)
 #define OPCODE_RAWDATA             (OPCODE_MAXITEMS + 1)
+#define OPCODE_RAWSYMBOLS          (OPCODE_MAXITEMS + 2)
+#define OPCODE_RAWSYMBOLS_DYNAMIC  (OPCODE_MAXITEMS + 3)
 
 #define OPCODE_NULLADDR            CAST(uint64_t, -1)
 
