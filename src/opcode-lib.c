@@ -145,6 +145,15 @@ int opcodelib_close(handle_t p) {
   return 0;
 }
 
+static int opcodelib_lnumbers(handle_t p, handle_t s, const uint64_t vaddr) {
+  int n = 0;
+  if (isopcode(p) && isopshdr(s)) {
+
+  }
+
+  return n;
+}
+
 int opcodelib_raw(handle_t p, handle_t s, unknown_t data, const size_t size, const uint64_t vaddr) {
   int n = 0;
   if (isopcode(p) && isopshdr(s)) {
@@ -164,6 +173,10 @@ int opcodelib_raw(handle_t p, handle_t s, unknown_t data, const size_t size, con
       if (siz <= 0) return n;
 
       if (ocuse_vaddr(oc, soffset)) {
+        if (MODE_ISSET(oc->action, OPTPROGRAM_LINE_NUMBERS)) {
+          n += opcodelib_lnumbers(p, s, soffset);
+        }
+
         if (MODE_ISSET(oc->action, OPTPROGRAM_PREFIX_ADDR)) {
           n2 += printf_nice(soffset, USE_LHEX32 | USE_COLON);
         } else {
