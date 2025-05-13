@@ -145,10 +145,54 @@ int opcodelib_close(handle_t p) {
   return 0;
 }
 
+static char *prev_functionname = NULL;
+static unsigned int prev_line = -1;
+static unsigned int prev_discriminator = -1;
+
 static int opcodelib_lnumbers(handle_t p, handle_t s, const uint64_t vaddr) {
   int n = 0;
   if (isopcode(p) && isopshdr(s)) {
+    popcode_t oc = CAST(popcode_t, p);
 
+    const char *filename;
+    const char *afilename = NULL;
+    const char *functionname;
+    unsigned int linenumber;
+    unsigned int discriminator;
+
+#define bfd_find_nearest_line_with_alt(abfd, alt_filename, sec, syms, off, \
+				       file, func, line, disc) \
+       BFD_SEND (abfd, _bfd_find_nearest_line_with_alt, \
+		 (abfd, alt_filename, syms, sec, off, file, func, line, disc))
+
+    bfd_set_error(bfd_error_no_error);
+//    if (!bfd_find_nearest_line_with_alt(CAST(bfd*, ocget(p, OPCODE_BFD)), afilename, ocget(s, MODE_OCSHDR), ocget(p, OPCODE_RAWSYMBOLS),
+//                                        vaddr, &filename, &functionname, &linenumber, &discriminator)) {
+//    if (
+    bfd_find_nearest_line_discriminator(CAST(bfd*, ocget(p, OPCODE_BFD)), ocget(s, MODE_OCSHDR), ocget(p, OPCODE_RAWSYMBOLS),
+                                            vaddr, &filename, &functionname, &linenumber, &discriminator);
+//					    ) {
+//    }
+
+      if (NULL != filename && 0 == filename[0]) filename = NULL;
+      if (NULL != functionname && 0 == functionname[0]) functionname = NULL;
+
+      if (NULL != functionname && (NULL == prev_functionname || 0 != strcmp(functionname, prev_functionname))) {
+        printf("%s():\n", functionname);
+        prev_functionname = functionname;
+        prev_line = -1;
+      }
+//printf("+++ %d %d\n", linenumber, discriminator);
+      if (linenumber > 0 && (linenumber != prev_line || discriminator != prev_discriminator)) {
+        printf("%s:%u", filename == NULL ? "???" : filename, linenumber);
+        if (discriminator > 0) {
+          printf_nice(discriminator, USE_DISCRIMINATOR);
+          prev_discriminator = discriminator;
+        }
+        n += printf_eol();
+        prev_line = linenumber;
+      }
+//    }
   }
 
   return n;
@@ -165,16 +209,17 @@ int opcodelib_raw(handle_t p, handle_t s, unknown_t data, const size_t size, con
 
     while (soffset < eoffset) {
       int n2 = 0;
-      pbstring_t ps = CAST(pbstring_t, oc->items[OPCODE_OUTDATA]);
+      pbstring_t ps = CAST(pbstring_t, ocget(p, OPCODE_OUTDATA));
       bstrclr(ps);
 
-      struct disassemble_info* di = oc->items[OPCODE_DISASSEMBLER];
+      struct disassemble_info* di = ocget(p, OPCODE_DISASSEMBLER);
       int siz = oc->ocfunc(soffset, di);
       if (siz <= 0) return n;
 
       if (ocuse_vaddr(oc, soffset)) {
         if (MODE_ISSET(oc->action, OPTPROGRAM_LINE_NUMBERS)) {
           n += opcodelib_lnumbers(p, s, soffset);
+          n += printf_pack(3);
         }
 
         if (MODE_ISSET(oc->action, OPTPROGRAM_PREFIX_ADDR)) {
@@ -200,15 +245,15 @@ int opcodelib_raw(handle_t p, handle_t s, unknown_t data, const size_t size, con
 int opcodelib_run(handle_t p, handle_t s) {
   int n = 0;
   if (isopcode(p) && isopshdr(s)) {
-    popcode_t oc = CAST(popcode_t, p);
-    struct disassemble_info* di = oc->items[OPCODE_DISASSEMBLER];
+//    popcode_t oc = CAST(popcode_t, p);
+    struct disassemble_info* di = ocget(p, OPCODE_DISASSEMBLER);
     if (di) {
       di->buffer_vma    = ocget_vmaddress(s);
       di->buffer_length = ocget_size(s);
       di->section       = ocget(s, MODE_OCSHDR);
       di->buffer        = xmalloc(di->buffer_length);
 
-      if (bfd_get_section_contents(oc->items[OPCODE_BFD], di->section, di->buffer, 0, di->buffer_length)) {
+      if (bfd_get_section_contents(ocget(p, OPCODE_BFD), di->section, di->buffer, 0, di->buffer_length)) {
         n += opcodelib_raw(p, s, di->buffer, ocget_size(s), ocget_vmaddress(s));
       }
 
