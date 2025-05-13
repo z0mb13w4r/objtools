@@ -154,10 +154,10 @@ unknown_t ocget(handle_t p, const imode_t mode) {
 bool_t ocuse_vaddr(handle_t p, uint64_t vaddr) {
   if (isopcode(p)) {
     popcode_t p0 = CAST(popcode_t, p);
-    return vaddr == OPCODE_NULLADDR ||
-           p0->saddress == OPCODE_NULLADDR ||
-           p0->eaddress == OPCODE_NULLADDR ||
-           p0->saddress <= vaddr && vaddr <= p0->eaddress;
+    return (vaddr == OPCODE_NULLADDR) ||
+           (p0->saddress == OPCODE_NULLADDR) ||
+           (p0->eaddress == OPCODE_NULLADDR) ||
+           (p0->saddress <= vaddr && vaddr <= p0->eaddress);
   }
 
   return FALSE;

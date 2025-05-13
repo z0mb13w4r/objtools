@@ -5,10 +5,10 @@ static char zDISASSEMBLEISA[] = "Select between AMD64 ISA and Intel64 ISA.";
 static char zDISASSEMBLEDATA[] = "Specify the default address size and operand size.";
 
 static const args_t zDISASSEMBLEARGS[] = {
-  {0, "att",                 OPTDISASSEMBLE_ATT_MNEMONIC,            NULL, 1},
+  {0, "att",                 OPTDISASSEMBLE_ATT,                     NULL, 1},
   {0, "att-mnemonic",        OPTDISASSEMBLE_ATT_MNEMONIC,            zDISASSEMBLEATTSYNTAX, 1},
 
-  {0, "intel",               OPTDISASSEMBLE_INTEL_MNEMONIC,          NULL, 2},
+  {0, "intel",               OPTDISASSEMBLE_INTEL,                   NULL, 2},
   {0, "intel-mnemonic",      OPTDISASSEMBLE_INTEL_MNEMONIC,          zDISASSEMBLEINTELSYNTAX, 2},
 
   {0, "x86-64",              OPTDISASSEMBLE_X86_64,                  NULL, 3},

@@ -85,6 +85,10 @@ int opcodelib_open(handle_t p, handle_t o) {
           di->disassembler_options = opcodelib_strncat(args, "att-mnemonic", ",", NELEMENTS(args));
         } else if (MODE_ISSET(op->ocdump, OPTDISASSEMBLE_INTEL_MNEMONIC)) {
           di->disassembler_options = opcodelib_strncat(args, "intel-mnemoic", ",", NELEMENTS(args));
+        } else if (MODE_ISSET(op->ocdump, OPTDISASSEMBLE_ATT)) {
+          di->disassembler_options = opcodelib_strncat(args, "att", ",", NELEMENTS(args));
+        } else if (MODE_ISSET(op->ocdump, OPTDISASSEMBLE_INTEL)) {
+          di->disassembler_options = opcodelib_strncat(args, "intel", ",", NELEMENTS(args));
         }
 
 	if (MODE_ISSET(op->ocdump, OPTDISASSEMBLE_X86_64)) {
