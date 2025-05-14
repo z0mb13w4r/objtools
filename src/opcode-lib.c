@@ -217,7 +217,7 @@ int opcodelib_raw(handle_t p, handle_t s, unknown_t data, const size_t size, con
       if (siz <= 0) return n;
 
       if (ocuse_vaddr(oc, soffset)) {
-        if (MODE_ISSET(oc->action, OPTPROGRAM_LINE_NUMBERS)) {
+        if (MODE_ISSET(oc->action, OPTPROGRAM_LINE_NUMBERS | OPTPROGRAM_SOURCE_CODE)) {
           n += opcodelib_lnumbers(p, s, soffset);
           n += printf_pack(3);
         }
