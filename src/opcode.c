@@ -153,15 +153,12 @@ unknown_t ocget(handle_t p, const imode_t mode) {
   } else if (isopcode(p) && OPCODE_RAWSYMBOLS_DYNAMIC == mode) {
     pbuffer_t p0 = ocget(p, OPCODE_SYMBOLS_DYNAMIC);
     return p0 && p0->size && p0->data ? p0->data : NULL;
-  } else if (ismode(p, mode) && ismodeopwrap(mode)) {
+  } else if ((ismode(p, mode) && ismodeopwrap(mode)) || (isopwrap(p) && mode == OPCODE_PARAM1)) {
     popwrap_t p0 = CAST(popwrap_t, p);
-    return p0->item;
-  } else if (isopwrap(p) && mode == OPCODE_ITEM) {
+    return p0->param1;
+  } else if (isopwrap(p) && mode == OPCODE_PARAM2) {
     popwrap_t p0 = CAST(popwrap_t, p);
-    return p0->item;
-  } else if (isopwrap(p) && mode == OPCODE_PARAM) {
-    popwrap_t p0 = CAST(popwrap_t, p);
-    return p0->param;
+    return p0->param2;
   }
 
   return NULL;
@@ -185,7 +182,7 @@ size_t ocget_maxsectionnamesize(handle_t p) {
   if (p0) {
     bfd_map_over_sections(p0, callback_find_max_sectionhdr_name, &maxsize);
   } else if (ismode(p, MODE_OCSHDR32) ||ismode(p, MODE_OCSHDR64)) {
-    return get_secnamemaxsize(ocget(p, OPCODE_PARAM));
+    return get_secnamemaxsize(ocget(p, OPCODE_PARAM2));
   }
 
   return maxsize;
@@ -450,6 +447,11 @@ uint64_t ocget_soffset(handle_t p, handle_t s) {
 
     if (p0->saddress == OPCODE_NULLADDR || p0->saddress < ocget_vmaddress(s)) soffset = 0;
     else soffset = p0->saddress - ocget_vmaddress(s);
+  } else if (isoptions(p)) {
+    poptions_t p0 = CAST(poptions_t, p);
+
+    if (p0->saddress == OPCODE_NULLADDR || p0->saddress < ocget_vmaddress(s)) soffset = 0;
+    else soffset = p0->saddress - ocget_vmaddress(s);
   }
 
   return soffset;
@@ -486,9 +488,9 @@ const char* ocget_name(handle_t p) {
   } else if (ismode(p, MODE_OCSHDR)) {
     return bfd_section_name(ocget(p, MODE_OCSHDR));
   } else if (ismode(p, MODE_OCSHDR32)) {
-    return get_secname32byshdr(ocget(p, OPCODE_PARAM), ocget(p, MODE_OCSHDR32));
+    return get_secname32byshdr(ocget(p, OPCODE_PARAM2), ocget(p, MODE_OCSHDR32));
   } else if (ismode(p, MODE_OCSHDR64)) {
-    return get_secname64byshdr(ocget(p, OPCODE_PARAM), ocget(p, MODE_OCSHDR64));
+    return get_secname64byshdr(ocget(p, OPCODE_PARAM2), ocget(p, MODE_OCSHDR64));
   }
 
   return NULL;

@@ -53,8 +53,8 @@
 #define OPCODE_DISASSEMBLER        (4)
 #define OPCODE_OUTDATA             (5)
 #define OPCODE_MAXITEMS            (6)
-#define OPCODE_ITEM                (OPCODE_MAXITEMS + 1)
-#define OPCODE_PARAM               (OPCODE_MAXITEMS + 2)
+#define OPCODE_PARAM1              (OPCODE_MAXITEMS + 1)
+#define OPCODE_PARAM2              (OPCODE_MAXITEMS + 2)
 #define OPCODE_RAWDATA             (OPCODE_MAXITEMS + 3)
 #define OPCODE_RAWSYMBOLS          (OPCODE_MAXITEMS + 4)
 #define OPCODE_RAWSYMBOLS_DYNAMIC  (OPCODE_MAXITEMS + 5)
@@ -71,8 +71,8 @@
 #define ocgetshdr32(x)             CAST(Elf32_Shdr*, ocget(x, MODE_OCPSDR32))
 #define ocgetshdr64(x)             CAST(Elf64_Shdr*, ocget(x, MODE_OCPSDR64))
 
-#define MALLOCSWRAP(x,y,z,v)       MALLOCSMODE(x,y,z); (p##y)->item = v
-#define MALLOCSWRAPEX(x,y,z,v,w)   MALLOCSMODE(x,y,z); (p##y)->item = v; (p##y)->param = w
+#define MALLOCSWRAP(x,y,z,v)       MALLOCSMODE(x,y,z); (p##y)->param1 = v
+#define MALLOCSWRAPEX(x,y,z,v,w)   MALLOCSMODE(x,y,z); (p##y)->param1 = v; (p##y)->param2 = w
 
 #define MALLOCSCBFUNC(x,y,z,a,b,c) MALLOCSMODE(x,y,z); (p##y)->param = a; (p##y)->cbfunc = b; (p##y)->handle = c
 
@@ -95,12 +95,12 @@ typedef struct opcode_s {
 typedef struct opwrap_s {
   smode_t    mode;
   union {
-    unknown_t item;
-    uint64_t  value;
+    unknown_t param1;
+    uint64_t  value1;
   };
   union {
-    unknown_t param;
-    uint64_t  option;
+    unknown_t param2;
+    uint64_t  value2;
   };
 } opwrap_t, *popwrap_t;
 

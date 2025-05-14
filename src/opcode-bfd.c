@@ -15,8 +15,7 @@ int opcodebfd_programs(handle_t p, opcbfunc_t cbfunc, unknown_t param) {
     if (phdr) {
       size_t e_phnum = bfdget_ehdr(p0)->e_phnum;
       for (size_t i = 0; i < e_phnum; ++i, ++phdr) {
-        MALLOCSMODE(opwrap_t, oc, MODE_OCPHDR);
-        poc->item = phdr;
+        MALLOCSWRAP(opwrap_t, oc, MODE_OCPHDR, phdr);
         cbfunc(p, poc, param);
       }
       return 0;
