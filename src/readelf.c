@@ -4,6 +4,7 @@
 #include "printf.h"
 #include "elfcode.h"
 #include "memfind.h"
+#include "ocdwarf.h"
 #include "readelf.h"
 #include "objutils.h"
 
@@ -1533,6 +1534,65 @@ static int dump_archspecific64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr
   return n;
 }
 
+static int dump_dwarf32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
+  int n = 0;
+  ocdwarf_open(p, o);
+
+  for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
+    Elf32_Shdr *shdr = get_shdr32byindex(p, i);
+    if (shdr) {
+      MALLOCSWRAPEX(opwrap_t, sec, MODE_OCSHDR32, shdr, p);
+
+      if (ocdwarf_isneeded(p, psec, o)) {
+
+        uint64_t soffset = ocget_soffset(p, psec);
+
+        printf_text("Contents of section", USE_LT);
+        printf_text(ocget_name(psec), USE_LT | USE_SPACE | USE_SQ);
+        printf_text("at offset", USE_LT | USE_SPACE);
+        printf_nice(ocget_position(psec) + soffset, USE_FHEX16 | USE_COLON | USE_EOL);
+
+        ocdwarf_run(p, psec);
+
+        printf_eol();
+      }
+    }
+  }
+
+  ocdwarf_close(p);
+  return n;
+}
+
+
+static int dump_dwarf64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
+  int n = 0;
+  ocdwarf_open(p, o);
+
+  for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
+    Elf64_Shdr *shdr = get_shdr64byindex(p, i);
+    if (shdr) {
+      MALLOCSWRAPEX(opwrap_t, sec, MODE_OCSHDR64, shdr, p);
+
+//      if (ocdwarf_isneeded(p, psec, o)) {
+
+        uint64_t soffset = ocget_soffset(p, psec);
+
+        printf_text("Contents of section", USE_LT);
+        printf_text(ocget_name(psec), USE_LT | USE_SPACE | USE_SQ);
+        printf_text("at offset", USE_LT | USE_SPACE);
+        printf_nice(ocget_position(psec) + soffset, USE_FHEX16 | USE_COLON | USE_EOL);
+
+//        ocdwarf_run(p, psec);
+
+        printf_eol();
+//      }
+    }
+  }
+
+  ocdwarf_close(p);
+  return n;
+}
+
 int readelf(const pbuffer_t p, const poptions_t o) {
   if (isELF(p)) {
     dump_summary(p, o);
@@ -1556,6 +1616,7 @@ int readelf(const pbuffer_t p, const poptions_t o) {
         if (o->actions)                                         dump_actions32(p, o, ehdr);
         if (MODE_ISSET(o->action, OPTREADELF_NOTES))            dump_notes32(p, o, ehdr);
         if (MODE_ISSET(o->action, OPTREADELF_ARCHSPECIFIC))     dump_archspecific32(p, o, ehdr);
+        if (MODE_ISSET(o->ocdump, OPTDEBUGELF_DEBUGGING))       dump_dwarf32(p, o, ehdr);
       }
     } else if (isELF64(p)) {
       Elf64_Ehdr *ehdr = get_ehdr64(p);
@@ -1574,6 +1635,7 @@ int readelf(const pbuffer_t p, const poptions_t o) {
         if (o->actions)                                         dump_actions64(p, o, ehdr);
         if (MODE_ISSET(o->action, OPTREADELF_NOTES))            dump_notes64(p, o, ehdr);
         if (MODE_ISSET(o->action, OPTREADELF_ARCHSPECIFIC))     dump_archspecific64(p, o, ehdr);
+        if (MODE_ISSET(o->ocdump, OPTDEBUGELF_DEBUGGING))       dump_dwarf64(p, o, ehdr);
       }
     }
   } else {

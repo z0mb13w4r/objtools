@@ -75,6 +75,10 @@ bool_t isopcode(handle_t p) {
   return ismode(p, MODE_OPCODE);
 }
 
+bool_t isopwrap(handle_t p) {
+  return ismode3(p, MODE_PUT3(MODE_OPWRAP));
+}
+
 bool_t isopshdr(handle_t p) {
   return ismode(p, MODE_OCSHDR);
 }
@@ -143,15 +147,21 @@ unknown_t ocget(handle_t p, const imode_t mode) {
   } else if (isopcode(p) && OPCODE_RAWDATA == mode) {
     popcode_t p0 = CAST(popcode_t, p);
     return p0->data;
+  } else if (isopcode(p) && OPCODE_RAWSYMBOLS == mode) {
+    pbuffer_t p0 = ocget(p, OPCODE_SYMBOLS);
+    return p0 && p0->size && p0->data ? p0->data : NULL;
+  } else if (isopcode(p) && OPCODE_RAWSYMBOLS_DYNAMIC == mode) {
+    pbuffer_t p0 = ocget(p, OPCODE_SYMBOLS_DYNAMIC);
+    return p0 && p0->size && p0->data ? p0->data : NULL;
   } else if (ismode(p, mode) && ismodeopwrap(mode)) {
     popwrap_t p0 = CAST(popwrap_t, p);
     return p0->item;
-  } else if (isopcode(p) && OPCODE_RAWSYMBOLS) {
-    pbuffer_t p0 = ocget(p, OPCODE_SYMBOLS);
-    return p0 && p0->size && p0->data ? p0->data : NULL;
-  } else if (isopcode(p) && OPCODE_RAWSYMBOLS_DYNAMIC) {
-    pbuffer_t p0 = ocget(p, OPCODE_SYMBOLS_DYNAMIC);
-    return p0 && p0->size && p0->data ? p0->data : NULL;
+  } else if (isopwrap(p) && mode == OPCODE_ITEM) {
+    popwrap_t p0 = CAST(popwrap_t, p);
+    return p0->item;
+  } else if (isopwrap(p) && mode == OPCODE_PARAM) {
+    popwrap_t p0 = CAST(popwrap_t, p);
+    return p0->param;
   }
 
   return NULL;
@@ -175,7 +185,7 @@ size_t ocget_maxsectionnamesize(handle_t p) {
   if (p0) {
     bfd_map_over_sections(p0, callback_find_max_sectionhdr_name, &maxsize);
   } else if (ismode(p, MODE_OCSHDR32) ||ismode(p, MODE_OCSHDR64)) {
-    return get_secnamemaxsize(ocget(p, OPCODE_RAWDATA));
+    return get_secnamemaxsize(ocget(p, OPCODE_PARAM));
   }
 
   return maxsize;
@@ -476,9 +486,9 @@ const char* ocget_name(handle_t p) {
   } else if (ismode(p, MODE_OCSHDR)) {
     return bfd_section_name(ocget(p, MODE_OCSHDR));
   } else if (ismode(p, MODE_OCSHDR32)) {
-    return get_secname32byshdr(ocget(p, OPCODE_RAWDATA), ocget(p, MODE_OCSHDR32));
+    return get_secname32byshdr(ocget(p, OPCODE_PARAM), ocget(p, MODE_OCSHDR32));
   } else if (ismode(p, MODE_OCSHDR64)) {
-    return get_secname64byshdr(ocget(p, OPCODE_RAWDATA), ocget(p, MODE_OCSHDR64));
+    return get_secname64byshdr(ocget(p, OPCODE_PARAM), ocget(p, MODE_OCSHDR64));
   }
 
   return NULL;

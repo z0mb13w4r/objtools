@@ -53,9 +53,11 @@
 #define OPCODE_DISASSEMBLER        (4)
 #define OPCODE_OUTDATA             (5)
 #define OPCODE_MAXITEMS            (6)
-#define OPCODE_RAWDATA             (OPCODE_MAXITEMS + 1)
-#define OPCODE_RAWSYMBOLS          (OPCODE_MAXITEMS + 2)
-#define OPCODE_RAWSYMBOLS_DYNAMIC  (OPCODE_MAXITEMS + 3)
+#define OPCODE_ITEM                (OPCODE_MAXITEMS + 1)
+#define OPCODE_PARAM               (OPCODE_MAXITEMS + 2)
+#define OPCODE_RAWDATA             (OPCODE_MAXITEMS + 3)
+#define OPCODE_RAWSYMBOLS          (OPCODE_MAXITEMS + 4)
+#define OPCODE_RAWSYMBOLS_DYNAMIC  (OPCODE_MAXITEMS + 5)
 
 #define OPCODE_NULLADDR            CAST(uint64_t, -1)
 
@@ -70,6 +72,8 @@
 #define ocgetshdr64(x)             CAST(Elf64_Shdr*, ocget(x, MODE_OCPSDR64))
 
 #define MALLOCSWRAP(x,y,z,v)       MALLOCSMODE(x,y,z); (p##y)->item = v
+#define MALLOCSWRAPEX(x,y,z,v,w)   MALLOCSMODE(x,y,z); (p##y)->item = v; (p##y)->param = w
+
 #define MALLOCSCBFUNC(x,y,z,a,b,c) MALLOCSMODE(x,y,z); (p##y)->param = a; (p##y)->cbfunc = b; (p##y)->handle = c
 
 typedef void (*opcbfunc_t)(handle_t p, handle_t item, unknown_t param);
@@ -94,6 +98,10 @@ typedef struct opwrap_s {
     unknown_t item;
     uint64_t  value;
   };
+  union {
+    unknown_t param;
+    uint64_t  option;
+  };
 } opwrap_t, *popwrap_t;
 
 typedef struct opfunc_s {
@@ -104,6 +112,7 @@ typedef struct opfunc_s {
 } opfunc_t, *popfunc_t;
 
 bool_t isopcode(handle_t p);
+bool_t isopwrap(handle_t p);
 
 bool_t isopshdr(handle_t p);
 bool_t isopphdr(handle_t p);
