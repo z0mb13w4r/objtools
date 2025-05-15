@@ -31,11 +31,12 @@ static int ocdwarf_dodebug_types(handle_t p, handle_t s, handle_t d) { return 0;
 static int ocdwarf_doeh_frame(handle_t p, handle_t s, handle_t d) { return 0; }
 
 pdwarf_display_t ocdwarf_get(handle_t s) {
-  if (isopshdr(s)) {
+  if (isopshdr(s) || isopshdrNN(s)) {
     const char* name = ocget_name(s);
     pdwarf_display_t p = zDWARFDISPLAY;
     for (size_t i = 0; i < eDWARF_MAX; ++i, ++p) {
       pdwarf_section_t x = &p->section;
+
       if (x->uncompressed_name && 0 == strcmp(x->uncompressed_name, name)) return p;
       else if (x->compressed_name && 0 == strcmp(x->compressed_name, name)) return p;
       else if (x->xcoff_name && 0 == strcmp(x->xcoff_name, name)) return p;
@@ -46,12 +47,22 @@ pdwarf_display_t ocdwarf_get(handle_t s) {
 }
 
 bool_t ocdwarf_isneeded(handle_t p, handle_t s, handle_t o) {
-  if (isopshdr(s) && isoptions(o)) {
+  if (isopcode(p) && isoptions(o)) {
     if (0 == (ocget_flags(s) & SEC_HAS_CONTENTS)) return FALSE;
     else if (0 == ocget_size(s)) return FALSE;
 
     uint64_t soffset = ocget_soffset(p, s);
     uint64_t eoffset = ocget_eoffset(p, s);
+    if (soffset >= eoffset) return FALSE;
+
+    poptions_t op = CAST(poptions_t, o);
+    pdwarf_display_t p0 = ocdwarf_get(s);
+    return p0 && MODE_ISSET(p0->action, op->ocdump);
+  } else if (isbuffer(p) && isoptions(o)) {
+    if (0 == ocget_size(s)) return FALSE;
+
+    uint64_t soffset = ocget_soffset(o, s);
+    uint64_t eoffset = ocget_eoffset(o, s);
     if (soffset >= eoffset) return FALSE;
 
     poptions_t op = CAST(poptions_t, o);
@@ -65,7 +76,6 @@ bool_t ocdwarf_isneeded(handle_t p, handle_t s, handle_t o) {
 int ocdwarf_open(handle_t p, handle_t o) {
   return 0;
 }
-
 
 int ocdwarf_close(handle_t p) {
   return 0;
