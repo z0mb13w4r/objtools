@@ -432,8 +432,6 @@ uint64_t ocget_opb(handle_t p, handle_t s) {
 
   if (isopcode(p) && isopshdr(s)) {
     opb = bfd_octets_per_byte(ocget(p, OPCODE_BFD), ocget(p, MODE_OCSHDR));
-  } else if (isopcode(p) && ismode(s, MODE_OCSHDR32)) {
-  } else if (isopcode(p) && ismode(s, MODE_OCSHDR64)) {
   }
 
   return opb;
@@ -441,40 +439,41 @@ uint64_t ocget_opb(handle_t p, handle_t s) {
 
 uint64_t ocget_soffset(handle_t p, handle_t s) {
   uint64_t soffset = 0;
+  uint64_t saddress = OPCODE_NULLADDR;
 
   if (isopcode(p)) {
-    popcode_t p0 = CAST(popcode_t, p);
-
-    if (p0->saddress == OPCODE_NULLADDR || p0->saddress < ocget_vmaddress(s)) soffset = 0;
-    else soffset = p0->saddress - ocget_vmaddress(s);
+    saddress = CAST(popcode_t, p)->saddress;
   } else if (isoptions(p)) {
-    poptions_t p0 = CAST(poptions_t, p);
-
-    if (p0->saddress == OPCODE_NULLADDR || p0->saddress < ocget_vmaddress(s)) soffset = 0;
-    else soffset = p0->saddress - ocget_vmaddress(s);
+    saddress = CAST(poptions_t, p)->saddress;
   }
+
+  if (saddress == OPCODE_NULLADDR || saddress < ocget_vmaddress(s)) soffset = 0;
+  else soffset = saddress - ocget_vmaddress(s);
 
   return soffset;
 }
 
 uint64_t ocget_eoffset(handle_t p, handle_t s) {
   uint64_t eoffset = 0;
+  uint64_t eaddress = OPCODE_NULLADDR;
 
   if (isopcode(p)) {
-    popcode_t p0 = CAST(popcode_t, p);
+    eaddress = CAST(popcode_t, p)->eaddress;
+  } else if (isoptions(p)) {
+    eaddress = CAST(poptions_t, p)->eaddress;
+  }
 
-    uint64_t size = ocget_size(s);
-    if (0 != size) {
-      /* Compute the address range to display. */
-      const uint64_t opb = ocget_opb(p, s);
+  uint64_t size = ocget_size(s);
+  if (0 != size) {
+    /* Compute the address range to display. */
+    const uint64_t opb = ocget_opb(p, s);
 
-      if (p0->eaddress == OPCODE_NULLADDR) eoffset = size / opb;
-      else {
-        if (p0->eaddress < ocget_vmaddress(s)) eoffset = 0;
-        else eoffset = p0->eaddress - ocget_vmaddress(s);
+    if (eaddress == OPCODE_NULLADDR) eoffset = size / opb;
+    else {
+      if (eaddress < ocget_vmaddress(s)) eoffset = 0;
+      else eoffset = eaddress - ocget_vmaddress(s);
 
-        if (eoffset > size / opb) eoffset = size / opb;
-      }
+      if (eoffset > size / opb) eoffset = size / opb;
     }
   }
 
