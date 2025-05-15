@@ -50,7 +50,7 @@ static void callback_disassemble(handle_t p, handle_t section, unknown_t param) 
 }
 
 static void callback_dwarf(handle_t p, handle_t section, unknown_t param) {
-  if (!ocdwarf_isneeded(p, section, param)) return;
+  if (!ocdwarf_isneeded(p, section)) return;
 
   uint64_t soffset = ocget_soffset(p, section);
 

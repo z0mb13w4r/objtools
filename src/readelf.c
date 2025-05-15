@@ -1543,7 +1543,7 @@ static int dump_dwarf32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr)
     if (shdr) {
       MALLOCSWRAPEX(opwrap_t, sec, MODE_OCSHDR32, shdr, p);
 
-      if (ocdwarf_isneeded(p, psec, o)) {
+      if (ocdwarf_isneeded(o, psec)) {
         printf_text("Contents of section", USE_LT);
         printf_text(ocget_name(psec), USE_LT | USE_SPACE | USE_SQ);
         printf_text("at offset", USE_LT | USE_SPACE);
@@ -1570,13 +1570,13 @@ static int dump_dwarf64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr)
     if (shdr) {
       MALLOCSWRAPEX(opwrap_t, sec, MODE_OCSHDR64, shdr, p);
 
-      if (ocdwarf_isneeded(p, psec, o)) {
+      if (ocdwarf_isneeded(o, psec)) {
         printf_text("Contents of section", USE_LT);
         printf_text(ocget_name(psec), USE_LT | USE_SPACE | USE_SQ);
         printf_text("at offset", USE_LT | USE_SPACE);
         printf_nice(ocget_offset(psec), USE_FHEX16 | USE_COLON | USE_EOL);
 
-//        ocdwarf_run(p, psec);
+        ocdwarf_run(o, psec);
 
         printf_eol();
       }

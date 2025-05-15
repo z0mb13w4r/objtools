@@ -46,8 +46,8 @@ pdwarf_display_t ocdwarf_get(handle_t s) {
   return NULL;
 }
 
-bool_t ocdwarf_isneeded(handle_t p, handle_t s, handle_t o) {
-  if (isopcode(p) && isoptions(o)) {
+bool_t ocdwarf_isneeded(handle_t p, handle_t s) {
+  if (isopcode(p)) {
     if (0 == (ocget_flags(s) & SEC_HAS_CONTENTS)) return FALSE;
     else if (0 == ocget_size(s)) return FALSE;
 
@@ -55,19 +55,19 @@ bool_t ocdwarf_isneeded(handle_t p, handle_t s, handle_t o) {
     uint64_t eoffset = ocget_eoffset(p, s);
     if (soffset >= eoffset) return FALSE;
 
-    poptions_t op = CAST(poptions_t, o);
-    pdwarf_display_t p0 = ocdwarf_get(s);
-    return p0 && MODE_ISSET(p0->action, op->ocdump);
-  } else if (isbuffer(p) && isoptions(o)) {
+    popcode_t p0 = CAST(popcode_t, p);
+    pdwarf_display_t p1 = ocdwarf_get(s);
+    return p1 && MODE_ISSET(p1->action, p0->ocdump);
+  } else if (isoptions(p)) {
     if (0 == ocget_size(s)) return FALSE;
 
-    uint64_t soffset = ocget_soffset(o, s);
-    uint64_t eoffset = ocget_eoffset(o, s);
+    uint64_t soffset = ocget_soffset(p, s);
+    uint64_t eoffset = ocget_eoffset(p, s);
     if (soffset >= eoffset) return FALSE;
 
-    poptions_t op = CAST(poptions_t, o);
-    pdwarf_display_t p0 = ocdwarf_get(s);
-    return p0 && MODE_ISSET(p0->action, op->ocdump);
+    poptions_t p0 = CAST(poptions_t, p);
+    pdwarf_display_t p1 = ocdwarf_get(s);
+    return p1 && MODE_ISSET(p1->action, p0->ocdump);
   }
 
   return FALSE;
@@ -427,7 +427,6 @@ int ocdwarf_run(handle_t p, handle_t s) {
   int n = 0;
   if (isopcode(p) && isopshdr(s)) {
     popcode_t oc = CAST(popcode_t, p);
-
     Dwarf_Error error = 0;
 
     int res = dwarf_object_init_b(&dw_interface, 0, 0, DW_GROUPNUMBER_ANY,
@@ -455,6 +454,9 @@ int ocdwarf_run(handle_t p, handle_t s) {
 
     dwarf_object_finish(oc->items[OPCODE_DWARF]);
     oc->items[OPCODE_DWARF] = NULL;
+  } else if (isoptions(p) && isopshdrNN(s)) {
+    pdwarf_display_t d = ocdwarf_get(s);
+    n = d && d->func ? d->func(p, s, &d->section) : -1;
   }
 
   return n;
