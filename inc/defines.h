@@ -7,6 +7,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+#ifndef DEBUGX
+#define DEBUGX(c)    printf("%c%c%c%d%c%c%c\n", c, c, c, __LINE__, c, c, c)
+#endif
+
 #ifndef CAST
 #define CAST(x,y)    ((x)(y))
 #endif

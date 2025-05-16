@@ -33,8 +33,9 @@ static int printf_post(const char* o, const imode_t mode) {
   return n;
 }
 
-void set_errname(const char* name) {
+int printf_errname(const char* name) {
   strncpy(errname, name, sizeof(errname));
+  return 0;
 }
 
 int printf_spos(char* o, const size_t size, const imode_t mode, const bool_t usespace) {
@@ -562,7 +563,7 @@ int printf_sore(const unknown_t p, const size_t size, const imode_t mode) {
   return n;
 }
 
-int printf_data(const void* p, const size_t size, const addrz_t addr, const imode_t mode) {
+int printf_data(const unknown_t p, const size_t size, const addrz_t addr, const imode_t mode) {
   const size_t MAX_SIZE = 16;
 
   const imode_t xmode = mode & ~(USE_POS0MASK | USE_FLAGMASK);

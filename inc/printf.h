@@ -168,7 +168,7 @@ int printf_nice(const uint64_t v, const imode_t mode);
 int printf_tidy(char* o, const size_t size, const double v, const imode_t mode);
 int printf_real(const double v, const imode_t mode);
 
-int printf_data(const void* p, const size_t size, const addrz_t addr, const imode_t mode);
+int printf_data(const unknown_t p, const size_t size, const addrz_t addr, const imode_t mode);
 int printf_hurt(const unknown_t p, const size_t size, const imode_t mode);
 int printf_sore(const unknown_t p, const size_t size, const imode_t mode);
 
@@ -179,7 +179,7 @@ int printf_masknone(const pconvert_t p, const maskz_t mask, const imode_t mode);
 int printf_pick(const pconvert_t p, const pick_t x, const imode_t mode);
 int printf_pack(const int size);
 
-void set_errname(const char* name);
+int printf_errname(const char* name);
 
 int  printf_d(const char* format, ...);
 int  printf_e(const char* format, ...);

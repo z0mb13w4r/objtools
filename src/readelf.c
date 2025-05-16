@@ -1545,11 +1545,11 @@ static int dump_dwarf32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr)
 
       if (ocdwarf_isneeded(o, psec)) {
         printf_text("Contents of section", USE_LT);
-        printf_text(ocget_name(psec), USE_LT | USE_SPACE | USE_SQ);
+        printf_text(get_secnamebyindex(p, i), USE_LT | USE_SPACE | USE_SQ);
         printf_text("at offset", USE_LT | USE_SPACE);
-        printf_nice(ocget_offset(psec), USE_FHEX16 | USE_COLON | USE_EOL);
+        printf_nice(shdr->sh_offset, USE_FHEX16 | USE_COLON | USE_EOL);
 
-        ocdwarf_run(p, psec);
+        ocdwarf_run(o, psec);
 
         printf_eol();
       }
@@ -1572,9 +1572,9 @@ static int dump_dwarf64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr)
 
       if (ocdwarf_isneeded(o, psec)) {
         printf_text("Contents of section", USE_LT);
-        printf_text(ocget_name(psec), USE_LT | USE_SPACE | USE_SQ);
+        printf_text(get_secnamebyindex(p, i), USE_LT | USE_SPACE | USE_SQ);
         printf_text("at offset", USE_LT | USE_SPACE);
-        printf_nice(ocget_offset(psec), USE_FHEX16 | USE_COLON | USE_EOL);
+        printf_nice(shdr->sh_offset, USE_FHEX16 | USE_COLON | USE_EOL);
 
         ocdwarf_run(o, psec);
 
