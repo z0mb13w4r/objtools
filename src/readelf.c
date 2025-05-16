@@ -1536,54 +1536,58 @@ static int dump_archspecific64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr
 
 static int dump_dwarf32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
   int n = 0;
-  ocdwarf_open(p, o);
+  handle_t oc = ocattach(p);
+  ocdwarf_open(oc, o);
 
   for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
     Elf32_Shdr *shdr = get_shdr32byindex(p, i);
     if (shdr) {
       MALLOCSWRAPEX(opwrap_t, sec, MODE_OCSHDR32, shdr, p);
 
-      if (ocdwarf_isneeded(o, psec)) {
+      if (ocdwarf_isneeded(oc, psec)) {
         printf_text("Contents of section", USE_LT);
         printf_text(get_secnamebyindex(p, i), USE_LT | USE_SPACE | USE_SQ);
         printf_text("at offset", USE_LT | USE_SPACE);
         printf_nice(shdr->sh_offset, USE_FHEX16 | USE_COLON | USE_EOL);
 
-        ocdwarf_run(o, psec);
+        ocdwarf_run(oc, psec);
 
         printf_eol();
       }
     }
   }
 
-  ocdwarf_close(p);
+  ocdwarf_close(oc);
+  occlose(oc);
   return n;
 }
 
 
 static int dump_dwarf64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
   int n = 0;
-  ocdwarf_open(p, o);
+  handle_t oc = ocattach(p);
+  ocdwarf_open(oc, o);
 
   for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
     Elf64_Shdr *shdr = get_shdr64byindex(p, i);
     if (shdr) {
       MALLOCSWRAPEX(opwrap_t, sec, MODE_OCSHDR64, shdr, p);
 
-      if (ocdwarf_isneeded(o, psec)) {
+      if (ocdwarf_isneeded(oc, psec)) {
         printf_text("Contents of section", USE_LT);
         printf_text(get_secnamebyindex(p, i), USE_LT | USE_SPACE | USE_SQ);
         printf_text("at offset", USE_LT | USE_SPACE);
         printf_nice(shdr->sh_offset, USE_FHEX16 | USE_COLON | USE_EOL);
 
-        ocdwarf_run(o, psec);
+        ocdwarf_run(oc, psec);
 
         printf_eol();
       }
     }
   }
 
-  ocdwarf_close(p);
+  ocdwarf_close(oc);
+  occlose(oc);
   return n;
 }
 

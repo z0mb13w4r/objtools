@@ -2,6 +2,7 @@
 #include <dwarf.h>
 #include <libdwarf.h>
 
+#include "printf.h"
 #include "opcode.h"
 #include "ocdwarf.h"
 #include "options.h"
@@ -23,7 +24,42 @@ static int ocdwarf_doeh_frame(handle_t p, handle_t s, handle_t d);
 static int ocdwarf_dodebug_abbrev(handle_t p, handle_t s, handle_t d) { return 0; }
 static int ocdwarf_dodebug_aranges(handle_t p, handle_t s, handle_t d) { return 0; }
 static int ocdwarf_dodebug_info(handle_t p, handle_t s, handle_t d) { return 0; }
-static int ocdwarf_dodebug_line(handle_t p, handle_t s, handle_t d) { return 0; }
+
+static int ocdwarf_dodebug_line(handle_t p, handle_t s, handle_t d) {
+  const int MAXSIZE = 31;
+
+  if (isopcode(p)) {
+    popcode_t p0 = CAST(popcode_t, p);
+    if (MODE_ISSET(p0->ocdump, OPTDEBUGELF_DEBUG_LINE)) {
+      printf_text("Offset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE) | USE_EOL);
+      printf_text("Length", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE) | USE_EOL);
+      printf_text("DWARF Version", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE) | USE_EOL);
+      printf_text("Prologue Length", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE) | USE_EOL);
+      printf_text("Minimum Instruction Length", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE) | USE_EOL);
+      printf_text("Initial value of 'is_stmt'", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE) | USE_EOL);
+      printf_text("Line Base", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE) | USE_EOL);
+      printf_text("Line Range", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE) | USE_EOL);
+      printf_text("Opcode Base", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE) | USE_EOL);
+      printf_eol();
+      printf_text("Opcodes", USE_LT | USE_SPACE | USE_COLON | USE_EOL);
+      printf_eol();
+      printf_text("The Directory Table", USE_LT | USE_SPACE);
+      printf_nice(0x1b, USE_COLON | USE_FHEX8 | USE_OFFSET | USE_EOL);
+      printf_eol();
+      printf_text("The File Name Table", USE_LT | USE_SPACE);
+      printf_nice(0xf8, USE_COLON | USE_FHEX8 | USE_OFFSET | USE_EOL);
+      printf_eol();
+      printf_text("Line Number Statements", USE_LT | USE_SPACE | USE_COLON | USE_EOL);
+      printf_eol();
+    }
+
+    if (MODE_ISSET(p0->ocdump, OPTDEBUGELF_DEBUG_LINE_DECODED)) {
+    }
+  }
+
+  return 0;
+}
+
 static int ocdwarf_dodebug_macroinfo(handle_t p, handle_t s, handle_t d) { return 0; }
 static int ocdwarf_dodebug_str(handle_t p, handle_t s, handle_t d) { return 0; }
 static int ocdwarf_dodebug_stroffset(handle_t p, handle_t s, handle_t d) { return 0; }
@@ -47,24 +83,17 @@ pdwarf_display_t ocdwarf_get(handle_t s) {
 }
 
 bool_t ocdwarf_isneeded(handle_t p, handle_t s) {
+  if (0 == ocget_size(s)) return FALSE;
+
+  uint64_t soffset = ocget_soffset(p, s);
+  uint64_t eoffset = ocget_eoffset(p, s);
+  if (soffset >= eoffset) return FALSE;
+
   if (isopcode(p)) {
-    if (0 == (ocget_flags(s) & SEC_HAS_CONTENTS)) return FALSE;
-    else if (0 == ocget_size(s)) return FALSE;
-
-    uint64_t soffset = ocget_soffset(p, s);
-    uint64_t eoffset = ocget_eoffset(p, s);
-    if (soffset >= eoffset) return FALSE;
-
     popcode_t p0 = CAST(popcode_t, p);
     pdwarf_display_t p1 = ocdwarf_get(s);
     return p1 && MODE_ISSET(p1->action, p0->ocdump);
   } else if (isoptions(p)) {
-    if (0 == ocget_size(s)) return FALSE;
-
-    uint64_t soffset = ocget_soffset(p, s);
-    uint64_t eoffset = ocget_eoffset(p, s);
-    if (soffset >= eoffset) return FALSE;
-
     poptions_t p0 = CAST(poptions_t, p);
     pdwarf_display_t p1 = ocdwarf_get(s);
     return p1 && MODE_ISSET(p1->action, p0->ocdump);
@@ -74,7 +103,18 @@ bool_t ocdwarf_isneeded(handle_t p, handle_t s) {
 }
 
 int ocdwarf_open(handle_t p, handle_t o) {
-  return 0;
+  if (isopcode(p) && isoptions(o)) {
+    popcode_t oc = CAST(popcode_t, p);
+    poptions_t op = CAST(poptions_t, o);
+
+    oc->action = op->action;
+    oc->ocdump = op->ocdump;
+    oc->saddress = op->saddress;
+    oc->eaddress = op->eaddress;
+    return 0;
+  }
+
+  return -1;
 }
 
 int ocdwarf_close(handle_t p) {
@@ -454,6 +494,9 @@ int ocdwarf_run(handle_t p, handle_t s) {
 
     dwarf_object_finish(oc->items[OPCODE_DWARF]);
     oc->items[OPCODE_DWARF] = NULL;
+  } else if (isopcode(p) && isopshdrNN(s)) {
+    pdwarf_display_t d = ocdwarf_get(s);
+    n = d && d->func ? d->func(p, s, &d->section) : -1;
   } else if (isoptions(p) && isopshdrNN(s)) {
     pdwarf_display_t d = ocdwarf_get(s);
     n = d && d->func ? d->func(p, s, &d->section) : -1;

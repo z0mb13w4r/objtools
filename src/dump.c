@@ -111,7 +111,7 @@ int dump_actions2(const pbuffer_t p, const poptions_t o, const handle_t s, const
   }
 
   if (ACT_DISASSEMBLE == action) {
-    ocdisassemble_close(p);
+    ocdisassemble_close(oc);
   }
 
   occlose(oc);
