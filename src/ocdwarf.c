@@ -9,18 +9,6 @@
 
 static const Dwarf_Sig8 zerosignature;
 
-static int ocdwarf_dodebug_abbrev(handle_t p, handle_t s, handle_t d);
-static int ocdwarf_dodebug_aranges(handle_t p, handle_t s, handle_t d);
-static int ocdwarf_dodebug_info(handle_t p, handle_t s, handle_t d);
-static int ocdwarf_dodebug_line(handle_t p, handle_t s, handle_t d);
-static int ocdwarf_dodebug_macroinfo(handle_t p, handle_t s, handle_t d);
-static int ocdwarf_dodebug_str(handle_t p, handle_t s, handle_t d);
-static int ocdwarf_dodebug_stroffset(handle_t p, handle_t s, handle_t d);
-static int ocdwarf_dodebug_types(handle_t p, handle_t s, handle_t d);
-static int ocdwarf_doeh_frame(handle_t p, handle_t s, handle_t d);
-
-#include "static/dwarf.ci"
-
 static int ocdwarf_dodebug_abbrev(handle_t p, handle_t s, handle_t d) { return 0; }
 static int ocdwarf_dodebug_aranges(handle_t p, handle_t s, handle_t d) { return 0; }
 static int ocdwarf_dodebug_info(handle_t p, handle_t s, handle_t d) { return 0; }
@@ -65,6 +53,8 @@ static int ocdwarf_dodebug_str(handle_t p, handle_t s, handle_t d) { return 0; }
 static int ocdwarf_dodebug_stroffset(handle_t p, handle_t s, handle_t d) { return 0; }
 static int ocdwarf_dodebug_types(handle_t p, handle_t s, handle_t d) { return 0; }
 static int ocdwarf_doeh_frame(handle_t p, handle_t s, handle_t d) { return 0; }
+
+#include "static/dwarf.ci"
 
 pdwarf_display_t ocdwarf_get(handle_t s) {
   if (isopshdr(s) || isopshdrNN(s)) {
