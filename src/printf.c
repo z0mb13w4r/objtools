@@ -62,6 +62,7 @@ int printf_spos(char* o, const size_t size, const imode_t mode, const bool_t use
     case USE_PLUS:                 n += PRINT1(" +");    break;
     case USE_DASH:                 n += PRINT1(" -");    break;
     case USE_OFFSET:               n += PRINT1(" (offset ");   break;
+    case USE_ADDRESS:              n += PRINT1(" (address ");  break;
     case USE_DISCRIMINATOR:        n += PRINT1(" (discriminator "); break;
     default:
       if (usespace)                n += PRINT1(" ");
@@ -78,6 +79,7 @@ int printf_epos(char* o, const size_t size, const imode_t mode) {
     switch (GET_BRACKET(mode)) {
     case USE_CB:                   n += PRINT1("}");         break;
     case USE_OFFSET:
+    case USE_ADDRESS:
     case USE_DISCRIMINATOR:
     case USE_RB:                   n += PRINT1(")");         break;
     case USE_SB:                   n += PRINT1("]");         break;
