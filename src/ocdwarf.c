@@ -7,15 +7,23 @@
 #include "ocdwarf.h"
 #include "options.h"
 
+static const int MAXSIZE = 31;
+
 static const Dwarf_Sig8 zerosignature;
 
 static int ocdwarf_dodebug_abbrev(handle_t p, handle_t s, handle_t d) { return 0; }
 static int ocdwarf_dodebug_aranges(handle_t p, handle_t s, handle_t d) { return 0; }
-static int ocdwarf_dodebug_info(handle_t p, handle_t s, handle_t d) { return 0; }
+
+static int ocdwarf_dodebug_info(handle_t p, handle_t s, handle_t d) {
+  printf_text("Compilation Unit @ offset 0x0", USE_LT | USE_SPACE | USE_COLON | USE_EOL);
+  printf_text("Length", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE) | USE_EOL);
+  printf_text("Version", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE) | USE_EOL);
+  printf_text("Abbrev Offset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE) | USE_EOL);
+  printf_text("Pointer Size", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE) | USE_EOL);
+  return 0;
+}
 
 static int ocdwarf_dodebug_line(handle_t p, handle_t s, handle_t d) {
-  const int MAXSIZE = 31;
-
   if (isopcode(p)) {
     popcode_t p0 = CAST(popcode_t, p);
     if (MODE_ISSET(p0->ocdump, OPTDEBUGELF_DEBUG_LINE)) {
