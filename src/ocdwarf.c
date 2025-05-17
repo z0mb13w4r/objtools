@@ -67,7 +67,15 @@ static int ocdwarf_dodebug_line(handle_t p, handle_t s, handle_t d) {
   return 0;
 }
 
-static int ocdwarf_dodebug_macroinfo(handle_t p, handle_t s, handle_t d) { return 0; }
+static int ocdwarf_dodebug_macroinfo(handle_t p, handle_t s, handle_t d) {
+  printf_text("Offset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE) | USE_EOL);
+  printf_text("Version", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE) | USE_EOL);
+  printf_text("Offset size", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE) | USE_EOL);
+  printf_text("Offset into", USE_LT | USE_TAB | SET_PAD(MAXSIZE) | USE_EOL);
+
+  return 0;
+}
+
 static int ocdwarf_dodebug_str(handle_t p, handle_t s, handle_t d) { return 0; }
 static int ocdwarf_dodebug_stroffset(handle_t p, handle_t s, handle_t d) { return 0; }
 static int ocdwarf_dodebug_types(handle_t p, handle_t s, handle_t d) { return 0; }
