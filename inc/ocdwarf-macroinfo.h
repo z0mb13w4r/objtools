@@ -4,7 +4,7 @@
 #include "ocdwarf.h"
 
 int ocdwarf_debug_macroinfo0a(handle_t p, handle_t s, handle_t d);
-int ocdwarf_debug_macroinfo1a(handle_t p, handle_t s, handle_t d);
+int ocdwarf_debug_macroinfo1a(handle_t p, handle_t s, handle_t d, uint16_t idx, uint8_t pick, uint32_t offset, uint16_t level, uint16_t version);
 int ocdwarf_debug_macroinfo2a(handle_t p, handle_t s, handle_t d);
 int ocdwarf_debug_macroinfo3a(handle_t p, handle_t s, handle_t d);
 int ocdwarf_debug_macroinfo4a(handle_t p, handle_t s, handle_t d);

@@ -3,6 +3,7 @@
 
 #include "objutils.h"
 
+extern convert_t zDWMACRO[];
 extern convert_t zPHDRTYPE[];
 extern convert_t zSHDRTYPE[];
 
