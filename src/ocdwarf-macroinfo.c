@@ -2,14 +2,28 @@
 #include "externs.h"
 #include "ocdwarf-macroinfo.h"
 
-int ocdwarf_debug_macroinfo0a(handle_t p, handle_t s, handle_t d) {
+int ocdwarf_debug_macroinfo0a(handle_t p, handle_t s, handle_t d, uint32_t offset1, uint32_t offset2, uint16_t level, uint16_t version, uint16_t count, uint16_t size) {
+  const int MAXSIZE = 26;
+
   int n = 0;
-  n += printf_text(".debug_macro: Macro info for a single cu at macro Offset 0x00000000", USE_LT | USE_EOL);
-  n += printf_text("Macro data from CU-DIE at .debug_info offset 0x0000000b:", USE_LT | USE_EOL);
-  n += printf_text("Nested import level: 0", USE_LT | USE_TAB | USE_EOL);
-  n += printf_text("Macro version      : 4", USE_LT | USE_TAB | USE_EOL);
-  n += printf_text("macro section offset 0x00000000", USE_LT | USE_TAB | USE_EOL);
-  n += printf_text("MacroInformationEntries count: 232, bytes length: 803", USE_LT | USE_TAB | USE_EOL);
+  n += printf_text(".debug_macro: Macro info for a single cu at macro Offset", USE_LT);
+  n += printf_nice(offset1, USE_FHEX32 | USE_EOL);
+
+  n += printf_text("Macro data from CU-DIE at .debug_info offset", USE_LT);
+  n += printf_nice(offset2, USE_FHEX32 | USE_COLON | USE_EOL);
+
+  n += printf_text("Nested import level", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(level, USE_DEC | USE_EOL);
+
+  n += printf_text("Macro version", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(version, USE_DEC | USE_EOL);
+
+  n += printf_text("Macro section offset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_nice(offset1, USE_FHEX32 | USE_EOL);
+
+  n += printf_text("MacroInformationEntries", USE_LT | USE_TAB | USE_COLON);
+  n += printf_nice(count, USE_DEC | USE_COUNT);
+  n += printf_nice(size, USE_DEC | USE_BYTES | USE_COMMA | USE_EOL);
 
   return n;
 }

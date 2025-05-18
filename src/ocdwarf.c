@@ -70,7 +70,7 @@ static int ocdwarf_dodebug_line(handle_t p, handle_t s, handle_t d) {
 
 static int ocdwarf_debug_macroinfo(handle_t p, handle_t s, handle_t d) {
   int n = 0;
-  n += ocdwarf_debug_macroinfo0a(p, s, d);
+  n += ocdwarf_debug_macroinfo0a(p, s, d, 0x00000000, 0x0000000b, 0, 4, 232, 803);
   n += ocdwarf_debug_macroinfo1a(p, s, d, 0, 0x07, 0x0000032a, 1, 4);
   n += ocdwarf_debug_macroinfo2a(p, s, d);
   n += ocdwarf_debug_macroinfo3a(p, s, d);

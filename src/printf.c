@@ -94,6 +94,7 @@ int printf_epos(char* o, const size_t size, const imode_t mode) {
     case USE_COLON:                n += PRINT1(":");         break;
     case USE_SEMICOLON:            n += PRINT1(";");         break;
     case USE_BYTES:                n += PRINT1(" (bytes)");  break;
+    case USE_COUNT:                n += PRINT1(" (count)");  break;
     case USE_MIN:                  n += PRINT1(" (min)");    break;
     case USE_MAX:                  n += PRINT1(" (max)");    break;
     default:                       break;
@@ -150,6 +151,7 @@ int printf_work(char* o, const size_t size, const char* p, const imode_t mode) {
     case USE_COLON:          n += PRINT1(":");          break;
     case USE_SEMICOLON:      n += PRINT1(";");          break;
     case USE_BYTES:          n += PRINT1(" (bytes)");   break;
+    case USE_COUNT:          n += PRINT1(" (count)");   break;
     case USE_MIN:            n += PRINT1(" (min)");     break;
     case USE_MAX:            n += PRINT1(" (max)");     break;
     default:                 break;
