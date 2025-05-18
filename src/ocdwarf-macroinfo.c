@@ -23,3 +23,24 @@ int ocdwarf_debug_macroinfo1a(handle_t p, handle_t s, handle_t d) {
   return n;
 }
 
+int ocdwarf_debug_macroinfo2a(handle_t p, handle_t s, handle_t d) {
+  int n = 0;
+  n += printf_text(" [  1] 0x03 DW_MACRO_start_file   line 0 file number 1 /media/SHYLA/objtools/misc/debugLINUX64/../../src/example.c", USE_LT | USE_TAB | USE_EOL);
+
+  return n;
+}
+
+int ocdwarf_debug_macroinfo3a(handle_t p, handle_t s, handle_t d) {
+  int n = 0;
+  n += printf_text(" [  4] 0x04 DW_MACRO_end_file", USE_LT | USE_TAB | USE_EOL);
+
+  return n;
+}
+
+int ocdwarf_debug_macroinfo4a(handle_t p, handle_t s, handle_t d) {
+  int n = 0;
+  n += printf_text(" [  6] 0x05 DW_MACRO_define_strp  line 23 str offset 0x0000230a _CTYPE_H 1", USE_LT | USE_TAB | USE_EOL);
+
+  return n;
+}
+
