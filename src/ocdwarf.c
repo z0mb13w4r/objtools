@@ -6,6 +6,7 @@
 #include "opcode.h"
 #include "ocdwarf.h"
 #include "options.h"
+#include "ocdwarf-macroinfo.h"
 
 static const int MAXSIZE = 31;
 
@@ -67,13 +68,16 @@ static int ocdwarf_dodebug_line(handle_t p, handle_t s, handle_t d) {
   return 0;
 }
 
-static int ocdwarf_dodebug_macroinfo(handle_t p, handle_t s, handle_t d) {
-  printf_text("Offset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE) | USE_EOL);
-  printf_text("Version", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE) | USE_EOL);
-  printf_text("Offset size", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE) | USE_EOL);
-  printf_text("Offset into", USE_LT | USE_TAB | SET_PAD(MAXSIZE) | USE_EOL);
+static int ocdwarf_debug_macroinfo(handle_t p, handle_t s, handle_t d) {
+  int n = 0;
+  n += ocdwarf_debug_macroinfo0a(p, s, d);
+  n += ocdwarf_debug_macroinfo1a(p, s, d);
+//  printf_text("Offset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE) | USE_EOL);
+//  printf_text("Version", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE) | USE_EOL);
+//  printf_text("Offset size", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE) | USE_EOL);
+//  printf_text("Offset into", USE_LT | USE_TAB | SET_PAD(MAXSIZE) | USE_EOL);
 
-  return 0;
+  return n;
 }
 
 static int ocdwarf_dodebug_str(handle_t p, handle_t s, handle_t d) { return 0; }

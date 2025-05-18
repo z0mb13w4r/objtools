@@ -30,6 +30,7 @@ SRCS_C = \
 	memfind.c \
 	memlink.c \
 	ocdwarf.c \
+	ocdwarf-macroinfo.c \
 	objcopy.c \
 	objdump.c \
 	objhash.c \
