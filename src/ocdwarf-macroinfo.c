@@ -76,9 +76,12 @@ int ocdwarf_debug_macroinfo2a(handle_t p, handle_t s, handle_t d, const uint16_t
   return n;
 }
 
-int ocdwarf_debug_macroinfo3a(handle_t p, handle_t s, handle_t d) {
+int ocdwarf_debug_macroinfo3a(handle_t p, handle_t s, handle_t d, const uint16_t idx, const uint8_t pick) {
   int n = 0;
-  n += printf_text(" [  4] 0x04 DW_MACRO_end_file", USE_LT | USE_TAB | USE_EOL);
+  n += printf_pack(2);
+  n += printf_nice(idx, USE_DEC3 | USE_SB);
+  n += printf_nice(pick, USE_FHEX8);
+  n += printf_pick(zDWMACRO, pick, USE_LT | USE_SPACE | USE_EOL);
 
   return n;
 }

@@ -75,7 +75,7 @@ static int ocdwarf_debug_macroinfo(handle_t p, handle_t s, handle_t d) {
   n += ocdwarf_debug_macroinfo2a(p, s, d, 1, 0x03, 0, 1, "/media/SHYLA/objtools/misc/debugLINUX64/../../src/example.c");
   n += ocdwarf_debug_macroinfo2a(p, s, d, 2, 0x03, 0, 9, "/usr/include/stdc-predef.h");
   n += ocdwarf_debug_macroinfo1a(p, s, d, 3, 0x07, 0x00000b4a, 1, 4);
-  n += ocdwarf_debug_macroinfo3a(p, s, d);
+  n += ocdwarf_debug_macroinfo3a(p, s, d, 4, 0x04);
   n += ocdwarf_debug_macroinfo4a(p, s, d);
 
 //  printf_text("Offset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE) | USE_EOL);
