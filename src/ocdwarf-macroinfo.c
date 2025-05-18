@@ -2,7 +2,8 @@
 #include "externs.h"
 #include "ocdwarf-macroinfo.h"
 
-int ocdwarf_debug_macroinfo0a(handle_t p, handle_t s, handle_t d, uint32_t offset1, uint32_t offset2, uint16_t level, uint16_t version, uint16_t count, uint16_t size) {
+int ocdwarf_debug_macroinfo0a(handle_t p, handle_t s, handle_t d, const uint32_t const offset1, const uint32_t offset2,
+                              const uint16_t level, const uint16_t version, const uint16_t count, const uint16_t size) {
   const int MAXSIZE = 26;
 
   int n = 0;
@@ -28,7 +29,8 @@ int ocdwarf_debug_macroinfo0a(handle_t p, handle_t s, handle_t d, uint32_t offse
   return n;
 }
 
-int ocdwarf_debug_macroinfo1a(handle_t p, handle_t s, handle_t d, uint16_t idx, uint8_t pick, uint32_t offset, uint16_t level, uint16_t version) {
+int ocdwarf_debug_macroinfo1a(handle_t p, handle_t s, handle_t d, const uint16_t idx, const uint8_t pick, const uint32_t offset,
+                              const uint16_t const level, const uint16_t version) {
   const int MAXSIZE1 = 23;
   const int MAXSIZE2 = 20;
   const int MAXSIZE3 = 10;
@@ -56,9 +58,20 @@ int ocdwarf_debug_macroinfo1a(handle_t p, handle_t s, handle_t d, uint16_t idx, 
   return n;
 }
 
-int ocdwarf_debug_macroinfo2a(handle_t p, handle_t s, handle_t d) {
+int ocdwarf_debug_macroinfo2a(handle_t p, handle_t s, handle_t d, const uint16_t idx, const uint8_t pick,
+                              const uint16_t lineno, const uint16_t fileno, const char* name) {
+  const int MAXSIZE = 23;
+
   int n = 0;
-  n += printf_text(" [  1] 0x03 DW_MACRO_start_file   line 0 file number 1 /media/SHYLA/objtools/misc/debugLINUX64/../../src/example.c", USE_LT | USE_TAB | USE_EOL);
+  n += printf_pack(2);
+  n += printf_nice(idx, USE_DEC3 | USE_SB);
+  n += printf_nice(pick, USE_FHEX8);
+  n += printf_pick(zDWMACRO, pick, USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+  n += printf_text("line", USE_LT);
+  n += printf_nice(lineno, USE_DEC);
+  n += printf_text("file number", USE_LT | USE_SPACE);
+  n += printf_nice(fileno, USE_DEC);
+  n += printf_text(name, USE_LT | USE_SPACE | USE_EOL);
 
   return n;
 }
