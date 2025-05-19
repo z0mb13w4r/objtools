@@ -17,7 +17,7 @@
 #include "static/unw_flags.ci"
 #include "static/verinfo.ci"
 
-const int MAXSIZE = 36;
+static const int MAXSIZE = 36;
 
 static int dump_dosheaderNN(const pbuffer_t p, const poptions_t o) {
   int n = 0;
