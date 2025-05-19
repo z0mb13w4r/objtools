@@ -78,6 +78,10 @@ static int ocdwarf_debug_macroinfo(handle_t p, handle_t s, handle_t d) {
   n += ocdwarf_debug_macroinfo3a(p, s, d, 4, 0x04);
   n += ocdwarf_debug_macroinfo4a(p, s, d, 6, 0x05, 23, 0x0000230a, "_CTYPE_H 1");
   n += ocdwarf_debug_macroinfo4a(p, s, d, 40, 0x06, 225, 0x0000061c, "__STD_TYPE");
+  n += printf_eol();
+
+  n += ocdwarf_debug_macroinfo0b(p, s, d, 0x0000032a, 0, 4, 347, 2077);
+  n += ocdwarf_debug_macroinfo4a(p, s, d, 0, 0x05, 0, 0x00003ba7, "__STDC__ 1");
 
 //  printf_text("Offset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE) | USE_EOL);
 //  printf_text("Version", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE) | USE_EOL);

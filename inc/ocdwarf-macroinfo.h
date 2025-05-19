@@ -5,6 +5,9 @@
 
 int ocdwarf_debug_macroinfo0a(handle_t p, handle_t s, handle_t d, const uint32_t offset1, const uint32_t offset2,
                               const uint16_t level, const uint16_t version, const uint16_t count, uint16_t size);
+int ocdwarf_debug_macroinfo0b(handle_t p, handle_t s, handle_t d, const uint32_t offset,
+                              const uint16_t level, const uint16_t version, const uint16_t count, const uint16_t size);
+
 int ocdwarf_debug_macroinfo1a(handle_t p, handle_t s, handle_t d, const uint16_t idx, const uint8_t pick, const uint32_t offset,
                               const uint16_t level, const uint16_t version);
 int ocdwarf_debug_macroinfo2a(handle_t p, handle_t s, handle_t d, const uint16_t idx, const uint8_t pick,

@@ -4,17 +4,11 @@
 
 static const int MAXSIZE = 23;
 
-int ocdwarf_debug_macroinfo0a(handle_t p, handle_t s, handle_t d, const uint32_t offset1, const uint32_t offset2,
+int ocdwarf_debug_macroinfo0z(handle_t p, handle_t s, handle_t d, const uint32_t offset,
                               const uint16_t level, const uint16_t version, const uint16_t count, const uint16_t size) {
   const int MAXSIZE2 = 26;
 
   int n = 0;
-  n += printf_text(".debug_macro: Macro info for a single cu at macro Offset", USE_LT);
-  n += printf_nice(offset1, USE_FHEX32 | USE_EOL);
-
-  n += printf_text("Macro data from CU-DIE at .debug_info offset", USE_LT);
-  n += printf_nice(offset2, USE_FHEX32 | USE_COLON | USE_EOL);
-
   n += printf_text("Nested import level", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE2));
   n += printf_nice(level, USE_DEC | USE_EOL);
 
@@ -22,11 +16,36 @@ int ocdwarf_debug_macroinfo0a(handle_t p, handle_t s, handle_t d, const uint32_t
   n += printf_nice(version, USE_DEC | USE_EOL);
 
   n += printf_text("Macro section offset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE2));
-  n += printf_nice(offset1, USE_FHEX32 | USE_EOL);
+  n += printf_nice(offset, USE_FHEX32 | USE_EOL);
 
   n += printf_text("MacroInformationEntries", USE_LT | USE_TAB | USE_COLON);
   n += printf_nice(count, USE_DEC | USE_COUNT);
   n += printf_nice(size, USE_DEC | USE_BYTES | USE_COMMA | USE_EOL);
+
+  return n;
+}
+
+int ocdwarf_debug_macroinfo0a(handle_t p, handle_t s, handle_t d, const uint32_t offset1, const uint32_t offset2,
+                              const uint16_t level, const uint16_t version, const uint16_t count, const uint16_t size) {
+  int n = 0;
+  n += printf_text(".debug_macro: Macro info for a single cu at macro offset", USE_LT);
+  n += printf_nice(offset1, USE_FHEX32 | USE_EOL);
+
+  n += printf_text("Macro data from CU-DIE at .debug_info offset", USE_LT);
+  n += printf_nice(offset2, USE_FHEX32 | USE_COLON | USE_EOL);
+
+  n += ocdwarf_debug_macroinfo0z(p, s, d, offset1, level, version, count, size);
+
+  return n;
+}
+
+int ocdwarf_debug_macroinfo0b(handle_t p, handle_t s, handle_t d, const uint32_t offset,
+                              const uint16_t level, const uint16_t version, const uint16_t count, const uint16_t size) {
+  int n = 0;
+  n += printf_text(".debug_macro: Macro info for imported macro unit at macro offset", USE_LT);
+  n += printf_nice(offset, USE_FHEX32 | USE_EOL);
+
+  n += ocdwarf_debug_macroinfo0z(p, s, d, offset, level, version, count, size);
 
   return n;
 }
