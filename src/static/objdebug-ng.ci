@@ -14,7 +14,7 @@ static char zDEBUGGDBINDEX[]     = "Displays the contents of the .gdb_index|.deb
 
 static const args_t zDEBUGELFARGS[] = {
   {'a', "abbrev",             OPTDEBUGELF_DEBUG_ABBREV,        zDEBUGABBREV},
-  {'A', "_addr",              OPTDEBUGELF_DEBUG_ADDR,          zDEBUGADDR},
+  {'A', "addr",               OPTDEBUGELF_DEBUG_ADDR,          zDEBUGADDR},
   {'c', "cu_index",           OPTDEBUGELF_DEBUG_CU_INDEX,      zDEBUGCUINDEX},
   {'f', "frames",             OPTDEBUGELF_DEBUG_FRAME,         zDEBUGFRAME},
   {'F', "frames_interp",      OPTDEBUGELF_DEBUG_FRAME_INTERP,  zDEBUGFRAMEINTERP},

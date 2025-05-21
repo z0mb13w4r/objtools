@@ -44,6 +44,8 @@
 #define OPTDEBUGELF_GDB_INDEX                      U64MASK(50)
 #define OPTDEBUGELF_DEBUGGING                      (0x1FFFFFULL << 30)
 
+#define OPTDEBUGELF_DEBUG_LINE_MASK                (OPTDEBUGELF_DEBUG_LINE | OPTDEBUGELF_DEBUG_LINE_DECODED)
+
 #define OPTFUNCTION_XOR1                           (1)
 #define OPTFUNCTION_XOR255                         (255)
 #define OPTFUNCTION_ROT5                           (256)
