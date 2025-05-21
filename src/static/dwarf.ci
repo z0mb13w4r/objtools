@@ -46,6 +46,17 @@ static dwarf_display_t zDWARFDISPLAY[] = {
   {{RAGE_DWARF, ".trace_info",             "",                         "",         eDWARF_TRACE_INFO},                 OPTDEBUGELF_TRACE_INFO,       NULL},
 };
 
+convert_t zDWADDR[] = {
+  {"DW_ADDR_none",             0x0000},
+  {"DW_ADDR_TI_PTR8",          0x0008},
+  {"DW_ADDR_TI_PTR16",         0x0010},
+  {"DW_ADDR_TI_PTR22",         0x0016},
+  {"DW_ADDR_TI_PTR23",         0x0017},
+  {"DW_ADDR_TI_PTR24",         0x0018},
+  {"DW_ADDR_TI_PTR32",         0x0020},
+  {0, 0}
+};
+
 convert_t zDWAT[] = {
   {"DW_AT_sibling",                           0x01},
   {"DW_AT_location",                          0x02},
@@ -279,6 +290,15 @@ convert_t zDWMACRO[] = {
   {"DW_MACRO_undef_strx",      0x0c},
   {"DW_MACRO_lo_user",         0xe0},
   {"DW_MACRO_hi_user",         0xff},
+  {0, 0}
+};
+
+convert_t zDWMACINFO[] = {
+  {"DW_MACINFO_define",                0x01},
+  {"DW_MACINFO_undef",                 0x02},
+  {"DW_MACINFO_start_file",            0x03},
+  {"DW_MACINFO_end_file",              0x04},
+  {"DW_MACINFO_vendor_ext",            0xff},
   {0, 0}
 };
 
