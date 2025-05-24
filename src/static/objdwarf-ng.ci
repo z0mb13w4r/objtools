@@ -1,0 +1,11 @@
+static const char zOBJDWARFARGS0[] = "-w";
+static const char zOBJDWARFARGS1[] = "--dwarf-dump";
+
+static const args_t zOBJDWARFARGS[] = {
+  {'H', "--help",            OPTPROGRAM_HELP},
+  {'v', "--version",         OPTPROGRAM_VERSION},
+  {'x', "--hex-dump",        0,                            zHEXDUMP},
+  {'p', "--string-dump",     0,                            zSTRDUMP},
+  {0, NULL}
+};
+

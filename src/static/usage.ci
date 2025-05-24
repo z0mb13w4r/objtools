@@ -6,6 +6,7 @@ const char *zALLSEE[] = {
   "objcopy-ng",
   "objdump-ng",
   "objhash-ng",
+  "objdwarf-ng",
   0
 };
 
@@ -33,4 +34,8 @@ const char *zLICENSE[] = {
   "SOFTWARE.",
   0
 };
+
+static char zHEXDUMP[]           = "Displays the contents of the indicated section as a hexadecimal bytes.";
+static char zSTRDUMP[]           = "Displays the contents of the indicated section as printable strings.";
+static char zCODEDUMP[]          = "Displays the contents of the indicated section as C Language Shell Code.";
 

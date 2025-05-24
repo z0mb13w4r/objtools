@@ -18,10 +18,6 @@ static char zELFRELOCS[]         = "Displays the contents of the file's relocati
 static char zELFSYMBOLS[]        = "Displays the entries in symbol table section of the file.";
 static char zELFUNWIND[]         = "Displays the contents of the file's unwind section.";
 
-static char zHEXDUMP[]           = "Displays the contents of the indicated section as a hexadecimal bytes.";
-static char zSTRDUMP[]           = "Displays the contents of the indicated section as printable strings.";
-static char zCODEDUMP[]          = "Displays the contents of the indicated section as C Language Shell Code.";
-
 static const args_t zREADELFARGS[] = {
   {'H', "--help",            OPTPROGRAM_HELP},
   {'v', "--version",         OPTPROGRAM_VERSION},

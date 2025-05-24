@@ -12,6 +12,7 @@
 #include "static/objdump-ng.ci"
 #include "static/readelf-ng.ci"
 #include "static/objdebug-ng.ci"
+#include "static/objdwarf-ng.ci"
 #include "static/objdisassemble-ng.ci"
 
 #define VERSION_VALUE "0.0"
@@ -306,6 +307,20 @@ static int usage0(poptions_t o, const char* name, const args_t args[]) {
 }
 
 static int usage1(poptions_t o, const char* name, const args_t args0[],
+                  const char* more0, const char* more1) {
+  usage_name(o, name, args0, zDESCRIPTION);
+  usage_synopsis0(o, name, args0);
+  usage_synopsis1(o, name, zDEBUGELFARGS, more0, more1);
+  usage_description(o, name, args0);
+  usage_options0(o, name, args0);
+  usage_options1(o, name, zDEBUGELFARGS, more0, more1);
+  usage_seealso(o, name, args0);
+  usage_copyright(o, name, args0);
+
+  return 0;
+}
+
+static int usage2(poptions_t o, const char* name, const args_t args0[],
                   const char* more0, const char* more1, const char* more2, const char* more3) {
   usage_name(o, name, args0, zDESCRIPTION);
   usage_synopsis0(o, name, args0);
@@ -437,7 +452,7 @@ int get_options_convert(poptions_t o, int argc, char** argv, char* name) {
 
 int get_options_readelf(poptions_t o, int argc, char** argv, char* name) {
   if (0 == argc) {
-    usage1(o, "readelf-ng", zREADELFARGS, zREADELFARGS0, zREADELFARGS1, zREADELFARGS2, zREADELFARGS3);
+    usage2(o, "readelf-ng", zREADELFARGS, zREADELFARGS0, zREADELFARGS1, zREADELFARGS2, zREADELFARGS3);
     return -1;
   }
 
@@ -505,7 +520,7 @@ int get_options_readelf(poptions_t o, int argc, char** argv, char* name) {
   }
 
   if (o->action & OPTPROGRAM_HELP) {
-    return usage1(o, "readelf-ng", zREADELFARGS, zREADELFARGS0, zREADELFARGS1, zREADELFARGS2, zREADELFARGS3);
+    return usage2(o, "readelf-ng", zREADELFARGS, zREADELFARGS0, zREADELFARGS1, zREADELFARGS2, zREADELFARGS3);
   }
 
   return 0;
@@ -559,7 +574,7 @@ int get_options_objcopy(poptions_t o, int argc, char** argv, char* name) {
 
 int get_options_objdump(poptions_t o, int argc, char** argv, char* name) {
   if (0 == argc) {
-    usage1(o, "objdump-ng", zOBJDUMPARGS, zOBJDUMPARGS0, zOBJDUMPARGS1, zOBJDUMPARGS2, zOBJDUMPARGS3);
+    usage2(o, "objdump-ng", zOBJDUMPARGS, zOBJDUMPARGS0, zOBJDUMPARGS1, zOBJDUMPARGS2, zOBJDUMPARGS3);
     return -1;
   }
 
@@ -605,7 +620,7 @@ int get_options_objdump(poptions_t o, int argc, char** argv, char* name) {
   }
 
   if (o->action & OPTPROGRAM_HELP) {
-    return usage1(o, "objdump-ng", zOBJDUMPARGS, zOBJDUMPARGS0, zOBJDUMPARGS1, zOBJDUMPARGS2, zOBJDUMPARGS3);
+    return usage2(o, "objdump-ng", zOBJDUMPARGS, zOBJDUMPARGS0, zOBJDUMPARGS1, zOBJDUMPARGS2, zOBJDUMPARGS3);
   }
 
   return 0;
@@ -613,7 +628,7 @@ int get_options_objdump(poptions_t o, int argc, char** argv, char* name) {
 
 int get_options_objdwarf(poptions_t o, int argc, char** argv, char* name) {
   if (0 == argc) {
-    usage1(o, "objdwarf-ng", zREADELFARGS, zREADELFARGS0, zREADELFARGS1, zREADELFARGS2, zREADELFARGS3);
+    usage1(o, "objdwarf-ng", zOBJDWARFARGS, zOBJDWARFARGS0, zOBJDWARFARGS1);
     return -1;
   }
 
@@ -626,7 +641,7 @@ int get_options_objdwarf(poptions_t o, int argc, char** argv, char* name) {
       MALLOCA(char, arg1, 1024);
 
       if (0 == breakup_args(argv[i], arg0, NELEMENTS(arg0), arg1, NELEMENTS(arg1))) {
-        if (0 == strcmp(arg0, zREADELFARGS1)) {
+        if (0 == strcmp(arg0, zOBJDWARFARGS1)) {
           o->ocdump |= get_options2(o, zDEBUGELFARGS, arg1);
         } else if (0 == strcmp(arg0, "--hex-dump")) {
           oinsertsecname(o, ACT_HEXDUMP, arg1);
@@ -636,10 +651,10 @@ int get_options_objdwarf(poptions_t o, int argc, char** argv, char* name) {
           oinsertsecname(o, ACT_ZLIB, arg1);
         }
       } else {
-        o->action |= get_options2(o, zREADELFARGS, argv[i]);
+        o->action |= get_options2(o, zOBJDWARFARGS, argv[i]);
       }
     } else if ('-' == argv[i][0]) {
-      if (0 == strcmp(argv[i], zREADELFARGS0)) {
+      if (0 == strcmp(argv[i], zOBJDWARFARGS0)) {
         imode_t ocdump = get_options1(o, zDEBUGELFARGS, argv[i] + 1);
         o->ocdump |= ocdump ? ocdump : set_options1(o, zDEBUGELFARGS);
       } else if (0 == strcmp(argv[i], "-x")) {
@@ -649,7 +664,7 @@ int get_options_objdwarf(poptions_t o, int argc, char** argv, char* name) {
       } else if (0 == strcmp(argv[i], "-z")) {
         oinsertsecname(o, ACT_ZLIB, argv[++i]);
       } else {
-        o->action |= get_options1(o, zREADELFARGS, argv[i]);
+        o->action |= get_options1(o, zOBJDWARFARGS, argv[i]);
       }
     } else {
       strncpy(o->inpname, argv[i], NELEMENTS(o->inpname));
@@ -657,11 +672,11 @@ int get_options_objdwarf(poptions_t o, int argc, char** argv, char* name) {
   }
 
   if (o->action & OPTPROGRAM_VERSION) {
-    return version0(o, "objdwarf-ng", zREADELFARGS);
+    return version0(o, "objdwarf-ng", zOBJDWARFARGS);
   }
 
   if (o->action & OPTPROGRAM_HELP) {
-    return usage1(o, "objdwarf-ng", zREADELFARGS, zREADELFARGS0, zREADELFARGS1, zREADELFARGS2, zREADELFARGS3);
+    return usage1(o, "objdwarf-ng", zOBJDWARFARGS, zOBJDWARFARGS0, zOBJDWARFARGS1);
   }
 
   return 0;
