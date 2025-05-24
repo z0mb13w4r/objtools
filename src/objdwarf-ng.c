@@ -8,7 +8,7 @@ int main(int argc, char* argv[]) {
   int r = -1;
   poptions_t o = omalloc();
   if (o) {
-    r = get_options_readelf(o, argc - 1, argv + 1, argv[0]);
+    r = get_options_objdwarf(o, argc - 1, argv + 1, argv[0]);
     if (0 == r && o->inpname[0]) {
       pbuffer_t p = bopen(o->inpname);
       if (p) {
