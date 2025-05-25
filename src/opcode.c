@@ -480,6 +480,18 @@ uint64_t ocget_eoffset(handle_t p, handle_t s) {
   return eoffset;
 }
 
+unknown_t ocget_data(handle_t p) {
+  if (ismode(p, MODE_OCSHDR32)) {
+    Elf32_Shdr* p0 = ocget(p, MODE_OCSHDR32);
+    return p0 ? getp(ocget(p, OPCODE_PARAM2), p0->sh_offset, p0->sh_size) : 0;
+  } else if (ismode(p, MODE_OCSHDR64)) {
+    Elf64_Shdr* p0 = ocget(p, MODE_OCSHDR64);
+    return p0 ? getp(ocget(p, OPCODE_PARAM2), p0->sh_offset, p0->sh_size) : 0;
+  }
+
+  return NULL;
+}
+
 const char* ocget_name(handle_t p) {
   bfd* p0 = ocget(p, OPCODE_BFD);
   if (p0) {

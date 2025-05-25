@@ -160,6 +160,8 @@ uint64_t ocget_opb(handle_t p, handle_t s);
 uint64_t ocget_soffset(handle_t p, handle_t s);
 uint64_t ocget_eoffset(handle_t p, handle_t s);
 
+unknown_t ocget_data(handle_t p);
+
 const char* ocget_name(handle_t p);
 const char* ocget_fileformat(handle_t p);
 
