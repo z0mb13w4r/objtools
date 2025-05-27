@@ -289,6 +289,26 @@ static pefunc_t zKERNEL32[] = {
   {0, 0}
 };
 
+static pefunc_t zMSGINA[] = {
+  {"WlxLoggedOnSAS",                   -1,   PEFUNC_BLACKLIST},
+  {"WlxLoggedOutSAS",                  -1,   PEFUNC_BLACKLIST},
+  {"WlxInitialize",                    -1,   PEFUNC_BLACKLIST},
+  {"WlxNegotiate",                     -1,   PEFUNC_BLACKLIST},
+  {"WlxDisconnectNotify",              -1,   PEFUNC_BLACKLIST},
+  {"WlxGetConsoleSwitchCredentials",   -1,   PEFUNC_BLACKLIST},
+  {"WlxIsLockOk",                      -1,   PEFUNC_BLACKLIST},
+  {"WlxIsLogoffOk",                    -1,   PEFUNC_BLACKLIST},
+  {"WlxLogoff",                        -1,   PEFUNC_BLACKLIST},
+  {"WlxNetworkProviderLoad",           -1,   PEFUNC_BLACKLIST},
+  {"WlxReconnectNotify",               -1,   PEFUNC_BLACKLIST},
+  {"WlxRemoveStatusMessage",           -1,   PEFUNC_BLACKLIST},
+  {"WlxScreenSaverNotify",             -1,   PEFUNC_BLACKLIST},
+  {"WlxShutdown",                      -1,   PEFUNC_BLACKLIST},
+  {"WlxStartApplication",              -1,   PEFUNC_BLACKLIST},
+  {"WlxWkstaLockedSAS",                -1,   PEFUNC_BLACKLIST},
+  {0, 0}
+};
+
 static pefunc_t zNETAPI32[] = {
   {"NetScheduleJobAdd",                -1,   PEFUNC_CRITICAL},
   {"NetShareEnum",                     -1,   PEFUNC_CRITICAL},
@@ -737,6 +757,11 @@ static pefunc_t zOLE32[] = {
   {0, 0}
 };
 
+static pefunc_t zSFC[] = {
+  {"SfcTerminateWatcherThread",        -1,   PEFUNC_BLACKLIST},
+  {0, 0}
+};
+
 static pefunc_t zSECUR32[] = {
   {"LsaEnumerateLogonSessions",        -1,   PEFUNC_BLACKLIST},
   {0, 0}
@@ -1069,6 +1094,16 @@ static pefunc_t zWS2_32[] = {
   {0, 0}
 };
 
+static pefunc_t zUNKNOWN[] = {
+  {"DllCanUnloadNow",                  -1,   PEFUNC_INFO},
+  {"DllGetClassObject",                -1,   PEFUNC_INFO},
+  {"EnableExecuteProtectionSupport",   -1,   PEFUNC_BLACKLIST},
+  {"SamIConnect",                      -1,   PEFUNC_BLACKLIST},
+  {"SamIGetPrivateData",               -1,   PEFUNC_BLACKLIST},
+  {"SamQueryInformationUse",           -1,   PEFUNC_BLACKLIST},
+  {0, 0}
+};
+
 static peobject_t zPEOBJECTS[] = {
   {"ADVAPI32.dll",   zADVAPI32},
   {"ADVPACK.dll",    zADVPACK},
@@ -1077,19 +1112,22 @@ static peobject_t zPEOBJECTS[] = {
   {"GDI32.dll",      zGDI32},
   {"IPHLPAPI.dll",   zIPHLPAPI},
   {"KERNEL32.dll",   zKERNEL32},
+  {"MSGINA.dll",     zMSGINA},
   {"NETAPI32.dll",   zNETAPI32},
   {"NTDLL.dll",      zNTDLL},
   {"NTOSKRNL.exe",   zNTOSKRNL},
   {"OLE32.dll",      zOLE32},
   {"OLEAUT32.dll",   zOLEAUT32},
-  {"SHELL32.dll",    zSHELL32},
+  {"SFC.dll",        zSFC},
   {"SECUR32.dll",    zSECUR32},
+  {"SHELL32.dll",    zSHELL32},
   {"SHLWAPI.dll",    zSHLWAPI},
   {"URLMON.dll",     zURLMON},
   {"USER32.dll",     zUSER32},
   {"WININET.dll",    zWININET},
   {"WS2_32.dll",     zWS2_32},
   {"WSOCK32.dll",    zWSOCK32},
+  {"unknown.dll",    zUNKNOWN},
   {0, 0},
 };
 
