@@ -461,11 +461,10 @@ static int ocdwarf_do(handle_t p, handle_t s, Dwarf_Error *e) {
                   &cu_header_length, &version_stamp, &abbrev_offset, &address_size, &length_size, &extension_size,
                   &type_signature, &typeoffset, &next_cu_header_offset, &header_cu_type, e);
       if (res != DW_DLV_OK) {
-        printf("Next cu header  result %d. Something is wrong FAIL, line %d\n", res, __LINE__);
         if (res == DW_DLV_ERROR) {
-          printf("Error is: %s\n", dwarf_errmsg(*e));
+          printf_e("dwarf errmsg: %s", dwarf_errmsg(*e));
         }
-        exit(EXIT_FAILURE);
+        printf_x("Next cu header result %d, line %d", res, __LINE__);
       }
 
       printf("CU header length..........0x%lx\n", (unsigned long)cu_header_length);
@@ -479,11 +478,11 @@ static int ocdwarf_do(handle_t p, handle_t s, Dwarf_Error *e) {
       else if (res != DW_DLV_OK) {
         /* There is no CU die, which should be impossible. */
         if (res == DW_DLV_ERROR) {
-          printf("ERROR: dwarf_siblingof_b failed, no CU die\n");
-          printf("Error is: %s\n",dwarf_errmsg(*e));
+          printf_e("dwarf errmsg: %s", dwarf_errmsg(*e));
+          printf_e("dwarf_siblingof_b failed, no CU die");
           return res;
         } else {
-          printf("ERROR: dwarf_siblingof_b got NO_ENTRY, no CU die\n");
+          printf_e("dwarf_siblingof_b got NO_ENTRY, no CU die");
           return res;
         }
       }
@@ -491,7 +490,7 @@ static int ocdwarf_do(handle_t p, handle_t s, Dwarf_Error *e) {
       res = ocdwarf_one_die(p, s, cu_die, level, e);
       if (res != DW_DLV_OK) {
         dwarf_dealloc_die(cu_die);
-        printf("ocdwarf_one_die failed! %d\n",res);
+        printf_e("ocdwarf_one_die failed! %d", res);
         return res;
       }
 
