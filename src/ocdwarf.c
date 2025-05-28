@@ -232,6 +232,12 @@ typedef struct dwarf_data_s {
   struct sectiondata_s * f_sectarray;
 } dwarf_data_t, *pdwarf_data_t;
 
+struct srcfilesdata {
+  char ** srcfiles;
+  Dwarf_Signed srcfilescount;
+  int srcfilesres;
+};
+
 /*  Use DW_END_little.
     Libdwarf finally sets the file-format-specific
     f_object_endianness field to a DW_END_little or
@@ -400,7 +406,7 @@ static void ocdwarf_dealloc(handle_t p, handle_t s, Dwarf_Attribute *attrbuf, Dw
 }
 
 static int ocdwarf_one_die(handle_t p, handle_t s, Dwarf_Die in_die, int level, Dwarf_Error *e) {
-  if (isopcode(p) && isopshdr(s)) {
+  if (isopcode(p) && (isopshdr(s) || isopshdrNN(s))) {
     Dwarf_Attribute *attrbuf = 0;
     Dwarf_Signed  attrcount = 0;
     Dwarf_Half tag = 0;
@@ -411,16 +417,19 @@ static int ocdwarf_one_die(handle_t p, handle_t s, Dwarf_Die in_die, int level, 
         printf("dwarf_tag failed! res %d\n",res);
         return res;
     }
+
     res = dwarf_get_TAG_name(tag, &tagname);
     if (res != DW_DLV_OK) {
         tagname = "<bogus tag>";
     }
-    printf("%3d:  Die: %s\n",level,tagname);
+
+    printf("%3d:  Die: %s\n", level, tagname);
     res = dwarf_attrlist(in_die, &attrbuf, &attrcount ,e);
     if (res != DW_DLV_OK) {
         printf("dwarf_attrlist failed! res %d\n",res);
         return res;
     }
+
     for (Dwarf_Signed i = 0; i < attrcount; ++i) {
         res = ocdwarf_print_attr(attrbuf[i], i, e);
         if (res != DW_DLV_OK) {
@@ -437,11 +446,20 @@ static int ocdwarf_one_die(handle_t p, handle_t s, Dwarf_Die in_die, int level, 
   return DW_DLV_ERROR;
 }
 
+static int ocdwarf_die_and_siblings(handle_t p, handle_t s, Dwarf_Die in_die,
+                  int is_info, int level, struct srcfilesdata *sf, Dwarf_Error *e) {
+  if (isopcode(p) && (isopshdr(s) || isopshdrNN(s))) {
+
+    return DW_DLV_OK;
+  }
+
+  return DW_DLV_ERROR;
+}
+
 static int ocdwarf_do(handle_t p, handle_t s, Dwarf_Error *e) {
   if (isopcode(p) && (isopshdr(s) || isopshdrNN(s))) {
     popcode_t oc = CAST(popcode_t, p);
 
-    Dwarf_Die no_die = 0;
     Dwarf_Bool is_info = TRUE; /* our data is not DWARF4 .debug_types. */
     Dwarf_Unsigned next_cu_header_offset = 0;
     Dwarf_Unsigned cu_header_length = 0;
@@ -453,10 +471,17 @@ static int ocdwarf_do(handle_t p, handle_t s, Dwarf_Error *e) {
     Dwarf_Half     length_size   = 0;
     Dwarf_Sig8     type_signature = zerosignature;
     Dwarf_Off      abbrev_offset = 0;
-    Dwarf_Die      cu_die = 0;
     int            level = 0;
 
     for ( ; ; ) {
+      Dwarf_Die no_die = 0;
+      Dwarf_Die cu_die = 0;
+
+//      struct srcfilesdata sf;
+//      sf.srcfilesres = DW_DLV_ERROR;
+//      sf.srcfiles = 0;
+//      sf.srcfilescount = 0;
+
       int res = dwarf_next_cu_header_d(oc->items[OPCODE_DWARF], is_info,
                   &cu_header_length, &version_stamp, &abbrev_offset, &address_size, &length_size, &extension_size,
                   &type_signature, &typeoffset, &next_cu_header_offset, &header_cu_type, e);
@@ -487,6 +512,7 @@ static int ocdwarf_do(handle_t p, handle_t s, Dwarf_Error *e) {
         }
       }
 
+//      res = ocdwarf_die_and_siblings(p, s, cu_die, is_info, 0, &sf, e);
       res = ocdwarf_one_die(p, s, cu_die, level, e);
       if (res != DW_DLV_OK) {
         dwarf_dealloc_die(cu_die);

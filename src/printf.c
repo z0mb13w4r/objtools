@@ -802,6 +802,7 @@ void printf_x(const char* format, ...) {
   } else {
     fprintf(stderr, "ERROR: %s\n\n", data);
   }
-  abort();
+
+  exit(EXIT_FAILURE);
 }
 
