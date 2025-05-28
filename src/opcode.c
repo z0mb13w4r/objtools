@@ -145,8 +145,9 @@ unknown_t ocget(handle_t p, const imode_t mode) {
     }
     return p0->items[mode];
   } else if (isopcode(p) && OPCODE_RAWDATA == mode) {
-    popcode_t p0 = CAST(popcode_t, p);
-    return p0->data;
+    return CAST(popcode_t, p)->data;
+  } else if (isopcode(p) && OPCODE_DWARFPTR == mode) {
+    return &CAST(popcode_t, p)->items[OPCODE_DWARF];
   } else if (isopcode(p) && OPCODE_RAWSYMBOLS == mode) {
     pbuffer_t p0 = ocget(p, OPCODE_SYMBOLS);
     return p0 && p0->size && p0->data ? p0->data : NULL;
@@ -154,11 +155,9 @@ unknown_t ocget(handle_t p, const imode_t mode) {
     pbuffer_t p0 = ocget(p, OPCODE_SYMBOLS_DYNAMIC);
     return p0 && p0->size && p0->data ? p0->data : NULL;
   } else if ((ismode(p, mode) && ismodeopwrap(mode)) || (isopwrap(p) && mode == OPCODE_PARAM1)) {
-    popwrap_t p0 = CAST(popwrap_t, p);
-    return p0->param1;
+    return CAST(popwrap_t, p)->param1;
   } else if (isopwrap(p) && mode == OPCODE_PARAM2) {
-    popwrap_t p0 = CAST(popwrap_t, p);
-    return p0->param2;
+    return CAST(popwrap_t, p)->param2;
   }
 
   return NULL;

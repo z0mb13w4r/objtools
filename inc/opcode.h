@@ -58,11 +58,14 @@
 #define OPCODE_RAWDATA             (OPCODE_MAXITEMS + 3)
 #define OPCODE_RAWSYMBOLS          (OPCODE_MAXITEMS + 4)
 #define OPCODE_RAWSYMBOLS_DYNAMIC  (OPCODE_MAXITEMS + 5)
+#define OPCODE_DWARFPTR            (OPCODE_MAXITEMS + 6)
 
 #define OPCODE_NULLADDR            CAST(uint64_t, -1)
 
 #define ocgetbfd(x)                CAST(bfd*, ocget(x, OPCODE_BFD))
 #define ocgetshdr(x)               CAST(asection*, ocget(x, MODE_OCSHDR))
+#define ocgetdwarf(x)              CAST(Dwarf_Debug*, ocget(x, OPCODE_DWARF))
+#define ocgetdwarfptr(x)           CAST(Dwarf_Debug*, ocget(x, OPCODE_DWARFPTR))
 
 #define ocgetehdr32(x)             CAST(Elf32_Ehdr*, ocget(x, MODE_OCEHDR32))
 #define ocgetehdr64(x)             CAST(Elf64_Ehdr*, ocget(x, MODE_OCEHDR64))

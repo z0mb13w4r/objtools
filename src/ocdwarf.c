@@ -401,8 +401,6 @@ static void ocdwarf_dealloc(handle_t p, handle_t s, Dwarf_Attribute *attrbuf, Dw
 
 static int ocdwarf_one_die(handle_t p, handle_t s, Dwarf_Die in_die, int level, Dwarf_Error *e) {
   if (isopcode(p) && isopshdr(s)) {
-    popcode_t oc = CAST(popcode_t, p);
-
     Dwarf_Attribute *attrbuf = 0;
     Dwarf_Signed  attrcount = 0;
     Dwarf_Half tag = 0;
@@ -512,7 +510,7 @@ int ocdwarf_run(handle_t p, handle_t s) {
     popcode_t oc = CAST(popcode_t, p);
     Dwarf_Error error = 0;
 
-    int res = dwarf_object_init_b(&dw_interface, 0, 0, DW_GROUPNUMBER_ANY, CAST(Dwarf_Debug*, &oc->items[OPCODE_DWARF]), &error);
+    int res = dwarf_object_init_b(&dw_interface, 0, 0, DW_GROUPNUMBER_ANY, ocgetdwarfptr(p), &error);
     if (res == DW_DLV_NO_ENTRY) {
       printf_x("Cannot dwarf_object_init_b() NO ENTRY.");
     } else if (res == DW_DLV_ERROR) {
@@ -546,7 +544,7 @@ int ocdwarf_run(handle_t p, handle_t s) {
         printf_x("Giving up, cannot open '%s'", "samples/exampled-32");
       }
 
-      int res = dwarf_init_b(my_init_fd, DW_GROUPNUMBER_ANY, 0, 0, CAST(Dwarf_Debug*, &oc->items[OPCODE_DWARF]), &error);
+      int res = dwarf_init_b(my_init_fd, DW_GROUPNUMBER_ANY, 0, 0, ocgetdwarfptr(p), &error);
       if (res != DW_DLV_OK) {
         printf_x("Giving up, cannot do DWARF processing '%s'", "samples/exampled-32");
       }
