@@ -512,24 +512,18 @@ int ocdwarf_run(handle_t p, handle_t s) {
     popcode_t oc = CAST(popcode_t, p);
     Dwarf_Error error = 0;
 
-    int res = dwarf_object_init_b(&dw_interface, 0, 0, DW_GROUPNUMBER_ANY,
-                                   CAST(Dwarf_Debug*, &oc->items[OPCODE_DWARF]), &error);
+    int res = dwarf_object_init_b(&dw_interface, 0, 0, DW_GROUPNUMBER_ANY, CAST(Dwarf_Debug*, &oc->items[OPCODE_DWARF]), &error);
     if (res == DW_DLV_NO_ENTRY) {
-        printf("FAIL Cannot dwarf_object_init_b() NO ENTRY. \n");
-        exit(EXIT_FAILURE);
-    } else if (res == DW_DLV_ERROR){
-        printf("FAIL Cannot dwarf_object_init_b(). \n");
-        printf("msg: %s\n",dwarf_errmsg(error));
-        dwarf_dealloc_error(oc->items[OPCODE_DWARF], error);
-        exit(EXIT_FAILURE);
+      printf_x("Cannot dwarf_object_init_b() NO ENTRY.");
+    } else if (res == DW_DLV_ERROR) {
+      printf_e("dwarf errmsg: %s", dwarf_errmsg(error));
+      dwarf_dealloc_error(oc->items[OPCODE_DWARF], error);
+      printf_x("Cannot dwarf_object_init_b().");
     }
+
     res = ocdwarf_do(p, s, &error);
-    if (res != DW_DLV_OK) {
-        if (res == DW_DLV_ERROR) {
-            dwarf_dealloc_error(oc->items[OPCODE_DWARF], error);
-        }
-        printf("FAIL printing, res %d line %d\n",res,__LINE__);
-        exit(EXIT_FAILURE);
+    if (res == DW_DLV_ERROR) {
+      dwarf_dealloc_error(oc->items[OPCODE_DWARF], error);
     }
 
 //    pdwarf_display_t d = ocdwarf_get(s);
@@ -549,7 +543,7 @@ int ocdwarf_run(handle_t p, handle_t s) {
 
       int my_init_fd = open("samples/exampled-32", O_RDONLY);
       if (-1 == my_init_fd) {
-        printf_x("Giving up, cannot open %s\n", "samples/exampled-32");
+        printf_x("Giving up, cannot open '%s'", "samples/exampled-32");
       }
 
       int res = dwarf_init_b(my_init_fd, DW_GROUPNUMBER_ANY, 0, 0, CAST(Dwarf_Debug*, &oc->items[OPCODE_DWARF]), &error);
@@ -558,6 +552,9 @@ int ocdwarf_run(handle_t p, handle_t s) {
       }
 
       res = ocdwarf_do(p, s, &error);
+      if (res == DW_DLV_ERROR) {
+        dwarf_dealloc_error(oc->items[OPCODE_DWARF], error);
+      }
 
       n = d && d->func ? d->func(p, s, &d->section) : -1;
       dwarf_object_finish(oc->items[OPCODE_DWARF]);
