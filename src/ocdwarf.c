@@ -394,7 +394,7 @@ static int ocdwarf_print_attr(Dwarf_Attribute attr, Dwarf_Signed anumber, Dwarf_
 }
 
 static void ocdwarf_dealloc(handle_t p, handle_t s, Dwarf_Attribute *attrbuf, Dwarf_Signed attrcount, Dwarf_Signed i) {
-  if (isopcode(p) && isopshdr(s)) {
+  if (isopcode(p)) {
     popcode_t oc = CAST(popcode_t, p);
 
     for ( ; i < attrcount; ++i) {
@@ -406,7 +406,7 @@ static void ocdwarf_dealloc(handle_t p, handle_t s, Dwarf_Attribute *attrbuf, Dw
 }
 
 static int ocdwarf_one_die(handle_t p, handle_t s, Dwarf_Die in_die, int level, Dwarf_Error *e) {
-  if (isopcode(p) && (isopshdr(s) || isopshdrNN(s))) {
+  if (isopcode(p)) {
     Dwarf_Attribute *attrbuf = 0;
     Dwarf_Signed  attrcount = 0;
     Dwarf_Half tag = 0;
@@ -414,19 +414,21 @@ static int ocdwarf_one_die(handle_t p, handle_t s, Dwarf_Die in_die, int level, 
 
     int res = dwarf_tag(in_die, &tag, e);
     if (res != DW_DLV_OK) {
-        printf("dwarf_tag failed! res %d\n",res);
+        printf_e("dwarf_tag failed! res %d", res);
         return res;
     }
 
-    res = dwarf_get_TAG_name(tag, &tagname);
-    if (res != DW_DLV_OK) {
-        tagname = "<bogus tag>";
-    }
+    printf_text("COMPILE_UNIT<header overall offset =", USE_LT);
+    printf_nice(level, USE_FHEX32 | USE_TBRT | USE_COLON | USE_EOL);
 
-    printf("%3d:  Die: %s\n", level, tagname);
+    printf_nice(level, USE_DEC2 | USE_TB);
+    printf_nice(0xffffffff, USE_FHEX32 | USE_TB);
+    printf_nice(tag, USE_FHEX16);
+    printf_pick(zDWTAG, tag, USE_SPACE | USE_EOL);
+
     res = dwarf_attrlist(in_die, &attrbuf, &attrcount ,e);
     if (res != DW_DLV_OK) {
-        printf("dwarf_attrlist failed! res %d\n",res);
+        printf_e("dwarf_attrlist failed! res %d", res);
         return res;
     }
 
@@ -434,7 +436,7 @@ static int ocdwarf_one_die(handle_t p, handle_t s, Dwarf_Die in_die, int level, 
         res = ocdwarf_print_attr(attrbuf[i], i, e);
         if (res != DW_DLV_OK) {
             ocdwarf_dealloc(p, s, attrbuf, attrcount, 0);
-            printf("dwarf_attr print failed! res %d\n",res);
+            printf("dwarf_attr print failed! res %d", res);
             return res;
         }
     }

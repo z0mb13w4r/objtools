@@ -54,8 +54,10 @@ int printf_spos(char* o, const size_t size, const imode_t mode, const bool_t use
     switch (GET_BRACKET(mode)) {
     case USE_CB:                   n += PRINT1(" {");    break;
     case USE_RB:                   n += PRINT1(" (");    break;
-    case USE_SB:                   n += PRINT1(" [");    break;
-    case USE_TB:                   n += PRINT1(" <");    break;
+    case USE_SB:
+    case USE_SBLT:                 n += PRINT1(" [");    break;
+    case USE_TB:
+    case USE_TBLT:                 n += PRINT1(" <");    break;
     case USE_DRTB:                 n += PRINT1(">>");    break;
     case USE_SQ:                   n += PRINT1(" '");    break;
     case USE_DQ:                   n += PRINT1(" \"");   break;
@@ -84,8 +86,10 @@ int printf_epos(char* o, const size_t size, const imode_t mode) {
     case USE_ADDRESS:
     case USE_DISCRIMINATOR:
     case USE_RB:                   n += PRINT1(")");         break;
-    case USE_SB:                   n += PRINT1("]");         break;
-    case USE_TB:                   n += PRINT1(">");         break;
+    case USE_SB:
+    case USE_SBRT:                 n += PRINT1("]");         break;
+    case USE_TB:
+    case USE_TBRT:                 n += PRINT1(">");         break;
     case USE_DRTB:                 n += PRINT1("<<");        break;
     case USE_SQ:                   n += PRINT1("'");         break;
     case USE_DQ:                   n += PRINT1("\"");        break;
@@ -134,12 +138,14 @@ int printf_work(char* o, const size_t size, const char* p, const imode_t mode) {
     }
 
     switch (b) {
-    case USE_SBLT:           n += PRINT2("[%s",  p);    break;
-    case USE_SBRT:           n += PRINT2("%s]",  p);    break;
     case USE_CB:             n += PRINT2("{%s}", p);    break;
     case USE_RB:             n += PRINT2("(%s)", p);    break;
     case USE_SB:             n += PRINT2("[%s]", p);    break;
+    case USE_SBLT:           n += PRINT2("[%s",  p);    break;
+    case USE_SBRT:           n += PRINT2("%s]",  p);    break;
     case USE_TB:             n += PRINT2("<%s>", p);    break;
+    case USE_TBLT:           n += PRINT2("<%s",  p);    break;
+    case USE_TBRT:           n += PRINT2("%s>",  p);    break;
     case USE_DRTB:           n += PRINT2(">>%s<<", p);  break;
     case USE_SQ:             n += PRINT2("'%s'", p);    break;
     case USE_DQ:             n += PRINT2("\"%s\"", p);  break;
