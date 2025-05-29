@@ -35,6 +35,10 @@
 #define NELEMENTS(x) (sizeof(x) / sizeof(x[0]))
 #endif
 
+#ifndef MEMCPYA
+#define MEMCPYA(x,y) memcpy(x, y, MIN(NELEMENTS(x), NELEMENTS(y)))
+#endif
+
 #ifndef ABS
 #define ABS(x)       (((x) < 0) ? -(x) : (x))
 #endif

@@ -93,6 +93,14 @@ typedef struct opcode_s {
     csh                cs;
     disassembler_ftype ocfunc;
   };
+  union {
+    char inpname[PATH_MAX];
+    char inpname0[PATH_MAX];
+  };
+  union {
+    char outname[PATH_MAX];
+    char inpname1[PATH_MAX];
+  };
 } opcode_t, *popcode_t;
 
 typedef struct opwrap_s {

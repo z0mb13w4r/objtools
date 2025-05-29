@@ -779,3 +779,35 @@ convert_t zDWUT[] = {
   {0, 0},
 };
 
+static pick_t zFORMADDR[] = {
+  DW_FORM_addr,
+  DW_FORM_addrx,
+  DW_FORM_addrx1,
+  DW_FORM_addrx2,
+  DW_FORM_addrx3,
+  DW_FORM_addrx4,
+  PICK_END
+};
+
+static pick_t zFORMSTRING[] = {
+  DW_FORM_string,
+  DW_FORM_GNU_strp_alt,
+  DW_FORM_GNU_str_index,
+  DW_FORM_strx,
+  DW_FORM_strx1,
+  DW_FORM_strx2,
+  DW_FORM_strx3,
+  DW_FORM_strx4,
+  DW_FORM_strp,
+  PICK_END
+};
+
+static pick_t zFORMUDATA[] = {
+  DW_FORM_data1,
+  DW_FORM_data2,
+  DW_FORM_data4,
+  DW_FORM_data8,
+  DW_FORM_udata,
+  PICK_END
+};
+

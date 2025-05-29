@@ -149,6 +149,10 @@ int ocdwarf_open(handle_t p, handle_t o) {
     oc->ocdump = op->ocdump;
     oc->saddress = op->saddress;
     oc->eaddress = op->eaddress;
+
+    MEMCPYA(oc->inpname0, op->inpname0);
+    MEMCPYA(oc->inpname1, op->inpname1);
+
     return 0;
   }
 
@@ -332,25 +336,6 @@ struct Dwarf_Obj_Access_Interface_a_s dw_interface = {
   &base_internals, &methods
 };
 
-static int
-isformstring(Dwarf_Half form) {
-    /*  Not handling every form string, just the
-        ones used in simple cases. */
-    switch(form) {
-    case DW_FORM_string:        return TRUE;
-    case DW_FORM_GNU_strp_alt:  return TRUE;
-    case DW_FORM_GNU_str_index: return TRUE;
-    case DW_FORM_strx:          return TRUE;
-    case DW_FORM_strx1:         return TRUE;
-    case DW_FORM_strx2:         return TRUE;
-    case DW_FORM_strx3:         return TRUE;
-    case DW_FORM_strx4:         return TRUE;
-    case DW_FORM_strp:          return TRUE;
-    default: break;
-    };
-    return FALSE;
-}
-
 static int ocdwarf_printf_attr(handle_t p, handle_t s, Dwarf_Attribute attr, Dwarf_Signed anumber, Dwarf_Error *e) {
   if (isopcode(p)) {
     popcode_t oc = CAST(popcode_t, p);
@@ -367,7 +352,7 @@ static int ocdwarf_printf_attr(handle_t p, handle_t s, Dwarf_Attribute attr, Dwa
     Dwarf_Half attrnum = 0;
     res = dwarf_whatattr(attr, &attrnum, e);
     if (res != DW_DLV_OK) {
-      printf("dwarf_whatattr failed! res %d", res);
+      printf_e("dwarf_whatattr failed! res %d", res);
       return res;
     }
 
@@ -383,19 +368,43 @@ static int ocdwarf_printf_attr(handle_t p, handle_t s, Dwarf_Attribute attr, Dwa
       printf_pick(zDWFORM, formnum, USE_SPACE | SET_PAD(18));
     }
 
-    if (!isformstring(formnum)) {
-      printf_eol();
-      return DW_DLV_OK;
+    if (isused(zFORMSTRING, formnum)) {
+      char *str = NULL;
+      res = dwarf_formstring(attr, &str, e);
+      if (res != DW_DLV_OK) {
+        printf_e("dwarf_formstring failed! res %d", res);
+        return res;
+      }
+
+      printf_text(str, USE_LT | USE_SPACE);
+    } else if (isused(zFORMUDATA, formnum)) {
+      Dwarf_Unsigned value;
+      res = dwarf_formudata(attr, &value, e);
+      if (res != DW_DLV_OK) {
+        printf_e("dwarf_formudata failed! res %d", res);
+        return res;
+      }
+
+      if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
+        printf_nice(value, USE_FHEX16);
+      }
+
+      if (DW_AT_language == attrnum) {
+        printf_pick(zDWLANG, value, USE_SPACE);
+      }
+    } else if (isused(zFORMADDR, formnum)) {
+      Dwarf_Addr addr = 0;
+      res = dwarf_formaddr(attr, &addr, e);
+      if (res != DW_DLV_OK) {
+        printf_e("dwarf_formaddr failed! res %d", res);
+        return res;
+      }
+
+      printf_nice(addr, USE_FHEX32);
     }
 
-    char *str = 0;
-    res = dwarf_formstring(attr, &str, e);
-    if (res != DW_DLV_OK) {
-      printf_e("dwarf_formstring failed! res %d", res);
-      return res;
-    }
+    printf_eol();
 
-    printf_text(str, USE_LT | USE_SPACE | USE_EOL);
     return DW_DLV_OK;
   }
 
@@ -418,6 +427,15 @@ static int ocdwarf_one_die(handle_t p, handle_t s, Dwarf_Die in_die, int level, 
   if (isopcode(p)) {
     popcode_t oc = CAST(popcode_t, p);
     int res = DW_DLV_OK;
+
+//    char *name = 0;
+//    res = dwarf_diename(in_die, &name, e);
+//    if (res == DW_DLV_ERROR) {
+//      printf_e("dwarf_diename, level %d", level);
+//      return res;
+//    }
+
+//    printf("%s\n", name);
 
     Dwarf_Half tag = 0;
     res = dwarf_tag(in_die, &tag, e);
@@ -578,14 +596,14 @@ int ocdwarf_run(handle_t p, handle_t s) {
 //      sectiondata[1].sd_secname = ocget_name(s);
 //      sectiondata[1].sd_content = ocget_data(s);
 
-      int my_init_fd = open("samples/exampled-32", O_RDONLY);
+      int my_init_fd = open(oc->inpname0, O_RDONLY);
       if (-1 == my_init_fd) {
-        printf_x("Giving up, cannot open '%s'", "samples/exampled-32");
+        printf_x("Giving up, cannot open '%s'", oc->inpname0);
       }
 
       int res = dwarf_init_b(my_init_fd, DW_GROUPNUMBER_ANY, 0, 0, ocgetdwarfptr(p), &error);
       if (res != DW_DLV_OK) {
-        printf_x("Giving up, cannot do DWARF processing '%s'", "samples/exampled-32");
+        printf_x("Giving up, cannot do DWARF processing '%s'", oc->inpname0);
       }
 
       res = ocdwarf_do(p, s, &error);
