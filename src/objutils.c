@@ -91,7 +91,7 @@ const char* strpicknull(const pconvert_t p, const pick_t x) {
 
 const char* strpickunknown(const pick_t x) {
   static char o[32];
-  printf_neat(o, sizeof(o), x, USE_LT);
+  printf_neat(o, sizeof(o), x, USE_UNKNOWN);
   return o;
 }
 

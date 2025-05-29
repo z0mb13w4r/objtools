@@ -351,45 +351,44 @@ isformstring(Dwarf_Half form) {
     return FALSE;
 }
 
-static int ocdwarf_print_attr(Dwarf_Attribute attr, Dwarf_Signed anumber, Dwarf_Error *e) {
-  char *str = 0;
-  const char *attrname = 0;
-  const char *formname = 0;
-  Dwarf_Half form = 0;
-  Dwarf_Half attrnum = 0;
+static int ocdwarf_printf_attr(Dwarf_Attribute attr, Dwarf_Signed anumber, Dwarf_Error *e) {
+  int res = 0;
 
-  int res = dwarf_whatform(attr, &form, e);
+  Dwarf_Half formnum = 0;
+  res = dwarf_whatform(attr, &formnum, e);
   if (res != DW_DLV_OK) {
-        printf("dwarf_whatform failed! res %d\n",res);
-        return res;
+    printf_e("dwarf_whatform failed! res %d", res);
+    return res;
   }
+
+  Dwarf_Half attrnum = 0;
   res = dwarf_whatattr(attr, &attrnum, e);
   if (res != DW_DLV_OK) {
-        printf("dwarf_whatattr failed! res %d\n",res);
-        return res;
+    printf("dwarf_whatattr failed! res %d", res);
+    return res;
   }
-  res = dwarf_get_AT_name(attrnum, &attrname);
-  if (res == DW_DLV_NO_ENTRY) {
-        printf("Bogus attrnum 0x%x\n",attrnum);
-        attrname = "<internal error ?>";
-  }
-  res = dwarf_get_FORM_name(form, &formname);
-  if (res == DW_DLV_NO_ENTRY) {
-        printf("Bogus form 0x%x\n",attrnum);
-        attrname = "<internal error ?>";
-  }
-  if (!isformstring(form)) {
-        printf("  [%2d] Attr: %-15s  Form: %-15s\n",
-            (int)anumber,attrname, formname);
+
+  printf_nice(anumber, USE_DEC2 | USE_SB | USE_TAB);
+
+  printf_nice(attrnum, USE_FHEX16);
+  printf_pick(zDWAT, attrnum, USE_SPACE | SET_PAD(18));
+
+  printf_nice(formnum, USE_FHEX8);
+  printf_pick(zDWFORM, formnum, USE_SPACE | SET_PAD(18));
+
+  if (!isformstring(formnum)) {
+    printf_eol();
         return DW_DLV_OK;
   }
+
+  char *str = 0;
   res = dwarf_formstring(attr, &str, e);
   if (res != DW_DLV_OK) {
-        printf("dwarf_formstring failed! res %d\n",res);
-        return res;
+    printf_e("dwarf_formstring failed! res %d", res);
+    return res;
   }
-    printf("  [%2d] Attr: %-15s  Form: %-15s %s\n",
-        (int)anumber,attrname,formname,str);
+
+  printf_text(str, USE_LT | USE_SPACE | USE_EOL);
   return DW_DLV_OK;
 }
 
@@ -407,12 +406,10 @@ static void ocdwarf_dealloc(handle_t p, handle_t s, Dwarf_Attribute *attrbuf, Dw
 
 static int ocdwarf_one_die(handle_t p, handle_t s, Dwarf_Die in_die, int level, Dwarf_Error *e) {
   if (isopcode(p)) {
-    Dwarf_Attribute *attrbuf = 0;
-    Dwarf_Signed  attrcount = 0;
-    Dwarf_Half tag = 0;
-    const char * tagname = 0;
+    int res = DW_DLV_OK;
 
-    int res = dwarf_tag(in_die, &tag, e);
+    Dwarf_Half tag = 0;
+    res = dwarf_tag(in_die, &tag, e);
     if (res != DW_DLV_OK) {
         printf_e("dwarf_tag failed! res %d", res);
         return res;
@@ -426,14 +423,16 @@ static int ocdwarf_one_die(handle_t p, handle_t s, Dwarf_Die in_die, int level, 
     printf_nice(tag, USE_FHEX16);
     printf_pick(zDWTAG, tag, USE_SPACE | USE_EOL);
 
-    res = dwarf_attrlist(in_die, &attrbuf, &attrcount ,e);
+    Dwarf_Signed attrcount = 0;
+    Dwarf_Attribute *attrbuf = 0;
+    res = dwarf_attrlist(in_die, &attrbuf, &attrcount, e);
     if (res != DW_DLV_OK) {
         printf_e("dwarf_attrlist failed! res %d", res);
         return res;
     }
 
     for (Dwarf_Signed i = 0; i < attrcount; ++i) {
-        res = ocdwarf_print_attr(attrbuf[i], i, e);
+        res = ocdwarf_printf_attr(attrbuf[i], i, e);
         if (res != DW_DLV_OK) {
             ocdwarf_dealloc(p, s, attrbuf, attrcount, 0);
             printf("dwarf_attr print failed! res %d", res);
