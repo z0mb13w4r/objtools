@@ -351,45 +351,55 @@ isformstring(Dwarf_Half form) {
     return FALSE;
 }
 
-static int ocdwarf_printf_attr(Dwarf_Attribute attr, Dwarf_Signed anumber, Dwarf_Error *e) {
-  int res = 0;
+static int ocdwarf_printf_attr(handle_t p, handle_t s, Dwarf_Attribute attr, Dwarf_Signed anumber, Dwarf_Error *e) {
+  if (isopcode(p)) {
+    popcode_t oc = CAST(popcode_t, p);
 
-  Dwarf_Half formnum = 0;
-  res = dwarf_whatform(attr, &formnum, e);
-  if (res != DW_DLV_OK) {
-    printf_e("dwarf_whatform failed! res %d", res);
-    return res;
+    int res = 0;
+
+    Dwarf_Half formnum = 0;
+    res = dwarf_whatform(attr, &formnum, e);
+    if (res != DW_DLV_OK) {
+      printf_e("dwarf_whatform failed! res %d", res);
+      return res;
+    }
+
+    Dwarf_Half attrnum = 0;
+    res = dwarf_whatattr(attr, &attrnum, e);
+    if (res != DW_DLV_OK) {
+      printf("dwarf_whatattr failed! res %d", res);
+      return res;
+    }
+
+    printf_nice(anumber, USE_DEC2 | USE_SB | USE_TAB);
+
+    if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
+      printf_nice(attrnum, USE_FHEX16);
+    }
+    printf_pick(zDWAT, attrnum, USE_SPACE | SET_PAD(18));
+
+    if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
+      printf_nice(formnum, USE_FHEX8);
+      printf_pick(zDWFORM, formnum, USE_SPACE | SET_PAD(18));
+    }
+
+    if (!isformstring(formnum)) {
+      printf_eol();
+      return DW_DLV_OK;
+    }
+
+    char *str = 0;
+    res = dwarf_formstring(attr, &str, e);
+    if (res != DW_DLV_OK) {
+      printf_e("dwarf_formstring failed! res %d", res);
+      return res;
+    }
+
+    printf_text(str, USE_LT | USE_SPACE | USE_EOL);
+    return DW_DLV_OK;
   }
 
-  Dwarf_Half attrnum = 0;
-  res = dwarf_whatattr(attr, &attrnum, e);
-  if (res != DW_DLV_OK) {
-    printf("dwarf_whatattr failed! res %d", res);
-    return res;
-  }
-
-  printf_nice(anumber, USE_DEC2 | USE_SB | USE_TAB);
-
-  printf_nice(attrnum, USE_FHEX16);
-  printf_pick(zDWAT, attrnum, USE_SPACE | SET_PAD(18));
-
-  printf_nice(formnum, USE_FHEX8);
-  printf_pick(zDWFORM, formnum, USE_SPACE | SET_PAD(18));
-
-  if (!isformstring(formnum)) {
-    printf_eol();
-        return DW_DLV_OK;
-  }
-
-  char *str = 0;
-  res = dwarf_formstring(attr, &str, e);
-  if (res != DW_DLV_OK) {
-    printf_e("dwarf_formstring failed! res %d", res);
-    return res;
-  }
-
-  printf_text(str, USE_LT | USE_SPACE | USE_EOL);
-  return DW_DLV_OK;
+  return DW_DLV_ERROR;
 }
 
 static void ocdwarf_dealloc(handle_t p, handle_t s, Dwarf_Attribute *attrbuf, Dwarf_Signed attrcount, Dwarf_Signed i) {
@@ -406,13 +416,14 @@ static void ocdwarf_dealloc(handle_t p, handle_t s, Dwarf_Attribute *attrbuf, Dw
 
 static int ocdwarf_one_die(handle_t p, handle_t s, Dwarf_Die in_die, int level, Dwarf_Error *e) {
   if (isopcode(p)) {
+    popcode_t oc = CAST(popcode_t, p);
     int res = DW_DLV_OK;
 
     Dwarf_Half tag = 0;
     res = dwarf_tag(in_die, &tag, e);
     if (res != DW_DLV_OK) {
-        printf_e("dwarf_tag failed! res %d", res);
-        return res;
+      printf_e("dwarf_tag failed! res %d", res);
+      return res;
     }
 
     printf_text("COMPILE_UNIT<header overall offset =", USE_LT);
@@ -420,7 +431,9 @@ static int ocdwarf_one_die(handle_t p, handle_t s, Dwarf_Die in_die, int level, 
 
     printf_nice(level, USE_DEC2 | USE_TB);
     printf_nice(0xffffffff, USE_FHEX32 | USE_TB);
-    printf_nice(tag, USE_FHEX16);
+    if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
+      printf_nice(tag, USE_FHEX16);
+    }
     printf_pick(zDWTAG, tag, USE_SPACE | USE_EOL);
 
     Dwarf_Signed attrcount = 0;
@@ -432,7 +445,7 @@ static int ocdwarf_one_die(handle_t p, handle_t s, Dwarf_Die in_die, int level, 
     }
 
     for (Dwarf_Signed i = 0; i < attrcount; ++i) {
-        res = ocdwarf_printf_attr(attrbuf[i], i, e);
+        res = ocdwarf_printf_attr(p, s, attrbuf[i], i, e);
         if (res != DW_DLV_OK) {
             ocdwarf_dealloc(p, s, attrbuf, attrcount, 0);
             printf("dwarf_attr print failed! res %d", res);

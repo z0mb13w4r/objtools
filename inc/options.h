@@ -52,6 +52,7 @@
 #define OPTFUNCTION_ROT13                          (257)
 #define OPTFUNCTION_ROT18                          (258)
 
+#define OPTPROGRAM_VERBOSE                         U64MASK(52)
 #define OPTPROGRAM_HASH                            U64MASK(53)
 #define OPTPROGRAM_ENTROPY                         U64MASK(54)
 #define OPTPROGRAM_DEMANGLE                        U64MASK(55)
