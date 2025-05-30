@@ -458,8 +458,22 @@ static int ocdwarf_one_die(handle_t p, handle_t s, Dwarf_Die in_die, int level, 
       return res;
     }
 
+    Dwarf_Off overall_offset = 0;
+    res = dwarf_dieoffset(in_die, &overall_offset, e);
+    if (res != DW_DLV_OK) {
+      printf_e("dwarf_dieoffset failed! res %d", res);
+      return res;
+    }
+
+    Dwarf_Off offset = 0;
+    res = dwarf_die_CU_offset(in_die, &offset, e);
+    if (res != DW_DLV_OK) {
+      printf_e("dwarf_die_CU_offset failed! res %d", res);
+      return res;
+    }
+
     printf_text("COMPILE_UNIT<header overall offset =", USE_LT);
-    printf_nice(level, USE_FHEX32 | USE_TBRT | USE_COLON | USE_EOL);
+    printf_nice(overall_offset - offset, USE_FHEX32 | USE_TBRT | USE_COLON | USE_EOL);
 
     printf_nice(level, USE_DEC2 | USE_TB);
     printf_nice(0xffffffff, USE_FHEX32 | USE_TB);
@@ -472,17 +486,17 @@ static int ocdwarf_one_die(handle_t p, handle_t s, Dwarf_Die in_die, int level, 
     Dwarf_Attribute *attrbuf = 0;
     res = dwarf_attrlist(in_die, &attrbuf, &attrcount, e);
     if (res != DW_DLV_OK) {
-        printf_e("dwarf_attrlist failed! res %d", res);
-        return res;
+      printf_e("dwarf_attrlist failed! res %d", res);
+      return res;
     }
 
     for (Dwarf_Signed i = 0; i < attrcount; ++i) {
-        res = ocdwarf_printf_attr(p, s, attrbuf[i], i, e);
-        if (res != DW_DLV_OK) {
-            ocdwarf_dealloc(p, s, attrbuf, attrcount, 0);
-            printf("dwarf_attr print failed! res %d", res);
-            return res;
-        }
+      res = ocdwarf_printf_attr(p, s, attrbuf[i], i, e);
+      if (res != DW_DLV_OK) {
+        ocdwarf_dealloc(p, s, attrbuf, attrcount, 0);
+        printf("dwarf_attr print failed! res %d", res);
+        return res;
+      }
     }
 
     ocdwarf_dealloc(p, s, attrbuf, attrcount, 0);
@@ -531,7 +545,8 @@ static int ocdwarf_do(handle_t p, handle_t s, Dwarf_Error *e) {
       int res = dwarf_next_cu_header_d(oc->items[OPCODE_DWARF], is_info,
                   &cu_header_length, &version_stamp, &abbrev_offset, &address_size, &length_size, &extension_size,
                   &type_signature, &typeoffset, &next_cu_header_offset, &header_cu_type, e);
-      if (res != DW_DLV_OK) {
+      if (res == DW_DLV_NO_ENTRY) break;
+      else if (res != DW_DLV_OK) {
         if (res == DW_DLV_ERROR) {
           printf_e("dwarf errmsg: %s", dwarf_errmsg(*e));
         }
