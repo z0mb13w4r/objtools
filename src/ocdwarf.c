@@ -365,7 +365,7 @@ static int ocdwarf_printf_attr(handle_t p, handle_t s, Dwarf_Attribute attr, Dwa
 
     if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
       printf_nice(formnum, USE_FHEX8);
-      printf_pick(zDWFORM, formnum, USE_SPACE | SET_PAD(18));
+      printf_pick(zDWFORM, formnum, USE_SPACE | SET_PAD(22));
     }
 
     if (isused(zFORMSTRING, formnum)) {
@@ -378,7 +378,7 @@ static int ocdwarf_printf_attr(handle_t p, handle_t s, Dwarf_Attribute attr, Dwa
 
       printf_text(str, USE_LT | USE_SPACE);
     } else if (isused(zFORMUDATA, formnum)) {
-      Dwarf_Unsigned value;
+      Dwarf_Unsigned value = 0;
       res = dwarf_formudata(attr, &value, e);
       if (res != DW_DLV_OK) {
         printf_e("dwarf_formudata failed! res %d", res);
@@ -406,6 +406,15 @@ static int ocdwarf_printf_attr(handle_t p, handle_t s, Dwarf_Attribute attr, Dwa
       }
 
       printf_nice(addr, USE_FHEX32);
+    } else if (isused(zFORMGREF, formnum)) {
+      Dwarf_Unsigned value = 0;
+      res = dwarf_global_formref(attr, &value, e);
+      if (res != DW_DLV_OK) {
+        printf_e("dwarf_global_formref failed! res %d", res);
+        return res;
+      }
+
+      printf_nice(value, USE_FHEX32);
     }
 
     printf_eol();
