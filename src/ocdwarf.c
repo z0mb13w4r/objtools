@@ -385,7 +385,12 @@ static int ocdwarf_printf_attr(handle_t p, handle_t s, Dwarf_Attribute attr, Dwa
         return res;
       }
 
-      if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
+      if (DW_AT_high_pc == attrnum) {
+        printf_text("offset-from-lowpc", USE_LT | USE_SPACE | USE_TB);
+        printf_nice(value, USE_DEC);
+        printf_text("highpc", USE_LT | USE_SPACE | USE_TBLT | USE_COLON);
+        printf_nice(value, USE_FHEX32 | USE_TBRT);
+      } else if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
         printf_nice(value, USE_FHEX16);
       }
 
