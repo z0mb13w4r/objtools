@@ -336,6 +336,8 @@ struct Dwarf_Obj_Access_Interface_a_s dw_interface = {
   &base_internals, &methods
 };
 
+static Dwarf_Addr low_pc_addr = 0;
+
 static int ocdwarf_printf_attr(handle_t p, handle_t s, Dwarf_Attribute attr, Dwarf_Signed anumber, Dwarf_Error *e) {
   if (isopcode(p)) {
     popcode_t oc = CAST(popcode_t, p);
@@ -356,11 +358,13 @@ static int ocdwarf_printf_attr(handle_t p, handle_t s, Dwarf_Attribute attr, Dwa
       return res;
     }
 
-    printf_nice(anumber, USE_DEC2 | USE_SB | USE_TAB);
-
     if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
+      printf_nice(anumber, USE_DEC2 | USE_SB | USE_TAB);
       printf_nice(attrnum, USE_FHEX16);
+    } else {
+      printf_pack(8);
     }
+
     printf_pick(zDWAT, attrnum, USE_SPACE | SET_PAD(18));
 
     if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
@@ -389,7 +393,7 @@ static int ocdwarf_printf_attr(handle_t p, handle_t s, Dwarf_Attribute attr, Dwa
         printf_text("offset-from-lowpc", USE_LT | USE_SPACE | USE_TB);
         printf_nice(value, USE_DEC);
         printf_text("highpc", USE_LT | USE_SPACE | USE_TBLT | USE_COLON);
-        printf_nice(value, USE_FHEX32 | USE_TBRT);
+        printf_nice(low_pc_addr + value, USE_FHEX32 | USE_TBRT);
       } else if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
         printf_nice(value, USE_FHEX16);
       }
@@ -403,6 +407,10 @@ static int ocdwarf_printf_attr(handle_t p, handle_t s, Dwarf_Attribute attr, Dwa
       if (res != DW_DLV_OK) {
         printf_e("dwarf_formaddr failed! res %d", res);
         return res;
+      }
+
+      if (DW_AT_low_pc == attrnum) {
+        low_pc_addr = addr;
       }
 
       printf_nice(addr, USE_FHEX32);
