@@ -462,7 +462,7 @@ static void ocdwarf_dealloc(handle_t p, handle_t s, Dwarf_Attribute *attrbuf, Dw
   }
 }
 
-static int ocdwarf_one_die(handle_t p, handle_t s, Dwarf_Die in_die, int level, Dwarf_Error *e) {
+static int ocdwarf_die_one(handle_t p, handle_t s, Dwarf_Die in_die, int level, Dwarf_Error *e) {
   if (isopcode(p)) {
     popcode_t oc = CAST(popcode_t, p);
     int res = DW_DLV_OK;
@@ -531,11 +531,33 @@ static int ocdwarf_one_die(handle_t p, handle_t s, Dwarf_Die in_die, int level, 
   return DW_DLV_ERROR;
 }
 
-static int ocdwarf_die_and_siblings(handle_t p, handle_t s, Dwarf_Die in_die,
-                  int is_info, int level, struct srcfilesdata *sf, Dwarf_Error *e) {
-  if (isopcode(p) && (isopshdr(s) || isopshdrNN(s))) {
+static int ocdwarf_die_data(handle_t p, handle_t s, Dwarf_Die die,
+                  Dwarf_Bool isinfo, int level, struct srcfilesdata *sf, Dwarf_Error *e) {
+  if (isopcode(p)) {
+    popcode_t oc = CAST(popcode_t, p);
+    int res = DW_DLV_OK;
+
+    char *name = 0;
+    res = dwarf_diename(die, &name, e);
+    if (res == DW_DLV_ERROR) {
+      dwarf_object_finish(oc->items[OPCODE_DWARF]);
+      printf_x("dwarf_diename, level %d", level);
+    } else if (res == DW_DLV_NO_ENTRY) {
+      name = "<no DW_AT_name attr>";
+    }
+
+    printf_text(name, USE_LT | USE_EOL);
 
     return DW_DLV_OK;
+  }
+
+  return DW_DLV_ERROR;
+}
+
+static int ocdwarf_die_and_siblings(handle_t p, handle_t s, Dwarf_Die die,
+                  Dwarf_Bool isinfo, int level, struct srcfilesdata *sf, Dwarf_Error *e) {
+  if (isopcode(p)) {
+    return ocdwarf_die_data(p, s, die, isinfo, level, sf, e);
   }
 
   return DW_DLV_ERROR;
@@ -596,8 +618,8 @@ static int ocdwarf_do(handle_t p, handle_t s, Dwarf_Error *e) {
         }
       }
 
-//      res = ocdwarf_die_and_siblings(p, s, cu_die, is_info, 0, &sf, e);
-      res = ocdwarf_one_die(p, s, cu_die, level, e);
+      res = ocdwarf_die_and_siblings(p, s, cu_die, is_info, level, &sf, e);
+//      res = ocdwarf_one_die(p, s, cu_die, level, e);
       if (res != DW_DLV_OK) {
         dwarf_dealloc_die(cu_die);
         printf_e("ocdwarf_one_die failed! %d", res);
