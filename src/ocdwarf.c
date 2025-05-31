@@ -450,19 +450,19 @@ static int ocdwarf_printf_attr(handle_t p, handle_t s, Dwarf_Attribute attr, Dwa
   return DW_DLV_ERROR;
 }
 
-static void ocdwarf_dealloc(handle_t p, handle_t s, Dwarf_Attribute *attrbuf, Dwarf_Signed attrcount, Dwarf_Signed i) {
+static void ocdwarf_dealloc(handle_t p, handle_t s, Dwarf_Attribute *a, Dwarf_Signed size, Dwarf_Signed i) {
   if (isopcode(p)) {
     popcode_t oc = CAST(popcode_t, p);
 
-    for ( ; i < attrcount; ++i) {
-      dwarf_dealloc_attribute(attrbuf[i]);
+    for ( ; i < size; ++i) {
+      dwarf_dealloc_attribute(a[i]);
     }
 
-    dwarf_dealloc(oc->items[OPCODE_DWARF], attrbuf, DW_DLA_LIST);
+    dwarf_dealloc(oc->items[OPCODE_DWARF], a, DW_DLA_LIST);
   }
 }
 
-static int ocdwarf_die_one(handle_t p, handle_t s, Dwarf_Die in_die, int level, Dwarf_Error *e) {
+static int ocdwarf_die_one(handle_t p, handle_t s, Dwarf_Die die, int level, Dwarf_Error *e) {
   if (isopcode(p)) {
     popcode_t oc = CAST(popcode_t, p);
     int res = DW_DLV_OK;
@@ -477,21 +477,21 @@ static int ocdwarf_die_one(handle_t p, handle_t s, Dwarf_Die in_die, int level, 
 //    printf("%s\n", name);
 
     Dwarf_Half tag = 0;
-    res = dwarf_tag(in_die, &tag, e);
+    res = dwarf_tag(die, &tag, e);
     if (res != DW_DLV_OK) {
       printf_e("dwarf_tag failed! res %d", res);
       return res;
     }
 
     Dwarf_Off overall_offset = 0;
-    res = dwarf_dieoffset(in_die, &overall_offset, e);
+    res = dwarf_dieoffset(die, &overall_offset, e);
     if (res != DW_DLV_OK) {
       printf_e("dwarf_dieoffset failed! res %d", res);
       return res;
     }
 
     Dwarf_Off offset = 0;
-    res = dwarf_die_CU_offset(in_die, &offset, e);
+    res = dwarf_die_CU_offset(die, &offset, e);
     if (res != DW_DLV_OK) {
       printf_e("dwarf_die_CU_offset failed! res %d", res);
       return res;
@@ -509,7 +509,7 @@ static int ocdwarf_die_one(handle_t p, handle_t s, Dwarf_Die in_die, int level, 
 
     Dwarf_Signed attrcount = 0;
     Dwarf_Attribute *attrbuf = 0;
-    res = dwarf_attrlist(in_die, &attrbuf, &attrcount, e);
+    res = dwarf_attrlist(die, &attrbuf, &attrcount, e);
     if (res != DW_DLV_OK) {
       printf_e("dwarf_attrlist failed! res %d", res);
       return res;
