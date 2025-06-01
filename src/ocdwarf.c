@@ -571,10 +571,13 @@ static int ocdwarf_die_data(handle_t p, handle_t s, Dwarf_Die die,
 
     printf_text(tagname, USE_LT | USE_EOL);
 
+//    printnamestrings(dbg, die);
+
+    Dwarf_Half formnum = 0;
     Dwarf_Attribute attr = 0;
+    const char *formname = 0;
     res = dwarf_attr(die, DW_AT_name, &attr, e);
     if (res == DW_DLV_OK) {
-      Dwarf_Half formnum = 0;
       res = dwarf_whatform(attr, &formnum, e);
       if (res != DW_DLV_OK) {
         if (res == DW_DLV_ERROR && e) {
@@ -585,7 +588,6 @@ static int ocdwarf_die_data(handle_t p, handle_t s, Dwarf_Die die,
         printf_x("dwarf_whatform, level %d", level);
       }
 
-      const char *formname = 0;
       res = dwarf_get_FORM_name(formnum, &formname);
       if (res != DW_DLV_OK) {
         formname = "form-name-unavailable";
@@ -593,6 +595,22 @@ static int ocdwarf_die_data(handle_t p, handle_t s, Dwarf_Die die,
 
       dwarf_dealloc(oc->items[OPCODE_DWARF], attr, DW_DLA_ATTR);
       printf_text(formname, USE_LT | USE_EOL);
+    }
+
+    if (tag == DW_TAG_subprogram) {
+     printf("<%3d> subprogram            : \"%s\"\n", level, name);
+//     print_subprog(dbg,print_me,level,sf,name);
+    } else if (tag == DW_TAG_compile_unit || tag == DW_TAG_partial_unit || tag == DW_TAG_type_unit) {
+      ocdwarf_sfreset(p, s, sf);
+      printf("<%3d> source file           : \"%s\"\n", level, name);
+//      print_comp_dir(dbg,print_me,level,sf);
+    } else {
+      printf("<%d> tag: %d %s  name: \"%s\"", level, tag, tagname, name);
+      if (formname) {
+        printf(" FORM 0x%x \"%s\"", formnum, formname);
+      }
+
+      printf("\n");
     }
 
     return DW_DLV_OK;
