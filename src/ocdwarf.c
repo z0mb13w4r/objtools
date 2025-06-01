@@ -571,6 +571,30 @@ static int ocdwarf_die_data(handle_t p, handle_t s, Dwarf_Die die,
 
     printf_text(tagname, USE_LT | USE_EOL);
 
+    Dwarf_Attribute attr = 0;
+    res = dwarf_attr(die, DW_AT_name, &attr, e);
+    if (res == DW_DLV_OK) {
+      Dwarf_Half formnum = 0;
+      res = dwarf_whatform(attr, &formnum, e);
+      if (res != DW_DLV_OK) {
+        if (res == DW_DLV_ERROR && e) {
+          dwarf_dealloc_error(oc->items[OPCODE_DWARF], *e);
+        }
+
+        dwarf_object_finish(oc->items[OPCODE_DWARF]);
+        printf_x("dwarf_whatform, level %d", level);
+      }
+
+      const char *formname = 0;
+      res = dwarf_get_FORM_name(formnum, &formname);
+      if (res != DW_DLV_OK) {
+        formname = "form-name-unavailable";
+      }
+
+      dwarf_dealloc(oc->items[OPCODE_DWARF], attr, DW_DLA_ATTR);
+      printf_text(formname, USE_LT | USE_EOL);
+    }
+
     return DW_DLV_OK;
   }
 
