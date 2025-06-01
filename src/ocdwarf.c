@@ -548,6 +548,29 @@ static int ocdwarf_die_data(handle_t p, handle_t s, Dwarf_Die die,
 
     printf_text(name, USE_LT | USE_EOL);
 
+    Dwarf_Half tag = 0;
+    res = dwarf_tag(die, &tag, e);
+    if (res != DW_DLV_OK) {
+      if (res == DW_DLV_ERROR && e) {
+        dwarf_dealloc_error(oc->items[OPCODE_DWARF], *e);
+      }
+      dwarf_object_finish(oc->items[OPCODE_DWARF]);
+      printf_x("dwarf_tag, level %d", level);
+    }
+
+    const char *tagname = 0;
+    res = dwarf_get_TAG_name(tag, &tagname);
+    if (res != DW_DLV_OK) {
+      if (res == DW_DLV_ERROR && e) {
+        dwarf_dealloc_error(oc->items[OPCODE_DWARF], *e);
+      }
+
+      dwarf_object_finish(oc->items[OPCODE_DWARF]);
+      printf_x("dwarf_get_TAG_name, level %d", level);
+    }
+
+    printf_text(tagname, USE_LT | USE_EOL);
+
     return DW_DLV_OK;
   }
 
@@ -686,7 +709,7 @@ int ocdwarf_run(handle_t p, handle_t s) {
         dwarf_dealloc_error(oc->items[OPCODE_DWARF], error);
       }
 
-      n = d && d->func ? d->func(p, s, &d->section) : -1;
+//      n = d && d->func ? d->func(p, s, &d->section) : -1;
       dwarf_object_finish(oc->items[OPCODE_DWARF]);
       oc->items[OPCODE_DWARF] = NULL;
     }
