@@ -350,7 +350,7 @@ static void ocdwarf_sfreset(handle_t p, handle_t s, struct srcfilesdata *sf) {
     }
 
     sf->srcfilesres = DW_DLV_ERROR;
-    sf->srcfiles = 0;
+    sf->srcfiles = NULL;
     sf->srcfilescount = 0;
   }
 }
@@ -531,6 +531,66 @@ static int ocdwarf_printf_one(handle_t p, handle_t s, Dwarf_Die die, int level, 
   return DW_DLV_ERROR;
 }
 
+static int ocdwarf_printf_cu(handle_t p, handle_t s, Dwarf_Die die,
+                  Dwarf_Bool isinfo, int level, struct srcfilesdata *sf, Dwarf_Error *e) {
+  if (isopcode(p) && sf) {
+    popcode_t oc = CAST(popcode_t, p);
+    int res = DW_DLV_OK;
+
+    Dwarf_Off overall_offset = 0;
+    res = dwarf_dieoffset(die, &overall_offset, e);
+    if (res != DW_DLV_OK) {
+      printf_e("dwarf_dieoffset failed! res %d", res);
+      return res;
+    }
+
+    Dwarf_Off offset = 0;
+    res = dwarf_die_CU_offset(die, &offset, e);
+    if (res != DW_DLV_OK) {
+      printf_e("dwarf_die_CU_offset failed! res %d", res);
+      return res;
+    }
+
+    printf_text("COMPILE_UNIT<header overall offset =", USE_LT);
+    printf_nice(overall_offset - offset, USE_FHEX32 | USE_TBRT | USE_COLON | USE_EOL);
+
+    Dwarf_Signed attrcount = 0;
+    Dwarf_Attribute *attrbuf = 0;
+    res = dwarf_attrlist(die, &attrbuf ,&attrcount, e);
+    if (res != DW_DLV_OK) return res;
+
+    sf->srcfilesres = dwarf_srcfiles(die, &sf->srcfiles, &sf->srcfilescount, &e);
+    for (Dwarf_Signed i = 0; i < attrcount ; ++i) {
+      Dwarf_Half aform;
+      res = dwarf_whatattr(attrbuf[i], &aform, e);
+      if (res == DW_DLV_OK) {
+        if (aform == DW_AT_comp_dir) {
+          char *name = 0;
+          res = dwarf_formstring(attrbuf[i], &name, e);
+          if (res == DW_DLV_OK) {
+            printf("<%3d> compilation directory : \"%s\"\n", level, name);
+          }
+        } else if (aform == DW_AT_stmt_list) {
+          /* Offset of stmt list for this CU in .debug_line */
+        }
+      }
+
+      dwarf_dealloc(oc->items[OPCODE_DWARF], attrbuf[i], DW_DLA_ATTR);
+    }
+
+    if (DW_DLV_OK == sf->srcfilesres && 0 != sf->srcfilescount) {
+      for (Dwarf_Signed i = 0; i < sf->srcfilescount; ++i) {
+        printf("<%3ld> %s\n", i, sf->srcfiles[i]);
+      }
+    }
+
+    dwarf_dealloc(oc->items[OPCODE_DWARF], attrbuf, DW_DLA_LIST);
+    return DW_DLV_OK;
+  }
+
+  return DW_DLV_ERROR;
+}
+
 static int ocdwarf_printf_data(handle_t p, handle_t s, Dwarf_Die die,
                   Dwarf_Bool isinfo, int level, struct srcfilesdata *sf, Dwarf_Error *e) {
   if (isopcode(p)) {
@@ -603,7 +663,7 @@ static int ocdwarf_printf_data(handle_t p, handle_t s, Dwarf_Die die,
     } else if (tag == DW_TAG_compile_unit || tag == DW_TAG_partial_unit || tag == DW_TAG_type_unit) {
       ocdwarf_sfreset(p, s, sf);
       printf("<%3d> source file           : \"%s\"\n", level, name);
-//      print_comp_dir(dbg,print_me,level,sf);
+      ocdwarf_printf_cu(p, s, die, isinfo, level, sf, e);
     } else {
       printf("<%d> tag: %d %s  name: \"%s\"", level, tag, tagname, name);
       if (formname) {
