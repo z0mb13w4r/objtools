@@ -355,7 +355,7 @@ static void ocdwarf_sfreset(handle_t p, handle_t s, struct srcfilesdata *sf) {
   }
 }
 
-static int ocdwarf_printf_attr(handle_t p, handle_t s, Dwarf_Attribute attr, Dwarf_Signed anumber, Dwarf_Error *e) {
+static int ocdwarf_printf_cu_attr(handle_t p, handle_t s, Dwarf_Signed attridx, Dwarf_Attribute attr, Dwarf_Error *e) {
   if (isopcode(p)) {
     popcode_t oc = CAST(popcode_t, p);
 
@@ -376,7 +376,7 @@ static int ocdwarf_printf_attr(handle_t p, handle_t s, Dwarf_Attribute attr, Dwa
     }
 
     if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
-      printf_nice(anumber, USE_DEC2 | USE_SB | USE_TAB);
+      printf_nice(attridx, USE_DEC2 | USE_SB | USE_TAB);
       printf_nice(attrnum, USE_FHEX16);
     } else {
       printf_pack(8);
@@ -516,10 +516,10 @@ static int ocdwarf_printf_one(handle_t p, handle_t s, Dwarf_Die die, int level, 
     }
 
     for (Dwarf_Signed i = 0; i < attrcount; ++i) {
-      res = ocdwarf_printf_attr(p, s, attrbuf[i], i, e);
+      res = ocdwarf_printf_cu_attr(p, s, i, attrbuf[i], e);
       if (res != DW_DLV_OK) {
         ocdwarf_dealloc(p, s, attrbuf, attrcount, 0);
-        printf("dwarf_attr print failed! res %d", res);
+        printf("ocdwarf_printf_cu_attr failed! res %d", res);
         return res;
       }
     }
@@ -561,18 +561,11 @@ static int ocdwarf_printf_cu(handle_t p, handle_t s, Dwarf_Die die,
 
     sf->srcfilesres = dwarf_srcfiles(die, &sf->srcfiles, &sf->srcfilescount, &e);
     for (Dwarf_Signed i = 0; i < attrcount ; ++i) {
-      Dwarf_Half aform;
-      res = dwarf_whatattr(attrbuf[i], &aform, e);
-      if (res == DW_DLV_OK) {
-        if (aform == DW_AT_comp_dir) {
-          char *name = 0;
-          res = dwarf_formstring(attrbuf[i], &name, e);
-          if (res == DW_DLV_OK) {
-            printf("<%3d> compilation directory : \"%s\"\n", level, name);
-          }
-        } else if (aform == DW_AT_stmt_list) {
-          /* Offset of stmt list for this CU in .debug_line */
-        }
+      res = ocdwarf_printf_cu_attr(p, s, i, attrbuf[i], e);
+      if (res != DW_DLV_OK) {
+        ocdwarf_dealloc(p, s, attrbuf, attrcount, 0);
+        printf("ocdwarf_printf_cu_attr failed! res %d", res);
+        return res;
       }
 
       dwarf_dealloc(oc->items[OPCODE_DWARF], attrbuf[i], DW_DLA_ATTR);
