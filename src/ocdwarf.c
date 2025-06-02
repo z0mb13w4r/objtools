@@ -462,7 +462,7 @@ static void ocdwarf_dealloc(handle_t p, handle_t s, Dwarf_Attribute *a, Dwarf_Si
   }
 }
 
-static int ocdwarf_die_one(handle_t p, handle_t s, Dwarf_Die die, int level, Dwarf_Error *e) {
+static int ocdwarf_printf_one(handle_t p, handle_t s, Dwarf_Die die, int level, Dwarf_Error *e) {
   if (isopcode(p)) {
     popcode_t oc = CAST(popcode_t, p);
     int res = DW_DLV_OK;
@@ -531,7 +531,7 @@ static int ocdwarf_die_one(handle_t p, handle_t s, Dwarf_Die die, int level, Dwa
   return DW_DLV_ERROR;
 }
 
-static int ocdwarf_die_data(handle_t p, handle_t s, Dwarf_Die die,
+static int ocdwarf_printf_data(handle_t p, handle_t s, Dwarf_Die die,
                   Dwarf_Bool isinfo, int level, struct srcfilesdata *sf, Dwarf_Error *e) {
   if (isopcode(p)) {
     popcode_t oc = CAST(popcode_t, p);
@@ -622,7 +622,7 @@ static int ocdwarf_die_data(handle_t p, handle_t s, Dwarf_Die die,
 static int ocdwarf_die_and_siblings(handle_t p, handle_t s, Dwarf_Die die,
                   Dwarf_Bool isinfo, int level, struct srcfilesdata *sf, Dwarf_Error *e) {
   if (isopcode(p)) {
-    return ocdwarf_die_data(p, s, die, isinfo, level, sf, e);
+    return ocdwarf_printf_data(p, s, die, isinfo, level, sf, e);
   }
 
   return DW_DLV_ERROR;
@@ -684,7 +684,7 @@ static int ocdwarf_do(handle_t p, handle_t s, Dwarf_Error *e) {
       }
 
       res = ocdwarf_die_and_siblings(p, s, cu_die, is_info, level, &sf, e);
-//      res = ocdwarf_one_die(p, s, cu_die, level, e);
+//      res = ocdwarf_printf_die(p, s, cu_die, level, e);
       if (res != DW_DLV_OK) {
         dwarf_dealloc_die(cu_die);
         printf_e("ocdwarf_one_die failed! %d", res);
