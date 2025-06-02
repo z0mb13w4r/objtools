@@ -450,6 +450,21 @@ static int ocdwarf_printf_cu_attr(handle_t p, handle_t s, Dwarf_Signed attridx, 
   return DW_DLV_ERROR;
 }
 
+static int ocdwarf_printf_srcfiles(handle_t p, handle_t s, struct srcfilesdata *sf) {
+  int n = 0;
+  if (isopcode(p)) {
+    popcode_t oc = CAST(popcode_t, p);
+    if (DW_DLV_OK == sf->srcfilesres && 0 != sf->srcfilescount) {
+      for (Dwarf_Signed i = 0; i < sf->srcfilescount; ++i) {
+        n += printf_nice(i, USE_DEC3 | USE_TB | USE_COLON);
+        n += printf_text(sf->srcfiles[i], USE_LT | USE_EOL);
+      }
+    }
+  }
+
+  return n;
+}
+
 static void ocdwarf_dealloc(handle_t p, handle_t s, Dwarf_Attribute *a, Dwarf_Signed size, Dwarf_Signed i) {
   if (isopcode(p)) {
     popcode_t oc = CAST(popcode_t, p);
@@ -467,14 +482,16 @@ static int ocdwarf_printf_one(handle_t p, handle_t s, Dwarf_Die die, int level, 
     popcode_t oc = CAST(popcode_t, p);
     int res = DW_DLV_OK;
 
-//    char *name = 0;
-//    res = dwarf_diename(in_die, &name, e);
-//    if (res == DW_DLV_ERROR) {
-//      printf_e("dwarf_diename, level %d", level);
-//      return res;
-//    }
+    if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
+      char *name = 0;
+      res = dwarf_diename(die, &name, e);
+      if (res == DW_DLV_ERROR) {
+        printf_e("dwarf_diename, level %d", level);
+        return res;
+      }
 
-//    printf("%s\n", name);
+      printf_text(name, USE_LT | USE_EOL);
+    }
 
     Dwarf_Half tag = 0;
     res = dwarf_tag(die, &tag, e);
@@ -559,7 +576,7 @@ static int ocdwarf_printf_cu(handle_t p, handle_t s, Dwarf_Die die,
     res = dwarf_attrlist(die, &attrbuf ,&attrcount, e);
     if (res != DW_DLV_OK) return res;
 
-    sf->srcfilesres = dwarf_srcfiles(die, &sf->srcfiles, &sf->srcfilescount, &e);
+    sf->srcfilesres = dwarf_srcfiles(die, &sf->srcfiles, &sf->srcfilescount, e);
     for (Dwarf_Signed i = 0; i < attrcount ; ++i) {
       res = ocdwarf_printf_cu_attr(p, s, i, attrbuf[i], e);
       if (res != DW_DLV_OK) {
@@ -571,10 +588,8 @@ static int ocdwarf_printf_cu(handle_t p, handle_t s, Dwarf_Die die,
       dwarf_dealloc(oc->items[OPCODE_DWARF], attrbuf[i], DW_DLA_ATTR);
     }
 
-    if (DW_DLV_OK == sf->srcfilesres && 0 != sf->srcfilescount) {
-      for (Dwarf_Signed i = 0; i < sf->srcfilescount; ++i) {
-        printf("<%3ld> %s\n", i, sf->srcfiles[i]);
-      }
+    if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
+      ocdwarf_printf_srcfiles(p, s, sf);
     }
 
     dwarf_dealloc(oc->items[OPCODE_DWARF], attrbuf, DW_DLA_LIST);
@@ -663,7 +678,7 @@ static int ocdwarf_printf_data(handle_t p, handle_t s, Dwarf_Die die,
         printf(" FORM 0x%x \"%s\"", formnum, formname);
       }
 
-      printf("\n");
+      printf_eol();
     }
 
     return DW_DLV_OK;
