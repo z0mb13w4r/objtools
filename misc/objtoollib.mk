@@ -32,6 +32,7 @@ SRCS_C = \
 	ocdwarf.c \
 	ocdwarf-info.c \
 	ocdwarf-lines.c \
+	ocdwarf-printf.c \
 	ocdwarf-macroinfo.c \
 	objcopy.c \
 	objdump.c \
