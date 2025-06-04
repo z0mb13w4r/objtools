@@ -9,6 +9,10 @@
 #define RAGE_DWARF            {'D', 'W', 'F'}
 #define MODE_DWARF            (MODE_PUT0('D') | MODE_PUT1('W') | MODE_PUT2('F'))
 
+#define IS_DLV_OK(x)          ((x) == DW_DLV_OK)
+#define IS_DLV_ERROR(x)       ((x) == DW_DLV_ERROR)
+#define IS_DLV_NO_ENTRY(x)    ((x) == DW_DLV_NO_ENTRY)
+
 typedef enum {
   eDWARF_DEBUG_ABBREV,
   eDWARF_DEBUG_ABBREV_DWO,
@@ -71,6 +75,12 @@ typedef struct dwarf_display_s {
   imode_t         action;
   int             (*func)(handle_t p, handle_t s, handle_t d);
 } dwarf_display_t, *pdwarf_display_t;
+
+typedef struct dwarf_srcfiles_s {
+  char       **data;
+  Dwarf_Signed size;
+  int          status;
+} dwarf_srcfiles_t;
 
 pdwarf_display_t ocdwarf_get(handle_t s);
 

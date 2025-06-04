@@ -575,38 +575,6 @@ static int ocdwarf_printf_cu(handle_t p, handle_t s, Dwarf_Die die,
   return DW_DLV_ERROR;
 }
 
-static int ocdwarf_printf_names_attr(handle_t p, handle_t s, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_Error *e) {
-  int res = DW_DLV_OK;
-
-  if (isopcode(p)) {
-    popcode_t oc = CAST(popcode_t, p);
-  }
-
-  return res;
-}
-
-static int ocdwarf_printf_names(handle_t p, handle_t s, Dwarf_Die die, Dwarf_Error *e) {
-  int res = DW_DLV_OK;
-
-  if (isopcode(p)) {
-    popcode_t oc = CAST(popcode_t, p);
-
-    Dwarf_Signed attrcount = 0;
-    Dwarf_Attribute *attrbuf = 0;
-    res = dwarf_attrlist(die, &attrbuf, &attrcount, e);
-    if (DW_DLV_ERROR == res) {
-      dwarf_dealloc_error(oc->items[OPCODE_DWARF], *e);
-    } else if (DW_DLV_OK == res) {
-      for (Dwarf_Signed i = 0; i < attrcount; ++i) {
-        ocdwarf_printf_names_attr(p, s, die, attrbuf[i], e);
-      }
-      dwarf_dealloc(oc->items[OPCODE_DWARF], attrbuf, DW_DLA_LIST);
-    }
-  }
-
-  return res;
-}
-
 static int ocdwarf_printf_data(handle_t p, handle_t s, Dwarf_Die die,
                   Dwarf_Bool isinfo, int level, dwarf_srcfiles_t *sf, Dwarf_Error *e) {
   if (isopcode(p)) {
