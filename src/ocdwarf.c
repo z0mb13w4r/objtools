@@ -327,7 +327,9 @@ struct Dwarf_Obj_Access_Interface_a_s dw_interface = {
   &base_internals, &methods
 };
 
-static Dwarf_Addr low_pc_addr = 0;
+Dwarf_Addr low_pc_addr = 0;
+Dwarf_Half cu_version_stamp = 0;
+Dwarf_Half cu_offset_size   = 0;
 
 static void ocdwarf_sfreset(handle_t p, handle_t s, dwarf_srcfiles_t *sf) {
   if (isopcode(p)) {
@@ -682,9 +684,7 @@ static int ocdwarf_do(handle_t p, handle_t s, Dwarf_Error *e) {
     Dwarf_Unsigned typeoffset     = 0;
     Dwarf_Half     extension_size = 0;
     Dwarf_Half     header_cu_type = 0;
-    Dwarf_Half     version_stamp = 0;
     Dwarf_Half     address_size  = 0;
-    Dwarf_Half     length_size   = 0;
     Dwarf_Sig8     type_signature = zerosignature;
     Dwarf_Off      abbrev_offset = 0;
     int            level = 0;
@@ -697,7 +697,7 @@ static int ocdwarf_do(handle_t p, handle_t s, Dwarf_Error *e) {
       sf.status = DW_DLV_ERROR;
 
       int res = dwarf_next_cu_header_d(oc->items[OPCODE_DWARF], is_info,
-                  &cu_header_length, &version_stamp, &abbrev_offset, &address_size, &length_size, &extension_size,
+                  &cu_header_length, &cu_version_stamp, &abbrev_offset, &address_size, &cu_offset_size, &extension_size,
                   &type_signature, &typeoffset, &next_cu_header_offset, &header_cu_type, e);
       if (res == DW_DLV_NO_ENTRY) break;
       else if (res != DW_DLV_OK) {
@@ -708,9 +708,9 @@ static int ocdwarf_do(handle_t p, handle_t s, Dwarf_Error *e) {
       }
 
       printf("CU header length..........0x%lx\n", (unsigned long)cu_header_length);
-      printf("Version stamp.............%d\n",version_stamp);
+      printf("Version stamp.............%d\n", cu_version_stamp);
       printf("Address size .............%d\n",address_size);
-      printf("Offset size...............%d\n",length_size);
+      printf("Offset size...............%d\n", cu_offset_size);
       printf("Next cu header offset.....0x%lx\n", (unsigned long)next_cu_header_offset);
 
       res = dwarf_siblingof_b(oc->items[OPCODE_DWARF], no_die, is_info, &cu_die, e);

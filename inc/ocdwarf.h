@@ -12,6 +12,7 @@
 #define IS_DLV_OK(x)          ((x) == DW_DLV_OK)
 #define IS_DLV_ERROR(x)       ((x) == DW_DLV_ERROR)
 #define IS_DLV_NO_ENTRY(x)    ((x) == DW_DLV_NO_ENTRY)
+#define IS_DLV_ANY_ERROR(x)   ((x) != DW_DLV_OK)
 
 typedef enum {
   eDWARF_DEBUG_ABBREV,
@@ -81,6 +82,9 @@ typedef struct dwarf_srcfiles_s {
   Dwarf_Signed size;
   int          status;
 } dwarf_srcfiles_t;
+
+extern Dwarf_Half cu_offset_size;
+extern Dwarf_Half cu_version_stamp;
 
 pdwarf_display_t ocdwarf_get(handle_t s);
 
