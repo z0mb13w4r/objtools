@@ -1,11 +1,8 @@
 #include <bfd.h>
-#include <dwarf.h>
-#include <libdwarf.h>
 
-#include "printf.h"
-#include "opcode.h"
 #include "ocdwarf.h"
 #include "options.h"
+#include "ocdwarf-printf.h"
 #include "ocdwarf-macroinfo.h"
 
 #include <fcntl.h>
@@ -236,12 +233,6 @@ typedef struct dwarf_data_s {
   struct sectiondata_s * f_sectarray;
 } dwarf_data_t, *pdwarf_data_t;
 
-struct srcfilesdata {
-  char ** srcfiles;
-  Dwarf_Signed srcfilescount;
-  int srcfilesres;
-};
-
 /*  Use DW_END_little.
     Libdwarf finally sets the file-format-specific
     f_object_endianness field to a DW_END_little or
@@ -338,20 +329,20 @@ struct Dwarf_Obj_Access_Interface_a_s dw_interface = {
 
 static Dwarf_Addr low_pc_addr = 0;
 
-static void ocdwarf_sfreset(handle_t p, handle_t s, struct srcfilesdata *sf) {
+static void ocdwarf_sfreset(handle_t p, handle_t s, dwarf_srcfiles_t *sf) {
   if (isopcode(p)) {
     popcode_t oc = CAST(popcode_t, p);
 
-    if (sf->srcfiles) {
-      for (Dwarf_Signed sri = 0; sri < sf->srcfilescount; ++sri) {
-        dwarf_dealloc(oc->items[OPCODE_DWARF], sf->srcfiles[sri], DW_DLA_STRING);
+    if (sf->data) {
+      for (Dwarf_Signed sri = 0; sri < sf->size; ++sri) {
+        dwarf_dealloc(oc->items[OPCODE_DWARF], sf->data[sri], DW_DLA_STRING);
       }
-      dwarf_dealloc(oc->items[OPCODE_DWARF], sf->srcfiles, DW_DLA_LIST);
+      dwarf_dealloc(oc->items[OPCODE_DWARF], sf->data, DW_DLA_LIST);
     }
 
-    sf->srcfilesres = DW_DLV_ERROR;
-    sf->srcfiles = NULL;
-    sf->srcfilescount = 0;
+    sf->status = DW_DLV_ERROR;
+    sf->data = NULL;
+    sf->size = 0;
   }
 }
 
@@ -450,21 +441,6 @@ static int ocdwarf_printf_cu_attr(handle_t p, handle_t s, Dwarf_Signed attridx, 
   return DW_DLV_ERROR;
 }
 
-static int ocdwarf_printf_srcfiles(handle_t p, handle_t s, struct srcfilesdata *sf) {
-  int n = 0;
-  if (isopcode(p)) {
-    popcode_t oc = CAST(popcode_t, p);
-    if (DW_DLV_OK == sf->srcfilesres && 0 != sf->srcfilescount) {
-      for (Dwarf_Signed i = 0; i < sf->srcfilescount; ++i) {
-        n += printf_nice(i, USE_DEC3 | USE_TB | USE_COLON);
-        n += printf_text(sf->srcfiles[i], USE_LT | USE_EOL);
-      }
-    }
-  }
-
-  return n;
-}
-
 static void ocdwarf_dealloc(handle_t p, handle_t s, Dwarf_Attribute *a, Dwarf_Signed size, Dwarf_Signed i) {
   if (isopcode(p)) {
     popcode_t oc = CAST(popcode_t, p);
@@ -549,7 +525,7 @@ static int ocdwarf_printf_one(handle_t p, handle_t s, Dwarf_Die die, int level, 
 }
 
 static int ocdwarf_printf_cu(handle_t p, handle_t s, Dwarf_Die die,
-                  Dwarf_Bool isinfo, int level, struct srcfilesdata *sf, Dwarf_Error *e) {
+                  Dwarf_Bool isinfo, int level, dwarf_srcfiles_t *sf, Dwarf_Error *e) {
   if (isopcode(p) && sf) {
     popcode_t oc = CAST(popcode_t, p);
     int res = DW_DLV_OK;
@@ -576,7 +552,7 @@ static int ocdwarf_printf_cu(handle_t p, handle_t s, Dwarf_Die die,
     res = dwarf_attrlist(die, &attrbuf ,&attrcount, e);
     if (res != DW_DLV_OK) return res;
 
-    sf->srcfilesres = dwarf_srcfiles(die, &sf->srcfiles, &sf->srcfilescount, e);
+    sf->status = dwarf_srcfiles(die, &sf->data, &sf->size, e);
     for (Dwarf_Signed i = 0; i < attrcount ; ++i) {
       res = ocdwarf_printf_cu_attr(p, s, i, attrbuf[i], e);
       if (res != DW_DLV_OK) {
@@ -632,7 +608,7 @@ static int ocdwarf_printf_names(handle_t p, handle_t s, Dwarf_Die die, Dwarf_Err
 }
 
 static int ocdwarf_printf_data(handle_t p, handle_t s, Dwarf_Die die,
-                  Dwarf_Bool isinfo, int level, struct srcfilesdata *sf, Dwarf_Error *e) {
+                  Dwarf_Bool isinfo, int level, dwarf_srcfiles_t *sf, Dwarf_Error *e) {
   if (isopcode(p)) {
     popcode_t oc = CAST(popcode_t, p);
     int res = DW_DLV_OK;
@@ -720,7 +696,7 @@ static int ocdwarf_printf_data(handle_t p, handle_t s, Dwarf_Die die,
 }
 
 static int ocdwarf_die_and_siblings(handle_t p, handle_t s, Dwarf_Die die,
-                  Dwarf_Bool isinfo, int level, struct srcfilesdata *sf, Dwarf_Error *e) {
+                  Dwarf_Bool isinfo, int level, dwarf_srcfiles_t *sf, Dwarf_Error *e) {
   if (isopcode(p)) {
     return ocdwarf_printf_data(p, s, die, isinfo, level, sf, e);
   }
@@ -749,8 +725,8 @@ static int ocdwarf_do(handle_t p, handle_t s, Dwarf_Error *e) {
       Dwarf_Die no_die = 0;
       Dwarf_Die cu_die = 0;
 
-      MALLOCS(struct srcfilesdata, sf);
-      sf.srcfilesres = DW_DLV_ERROR;
+      MALLOCS(dwarf_srcfiles_t, sf);
+      sf.status = DW_DLV_ERROR;
 
       int res = dwarf_next_cu_header_d(oc->items[OPCODE_DWARF], is_info,
                   &cu_header_length, &version_stamp, &abbrev_offset, &address_size, &length_size, &extension_size,

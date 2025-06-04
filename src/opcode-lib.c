@@ -145,17 +145,17 @@ int opcodelib_close(handle_t p) {
   return 0;
 }
 
-static char *prev_functionname = NULL;
+static const char  *prev_functionname = NULL;
 static unsigned int prev_line = -1;
 static unsigned int prev_discriminator = -1;
 
 static int opcodelib_lnumbers(handle_t p, handle_t s, const uint64_t vaddr) {
   int n = 0;
   if (isopcode(p) && isopshdr(s)) {
-    popcode_t oc = CAST(popcode_t, p);
+//    popcode_t oc = CAST(popcode_t, p);
 
     const char *filename;
-    const char *afilename = NULL;
+//    const char *afilename = NULL;
     const char *functionname;
     unsigned int linenumber;
     unsigned int discriminator;

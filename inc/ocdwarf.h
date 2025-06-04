@@ -1,7 +1,10 @@
 #ifndef __OCDWARF_H_
 #define __OCDWARF_H_
 
-#include "defines.h"
+#include <dwarf.h>
+#include <libdwarf.h>
+
+#include "opcode.h"
 
 #define RAGE_DWARF            {'D', 'W', 'F'}
 #define MODE_DWARF            (MODE_PUT0('D') | MODE_PUT1('W') | MODE_PUT2('F'))
