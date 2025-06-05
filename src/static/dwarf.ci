@@ -814,7 +814,7 @@ convert_t zDWUT[] = {
   {0, 0},
 };
 
-static pick_t zFORMADDR[] = {
+pick_t zFORMADDR[] = {
   DW_FORM_addr,
   DW_FORM_addrx,
   DW_FORM_addrx1,
@@ -824,12 +824,12 @@ static pick_t zFORMADDR[] = {
   PICK_END
 };
 
-static pick_t zFORMGREF[] = {
+pick_t zFORMGREF[] = {
   DW_FORM_sec_offset,
   PICK_END
 };
 
-static pick_t zFORMSTRING[] = {
+pick_t zFORMSTRING[] = {
   DW_FORM_string,
   DW_FORM_GNU_strp_alt,
   DW_FORM_GNU_str_index,
@@ -842,7 +842,7 @@ static pick_t zFORMSTRING[] = {
   PICK_END
 };
 
-static pick_t zFORMUDATA[] = {
+pick_t zFORMUDATA[] = {
   DW_FORM_data1,
   DW_FORM_data2,
   DW_FORM_data4,

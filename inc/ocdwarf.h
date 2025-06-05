@@ -5,6 +5,7 @@
 #include <libdwarf.h>
 
 #include "opcode.h"
+#include "externs.h"
 
 #define RAGE_DWARF            {'D', 'W', 'F'}
 #define MODE_DWARF            (MODE_PUT0('D') | MODE_PUT1('W') | MODE_PUT2('F'))
@@ -94,6 +95,8 @@ int ocdwarf_open(handle_t p, handle_t o);
 int ocdwarf_close(handle_t p);
 
 int ocdwarf_run(handle_t p, handle_t s);
+
+void ocdwarf_dealloc(handle_t p, handle_t s, Dwarf_Attribute *a, Dwarf_Signed size, Dwarf_Signed i);
 
 #endif
 
