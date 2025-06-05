@@ -564,7 +564,7 @@ static int ocdwarf_do(handle_t p, handle_t s, Dwarf_Error *e) {
       res = ocdwarf_printf_one(p, s, cu_die, level, e);
       if (OCDWARF_ISERRCODE(res)) {
         dwarf_dealloc_die(cu_die);
-        printf_e("ocdwarf_one_die failed! %d", res);
+        printf_e("ocdwarf_printf_one failed! %d", res);
         return res;
       }
 

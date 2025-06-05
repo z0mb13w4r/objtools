@@ -178,7 +178,7 @@ int ocdwarf_printf_names(handle_t p, handle_t s, Dwarf_Die die, Dwarf_Error *e) 
 
 int ocdwarf_printf_one(handle_t p, handle_t s, Dwarf_Die die, int level, Dwarf_Error *e) {
   int x = DW_DLV_ERROR;
-  int n = 0;
+  int n0 = 0;
 
   if (isopcode(p)) {
     popcode_t oc = CAST(popcode_t, p);
@@ -188,63 +188,64 @@ int ocdwarf_printf_one(handle_t p, handle_t s, Dwarf_Die die, int level, Dwarf_E
       x = dwarf_diename(die, &name, e);
       if (IS_DLV_ANY_ERROR(x)) {
         printf_e("dwarf_diename, level %d", level);
-        return OCDWARF_ERRCODE(x, n);
+        return OCDWARF_ERRCODE(x, n0);
       }
 
-      n += printf_text(name, USE_LT | USE_EOL);
+      n0 += printf_text(name, USE_LT | USE_EOL);
     }
 
     Dwarf_Half tag = 0;
     x = dwarf_tag(die, &tag, e);
     if (IS_DLV_ANY_ERROR(x)) {
       printf_e("dwarf_tag failed! errcode %d", x);
-      return OCDWARF_ERRCODE(x, n);
+      return OCDWARF_ERRCODE(x, n0);
     }
 
     Dwarf_Off overall_offset = 0;
     x = dwarf_dieoffset(die, &overall_offset, e);
     if (IS_DLV_ANY_ERROR(x)) {
       printf_e("dwarf_dieoffset failed! errcode %d", x);
-      return OCDWARF_ERRCODE(x, n);
+      return OCDWARF_ERRCODE(x, n0);
     }
 
     Dwarf_Off offset = 0;
     x = dwarf_die_CU_offset(die, &offset, e);
     if (IS_DLV_ANY_ERROR(x)) {
       printf_e("dwarf_die_CU_offset failed! errcode %d", x);
-      return OCDWARF_ERRCODE(x, n);
+      return OCDWARF_ERRCODE(x, n0);
     }
 
-    n += printf_text("COMPILE_UNIT<header overall offset =", USE_LT);
-    n += printf_nice(overall_offset - offset, USE_FHEX32 | USE_TBRT | USE_COLON | USE_EOL);
+    n0 += printf_text("COMPILE_UNIT<header overall offset =", USE_LT);
+    n0 += printf_nice(overall_offset - offset, USE_FHEX32 | USE_TBRT | USE_COLON | USE_EOL);
 
-    n += printf_nice(level, USE_DEC2 | USE_TB);
-    n += printf_nice(0xffffffff, USE_FHEX32 | USE_TB);
+    n0 += printf_nice(level, USE_DEC2 | USE_TB);
+    n0 += printf_nice(0xffffffff, USE_FHEX32 | USE_TB);
     if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
-      n += printf_nice(tag, USE_FHEX16);
+      n0 += printf_nice(tag, USE_FHEX16);
     }
-    n += printf_pick(zDWTAG, tag, USE_SPACE | USE_EOL);
+    n0 += printf_pick(zDWTAG, tag, USE_SPACE | USE_EOL);
 
     Dwarf_Signed attrcount = 0;
     Dwarf_Attribute *attrbuf = 0;
     x = dwarf_attrlist(die, &attrbuf, &attrcount, e);
     if (IS_DLV_ANY_ERROR(x)) {
       printf_e("dwarf_attrlist failed! errcode %d", x);
-      return OCDWARF_ERRCODE(x, n);
+      return OCDWARF_ERRCODE(x, n0);
     }
 
     for (Dwarf_Signed i = 0; i < attrcount; ++i) {
-      x = ocdwarf_printf_cu_attr(p, s, i, attrbuf[i], e);
-      if (OCDWARF_ISERRCODE(x)) {
+      int n1 = ocdwarf_printf_cu_attr(p, s, i, attrbuf[i], e);
+      if (OCDWARF_ISERRCODE(n1)) {
+
         ocdwarf_dealloc(p, s, attrbuf, attrcount, 0);
-        return x;
+        return n1;
       }
-      n += x;
+      n0 += n1;
     }
 
     ocdwarf_dealloc(p, s, attrbuf, attrcount, 0);
   }
 
-  return OCDWARF_ERRCODE(x, n);
+  return OCDWARF_ERRCODE(x, n0);
 }
 
