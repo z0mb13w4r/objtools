@@ -18,102 +18,101 @@ int ocdwarf_printf_srcfiles(handle_t p, handle_t s, dwarf_srcfiles_t *sf) {
 Dwarf_Addr low_pc_addr = 0;
 
 int ocdwarf_printf_cu_attr(handle_t p, handle_t s, Dwarf_Signed attridx, Dwarf_Attribute attr, Dwarf_Error *e) {
+  int x = DW_DLV_ERROR;
+  int n = 0;
+
   if (isopcode(p)) {
     popcode_t oc = CAST(popcode_t, p);
 
-    int res = 0;
-
     Dwarf_Half formnum = 0;
-    res = dwarf_whatform(attr, &formnum, e);
-    if (res != DW_DLV_OK) {
-      printf_e("dwarf_whatform failed! res %d", res);
-      return res;
+    x = dwarf_whatform(attr, &formnum, e);
+    if (IS_DLV_ANY_ERROR(x)) {
+      printf_e("dwarf_whatform failed! errcode %d", x);
+      return OCDWARF_ERRCODE(x, n);
     }
 
     Dwarf_Half attrnum = 0;
-    res = dwarf_whatattr(attr, &attrnum, e);
-    if (res != DW_DLV_OK) {
-      printf_e("dwarf_whatattr failed! res %d", res);
-      return res;
+    x = dwarf_whatattr(attr, &attrnum, e);
+    if (IS_DLV_ANY_ERROR(x)) {
+      printf_e("dwarf_whatattr failed! errcode %d", x);
+      return OCDWARF_ERRCODE(x, n);
     }
 
     if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
-      printf_nice(attridx, USE_DEC2 | USE_SB | USE_TAB);
-      printf_nice(attrnum, USE_FHEX16);
+      n += printf_nice(attridx, USE_DEC2 | USE_SB | USE_TAB);
+      n += printf_nice(attrnum, USE_FHEX16);
     } else {
-      printf_pack(8);
+      n += printf_pack(8);
     }
 
-    printf_pick(zDWAT, attrnum, USE_SPACE | SET_PAD(18));
+    n += printf_pick(zDWAT, attrnum, USE_SPACE | SET_PAD(18));
 
     if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
-      printf_nice(formnum, USE_FHEX8);
-      printf_pick(zDWFORM, formnum, USE_SPACE | SET_PAD(22));
+      n += printf_nice(formnum, USE_FHEX8);
+      n += printf_pick(zDWFORM, formnum, USE_SPACE | SET_PAD(22));
     }
 
     if (isused(zFORMSTRING, formnum)) {
       char *str = NULL;
-      res = dwarf_formstring(attr, &str, e);
-      if (res != DW_DLV_OK) {
-        printf_e("dwarf_formstring failed! res %d", res);
-        return res;
+      x = dwarf_formstring(attr, &str, e);
+      if (IS_DLV_ANY_ERROR(x)) {
+        printf_e("dwarf_formstring failed! errcode %d", x);
+        return OCDWARF_ERRCODE(x, n);
       }
 
-      printf_text(str, USE_LT | USE_SPACE);
+      n += printf_text(str, USE_LT | USE_SPACE);
     } else if (isused(zFORMUDATA, formnum)) {
       Dwarf_Unsigned value = 0;
-      res = dwarf_formudata(attr, &value, e);
-      if (res != DW_DLV_OK) {
-        printf_e("dwarf_formudata failed! res %d", res);
-        return res;
+      x = dwarf_formudata(attr, &value, e);
+      if (IS_DLV_ANY_ERROR(x)) {
+        printf_e("dwarf_formudata failed! errcode %d", x);
+        return OCDWARF_ERRCODE(x, n);
       }
 
       if (DW_AT_high_pc == attrnum) {
-        printf_text("offset-from-lowpc", USE_LT | USE_SPACE | USE_TB);
-        printf_nice(value, USE_DEC);
-        printf_text("highpc", USE_LT | USE_SPACE | USE_TBLT | USE_COLON);
-        printf_nice(low_pc_addr + value, USE_FHEX32 | USE_TBRT);
+        n += printf_text("offset-from-lowpc", USE_LT | USE_SPACE | USE_TB);
+        n += printf_nice(value, USE_DEC);
+        n += printf_text("highpc", USE_LT | USE_SPACE | USE_TBLT | USE_COLON);
+        n += printf_nice(low_pc_addr + value, USE_FHEX32 | USE_TBRT);
       } else if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
-        printf_nice(value, USE_FHEX16);
+        n += printf_nice(value, USE_FHEX16);
       }
 
       if (DW_AT_language == attrnum) {
-        printf_pick(zDWLANG, value, USE_SPACE);
+        n += printf_pick(zDWLANG, value, USE_SPACE);
       }
     } else if (isused(zFORMADDR, formnum)) {
       Dwarf_Addr addr = 0;
-      res = dwarf_formaddr(attr, &addr, e);
-      if (res != DW_DLV_OK) {
-        printf_e("dwarf_formaddr failed! res %d", res);
-        return res;
+      x = dwarf_formaddr(attr, &addr, e);
+      if (IS_DLV_ANY_ERROR(x)) {
+        printf_e("dwarf_formaddr failed! errcode %d", x);
+        return OCDWARF_ERRCODE(x, n);
       }
 
       if (DW_AT_low_pc == attrnum) {
         low_pc_addr = addr;
       }
 
-      printf_nice(addr, USE_FHEX32);
+      n += printf_nice(addr, USE_FHEX32);
     } else if (isused(zFORMGREF, formnum)) {
       Dwarf_Unsigned value = 0;
-      res = dwarf_global_formref(attr, &value, e);
-      if (res != DW_DLV_OK) {
-        printf_e("dwarf_global_formref failed! res %d", res);
-        return res;
+      x = dwarf_global_formref(attr, &value, e);
+      if (IS_DLV_ANY_ERROR(x)) {
+        printf_e("dwarf_global_formref failed! errcode %d", x);
+        return OCDWARF_ERRCODE(x, n);
       }
 
-      printf_nice(value, USE_FHEX32);
+      n += printf_nice(value, USE_FHEX32);
     }
 
-    printf_eol();
-
-    return DW_DLV_OK;
+    n += printf_eol();
   }
 
-  return DW_DLV_ERROR;
+  return OCDWARF_ERRCODE(x, n);
 }
 
 static int ocdwarf_printf_name(handle_t p, handle_t s, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_Error *e) {
-  int x = DW_DLV_OK;
+  int x = DW_DLV_ERROR;
   int n = 0;
 
   if (isopcode(p)) {
@@ -187,7 +186,7 @@ int ocdwarf_printf_one(handle_t p, handle_t s, Dwarf_Die die, int level, Dwarf_E
     if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
       char *name = 0;
       x = dwarf_diename(die, &name, e);
-      if (IS_DLV_ERROR(x)) {
+      if (IS_DLV_ANY_ERROR(x)) {
         printf_e("dwarf_diename, level %d", level);
         return OCDWARF_ERRCODE(x, n);
       }
@@ -197,21 +196,21 @@ int ocdwarf_printf_one(handle_t p, handle_t s, Dwarf_Die die, int level, Dwarf_E
 
     Dwarf_Half tag = 0;
     x = dwarf_tag(die, &tag, e);
-    if (IS_DLV_ERROR(x)) {
+    if (IS_DLV_ANY_ERROR(x)) {
       printf_e("dwarf_tag failed! errcode %d", x);
       return OCDWARF_ERRCODE(x, n);
     }
 
     Dwarf_Off overall_offset = 0;
     x = dwarf_dieoffset(die, &overall_offset, e);
-    if (IS_DLV_ERROR(x)) {
+    if (IS_DLV_ANY_ERROR(x)) {
       printf_e("dwarf_dieoffset failed! errcode %d", x);
       return OCDWARF_ERRCODE(x, n);
     }
 
     Dwarf_Off offset = 0;
     x = dwarf_die_CU_offset(die, &offset, e);
-    if (IS_DLV_ERROR(x)) {
+    if (IS_DLV_ANY_ERROR(x)) {
       printf_e("dwarf_die_CU_offset failed! errcode %d", x);
       return OCDWARF_ERRCODE(x, n);
     }
@@ -229,7 +228,7 @@ int ocdwarf_printf_one(handle_t p, handle_t s, Dwarf_Die die, int level, Dwarf_E
     Dwarf_Signed attrcount = 0;
     Dwarf_Attribute *attrbuf = 0;
     x = dwarf_attrlist(die, &attrbuf, &attrcount, e);
-    if (IS_DLV_ERROR(x)) {
+    if (IS_DLV_ANY_ERROR(x)) {
       printf_e("dwarf_attrlist failed! errcode %d", x);
       return OCDWARF_ERRCODE(x, n);
     }
@@ -240,6 +239,7 @@ int ocdwarf_printf_one(handle_t p, handle_t s, Dwarf_Die die, int level, Dwarf_E
         ocdwarf_dealloc(p, s, attrbuf, attrcount, 0);
         return x;
       }
+      n += x;
     }
 
     ocdwarf_dealloc(p, s, attrbuf, attrcount, 0);
