@@ -562,7 +562,7 @@ static int ocdwarf_do(handle_t p, handle_t s, Dwarf_Error *e) {
 
 //      res = ocdwarf_die_and_siblings(p, s, cu_die, is_info, level, &sf, e);
       res = ocdwarf_printf_one(p, s, cu_die, level, e);
-      if (res != DW_DLV_OK) {
+      if (OCDWARF_ISERRCODE(res)) {
         dwarf_dealloc_die(cu_die);
         printf_e("ocdwarf_one_die failed! %d", res);
         return res;
