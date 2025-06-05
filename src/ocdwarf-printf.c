@@ -187,7 +187,7 @@ int ocdwarf_printf_one(handle_t p, handle_t s, Dwarf_Die die, int level, Dwarf_E
       char *name = 0;
       x = dwarf_diename(die, &name, e);
       if (IS_DLV_ANY_ERROR(x)) {
-        printf_e("dwarf_diename, level %d", level);
+        printf_e("dwarf_diename, errcode %d", x);
         return OCDWARF_ERRCODE(x, n0);
       }
 
@@ -236,7 +236,6 @@ int ocdwarf_printf_one(handle_t p, handle_t s, Dwarf_Die die, int level, Dwarf_E
     for (Dwarf_Signed i = 0; i < attrcount; ++i) {
       int n1 = ocdwarf_printf_cu_attr(p, s, i, attrbuf[i], e);
       if (OCDWARF_ISERRCODE(n1)) {
-
         ocdwarf_dealloc(p, s, attrbuf, attrcount, 0);
         return n1;
       }

@@ -361,53 +361,54 @@ void ocdwarf_dealloc(handle_t p, handle_t s, Dwarf_Attribute *a, Dwarf_Signed si
 
 static int ocdwarf_printf_cu(handle_t p, handle_t s, Dwarf_Die die,
                   Dwarf_Bool isinfo, int level, dwarf_srcfiles_t *sf, Dwarf_Error *e) {
+  int x = DW_DLV_ERROR;
+  int n0 = 0;
+
   if (isopcode(p) && sf) {
     popcode_t oc = CAST(popcode_t, p);
-    int res = DW_DLV_OK;
 
     Dwarf_Off overall_offset = 0;
-    res = dwarf_dieoffset(die, &overall_offset, e);
-    if (res != DW_DLV_OK) {
-      printf_e("dwarf_dieoffset failed! res %d", res);
-      return res;
+    x = dwarf_dieoffset(die, &overall_offset, e);
+    if (IS_DLV_ANY_ERROR(x)) {
+      printf_e("dwarf_dieoffset failed! errcode %d", x);
+      return OCDWARF_ERRCODE(x, n0);
     }
 
     Dwarf_Off offset = 0;
-    res = dwarf_die_CU_offset(die, &offset, e);
-    if (res != DW_DLV_OK) {
-      printf_e("dwarf_die_CU_offset failed! res %d", res);
-      return res;
+    x = dwarf_die_CU_offset(die, &offset, e);
+    if (IS_DLV_ANY_ERROR(x)) {
+      printf_e("dwarf_die_CU_offset failed! res %d", x);
+      return OCDWARF_ERRCODE(x, n0);
     }
 
-    printf_text("COMPILE_UNIT<header overall offset =", USE_LT);
-    printf_nice(overall_offset - offset, USE_FHEX32 | USE_TBRT | USE_COLON | USE_EOL);
+    n0 += printf_text("COMPILE_UNIT<header overall offset =", USE_LT);
+    n0 += printf_nice(overall_offset - offset, USE_FHEX32 | USE_TBRT | USE_COLON | USE_EOL);
 
     Dwarf_Signed attrcount = 0;
     Dwarf_Attribute *attrbuf = 0;
-    res = dwarf_attrlist(die, &attrbuf ,&attrcount, e);
-    if (res != DW_DLV_OK) return res;
+    x = dwarf_attrlist(die, &attrbuf ,&attrcount, e);
+    if (IS_DLV_ANY_ERROR(x)) return OCDWARF_ERRCODE(x, n0);
 
     sf->status = dwarf_srcfiles(die, &sf->data, &sf->size, e);
     for (Dwarf_Signed i = 0; i < attrcount ; ++i) {
-      res = ocdwarf_printf_cu_attr(p, s, i, attrbuf[i], e);
-      if (res != DW_DLV_OK) {
+      int n1 = ocdwarf_printf_cu_attr(p, s, i, attrbuf[i], e);
+      if (OCDWARF_ISERRCODE(n1)) {
         ocdwarf_dealloc(p, s, attrbuf, attrcount, 0);
-        printf("ocdwarf_printf_cu_attr failed! res %d", res);
-        return res;
+        return n1;
       }
 
       dwarf_dealloc(oc->items[OPCODE_DWARF], attrbuf[i], DW_DLA_ATTR);
+      n0 += n1;
     }
 
     if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
-      ocdwarf_printf_srcfiles(p, s, sf);
+      n0 += ocdwarf_printf_srcfiles(p, s, sf);
     }
 
     dwarf_dealloc(oc->items[OPCODE_DWARF], attrbuf, DW_DLA_LIST);
-    return DW_DLV_OK;
   }
 
-  return DW_DLV_ERROR;
+  return OCDWARF_ERRCODE(x, n0);
 }
 
 static int ocdwarf_printf_data(handle_t p, handle_t s, Dwarf_Die die,
@@ -532,25 +533,27 @@ static int ocdwarf_do(handle_t p, handle_t s, Dwarf_Error *e) {
       int res = dwarf_next_cu_header_d(oc->items[OPCODE_DWARF], is_info,
                   &cu_header_length, &cu_version_stamp, &abbrev_offset, &address_size, &cu_offset_size, &extension_size,
                   &type_signature, &typeoffset, &next_cu_header_offset, &header_cu_type, e);
-      if (res == DW_DLV_NO_ENTRY) break;
-      else if (res != DW_DLV_OK) {
-        if (res == DW_DLV_ERROR) {
+      if (IS_DLV_NO_ENTRY(res)) break;
+      else if (IS_DLV_ANY_ERROR(res)) {
+        if (IS_DLV_ERROR(res)) {
           printf_e("dwarf errmsg: %s", dwarf_errmsg(*e));
         }
         printf_x("Next cu header result %d, line %d", res, __LINE__);
       }
 
-      printf("CU header length..........0x%lx\n", (unsigned long)cu_header_length);
-      printf("Version stamp.............%d\n", cu_version_stamp);
-      printf("Address size .............%d\n",address_size);
-      printf("Offset size...............%d\n", cu_offset_size);
-      printf("Next cu header offset.....0x%lx\n", (unsigned long)next_cu_header_offset);
+      if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
+        printf("CU header length..........0x%lx\n", (unsigned long)cu_header_length);
+        printf("Version stamp.............%d\n", cu_version_stamp);
+        printf("Address size .............%d\n",address_size);
+        printf("Offset size...............%d\n", cu_offset_size);
+        printf("Next cu header offset.....0x%lx\n", (unsigned long)next_cu_header_offset);
+      }
 
       res = dwarf_siblingof_b(oc->items[OPCODE_DWARF], no_die, is_info, &cu_die, e);
-      if (DW_DLV_NO_ENTRY == res) return DW_DLV_OK;
-      else if (res != DW_DLV_OK) {
+      if (IS_DLV_NO_ENTRY(res)) return DW_DLV_OK;
+      else if (IS_DLV_ANY_ERROR(res)) {
         /* There is no CU die, which should be impossible. */
-        if (res == DW_DLV_ERROR) {
+        if (IS_DLV_ERROR(res)) {
           printf_e("dwarf errmsg: %s", dwarf_errmsg(*e));
           printf_e("dwarf_siblingof_b failed, no CU die");
           return res;
@@ -560,8 +563,8 @@ static int ocdwarf_do(handle_t p, handle_t s, Dwarf_Error *e) {
         }
       }
 
-//      res = ocdwarf_die_and_siblings(p, s, cu_die, is_info, level, &sf, e);
-      res = ocdwarf_printf_one(p, s, cu_die, level, e);
+      res = ocdwarf_die_and_siblings(p, s, cu_die, is_info, level, &sf, e);
+//      res = ocdwarf_printf_one(p, s, cu_die, level, e);
       if (OCDWARF_ISERRCODE(res)) {
         dwarf_dealloc_die(cu_die);
         printf_e("ocdwarf_printf_one failed! %d", res);
