@@ -9,6 +9,9 @@
 
 #include "static/color.ci"
 
+#define STDERR stdout
+#define STDOUT stdout
+
 #define MAX_BUFFER_SIZE  (1024)
 #define MAX_PADDING_SIZE (256)
 
@@ -22,7 +25,7 @@ static int printf_post(const char* o, const imode_t mode) {
 
   if (o) {
     n += printf_color(mode);
-    fprintf(stdout, "%s", o);
+    fprintf(STDOUT, "%s", o);
     n += printf_color(GET_COLOR(mode) ? USE_RESET : 0);
   }
 
@@ -292,11 +295,11 @@ int printf_neat(char* o, const size_t size, const uint64_t v, const imode_t mode
 }
 
 int printf_eol() {
-  return fprintf(stdout, "\n");
+  return fprintf(STDOUT, "\n");
 }
 
 int printf_pack(const int size) {
-  return size <= 0 ? 0 : fprintf(stdout, "%*s", size, " ");
+  return size <= 0 ? 0 : fprintf(STDOUT, "%*s", size, " ");
 }
 
 int printf_nice(const uint64_t v, const imode_t mode) {
@@ -744,10 +747,10 @@ int printf_d(const char* format, ...) {
   va_end(pVAList);
 
   if (errname[0]) {
-    return fprintf(stdout, "%s: DEBUG: %s\n\n", errname, data);
+    return fprintf(STDOUT, "%s: DEBUG: %s\n\n", errname, data);
   }
 
-  return fprintf(stdout, "DEBUG: %s\n\n", data);
+  return fprintf(STDOUT, "DEBUG: %s\n\n", data);
 }
 
 int printf_e(const char* format, ...) {
@@ -759,10 +762,10 @@ int printf_e(const char* format, ...) {
   va_end(pVAList);
 
   if (errname[0]) {
-    return fprintf(stdout, "%s: ERROR: %s\n\n", errname, data);
+    return fprintf(STDERR, "%s: ERROR: %s\n\n", errname, data);
   }
 
-  return fprintf(stdout, "ERROR: %s\n\n", data);
+  return fprintf(STDERR, "ERROR: %s\n\n", data);
 }
 
 int printf_i(const char* format, ...) {
@@ -774,10 +777,10 @@ int printf_i(const char* format, ...) {
   va_end(pVAList);
 
   if (errname[0]) {
-    return fprintf(stdout, "%s: INFO: %s\n\n", errname, data);
+    return fprintf(STDOUT, "%s: INFO: %s\n\n", errname, data);
   }
 
-  return fprintf(stdout, "INFO: %s\n\n", data);
+  return fprintf(STDOUT, "INFO: %s\n\n", data);
 }
 
 int printf_w(const char* format, ...) {
@@ -789,10 +792,10 @@ int printf_w(const char* format, ...) {
   va_end(pVAList);
 
   if (errname[0]) {
-    return fprintf(stdout, "%s: WARNING: %s\n\n", errname, data);
+    return fprintf(STDOUT, "%s: WARNING: %s\n\n", errname, data);
   }
 
-  return fprintf(stdout, "WARNING: %s\n\n", data);
+  return fprintf(STDOUT, "WARNING: %s\n\n", data);
 }
 
 void printf_x(const char* format, ...) {
@@ -804,9 +807,9 @@ void printf_x(const char* format, ...) {
   va_end(pVAList);
 
   if (errname[0]) {
-    fprintf(stdout, "%s: FAIL: %s\n\n", errname, data);
+    fprintf(STDERR, "%s: FAIL: %s\n\n", errname, data);
   } else {
-    fprintf(stdout, "ERROR: %s\n\n", data);
+    fprintf(STDERR, "ERROR: %s\n\n", data);
   }
 
   exit(EXIT_FAILURE);
