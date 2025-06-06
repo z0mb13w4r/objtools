@@ -759,10 +759,10 @@ int printf_e(const char* format, ...) {
   va_end(pVAList);
 
   if (errname[0]) {
-    return fprintf(stderr, "%s: ERROR: %s\n\n", errname, data);
+    return fprintf(stdout, "%s: ERROR: %s\n\n", errname, data);
   }
 
-  return fprintf(stderr, "ERROR: %s\n\n", data);
+  return fprintf(stdout, "ERROR: %s\n\n", data);
 }
 
 int printf_i(const char* format, ...) {
@@ -804,9 +804,9 @@ void printf_x(const char* format, ...) {
   va_end(pVAList);
 
   if (errname[0]) {
-    fprintf(stderr, "%s: FAIL: %s\n\n", errname, data);
+    fprintf(stdout, "%s: FAIL: %s\n\n", errname, data);
   } else {
-    fprintf(stderr, "ERROR: %s\n\n", data);
+    fprintf(stdout, "ERROR: %s\n\n", data);
   }
 
   exit(EXIT_FAILURE);
