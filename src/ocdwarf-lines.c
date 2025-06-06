@@ -3,7 +3,7 @@
 #include "options.h"
 #include "ocdwarf-lines.h"
 
-int ocdwarf_dodebug_line(handle_t p, handle_t s, handle_t d) {
+int ocdwarf_debug_line(handle_t p, handle_t s, handle_t d) {
   int n = 0;
   if (isopcode(p)) {
     popcode_t p0 = CAST(popcode_t, p);

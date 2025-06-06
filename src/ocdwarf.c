@@ -13,9 +13,9 @@
 
 static const Dwarf_Sig8 zerosignature;
 
-static int ocdwarf_dodebug_abbrev(handle_t p, handle_t s, handle_t d) { return 0; }
+static int ocdwarf_debug_abbrev(handle_t p, handle_t s, handle_t d) { return 0; }
 
-static int ocdwarf_dodebug_aranges(handle_t p, handle_t s, handle_t d) {
+static int ocdwarf_debug_aranges(handle_t p, handle_t s, handle_t d) {
   printf_text("Length", USE_LT | USE_SPACE | USE_COLON | USE_EOL);
   printf_text("Version", USE_LT | USE_SPACE | USE_COLON | USE_EOL);
   printf_text("Offset into .debug_info", USE_LT | USE_SPACE | USE_COLON | USE_EOL);
@@ -27,10 +27,10 @@ static int ocdwarf_dodebug_aranges(handle_t p, handle_t s, handle_t d) {
   return 0;
 }
 
-static int ocdwarf_dodebug_str(handle_t p, handle_t s, handle_t d) { return 0; }
-static int ocdwarf_dodebug_stroffset(handle_t p, handle_t s, handle_t d) { return 0; }
-static int ocdwarf_dodebug_types(handle_t p, handle_t s, handle_t d) { return 0; }
-static int ocdwarf_doeh_frame(handle_t p, handle_t s, handle_t d) { return 0; }
+static int ocdwarf_debug_str(handle_t p, handle_t s, handle_t d) { return 0; }
+static int ocdwarf_debug_stroffset(handle_t p, handle_t s, handle_t d) { return 0; }
+static int ocdwarf_debug_types(handle_t p, handle_t s, handle_t d) { return 0; }
+static int ocdwarf_eh_frame(handle_t p, handle_t s, handle_t d) { return 0; }
 
 #include "static/dwarf.ci"
 
