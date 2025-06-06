@@ -120,3 +120,26 @@ int ocdwarf_debug_macroinfo4a(handle_t p, handle_t s, handle_t d, const uint16_t
   return n;
 }
 
+int ocdwarf_debug_macroinfo(handle_t p, handle_t s, handle_t d) {
+  int n = 0;
+  n += ocdwarf_debug_macroinfo0a(p, s, d, 0x00000000, 0x0000000b, 0, 4, 232, 803);
+  n += ocdwarf_debug_macroinfo1a(p, s, d, 0, 0x07, 0x0000032a, 1, 4);
+  n += ocdwarf_debug_macroinfo2a(p, s, d, 1, 0x03, 0, 1, "/media/SHYLA/objtools/misc/debugLINUX64/../../src/example.c");
+  n += ocdwarf_debug_macroinfo2a(p, s, d, 2, 0x03, 0, 9, "/usr/include/stdc-predef.h");
+  n += ocdwarf_debug_macroinfo1a(p, s, d, 3, 0x07, 0x00000b4a, 1, 4);
+  n += ocdwarf_debug_macroinfo3a(p, s, d, 4, 0x04);
+  n += ocdwarf_debug_macroinfo4a(p, s, d, 6, 0x05, 23, 0x0000230a, "_CTYPE_H 1");
+  n += ocdwarf_debug_macroinfo4a(p, s, d, 40, 0x06, 225, 0x0000061c, "__STD_TYPE");
+  n += printf_eol();
+
+  n += ocdwarf_debug_macroinfo0b(p, s, d, 0x0000032a, 0, 4, 347, 2077);
+  n += ocdwarf_debug_macroinfo4a(p, s, d, 0, 0x05, 0, 0x00003ba7, "__STDC__ 1");
+
+//  printf_text("Offset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE) | USE_EOL);
+//  printf_text("Version", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE) | USE_EOL);
+//  printf_text("Offset size", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE) | USE_EOL);
+//  printf_text("Offset into", USE_LT | USE_TAB | SET_PAD(MAXSIZE) | USE_EOL);
+
+  return n;
+}
+

@@ -16,5 +16,7 @@ int ocdwarf_debug_macroinfo3a(handle_t p, handle_t s, handle_t d, const uint16_t
 int ocdwarf_debug_macroinfo4a(handle_t p, handle_t s, handle_t d, const uint16_t idx, const uint8_t pick, const uint16_t lineno,
                               const uint32_t offset, const char* name);
 
+int ocdwarf_debug_macroinfo(handle_t p, handle_t s, handle_t d);
+
 #endif
 
