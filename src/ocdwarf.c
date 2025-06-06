@@ -5,28 +5,14 @@
 #include "ocdwarf-info.h"
 #include "ocdwarf-lines.h"
 #include "ocdwarf-printf.h"
+#include "ocdwarf-aranges.h"
 #include "ocdwarf-macroinfo.h"
 
 #include <fcntl.h>
 
-//static const int MAXSIZE = 31;
-
 static const Dwarf_Sig8 zerosignature;
 
 static int ocdwarf_debug_abbrev(handle_t p, handle_t s, handle_t d) { return 0; }
-
-static int ocdwarf_debug_aranges(handle_t p, handle_t s, handle_t d) {
-  printf_text("Length", USE_LT | USE_SPACE | USE_COLON | USE_EOL);
-  printf_text("Version", USE_LT | USE_SPACE | USE_COLON | USE_EOL);
-  printf_text("Offset into .debug_info", USE_LT | USE_SPACE | USE_COLON | USE_EOL);
-  printf_text("Pointer Size", USE_LT | USE_SPACE | USE_COLON | USE_EOL);
-  printf_text("Segment Size", USE_LT | USE_SPACE | USE_COLON | USE_EOL);
-
-  printf_text("Address Length", USE_LT | USE_TAB | USE_EOL);
-
-  return 0;
-}
-
 static int ocdwarf_debug_str(handle_t p, handle_t s, handle_t d) { return 0; }
 static int ocdwarf_debug_stroffset(handle_t p, handle_t s, handle_t d) { return 0; }
 static int ocdwarf_debug_types(handle_t p, handle_t s, handle_t d) { return 0; }
