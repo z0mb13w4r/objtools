@@ -10,6 +10,8 @@
 
 #include <fcntl.h>
 
+static const int MAXSIZE = 23;
+
 static const Dwarf_Sig8 zerosignature;
 
 static int ocdwarf_debug_abbrev(handle_t p, handle_t s, handle_t d) { return 0; }
@@ -461,11 +463,16 @@ static int ocdwarf_do(handle_t p, handle_t s, Dwarf_Error *e) {
       }
 
       if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
-        printf("CU header length..........0x%lx\n", (unsigned long)cu_header_length);
-        printf("Version stamp.............%d\n", cu_version_stamp);
-        printf("Address size .............%d\n",address_size);
-        printf("Offset size...............%d\n", cu_offset_size);
-        printf("Next cu header offset.....0x%lx\n", (unsigned long)next_cu_header_offset);
+        printf_text("CU header length", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
+        printf_nice(cu_header_length, USE_FHEX | USE_EOL);
+        printf_text("Version stamp", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
+        printf_nice(cu_version_stamp, USE_DEC | USE_EOL);
+        printf_text("Address size", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
+        printf_nice(address_size, USE_DEC | USE_EOL);
+        printf_text("Offset size", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
+        printf_nice(cu_offset_size, USE_DEC | USE_EOL);
+        printf_text("Next cu header offset", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
+        printf_nice(next_cu_header_offset, USE_FHEX | USE_EOL);
       }
 
       res = dwarf_siblingof_b(oc->items[OPCODE_DWARF], no_die, is_info, &cu_die, e);
