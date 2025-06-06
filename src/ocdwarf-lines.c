@@ -4,6 +4,7 @@
 #include "ocdwarf-lines.h"
 
 int ocdwarf_dodebug_line(handle_t p, handle_t s, handle_t d) {
+  int n = 0;
   if (isopcode(p)) {
     popcode_t p0 = CAST(popcode_t, p);
     if (MODE_ISSET(p0->ocdump, OPTDEBUGELF_DEBUG_LINE)) {
@@ -33,6 +34,6 @@ int ocdwarf_dodebug_line(handle_t p, handle_t s, handle_t d) {
     }
   }
 
-  return 0;
+  return n;
 }
 

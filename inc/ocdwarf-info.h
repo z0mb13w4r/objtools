@@ -3,5 +3,7 @@
 
 #include "ocdwarf.h"
 
+int ocdwarf_dodebug_info(handle_t p, handle_t s, handle_t d);
+
 #endif
 
