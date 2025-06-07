@@ -421,11 +421,50 @@ static int ocdwarf_printf_data(handle_t p, handle_t s, Dwarf_Die die,
 
 static int ocdwarf_die_and_siblings(handle_t p, handle_t s, Dwarf_Die die,
                   Dwarf_Bool isinfo, int level, dwarf_srcfiles_t *sf, Dwarf_Error *e) {
+  Dwarf_Die cur_die = die;
+  int x = DW_DLV_ERROR;
+  int n0 = 0;
+  int n1 = 0;
+
   if (isopcode(p)) {
-    return ocdwarf_printf_data(p, s, die, isinfo, level, sf, e);
+    popcode_t oc = CAST(popcode_t, p);
+    n1 = ocdwarf_printf_data(p, s, die, isinfo, level, sf, e);
+
+    for ( ; ; ) {
+      Dwarf_Die child = 0;
+      x = dwarf_child(cur_die, &child, e);
+      if (IS_DLV_ERROR(x)) {
+        dwarf_dealloc_die(cur_die);
+        if (e) {
+          dwarf_dealloc_error(oc->items[OPCODE_DWARF], *e);
+        }
+        dwarf_finish(oc->items[OPCODE_DWARF]);
+        printf_x("dwarf_child, level %d", level);
+      } else if (IS_DLV_OK(x)) {
+        n0 += ocdwarf_die_and_siblings(p, s, child, isinfo, level + 1, sf, e);
+        dwarf_dealloc_die(child);
+        child = 0;
+      }
+      /* x == DW_DLV_NO_ENTRY or DW_DLV_OK */
+      Dwarf_Die sib_die = 0;
+      x = dwarf_siblingof_b(oc->items[OPCODE_DWARF], cur_die, isinfo, &sib_die, e);
+      if (IS_DLV_NO_ENTRY(x)) break;
+      else if (IS_DLV_ERROR(x)) {
+        if (e) {
+          printf_e("errcode = %d, errmessage = %s", dwarf_errmsg(*e));
+        }
+        dwarf_finish(oc->items[OPCODE_DWARF]);
+        printf_x("dwarf_siblingof_b, level %d", level);
+      }
+      if (cur_die != die) {
+        dwarf_dealloc_die(cur_die);
+      }
+      cur_die = sib_die;
+      n1 = ocdwarf_printf_data(p, s, cur_die, isinfo, level, sf, e);
+    }
   }
 
-  return DW_DLV_ERROR;
+  return OCDWARF_ERRCODE(x, n0);
 }
 
 static int ocdwarf_do(handle_t p, handle_t s, Dwarf_Error *e) {
