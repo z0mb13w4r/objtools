@@ -352,8 +352,6 @@ static int ocdwarf_printf_data(handle_t p, handle_t s, Dwarf_Die die,
       name = "<no DW_AT_name attr>";
     }
 
-    n += printf_text(name, USE_LT | USE_EOL);
-
     Dwarf_Half tag = 0;
     x = dwarf_tag(die, &tag, e);
     if (IS_DLV_ANY_ERROR(x)) {
@@ -400,8 +398,9 @@ static int ocdwarf_printf_data(handle_t p, handle_t s, Dwarf_Die die,
     } else {
       n += ocdwarf_printf_idx(p, level, USE_NONE);
       n += ocdwarf_printf_addr(p, 0xffffffff, USE_NONE);
-      n += ocdwarf_printf_tag(p, tag, USE_EOL);
-      printf(" name: \"%s\"", name);
+      n += ocdwarf_printf_tag(p, tag, USE_NONE);
+      n += printf_text(name, USE_LT | USE_SPACE | USE_SQ);
+      n += printf_eol();
       if (formname) {
         printf(" FORM 0x%x \"%s\"", formnum, formname);
       }
