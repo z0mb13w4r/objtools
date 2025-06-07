@@ -1,6 +1,27 @@
 #include "options.h"
 #include "ocdwarf-printf.h"
 
+int ocdwarf_printf_idx(handle_t p, const uint64_t v, const imode_t mode) {
+  return printf_nice(v, USE_DEC2 | USE_TB | mode);
+}
+
+int ocdwarf_printf_tag(handle_t p, const uint64_t v, const imode_t mode) {
+  int n = 0;
+  if (isopcode(p)) {
+    popcode_t oc = CAST(popcode_t, p);
+    if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
+      n += printf_nice(v, USE_FHEX16);
+    }
+    n += printf_pick(zDWTAG, v, USE_SPACE | mode);
+  }
+
+  return n;
+}
+
+int ocdwarf_printf_addr(handle_t p, const uint64_t v, const imode_t mode) {
+  return printf_nice(v, USE_FHEX32 | USE_TB | mode);
+}
+
 int ocdwarf_printf_srcfiles(handle_t p, handle_t s, dwarf_srcfiles_t *sf) {
   int n = 0;
   if (isopcode(p)) {
@@ -217,13 +238,9 @@ int ocdwarf_printf_one(handle_t p, handle_t s, Dwarf_Die die, int level, Dwarf_E
 
     n0 += printf_text("COMPILE_UNIT<header overall offset =", USE_LT);
     n0 += printf_nice(overall_offset - offset, USE_FHEX32 | USE_TBRT | USE_COLON | USE_EOL);
-
-    n0 += printf_nice(level, USE_DEC2 | USE_TB);
-    n0 += printf_nice(0xffffffff, USE_FHEX32 | USE_TB);
-    if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
-      n0 += printf_nice(tag, USE_FHEX16);
-    }
-    n0 += printf_pick(zDWTAG, tag, USE_SPACE | USE_EOL);
+    n0 += ocdwarf_printf_idx(p, level, USE_NONE);
+    n0 += ocdwarf_printf_addr(p, 0xffffffff, USE_NONE);
+    n0 += ocdwarf_printf_tag(p, tag, USE_EOL);
 
     Dwarf_Signed attrcount = 0;
     Dwarf_Attribute *attrbuf = 0;

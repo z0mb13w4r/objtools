@@ -280,7 +280,7 @@ void ocdwarf_dealloc(handle_t p, handle_t s, Dwarf_Attribute *a, Dwarf_Signed si
   }
 }
 
-static int ocdwarf_printf_cu(handle_t p, handle_t s, Dwarf_Die die,
+static int ocdwarf_printf_cu(handle_t p, handle_t s, Dwarf_Die die, Dwarf_Half tag,
                   Dwarf_Bool isinfo, int level, dwarf_srcfiles_t *sf, Dwarf_Error *e) {
   int x = DW_DLV_ERROR;
   int n0 = 0;
@@ -304,6 +304,9 @@ static int ocdwarf_printf_cu(handle_t p, handle_t s, Dwarf_Die die,
 
     n0 += printf_text("COMPILE_UNIT<header overall offset =", USE_LT);
     n0 += printf_nice(overall_offset - offset, USE_FHEX32 | USE_TBRT | USE_COLON | USE_EOL);
+    n0 += ocdwarf_printf_idx(p, level, USE_NONE);
+    n0 += ocdwarf_printf_addr(p, 0xffffffff, USE_NONE);
+    n0 += ocdwarf_printf_tag(p, tag, USE_EOL);
 
     Dwarf_Signed attrcount = 0;
     Dwarf_Attribute *attrbuf = 0;
@@ -361,18 +364,6 @@ static int ocdwarf_printf_data(handle_t p, handle_t s, Dwarf_Die die,
       printf_x("dwarf_tag, level %d", level);
     }
 
-    const char *tagname = 0;
-    x = dwarf_get_TAG_name(tag, &tagname);
-    if (IS_DLV_ANY_ERROR(x)) {
-      if (IS_DLV_ERROR(x) && e) {
-        dwarf_dealloc_error(oc->items[OPCODE_DWARF], *e);
-      }
-
-      dwarf_object_finish(oc->items[OPCODE_DWARF]);
-      printf_x("dwarf_get_TAG_name, level %d", level);
-    }
-
-    n += printf_text(tagname, USE_LT | USE_EOL);
     n += ocdwarf_printf_names(p, s, die, e);
 
     Dwarf_Half formnum = 0;
@@ -405,9 +396,12 @@ static int ocdwarf_printf_data(handle_t p, handle_t s, Dwarf_Die die,
     } else if (tag == DW_TAG_compile_unit || tag == DW_TAG_partial_unit || tag == DW_TAG_type_unit) {
       ocdwarf_sfreset(p, s, sf);
       printf("<%3d> source file           : \"%s\"\n", level, name);
-      n += ocdwarf_printf_cu(p, s, die, isinfo, level, sf, e);
+      n += ocdwarf_printf_cu(p, s, die, tag, isinfo, level, sf, e);
     } else {
-      printf("<%d> tag: %d %s  name: \"%s\"", level, tag, tagname, name);
+      n += ocdwarf_printf_idx(p, level, USE_NONE);
+      n += ocdwarf_printf_addr(p, 0xffffffff, USE_NONE);
+      n += ocdwarf_printf_tag(p, tag, USE_EOL);
+      printf(" name: \"%s\"", name);
       if (formname) {
         printf(" FORM 0x%x \"%s\"", formnum, formname);
       }

@@ -98,6 +98,8 @@
 #define SET_COLOR(x)      SET_XX4(x, 24)
 #define SET_FLAG(x)       SET_XX4(x, 28)
 
+#define USE_NONE          (0)
+
 #define USE_LT            SET_FORMAT(1)
 #define USE_RT            SET_FORMAT(2)
 #define USE_FORMATMASK    SET_FORMAT(3)
