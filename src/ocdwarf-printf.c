@@ -256,6 +256,7 @@ int ocdwarf_printf_value(handle_t p, Dwarf_Die die, Dwarf_Half nattr, Dwarf_Erro
   if (isopcode(p)) {
     popcode_t oc = CAST(popcode_t, p);
 
+    n += printf_pack(4);
     n += ocdwarf_printf_AT(p, nattr, USE_NONE);
 
     Dwarf_Half nform = 0;
@@ -305,6 +306,8 @@ int ocdwarf_printf_value(handle_t p, Dwarf_Die die, Dwarf_Half nattr, Dwarf_Erro
         n += ocdwarf_printf_ATE(p, value, USE_NONE);
       } else if (isused(zATDEC, nattr)) {
         n += printf_nice(value, USE_DEC);
+      } else if (isused(zATHEX32, nattr)) {
+        n += printf_nice(value, USE_FHEX32);
       } else {
         n += printf_nice(value, USE_FHEX16);
       }

@@ -387,6 +387,13 @@ static int ocdwarf_printf_data(handle_t p, handle_t s, Dwarf_Die die,
         n += ocdwarf_printf_value(p, die, DW_AT_name, e);
       } else if (DW_TAG_typedef == tag) {
         n += ocdwarf_printf_value(p, die, DW_AT_name, e);
+        n += ocdwarf_printf_value(p, die, DW_AT_decl_file, e); // TBD
+        n += ocdwarf_printf_value(p, die, DW_AT_decl_line, e);
+        n += ocdwarf_printf_value(p, die, DW_AT_decl_column, e);
+        n += ocdwarf_printf_value(p, die, DW_AT_type, e); // TBD
+      } else if (DW_TAG_enumerator == tag) {
+        n += ocdwarf_printf_value(p, die, DW_AT_name, e);
+        n += ocdwarf_printf_value(p, die, DW_AT_const_value, e);
       } else {
         n += ocdwarf_printf_value(p, die, DW_AT_name, e);
       }
