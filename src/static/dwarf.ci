@@ -817,6 +817,7 @@ convert_t zDWUT[] = {
 pick_t zATDEC[] = {
   DW_AT_byte_size,
   DW_AT_const_value,
+  DW_AT_data_member_location,
   PICK_END
 };
 
