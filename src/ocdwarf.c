@@ -385,6 +385,8 @@ static int ocdwarf_printf_data(handle_t p, handle_t s, Dwarf_Die die,
         n += ocdwarf_printf_value(p, die, DW_AT_byte_size, e);
         n += ocdwarf_printf_value(p, die, DW_AT_encoding, e);
         n += ocdwarf_printf_value(p, die, DW_AT_name, e);
+      } else if (DW_TAG_const_type == tag) {
+        n += ocdwarf_printf_value(p, die, DW_AT_type, e);
       } else if (DW_TAG_typedef == tag) {
         n += ocdwarf_printf_value(p, die, DW_AT_name, e);
         n += ocdwarf_printf_value(p, die, DW_AT_decl_file, e); // TBD
@@ -409,6 +411,7 @@ static int ocdwarf_printf_data(handle_t p, handle_t s, Dwarf_Die die,
         n += ocdwarf_printf_value(p, die, DW_AT_decl_line, e);
         n += ocdwarf_printf_value(p, die, DW_AT_decl_column, e);
         n += ocdwarf_printf_value(p, die, DW_AT_sibling, e);
+        n += ocdwarf_printf_value(p, die, DW_AT_declaration, e);
       } else if (DW_TAG_pointer_type == tag) {
         n += ocdwarf_printf_value(p, die, DW_AT_byte_size, e);
         n += ocdwarf_printf_value(p, die, DW_AT_type, e);
@@ -419,6 +422,21 @@ static int ocdwarf_printf_data(handle_t p, handle_t s, Dwarf_Die die,
         n += ocdwarf_printf_value(p, die, DW_AT_decl_column, e);
         n += ocdwarf_printf_value(p, die, DW_AT_type, e);
         n += ocdwarf_printf_value(p, die, DW_AT_data_member_location, e);
+      } else if (DW_TAG_array_type == tag) {
+        n += ocdwarf_printf_value(p, die, DW_AT_type, e);
+        n += ocdwarf_printf_value(p, die, DW_AT_sibling, e);
+      } else if (DW_TAG_subrange_type == tag) {
+        n += ocdwarf_printf_value(p, die, DW_AT_type, e);
+        n += ocdwarf_printf_value(p, die, DW_AT_upper_bound, e);
+      } else if (DW_TAG_variable == tag) {
+        n += ocdwarf_printf_value(p, die, DW_AT_name, e);
+        n += ocdwarf_printf_value(p, die, DW_AT_decl_file, e);
+        n += ocdwarf_printf_value(p, die, DW_AT_decl_line, e);
+        n += ocdwarf_printf_value(p, die, DW_AT_decl_column, e);
+        n += ocdwarf_printf_value(p, die, DW_AT_type, e);
+        n += ocdwarf_printf_value(p, die, DW_AT_external, e);
+        n += ocdwarf_printf_value(p, die, DW_AT_location, e);
+        n += ocdwarf_printf_value(p, die, DW_AT_declaration, e);
       } else {
         n += ocdwarf_printf_value(p, die, DW_AT_name, e);
       }

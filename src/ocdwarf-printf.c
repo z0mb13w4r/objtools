@@ -256,13 +256,13 @@ int ocdwarf_printf_value(handle_t p, Dwarf_Die die, Dwarf_Half nattr, Dwarf_Erro
   if (isopcode(p)) {
     popcode_t oc = CAST(popcode_t, p);
 
-    n += printf_pack(4);
-    n += ocdwarf_printf_AT(p, nattr, USE_NONE);
-
     Dwarf_Half nform = 0;
     Dwarf_Attribute attr = 0;
     x = dwarf_attr(die, nattr, &attr, e);
     if (IS_DLV_OK(x)) {
+      n += printf_pack(4);
+      n += ocdwarf_printf_AT(p, nattr, USE_NONE);
+
       x = dwarf_whatform(attr, &nform, e);
       if (IS_DLV_ANY_ERROR(x)) {
         if (IS_DLV_ERROR(x) && e) {
