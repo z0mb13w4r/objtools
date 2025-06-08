@@ -814,6 +814,16 @@ convert_t zDWUT[] = {
   {0, 0},
 };
 
+pick_t zATDEC[] = {
+  DW_AT_byte_size,
+  PICK_END
+};
+
+pick_t zATE[] = {
+  DW_AT_encoding,
+  PICK_END
+};
+
 pick_t zFORMADDR[] = {
   DW_FORM_addr,
   DW_FORM_addrx,

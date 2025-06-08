@@ -18,6 +18,19 @@ int ocdwarf_printf_AT(handle_t p, const uint64_t v, const imode_t mode) {
   return n;
 }
 
+int ocdwarf_printf_ATE(handle_t p, const uint64_t v, const imode_t mode) {
+  int n = 0;
+  if (isopcode(p)) {
+    popcode_t oc = CAST(popcode_t, p);
+    if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
+      n += printf_nice(v, USE_FHEX16);
+    }
+    n += printf_pick(zDWATE, v, USE_SPACE | mode);
+  }
+
+  return n;
+}
+
 int ocdwarf_printf_TAG(handle_t p, const uint64_t v, const imode_t mode) {
   int n = 0;
   if (isopcode(p)) {
@@ -39,6 +52,19 @@ int ocdwarf_printf_FORM(handle_t p, const uint64_t v, const imode_t mode) {
       n += printf_nice(v, USE_FHEX16);
     }
     n += printf_pick(zDWFORM, v, USE_SPACE | SET_PAD(22) | mode);
+  }
+
+  return n;
+}
+
+int ocdwarf_printf_LANG(handle_t p, const uint64_t v, const imode_t mode) {
+  int n = 0;
+  if (isopcode(p)) {
+    popcode_t oc = CAST(popcode_t, p);
+    if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
+      n += printf_nice(v, USE_FHEX16);
+    }
+    n += printf_pick(zDWLANG, v, USE_SPACE | mode);
   }
 
   return n;
@@ -273,12 +299,14 @@ int ocdwarf_printf_value(handle_t p, Dwarf_Die die, Dwarf_Half nattr, Dwarf_Erro
         n += printf_nice(value, USE_DEC);
         n += printf_text("highpc", USE_LT | USE_SPACE | USE_TBLT | USE_COLON);
         n += printf_nice(low_pc_addr + value, USE_FHEX32 | USE_TBRT);
-      } else if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
+      } else if (DW_AT_language == nattr) {
+        n += ocdwarf_printf_LANG(p, value, USE_NONE);
+      } else if (isused(zATE, nattr)) {
+        n += ocdwarf_printf_ATE(p, value, USE_NONE);
+      } else if (isused(zATDEC, nattr)) {
+        n += printf_nice(value, USE_DEC);
+      } else {
         n += printf_nice(value, USE_FHEX16);
-      }
-
-      if (DW_AT_language == nattr) {
-        n += printf_pick(zDWLANG, value, USE_SPACE);
       }
     }
 
