@@ -19,7 +19,7 @@ int ocdwarf_printf_idx(handle_t p, const uint64_t v, const imode_t mode) {
 }
 
 int ocdwarf_printf_AT(handle_t p, const uint64_t v, const imode_t mode) {
-  return ocdwarf_printf_pluck(p, zDWAT, v, mode | SET_PAD(18));
+  return ocdwarf_printf_pluck(p, zDWAT, v, mode | SET_PAD(27));
 }
 
 int ocdwarf_printf_ATE(handle_t p, const uint64_t v, const imode_t mode) {
@@ -70,7 +70,7 @@ int ocdwarf_printf_srcfile(handle_t p, const uint32_t x, pdwarf_srcfiles_t sf, c
 
 Dwarf_Addr low_pc_addr = 0;
 
-int ocdwarf_printf_worth(handle_t p, Dwarf_Signed index, Dwarf_Attribute attr, pdwarf_srcfiles_t sf, Dwarf_Error *e) {
+int ocdwarf_printf_worth(handle_t p, Dwarf_Signed index, Dwarf_Die die, Dwarf_Attribute attr, pdwarf_srcfiles_t sf, Dwarf_Error *e) {
   int x = DW_DLV_ERROR;
   int n = 0;
 
@@ -88,13 +88,13 @@ int ocdwarf_printf_worth(handle_t p, Dwarf_Signed index, Dwarf_Attribute attr, p
       n += printf_nice(index, USE_DEC2 | USE_SB | USE_TAB);
     }
 
-    n += ocdwarf_printf_merit(p, attr, nattr, sf, e);
+    n += ocdwarf_printf_merit(p, die, attr, nattr, sf, e);
   }
 
   return OCDWARF_ERRCODE(x, n);
 }
 
-int ocdwarf_printf_merit(handle_t p, Dwarf_Attribute attr, Dwarf_Half nattr, pdwarf_srcfiles_t sf, Dwarf_Error *e) {
+int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_Half nattr, pdwarf_srcfiles_t sf, Dwarf_Error *e) {
   int x = DW_DLV_ERROR;
   int n = 0;
 
@@ -174,6 +174,18 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Attribute attr, Dwarf_Half nattr, pdw
         printf_e("dwarf_global_formref failed! errcode %d", x);
         return OCDWARF_ERRCODE(x, n);
       }
+
+      n += printf_nice(value, USE_FHEX32);
+    } else if (DW_AT_type == nattr) {
+      Dwarf_Off offset = 0;
+      Dwarf_Bool isinfo = FALSE;
+      x = dwarf_dietype_offset(die, &offset, &isinfo, e);
+      if (IS_DLV_ANY_ERROR(x)) {
+        printf_e("dwarf_dietype_offset failed! errcode %d", x);
+        return OCDWARF_ERRCODE(x, n);
+      }
+
+      n += printf_nice(offset, USE_FHEX32);
     }
 
     n += printf_eol();
@@ -190,7 +202,7 @@ int ocdwarf_printf_value(handle_t p, Dwarf_Die die, Dwarf_Half nattr, pdwarf_src
     Dwarf_Attribute attr = 0;
     x = dwarf_attr(die, nattr, &attr, e);
     if (IS_DLV_OK(x)) {
-      n += ocdwarf_printf_merit(p, attr, nattr, sf, e);
+      n += ocdwarf_printf_merit(p, die, attr, nattr, sf, e);
     }
   }
 
@@ -316,7 +328,7 @@ int ocdwarf_printf_one(handle_t p, handle_t s, Dwarf_Die die, int level, Dwarf_E
     }
 
     for (Dwarf_Signed i = 0; i < attrcount; ++i) {
-      int n1 = ocdwarf_printf_worth(p, i, attrbuf[i], NULL, e);
+      int n1 = ocdwarf_printf_worth(p, i, die, attrbuf[i], NULL, e);
       if (OCDWARF_ISERRCODE(n1)) {
         ocdwarf_dealloc(p, s, attrbuf, attrcount, 0);
         return n1;
