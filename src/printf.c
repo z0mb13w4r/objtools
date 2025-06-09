@@ -240,6 +240,7 @@ int printf_neat(char* o, const size_t size, const uint64_t v, const imode_t mode
     case USE_CORRUPT:              n += PRINT2("<corrupt: %" PRIx64 ">", v);       break;
     case USE_UNKNOWN:              n += PRINT2("<unknown: %" PRIx64 ">", v);       break;
     case USE_WARNING:              n += PRINT2("<warning: %" PRIx64 ">", v);       break;
+    case USE_BOOL:                 n += PRINT1(v ? "true" : "false");              break;
 
     case USE_SHEX8:
       if (v < CHAR_MAX)            n += PRINT2("+ %" PRIx64, v);

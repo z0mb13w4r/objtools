@@ -186,6 +186,7 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
       }
 
       n += printf_nice(offset, USE_FHEX32);
+      n += printf_nice(isinfo, USE_BOOL);
     }
 
     n += printf_eol();
