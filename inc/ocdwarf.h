@@ -82,7 +82,7 @@ typedef struct dwarf_srcfiles_s {
   char       **data;
   Dwarf_Signed size;
   int          status;
-} dwarf_srcfiles_t;
+} dwarf_srcfiles_t, *pdwarf_srcfiles_t;
 
 extern Dwarf_Half cu_offset_size;
 extern Dwarf_Half cu_version_stamp;

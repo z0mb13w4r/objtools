@@ -828,6 +828,11 @@ pick_t zATHEX32[] = {
   PICK_END
 };
 
+pick_t zATSRCFILE[] = {
+  DW_AT_decl_file,
+  PICK_END
+};
+
 pick_t zATE[] = {
   DW_AT_encoding,
   PICK_END

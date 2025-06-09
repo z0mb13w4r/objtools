@@ -21,12 +21,14 @@ int ocdwarf_printf_LANG(handle_t p, const uint64_t v, const imode_t mode);
 int ocdwarf_printf_idx(handle_t p, const uint64_t v, const imode_t mode);
 int ocdwarf_printf_addr(handle_t p, const uint64_t v, const imode_t mode);
 
-int ocdwarf_printf_value(handle_t p, Dwarf_Die die, Dwarf_Half nattr, Dwarf_Error *e);
-int ocdwarf_printf_merit(handle_t p, Dwarf_Attribute attr, Dwarf_Half nattr, Dwarf_Error *e);
-int ocdwarf_printf_worth(handle_t p, Dwarf_Signed index, Dwarf_Attribute attr, Dwarf_Error *e);
+int ocdwarf_printf_srcfiles(handle_t p, pdwarf_srcfiles_t sf);
+int ocdwarf_printf_srcfile(handle_t p, const uint32_t x, pdwarf_srcfiles_t sf, const imode_t mode);
+
+int ocdwarf_printf_value(handle_t p, Dwarf_Die die, Dwarf_Half nattr, pdwarf_srcfiles_t sf, Dwarf_Error *e);
+int ocdwarf_printf_merit(handle_t p, Dwarf_Attribute attr, Dwarf_Half nattr, pdwarf_srcfiles_t sf, Dwarf_Error *e);
+int ocdwarf_printf_worth(handle_t p, Dwarf_Signed index, Dwarf_Attribute attr, pdwarf_srcfiles_t sf, Dwarf_Error *e);
 
 int ocdwarf_printf_names(handle_t p, handle_t s, Dwarf_Die die, Dwarf_Error *e);
-int ocdwarf_printf_srcfiles(handle_t p, handle_t s, dwarf_srcfiles_t *sf);
 int ocdwarf_printf_one(handle_t p, handle_t s, Dwarf_Die die, int level, Dwarf_Error *e);
 
 #endif

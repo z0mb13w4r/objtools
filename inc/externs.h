@@ -6,6 +6,7 @@
 extern pick_t zATE[];
 extern pick_t zATDEC[];
 extern pick_t zATHEX32[];
+extern pick_t zATSRCFILE[];
 
 extern pick_t zFORMADDR[];
 extern pick_t zFORMGREF[];
