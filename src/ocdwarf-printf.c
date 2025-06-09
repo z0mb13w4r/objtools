@@ -1,73 +1,41 @@
 #include "options.h"
 #include "ocdwarf-printf.h"
 
+int ocdwarf_printf_pluck(handle_t p, const pconvert_t z, const pick_t x, const imode_t mode) {
+  int n = 0;
+  if (isopcode(p)) {
+    popcode_t oc = CAST(popcode_t, p);
+    if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
+      n += printf_nice(x, USE_FHEX16);
+    }
+    n += printf_pick(z, x, USE_SPACE | mode);
+  }
+
+  return n;
+}
+
 int ocdwarf_printf_idx(handle_t p, const uint64_t v, const imode_t mode) {
   return printf_nice(v, USE_DEC2 | USE_TB | mode);
 }
 
 int ocdwarf_printf_AT(handle_t p, const uint64_t v, const imode_t mode) {
-  int n = 0;
-  if (isopcode(p)) {
-    popcode_t oc = CAST(popcode_t, p);
-    if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
-      n += printf_nice(v, USE_FHEX16);
-    }
-    n += printf_pick(zDWAT, v, USE_SPACE | SET_PAD(18) | mode);
-  }
-
-  return n;
+  return ocdwarf_printf_pluck(p, zDWAT, v, mode | SET_PAD(18));
 }
 
 int ocdwarf_printf_ATE(handle_t p, const uint64_t v, const imode_t mode) {
-  int n = 0;
-  if (isopcode(p)) {
-    popcode_t oc = CAST(popcode_t, p);
-    if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
-      n += printf_nice(v, USE_FHEX16);
-    }
-    n += printf_pick(zDWATE, v, USE_SPACE | mode);
-  }
-
-  return n;
+  return ocdwarf_printf_pluck(p, zDWATE, v, mode);
 }
 
 int ocdwarf_printf_TAG(handle_t p, const uint64_t v, const imode_t mode) {
-  int n = 0;
-  if (isopcode(p)) {
-    popcode_t oc = CAST(popcode_t, p);
-    if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
-      n += printf_nice(v, USE_FHEX16);
-    }
-    n += printf_pick(zDWTAG, v, USE_SPACE | mode);
-  }
-
-  return n;
+  return ocdwarf_printf_pluck(p, zDWTAG, v, mode);
 }
 
 int ocdwarf_printf_FORM(handle_t p, const uint64_t v, const imode_t mode) {
-  int n = 0;
-  if (isopcode(p)) {
-    popcode_t oc = CAST(popcode_t, p);
-    if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
-      n += printf_nice(v, USE_FHEX16);
-    }
-    n += printf_pick(zDWFORM, v, USE_SPACE | SET_PAD(22) | mode);
-  }
-
-  return n;
+  return ocdwarf_printf_pluck(p, zDWFORM, v, mode | SET_PAD(22));
 }
 
 int ocdwarf_printf_LANG(handle_t p, const uint64_t v, const imode_t mode) {
-  int n = 0;
-  if (isopcode(p)) {
-    popcode_t oc = CAST(popcode_t, p);
-    if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
-      n += printf_nice(v, USE_FHEX16);
-    }
-    n += printf_pick(zDWLANG, v, USE_SPACE | mode);
-  }
-
-  return n;
+  return ocdwarf_printf_pluck(p, zDWLANG, v, mode);
 }
 
 int ocdwarf_printf_addr(handle_t p, const uint64_t v, const imode_t mode) {
