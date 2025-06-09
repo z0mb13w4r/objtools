@@ -217,7 +217,7 @@ int ocdwarf_printf_names(handle_t p, handle_t s, Dwarf_Die die, Dwarf_Error *e) 
   return OCDWARF_ERRCODE(x, n);
 }
 
-int ocdwarf_printf_value(handle_t p, Dwarf_Die die, Dwarf_Half nattr, Dwarf_Error *e) {
+int ocdwarf_printf_merit(handle_t p, Dwarf_Attribute attr, Dwarf_Half nattr, Dwarf_Error *e) {
   int x = DW_DLV_ERROR;
   int n = 0;
 
@@ -225,25 +225,21 @@ int ocdwarf_printf_value(handle_t p, Dwarf_Die die, Dwarf_Half nattr, Dwarf_Erro
     popcode_t oc = CAST(popcode_t, p);
 
     Dwarf_Half nform = 0;
-    Dwarf_Attribute attr = 0;
-    x = dwarf_attr(die, nattr, &attr, e);
-    if (IS_DLV_OK(x)) {
-      n += printf_pack(4);
-      n += ocdwarf_printf_AT(p, nattr, USE_NONE);
-
-      x = dwarf_whatform(attr, &nform, e);
-      if (IS_DLV_ANY_ERROR(x)) {
-        if (IS_DLV_ERROR(x) && e) {
-          dwarf_dealloc_error(oc->items[OPCODE_DWARF], *e);
-        }
-
-        dwarf_object_finish(oc->items[OPCODE_DWARF]);
-        printf_x("dwarf_whatform");
+    x = dwarf_whatform(attr, &nform, e);
+    if (IS_DLV_ANY_ERROR(x)) {
+      if (IS_DLV_ERROR(x) && e) {
+        dwarf_dealloc_error(oc->items[OPCODE_DWARF], *e);
       }
 
-      if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
-        n += ocdwarf_printf_FORM(p, nform, USE_NONE);
-      }
+      dwarf_object_finish(oc->items[OPCODE_DWARF]);
+      printf_x("dwarf_whatform");
+    }
+
+    n += printf_pack(4);
+    n += ocdwarf_printf_AT(p, nattr, USE_NONE);
+
+    if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
+      n += ocdwarf_printf_FORM(p, nform, USE_NONE);
     }
 
     if (isused(zFORMSTRING, nform)) {
@@ -279,9 +275,46 @@ int ocdwarf_printf_value(handle_t p, Dwarf_Die die, Dwarf_Half nattr, Dwarf_Erro
       } else {
         n += printf_nice(value, USE_FHEX16);
       }
+    } else if (isused(zFORMADDR, nform)) {
+      Dwarf_Addr addr = 0;
+      x = dwarf_formaddr(attr, &addr, e);
+      if (IS_DLV_ANY_ERROR(x)) {
+        printf_e("dwarf_formaddr failed! errcode %d", x);
+        return OCDWARF_ERRCODE(x, n);
+      }
+
+      if (DW_AT_low_pc == nattr) {
+        low_pc_addr = addr;
+      }
+
+      n += printf_nice(addr, USE_FHEX32);
+    } else if (isused(zFORMGREF, nform)) {
+      Dwarf_Unsigned value = 0;
+      x = dwarf_global_formref(attr, &value, e);
+      if (IS_DLV_ANY_ERROR(x)) {
+        printf_e("dwarf_global_formref failed! errcode %d", x);
+        return OCDWARF_ERRCODE(x, n);
+      }
     }
 
     n += printf_eol();
+  }
+
+  return OCDWARF_ERRCODE(x, n);
+}
+
+int ocdwarf_printf_value(handle_t p, Dwarf_Die die, Dwarf_Half nattr, Dwarf_Error *e) {
+  int x = DW_DLV_ERROR;
+  int n = 0;
+
+  if (isopcode(p)) {
+    popcode_t oc = CAST(popcode_t, p);
+
+    Dwarf_Attribute attr = 0;
+    x = dwarf_attr(die, nattr, &attr, e);
+    if (IS_DLV_OK(x)) {
+      n += ocdwarf_printf_merit(p, attr, nattr, e);
+    }
   }
 
   return OCDWARF_ERRCODE(x, n);
