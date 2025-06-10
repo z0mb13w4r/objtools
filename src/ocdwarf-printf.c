@@ -1,6 +1,20 @@
 #include "options.h"
 #include "ocdwarf-printf.h"
 
+int ocdwarf_printf_me(handle_t p, const int x, const char *y, const char *z, const imode_t mode) {
+  int n = 0;
+  if (isopcode(p)) {
+    popcode_t oc = CAST(popcode_t, p);
+    if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
+      n += printf_nice(x, USE_DEC2 | USE_TB | USE_NOSPACE);
+      n += printf_text(y, USE_LT | USE_SPACE | USE_COLON | SET_PAD(23));
+      n += printf_text(z, USE_LT | USE_SPACE | USE_DQ | mode);
+    }
+  }
+
+  return n;
+}
+
 int ocdwarf_printf_pluck(handle_t p, const pconvert_t z, const pick_t x, const imode_t mode) {
   int n = 0;
   if (isopcode(p)) {

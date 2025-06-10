@@ -312,11 +312,11 @@ static int ocdwarf_printf_data(handle_t p, handle_t s, Dwarf_Die die,
     }
 
     if (tag == DW_TAG_subprogram) {
-      printf("<%3d> subprogram            : \"%s\"\n", level, name);
+      n += ocdwarf_printf_me(p, level, "subprogram", name, USE_EOL);
       n += ocdwarf_printf_sp(p, s, die, tag, isinfo, level, sf, e);
     } else if (tag == DW_TAG_compile_unit || tag == DW_TAG_partial_unit || tag == DW_TAG_type_unit) {
       ocdwarf_sfreset(p, s, sf);
-      printf("<%3d> source file           : \"%s\"\n", level, name);
+      n += ocdwarf_printf_me(p, level, "source file", name, USE_EOL);
       n += ocdwarf_printf_cu(p, s, die, tag, isinfo, level, sf, e);
     } else {
       n += ocdwarf_printf_idx(p, level, USE_NONE);
@@ -501,9 +501,9 @@ static int ocdwarf_do(handle_t p, handle_t s, Dwarf_Error *e) {
 
       res = ocdwarf_die_and_siblings(p, s, cu_die, is_info, level, &sf, e);
 //      res = ocdwarf_printf_one(p, s, cu_die, level, e);
-      if (OCDWARF_ISERRCODE(res)) {
+      if (OCDWARF_ISFAILED(res)) {
         dwarf_dealloc_die(cu_die);
-        printf_e("ocdwarf_printf_one failed! %d", res);
+        printf_e("ocdwarf_die_and_siblings failed! %d", res);
         return res;
       }
 

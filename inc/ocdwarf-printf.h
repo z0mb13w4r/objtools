@@ -10,6 +10,8 @@
 #include "printf.h"
 #include "ocdwarf.h"
 
+int ocdwarf_printf_me(handle_t p, const int x, const char *y, const char *z, const imode_t mode);
+
 int ocdwarf_printf_pluck(handle_t p, const pconvert_t z, const pick_t x, const imode_t mode);
 
 int ocdwarf_printf_AT(handle_t p, const uint64_t v, const imode_t mode);
