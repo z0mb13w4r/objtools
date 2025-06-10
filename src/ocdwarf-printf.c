@@ -70,7 +70,7 @@ int ocdwarf_printf_srcfile(handle_t p, const uint32_t x, pdwarf_srcfiles_t sf, c
 
 Dwarf_Addr low_pc_addr = 0;
 
-int ocdwarf_printf_worth(handle_t p, Dwarf_Signed index, Dwarf_Die die, Dwarf_Attribute attr, pdwarf_srcfiles_t sf, Dwarf_Error *e) {
+int ocdwarf_printf_worth(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_Signed index, pdwarf_srcfiles_t sf, Dwarf_Error *e) {
   int x = DW_DLV_ERROR;
   int n = 0;
 
@@ -329,7 +329,7 @@ int ocdwarf_printf_one(handle_t p, handle_t s, Dwarf_Die die, int level, Dwarf_E
     }
 
     for (Dwarf_Signed i = 0; i < attrcount; ++i) {
-      int n1 = ocdwarf_printf_worth(p, i, die, attrbuf[i], NULL, e);
+      int n1 = ocdwarf_printf_worth(p, die, attrbuf[i], i, NULL, e);
       if (OCDWARF_ISERRCODE(n1)) {
         ocdwarf_dealloc(p, s, attrbuf, attrcount, 0);
         return n1;

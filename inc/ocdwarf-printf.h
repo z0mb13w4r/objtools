@@ -26,7 +26,7 @@ int ocdwarf_printf_srcfile(handle_t p, const uint32_t x, pdwarf_srcfiles_t sf, c
 
 int ocdwarf_printf_value(handle_t p, Dwarf_Die die, Dwarf_Half nattr, pdwarf_srcfiles_t sf, Dwarf_Error *e);
 int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_Half nattr, pdwarf_srcfiles_t sf, Dwarf_Error *e);
-int ocdwarf_printf_worth(handle_t p, Dwarf_Signed index, Dwarf_Die die, Dwarf_Attribute attr, pdwarf_srcfiles_t sf, Dwarf_Error *e);
+int ocdwarf_printf_worth(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_Signed index, pdwarf_srcfiles_t sf, Dwarf_Error *e);
 
 int ocdwarf_printf_names(handle_t p, handle_t s, Dwarf_Die die, Dwarf_Error *e);
 int ocdwarf_printf_one(handle_t p, handle_t s, Dwarf_Die die, int level, Dwarf_Error *e);

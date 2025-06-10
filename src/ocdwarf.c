@@ -315,7 +315,7 @@ static int ocdwarf_printf_cu(handle_t p, handle_t s, Dwarf_Die die, Dwarf_Half t
 
     sf->status = dwarf_srcfiles(die, &sf->data, &sf->size, e);
     for (Dwarf_Signed i = 0; i < attrcount ; ++i) {
-      int n1 = ocdwarf_printf_worth(p, i, die, attrbuf[i], sf, e);
+      int n1 = ocdwarf_printf_worth(p, die, attrbuf[i], i, sf, e);
       if (OCDWARF_ISERRCODE(n1)) {
         ocdwarf_dealloc(p, s, attrbuf, attrcount, 0);
         return n1;
