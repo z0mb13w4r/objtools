@@ -280,61 +280,6 @@ void ocdwarf_dealloc(handle_t p, handle_t s, Dwarf_Attribute *a, Dwarf_Signed si
   }
 }
 
-static int ocdwarf_printf_cu(handle_t p, handle_t s, Dwarf_Die die, Dwarf_Half tag,
-                  Dwarf_Bool isinfo, int level, pdwarf_srcfiles_t sf, Dwarf_Error *e) {
-  int x = DW_DLV_ERROR;
-  int n0 = 0;
-
-  if (isopcode(p) && sf) {
-    popcode_t oc = CAST(popcode_t, p);
-
-    Dwarf_Off overall_offset = 0;
-    x = dwarf_dieoffset(die, &overall_offset, e);
-    if (IS_DLV_ANY_ERROR(x)) {
-      printf_e("dwarf_dieoffset failed! errcode %d", x);
-      return OCDWARF_ERRCODE(x, n0);
-    }
-
-    Dwarf_Off offset = 0;
-    x = dwarf_die_CU_offset(die, &offset, e);
-    if (IS_DLV_ANY_ERROR(x)) {
-      printf_e("dwarf_die_CU_offset failed! res %d", x);
-      return OCDWARF_ERRCODE(x, n0);
-    }
-
-    n0 += printf_text("COMPILE_UNIT<header overall offset =", USE_LT);
-    n0 += printf_nice(overall_offset - offset, USE_FHEX32 | USE_TBRT | USE_COLON | USE_EOL);
-    n0 += ocdwarf_printf_idx(p, level, USE_NONE);
-    n0 += ocdwarf_printf_addr(p, 0xffffffff, USE_NONE);
-    n0 += ocdwarf_printf_TAG(p, tag, USE_EOL);
-
-    Dwarf_Signed attrcount = 0;
-    Dwarf_Attribute *attrbuf = 0;
-    x = dwarf_attrlist(die, &attrbuf ,&attrcount, e);
-    if (IS_DLV_ANY_ERROR(x)) return OCDWARF_ERRCODE(x, n0);
-
-    sf->status = dwarf_srcfiles(die, &sf->data, &sf->size, e);
-    for (Dwarf_Signed i = 0; i < attrcount ; ++i) {
-      int n1 = ocdwarf_printf_worth(p, die, attrbuf[i], i, sf, e);
-      if (OCDWARF_ISERRCODE(n1)) {
-        ocdwarf_dealloc(p, s, attrbuf, attrcount, 0);
-        return n1;
-      }
-
-      dwarf_dealloc(oc->items[OPCODE_DWARF], attrbuf[i], DW_DLA_ATTR);
-      n0 += n1;
-    }
-
-    if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
-      n0 += ocdwarf_printf_srcfiles(p, sf);
-    }
-
-    dwarf_dealloc(oc->items[OPCODE_DWARF], attrbuf, DW_DLA_LIST);
-  }
-
-  return OCDWARF_ERRCODE(x, n0);
-}
-
 static int ocdwarf_printf_data(handle_t p, handle_t s, Dwarf_Die die,
                   Dwarf_Bool isinfo, int level, pdwarf_srcfiles_t sf, Dwarf_Error *e) {
   int x = DW_DLV_ERROR;
@@ -367,8 +312,8 @@ static int ocdwarf_printf_data(handle_t p, handle_t s, Dwarf_Die die,
     }
 
     if (tag == DW_TAG_subprogram) {
-     printf("<%3d> subprogram            : \"%s\"\n", level, name);
-//     print_subprog(dbg,print_me,level,sf,name);
+      printf("<%3d> subprogram            : \"%s\"\n", level, name);
+      n += ocdwarf_printf_sp(p, s, die, tag, isinfo, level, sf, e);
     } else if (tag == DW_TAG_compile_unit || tag == DW_TAG_partial_unit || tag == DW_TAG_type_unit) {
       ocdwarf_sfreset(p, s, sf);
       printf("<%3d> source file           : \"%s\"\n", level, name);
@@ -451,12 +396,11 @@ static int ocdwarf_die_and_siblings(handle_t p, handle_t s, Dwarf_Die die,
                   Dwarf_Bool isinfo, int level, pdwarf_srcfiles_t sf, Dwarf_Error *e) {
   Dwarf_Die cur_die = die;
   int x = DW_DLV_ERROR;
-  int n0 = 0;
-  int n1 = 0;
+  int n = 0;
 
   if (isopcode(p)) {
     popcode_t oc = CAST(popcode_t, p);
-    n1 = ocdwarf_printf_data(p, s, die, isinfo, level, sf, e);
+    n += ocdwarf_printf_data(p, s, die, isinfo, level, sf, e);
 
     for ( ; ; ) {
       Dwarf_Die child = 0;
@@ -469,7 +413,7 @@ static int ocdwarf_die_and_siblings(handle_t p, handle_t s, Dwarf_Die die,
         dwarf_finish(oc->items[OPCODE_DWARF]);
         printf_x("dwarf_child, level %d", level);
       } else if (IS_DLV_OK(x)) {
-        n0 += ocdwarf_die_and_siblings(p, s, child, isinfo, level + 1, sf, e);
+        n += ocdwarf_die_and_siblings(p, s, child, isinfo, level + 1, sf, e);
         dwarf_dealloc_die(child);
         child = 0;
       }
@@ -488,11 +432,11 @@ static int ocdwarf_die_and_siblings(handle_t p, handle_t s, Dwarf_Die die,
         dwarf_dealloc_die(cur_die);
       }
       cur_die = sib_die;
-      n1 = ocdwarf_printf_data(p, s, cur_die, isinfo, level, sf, e);
+      n += ocdwarf_printf_data(p, s, cur_die, isinfo, level, sf, e);
     }
   }
 
-  return OCDWARF_ERRCODE(x, n0);
+  return OCDWARF_ERRCODE(x, n);
 }
 
 static int ocdwarf_do(handle_t p, handle_t s, Dwarf_Error *e) {

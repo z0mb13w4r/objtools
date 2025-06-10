@@ -343,3 +343,70 @@ int ocdwarf_printf_one(handle_t p, handle_t s, Dwarf_Die die, int level, Dwarf_E
   return OCDWARF_ERRCODE(x, n0);
 }
 
+int ocdwarf_printf_cu(handle_t p, handle_t s, Dwarf_Die die, Dwarf_Half tag,
+                  Dwarf_Bool isinfo, int level, pdwarf_srcfiles_t sf, Dwarf_Error *e) {
+  int x = DW_DLV_ERROR;
+  int n0 = 0;
+
+  if (isopcode(p) && sf) {
+    popcode_t oc = CAST(popcode_t, p);
+
+    Dwarf_Off overall_offset = 0;
+    x = dwarf_dieoffset(die, &overall_offset, e);
+    if (IS_DLV_ANY_ERROR(x)) {
+      printf_e("dwarf_dieoffset failed! errcode %d", x);
+      return OCDWARF_ERRCODE(x, n0);
+    }
+
+    Dwarf_Off offset = 0;
+    x = dwarf_die_CU_offset(die, &offset, e);
+    if (IS_DLV_ANY_ERROR(x)) {
+      printf_e("dwarf_die_CU_offset failed! res %d", x);
+      return OCDWARF_ERRCODE(x, n0);
+    }
+
+    n0 += printf_text("COMPILE_UNIT<header overall offset =", USE_LT);
+    n0 += printf_nice(overall_offset - offset, USE_FHEX32 | USE_TBRT | USE_COLON | USE_EOL);
+    n0 += ocdwarf_printf_idx(p, level, USE_NONE);
+    n0 += ocdwarf_printf_addr(p, 0xffffffff, USE_NONE);
+    n0 += ocdwarf_printf_TAG(p, tag, USE_EOL);
+
+    Dwarf_Signed attrcount = 0;
+    Dwarf_Attribute *attrbuf = 0;
+    x = dwarf_attrlist(die, &attrbuf ,&attrcount, e);
+    if (IS_DLV_ANY_ERROR(x)) return OCDWARF_ERRCODE(x, n0);
+
+    sf->status = dwarf_srcfiles(die, &sf->data, &sf->size, e);
+    for (Dwarf_Signed i = 0; i < attrcount ; ++i) {
+      int n1 = ocdwarf_printf_worth(p, die, attrbuf[i], i, sf, e);
+      if (OCDWARF_ISERRCODE(n1)) {
+        ocdwarf_dealloc(p, s, attrbuf, attrcount, 0);
+        return n1;
+      }
+
+      dwarf_dealloc(oc->items[OPCODE_DWARF], attrbuf[i], DW_DLA_ATTR);
+      n0 += n1;
+    }
+
+    if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
+      n0 += ocdwarf_printf_srcfiles(p, sf);
+    }
+
+    dwarf_dealloc(oc->items[OPCODE_DWARF], attrbuf, DW_DLA_LIST);
+  }
+
+  return OCDWARF_ERRCODE(x, n0);
+}
+
+int ocdwarf_printf_sp(handle_t p, handle_t s, Dwarf_Die die, Dwarf_Half tag,
+                  Dwarf_Bool isinfo, int level, pdwarf_srcfiles_t sf, Dwarf_Error *e) {
+  int x = DW_DLV_ERROR;
+  int n0 = 0;
+
+  if (isopcode(p) && sf) {
+//    popcode_t oc = CAST(popcode_t, p);
+  }
+
+  return OCDWARF_ERRCODE(x, n0);
+}
+
