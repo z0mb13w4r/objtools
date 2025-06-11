@@ -419,6 +419,30 @@ int ocdwarf_printf_sp(handle_t p, handle_t s, Dwarf_Die die, Dwarf_Half tag,
 
   if (isopcode(p) && sf) {
 //    popcode_t oc = CAST(popcode_t, p);
+
+    Dwarf_Signed cattr = 0;
+    Dwarf_Attribute *pattr = 0;
+    x = dwarf_attrlist(die, &pattr, &cattr, e);
+    if (IS_DLV_ANY_ERROR(x)) {
+      printf_e("dwarf_attrlist failed! errcode %d", x);
+      return OCDWARF_ERRCODE(x, n0);
+    }
+
+    n0 += ocdwarf_printf_idx(p, level, USE_NONE);
+    n0 += ocdwarf_printf_addr(p, 0xffffffff, USE_NONE);
+    n0 += ocdwarf_printf_TAG(p, tag, USE_EOL);
+
+    for (Dwarf_Signed i = 0; i < cattr; ++i) {
+      int n1 = ocdwarf_printf_worth(p, die, pattr[i], i, NULL, e);
+      if (OCDWARF_ISERRCODE(n1)) {
+        ocdwarf_dealloc(p, s, pattr, cattr, 0);
+        return n1;
+      }
+      n0 += n1;
+    }
+
+    ocdwarf_dealloc(p, s, pattr, cattr, 0);
+    n0 += printf_eol();
   }
 
   return OCDWARF_ERRCODE(x, n0);
