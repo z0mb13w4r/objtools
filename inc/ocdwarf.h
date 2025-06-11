@@ -96,6 +96,8 @@ int ocdwarf_close(handle_t p);
 
 int ocdwarf_run(handle_t p, handle_t s);
 
+void ocdwarf_sfreset(handle_t p, pdwarf_srcfiles_t sf);
+
 void ocdwarf_dealloc(handle_t p, handle_t s, Dwarf_Attribute *a, Dwarf_Signed size, Dwarf_Signed i);
 
 #endif
