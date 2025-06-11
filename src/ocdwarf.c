@@ -334,7 +334,7 @@ static int ocdwarf_do(handle_t p, handle_t s, Dwarf_Error *e) {
     Dwarf_Bool is_info = TRUE; /* our data is not DWARF4 .debug_types. */
     Dwarf_Unsigned next_cu_header_offset = 0;
     Dwarf_Unsigned cu_header_length = 0;
-    Dwarf_Unsigned typeoffset     = 0;
+    Dwarf_Unsigned type_offset    = 0;
     Dwarf_Half     extension_size = 0;
     Dwarf_Half     header_cu_type = 0;
     Dwarf_Half     address_size  = 0;
@@ -349,15 +349,15 @@ static int ocdwarf_do(handle_t p, handle_t s, Dwarf_Error *e) {
       MALLOCS(dwarf_srcfiles_t, sf);
       sf.status = DW_DLV_ERROR;
 
-      int res = dwarf_next_cu_header_d(oc->items[OPCODE_DWARF], is_info,
+      int x = dwarf_next_cu_header_d(oc->items[OPCODE_DWARF], is_info,
                   &cu_header_length, &cu_version_stamp, &abbrev_offset, &address_size, &cu_offset_size, &extension_size,
-                  &type_signature, &typeoffset, &next_cu_header_offset, &header_cu_type, e);
-      if (IS_DLV_NO_ENTRY(res)) break;
-      else if (IS_DLV_ANY_ERROR(res)) {
-        if (IS_DLV_ERROR(res)) {
+                  &type_signature, &type_offset, &next_cu_header_offset, &header_cu_type, e);
+      if (IS_DLV_NO_ENTRY(x)) break;
+      else if (IS_DLV_ANY_ERROR(x)) {
+        if (IS_DLV_ERROR(x)) {
           printf_e("dwarf errmsg: %s", dwarf_errmsg(*e));
         }
-        printf_x("Next cu header result %d, line %d", res, __LINE__);
+        printf_x("Next cu header result %d, line %d", x, __LINE__);
       }
 
       if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
@@ -373,26 +373,25 @@ static int ocdwarf_do(handle_t p, handle_t s, Dwarf_Error *e) {
         printf_nice(next_cu_header_offset, USE_FHEX | USE_EOL);
       }
 
-      res = dwarf_siblingof_b(oc->items[OPCODE_DWARF], no_die, is_info, &cu_die, e);
-      if (IS_DLV_NO_ENTRY(res)) return DW_DLV_OK;
-      else if (IS_DLV_ANY_ERROR(res)) {
+      x = dwarf_siblingof_b(oc->items[OPCODE_DWARF], no_die, is_info, &cu_die, e);
+      if (IS_DLV_NO_ENTRY(x)) return DW_DLV_OK;
+      else if (IS_DLV_ANY_ERROR(x)) {
         /* There is no CU die, which should be impossible. */
-        if (IS_DLV_ERROR(res)) {
+        if (IS_DLV_ERROR(x)) {
           printf_e("dwarf errmsg: %s", dwarf_errmsg(*e));
           printf_e("dwarf_siblingof_b failed, no CU die");
-          return res;
+          return x;
         } else {
           printf_e("dwarf_siblingof_b got NO_ENTRY, no CU die");
-          return res;
+          return x;
         }
       }
 
-      res = ocdwarf_die_and_siblings(p, s, cu_die, is_info, level, &sf, e);
-//      res = ocdwarf_printf_one(p, s, cu_die, level, e);
-      if (OCDWARF_ISFAILED(res)) {
+      x = ocdwarf_die_and_siblings(p, s, cu_die, is_info, level, &sf, e);
+      if (OCDWARF_ISFAILED(x)) {
         dwarf_dealloc_die(cu_die);
-        printf_e("ocdwarf_die_and_siblings failed! %d", res);
-        return res;
+        printf_e("ocdwarf_die_and_siblings failed! %d", x);
+        return x;
       }
 
       dwarf_dealloc_die(cu_die);

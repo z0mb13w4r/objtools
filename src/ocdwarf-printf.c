@@ -1,6 +1,10 @@
 #include "options.h"
 #include "ocdwarf-printf.h"
 
+Dwarf_Unsigned nline = 0;
+Dwarf_Unsigned ncolumn = 0;
+Dwarf_Addr low_pc_addr = 0;
+
 int ocdwarf_printf_me(handle_t p, const int x, const char *y, const char *z, const imode_t mode) {
   int n = 0;
   if (isopcode(p)) {
@@ -32,6 +36,10 @@ int ocdwarf_printf_idx(handle_t p, const uint64_t v, const imode_t mode) {
   return printf_nice(v, USE_DEC2 | USE_TB | mode);
 }
 
+int ocdwarf_printf_num(handle_t p, const uint64_t v, const imode_t mode) {
+  return printf_nice(v, USE_FHEX32 | USE_TB | mode);
+}
+
 int ocdwarf_printf_AT(handle_t p, const uint64_t v, const imode_t mode) {
   return ocdwarf_printf_pluck(p, zDWAT, v, mode | SET_PAD(30));
 }
@@ -50,10 +58,6 @@ int ocdwarf_printf_FORM(handle_t p, const uint64_t v, const imode_t mode) {
 
 int ocdwarf_printf_LANG(handle_t p, const uint64_t v, const imode_t mode) {
   return ocdwarf_printf_pluck(p, zDWLANG, v, mode);
-}
-
-int ocdwarf_printf_addr(handle_t p, const uint64_t v, const imode_t mode) {
-  return printf_nice(v, USE_FHEX32 | USE_TB | mode);
 }
 
 int ocdwarf_printf_srcfiles(handle_t p, pdwarf_srcfiles_t sf) {
@@ -81,8 +85,6 @@ int ocdwarf_printf_srcfile(handle_t p, const uint32_t x, pdwarf_srcfiles_t sf, c
 
   return n;
 }
-
-Dwarf_Addr low_pc_addr = 0;
 
 int ocdwarf_printf_worth(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_Signed index, pdwarf_srcfiles_t sf, Dwarf_Error *e) {
   int x = DW_DLV_ERROR;
@@ -150,6 +152,12 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
         return OCDWARF_ERRCODE(x, n);
       }
 
+      if (DW_AT_decl_line == nattr) {
+        nline = value;
+      } else if (DW_AT_decl_column == nattr) {
+        ncolumn = value;
+      }
+
       if (DW_AT_high_pc == nattr) {
         n += printf_text("offset-from-lowpc", USE_LT | USE_SPACE | USE_TB);
         n += printf_nice(value, USE_DEC);
@@ -208,8 +216,10 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
         return OCDWARF_ERRCODE(x, n);
       }
 
-      n += printf_nice(offset, USE_FHEX32);
-      n += printf_nice(isinfo, USE_BOOL);
+      n += printf_nice(offset, USE_FHEX32 | USE_TB);
+      if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
+        n += printf_nice(isinfo, USE_BOOL);
+      }
     }
 
     n += printf_eol();
@@ -355,13 +365,22 @@ int ocdwarf_printf_sp(handle_t p, handle_t s, Dwarf_Die die, Dwarf_Half tag,
     Dwarf_Signed cattr = 0;
     Dwarf_Attribute *pattr = 0;
     x = dwarf_attrlist(die, &pattr, &cattr, e);
-    if (IS_DLV_ANY_ERROR(x)) {
+    if (IS_DLV_NO_ENTRY(x)) {
+      return n0;
+    } else if (IS_DLV_ERROR(x)) {
       printf_e("dwarf_attrlist failed! errcode %d", x);
       return OCDWARF_ERRCODE(x, n0);
     }
 
+    Dwarf_Off overall_offset = 0;
+    x = dwarf_dieoffset(die, &overall_offset, e);
+    if (IS_DLV_ANY_ERROR(x)) {
+      printf_e("dwarf_dieoffset failed! errcode %d", x);
+      return OCDWARF_ERRCODE(x, n0);
+    }
+
     n0 += ocdwarf_printf_idx(p, level, USE_NONE);
-    n0 += ocdwarf_printf_addr(p, 0xffffffff, USE_NONE);
+    n0 += ocdwarf_printf_num(p, overall_offset, USE_NOSPACE);
     n0 += ocdwarf_printf_TAG(p, tag, USE_NONE);
     if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
       n0 += printf_text(name, USE_LT | USE_SPACE | USE_SQ);

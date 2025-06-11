@@ -21,7 +21,7 @@ int ocdwarf_printf_FORM(handle_t p, const uint64_t v, const imode_t mode);
 int ocdwarf_printf_LANG(handle_t p, const uint64_t v, const imode_t mode);
 
 int ocdwarf_printf_idx(handle_t p, const uint64_t v, const imode_t mode);
-int ocdwarf_printf_addr(handle_t p, const uint64_t v, const imode_t mode);
+int ocdwarf_printf_num(handle_t p, const uint64_t v, const imode_t mode);
 
 int ocdwarf_printf_srcfiles(handle_t p, pdwarf_srcfiles_t sf);
 int ocdwarf_printf_srcfile(handle_t p, const uint32_t x, pdwarf_srcfiles_t sf, const imode_t mode);
