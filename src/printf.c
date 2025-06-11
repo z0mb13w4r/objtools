@@ -277,6 +277,11 @@ int printf_neat(char* o, const size_t size, const uint64_t v, const imode_t mode
       else                         n += PRINT1(".");
       break;
 
+    case USE_YESNO:
+      if (v)                       n += PRINT2("yes(%" PRId64 ")", v);
+      else                         n += PRINT2("no(%" PRId64 ")", v);
+      break;
+
     case USE_TIMEDATE: {
       struct tm * tmp;
       time_t atime = v;

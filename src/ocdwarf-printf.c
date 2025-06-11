@@ -33,7 +33,7 @@ int ocdwarf_printf_idx(handle_t p, const uint64_t v, const imode_t mode) {
 }
 
 int ocdwarf_printf_AT(handle_t p, const uint64_t v, const imode_t mode) {
-  return ocdwarf_printf_pluck(p, zDWAT, v, mode | SET_PAD(27));
+  return ocdwarf_printf_pluck(p, zDWAT, v, mode | SET_PAD(30));
 }
 
 int ocdwarf_printf_ATE(handle_t p, const uint64_t v, const imode_t mode) {
@@ -181,6 +181,15 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
       }
 
       n += printf_nice(addr, USE_FHEX32);
+    } else if (isused(zFORMBOOL, nform)) {
+      Dwarf_Unsigned value = 0;
+      x = dwarf_formudata(attr, &value, e);
+      if (IS_DLV_ANY_ERROR(x)) {
+        printf_e("dwarf_formudata failed! errcode %d", x);
+        return OCDWARF_ERRCODE(x, n);
+      }
+
+      n += printf_nice(value, USE_YESNO);
     } else if (isused(zFORMGREF, nform)) {
       Dwarf_Unsigned value = 0;
       x = dwarf_global_formref(attr, &value, e);
@@ -332,7 +341,16 @@ int ocdwarf_printf_sp(handle_t p, handle_t s, Dwarf_Die die, Dwarf_Half tag,
   int n0 = 0;
 
   if (isopcode(p) && sf) {
-//    popcode_t oc = CAST(popcode_t, p);
+    popcode_t oc = CAST(popcode_t, p);
+
+    char *name = 0;
+    x = dwarf_diename(die, &name, e);
+    if (IS_DLV_ERROR(x)) {
+      dwarf_object_finish(oc->items[OPCODE_DWARF]);
+      printf_x("dwarf_diename, level %d", level);
+    } else if (IS_DLV_NO_ENTRY(x)) {
+      name = "<no DW_AT_name attr>";
+    }
 
     Dwarf_Signed cattr = 0;
     Dwarf_Attribute *pattr = 0;
@@ -344,10 +362,14 @@ int ocdwarf_printf_sp(handle_t p, handle_t s, Dwarf_Die die, Dwarf_Half tag,
 
     n0 += ocdwarf_printf_idx(p, level, USE_NONE);
     n0 += ocdwarf_printf_addr(p, 0xffffffff, USE_NONE);
-    n0 += ocdwarf_printf_TAG(p, tag, USE_EOL);
+    n0 += ocdwarf_printf_TAG(p, tag, USE_NONE);
+    if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
+      n0 += printf_text(name, USE_LT | USE_SPACE | USE_SQ);
+    }
+    n0 += printf_eol();
 
     for (Dwarf_Signed i = 0; i < cattr; ++i) {
-      int n1 = ocdwarf_printf_worth(p, die, pattr[i], i, NULL, e);
+      int n1 = ocdwarf_printf_worth(p, die, pattr[i], i, sf, e);
       if (OCDWARF_ISERRCODE(n1)) {
         ocdwarf_dealloc(p, s, pattr, cattr, 0);
         return n1;

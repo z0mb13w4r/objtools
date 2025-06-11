@@ -848,6 +848,11 @@ pick_t zFORMADDR[] = {
   PICK_END
 };
 
+pick_t zFORMBOOL[] = {
+  DW_FORM_flag_present,
+  PICK_END
+};
+
 pick_t zFORMGREF[] = {
   DW_FORM_sec_offset,
   PICK_END
