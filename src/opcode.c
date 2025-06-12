@@ -146,7 +146,7 @@ unknown_t ocget(handle_t p, const imode_t mode) {
     return p0->items[mode];
   } else if (isopcode(p) && OPCODE_RAWDATA == mode) {
     return CAST(popcode_t, p)->data;
-  } else if (isopcode(p) && OPCODE_DWARFPTR == mode) {
+  } else if (isopcode(p) && OPCODE_DWARF_PTR == mode) {
     return &CAST(popcode_t, p)->items[OPCODE_DWARF];
   } else if (isopcode(p) && OPCODE_RAWSYMBOLS == mode) {
     pbuffer_t p0 = ocget(p, OPCODE_SYMBOLS);

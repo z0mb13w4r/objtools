@@ -71,6 +71,7 @@ int ocdwarf_open(handle_t p, handle_t o) {
     MEMCPYA(oc->inpname0, op->inpname0);
     MEMCPYA(oc->inpname1, op->inpname1);
 
+    oc->items[OPCODE_DWARF_ERROR] = xmalloc(sizeof(Dwarf_Error));
     return 0;
   }
 
@@ -78,7 +79,13 @@ int ocdwarf_open(handle_t p, handle_t o) {
 }
 
 int ocdwarf_close(handle_t p) {
-  return 0;
+  if (isopcode(p)) {
+    popcode_t oc = CAST(popcode_t, p);
+    zfree(&oc->items[OPCODE_DWARF_ERROR]);
+    return 0;
+  }
+
+  return -1;
 }
 
 /* Some valid DWARF2 data */
@@ -386,7 +393,7 @@ int ocdwarf_run(handle_t p, handle_t s) {
     pdwarf_display_t d = ocdwarf_get(s);
     if (d && d->func) {
       popcode_t oc = CAST(popcode_t, p);
-      Dwarf_Error error = 0;
+//      Dwarf_Error error = 0;
 
 //      sectiondata[1].sd_sectionsize = ocget_size(s);
 //      sectiondata[1].sd_secname = ocget_name(s);
@@ -397,14 +404,14 @@ int ocdwarf_run(handle_t p, handle_t s) {
         printf_x("Giving up, cannot open '%s'", oc->inpname0);
       }
 
-      int res = dwarf_init_b(my_init_fd, DW_GROUPNUMBER_ANY, 0, 0, ocgetdwarfptr(p), &error);
+      int res = dwarf_init_b(my_init_fd, DW_GROUPNUMBER_ANY, 0, 0, ocgetdwarfptr(p), ocgetdwarferr(p));
       if (res != DW_DLV_OK) {
         printf_x("Giving up, cannot do DWARF processing '%s'", oc->inpname0);
       }
 
-      res = ocdwarf_do(p, s, &error);
+      res = ocdwarf_do(p, s, ocgetdwarferr(p));
       if (res == DW_DLV_ERROR) {
-        dwarf_dealloc_error(oc->items[OPCODE_DWARF], error);
+        dwarf_dealloc_error(oc->items[OPCODE_DWARF], *ocgetdwarferr(p));
       }
 
 //      n = d && d->func ? d->func(p, s, &d->section) : -1;

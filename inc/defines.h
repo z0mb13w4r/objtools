@@ -115,8 +115,8 @@ typedef uint64_t imode_t;
 typedef uint32_t nmode_t;
 typedef char     smode_t[4];
 
-typedef void*    handle_t;
-typedef void*    unknown_t;
+typedef void    *handle_t;
+typedef void    *unknown_t, **punknown_t;
 
 typedef uint32_t pick_t, *ppick_t;
 
