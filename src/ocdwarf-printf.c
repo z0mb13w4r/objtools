@@ -220,6 +220,15 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
       if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
         n += printf_nice(isinfo, USE_BOOL);
       }
+    } else if (DW_AT_sibling == nattr) {
+      Dwarf_Unsigned value = 0;
+      x = dwarf_global_formref(attr, &value, e);
+      if (IS_DLV_ANY_ERROR(x)) {
+        printf_e("dwarf_global_formref failed! errcode %d", x);
+        return OCDWARF_ERRCODE(x, n);
+      }
+
+      n += printf_nice(value, USE_FHEX32 | USE_TB);
     }
 
     n += printf_eol();
