@@ -287,105 +287,22 @@ void ocdwarf_dealloc(handle_t p, handle_t s, Dwarf_Attribute *a, Dwarf_Signed si
   }
 }
 
-static int ocdwarf_do(handle_t p, handle_t s, Dwarf_Error *e) {
-  if (isopcode(p) && (isopshdr(s) || isopshdrNN(s))) {
-    popcode_t oc = CAST(popcode_t, p);
-
-    Dwarf_Bool is_info = TRUE; /* our data is not DWARF4 .debug_types. */
-    Dwarf_Unsigned next_cu_header_offset = 0;
-    Dwarf_Unsigned cu_header_length = 0;
-    Dwarf_Unsigned type_offset    = 0;
-    Dwarf_Half     extension_size = 0;
-    Dwarf_Half     header_cu_type = 0;
-    Dwarf_Half     address_size  = 0;
-    Dwarf_Sig8     type_signature = zerosignature;
-    Dwarf_Off      abbrev_offset = 0;
-    int            level = 0;
-
-    for ( ; ; ) {
-      Dwarf_Die no_die = 0;
-      Dwarf_Die cu_die = 0;
-
-      MALLOCS(dwarf_srcfiles_t, sf);
-      sf.status = DW_DLV_ERROR;
-
-      int x = dwarf_next_cu_header_d(oc->items[OPCODE_DWARF], is_info,
-                  &cu_header_length, &cu_version_stamp, &abbrev_offset, &address_size, &cu_offset_size, &extension_size,
-                  &type_signature, &type_offset, &next_cu_header_offset, &header_cu_type, e);
-      if (IS_DLV_NO_ENTRY(x)) break;
-      else if (IS_DLV_ANY_ERROR(x)) {
-        if (IS_DLV_ERROR(x)) {
-          printf_e("dwarf errmsg: %s", dwarf_errmsg(*e));
-        }
-        printf_x("Next cu header result %d, line %d", x, __LINE__);
-      }
-
-      if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
-        printf_text("CU header length", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
-        printf_nice(cu_header_length, USE_FHEX | USE_EOL);
-        printf_text("Version stamp", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
-        printf_nice(cu_version_stamp, USE_DEC | USE_EOL);
-        printf_text("Address size", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
-        printf_nice(address_size, USE_DEC | USE_EOL);
-        printf_text("Offset size", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
-        printf_nice(cu_offset_size, USE_DEC | USE_EOL);
-        printf_text("Next cu header offset", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
-        printf_nice(next_cu_header_offset, USE_FHEX | USE_EOL);
-      }
-
-      x = dwarf_siblingof_b(oc->items[OPCODE_DWARF], no_die, is_info, &cu_die, e);
-      if (IS_DLV_NO_ENTRY(x)) return DW_DLV_OK;
-      else if (IS_DLV_ANY_ERROR(x)) {
-        /* There is no CU die, which should be impossible. */
-        if (IS_DLV_ERROR(x)) {
-          printf_e("dwarf errmsg: %s", dwarf_errmsg(*e));
-          printf_e("dwarf_siblingof_b failed, no CU die");
-          return x;
-        } else {
-          printf_e("dwarf_siblingof_b got NO_ENTRY, no CU die");
-          return x;
-        }
-      }
-
-      x = ocdwarf_die_and_siblings(p, s, cu_die, is_info, level, &sf, e);
-      if (OCDWARF_ISFAILED(x)) {
-        dwarf_dealloc_die(cu_die);
-        printf_e("ocdwarf_die_and_siblings failed! %d", x);
-        return x;
-      }
-
-      dwarf_dealloc_die(cu_die);
-      ocdwarf_sfreset(p, &sf);
-    }
-
-    return DW_DLV_OK;
-  }
-
-  return DW_DLV_ERROR;
-}
-
 int ocdwarf_run(handle_t p, handle_t s) {
   int n = 0;
   if (isopcode(p) && isopshdr(s)) {
     popcode_t oc = CAST(popcode_t, p);
-    Dwarf_Error error = 0;
 
-    int res = dwarf_object_init_b(&dw_interface, 0, 0, DW_GROUPNUMBER_ANY, ocgetdwarfptr(p), &error);
-    if (res == DW_DLV_NO_ENTRY) {
+    int x = dwarf_object_init_b(&dw_interface, 0, 0, DW_GROUPNUMBER_ANY, ocgetdwarfptr(p), ocgetdwarferr(p));
+    if (IS_DLV_NO_ENTRY(x)) {
       printf_x("Cannot dwarf_object_init_b() NO ENTRY.");
-    } else if (res == DW_DLV_ERROR) {
-      printf_e("dwarf errmsg: %s", dwarf_errmsg(error));
-      dwarf_dealloc_error(oc->items[OPCODE_DWARF], error);
+    } else if (IS_DLV_ERROR(x)) {
+      printf_e("dwarf errmsg: %s", dwarf_errmsg(*ocgetdwarferr(p)));
+      dwarf_dealloc_error(oc->items[OPCODE_DWARF], *ocgetdwarferr(p));
       printf_x("Cannot dwarf_object_init_b().");
     }
 
-    res = ocdwarf_do(p, s, &error);
-    if (res == DW_DLV_ERROR) {
-      dwarf_dealloc_error(oc->items[OPCODE_DWARF], error);
-    }
-
-//    pdwarf_display_t d = ocdwarf_get(s);
-//    n = d && d->func ? d->func(p, s, &d->section) : -1;
+    pdwarf_display_t d = ocdwarf_get(s);
+    n = d && d->func ? d->func(p, s, &d->section) : -1;
 
     dwarf_object_finish(oc->items[OPCODE_DWARF]);
     oc->items[OPCODE_DWARF] = NULL;
@@ -393,7 +310,6 @@ int ocdwarf_run(handle_t p, handle_t s) {
     pdwarf_display_t d = ocdwarf_get(s);
     if (d && d->func) {
       popcode_t oc = CAST(popcode_t, p);
-//      Dwarf_Error error = 0;
 
 //      sectiondata[1].sd_sectionsize = ocget_size(s);
 //      sectiondata[1].sd_secname = ocget_name(s);
@@ -404,23 +320,15 @@ int ocdwarf_run(handle_t p, handle_t s) {
         printf_x("Giving up, cannot open '%s'", oc->inpname0);
       }
 
-      int res = dwarf_init_b(my_init_fd, DW_GROUPNUMBER_ANY, 0, 0, ocgetdwarfptr(p), ocgetdwarferr(p));
-      if (res != DW_DLV_OK) {
+      int x = dwarf_init_b(my_init_fd, DW_GROUPNUMBER_ANY, 0, 0, ocgetdwarfptr(p), ocgetdwarferr(p));
+      if (IS_DLV_ANY_ERROR(x)) {
         printf_x("Giving up, cannot do DWARF processing '%s'", oc->inpname0);
       }
-
-//      res = ocdwarf_do(p, s, ocgetdwarferr(p));
-//      if (res == DW_DLV_ERROR) {
-//        dwarf_dealloc_error(oc->items[OPCODE_DWARF], *ocgetdwarferr(p));
-//      }
 
       n = d && d->func ? d->func(p, s, &d->section) : -1;
       dwarf_object_finish(oc->items[OPCODE_DWARF]);
       oc->items[OPCODE_DWARF] = NULL;
     }
-  } else if (isoptions(p) && isopshdrNN(s)) {
-    pdwarf_display_t d = ocdwarf_get(s);
-    n = d && d->func ? d->func(p, s, &d->section) : -1;
   }
 
   return n;
