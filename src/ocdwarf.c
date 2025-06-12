@@ -409,12 +409,12 @@ int ocdwarf_run(handle_t p, handle_t s) {
         printf_x("Giving up, cannot do DWARF processing '%s'", oc->inpname0);
       }
 
-      res = ocdwarf_do(p, s, ocgetdwarferr(p));
-      if (res == DW_DLV_ERROR) {
-        dwarf_dealloc_error(oc->items[OPCODE_DWARF], *ocgetdwarferr(p));
-      }
+//      res = ocdwarf_do(p, s, ocgetdwarferr(p));
+//      if (res == DW_DLV_ERROR) {
+//        dwarf_dealloc_error(oc->items[OPCODE_DWARF], *ocgetdwarferr(p));
+//      }
 
-//      n = d && d->func ? d->func(p, s, &d->section) : -1;
+      n = d && d->func ? d->func(p, s, &d->section) : -1;
       dwarf_object_finish(oc->items[OPCODE_DWARF]);
       oc->items[OPCODE_DWARF] = NULL;
     }
