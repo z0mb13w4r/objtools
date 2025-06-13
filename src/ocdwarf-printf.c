@@ -220,6 +220,23 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
       if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
         n += printf_nice(isinfo, USE_BOOL);
       }
+
+      Dwarf_Die tdie = 0;
+      x = dwarf_offdie_b(oc->items[OPCODE_DWARF], offset, isinfo, &tdie, e);
+      if (IS_DLV_ANY_ERROR(x)) {
+        printf_e("dwarf_offdie_b failed! errcode %d", x);
+        return OCDWARF_ERRCODE(x, n);
+      }
+
+      char *name = 0;
+      int x0 = dwarf_diename(tdie, &name, e);
+      if (IS_DLV_ERROR(x0)) {
+        printf_e("dwarf_diename failed! errcode %d", x0);
+        return OCDWARF_ERRCODE(x0, n);
+      } else if (IS_DLV_OK(x0)) {
+        n += printf_text("Refers to", USE_LT | USE_SPACE | USE_COLON);
+        n += printf_text(name, USE_LT | USE_SPACE);
+      }
     } else if (DW_AT_sibling == nattr) {
       Dwarf_Off offset = 0;
       Dwarf_Bool isinfo = FALSE;
@@ -242,11 +259,11 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
       }
 
       char *name = 0;
-      x = dwarf_diename(tdie, &name, e);
-      if (IS_DLV_ERROR(x)) {
-        printf_e("dwarf_diename failed! errcode %d", x);
-        return OCDWARF_ERRCODE(x, n);
-      } else if (IS_DLV_OK(x)) {
+      int x0 = dwarf_diename(tdie, &name, e);
+      if (IS_DLV_ERROR(x0)) {
+        printf_e("dwarf_diename failed! errcode %d", x0);
+        return OCDWARF_ERRCODE(x0, n);
+      } else if (IS_DLV_OK(x0)) {
         n += printf_text("Refers to", USE_LT | USE_SPACE | USE_COLON);
         n += printf_text(name, USE_LT | USE_SPACE);
       }
