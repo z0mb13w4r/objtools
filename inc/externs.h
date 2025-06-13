@@ -12,6 +12,7 @@ extern pick_t zFORMBOOL[];
 extern pick_t zFORMADDR[];
 extern pick_t zFORMGREF[];
 extern pick_t zFORMUDATA[];
+extern pick_t zFORMOFFSET[];
 extern pick_t zFORMSTRING[];
 
 extern convert_t zDWAT[];

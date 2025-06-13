@@ -858,6 +858,11 @@ pick_t zFORMGREF[] = {
   PICK_END
 };
 
+pick_t zFORMOFFSET[] = {
+  DW_FORM_ref4,
+  PICK_END
+};
+
 pick_t zFORMSTRING[] = {
   DW_FORM_string,
   DW_FORM_GNU_strp_alt,
