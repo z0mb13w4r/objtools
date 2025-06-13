@@ -247,6 +247,7 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
         printf_e("dwarf_diename failed! errcode %d", x);
         return OCDWARF_ERRCODE(x, n);
       } else if (IS_DLV_OK(x)) {
+        n += printf_text("Refers to", USE_LT | USE_SPACE | USE_COLON);
         n += printf_text(name, USE_LT | USE_SPACE);
       }
     }
