@@ -246,7 +246,16 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
         n += printf_text(name, USE_LT | USE_SPACE);
       }
     } else if (isused(zFORMBLOCK, nform)) {
-
+      Dwarf_Block *block = 0;
+      int x0 = dwarf_formblock(attr, &block, e);
+      if (IS_DLV_ERROR(x0)) {
+        printf_e("dwarf_formblock failed! errcode %d", x0);
+        return OCDWARF_ERRCODE(x0, n);
+      } else if (IS_DLV_OK(x0)) {
+        n += printf_text("len", USE_LT | USE_SPACE);
+        n += printf_nice(block->bl_len, USE_FHEX16);
+        dwarf_dealloc(oc->items[OPCODE_DWARF], block, DW_DLA_BLOCK);
+      }
     }
 
     n += printf_eol();
