@@ -245,6 +245,8 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
         n += printf_text("Refers to", USE_LT | USE_SPACE | USE_COLON);
         n += printf_text(name, USE_LT | USE_SPACE);
       }
+    } else if (isused(zFORMBLOCK, nform)) {
+
     }
 
     n += printf_eol();

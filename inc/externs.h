@@ -11,6 +11,7 @@ extern pick_t zATSRCFILE[];
 extern pick_t zFORMBOOL[];
 extern pick_t zFORMADDR[];
 extern pick_t zFORMGREF[];
+extern pick_t zFORMBLOCK[];
 extern pick_t zFORMUDATA[];
 extern pick_t zFORMOFFSET[];
 extern pick_t zFORMSTRING[];
