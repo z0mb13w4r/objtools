@@ -254,7 +254,7 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
       } else if (IS_DLV_OK(x0)) {
         n += printf_text("len", USE_LT | USE_SPACE);
         n += printf_nice(block->bl_len, USE_FHEX16 | USE_COLON);
-        n += printf_sore(block->bl_data, block->bl_len, USE_HEX);
+        n += printf_hurt(block->bl_data, block->bl_len, USE_HEX | USE_SPACE | USE_COLON | USE_0x);
         dwarf_dealloc(oc->items[OPCODE_DWARF], block, DW_DLA_BLOCK);
       }
     }

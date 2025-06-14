@@ -51,6 +51,7 @@ int printf_spos(char* o, const size_t size, const imode_t mode, const bool_t use
     case USE_TAB:                  n += PRINT1(" ");     break;
     case USE_TAB2:                 n += PRINT1("   ");   break;
     case USE_COMMA:                n += PRINT1(", ");    break;
+    case USE_0x:                   n += PRINT1("0x");    break;
     default:                       break;
     }
 
@@ -400,16 +401,17 @@ int printf_book(const char* p[], const imode_t mode) {
 
 int printf_hurt(const unknown_t p, const size_t size, const imode_t mode) {
   int n = 0;
+  n += printf_pack(mode & USE_TAB ? 1 : 0);
   n += printf_pack(mode & USE_SPACE ? 1 : 0);
-  n += printf_sore(p, size, mode & ~USE_SPACE);
+  n += printf_sore(p, size, mode & ~(USE_SPACE | USE_TAB));
 
   return n;
 }
 
 int printf_sore(const unknown_t p, const size_t size, const imode_t mode) {
   const int MAXSIZE = 10;
-  const imode_t xmode = mode & ~(USE_POS0MASK | USE_FLAGMASK | USE_COLORMASK);
-  const imode_t ymode = mode &  (USE_POS0MASK | USE_FLAGMASK | USE_COLORMASK);
+  const imode_t xmode = mode & ~(USE_POS0MASK | USE_POS1MASK | USE_FLAGMASK | USE_COLORMASK);
+  const imode_t ymode = mode &  (USE_POS0MASK | USE_POS1MASK | USE_FLAGMASK | USE_COLORMASK);
   const imode_t zmode = mode &   USE_POS0MASK;
   int n = 0;
 
@@ -459,7 +461,7 @@ int printf_sore(const unknown_t p, const size_t size, const imode_t mode) {
       n += printf_neat(o + n, sizeof(o) - n, *p0, USE_SPACE == GET_POS0(mode) ? USE_LHEX8 : USE_LHEX8 | USE_NOSPACE);
     }
 
-    n += printf_epos(o, sizeof(o), mode);
+    n += printf_epos(o + n, sizeof(o) - n, mode);
     n += printf_post(o, mode);
   } else if (USE_MD5 == xmode) {
     uchar_t md[MD5_DIGEST_LENGTH];

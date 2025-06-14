@@ -133,6 +133,7 @@
 #define USE_ATAT          SET_POS0(5)
 #define USE_DOT           SET_POS0(6)
 #define USE_COMMA         SET_POS0(7)
+#define USE_0x            SET_POS0(8)
 #define USE_POS0MASK      SET_POS0(15)
 
 #define USE_COLON         SET_POS1(1)
