@@ -270,7 +270,7 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
             if (DW_OP_fbreg == v0) {
               n += printf_nice(v1, USE_SDEC8);
             } else if (DW_OP_breg5 == v0) {
-              n += printf_nice(v1, USE_SDEC8);
+              n += printf_nice(v1, USE_SDEC8 | USE_NOSPACE);
             } else if (block->bl_len >= 5) {
               n += printf_hurt(CAST(puchar_t, block->bl_data) + 3, 2, USE_HEX | USE_SPACE | USE_0x);
               n += printf_hurt(CAST(puchar_t, block->bl_data) + 2, 1, USE_HEX);
