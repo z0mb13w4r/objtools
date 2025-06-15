@@ -15,6 +15,7 @@ int ocdwarf_printf_me(handle_t p, const int x, const char *y, const char *z, con
 int ocdwarf_printf_pluck(handle_t p, const pconvert_t z, const pick_t x, const imode_t mode);
 
 int ocdwarf_printf_AT(handle_t p, const uint64_t v, const imode_t mode);
+int ocdwarf_printf_OP(handle_t p, const uint64_t v, const imode_t mode);
 int ocdwarf_printf_ATE(handle_t p, const uint64_t v, const imode_t mode);
 int ocdwarf_printf_TAG(handle_t p, const uint64_t v, const imode_t mode);
 int ocdwarf_printf_FORM(handle_t p, const uint64_t v, const imode_t mode);

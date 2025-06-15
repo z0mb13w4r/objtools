@@ -17,6 +17,7 @@ extern pick_t zFORMOFFSET[];
 extern pick_t zFORMSTRING[];
 
 extern convert_t zDWAT[];
+extern convert_t zDWOP[];
 extern convert_t zDWATE[];
 extern convert_t zDWTAG[];
 extern convert_t zDWFORM[];

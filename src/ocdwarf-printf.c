@@ -44,6 +44,10 @@ int ocdwarf_printf_AT(handle_t p, const uint64_t v, const imode_t mode) {
   return ocdwarf_printf_pluck(p, zDWAT, v, mode | SET_PAD(30));
 }
 
+int ocdwarf_printf_OP(handle_t p, const uint64_t v, const imode_t mode) {
+  return ocdwarf_printf_pluck(p, zDWOP, v, mode);
+}
+
 int ocdwarf_printf_ATE(handle_t p, const uint64_t v, const imode_t mode) {
   return ocdwarf_printf_pluck(p, zDWATE, v, mode);
 }
@@ -254,10 +258,26 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
       if (IS_DLV_ERROR(x0)) {
         printf_e("dwarf_formblock failed! errcode %d", x0);
         return OCDWARF_ERRCODE(x0, n);
-      } else if (IS_DLV_OK(x0)) {
+      } else if (IS_DLV_OK(x0) && block && 0 != block->bl_len) {
         n += printf_text("len", USE_LT | USE_SPACE);
         n += printf_nice(block->bl_len, USE_FHEX16 | USE_COLON);
         n += printf_hurt(block->bl_data, block->bl_len, USE_HEX | USE_SPACE | USE_COLON | USE_0x);
+        if (block->bl_len >= 1) {
+          uchar_t v0 = CAST(puchar_t, block->bl_data)[0];
+          n += ocdwarf_printf_OP(p, v0, USE_SPACE);
+          if (block->bl_len >= 2) {
+            uchar_t v1 = CAST(puchar_t, block->bl_data)[1];
+            if (DW_OP_fbreg == v0) {
+              n += printf_nice(v1, USE_SDEC8);
+            } else if (DW_OP_breg5 == v0) {
+              n += printf_nice(v1, USE_SDEC8);
+            } else if (block->bl_len >= 5) {
+              n += printf_hurt(CAST(puchar_t, block->bl_data) + 3, 2, USE_HEX | USE_SPACE | USE_0x);
+              n += printf_hurt(CAST(puchar_t, block->bl_data) + 2, 1, USE_HEX);
+              n += printf_hurt(CAST(puchar_t, block->bl_data) + 1, 1, USE_HEX);
+            }
+          }
+        }
         dwarf_dealloc(oc->items[OPCODE_DWARF], block, DW_DLA_BLOCK);
       }
     }
