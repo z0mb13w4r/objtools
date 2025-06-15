@@ -16,6 +16,10 @@ int ocdwarf_die_and_siblings(handle_t p, handle_t s, Dwarf_Die die,
     popcode_t oc = CAST(popcode_t, p);
     n += ocdwarf_printf(p, s, die, isinfo, level, sf, e);
 
+    if (0 == level) {
+      n += printf_text("LOCAL_SYMBOLS", USE_LT | USE_COLON | USE_EOL);
+    }
+
     Dwarf_Die cur_die = die;
 
     for ( ; ; ) {
