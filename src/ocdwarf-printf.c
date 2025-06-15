@@ -169,6 +169,9 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
         n += ocdwarf_printf_ATE(p, value, USE_NONE);
       } else if (isused(zATDEC, nattr)) {
         n += printf_nice(value, USE_DEC);
+        if (nattr == DW_AT_byte_size && CHAR_MAX <= value) {
+          n += printf_nice(value, USE_SDEC8 | USE_RB);
+        }
       } else if (isused(zATHEX32, nattr)) {
         n += printf_nice(value, USE_FHEX32);
       } else if (isused(zATSRCFILE, nattr)) {

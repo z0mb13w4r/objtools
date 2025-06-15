@@ -247,6 +247,21 @@ int printf_neat(char* o, const size_t size, const uint64_t v, const imode_t mode
     case USE_WARNING:              n += PRINT2("<warning: %" PRIx64 ">", v);       break;
     case USE_BOOL:                 n += PRINT1(v ? "true" : "false");              break;
 
+    case USE_SDEC8:
+      if (v < CHAR_MAX)            n += PRINT2("%" PRId64, v);
+      else                         n += PRINT2("%" PRId64, -(UCHAR_MAX - v) - 1);
+      break;
+
+    case USE_SDEC16:
+      if (v < SHRT_MAX)            n += PRINT2("%" PRId64, v);
+      else                         n += PRINT2("-%" PRId64, -(USHRT_MAX - v) - 1);
+      break;
+
+    case USE_SDEC32:
+      if (v < INT_MAX)             n += PRINT2("%" PRId64, v);
+      else                         n += PRINT2("-%" PRId64, -(UINT_MAX - v) - 1);
+      break;
+
     case USE_SHEX8:
       if (v < CHAR_MAX)            n += PRINT2("+ %" PRIx64, v);
       else                         n += PRINT2("- %" PRIx64, (~v) + 1);
