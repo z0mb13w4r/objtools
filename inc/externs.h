@@ -5,6 +5,8 @@
 
 extern pick_t zATE[];
 extern pick_t zATDEC[];
+extern pick_t zATDEC8[];
+extern pick_t zATDEC16[];
 extern pick_t zATHEX32[];
 extern pick_t zATSRCFILE[];
 

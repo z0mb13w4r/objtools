@@ -254,12 +254,12 @@ int printf_neat(char* o, const size_t size, const uint64_t v, const imode_t mode
 
     case USE_SDEC16:
       if (v < SHRT_MAX)            n += PRINT2("%" PRId64, v);
-      else                         n += PRINT2("-%" PRId64, -(USHRT_MAX - v) - 1);
+      else                         n += PRINT2("%" PRId64, -(USHRT_MAX - v) - 1);
       break;
 
     case USE_SDEC32:
       if (v < INT_MAX)             n += PRINT2("%" PRId64, v);
-      else                         n += PRINT2("-%" PRId64, -(UINT_MAX - v) - 1);
+      else                         n += PRINT2("%" PRId64, -(UINT_MAX - v) - 1);
       break;
 
     case USE_SHEX8:

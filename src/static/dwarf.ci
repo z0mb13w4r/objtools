@@ -822,6 +822,17 @@ pick_t zATDEC[] = {
   PICK_END
 };
 
+pick_t zATDEC8[] = {
+  DW_AT_byte_size,
+  DW_AT_data_member_location,
+  PICK_END
+};
+
+pick_t zATDEC16[] = {
+  DW_AT_const_value,
+  PICK_END
+};
+
 pick_t zATHEX32[] = {
   DW_AT_decl_line,
   DW_AT_decl_column,
