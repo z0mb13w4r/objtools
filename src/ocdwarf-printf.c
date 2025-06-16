@@ -1,3 +1,4 @@
+#include "decode.h"
 #include "options.h"
 #include "ocdwarf-printf.h"
 
@@ -268,7 +269,7 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
           if (block->bl_len >= 2) {
             uchar_t v1 = CAST(puchar_t, block->bl_data)[1];
             if (DW_OP_fbreg == v0) {
-              n += printf_nice(v1, USE_SDEC8);
+              n += printf_nice(sleb128_decode(CAST(puchar_t, block->bl_data) + 1, block->bl_len - 1), USE_DEC);
             } else if (DW_OP_breg5 == v0) {
               n += printf_nice(v1, USE_SDEC8 | USE_NOSPACE);
             } else if (block->bl_len >= 5) {
