@@ -64,5 +64,8 @@ int aes_encrypt(const int mode, puchar_t src, const size_t srcsize,
 
 handle_t base64_decode(unknown_t src, size_t srcsize);
 
+uint64_t sleb128_decode(unknown_t src, size_t srcsize);
+uint64_t uleb128_decode(unknown_t src, size_t srcsize);
+
 #endif
 

@@ -482,3 +482,43 @@ handle_t base64_decode(unknown_t src, size_t srcsize) {
   return NULL;
 }
 
+uint64_t sleb128_decode(unknown_t src, size_t srcsize) {
+  uint64_t n = 0;
+
+  if (src && srcsize) {
+    uchar_t x = 0;
+    uint64_t y = 0;
+    puchar_t psrc = CAST(puchar_t, src);
+    for (size_t i = 0; i < srcsize; ++i) {
+      x = psrc[i];
+      n |= (x & 0x7f) << y;
+      y += 7;
+
+      if ((x & 0x80) == 0) break;
+    }
+
+    if ((y < 64) && (x & 0x40)) {
+      n |= -(1 << y);
+    }
+  }
+
+  return n;
+}
+
+uint64_t uleb128_decode(unknown_t src, size_t srcsize) {
+  uint64_t n = 0;
+
+  if (src && srcsize) {
+    uint64_t y = 0;
+    puchar_t psrc = CAST(puchar_t, src);
+    for (size_t i = 0; i < srcsize; ++i) {
+      uchar_t x = psrc[i];
+      n |= (x & 0x7f) << y;
+      y += 7;
+      if ((x & 0x80) == 0) break;
+    }
+  }
+
+  return n;
+}
+
