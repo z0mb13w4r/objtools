@@ -33,11 +33,13 @@ SRCS_C = \
 	ocdwarf-str.c \
 	ocdwarf-info.c \
 	ocdwarf-lines.c \
+	ocdwarf-types.c \
 	ocdwarf-abbrev.c \
 	ocdwarf-printf.c \
 	ocdwarf-aranges.c \
 	ocdwarf-eh-frame.c \
 	ocdwarf-macroinfo.c \
+	ocdwarf-stroffset.c \
 	objcopy.c \
 	objdump.c \
 	objhash.c \
