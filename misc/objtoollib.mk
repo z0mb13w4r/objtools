@@ -30,10 +30,13 @@ SRCS_C = \
 	memfind.c \
 	memlink.c \
 	ocdwarf.c \
+	ocdwarf-str.c \
 	ocdwarf-info.c \
 	ocdwarf-lines.c \
+	ocdwarf-abbrev.c \
 	ocdwarf-printf.c \
 	ocdwarf-aranges.c \
+	ocdwarf-eh-frame.c \
 	ocdwarf-macroinfo.c \
 	objcopy.c \
 	objdump.c \
