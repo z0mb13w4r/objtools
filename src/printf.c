@@ -142,6 +142,7 @@ int printf_work(char* o, const size_t size, const char* p, const imode_t mode) {
     case USE_TAB:            n += PRINT1("  ");         break;
     case USE_TAB2:           n += PRINT1("    ");       break;
     case USE_DOT:            n += PRINT1(".");          break;
+    case USE_COMMA:          n += PRINT1(", ");         break;
     default:                 break;
     }
 
@@ -416,9 +417,11 @@ int printf_book(const char* p[], const imode_t mode) {
 
 int printf_hurt(const unknown_t p, const size_t size, const imode_t mode) {
   int n = 0;
-  n += printf_pack(mode & USE_TAB ? 1 : 0);
+#define USE_TAB1 USE_TAB
+  n += printf_pack(mode & USE_TAB2 ? 4 : 0);
+  n += printf_pack(mode & USE_TAB1 ? 2 : 0);
   n += printf_pack(mode & USE_SPACE ? 1 : 0);
-  n += printf_sore(p, size, mode & ~(USE_SPACE | USE_TAB));
+  n += printf_sore(p, size, mode & ~(USE_SPACE | USE_TAB1 | USE_TAB2));
 
   return n;
 }
