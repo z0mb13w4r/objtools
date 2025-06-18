@@ -102,10 +102,16 @@ int ocdwarf_debug_info(handle_t p, handle_t s, handle_t d) {
         printf_nice(cu_version_stamp, USE_DEC | USE_EOL);
         printf_text("Address size", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
         printf_nice(address_size, USE_DEC | USE_EOL);
-        printf_text("Offset size", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
+        printf_text("Type offset", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
+        printf_nice(type_offset, USE_FHEX | USE_EOL);
+        printf_text("Extension size", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
+        printf_nice(extension_size, USE_DEC | USE_EOL);
+        printf_text("CU offset size", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
         printf_nice(cu_offset_size, USE_DEC | USE_EOL);
-        printf_text("Next cu header offset", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
+        printf_text("CU next header offset", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
         printf_nice(next_cu_header_offset, USE_FHEX | USE_EOL);
+        printf_text("CU header type", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
+        printf_nice(header_cu_type, USE_FHEX | USE_EOL);
       }
 
       x = dwarf_siblingof_b(oc->items[OPCODE_DWARF], no_die, is_info, &cu_die, oc->items[OPCODE_DWARF_ERROR]);
