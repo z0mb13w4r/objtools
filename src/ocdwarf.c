@@ -5,12 +5,12 @@
 #include "ocdwarf-str.h"
 #include "ocdwarf-info.h"
 #include "ocdwarf-lines.h"
+#include "ocdwarf-macro.h"
 #include "ocdwarf-types.h"
 #include "ocdwarf-abbrev.h"
 #include "ocdwarf-printf.h"
 #include "ocdwarf-aranges.h"
 #include "ocdwarf-eh-frame.h"
-#include "ocdwarf-macroinfo.h"
 #include "ocdwarf-stroffset.h"
 
 #include <fcntl.h>

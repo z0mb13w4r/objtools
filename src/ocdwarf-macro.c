@@ -1,12 +1,12 @@
 #include "printf.h"
 #include "externs.h"
 #include "options.h"
-#include "ocdwarf-macroinfo.h"
+#include "ocdwarf-macro.h"
 
 static const int MAXSIZE = 23;
 
 
-int ocdwarf_debug_macroinfo(handle_t p, handle_t s, handle_t d) {
+int ocdwarf_debug_macro(handle_t p, handle_t s, handle_t d) {
   int x = DW_DLV_ERROR;
   int n0 = 0;
 
