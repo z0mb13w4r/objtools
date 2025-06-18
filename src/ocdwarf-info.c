@@ -66,7 +66,7 @@ int ocdwarf_debug_info(handle_t p, handle_t s, handle_t d) {
   if (isopcode(p) && (isopshdr(s) || isopshdrNN(s))) {
     popcode_t oc = CAST(popcode_t, p);
 
-    Dwarf_Bool is_info = TRUE; /* our data is not DWARF4 .debug_types. */
+    Dwarf_Bool isinfo = TRUE; /* our data is not DWARF4 .debug_types. */
     Dwarf_Unsigned next_cu_header_offset = 0;
     Dwarf_Unsigned cu_header_length = 0;
     Dwarf_Unsigned type_offset    = 0;
@@ -84,9 +84,9 @@ int ocdwarf_debug_info(handle_t p, handle_t s, handle_t d) {
       MALLOCS(dwarf_srcfiles_t, sf);
       sf.status = DW_DLV_ERROR;
 
-      x = dwarf_next_cu_header_d(oc->items[OPCODE_DWARF], is_info,
-                  &cu_header_length, &cu_version_stamp, &abbrev_offset, &address_size, &cu_offset_size, &extension_size,
-                  &type_signature, &type_offset, &next_cu_header_offset, &header_cu_type, oc->items[OPCODE_DWARF_ERROR]);
+      x = dwarf_next_cu_header_d(oc->items[OPCODE_DWARF], isinfo, &cu_header_length, &cu_version_stamp,
+                  &abbrev_offset, &address_size, &cu_offset_size, &extension_size, &type_signature, &type_offset,
+                  &next_cu_header_offset, &header_cu_type, oc->items[OPCODE_DWARF_ERROR]);
       if (IS_DLV_NO_ENTRY(x)) break;
       else if (IS_DLV_ANY_ERROR(x)) {
         if (IS_DLV_ERROR(x)) {
@@ -114,7 +114,7 @@ int ocdwarf_debug_info(handle_t p, handle_t s, handle_t d) {
         printf_nice(header_cu_type, USE_FHEX | USE_EOL);
       }
 
-      x = dwarf_siblingof_b(oc->items[OPCODE_DWARF], no_die, is_info, &cu_die, oc->items[OPCODE_DWARF_ERROR]);
+      x = dwarf_siblingof_b(oc->items[OPCODE_DWARF], no_die, isinfo, &cu_die, oc->items[OPCODE_DWARF_ERROR]);
       if (IS_DLV_NO_ENTRY(x)) break;
       else if (IS_DLV_ERROR(x)) {
         printf_e("dwarf errmsg: %s", dwarf_errmsg(*ocgetdwarferr(p)));
@@ -122,7 +122,7 @@ int ocdwarf_debug_info(handle_t p, handle_t s, handle_t d) {
         return OCDWARF_ERRCODE(x, n0);
       }
 
-      int n1 = ocdwarf_die_and_siblings(p, s, cu_die, is_info, level, &sf, oc->items[OPCODE_DWARF_ERROR]);
+      int n1 = ocdwarf_die_and_siblings(p, s, cu_die, isinfo, level, &sf, oc->items[OPCODE_DWARF_ERROR]);
       if (OCDWARF_ISFAILED(n1)) {
         dwarf_dealloc_die(cu_die);
         printf_e("ocdwarf_die_and_siblings failed! %d", n1);

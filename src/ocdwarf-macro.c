@@ -5,6 +5,7 @@
 
 static const int MAXSIZE = 23;
 
+static const Dwarf_Sig8 zerosignature;
 
 int ocdwarf_debug_macro(handle_t p, handle_t s, handle_t d) {
   int x = DW_DLV_ERROR;
@@ -15,19 +16,45 @@ int ocdwarf_debug_macro(handle_t p, handle_t s, handle_t d) {
 
     int level = 0;
 
-    Dwarf_Half mac_version = 4;
-    Dwarf_Unsigned mac_offset = 0;
-    Dwarf_Unsigned number_of_ops = 232;
-    Dwarf_Unsigned ops_total_byte_len = 803;
+    Dwarf_Bool isinfo = TRUE; /* our data is not DWARF4 .debug_types. */
+    Dwarf_Unsigned next_cu_header_offset = 0;
+    Dwarf_Unsigned cu_header_length = 0;
+    Dwarf_Unsigned type_offset    = 0;
+    Dwarf_Half     extension_size = 0;
+    Dwarf_Half     header_cu_type = 0;
+    Dwarf_Half     address_size  = 0;
+    Dwarf_Sig8     type_signature = zerosignature;
+    Dwarf_Off      abbrev_offset = 0;
+
+    Dwarf_Die      cu_die = 0;
+
+    x = dwarf_next_cu_header_e(oc->items[OPCODE_DWARF], isinfo, &cu_die, &cu_header_length, &cu_version_stamp,
+                     &abbrev_offset, &address_size, &cu_offset_size, &extension_size, &type_signature, &type_offset,
+                     &next_cu_header_offset, &header_cu_type, oc->items[OPCODE_DWARF_ERROR]);
+
+    Dwarf_Half macro_version = 0;
+    Dwarf_Unsigned version = 0;
+    Dwarf_Unsigned macro_offset = 0;
+    Dwarf_Unsigned number_of_ops = 0;
+    Dwarf_Unsigned macro_unit_offset = 0;
+    Dwarf_Unsigned ops_total_byte_len = 0;
+    Dwarf_Macro_Context macro_context = 0;
+
+    x = dwarf_get_macro_context(cu_die, &version, &macro_context, &macro_unit_offset,
+                     &number_of_ops, &ops_total_byte_len, oc->items[OPCODE_DWARF_ERROR]);
+
+//    x = dwarf_macro_context_head(macro_context, &mac_version, &mac_offset, &mac_len, &mac_header_len,
+//                      &mflags, &has_line_offset, &line_offset, &has_offset_size_64, &has_operands_table,
+//                      &opcode_count, oc->items[OPCODE_DWARF_ERROR]);
 
     printf_text("Nested import level", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     printf_nice(level, USE_DEC | USE_EOL);
 
     printf_text("Macro version", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-    printf_nice(mac_version, USE_DEC | USE_EOL);
+    printf_nice(macro_version, USE_DEC | USE_EOL);
 
     printf_text("Macro section offset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-    printf_nice(mac_offset, USE_FHEX32 | USE_EOL);
+    printf_nice(macro_offset, USE_FHEX32 | USE_EOL);
 
     printf_text("MacroInformationEntries count", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     printf_nice(number_of_ops, USE_DEC);
