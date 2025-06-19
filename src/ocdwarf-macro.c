@@ -62,6 +62,11 @@ int ocdwarf_debug_macro(handle_t p, handle_t s, handle_t d) {
     x = dwarf_get_macro_context(cu_die, &version, &macro_context, &macro_unit_offset,
                      &number_of_ops, &ops_total_byte_len, oc->items[OPCODE_DWARF_ERROR]);
 
+      if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
+        printf_text("Macro unit offset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        printf_nice(macro_unit_offset, USE_DEC | USE_EOL);
+      }
+
     unsigned int macro_flags = 0;
     Dwarf_Half macro_version = 0;
     Dwarf_Unsigned macro_len = 0;
