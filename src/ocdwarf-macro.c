@@ -111,6 +111,37 @@ int ocdwarf_debug_macro(handle_t p, handle_t s, handle_t d) {
         printf_nice(has_operands_table, USE_YESNO | USE_EOL);
         printf_text("Opcode count", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
         printf_nice(opcode_count, USE_DEC | USE_EOL);
+
+        for (Dwarf_Half i = 0; i < opcode_count; ++i) {
+          Dwarf_Half opcode_num = 0;
+          Dwarf_Half operand_count = 0;
+          const Dwarf_Small *operand_array = 0;
+
+          x = dwarf_macro_operands_table(macro_context, i,
+	            &opcode_num, &operand_count, &operand_array, oc->items[OPCODE_DWARF_ERROR]);
+          if (IS_DLV_NO_ENTRY(x)) {
+            dwarf_dealloc_macro_context(macro_context);
+            printf_e("dwarf_macro_operands_table - NO_ENTRY for index %u of %u indexes.", i, opcode_count);
+            break;
+          } else if (IS_DLV_ERROR(x)) {
+            printf_x("dwarf_macro_operands_table - NO_ENTRY for index %u of %u indexes.", i, opcode_count);
+          } else if (0 == opcode_num) {
+            n0 += printf_nice(i, USE_DEC3 | USE_SB);
+            n0 += printf_text("end of macro operands.", USE_LT | USE_EOL);
+            continue;
+          }
+
+          n0 += printf_nice(i, USE_DEC3 | USE_SB);
+          n0 += printf_text("op", USE_LT | USE_SPACE | USE_COLON);
+          n0 += ocdwarf_printf_MACRO(p, opcode_num, USE_NONE);
+          n0 += printf_eol();
+          for (Dwarf_Half j = 0; j < operand_count; ++j) {
+            n0 += printf_nice(i, USE_DEC3 | USE_SB);
+            n0 += ocdwarf_printf_FORM(p, operand_array[j], USE_NONE);
+            n0 += printf_eol();
+          }
+          n0 += printf_eol();
+        }
       }
   }
 

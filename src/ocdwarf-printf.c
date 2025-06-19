@@ -65,6 +65,10 @@ int ocdwarf_printf_LANG(handle_t p, const uint64_t v, const imode_t mode) {
   return ocdwarf_printf_pluck(p, zDWLANG, v, mode);
 }
 
+int ocdwarf_printf_MACRO(handle_t p, const uint64_t v, const imode_t mode) {
+  return ocdwarf_printf_pluck(p, zDWMACRO, v, mode);
+}
+
 int ocdwarf_printf_srcfiles(handle_t p, pdwarf_srcfiles_t sf) {
   int n = 0;
   if (isopcode(p) && sf) {

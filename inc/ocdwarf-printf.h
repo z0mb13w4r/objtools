@@ -20,6 +20,7 @@ int ocdwarf_printf_ATE(handle_t p, const uint64_t v, const imode_t mode);
 int ocdwarf_printf_TAG(handle_t p, const uint64_t v, const imode_t mode);
 int ocdwarf_printf_FORM(handle_t p, const uint64_t v, const imode_t mode);
 int ocdwarf_printf_LANG(handle_t p, const uint64_t v, const imode_t mode);
+int ocdwarf_printf_MACRO(handle_t p, const uint64_t v, const imode_t mode);
 
 int ocdwarf_printf_idx(handle_t p, const uint64_t v, const imode_t mode);
 int ocdwarf_printf_num(handle_t p, const uint64_t v, const imode_t mode);
