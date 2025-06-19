@@ -3,7 +3,7 @@
 #include "options.h"
 #include "ocdwarf-info.h"
 
-static const int MAXSIZE = 23;
+static const int MAXSIZE = 24;
 
 static const Dwarf_Sig8 zerosignature;
 

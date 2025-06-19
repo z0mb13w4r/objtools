@@ -3,7 +3,7 @@
 #include "options.h"
 #include "ocdwarf-macro.h"
 
-static const int MAXSIZE = 23;
+static const int MAXSIZE = 24;
 
 static const Dwarf_Sig8 zerosignature;
 
@@ -31,6 +31,27 @@ int ocdwarf_debug_macro(handle_t p, handle_t s, handle_t d) {
     x = dwarf_next_cu_header_e(oc->items[OPCODE_DWARF], isinfo, &cu_die, &cu_header_length, &cu_version_stamp,
                      &abbrev_offset, &address_size, &cu_offset_size, &extension_size, &type_signature, &type_offset,
                      &next_cu_header_offset, &header_cu_type, oc->items[OPCODE_DWARF_ERROR]);
+
+      if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
+        printf_text("CU header length", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        printf_nice(cu_header_length, USE_FHEX | USE_EOL);
+        printf_text("Version stamp", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        printf_nice(cu_version_stamp, USE_DEC | USE_EOL);
+        printf_text("Abbrev offset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        printf_nice(abbrev_offset, USE_DEC | USE_EOL);
+        printf_text("Address size", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        printf_nice(address_size, USE_DEC | USE_EOL);
+        printf_text("Extension size", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        printf_nice(extension_size, USE_DEC | USE_EOL);
+        printf_text("Type offset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        printf_nice(type_offset, USE_FHEX | USE_EOL);
+        printf_text("CU offset size", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        printf_nice(cu_offset_size, USE_DEC | USE_EOL);
+        printf_text("CU next header offset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        printf_nice(next_cu_header_offset, USE_FHEX | USE_EOL);
+        printf_text("CU header type", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        printf_nice(header_cu_type, USE_FHEX | USE_EOL);
+      }
 
     Dwarf_Unsigned version = 0;
     Dwarf_Unsigned number_of_ops = 0;
