@@ -95,6 +95,23 @@ int ocdwarf_debug_macro(handle_t p, handle_t s, handle_t d) {
     printf_nice(number_of_ops, USE_DEC);
     printf_text("bytes length", USE_LT | USE_COMMA | USE_COLON);
     printf_nice(ops_total_byte_len, USE_DEC | USE_EOL);
+
+      if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
+        printf_text("Macro header length", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        printf_nice(macro_header_len, USE_DEC | USE_EOL);
+        printf_text("Macro flags", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        printf_nice(macro_flags, USE_DEC | USE_EOL);
+        printf_text("Has line offset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        printf_nice(has_line_offset, USE_YESNO | USE_EOL);
+        printf_text("Line offset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        printf_nice(line_offset, USE_DEC | USE_EOL);
+        printf_text("Has offset size 64", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        printf_nice(has_offset_size_64, USE_YESNO | USE_EOL);
+        printf_text("Has operands table", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        printf_nice(has_operands_table, USE_YESNO | USE_EOL);
+        printf_text("Opcode count", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        printf_nice(opcode_count, USE_DEC | USE_EOL);
+      }
   }
 
   return OCDWARF_ERRCODE(x, n0);
