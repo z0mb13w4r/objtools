@@ -31,6 +31,11 @@ int ocdwarf_debug_macro(handle_t p, handle_t s, handle_t d) {
     x = dwarf_next_cu_header_e(oc->items[OPCODE_DWARF], isinfo, &cu_die, &cu_header_length, &cu_version_stamp,
                      &abbrev_offset, &address_size, &cu_offset_size, &extension_size, &type_signature, &type_offset,
                      &next_cu_header_offset, &header_cu_type, oc->items[OPCODE_DWARF_ERROR]);
+    if (IS_DLV_NO_ENTRY(x)) return n0;
+    else if (IS_DLV_ERROR(x)) {
+      printf_e("dwarf_next_cu_header_e failed! - %d", x);
+      return OCDWARF_ERRCODE(x, n0);
+    }
 
       if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
         printf_text("CU header length", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
@@ -61,6 +66,11 @@ int ocdwarf_debug_macro(handle_t p, handle_t s, handle_t d) {
 
     x = dwarf_get_macro_context(cu_die, &version, &macro_context, &macro_unit_offset,
                      &number_of_ops, &ops_total_byte_len, oc->items[OPCODE_DWARF_ERROR]);
+    if (IS_DLV_NO_ENTRY(x)) return n0;
+    else if (IS_DLV_ERROR(x)) {
+      printf_e("dwarf_get_macro_context failed! - %d", x);
+      return OCDWARF_ERRCODE(x, n0);
+    }
 
       if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
         printf_text("Macro unit offset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
@@ -81,6 +91,10 @@ int ocdwarf_debug_macro(handle_t p, handle_t s, handle_t d) {
     x = dwarf_macro_context_head(macro_context, &macro_version, &macro_offset, &macro_len, &macro_header_len,
                       &macro_flags, &has_line_offset, &line_offset, &has_offset_size_64, &has_operands_table,
                       &opcode_count, oc->items[OPCODE_DWARF_ERROR]);
+    if (IS_DLV_ANY_ERROR(x)) {
+      printf_e("dwarf_macro_context_head failed! - %d", x);
+      return OCDWARF_ERRCODE(x, n0);
+    }
 
     printf_text("Nested import level", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     printf_nice(level, USE_DEC | USE_EOL);
@@ -118,7 +132,7 @@ int ocdwarf_debug_macro(handle_t p, handle_t s, handle_t d) {
           const Dwarf_Small *operand_array = 0;
 
           x = dwarf_macro_operands_table(macro_context, i,
-	            &opcode_num, &operand_count, &operand_array, oc->items[OPCODE_DWARF_ERROR]);
+                    &opcode_num, &operand_count, &operand_array, oc->items[OPCODE_DWARF_ERROR]);
           if (IS_DLV_NO_ENTRY(x)) {
             dwarf_dealloc_macro_context(macro_context);
             printf_e("dwarf_macro_operands_table - NO_ENTRY for index %u of %u indexes.", i, opcode_count);

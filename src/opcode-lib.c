@@ -91,7 +91,7 @@ int opcodelib_open(handle_t p, handle_t o) {
           di->disassembler_options = opcodelib_strncat(args, "intel", ",", NELEMENTS(args));
         }
 
-	if (MODE_ISSET(op->ocdump, OPTDISASSEMBLE_X86_64)) {
+        if (MODE_ISSET(op->ocdump, OPTDISASSEMBLE_X86_64)) {
           di->disassembler_options = opcodelib_strncat(args, "x86-64", ",", NELEMENTS(args));
         } else if (MODE_ISSET(op->ocdump, OPTDISASSEMBLE_I386)) {
           di->disassembler_options = opcodelib_strncat(args, "i386", ",", NELEMENTS(args));
@@ -105,7 +105,7 @@ int opcodelib_open(handle_t p, handle_t o) {
           di->disassembler_options = opcodelib_strncat(args, "intel64", ",", NELEMENTS(args));
         }
 
-	if (MODE_ISSET(op->ocdump, OPTDISASSEMBLE_ADDR16)) {
+        if (MODE_ISSET(op->ocdump, OPTDISASSEMBLE_ADDR16)) {
           di->disassembler_options = opcodelib_strncat(args, "addr16", ",", NELEMENTS(args));
         } else if (MODE_ISSET(op->ocdump, OPTDISASSEMBLE_ADDR32)) {
           di->disassembler_options = opcodelib_strncat(args, "addr32", ",", NELEMENTS(args));
@@ -160,10 +160,8 @@ static int opcodelib_lnumbers(handle_t p, handle_t s, const uint64_t vaddr) {
     unsigned int linenumber;
     unsigned int discriminator;
 
-#define bfd_find_nearest_line_with_alt(abfd, alt_filename, sec, syms, off, \
-				       file, func, line, disc) \
-       BFD_SEND (abfd, _bfd_find_nearest_line_with_alt, \
-		 (abfd, alt_filename, syms, sec, off, file, func, line, disc))
+#define bfd_find_nearest_line_with_alt(abfd, alt_filename, sec, syms, off, file, func, line, disc) \
+       BFD_SEND (abfd, _bfd_find_nearest_line_with_alt, (abfd, alt_filename, syms, sec, off, file, func, line, disc))
 
     bfd_set_error(bfd_error_no_error);
 //    if (!bfd_find_nearest_line_with_alt(CAST(bfd*, ocget(p, OPCODE_BFD)), afilename, ocget(s, MODE_OCSHDR), ocget(p, OPCODE_RAWSYMBOLS),
@@ -171,7 +169,7 @@ static int opcodelib_lnumbers(handle_t p, handle_t s, const uint64_t vaddr) {
 //    if (
     bfd_find_nearest_line_discriminator(CAST(bfd*, ocget(p, OPCODE_BFD)), ocget(s, MODE_OCSHDR), ocget(p, OPCODE_RAWSYMBOLS),
                                             vaddr, &filename, &functionname, &linenumber, &discriminator);
-//					    ) {
+//       ) {
 //    }
 
       if (NULL != filename && 0 == filename[0]) filename = NULL;
