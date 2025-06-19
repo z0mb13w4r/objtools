@@ -32,9 +32,7 @@ int ocdwarf_debug_macro(handle_t p, handle_t s, handle_t d) {
                      &abbrev_offset, &address_size, &cu_offset_size, &extension_size, &type_signature, &type_offset,
                      &next_cu_header_offset, &header_cu_type, oc->items[OPCODE_DWARF_ERROR]);
 
-    Dwarf_Half macro_version = 0;
     Dwarf_Unsigned version = 0;
-    Dwarf_Unsigned macro_offset = 0;
     Dwarf_Unsigned number_of_ops = 0;
     Dwarf_Unsigned macro_unit_offset = 0;
     Dwarf_Unsigned ops_total_byte_len = 0;
@@ -43,9 +41,20 @@ int ocdwarf_debug_macro(handle_t p, handle_t s, handle_t d) {
     x = dwarf_get_macro_context(cu_die, &version, &macro_context, &macro_unit_offset,
                      &number_of_ops, &ops_total_byte_len, oc->items[OPCODE_DWARF_ERROR]);
 
-//    x = dwarf_macro_context_head(macro_context, &mac_version, &mac_offset, &mac_len, &mac_header_len,
-//                      &mflags, &has_line_offset, &line_offset, &has_offset_size_64, &has_operands_table,
-//                      &opcode_count, oc->items[OPCODE_DWARF_ERROR]);
+    unsigned int macro_flags = 0;
+    Dwarf_Half macro_version = 0;
+    Dwarf_Unsigned macro_len = 0;
+    Dwarf_Unsigned macro_offset = 0;
+    Dwarf_Unsigned macro_header_len = 0;
+    Dwarf_Unsigned line_offset = 0;
+    Dwarf_Half opcode_count = 0;
+    Dwarf_Bool has_line_offset = FALSE;
+    Dwarf_Bool has_operands_table = FALSE;
+    Dwarf_Bool has_offset_size_64 = FALSE;
+
+    x = dwarf_macro_context_head(macro_context, &macro_version, &macro_offset, &macro_len, &macro_header_len,
+                      &macro_flags, &has_line_offset, &line_offset, &has_offset_size_64, &has_operands_table,
+                      &opcode_count, oc->items[OPCODE_DWARF_ERROR]);
 
     printf_text("Nested import level", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     printf_nice(level, USE_DEC | USE_EOL);
