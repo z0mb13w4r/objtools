@@ -8,13 +8,13 @@ static const int MAXSIZE = 24;
 static const Dwarf_Sig8 zerosignature;
 
 int ocdwarf_die_and_siblings(handle_t p, handle_t s, Dwarf_Die die,
-                  Dwarf_Bool isinfo, int level, pdwarf_srcfiles_t sf, Dwarf_Error *e) {
+                  Dwarf_Bool isinfo, int level, Dwarf_Error *e) {
   int x = DW_DLV_ERROR;
   int n = 0;
 
   if (isopcode(p)) {
     popcode_t oc = CAST(popcode_t, p);
-    n += ocdwarf_printf(p, s, die, isinfo, level, sf, e);
+    n += ocdwarf_printf(p, s, die, isinfo, level, e);
 
     if (0 == level) {
       n += printf_text("LOCAL_SYMBOLS", USE_LT | USE_COLON | USE_EOL);
@@ -30,7 +30,7 @@ int ocdwarf_die_and_siblings(handle_t p, handle_t s, Dwarf_Die die,
         ocdwarf_finish(p, e);
         printf_x("dwarf_child, level %d", level);
       } else if (IS_DLV_OK(x)) {
-        n += ocdwarf_die_and_siblings(p, s, child, isinfo, level + 1, sf, e);
+        n += ocdwarf_die_and_siblings(p, s, child, isinfo, level + 1, e);
         dwarf_dealloc_die(child);
         child = 0;
       }
@@ -46,7 +46,7 @@ int ocdwarf_die_and_siblings(handle_t p, handle_t s, Dwarf_Die die,
         dwarf_dealloc_die(cur_die);
       }
       cur_die = sib_die;
-      n += ocdwarf_printf(p, s, cur_die, isinfo, level, sf, e);
+      n += ocdwarf_printf(p, s, cur_die, isinfo, level, e);
     }
   }
 
@@ -74,9 +74,6 @@ int ocdwarf_debug_info(handle_t p, handle_t s, handle_t d) {
     for ( ; ; ) {
       Dwarf_Die no_die = 0;
       Dwarf_Die cu_die = 0;
-
-      MALLOCS(dwarf_srcfiles_t, sf);
-      sf.status = DW_DLV_ERROR;
 
       x = dwarf_next_cu_header_d(ocget(p, OPCODE_DWARF_DEBUG), isinfo, &cu_header_length, &cu_version_stamp,
                   &abbrev_offset, &address_size, &cu_offset_size, &extension_size, &type_signature, &type_offset,
@@ -116,7 +113,7 @@ int ocdwarf_debug_info(handle_t p, handle_t s, handle_t d) {
         return OCDWARF_ERRCODE(x, n0);
       }
 
-      int n1 = ocdwarf_die_and_siblings(p, s, cu_die, isinfo, level, &sf, ocget(p, OPCODE_DWARF_ERROR));
+      int n1 = ocdwarf_die_and_siblings(p, s, cu_die, isinfo, level, ocget(p, OPCODE_DWARF_ERROR));
       if (OCDWARF_ISFAILED(n1)) {
         dwarf_dealloc_die(cu_die);
         printf_e("ocdwarf_die_and_siblings failed! %d", n1);

@@ -159,6 +159,9 @@ unknown_t ocget(handle_t p, const imode_t mode) {
   } else if (isopcode(p) && OPCODE_DWARF_ERROR == mode) {
     pdwarf_workspace_t p0 = ocget(p, OPCODE_DWARF1);
     return p0 ? &p0->err : NULL;
+  } else if (isopcode(p) && OPCODE_DWARF_SRCFILES == mode) {
+    pdwarf_workspace_t p0 = ocget(p, OPCODE_DWARF1);
+    return p0 ? p0->sf : NULL;
   } else if ((ismode(p, mode) && ismodeopwrap(mode)) || (isopwrap(p) && mode == OPCODE_PARAM1)) {
     return CAST(popwrap_t, p)->param1;
   } else if (isopwrap(p) && mode == OPCODE_PARAM2) {
