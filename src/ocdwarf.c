@@ -70,9 +70,9 @@ int ocdwarf_open(handle_t p, handle_t o) {
     MEMCPYA(oc->inpname0, op->inpname0);
     MEMCPYA(oc->inpname1, op->inpname1);
 
-    oc->items[OPCODE_DWARF1] = xmalloc(sizeof(dwarf_workspace_t));
-    if (oc->items[OPCODE_DWARF1]) {
-      pdwarf_workspace_t ws = CAST(pdwarf_workspace_t, oc->items[OPCODE_DWARF1]);
+    oc->items[OPCODE_DWARF] = xmalloc(sizeof(ocdwarf_t));
+    if (oc->items[OPCODE_DWARF]) {
+      pocdwarf_t ws = CAST(pocdwarf_t, oc->items[OPCODE_DWARF]);
       ws->sf = xmalloc(sizeof(pdwarf_srcfiles_t));
       if (ws) {
         ws->sf->status = DW_DLV_ERROR;
@@ -90,12 +90,12 @@ int ocdwarf_close(handle_t p) {
     ocdwarf_sfreset(p);
     popcode_t oc = CAST(popcode_t, p);
     if (oc) {
-      pdwarf_workspace_t ws = CAST(pdwarf_workspace_t, oc->items[OPCODE_DWARF1]);
+      pocdwarf_t ws = CAST(pocdwarf_t, oc->items[OPCODE_DWARF]);
       if (ws) {
         xfree(ws->sf);
       }
 
-      zfree(&oc->items[OPCODE_DWARF1]);
+      zfree(&oc->items[OPCODE_DWARF]);
     }
 
     return 0;
@@ -318,7 +318,7 @@ int ocdwarf_sfcreate(handle_t p, Dwarf_Die die, Dwarf_Error *e) {
 
 void ocdwarf_dealloc(handle_t p, unknown_t v, Dwarf_Unsigned type) {
   if (isopcode(p)) {
-    pdwarf_workspace_t p0 = ocget(p, OPCODE_DWARF1);
+    pocdwarf_t p0 = ocget(p, OPCODE_DWARF);
     if (p0) {
       dwarf_dealloc(p0->dbg, v, type);
     }
@@ -339,7 +339,7 @@ void ocdwarf_dealloc_error(handle_t p, Dwarf_Error *e) {
   if (isopcode(p) && e) {
     printf_e("message = %s", dwarf_errmsg(*e));
 
-    pdwarf_workspace_t p0 = ocget(p, OPCODE_DWARF1);
+    pocdwarf_t p0 = ocget(p, OPCODE_DWARF);
     if (p0) {
       dwarf_dealloc_error(p0->dbg, *e);
     }
@@ -350,7 +350,7 @@ void ocdwarf_finish(handle_t p, Dwarf_Error *e) {
   if (isopcode(p)) {
     ocdwarf_dealloc_error(p, e);
 
-    pdwarf_workspace_t p0 = ocget(p, OPCODE_DWARF1);
+    pocdwarf_t p0 = ocget(p, OPCODE_DWARF);
     if (p0) {
       dwarf_finish(p0->dbg);
 //      p0->dbg = NULL;
@@ -360,7 +360,7 @@ void ocdwarf_finish(handle_t p, Dwarf_Error *e) {
 
 void ocdwarf_object_finish(handle_t p) {
   if (isopcode(p)) {
-    pdwarf_workspace_t p0 = ocget(p, OPCODE_DWARF1);
+    pocdwarf_t p0 = ocget(p, OPCODE_DWARF);
     if (p0) {
       dwarf_object_finish(p0->dbg);
       p0->dbg = NULL;
@@ -372,7 +372,7 @@ int ocdwarf_run(handle_t p, handle_t s) {
   int n = 0;
   if (isopcode(p) && isopshdr(s)) {
     popcode_t oc = CAST(popcode_t, p);
-    pdwarf_workspace_t ws = ocget(p, OPCODE_DWARF1);
+    pocdwarf_t ws = ocget(p, OPCODE_DWARF);
     if (ws) {
       int x = dwarf_object_init_b(&dw_interface, 0, 0, DW_GROUPNUMBER_ANY, &ws->dbg, &ws->err);
       if (IS_DLV_NO_ENTRY(x)) {
@@ -389,7 +389,7 @@ int ocdwarf_run(handle_t p, handle_t s) {
     }
   } else if (isopcode(p) && isopshdrNN(s)) {
     popcode_t oc = CAST(popcode_t, p);
-    pdwarf_workspace_t ws = ocget(p, OPCODE_DWARF1);
+    pocdwarf_t ws = ocget(p, OPCODE_DWARF);
     if (ws) {
     pdwarf_display_t d = ocdwarf_get(s);
       if (d && d->func) {

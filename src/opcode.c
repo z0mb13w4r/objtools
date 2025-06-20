@@ -154,13 +154,13 @@ unknown_t ocget(handle_t p, const imode_t mode) {
     pbuffer_t p0 = ocget(p, OPCODE_SYMBOLS_DYNAMIC);
     return p0 && p0->size && p0->data ? p0->data : NULL;
   } else if (isopcode(p) && OPCODE_DWARF_DEBUG == mode) {
-    pdwarf_workspace_t p0 = ocget(p, OPCODE_DWARF1);
+    pocdwarf_t p0 = ocget(p, OPCODE_DWARF);
     return p0 ? p0->dbg : NULL;
   } else if (isopcode(p) && OPCODE_DWARF_ERROR == mode) {
-    pdwarf_workspace_t p0 = ocget(p, OPCODE_DWARF1);
+    pocdwarf_t p0 = ocget(p, OPCODE_DWARF);
     return p0 ? &p0->err : NULL;
   } else if (isopcode(p) && OPCODE_DWARF_SRCFILES == mode) {
-    pdwarf_workspace_t p0 = ocget(p, OPCODE_DWARF1);
+    pocdwarf_t p0 = ocget(p, OPCODE_DWARF);
     return p0 ? p0->sf : NULL;
   } else if ((ismode(p, mode) && ismodeopwrap(mode)) || (isopwrap(p) && mode == OPCODE_PARAM1)) {
     return CAST(popwrap_t, p)->param1;
