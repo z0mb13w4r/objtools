@@ -130,10 +130,10 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
     x = dwarf_whatform(attr, &nform, e);
     if (IS_DLV_ANY_ERROR(x)) {
       if (IS_DLV_ERROR(x) && e) {
-        dwarf_dealloc_error(oc->items[OPCODE_DWARF], *e);
+        ocdwarf_dealloc_error(p, e);
       }
 
-      dwarf_object_finish(oc->items[OPCODE_DWARF]);
+      ocdwarf_object_finish(p);
       printf_x("dwarf_whatform");
     }
 
@@ -244,7 +244,7 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
       }
 
       Dwarf_Die tdie = 0;
-      x = dwarf_offdie_b(oc->items[OPCODE_DWARF], offset, isinfo, &tdie, e);
+      x = dwarf_offdie_b(ocget(p, OPCODE_DWARF_DEBUG), offset, isinfo, &tdie, e);
       if (IS_DLV_ANY_ERROR(x)) {
         printf_e("dwarf_offdie_b failed! errcode %d", x);
         return OCDWARF_ERRCODE(x, n);
@@ -285,7 +285,8 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
             }
           }
         }
-        dwarf_dealloc(oc->items[OPCODE_DWARF], block, DW_DLA_BLOCK);
+
+        ocdwarf_dealloc(p, block, DW_DLA_BLOCK);
       }
     }
 
@@ -321,9 +322,9 @@ static int ocdwarf_printf_name(handle_t p, handle_t s, Dwarf_Die die, Dwarf_Attr
     x = dwarf_whatattr(attr, &attrnum, e);
     if (IS_DLV_ANY_ERROR(x)) {
       if (IS_DLV_ERROR(x) && e) {
-        dwarf_dealloc_error(oc->items[OPCODE_DWARF], *e);
+        ocdwarf_dealloc_error(p, e);
       }
-      dwarf_object_finish(oc->items[OPCODE_DWARF]);
+      ocdwarf_object_finish(p);
       printf_x("dwarf_whatattr");
     }
 
@@ -331,9 +332,9 @@ static int ocdwarf_printf_name(handle_t p, handle_t s, Dwarf_Die die, Dwarf_Attr
     x = dwarf_whatform(attr, &formnum, e);
     if (IS_DLV_ANY_ERROR(x)) {
       if (IS_DLV_ERROR(x) && e) {
-        dwarf_dealloc_error(oc->items[OPCODE_DWARF], *e);
+        ocdwarf_dealloc_error(p, e);
       }
-      dwarf_object_finish(oc->items[OPCODE_DWARF]);
+      ocdwarf_object_finish(p);
       printf_x("dwarf_whatform");
     }
 
@@ -344,7 +345,7 @@ static int ocdwarf_printf_name(handle_t p, handle_t s, Dwarf_Die die, Dwarf_Attr
       if (IS_DLV_OK(x)) {
         n += printf_text("CLASS", USE_LT | USE_COLON);
         n += printf_text(stringval, USE_LT | USE_SPACE | USE_EOL);
-        dwarf_dealloc(oc->items[OPCODE_DWARF], stringval, DW_DLA_STRING);
+        ocdwarf_dealloc(p, stringval, DW_DLA_STRING);
       }
     }
   }
@@ -363,12 +364,12 @@ int ocdwarf_printf_names(handle_t p, handle_t s, Dwarf_Die die, Dwarf_Error *e) 
     Dwarf_Attribute *attrbuf = 0;
     x = dwarf_attrlist(die, &attrbuf, &attrcount, e);
     if (IS_DLV_ERROR(x)) {
-      dwarf_dealloc_error(oc->items[OPCODE_DWARF], *e);
+      ocdwarf_dealloc_error(p, e);
     } else if (IS_DLV_OK(x)) {
       for (Dwarf_Signed i = 0; i < attrcount; ++i) {
         n += ocdwarf_printf_name(p, s, die, attrbuf[i], e);
       }
-      dwarf_dealloc(oc->items[OPCODE_DWARF], attrbuf, DW_DLA_LIST);
+      ocdwarf_dealloc(p, attrbuf, DW_DLA_LIST);
     }
   }
 
@@ -423,7 +424,7 @@ int ocdwarf_printf_sp(handle_t p, handle_t s, Dwarf_Die die, Dwarf_Half tag,
     char *name = 0;
     x = dwarf_diename(die, &name, e);
     if (IS_DLV_ERROR(x)) {
-      dwarf_object_finish(oc->items[OPCODE_DWARF]);
+      ocdwarf_object_finish(p);
       printf_x("dwarf_diename, level %d", level);
     } else if (IS_DLV_NO_ENTRY(x)) {
       name = "<no DW_AT_name attr>";
@@ -457,13 +458,13 @@ int ocdwarf_printf_sp(handle_t p, handle_t s, Dwarf_Die die, Dwarf_Half tag,
     for (Dwarf_Signed i = 0; i < cattr; ++i) {
       int n1 = ocdwarf_printf_worth(p, die, pattr[i], i, sf, e);
       if (OCDWARF_ISERRCODE(n1)) {
-        ocdwarf_dealloc(p, s, pattr, cattr, 0);
+        ocdwarf_dealloc_attribute(p, pattr, cattr);
         return n1;
       }
       n0 += n1;
     }
 
-    ocdwarf_dealloc(p, s, pattr, cattr, 0);
+    ocdwarf_dealloc_attribute(p, pattr, cattr);
     n0 += printf_eol();
   }
 
@@ -481,7 +482,7 @@ int ocdwarf_printf(handle_t p, handle_t s,
     char *name = 0;
     x = dwarf_diename(die, &name, e);
     if (IS_DLV_ERROR(x)) {
-      dwarf_object_finish(oc->items[OPCODE_DWARF]);
+      ocdwarf_object_finish(p);
       printf_x("dwarf_diename, level %d", level);
     } else if (IS_DLV_NO_ENTRY(x)) {
       name = "<no DW_AT_name attr>";
@@ -491,9 +492,9 @@ int ocdwarf_printf(handle_t p, handle_t s,
     x = dwarf_tag(die, &tag, e);
     if (IS_DLV_ANY_ERROR(x)) {
       if (IS_DLV_ERROR(x) && e) {
-        dwarf_dealloc_error(oc->items[OPCODE_DWARF], *e);
+        ocdwarf_dealloc_error(p, e);
       }
-      dwarf_object_finish(oc->items[OPCODE_DWARF]);
+      ocdwarf_object_finish(p);
       printf_x("dwarf_tag, level %d", level);
     }
 
@@ -505,7 +506,7 @@ int ocdwarf_printf(handle_t p, handle_t s,
       n += ocdwarf_printf_me(p, level, "subprogram", name, USE_EOL);
       n += ocdwarf_printf_sp(p, s, die, tag, isinfo, level, sf, e);
     } else if (tag == DW_TAG_compile_unit || tag == DW_TAG_partial_unit || tag == DW_TAG_type_unit) {
-      ocdwarf_sfreset(p, sf);
+      ocdwarf_sfreset(p);
       n += ocdwarf_printf_me(p, level, "source file", name, USE_EOL);
       n += ocdwarf_printf_cu(p, s, die, tag, isinfo, level, sf, e);
     } else {

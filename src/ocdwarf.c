@@ -70,7 +70,15 @@ int ocdwarf_open(handle_t p, handle_t o) {
     MEMCPYA(oc->inpname0, op->inpname0);
     MEMCPYA(oc->inpname1, op->inpname1);
 
-    oc->items[OPCODE_DWARF_ERROR] = xmalloc(sizeof(Dwarf_Error));
+    oc->items[OPCODE_DWARF1] = xmalloc(sizeof(dwarf_workspace_t));
+    if (oc->items[OPCODE_DWARF1]) {
+      pdwarf_workspace_t ws = CAST(pdwarf_workspace_t, oc->items[OPCODE_DWARF1]);
+      ws->sf = xmalloc(sizeof(pdwarf_srcfiles_t));
+      if (ws) {
+        ws->sf->status = DW_DLV_ERROR;
+      }
+    }
+
     return 0;
   }
 
@@ -79,8 +87,17 @@ int ocdwarf_open(handle_t p, handle_t o) {
 
 int ocdwarf_close(handle_t p) {
   if (isopcode(p)) {
+    ocdwarf_sfreset(p);
     popcode_t oc = CAST(popcode_t, p);
-    zfree(&oc->items[OPCODE_DWARF_ERROR]);
+    if (oc) {
+      pdwarf_workspace_t ws = CAST(pdwarf_workspace_t, oc->items[OPCODE_DWARF1]);
+      if (ws) {
+        xfree(ws->sf);
+      }
+
+      zfree(&oc->items[OPCODE_DWARF1]);
+    }
+
     return 0;
   }
 
@@ -257,32 +274,78 @@ struct Dwarf_Obj_Access_Interface_a_s dw_interface = {
 Dwarf_Half cu_version_stamp = 0;
 Dwarf_Half cu_offset_size   = 0;
 
-void ocdwarf_sfreset(handle_t p, pdwarf_srcfiles_t sf) {
+void ocdwarf_sfreset(handle_t p) {
   if (isopcode(p)) {
     popcode_t oc = CAST(popcode_t, p);
-
-    if (sf->data) {
-      for (Dwarf_Signed sri = 0; sri < sf->size; ++sri) {
-        dwarf_dealloc(oc->items[OPCODE_DWARF], sf->data[sri], DW_DLA_STRING);
+    pdwarf_workspace_t ws = CAST(pdwarf_workspace_t, oc->items[OPCODE_DWARF1]);
+    if (ws && ws->sf) {
+      if (ws->sf->data) {
+        for (Dwarf_Signed i = 0; i < ws->sf->size; ++i) {
+          ocdwarf_dealloc(p, ws->sf->data[i], DW_DLA_STRING);
+        }
+        ocdwarf_dealloc(p, ws->sf->data, DW_DLA_LIST);
       }
-      dwarf_dealloc(oc->items[OPCODE_DWARF], sf->data, DW_DLA_LIST);
-    }
 
-    sf->status = DW_DLV_ERROR;
-    sf->data = NULL;
-    sf->size = 0;
+      ws->sf->status = DW_DLV_ERROR;
+      ws->sf->data = NULL;
+      ws->sf->size = 0;
+    }
   }
 }
 
-void ocdwarf_dealloc(handle_t p, handle_t s, Dwarf_Attribute *a, Dwarf_Signed size, Dwarf_Signed i) {
+void ocdwarf_dealloc(handle_t p, unknown_t v, Dwarf_Unsigned type) {
   if (isopcode(p)) {
     popcode_t oc = CAST(popcode_t, p);
+    if (oc->items[OPCODE_DWARF1]) {
+      pdwarf_workspace_t ws = CAST(pdwarf_workspace_t, oc->items[OPCODE_DWARF1]);
+      dwarf_dealloc(ws->dbg, v, type);
+    }
+  }
+}
 
-    for ( ; i < size; ++i) {
-      dwarf_dealloc_attribute(a[i]);
+void ocdwarf_dealloc_attribute(handle_t p, Dwarf_Attribute *v, Dwarf_Signed size) {
+  if (isopcode(p)) {
+    for (Dwarf_Signed i = 0; i < size; ++i) {
+      dwarf_dealloc_attribute(v[i]);
     }
 
-    dwarf_dealloc(oc->items[OPCODE_DWARF], a, DW_DLA_LIST);
+    ocdwarf_dealloc(p, v, DW_DLA_LIST);
+  }
+}
+
+void ocdwarf_dealloc_error(handle_t p, Dwarf_Error *e) {
+  if (isopcode(p) && e) {
+    printf_e("message = %s", dwarf_errmsg(*e));
+
+    popcode_t oc = CAST(popcode_t, p);
+    if (oc->items[OPCODE_DWARF1]) {
+      pdwarf_workspace_t ws = CAST(pdwarf_workspace_t, oc->items[OPCODE_DWARF1]);
+      dwarf_dealloc_error(ws->dbg, *e);
+    }
+  }
+}
+
+void ocdwarf_finish(handle_t p, Dwarf_Error *e) {
+  if (isopcode(p)) {
+    ocdwarf_dealloc_error(p, e);
+
+    popcode_t oc = CAST(popcode_t, p);
+    if (oc->items[OPCODE_DWARF1]) {
+      pdwarf_workspace_t ws = CAST(pdwarf_workspace_t, oc->items[OPCODE_DWARF1]);
+      dwarf_finish(ws->dbg);
+//      ws->dbg = NULL;
+    }
+  }
+}
+
+void ocdwarf_object_finish(handle_t p) {
+  if (isopcode(p)) {
+    popcode_t oc = CAST(popcode_t, p);
+    if (oc->items[OPCODE_DWARF1]) {
+      pdwarf_workspace_t ws = CAST(pdwarf_workspace_t, oc->items[OPCODE_DWARF1]);
+      dwarf_object_finish(ws->dbg);
+      ws->dbg = NULL;
+    }
   }
 }
 
@@ -290,43 +353,46 @@ int ocdwarf_run(handle_t p, handle_t s) {
   int n = 0;
   if (isopcode(p) && isopshdr(s)) {
     popcode_t oc = CAST(popcode_t, p);
+    pdwarf_workspace_t ws = CAST(pdwarf_workspace_t, oc->items[OPCODE_DWARF1]);
+    if (ws) {
+      int x = dwarf_object_init_b(&dw_interface, 0, 0, DW_GROUPNUMBER_ANY, &ws->dbg, &ws->err);
+      if (IS_DLV_NO_ENTRY(x)) {
+        printf_x("Cannot dwarf_object_init_b() NO ENTRY.");
+      } else if (IS_DLV_ERROR(x)) {
+        ocdwarf_dealloc_error(p, &ws->err);
+        printf_x("Cannot dwarf_object_init_b().");
+      }
 
-    int x = dwarf_object_init_b(&dw_interface, 0, 0, DW_GROUPNUMBER_ANY, ocgetdwarfptr(p), ocgetdwarferr(p));
-    if (IS_DLV_NO_ENTRY(x)) {
-      printf_x("Cannot dwarf_object_init_b() NO ENTRY.");
-    } else if (IS_DLV_ERROR(x)) {
-      printf_e("dwarf errmsg: %s", dwarf_errmsg(*ocgetdwarferr(p)));
-      dwarf_dealloc_error(oc->items[OPCODE_DWARF], *ocgetdwarferr(p));
-      printf_x("Cannot dwarf_object_init_b().");
+      pdwarf_display_t d = ocdwarf_get(s);
+      n = d && d->func ? d->func(p, s, &d->section) : -1;
+
+      ocdwarf_object_finish(p);
     }
-
-    pdwarf_display_t d = ocdwarf_get(s);
-    n = d && d->func ? d->func(p, s, &d->section) : -1;
-
-    dwarf_object_finish(oc->items[OPCODE_DWARF]);
-    oc->items[OPCODE_DWARF] = NULL;
   } else if (isopcode(p) && isopshdrNN(s)) {
+    popcode_t oc = CAST(popcode_t, p);
+    pdwarf_workspace_t ws = CAST(pdwarf_workspace_t, oc->items[OPCODE_DWARF1]);
+    if (ws) {
     pdwarf_display_t d = ocdwarf_get(s);
-    if (d && d->func) {
-      popcode_t oc = CAST(popcode_t, p);
+      if (d && d->func) {
+        popcode_t oc = CAST(popcode_t, p);
 
 //      sectiondata[1].sd_sectionsize = ocget_size(s);
 //      sectiondata[1].sd_secname = ocget_name(s);
 //      sectiondata[1].sd_content = ocget_data(s);
 
-      int my_init_fd = open(oc->inpname0, O_RDONLY);
-      if (-1 == my_init_fd) {
-        printf_x("Giving up, cannot open '%s'", oc->inpname0);
-      }
+        int my_init_fd = open(oc->inpname0, O_RDONLY);
+        if (-1 == my_init_fd) {
+          printf_x("Giving up, cannot open '%s'", oc->inpname0);
+        }
 
-      int x = dwarf_init_b(my_init_fd, DW_GROUPNUMBER_ANY, 0, 0, ocgetdwarfptr(p), ocgetdwarferr(p));
-      if (IS_DLV_ANY_ERROR(x)) {
-        printf_x("Giving up, cannot do DWARF processing '%s'", oc->inpname0);
-      }
+        int x = dwarf_init_b(my_init_fd, DW_GROUPNUMBER_ANY, 0, 0, &ws->dbg, &ws->err);
+        if (IS_DLV_ANY_ERROR(x)) {
+          printf_x("Giving up, cannot do DWARF processing '%s'", oc->inpname0);
+        }
 
-      n = d && d->func ? d->func(p, s, &d->section) : -1;
-      dwarf_object_finish(oc->items[OPCODE_DWARF]);
-      oc->items[OPCODE_DWARF] = NULL;
+        n = d && d->func ? d->func(p, s, &d->section) : -1;
+        ocdwarf_object_finish(p);
+      }
     }
   }
 

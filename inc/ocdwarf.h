@@ -84,6 +84,12 @@ typedef struct dwarf_srcfiles_s {
   int          status;
 } dwarf_srcfiles_t, *pdwarf_srcfiles_t;
 
+typedef struct dwarf_workspace_s {
+  Dwarf_Debug  dbg;
+  Dwarf_Error  err;
+  pdwarf_srcfiles_t sf;
+} dwarf_workspace_t, *pdwarf_workspace_t;
+
 extern Dwarf_Half cu_offset_size;
 extern Dwarf_Half cu_version_stamp;
 
@@ -96,9 +102,14 @@ int ocdwarf_close(handle_t p);
 
 int ocdwarf_run(handle_t p, handle_t s);
 
-void ocdwarf_sfreset(handle_t p, pdwarf_srcfiles_t sf);
+void ocdwarf_sfreset(handle_t p);
 
-void ocdwarf_dealloc(handle_t p, handle_t s, Dwarf_Attribute *a, Dwarf_Signed size, Dwarf_Signed i);
+void ocdwarf_dealloc(handle_t p, unknown_t v, Dwarf_Unsigned type);
+void ocdwarf_dealloc_attribute(handle_t p, Dwarf_Attribute *v, Dwarf_Signed size);
+void ocdwarf_dealloc_error(handle_t p, Dwarf_Error *e);
+
+void ocdwarf_finish(handle_t p, Dwarf_Error *e);
+void ocdwarf_object_finish(handle_t p);
 
 #endif
 

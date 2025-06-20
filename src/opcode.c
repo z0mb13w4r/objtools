@@ -4,6 +4,7 @@
 #include "pecode.h"
 #include "printf.h"
 #include "elfcode.h"
+#include "ocdwarf.h"
 #include "options.h"
 #include "objutils.h"
 #include "opcode-bfd.h"
@@ -146,14 +147,18 @@ unknown_t ocget(handle_t p, const imode_t mode) {
     return p0->items[mode];
   } else if (isopcode(p) && OPCODE_RAWDATA == mode) {
     return CAST(popcode_t, p)->data;
-  } else if (isopcode(p) && OPCODE_DWARF_PTR == mode) {
-    return &CAST(popcode_t, p)->items[OPCODE_DWARF];
   } else if (isopcode(p) && OPCODE_RAWSYMBOLS == mode) {
     pbuffer_t p0 = ocget(p, OPCODE_SYMBOLS);
     return p0 && p0->size && p0->data ? p0->data : NULL;
   } else if (isopcode(p) && OPCODE_RAWSYMBOLS_DYNAMIC == mode) {
     pbuffer_t p0 = ocget(p, OPCODE_SYMBOLS_DYNAMIC);
     return p0 && p0->size && p0->data ? p0->data : NULL;
+  } else if (isopcode(p) && OPCODE_DWARF_DEBUG == mode) {
+    pdwarf_workspace_t p0 = ocget(p, OPCODE_DWARF1);
+    return p0 ? p0->dbg : NULL;
+  } else if (isopcode(p) && OPCODE_DWARF_ERROR == mode) {
+    pdwarf_workspace_t p0 = ocget(p, OPCODE_DWARF1);
+    return p0 ? &p0->err : NULL;
   } else if ((ismode(p, mode) && ismodeopwrap(mode)) || (isopwrap(p) && mode == OPCODE_PARAM1)) {
     return CAST(popwrap_t, p)->param1;
   } else if (isopwrap(p) && mode == OPCODE_PARAM2) {

@@ -27,10 +27,7 @@ int ocdwarf_die_and_siblings(handle_t p, handle_t s, Dwarf_Die die,
       x = dwarf_child(cur_die, &child, e);
       if (IS_DLV_ERROR(x)) {
         dwarf_dealloc_die(cur_die);
-        if (e) {
-          dwarf_dealloc_error(oc->items[OPCODE_DWARF], *e);
-        }
-        dwarf_finish(oc->items[OPCODE_DWARF]);
+        ocdwarf_finish(p, e);
         printf_x("dwarf_child, level %d", level);
       } else if (IS_DLV_OK(x)) {
         n += ocdwarf_die_and_siblings(p, s, child, isinfo, level + 1, sf, e);
@@ -39,13 +36,10 @@ int ocdwarf_die_and_siblings(handle_t p, handle_t s, Dwarf_Die die,
       }
       /* x == DW_DLV_NO_ENTRY or DW_DLV_OK */
       Dwarf_Die sib_die = 0;
-      x = dwarf_siblingof_b(oc->items[OPCODE_DWARF], cur_die, isinfo, &sib_die, e);
+      x = dwarf_siblingof_b(ocget(p, OPCODE_DWARF_DEBUG), cur_die, isinfo, &sib_die, e);
       if (IS_DLV_NO_ENTRY(x)) break;
       else if (IS_DLV_ERROR(x)) {
-        if (e) {
-          printf_e("errcode = %d, errmessage = %s", dwarf_errmsg(*e));
-        }
-        dwarf_finish(oc->items[OPCODE_DWARF]);
+        ocdwarf_finish(p, e);
         printf_x("dwarf_siblingof_b, level %d", level);
       }
       if (cur_die != die) {
@@ -84,13 +78,13 @@ int ocdwarf_debug_info(handle_t p, handle_t s, handle_t d) {
       MALLOCS(dwarf_srcfiles_t, sf);
       sf.status = DW_DLV_ERROR;
 
-      x = dwarf_next_cu_header_d(oc->items[OPCODE_DWARF], isinfo, &cu_header_length, &cu_version_stamp,
+      x = dwarf_next_cu_header_d(ocget(p, OPCODE_DWARF_DEBUG), isinfo, &cu_header_length, &cu_version_stamp,
                   &abbrev_offset, &address_size, &cu_offset_size, &extension_size, &type_signature, &type_offset,
-                  &next_cu_header_offset, &header_cu_type, oc->items[OPCODE_DWARF_ERROR]);
+                  &next_cu_header_offset, &header_cu_type, ocget(p, OPCODE_DWARF_ERROR));
       if (IS_DLV_NO_ENTRY(x)) break;
       else if (IS_DLV_ANY_ERROR(x)) {
         if (IS_DLV_ERROR(x)) {
-          printf_e("dwarf errmsg: %s", dwarf_errmsg(*ocgetdwarferr(p)));
+          ocdwarf_dealloc_error(p, ocget(p, OPCODE_DWARF_ERROR));
         }
         printf_x("Next cu header result %d, line %d", x, __LINE__);
       }
@@ -114,15 +108,15 @@ int ocdwarf_debug_info(handle_t p, handle_t s, handle_t d) {
         printf_nice(header_cu_type, USE_FHEX | USE_EOL);
       }
 
-      x = dwarf_siblingof_b(oc->items[OPCODE_DWARF], no_die, isinfo, &cu_die, oc->items[OPCODE_DWARF_ERROR]);
+      x = dwarf_siblingof_b(ocget(p, OPCODE_DWARF_DEBUG), no_die, isinfo, &cu_die, ocget(p, OPCODE_DWARF_ERROR));
       if (IS_DLV_NO_ENTRY(x)) break;
       else if (IS_DLV_ERROR(x)) {
-        printf_e("dwarf errmsg: %s", dwarf_errmsg(*ocgetdwarferr(p)));
+        ocdwarf_dealloc_error(p, ocget(p, OPCODE_DWARF_ERROR));
         printf_e("dwarf_siblingof_b failed, no CU die");
         return OCDWARF_ERRCODE(x, n0);
       }
 
-      int n1 = ocdwarf_die_and_siblings(p, s, cu_die, isinfo, level, &sf, oc->items[OPCODE_DWARF_ERROR]);
+      int n1 = ocdwarf_die_and_siblings(p, s, cu_die, isinfo, level, &sf, ocget(p, OPCODE_DWARF_ERROR));
       if (OCDWARF_ISFAILED(n1)) {
         dwarf_dealloc_die(cu_die);
         printf_e("ocdwarf_die_and_siblings failed! %d", n1);
@@ -132,7 +126,7 @@ int ocdwarf_debug_info(handle_t p, handle_t s, handle_t d) {
       n0 += n1;
 
       dwarf_dealloc_die(cu_die);
-      ocdwarf_sfreset(p, &sf);
+      ocdwarf_sfreset(p);
     }
   }
 
