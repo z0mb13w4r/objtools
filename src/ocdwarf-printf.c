@@ -9,7 +9,7 @@ Dwarf_Addr low_pc_addr = 0;
 int ocdwarf_printf_me(handle_t p, const int x, const char *y, const char *z, const imode_t mode) {
   int n = 0;
   if (isopcode(p)) {
-    popcode_t oc = CAST(popcode_t, p);
+    popcode_t oc = ocget(p, OPCODE_THIS);
     if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
       n += printf_nice(x, USE_DEC2 | USE_TB | USE_NOSPACE);
       n += printf_text(y, USE_LT | USE_SPACE | USE_COLON | SET_PAD(23));
@@ -23,7 +23,7 @@ int ocdwarf_printf_me(handle_t p, const int x, const char *y, const char *z, con
 int ocdwarf_printf_pluck(handle_t p, const pconvert_t z, const pick_t x, const imode_t mode) {
   int n = 0;
   if (isopcode(p)) {
-    popcode_t oc = CAST(popcode_t, p);
+    popcode_t oc = ocget(p, OPCODE_THIS);
     if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
       n += printf_nice(x, USE_FHEX16);
     }
@@ -87,7 +87,7 @@ int ocdwarf_printf_worth(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
   int n = 0;
 
   if (isopcode(p)) {
-    popcode_t oc = CAST(popcode_t, p);
+    popcode_t oc = ocget(p, OPCODE_THIS);
 
     Dwarf_Half nattr = 0;
     x = dwarf_whatattr(attr, &nattr, e);
@@ -111,7 +111,7 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
   int n = 0;
 
   if (isopcode(p)) {
-    popcode_t oc = CAST(popcode_t, p);
+    popcode_t oc = ocget(p, OPCODE_THIS);
 
     Dwarf_Half nform = 0;
     x = dwarf_whatform(attr, &nform, e);
@@ -366,7 +366,7 @@ int ocdwarf_printf_cu(handle_t p, handle_t s, Dwarf_Die die, Dwarf_Half tag,
   int n0 = 0;
 
   if (isopcode(p)) {
-    popcode_t oc = CAST(popcode_t, p);
+    popcode_t oc = ocget(p, OPCODE_THIS);
 
     Dwarf_Off overall_offset = 0;
     x = dwarf_dieoffset(die, &overall_offset, e);
@@ -400,7 +400,7 @@ int ocdwarf_printf_sp(handle_t p, handle_t s, Dwarf_Die die, Dwarf_Half tag,
   int n0 = 0;
 
   if (isopcode(p)) {
-    popcode_t oc = CAST(popcode_t, p);
+    popcode_t oc = ocget(p, OPCODE_THIS);
 
     char *name = 0;
     x = dwarf_diename(die, &name, e);
@@ -458,7 +458,7 @@ int ocdwarf_printf(handle_t p, handle_t s,
   int n = 0;
 
   if (isopcode(p)) {
-    popcode_t oc = CAST(popcode_t, p);
+    popcode_t oc = ocget(p, OPCODE_THIS);
 
     char *name = 0;
     x = dwarf_diename(die, &name, e);

@@ -32,7 +32,7 @@ static int get_csmode(handle_t p, handle_t o) {
 int capstone_open(handle_t p, handle_t o) {
   if (isopcode(p) && isoptions(o)) {
     poptions_t op = CAST(poptions_t, o);
-    popcode_t oc = CAST(popcode_t, p);
+    popcode_t oc = ocget(p, OPCODE_THIS);
     if (CS_ERR_OK == cs_open(get_csarch(p, o), get_csmode(p, o), &oc->cs)) {
       if (MODE_ISSET(op->ocdump, OPTDISASSEMBLE_ATT_MNEMONIC)) {
         cs_option(oc->cs, CS_OPT_SYNTAX, CS_OPT_SYNTAX_ATT);
@@ -52,7 +52,7 @@ int capstone_open(handle_t p, handle_t o) {
 
 int capstone_close(handle_t p) {
   if (isopcode(p)) {
-    popcode_t oc = CAST(popcode_t, p);
+    popcode_t oc = ocget(p, OPCODE_THIS);
     cs_close(&oc->cs);
     return 0;
   }
@@ -63,7 +63,7 @@ int capstone_close(handle_t p) {
 int capstone_raw(handle_t p, handle_t s, unknown_t data, const size_t size, const uint64_t vaddr) {
   int n = 0;
   if (data && isopcode(p) && ismodeNXXN(s, MODE_OCSHDRWRAP)) {
-    popcode_t oc = CAST(popcode_t, p);
+    popcode_t oc = ocget(p, OPCODE_THIS);
     cs_insn *insn = NULL;
     size_t count = cs_disasm(oc->cs, data, size, vaddr, 0, &insn);
     if (count > 0) {

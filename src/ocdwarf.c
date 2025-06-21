@@ -45,7 +45,7 @@ bool_t ocdwarf_isneeded(handle_t p, handle_t s) {
   if (soffset >= eoffset) return FALSE;
 
   if (isopcode(p)) {
-    popcode_t p0 = CAST(popcode_t, p);
+    popcode_t p0 = ocget(p, OPCODE_THIS);
     pdwarf_display_t p1 = ocdwarf_get(s);
     return p1 && MODE_ISSET(p1->action, p0->ocdump);
   } else if (isoptions(p)) {
@@ -59,7 +59,7 @@ bool_t ocdwarf_isneeded(handle_t p, handle_t s) {
 
 int ocdwarf_open(handle_t p, handle_t o) {
   if (isopcode(p) && isoptions(o)) {
-    popcode_t oc = CAST(popcode_t, p);
+    popcode_t oc = ocget(p, OPCODE_THIS);
     poptions_t op = CAST(poptions_t, o);
 
     oc->action = op->action;
@@ -88,7 +88,7 @@ int ocdwarf_open(handle_t p, handle_t o) {
 int ocdwarf_close(handle_t p) {
   if (isopcode(p)) {
     ocdwarf_sfreset(p);
-    popcode_t oc = CAST(popcode_t, p);
+    popcode_t oc = ocget(p, OPCODE_THIS);
     if (oc) {
       pocdwarf_t ws = CAST(pocdwarf_t, oc->items[OPCODE_DWARF]);
       if (ws) {
@@ -296,7 +296,7 @@ int ocdwarf_sfreset(handle_t p) {
 int ocdwarf_sfcreate(handle_t p, Dwarf_Die die, Dwarf_Error *e) {
   int n = 0;
   if (isopcode(p)) {
-    popcode_t oc = CAST(popcode_t, p);
+    popcode_t oc = ocget(p, OPCODE_THIS);
     pdwarf_srcfiles_t sf = ocget(p, OPCODE_DWARF_SRCFILES);
     if (sf) {
       sf->status = dwarf_srcfiles(die, &sf->data, &sf->size, e);
@@ -368,7 +368,6 @@ void ocdwarf_object_finish(handle_t p) {
 int ocdwarf_run(handle_t p, handle_t s) {
   int n = 0;
   if (isopcode(p) && isopshdr(s)) {
-    popcode_t oc = CAST(popcode_t, p);
     pocdwarf_t ws = ocget(p, OPCODE_DWARF);
     if (ws) {
       int x = dwarf_object_init_b(&dw_interface, 0, 0, DW_GROUPNUMBER_ANY, &ws->dbg, &ws->err);
@@ -385,12 +384,11 @@ int ocdwarf_run(handle_t p, handle_t s) {
       ocdwarf_object_finish(p);
     }
   } else if (isopcode(p) && isopshdrNN(s)) {
-    popcode_t oc = CAST(popcode_t, p);
     pocdwarf_t ws = ocget(p, OPCODE_DWARF);
     if (ws) {
     pdwarf_display_t d = ocdwarf_get(s);
       if (d && d->func) {
-        popcode_t oc = CAST(popcode_t, p);
+        popcode_t oc = ocget(p, OPCODE_THIS);
 
 //      sectiondata[1].sd_sectionsize = ocget_size(s);
 //      sectiondata[1].sd_secname = ocget_name(s);
