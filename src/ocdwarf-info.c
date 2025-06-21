@@ -13,7 +13,6 @@ int ocdwarf_die_and_siblings(handle_t p, handle_t s, Dwarf_Die die,
   int n = 0;
 
   if (isopcode(p)) {
-    popcode_t oc = CAST(popcode_t, p);
     n += ocdwarf_printf(p, s, die, isinfo, level, e);
 
     if (0 == level) {

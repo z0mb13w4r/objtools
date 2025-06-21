@@ -146,6 +146,7 @@ handle_t ocattach(handle_t p);
 int occlose(handle_t p);
 
 unknown_t ocget(handle_t p, const imode_t mode);
+bool_t    ochas(handle_t p, const imode_t mode);
 
 size_t ocget_maxsectionnamesize(handle_t p);
 
