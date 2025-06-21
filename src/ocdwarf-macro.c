@@ -158,6 +158,38 @@ int ocdwarf_debug_macro(handle_t p, handle_t s, handle_t d) {
           n0 += printf_eol();
         }
       }
+
+    for (Dwarf_Unsigned i = 0; i < number_of_ops; ++i) {
+      Dwarf_Half formcodes_count = 0;
+      Dwarf_Half macro_operator = 0;
+      const Dwarf_Small *formcodes_array = NULL;
+      Dwarf_Unsigned op_start_section_offset = 0;
+      x = dwarf_get_macro_op(macro_context, i, &op_start_section_offset, &macro_operator,
+                       &formcodes_count, &formcodes_array, ocget(p, OPCODE_DWARF_ERROR));
+      if (IS_DLV_ANY_ERROR(x)) {
+        printf_e("dwarf_get_macro_op failed! - %d", x);
+        dwarf_dealloc_macro_context(macro_context);
+        return OCDWARF_ERRCODE(x, n0);
+      }
+
+      n0 += printf_nice(i, USE_DEC3Z | USE_SB);
+      n0 += ocdwarf_printf_MACRO(p, macro_operator, USE_SPECIAL);
+      if (DW_MACRO_import == macro_operator) {
+        n0 += printf_text("offset", USE_LT | USE_SPACE);
+
+        Dwarf_Unsigned offset = 0;
+        x = dwarf_get_macro_import(macro_context, i, &offset, ocget(p, OPCODE_DWARF_ERROR));
+        if (IS_DLV_ANY_ERROR(x)) {
+          printf_e("dwarf_get_macro_import failed! - %d", x);
+          dwarf_dealloc_macro_context(macro_context);
+          return OCDWARF_ERRCODE(x, n0);
+        }
+
+        n0 += printf_nice(offset, USE_FHEX32);
+      }
+
+      n0 += printf_eol();
+    }
   }
 
   return OCDWARF_ERRCODE(x, n0);

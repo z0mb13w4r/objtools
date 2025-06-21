@@ -24,10 +24,10 @@ int ocdwarf_printf_pluck(handle_t p, const pconvert_t z, const pick_t x, const i
   int n = 0;
   if (isopcode(p)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
-    if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
+    if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE) || MODE_ISSET(USE_SPECIAL, mode)) {
       n += printf_nice(x, USE_FHEX16);
     }
-    n += printf_pick(z, x, USE_SPACE | mode);
+    n += printf_pick(z, x, USE_SPACE | (mode & ~USE_SPECIAL));
   }
 
   return n;
