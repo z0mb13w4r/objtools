@@ -323,7 +323,8 @@ static int ocdwarf_printf_name(handle_t p, handle_t s, Dwarf_Die die, Dwarf_Attr
       printf_x("dwarf_whatform");
     }
 
-    enum Dwarf_Form_Class cl = dwarf_get_form_class(cu_version_stamp, attrnum, cu_offset_size, formnum);
+    pocdwarf_t ws = ocget(p, OPCODE_DWARF);
+    enum Dwarf_Form_Class cl = dwarf_get_form_class(ws->cu_version_stamp, attrnum, ws->cu_offset_size, formnum);
     if (DW_FORM_CLASS_STRING == cl) {
       char *stringval = 0;
       x = dwarf_die_text(die, attrnum, &stringval, e);

@@ -12,7 +12,8 @@ int ocdwarf_debug_macro(handle_t p, handle_t s, handle_t d) {
   int n0 = 0;
 
   if (isopcode(p) && (isopshdr(s) || isopshdrNN(s))) {
-    popcode_t oc = CAST(popcode_t, p);
+    pocdwarf_t ws = ocget(p, OPCODE_DWARF);
+    popcode_t oc = ocget(p, OPCODE_THIS);
 
     int level = 0;
 
@@ -28,8 +29,8 @@ int ocdwarf_debug_macro(handle_t p, handle_t s, handle_t d) {
 
     Dwarf_Die      cu_die = 0;
 
-    x = dwarf_next_cu_header_e(ocget(p, OPCODE_DWARF_DEBUG), isinfo, &cu_die, &cu_header_length, &cu_version_stamp,
-                     &abbrev_offset, &address_size, &cu_offset_size, &extension_size, &type_signature, &type_offset,
+    x = dwarf_next_cu_header_e(ocget(p, OPCODE_DWARF_DEBUG), isinfo, &cu_die, &cu_header_length, &ws->cu_version_stamp,
+                     &abbrev_offset, &address_size, &ws->cu_offset_size, &extension_size, &type_signature, &type_offset,
                      &next_cu_header_offset, &header_cu_type, ocget(p, OPCODE_DWARF_ERROR));
     if (IS_DLV_NO_ENTRY(x)) return n0;
     else if (IS_DLV_ERROR(x)) {
@@ -41,7 +42,7 @@ int ocdwarf_debug_macro(handle_t p, handle_t s, handle_t d) {
         printf_text("CU header length", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
         printf_nice(cu_header_length, USE_FHEX | USE_EOL);
         printf_text("Version stamp", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-        printf_nice(cu_version_stamp, USE_DEC | USE_EOL);
+        printf_nice(ws->cu_version_stamp, USE_DEC | USE_EOL);
         printf_text("Abbrev offset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
         printf_nice(abbrev_offset, USE_DEC | USE_EOL);
         printf_text("Address size", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
@@ -51,7 +52,7 @@ int ocdwarf_debug_macro(handle_t p, handle_t s, handle_t d) {
         printf_text("Type offset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
         printf_nice(type_offset, USE_FHEX | USE_EOL);
         printf_text("CU offset size", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-        printf_nice(cu_offset_size, USE_DEC | USE_EOL);
+        printf_nice(ws->cu_offset_size, USE_DEC | USE_EOL);
         printf_text("CU next header offset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
         printf_nice(next_cu_header_offset, USE_FHEX | USE_EOL);
         printf_text("CU header type", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));

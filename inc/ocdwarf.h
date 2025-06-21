@@ -88,10 +88,10 @@ typedef struct ocdwarf_s {
   Dwarf_Debug  dbg;
   Dwarf_Error  err;
   pdwarf_srcfiles_t sf;
-} ocdwarf_t, *pocdwarf_t;
 
-extern Dwarf_Half cu_offset_size;
-extern Dwarf_Half cu_version_stamp;
+  Dwarf_Half cu_offset_size;
+  Dwarf_Half cu_version_stamp;
+} ocdwarf_t, *pocdwarf_t;
 
 pdwarf_display_t ocdwarf_get(handle_t s);
 

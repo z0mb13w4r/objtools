@@ -271,9 +271,6 @@ struct Dwarf_Obj_Access_Interface_a_s dw_interface = {
   &base_internals, &methods
 };
 
-Dwarf_Half cu_version_stamp = 0;
-Dwarf_Half cu_offset_size   = 0;
-
 int ocdwarf_sfreset(handle_t p) {
   if (isopcode(p)) {
     pdwarf_srcfiles_t sf = ocget(p, OPCODE_DWARF_SRCFILES);

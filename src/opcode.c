@@ -145,6 +145,8 @@ unknown_t ocget(handle_t p, const imode_t mode) {
       p0->items[mode] = create_symbols_dynamic(p0->items[OPCODE_BFD]);
     }
     return p0->items[mode];
+  } else if (isopcode(p) && OPCODE_THIS == mode) {
+    return CAST(popcode_t, p);
   } else if (isopcode(p) && OPCODE_RAWDATA == mode) {
     return CAST(popcode_t, p)->data;
   } else if (isopcode(p) && OPCODE_RAWSYMBOLS == mode) {
