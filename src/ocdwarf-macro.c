@@ -9,7 +9,7 @@ static const Dwarf_Sig8 zerosignature;
 
 int ocdwarf_debug_macro_ops(handle_t p, Dwarf_Macro_Context context, Dwarf_Unsigned count, Dwarf_Error *e) {
   int x = DW_DLV_ERROR;
-  int n0 = 0;
+  int n = 0;
 
   if (isopcode(p)) {
     for (Dwarf_Unsigned i = 0; i < count; ++i) {
@@ -22,11 +22,11 @@ int ocdwarf_debug_macro_ops(handle_t p, Dwarf_Macro_Context context, Dwarf_Unsig
       if (IS_DLV_ANY_ERROR(x)) {
         printf_e("dwarf_get_macro_op failed! - %d", x);
         dwarf_dealloc_macro_context(context);
-        return OCDWARF_ERRCODE(x, n0);
+        return OCDWARF_ERRCODE(x, n);
       }
 
-      n0 += printf_nice(i, USE_DEC3 | USE_SB);
-      n0 += ocdwarf_printf_MACRO(p, macro_operator, USE_SPECIAL);
+      n += printf_nice(i, USE_DEC3 | USE_SB);
+      n += ocdwarf_printf_MACRO(p, macro_operator, USE_SPECIAL);
       if (DW_MACRO_import == macro_operator) {
         Dwarf_Unsigned offset = 0;
 
@@ -34,11 +34,11 @@ int ocdwarf_debug_macro_ops(handle_t p, Dwarf_Macro_Context context, Dwarf_Unsig
         if (IS_DLV_ANY_ERROR(x)) {
           printf_e("dwarf_get_macro_import failed! - %d", x);
           dwarf_dealloc_macro_context(context);
-          return OCDWARF_ERRCODE(x, n0);
+          return OCDWARF_ERRCODE(x, n);
         }
 
-        n0 += printf_text("offset", USE_LT | USE_SPACE);
-        n0 += printf_nice(offset, USE_FHEX32);
+        n += printf_text("offset", USE_LT | USE_SPACE);
+        n += printf_nice(offset, USE_FHEX32);
       } else if (DW_MACRO_start_file == macro_operator) {
         Dwarf_Unsigned nline = 0;
         Dwarf_Unsigned index = 0;
@@ -48,20 +48,41 @@ int ocdwarf_debug_macro_ops(handle_t p, Dwarf_Macro_Context context, Dwarf_Unsig
         if (IS_DLV_ANY_ERROR(x)) {
           printf_e("dwarf_get_macro_startend_file failed! - %d", x);
           dwarf_dealloc_macro_context(context);
-          return OCDWARF_ERRCODE(x, n0);
+          return OCDWARF_ERRCODE(x, n);
         }
 
-        n0 += printf_text("line", USE_LT | USE_SPACE);
-        n0 += printf_nice(nline, USE_DEC);
-        n0 += printf_text("file number", USE_LT | USE_SPACE);
-        n0 += ocdwarf_printf_srcfile(p, index, USE_DEC);
+        n += printf_text("line", USE_LT | USE_SPACE);
+        n += printf_nice(nline, USE_DEC);
+        n += printf_text("file number", USE_LT | USE_SPACE);
+        n += ocdwarf_printf_srcfile(p, index, USE_DEC);
+      } else if (DW_MACRO_define_strp == macro_operator || DW_MACRO_undef_strp == macro_operator) {
+        Dwarf_Unsigned nline = 0;
+        Dwarf_Unsigned index = 0;
+        Dwarf_Unsigned offset = 0;
+        Dwarf_Half forms_count = 0;
+        const char    *name_string = NULL;
+
+        x = dwarf_get_macro_defundef(context, i, &nline, &index, &offset, &forms_count, &name_string, e);
+        if (IS_DLV_ANY_ERROR(x)) {
+          printf_e("dwarf_get_macro_defundef failed! - %d", x);
+          dwarf_dealloc_macro_context(context);
+          return OCDWARF_ERRCODE(x, n);
+        }
+
+        n += printf_text("line", USE_LT | USE_SPACE);
+        n += printf_nice(nline, USE_DEC);
+        n += printf_text("str offset", USE_LT | USE_SPACE);
+        n += printf_nice(offset, USE_FHEX32);
+        if (name_string) {
+          n += printf_text(name_string, USE_LT | USE_SPACE);
+        }
       }
 
-      n0 += printf_eol();
+      n += printf_eol();
     }
   }
 
-  return OCDWARF_ERRCODE(x, n0);
+  return OCDWARF_ERRCODE(x, n);
 }
 
 int ocdwarf_debug_macro(handle_t p, handle_t s, handle_t d) {
