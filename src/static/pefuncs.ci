@@ -320,6 +320,9 @@ static pefunc_t zNTDLL[] = {
   {"LdrGetProcedureAddress",           -1,   PEFUNC_BLACKLIST},
   {"NtQueryInformationProcess",        -1,   PEFUNC_BLACKLIST},
   {"NtSetInformationProcess",          -1,   PEFUNC_BLACKLIST},
+  {"NtSuspendProcess",                 -1,   PEFUNC_BLACKLIST},
+  {"NtResumeProcess",                  -1,   PEFUNC_BLACKLIST},
+  {"NtUnmapViewOfSection",             -1,   PEFUNC_BLACKLIST},
   {0, 0}
 };
 
@@ -787,6 +790,7 @@ static pefunc_t zUSER32[] = {
   {"GetDC",                            -1,   PEFUNC_CRITICAL},
   {"GetDCEx",                          -1,   PEFUNC_CRITICAL},
   {"AttachThreadInput",                -1,   PEFUNC_CRITICAL},
+  {"GetSystemMetrics",                 -1,   PEFUNC_ALERT},
   {"RegisterHotKey",                   -1,   PEFUNC_ALERT},
   {"CallNextHookEx",                   -1,   PEFUNC_ALERT},
   {"SetWindowsHookExA",                -1,   PEFUNC_ALERT},
@@ -799,6 +803,9 @@ static pefunc_t zUSER32[] = {
   {"EnumWindows",                      -1,   PEFUNC_ALERT},
   {"GetAsyncKeyState",                 -1,   PEFUNC_ALERT},
   {"GetKeyState",                      -1,   PEFUNC_ALERT},
+  {"GetKeyNameTextA",                  -1,   PEFUNC_ALERT},
+  {"GetKeyNameTextW",                  -1,   PEFUNC_ALERT},
+  {"GetClipboardData",                 -1,   PEFUNC_ALERT},
   {"MapVirtualKeyA",                   -1,   PEFUNC_ALERT},
   {"MapVirtualKeyW",                   -1,   PEFUNC_ALERT},
   {0, 0}
