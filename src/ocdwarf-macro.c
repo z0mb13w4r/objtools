@@ -7,7 +7,8 @@ static const int MAXSIZE = 24;
 
 static const Dwarf_Sig8 zerosignature;
 
-int ocdwarf_debug_macro_ops(handle_t p, Dwarf_Macro_Context context, Dwarf_Unsigned count, Dwarf_Error *e) {
+int ocdwarf_debug_macro_ops(handle_t p, Dwarf_Macro_Context context, Dwarf_Unsigned macro_unit_offset,
+                     Dwarf_Unsigned count, Dwarf_Error *e) {
   int x = DW_DLV_ERROR;
   int n = 0;
 
@@ -76,6 +77,13 @@ int ocdwarf_debug_macro_ops(handle_t p, Dwarf_Macro_Context context, Dwarf_Unsig
         if (name_string) {
           n += printf_text(name_string, USE_LT | USE_SPACE);
         }
+      } else if (0 == macro_operator) {
+        n += printf_text("op offset", USE_LT | USE_SPACE);
+        n += printf_nice(op_start_section_offset, USE_FHEX32);
+        n += printf_text("macro unit length", USE_LT | USE_SPACE);
+        n += printf_nice(op_start_section_offset + 1 - macro_unit_offset, USE_DEC);
+        n += printf_text("next byte offset", USE_LT | USE_SPACE);
+        n += printf_nice(op_start_section_offset + 1, USE_FHEX32);
       }
 
       n += printf_eol();
@@ -238,7 +246,7 @@ int ocdwarf_debug_macro(handle_t p, handle_t s, handle_t d) {
       }
 
     n0 += ocdwarf_sfcreate(p, cu_die, ocget(p, OPCODE_DWARF_ERROR));
-    n0 += ocdwarf_debug_macro_ops(p, macro_context, number_of_ops, ocget(p, OPCODE_DWARF_ERROR));
+    n0 += ocdwarf_debug_macro_ops(p, macro_context, macro_unit_offset, number_of_ops, ocget(p, OPCODE_DWARF_ERROR));
   }
 
   return OCDWARF_ERRCODE(x, n0);

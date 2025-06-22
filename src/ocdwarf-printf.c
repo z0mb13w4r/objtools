@@ -69,6 +69,10 @@ int ocdwarf_printf_LANG(handle_t p, const uint64_t v, const imode_t mode) {
 }
 
 int ocdwarf_printf_MACRO(handle_t p, const uint64_t v, const imode_t mode) {
+  if (0 == v && MODE_ISSET(USE_SPECIAL, mode)) {
+    return printf_nice(v, USE_FHEX8) + printf_text("end-of-macros", USE_LT | USE_SPACE);
+  }
+
   return ocdwarf_printf_pluck(p, zDWMACRO, v, mode);
 }
 
