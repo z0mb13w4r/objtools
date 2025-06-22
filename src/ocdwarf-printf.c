@@ -77,8 +77,8 @@ int ocdwarf_printf_srcfile(handle_t p, const uint32_t v, const imode_t mode) {
   if (isopcode(p)) {
     pdwarf_srcfiles_t sf = ocget(p, OPCODE_DWARF_SRCFILES);
     if (sf && IS_DLV_OK(sf->status) && (0 != sf->size) && ((v - 1) < sf->size)) {
-      n += printf_nice(v, USE_FHEX32);
-      n += printf_text(sf->data[v - 1], USE_LT | USE_SPACE | mode);
+      n += printf_nice(v, mode);
+      n += printf_text(sf->data[v - 1], USE_LT | USE_SPACE);
     }
   }
 
@@ -176,7 +176,7 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
       } else if (isused(zATHEX32, nattr)) {
         n += printf_nice(value, USE_FHEX32);
       } else if (isused(zATSRCFILE, nattr)) {
-        n += ocdwarf_printf_srcfile(p, value, USE_NONE);
+        n += ocdwarf_printf_srcfile(p, value, USE_FHEX32);
       } else {
         n += printf_nice(value, USE_FHEX16);
       }
