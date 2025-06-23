@@ -101,6 +101,103 @@ int ocdwarf_debug_macro_ops(handle_t p, Dwarf_Macro_Context context, int level,
   return OCDWARF_ERRCODE(x, n);
 }
 
+int ocdwarf_debug_macro_context(handle_t p, Dwarf_Macro_Context context, int level,
+                     Dwarf_Unsigned macro_unit_offset, Dwarf_Unsigned number_of_ops,
+                     Dwarf_Unsigned ops_total_byte_len, Dwarf_Error *e) {
+  int x = DW_DLV_ERROR;
+  int n = 0;
+
+  if (isopcode(p)) {
+    popcode_t oc = ocget(p, OPCODE_THIS);
+
+    unsigned int macro_flags = 0;
+    Dwarf_Half macro_version = 0;
+    Dwarf_Unsigned macro_len = 0;
+    Dwarf_Unsigned macro_offset = 0;
+    Dwarf_Unsigned macro_header_len = 0;
+    Dwarf_Unsigned line_offset = 0;
+    Dwarf_Half opcode_count = 0;
+    Dwarf_Bool has_line_offset = FALSE;
+    Dwarf_Bool has_operands_table = FALSE;
+    Dwarf_Bool has_offset_size_64 = FALSE;
+
+    x = dwarf_macro_context_head(context, &macro_version, &macro_offset, &macro_len, &macro_header_len,
+                      &macro_flags, &has_line_offset, &line_offset, &has_offset_size_64, &has_operands_table,
+                      &opcode_count, e);
+    if (IS_DLV_ANY_ERROR(x)) {
+      printf_e("dwarf_macro_context_head failed! - %d", x);
+      return OCDWARF_ERRCODE(x, n);
+    }
+
+    n += printf_text("Nested import level", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(level, USE_DEC | USE_EOL);
+
+    n += printf_text("Macro version", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(macro_version, USE_DEC | USE_EOL);
+
+    n += printf_text("Macro section offset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(macro_offset, USE_FHEX32 | USE_EOL);
+
+    n += printf_text("MacroInformationEntries count", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(number_of_ops, USE_DEC);
+    n += printf_text("bytes length", USE_LT | USE_COMMA | USE_COLON);
+    n += printf_nice(ops_total_byte_len, USE_DEC | USE_EOL);
+
+    if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
+      n += printf_text("Macro header length", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_nice(macro_header_len, USE_DEC | USE_EOL);
+      n += printf_text("Macro flags", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_nice(macro_flags, USE_DEC | USE_EOL);
+      n += printf_text("Has line offset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_nice(has_line_offset, USE_YESNO | USE_EOL);
+      n += printf_text("Line offset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_nice(line_offset, USE_DEC | USE_EOL);
+      n += printf_text("Has offset size 64", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_nice(has_offset_size_64, USE_YESNO | USE_EOL);
+      n += printf_text("Has operands table", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_nice(has_operands_table, USE_YESNO | USE_EOL);
+      n += printf_text("Opcode count", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_nice(opcode_count, USE_DEC | USE_EOL);
+
+      for (Dwarf_Half i = 0; i < opcode_count; ++i) {
+        Dwarf_Half opcode_num = 0;
+        Dwarf_Half operand_count = 0;
+        const Dwarf_Small *operand_array = 0;
+
+        x = dwarf_macro_operands_table(context, i,
+                  &opcode_num, &operand_count, &operand_array, e);
+        if (IS_DLV_NO_ENTRY(x)) {
+          dwarf_dealloc_macro_context(context);
+          printf_e("dwarf_macro_operands_table - NO_ENTRY for index %u of %u indexes.", i, opcode_count);
+          break;
+        } else if (IS_DLV_ERROR(x)) {
+          printf_x("dwarf_macro_operands_table - NO_ENTRY for index %u of %u indexes.", i, opcode_count);
+        } else if (0 == opcode_num) {
+          n += printf_nice(i, USE_DEC3 | USE_SB);
+          n += printf_text("end of macro operands.", USE_LT | USE_EOL);
+          continue;
+        }
+
+        n += printf_nice(i, USE_DEC3 | USE_SB);
+        n += printf_text("op", USE_LT | USE_SPACE | USE_COLON);
+        n += ocdwarf_printf_MACRO(p, opcode_num, USE_NONE);
+        n += printf_eol();
+        for (Dwarf_Half j = 0; j < operand_count; ++j) {
+          n += printf_nice(i, USE_DEC3 | USE_SB);
+          n += ocdwarf_printf_FORM(p, operand_array[j], USE_NONE);
+          n += printf_eol();
+        }
+        n += printf_eol();
+      }
+    }
+
+    n += ocdwarf_debug_macro_ops(p, context, level, macro_version, macro_unit_offset,
+                       number_of_ops, e);
+  }
+
+  return OCDWARF_ERRCODE(x, n);
+}
+
 int ocdwarf_debug_macro(handle_t p, handle_t s, handle_t d) {
   int x = DW_DLV_ERROR;
   int n0 = 0;
@@ -172,90 +269,9 @@ int ocdwarf_debug_macro(handle_t p, handle_t s, handle_t d) {
       n0 += printf_nice(macro_unit_offset, USE_DEC | USE_EOL);
     }
 
-    unsigned int macro_flags = 0;
-    Dwarf_Half macro_version = 0;
-    Dwarf_Unsigned macro_len = 0;
-    Dwarf_Unsigned macro_offset = 0;
-    Dwarf_Unsigned macro_header_len = 0;
-    Dwarf_Unsigned line_offset = 0;
-    Dwarf_Half opcode_count = 0;
-    Dwarf_Bool has_line_offset = FALSE;
-    Dwarf_Bool has_operands_table = FALSE;
-    Dwarf_Bool has_offset_size_64 = FALSE;
-
-    x = dwarf_macro_context_head(macro_context, &macro_version, &macro_offset, &macro_len, &macro_header_len,
-                      &macro_flags, &has_line_offset, &line_offset, &has_offset_size_64, &has_operands_table,
-                      &opcode_count, ocget(p, OPCODE_DWARF_ERROR));
-    if (IS_DLV_ANY_ERROR(x)) {
-      printf_e("dwarf_macro_context_head failed! - %d", x);
-      return OCDWARF_ERRCODE(x, n0);
-    }
-
-    n0 += printf_text("Nested import level", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-    n0 += printf_nice(level, USE_DEC | USE_EOL);
-
-    n0 += printf_text("Macro version", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-    n0 += printf_nice(macro_version, USE_DEC | USE_EOL);
-
-    n0 += printf_text("Macro section offset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-    n0 += printf_nice(macro_offset, USE_FHEX32 | USE_EOL);
-
-    n0 += printf_text("MacroInformationEntries count", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-    n0 += printf_nice(number_of_ops, USE_DEC);
-    n0 += printf_text("bytes length", USE_LT | USE_COMMA | USE_COLON);
-    n0 += printf_nice(ops_total_byte_len, USE_DEC | USE_EOL);
-
-    if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
-      n0 += printf_text("Macro header length", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-      n0 += printf_nice(macro_header_len, USE_DEC | USE_EOL);
-      n0 += printf_text("Macro flags", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-      n0 += printf_nice(macro_flags, USE_DEC | USE_EOL);
-      n0 += printf_text("Has line offset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-      n0 += printf_nice(has_line_offset, USE_YESNO | USE_EOL);
-      n0 += printf_text("Line offset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-      n0 += printf_nice(line_offset, USE_DEC | USE_EOL);
-      n0 += printf_text("Has offset size 64", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-      n0 += printf_nice(has_offset_size_64, USE_YESNO | USE_EOL);
-      n0 += printf_text("Has operands table", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-      n0 += printf_nice(has_operands_table, USE_YESNO | USE_EOL);
-      n0 += printf_text("Opcode count", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-      n0 += printf_nice(opcode_count, USE_DEC | USE_EOL);
-
-      for (Dwarf_Half i = 0; i < opcode_count; ++i) {
-        Dwarf_Half opcode_num = 0;
-        Dwarf_Half operand_count = 0;
-        const Dwarf_Small *operand_array = 0;
-
-        x = dwarf_macro_operands_table(macro_context, i,
-                  &opcode_num, &operand_count, &operand_array, ocget(p, OPCODE_DWARF_ERROR));
-        if (IS_DLV_NO_ENTRY(x)) {
-          dwarf_dealloc_macro_context(macro_context);
-          printf_e("dwarf_macro_operands_table - NO_ENTRY for index %u of %u indexes.", i, opcode_count);
-          break;
-        } else if (IS_DLV_ERROR(x)) {
-          printf_x("dwarf_macro_operands_table - NO_ENTRY for index %u of %u indexes.", i, opcode_count);
-        } else if (0 == opcode_num) {
-          n0 += printf_nice(i, USE_DEC3 | USE_SB);
-          n0 += printf_text("end of macro operands.", USE_LT | USE_EOL);
-          continue;
-        }
-
-        n0 += printf_nice(i, USE_DEC3 | USE_SB);
-        n0 += printf_text("op", USE_LT | USE_SPACE | USE_COLON);
-        n0 += ocdwarf_printf_MACRO(p, opcode_num, USE_NONE);
-        n0 += printf_eol();
-        for (Dwarf_Half j = 0; j < operand_count; ++j) {
-          n0 += printf_nice(i, USE_DEC3 | USE_SB);
-          n0 += ocdwarf_printf_FORM(p, operand_array[j], USE_NONE);
-          n0 += printf_eol();
-        }
-        n0 += printf_eol();
-      }
-    }
-
     n0 += ocdwarf_sfcreate(p, cu_die, ocget(p, OPCODE_DWARF_ERROR));
-    n0 += ocdwarf_debug_macro_ops(p, macro_context, level, macro_version, macro_unit_offset,
-                       number_of_ops, ocget(p, OPCODE_DWARF_ERROR));
+    n0 += ocdwarf_debug_macro_context(p, macro_context, level, macro_unit_offset,
+                     number_of_ops, ops_total_byte_len, ocget(p, OPCODE_DWARF_ERROR));
   }
 
   return OCDWARF_ERRCODE(x, n0);
