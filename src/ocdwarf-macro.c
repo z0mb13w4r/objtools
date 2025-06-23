@@ -200,7 +200,7 @@ int ocdwarf_debug_macro_context(handle_t p, Dwarf_Macro_Context context, int lev
 
 int ocdwarf_debug_macro(handle_t p, handle_t s, handle_t d) {
   int x = DW_DLV_ERROR;
-  int n0 = 0;
+  int n = 0;
 
   if (isopcode(p) && (isopshdr(s) || isopshdrNN(s))) {
     pocdwarf_t ws = ocget(p, OPCODE_DWARF);
@@ -223,31 +223,31 @@ int ocdwarf_debug_macro(handle_t p, handle_t s, handle_t d) {
     x = dwarf_next_cu_header_e(ocget(p, OPCODE_DWARF_DEBUG), isinfo, &cu_die, &cu_header_length, &ws->cu_version_stamp,
                      &abbrev_offset, &address_size, &ws->cu_offset_size, &extension_size, &type_signature, &type_offset,
                      &next_cu_header_offset, &header_cu_type, ocget(p, OPCODE_DWARF_ERROR));
-    if (IS_DLV_NO_ENTRY(x)) return n0;
+    if (IS_DLV_NO_ENTRY(x)) return n;
     else if (IS_DLV_ERROR(x)) {
       printf_e("dwarf_next_cu_header_e failed! - %d", x);
-      return OCDWARF_ERRCODE(x, n0);
+      return OCDWARF_ERRCODE(x, n);
     }
 
     if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
-      n0 += printf_text("CU header length", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-      n0 += printf_nice(cu_header_length, USE_FHEX | USE_EOL);
-      n0 += printf_text("Version stamp", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-      n0 += printf_nice(ws->cu_version_stamp, USE_DEC | USE_EOL);
-      n0 += printf_text("Abbrev offset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-      n0 += printf_nice(abbrev_offset, USE_DEC | USE_EOL);
-      n0 += printf_text("Address size", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-      n0 += printf_nice(address_size, USE_DEC | USE_EOL);
-      n0 += printf_text("Extension size", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-      n0 += printf_nice(extension_size, USE_DEC | USE_EOL);
-      n0 += printf_text("Type offset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-      n0 += printf_nice(type_offset, USE_FHEX | USE_EOL);
-      n0 += printf_text("CU offset size", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-      n0 += printf_nice(ws->cu_offset_size, USE_DEC | USE_EOL);
-      n0 += printf_text("CU next header offset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-      n0 += printf_nice(next_cu_header_offset, USE_FHEX | USE_EOL);
-      n0 += printf_text("CU header type", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-      n0 += printf_nice(header_cu_type, USE_FHEX | USE_EOL);
+      n += printf_text("CU header length", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_nice(cu_header_length, USE_FHEX | USE_EOL);
+      n += printf_text("Version stamp", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_nice(ws->cu_version_stamp, USE_DEC | USE_EOL);
+      n += printf_text("Abbrev offset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_nice(abbrev_offset, USE_DEC | USE_EOL);
+      n += printf_text("Address size", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_nice(address_size, USE_DEC | USE_EOL);
+      n += printf_text("Extension size", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_nice(extension_size, USE_DEC | USE_EOL);
+      n += printf_text("Type offset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_nice(type_offset, USE_FHEX | USE_EOL);
+      n += printf_text("CU offset size", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_nice(ws->cu_offset_size, USE_DEC | USE_EOL);
+      n += printf_text("CU next header offset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_nice(next_cu_header_offset, USE_FHEX | USE_EOL);
+      n += printf_text("CU header type", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_nice(header_cu_type, USE_FHEX | USE_EOL);
     }
 
     Dwarf_Unsigned version = 0;
@@ -258,22 +258,22 @@ int ocdwarf_debug_macro(handle_t p, handle_t s, handle_t d) {
 
     x = dwarf_get_macro_context(cu_die, &version, &macro_context, &macro_unit_offset,
                      &number_of_ops, &ops_total_byte_len, ocget(p, OPCODE_DWARF_ERROR));
-    if (IS_DLV_NO_ENTRY(x)) return n0;
+    if (IS_DLV_NO_ENTRY(x)) return n;
     else if (IS_DLV_ERROR(x)) {
       printf_e("dwarf_get_macro_context failed! - %d", x);
-      return OCDWARF_ERRCODE(x, n0);
+      return OCDWARF_ERRCODE(x, n);
     }
 
     if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
-      n0 += printf_text("Macro unit offset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-      n0 += printf_nice(macro_unit_offset, USE_DEC | USE_EOL);
+      n += printf_text("Macro unit offset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_nice(macro_unit_offset, USE_DEC | USE_EOL);
     }
 
-    n0 += ocdwarf_sfcreate(p, cu_die, ocget(p, OPCODE_DWARF_ERROR));
-    n0 += ocdwarf_debug_macro_context(p, macro_context, level, macro_unit_offset,
+    n += ocdwarf_sfcreate(p, cu_die, ocget(p, OPCODE_DWARF_ERROR));
+    n += ocdwarf_debug_macro_context(p, macro_context, level, macro_unit_offset,
                      number_of_ops, ops_total_byte_len, ocget(p, OPCODE_DWARF_ERROR));
   }
 
-  return OCDWARF_ERRCODE(x, n0);
+  return OCDWARF_ERRCODE(x, n);
 }
 
