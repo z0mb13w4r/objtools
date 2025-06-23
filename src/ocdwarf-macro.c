@@ -7,8 +7,8 @@ static const int MAXSIZE = 24;
 
 static const Dwarf_Sig8 zerosignature;
 
-int ocdwarf_debug_macro_ops(handle_t p, Dwarf_Macro_Context context, Dwarf_Unsigned macro_unit_offset,
-                     Dwarf_Unsigned count, Dwarf_Error *e) {
+int ocdwarf_debug_macro_ops(handle_t p, Dwarf_Macro_Context context, int level,
+                     Dwarf_Half macro_version, Dwarf_Unsigned macro_unit_offset, Dwarf_Unsigned count, Dwarf_Error *e) {
   int x = DW_DLV_ERROR;
   int n = 0;
 
@@ -29,9 +29,9 @@ int ocdwarf_debug_macro_ops(handle_t p, Dwarf_Macro_Context context, Dwarf_Unsig
       n += printf_nice(i, USE_DEC3 | USE_SB);
       n += ocdwarf_printf_MACRO(p, macro_operator, USE_SPECIAL);
       if (DW_MACRO_import == macro_operator) {
-        Dwarf_Unsigned offset = 0;
+        Dwarf_Unsigned macro_offset = 0;
 
-        x = dwarf_get_macro_import(context, i, &offset, e);
+        x = dwarf_get_macro_import(context, i, &macro_offset, e);
         if (IS_DLV_ANY_ERROR(x)) {
           printf_e("dwarf_get_macro_import failed! - %d", x);
           dwarf_dealloc_macro_context(context);
@@ -39,7 +39,15 @@ int ocdwarf_debug_macro_ops(handle_t p, Dwarf_Macro_Context context, Dwarf_Unsig
         }
 
         n += printf_text("offset", USE_LT | USE_SPACE);
-        n += printf_nice(offset, USE_FHEX32);
+        n += printf_nice(macro_offset, USE_FHEX32);
+        n += printf_eol();
+
+        n += printf_text("Nested import level", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        n += printf_nice(level + 1, USE_DEC | USE_EOL);
+        n += printf_text("Macro version", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        n += printf_nice(macro_version, USE_DEC | USE_EOL);
+        n += printf_text("Macro section offset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        n += printf_nice(macro_offset, USE_FHEX32 | USE_EOL);
       } else if (DW_MACRO_start_file == macro_operator) {
         Dwarf_Unsigned nline = 0;
         Dwarf_Unsigned index = 0;
@@ -246,7 +254,8 @@ int ocdwarf_debug_macro(handle_t p, handle_t s, handle_t d) {
       }
 
     n0 += ocdwarf_sfcreate(p, cu_die, ocget(p, OPCODE_DWARF_ERROR));
-    n0 += ocdwarf_debug_macro_ops(p, macro_context, macro_unit_offset, number_of_ops, ocget(p, OPCODE_DWARF_ERROR));
+    n0 += ocdwarf_debug_macro_ops(p, macro_context, level, macro_version, macro_unit_offset,
+                       number_of_ops, ocget(p, OPCODE_DWARF_ERROR));
   }
 
   return OCDWARF_ERRCODE(x, n0);
