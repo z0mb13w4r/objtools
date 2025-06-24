@@ -7,7 +7,7 @@ static const int MAXSIZE = 24;
 
 static const Dwarf_Sig8 zerosignature;
 
-int ocdwarf_debug_macro_ops(handle_t p, Dwarf_Macro_Context context, int level,
+int ocdwarf_debug_macro_ops(handle_t p, Dwarf_Die die, Dwarf_Macro_Context context, int level,
                      Dwarf_Half macro_version, Dwarf_Unsigned macro_unit_offset, Dwarf_Unsigned count, Dwarf_Error *e) {
   int x = DW_DLV_ERROR;
   int n = 0;
@@ -22,7 +22,6 @@ int ocdwarf_debug_macro_ops(handle_t p, Dwarf_Macro_Context context, int level,
                        &formcodes_count, &formcodes_array, e);
       if (IS_DLV_ANY_ERROR(x)) {
         printf_e("dwarf_get_macro_op failed! - %d", x);
-        dwarf_dealloc_macro_context(context);
         return OCDWARF_ERRCODE(x, n);
       }
 
@@ -34,7 +33,6 @@ int ocdwarf_debug_macro_ops(handle_t p, Dwarf_Macro_Context context, int level,
         x = dwarf_get_macro_import(context, i, &macro_offset, e);
         if (IS_DLV_ANY_ERROR(x)) {
           printf_e("dwarf_get_macro_import failed! - %d", x);
-          dwarf_dealloc_macro_context(context);
           return OCDWARF_ERRCODE(x, n);
         }
 
@@ -56,7 +54,6 @@ int ocdwarf_debug_macro_ops(handle_t p, Dwarf_Macro_Context context, int level,
         x = dwarf_get_macro_startend_file(context, i, &nline, &index, &name_string, e);
         if (IS_DLV_ANY_ERROR(x)) {
           printf_e("dwarf_get_macro_startend_file failed! - %d", x);
-          dwarf_dealloc_macro_context(context);
           return OCDWARF_ERRCODE(x, n);
         }
 
@@ -74,7 +71,6 @@ int ocdwarf_debug_macro_ops(handle_t p, Dwarf_Macro_Context context, int level,
         x = dwarf_get_macro_defundef(context, i, &nline, &index, &offset, &forms_count, &name_string, e);
         if (IS_DLV_ANY_ERROR(x)) {
           printf_e("dwarf_get_macro_defundef failed! - %d", x);
-          dwarf_dealloc_macro_context(context);
           return OCDWARF_ERRCODE(x, n);
         }
 
@@ -101,7 +97,7 @@ int ocdwarf_debug_macro_ops(handle_t p, Dwarf_Macro_Context context, int level,
   return OCDWARF_ERRCODE(x, n);
 }
 
-int ocdwarf_debug_macro_context(handle_t p, Dwarf_Macro_Context context, int level,
+int ocdwarf_debug_macro_context(handle_t p, Dwarf_Die die, Dwarf_Macro_Context context, int level,
                      Dwarf_Unsigned macro_unit_offset, Dwarf_Unsigned number_of_ops,
                      Dwarf_Unsigned ops_total_byte_len, Dwarf_Error *e) {
   int x = DW_DLV_ERROR;
@@ -167,7 +163,6 @@ int ocdwarf_debug_macro_context(handle_t p, Dwarf_Macro_Context context, int lev
         x = dwarf_macro_operands_table(context, i,
                   &opcode_num, &operand_count, &operand_array, e);
         if (IS_DLV_NO_ENTRY(x)) {
-          dwarf_dealloc_macro_context(context);
           printf_e("dwarf_macro_operands_table - NO_ENTRY for index %u of %u indexes.", i, opcode_count);
           break;
         } else if (IS_DLV_ERROR(x)) {
@@ -191,8 +186,7 @@ int ocdwarf_debug_macro_context(handle_t p, Dwarf_Macro_Context context, int lev
       }
     }
 
-    n += ocdwarf_debug_macro_ops(p, context, level, macro_version, macro_unit_offset,
-                       number_of_ops, e);
+    n += ocdwarf_debug_macro_ops(p, die, context, level, macro_version, macro_unit_offset, number_of_ops, e);
   }
 
   return OCDWARF_ERRCODE(x, n);
@@ -270,8 +264,10 @@ int ocdwarf_debug_macro(handle_t p, handle_t s, handle_t d) {
     }
 
     n += ocdwarf_sfcreate(p, cu_die, ocget(p, OPCODE_DWARF_ERROR));
-    n += ocdwarf_debug_macro_context(p, macro_context, level, macro_unit_offset,
+    n += ocdwarf_debug_macro_context(p, cu_die, macro_context, level, macro_unit_offset,
                      number_of_ops, ops_total_byte_len, ocget(p, OPCODE_DWARF_ERROR));
+
+    dwarf_dealloc_macro_context(macro_context);
   }
 
   return OCDWARF_ERRCODE(x, n);
