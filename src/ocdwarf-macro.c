@@ -88,10 +88,41 @@ int ocdwarf_debug_macro_ops(handle_t p, Dwarf_Die die, Dwarf_Macro_Context conte
         n += printf_nice(op_start_section_offset + 1 - macro_unit_offset, USE_DEC);
         n += printf_text("next byte offset", USE_LT | USE_SPACE);
         n += printf_nice(op_start_section_offset + 1, USE_FHEX32);
+        n += printf_eol();
+
+        n += ocdwarf_debug_macro_offset(p, die, level, op_start_section_offset + 1, e);
       }
 
       n += printf_eol();
     }
+  }
+
+  return OCDWARF_ERRCODE(x, n);
+}
+
+int ocdwarf_debug_macro_offset(handle_t p, Dwarf_Die die, int level,
+                     Dwarf_Unsigned macro_offset, Dwarf_Error *e) {
+  int x = DW_DLV_ERROR;
+  int n = 0;
+
+  if (isopcode(p)) {
+    popcode_t oc = ocget(p, OPCODE_THIS);
+
+    Dwarf_Unsigned version = 0;
+    Dwarf_Unsigned number_of_ops = 0;
+    Dwarf_Unsigned ops_total_byte_len = 0;
+    Dwarf_Macro_Context macro_context = 0;
+
+    x = dwarf_get_macro_context_by_offset(die, macro_offset, &version, &macro_context,
+                     &number_of_ops, &ops_total_byte_len, e);
+    if (IS_DLV_NO_ENTRY(x)) return n;
+    else if (IS_DLV_ERROR(x)) {
+      printf_e("dwarf_get_macro_context_by_offset failed! - %d", x);
+      return OCDWARF_ERRCODE(x, n);
+    }
+
+    n += ocdwarf_debug_macro_context(p, die, macro_context, level, macro_offset,
+                     number_of_ops, ops_total_byte_len, e);
   }
 
   return OCDWARF_ERRCODE(x, n);
