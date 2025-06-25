@@ -905,3 +905,25 @@ pick_t zFORMUDATA[] = {
   PICK_END
 };
 
+pick_t zMACRODEF[] = {
+  DW_MACRO_undef,
+  DW_MACRO_undef_sup,
+  DW_MACRO_undef_strp,
+  DW_MACRO_undef_strx,
+  DW_MACRO_define,
+  DW_MACRO_define_sup,
+  DW_MACRO_define_strp,
+  DW_MACRO_define_strx,
+  PICK_END
+};
+
+pick_t zMACRODEFSTR[] = {
+  DW_MACRO_undef_sup,
+  DW_MACRO_undef_strp,
+  DW_MACRO_undef_strx,
+  DW_MACRO_define_sup,
+  DW_MACRO_define_strp,
+  DW_MACRO_define_strx,
+  PICK_END
+};
+

@@ -36,16 +36,21 @@ int ocdwarf_debug_macro_ops(handle_t p, Dwarf_Die die, Dwarf_Macro_Context conte
           return OCDWARF_ERRCODE(x, n);
         }
 
-        n += printf_text("offset", USE_LT | USE_SPACE);
-        n += printf_nice(macro_offset, USE_FHEX32);
-        n += printf_eol();
+        if (DW_MACRO_import == macro_operator || DW_MACRO_import_sup == macro_operator) {
+          n += printf_text("offset", USE_LT | USE_SPACE);
+          n += printf_nice(macro_offset, USE_FHEX32);
+          n += printf_eol();
 
-        n += printf_text("Nested import level", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-        n += printf_nice(level + 1, USE_DEC | USE_EOL);
-        n += printf_text("Macro version", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-        n += printf_nice(macro_version, USE_DEC | USE_EOL);
-        n += printf_text("Macro section offset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-        n += printf_nice(macro_offset, USE_FHEX32 | USE_EOL);
+          n += printf_text("Nested import level", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+          n += printf_nice(level + 1, USE_DEC | USE_EOL);
+          n += printf_text("Macro version", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+          n += printf_nice(macro_version, USE_DEC | USE_EOL);
+          n += printf_text("Macro section offset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+          n += printf_nice(macro_offset, USE_FHEX32 | USE_EOL);
+        } else if (DW_MACRO_import_sup == macro_operator) {
+          n += printf_text("sup_offset", USE_LT | USE_SPACE);
+          n += printf_nice(macro_offset, USE_FHEX32);
+        }
       } else if (DW_MACRO_start_file == macro_operator) {
         Dwarf_Unsigned nline = 0;
         Dwarf_Unsigned index = 0;
@@ -61,10 +66,7 @@ int ocdwarf_debug_macro_ops(handle_t p, Dwarf_Die die, Dwarf_Macro_Context conte
         n += printf_nice(nline, USE_DEC);
         n += printf_text("file number", USE_LT | USE_SPACE);
         n += ocdwarf_printf_srcfile(p, index, USE_DEC);
-      } else if (DW_MACRO_define_strp == macro_operator || DW_MACRO_undef_strp == macro_operator
-              || DW_MACRO_define_sup == macro_operator  || DW_MACRO_undef_sup == macro_operator
-              || DW_MACRO_define_strx == macro_operator || DW_MACRO_undef_strx == macro_operator
-              || DW_MACRO_define == macro_operator      || DW_MACRO_undef == macro_operator) {
+      } else if (isused(zMACRODEF, macro_operator)) {
         Dwarf_Unsigned nline = 0;
         Dwarf_Unsigned index = 0;
         Dwarf_Unsigned offset = 0;
@@ -79,26 +81,15 @@ int ocdwarf_debug_macro_ops(handle_t p, Dwarf_Die die, Dwarf_Macro_Context conte
 
         n += printf_text("line", USE_LT | USE_SPACE);
         n += printf_nice(nline, USE_DEC);
-        if (DW_MACRO_define_strp == macro_operator || DW_MACRO_undef_strp == macro_operator
-            || DW_MACRO_define_strx == macro_operator || DW_MACRO_undef_strx == macro_operator
-            || DW_MACRO_define_sup == macro_operator  || DW_MACRO_undef_sup == macro_operator) {
+
+        if (isused(zMACRODEFSTR, macro_operator)) {
           n += printf_text("str offset", USE_LT | USE_SPACE);
           n += printf_nice(offset, USE_FHEX32);
         }
+
         if (macro_string) {
           n += printf_text(macro_string, USE_LT | USE_SPACE);
         }
-      } else if (DW_MACRO_import_sup == macro_operator) {
-        Dwarf_Unsigned offset = 0;
-
-        x = dwarf_get_macro_import(context, i, &offset, e);
-        if (IS_DLV_ANY_ERROR(x)) {
-          printf_e("dwarf_get_macro_import failed! - %d", x);
-          return OCDWARF_ERRCODE(x, n);
-        }
-
-        n += printf_text("sup_offset", USE_LT | USE_SPACE);
-        n += printf_nice(offset, USE_FHEX32);
       } else if (0 == macro_operator) {
         n += printf_text("op offset", USE_LT | USE_SPACE);
         n += printf_nice(op_start_section_offset, USE_FHEX32);

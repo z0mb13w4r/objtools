@@ -18,6 +18,9 @@ extern pick_t zFORMUDATA[];
 extern pick_t zFORMOFFSET[];
 extern pick_t zFORMSTRING[];
 
+extern pick_t zMACRODEF[];
+extern pick_t zMACRODEFSTR[];
+
 extern convert_t zDWAT[];
 extern convert_t zDWOP[];
 extern convert_t zDWATE[];
