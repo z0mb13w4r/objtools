@@ -333,12 +333,13 @@ void ocdwarf_dealloc_attribute(handle_t p, Dwarf_Attribute *v, Dwarf_Signed size
 }
 
 void ocdwarf_dealloc_error(handle_t p, Dwarf_Error *e) {
-  if (isopcode(p) && e) {
-    printf_e("message = %s", dwarf_errmsg(*e));
+  if (isopcode(p)) {
+    Dwarf_Error *e0 = e ? e : ocget(p, OPCODE_DWARF_ERROR);
+    printf_e("message = %s", dwarf_errmsg(*e0));
 
     pocdwarf_t p0 = ocget(p, OPCODE_DWARF);
     if (p0) {
-      dwarf_dealloc_error(p0->dbg, *e);
+      dwarf_dealloc_error(p0->dbg, *e0);
     }
   }
 }

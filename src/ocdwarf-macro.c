@@ -135,7 +135,7 @@ int ocdwarf_debug_macro_offset(handle_t p, Dwarf_Die die, int level,
     }
 
     n += printf_text(".debug_macro: Macro info for imported macro unit at macro offset", USE_LT | USE_SPACE);
-    n += printf_nice(macro_offset, USE_FHEX32);
+    n += printf_nice(macro_offset, USE_FHEX32 | USE_COLON);
     n += printf_eol();
 
     n += ocdwarf_debug_macro_context(p, die, macro_context, level, macro_offset,
@@ -301,6 +301,30 @@ int ocdwarf_debug_macro(handle_t p, handle_t s, handle_t d) {
     n += printf_text(".debug_macro: Macro info for a single cu at macro offset", USE_LT | USE_SPACE);
     n += printf_nice(macro_unit_offset, USE_FHEX32);
     n += printf_eol();
+
+    Dwarf_Off offset = 0;
+    x = dwarf_dieoffset(cu_die, &offset, ocget(p, OPCODE_DWARF_ERROR));
+    if (IS_DLV_OK(x)) {
+      const char *sec_name = 0;
+
+      x = dwarf_get_die_section_name_b(cu_die, &sec_name, ocget(p, OPCODE_DWARF_ERROR));
+      if (IS_DLV_ANY_ERROR(x) ||  0 == sec_name || 0 == *sec_name) {
+        sec_name = ".debug_info";
+      }
+
+      if (IS_DLV_ERROR(x)) {
+        ocdwarf_dealloc_error(p, NULL);
+      }
+
+      n += printf_text("Macro data from CU-DIE at", USE_LT);
+      n += printf_text(sec_name, USE_LT | USE_SPACE);
+      n += printf_text("offset", USE_LT | USE_SPACE);
+      n += printf_nice(offset, USE_FHEX32 | USE_COLON);
+      n += printf_eol();
+    } else {
+      printf_text("Macro data (for the CU-DIE at unknown location)", USE_LT | USE_EOL);
+      ocdwarf_dealloc_error(p, NULL);
+    }
 
     x = dwarf_get_macro_context(cu_die, &version, &macro_context, &macro_unit_offset,
                      &number_of_ops, &ops_total_byte_len, ocget(p, OPCODE_DWARF_ERROR));

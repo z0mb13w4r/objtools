@@ -81,7 +81,7 @@ int ocdwarf_debug_info(handle_t p, handle_t s, handle_t d) {
       if (IS_DLV_NO_ENTRY(x)) break;
       else if (IS_DLV_ANY_ERROR(x)) {
         if (IS_DLV_ERROR(x)) {
-          ocdwarf_dealloc_error(p, ocget(p, OPCODE_DWARF_ERROR));
+          ocdwarf_dealloc_error(p, NULL);
         }
         printf_x("Next cu header result %d, line %d", x, __LINE__);
       }
@@ -108,7 +108,7 @@ int ocdwarf_debug_info(handle_t p, handle_t s, handle_t d) {
       x = dwarf_siblingof_b(ocget(p, OPCODE_DWARF_DEBUG), no_die, isinfo, &cu_die, ocget(p, OPCODE_DWARF_ERROR));
       if (IS_DLV_NO_ENTRY(x)) break;
       else if (IS_DLV_ERROR(x)) {
-        ocdwarf_dealloc_error(p, ocget(p, OPCODE_DWARF_ERROR));
+        ocdwarf_dealloc_error(p, NULL);
         printf_e("dwarf_siblingof_b failed, no CU die");
         return OCDWARF_ERRCODE(x, n0);
       }
