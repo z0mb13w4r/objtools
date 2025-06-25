@@ -81,6 +81,19 @@ int ocdwarf_debug_macro_ops(handle_t p, Dwarf_Die die, Dwarf_Macro_Context conte
         if (name_string) {
           n += printf_text(name_string, USE_LT | USE_SPACE);
         }
+      } else if (DW_MACRO_define == macro_operator || DW_MACRO_undef == macro_operator) {
+        Dwarf_Unsigned nline = 0;
+        Dwarf_Unsigned index = 0;
+        Dwarf_Unsigned offset = 0;
+        Dwarf_Half forms_count = 0;
+        const char    *name_string = NULL;
+
+        x = dwarf_get_macro_defundef(context, i, &nline, &index, &offset, &forms_count, &name_string, e);
+        n += printf_text("line", USE_LT | USE_SPACE);
+        n += printf_nice(nline, USE_DEC);
+        if (name_string) {
+          n += printf_text(name_string, USE_LT | USE_SPACE);
+        }
       } else if (0 == macro_operator) {
         n += printf_text("op offset", USE_LT | USE_SPACE);
         n += printf_nice(op_start_section_offset, USE_FHEX32);
