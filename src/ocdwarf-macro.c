@@ -298,6 +298,10 @@ int ocdwarf_debug_macro(handle_t p, handle_t s, handle_t d) {
     Dwarf_Unsigned ops_total_byte_len = 0;
     Dwarf_Macro_Context macro_context = 0;
 
+    n += printf_text(".debug_macro: Macro info for a single cu at macro offset", USE_LT | USE_SPACE);
+    n += printf_nice(macro_unit_offset, USE_FHEX32);
+    n += printf_eol();
+
     x = dwarf_get_macro_context(cu_die, &version, &macro_context, &macro_unit_offset,
                      &number_of_ops, &ops_total_byte_len, ocget(p, OPCODE_DWARF_ERROR));
     if (IS_DLV_NO_ENTRY(x)) return n;
