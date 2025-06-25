@@ -121,6 +121,10 @@ int ocdwarf_debug_macro_offset(handle_t p, Dwarf_Die die, int level,
       return OCDWARF_ERRCODE(x, n);
     }
 
+    n += printf_text(".debug_macro: Macro info for imported macro unit at macro offset", USE_LT | USE_SPACE);
+    n += printf_nice(macro_offset, USE_FHEX32);
+    n += printf_eol();
+
     n += ocdwarf_debug_macro_context(p, die, macro_context, level, macro_offset,
                      number_of_ops, ops_total_byte_len, e);
   }
