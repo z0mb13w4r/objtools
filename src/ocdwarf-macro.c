@@ -61,14 +61,17 @@ int ocdwarf_debug_macro_ops(handle_t p, Dwarf_Die die, Dwarf_Macro_Context conte
         n += printf_nice(nline, USE_DEC);
         n += printf_text("file number", USE_LT | USE_SPACE);
         n += ocdwarf_printf_srcfile(p, index, USE_DEC);
-      } else if (DW_MACRO_define_strp == macro_operator || DW_MACRO_undef_strp == macro_operator) {
+      } else if (DW_MACRO_define_strp == macro_operator || DW_MACRO_undef_strp == macro_operator
+              || DW_MACRO_define_sup == macro_operator  || DW_MACRO_undef_sup == macro_operator
+              || DW_MACRO_define_strx == macro_operator || DW_MACRO_undef_strx == macro_operator
+              || DW_MACRO_define == macro_operator      || DW_MACRO_undef == macro_operator) {
         Dwarf_Unsigned nline = 0;
         Dwarf_Unsigned index = 0;
         Dwarf_Unsigned offset = 0;
-        Dwarf_Half forms_count = 0;
-        const char    *name_string = NULL;
+        Dwarf_Half     forms_count = 0;
+        const char    *macro_string = NULL;
 
-        x = dwarf_get_macro_defundef(context, i, &nline, &index, &offset, &forms_count, &name_string, e);
+        x = dwarf_get_macro_defundef(context, i, &nline, &index, &offset, &forms_count, &macro_string, e);
         if (IS_DLV_ANY_ERROR(x)) {
           printf_e("dwarf_get_macro_defundef failed! - %d", x);
           return OCDWARF_ERRCODE(x, n);
@@ -76,33 +79,15 @@ int ocdwarf_debug_macro_ops(handle_t p, Dwarf_Die die, Dwarf_Macro_Context conte
 
         n += printf_text("line", USE_LT | USE_SPACE);
         n += printf_nice(nline, USE_DEC);
-        n += printf_text("str offset", USE_LT | USE_SPACE);
-        n += printf_nice(offset, USE_FHEX32);
-        if (name_string) {
-          n += printf_text(name_string, USE_LT | USE_SPACE);
+        if (DW_MACRO_define_strp == macro_operator || DW_MACRO_undef_strp == macro_operator
+            || DW_MACRO_define_strx == macro_operator || DW_MACRO_undef_strx == macro_operator
+            || DW_MACRO_define_sup == macro_operator  || DW_MACRO_undef_sup == macro_operator) {
+          n += printf_text("str offset", USE_LT | USE_SPACE);
+          n += printf_nice(offset, USE_FHEX32);
         }
-      } else if (DW_MACRO_define == macro_operator || DW_MACRO_undef == macro_operator) {
-        Dwarf_Unsigned nline = 0;
-        Dwarf_Unsigned index = 0;
-        Dwarf_Unsigned offset = 0;
-        Dwarf_Half forms_count = 0;
-        const char    *name_string = NULL;
-
-        x = dwarf_get_macro_defundef(context, i, &nline, &index, &offset, &forms_count, &name_string, e);
-        if (IS_DLV_ANY_ERROR(x)) {
-          printf_e("dwarf_get_macro_defundef failed! - %d", x);
-          return OCDWARF_ERRCODE(x, n);
+        if (macro_string) {
+          n += printf_text(macro_string, USE_LT | USE_SPACE);
         }
-
-        n += printf_text("line", USE_LT | USE_SPACE);
-        n += printf_nice(nline, USE_DEC);
-        if (name_string) {
-          n += printf_text(name_string, USE_LT | USE_SPACE);
-        }
-      } else if (DW_MACRO_define_strx == macro_operator || DW_MACRO_undef_strx == macro_operator) {
-
-      } else if (DW_MACRO_define_sup == macro_operator || DW_MACRO_undef_sup == macro_operator) {
-
       } else if (DW_MACRO_import_sup == macro_operator) {
         Dwarf_Unsigned offset = 0;
 
@@ -114,7 +99,6 @@ int ocdwarf_debug_macro_ops(handle_t p, Dwarf_Die die, Dwarf_Macro_Context conte
 
         n += printf_text("sup_offset", USE_LT | USE_SPACE);
         n += printf_nice(offset, USE_FHEX32);
-
       } else if (0 == macro_operator) {
         n += printf_text("op offset", USE_LT | USE_SPACE);
         n += printf_nice(op_start_section_offset, USE_FHEX32);
