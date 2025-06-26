@@ -73,7 +73,8 @@ int ocdwarf_open(handle_t p, handle_t o) {
     oc->items[OPCODE_DWARF] = xmalloc(sizeof(ocdwarf_t));
     if (oc->items[OPCODE_DWARF]) {
       pocdwarf_t ws = CAST(pocdwarf_t, oc->items[OPCODE_DWARF]);
-      ws->sf = xmalloc(sizeof(pdwarf_srcfiles_t));
+      ws->sf = xmalloc(sizeof(dwarf_srcfiles_t));
+      ws->st = xmalloc(sizeof(dwarf_statistics_t));
       if (ws) {
         ws->sf->status = DW_DLV_ERROR;
       }
@@ -93,6 +94,7 @@ int ocdwarf_close(handle_t p) {
       pocdwarf_t ws = CAST(pocdwarf_t, oc->items[OPCODE_DWARF]);
       if (ws) {
         xfree(ws->sf);
+        xfree(ws->st);
       }
 
       zfree(&oc->items[OPCODE_DWARF]);

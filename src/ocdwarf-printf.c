@@ -373,8 +373,6 @@ int ocdwarf_printf_cu(handle_t p, handle_t s, Dwarf_Die die, Dwarf_Half tag,
   int n0 = 0;
 
   if (isopcode(p)) {
-    popcode_t oc = ocget(p, OPCODE_THIS);
-
     Dwarf_Off overall_offset = 0;
     x = dwarf_dieoffset(die, &overall_offset, e);
     if (IS_DLV_ANY_ERROR(x)) {

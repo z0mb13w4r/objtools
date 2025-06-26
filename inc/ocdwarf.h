@@ -84,10 +84,16 @@ typedef struct dwarf_srcfiles_s {
   int          status;
 } dwarf_srcfiles_t, *pdwarf_srcfiles_t;
 
+typedef struct dwarf_statistics_s {
+  Dwarf_Off soffset;
+  Dwarf_Off eoffset;
+} dwarf_statistics_t, *pdwarf_statistics_t;
+
 typedef struct ocdwarf_s {
   Dwarf_Debug  dbg;
   Dwarf_Error  err;
   pdwarf_srcfiles_t sf;
+  pdwarf_statistics_t st;
 
   Dwarf_Half cu_offset_size;
   Dwarf_Half cu_version_stamp;
