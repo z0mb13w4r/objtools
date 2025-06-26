@@ -115,8 +115,6 @@ int ocdwarf_debug_macro_offset(handle_t p, Dwarf_Die die, int level,
   int n = 0;
 
   if (isopcode(p)) {
-    popcode_t oc = ocget(p, OPCODE_THIS);
-
     Dwarf_Unsigned version = 0;
     Dwarf_Unsigned number_of_ops = 0;
     Dwarf_Unsigned ops_total_byte_len = 0;
@@ -124,21 +122,19 @@ int ocdwarf_debug_macro_offset(handle_t p, Dwarf_Die die, int level,
 
     x = dwarf_get_macro_context_by_offset(die, macro_offset, &version, &macro_context,
                      &number_of_ops, &ops_total_byte_len, e);
-    if (IS_DLV_NO_ENTRY(x)) return n;
-    else if (IS_DLV_ERROR(x)) {
-      printf_e("dwarf_get_macro_context_by_offset failed! - %d", x);
+    if (IS_DLV_OK(x)) {
+      n += printf_text(".debug_macro: Macro info for imported macro unit at macro offset", USE_LT | USE_SPACE);
+      n += printf_nice(macro_offset, USE_FHEX32 | USE_COLON);
+      n += printf_eol();
+
+      n += ocdwarf_debug_macro_context(p, die, macro_context, level, macro_offset,
+                     number_of_ops, ops_total_byte_len, e);
+
       return OCDWARF_ERRCODE(x, n);
     }
-
-    n += printf_text(".debug_macro: Macro info for imported macro unit at macro offset", USE_LT | USE_SPACE);
-    n += printf_nice(macro_offset, USE_FHEX32 | USE_COLON);
-    n += printf_eol();
-
-    n += ocdwarf_debug_macro_context(p, die, macro_context, level, macro_offset,
-                     number_of_ops, ops_total_byte_len, e);
   }
 
-  return OCDWARF_ERRCODE(x, n);
+  return n;
 }
 
 int ocdwarf_debug_macro_context(handle_t p, Dwarf_Die die, Dwarf_Macro_Context context, int level,
