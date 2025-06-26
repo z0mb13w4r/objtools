@@ -87,6 +87,9 @@ typedef struct dwarf_srcfiles_s {
 typedef struct dwarf_statistics_s {
   Dwarf_Off soffset;
   Dwarf_Off eoffset;
+  Dwarf_Unsigned idepth;
+  Dwarf_Unsigned sdepth;
+  Dwarf_Unsigned mcount;
 } dwarf_statistics_t, *pdwarf_statistics_t;
 
 typedef struct ocdwarf_s {

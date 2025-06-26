@@ -115,10 +115,15 @@ int ocdwarf_debug_macro_offset(handle_t p, Dwarf_Die die, int level,
   int n = 0;
 
   if (isopcode(p)) {
+    pdwarf_statistics_t st = ocget(p, OPCODE_DWARF_STATISTICS);
+
     Dwarf_Unsigned version = 0;
     Dwarf_Unsigned number_of_ops = 0;
     Dwarf_Unsigned ops_total_byte_len = 0;
     Dwarf_Macro_Context macro_context = 0;
+
+    st->mcount ++;
+    st->eoffset = MAX(st->eoffset, macro_offset);
 
     x = dwarf_get_macro_context_by_offset(die, macro_offset, &version, &macro_context,
                      &number_of_ops, &ops_total_byte_len, e);
@@ -237,6 +242,7 @@ int ocdwarf_debug_macro(handle_t p, handle_t s, handle_t d) {
   int n = 0;
 
   if (isopcode(p) && (isopshdr(s) || isopshdrNN(s))) {
+    pdwarf_statistics_t st = ocget(p, OPCODE_DWARF_STATISTICS);
     pocdwarf_t ws = ocget(p, OPCODE_DWARF);
     popcode_t oc = ocget(p, OPCODE_THIS);
 
@@ -286,12 +292,19 @@ int ocdwarf_debug_macro(handle_t p, handle_t s, handle_t d) {
 
     Dwarf_Unsigned version = 0;
     Dwarf_Unsigned number_of_ops = 0;
-    Dwarf_Unsigned macro_unit_offset = 0;
     Dwarf_Unsigned ops_total_byte_len = 0;
     Dwarf_Macro_Context macro_context = 0;
 
+    x = dwarf_get_macro_context(cu_die, &version, &macro_context, &st->soffset,
+                     &number_of_ops, &ops_total_byte_len, ocget(p, OPCODE_DWARF_ERROR));
+    if (IS_DLV_NO_ENTRY(x)) return n;
+    else if (IS_DLV_ERROR(x)) {
+      printf_e("dwarf_get_macro_context failed! - %d", x);
+      return OCDWARF_ERRCODE(x, n);
+    }
+
     n += printf_text(".debug_macro: Macro info for a single cu at macro offset", USE_LT | USE_SPACE);
-    n += printf_nice(macro_unit_offset, USE_FHEX32);
+    n += printf_nice(st->soffset, USE_FHEX32);
     n += printf_eol();
 
     Dwarf_Off offset = 0;
@@ -318,22 +331,32 @@ int ocdwarf_debug_macro(handle_t p, handle_t s, handle_t d) {
       ocdwarf_dealloc_error(p, NULL);
     }
 
-    x = dwarf_get_macro_context(cu_die, &version, &macro_context, &macro_unit_offset,
-                     &number_of_ops, &ops_total_byte_len, ocget(p, OPCODE_DWARF_ERROR));
-    if (IS_DLV_NO_ENTRY(x)) return n;
-    else if (IS_DLV_ERROR(x)) {
-      printf_e("dwarf_get_macro_context failed! - %d", x);
-      return OCDWARF_ERRCODE(x, n);
-    }
-
     if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
       n += printf_text("Macro unit offset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-      n += printf_nice(macro_unit_offset, USE_DEC | USE_EOL);
+      n += printf_nice(st->soffset, USE_DEC | USE_EOL);
     }
 
     n += ocdwarf_sfcreate(p, cu_die, ocget(p, OPCODE_DWARF_ERROR));
-    n += ocdwarf_debug_macro_context(p, cu_die, macro_context, level, macro_unit_offset,
+    n += ocdwarf_debug_macro_context(p, cu_die, macro_context, level, st->soffset,
                      number_of_ops, ops_total_byte_len, ocget(p, OPCODE_DWARF_ERROR));
+
+    n += printf_text("Macro unit count DWARF5 .debug_macro", USE_LT | USE_COLON);
+    n += printf_nice(st->mcount, USE_DEC);
+    n += printf_eol();
+
+    n += printf_text("Macro offsets start at", USE_LT);
+    n += printf_nice(st->soffset, USE_FHEX32);
+    n += printf_text("and end at", USE_LT | USE_SPACE);
+    n += printf_nice(st->eoffset, USE_FHEX32);
+    n += printf_eol();
+
+    n += printf_text("Maximum nest depth of DW_MACRO_start_file", USE_LT | USE_COLON);
+    n += printf_nice(st->sdepth, USE_DEC);
+    n += printf_eol();
+
+    n += printf_text("Maximum nest depth of DW_MACRO_import", USE_LT | USE_COLON);
+    n += printf_nice(st->idepth, USE_DEC);
+    n += printf_eol();
 
     dwarf_dealloc_macro_context(macro_context);
   }
