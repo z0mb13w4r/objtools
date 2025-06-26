@@ -13,8 +13,6 @@ int ocdwarf_debug_macro_ops(handle_t p, Dwarf_Die die, Dwarf_Macro_Context conte
   int n = 0;
 
   if (isopcode(p)) {
-    pdwarf_statistics_t st = ocget(p, OPCODE_DWARF_STATISTICS);
-
     for (Dwarf_Unsigned i = 0; i < count; ++i) {
       Dwarf_Half formcodes_count = 0;
       Dwarf_Half macro_operator = 0;
@@ -40,8 +38,7 @@ int ocdwarf_debug_macro_ops(handle_t p, Dwarf_Die die, Dwarf_Macro_Context conte
 
         if (DW_MACRO_import == macro_operator) {
           n += printf_text("offset", USE_LT | USE_SPACE);
-          n += printf_nice(macro_offset, USE_FHEX32);
-          n += printf_eol();
+          n += printf_nice(macro_offset, USE_FHEX32 | USE_EOL);
 
           n += printf_text("Nested import level", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
           n += printf_nice(level + 1, USE_DEC | USE_EOL);
@@ -135,8 +132,7 @@ int ocdwarf_debug_macro_offset(handle_t p, Dwarf_Die die, int level,
                      &number_of_ops, &ops_total_byte_len, e);
     if (IS_DLV_OK(x)) {
       n += printf_text(".debug_macro: Macro info for imported macro unit at macro offset", USE_LT | USE_SPACE);
-      n += printf_nice(macro_offset, USE_FHEX32 | USE_COLON);
-      n += printf_eol();
+      n += printf_nice(macro_offset, USE_FHEX32 | USE_COLON | USE_EOL);
 
       n += ocdwarf_debug_macro_context(p, die, macro_context, level, macro_offset,
                      number_of_ops, ops_total_byte_len, e);
@@ -312,8 +308,7 @@ int ocdwarf_debug_macro(handle_t p, handle_t s, handle_t d) {
     st->idepth ++;
 
     n += printf_text(".debug_macro: Macro info for a single cu at macro offset", USE_LT | USE_SPACE);
-    n += printf_nice(st->soffset, USE_FHEX32);
-    n += printf_eol();
+    n += printf_nice(st->soffset, USE_FHEX32 | USE_EOL);
 
     Dwarf_Off offset = 0;
     x = dwarf_dieoffset(cu_die, &offset, ocget(p, OPCODE_DWARF_ERROR));
