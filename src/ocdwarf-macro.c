@@ -13,6 +13,8 @@ int ocdwarf_debug_macro_ops(handle_t p, Dwarf_Die die, Dwarf_Macro_Context conte
   int n = 0;
 
   if (isopcode(p)) {
+    pdwarf_statistics_t st = ocget(p, OPCODE_DWARF_STATISTICS);
+
     for (Dwarf_Unsigned i = 0; i < count; ++i) {
       Dwarf_Half formcodes_count = 0;
       Dwarf_Half macro_operator = 0;
@@ -27,7 +29,7 @@ int ocdwarf_debug_macro_ops(handle_t p, Dwarf_Die die, Dwarf_Macro_Context conte
 
       n += printf_nice(i, USE_DEC3 | USE_SB);
       n += ocdwarf_printf_MACRO(p, macro_operator, USE_SPECIAL);
-      if (DW_MACRO_import == macro_operator) {
+      if (DW_MACRO_import == macro_operator || DW_MACRO_import_sup == macro_operator) {
         Dwarf_Unsigned macro_offset = 0;
 
         x = dwarf_get_macro_import(context, i, &macro_offset, e);
@@ -36,7 +38,7 @@ int ocdwarf_debug_macro_ops(handle_t p, Dwarf_Die die, Dwarf_Macro_Context conte
           return OCDWARF_ERRCODE(x, n);
         }
 
-        if (DW_MACRO_import == macro_operator || DW_MACRO_import_sup == macro_operator) {
+        if (DW_MACRO_import == macro_operator) {
           n += printf_text("offset", USE_LT | USE_SPACE);
           n += printf_nice(macro_offset, USE_FHEX32);
           n += printf_eol();
@@ -52,6 +54,8 @@ int ocdwarf_debug_macro_ops(handle_t p, Dwarf_Die die, Dwarf_Macro_Context conte
           n += printf_nice(macro_offset, USE_FHEX32);
         }
       } else if (DW_MACRO_start_file == macro_operator) {
+        pdwarf_statistics_t st = ocget(p, OPCODE_DWARF_STATISTICS);
+
         Dwarf_Unsigned nline = 0;
         Dwarf_Unsigned index = 0;
         const char    *name_string = NULL;
@@ -61,6 +65,8 @@ int ocdwarf_debug_macro_ops(handle_t p, Dwarf_Die die, Dwarf_Macro_Context conte
           printf_e("dwarf_get_macro_startend_file failed! - %d", x);
           return OCDWARF_ERRCODE(x, n);
         }
+
+	st->sdepth ++;
 
         n += printf_text("line", USE_LT | USE_SPACE);
         n += printf_nice(nline, USE_DEC);
@@ -302,6 +308,8 @@ int ocdwarf_debug_macro(handle_t p, handle_t s, handle_t d) {
       printf_e("dwarf_get_macro_context failed! - %d", x);
       return OCDWARF_ERRCODE(x, n);
     }
+
+    st->idepth ++;
 
     n += printf_text(".debug_macro: Macro info for a single cu at macro offset", USE_LT | USE_SPACE);
     n += printf_nice(st->soffset, USE_FHEX32);
