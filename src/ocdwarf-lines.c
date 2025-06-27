@@ -168,6 +168,13 @@ int ocdwarf_debug_line(handle_t p, handle_t s, handle_t d) {
         }
       }
 
+      Dwarf_Unsigned cc = 0;
+      x = dwarf_linecontext(k, &cc, ocget(p, OPCODE_DWARF_ERROR));
+      if (IS_DLV_OK(x) && cc) {
+        n += printf_text("CC=", USE_LT | USE_SPACE);
+        n += printf_nice(cc, USE_FHEX | USE_NOSPACE);
+      }
+
       n += printf_eol();
     }
   }
