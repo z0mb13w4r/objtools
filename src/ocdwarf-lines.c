@@ -86,11 +86,49 @@ int ocdwarf_debug_line(handle_t p, handle_t s, handle_t d) {
 
     n += ocdwarf_sfcreate(p, cu_die, ocget(p, OPCODE_DWARF_ERROR));
 
-    printf_text("NS new statement, BB new basic block, ET end of text sequence", USE_LT | USE_EOL);
-    printf_text("PE prologue end, EB epilogue begin", USE_LT | USE_EOL);
-    printf_text("IS=val ISA number, DI=val discriminator value", USE_LT | USE_EOL);
+    n += printf_text("NS new statement, BB new basic block, ET end of text sequence", USE_LT | USE_EOL);
+    n += printf_text("PE prologue end, EB epilogue begin", USE_LT | USE_EOL);
+    n += printf_text("IS=val ISA number, DI=val discriminator value", USE_LT | USE_EOL);
+    n += printf_text("<pc> [lno,col] NS BB ET PE EB IS= DI= uri:", USE_LT);
+    n += printf_text("filepath", USE_LT | USE_SPACE | USE_DQ | USE_EOL);
 
     for (Dwarf_Signed i = 0; i < line_count; ++i) {
+      if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
+        n += printf_nice(i, USE_DEC3 | USE_TB);
+      }
+
+      Dwarf_Addr pc = 0;
+      Dwarf_Line k = line_array[i];
+      x = dwarf_lineaddr(k, &pc, ocget(p, OPCODE_DWARF_ERROR));
+      if (IS_DLV_ERROR(x)) {
+        pc = 0;
+      } else if (IS_DLV_NO_ENTRY(x)) {
+        pc = 0;
+      }
+
+      n += printf_nice(pc, USE_FHEX32);
+
+      Dwarf_Unsigned nline = 0;
+      x = dwarf_lineno(k, &nline, ocget(p, OPCODE_DWARF_ERROR));
+      if (IS_DLV_ERROR(x)) {
+        nline = 0;
+      } else if (IS_DLV_NO_ENTRY(x)) {
+        nline = 0;
+      }
+
+      n += printf_nice(nline, USE_DEC4 | USE_SBLT);
+
+      Dwarf_Unsigned column = 0;
+      x = dwarf_lineoff_b(k, &column, ocget(p, OPCODE_DWARF_ERROR));
+      if (IS_DLV_ERROR(x)) {
+        column = 0;
+      } else if (IS_DLV_NO_ENTRY(x)) {
+        column = 0;
+      }
+
+      n += printf_nice(column, USE_DEC2 | USE_COMMA | USE_SBRT);
+
+      n += printf_eol();
     }
   }
 
