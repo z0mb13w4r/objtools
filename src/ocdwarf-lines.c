@@ -74,16 +74,23 @@ int ocdwarf_debug_line(handle_t p, handle_t s, handle_t d) {
       x = dwarf_srclines_from_linecontext(line_context, &line_array, &line_count, ocget(p, OPCODE_DWARF_ERROR));
     }
 
+    const char *sec_name = 0;
+    x = dwarf_get_line_section_name_from_die(cu_die, &sec_name, ocget(p, OPCODE_DWARF_ERROR));
+    if (IS_DLV_ANY_ERROR(x) ||  0 == sec_name || 0 == *sec_name) {
+      sec_name = ".debug_line";
+    }
+
+    if (IS_DLV_ERROR(x)) {
+      ocdwarf_dealloc_error(p, NULL);
+    }
+
     n += ocdwarf_sfcreate(p, cu_die, ocget(p, OPCODE_DWARF_ERROR));
 
     printf_text("NS new statement, BB new basic block, ET end of text sequence", USE_LT | USE_EOL);
     printf_text("PE prologue end, EB epilogue begin", USE_LT | USE_EOL);
     printf_text("IS=val ISA number, DI=val discriminator value", USE_LT | USE_EOL);
 
-    if (MODE_ISSET(oc->ocdump, OPTDEBUGELF_DEBUG_LINE)) {
-    }
-
-    if (MODE_ISSET(oc->ocdump, OPTDEBUGELF_DEBUG_LINE_DECODED)) {
+    for (Dwarf_Signed i = 0; i < line_count; ++i) {
     }
   }
 
