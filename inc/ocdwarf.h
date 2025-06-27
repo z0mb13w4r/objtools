@@ -102,6 +102,8 @@ typedef struct ocdwarf_s {
   Dwarf_Half cu_version_stamp;
 } ocdwarf_t, *pocdwarf_t;
 
+extern const Dwarf_Sig8 ZEROSIGNATURE;
+
 pdwarf_display_t ocdwarf_get(handle_t s);
 
 bool_t ocdwarf_isneeded(handle_t p, handle_t s);

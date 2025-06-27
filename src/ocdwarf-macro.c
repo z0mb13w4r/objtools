@@ -5,8 +5,6 @@
 
 static const int MAXSIZE = 24;
 
-static const Dwarf_Sig8 zerosignature;
-
 int ocdwarf_debug_macro_ops(handle_t p, Dwarf_Die die, Dwarf_Macro_Context context, int level,
                      Dwarf_Half macro_version, Dwarf_Unsigned macro_unit_offset, Dwarf_Unsigned count, Dwarf_Error *e) {
   int x = DW_DLV_ERROR;
@@ -257,7 +255,7 @@ int ocdwarf_debug_macro(handle_t p, handle_t s, handle_t d) {
     Dwarf_Half     extension_size = 0;
     Dwarf_Half     header_cu_type = 0;
     Dwarf_Half     address_size  = 0;
-    Dwarf_Sig8     type_signature = zerosignature;
+    Dwarf_Sig8     type_signature = ZEROSIGNATURE;
     Dwarf_Off      abbrev_offset = 0;
 
     Dwarf_Die      cu_die = 0;

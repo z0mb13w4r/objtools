@@ -17,7 +17,7 @@
 
 static const int MAXSIZE = 23;
 
-static const Dwarf_Sig8 zerosignature;
+const Dwarf_Sig8 ZEROSIGNATURE;
 
 #include "static/dwarf.ci"
 
