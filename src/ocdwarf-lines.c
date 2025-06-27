@@ -3,6 +3,8 @@
 #include "options.h"
 #include "ocdwarf-lines.h"
 
+static const int MAXSIZE = 24;
+
 int ocdwarf_debug_line(handle_t p, handle_t s, handle_t d) {
   int x = DW_DLV_ERROR;
   int n = 0;
@@ -53,6 +55,26 @@ int ocdwarf_debug_line(handle_t p, handle_t s, handle_t d) {
       n += printf_nice(header_cu_type, USE_FHEX | USE_EOL);
     }
 
+    Dwarf_Signed line_count = 0;
+    Dwarf_Line  *line_array = NULL;
+    Dwarf_Small  table_count = 0;
+    Dwarf_Unsigned line_version = 0;
+    Dwarf_Line_Context line_context = 0;
+
+    x = dwarf_srclines_b(cu_die, &line_version, &table_count, &line_context, ocget(p, OPCODE_DWARF_ERROR));
+    if (IS_DLV_OK(x)) {
+      if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
+        n += printf_text("Line version", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        n += printf_nice(line_version, USE_DEC | USE_EOL);
+        n += printf_text("Table count", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        n += printf_nice(table_count, USE_DEC | USE_EOL);
+
+      }
+
+      x = dwarf_srclines_from_linecontext(line_context, &line_array, &line_count, ocget(p, OPCODE_DWARF_ERROR));
+    }
+
+    n += ocdwarf_sfcreate(p, cu_die, ocget(p, OPCODE_DWARF_ERROR));
 
     printf_text("NS new statement, BB new basic block, ET end of text sequence", USE_LT | USE_EOL);
     printf_text("PE prologue end, EB epilogue begin", USE_LT | USE_EOL);
