@@ -128,6 +128,46 @@ int ocdwarf_debug_line(handle_t p, handle_t s, handle_t d) {
 
       n += printf_nice(column, USE_DEC2 | USE_COMMA | USE_SBRT);
 
+      Dwarf_Bool ns = FALSE;
+      x = dwarf_linebeginstatement(k, &ns, ocget(p, OPCODE_DWARF_ERROR));
+      if (IS_DLV_OK(x) && ns) {
+        n += printf_text("NS", USE_LT | USE_SPACE);
+      }
+
+      Dwarf_Bool bb = FALSE;
+      x = dwarf_lineblock(k, &bb, ocget(p, OPCODE_DWARF_ERROR));
+      if (IS_DLV_OK(x) && bb) {
+        n += printf_text("BB", USE_LT | USE_SPACE);
+      }
+
+      Dwarf_Bool et = FALSE;
+      x = dwarf_lineendsequence(k, &et, ocget(p, OPCODE_DWARF_ERROR));
+      if (IS_DLV_OK(x) && et) {
+        n += printf_text("ET", USE_LT | USE_SPACE);
+      }
+
+      Dwarf_Bool pe = FALSE;
+      Dwarf_Bool eb = FALSE;
+      Dwarf_Unsigned isa = 0;
+      Dwarf_Unsigned discriminator = 0;
+      x = dwarf_prologue_end_etc(k, &pe, &eb, &isa, &discriminator, ocget(p, OPCODE_DWARF_ERROR));
+      if (IS_DLV_OK(x)) {
+        if (pe) {
+          n += printf_text("PE", USE_LT | USE_SPACE);
+        }
+        if (eb) {
+          n += printf_text("EB", USE_LT | USE_SPACE);
+        }
+        if (isa) {
+          n += printf_text("IS=", USE_LT | USE_SPACE);
+          n += printf_nice(isa, USE_FHEX | USE_NOSPACE);
+        }
+        if (discriminator) {
+          n += printf_text("DI=", USE_LT | USE_SPACE);
+          n += printf_nice(discriminator, USE_FHEX | USE_NOSPACE);
+        }
+      }
+
       n += printf_eol();
     }
   }
