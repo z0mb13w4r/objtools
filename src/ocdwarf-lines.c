@@ -185,6 +185,16 @@ int ocdwarf_debug_line(handle_t p, handle_t s, handle_t d) {
       }
       ocdwarf_dealloc(p, sf, DW_DLA_STRING);
 
+      if (0 == i) {
+        char* lf = NULL;
+        x = dwarf_linesrc(k, &lf, ocget(p, OPCODE_DWARF_ERROR));
+        if (IS_DLV_OK(x) && 0 != lf && 0 != *lf) {
+          n += printf_text("uri", USE_LT | USE_COLON | USE_SPACE);
+          n += printf_text(lf, USE_LT | USE_SPACE | USE_DQ);
+        }
+        ocdwarf_dealloc(p, lf, DW_DLA_STRING);
+      }
+
       n += printf_eol();
     }
   }
