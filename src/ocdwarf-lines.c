@@ -175,6 +175,16 @@ int ocdwarf_debug_line(handle_t p, handle_t s, handle_t d) {
         n += printf_nice(cc, USE_FHEX | USE_NOSPACE);
       }
 
+      char* sn = NULL;
+      char* sf = NULL;
+      Dwarf_Unsigned sl = 0;
+      x = dwarf_line_subprog(k, &sn, &sf, &sl, ocget(p, OPCODE_DWARF_ERROR));
+      if (IS_DLV_OK(x) && 0 != sn && 0 != *sn) {
+        n += printf_text("SB=", USE_LT | USE_SPACE);
+        n += printf_text(sn, USE_LT | USE_SPACE | USE_DQ);
+      }
+      ocdwarf_dealloc(p, sf, DW_DLA_STRING);
+
       n += printf_eol();
     }
   }
