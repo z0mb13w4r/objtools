@@ -282,6 +282,12 @@ convert_t zDWATE[] = {
   {0, 0}
 };
 
+convert_t zDWCHILDREN[] = {
+  {"DW_CHILDREN_no",                0x00},
+  {"DW_CHILDREN_yes",               0x01},
+  {0, 0},
+};
+
 convert_t zDWEND[] = {
   {"DW_END_default",                0x00},
   {"DW_END_big",                    0x01},

@@ -28,6 +28,7 @@ extern convert_t zDWTAG[];
 extern convert_t zDWFORM[];
 extern convert_t zDWLANG[];
 extern convert_t zDWMACRO[];
+extern convert_t zDWCHILDREN[];
 
 extern convert_t zPHDRTYPE[];
 extern convert_t zSHDRTYPE[];

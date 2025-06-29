@@ -20,6 +20,9 @@ int ocdwarf_abbrev_cu(handle_t p, Dwarf_Unsigned offset, Dwarf_Unsigned nabbrev,
       return OCDWARF_ERRCODE(x, n);
     }
 
+    n += printf_nice(nabbrev, USE_DEC2 | USE_TB);
+    n += printf_nice(offset,  USE_FHEX32 | USE_TB | USE_NOSPACE);
+
     Dwarf_Unsigned abbrev_code = 0;
     x = dwarf_get_abbrev_code(abbrev, &abbrev_code, e);
     if (IS_DLV_OK(x)) {

@@ -76,6 +76,10 @@ int ocdwarf_printf_MACRO(handle_t p, const uint64_t v, const imode_t mode) {
   return ocdwarf_printf_pluck(p, zDWMACRO, v, mode);
 }
 
+int ocdwarf_printf_CHILDREN(handle_t p, const uint64_t v, const imode_t mode) {
+  return ocdwarf_printf_pluck(p, zDWCHILDREN, v, mode);
+}
+
 int ocdwarf_printf_srcfile(handle_t p, const uint32_t v, const imode_t mode) {
   int n = 0;
   if (isopcode(p)) {
