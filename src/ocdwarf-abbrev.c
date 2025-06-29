@@ -5,23 +5,65 @@
 
 static const int MAXSIZE = 23;
 
+int ocdwarf_abbrev_cu(handle_t p, Dwarf_Unsigned offset, Dwarf_Unsigned nabbrev, Dwarf_Error *e) {
+  int x = DW_DLV_ERROR;
+  int n = 0;
+
+  if (isopcode(p)) {
+    Dwarf_Unsigned length = 0;
+    Dwarf_Abbrev   abbrev = 0;
+    Dwarf_Unsigned abbrev_entry_count = 0;
+    x = dwarf_get_abbrev(ocget(p, OPCODE_DWARF_DEBUG), offset, &abbrev, &length, &abbrev_entry_count, e);
+    if (IS_DLV_NO_ENTRY(x)) return n;
+    else if (IS_DLV_ERROR(x)) {
+      printf_e("dwarf_get_abbrev failed! - %d", x);
+      return OCDWARF_ERRCODE(x, n);
+    }
+
+    Dwarf_Unsigned abbrev_code = 0;
+    x = dwarf_get_abbrev_code(abbrev, &abbrev_code, e);
+    if (IS_DLV_OK(x)) {
+      n += printf_text("code", USE_LT | USE_TBLT | USE_COLON);
+      n += printf_nice(abbrev_code, USE_DEC | USE_TBRT);
+    }
+
+    Dwarf_Half abbrev_tag = 0;
+    x = dwarf_get_abbrev_tag(abbrev, &abbrev_tag, e);
+    if (IS_DLV_OK(x)) {
+      n += ocdwarf_printf_TAG(p, abbrev_tag, USE_NONE);
+    }
+
+    n += printf_eol();
+
+    ocdwarf_dealloc(p, abbrev, DW_DLA_ABBREV);
+  }
+
+  return OCDWARF_ERRCODE(x, n);
+}
+
 int ocdwarf_debug_abbrev(handle_t p, handle_t s, handle_t d) {
   int x = DW_DLV_ERROR;
-  int n0 = 0;
+  int n = 0;
 
   if (isopcode(p) && (isopshdr(s) || isopshdrNN(s))) {
-    popcode_t oc = CAST(popcode_t, p);
-
     Dwarf_Abbrev   abbrev = 0;
     Dwarf_Unsigned offset = 0;
     Dwarf_Unsigned length = 0;
     Dwarf_Unsigned unused_entry_count = 0;
 
     x = dwarf_get_abbrev(ocget(p, OPCODE_DWARF_DEBUG), offset, &abbrev, &length, &unused_entry_count, ocget(p, OPCODE_DWARF_ERROR));
+    if (IS_DLV_NO_ENTRY(x)) return n;
+    else if (IS_DLV_ERROR(x)) {
+      printf_e("dwarf_get_abbrev failed! - %d", x);
+      return OCDWARF_ERRCODE(x, n);
+    }
+
+    Dwarf_Unsigned nabbrev = 1;
+    n += ocdwarf_abbrev_cu(p, offset, nabbrev, ocget(p, OPCODE_DWARF_ERROR));
 
     ocdwarf_dealloc(p, abbrev, DW_DLA_ABBREV);
   }
 
-  return OCDWARF_ERRCODE(x, n0);
+  return OCDWARF_ERRCODE(x, n);
 }
 
