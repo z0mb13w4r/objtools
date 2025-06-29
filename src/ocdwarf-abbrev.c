@@ -20,8 +20,8 @@ int ocdwarf_abbrev_cu(handle_t p, Dwarf_Unsigned offset, Dwarf_Unsigned nabbrev,
       return OCDWARF_ERRCODE(x, n);
     }
 
-    n += ocdwarf_printf_idx(p, nabbrev, USE_NONE);
-    n += ocdwarf_printf_num(p, offset, USE_NOSPACE);
+    n += ocdwarf_printf_DEC(p, nabbrev, USE_NONE);
+    n += ocdwarf_printf_HEX(p, offset, USE_NOSPACE);
 
     Dwarf_Unsigned abbrev_code = 0;
     x = dwarf_get_abbrev_code(abbrev, &abbrev_code, e);
@@ -52,7 +52,7 @@ int ocdwarf_abbrev_cu(handle_t p, Dwarf_Unsigned offset, Dwarf_Unsigned nabbrev,
       Dwarf_Bool filter_outliers = FALSE;
       x = dwarf_get_abbrev_entry_b(abbrev, i, filter_outliers, &nattr, &nform, &impl_const, &offset2, e);
       if (IS_DLV_OK(x)) {
-        n += ocdwarf_printf_num(p, offset2, USE_TAB);
+        n += ocdwarf_printf_HEX(p, offset2, USE_TAB);
         n += ocdwarf_printf_AT(p, nattr, USE_NONE);
         n += ocdwarf_printf_FORM(p, nform, USE_NONE);
         n += printf_eol();

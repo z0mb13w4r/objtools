@@ -36,11 +36,11 @@ int ocdwarf_printf_pluck(handle_t p, const pconvert_t z, const pick_t x, const i
   return n;
 }
 
-int ocdwarf_printf_idx(handle_t p, const uint64_t v, const imode_t mode) {
+int ocdwarf_printf_DEC(handle_t p, const uint64_t v, const imode_t mode) {
   return printf_nice(v, USE_DEC2 | USE_TB | mode);
 }
 
-int ocdwarf_printf_num(handle_t p, const uint64_t v, const imode_t mode) {
+int ocdwarf_printf_HEX(handle_t p, const uint64_t v, const imode_t mode) {
   return printf_nice(v, USE_FHEX32 | USE_TB | mode);
 }
 
@@ -437,8 +437,8 @@ int ocdwarf_printf_sp(handle_t p, handle_t s, Dwarf_Die die, Dwarf_Half tag,
       return OCDWARF_ERRCODE(x, n0);
     }
 
-    n0 += ocdwarf_printf_idx(p, level, USE_NONE);
-    n0 += ocdwarf_printf_num(p, overall_offset, USE_NOSPACE);
+    n0 += ocdwarf_printf_DEC(p, level, USE_NONE);
+    n0 += ocdwarf_printf_HEX(p, overall_offset, USE_NOSPACE);
     n0 += ocdwarf_printf_TAG(p, tag, USE_NONE);
     if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
       n0 += printf_text(name, USE_LT | USE_SPACE | USE_SQ);
