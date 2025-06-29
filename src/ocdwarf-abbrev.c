@@ -36,6 +36,12 @@ int ocdwarf_abbrev_cu(handle_t p, Dwarf_Unsigned offset, Dwarf_Unsigned nabbrev,
       n += ocdwarf_printf_TAG(p, abbrev_tag, USE_NONE);
     }
 
+    Dwarf_Signed child_flag = 0;
+    x = dwarf_get_abbrev_children_flag(abbrev, &child_flag, e);
+    if (IS_DLV_OK(x)) {
+      n += ocdwarf_printf_CHILDREN(p, child_flag, USE_NONE);
+    }
+
     n += printf_eol();
 
     ocdwarf_dealloc(p, abbrev, DW_DLA_ABBREV);
