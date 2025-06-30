@@ -5,22 +5,24 @@
 
 static const int MAXSIZE = 23;
 
-int ocdwarf_abbrev_cu(handle_t p, Dwarf_Unsigned offset, Dwarf_Unsigned nabbrev, Dwarf_Error *e) {
+int ocdwarf_abbrev_one(handle_t p, Dwarf_Unsigned offset, Dwarf_Unsigned nabbrev, Dwarf_Unsigned *size, Dwarf_Error *e) {
   int x = DW_DLV_ERROR;
   int n = 0;
 
-  if (isopcode(p)) {
-    Dwarf_Unsigned length = 0;
+  if (isopcode(p) && size) {
+    *size = 0;
+
     Dwarf_Abbrev   abbrev = 0;
     Dwarf_Unsigned abbrev_entry_count = 0;
-    x = dwarf_get_abbrev(ocget(p, OPCODE_DWARF_DEBUG), offset, &abbrev, &length, &abbrev_entry_count, e);
-    if (IS_DLV_NO_ENTRY(x)) return n;
-    else if (IS_DLV_ERROR(x)) {
-      printf_e("dwarf_get_abbrev failed! - %d", x);
+    x = dwarf_get_abbrev(ocget(p, OPCODE_DWARF_DEBUG), offset, &abbrev, size, &abbrev_entry_count, e);
+    if (IS_DLV_ANY_ERROR(x)) {
+      if (IS_DLV_ERROR(x)) {
+        printf_e("dwarf_get_abbrev failed! - %d", x);
+      }
       return OCDWARF_ERRCODE(x, n);
     }
 
-    n += ocdwarf_printf_DEC(p, nabbrev, USE_NONE);
+    n += ocdwarf_printf_DEC(p, nabbrev, USE_NOSPACE);
     n += ocdwarf_printf_HEX(p, offset, USE_NOSPACE);
 
     Dwarf_Unsigned abbrev_code = 0;
@@ -43,6 +45,13 @@ int ocdwarf_abbrev_cu(handle_t p, Dwarf_Unsigned offset, Dwarf_Unsigned nabbrev,
     }
 
     n += printf_eol();
+
+    if (abbrev_entry_count < 1) {
+      n += printf_text("This abbreviation code has no entries", USE_LT | USE_TAB | USE_EOL);
+      if (*size == 0 || *size == 1) {
+        n += printf_eol();
+      }
+    }
 
     for (Dwarf_Unsigned i = 0; i < abbrev_entry_count; ++i) {
       Dwarf_Unsigned nattr = 0;
@@ -67,27 +76,21 @@ int ocdwarf_abbrev_cu(handle_t p, Dwarf_Unsigned offset, Dwarf_Unsigned nabbrev,
 
 int ocdwarf_debug_abbrev(handle_t p, handle_t s, handle_t d) {
   int x = DW_DLV_ERROR;
-  int n = 0;
+  int n0 = 0;
 
   if (isopcode(p) && (isopshdr(s) || isopshdrNN(s))) {
-    Dwarf_Abbrev   abbrev = 0;
     Dwarf_Unsigned offset = 0;
-    Dwarf_Unsigned length = 0;
-    Dwarf_Unsigned unused_entry_count = 0;
-
-    x = dwarf_get_abbrev(ocget(p, OPCODE_DWARF_DEBUG), offset, &abbrev, &length, &unused_entry_count, ocget(p, OPCODE_DWARF_ERROR));
-    if (IS_DLV_NO_ENTRY(x)) return n;
-    else if (IS_DLV_ERROR(x)) {
-      printf_e("dwarf_get_abbrev failed! - %d", x);
-      return OCDWARF_ERRCODE(x, n);
-    }
-
     Dwarf_Unsigned nabbrev = 1;
-    n += ocdwarf_abbrev_cu(p, offset, nabbrev, ocget(p, OPCODE_DWARF_ERROR));
 
-    ocdwarf_dealloc(p, abbrev, DW_DLA_ABBREV);
+    for ( ; ; ) {
+      Dwarf_Unsigned size = 0;
+      int n1 = ocdwarf_abbrev_one(p, offset, nabbrev, &size, ocget(p, OPCODE_DWARF_ERROR));
+      if (OCDWARF_ISERRCODE(n1) || 1 == size || 0 == size) break;
+      offset += size;
+      n0 += n1;
+    }
   }
 
-  return OCDWARF_ERRCODE(x, n);
+  return OCDWARF_ERRCODE(x, n0);
 }
 
