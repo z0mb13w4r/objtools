@@ -35,36 +35,44 @@ int ocdwarf_abbrev_one(handle_t p, Dwarf_Unsigned offset, Dwarf_Unsigned nabbrev
     Dwarf_Half abbrev_tag = 0;
     x = dwarf_get_abbrev_tag(abbrev, &abbrev_tag, e);
     if (IS_DLV_OK(x)) {
-      n += ocdwarf_printf_TAG(p, abbrev_tag, USE_NONE);
+      if (0 == abbrev_tag) {
+        n += printf_text("Abbrev 0: null abbrev entry", USE_LT | USE_SPACE);
+      } else {
+        n += ocdwarf_printf_TAG(p, abbrev_tag, USE_NONE);
+      }
     }
 
-    Dwarf_Signed child_flag = 0;
-    x = dwarf_get_abbrev_children_flag(abbrev, &child_flag, e);
-    if (IS_DLV_OK(x)) {
-      n += ocdwarf_printf_CHILDREN(p, child_flag, USE_NONE);
+    if (0 != abbrev_tag) {
+      Dwarf_Signed child_flag = 0;
+      x = dwarf_get_abbrev_children_flag(abbrev, &child_flag, e);
+      if (IS_DLV_OK(x)) {
+        n += ocdwarf_printf_CHILDREN(p, child_flag, USE_NONE);
+      }
     }
 
     n += printf_eol();
 
     if (abbrev_entry_count < 1) {
-      n += printf_text("This abbreviation code has no entries", USE_LT | USE_TAB | USE_EOL);
+      if (0 != abbrev_tag) {
+        n += printf_text("This abbreviation code has no entries", USE_LT | USE_TAB | USE_EOL);
+      }
       if (*size == 0 || *size == 1) {
         n += printf_eol();
       }
-    }
-
-    for (Dwarf_Unsigned i = 0; i < abbrev_entry_count; ++i) {
-      Dwarf_Unsigned nattr = 0;
-      Dwarf_Unsigned nform = 0;
-      Dwarf_Signed   impl_const = 0;
-      Dwarf_Off      offset2 = 0;
-      Dwarf_Bool filter_outliers = FALSE;
-      x = dwarf_get_abbrev_entry_b(abbrev, i, filter_outliers, &nattr, &nform, &impl_const, &offset2, e);
-      if (IS_DLV_OK(x)) {
-        n += ocdwarf_printf_HEX(p, offset2, USE_TAB);
-        n += ocdwarf_printf_AT(p, nattr, USE_NONE);
-        n += ocdwarf_printf_FORM(p, nform, USE_NONE);
-        n += printf_eol();
+    } else {
+      for (Dwarf_Unsigned i = 0; i < abbrev_entry_count; ++i) {
+        Dwarf_Unsigned nattr = 0;
+        Dwarf_Unsigned nform = 0;
+        Dwarf_Signed   impl_const = 0;
+        Dwarf_Off      offset2 = 0;
+        Dwarf_Bool filter_outliers = FALSE;
+        x = dwarf_get_abbrev_entry_b(abbrev, i, filter_outliers, &nattr, &nform, &impl_const, &offset2, e);
+        if (IS_DLV_OK(x)) {
+          n += ocdwarf_printf_HEX(p, offset2, USE_TAB);
+          n += ocdwarf_printf_AT(p, nattr, USE_NONE);
+          n += ocdwarf_printf_FORM(p, nform, USE_NONE);
+          n += printf_eol();
+        }
       }
     }
 
