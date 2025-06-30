@@ -18,6 +18,15 @@ int ocdwarf_debug_aranges(handle_t p, handle_t s, handle_t d) {
       return OCDWARF_ERRCODE(x, n);
     }
 
+    for (Dwarf_Signed i = 0; i < arange_count; ++i) {
+      Dwarf_Unsigned segment = 0;
+      Dwarf_Unsigned segment_entry_size = 0;
+      Dwarf_Addr start = 0;
+      Dwarf_Unsigned length = 0;
+      Dwarf_Off cu_die_offset = 0;
+      x = dwarf_get_arange_info_b(arange_array[i], &segment, &segment_entry_size,
+                     &start, &length, &cu_die_offset, ocget(p, OPCODE_DWARF_ERROR));
+    }
   }
 
   return OCDWARF_ERRCODE(x, n);
