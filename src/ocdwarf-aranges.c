@@ -26,6 +26,23 @@ int ocdwarf_debug_aranges(handle_t p, handle_t s, handle_t d) {
       Dwarf_Off cu_die_offset = 0;
       x = dwarf_get_arange_info_b(arange_array[i], &segment, &segment_entry_size,
                      &start, &length, &cu_die_offset, ocget(p, OPCODE_DWARF_ERROR));
+
+      Dwarf_Die cu_die = NULL;
+      Dwarf_Bool isinfo = TRUE;
+      x = dwarf_offdie_b(ocget(p, OPCODE_DWARF_DEBUG), cu_die_offset, isinfo, &cu_die, ocget(p, OPCODE_DWARF_ERROR));
+      if (IS_DLV_OK(x) && (0 != start || 0 != length)) {
+        n += ocdwarf_printf(p, s, cu_die, isinfo, i, ocget(p, OPCODE_DWARF_ERROR));
+
+        n += printf_text("arange starts at", USE_LT);
+        n += printf_nice(start, USE_FHEX32);
+        n += printf_text(", length of", USE_LT);
+        n += printf_nice(length, USE_FHEX32);
+        n += printf_text(", cu_die_offset =", USE_LT);
+        n += printf_nice(cu_die_offset, USE_FHEX32);
+        n += printf_eol();
+      }
+
+      ocdwarf_dealloc(p, cu_die, DW_DLA_DIE);
     }
   }
 
