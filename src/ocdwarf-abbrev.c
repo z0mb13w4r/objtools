@@ -3,8 +3,6 @@
 #include "options.h"
 #include "ocdwarf-abbrev.h"
 
-static const int MAXSIZE = 23;
-
 int ocdwarf_abbrev_one(handle_t p, Dwarf_Unsigned offset, Dwarf_Unsigned nabbrev, Dwarf_Unsigned *size, Dwarf_Error *e) {
   int x = DW_DLV_ERROR;
   int n = 0;
