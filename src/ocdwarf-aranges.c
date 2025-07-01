@@ -47,6 +47,8 @@ int ocdwarf_debug_aranges(handle_t p, handle_t s, handle_t d) {
         n += printf_text(", cu_die_offset =", USE_LT);
         n += printf_nice(cu_die_offset, USE_FHEX32);
         n += printf_eol();
+      } else {
+        n += printf_text("arange end", USE_LT);
       }
 
       ocdwarf_dealloc(p, cu_die, DW_DLA_DIE);
