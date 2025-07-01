@@ -16,6 +16,10 @@ int ocdwarf_debug_str(handle_t p, handle_t s, handle_t d) {
     while (IS_DLV_OK(x)) {
       n += printf_text("name at offset", USE_LT);
       n += printf_nice(offset, USE_FHEX32);
+      n += printf_text("length", USE_LT | USE_COMMA);
+      n += printf_nice(length, USE_DEC);
+      n += printf_text("is", USE_LT | USE_SPACE);
+      n += printf_text(string, USE_LT | USE_SPACE | USE_SQ);
       n += printf_eol();
 
       offset += length + 1;

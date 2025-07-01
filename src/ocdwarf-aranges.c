@@ -42,9 +42,9 @@ int ocdwarf_debug_aranges(handle_t p, handle_t s, handle_t d) {
         }
 
         n += printf_nice(start, USE_FHEX32);
-        n += printf_text(", length of", USE_LT);
+        n += printf_text("length of", USE_LT | USE_COMMA);
         n += printf_nice(length, USE_FHEX32);
-        n += printf_text(", cu_die_offset =", USE_LT);
+        n += printf_text("cu_die_offset =", USE_LT | USE_COMMA);
         n += printf_nice(cu_die_offset, USE_FHEX32);
         n += printf_eol();
       } else {
