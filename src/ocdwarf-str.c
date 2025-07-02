@@ -18,17 +18,21 @@ int ocdwarf_debug_str(handle_t p, handle_t s, handle_t d) {
     x = dwarf_sec_group_sizes(ocget(p, OPCODE_DWARF_DEBUG), &section_count, &group_count, &selected_group,
                      &group_map_entry_count, ocget(p, OPCODE_DWARF_ERROR));
 
-//    if (group_count != 1 && selected_group != DW_GROUPNUMBER_BASE) {
+    if (group_count > 0) {
       printf_text("Section Groups data", USE_LT | USE_EOL);
       printf_text("Number of Elf-like sections", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
       printf_nice(section_count, USE_DEC | USE_EOL);
       printf_text("Number of groups", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
       printf_nice(group_count, USE_DEC | USE_EOL);
       printf_text("Group to print", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-      printf_nice(selected_group, USE_DEC | USE_EOL);
+      ocdwarf_printf_GNUM(p, selected_group, USE_EOL);
       printf_text("Count of map entries", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
       printf_nice(group_map_entry_count, USE_DEC | USE_EOL);
-//    }
+
+      MALLOCA(Dwarf_Unsigned, sec_nums, group_map_entry_count);
+      MALLOCA(Dwarf_Unsigned, group_nums, group_map_entry_count);
+      MALLOCA(char *, sec_names, group_map_entry_count);
+    }
 
     char* string = 0;
     Dwarf_Off offset = 0;

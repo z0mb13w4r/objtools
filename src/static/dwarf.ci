@@ -345,6 +345,13 @@ convert_t zDWFORM[] = {
   {0, 0}
 };
 
+convert_t zDWGNUM[] = {
+  {"DW_GROUPNUMBER_ANY",                 0},
+  {"DW_GROUPNUMBER_BASE",                1},
+  {"DW_GROUPNUMBER_DWO",                 2},
+  {0, 0},
+};
+
 convert_t zDWLANG[] = {
   {"DW_LANG_C89",              0x0001},
   {"DW_LANG_C",                0x0002},

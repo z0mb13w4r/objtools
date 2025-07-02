@@ -60,6 +60,10 @@ int ocdwarf_printf_TAG(handle_t p, const uint64_t v, const imode_t mode) {
   return ocdwarf_printf_pluck(p, zDWTAG, v, mode);
 }
 
+int ocdwarf_printf_GNUM(handle_t p, const uint64_t v, const imode_t mode) {
+  return ocdwarf_printf_pluck(p, zDWGNUM, v, mode);
+}
+
 int ocdwarf_printf_FORM(handle_t p, const uint64_t v, const imode_t mode) {
   return ocdwarf_printf_pluck(p, zDWFORM, v, mode | SET_PAD(22));
 }

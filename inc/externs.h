@@ -25,6 +25,7 @@ extern convert_t zDWAT[];
 extern convert_t zDWOP[];
 extern convert_t zDWATE[];
 extern convert_t zDWTAG[];
+extern convert_t zDWGNUM[];
 extern convert_t zDWFORM[];
 extern convert_t zDWLANG[];
 extern convert_t zDWMACRO[];
