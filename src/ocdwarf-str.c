@@ -25,7 +25,7 @@ int ocdwarf_debug_str(handle_t p, handle_t s, handle_t d) {
       n += printf_text("Number of groups", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
       n += printf_nice(group_count, USE_DEC | USE_EOL);
       n += printf_text("Group to print", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-      n += ocdwarf_printf_GNUM(p, selected_group, USE_EOL);
+      n += ocdwarf_printf_GNUM(p, selected_group, USE_SPECIAL | USE_EOL);
       n += printf_text("Count of map entries", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
       n += printf_nice(group_map_entry_count, USE_DEC | USE_EOL);
 
