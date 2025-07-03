@@ -1291,7 +1291,7 @@ static int dump_versionneed32(const pbuffer_t p, const poptions_t o, Elf32_Shdr 
         Elf32_Vernaux *va = getp(p, shdr->sh_offset + xoffset, sizeof(Elf32_Vernaux));
         if (va) {
           n += dump_versionneed2(p, xoffset, shdr->sh_link, va->vna_name, va->vna_flags, va->vna_other);
-	  xoffset += va->vna_next;
+          xoffset += va->vna_next;
         }
       }
     }
@@ -1319,7 +1319,7 @@ static int dump_versionneed64(const pbuffer_t p, const poptions_t o, Elf64_Shdr 
         Elf64_Vernaux *va = getp(p, shdr->sh_offset + xoffset, sizeof(Elf64_Vernaux));
         if (va) {
           n += dump_versionneed2(p, xoffset, shdr->sh_link, va->vna_name, va->vna_flags, va->vna_other);
-	  xoffset += va->vna_next;
+          xoffset += va->vna_next;
         }
       }
     }

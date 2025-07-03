@@ -852,7 +852,7 @@ static int dump_resourceZ(const pbuffer_t p, PIMAGE_RESOURCE_DIRECTORY p0, const
       n += dump_resource1(p, p1->NameIsString, p1->Name, p1->OffsetToData, z);
       if (p1->DataIsDirectory) {
         n += dump_resourceZ(p, peget_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_RESOURCE) + p1->OffsetToDirectory,
-	                    !Name && !p1->NameIsString ? p1->Name : Name, z + 1);
+                            !Name && !p1->NameIsString ? p1->Name : Name, z + 1);
       } else {
         n += dump_resourceY(p, peget_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_RESOURCE) + p1->OffsetToDirectory, Name);
       }

@@ -61,7 +61,7 @@ int ocdwarf_debug_macro_ops(handle_t p, Dwarf_Die die, Dwarf_Macro_Context conte
           return OCDWARF_ERRCODE(x, n);
         }
 
-	st->sdepth ++;
+        st->sdepth ++;
 
         n += printf_text("line", USE_LT | USE_SPACE);
         n += printf_nice(nline, USE_DEC);
