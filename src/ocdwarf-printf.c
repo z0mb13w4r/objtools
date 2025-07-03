@@ -41,7 +41,14 @@ int ocdwarf_printf_DEC(handle_t p, const uint64_t v, const imode_t mode) {
 }
 
 int ocdwarf_printf_HEX(handle_t p, const uint64_t v, const imode_t mode) {
-  return printf_nice(v, USE_FHEX32 | USE_TB | mode);
+  if (isopcode(p)) {
+    popcode_t oc = ocget(p, OPCODE_THIS);
+    if (MODE_ISSET(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+      return printf_nice(v, USE_FHEX32 | USE_TB | mode);
+    }
+  }
+
+  return printf_nice(v, USE_LHEX | USE_TB | mode);
 }
 
 int ocdwarf_printf_AT(handle_t p, const uint64_t v, const imode_t mode) {
@@ -149,10 +156,10 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
     n += printf_pack(4);
     if (MODE_ISSET(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
       if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
-        n += printf_nice(offset, USE_LHEX32 | USE_TB);
+        n += ocdwarf_printf_HEX(p, offset, USE_NONE);
       }
     } else {
-      n += printf_nice(offset, USE_LHEX | USE_TB);
+      n += ocdwarf_printf_HEX(p, offset, USE_NONE);
     }
 
     n += ocdwarf_printf_AT(p, nattr, USE_NONE);
