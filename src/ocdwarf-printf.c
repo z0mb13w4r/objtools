@@ -37,7 +37,14 @@ int ocdwarf_printf_pluck(handle_t p, const pconvert_t z, const pick_t x, const i
 }
 
 int ocdwarf_printf_DEC(handle_t p, const uint64_t v, const imode_t mode) {
-  return printf_nice(v, USE_DEC2 | USE_TB | mode);
+  if (isopcode(p)) {
+    popcode_t oc = ocget(p, OPCODE_THIS);
+    if (MODE_ISSET(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+      return printf_nice(v, USE_DEC2 | USE_TB | mode);
+    }
+  }
+
+  return printf_nice(v, USE_DEC | USE_TB | mode);
 }
 
 int ocdwarf_printf_HEX(handle_t p, const uint64_t v, const imode_t mode) {
@@ -119,7 +126,7 @@ int ocdwarf_printf_worth(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
     }
 
     if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
-      n += printf_nice(index, USE_DEC2 | USE_SB | USE_TAB);
+      n += ocdwarf_printf_DEC(p, index, USE_TAB);
     }
 
     n += ocdwarf_printf_merit(p, die, attr, nattr, e);
