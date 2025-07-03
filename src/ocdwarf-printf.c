@@ -140,7 +140,19 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
     }
 
     n += printf_pack(4);
-    n += ocdwarf_printf_AT(p, nattr, USE_NONE);
+    if (MODE_ISSET(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+      n += ocdwarf_printf_AT(p, nattr, USE_NONE);
+    } else {
+      Dwarf_Off offset = 0;
+      x = dwarf_attr_offset(die, attr, &offset, e);
+      if (IS_DLV_ANY_ERROR(x)) {
+        printf_e("dwarf_attr_offset failed! errcode %d", x);
+        return OCDWARF_ERRCODE(x, n);
+      }
+
+      n += printf_nice(offset, USE_LHEX | USE_TB);
+      n += ocdwarf_printf_AT(p, nattr, USE_SPACE);
+    }
 
     if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
       n += ocdwarf_printf_FORM(p, nform, USE_NONE);

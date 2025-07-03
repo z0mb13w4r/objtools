@@ -42,6 +42,7 @@
 #define OPTDEBUGELF_TRACE_ABBREV                   U64MASK(48)
 #define OPTDEBUGELF_TRACE_INFO                     U64MASK(49)
 #define OPTDEBUGELF_GDB_INDEX                      U64MASK(50)
+#define OPTDEBUGELF_ENHANCED                       U64MASK(51)
 #define OPTDEBUGELF_DEBUGGING                      (0x1FFFFFULL << 30)
 
 #define OPTDEBUGELF_DEBUG_LINE_MASK                (OPTDEBUGELF_DEBUG_LINE | OPTDEBUGELF_DEBUG_LINE_DECODED)
