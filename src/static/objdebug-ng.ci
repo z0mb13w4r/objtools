@@ -34,6 +34,7 @@ static const args_t zDEBUGELFARGS[] = {
   {'u', "trace_abbrev",       OPTDEBUGELF_TRACE_ABBREV},
   {'U', "trace_info",         OPTDEBUGELF_TRACE_INFO},
   {'g', "gdb_index",          OPTDEBUGELF_GDB_INDEX,           zDEBUGGDBINDEX},
+  {'X', "enhanced",           OPTDEBUGELF_ENHANCED},
   {0, NULL}
 };
 
