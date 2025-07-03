@@ -6,6 +6,8 @@ Dwarf_Unsigned nline = 0;
 Dwarf_Unsigned ncolumn = 0;
 Dwarf_Addr low_pc_addr = 0;
 
+const int MAXMERIT = 18;
+
 int ocdwarf_printf_me(handle_t p, const int x, const char *y, const char *z, const imode_t mode) {
   int n = 0;
   if (isopcode(p)) {
@@ -125,6 +127,8 @@ int ocdwarf_printf_worth(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
       return OCDWARF_ERRCODE(x, n);
     }
 
+    n += printf_pack(MAXMERIT);
+
     if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
       n += ocdwarf_printf_DEC(p, index, USE_TAB);
     }
@@ -160,7 +164,6 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
       return OCDWARF_ERRCODE(x, n);
     }
 
-    n += printf_pack(4);
     if (MODE_ISSET(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
       if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
         n += ocdwarf_printf_HEX(p, offset, USE_NONE);
@@ -335,6 +338,7 @@ int ocdwarf_printf_value(handle_t p, Dwarf_Die die, Dwarf_Half nattr, pdwarf_src
     Dwarf_Attribute attr = 0;
     x = dwarf_attr(die, nattr, &attr, e);
     if (IS_DLV_OK(x)) {
+      n += printf_pack(MAXMERIT);
       n += ocdwarf_printf_merit(p, die, attr, nattr, e);
     }
   }
