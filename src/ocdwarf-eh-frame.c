@@ -35,6 +35,7 @@ int ocdwarf_eh_frame(handle_t p, handle_t s, handle_t d) {
     }
 
 
+    ocdwarf_dealloc_fde_cie_list(p, cie_data, cie_element_count, fde_data, fde_element_count);
   }
 
   return OCDWARF_ERRCODE(x, n);
