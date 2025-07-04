@@ -68,6 +68,24 @@ int ocdwarf_eh_frame(handle_t p, handle_t s, handle_t d) {
       n += printf_text("::length", USE_LT);
       n += printf_nice(fde_bytes_length, USE_FHEX32 | USE_TBRT);
       n += printf_eol();
+
+      Dwarf_Small *augdata = 0;
+      Dwarf_Unsigned augdata_len = 0;
+      x = dwarf_get_fde_augmentation_data(fde, &augdata, &augdata_len, ocget(p, OPCODE_DWARF_ERROR));
+      if (IS_DLV_ERROR(x)) {
+        printf_e("dwarf_get_fde_augmentation_data failed! - %d", x);
+        return OCDWARF_ERRCODE(x, n);
+      }
+
+      n += printf_text("eh aug data len", USE_LT | USE_TBLT);
+      if (0 == augdata_len) {
+        n += printf_nice(augdata_len, USE_FHEX | USE_TBRT);
+      } else {
+        n += printf_nice(augdata_len, USE_FHEX);
+        n += printf_hurt(augdata, augdata_len, USE_HEX | USE_SPACE | USE_0x | USE_TBRT);
+      }
+
+      n += printf_eol();
     }
 
     ocdwarf_dealloc_fde_cie_list(p, cie_data, cie_element_count, fde_data, fde_element_count);

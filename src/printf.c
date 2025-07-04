@@ -430,7 +430,7 @@ int printf_hurt(const unknown_t p, const size_t size, const imode_t mode) {
 
 int printf_sore(const unknown_t p, const size_t size, const imode_t mode) {
   const int MAXSIZE = 10;
-  const imode_t xmode = mode & ~(USE_POS0MASK | USE_POS1MASK | USE_FLAGMASK | USE_COLORMASK);
+  const imode_t xmode = mode & ~(USE_POS0MASK | USE_POS1MASK | USE_FLAGMASK | USE_COLORMASK | USE_BRACKETMASK);
   const imode_t ymode = mode &  (USE_POS0MASK | USE_POS1MASK | USE_FLAGMASK | USE_COLORMASK);
   const imode_t zmode = mode &   USE_POS0MASK;
   int n = 0;
