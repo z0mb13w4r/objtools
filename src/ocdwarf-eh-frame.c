@@ -52,6 +52,10 @@ int ocdwarf_eh_frame(handle_t p, handle_t s, handle_t d) {
 
       n += ocdwarf_printf_DEC(p, i, USE_NONE);
 
+      // <0x00001020:0x000010c0>
+      n += printf_nice(low_pc, USE_FHEX32 | USE_TBLT | USE_COLON | USE_NOSPACE);
+      n += printf_nice(low_pc + func_length, USE_FHEX32 | USE_TBRT | USE_NOSPACE);
+
       // <cie offset 0x00000034::cie index 0>
       n += printf_text("cie offset", USE_LT | USE_TBLT);
       n += printf_nice(cie_offset, USE_FHEX32);
