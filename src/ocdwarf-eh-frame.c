@@ -52,11 +52,17 @@ int ocdwarf_eh_frame(handle_t p, handle_t s, handle_t d) {
 
       n += ocdwarf_printf_DEC(p, i, USE_NONE);
 
+      // <cie offset 0x00000034::cie index 0>
       n += printf_text("cie offset", USE_LT | USE_TBLT);
       n += printf_nice(cie_offset, USE_FHEX32);
       n += printf_text("::cie index", USE_LT);
       n += printf_nice(cie_index, USE_DEC | USE_TBRT);
 
+      // <fde offset 0x00000030::length 0x00000024>
+      n += printf_text("fde offset", USE_LT | USE_TBLT);
+      n += printf_nice(fde_offset, USE_FHEX32);
+      n += printf_text("::length", USE_LT);
+      n += printf_nice(fde_bytes_length, USE_FHEX32 | USE_TBRT);
       n += printf_eol();
     }
 
