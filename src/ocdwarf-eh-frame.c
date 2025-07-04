@@ -50,11 +50,16 @@ int ocdwarf_eh_frame(handle_t p, handle_t s, handle_t d) {
         return OCDWARF_ERRCODE(x, n);
       }
 
+      Dwarf_Addr end_func_addr = low_pc + func_length;
+
       n += ocdwarf_printf_DEC(p, i, USE_NONE);
 
       // <0x00001020:0x000010c0>
       n += printf_nice(low_pc, USE_FHEX32 | USE_TBLT | USE_COLON | USE_NOSPACE);
-      n += printf_nice(low_pc + func_length, USE_FHEX32 | USE_TBRT | USE_NOSPACE);
+      n += printf_nice(end_func_addr, USE_FHEX32 | USE_TBRT | USE_NOSPACE);
+
+      // <_getchar>
+      n += printf_text("_getchar", USE_LT | USE_TB);
 
       // <cie offset 0x00000034::cie index 0>
       n += printf_text("cie offset", USE_LT | USE_TBLT);
@@ -83,6 +88,9 @@ int ocdwarf_eh_frame(handle_t p, handle_t s, handle_t d) {
       } else {
         n += printf_nice(augdata_len, USE_FHEX);
         n += printf_hurt(augdata, augdata_len, USE_HEX | USE_SPACE | USE_0x | USE_TBRT);
+      }
+
+      for (Dwarf_Addr j = low_pc; j < end_func_addr; ++j) {
       }
 
       n += printf_eol();
