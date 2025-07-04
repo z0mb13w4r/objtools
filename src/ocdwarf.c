@@ -334,6 +334,17 @@ void ocdwarf_dealloc_attribute(handle_t p, Dwarf_Attribute *v, Dwarf_Signed size
   }
 }
 
+void ocdwarf_dealloc_fde_cie_list(handle_t p, Dwarf_Cie *cie_data, Dwarf_Signed cie_element_count,
+                     Dwarf_Fde *fde_data, Dwarf_Signed fde_element_count) {
+  if (isopcode(p)) {
+    pocdwarf_t p0 = ocget(p, OPCODE_DWARF);
+    if (p0) {
+      dwarf_dealloc_fde_cie_list(ocget(p, OPCODE_DWARF_DEBUG), cie_data, cie_element_count,
+                     fde_data, fde_element_count);
+    }
+  }
+}
+
 void ocdwarf_dealloc_error(handle_t p, Dwarf_Error *e) {
   if (isopcode(p)) {
     Dwarf_Error *e0 = e ? e : ocget(p, OPCODE_DWARF_ERROR);
