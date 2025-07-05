@@ -111,7 +111,7 @@ int ocdwarf_eh_frame(handle_t p, handle_t s, handle_t d) {
 
         n += printf_nice(j, USE_FHEX32 | USE_COLON);
         n += ocdwarf_printf_EXPR(p, value_type, USE_LT | USE_SPACE | USE_TBLT);
-        n += printf_text("=", USE_LT);
+        n += printf_text("cfa=", USE_LT | USE_SPACE);
         n += printf_nice(offset, USE_DEC2Z | USE_NOSPACE);
         n += printf_join("r", reg, USE_DEC | USE_RB);
         n += printf_eol();
