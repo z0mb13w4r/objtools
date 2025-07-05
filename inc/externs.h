@@ -31,6 +31,9 @@ extern convert_t zDWLANG[];
 extern convert_t zDWMACRO[];
 extern convert_t zDWCHILDREN[];
 
+extern convert_t zDWEXPR[];
+extern convert_t zDWEXPRLITE[];
+
 extern convert_t zPHDRTYPE[];
 extern convert_t zSHDRTYPE[];
 

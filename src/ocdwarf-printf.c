@@ -76,6 +76,17 @@ int ocdwarf_printf_TAG(handle_t p, const uint64_t v, const imode_t mode) {
   return ocdwarf_printf_pluck(p, zDWTAG, v, mode);
 }
 
+int ocdwarf_printf_EXPR(handle_t p, const uint64_t v, const imode_t mode) {
+  if (isopcode(p)) {
+    popcode_t oc = ocget(p, OPCODE_THIS);
+    if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
+      return ocdwarf_printf_pluck(p, zDWEXPR, v, mode);
+    }
+  }
+
+  return ocdwarf_printf_pluck(p, zDWEXPRLITE, v, mode);
+}
+
 int ocdwarf_printf_GNUM(handle_t p, const uint64_t v, const imode_t mode) {
   return ocdwarf_printf_pluck(p, zDWGNUM, v, mode);
 }

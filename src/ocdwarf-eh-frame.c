@@ -3,8 +3,6 @@
 #include "options.h"
 #include "ocdwarf-eh-frame.h"
 
-static const int MAXSIZE = 23;
-
 int ocdwarf_eh_frame(handle_t p, handle_t s, handle_t d) {
   int x = DW_DLV_ERROR;
   int n = 0;
@@ -112,6 +110,7 @@ int ocdwarf_eh_frame(handle_t p, handle_t s, handle_t d) {
         }
 
         n += printf_nice(j, USE_FHEX32 | USE_COLON);
+        n += ocdwarf_printf_EXPR(p, value_type, USE_LT | USE_SPACE | USE_TBLT);
         n += printf_eol();
 
         if (!has_more_rows) {

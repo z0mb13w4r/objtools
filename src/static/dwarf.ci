@@ -297,6 +297,22 @@ convert_t zDWEND[] = {
   {0, 0}
 };
 
+convert_t zDWEXPR[] = {
+  {"DW_EXPR_OFFSET",                0},
+  {"DW_EXPR_VAL_OFFSET",            1},
+  {"DW_EXPR_EXPRESSION",            2},
+  {"DW_EXPR_VAL_EXPRESSION",        3},
+  {0, 0},
+};
+
+convert_t zDWEXPRLITE[] = {
+  {"off",                           0},
+  {"valoff",                        1},
+  {"expr",                          2},
+  {"valexpr",                       3},
+  {0, 0},
+};
+
 convert_t zDWFORM[] = {
   {"DW_FORM_addr",                       0x01},
   {"DW_FORM_REF",                        0x02},
