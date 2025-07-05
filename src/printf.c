@@ -20,6 +20,32 @@
 
 static char errname[256] = {0};
 
+static imode_t make_pos0(const imode_t mode) {
+  switch (GET_BRACKET(mode)) {
+  case USE_CB:                     return USE_CBLT;
+  case USE_RB:                     return USE_RBLT;
+  case USE_SB:                     return USE_SBLT;
+  case USE_TB:                     return USE_TBLT;
+  default:
+    break;
+  }
+
+  return USE_NONE;
+}
+
+static imode_t make_pos1(const imode_t mode) {
+  switch (GET_BRACKET(mode)) {
+  case USE_CB:                     return USE_CBRT;
+  case USE_RB:                     return USE_RBRT;
+  case USE_SB:                     return USE_SBRT;
+  case USE_TB:                     return USE_TBRT;
+  default:
+    break;
+  }
+
+  return USE_NONE;
+}
+
 static int printf_post(const char* o, const imode_t mode) {
   int n = 0;
 
@@ -66,8 +92,10 @@ int printf_spos(char* o, const size_t size, const imode_t mode, const bool_t use
     default:
       if (usespace)                n += PRINT1(" ");
       switch (GET_BRACKET(mode)) {
-      case USE_CB:                 n += PRINT1("{");     break;
-      case USE_RB:                 n += PRINT1("(");     break;
+      case USE_CB:
+      case USE_CBLT:               n += PRINT1("{");     break;
+      case USE_RB:
+      case USE_RBLT:               n += PRINT1("(");     break;
       case USE_SB:
       case USE_SBLT:               n += PRINT1("[");     break;
       case USE_TB:
@@ -88,12 +116,14 @@ int printf_epos(char* o, const size_t size, const imode_t mode) {
   int n = 0;
   if (o) {
     switch (GET_BRACKET(mode)) {
-    case USE_CB:                   n += PRINT1("}");         break;
+    case USE_CB:
+    case USE_CBRT:                 n += PRINT1("}");         break;
     case USE_LINE:
     case USE_OFFSET:
     case USE_ADDRESS:
     case USE_DISCRIMINATOR:
-    case USE_RB:                   n += PRINT1(")");         break;
+    case USE_RB:
+    case USE_RBRT:                 n += PRINT1(")");         break;
     case USE_SB:
     case USE_SBRT:                 n += PRINT1("]");         break;
     case USE_TB:
@@ -148,7 +178,11 @@ int printf_work(char* o, const size_t size, const char* p, const imode_t mode) {
 
     switch (b) {
     case USE_CB:             n += PRINT2("{%s}", p);    break;
+    case USE_CBLT:           n += PRINT2("{%s",  p);    break;
+    case USE_CBRT:           n += PRINT2("%s)",  p);    break;
     case USE_RB:             n += PRINT2("(%s)", p);    break;
+    case USE_RBLT:           n += PRINT2("(%s",  p);    break;
+    case USE_RBRT:           n += PRINT2("%s)",  p);    break;
     case USE_SB:             n += PRINT2("[%s]", p);    break;
     case USE_SBLT:           n += PRINT2("[%s",  p);    break;
     case USE_SBRT:           n += PRINT2("%s]",  p);    break;
@@ -356,9 +390,13 @@ int printf_join(const char* p, const uint64_t v, const imode_t mode) {
 
   int n = 0;
   if (p) {
-    n += printf_work(o, sizeof(o), p, mode);
-    n += printf_neat(o + n, sizeof(o) - n, v, (mode & ~USE_POS0MASK) | USE_NOSPACE);
-    n += printf_post(o, mode);
+    const imode_t modex = mode & ~(USE_BRACKETMASK | USE_POS0MASK | USE_POS1MASK);
+    const imode_t mode0 = (mode & USE_POS0MASK) | make_pos0(mode);
+    const imode_t mode1 = (mode & USE_POS1MASK) | make_pos1(mode);
+
+    n += printf_work(o, sizeof(o), p, modex | mode0);
+    n += printf_neat(o + n, sizeof(o) - n, v, modex | mode1 | USE_NOSPACE);
+    n += printf_post(o, modex);
   }
 
   return n;
@@ -369,9 +407,13 @@ int printf_yoke(const char* p, const char* q, const imode_t mode) {
 
   int n = 0;
   if (p) {
-    n += printf_work(o, sizeof(o), p, mode);
-    n += printf_work(o + n, sizeof(o) - n, q, (mode & ~USE_POS0MASK) | USE_NOSPACE);
-    n += printf_post(o, mode);
+    const imode_t modex = mode & ~(USE_BRACKETMASK | USE_POS0MASK | USE_POS1MASK);
+    const imode_t mode0 = (mode & USE_POS0MASK) | make_pos0(mode);
+    const imode_t mode1 = (mode & USE_POS1MASK) | make_pos1(mode);
+
+    n += printf_work(o, sizeof(o), p, modex | mode0);
+    n += printf_work(o + n, sizeof(o) - n, q, modex | mode1 | USE_NOSPACE);
+    n += printf_post(o, modex);
   }
 
   return n;
