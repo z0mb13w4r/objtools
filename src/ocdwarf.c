@@ -17,7 +17,8 @@
 
 static const int MAXSIZE = 23;
 
-const Dwarf_Sig8 ZEROSIGNATURE;
+const Dwarf_Sig8  ZEROSIGNATURE;
+const Dwarf_Block ZEROBLOCK;
 
 #include "static/dwarf.ci"
 

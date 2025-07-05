@@ -90,7 +90,36 @@ int ocdwarf_eh_frame(handle_t p, handle_t s, handle_t d) {
         n += printf_hurt(augdata, augdata_len, USE_HEX | USE_SPACE | USE_0x | USE_TBRT);
       }
 
+      n += printf_eol();
+
       for (Dwarf_Addr j = low_pc; j < end_func_addr; ++j) {
+        Dwarf_Addr     row_pc = 0;
+        Dwarf_Addr     subsequent_pc = 0;
+        Dwarf_Bool     has_more_rows = 0;
+        Dwarf_Small    value_type = 0;
+        Dwarf_Block    block = ZEROBLOCK;
+        Dwarf_Signed   offset = 0;
+        Dwarf_Unsigned offset_relevant = 0;
+        Dwarf_Unsigned reg = 0;
+
+        x = dwarf_get_fde_info_for_cfa_reg3_c(fde, j, &value_type, &offset_relevant,
+                     &reg, &offset, &block, &row_pc, &has_more_rows, &subsequent_pc,
+                     ocget(p, OPCODE_DWARF_ERROR));
+        if (IS_DLV_NO_ENTRY(x)) continue;
+        else if (IS_DLV_ERROR(x)) {
+          printf_e("dwarf_get_fde_info_for_cfa_reg3_c failed! - %d", x);
+          return OCDWARF_ERRCODE(x, n);
+        }
+
+        n += printf_nice(j, USE_FHEX32 | USE_COLON);
+        n += printf_eol();
+
+        if (!has_more_rows) {
+          j = low_pc + func_length - 1;
+        } else if (subsequent_pc > j) {
+          j = subsequent_pc -1;
+        }
+
       }
 
       n += printf_eol();
