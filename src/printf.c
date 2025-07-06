@@ -18,9 +18,11 @@
 #define PRINT1(x)    snprintf(o + n, size - n, x)
 #define PRINT2(x,y)  snprintf(o + n, size - n, x, y)
 
+#define MODE_USESPACE(x)  (USE_SPACE == GET_POS0(x) || USE_TAB1 == GET_POS0(x) || USE_TAB2 == GET_POS0(x))
+
 static char errname[256] = {0};
 
-static imode_t make_pos0(const imode_t mode) {
+static imode_t make_spos(const imode_t mode) {
   switch (GET_BRACKET(mode)) {
   case USE_CB:                     return USE_CBLT;
   case USE_RB:                     return USE_RBLT;
@@ -33,7 +35,7 @@ static imode_t make_pos0(const imode_t mode) {
   return USE_NONE;
 }
 
-static imode_t make_pos1(const imode_t mode) {
+static imode_t make_epos(const imode_t mode) {
   switch (GET_BRACKET(mode)) {
   case USE_CB:                     return USE_CBRT;
   case USE_RB:                     return USE_RBRT;
@@ -169,7 +171,7 @@ int printf_work(char* o, const size_t size, const char* p, const imode_t mode) {
     case USE_AT:             n += PRINT1("@");          break;
     case USE_ATAT:           n += PRINT1("@@");         break;
     case USE_SPACE:          n += PRINT1(" ");          break;
-    case USE_TAB:            n += PRINT1("  ");         break;
+    case USE_TAB1:           n += PRINT1("  ");         break;
     case USE_TAB2:           n += PRINT1("    ");       break;
     case USE_DOT:            n += PRINT1(".");          break;
     case USE_COMMA:          n += PRINT1(", ");         break;
@@ -217,7 +219,7 @@ int printf_tidy(char* o, const size_t size, const double v, const imode_t mode) 
   if (o) {
     const imode_t mode0 = GET_POS0(mode);
     const imode_t modex = mode & ~(USE_FLAGMASK | USE_POS0MASK | USE_POS1MASK | USE_BRACKETMASK | USE_COLORMASK);
-    const bool_t  usespace = (0 == (mode & USE_NOSPACE) && 0 == mode0) || USE_SPACE == mode0 || USE_TAB == mode0;
+    const bool_t  usespace = (0 == (mode & USE_NOSPACE) && 0 == mode0) || MODE_USESPACE(mode0);
 
     n += printf_spos(o + n, size - n, mode, usespace);
 
@@ -243,7 +245,7 @@ int printf_neat(char* o, const size_t size, const uint64_t v, const imode_t mode
     const imode_t mode0 = GET_POS0(mode);
     const imode_t modex = mode & ~(USE_FLAGMASK | USE_POS0MASK | USE_POS1MASK | USE_BRACKETMASK | USE_COLORMASK);
     const bool_t  usespace = (0 == (mode & USE_NOSPACE) && 0 == mode0 && USE_CHARCTRL != modex && USE_CHAR != modex)
-                        || USE_SPACE == mode0 || USE_TAB == mode0;
+                        || MODE_USESPACE(mode0);
 
     n += printf_spos(o + n, size - n, mode, usespace);
 
@@ -365,8 +367,28 @@ int printf_pack(const int size) {
   return size <= 0 ? 0 : fprintf(STDOUT, "%*s", size, " ");
 }
 
+int printf_open(const imode_t mode) {
+  MALLOCA(char, o, MAX_BUFFER_SIZE);
+
+  int n = 0;
+  n += printf_spos(o, sizeof(o), mode, MODE_USESPACE(mode));
+  n += printf_post(o, mode);
+
+  return n;
+}
+
+int printf_stop(const imode_t mode) {
+  MALLOCA(char, o, MAX_BUFFER_SIZE);
+
+  int n = 0;
+  n += printf_epos(o, sizeof(o), mode);
+  n += printf_post(o, mode);
+
+  return n;
+}
+
 int printf_nice(const uint64_t v, const imode_t mode) {
-  MALLOCA(char, o, 1024);
+  MALLOCA(char, o, MAX_BUFFER_SIZE);
 
   int n = 0;
   n += printf_neat(o, sizeof(o), v, mode);
@@ -376,7 +398,7 @@ int printf_nice(const uint64_t v, const imode_t mode) {
 }
 
 int printf_real(const double v, const imode_t mode) {
-  MALLOCA(char, o, 1024);
+  MALLOCA(char, o, MAX_BUFFER_SIZE);
 
   int n = 0;
   n += printf_tidy(o, sizeof(o), v, mode);
@@ -386,13 +408,13 @@ int printf_real(const double v, const imode_t mode) {
 }
 
 int printf_join(const char* p, const uint64_t v, const imode_t mode) {
-  MALLOCA(char, o, 1024);
+  MALLOCA(char, o, MAX_BUFFER_SIZE);
 
   int n = 0;
   if (p) {
     const imode_t modex = mode & ~(USE_BRACKETMASK | USE_POS0MASK | USE_POS1MASK);
-    const imode_t mode0 = (mode & USE_POS0MASK) | make_pos0(mode);
-    const imode_t mode1 = (mode & USE_POS1MASK) | make_pos1(mode);
+    const imode_t mode0 = (mode & USE_POS0MASK) | make_spos(mode);
+    const imode_t mode1 = (mode & USE_POS1MASK) | make_epos(mode);
 
     n += printf_work(o, sizeof(o), p, modex | mode0);
     n += printf_neat(o + n, sizeof(o) - n, v, modex | mode1 | USE_NOSPACE);
@@ -403,13 +425,13 @@ int printf_join(const char* p, const uint64_t v, const imode_t mode) {
 }
 
 int printf_yoke(const char* p, const char* q, const imode_t mode) {
-  MALLOCA(char, o, 1024);
+  MALLOCA(char, o, MAX_BUFFER_SIZE);
 
   int n = 0;
   if (p) {
     const imode_t modex = mode & ~(USE_BRACKETMASK | USE_POS0MASK | USE_POS1MASK);
-    const imode_t mode0 = (mode & USE_POS0MASK) | make_pos0(mode);
-    const imode_t mode1 = (mode & USE_POS1MASK) | make_pos1(mode);
+    const imode_t mode0 = (mode & USE_POS0MASK) | make_spos(mode);
+    const imode_t mode1 = (mode & USE_POS1MASK) | make_epos(mode);
 
     n += printf_work(o, sizeof(o), p, modex | mode0);
     n += printf_work(o + n, sizeof(o) - n, q, modex | mode1 | USE_NOSPACE);
@@ -461,7 +483,6 @@ int printf_book(const char* p[], const imode_t mode) {
 
 int printf_hurt(const unknown_t p, const size_t size, const imode_t mode) {
   int n = 0;
-#define USE_TAB1 USE_TAB
   n += printf_pack(mode & USE_TAB2 ? 4 : 0);
   n += printf_pack(mode & USE_TAB1 ? 2 : 0);
   n += printf_pack(mode & USE_SPACE ? 1 : 0);
@@ -496,7 +517,7 @@ int printf_sore(const unknown_t p, const size_t size, const imode_t mode) {
 
   puchar_t p0 = CAST(puchar_t, p);
   if (USE_STR == xmode || USE_STRSIZE == xmode) {
-    n += printf_spos(o, sizeof(o), mode, USE_SPACE == GET_POS0(mode) || USE_TAB == GET_POS0(mode));
+    n += printf_spos(o, sizeof(o), mode, MODE_USESPACE(mode));
 
     for (size_t i = 0; i < size; ++i, ++p0) {
       if (USE_STR == xmode && 0 == *p0) break;
@@ -506,7 +527,7 @@ int printf_sore(const unknown_t p, const size_t size, const imode_t mode) {
     n += printf_epos(o, sizeof(o), mode);
     n += printf_post(o, mode);
   } else if (USE_STR16 == xmode || USE_STR16SIZE == xmode) {
-    n += printf_spos(o, sizeof(o), mode, USE_SPACE == GET_POS0(mode) || USE_TAB == GET_POS0(mode));
+    n += printf_spos(o, sizeof(o), mode, MODE_USESPACE(mode));
 
     pushort_t p1 = CAST(pushort_t, p);
     for (size_t i = 0; i < size; i += 2, ++p1) {
@@ -517,7 +538,7 @@ int printf_sore(const unknown_t p, const size_t size, const imode_t mode) {
     n += printf_epos(o, sizeof(o), mode);
     n += printf_post(o, mode);
   } else if (USE_HEX == xmode) {
-    n += printf_spos(o, sizeof(o), mode, USE_SPACE == GET_POS0(mode) || USE_TAB == GET_POS0(mode));
+    n += printf_spos(o, sizeof(o), mode, MODE_USESPACE(mode));
 
     for (size_t i = 0; i < size; ++i, ++p0) {
       n += printf_neat(o + n, sizeof(o) - n, *p0, USE_SPACE == GET_POS0(mode) ? USE_LHEX8 : USE_LHEX8 | USE_NOSPACE);
@@ -637,7 +658,7 @@ int printf_sore(const unknown_t p, const size_t size, const imode_t mode) {
   } else if (USE_BASE64 == xmode) {
 
   } else if (USE_GUID == xmode) {
-    n += printf_spos(o, sizeof(o), mode, USE_SPACE == GET_POS0(mode) || USE_TAB == GET_POS0(mode));
+    n += printf_spos(o, sizeof(o), mode, MODE_USESPACE(mode));
 
     for (size_t i = 0; i < 4; ++i, ++p0) n += printf_neat(o + n, sizeof(o) - n, *p0, USE_LHEX8 | USE_NOSPACE);
     n += printf_neat(o + n, sizeof(o) - n, '-', USE_CHAR);

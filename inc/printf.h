@@ -137,6 +137,7 @@
 
 #define USE_SPACE         SET_POS0(1)
 #define USE_TAB           SET_POS0(2)
+#define USE_TAB1          SET_POS0(2)
 #define USE_TAB2          SET_POS0(3)
 #define USE_AT            SET_POS0(4)
 #define USE_ATAT          SET_POS0(5)
@@ -176,6 +177,9 @@ int printf_spos(char* o, const size_t size, const imode_t mode, const bool_t use
 int printf_epos(char* o, const size_t size, const imode_t mode);
 
 int printf_color(const imode_t mode);
+
+int printf_open(const imode_t mode);
+int printf_stop(const imode_t mode);
 
 int printf_work(char* o, const size_t size, const char* p, const imode_t mode);
 int printf_join(const char* p, const uint64_t v, const imode_t mode);

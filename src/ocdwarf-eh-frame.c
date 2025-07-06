@@ -114,6 +114,7 @@ int ocdwarf_eh_frame(handle_t p, handle_t s, handle_t d) {
         n += printf_text("cfa=", USE_LT | USE_SPACE);
         n += printf_nice(offset, USE_DEC2Z | USE_NOSPACE);
         n += printf_join("r", reg, USE_DEC | USE_RB);
+        n += printf_stop(USE_TBRT);
         n += printf_eol();
 
         if (!has_more_rows) {
