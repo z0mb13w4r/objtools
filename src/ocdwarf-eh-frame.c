@@ -3,33 +3,11 @@
 #include "options.h"
 #include "ocdwarf-eh-frame.h"
 
-int ocdwarf_eh_frame(handle_t p, handle_t s, handle_t d) {
+int ocdwarf_eh_frame_fdes(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed fde_element_count, Dwarf_Error *e) {
   int x = DW_DLV_ERROR;
   int n = 0;
 
-  if (isopcode(p) && (isopshdr(s) || isopshdrNN(s))) {
-    Dwarf_Cie *cie_data = NULL;
-    Dwarf_Fde *fde_data = NULL;
-    Dwarf_Signed cie_element_count = 0;
-    Dwarf_Signed fde_element_count = 0;
-    x = dwarf_get_fde_list_eh(ocget(p, OPCODE_DWARF_DEBUG), &cie_data, &cie_element_count,
-                     &fde_data, &fde_element_count, ocget(p, OPCODE_DWARF_ERROR));
-    if (IS_DLV_NO_ENTRY(x)) return n;
-    else if (IS_DLV_ERROR(x)) {
-      printf_e("dwarf_get_fde_list_eh failed! - %d", x);
-      return OCDWARF_ERRCODE(x, n);
-    }
-
-    const char *sec_name = 0;
-    x = dwarf_get_frame_section_name_eh_gnu(ocget(p, OPCODE_DWARF_DEBUG), &sec_name, ocget(p, OPCODE_DWARF_ERROR));
-    if (IS_DLV_ANY_ERROR(x) ||  0 == sec_name || 0 == *sec_name) {
-      sec_name = ".eh_frame";
-    }
-
-    if (IS_DLV_ERROR(x)) {
-      ocdwarf_dealloc_error(p, NULL);
-    }
-
+  if (isopcode(p)) {
     for (Dwarf_Signed i = 0; i < fde_element_count; ++i) {
       Dwarf_Addr     low_pc = 0;
       Dwarf_Unsigned func_length = 0;
@@ -41,7 +19,7 @@ int ocdwarf_eh_frame(handle_t p, handle_t s, handle_t d) {
 
       Dwarf_Fde fde = fde_data[i];
       x = dwarf_get_fde_range(fde, &low_pc, &func_length, &fde_bytes, &fde_bytes_length,
-                     &cie_offset, &cie_index, &fde_offset, ocget(p, OPCODE_DWARF_ERROR));
+                     &cie_offset, &cie_index, &fde_offset, e);
       if (IS_DLV_NO_ENTRY(x)) break;
       else if (IS_DLV_ERROR(x)) {
         printf_e("dwarf_get_fde_range failed! - %d", x);
@@ -74,7 +52,7 @@ int ocdwarf_eh_frame(handle_t p, handle_t s, handle_t d) {
 
       Dwarf_Small *augdata = 0;
       Dwarf_Unsigned augdata_len = 0;
-      x = dwarf_get_fde_augmentation_data(fde, &augdata, &augdata_len, ocget(p, OPCODE_DWARF_ERROR));
+      x = dwarf_get_fde_augmentation_data(fde, &augdata, &augdata_len, e);
       if (IS_DLV_ERROR(x)) {
         printf_e("dwarf_get_fde_augmentation_data failed! - %d", x);
         return OCDWARF_ERRCODE(x, n);
@@ -102,8 +80,7 @@ int ocdwarf_eh_frame(handle_t p, handle_t s, handle_t d) {
         Dwarf_Unsigned reg = 0;
 
         x = dwarf_get_fde_info_for_cfa_reg3_c(fde, j, &value_type, &offset_relevant,
-                     &reg, &offset, &block, &row_pc, &has_more_rows, &subsequent_pc,
-                     ocget(p, OPCODE_DWARF_ERROR));
+                     &reg, &offset, &block, &row_pc, &has_more_rows, &subsequent_pc, e);
         if (IS_DLV_NO_ENTRY(x)) continue;
         else if (IS_DLV_ERROR(x)) {
           printf_e("dwarf_get_fde_info_for_cfa_reg3_c failed! - %d", x);
@@ -132,16 +109,15 @@ int ocdwarf_eh_frame(handle_t p, handle_t s, handle_t d) {
           Dwarf_Addr row_pc = 0;
 
           x = dwarf_get_fde_info_for_reg3_c(fde, k, cur_pc_in_table, &value_type, &offset_relevant,
-                     &reg, &offset, &block, &row_pc, &has_more_rows, &subsequent_pc,
-                     ocget(p, OPCODE_DWARF_ERROR));
+                     &reg, &offset, &block, &row_pc, &has_more_rows, &subsequent_pc, e);
           if (IS_DLV_NO_ENTRY(x)) continue;
           else if (IS_DLV_ERROR(x)) {
             printf_e("dwarf_get_fde_info_for_reg3_c failed! - %d", x);
             return OCDWARF_ERRCODE(x, n);
           } else if (row_pc != cur_pc_in_table) continue;
 
-          n += ocdwarf_printf_EXPR(p, value_type, USE_LT | USE_SPACE | USE_TBLT);
-          n += printf_nice(reg, USE_DEC);
+//          n += ocdwarf_printf_EXPR(p, value_type, USE_LT | USE_SPACE | USE_TBLT);
+//          n += printf_nice(reg, USE_DEC);
         }
 
         n += printf_eol();
@@ -149,6 +125,39 @@ int ocdwarf_eh_frame(handle_t p, handle_t s, handle_t d) {
 
       n += printf_eol();
     }
+  }
+
+  return OCDWARF_ERRCODE(x, n);
+}
+
+int ocdwarf_eh_frame(handle_t p, handle_t s, handle_t d) {
+  int x = DW_DLV_ERROR;
+  int n = 0;
+
+  if (isopcode(p) && (isopshdr(s) || isopshdrNN(s))) {
+    Dwarf_Cie *cie_data = NULL;
+    Dwarf_Fde *fde_data = NULL;
+    Dwarf_Signed cie_element_count = 0;
+    Dwarf_Signed fde_element_count = 0;
+    x = dwarf_get_fde_list_eh(ocget(p, OPCODE_DWARF_DEBUG), &cie_data, &cie_element_count,
+                     &fde_data, &fde_element_count, ocget(p, OPCODE_DWARF_ERROR));
+    if (IS_DLV_NO_ENTRY(x)) return n;
+    else if (IS_DLV_ERROR(x)) {
+      printf_e("dwarf_get_fde_list_eh failed! - %d", x);
+      return OCDWARF_ERRCODE(x, n);
+    }
+
+    const char *sec_name = 0;
+    x = dwarf_get_frame_section_name_eh_gnu(ocget(p, OPCODE_DWARF_DEBUG), &sec_name, ocget(p, OPCODE_DWARF_ERROR));
+    if (IS_DLV_ANY_ERROR(x) ||  0 == sec_name || 0 == *sec_name) {
+      sec_name = ".eh_frame";
+    }
+
+    if (IS_DLV_ERROR(x)) {
+      ocdwarf_dealloc_error(p, NULL);
+    }
+
+    n += ocdwarf_eh_frame_fdes(p, fde_data, fde_element_count, ocget(p, OPCODE_DWARF_ERROR));
 
     ocdwarf_dealloc_fde_cie_list(p, cie_data, cie_element_count, fde_data, fde_element_count);
   }
