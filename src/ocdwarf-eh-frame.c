@@ -3,6 +3,16 @@
 #include "options.h"
 #include "ocdwarf-eh-frame.h"
 
+int ocdwarf_eh_frame_cies(handle_t p, Dwarf_Cie *cie_data, Dwarf_Signed cie_element_count, Dwarf_Error *e) {
+  int x = DW_DLV_ERROR;
+  int n = 0;
+
+  if (isopcode(p)) {
+  }
+
+  return OCDWARF_ERRCODE(x, n);
+}
+
 int ocdwarf_eh_frame_fdes(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed fde_element_count, Dwarf_Error *e) {
   int x = DW_DLV_ERROR;
   int n = 0;
@@ -158,6 +168,7 @@ int ocdwarf_eh_frame(handle_t p, handle_t s, handle_t d) {
     }
 
     n += ocdwarf_eh_frame_fdes(p, fde_data, fde_element_count, ocget(p, OPCODE_DWARF_ERROR));
+    n += ocdwarf_eh_frame_cies(p, cie_data, cie_element_count, ocget(p, OPCODE_DWARF_ERROR));
 
     ocdwarf_dealloc_fde_cie_list(p, cie_data, cie_element_count, fde_data, fde_element_count);
   }
