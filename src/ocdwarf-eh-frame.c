@@ -3,6 +3,8 @@
 #include "options.h"
 #include "ocdwarf-eh-frame.h"
 
+static const int MAXSIZE = 24;
+
 int ocdwarf_eh_frame_cies(handle_t p, Dwarf_Cie *cie_data, Dwarf_Signed cie_element_count, Dwarf_Error *e) {
   int x = DW_DLV_ERROR;
   int n = 0;
@@ -30,6 +32,19 @@ int ocdwarf_eh_frame_cies(handle_t p, Dwarf_Cie *cie_data, Dwarf_Signed cie_elem
         return OCDWARF_ERRCODE(x, n);
       }
 
+      n += ocdwarf_printf_DEC(p, i, USE_NONE);
+      n += printf_text("version", USE_LT | USE_SPACE | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_nice(version, USE_DEC);
+      n += printf_eol();
+
+      Dwarf_Off cie_off = 0;
+      x = dwarf_cie_section_offset(ocget(p, OPCODE_DWARF_DEBUG), cie, &cie_off, e);
+      if (IS_DLV_OK(x)) {
+        n += printf_text("cie section offset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        n += printf_nice(cie_off, USE_DEC);
+        n += printf_nice(cie_off, USE_FHEX32);
+        n += printf_eol();
+      }
     }
   }
 
