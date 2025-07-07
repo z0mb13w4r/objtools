@@ -45,6 +45,33 @@ int ocdwarf_eh_frame_cies(handle_t p, Dwarf_Cie *cie_data, Dwarf_Signed cie_elem
         n += printf_nice(cie_off, USE_FHEX32);
         n += printf_eol();
       }
+
+      n += printf_text("augmentation", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_text(augmenter, USE_LT);
+      n += printf_eol();
+
+      n += printf_text("code_alignment_factor", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_nice(code_alignment_factor, USE_DEC);
+      n += printf_eol();
+
+      n += printf_text("data_alignment_factor", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_nice(data_alignment_factor, USE_DEC);
+      n += printf_eol();
+
+      n += printf_text("address_register_rule", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_nice(address_register_rule, USE_DEC);
+      n += printf_eol();
+
+      Dwarf_Small *augdata = 0;
+      Dwarf_Unsigned augdata_len = 0;
+      n += dwarf_get_cie_augmentation_data(cie, &augdata, &augdata_len, e);
+      if (IS_DLV_OK(x)) {
+        n += printf_text("eh aug data len", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        n += printf_nice(augdata_len, USE_FHEX);
+        n += printf_text("bytes", USE_LT | USE_COMMA);
+        n += printf_hurt(augdata, augdata_len, USE_HEX | USE_SPACE | USE_0x);
+        n += printf_eol();
+      }
     }
   }
 
