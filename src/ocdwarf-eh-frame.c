@@ -8,6 +8,29 @@ int ocdwarf_eh_frame_cies(handle_t p, Dwarf_Cie *cie_data, Dwarf_Signed cie_elem
   int n = 0;
 
   if (isopcode(p)) {
+    n += printf_text("cie", USE_LT | USE_COLON | USE_EOL);
+
+    for (Dwarf_Signed i = 0; i < cie_element_count; ++i) {
+      char*          augmenter = "";
+      Dwarf_Small    version = 0;
+      Dwarf_Unsigned code_alignment_factor = 0;
+      Dwarf_Signed   data_alignment_factor = 0;
+      Dwarf_Small   *cie_initial_instructions = 0;
+      Dwarf_Unsigned cie_initial_instructions_length = 0;
+      Dwarf_Unsigned bytes_in_cie = 0;
+      Dwarf_Half     address_register_rule = 0;
+      Dwarf_Half     offset_size = 0;
+
+      Dwarf_Cie cie = cie_data[i];
+      x = dwarf_get_cie_info_b(cie, &bytes_in_cie, &version, &augmenter, &code_alignment_factor, &data_alignment_factor,
+                     &address_register_rule, &cie_initial_instructions, &cie_initial_instructions_length, &offset_size, e);
+      if (IS_DLV_NO_ENTRY(x)) break;
+      else if (IS_DLV_ERROR(x)) {
+        printf_e("dwarf_get_cie_info_b failed! - %d", x);
+        return OCDWARF_ERRCODE(x, n);
+      }
+
+    }
   }
 
   return OCDWARF_ERRCODE(x, n);
@@ -18,6 +41,8 @@ int ocdwarf_eh_frame_fdes(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed fde_elem
   int n = 0;
 
   if (isopcode(p)) {
+    n += printf_text("fde", USE_LT | USE_COLON | USE_EOL);
+
     for (Dwarf_Signed i = 0; i < fde_element_count; ++i) {
       Dwarf_Addr     low_pc = 0;
       Dwarf_Unsigned func_length = 0;
