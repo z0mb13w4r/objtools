@@ -10,7 +10,7 @@ int ocdwarf_eh_frame_cies(handle_t p, Dwarf_Cie *cie_data, Dwarf_Signed cie_elem
   int n = 0;
 
   if (isopcode(p)) {
-    n += printf_text("cie", USE_LT | USE_COLON | USE_EOL);
+    n += printf_text("CIE", USE_LT | USE_SB | USE_EOL);
 
     for (Dwarf_Signed i = 0; i < cie_element_count; ++i) {
       char*          augmenter = "";
@@ -72,6 +72,10 @@ int ocdwarf_eh_frame_cies(handle_t p, Dwarf_Cie *cie_data, Dwarf_Signed cie_elem
         n += printf_hurt(augdata, augdata_len, USE_HEX | USE_SPACE | USE_0x);
         n += printf_eol();
       }
+
+      n += printf_text("bytes of initial instructions", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_nice(cie_initial_instructions_length, USE_DEC);
+      n += printf_eol();
     }
   }
 
@@ -83,7 +87,7 @@ int ocdwarf_eh_frame_fdes(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed fde_elem
   int n = 0;
 
   if (isopcode(p)) {
-    n += printf_text("fde", USE_LT | USE_COLON | USE_EOL);
+    n += printf_text("FDE", USE_LT | USE_SB | USE_EOL);
 
     for (Dwarf_Signed i = 0; i < fde_element_count; ++i) {
       Dwarf_Addr     low_pc = 0;
