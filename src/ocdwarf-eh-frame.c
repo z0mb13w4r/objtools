@@ -76,6 +76,22 @@ int ocdwarf_eh_frame_cies(handle_t p, Dwarf_Cie *cie_data, Dwarf_Signed cie_elem
       n += printf_text("bytes of initial instructions", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
       n += printf_nice(cie_initial_instructions_length, USE_DEC);
       n += printf_eol();
+
+      n += printf_text("cie length", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_nice(bytes_in_cie, USE_DEC);
+      n += printf_eol();
+
+      Dwarf_Frame_Instr_Head head = 0;
+      Dwarf_Unsigned         instr_count = 0;
+      x = dwarf_expand_frame_instructions(cie, cie_initial_instructions, cie_initial_instructions_length,
+                     &head, &instr_count, e);
+      if (IS_DLV_NO_ENTRY(x)) break;
+      else if (IS_DLV_ERROR(x)) {
+        printf_e("dwarf_expand_frame_instructions failed! - %d", x);
+        return OCDWARF_ERRCODE(x, n);
+      }
+
+      dwarf_dealloc_frame_instr_head(head);
     }
   }
 
