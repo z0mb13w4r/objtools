@@ -218,7 +218,7 @@ int printf_tidy(char* o, const size_t size, const double v, const imode_t mode) 
   int n = 0;
   if (o) {
     const imode_t mode0 = GET_POS0(mode);
-    const imode_t modex = mode & ~(USE_FLAGMASK | USE_POS0MASK | USE_POS1MASK | USE_BRACKETMASK | USE_COLORMASK);
+    const imode_t modex = GET_STYLE(mode);
     const bool_t  usespace = (0 == (mode & USE_NOSPACE) && 0 == mode0) || MODE_USESPACE(mode0);
 
     n += printf_spos(o + n, size - n, mode, usespace);
@@ -243,7 +243,7 @@ int printf_neat(char* o, const size_t size, const uint64_t v, const imode_t mode
   int n = 0;
   if (o) {
     const imode_t mode0 = GET_POS0(mode);
-    const imode_t modex = mode & ~(USE_FLAGMASK | USE_POS0MASK | USE_POS1MASK | USE_BRACKETMASK | USE_COLORMASK);
+    const imode_t modex = GET_STYLE(mode);
     const bool_t  usespace = (0 == (mode & USE_NOSPACE) && 0 == mode0 && USE_CHARCTRL != modex && USE_CHAR != modex)
                         || MODE_USESPACE(mode0);
 
@@ -493,7 +493,7 @@ int printf_hurt(const unknown_t p, const size_t size, const imode_t mode) {
 
 int printf_sore(const unknown_t p, const size_t size, const imode_t mode) {
   const int MAXSIZE = 10;
-  const imode_t xmode = mode & ~(USE_POS0MASK | USE_POS1MASK | USE_FLAGMASK | USE_COLORMASK | USE_BRACKETMASK);
+  const imode_t modex = GET_STYLE(mode);
   const imode_t ymode = mode &  (USE_POS0MASK | USE_POS1MASK | USE_FLAGMASK | USE_COLORMASK);
   const imode_t zmode = mode &   USE_POS0MASK;
   int n = 0;
