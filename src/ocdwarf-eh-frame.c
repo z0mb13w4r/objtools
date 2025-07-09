@@ -81,17 +81,47 @@ int ocdwarf_eh_frame_cies(handle_t p, Dwarf_Cie *cie_data, Dwarf_Signed cie_elem
       n += printf_nice(bytes_in_cie, USE_DEC);
       n += printf_eol();
 
-      Dwarf_Frame_Instr_Head head = 0;
+      Dwarf_Frame_Instr_Head instr_head = 0;
       Dwarf_Unsigned         instr_count = 0;
       x = dwarf_expand_frame_instructions(cie, cie_initial_instructions, cie_initial_instructions_length,
-                     &head, &instr_count, e);
+                     &instr_head, &instr_count, e);
       if (IS_DLV_NO_ENTRY(x)) break;
       else if (IS_DLV_ERROR(x)) {
         printf_e("dwarf_expand_frame_instructions failed! - %d", x);
         return OCDWARF_ERRCODE(x, n);
       }
 
-      dwarf_dealloc_frame_instr_head(head);
+      if (0 != instr_count) {
+        printf_text("[  ] offset name                 operands", USE_LT | USE_TAB | USE_EOL);
+      }
+
+      for (Dwarf_Unsigned j = 0; j < instr_count; ++j) {
+        const char     *fields_description = 0;
+        Dwarf_Small     cfa_operation = 0;
+        Dwarf_Unsigned  instr_offset_in_instrs = 0;
+        Dwarf_Unsigned  u0 = 0;
+        Dwarf_Unsigned  u1 = 0;
+        Dwarf_Unsigned  u2 = 0;
+        Dwarf_Signed    s0 = 0;
+        Dwarf_Signed    s1 = 0;
+        Dwarf_Block     expression_block;
+
+        x = dwarf_get_frame_instruction_a(instr_head, j, &instr_offset_in_instrs, &cfa_operation,
+                     &fields_description, &u0, &u1, &u2, &s0, &s1,
+                     0, 0, /* These alignment factors passed to us. */
+                     &expression_block, e);
+        if (IS_DLV_NO_ENTRY(x)) break;
+        else if (IS_DLV_ERROR(x)) {
+          printf_e("dwarf_get_frame_instruction_a failed! - %d", x);
+          ocdwarf_dealloc_error(p, e);
+          return OCDWARF_ERRCODE(x, n);
+        }
+
+        n += ocdwarf_printf_DEC(p, j, USE_NONE);
+        n += printf_eol();
+      }
+
+      dwarf_dealloc_frame_instr_head(instr_head);
     }
   }
 
