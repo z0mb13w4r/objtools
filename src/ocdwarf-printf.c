@@ -74,6 +74,10 @@ int ocdwarf_printf_ATE(handle_t p, const uint64_t v, const imode_t mode) {
   return ocdwarf_printf_pluck(p, zDWATE, v, mode);
 }
 
+int ocdwarf_printf_CFA(handle_t p, const uint64_t v, const imode_t mode) {
+  return ocdwarf_printf_pluck(p, zDWCFA, v, mode);
+}
+
 int ocdwarf_printf_TAG(handle_t p, const uint64_t v, const imode_t mode) {
   return ocdwarf_printf_pluck(p, zDWTAG, v, mode);
 }

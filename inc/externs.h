@@ -24,6 +24,7 @@ extern pick_t zMACRODEFSTR[];
 extern convert_t zDWAT[];
 extern convert_t zDWOP[];
 extern convert_t zDWATE[];
+extern convert_t zDWCFA[];
 extern convert_t zDWTAG[];
 extern convert_t zDWGNUM[];
 extern convert_t zDWFORM[];
