@@ -493,51 +493,51 @@ int printf_hurt(const unknown_t p, const size_t size, const imode_t mode) {
 
 int printf_sore(const unknown_t p, const size_t size, const imode_t mode) {
   const int MAXSIZE = 10;
+  const imode_t mode0 = GET_POS0(mode);
   const imode_t modex = GET_STYLE(mode);
   const imode_t ymode = mode &  (USE_POS0MASK | USE_POS1MASK | USE_FLAGMASK | USE_COLORMASK);
-  const imode_t zmode = mode &   USE_POS0MASK;
   int n = 0;
 
-  if (USE_HASHALL == xmode) {
+  if (USE_HASHALL == modex) {
     n += printf_text("HASHES", USE_LT | USE_COLON | USE_EOL);
-    n += printf_sore(p, size, USE_MD5 | USE_TAB | zmode);
-    n += printf_sore(p, size, USE_SHA1 | USE_TAB | zmode);
-    n += printf_sore(p, size, USE_SHA256 | USE_TAB | zmode);
-    n += printf_sore(p, size, USE_SHA512 | USE_TAB | zmode);
+    n += printf_sore(p, size, USE_MD5 | USE_TAB | mode0);
+    n += printf_sore(p, size, USE_SHA1 | USE_TAB | mode0);
+    n += printf_sore(p, size, USE_SHA256 | USE_TAB | mode0);
+    n += printf_sore(p, size, USE_SHA512 | USE_TAB | mode0);
     n += printf_eol();
-  } else if (USE_CRCALL == xmode) {
+  } else if (USE_CRCALL == modex) {
     n += printf_text("CRCS", USE_LT | USE_COLON | USE_EOL);
-    n += printf_sore(p, size, USE_CRC8 | USE_TAB | zmode);
-    n += printf_sore(p, size, USE_CRC16 | USE_TAB | zmode);
-    n += printf_sore(p, size, USE_CRC32 | USE_TAB | zmode);
+    n += printf_sore(p, size, USE_CRC8 | USE_TAB | mode0);
+    n += printf_sore(p, size, USE_CRC16 | USE_TAB | mode0);
+    n += printf_sore(p, size, USE_CRC32 | USE_TAB | mode0);
     n += printf_eol();
   }
 
   MALLOCA(char, o, 1024);
 
   puchar_t p0 = CAST(puchar_t, p);
-  if (USE_STR == xmode || USE_STRSIZE == xmode) {
+  if (USE_STR == modex || USE_STRSIZE == modex) {
     n += printf_spos(o, sizeof(o), mode, MODE_USESPACE(mode));
 
     for (size_t i = 0; i < size; ++i, ++p0) {
-      if (USE_STR == xmode && 0 == *p0) break;
+      if (USE_STR == modex && 0 == *p0) break;
       n += printf_neat(o + n, sizeof(o) - n, *p0, USE_CHARCTRL);
     }
 
     n += printf_epos(o, sizeof(o), mode);
     n += printf_post(o, mode);
-  } else if (USE_STR16 == xmode || USE_STR16SIZE == xmode) {
+  } else if (USE_STR16 == modex || USE_STR16SIZE == modex) {
     n += printf_spos(o, sizeof(o), mode, MODE_USESPACE(mode));
 
     pushort_t p1 = CAST(pushort_t, p);
     for (size_t i = 0; i < size; i += 2, ++p1) {
-      if (USE_STR16 == xmode && 0 == *p1) break;
+      if (USE_STR16 == modex && 0 == *p1) break;
       n += printf_neat(o + n, sizeof(o) - n, *p1, USE_CHARCTRL);
     }
 
     n += printf_epos(o, sizeof(o), mode);
     n += printf_post(o, mode);
-  } else if (USE_HEX == xmode) {
+  } else if (USE_HEX == modex) {
     n += printf_spos(o, sizeof(o), mode, MODE_USESPACE(mode));
 
     for (size_t i = 0; i < size; ++i, ++p0) {
@@ -546,11 +546,11 @@ int printf_sore(const unknown_t p, const size_t size, const imode_t mode) {
 
     n += printf_epos(o + n, sizeof(o) - n, mode);
     n += printf_post(o, mode);
-  } else if (USE_MD5 == xmode) {
+  } else if (USE_MD5 == modex) {
     uchar_t md[MD5_DIGEST_LENGTH];
     if (!md5(p0, size, md)) {
       if (0 == (mode & USE_NOTEXT)) {
-        n += printf_text("MD5", USE_LT | USE_COLON | zmode | SET_PAD(MAXSIZE));
+        n += printf_text("MD5", USE_LT | USE_COLON | mode0 | SET_PAD(MAXSIZE));
         n += printf_sore(md, MD5_DIGEST_LENGTH, USE_HEX | USE_EOL);
       } else {
         n += printf_hurt(md, MD5_DIGEST_LENGTH, USE_HEX | ymode);
@@ -558,11 +558,11 @@ int printf_sore(const unknown_t p, const size_t size, const imode_t mode) {
     } else if (0 != (mode & USE_NOTEXT)) {
       n += printf_hurt(md, MD5_DIGEST_LENGTH, USE_HEX | ymode);
     }
-  } else if (USE_SHA1 == xmode) {
+  } else if (USE_SHA1 == modex) {
     uchar_t md[SHA_DIGEST_LENGTH];
     if (!sha1(p0, size, md)) {
       if (0 == (mode & USE_NOTEXT)) {
-        n += printf_text("SHA1", USE_LT | USE_COLON | zmode | SET_PAD(MAXSIZE));
+        n += printf_text("SHA1", USE_LT | USE_COLON | mode0 | SET_PAD(MAXSIZE));
         n += printf_sore(md, SHA_DIGEST_LENGTH, USE_HEX | USE_EOL);
       } else {
         n += printf_hurt(md, SHA_DIGEST_LENGTH, USE_HEX | ymode);
@@ -570,11 +570,11 @@ int printf_sore(const unknown_t p, const size_t size, const imode_t mode) {
     } else if (0 != (mode & USE_NOTEXT)) {
       n += printf_hurt(md, SHA_DIGEST_LENGTH, USE_HEX | ymode);
     }
-  } else if (USE_SHA256 == xmode) {
+  } else if (USE_SHA256 == modex) {
     uchar_t md[SHA256_DIGEST_LENGTH];
     if (!sha256(p0, size, md)) {
       if (0 == (mode & USE_NOTEXT)) {
-        n += printf_text("SHA256", USE_LT | USE_COLON | zmode | SET_PAD(MAXSIZE));
+        n += printf_text("SHA256", USE_LT | USE_COLON | mode0 | SET_PAD(MAXSIZE));
         n += printf_sore(md, SHA256_DIGEST_LENGTH, USE_HEX | USE_EOL);
       } else {
         n += printf_hurt(md, SHA256_DIGEST_LENGTH, USE_HEX | ymode);
@@ -582,11 +582,11 @@ int printf_sore(const unknown_t p, const size_t size, const imode_t mode) {
     } else if (0 != (mode & USE_NOTEXT)) {
       n += printf_hurt(md, SHA256_DIGEST_LENGTH, USE_HEX | ymode);
     }
-  } else if (USE_SHA512 == xmode) {
+  } else if (USE_SHA512 == modex) {
     uchar_t md[SHA512_DIGEST_LENGTH];
     if (!sha512(p0, size, md)) {
       if (0 == (mode & USE_NOTEXT)) {
-        n += printf_text("SHA512", USE_LT | USE_COLON | zmode | SET_PAD(MAXSIZE));
+        n += printf_text("SHA512", USE_LT | USE_COLON | mode0 | SET_PAD(MAXSIZE));
         n += printf_sore(md, SHA512_DIGEST_LENGTH, USE_HEX | USE_EOL);
       } else {
         n += printf_hurt(md, SHA512_DIGEST_LENGTH, USE_HEX | ymode);
@@ -594,32 +594,32 @@ int printf_sore(const unknown_t p, const size_t size, const imode_t mode) {
     } else if (0 != (mode & USE_NOTEXT)) {
       n += printf_hurt(md, SHA512_DIGEST_LENGTH, USE_HEX | ymode);
     }
-  } else if (USE_CRC8 == xmode) {
+  } else if (USE_CRC8 == modex) {
     if (0 == (mode & USE_NOTEXT)) {
-      n += printf_text("CRC8", USE_LT | USE_COLON | zmode | SET_PAD(MAXSIZE));
+      n += printf_text("CRC8", USE_LT | USE_COLON | mode0 | SET_PAD(MAXSIZE));
       n += printf_nice(crc8_calculate(CRC_DEF8, p0, size), USE_FHEX8 | USE_EOL);
     } else {
       n += printf_nice(crc8_calculate(CRC_DEF8, p0, size), USE_FHEX8 | ymode);
     }
-  } else if (USE_CRC16 == xmode) {
+  } else if (USE_CRC16 == modex) {
     if (0 == (mode & USE_NOTEXT)) {
-      n += printf_text("CRC16", USE_LT | USE_COLON | zmode | SET_PAD(MAXSIZE));
+      n += printf_text("CRC16", USE_LT | USE_COLON | mode0 | SET_PAD(MAXSIZE));
       n += printf_nice(crc16_calculate(CRC_DEF16, p0, size), USE_FHEX16 | USE_EOL);
     } else {
       n += printf_nice(crc16_calculate(CRC_DEF16, p0, size), USE_FHEX16 | ymode);
     }
-  } else if (USE_CRC32 == xmode) {
+  } else if (USE_CRC32 == modex) {
     if (0 == (mode & USE_NOTEXT)) {
-      n += printf_text("CRC32", USE_LT | USE_COLON | zmode | SET_PAD(MAXSIZE));
+      n += printf_text("CRC32", USE_LT | USE_COLON | mode0 | SET_PAD(MAXSIZE));
       n += printf_nice(crc32_calculate(CRC_DEF32, p0, size), USE_FHEX32 | USE_EOL);
     } else {
       n += printf_nice(crc32_calculate(CRC_DEF32, p0, size), USE_FHEX32 | ymode);
     }
-  } else if (USE_ENTROPY == xmode) {
+  } else if (USE_ENTROPY == modex) {
     double entropy, min, max;
     if (!entropy_calculate(p0, size, &entropy, &min, &max)) {
       if (0 == (mode & USE_NOTEXT)) {
-        n += printf_text("ENTROPY", USE_LT | USE_COLON | zmode | SET_PAD(MAXSIZE));
+        n += printf_text("ENTROPY", USE_LT | USE_COLON | mode0 | SET_PAD(MAXSIZE));
         n += printf_real(entropy, USE_REALp6 | USE_NOSPACE);
         n += printf_real(min, USE_REALp6 | USE_MIN);
         n += printf_real(max, USE_REALp6 | USE_MAX);
@@ -628,36 +628,36 @@ int printf_sore(const unknown_t p, const size_t size, const imode_t mode) {
         n += printf_real(entropy, USE_REALp6 | ymode);
       }
     }
-  } else if (USE_ROT5 == xmode) {
+  } else if (USE_ROT5 == modex) {
     if (!rot5(p0, size)) {
       if (0 == (mode & USE_NOTEXT)) {
-        n += printf_text("ROT5", USE_LT | USE_COLON | zmode | SET_PAD(MAXSIZE));
+        n += printf_text("ROT5", USE_LT | USE_COLON | mode0 | SET_PAD(MAXSIZE));
         n += printf_sore(p0, size, USE_HEX | USE_EOL);
       } else {
         n += printf_sore(p0, size, USE_HEX | ymode);
       }
     }
-  } else if (USE_ROT13 == xmode) {
+  } else if (USE_ROT13 == modex) {
     if (!rot13(p0, size)) {
       if (0 == (mode & USE_NOTEXT)) {
-        n += printf_text("ROT13", USE_LT | USE_COLON | zmode | SET_PAD(MAXSIZE));
+        n += printf_text("ROT13", USE_LT | USE_COLON | mode0 | SET_PAD(MAXSIZE));
         n += printf_sore(p0, size, USE_HEX | USE_EOL);
       } else {
         n += printf_sore(p0, size, USE_HEX | ymode);
       }
     }
-  } else if (USE_ROT18 == xmode) {
+  } else if (USE_ROT18 == modex) {
     if (!rot18(p0, size)) {
       if (0 == (mode & USE_NOTEXT)) {
-        n += printf_text("ROT18", USE_LT | USE_COLON | zmode | SET_PAD(MAXSIZE));
+        n += printf_text("ROT18", USE_LT | USE_COLON | mode0 | SET_PAD(MAXSIZE));
         n += printf_sore(p0, size, USE_HEX | USE_EOL);
       } else {
         n += printf_sore(p0, size, USE_HEX | ymode);
       }
     }
-  } else if (USE_BASE64 == xmode) {
+  } else if (USE_BASE64 == modex) {
 
-  } else if (USE_GUID == xmode) {
+  } else if (USE_GUID == modex) {
     n += printf_spos(o, sizeof(o), mode, MODE_USESPACE(mode));
 
     for (size_t i = 0; i < 4; ++i, ++p0) n += printf_neat(o + n, sizeof(o) - n, *p0, USE_LHEX8 | USE_NOSPACE);
