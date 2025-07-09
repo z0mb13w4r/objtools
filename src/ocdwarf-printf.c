@@ -39,14 +39,16 @@ int ocdwarf_printf_pluck(handle_t p, const pconvert_t z, const pick_t x, const i
 }
 
 int ocdwarf_printf_DEC(handle_t p, const uint64_t v, const imode_t mode) {
+  const bool_t isset = GET_BRACKET(mode) ? TRUE : FALSE;
+
   if (isopcode(p)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
     if (MODE_ISSET(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
-      return printf_nice(v, USE_DEC2 | USE_TB | mode);
+      return printf_nice(v, isset ? USE_DEC2 | mode : USE_DEC2 | USE_TB | mode);
     }
   }
 
-  return printf_nice(v, USE_DEC | USE_TB | mode);
+  return printf_nice(v, isset ? USE_DEC | mode : USE_DEC | USE_TB | mode);
 }
 
 int ocdwarf_printf_HEX(handle_t p, const uint64_t v, const imode_t mode) {

@@ -117,7 +117,7 @@ int ocdwarf_eh_frame_cies(handle_t p, Dwarf_Cie *cie_data, Dwarf_Signed cie_elem
           return OCDWARF_ERRCODE(x, n);
         }
 
-        n += ocdwarf_printf_DEC(p, j, USE_NONE);
+        n += ocdwarf_printf_DEC(p, j, USE_SB);
         n += printf_eol();
       }
 
