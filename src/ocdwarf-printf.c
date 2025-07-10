@@ -132,12 +132,13 @@ int ocdwarf_printf_srcfile(handle_t p, const uint32_t v, const imode_t mode) {
 
 static int ocdwarf_printf_fields_description_r(handle_t p, const char* fields_description,
                      Dwarf_Unsigned u0, Dwarf_Unsigned u1, Dwarf_Unsigned u2, Dwarf_Signed s0, Dwarf_Signed s1,
-                     Dwarf_Unsigned code_alignment_factor, Dwarf_Signed data_alignment_factor) {
+                     Dwarf_Unsigned code_alignment_factor, Dwarf_Signed data_alignment_factor, Dwarf_Block *expression_block) {
   int n = 0;
-  if (isopcode(p) && fields_description) {
+  if (isopcode(p) && fields_description && expression_block) {
     popcode_t oc = ocget(p, OPCODE_THIS);
 
     if (0 == fields_description[1]) {
+      n += printf_join("r", u0, USE_DEC | USE_SPACE);
     } else if ('u' == fields_description[1]) {
       n += printf_join("r", u0, USE_DEC | USE_SPACE);
       if (0 == fields_description[2]) {
@@ -174,6 +175,13 @@ static int ocdwarf_printf_fields_description_r(handle_t p, const char* fields_de
         }
       }
     } else if ('b' == fields_description[1]) {
+      n += printf_join("r", u0, USE_DEC | USE_SPACE);
+      n += printf_text("expr block len", USE_LT | USE_SPACE);
+      n += printf_nice(expression_block->bl_len, USE_DEC);
+      n += printf_hurt(expression_block->bl_data, expression_block->bl_len, USE_HEX | USE_SPACE | USE_0x);
+      if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
+// TBD
+      }
     }
   }
 
@@ -182,13 +190,13 @@ static int ocdwarf_printf_fields_description_r(handle_t p, const char* fields_de
 
 int ocdwarf_printf_fields_description(handle_t p, const char* fields_description,
                      Dwarf_Unsigned u0, Dwarf_Unsigned u1, Dwarf_Unsigned u2, Dwarf_Signed s0, Dwarf_Signed s1,
-                     Dwarf_Unsigned code_alignment_factor, Dwarf_Signed data_alignment_factor) {
+                     Dwarf_Unsigned code_alignment_factor, Dwarf_Signed data_alignment_factor, Dwarf_Block *expression_block) {
   int n = 0;
   if (isopcode(p) && fields_description) {
     if ('u' == fields_description[0]) {
     } else if ('r' == fields_description[0]) {
       n += ocdwarf_printf_fields_description_r(p, fields_description, u0, u1, u2, s0, s1,
-                     code_alignment_factor, data_alignment_factor);
+                     code_alignment_factor, data_alignment_factor, expression_block);
     } else if ('s' == fields_description[0]) {
     } else if ('b' == fields_description[0]) {
     } else if (0 == fields_description[0]) {

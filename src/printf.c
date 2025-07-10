@@ -18,7 +18,8 @@
 #define PRINT1(x)    snprintf(o + n, size - n, x)
 #define PRINT2(x,y)  snprintf(o + n, size - n, x, y)
 
-#define MODE_USESPACE(x)  (USE_SPACE == GET_POS0(x) || USE_TAB1 == GET_POS0(x) || USE_TAB2 == GET_POS0(x))
+#define MODE_USESPACE(x)   (USE_SPACE == GET_POS0(x))
+#define MODE_USESPACES(x)  (USE_SPACE == GET_POS0(x) || USE_TAB1 == GET_POS0(x) || USE_TAB2 == GET_POS0(x))
 
 static char errname[256] = {0};
 
@@ -219,7 +220,7 @@ int printf_tidy(char* o, const size_t size, const double v, const imode_t mode) 
   if (o) {
     const imode_t mode0 = GET_POS0(mode);
     const imode_t modex = GET_STYLE(mode);
-    const bool_t  usespace = (0 == (mode & USE_NOSPACE) && 0 == mode0) || MODE_USESPACE(mode0);
+    const bool_t  usespace = (0 == (mode & USE_NOSPACE) && 0 == mode0) || MODE_USESPACES(mode0);
 
     n += printf_spos(o + n, size - n, mode, usespace);
 
@@ -245,7 +246,7 @@ int printf_neat(char* o, const size_t size, const uint64_t v, const imode_t mode
     const imode_t mode0 = GET_POS0(mode);
     const imode_t modex = GET_STYLE(mode);
     const bool_t  usespace = (0 == (mode & USE_NOSPACE) && 0 == mode0 && USE_CHARCTRL != modex && USE_CHAR != modex)
-                        || MODE_USESPACE(mode0);
+                        || MODE_USESPACES(mode0);
 
     n += printf_spos(o + n, size - n, mode, usespace);
 
@@ -371,7 +372,7 @@ int printf_open(const imode_t mode) {
   MALLOCA(char, o, MAX_BUFFER_SIZE);
 
   int n = 0;
-  n += printf_spos(o, sizeof(o), mode, MODE_USESPACE(mode));
+  n += printf_spos(o, sizeof(o), mode, MODE_USESPACES(mode));
   n += printf_post(o, mode);
 
   return n;
@@ -483,10 +484,12 @@ int printf_book(const char* p[], const imode_t mode) {
 
 int printf_hurt(const unknown_t p, const size_t size, const imode_t mode) {
   int n = 0;
-  n += printf_pack(mode & USE_TAB2 ? 4 : 0);
-  n += printf_pack(mode & USE_TAB1 ? 2 : 0);
-  n += printf_pack(mode & USE_SPACE ? 1 : 0);
-  n += printf_sore(p, size, mode & ~(USE_SPACE | USE_TAB1 | USE_TAB2));
+  if (0 != size) {
+    n += printf_pack(mode & USE_TAB2 ? 4 : 0);
+    n += printf_pack(mode & USE_TAB1 ? 2 : 0);
+    n += printf_pack(mode & USE_SPACE ? 1 : 0);
+    n += printf_sore(p, size, mode & ~(USE_SPACE | USE_TAB1 | USE_TAB2));
+  }
 
   return n;
 }
@@ -517,7 +520,7 @@ int printf_sore(const unknown_t p, const size_t size, const imode_t mode) {
 
   puchar_t p0 = CAST(puchar_t, p);
   if (USE_STR == modex || USE_STRSIZE == modex) {
-    n += printf_spos(o, sizeof(o), mode, MODE_USESPACE(mode));
+    n += printf_spos(o, sizeof(o), mode, MODE_USESPACES(mode));
 
     for (size_t i = 0; i < size; ++i, ++p0) {
       if (USE_STR == modex && 0 == *p0) break;
@@ -527,7 +530,7 @@ int printf_sore(const unknown_t p, const size_t size, const imode_t mode) {
     n += printf_epos(o, sizeof(o), mode);
     n += printf_post(o, mode);
   } else if (USE_STR16 == modex || USE_STR16SIZE == modex) {
-    n += printf_spos(o, sizeof(o), mode, MODE_USESPACE(mode));
+    n += printf_spos(o, sizeof(o), mode, MODE_USESPACES(mode));
 
     pushort_t p1 = CAST(pushort_t, p);
     for (size_t i = 0; i < size; i += 2, ++p1) {
@@ -538,14 +541,16 @@ int printf_sore(const unknown_t p, const size_t size, const imode_t mode) {
     n += printf_epos(o, sizeof(o), mode);
     n += printf_post(o, mode);
   } else if (USE_HEX == modex) {
-    n += printf_spos(o, sizeof(o), mode, MODE_USESPACE(mode));
+    if (0 != size) {
+      n += printf_spos(o, sizeof(o), mode, MODE_USESPACES(mode));
 
-    for (size_t i = 0; i < size; ++i, ++p0) {
-      n += printf_neat(o + n, sizeof(o) - n, *p0, USE_SPACE == GET_POS0(mode) ? USE_LHEX8 : USE_LHEX8 | USE_NOSPACE);
+      for (size_t i = 0; i < size; ++i, ++p0) {
+        n += printf_neat(o + n, sizeof(o) - n, *p0, MODE_USESPACE(mode) ? USE_LHEX8 : USE_LHEX8 | USE_NOSPACE);
+      }
+
+      n += printf_epos(o + n, sizeof(o) - n, mode);
+      n += printf_post(o, mode);
     }
-
-    n += printf_epos(o + n, sizeof(o) - n, mode);
-    n += printf_post(o, mode);
   } else if (USE_MD5 == modex) {
     uchar_t md[MD5_DIGEST_LENGTH];
     if (!md5(p0, size, md)) {
@@ -658,7 +663,7 @@ int printf_sore(const unknown_t p, const size_t size, const imode_t mode) {
   } else if (USE_BASE64 == modex) {
 
   } else if (USE_GUID == modex) {
-    n += printf_spos(o, sizeof(o), mode, MODE_USESPACE(mode));
+    n += printf_spos(o, sizeof(o), mode, MODE_USESPACES(mode));
 
     for (size_t i = 0; i < 4; ++i, ++p0) n += printf_neat(o + n, sizeof(o) - n, *p0, USE_LHEX8 | USE_NOSPACE);
     n += printf_neat(o + n, sizeof(o) - n, '-', USE_CHAR);
@@ -784,7 +789,7 @@ int printf_mask(const pconvert_t p, const maskz_t mask, const imode_t mode) {
   int n = 0;
   if (p) {
     maskz_t v = mask;
-    imode_t s = mode & USE_NOSPACE ? 0 : USE_SPACE;
+    imode_t s = mode & USE_NOSPACE ? USE_NONE : USE_SPACE;
     for (pconvert_t x = p; 0 != x->text; ++x) {
       if (x->type & v) {
         n += printf_work(data + n, sizeof(data) - n, x->text, (mode & ~USE_EOL) | s);
