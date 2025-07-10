@@ -120,6 +120,7 @@ int ocdwarf_eh_frame_cies(handle_t p, Dwarf_Cie *cie_data, Dwarf_Signed cie_elem
         n += ocdwarf_printf_DEC(p, j, USE_SB);
         n += printf_nice(instr_offset_in_instrs, USE_DEC2);
         n += ocdwarf_printf_CFA(p, cfa_operation, USE_NONE);
+        n += ocdwarf_printf_fields_description(p, fields_description);
         n += printf_eol();
       }
 

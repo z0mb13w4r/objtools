@@ -130,6 +130,14 @@ int ocdwarf_printf_srcfile(handle_t p, const uint32_t v, const imode_t mode) {
   return n;
 }
 
+int ocdwarf_printf_fields_description(handle_t p, const char* fields_description) {
+  int n = 0;
+  if (isopcode(p)) {
+  }
+
+  return n;
+}
+
 int ocdwarf_printf_worth(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_Signed index, Dwarf_Error *e) {
   int x = DW_DLV_ERROR;
   int n = 0;
