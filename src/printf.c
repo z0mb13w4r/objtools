@@ -413,8 +413,8 @@ int printf_join(const char* p, const uint64_t v, const imode_t mode) {
   int n = 0;
   if (p) {
     const imode_t modex = mode & ~(USE_BRACKETMASK | USE_POS0MASK | USE_POS1MASK);
-    const imode_t mode0 = (mode & USE_POS0MASK) | make_spos(mode);
-    const imode_t mode1 = (mode & USE_POS1MASK) | make_epos(mode);
+    const imode_t mode0 = GET_POS0(mode) | make_spos(mode);
+    const imode_t mode1 = GET_POS1(mode) | make_epos(mode);
 
     n += printf_work(o, sizeof(o), p, modex | mode0);
     n += printf_neat(o + n, sizeof(o) - n, v, modex | mode1 | USE_NOSPACE);
@@ -430,8 +430,8 @@ int printf_yoke(const char* p, const char* q, const imode_t mode) {
   int n = 0;
   if (p) {
     const imode_t modex = mode & ~(USE_BRACKETMASK | USE_POS0MASK | USE_POS1MASK);
-    const imode_t mode0 = (mode & USE_POS0MASK) | make_spos(mode);
-    const imode_t mode1 = (mode & USE_POS1MASK) | make_epos(mode);
+    const imode_t mode0 = GET_POS0(mode) | make_spos(mode);
+    const imode_t mode1 = GET_POS1(mode) | make_epos(mode);
 
     n += printf_work(o, sizeof(o), p, modex | mode0);
     n += printf_work(o + n, sizeof(o) - n, q, modex | mode1 | USE_NOSPACE);
