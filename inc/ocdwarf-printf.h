@@ -31,7 +31,9 @@ int ocdwarf_printf_HEX(handle_t p, const uint64_t v, const imode_t mode);
 
 int ocdwarf_printf_srcfile(handle_t p, const uint32_t v, const imode_t mode);
 
-int ocdwarf_printf_fields_description(handle_t p, const char* fields_description);
+int ocdwarf_printf_fields_description(handle_t p, const char* fields_description,
+                     Dwarf_Unsigned u0, Dwarf_Unsigned u1, Dwarf_Unsigned u2,
+                     Dwarf_Signed s0, Dwarf_Signed s1);
 
 int ocdwarf_printf_value(handle_t p, Dwarf_Die die, Dwarf_Half nattr, pdwarf_srcfiles_t sf, Dwarf_Error *e);
 int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_Half nattr, Dwarf_Error *e);

@@ -130,9 +130,34 @@ int ocdwarf_printf_srcfile(handle_t p, const uint32_t v, const imode_t mode) {
   return n;
 }
 
-int ocdwarf_printf_fields_description(handle_t p, const char* fields_description) {
+static int ocdwarf_printf_fields_description_r(handle_t p, const char* fields_description,
+                     Dwarf_Unsigned u0, Dwarf_Unsigned u1, Dwarf_Unsigned u2,
+                     Dwarf_Signed s0, Dwarf_Signed s1) {
   int n = 0;
-  if (isopcode(p)) {
+  if (isopcode(p) && fields_description) {
+    if (0 == fields_description[1]) {
+    } else if ('u' == fields_description[1]) {
+    } else if ('r' == fields_description[1]) {
+    } else if ('s' == fields_description[1]) {
+    } else if ('b' == fields_description[1]) {
+    }
+  }
+
+  return n;
+}
+
+int ocdwarf_printf_fields_description(handle_t p, const char* fields_description,
+                     Dwarf_Unsigned u0, Dwarf_Unsigned u1, Dwarf_Unsigned u2,
+                     Dwarf_Signed s0, Dwarf_Signed s1) {
+  int n = 0;
+  if (isopcode(p) && fields_description) {
+    if ('u' == fields_description[0]) {
+    } else if ('r' == fields_description[0]) {
+      n += ocdwarf_printf_fields_description_r(p, fields_description, u0, u1, u2, s0, s1);
+    } else if ('s' == fields_description[0]) {
+    } else if ('b' == fields_description[0]) {
+    } else if (0 == fields_description[0]) {
+    }
   }
 
   return n;
