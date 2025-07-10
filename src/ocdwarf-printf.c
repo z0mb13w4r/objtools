@@ -137,6 +137,12 @@ static int ocdwarf_printf_fields_description_r(handle_t p, const char* fields_de
   if (isopcode(p) && fields_description) {
     if (0 == fields_description[1]) {
     } else if ('u' == fields_description[1]) {
+      n += printf_join("r", u0, USE_DEC | USE_SPACE);
+      if (0 == fields_description[2]) {
+        n += printf_nice(u1, USE_SDEC8);
+      } else if ('d' == fields_description[2]) {
+      } else if ('a' == fields_description[2]) {
+      }
     } else if ('r' == fields_description[1]) {
     } else if ('s' == fields_description[1]) {
     } else if ('b' == fields_description[1]) {
