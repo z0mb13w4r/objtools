@@ -371,7 +371,7 @@ int ocdwarf_printf_value(handle_t p, Dwarf_Die die, Dwarf_Half nattr, pdwarf_src
   return OCDWARF_ERRCODE(x, n);
 }
 
-static int ocdwarf_printf_name(handle_t p, handle_t s, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_Error *e) {
+static int ocdwarf_printf_name(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_Error *e) {
   int x = DW_DLV_ERROR;
   int n = 0;
 
@@ -412,7 +412,7 @@ static int ocdwarf_printf_name(handle_t p, handle_t s, Dwarf_Die die, Dwarf_Attr
   return OCDWARF_ERRCODE(x, n);
 }
 
-int ocdwarf_printf_names(handle_t p, handle_t s, Dwarf_Die die, Dwarf_Error *e) {
+int ocdwarf_printf_names(handle_t p, Dwarf_Die die, Dwarf_Error *e) {
   int x = DW_DLV_ERROR;
   int n = 0;
 
@@ -424,7 +424,7 @@ int ocdwarf_printf_names(handle_t p, handle_t s, Dwarf_Die die, Dwarf_Error *e) 
       ocdwarf_dealloc_error(p, e);
     } else if (IS_DLV_OK(x)) {
       for (Dwarf_Signed i = 0; i < attrcount; ++i) {
-        n += ocdwarf_printf_name(p, s, die, attrbuf[i], e);
+        n += ocdwarf_printf_name(p, die, attrbuf[i], e);
       }
       ocdwarf_dealloc(p, attrbuf, DW_DLA_LIST);
     }
@@ -433,7 +433,7 @@ int ocdwarf_printf_names(handle_t p, handle_t s, Dwarf_Die die, Dwarf_Error *e) 
   return OCDWARF_ERRCODE(x, n);
 }
 
-int ocdwarf_printf_cu(handle_t p, handle_t s, Dwarf_Die die, Dwarf_Half tag,
+int ocdwarf_printf_cu(handle_t p, Dwarf_Die die, Dwarf_Half tag,
               Dwarf_Bool isinfo, int level, Dwarf_Error *e) {
   int x = DW_DLV_ERROR;
   int n0 = 0;
@@ -456,7 +456,7 @@ int ocdwarf_printf_cu(handle_t p, handle_t s, Dwarf_Die die, Dwarf_Half tag,
     n0 += printf_text("COMPILE_UNIT<header overall offset =", USE_LT);
     n0 += printf_nice(overall_offset - offset, USE_FHEX32 | USE_TBRT | USE_COLON | USE_EOL);
 
-    int n1 = ocdwarf_printf_sp(p, s, die, tag, isinfo, level, e);
+    int n1 = ocdwarf_printf_sp(p, die, tag, isinfo, level, e);
     if (OCDWARF_ISERRCODE(n1)) return n1;
 
     n0 += ocdwarf_sfcreate(p, die, e);
@@ -465,7 +465,7 @@ int ocdwarf_printf_cu(handle_t p, handle_t s, Dwarf_Die die, Dwarf_Half tag,
   return OCDWARF_ERRCODE(x, n0);
 }
 
-int ocdwarf_printf_sp(handle_t p, handle_t s, Dwarf_Die die, Dwarf_Half tag,
+int ocdwarf_printf_sp(handle_t p, Dwarf_Die die, Dwarf_Half tag,
               Dwarf_Bool isinfo, int level, Dwarf_Error *e) {
   int x = DW_DLV_ERROR;
   int n0 = 0;
@@ -551,18 +551,18 @@ int ocdwarf_printf(handle_t p, handle_t s,
     }
 
     if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
-      n += ocdwarf_printf_names(p, s, die, e);
+      n += ocdwarf_printf_names(p, die, e);
     }
 
     if (tag == DW_TAG_subprogram) {
       n += ocdwarf_printf_me(p, level, "subprogram", name, USE_EOL);
-      n += ocdwarf_printf_sp(p, s, die, tag, isinfo, level, e);
+      n += ocdwarf_printf_sp(p, die, tag, isinfo, level, e);
     } else if (tag == DW_TAG_compile_unit || tag == DW_TAG_partial_unit || tag == DW_TAG_type_unit) {
       ocdwarf_sfreset(p);
       n += ocdwarf_printf_me(p, level, "source file", name, USE_EOL);
-      n += ocdwarf_printf_cu(p, s, die, tag, isinfo, level, e);
+      n += ocdwarf_printf_cu(p, die, tag, isinfo, level, e);
     } else {
-      n += ocdwarf_printf_sp(p, s, die, tag, isinfo, level, e);
+      n += ocdwarf_printf_sp(p, die, tag, isinfo, level, e);
     }
   }
 
