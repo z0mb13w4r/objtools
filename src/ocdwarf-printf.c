@@ -157,7 +157,22 @@ static int ocdwarf_printf_fields_description_r(handle_t p, const char* fields_de
         n += printf_nice(u2, USE_DEC | USE_RBRT);
       }
     } else if ('r' == fields_description[1]) {
+      n += printf_join("r", u0, USE_DEC | USE_SPACE);
+      n += printf_join("r", u1, USE_DEC | USE_SPACE);
     } else if ('s' == fields_description[1]) {
+      if ('d' == fields_description[2]) {
+        n += printf_join("r", u0, USE_DEC | USE_SPACE);
+        n += printf_nice(s1 * data_alignment_factor, USE_DEC);
+        if ('a' == fields_description[3]) {
+          n += printf_text(", addrspace", USE_LT);
+          n += printf_nice(u2, USE_DEC);
+        }
+        if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
+          n += printf_nice(s1, USE_DEC | USE_RBLT);
+          n += printf_text("*", USE_LT | USE_SPACE);
+          n += printf_nice(data_alignment_factor, USE_DEC | USE_RBRT);
+        }
+      }
     } else if ('b' == fields_description[1]) {
     }
   }
