@@ -5,7 +5,7 @@
 
 static const int MAXSIZE = 24;
 
-int ocdwarf_eh_frame_cies(handle_t p, Dwarf_Die die, Dwarf_Cie *cie_data, Dwarf_Signed cie_element_count, Dwarf_Error *e) {
+int ocdwarf_eh_frame_cies(handle_t p, Dwarf_Cie *cie_data, Dwarf_Signed cie_element_count, Dwarf_Error *e) {
   int x = DW_DLV_ERROR;
   int n = 0;
 
@@ -120,7 +120,7 @@ int ocdwarf_eh_frame_cies(handle_t p, Dwarf_Die die, Dwarf_Cie *cie_data, Dwarf_
         n += ocdwarf_printf_DEC(p, j, USE_SB);
         n += printf_nice(instr_offset_in_instrs, USE_DEC2);
         n += ocdwarf_printf_CFA(p, cfa_operation, USE_NONE);
-        n += ocdwarf_printf_fields_description(p, die, fields_description, u0, u1, u2, s0, s1,
+        n += ocdwarf_printf_fields_description(p, fields_description, u0, u1, u2, s0, s1,
                      code_alignment_factor, data_alignment_factor, &expression_block);
         n += printf_eol();
       }
@@ -290,7 +290,7 @@ int ocdwarf_eh_frame(handle_t p, handle_t s, handle_t d) {
 
     Dwarf_Die die = 0;
     n += ocdwarf_eh_frame_fdes(p, fde_data, fde_element_count, ocget(p, OPCODE_DWARF_ERROR));
-    n += ocdwarf_eh_frame_cies(p, die, cie_data, cie_element_count, ocget(p, OPCODE_DWARF_ERROR));
+    n += ocdwarf_eh_frame_cies(p, cie_data, cie_element_count, ocget(p, OPCODE_DWARF_ERROR));
 
     ocdwarf_dealloc_fde_cie_list(p, cie_data, cie_element_count, fde_data, fde_element_count);
   }

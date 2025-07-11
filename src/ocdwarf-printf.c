@@ -130,7 +130,7 @@ int ocdwarf_printf_srcfile(handle_t p, const uint32_t v, const imode_t mode) {
   return n;
 }
 
-int ocdwarf_printf_expression_block(handle_t p, Dwarf_Die die, Dwarf_Block *expression_block) {
+int ocdwarf_printf_expression_block(handle_t p, Dwarf_Block *expression_block) {
   int n = 0;
   if (isopcode(p) && expression_block) {
   }
@@ -138,7 +138,7 @@ int ocdwarf_printf_expression_block(handle_t p, Dwarf_Die die, Dwarf_Block *expr
   return n;
 }
 
-static int ocdwarf_printf_fields_description_r(handle_t p, Dwarf_Die die, const char* fields_description,
+static int ocdwarf_printf_fields_description_r(handle_t p, const char* fields_description,
                      Dwarf_Unsigned u0, Dwarf_Unsigned u1, Dwarf_Unsigned u2, Dwarf_Signed s0, Dwarf_Signed s1,
                      Dwarf_Unsigned code_alignment_factor, Dwarf_Signed data_alignment_factor, Dwarf_Block *expression_block) {
   int n = 0;
@@ -188,8 +188,7 @@ static int ocdwarf_printf_fields_description_r(handle_t p, Dwarf_Die die, const 
       n += printf_nice(expression_block->bl_len, USE_DEC);
       n += printf_hurt(expression_block->bl_data, expression_block->bl_len, USE_HEX | USE_SPACE | USE_0x);
       if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
-// TBD
-        n += ocdwarf_printf_expression_block(p, die, expression_block);
+        n += ocdwarf_printf_expression_block(p, expression_block);
       }
     }
   }
@@ -197,14 +196,14 @@ static int ocdwarf_printf_fields_description_r(handle_t p, Dwarf_Die die, const 
   return n;
 }
 
-int ocdwarf_printf_fields_description(handle_t p, Dwarf_Die die, const char* fields_description,
+int ocdwarf_printf_fields_description(handle_t p, const char* fields_description,
                      Dwarf_Unsigned u0, Dwarf_Unsigned u1, Dwarf_Unsigned u2, Dwarf_Signed s0, Dwarf_Signed s1,
                      Dwarf_Unsigned code_alignment_factor, Dwarf_Signed data_alignment_factor, Dwarf_Block *expression_block) {
   int n = 0;
   if (isopcode(p) && fields_description) {
     if ('u' == fields_description[0]) {
     } else if ('r' == fields_description[0]) {
-      n += ocdwarf_printf_fields_description_r(p, die, fields_description, u0, u1, u2, s0, s1,
+      n += ocdwarf_printf_fields_description_r(p, fields_description, u0, u1, u2, s0, s1,
                      code_alignment_factor, data_alignment_factor, expression_block);
     } else if ('s' == fields_description[0]) {
     } else if ('b' == fields_description[0]) {
