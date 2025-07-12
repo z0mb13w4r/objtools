@@ -442,6 +442,23 @@ int printf_yoke(const char* p, const char* q, const imode_t mode) {
   return n;
 }
 
+int printf_tack(const uint64_t v0, const imode_t m0, const char* v1, const uint64_t v2, const imode_t m2, const imode_t mode) {
+  MALLOCA(char, o, MAX_BUFFER_SIZE);
+
+  int n = 0;
+  if (v1) {
+    const imode_t modex = mode & ~(USE_BRACKETMASK | USE_POS0MASK | USE_POS1MASK);
+    const imode_t mode0 = GET_POS0(mode) | make_spos(mode);
+    const imode_t mode1 = GET_POS1(mode) | make_epos(mode);
+
+    n += printf_nice(v0, m0 | mode0);
+    n += printf_text(v1, USE_LT | USE_SPACE);
+    n += printf_nice(v2, m2 | mode1);
+  }
+
+  return n;
+}
+
 int printf_text(const char* p, const imode_t mode) {
   MALLOCA(char, o1, MAX_BUFFER_SIZE);
   MALLOCA(char, o2, MAX_BUFFER_SIZE + MAX_PADDING_SIZE);

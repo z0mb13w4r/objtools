@@ -178,9 +178,7 @@ static int ocdwarf_printf_fields_description_r(handle_t p, const char* fields_de
         n += printf_nice(u1 * data_alignment_factor, USE_DEC);
 
         if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
-          n += printf_nice(u1, USE_DEC | USE_RBLT);
-          n += printf_text("*", USE_LT | USE_SPACE);
-          n += printf_nice(data_alignment_factor, USE_DEC | USE_RBRT);
+          n += printf_tack(u1, USE_DEC, "*", data_alignment_factor, USE_DEC, USE_RB);
         }
       } else if ('a' == fields_description[2]) {
         n += printf_nice(u1, USE_DEC);
@@ -200,9 +198,7 @@ static int ocdwarf_printf_fields_description_r(handle_t p, const char* fields_de
           n += printf_nice(u2, USE_DEC);
         }
         if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
-          n += printf_nice(s1, USE_DEC | USE_RBLT);
-          n += printf_text("*", USE_LT | USE_SPACE);
-          n += printf_nice(data_alignment_factor, USE_DEC | USE_RBRT);
+          n += printf_tack(s1, USE_DEC, "*", data_alignment_factor, USE_DEC, USE_RB);
         }
       }
     } else if ('b' == fields_description[1]) {
@@ -235,7 +231,16 @@ static int ocdwarf_printf_fields_description_u(handle_t p, const char* fields_de
                      Dwarf_Unsigned code_alignment_factor, Dwarf_Signed data_alignment_factor, Dwarf_Block *expression_block) {
   int n = 0;
   if (isopcode(p) && fields_description && expression_block) {
+    popcode_t oc = ocget(p, OPCODE_THIS);
 
+    if (0 == fields_description[1]) {
+      n += printf_nice(u0, USE_DEC);
+    } else if ('c' == fields_description[1]) {
+      n += printf_nice(u0 * code_alignment_factor, USE_DEC);
+      if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
+        n += printf_tack(u0, USE_DEC, "*", code_alignment_factor, USE_DEC, USE_RB);
+      }
+    }
   }
 
   return n;

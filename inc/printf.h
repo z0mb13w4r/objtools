@@ -183,6 +183,8 @@ int printf_open(const imode_t mode);
 int printf_stop(const imode_t mode);
 
 int printf_work(char* o, const size_t size, const char* p, const imode_t mode);
+
+int printf_tack(const uint64_t v0, const imode_t m0, const char* v1, const uint64_t v2, const imode_t m2, const imode_t mode);
 int printf_join(const char* p, const uint64_t v, const imode_t mode);
 int printf_yoke(const char* p, const char* q, const imode_t mode);
 int printf_book(const char* p[], const imode_t mode);
