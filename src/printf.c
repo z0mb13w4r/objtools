@@ -447,7 +447,6 @@ int printf_tack(const uint64_t v0, const imode_t m0, const char* v1, const uint6
 
   int n = 0;
   if (v1) {
-    const imode_t modex = mode & ~(USE_BRACKETMASK | USE_POS0MASK | USE_POS1MASK);
     const imode_t mode0 = GET_POS0(mode) | make_spos(mode);
     const imode_t mode1 = GET_POS1(mode) | make_epos(mode);
 
