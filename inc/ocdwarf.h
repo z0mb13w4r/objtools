@@ -117,6 +117,10 @@ int ocdwarf_run(handle_t p, handle_t s);
 int ocdwarf_sfreset(handle_t p);
 int ocdwarf_sfcreate(handle_t p, Dwarf_Die die, Dwarf_Error *e);
 
+int ocdwarf_next_cu_header(handle_t p, Dwarf_Die *cu_die, Dwarf_Error *e);
+
+int ocdwarf_getfuncname(handle_t p);
+
 void ocdwarf_dealloc(handle_t p, unknown_t v, Dwarf_Unsigned type);
 void ocdwarf_dealloc_attribute(handle_t p, Dwarf_Attribute *v, Dwarf_Signed size);
 void ocdwarf_dealloc_fde_cie_list(handle_t p, Dwarf_Cie *cie_data, Dwarf_Signed cie_element_count,
