@@ -31,7 +31,7 @@ int ocdwarf_debug_aranges(handle_t p, handle_t s, handle_t d) {
       Dwarf_Bool isinfo = TRUE;
       x = dwarf_offdie_b(ocget(p, OPCODE_DWARF_DEBUG), cu_die_offset, isinfo, &cu_die, ocget(p, OPCODE_DWARF_ERROR));
       if (IS_DLV_OK(x) && (0 != start || 0 != length)) {
-        n += ocdwarf_printf(p, s, cu_die, isinfo, i, ocget(p, OPCODE_DWARF_ERROR));
+        n += ocdwarf_printf(p, cu_die, isinfo, i, ocget(p, OPCODE_DWARF_ERROR));
 
         if (segment_entry_size) {
           n += printf_text("arange starts at segment", USE_LT);

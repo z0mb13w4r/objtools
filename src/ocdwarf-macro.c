@@ -255,6 +255,8 @@ int ocdwarf_debug_macro(handle_t p, handle_t s, handle_t d) {
       return x;
     }
 
+    n += x;
+
     Dwarf_Unsigned version = 0;
     Dwarf_Unsigned number_of_ops = 0;
     Dwarf_Unsigned ops_total_byte_len = 0;

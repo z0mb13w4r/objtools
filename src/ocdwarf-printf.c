@@ -673,8 +673,7 @@ int ocdwarf_printf_sp(handle_t p, Dwarf_Die die, Dwarf_Half tag,
   return OCDWARF_ERRCODE(x, n0);
 }
 
-int ocdwarf_printf(handle_t p, handle_t s,
-              Dwarf_Die die, Dwarf_Bool isinfo, int level, Dwarf_Error *e) {
+int ocdwarf_printf(handle_t p, Dwarf_Die die, Dwarf_Bool isinfo, int level, Dwarf_Error *e) {
   int x = DW_DLV_ERROR;
   int n = 0;
 

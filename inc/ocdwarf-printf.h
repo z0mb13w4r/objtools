@@ -48,7 +48,7 @@ int ocdwarf_printf_cu(handle_t p, Dwarf_Die die, Dwarf_Half tag,
 int ocdwarf_printf_sp(handle_t p, Dwarf_Die die, Dwarf_Half tag,
               Dwarf_Bool isinfo, int level, Dwarf_Error *e);
 
-int ocdwarf_printf(handle_t p, handle_t s, Dwarf_Die die, Dwarf_Bool isinfo,
+int ocdwarf_printf(handle_t p, Dwarf_Die die, Dwarf_Bool isinfo,
                      int level, Dwarf_Error *e);
 
 #endif
