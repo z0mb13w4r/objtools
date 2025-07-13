@@ -316,16 +316,33 @@ int ocdwarf_sfcreate(handle_t p, Dwarf_Die die, Dwarf_Error *e) {
   return n;
 }
 
-int ocdwarf_getfuncname(handle_t p) {
+int ocdwarf_getfuncname(handle_t p, char* funcname, Dwarf_Error *e) {
   int x = DW_DLV_ERROR;
+  int n = 0;
 
   if (isopcode(p)) {
-    pocdwarf_t p0 = ocget(p, OPCODE_DWARF);
-    if (p0) {
+    Dwarf_Die cu_die = 0;
+
+    n = ocdwarf_next_cu_header(p, &cu_die, e);
+    if (OCDWARF_ISNOENTRY(n)) return n;
+    else if (OCDWARF_ISFAILED(n)) {
+      ocdwarf_dealloc_error(p, NULL);
+      return n;
+    }
+
+    Dwarf_Die child = 0;
+    x = dwarf_child(cu_die, &child, e);
+    if (IS_DLV_ERROR(x)) {
+      dwarf_dealloc_die(cu_die);
+      ocdwarf_finish(p, NULL);
+    } else if (IS_DLV_OK(x)) {
+
+      dwarf_dealloc_die(child);
+      child = 0;
     }
   }
 
-  return x;
+  return OCDWARF_ERRCODE(x, n);
 }
 
 int ocdwarf_next_cu_header(handle_t p, Dwarf_Die *cu_die, Dwarf_Error *e) {
