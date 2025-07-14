@@ -326,15 +326,6 @@ static int ocdwarf_getfuncnameZ(handle_t p, Dwarf_Die die, Dwarf_Half tag,
   if (isopcode(p)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
 
-    char *name = 0;
-    x = dwarf_diename(die, &name, e);
-    if (IS_DLV_ERROR(x)) {
-      ocdwarf_object_finish(p);
-      printf_x("dwarf_diename, level %d", level);
-    } else if (IS_DLV_NO_ENTRY(x)) {
-      name = "<no DW_AT_name attr>";
-    }
-
     Dwarf_Signed cattr = 0;
     Dwarf_Attribute *pattr = 0;
     x = dwarf_attrlist(die, &pattr, &cattr, e);
@@ -345,32 +336,45 @@ static int ocdwarf_getfuncnameZ(handle_t p, Dwarf_Die die, Dwarf_Half tag,
       return OCDWARF_ERRCODE(x, n0);
     }
 
-    Dwarf_Off overall_offset = 0;
-    x = dwarf_dieoffset(die, &overall_offset, e);
-    if (IS_DLV_ANY_ERROR(x)) {
-      printf_e("dwarf_dieoffset failed! errcode %d", x);
-      return OCDWARF_ERRCODE(x, n0);
-    }
-
-    n0 += ocdwarf_printf_DEC(p, level, USE_NONE);
-    n0 += ocdwarf_printf_HEX(p, overall_offset, USE_NOSPACE);
-    n0 += ocdwarf_printf_TAG(p, tag, USE_NONE);
     if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
+      Dwarf_Off overall_offset = 0;
+      x = dwarf_dieoffset(die, &overall_offset, e);
+      if (IS_DLV_ANY_ERROR(x)) {
+        printf_e("dwarf_dieoffset failed! errcode %d", x);
+        return OCDWARF_ERRCODE(x, n0);
+      }
+
+      char *name = 0;
+      x = dwarf_diename(die, &name, e);
+      if (IS_DLV_ERROR(x)) {
+        ocdwarf_object_finish(p);
+        printf_x("dwarf_diename, level %d", level);
+      } else if (IS_DLV_NO_ENTRY(x)) {
+        name = "<no DW_AT_name attr>";
+      }
+
+      n0 += ocdwarf_printf_DEC(p, level, USE_NONE);
+      n0 += ocdwarf_printf_HEX(p, overall_offset, USE_NOSPACE);
+      n0 += ocdwarf_printf_TAG(p, tag, USE_NONE);
       n0 += printf_text(name, USE_LT | USE_SPACE | USE_SQ);
+      n0 += printf_eol();
     }
-    n0 += printf_eol();
 
     for (Dwarf_Signed i = 0; i < cattr; ++i) {
-      int n1 = ocdwarf_printf_worth(p, die, pattr[i], i, e);
-      if (OCDWARF_ISERRCODE(n1)) {
-        ocdwarf_dealloc_attribute(p, pattr, cattr);
-        return n1;
+      if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
+        int n1 = ocdwarf_printf_worth(p, die, pattr[i], i, e);
+        if (OCDWARF_ISERRCODE(n1)) {
+          ocdwarf_dealloc_attribute(p, pattr, cattr);
+          return n1;
+        }
+        n0 += n1;
       }
-      n0 += n1;
     }
 
     ocdwarf_dealloc_attribute(p, pattr, cattr);
-    n0 += printf_eol();
+    if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
+      n0 += printf_eol();
+    }
   }
 
   return OCDWARF_ERRCODE(x, n0);
@@ -383,15 +387,6 @@ static int ocdwarf_getfuncnameY(handle_t p, Dwarf_Die die, Dwarf_Bool isinfo, in
   if (isopcode(p)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
 
-    char *name = 0;
-    x = dwarf_diename(die, &name, e);
-    if (IS_DLV_ERROR(x)) {
-      ocdwarf_object_finish(p);
-      printf_x("dwarf_diename, level %d", level);
-    } else if (IS_DLV_NO_ENTRY(x)) {
-      name = "<no DW_AT_name attr>";
-    }
-
     Dwarf_Half tag = 0;
     x = dwarf_tag(die, &tag, e);
     if (IS_DLV_ANY_ERROR(x)) {
@@ -403,7 +398,6 @@ static int ocdwarf_getfuncnameY(handle_t p, Dwarf_Die die, Dwarf_Bool isinfo, in
     }
 
     if (tag == DW_TAG_subprogram) {
-      n += ocdwarf_printf_me(p, level, "subprogram", name, USE_EOL);
       n += ocdwarf_getfuncnameZ(p, die, tag, isinfo, level, e);
     } else if (tag == DW_TAG_compile_unit || tag == DW_TAG_partial_unit || tag == DW_TAG_type_unit) {
       n += ocdwarf_sfcreate(p, die, e);

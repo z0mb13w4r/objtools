@@ -159,10 +159,11 @@ int ocdwarf_eh_frame_fdes(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed fde_elem
 
       Dwarf_Addr end_func_addr = low_pc + func_length;
 
-      n += ocdwarf_printf_DEC(p, i, USE_NONE);
-
       char* funcname = 0;
       ocdwarf_getfuncname(p, &funcname, e);
+
+      // < 0>
+      n += ocdwarf_printf_DEC(p, i, USE_NONE);
 
       // <0x00001020:0x000010c0>
       n += printf_nice(low_pc, USE_FHEX32 | USE_TBLT | USE_COLON | USE_NOSPACE);
