@@ -316,6 +316,51 @@ int ocdwarf_sfcreate(handle_t p, Dwarf_Die die, Dwarf_Error *e) {
   return n;
 }
 
+static int ocdwarf_getfuncnameY(handle_t p, Dwarf_Die die, Dwarf_Bool isinfo, int level, Dwarf_Error *e) {
+  int x = DW_DLV_ERROR;
+  int n = 0;
+
+  if (isopcode(p)) {
+    popcode_t oc = ocget(p, OPCODE_THIS);
+
+    char *name = 0;
+    x = dwarf_diename(die, &name, e);
+    if (IS_DLV_ERROR(x)) {
+      ocdwarf_object_finish(p);
+      printf_x("dwarf_diename, level %d", level);
+    } else if (IS_DLV_NO_ENTRY(x)) {
+      name = "<no DW_AT_name attr>";
+    }
+
+    Dwarf_Half tag = 0;
+    x = dwarf_tag(die, &tag, e);
+    if (IS_DLV_ANY_ERROR(x)) {
+      if (IS_DLV_ERROR(x) && e) {
+        ocdwarf_dealloc_error(p, e);
+      }
+      ocdwarf_object_finish(p);
+      printf_x("dwarf_tag, level %d", level);
+    }
+
+    if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
+      n += ocdwarf_printf_names(p, die, e);
+    }
+
+    if (tag == DW_TAG_subprogram) {
+      n += ocdwarf_printf_me(p, level, "subprogram", name, USE_EOL);
+      n += ocdwarf_printf_sp(p, die, tag, isinfo, level, e);
+    } else if (tag == DW_TAG_compile_unit || tag == DW_TAG_partial_unit || tag == DW_TAG_type_unit) {
+      ocdwarf_sfreset(p);
+      n += ocdwarf_printf_me(p, level, "source file", name, USE_EOL);
+      n += ocdwarf_printf_cu(p, die, tag, isinfo, level, e);
+    } else {
+      n += ocdwarf_printf_sp(p, die, tag, isinfo, level, e);
+    }
+  }
+
+  return OCDWARF_ERRCODE(x, n);
+}
+
 static int ocdwarf_getfuncnameX(handle_t p, Dwarf_Die die,
                   Dwarf_Bool isinfo, int level, Dwarf_Error *e) {
   int x = DW_DLV_ERROR;
@@ -348,7 +393,7 @@ static int ocdwarf_getfuncnameX(handle_t p, Dwarf_Die die,
         dwarf_dealloc_die(cur_die);
       }
       cur_die = sib_die;
-      n += ocdwarf_printf(p, cur_die, isinfo, level, e);
+      n += ocdwarf_getfuncnameY(p, cur_die, isinfo, level, e);
     }
   }
 
@@ -385,7 +430,7 @@ int ocdwarf_getfuncname(handle_t p, char** funcname, Dwarf_Error *e) {
         return OCDWARF_ERRCODE(x, n0);
       }
 
-      n1 = ocdwarf_die_and_siblings(p, cu_die, isinfo, level, e);
+      n1 = ocdwarf_getfuncnameX(p, cu_die, isinfo, level, e);
       if (OCDWARF_ISFAILED(n1)) {
         dwarf_dealloc_die(cu_die);
         printf_e("ocdwarf_die_and_siblings failed! %d", n1);
