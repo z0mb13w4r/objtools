@@ -159,8 +159,8 @@ int ocdwarf_eh_frame_fdes(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed fde_elem
 
       Dwarf_Addr end_func_addr = low_pc + func_length;
 
-      char* funcname = 0;
-      ocdwarf_getfuncname(p, low_pc, &funcname, e);
+      char* name = 0;
+      ocdwarf_getfuncname(p, low_pc, &name, e);
 
       // < 0>
       n += ocdwarf_printf_DEC(p, i, USE_NONE);
@@ -170,7 +170,7 @@ int ocdwarf_eh_frame_fdes(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed fde_elem
       n += printf_nice(end_func_addr, USE_FHEX32 | USE_TBRT | USE_NOSPACE);
 
       // <_getchar>
-      n += printf_text("_getchar", USE_LT | USE_TB);
+      n += printf_text(name, USE_LT | USE_TB);
 
       // <cie offset 0x00000034::cie index 0>
       n += printf_text("cie offset", USE_LT | USE_TBLT);
