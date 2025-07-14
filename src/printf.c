@@ -464,21 +464,19 @@ int printf_text(const char* p, const imode_t mode) {
 
   int n = 0;
 
-  if (p) {
-    n += printf_work(o1, sizeof(o1), p, mode);
+  n += printf_work(o1, sizeof(o1), p ? p : "", mode);
 
-    int sz = MIN(MAX(0, CAST(int, GET_PAD(mode)) - n), MAX_PADDING_SIZE);
-    if (sz) {
-      if (USE_RT == GET_FORMAT(mode)) {
-        snprintf(o2, sizeof(o2), "%*s%s", sz, " ", o1);
-      } else {
-        snprintf(o2, sizeof(o2), "%s%*s", o1, sz, " ");
-      }
-
-      n += printf_post(o2, mode) + sz;
+  int sz = MIN(MAX(0, CAST(int, GET_PAD(mode)) - n), MAX_PADDING_SIZE);
+  if (sz) {
+    if (USE_RT == GET_FORMAT(mode)) {
+      snprintf(o2, sizeof(o2), "%*s%s", sz, " ", o1);
     } else {
-      n += printf_post(o1, mode);
+      snprintf(o2, sizeof(o2), "%s%*s", o1, sz, " ");
     }
+
+    n += printf_post(o2, mode) + sz;
+  } else {
+    n += printf_post(o1, mode);
   }
 
   return n;
