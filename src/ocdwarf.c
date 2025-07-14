@@ -302,6 +302,8 @@ int ocdwarf_sfcreate(handle_t p, Dwarf_Die die, Dwarf_Error *e) {
     popcode_t oc = ocget(p, OPCODE_THIS);
     pdwarf_srcfiles_t sf = ocget(p, OPCODE_DWARF_SRCFILES);
     if (sf) {
+      ocdwarf_sfreset(p);
+
       sf->status = dwarf_srcfiles(die, &sf->data, &sf->size, e);
 
       if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE) && IS_DLV_OK(sf->status) && 0 != sf->size) {
@@ -342,19 +344,11 @@ static int ocdwarf_getfuncnameY(handle_t p, Dwarf_Die die, Dwarf_Bool isinfo, in
       printf_x("dwarf_tag, level %d", level);
     }
 
-    if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
-      n += ocdwarf_printf_names(p, die, e);
-    }
-
     if (tag == DW_TAG_subprogram) {
       n += ocdwarf_printf_me(p, level, "subprogram", name, USE_EOL);
       n += ocdwarf_printf_sp(p, die, tag, isinfo, level, e);
     } else if (tag == DW_TAG_compile_unit || tag == DW_TAG_partial_unit || tag == DW_TAG_type_unit) {
-      ocdwarf_sfreset(p);
-      n += ocdwarf_printf_me(p, level, "source file", name, USE_EOL);
-      n += ocdwarf_printf_cu(p, die, tag, isinfo, level, e);
-    } else {
-      n += ocdwarf_printf_sp(p, die, tag, isinfo, level, e);
+      n += ocdwarf_sfcreate(p, die, e);
     }
   }
 
