@@ -373,9 +373,9 @@ static int ocdwarf_spget0(handle_t p, Dwarf_Die die, Dwarf_Half tag, Dwarf_Addr 
         if (IS_DLV_ANY_ERROR(x)) {
           printf_e("dwarf_formaddr failed! errcode %d", x);
           return OCDWARF_ERRCODE(x, n0);
+        } else if (low_pc_addr == addr) {
+          ismatch = TRUE;
         }
-
-        if (low_pc_addr == addr) ismatch = TRUE;
       }
 
       if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
@@ -390,16 +390,45 @@ static int ocdwarf_spget0(handle_t p, Dwarf_Die die, Dwarf_Half tag, Dwarf_Addr 
 
     if (ismatch) {
       for (Dwarf_Signed i = 0; i < cattr; ++i) {
+        Dwarf_Attribute attr = pattr[i];
+
+        Dwarf_Half nform = 0;
+        x = dwarf_whatform(attr, &nform, e);
+        if (IS_DLV_ANY_ERROR(x)) {
+          if (IS_DLV_ERROR(x) && e) {
+            ocdwarf_dealloc_error(p, e);
+          }
+
+          ocdwarf_object_finish(p);
+          printf_x("dwarf_whatform");
+        }
+
         Dwarf_Half nattr = 0;
-        x = dwarf_whatattr(pattr[i], &nattr, e);
+        x = dwarf_whatattr(attr, &nattr, e);
         if (IS_DLV_ANY_ERROR(x)) {
           printf_e("dwarf_whatattr failed! errcode %d", x);
           return OCDWARF_ERRCODE(x, n0);
-        } else if (DW_AT_name == nattr) {
-          x = dwarf_formstring(pattr[i], name, e);
+        } else if (isused(zFORMSTRING, nform)) {
+          char *value = NULL;
+          x = dwarf_formstring(attr, &value, e);
           if (IS_DLV_ANY_ERROR(x)) {
             printf_e("dwarf_formstring failed! errcode %d", x);
            return OCDWARF_ERRCODE(x, n0);
+          } else if (DW_AT_name == nattr) {
+            *name = value;
+          }
+        } else if (isused(zFORMUDATA, nform)) {
+          Dwarf_Unsigned value = 0;
+          x = dwarf_formudata(attr, &value, e);
+          if (IS_DLV_ANY_ERROR(x)) {
+            printf_e("dwarf_formudata failed! errcode %d", x);
+            return OCDWARF_ERRCODE(x, n0);
+          }
+
+          if (DW_AT_decl_line == nattr) {
+//            nline = value;
+          } else if (DW_AT_decl_column == nattr) {
+//            ncolumn = value;
           }
         }
       }
