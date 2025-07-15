@@ -415,7 +415,7 @@ static int ocdwarf_spget0(handle_t p, Dwarf_Die die, Dwarf_Half tag, Dwarf_Addr 
           if (IS_DLV_ANY_ERROR(x)) {
             printf_e("dwarf_formstring failed! errcode %d", x);
            return OCDWARF_ERRCODE(x, n0);
-          } else if (DW_AT_name == nattr) {
+          } else if (DW_AT_name == nattr && name) {
             *name = value;
           }
         } else if (isused(zFORMUDATA, nform)) {
@@ -426,9 +426,9 @@ static int ocdwarf_spget0(handle_t p, Dwarf_Die die, Dwarf_Half tag, Dwarf_Addr 
             return OCDWARF_ERRCODE(x, n0);
           }
 
-          if (DW_AT_decl_line == nattr) {
+          if (DW_AT_decl_line == nattr && nline) {
             *nline = value;
-          } else if (DW_AT_decl_column == nattr) {
+          } else if (DW_AT_decl_column == nattr && ncolumn) {
             *ncolumn = value;
           }
         }
