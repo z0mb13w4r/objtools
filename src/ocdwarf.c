@@ -470,9 +470,11 @@ static int ocdwarf_getfuncnameX(handle_t p, Dwarf_Die die, Dwarf_Addr addr,
         ocdwarf_finish(p, e);
         printf_x("dwarf_siblingof_b, level %d", level);
       }
+
       if (cur_die != die) {
         dwarf_dealloc_die(cur_die);
       }
+
       cur_die = sib_die;
       n += ocdwarf_getfuncnameY(p, cur_die, addr, isinfo, level, name, e);
     }
@@ -481,7 +483,7 @@ static int ocdwarf_getfuncnameX(handle_t p, Dwarf_Die die, Dwarf_Addr addr,
   return OCDWARF_ERRCODE(x, n);
 }
 
-int ocdwarf_getfuncname(handle_t p, Dwarf_Addr addr, char** name, Dwarf_Error *e) {
+int ocdwarf_spget(handle_t p, Dwarf_Addr addr, char** name, Dwarf_Error *e) {
   int x = DW_DLV_ERROR;
   int n0 = 0;
   int n1 = 0;
