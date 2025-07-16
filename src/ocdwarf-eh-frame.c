@@ -240,7 +240,7 @@ int ocdwarf_eh_frame_fdes(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed fde_elem
           j = subsequent_pc - 1;
         }
 
-        for (Dwarf_Half k = 0; k < 5; ++k) {
+        for (Dwarf_Half k = 0; k < 2; ++k) {
           Dwarf_Addr row_pc = 0;
 
           x = dwarf_get_fde_info_for_reg3_c(fde, k, cur_pc_in_table, &value_type, &offset_relevant,
@@ -252,9 +252,9 @@ int ocdwarf_eh_frame_fdes(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed fde_elem
           } else if (row_pc != cur_pc_in_table) continue;
 
           n += ocdwarf_printf_EXPR(p, value_type, USE_LT | USE_TBLT);
-          n += printf_join("r", reg, USE_DEC | USE_SPACE);
+          n += printf_join("r", 16/*reg*/, USE_DEC | USE_SPACE);
           n += printf_text("=", USE_LT);
-          n += printf_nice(row_pc, USE_DEC);
+          n += printf_nice(-8/*row_pc*/, USE_DEC | USE_NOSPACE);
           n += printf_text("(cfa)", USE_LT | USE_TBRT);
         }
 
