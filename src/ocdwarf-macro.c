@@ -66,7 +66,7 @@ int ocdwarf_debug_macro_ops(handle_t p, Dwarf_Die die, Dwarf_Macro_Context conte
         n += printf_text("line", USE_LT | USE_SPACE);
         n += printf_nice(nline, USE_DEC);
         n += printf_text("file number", USE_LT | USE_SPACE);
-        n += ocdwarf_printf_srcfile(p, index, USE_DEC);
+        n += ocdwarf_printf_SRCFILE(p, index, USE_DEC);
       } else if (isused(zMACRODEF, macro_operator)) {
         Dwarf_Unsigned nline = 0;
         Dwarf_Unsigned index = 0;

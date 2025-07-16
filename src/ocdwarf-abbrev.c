@@ -85,6 +85,8 @@ int ocdwarf_debug_abbrev(handle_t p, handle_t s, handle_t d) {
   int n0 = 0;
 
   if (isopcode(p) && (isopshdr(s) || isopshdrNN(s))) {
+    n0 += ocdwarf_printf_groups(p, ocget(p, OPCODE_DWARF_ERROR));
+
     Dwarf_Unsigned offset = 0;
     Dwarf_Unsigned nabbrev = 1;
 

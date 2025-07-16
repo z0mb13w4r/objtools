@@ -8,6 +8,8 @@ int ocdwarf_debug_aranges(handle_t p, handle_t s, handle_t d) {
   int n = 0;
 
   if (isopcode(p) && (isopshdr(s) || isopshdrNN(s))) {
+    n += ocdwarf_printf_groups(p, ocget(p, OPCODE_DWARF_ERROR));
+
     Dwarf_Signed arange_count = 0;
     Dwarf_Arange *arange_array = NULL;
     x = dwarf_get_aranges(ocget(p, OPCODE_DWARF_DEBUG), &arange_array, &arange_count, ocget(p, OPCODE_DWARF_ERROR));

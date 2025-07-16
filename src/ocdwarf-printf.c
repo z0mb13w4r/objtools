@@ -6,7 +6,9 @@ Dwarf_Unsigned nline = 0;
 Dwarf_Unsigned ncolumn = 0;
 Dwarf_Addr low_pc_addr = 0;
 
-const int MAXMERIT = 18;
+static const int MAXMERIT = 18;
+static const int MAXGROUP = 24;
+
 
 int ocdwarf_printf_me(handle_t p, const int x, const char *y, const char *z, const imode_t mode) {
   int n = 0;
@@ -117,7 +119,7 @@ int ocdwarf_printf_CHILDREN(handle_t p, const uint64_t v, const imode_t mode) {
   return ocdwarf_printf_pluck(p, zDWCHILDREN, v, mode);
 }
 
-int ocdwarf_printf_srcfile(handle_t p, const uint32_t v, const imode_t mode) {
+int ocdwarf_printf_SRCFILE(handle_t p, const uint32_t v, const imode_t mode) {
   int n = 0;
   if (isopcode(p)) {
     pdwarf_srcfiles_t sf = ocget(p, OPCODE_DWARF_SRCFILES);
@@ -395,7 +397,7 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
       } else if (isused(zATHEX32, nattr)) {
         n += printf_nice(value, USE_FHEX32);
       } else if (isused(zATSRCFILE, nattr)) {
-        n += ocdwarf_printf_srcfile(p, value, USE_FHEX32);
+        n += ocdwarf_printf_SRCFILE(p, value, USE_FHEX32);
       } else {
         n += printf_nice(value, USE_FHEX16);
       }
@@ -555,6 +557,60 @@ static int ocdwarf_printf_name(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, 
         n += printf_text("CLASS", USE_LT | USE_COLON);
         n += printf_text(stringval, USE_LT | USE_SPACE | USE_EOL);
         ocdwarf_dealloc(p, stringval, DW_DLA_STRING);
+      }
+    }
+  }
+
+  return OCDWARF_ERRCODE(x, n);
+}
+
+int ocdwarf_printf_groups(handle_t p, Dwarf_Error *e) {
+  int x = DW_DLV_ERROR;
+  int n = 0;
+
+  if (isopcode(p)) {
+    Dwarf_Unsigned group_count = 0;
+    Dwarf_Unsigned section_count = 0;
+    Dwarf_Unsigned selected_group = 0;
+    Dwarf_Unsigned group_map_entry_count = 0;
+
+    x = dwarf_sec_group_sizes(ocget(p, OPCODE_DWARF_DEBUG), &section_count, &group_count, &selected_group,
+                     &group_map_entry_count, e);
+
+    if (IS_DLV_OK(x)) {
+      if (group_count == 1 && DW_GROUPNUMBER_BASE == selected_group) {
+
+      } else if (group_count > 0) {
+        n += printf_text("Section Groups data", USE_LT | USE_EOL);
+        n += printf_text("Number of Elf-like sections", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXGROUP));
+        n += printf_nice(section_count, USE_DEC | USE_EOL);
+        n += printf_text("Number of groups", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXGROUP));
+        n += printf_nice(group_count, USE_DEC | USE_EOL);
+        n += printf_text("Group to print", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXGROUP));
+        n += ocdwarf_printf_GNUM(p, selected_group, USE_SPECIAL | USE_EOL);
+        n += printf_text("Count of map entries", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXGROUP));
+        n += printf_nice(group_map_entry_count, USE_DEC | USE_EOL);
+
+        MALLOCA(Dwarf_Unsigned, sec_nums, group_map_entry_count);
+        MALLOCA(Dwarf_Unsigned, group_nums, group_map_entry_count);
+        MALLOCA(const char *, sec_names, group_map_entry_count);
+
+        x = dwarf_sec_group_map(ocget(p, OPCODE_DWARF_DEBUG), group_map_entry_count,
+                     group_nums, sec_nums, sec_names, e);
+
+        if (IS_DLV_OK(x)) {
+          for (Dwarf_Unsigned i = 0; i < group_map_entry_count; ++i) {
+            if (i == 0) {
+              n += printf_text("[index]  group section", USE_LT | USE_TAB | USE_EOL);
+            }
+
+            n += printf_nice(i, USE_DEC5 | USE_SB);
+            n += printf_nice(group_nums[i], USE_DEC4);
+            n += printf_nice(sec_nums[i], USE_DEC4);
+            n += printf_text(sec_names[i], USE_LT | USE_SPACE);
+            n += printf_eol();
+          }
+        }
       }
     }
   }
