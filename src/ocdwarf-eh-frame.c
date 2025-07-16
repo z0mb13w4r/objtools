@@ -160,11 +160,7 @@ int ocdwarf_eh_frame_fdes(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed fde_elem
       Dwarf_Addr end_func_addr = low_pc + func_length;
 
       char* name = 0;
-      Dwarf_Addr low_pc_addr = 0;
-      Dwarf_Addr high_pc_addr = 0;
-      Dwarf_Unsigned nline = 0;
-      Dwarf_Unsigned ncolumn = 0;
-      ocdwarf_spget(p, low_pc, &name, &nline, &ncolumn, &low_pc_addr, &high_pc_addr, e);
+      ocdwarf_spget(p, low_pc, &name, NULL, NULL, NULL, NULL, e);
 
       // < 0>
       n += ocdwarf_printf_DEC(p, i, USE_NONE);
@@ -244,7 +240,7 @@ int ocdwarf_eh_frame_fdes(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed fde_elem
           j = subsequent_pc - 1;
         }
 
-        for (Dwarf_Half k = 0; k < 100; ++k) {
+        for (Dwarf_Half k = 0; k < 5; ++k) {
           Dwarf_Addr row_pc = 0;
 
           x = dwarf_get_fde_info_for_reg3_c(fde, k, cur_pc_in_table, &value_type, &offset_relevant,
@@ -255,8 +251,11 @@ int ocdwarf_eh_frame_fdes(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed fde_elem
             return OCDWARF_ERRCODE(x, n);
           } else if (row_pc != cur_pc_in_table) continue;
 
-//          n += ocdwarf_printf_EXPR(p, value_type, USE_LT | USE_SPACE | USE_TBLT);
-//          n += printf_nice(reg, USE_DEC);
+          n += ocdwarf_printf_EXPR(p, value_type, USE_LT | USE_TBLT);
+          n += printf_join("r", reg, USE_DEC | USE_SPACE);
+          n += printf_text("=", USE_LT);
+          n += printf_nice(row_pc, USE_DEC);
+          n += printf_text("(cfa)", USE_LT | USE_TBRT);
         }
 
         n += printf_eol();
