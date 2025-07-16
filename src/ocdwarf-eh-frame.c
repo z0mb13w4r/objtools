@@ -204,7 +204,7 @@ int ocdwarf_eh_frame_fdes(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed fde_elem
       n += printf_eol();
 
       for (Dwarf_Addr j = low_pc; j < end_func_addr; ++j) {
-        Dwarf_Addr     cur_pc_in_table = j;
+        Dwarf_Addr     cur_pc = j;
         Dwarf_Addr     row_pc = 0;
         Dwarf_Addr     subsequent_pc = 0;
         Dwarf_Bool     has_more_rows = 0;
@@ -240,22 +240,33 @@ int ocdwarf_eh_frame_fdes(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed fde_elem
           j = subsequent_pc - 1;
         }
 
-        for (Dwarf_Half k = 0; k < 2; ++k) {
-          Dwarf_Addr row_pc = 0;
+        for (Dwarf_Half k = 0; k < 100; ++k) {
+          Dwarf_Addr     row_pc = 0;
+          Dwarf_Addr     subsequent_pc = 0;
+          Dwarf_Bool     has_more_rows = 0;
+          Dwarf_Small    value_type = 0;
+          Dwarf_Block    block = ZEROBLOCK;
+          Dwarf_Signed   offset = 0;
+          Dwarf_Unsigned offset_relevant = 0;
+          Dwarf_Unsigned reg = 0;
 
-          x = dwarf_get_fde_info_for_reg3_c(fde, k, cur_pc_in_table, &value_type, &offset_relevant,
+          x = dwarf_get_fde_info_for_reg3_c(fde, k, cur_pc, &value_type, &offset_relevant,
                      &reg, &offset, &block, &row_pc, &has_more_rows, &subsequent_pc, e);
-          if (IS_DLV_NO_ENTRY(x)) continue;
-          else if (IS_DLV_ERROR(x)) {
+          if (IS_DLV_ERROR(x)) {
             printf_e("dwarf_get_fde_info_for_reg3_c failed! - %d", x);
             return OCDWARF_ERRCODE(x, n);
-          } else if (row_pc != cur_pc_in_table) continue;
+          } else if (IS_DLV_NO_ENTRY(x)) continue;
+            else if (row_pc != cur_pc || 0 == offset) continue;
+
+//printf("\n+++%d %d[k] %d[cpc] %d[vt] %d[ofr] %d[reg] %d[off] %d[rpc] %d[has] %d[spc]+++\n",
+//  x, k, cur_pc, value_type, offset_relevant, reg, offset, row_pc, has_more_rows, subsequent_pc);
 
           n += ocdwarf_printf_EXPR(p, value_type, USE_LT | USE_TBLT);
-          n += printf_join("r", 16/*reg*/, USE_DEC | USE_SPACE);
+          n += printf_join("r", reg, USE_DEC | USE_SPACE);
           n += printf_text("=", USE_LT);
-          n += printf_nice(-8/*row_pc*/, USE_DEC | USE_NOSPACE);
-          n += printf_text("(cfa)", USE_LT | USE_TBRT);
+          n += printf_nice(offset, USE_DEC | USE_NOSPACE);
+          n += printf_text("cfa", USE_LT | USE_RB);
+          n += printf_stop(USE_TBRT);
         }
 
         n += printf_eol();
