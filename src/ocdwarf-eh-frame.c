@@ -161,9 +161,10 @@ int ocdwarf_eh_frame_fdes(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed fde_elem
 
       char* name = 0;
       Dwarf_Addr low_pc_addr = 0;
+      Dwarf_Addr high_pc_addr = 0;
       Dwarf_Unsigned nline = 0;
       Dwarf_Unsigned ncolumn = 0;
-      ocdwarf_spget(p, low_pc, &name, &nline, &ncolumn, &low_pc_addr, e);
+      ocdwarf_spget(p, low_pc, &name, &nline, &ncolumn, &low_pc_addr, &high_pc_addr, e);
 
       // < 0>
       n += ocdwarf_printf_DEC(p, i, USE_NONE);
