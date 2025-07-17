@@ -255,13 +255,21 @@ int ocdwarf_eh_frame_fdes(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed fde_elem
           if (IS_DLV_ERROR(x)) {
             printf_e("dwarf_get_fde_info_for_reg3_c failed! - %d", x);
             return OCDWARF_ERRCODE(x, n);
-          } else if (IS_DLV_NO_ENTRY(x) || row_pc != cur_pc || 0 == offset) continue;
+          } else if (IS_DLV_NO_ENTRY(x) || row_pc != cur_pc || (0 == value_type && 0 == offset)) continue;
+
+//printf("\n+++%d %d[k] %d[cpc] %d[vt] %d[ofr] %d[reg] %d[off] %d[rpc] %d[has] %d[spc]+++\n",
+//  x, k, cur_pc, value_type, offset_relevant, reg, offset, row_pc, has_more_rows, subsequent_pc);
 
           n += ocdwarf_printf_EXPR(p, value_type, USE_LT | USE_TBLT);
           n += printf_join("r", k, USE_DEC | USE_SPACE);
           n += printf_text("=", USE_LT);
-          n += printf_nice(offset, USE_DEC | USE_NOSPACE);
-          n += printf_text("cfa", USE_LT | USE_RB);
+          if (DW_EXPR_EXPRESSION == value_type || DW_EXPR_VAL_EXPRESSION == value_type) {
+            n += printf_text("expr-block-len=", USE_LT);
+            n += printf_nice(block.bl_len, USE_DEC | USE_NOSPACE);
+          } else {
+            n += printf_nice(offset, USE_DEC | USE_NOSPACE);
+            n += printf_text("cfa", USE_LT | USE_RB);
+          }
           n += printf_stop(USE_TBRT);
         }
 
