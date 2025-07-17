@@ -5,12 +5,16 @@
 
 static const int MAXSIZE = 24;
 
+#define PICK_ENHANCED(x,y,z)           (MODE_ISSET((x)->ocdump, OPTDEBUGELF_ENHANCED) ? (y) : (z))
+
 int ocdwarf_debug_macro_ops(handle_t p, Dwarf_Die die, Dwarf_Macro_Context context, int level,
                      Dwarf_Half macro_version, Dwarf_Unsigned macro_unit_offset, Dwarf_Unsigned count, Dwarf_Error *e) {
   int x = DW_DLV_ERROR;
   int n = 0;
 
   if (isopcode(p)) {
+    popcode_t oc = ocget(p, OPCODE_THIS);
+
     for (Dwarf_Unsigned i = 0; i < count; ++i) {
       Dwarf_Half formcodes_count = 0;
       Dwarf_Half macro_operator = 0;
@@ -23,8 +27,15 @@ int ocdwarf_debug_macro_ops(handle_t p, Dwarf_Die die, Dwarf_Macro_Context conte
         return OCDWARF_ERRCODE(x, n);
       }
 
-      n += printf_nice(i, USE_DEC3 | USE_SB);
+      n += ocdwarf_printf_DEC(p, i, USE_SB);
       n += ocdwarf_printf_MACRO(p, macro_operator, USE_SPECIAL);
+
+      const imode_t TRY_COLON = MODE_ISSET(oc->ocdump, OPTDEBUGELF_ENHANCED) ? USE_NONE : USE_COLON;
+
+      if (MODE_ISNOT(oc->ocdump, OPTDEBUGELF_ENHANCED) && (DW_MACRO_end_file != macro_operator)) {
+        n += printf_text("-", USE_LT | USE_SPACE);
+      }
+
       if (DW_MACRO_import == macro_operator || DW_MACRO_import_sup == macro_operator) {
         Dwarf_Unsigned macro_offset = 0;
 
@@ -35,15 +46,17 @@ int ocdwarf_debug_macro_ops(handle_t p, Dwarf_Die die, Dwarf_Macro_Context conte
         }
 
         if (DW_MACRO_import == macro_operator) {
-          n += printf_text("offset", USE_LT | USE_SPACE);
-          n += printf_nice(macro_offset, USE_FHEX32 | USE_EOL);
+          n += printf_text("offset", USE_LT | USE_SPACE | TRY_COLON);
+          n += ocdwarf_printf_ADDR(p, macro_offset, USE_EOL);
 
-          n += printf_text("Nested import level", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-          n += printf_nice(level + 1, USE_DEC | USE_EOL);
-          n += printf_text("Macro version", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-          n += printf_nice(macro_version, USE_DEC | USE_EOL);
-          n += printf_text("Macro section offset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-          n += printf_nice(macro_offset, USE_FHEX32 | USE_EOL);
+          if (MODE_ISSET(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+            n += printf_text("Nested import level", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+            n += printf_nice(level + 1, USE_DEC | USE_EOL);
+            n += printf_text("Macro version", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+            n += printf_nice(macro_version, USE_DEC | USE_EOL);
+            n += printf_text("Macro section offset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+            n += printf_nice(macro_offset, USE_FHEX32 | USE_EOL);
+          }
         } else if (DW_MACRO_import_sup == macro_operator) {
           n += printf_text("sup_offset", USE_LT | USE_SPACE);
           n += printf_nice(macro_offset, USE_FHEX32);
@@ -63,9 +76,9 @@ int ocdwarf_debug_macro_ops(handle_t p, Dwarf_Die die, Dwarf_Macro_Context conte
 
         st->sdepth ++;
 
-        n += printf_text("line", USE_LT | USE_SPACE);
+        n += printf_text(PICK_ENHANCED(oc, "line", "lineno"), USE_LT | USE_SPACE | TRY_COLON);
         n += printf_nice(nline, USE_DEC);
-        n += printf_text("file number", USE_LT | USE_SPACE);
+        n += printf_text(PICK_ENHANCED(oc, "file number", "filenum"), USE_LT | USE_SPACE | TRY_COLON);
         n += ocdwarf_printf_SRCFILE(p, index, USE_DEC);
       } else if (isused(zMACRODEF, macro_operator)) {
         Dwarf_Unsigned nline = 0;
@@ -80,12 +93,14 @@ int ocdwarf_debug_macro_ops(handle_t p, Dwarf_Die die, Dwarf_Macro_Context conte
           return OCDWARF_ERRCODE(x, n);
         }
 
-        n += printf_text("line", USE_LT | USE_SPACE);
+        n += printf_text(PICK_ENHANCED(oc, "line", "lineno"), USE_LT | USE_SPACE | TRY_COLON);
         n += printf_nice(nline, USE_DEC);
 
         if (isused(zMACRODEFSTR, macro_operator)) {
-          n += printf_text("str offset", USE_LT | USE_SPACE);
-          n += printf_nice(offset, USE_FHEX32);
+          n += printf_text(PICK_ENHANCED(oc, "str offset", "macro"), USE_LT | USE_SPACE | TRY_COLON);
+          if (MODE_ISSET(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+            n += printf_nice(offset, USE_FHEX32);
+          }
         }
 
         if (macro_string) {
@@ -93,11 +108,11 @@ int ocdwarf_debug_macro_ops(handle_t p, Dwarf_Die die, Dwarf_Macro_Context conte
         }
       } else if (0 == macro_operator) {
         n += printf_text("op offset", USE_LT | USE_SPACE);
-        n += printf_nice(op_start_section_offset, USE_FHEX32);
+        n += ocdwarf_printf_ADDR(p, op_start_section_offset, USE_NONE);
         n += printf_text("macro unit length", USE_LT | USE_SPACE);
         n += printf_nice(op_start_section_offset + 1 - macro_unit_offset, USE_DEC);
         n += printf_text("next byte offset", USE_LT | USE_SPACE);
-        n += printf_nice(op_start_section_offset + 1, USE_FHEX32);
+        n += ocdwarf_printf_ADDR(p, op_start_section_offset + 1, USE_NONE);
         n += printf_eol();
 
         n += ocdwarf_debug_macro_offset(p, die, level, op_start_section_offset + 1, e);
@@ -130,7 +145,7 @@ int ocdwarf_debug_macro_offset(handle_t p, Dwarf_Die die, int level,
                      &number_of_ops, &ops_total_byte_len, e);
     if (IS_DLV_OK(x)) {
       n += printf_text(".debug_macro: Macro info for imported macro unit at macro offset", USE_LT | USE_SPACE);
-      n += printf_nice(macro_offset, USE_FHEX32 | USE_COLON | USE_EOL);
+      n += ocdwarf_printf_ADDR(p, macro_offset, USE_COLON | USE_EOL);
 
       n += ocdwarf_debug_macro_context(p, die, macro_context, level, macro_offset,
                      number_of_ops, ops_total_byte_len, e);
@@ -170,19 +185,21 @@ int ocdwarf_debug_macro_context(handle_t p, Dwarf_Die die, Dwarf_Macro_Context c
       return OCDWARF_ERRCODE(x, n);
     }
 
-    n += printf_text("Nested import level", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-    n += printf_nice(level, USE_DEC | USE_EOL);
+    if (MODE_ISSET(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+      n += printf_text("Nested import level", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_nice(level, USE_DEC | USE_EOL);
 
-    n += printf_text("Macro version", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-    n += printf_nice(macro_version, USE_DEC | USE_EOL);
+      n += printf_text("Macro version", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_nice(macro_version, USE_DEC | USE_EOL);
 
-    n += printf_text("Macro section offset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-    n += printf_nice(macro_offset, USE_FHEX32 | USE_EOL);
+      n += printf_text("Macro section offset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_nice(macro_offset, USE_FHEX32 | USE_EOL);
 
-    n += printf_text("MacroInformationEntries count", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-    n += printf_nice(number_of_ops, USE_DEC);
-    n += printf_text("bytes length", USE_LT | USE_COMMA | USE_COLON);
-    n += printf_nice(ops_total_byte_len, USE_DEC | USE_EOL);
+      n += printf_text("MacroInformationEntries count", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_nice(number_of_ops, USE_DEC);
+      n += printf_text("bytes length", USE_LT | USE_COMMA | USE_COLON);
+      n += printf_nice(ops_total_byte_len, USE_DEC | USE_EOL);
+    }
 
     if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
       n += printf_text("Macro header length", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
@@ -218,7 +235,7 @@ int ocdwarf_debug_macro_context(handle_t p, Dwarf_Die die, Dwarf_Macro_Context c
           continue;
         }
 
-        n += printf_nice(i, USE_DEC3 | USE_SB);
+        n += ocdwarf_printf_DEC(p, i, USE_SB);
         n += printf_text("op", USE_LT | USE_SPACE | USE_COLON);
         n += ocdwarf_printf_MACRO(p, opcode_num, USE_NONE);
         n += printf_eol();
@@ -310,23 +327,25 @@ int ocdwarf_debug_macro(handle_t p, handle_t s, handle_t d) {
     n += ocdwarf_debug_macro_context(p, cu_die, macro_context, level, st->soffset,
                      number_of_ops, ops_total_byte_len, ocget(p, OPCODE_DWARF_ERROR));
 
-    n += printf_text("Macro unit count DWARF5 .debug_macro", USE_LT | USE_COLON);
-    n += printf_nice(st->mcount, USE_DEC);
-    n += printf_eol();
+    if (MODE_ISSET(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+      n += printf_text("Macro unit count DWARF5 .debug_macro", USE_LT | USE_COLON);
+      n += printf_nice(st->mcount, USE_DEC);
+      n += printf_eol();
 
-    n += printf_text("Macro offsets start at", USE_LT);
-    n += printf_nice(st->soffset, USE_FHEX32);
-    n += printf_text("and end at", USE_LT | USE_SPACE);
-    n += printf_nice(st->eoffset, USE_FHEX32);
-    n += printf_eol();
+      n += printf_text("Macro offsets start at", USE_LT);
+      n += printf_nice(st->soffset, USE_FHEX32);
+      n += printf_text("and end at", USE_LT | USE_SPACE);
+      n += printf_nice(st->eoffset, USE_FHEX32);
+      n += printf_eol();
 
-    n += printf_text("Maximum nest depth of DW_MACRO_start_file", USE_LT | USE_COLON);
-    n += printf_nice(st->sdepth, USE_DEC);
-    n += printf_eol();
+      n += printf_text("Maximum nest depth of DW_MACRO_start_file", USE_LT | USE_COLON);
+      n += printf_nice(st->sdepth, USE_DEC);
+      n += printf_eol();
 
-    n += printf_text("Maximum nest depth of DW_MACRO_import", USE_LT | USE_COLON);
-    n += printf_nice(st->idepth, USE_DEC);
-    n += printf_eol();
+      n += printf_text("Maximum nest depth of DW_MACRO_import", USE_LT | USE_COLON);
+      n += printf_nice(st->idepth, USE_DEC);
+      n += printf_eol();
+    }
 
     dwarf_dealloc_macro_context(macro_context);
   }

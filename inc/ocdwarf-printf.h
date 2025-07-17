@@ -28,6 +28,7 @@ int ocdwarf_printf_CHILDREN(handle_t p, const uint64_t v, const imode_t mode);
 
 int ocdwarf_printf_DEC(handle_t p, const uint64_t v, const imode_t mode);
 int ocdwarf_printf_HEX(handle_t p, const uint64_t v, const imode_t mode);
+int ocdwarf_printf_ADDR(handle_t p, const uint64_t v, const imode_t mode);
 
 int ocdwarf_printf_SRCFILE(handle_t p, const uint32_t v, const imode_t mode);
 

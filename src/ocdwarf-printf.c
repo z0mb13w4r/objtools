@@ -64,6 +64,17 @@ int ocdwarf_printf_HEX(handle_t p, const uint64_t v, const imode_t mode) {
   return printf_nice(v, USE_LHEX | USE_TB | mode);
 }
 
+int ocdwarf_printf_ADDR(handle_t p, const uint64_t v, const imode_t mode) {
+  if (isopcode(p)) {
+    popcode_t oc = ocget(p, OPCODE_THIS);
+    if (MODE_ISSET(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+      return printf_nice(v, USE_FHEX32 | mode);
+    }
+  }
+
+  return printf_nice(v, USE_FHEX | mode);
+}
+
 int ocdwarf_printf_AT(handle_t p, const uint64_t v, const imode_t mode) {
   return ocdwarf_printf_pluck(p, zDWAT, v, mode | SET_PAD(30));
 }
@@ -124,7 +135,12 @@ int ocdwarf_printf_SRCFILE(handle_t p, const uint32_t v, const imode_t mode) {
   if (isopcode(p)) {
     pdwarf_srcfiles_t sf = ocget(p, OPCODE_DWARF_SRCFILES);
     if (sf && IS_DLV_OK(sf->status) && (0 != sf->size) && ((v - 1) < sf->size)) {
+      popcode_t oc = ocget(p, OPCODE_THIS);
+
       n += printf_nice(v, mode);
+      if (MODE_ISNOT(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+        n += printf_text("filename", USE_LT | USE_SPACE | USE_COLON);
+      }
       n += printf_text(sf->data[v - 1], USE_LT | USE_SPACE);
     }
   }
