@@ -302,6 +302,7 @@ int ocdwarf_eh_frame(handle_t p, handle_t s, handle_t d) {
       ocdwarf_dealloc_error(p, NULL);
     }
 
+    n += ocdwarf_printf_groups(p, ocget(p, OPCODE_DWARF_ERROR));
     n += ocdwarf_eh_frame_fdes(p, fde_data, fde_element_count, ocget(p, OPCODE_DWARF_ERROR));
     n += ocdwarf_eh_frame_cies(p, cie_data, cie_element_count, ocget(p, OPCODE_DWARF_ERROR));
 
