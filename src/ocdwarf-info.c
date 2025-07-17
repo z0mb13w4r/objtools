@@ -57,6 +57,8 @@ int ocdwarf_debug_info(handle_t p, handle_t s, handle_t d) {
     Dwarf_Bool isinfo = TRUE; /* our data is not DWARF4 .debug_types. */
     int            level = 0;
 
+    n0 += ocdwarf_printf_groups(p, ocget(p, OPCODE_DWARF_ERROR));
+
     for ( ; ; ) {
       Dwarf_Die no_die = 0;
       Dwarf_Die cu_die = 0;
