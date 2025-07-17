@@ -245,6 +245,8 @@ int ocdwarf_debug_macro(handle_t p, handle_t s, handle_t d) {
     pdwarf_statistics_t st = ocget(p, OPCODE_DWARF_STATISTICS);
     popcode_t oc = ocget(p, OPCODE_THIS);
 
+    n += ocdwarf_printf_groups(p, ocget(p, OPCODE_DWARF_ERROR));
+
     int level = 0;
     Dwarf_Die cu_die = 0;
 
