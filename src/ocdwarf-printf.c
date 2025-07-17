@@ -30,7 +30,7 @@ int ocdwarf_printf_pluck(handle_t p, const pconvert_t z, const pick_t x, const i
     popcode_t oc = ocget(p, OPCODE_THIS);
     if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
       n += printf_nice(x, USE_FHEX16);
-    } else if (MODE_ISSET(USE_SPECIAL, mode)) {
+    } else if (MODE_ISSET(USE_SPECIAL, mode) && MODE_ISSET(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
       n += printf_nice(x, USE_FHEX8);
     }
 
