@@ -54,10 +54,14 @@ int ocdwarf_debug_info(handle_t p, handle_t s, handle_t d) {
   int n1 = 0;
 
   if (isopcode(p) && (isopshdr(s) || isopshdrNN(s))) {
-    Dwarf_Bool isinfo = TRUE; /* our data is not DWARF4 .debug_types. */
-    int            level = 0;
+    popcode_t oc = ocget(p, OPCODE_THIS);
 
-    n0 += ocdwarf_printf_groups(p, ocget(p, OPCODE_DWARF_ERROR));
+    Dwarf_Bool isinfo = TRUE; /* our data is not DWARF4 .debug_types. */
+    int        level = 0;
+
+    if (MODE_ISSET(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+      n0 += ocdwarf_printf_groups(p, ocget(p, OPCODE_DWARF_ERROR));
+    }
 
     for ( ; ; ) {
       Dwarf_Die no_die = 0;
