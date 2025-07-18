@@ -13,7 +13,9 @@ int ocdwarf_debug_line(handle_t p, handle_t s, handle_t d) {
     pocdwarf_t ws = ocget(p, OPCODE_DWARF);
     popcode_t oc = ocget(p, OPCODE_THIS);
 
-    n += ocdwarf_printf_groups(p, ocget(p, OPCODE_DWARF_ERROR));
+    if (MODE_ISSET(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+      n += ocdwarf_printf_groups(p, ocget(p, OPCODE_DWARF_ERROR));
+    }
 
     Dwarf_Bool isinfo = TRUE; /* our data is not DWARF4 .debug_types. */
     Dwarf_Unsigned next_cu_header_offset = 0;
@@ -121,7 +123,7 @@ int ocdwarf_debug_line(handle_t p, handle_t s, handle_t d) {
         pc = 0;
       }
 
-      n += printf_nice(pc, USE_FHEX32);
+      n += ocdwarf_printf_ADDR(p, pc, USE_NONE);
 
       Dwarf_Unsigned nline = 0;
       x = dwarf_lineno(k, &nline, ocget(p, OPCODE_DWARF_ERROR));
