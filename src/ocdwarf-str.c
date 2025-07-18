@@ -3,14 +3,16 @@
 #include "options.h"
 #include "ocdwarf-str.h"
 
-static const int MAXSIZE = 24;
-
 int ocdwarf_debug_str(handle_t p, handle_t s, handle_t d) {
   int x = DW_DLV_ERROR;
   int n = 0;
 
   if (isopcode(p) && (isopshdr(s) || isopshdrNN(s))) {
-    n += ocdwarf_printf_groups(p, ocget(p, OPCODE_DWARF_ERROR));
+    popcode_t oc = ocget(p, OPCODE_THIS);
+
+    if (MODE_ISSET(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+      n += ocdwarf_printf_groups(p, ocget(p, OPCODE_DWARF_ERROR));
+    }
 
     char* string = 0;
     Dwarf_Off offset = 0;
@@ -18,11 +20,8 @@ int ocdwarf_debug_str(handle_t p, handle_t s, handle_t d) {
 
     x = dwarf_get_str(ocget(p, OPCODE_DWARF_DEBUG), offset, &string, &length, ocget(p, OPCODE_DWARF_ERROR));
     while (IS_DLV_OK(x)) {
-      n += printf_text("name at offset", USE_LT);
-      n += printf_nice(offset, USE_FHEX32);
-      n += printf_text("length", USE_LT | USE_COMMA);
-      n += printf_nice(length, USE_DEC);
-      n += printf_text("is", USE_LT | USE_SPACE);
+      n += ocdwarf_printf_ADDR(p, offset, USE_TB);
+      n += ocdwarf_printf_DEC(p, length, USE_TB | USE_NOSPACE);
       n += printf_text(string, USE_LT | USE_SPACE | USE_SQ);
       n += printf_eol();
 
