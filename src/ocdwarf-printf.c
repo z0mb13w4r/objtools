@@ -339,10 +339,11 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
   if (isopcode(p)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
 
-    const imode_t TRY_COLON  = MODE_ISSET(oc->ocdump, OPTDEBUGELF_ENHANCED) ? USE_NONE : USE_COLON;
-    const imode_t TRY_DECHEX = MODE_ISSET(oc->ocdump, OPTDEBUGELF_ENHANCED) ? USE_FHEX32 : USE_DEC;
-    const imode_t TRY_HEXDEC = MODE_ISSET(oc->ocdump, OPTDEBUGELF_ENHANCED) ? USE_DEC : USE_FHEX;
-    const imode_t TRY_HEX    = MODE_ISSET(oc->ocdump, OPTDEBUGELF_ENHANCED) ? USE_FHEX32 : USE_FHEX;
+    const imode_t TRY_HEX      = MODE_ISSET(oc->ocdump, OPTDEBUGELF_ENHANCED) ? USE_FHEX32 : USE_FHEX;
+    const imode_t TRY_COLON    = MODE_ISSET(oc->ocdump, OPTDEBUGELF_ENHANCED) ? USE_NONE   : USE_COLON;
+    const imode_t TRY_HEXDEC   = MODE_ISSET(oc->ocdump, OPTDEBUGELF_ENHANCED) ? USE_DEC    : USE_FHEX;
+    const imode_t TRY_DECHEX16 = MODE_ISSET(oc->ocdump, OPTDEBUGELF_ENHANCED) ? USE_FHEX16 : USE_DEC;
+    const imode_t TRY_DECHEX32 = MODE_ISSET(oc->ocdump, OPTDEBUGELF_ENHANCED) ? USE_FHEX32 : USE_DEC;
 
     Dwarf_Half nform = 0;
     x = dwarf_whatform(attr, &nform, e);
@@ -416,9 +417,9 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
           n += printf_nice(value, USE_SDEC16 | USE_RB);
         }
       } else if (isused(zATHEX32, nattr)) {
-        n += printf_nice(value, TRY_DECHEX);
+        n += printf_nice(value, TRY_DECHEX32);
       } else if (isused(zATSRCFILE, nattr)) {
-        n += ocdwarf_printf_SRCFILE(p, value, TRY_DECHEX);
+        n += ocdwarf_printf_SRCFILE(p, value, TRY_DECHEX32);
       } else {
         n += printf_nice(value, USE_FHEX16);
       }
@@ -498,11 +499,11 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
         return OCDWARF_ERRCODE(x0, n);
       } else if (IS_DLV_OK(x0) && block && 0 != block->bl_len) {
         n += printf_text("len", USE_LT | USE_SPACE);
-        n += printf_nice(block->bl_len, USE_FHEX16 | USE_COLON);
+        n += printf_nice(block->bl_len, TRY_DECHEX16 | USE_COLON);
         n += printf_hurt(block->bl_data, block->bl_len, USE_HEX | USE_SPACE | USE_COLON | USE_0x);
         if (block->bl_len >= 1) {
           uchar_t v0 = CAST(puchar_t, block->bl_data)[0];
-          n += ocdwarf_printf_OP(p, v0, USE_SPACE);
+          n += ocdwarf_printf_OP(p, v0, USE_SPACE | TRY_COLON);
           if (block->bl_len >= 2) {
             uchar_t v1 = CAST(puchar_t, block->bl_data)[1];
             if (DW_OP_fbreg == v0) {
