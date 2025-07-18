@@ -470,7 +470,7 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
         }
       }
 
-      n += printf_nice(offset, USE_FHEX32 | USE_TB);
+      n += printf_nice(offset, TRY_HEX | USE_TB);
       if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
         n += printf_nice(isinfo, USE_BOOL);
       }
@@ -488,8 +488,7 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
         printf_e("dwarf_diename failed! errcode %d", x0);
         return OCDWARF_ERRCODE(x0, n);
       } else if (IS_DLV_OK(x0)) {
-        n += printf_text("Refers to", USE_LT | USE_SPACE | USE_COLON);
-        n += printf_text(name, USE_LT | USE_SPACE);
+        n += printf_text(name, USE_LT | USE_SPACE | USE_TB);
       }
     } else if (isused(zFORMBLOCK, nform)) {
       Dwarf_Block *block = 0;
