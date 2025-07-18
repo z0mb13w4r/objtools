@@ -339,8 +339,10 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
   if (isopcode(p)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
 
-    const imode_t TRY_COLON = MODE_ISSET(oc->ocdump, OPTDEBUGELF_ENHANCED) ? USE_NONE : USE_COLON;
+    const imode_t TRY_COLON  = MODE_ISSET(oc->ocdump, OPTDEBUGELF_ENHANCED) ? USE_NONE : USE_COLON;
     const imode_t TRY_DECHEX = MODE_ISSET(oc->ocdump, OPTDEBUGELF_ENHANCED) ? USE_FHEX32 : USE_DEC;
+    const imode_t TRY_HEXDEC = MODE_ISSET(oc->ocdump, OPTDEBUGELF_ENHANCED) ? USE_DEC : USE_FHEX;
+    const imode_t TRY_HEX    = MODE_ISSET(oc->ocdump, OPTDEBUGELF_ENHANCED) ? USE_FHEX32 : USE_FHEX;
 
     Dwarf_Half nform = 0;
     x = dwarf_whatform(attr, &nform, e);
@@ -399,9 +401,9 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
 
       if (DW_AT_high_pc == nattr) {
         n += printf_text("offset-from-lowpc", USE_LT | USE_SPACE | USE_TB);
-        n += printf_nice(value, USE_DEC);
+        n += printf_nice(value, TRY_HEXDEC);
         n += printf_text("highpc", USE_LT | USE_SPACE | USE_TBLT | USE_COLON);
-        n += printf_nice(low_pc_addr + value, USE_FHEX32 | USE_TBRT);
+        n += ocdwarf_printf_ADDR(p, low_pc_addr + value, USE_TBRT);
       } else if (DW_AT_language == nattr) {
         n += ocdwarf_printf_LANG(p, value, USE_NONE);
       } else if (isused(zATE, nattr)) {
@@ -450,7 +452,7 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
         return OCDWARF_ERRCODE(x, n);
       }
 
-      n += printf_nice(value, USE_FHEX32);
+      n += printf_nice(value, TRY_HEX);
     } else if (isused(zFORMOFFSET, nform)) {
       Dwarf_Off offset = 0;
       Dwarf_Bool isinfo = FALSE;
