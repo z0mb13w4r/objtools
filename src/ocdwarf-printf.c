@@ -339,6 +339,9 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
   if (isopcode(p)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
 
+    const imode_t TRY_COLON = MODE_ISSET(oc->ocdump, OPTDEBUGELF_ENHANCED) ? USE_NONE : USE_COLON;
+    const imode_t TRY_DECHEX = MODE_ISSET(oc->ocdump, OPTDEBUGELF_ENHANCED) ? USE_FHEX32 : USE_DEC;
+
     Dwarf_Half nform = 0;
     x = dwarf_whatform(attr, &nform, e);
     if (IS_DLV_ANY_ERROR(x)) {
@@ -365,7 +368,7 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
       n += ocdwarf_printf_HEX(p, offset, USE_NONE);
     }
 
-    n += ocdwarf_printf_AT(p, nattr, USE_NONE);
+    n += ocdwarf_printf_AT(p, nattr, TRY_COLON);
 
     if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
       n += ocdwarf_printf_FORM(p, nform, USE_NONE);
@@ -411,9 +414,9 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
           n += printf_nice(value, USE_SDEC16 | USE_RB);
         }
       } else if (isused(zATHEX32, nattr)) {
-        n += printf_nice(value, USE_FHEX32);
+        n += printf_nice(value, TRY_DECHEX);
       } else if (isused(zATSRCFILE, nattr)) {
-        n += ocdwarf_printf_SRCFILE(p, value, USE_FHEX32);
+        n += ocdwarf_printf_SRCFILE(p, value, TRY_DECHEX);
       } else {
         n += printf_nice(value, USE_FHEX16);
       }
@@ -429,7 +432,7 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
         low_pc_addr = addr;
       }
 
-      n += printf_nice(addr, USE_FHEX32);
+      n += ocdwarf_printf_ADDR(p, addr, USE_NONE);
     } else if (isused(zFORMBOOL, nform)) {
       Dwarf_Unsigned value = 0;
       x = dwarf_formudata(attr, &value, e);
