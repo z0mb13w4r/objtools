@@ -102,7 +102,7 @@ bool_t isopshdrNN(handle_t p) {
 
 bool_t isobject(handle_t p) {
   if (isopcode(p)) {
-    popcode_t p0 = CAST(popcode_t, p);
+    popcode_t p0 = ocget(p, OPCODE_THIS);
     return p0->items[OPCODE_BFD] && bfd_check_format(p0->items[OPCODE_BFD], bfd_object);
   }
 
@@ -111,7 +111,7 @@ bool_t isobject(handle_t p) {
 
 bool_t isarchive(handle_t p) {
   if (isopcode(p)) {
-    popcode_t p0 = CAST(popcode_t, p);
+    popcode_t p0 = ocget(p, OPCODE_THIS);
     return p0->items[OPCODE_BFD] && bfd_check_format(p0->items[OPCODE_BFD], bfd_archive);
   }
 
@@ -120,7 +120,7 @@ bool_t isarchive(handle_t p) {
 
 bool_t iscoredump(handle_t p) {
   if (isopcode(p)) {
-    popcode_t p0 = CAST(popcode_t, p);
+    popcode_t p0 = ocget(p, OPCODE_THIS);
     return p0->items[OPCODE_BFD] && bfd_check_format(p0->items[OPCODE_BFD], bfd_core);
   }
 
@@ -129,7 +129,7 @@ bool_t iscoredump(handle_t p) {
 
 bool_t isattached(handle_t p) {
   if (isopcode(p)) {
-    popcode_t p0 = CAST(popcode_t, p);
+    popcode_t p0 = ocget(p, OPCODE_THIS);
     return !p0->items[OPCODE_BFD];
   }
 
@@ -182,7 +182,7 @@ bool_t ochas(handle_t p, const imode_t mode) {
 
 bool_t ocuse_vaddr(handle_t p, uint64_t vaddr) {
   if (isopcode(p)) {
-    popcode_t p0 = CAST(popcode_t, p);
+    popcode_t p0 = ocget(p, OPCODE_THIS);
     return (vaddr == OPCODE_NULLADDR) ||
            (p0->saddress == OPCODE_NULLADDR) ||
            (p0->eaddress == OPCODE_NULLADDR) ||
@@ -544,7 +544,7 @@ handle_t ocmalloc() {
 
 handle_t ocfree(handle_t p) {
   if (isopcode(p)) {
-    popcode_t p0 = CAST(popcode_t, p);
+    popcode_t p0 = ocget(p, OPCODE_THIS);
     if (!isattached(p)) {
       bfree(p0->data);
     }
@@ -564,7 +564,7 @@ handle_t ocopen(const char* name) {
   if (p0) {
     handle_t p1 = ocmalloc();
     if (p1) {
-      popcode_t p2 = CAST(popcode_t, p1);
+      popcode_t p2 = ocget(p1, OPCODE_THIS);
       p2->data = p0;
       p2->items[OPCODE_BFD] = bfd_openr(name, NULL);
       return p1;
@@ -580,7 +580,7 @@ handle_t ocattach(handle_t p) {
   if (isbuffer(p)) {
     handle_t p1 = ocmalloc();
     if (p1) {
-      popcode_t p2 = CAST(popcode_t, p1);
+      popcode_t p2 = ocget(p1, OPCODE_THIS);
       p2->data = p;
       return p1;
     }
@@ -591,7 +591,7 @@ handle_t ocattach(handle_t p) {
 
 int occlose(handle_t p) {
   if (isopcode(p)) {
-    popcode_t p0 = CAST(popcode_t, p);
+    popcode_t p0 = ocget(p, OPCODE_THIS);
     if (p0->items[OPCODE_BFD]) {
       bfd_close(p0->items[OPCODE_BFD]);
     }
@@ -646,15 +646,8 @@ int ocdo_sections(handle_t p, opcbfunc_t cbfunc, unknown_t param) {
 }
 
 int ocdisassemble_open(handle_t p, handle_t o) {
-  if (isopcode(p) && isoptions(o)) {
-    popcode_t oc = CAST(popcode_t, p);
-    poptions_t op = CAST(poptions_t, o);
-
-    oc->action = op->action;
-    oc->ocdump = op->ocdump;
-    oc->saddress = op->saddress;
-    oc->eaddress = op->eaddress;
-
+  if (0 == ocdwarf_open(p, o)) {
+    popcode_t oc = ocget(p, OPCODE_THIS);
     if (oc->action & OPTPROGRAM_CAPSTONE || isattached(p)) {
       return capstone_open(p, o);
     } else {
@@ -666,8 +659,8 @@ int ocdisassemble_open(handle_t p, handle_t o) {
 }
 
 int ocdisassemble_close(handle_t p) {
-  if (isopcode(p)) {
-    popcode_t oc = CAST(popcode_t, p);
+  if (0 == ocdwarf_close(p)) {
+    popcode_t oc = ocget(p, OPCODE_THIS);
     if (oc->action & OPTPROGRAM_CAPSTONE || isattached(p)) {
       return capstone_close(p);
     } else {
@@ -680,7 +673,7 @@ int ocdisassemble_close(handle_t p) {
 
 int ocdisassemble_run(handle_t p, handle_t s) {
   if (isopcode(p) && ismodeNXXN(s, MODE_OCSHDRWRAP)) {
-    popcode_t oc = CAST(popcode_t, p);
+    popcode_t oc = ocget(p, OPCODE_THIS);
     if (oc->action & OPTPROGRAM_CAPSTONE || isattached(p)) {
       return capstone_run(p, s);
     } else {
@@ -693,7 +686,7 @@ int ocdisassemble_run(handle_t p, handle_t s) {
 
 int ocdisassemble_raw(handle_t p, handle_t s, unknown_t data, const size_t size, const uint64_t vaddr) {
   if (isopcode(p) && ismodeNXXN(s, MODE_OCSHDRWRAP)) {
-    popcode_t oc = CAST(popcode_t, p);
+    popcode_t oc = ocget(p, OPCODE_THIS);
     if (oc->action & OPTPROGRAM_CAPSTONE || isattached(p)) {
       return capstone_raw(p, s, data, size, vaddr);
     } else {
