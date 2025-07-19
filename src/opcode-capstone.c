@@ -1,6 +1,7 @@
 #include "opcode.h"
 #include "printf.h"
 #include "options.h"
+#include "opcode-printf.h"
 #include "opcode-capstone.h"
 
 static int get_csarch(handle_t p, handle_t o) {
@@ -79,7 +80,7 @@ int capstone_raw(handle_t p, handle_t s, unknown_t data, const size_t size, cons
             bskip = FALSE;
           }
           if (!bskip) {
-            n2 += printf_nice(insn[i].address, USE_LHEX32 | USE_COLON);
+            n2 += opcode_printf_LHEX(p, insn[i].address, USE_COLON);
             n2 += printf_sore(insn[i].bytes, insn[i].size, USE_HEX | USE_SPACE);
             n2 += printf_pack(42 - n2);
             n2 += printf_text(insn[i].mnemonic, USE_LT | USE_SPACE);
