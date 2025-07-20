@@ -567,7 +567,7 @@ static int ocdwarf_spget2(handle_t p, Dwarf_Die die, Dwarf_Addr addr,
 }
 
 int ocdwarf_spget(handle_t p, Dwarf_Addr addr, char** name,
-                     Dwarf_Unsigned *nline, Dwarf_Unsigned *ncolumn, char **source,
+                     Dwarf_Unsigned *nline, Dwarf_Unsigned *ncolumn, Dwarf_Unsigned *discriminator, char **source,
                      Dwarf_Addr *low_pc_addr, Dwarf_Addr *high_pc_addr, Dwarf_Error *e) {
   int x = DW_DLV_ERROR;
   int n0 = 0;
