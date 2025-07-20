@@ -34,6 +34,30 @@ int opcode_printf_LHEX(handle_t p, const uint64_t v, const imode_t mode) {
   return printf_nice(v, USE_LHEX | mode);
 }
 
+int opcode_printf_FADDR(handle_t p, const uint64_t v, const imode_t mode) {
+  if (isopcode(p)) {
+    if (ocis32(p)) {
+      return printf_nice(v, USE_FHEX32 | mode);
+    } else if (ocis64(p)) {
+      return printf_nice(v, USE_FHEX64 | mode);
+    }
+  }
+
+  return printf_nice(v, USE_FHEX32 | mode);
+}
+
+int opcode_printf_LADDR(handle_t p, const uint64_t v, const imode_t mode) {
+  if (isopcode(p)) {
+    if (ocis32(p)) {
+      return printf_nice(v, USE_LHEX32 | mode);
+    } else if (ocis64(p)) {
+      return printf_nice(v, USE_LHEX64 | mode);
+    }
+  }
+
+  return printf_nice(v, USE_LHEX32 | mode);
+}
+
 int opcode_printf_pluck(handle_t p, const pconvert_t z, const pick_t x, const imode_t mode) {
   int n = 0;
   if (isopcode(p)) {

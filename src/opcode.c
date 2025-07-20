@@ -176,6 +176,15 @@ unknown_t ocget(handle_t p, const imode_t mode) {
   return NULL;
 }
 
+bool_t ocis32(handle_t p) {
+  return 32 == ocget_archsize(p) ? TRUE : FALSE;
+
+}
+
+bool_t ocis64(handle_t p) {
+  return 64 == ocget_archsize(p) ? TRUE : FALSE;
+}
+
 bool_t ochas(handle_t p, const imode_t mode) {
   return ocget(p, mode) ? TRUE : FALSE;
 }
