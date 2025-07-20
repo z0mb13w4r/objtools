@@ -1,5 +1,6 @@
 #include "opcode.h"
 #include "printf.h"
+#include "ocdwarf.h"
 #include "options.h"
 #include "opcode-printf.h"
 #include "opcode-capstone.h"
@@ -65,6 +66,7 @@ int capstone_raw(handle_t p, handle_t s, unknown_t data, const size_t size, cons
   int n = 0;
   if (data && isopcode(p) && ismodeNXXN(s, MODE_OCSHDRWRAP)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
+
     cs_insn *insn = NULL;
     size_t count = cs_disasm(oc->cs, data, size, vaddr, 0, &insn);
     if (count > 0) {
@@ -80,6 +82,18 @@ int capstone_raw(handle_t p, handle_t s, unknown_t data, const size_t size, cons
             bskip = FALSE;
           }
           if (!bskip) {
+            char *name = NULL;
+            Dwarf_Unsigned nline = 0;
+
+            n2 += ocdwarf_spget(p, insn[i].address, &name, &nline, NULL, NULL, NULL, NULL);
+            if (0 != name) {
+              printf_text(name, USE_LT);
+              printf_text("()", USE_LT | USE_COLON | USE_EOL);
+
+              printf_text("source name", USE_LT | USE_COLON);
+              printf_nice(nline + 1, USE_DEC | USE_EOL);
+            }
+
             n2 += opcode_printf_LHEX(p, insn[i].address, USE_COLON);
             n2 += printf_sore(insn[i].bytes, insn[i].size, USE_HEX | USE_SPACE);
             n2 += printf_pack(42 - n2);

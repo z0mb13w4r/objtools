@@ -79,6 +79,16 @@ int ocdwarf_open(handle_t p, handle_t o) {
       if (ws) {
         ws->sf->status = DW_DLV_ERROR;
       }
+
+      int my_init_fd = open(oc->inpname0, O_RDONLY);
+      if (-1 == my_init_fd) {
+        printf_x("Giving up, cannot open '%s'", oc->inpname0);
+      }
+
+      int x = dwarf_init_b(my_init_fd, DW_GROUPNUMBER_ANY, 0, 0, &ws->dbg, &ws->err);
+      if (IS_DLV_ANY_ERROR(x)) {
+        printf_x("Giving up, cannot do DWARF processing '%s'", oc->inpname0);
+      }
     }
 
     return 0;
@@ -90,6 +100,8 @@ int ocdwarf_open(handle_t p, handle_t o) {
 int ocdwarf_close(handle_t p) {
   if (isopcode(p)) {
     ocdwarf_sfreset(p);
+    ocdwarf_object_finish(p);
+
     popcode_t oc = ocget(p, OPCODE_THIS);
     if (oc) {
       pocdwarf_t ws = CAST(pocdwarf_t, oc->items[OPCODE_DWARF]);
@@ -731,24 +743,11 @@ int ocdwarf_run(handle_t p, handle_t s) {
     if (ws) {
     pdwarf_display_t d = ocdwarf_get(s);
       if (d && d->func) {
-        popcode_t oc = ocget(p, OPCODE_THIS);
-
 //      sectiondata[1].sd_sectionsize = ocget_size(s);
 //      sectiondata[1].sd_secname = ocget_name(s);
 //      sectiondata[1].sd_content = ocget_data(s);
 
-        int my_init_fd = open(oc->inpname0, O_RDONLY);
-        if (-1 == my_init_fd) {
-          printf_x("Giving up, cannot open '%s'", oc->inpname0);
-        }
-
-        int x = dwarf_init_b(my_init_fd, DW_GROUPNUMBER_ANY, 0, 0, &ws->dbg, &ws->err);
-        if (IS_DLV_ANY_ERROR(x)) {
-          printf_x("Giving up, cannot do DWARF processing '%s'", oc->inpname0);
-        }
-
         n = d && d->func ? d->func(p, s, &d->section) : -1;
-        ocdwarf_object_finish(p);
       }
     }
   }
