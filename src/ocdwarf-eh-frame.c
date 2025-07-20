@@ -160,7 +160,7 @@ int ocdwarf_eh_frame_fdes(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed fde_elem
       Dwarf_Addr end_func_addr = low_pc + func_length;
 
       char* name = 0;
-      ocdwarf_spget(p, low_pc, &name, NULL, NULL, NULL, NULL, e);
+      n += ocdwarf_spget(p, low_pc, &name, NULL, NULL, NULL, NULL, NULL, e);
 
       // < 0>
       n += ocdwarf_printf_DEC(p, i, USE_NONE);

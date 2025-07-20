@@ -83,9 +83,10 @@ int capstone_raw(handle_t p, handle_t s, unknown_t data, const size_t size, cons
           }
           if (!bskip) {
             char *name = NULL;
+            char *source = NULL;
             Dwarf_Unsigned nline = 0;
 
-            n2 += ocdwarf_spget(p, insn[i].address, &name, &nline, NULL, NULL, NULL, NULL);
+            n2 += ocdwarf_spget(p, insn[i].address, &name, &nline, NULL, &source, NULL, NULL, NULL);
             if (0 != name) {
               n2 += opcode_printf_LADDR(p, insn[i].address, USE_NONE);
               n2 += printf_text(name, USE_LT | USE_SPACE | USE_TB | USE_COLON | USE_EOL);
