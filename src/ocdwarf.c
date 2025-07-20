@@ -598,6 +598,8 @@ int ocdwarf_spget(handle_t p, Dwarf_Addr addr, char** name,
         return OCDWARF_ERRCODE(x, n0);
       }
 
+      n0 += ocdwarf_sfcreate(p, cu_die, e);
+
       n1 = ocdwarf_spget2(p, cu_die, addr, isinfo, level, name, nline, ncolumn,
                      source, low_pc_addr, high_pc_addr, e);
       if (OCDWARF_ISFAILED(n1)) {

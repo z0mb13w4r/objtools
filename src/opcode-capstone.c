@@ -94,7 +94,7 @@ int capstone_raw(handle_t p, handle_t s, unknown_t data, const size_t size, cons
               n2 += printf_yoke(name, "()", USE_LT | USE_COLON | USE_EOL);
 
               n2 += printf_text(source, USE_LT | USE_COLON);
-              n2 += printf_nice(nline + 1, USE_DEC | USE_EOL);
+              n2 += printf_nice(nline + 1, USE_DEC | USE_NOSPACE | USE_EOL);
             }
 
             n2 += opcode_printf_LHEX(p, insn[i].address, USE_COLON);
