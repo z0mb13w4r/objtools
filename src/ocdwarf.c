@@ -403,7 +403,7 @@ static int ocdwarf_spget0(handle_t p, Dwarf_Die die, Dwarf_Half tag, Dwarf_Addr 
             printf_e("dwarf_formudata failed! errcode %d", x);
             return OCDWARF_ERRCODE(x, n0);
           } else if (DW_AT_decl_line == nattr && nline) {
-            *nline = value;
+            *nline = value + 1;
           } else if (DW_AT_decl_column == nattr && ncolumn) {
             *ncolumn = value;
           } else if (DW_AT_high_pc == nattr && low_pc_addr && high_pc_addr) {
@@ -532,13 +532,71 @@ static int ocdwarf_spget3(handle_t p, Dwarf_Die *die, Dwarf_Addr addr,
   return OCDWARF_ERRCODE(x, n);
 }
 
-int ocdwarf_dfget3(handle_t p, Dwarf_Die *die, Dwarf_Addr addr, Dwarf_Bool isinfo, char **source,
-                     Dwarf_Unsigned *discriminator, Dwarf_Error *e) {
+int ocdwarf_dfget3(handle_t p, Dwarf_Die die, Dwarf_Addr addr, Dwarf_Bool isinfo, char **source,
+                     Dwarf_Unsigned *nline, Dwarf_Unsigned *ncolumn, Dwarf_Unsigned *discriminator, Dwarf_Error *e) {
   int x = DW_DLV_ERROR;
   int n = 0;
 
   if (isopcode(p)) {
+    Dwarf_Signed line_count = 0;
+    Dwarf_Line  *line_array = NULL;
+    Dwarf_Small  table_count = 0;
+    Dwarf_Unsigned line_version = 0;
+    Dwarf_Line_Context line_context = 0;
 
+    x = dwarf_srclines_b(die, &line_version, &table_count, &line_context, e);
+    if (IS_DLV_OK(x)) {
+      x = dwarf_srclines_from_linecontext(line_context, &line_array, &line_count, e);
+    }
+    if (IS_DLV_OK(x)) {
+      for (Dwarf_Signed i = 0; i < line_count; ++i) {
+        Dwarf_Addr pc = 0;
+        Dwarf_Line k = line_array[i];
+        x = dwarf_lineaddr(k, &pc, e);
+        if (IS_DLV_ANY_ERROR(x)) continue;
+        else if (addr != pc) continue;
+
+        Dwarf_Unsigned value0 = 0;
+        Dwarf_Unsigned value1 = 0;
+        Dwarf_Bool value2 = FALSE;
+        Dwarf_Bool value3 = FALSE;
+        char *value4 = NULL;
+
+        x = dwarf_lineno(k, &value0, e);
+        if (IS_DLV_OK(x) && nline) {
+          *nline = value0;
+//printf("%d[L]", value0);
+        }
+
+        x = dwarf_lineoff_b(k, &value0, e);
+        if (IS_DLV_OK(x) && ncolumn) {
+          *ncolumn = value0;
+//printf("%d[C]", value0);
+        }
+
+        x = dwarf_prologue_end_etc(k, &value2, &value3, &value0, &value1, e);
+        if (IS_DLV_OK(x) && discriminator) {
+          *discriminator = value1;
+//printf("%d[D]", value1);
+        }
+
+//        char* sn = NULL;
+//        char* sf = NULL;
+//        x = dwarf_line_subprog(k, &sn, &sf, &value0, e);
+//        if (IS_DLV_OK(x) && sf) {
+//          *source = sf;
+//printf(" - %s", sf);
+//        }
+
+          x = dwarf_linesrc(k, &value4, e);
+          if (IS_DLV_OK(x) && source) {
+            *source = value4;
+//printf(" - %s", value4);
+          }
+
+//printf("\n");
+      }
+    }
   }
 
   return OCDWARF_ERRCODE(x, n);
@@ -585,12 +643,12 @@ int ocdwarf_spget(handle_t p, Dwarf_Addr addr, char** name,
 
       n0 += n1;
 
-//      n1 = ocdwarf_dfget3(p, &cu_die, addr, isinfo, source, discriminator, e);
-//      if (OCDWARF_ISFAILED(n1)) {
-//        dwarf_dealloc_die(cu_die);
-//        printf_e("ocdwarf_dfget3 failed! %d", n1);
-//        return n1;
-//      }
+      n1 = ocdwarf_dfget3(p, cu_die, addr, isinfo, source, nline, ncolumn, discriminator, e);
+      if (OCDWARF_ISFAILED(n1)) {
+        dwarf_dealloc_die(cu_die);
+        printf_e("ocdwarf_dfget3 failed! %d", n1);
+        return n1;
+      }
 
       dwarf_dealloc_die(cu_die);
       ocdwarf_sfreset(p);
