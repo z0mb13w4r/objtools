@@ -264,7 +264,7 @@ unknown_t getp(const pbuffer_t p, const int offset, const size_t size) {
 
 int getb(const pbuffer_t p, const int offset) {
   puchar_t v = getp(p, offset, sizeof(uchar_t));
-  return v ? *v : -1;
+  return v ? *v : ECODE_PARAM;
 }
 
 int isBigEndian(const pbuffer_t p) {
@@ -272,7 +272,7 @@ int isBigEndian(const pbuffer_t p) {
     return ELFDATA2MSB == getb(p, EI_DATA);
   }
 
-  return -1;
+  return ECODE_HANDLE;
 }
 
 int isLittleEndian(const pbuffer_t p) {
@@ -280,6 +280,6 @@ int isLittleEndian(const pbuffer_t p) {
     return ELFDATA2LSB == getb(p, EI_DATA);
   }
 
-  return -1;
+  return ECODE_HANDLE;
 }
 

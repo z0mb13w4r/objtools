@@ -30,10 +30,10 @@ int rot5(const unknown_t p, const size_t size) {
       p0[i] = zap(p0[i], '0', '9', 5);
     }
 
-    return 0;
+    return ECODE_OK;
   }
 
-  return -1;
+  return ECODE_HANDLE;
 }
 
 int rot13(const unknown_t p, const size_t size) {
@@ -44,10 +44,10 @@ int rot13(const unknown_t p, const size_t size) {
       p0[i] = zap(p0[i], 'a', 'z', 13);
     }
 
-    return 0;
+    return ECODE_OK;
   }
 
-  return -1;
+  return ECODE_HANDLE;
 }
 
 int rot18(const unknown_t p, const size_t size) {
@@ -59,10 +59,10 @@ int rot18(const unknown_t p, const size_t size) {
       p0[i] = zap(p0[i], '0', '9', 5);
     }
 
-    return 0;
+    return ECODE_OK;
   }
 
-  return -1;
+  return ECODE_HANDLE;
 }
 
 int rot47(const unknown_t p, const size_t size) {
@@ -72,10 +72,10 @@ int rot47(const unknown_t p, const size_t size) {
       p0[i] = zap(p0[i], 33, 126, 47);
     }
 
-    return 0;
+    return ECODE_OK;
   }
 
-  return -1;
+  return ECODE_HANDLE;
 }
 
 int not8(const unknown_t p, const size_t size) {

@@ -91,10 +91,10 @@ int ocdwarf_open(handle_t p, handle_t o) {
       }
     }
 
-    return 0;
+    return ECODE_OK;
   }
 
-  return -1;
+  return ECODE_HANDLE;
 }
 
 int ocdwarf_close(handle_t p) {
@@ -113,10 +113,10 @@ int ocdwarf_close(handle_t p) {
       zfree(&oc->items[OPCODE_DWARF]);
     }
 
-    return 0;
+    return ECODE_OK;
   }
 
-  return -1;
+  return ECODE_HANDLE;
 }
 
 /* Some valid DWARF2 data */
@@ -534,9 +534,6 @@ static int ocdwarf_spget3(handle_t p, Dwarf_Die *die, Dwarf_Addr addr,
 
 int ocdwarf_dfget3(handle_t p, Dwarf_Die die, Dwarf_Addr addr, Dwarf_Bool isinfo, char **source,
                      Dwarf_Unsigned *nline, Dwarf_Unsigned *ncolumn, Dwarf_Unsigned *discriminator, Dwarf_Error *e) {
-  int x = DW_DLV_ERROR;
-  int n = 0;
-
   if (isopcode(p)) {
     Dwarf_Signed line_count = 0;
     Dwarf_Line  *line_array = NULL;
@@ -544,7 +541,7 @@ int ocdwarf_dfget3(handle_t p, Dwarf_Die die, Dwarf_Addr addr, Dwarf_Bool isinfo
     Dwarf_Unsigned line_version = 0;
     Dwarf_Line_Context line_context = 0;
 
-    x = dwarf_srclines_b(die, &line_version, &table_count, &line_context, e);
+    int x = dwarf_srclines_b(die, &line_version, &table_count, &line_context, e);
     if (IS_DLV_OK(x)) {
       x = dwarf_srclines_from_linecontext(line_context, &line_array, &line_count, e);
     }
@@ -581,11 +578,13 @@ int ocdwarf_dfget3(handle_t p, Dwarf_Die die, Dwarf_Addr addr, Dwarf_Bool isinfo
         if (IS_DLV_OK(x) && source) {
           *source = value4;
         }
+
+	return ECODE_OK;
       }
     }
   }
 
-  return OCDWARF_ERRCODE(x, n);
+  return ECODE_MISSING;
 }
 
 int ocdwarf_spget(handle_t p, Dwarf_Addr addr, char** name,
@@ -629,11 +628,9 @@ int ocdwarf_spget(handle_t p, Dwarf_Addr addr, char** name,
 
       n0 += n1;
 
-      n1 = ocdwarf_dfget3(p, cu_die, addr, isinfo, source, nline, ncolumn, discriminator, e);
-      if (OCDWARF_ISFAILED(n1)) {
-        dwarf_dealloc_die(cu_die);
-        printf_e("ocdwarf_dfget3 failed! %d", n1);
-        return n1;
+      x = ocdwarf_dfget3(p, cu_die, addr, isinfo, source, nline, ncolumn, discriminator, e);
+      if (ECODE_ISFAILED(x)) {
+        printf_e("ocdwarf_dfget3 failed! %d", x);
       }
 
       dwarf_dealloc_die(cu_die);
@@ -641,7 +638,7 @@ int ocdwarf_spget(handle_t p, Dwarf_Addr addr, char** name,
     }
   }
 
-  return OCDWARF_ERRCODE(x, n0);
+  return x;
 }
 
 int ocdwarf_next_cu_header(handle_t p, Dwarf_Die *cu_die, Dwarf_Error *e) {

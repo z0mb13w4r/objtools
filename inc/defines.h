@@ -7,9 +7,15 @@
 #include <stdlib.h>
 #include <string.h>
 
-#ifndef DEBUGX
-#define DEBUGX(c)    printf("%c%c%c%d%c%c%c\n", c, c, c, __LINE__, c, c, c)
-#endif
+#define ECODE_OK             (0)
+#define ECODE_GENERIC        (-1)
+#define ECODE_HANDLE         (-2)
+#define ECODE_DWARF          (-3)
+#define ECODE_PARAM          (-4)
+#define ECODE_MISSING        (-100)
+
+#define ECODE_ISOK(x)        (ECODE_OK == (x))
+#define ECODE_ISFAILED(x)    (((x) < ECODE_OK) && (ECODE_MISSING < (x)))
 
 #ifndef CAST
 #define CAST(x,y)    ((x)(y))

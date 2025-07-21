@@ -605,10 +605,10 @@ int occlose(handle_t p) {
       bfd_close(p0->items[OPCODE_BFD]);
     }
     ocfree(p);
-    return 0;
+    return ECODE_OK;
   }
 
-  return -1;
+  return ECODE_HANDLE;
 }
 
 void occonfig(const char* name, const char* target) {
@@ -638,7 +638,7 @@ int ocdo_programs(handle_t p, opcbfunc_t cbfunc, unknown_t param) {
     }
   }
 
-  return -1;
+  return ECODE_HANDLE;
 }
 
 int ocdo_sections(handle_t p, opcbfunc_t cbfunc, unknown_t param) {
@@ -651,11 +651,11 @@ int ocdo_sections(handle_t p, opcbfunc_t cbfunc, unknown_t param) {
     }
   }
 
-  return -1;
+  return ECODE_HANDLE;
 }
 
 int ocdisassemble_open(handle_t p, handle_t o) {
-  if (0 == ocdwarf_open(p, o)) {
+  if (ECODE_OK == ocdwarf_open(p, o)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
     if (oc->action & OPTPROGRAM_CAPSTONE || isattached(p)) {
       return capstone_open(p, o);
@@ -664,11 +664,11 @@ int ocdisassemble_open(handle_t p, handle_t o) {
     }
   }
 
-  return -1;
+  return ECODE_HANDLE;
 }
 
 int ocdisassemble_close(handle_t p) {
-  if (0 == ocdwarf_close(p)) {
+  if (ECODE_OK == ocdwarf_close(p)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
     if (oc->action & OPTPROGRAM_CAPSTONE || isattached(p)) {
       return capstone_close(p);
@@ -677,7 +677,7 @@ int ocdisassemble_close(handle_t p) {
     }
   }
 
-  return -1;
+  return ECODE_HANDLE;
 }
 
 int ocdisassemble_run(handle_t p, handle_t s) {
@@ -690,7 +690,7 @@ int ocdisassemble_run(handle_t p, handle_t s) {
     }
   }
 
-  return -1;
+  return ECODE_HANDLE;
 }
 
 int ocdisassemble_raw(handle_t p, handle_t s, unknown_t data, const size_t size, const uint64_t vaddr) {
@@ -703,6 +703,6 @@ int ocdisassemble_raw(handle_t p, handle_t s, unknown_t data, const size_t size,
     }
   }
 
-  return -1;
+  return ECODE_HANDLE;
 }
 

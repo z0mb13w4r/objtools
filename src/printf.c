@@ -493,7 +493,7 @@ int printf_book(const char* p[], const imode_t mode) {
     return n;
   }
 
-  return -1;
+  return ECODE_HANDLE;
 }
 
 int printf_hurt(const unknown_t p, const size_t size, const imode_t mode) {
@@ -648,7 +648,7 @@ int printf_sore(const unknown_t p, const size_t size, const imode_t mode) {
       }
     }
   } else if (USE_ROT5 == modex) {
-    if (!rot5(p0, size)) {
+    if (ECODE_ISOK(rot5(p0, size))) {
       if (0 == (mode & USE_NOTEXT)) {
         n += printf_text("ROT5", USE_LT | USE_COLON | mode0 | SET_PAD(MAXSIZE));
         n += printf_sore(p0, size, USE_HEX | USE_EOL);
@@ -657,7 +657,7 @@ int printf_sore(const unknown_t p, const size_t size, const imode_t mode) {
       }
     }
   } else if (USE_ROT13 == modex) {
-    if (!rot13(p0, size)) {
+    if (ECODE_ISOK(rot13(p0, size))) {
       if (0 == (mode & USE_NOTEXT)) {
         n += printf_text("ROT13", USE_LT | USE_COLON | mode0 | SET_PAD(MAXSIZE));
         n += printf_sore(p0, size, USE_HEX | USE_EOL);
@@ -666,7 +666,7 @@ int printf_sore(const unknown_t p, const size_t size, const imode_t mode) {
       }
     }
   } else if (USE_ROT18 == modex) {
-    if (!rot18(p0, size)) {
+    if (ECODE_ISOK(rot18(p0, size))) {
       if (0 == (mode & USE_NOTEXT)) {
         n += printf_text("ROT18", USE_LT | USE_COLON | mode0 | SET_PAD(MAXSIZE));
         n += printf_sore(p0, size, USE_HEX | USE_EOL);
@@ -780,7 +780,7 @@ int printf_data(const unknown_t p, const size_t size, const addrz_t addr, const 
       pp += siz;
       i += siz;
     } else {
-      return -1;
+      return ECODE_PARAM;
     }
   }
 
