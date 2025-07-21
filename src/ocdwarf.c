@@ -566,6 +566,31 @@ static int ocdwarf_spget2(handle_t p, Dwarf_Die die, Dwarf_Addr addr,
   return OCDWARF_ERRCODE(x, n);
 }
 
+static int ocdwarf_spget3(handle_t p, Dwarf_Die *die, Dwarf_Addr addr,
+                  Dwarf_Bool isinfo, Dwarf_Unsigned level, char **name,
+                  Dwarf_Unsigned *nline, Dwarf_Unsigned *ncolumn, char **source,
+                  Dwarf_Addr *low_pc_addr, Dwarf_Addr *high_pc_addr, Dwarf_Error *e) {
+  int x = DW_DLV_ERROR;
+  int n = 0;
+
+  if (isopcode(p)) {
+      Dwarf_Die no_die = 0;
+
+      x = dwarf_siblingof_b(ocget(p, OPCODE_DWARF_DEBUG), no_die, isinfo, die, e);
+      if (IS_DLV_NO_ENTRY(x)) return n;
+      else if (IS_DLV_ERROR(x)) {
+        ocdwarf_dealloc_error(p, NULL);
+        printf_e("dwarf_siblingof_b failed, no CU die");
+        return OCDWARF_ERRCODE(x, n);
+      }
+
+      n = ocdwarf_spget2(p, *die, addr, isinfo, level, name, nline, ncolumn,
+                     source, low_pc_addr, high_pc_addr, e);
+  }
+
+  return OCDWARF_ERRCODE(x, n);
+}
+
 int ocdwarf_spget(handle_t p, Dwarf_Addr addr, char** name,
                      Dwarf_Unsigned *nline, Dwarf_Unsigned *ncolumn, Dwarf_Unsigned *discriminator, char **source,
                      Dwarf_Addr *low_pc_addr, Dwarf_Addr *high_pc_addr, Dwarf_Error *e) {
@@ -578,7 +603,6 @@ int ocdwarf_spget(handle_t p, Dwarf_Addr addr, char** name,
     int            level = 0;
 
     for ( ; ; ) {
-      Dwarf_Die no_die = 0;
       Dwarf_Die cu_die = 0;
 
       n1 = ocdwarf_next_cu_header(p, &cu_die, e);
@@ -599,19 +623,11 @@ int ocdwarf_spget(handle_t p, Dwarf_Addr addr, char** name,
 
       n0 += n1;
 
-      x = dwarf_siblingof_b(ocget(p, OPCODE_DWARF_DEBUG), no_die, isinfo, &cu_die, e);
-      if (IS_DLV_NO_ENTRY(x)) return n0;
-      else if (IS_DLV_ERROR(x)) {
-        ocdwarf_dealloc_error(p, NULL);
-        printf_e("dwarf_siblingof_b failed, no CU die");
-        return OCDWARF_ERRCODE(x, n0);
-      }
-
-      n1 = ocdwarf_spget2(p, cu_die, addr, isinfo, level, name, nline, ncolumn,
+      n1 = ocdwarf_spget3(p, &cu_die, addr, isinfo, level, name, nline, ncolumn,
                      source, low_pc_addr, high_pc_addr, e);
       if (OCDWARF_ISFAILED(n1)) {
         dwarf_dealloc_die(cu_die);
-        printf_e("ocdwarf_die_and_siblings failed! %d", n1);
+        printf_e("ocdwarf_spget3 failed! %d", n1);
         return n1;
       }
 
