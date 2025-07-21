@@ -590,6 +590,15 @@ int ocdwarf_spget(handle_t p, Dwarf_Addr addr, char** name,
 
       n0 += n1;
 
+      n1 = ocdwarf_sfcreate(p, cu_die, e);
+      if (OCDWARF_ISFAILED(n1)) {
+        dwarf_dealloc_die(cu_die);
+        printf_e("ocdwarf_sfcreate failed! %d", n1);
+        return n1;
+      }
+
+      n0 += n1;
+
       x = dwarf_siblingof_b(ocget(p, OPCODE_DWARF_DEBUG), no_die, isinfo, &cu_die, e);
       if (IS_DLV_NO_ENTRY(x)) return n0;
       else if (IS_DLV_ERROR(x)) {
@@ -597,8 +606,6 @@ int ocdwarf_spget(handle_t p, Dwarf_Addr addr, char** name,
         printf_e("dwarf_siblingof_b failed, no CU die");
         return OCDWARF_ERRCODE(x, n0);
       }
-
-      n0 += ocdwarf_sfcreate(p, cu_die, e);
 
       n1 = ocdwarf_spget2(p, cu_die, addr, isinfo, level, name, nline, ncolumn,
                      source, low_pc_addr, high_pc_addr, e);
