@@ -565,36 +565,22 @@ int ocdwarf_dfget3(handle_t p, Dwarf_Die die, Dwarf_Addr addr, Dwarf_Bool isinfo
         x = dwarf_lineno(k, &value0, e);
         if (IS_DLV_OK(x) && nline) {
           *nline = value0;
-//printf("%d[L]", value0);
         }
 
         x = dwarf_lineoff_b(k, &value0, e);
         if (IS_DLV_OK(x) && ncolumn) {
           *ncolumn = value0;
-//printf("%d[C]", value0);
         }
 
         x = dwarf_prologue_end_etc(k, &value2, &value3, &value0, &value1, e);
         if (IS_DLV_OK(x) && discriminator) {
           *discriminator = value1;
-//printf("%d[D]", value1);
         }
 
-//        char* sn = NULL;
-//        char* sf = NULL;
-//        x = dwarf_line_subprog(k, &sn, &sf, &value0, e);
-//        if (IS_DLV_OK(x) && sf) {
-//          *source = sf;
-//printf(" - %s", sf);
-//        }
-
-          x = dwarf_linesrc(k, &value4, e);
-          if (IS_DLV_OK(x) && source) {
-            *source = value4;
-//printf(" - %s", value4);
-          }
-
-//printf("\n");
+        x = dwarf_linesrc(k, &value4, e);
+        if (IS_DLV_OK(x) && source) {
+          *source = value4;
+        }
       }
     }
   }
