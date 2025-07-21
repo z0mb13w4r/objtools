@@ -338,8 +338,6 @@ static int ocdwarf_spget0(handle_t p, Dwarf_Die die, Dwarf_Half tag, Dwarf_Addr 
   int n0 = 0;
 
   if (isopcode(p)) {
-    popcode_t oc = ocget(p, OPCODE_THIS);
-
     Dwarf_Signed cattr = 0;
     Dwarf_Attribute *pattr = 0;
     x = dwarf_attrlist(die, &pattr, &cattr, e);
@@ -430,9 +428,6 @@ static int ocdwarf_spget0(handle_t p, Dwarf_Die die, Dwarf_Half tag, Dwarf_Addr 
     }
 
     ocdwarf_dealloc_attribute(p, pattr, cattr);
-    if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
-      n0 += printf_eol();
-    }
   }
 
   return OCDWARF_ERRCODE(x, n0);
