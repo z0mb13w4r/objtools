@@ -85,10 +85,10 @@ int not8(const unknown_t p, const size_t size) {
       p0[i] = ~p0[i];
     }
 
-    return 0;
+    return ECODE_OK;
   }
 
-  return -1;
+  return ECODE_HANDLE;
 }
 
 int not16(const unknown_t p, const size_t size) {
@@ -98,10 +98,10 @@ int not16(const unknown_t p, const size_t size) {
       p0[i] = ~p0[i];
     }
 
-    return 0;
+    return ECODE_OK;
   }
 
-  return -1;
+  return ECODE_HANDLE;
 }
 
 int not32(const unknown_t p, const size_t size) {
@@ -111,10 +111,10 @@ int not32(const unknown_t p, const size_t size) {
       p0[i] = ~p0[i];
     }
 
-    return 0;
+    return ECODE_OK;
   }
 
-  return -1;
+  return ECODE_HANDLE;
 }
 
 int shl8(const unknown_t p, const uint8_t v, const size_t size) {
@@ -124,10 +124,10 @@ int shl8(const unknown_t p, const uint8_t v, const size_t size) {
       p0[i] <<= v;
     }
 
-    return 0;
+    return ECODE_OK;
   }
 
-  return -1;
+  return ECODE_HANDLE;
 }
 
 int shl16(const unknown_t p, const uint16_t v, const size_t size) {
@@ -137,10 +137,10 @@ int shl16(const unknown_t p, const uint16_t v, const size_t size) {
       p0[i] <<= v;
     }
 
-    return 0;
+    return ECODE_OK;
   }
 
-  return -1;
+  return ECODE_HANDLE;
 }
 
 int shl32(const unknown_t p, const uint32_t v, const size_t size) {
@@ -150,10 +150,10 @@ int shl32(const unknown_t p, const uint32_t v, const size_t size) {
       p0[i] <<= v;
     }
 
-    return 0;
+    return ECODE_OK;
   }
 
-  return -1;
+  return ECODE_HANDLE;
 }
 
 int shr8(const unknown_t p, const uint8_t v, const size_t size) {
@@ -163,10 +163,10 @@ int shr8(const unknown_t p, const uint8_t v, const size_t size) {
       p0[i] >>= v;
     }
 
-    return 0;
+    return ECODE_OK;
   }
 
-  return -1;
+  return ECODE_HANDLE;
 }
 
 int shr16(const unknown_t p, const uint16_t v, const size_t size) {
@@ -176,10 +176,10 @@ int shr16(const unknown_t p, const uint16_t v, const size_t size) {
       p0[i] >>= v;
     }
 
-    return 0;
+    return ECODE_OK;
   }
 
-  return -1;
+  return ECODE_HANDLE;
 }
 
 int shr32(const unknown_t p, const uint32_t v, const size_t size) {
@@ -189,10 +189,10 @@ int shr32(const unknown_t p, const uint32_t v, const size_t size) {
       p0[i] >>= v;
     }
 
-    return 0;
+    return ECODE_OK;
   }
 
-  return -1;
+  return ECODE_HANDLE;
 }
 
 int xor8(const unknown_t p, const uint8_t v, const size_t size) {
@@ -202,10 +202,10 @@ int xor8(const unknown_t p, const uint8_t v, const size_t size) {
       p0[i] ^= v;
     }
 
-    return 0;
+    return ECODE_OK;
   }
 
-  return -1;
+  return ECODE_HANDLE;
 }
 
 int rol8(const unknown_t p, const uint8_t v, const size_t size) {
@@ -215,10 +215,10 @@ int rol8(const unknown_t p, const uint8_t v, const size_t size) {
       p0[i] = (p0[i] << v) | (p0[i] >> (8 - v));
     }
 
-    return 0;
+    return ECODE_OK;
   }
 
-  return -1;
+  return ECODE_HANDLE;
 }
 
 int rol16(const unknown_t p, const uint16_t v, const size_t size) {
@@ -228,10 +228,10 @@ int rol16(const unknown_t p, const uint16_t v, const size_t size) {
       p0[i] = (p0[i] << v) | (p0[i] >> (16 - v));
     }
 
-    return 0;
+    return ECODE_OK;
   }
 
-  return -1;
+  return ECODE_HANDLE;
 }
 
 int rol32(const unknown_t p, const uint32_t v, const size_t size) {
@@ -241,10 +241,10 @@ int rol32(const unknown_t p, const uint32_t v, const size_t size) {
       p0[i] = (p0[i] << v) | (p0[i] >> (32 - v));
     }
 
-    return 0;
+    return ECODE_OK;
   }
 
-  return -1;
+  return ECODE_HANDLE;
 }
 
 int ror8(const unknown_t p, const uint8_t v, const size_t size) {
@@ -254,10 +254,10 @@ int ror8(const unknown_t p, const uint8_t v, const size_t size) {
       p0[i] = (p0[i] >> v) | (p0[i] << (8 - v));
     }
 
-    return 0;
+    return ECODE_OK;
   }
 
-  return -1;
+  return ECODE_HANDLE;
 }
 
 int ror16(const unknown_t p, const uint16_t v, const size_t size) {
@@ -267,10 +267,10 @@ int ror16(const unknown_t p, const uint16_t v, const size_t size) {
       p0[i] = (p0[i] >> v) | (p0[i] << (16 - v));
     }
 
-    return 0;
+    return ECODE_OK;
   }
 
-  return -1;
+  return ECODE_HANDLE;
 }
 
 int ror32(const unknown_t p, const uint32_t v, const size_t size) {
@@ -280,10 +280,10 @@ int ror32(const unknown_t p, const uint32_t v, const size_t size) {
       p0[i] = (p0[i] >> v) | (p0[i] << (32 - v));
     }
 
-    return 0;
+    return ECODE_OK;
   }
 
-  return -1;
+  return ECODE_HANDLE;
 }
 
 int xor16(const unknown_t p, const uint16_t v, const size_t size) {
@@ -293,10 +293,10 @@ int xor16(const unknown_t p, const uint16_t v, const size_t size) {
       p0[i] ^= v;
     }
 
-    return 0;
+    return ECODE_OK;
   }
 
-  return -1;
+  return ECODE_HANDLE;
 }
 
 int xor32(const unknown_t p, const uint32_t v, const size_t size) {
@@ -306,10 +306,10 @@ int xor32(const unknown_t p, const uint32_t v, const size_t size) {
       p0[i] ^= v;
     }
 
-    return 0;
+    return ECODE_OK;
   }
 
-  return -1;
+  return ECODE_HANDLE;
 }
 
 int add8(const unknown_t p, const uint8_t v, const size_t size) {
@@ -320,10 +320,10 @@ int add8(const unknown_t p, const uint8_t v, const size_t size) {
       p0[i] = v0 > UCHAR_MAX ? v0 - UCHAR_MAX : v0;
     }
 
-    return 0;
+    return ECODE_OK;
   }
 
-  return -1;
+  return ECODE_HANDLE;
 }
 
 int add16(const unknown_t p, const uint16_t v, const size_t size) {
@@ -334,10 +334,10 @@ int add16(const unknown_t p, const uint16_t v, const size_t size) {
       p0[i] = v0 > USHRT_MAX ? v0 - USHRT_MAX : v0;
     }
 
-    return 0;
+    return ECODE_OK;
   }
 
-  return -1;
+  return ECODE_HANDLE;
 }
 
 int add32(const unknown_t p, const uint32_t v, const size_t size) {
@@ -348,10 +348,10 @@ int add32(const unknown_t p, const uint32_t v, const size_t size) {
       p0[i] = v0 > ULONG_MAX ? v0 - ULONG_MAX : v0;
     }
 
-    return 0;
+    return ECODE_OK;
   }
 
-  return -1;
+  return ECODE_HANDLE;
 }
 
 int sub8(const unknown_t p, const uint8_t v, const size_t size) {
@@ -362,10 +362,10 @@ int sub8(const unknown_t p, const uint8_t v, const size_t size) {
       p0[i] = v0 < 0 ? UCHAR_MAX + v0 : v0;
     }
 
-    return 0;
+    return ECODE_OK;
   }
 
-  return -1;
+  return ECODE_HANDLE;
 }
 
 int sub16(const unknown_t p, const uint16_t v, const size_t size) {
@@ -376,10 +376,10 @@ int sub16(const unknown_t p, const uint16_t v, const size_t size) {
       p0[i] = v0 < 0 ? USHRT_MAX + v0 : v0;
     }
 
-    return 0;
+    return ECODE_OK;
   }
 
-  return -1;
+  return ECODE_HANDLE;
 }
 
 int sub32(const unknown_t p, const uint32_t v, const size_t size) {
@@ -390,10 +390,10 @@ int sub32(const unknown_t p, const uint32_t v, const size_t size) {
       p0[i] = v0 < 0 ? ULONG_MAX + v0 : v0;
     }
 
-    return 0;
+    return ECODE_OK;
   }
 
-  return -1;
+  return ECODE_HANDLE;
 }
 
 int aes_encrypt(const int mode, puchar_t src, const size_t srcsize,
@@ -406,7 +406,7 @@ int aes_encrypt(const int mode, puchar_t src, const size_t srcsize,
   int dstsize = 0;
 
   EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
-  if (NULL == ctx) return -1;
+  if (NULL == ctx) return ECODE_CRYPTO;
 
   int x = TRUE;
 

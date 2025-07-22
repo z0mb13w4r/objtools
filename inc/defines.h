@@ -9,13 +9,16 @@
 
 #define ECODE_OK             (0)
 #define ECODE_GENERIC        (-1)
-#define ECODE_HANDLE         (-2)
 #define ECODE_DWARF          (-3)
 #define ECODE_PARAM          (-4)
-#define ECODE_MISSING        (-100)
+#define ECODE_CRYPTO         (-5)
+#define ECODE_HANDLE         (-298)
+#define ECODE_NULL           (-299)
+#define ECODE_MISSING        (-300)
 
 #define ECODE_ISOK(x)        (ECODE_OK == (x))
-#define ECODE_ISFAILED(x)    (((x) < ECODE_OK) && (ECODE_MISSING < (x)))
+#define ECODE_ISEVIL(x)      ((x) < ECODE_OK)
+#define ECODE_ISFAILED(x)    (ECODE_ISEVIL(x) && (ECODE_MISSING < (x)))
 
 #ifndef CAST
 #define CAST(x,y)    ((x)(y))
