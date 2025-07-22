@@ -5,7 +5,7 @@
 #include "objutils.h"
 
 bool_t isbits(const imode_t x) {
-  return x & (x -1);
+  return x & (x - 1);
 }
 
 bool_t isused(ppick_t p, const pick_t x) {
@@ -136,7 +136,7 @@ int strlen8(unknown_t s, const size_t maxsize) {
     return maxsize;
   }
 
-  return -1;
+  return ECODE_NULL;
 }
 
 int strlen16(unknown_t s, const size_t maxsize) {
@@ -149,7 +149,7 @@ int strlen16(unknown_t s, const size_t maxsize) {
     return maxsize;
   }
 
-  return -1;
+  return ECODE_NULL;
 }
 
 int strsize8(unknown_t s, const size_t maxsize) {
@@ -162,7 +162,7 @@ int strsize8(unknown_t s, const size_t maxsize) {
     return maxsize;
   }
 
-  return -1;
+  return ECODE_NULL;
 }
 
 int strsize16(unknown_t s, const size_t maxsize) {
@@ -175,7 +175,7 @@ int strsize16(unknown_t s, const size_t maxsize) {
     return maxsize;
   }
 
-  return -1;
+  return ECODE_NULL;
 }
 
 int strcmp8(const unknown_t s0, const char* s1, const size_t maxsize) {
@@ -188,10 +188,10 @@ int strcmp8(const unknown_t s0, const char* s1, const size_t maxsize) {
       if (0 == c0 || 0 == c1 || c0 != c1) return c0 - c1;
     }
 
-    return 0;
+    return ECODE_OK;
   }
 
-  return -1;
+  return ECODE_NULL;
 }
 
 int strcmp16(const unknown_t s0, const char* s1, const size_t maxsize) {
@@ -204,9 +204,9 @@ int strcmp16(const unknown_t s0, const char* s1, const size_t maxsize) {
       if (0 == c0 || 0 == c1 || c0 != c1) return c0 - c1;
     }
 
-    return 0;
+    return ECODE_OK;
   }
 
-  return -1;
+  return ECODE_NULL;
 }
 
