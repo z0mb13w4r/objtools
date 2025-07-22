@@ -400,11 +400,11 @@ static int breakup_args(char* args, char* dst0, const size_t dst0size, char* dst
     tok = strtok(NULL, DELIMITS);
     if (tok) {
       strncpy(dst1, tok, dst1size);
-      return 0;
+      return ECODE_OK;
     }
   }
 
-  return -1;
+  return ECODE_GENERIC;
 }
 
 int get_options_convert(poptions_t o, int argc, char** argv, char* name) {
@@ -421,7 +421,7 @@ int get_options_convert(poptions_t o, int argc, char** argv, char* name) {
       MALLOCA(char, arg0, 1024);
       MALLOCA(char, arg1, 1024);
 
-      if (0 == breakup_args(argv[i], arg0, NELEMENTS(arg0), arg1, NELEMENTS(arg1))) {
+      if (ECODE_ISOK(breakup_args(argv[i], arg0, NELEMENTS(arg0), arg1, NELEMENTS(arg1)))) {
         if (0 == strcmp(arg0, "--output")) {
           strncpy(o->outname, arg1, NELEMENTS(o->outname));
         }
@@ -434,7 +434,7 @@ int get_options_convert(poptions_t o, int argc, char** argv, char* name) {
       } else {
         o->action |= get_options1(o, zCONVERTARGS, argv[i]);
       }
-    } else if (0 != sinsert(o, argv[i])) {
+    } else if (ECODE_ISEVIL(sinsert(o, argv[i]))) {
       strncpy(o->inpname, argv[i], NELEMENTS(o->inpname));
     }
   }
@@ -447,7 +447,7 @@ int get_options_convert(poptions_t o, int argc, char** argv, char* name) {
     return usage0(o, "convert-ng", zCONVERTARGS);
   }
 
-  return 0;
+  return ECODE_OK;
 }
 
 int get_options_readelf(poptions_t o, int argc, char** argv, char* name) {
@@ -464,7 +464,7 @@ int get_options_readelf(poptions_t o, int argc, char** argv, char* name) {
       MALLOCA(char, arg0, 1024);
       MALLOCA(char, arg1, 1024);
 
-      if (0 == breakup_args(argv[i], arg0, NELEMENTS(arg0), arg1, NELEMENTS(arg1))) {
+      if (ECODE_ISOK(breakup_args(argv[i], arg0, NELEMENTS(arg0), arg1, NELEMENTS(arg1)))) {
         if (0 == strcmp(arg0, zREADELFARGS1)) {
           o->ocdump |= get_options2(o, zDEBUGELFARGS, arg1);
         } else if (0 == strcmp(arg0, "--hex-dump")) {
@@ -523,7 +523,7 @@ int get_options_readelf(poptions_t o, int argc, char** argv, char* name) {
     return usage2(o, "readelf-ng", zREADELFARGS, zREADELFARGS0, zREADELFARGS1, zREADELFARGS2, zREADELFARGS3);
   }
 
-  return 0;
+  return ECODE_OK;
 }
 
 int get_options_objcopy(poptions_t o, int argc, char** argv, char* name) {
@@ -538,17 +538,17 @@ int get_options_objcopy(poptions_t o, int argc, char** argv, char* name) {
     if ('-' == argv[i][0] && '-' == argv[i][1]) {
       if (0 == strcmp(argv[i], "--add-section")) {
         paction_t p = amalloc();
-        if (p && 0 == breakup_args(argv[++i], p->secname, NELEMENTS(p->secname), p->outname, NELEMENTS(p->outname))) {
+        if (p && ECODE_ISOK(breakup_args(argv[++i], p->secname, NELEMENTS(p->secname), p->outname, NELEMENTS(p->outname)))) {
           oinsert(o, p, ACT_ADDSECTION);
         }
       } else if (0 == strcmp(argv[i], "--dump-section")) {
         paction_t p = amalloc();
-        if (p && 0 == breakup_args(argv[++i], p->secname, NELEMENTS(p->secname), p->outname, NELEMENTS(p->outname))) {
+        if (p && ECODE_ISOK(breakup_args(argv[++i], p->secname, NELEMENTS(p->secname), p->outname, NELEMENTS(p->outname)))) {
           oinsert(o, p, ACT_DUMPSECTION);
         }
       } else if (0 == strcmp(argv[i], "--update-section")) {
         paction_t p = amalloc();
-        if (p && 0 == breakup_args(argv[++i], p->secname, NELEMENTS(p->secname), p->outname, NELEMENTS(p->outname))) {
+        if (p && ECODE_ISOK(breakup_args(argv[++i], p->secname, NELEMENTS(p->secname), p->outname, NELEMENTS(p->outname)))) {
           oinsert(o, p, ACT_UPDATESECTION);
         }
       } else {
@@ -569,7 +569,7 @@ int get_options_objcopy(poptions_t o, int argc, char** argv, char* name) {
     return usage0(o, "objcopy-ng", OBJCOPYARGS);
   }
 
-  return 0;
+  return ECODE_OK;
 }
 
 int get_options_objdump(poptions_t o, int argc, char** argv, char* name) {
@@ -586,7 +586,7 @@ int get_options_objdump(poptions_t o, int argc, char** argv, char* name) {
       MALLOCA(char, arg0, 256);
       MALLOCA(char, arg1, 256);
 
-      if (0 == breakup_args(argv[i], arg0, NELEMENTS(arg0), arg1, NELEMENTS(arg1))) {
+      if (ECODE_ISOK(breakup_args(argv[i], arg0, NELEMENTS(arg0), arg1, NELEMENTS(arg1)))) {
         if (0 == strcmp(arg0, zOBJDUMPARGS1)) {
           o->ocdump |= get_options2(o, zDEBUGELFARGS, arg1);
         } else if (0 == strcmp(arg0, zOBJDUMPARGS3)) {
@@ -623,7 +623,7 @@ int get_options_objdump(poptions_t o, int argc, char** argv, char* name) {
     return usage2(o, "objdump-ng", zOBJDUMPARGS, zOBJDUMPARGS0, zOBJDUMPARGS1, zOBJDUMPARGS2, zOBJDUMPARGS3);
   }
 
-  return 0;
+  return ECODE_OK;
 }
 
 int get_options_objdwarf(poptions_t o, int argc, char** argv, char* name) {
@@ -640,7 +640,7 @@ int get_options_objdwarf(poptions_t o, int argc, char** argv, char* name) {
       MALLOCA(char, arg0, 1024);
       MALLOCA(char, arg1, 1024);
 
-      if (0 == breakup_args(argv[i], arg0, NELEMENTS(arg0), arg1, NELEMENTS(arg1))) {
+      if (ECODE_ISOK(breakup_args(argv[i], arg0, NELEMENTS(arg0), arg1, NELEMENTS(arg1)))) {
         if (0 == strcmp(arg0, zOBJDWARFARGS1)) {
           o->ocdump |= get_options2(o, zDEBUGELFARGS, arg1);
         } else if (0 == strcmp(arg0, "--hex-dump")) {
@@ -679,7 +679,7 @@ int get_options_objdwarf(poptions_t o, int argc, char** argv, char* name) {
     return usage1(o, "objdwarf-ng", zOBJDWARFARGS, zOBJDWARFARGS0, zOBJDWARFARGS1);
   }
 
-  return 0;
+  return ECODE_OK;
 }
 
 int get_options_objhash(poptions_t o, int argc, char** argv, char* name) {
@@ -695,7 +695,7 @@ int get_options_objhash(poptions_t o, int argc, char** argv, char* name) {
       MALLOCA(char, arg0, 256);
       MALLOCA(char, arg1, 256);
 
-      if (0 == breakup_args(argv[i], arg0, NELEMENTS(arg0), arg1, NELEMENTS(arg1))) {
+      if (ECODE_ISOK(breakup_args(argv[i], arg0, NELEMENTS(arg0), arg1, NELEMENTS(arg1)))) {
         if (0 == strcmp(arg0, "--hex-dump")) {
           oinsertsecname(o, ACT_HEXDUMP, arg1);
         } else if (0 == strcmp(arg0, "--string-dump")) {
@@ -731,7 +731,7 @@ int get_options_objhash(poptions_t o, int argc, char** argv, char* name) {
     return usage0(o, "objhash-ng", OBJHASHARGS);
   }
 
-  return 0;
+  return ECODE_OK;
 }
 
 int isactions(handle_t p) {
@@ -784,10 +784,10 @@ int oinsert(handle_t o, handle_t p, const int action) {
     p0->action  = action;
     p0->actions = o0->actions;
     o0->actions = p0;
-    return 0;
+    return ECODE_OK;
   }
 
-  return -1;
+  return ECODE_HANDLE;
 }
 
 int oinsertvalue(handle_t o, const int action, const uint64_t value) {
@@ -796,11 +796,11 @@ int oinsertvalue(handle_t o, const int action, const uint64_t value) {
     if (isactions(p)) {
       p->value = value;
       oinsert(o, p, action);
-      return 0;
+      return ECODE_OK;
     }
   }
 
-  return -1;
+  return ECODE_HANDLE;
 }
 
 int oinsertsecname(handle_t o, const int action, const char *secname) {
@@ -809,10 +809,10 @@ int oinsertsecname(handle_t o, const int action, const char *secname) {
     if (isactions(p)) {
       strncpy(p->secname, secname, NELEMENTS(p->secname));
       oinsert(o, p, action);
-      return 0;
+      return ECODE_OK;
     }
   }
 
-  return -1;
+  return ECODE_HANDLE;
 }
 

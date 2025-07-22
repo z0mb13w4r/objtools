@@ -98,7 +98,7 @@ int sprocess(poptions_t o, const char *script) {
     }
   }
 
-  return -1;
+  return ECODE_HANDLE;
 }
 
 int sinsert(poptions_t o, const char *script) {
@@ -118,6 +118,6 @@ int sinsert(poptions_t o, const char *script) {
     }
   }
 
-  return -1;
+  return ECODE_HANDLE;
 }
 
