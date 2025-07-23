@@ -44,22 +44,24 @@ int capstone_open(handle_t p, handle_t o) {
         cs_option(oc->cs, CS_OPT_SYNTAX, CS_OPT_SYNTAX_ATT);
       }
 
-//    cs_option(oc->cs, CS_OPT_DETAIL, CS_OPT_ON);
-      return 0;
+//      cs_option(oc->cs, CS_OPT_DETAIL, CS_OPT_ON);
+      return ECODE_OK;
     }
+
+    return ECODE_CAPSTONE;
   }
 
-  return -1;
+  return ECODE_HANDLE;
 }
 
 int capstone_close(handle_t p) {
   if (isopcode(p)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
     cs_close(&oc->cs);
-    return 0;
+    return ECODE_OK;
   }
 
-  return -1;
+  return ECODE_HANDLE;
 }
 
 int capstone_raw(handle_t p, handle_t s, unknown_t data, const size_t size, const uint64_t vaddr) {

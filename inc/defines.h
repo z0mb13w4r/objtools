@@ -12,6 +12,7 @@
 #define ECODE_DWARF          (-3)
 #define ECODE_PARAM          (-4)
 #define ECODE_CRYPTO         (-5)
+#define ECODE_CAPSTONE       (-6)
 #define ECODE_HANDLE         (-298)
 #define ECODE_NULL           (-299)
 #define ECODE_NOENTRY        (-300)

@@ -18,11 +18,11 @@ int opcodebfd_programs(handle_t p, opcbfunc_t cbfunc, unknown_t param) {
         MALLOCSWRAP(opwrap_t, oc, MODE_OCPHDR, phdr);
         cbfunc(p, poc, param);
       }
-      return 0;
+      return ECODE_OK;
     }
   }
 
-  return -1;
+  return ECODE_HANDLE;
 }
 
 int opcodebfd_sections(handle_t p, opcbfunc_t cbfunc, unknown_t param) {
@@ -30,9 +30,9 @@ int opcodebfd_sections(handle_t p, opcbfunc_t cbfunc, unknown_t param) {
   if (p0) {
     MALLOCSCBFUNC(opfunc_t, cb, MODE_OPCBFUNC, param, cbfunc, p);
     bfd_map_over_sections(p0, callback_section, pcb);
-    return 0;
+    return ECODE_OK;
   }
 
-  return -1;
+  return ECODE_HANDLE;
 }
 
