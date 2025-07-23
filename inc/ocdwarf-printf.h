@@ -1,11 +1,7 @@
 #ifndef __OCDWARF_PRINTF_H_
 #define __OCDWARF_PRINTF_H_
 
-#define OCDWARF_ISERRCODE(x)  ((x) < 0)
-#define OCDWARF_ISNOENTRY(x)  (-1 == (x))
-#define OCDWARF_ISFAILED(x)   (-2 == (x))
-
-#define OCDWARF_ERRCODE(x,n)  (IS_DLV_OK(x) ? (n) : IS_DLV_NO_ENTRY(x) ? -1 : -2)
+#define OCDWARF_ERRCODE(x,n)  (IS_DLV_OK(x) ? (n) : IS_DLV_NO_ENTRY(x) ? ECODE_NOENTRY : ECODE_DWARF)
 
 #include "printf.h"
 #include "ocdwarf.h"

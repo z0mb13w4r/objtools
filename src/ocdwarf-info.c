@@ -68,8 +68,8 @@ int ocdwarf_debug_info(handle_t p, handle_t s, handle_t d) {
       Dwarf_Die cu_die = 0;
 
       n1 = ocdwarf_next_cu_header(p, &cu_die, ocget(p, OPCODE_DWARF_ERROR));
-      if (OCDWARF_ISNOENTRY(n1)) return n0;
-      else if (OCDWARF_ISFAILED(n1)) {
+      if (ECODE_ISNOENTRY(n1)) return n0;
+      else if (ECODE_ISFAILED(n1)) {
         ocdwarf_dealloc_error(p, NULL);
         return n1;
       }
@@ -85,7 +85,7 @@ int ocdwarf_debug_info(handle_t p, handle_t s, handle_t d) {
       }
 
       n1 = ocdwarf_die_and_siblings(p, cu_die, isinfo, level, ocget(p, OPCODE_DWARF_ERROR));
-      if (OCDWARF_ISFAILED(n1)) {
+      if (ECODE_ISFAILED(n1)) {
         dwarf_dealloc_die(cu_die);
         printf_e("ocdwarf_die_and_siblings failed! %d", n1);
         return n1;

@@ -97,7 +97,7 @@ int ocdwarf_debug_abbrev(handle_t p, handle_t s, handle_t d) {
     for ( ; ; ) {
       Dwarf_Unsigned size = 0;
       int n1 = ocdwarf_abbrev_one(p, offset, nabbrev, &size, ocget(p, OPCODE_DWARF_ERROR));
-      if (OCDWARF_ISERRCODE(n1) || 1 == size || 0 == size) break;
+      if (ECODE_ISEVIL(n1) || 1 == size || 0 == size) break;
       nabbrev += 1;
       offset += size;
       n0 += n1;

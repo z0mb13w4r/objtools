@@ -270,8 +270,8 @@ int ocdwarf_debug_macro(handle_t p, handle_t s, handle_t d) {
     Dwarf_Die cu_die = 0;
 
     x = ocdwarf_next_cu_header(p, &cu_die, ocget(p, OPCODE_DWARF_ERROR));
-    if (OCDWARF_ISNOENTRY(x)) return n;
-    else if (OCDWARF_ISFAILED(x)) {
+    if (ECODE_ISNOENTRY(x)) return n;
+    else if (ECODE_ISFAILED(x)) {
       ocdwarf_dealloc_error(p, NULL);
       return x;
     }

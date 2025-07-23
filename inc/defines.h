@@ -14,11 +14,13 @@
 #define ECODE_CRYPTO         (-5)
 #define ECODE_HANDLE         (-298)
 #define ECODE_NULL           (-299)
-#define ECODE_MISSING        (-300)
+#define ECODE_NOENTRY        (-300)
 
-#define ECODE_ISOK(x)        (ECODE_OK == (x))
-#define ECODE_ISEVIL(x)      ((x) < ECODE_OK)
-#define ECODE_ISFAILED(x)    (ECODE_ISEVIL(x) && (ECODE_MISSING < (x)))
+#define ECODE_ISOK(x)        (ECODE_OK <= (x))
+#define ECODE_ISEVIL(x)      (ECODE_OK >  (x))
+#define ECODE_ISFAILED(x)    (ECODE_ISEVIL(x) && !ECODE_ISWARNING(x))
+#define ECODE_ISNOENTRY(x)   (ECODE_NOENTRY == (x))
+#define ECODE_ISWARNING(x)   (ECODE_NOENTRY <= (x))
 
 #ifndef CAST
 #define CAST(x,y)    ((x)(y))

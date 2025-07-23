@@ -684,7 +684,7 @@ int ocdwarf_printf_cu(handle_t p, Dwarf_Die die, Dwarf_Half tag,
     n0 += printf_nice(overall_offset - offset, USE_FHEX32 | USE_TBRT | USE_COLON | USE_EOL);
 
     int n1 = ocdwarf_printf_sp(p, die, tag, isinfo, level, e);
-    if (OCDWARF_ISERRCODE(n1)) return n1;
+    if (ECODE_ISEVIL(n1)) return n1;
 
     n0 += ocdwarf_sfcreate(p, die, e);
   }
@@ -736,7 +736,7 @@ int ocdwarf_printf_sp(handle_t p, Dwarf_Die die, Dwarf_Half tag,
 
     for (Dwarf_Signed i = 0; i < cattr; ++i) {
       int n1 = ocdwarf_printf_worth(p, die, pattr[i], i, e);
-      if (OCDWARF_ISERRCODE(n1)) {
+      if (ECODE_ISEVIL(n1)) {
         ocdwarf_dealloc_attribute(p, pattr, cattr);
         return n1;
       }

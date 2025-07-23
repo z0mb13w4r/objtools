@@ -301,33 +301,35 @@ int ocdwarf_sfreset(handle_t p) {
       sf->data = NULL;
       sf->size = 0;
 
-      return sf->status;
+      return ECODE_OK;
     }
   }
 
-  return DW_DLV_ERROR;
+  return ECODE_HANDLE;
 }
 
 int ocdwarf_sfcreate(handle_t p, Dwarf_Die die, Dwarf_Error *e) {
-  int n = 0;
   if (isopcode(p)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
     pdwarf_srcfiles_t sf = ocget(p, OPCODE_DWARF_SRCFILES);
     if (sf) {
-      ocdwarf_sfreset(p);
-
+      if (ECODE_ISOK(ocdwarf_sfreset(p))) {
       sf->status = dwarf_srcfiles(die, &sf->data, &sf->size, e);
 
-      if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE) && IS_DLV_OK(sf->status) && 0 != sf->size) {
-        for (Dwarf_Signed i = 0; i < sf->size; ++i) {
-          n += printf_nice(i, USE_DEC3 | USE_TB | USE_COLON);
-          n += printf_text(sf->data[i], USE_LT | USE_EOL);
+        int n = ECODE_OK;
+        if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE) && IS_DLV_OK(sf->status) && 0 != sf->size) {
+          for (Dwarf_Signed i = 0; i < sf->size; ++i) {
+            n += printf_nice(i, USE_DEC3 | USE_TB | USE_COLON);
+            n += printf_text(sf->data[i], USE_LT | USE_EOL);
+          }
         }
+
+        return n;
       }
     }
   }
 
-  return n;
+  return ECODE_HANDLE;
 }
 
 static int ocdwarf_spget0(handle_t p, Dwarf_Die die, Dwarf_Half tag, Dwarf_Addr addr,
@@ -339,7 +341,7 @@ static int ocdwarf_spget0(handle_t p, Dwarf_Die die, Dwarf_Half tag, Dwarf_Addr 
     Dwarf_Attribute *pattr = 0;
     int x = dwarf_attrlist(die, &pattr, &cattr, e);
     if (IS_DLV_NO_ENTRY(x)) {
-      return ECODE_MISSING;
+      return ECODE_NOENTRY;
     } else if (IS_DLV_ERROR(x)) {
       printf_e("dwarf_attrlist failed! errcode %d", x);
       return ECODE_DWARF;
@@ -426,7 +428,7 @@ static int ocdwarf_spget0(handle_t p, Dwarf_Die die, Dwarf_Half tag, Dwarf_Addr 
     }
 
     ocdwarf_dealloc_attribute(p, pattr, cattr);
-    return ismatch ? ECODE_OK : ECODE_MISSING;
+    return ismatch ? ECODE_OK : ECODE_NOENTRY;
   }
 
   return ECODE_HANDLE;
@@ -452,8 +454,10 @@ static int ocdwarf_spget1(handle_t p, Dwarf_Die die, Dwarf_Addr addr,
       return ocdwarf_spget0(p, die, tag, addr, isinfo, name, nline, ncolumn,
                      source, low_pc_addr, high_pc_addr, e);
     } else if (tag == DW_TAG_compile_unit || tag == DW_TAG_partial_unit || tag == DW_TAG_type_unit) {
-      return ocdwarf_sfcreate(p, die, e);
+      ocdwarf_sfcreate(p, die, e);
     }
+
+    return ECODE_NOENTRY;
   }
 
   return ECODE_HANDLE;
@@ -463,9 +467,6 @@ static int ocdwarf_spget2(handle_t p, Dwarf_Die die, Dwarf_Addr addr,
                   Dwarf_Bool isinfo, char **name,
                   Dwarf_Unsigned *nline, Dwarf_Unsigned *ncolumn, char **source,
                   Dwarf_Addr *low_pc_addr, Dwarf_Addr *high_pc_addr, Dwarf_Error *e) {
-  int x = DW_DLV_ERROR;
-  int n = 0;
-
   if (isopcode(p)) {
     Dwarf_Die cur_die = die;
 
@@ -481,13 +482,12 @@ static int ocdwarf_spget2(handle_t p, Dwarf_Die die, Dwarf_Addr addr,
         x = ocdwarf_spget2(p, child, addr, isinfo, name, nline, ncolumn,
                      source, low_pc_addr, high_pc_addr, e);
         dwarf_dealloc_die(child);
-        child = 0;
         if (ECODE_ISOK(x)) return ECODE_OK;
       }
       /* x == DW_DLV_NO_ENTRY or DW_DLV_OK */
       Dwarf_Die sib_die = 0;
       x = dwarf_siblingof_b(ocget(p, OPCODE_DWARF_DEBUG), cur_die, isinfo, &sib_die, e);
-      if (IS_DLV_NO_ENTRY(x)) return ECODE_MISSING;
+      if (IS_DLV_NO_ENTRY(x)) return ECODE_NOENTRY;
       else if (IS_DLV_ERROR(x)) {
         ocdwarf_finish(p, e);
         printf_x("dwarf_siblingof_b failed! errcode %d", x);
@@ -515,7 +515,7 @@ static int ocdwarf_spget3(handle_t p, Dwarf_Die *die, Dwarf_Addr addr,
       Dwarf_Die no_die = 0;
 
       int x = dwarf_siblingof_b(ocget(p, OPCODE_DWARF_DEBUG), no_die, isinfo, die, e);
-      if (IS_DLV_NO_ENTRY(x)) return ECODE_MISSING;
+      if (IS_DLV_NO_ENTRY(x)) return ECODE_NOENTRY;
       else if (IS_DLV_ERROR(x)) {
         ocdwarf_dealloc_error(p, NULL);
         printf_e("dwarf_siblingof_b failed! errcode %d", x);
@@ -581,7 +581,7 @@ int ocdwarf_dfget3(handle_t p, Dwarf_Die die, Dwarf_Addr addr, Dwarf_Bool isinfo
     }
   }
 
-  return ECODE_MISSING;
+  return ECODE_NOENTRY;
 }
 
 int ocdwarf_spget(handle_t p, Dwarf_Addr addr, char** name,
@@ -598,8 +598,8 @@ int ocdwarf_spget(handle_t p, Dwarf_Addr addr, char** name,
       Dwarf_Die cu_die = 0;
 
       n1 = ocdwarf_next_cu_header(p, &cu_die, e);
-      if (OCDWARF_ISNOENTRY(n1)) return n0;
-      else if (OCDWARF_ISFAILED(n1)) {
+      if (ECODE_ISNOENTRY(n1)) return n0;
+      else if (ECODE_ISFAILED(n1)) {
         ocdwarf_dealloc_error(p, NULL);
         return n1;
       }
@@ -607,7 +607,7 @@ int ocdwarf_spget(handle_t p, Dwarf_Addr addr, char** name,
       n0 += n1;
 
       n1 = ocdwarf_sfcreate(p, cu_die, e);
-      if (OCDWARF_ISFAILED(n1)) {
+      if (ECODE_ISFAILED(n1)) {
         dwarf_dealloc_die(cu_die);
         printf_e("ocdwarf_sfcreate failed! %d", n1);
         return n1;
@@ -617,7 +617,7 @@ int ocdwarf_spget(handle_t p, Dwarf_Addr addr, char** name,
 
       n1 = ocdwarf_spget3(p, &cu_die, addr, isinfo, name, nline, ncolumn,
                      source, low_pc_addr, high_pc_addr, e);
-      if (OCDWARF_ISFAILED(n1)) {
+      if (ECODE_ISFAILED(n1)) {
         dwarf_dealloc_die(cu_die);
         printf_e("ocdwarf_spget3 failed! %d", n1);
         return n1;
