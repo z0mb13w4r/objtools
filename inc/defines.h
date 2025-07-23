@@ -9,10 +9,12 @@
 
 #define ECODE_OK             (0)
 #define ECODE_GENERIC        (-1)
+#define ECODE_MALLOC         (-2)
 #define ECODE_DWARF          (-3)
 #define ECODE_PARAM          (-4)
 #define ECODE_CRYPTO         (-5)
 #define ECODE_CAPSTONE       (-6)
+#define ECODE_ARGUMENTS      (-7)
 #define ECODE_HANDLE         (-298)
 #define ECODE_NULL           (-299)
 #define ECODE_NOENTRY        (-300)

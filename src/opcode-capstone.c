@@ -69,9 +69,6 @@ int capstone_raw(handle_t p, handle_t s, unknown_t data, const size_t size, cons
   if (data && isopcode(p) && ismodeNXXN(s, MODE_OCSHDRWRAP)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
 
-    Dwarf_Unsigned prev_nline = 0;
-    Dwarf_Unsigned prev_discriminator = 0;
-
     cs_insn *insn = NULL;
     size_t count = cs_disasm(oc->cs, data, size, vaddr, 0, &insn);
     if (count > 0) {
@@ -87,32 +84,7 @@ int capstone_raw(handle_t p, handle_t s, unknown_t data, const size_t size, cons
             bskip = FALSE;
           }
           if (!bskip) {
-            char *name = NULL;
-            char *source = NULL;
-            Dwarf_Unsigned nline = 0;
-            Dwarf_Unsigned discriminator = 0;
-
-            n2 += ocdwarf_spget(p, insn[i].address, &name, &nline, NULL, &discriminator, &source, NULL, NULL, NULL);
-
-            bool_t isok = prev_nline != nline || prev_discriminator != discriminator;
-
-            if (isok && 0 != name) {
-              n2 += opcode_printf_LADDR(p, insn[i].address, USE_NONE);
-              n2 += printf_text(name, USE_LT | USE_SPACE | USE_TB | USE_COLON | USE_EOL);
-
-              n2 += printf_yoke(name, "()", USE_LT | USE_COLON | USE_EOL);
-            }
-            if (isok && 0 != source) {
-              n2 += printf_text(source, USE_LT | USE_COLON);
-              n2 += printf_nice(nline, USE_DEC | USE_NOSPACE);
-              if (0 != discriminator) {
-                n2 += printf_nice(discriminator, USE_DISCRIMINATOR);
-              }
-              n2 += printf_eol();
-
-              prev_nline = nline;
-              prev_discriminator = discriminator;
-            }
+            n2 += ocdisassemble_lnumbers(p, s, insn[i].address);
 
             n2 += opcode_printf_LHEX(p, insn[i].address, USE_COLON);
             n2 += printf_sore(insn[i].bytes, insn[i].size, USE_HEX | USE_SPACE);

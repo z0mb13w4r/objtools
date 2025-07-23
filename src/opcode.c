@@ -10,6 +10,7 @@
 #include "opcode-bfd.h"
 #include "opcode-elf.h"
 #include "opcode-lib.h"
+#include "opcode-printf.h"
 #include "opcode-capstone.h"
 
 static void callback_find_max_sectionhdr_name(bfd *f ATTRIBUTE_UNUSED, asection *s, void *p) {
@@ -701,6 +702,49 @@ int ocdisassemble_raw(handle_t p, handle_t s, unknown_t data, const size_t size,
     } else {
       return opcodelib_raw(p, s, data, size, vaddr);
     }
+  }
+
+  return ECODE_HANDLE;
+}
+
+int ocdisassemble_lnumbers(handle_t p, handle_t s, const uint64_t vaddr) {
+  if (isopcode(p) && isopshdr(s)) {
+    popcode_t oc = ocget(p, OPCODE_THIS);
+
+    int n = 0;
+    char *name = NULL;
+    char *source = NULL;
+    Dwarf_Unsigned nline = 0;
+    Dwarf_Unsigned discriminator = 0;
+
+    n += ocdwarf_spget(p, vaddr, &name, &nline, NULL, &discriminator, &source, NULL, NULL, NULL);
+
+    bool_t isok = oc->prev_nline != nline || oc->prev_discriminator != discriminator;
+
+    if (isok && 0 != name) {
+      n += opcode_printf_LADDR(p, vaddr, USE_NONE);
+      n += printf_text(name, USE_LT | USE_SPACE | USE_TB | USE_COLON | USE_EOL);
+
+      if (MODE_ISSET(oc->action, OPTPROGRAM_LINE_NUMBERS)) {
+        n += printf_yoke(name, "()", USE_LT | USE_COLON | USE_EOL);
+      }
+    }
+
+    if (MODE_ISSET(oc->action, OPTPROGRAM_LINE_NUMBERS)) {
+      if (isok && 0 != source) {
+        n += printf_text(source, USE_LT | USE_COLON);
+        n += printf_nice(nline, USE_DEC | USE_NOSPACE);
+        if (0 != discriminator) {
+          n += printf_nice(discriminator, USE_DISCRIMINATOR);
+        }
+        n += printf_eol();
+
+        oc->prev_nline = nline;
+        oc->prev_discriminator = discriminator;
+      }
+    }
+
+    return n;
   }
 
   return ECODE_HANDLE;

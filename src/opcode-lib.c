@@ -1,8 +1,10 @@
 #include "opcode.h"
 #include "printf.h"
 #include "bstring.h"
+#include "ocdwarf.h"
 #include "options.h"
 #include "opcode-lib.h"
+#include "opcode-printf.h"
 
 #define DEFAULT_SKIP_ZEROES            (8)
 #define DEFAULT_SKIP_ZEROES_AT_END     (3)
@@ -127,12 +129,12 @@ int opcodelib_open(handle_t p, handle_t o) {
         oc->ocfunc = disassembler(di->arch, bfd_big_endian(bf), di->mach, bf);
 
         disassemble_init_for_target(di);
-        return 0;
+        return ECODE_OK;
       }
     }
   }
 
-  return -1;
+  return ECODE_HANDLE;
 }
 
 int opcodelib_close(handle_t p) {
@@ -142,64 +144,13 @@ int opcodelib_close(handle_t p) {
     oc->items[OPCODE_OUTDATA] = NULL;
   }
 
-  return 0;
-}
-
-static const char  *prev_functionname = NULL;
-static unsigned int prev_line = -1;
-static unsigned int prev_discriminator = -1;
-
-static int opcodelib_lnumbers(handle_t p, handle_t s, const uint64_t vaddr) {
-  int n = 0;
-  if (isopcode(p) && isopshdr(s)) {
-//    popcode_t oc = CAST(popcode_t, p);
-
-    const char *filename;
-//    const char *afilename = NULL;
-    const char *functionname;
-    unsigned int linenumber;
-    unsigned int discriminator;
-
-#define bfd_find_nearest_line_with_alt(abfd, alt_filename, sec, syms, off, file, func, line, disc) \
-       BFD_SEND (abfd, _bfd_find_nearest_line_with_alt, (abfd, alt_filename, syms, sec, off, file, func, line, disc))
-
-    bfd_set_error(bfd_error_no_error);
-//    if (!bfd_find_nearest_line_with_alt(CAST(bfd*, ocget(p, OPCODE_BFD)), afilename, ocget(s, MODE_OCSHDR), ocget(p, OPCODE_RAWSYMBOLS),
-//                                        vaddr, &filename, &functionname, &linenumber, &discriminator)) {
-//    if (
-    bfd_find_nearest_line_discriminator(CAST(bfd*, ocget(p, OPCODE_BFD)), ocget(s, MODE_OCSHDR), ocget(p, OPCODE_RAWSYMBOLS),
-                                            vaddr, &filename, &functionname, &linenumber, &discriminator);
-//       ) {
-//    }
-
-      if (NULL != filename && 0 == filename[0]) filename = NULL;
-      if (NULL != functionname && 0 == functionname[0]) functionname = NULL;
-
-      if (NULL != functionname && (NULL == prev_functionname || 0 != strcmp(functionname, prev_functionname))) {
-        printf("%s():\n", functionname);
-        prev_functionname = functionname;
-        prev_line = -1;
-      }
-//printf("+++ %d %d\n", linenumber, discriminator);
-      if (linenumber > 0 && (linenumber != prev_line || discriminator != prev_discriminator)) {
-        printf("%s:%u", filename == NULL ? "???" : filename, linenumber);
-        if (discriminator > 0) {
-          printf_nice(discriminator, USE_DISCRIMINATOR);
-          prev_discriminator = discriminator;
-        }
-        n += printf_eol();
-        prev_line = linenumber;
-      }
-//    }
-  }
-
-  return n;
+  return ECODE_OK;
 }
 
 int opcodelib_raw(handle_t p, handle_t s, unknown_t data, const size_t size, const uint64_t vaddr) {
   int n = 0;
   if (isopcode(p) && isopshdr(s)) {
-    popcode_t oc = CAST(popcode_t, p);
+    popcode_t oc = ocget(p, OPCODE_THIS);
     puchar_t p0 = CAST(puchar_t, data);
 
     uint64_t soffset = vaddr;
@@ -215,15 +166,12 @@ int opcodelib_raw(handle_t p, handle_t s, unknown_t data, const size_t size, con
       if (siz <= 0) return n;
 
       if (ocuse_vaddr(oc, soffset)) {
-        if (MODE_ISSET(oc->action, OPTPROGRAM_LINE_NUMBERS | OPTPROGRAM_SOURCE_CODE)) {
-          n += opcodelib_lnumbers(p, s, soffset);
-          n += printf_pack(3);
-        }
+        n += ocdisassemble_lnumbers(p, s, soffset);
 
         if (MODE_ISSET(oc->action, OPTPROGRAM_PREFIX_ADDR)) {
           n2 += printf_nice(soffset, USE_LHEX32 | USE_COLON);
         } else {
-          n2 += printf_nice(soffset, USE_HEX4 | USE_COLON);
+          n2 += opcode_printf_LHEX(p, soffset, USE_COLON);
           n2 += printf_sore(p0, siz, USE_HEX | USE_SPACE);
           n2 += printf_pack(31 - n2);
         }
@@ -243,7 +191,6 @@ int opcodelib_raw(handle_t p, handle_t s, unknown_t data, const size_t size, con
 int opcodelib_run(handle_t p, handle_t s) {
   int n = 0;
   if (isopcode(p) && isopshdr(s)) {
-//    popcode_t oc = CAST(popcode_t, p);
     struct disassemble_info* di = ocget(p, OPCODE_DISASSEMBLER);
     if (di) {
       di->buffer_vma    = ocget_vmaddress(s);

@@ -63,21 +63,23 @@ static const args_t OBJHASHARGS[] = {
 };
 
 static int usage_name(poptions_t o, const char* name, const args_t args[], const char* desc) {
-  printf_text("NAME", USE_LT | USE_EOL);
-  printf_text(name, USE_LT | USE_TAB | USE_COLON);
-  printf_text(desc, USE_LT | USE_SPACE | USE_EOL);
-  printf_eol();
+  int n = 0;
+  n += printf_text("NAME", USE_LT | USE_EOL);
+  n += printf_text(name, USE_LT | USE_TAB | USE_COLON);
+  n += printf_text(desc, USE_LT | USE_SPACE | USE_EOL);
+  n += printf_eol();
 
-  return 0;
+  return n;
 }
 
 static int usage_synopsis0(poptions_t o, const char* name, const args_t args[]) {
   MALLOCA(char, m, 1024);
 
-  int n = 0;
+  int n0 = 0;
+  int n1 = 0;
   if (args) {
-    printf_text("SYNOPSIS", USE_LT | USE_EOL);
-    n = printf_text(name, USE_LT | USE_TAB);
+    n0 += printf_text("SYNOPSIS", USE_LT | USE_EOL);
+    n1  = printf_text(name, USE_LT | USE_TAB);
     if (args[0].option1 && args[0].option2) {
       snprintf(m, sizeof(m), "-%c|%s", args[0].option1, args[0].option2);
     } else if (args[0].option1) {
@@ -85,7 +87,7 @@ static int usage_synopsis0(poptions_t o, const char* name, const args_t args[]) 
     } else if (args[0].option2) {
       snprintf(m, sizeof(m), "%s", args[0].option2);
     }
-     printf_text(m, USE_LT | USE_SPACE | USE_SB | USE_EOL);
+    n0 += printf_text(m, USE_LT | USE_SPACE | USE_SB | USE_EOL);
 
     for (int j = 1; (0 != args[j].option1) || (0 != args[j].option2); ++j) {
       if (args[j].option1 && args[j].option2) {
@@ -95,12 +97,12 @@ static int usage_synopsis0(poptions_t o, const char* name, const args_t args[]) 
       } else if (args[j].option2) {
         snprintf(m, sizeof(m), "%s", args[j].option2);
       }
-      printf_pack(n);
-      printf_text(m, USE_LT | USE_SPACE | USE_SB | USE_EOL);
+      printf_pack(n1);
+      n0 += printf_text(m, USE_LT | USE_SPACE | USE_SB | USE_EOL);
     }
   }
 
-  return n;
+  return n0 + n1;
 }
 
 static int usage_synopsis1(poptions_t o, const char* name, const args_t args[], const char* more0, const char* more1) {
@@ -144,16 +146,17 @@ static int usage_synopsis2(poptions_t o, const char* name, const args_t args[], 
     n += printf_text(m, USE_LT | USE_SPACE | USE_SB | USE_EOL);
   }
 
-  printf_eol();
+  n += printf_eol();
 
   return n;
 }
 
 static int usage_description(poptions_t o, const char* name, const args_t args[]) {
-  printf_text("DESCRIPTION", USE_LT | USE_EOL);
-  printf_eol();
+  int n = 0;
+  n += printf_text("DESCRIPTION", USE_LT | USE_EOL);
+  n += printf_eol();
 
-  return 0;
+  return n;
 }
 
 static int usage_options0(poptions_t o, const char* name, const args_t args[]) {
@@ -273,74 +276,81 @@ static int usage_options2(poptions_t o, const char* name, const args_t args[], c
 }
 
 static int usage_seealso(poptions_t o, const char* name, const args_t args[]) {
-  printf_text("SEE ALSO", USE_LT | USE_EOL);
-  printf_book(zALLSEE, USE_LT | USE_TAB | USE_EOL);
-  printf_eol();
+  int n = 0;
+  n += printf_text("SEE ALSO", USE_LT | USE_EOL);
+  n += printf_book(zALLSEE, USE_LT | USE_TAB | USE_EOL);
+  n += printf_eol();
 
-  return 0;
+  return n;
 }
 
 static int usage_version(poptions_t o, const char* name, const args_t args[]) {
-  printf_yoke(name, " v"VERSION_VALUE, USE_LT | USE_EOL);
-  printf_eol();
+  int n = 0;
+  n += printf_yoke(name, " v"VERSION_VALUE, USE_LT | USE_EOL);
+  n += printf_eol();
 
-  return 0;
+  return n;
 }
 
 static int usage_copyright(poptions_t o, const char* name, const args_t args[]) {
-  printf_text("COPYRIGHT", USE_LT | USE_EOL);
-  printf_book(zLICENSE, USE_LT | USE_TAB | USE_EOL);
-  printf_eol();
+  int n = 0;
+  n += printf_text("COPYRIGHT", USE_LT | USE_EOL);
+  n += printf_book(zLICENSE, USE_LT | USE_TAB | USE_EOL);
+  n += printf_eol();
 
-  return 0;
+  return n;
 }
 
 static int usage0(poptions_t o, const char* name, const args_t args[]) {
-  usage_name(o, name, args, zDESCRIPTION);
-  usage_synopsis0(o, name, args);
-  usage_description(o, name, args);
-  usage_options0(o, name, args);
-  usage_seealso(o, name, args);
-  usage_copyright(o, name, args);
+  int n = 0;
+  n += usage_name(o, name, args, zDESCRIPTION);
+  n += usage_synopsis0(o, name, args);
+  n += usage_description(o, name, args);
+  n += usage_options0(o, name, args);
+  n += usage_seealso(o, name, args);
+  n += usage_copyright(o, name, args);
 
-  return 0;
+  return n;
 }
 
 static int usage1(poptions_t o, const char* name, const args_t args0[],
                   const char* more0, const char* more1) {
-  usage_name(o, name, args0, zDESCRIPTION);
-  usage_synopsis0(o, name, args0);
-  usage_synopsis1(o, name, zDEBUGELFARGS, more0, more1);
-  usage_description(o, name, args0);
-  usage_options0(o, name, args0);
-  usage_options1(o, name, zDEBUGELFARGS, more0, more1);
-  usage_seealso(o, name, args0);
-  usage_copyright(o, name, args0);
+  int n = 0;
+  n += usage_name(o, name, args0, zDESCRIPTION);
+  n += usage_synopsis0(o, name, args0);
+  n += usage_synopsis1(o, name, zDEBUGELFARGS, more0, more1);
+  n += usage_description(o, name, args0);
+  n += usage_options0(o, name, args0);
+  n += usage_options1(o, name, zDEBUGELFARGS, more0, more1);
+  n += usage_seealso(o, name, args0);
+  n += usage_copyright(o, name, args0);
 
   return 0;
 }
 
 static int usage2(poptions_t o, const char* name, const args_t args0[],
                   const char* more0, const char* more1, const char* more2, const char* more3) {
-  usage_name(o, name, args0, zDESCRIPTION);
-  usage_synopsis0(o, name, args0);
-  usage_synopsis1(o, name, zDEBUGELFARGS, more0, more1);
-  usage_synopsis2(o, name, zDISASSEMBLEARGS, more2, more3);
-  usage_description(o, name, args0);
-  usage_options0(o, name, args0);
-  usage_options1(o, name, zDEBUGELFARGS, more0, more1);
-  usage_options2(o, name, zDISASSEMBLEARGS, more2, more3);
-  usage_seealso(o, name, args0);
-  usage_copyright(o, name, args0);
+  int n = 0;
+  n += usage_name(o, name, args0, zDESCRIPTION);
+  n += usage_synopsis0(o, name, args0);
+  n += usage_synopsis1(o, name, zDEBUGELFARGS, more0, more1);
+  n += usage_synopsis2(o, name, zDISASSEMBLEARGS, more2, more3);
+  n += usage_description(o, name, args0);
+  n += usage_options0(o, name, args0);
+  n += usage_options1(o, name, zDEBUGELFARGS, more0, more1);
+  n += usage_options2(o, name, zDISASSEMBLEARGS, more2, more3);
+  n += usage_seealso(o, name, args0);
+  n += usage_copyright(o, name, args0);
 
-  return 0;
+  return n;
 }
 
 static int version0(poptions_t o, const char* name, const args_t args[]) {
-  usage_version(o, name, args);
-  usage_copyright(o, name, args);
+  int n = 0;
+  n += usage_version(o, name, args);
+  n += usage_copyright(o, name, args);
 
-  return 0;
+  return n;
 }
 
 static imode_t get_options1(poptions_t o, const args_t args[], const char *argv) {
@@ -575,7 +585,7 @@ int get_options_objcopy(poptions_t o, int argc, char** argv, char* name) {
 int get_options_objdump(poptions_t o, int argc, char** argv, char* name) {
   if (0 == argc) {
     usage2(o, "objdump-ng", zOBJDUMPARGS, zOBJDUMPARGS0, zOBJDUMPARGS1, zOBJDUMPARGS2, zOBJDUMPARGS3);
-    return -1;
+    return ECODE_ARGUMENTS;
   }
 
   strname(o->prgname, name);
