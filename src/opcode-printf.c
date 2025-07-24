@@ -85,7 +85,7 @@ int opcode_printf_source(handle_t p, const uint64_t vaddr) {
     Dwarf_Unsigned nline = 0;
     Dwarf_Unsigned discriminator = 0;
 
-    n += ocdwarf_spget(p, vaddr, &name, &nline, NULL, &discriminator, &source, NULL, NULL, NULL, NULL);
+    ocdwarf_spget(p, vaddr, &name, &nline, NULL, &discriminator, &source, NULL, NULL, NULL, NULL);
 
     bool_t isok = oc->prev_nline != nline || oc->prev_discriminator != discriminator;
 
@@ -96,6 +96,8 @@ int opcode_printf_source(handle_t p, const uint64_t vaddr) {
       if (MODE_ISSET(oc->action, OPTPROGRAM_LINE_NUMBERS)) {
         n += printf_yoke(name, "()", USE_LT | USE_COLON | USE_EOL);
       }
+
+      ocdwarf_dealloc(p, name, DW_DLA_STRING);
     }
 
     if (MODE_ISSET(oc->action, OPTPROGRAM_LINE_NUMBERS)) {
@@ -109,6 +111,8 @@ int opcode_printf_source(handle_t p, const uint64_t vaddr) {
 
         oc->prev_nline = nline;
         oc->prev_discriminator = discriminator;
+
+        ocdwarf_dealloc(p, source, DW_DLA_STRING);
       }
     }
 
@@ -120,12 +124,16 @@ int opcode_printf_source(handle_t p, const uint64_t vaddr) {
 
 int opcode_printf_detail(handle_t p, unknown_t mnemonic, unknown_t opcodes) {
   if (isopcode(p)) {
-//    popcode_t oc = ocget(p, OPCODE_THIS);
-
     int n = 0;
     char *name = NULL;
     Dwarf_Off offset = 0;
-//    Dwarf_Addr addr = 0;
+    Dwarf_Addr vaddr = 0;
+
+    if (0 == strncmp(mnemonic, "callq", 5)) {
+      vaddr = 0x159f;
+    }
+
+    ocdwarf_spget(p, vaddr, &name, NULL, NULL, NULL, NULL, NULL, NULL, &offset, NULL);
 
     if (0 != name) {
       if (0 != offset) {
@@ -135,6 +143,8 @@ int opcode_printf_detail(handle_t p, unknown_t mnemonic, unknown_t opcodes) {
       } else {
         n += printf_text(name, USE_LT | USE_SPACE | USE_TB);
       }
+
+      ocdwarf_dealloc(p, name, DW_DLA_STRING);
     }
 
     return n;
