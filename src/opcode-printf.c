@@ -85,7 +85,7 @@ int opcode_printf_source(handle_t p, const uint64_t vaddr) {
     Dwarf_Unsigned nline = 0;
     Dwarf_Unsigned discriminator = 0;
 
-    n += ocdwarf_spget(p, vaddr, &name, &nline, NULL, &discriminator, &source, NULL, NULL, NULL);
+    n += ocdwarf_spget(p, vaddr, &name, &nline, NULL, &discriminator, &source, NULL, NULL, NULL, NULL);
 
     bool_t isok = oc->prev_nline != nline || oc->prev_discriminator != discriminator;
 

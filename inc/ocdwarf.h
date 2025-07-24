@@ -119,7 +119,7 @@ int ocdwarf_sfcreate(handle_t p, Dwarf_Die die, Dwarf_Error *e);
 
 int ocdwarf_spget(handle_t p, Dwarf_Addr addr, char **name,
                      Dwarf_Unsigned *nline, Dwarf_Unsigned *ncolumn, Dwarf_Unsigned *discriminator, char **source,
-                     Dwarf_Addr *low_pc_addr, Dwarf_Addr *high_pc_addr, Dwarf_Error *e);
+                     Dwarf_Addr *low_pc_addr, Dwarf_Addr *high_pc_addr, Dwarf_Off *offset, Dwarf_Error *e);
 
 int ocdwarf_next_cu_header(handle_t p, Dwarf_Die *cu_die, Dwarf_Error *e);
 
