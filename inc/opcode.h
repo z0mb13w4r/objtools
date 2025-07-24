@@ -195,7 +195,6 @@ int ocdisassemble_close(handle_t p);
 
 int ocdisassemble_run(handle_t p, handle_t s);
 int ocdisassemble_raw(handle_t p, handle_t s, unknown_t data, const size_t size, const uint64_t vaddr);
-int ocdisassemble_lnumbers(handle_t p, handle_t s, const uint64_t vaddr);
 
 #endif
 

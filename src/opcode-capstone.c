@@ -84,7 +84,7 @@ int capstone_raw(handle_t p, handle_t s, unknown_t data, const size_t size, cons
             bskip = FALSE;
           }
           if (!bskip) {
-            n2 += ocdisassemble_lnumbers(p, s, insn[i].address);
+            n2 += opcode_printf_lnumbers(p, insn[i].address);
 
             n2 += opcode_printf_LHEX(p, insn[i].address, USE_COLON);
             n2 += printf_sore(insn[i].bytes, insn[i].size, USE_HEX | USE_SPACE);

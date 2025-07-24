@@ -148,7 +148,7 @@ int opcodelib_close(handle_t p) {
 }
 
 int opcodelib_raw(handle_t p, handle_t s, unknown_t data, const size_t size, const uint64_t vaddr) {
-  int n = 0;
+  int n0 = 0;
   if (isopcode(p) && isopshdr(s)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
     puchar_t p0 = CAST(puchar_t, data);
@@ -157,35 +157,36 @@ int opcodelib_raw(handle_t p, handle_t s, unknown_t data, const size_t size, con
     uint64_t eoffset = vaddr + size;
 
     while (soffset < eoffset) {
-      int n2 = 0;
+      int n1 = 0;
       pbstring_t ps = CAST(pbstring_t, ocget(p, OPCODE_OUTDATA));
       bstrclr(ps);
 
       struct disassemble_info* di = ocget(p, OPCODE_DISASSEMBLER);
       int siz = oc->ocfunc(soffset, di);
-      if (siz <= 0) return n;
+      if (siz <= 0) return n0;
 
       if (ocuse_vaddr(oc, soffset)) {
-        n += ocdisassemble_lnumbers(p, s, soffset);
+        n0 += opcode_printf_lnumbers(p, soffset);
 
         if (MODE_ISSET(oc->action, OPTPROGRAM_PREFIX_ADDR)) {
-          n2 += printf_nice(soffset, USE_LHEX32 | USE_COLON);
+          n1 += printf_nice(soffset, USE_LHEX32 | USE_COLON);
         } else {
-          n2 += opcode_printf_LHEX(p, soffset, USE_COLON);
-          n2 += printf_sore(p0, siz, USE_HEX | USE_SPACE);
-          n2 += printf_pack(31 - n2);
+          n1 += opcode_printf_LHEX(p, soffset, USE_COLON);
+          n1 += printf_sore(p0, siz, USE_HEX | USE_SPACE);
+          n1 += printf_pack(31 - n1);
         }
 
-        n2 += printf_sore(ps->data, ps->size, USE_STR | USE_SPACE | USE_EOL);
+        n1 += printf_sore(ps->data, ps->size, USE_STR | USE_SPACE);
+        n1 += printf_eol();
       }
 
       soffset += siz;
       p0 += siz;
-      n += n2;
+      n0 += n1;
     }
   }
 
-  return n;
+  return n0;
 }
 
 int opcodelib_run(handle_t p, handle_t s) {

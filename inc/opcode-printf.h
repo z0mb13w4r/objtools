@@ -12,5 +12,7 @@ int opcode_printf_LADDR(handle_t p, const uint64_t v, const imode_t mode);
 
 int opcode_printf_pluck(handle_t p, const pconvert_t z, const pick_t x, const imode_t mode);
 
+int opcode_printf_lnumbers(handle_t p, const uint64_t vaddr);
+
 #endif
 
