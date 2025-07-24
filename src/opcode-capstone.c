@@ -84,13 +84,15 @@ int capstone_raw(handle_t p, handle_t s, unknown_t data, const size_t size, cons
             bskip = FALSE;
           }
           if (!bskip) {
-            n2 += opcode_printf_lnumbers(p, insn[i].address);
+            n2 += opcode_printf_source(p, insn[i].address);
 
             n2 += opcode_printf_LHEX(p, insn[i].address, USE_COLON);
             n2 += printf_sore(insn[i].bytes, insn[i].size, USE_HEX | USE_SPACE);
             n2 += printf_pack(42 - n2);
             n2 += printf_text(insn[i].mnemonic, USE_LT | USE_SPACE);
             n2 += printf_text(insn[i].op_str, USE_LT | USE_SPACE);
+
+            n2 += opcode_printf_detail(p, insn[i].mnemonic, insn[i].op_str);
             n2 += printf_eol();
           }
           if (0xcc == insn[i].bytes[0] || 0x90 == insn[i].bytes[0] || 0x00 == insn[i].bytes[0]) {

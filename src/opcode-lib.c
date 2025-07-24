@@ -166,7 +166,7 @@ int opcodelib_raw(handle_t p, handle_t s, unknown_t data, const size_t size, con
       if (siz <= 0) return n0;
 
       if (ocuse_vaddr(oc, soffset)) {
-        n0 += opcode_printf_lnumbers(p, soffset);
+        n0 += opcode_printf_source(p, soffset);
 
         if (MODE_ISSET(oc->action, OPTPROGRAM_PREFIX_ADDR)) {
           n1 += printf_nice(soffset, USE_LHEX32 | USE_COLON);
@@ -177,6 +177,7 @@ int opcodelib_raw(handle_t p, handle_t s, unknown_t data, const size_t size, con
         }
 
         n1 += printf_sore(ps->data, ps->size, USE_STR | USE_SPACE);
+        n1 += opcode_printf_detail(p, ps->data, NULL);
         n1 += printf_eol();
       }
 

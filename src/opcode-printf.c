@@ -75,7 +75,7 @@ int opcode_printf_pluck(handle_t p, const pconvert_t z, const pick_t x, const im
   return n;
 }
 
-int opcode_printf_lnumbers(handle_t p, const uint64_t vaddr) {
+int opcode_printf_source(handle_t p, const uint64_t vaddr) {
   if (isopcode(p)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
 
@@ -111,6 +111,18 @@ int opcode_printf_lnumbers(handle_t p, const uint64_t vaddr) {
         oc->prev_discriminator = discriminator;
       }
     }
+
+    return n;
+  }
+
+  return ECODE_HANDLE;
+}
+
+int opcode_printf_detail(handle_t p, unknown_t mnemonic, unknown_t opcodes) {
+  if (isopcode(p)) {
+//    popcode_t oc = ocget(p, OPCODE_THIS);
+
+    int n = 0;
 
     return n;
   }
