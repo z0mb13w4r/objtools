@@ -123,6 +123,19 @@ int opcode_printf_detail(handle_t p, unknown_t mnemonic, unknown_t opcodes) {
 //    popcode_t oc = ocget(p, OPCODE_THIS);
 
     int n = 0;
+    char *name = NULL;
+    Dwarf_Off offset = 0;
+//    Dwarf_Addr addr = 0;
+
+    if (0 != name) {
+      if (0 != offset) {
+        n += printf_text(name, USE_LT | USE_SPACE | USE_TBLT);
+        n += printf_text("+", USE_LT);
+        n += printf_nice(offset, USE_FHEX | USE_TBRT | USE_NOSPACE);
+      } else {
+        n += printf_text(name, USE_LT | USE_SPACE | USE_TB);
+      }
+    }
 
     return n;
   }
