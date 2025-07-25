@@ -122,7 +122,7 @@ int opcode_printf_source(handle_t p, const uint64_t vaddr) {
   return ECODE_HANDLE;
 }
 
-int opcode_printf_detail(handle_t p, unknown_t mnemonic, unknown_t opcodes) {
+int opcode_printf_detail(handle_t p, const uint64_t vaddr, unknown_t mnemonic, unknown_t opcodes) {
   if (isopcode(p)) {
     int n = 0;
     char *name = NULL;
