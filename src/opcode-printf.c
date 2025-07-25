@@ -1,6 +1,7 @@
 #include "ocdwarf.h"
 #include "options.h"
 #include "opcode-printf.h"
+#include "opcode-examine.h"
 
 int opcode_printf_DEC(handle_t p, const uint64_t v, const imode_t mode) {
   if (isopcode(p)) {
@@ -129,6 +130,8 @@ int opcode_printf_detail(handle_t p, const uint64_t vaddr, unknown_t mnemonic, u
     Dwarf_Off offset = 0;
     Dwarf_Addr vaddr = 0;
 
+    pocexamine_t oe = oecreate(vaddr, mnemonic, opcodes);
+
     if (0 == strncmp(mnemonic, "callq", 5)) {
       vaddr = 0x159f;
     }
@@ -146,6 +149,8 @@ int opcode_printf_detail(handle_t p, const uint64_t vaddr, unknown_t mnemonic, u
 
       ocdwarf_dealloc(p, name, DW_DLA_STRING);
     }
+
+    oefree(oe);
 
     return n;
   }
