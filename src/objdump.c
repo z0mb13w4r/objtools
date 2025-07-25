@@ -193,7 +193,16 @@ static int dump_privatehdr(const handle_t p, const poptions_t o) {
     n += printf_eol();
   } else {
     n += printf_text("PROGRAM HEADER", USE_LT | USE_COLON | USE_EOL);
-    printf_text("Type            Offset           VirtAddr         PhysAddr         Align FileSiz          MemSiz           Flg", USE_LT | USE_TAB | USE_EOL);
+    n += printf_text("Type", USE_LT | USE_TAB | SET_PAD(max_name_size));
+    n += printf_text("Offset", USE_LT | USE_SPACE | SET_PAD(17));
+    n += printf_text("VirtAddr", USE_LT | USE_SPACE | SET_PAD(17));
+    n += printf_text("PhysAddr", USE_LT | USE_SPACE | SET_PAD(17));
+    n += printf_text("Align", USE_LT | USE_SPACE | SET_PAD(6));
+    n += printf_text("FileSiz", USE_LT | USE_SPACE | SET_PAD(17));
+    n += printf_text("MemSiz", USE_LT | USE_SPACE | SET_PAD(17));
+    n += printf_text("Flg", USE_LT | USE_SPACE);
+    n += printf_eol();
+
     ocdo_programs(p, callback_programhdr, &max_name_size);
     n += printf_eol();
 
