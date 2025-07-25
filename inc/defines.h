@@ -137,9 +137,9 @@ typedef uint32_t pick_t, *ppick_t;
 
 typedef int      bool_t;
 
-typedef unsigned int   uint_t;
-typedef unsigned char  uchar_t, *puchar_t;
-typedef unsigned long  ulong_t, *pulong_t;
+typedef unsigned int   uint_t,   *puint_t;
+typedef unsigned char  uchar_t,  *puchar_t;
+typedef unsigned long  ulong_t,  *pulong_t;
 typedef unsigned short ushort_t, *pushort_t;
 
 typedef char           CHAR, *PCHAR;

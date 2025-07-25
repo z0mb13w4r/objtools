@@ -15,6 +15,9 @@ bool_t isbits(const imode_t x);
 bool_t isused(ppick_t p, const pick_t x);
 bool_t isnamedone(const char* names[], const size_t maxnames, const char* check);
 
+bool_t ishex8(int x);
+bool_t ishexb(unknown_t p, const size_t size);
+
 uint64_t ulog2(uint64_t  x);
 uint64_t atoimode(const char* src);
 uint64_t atovalue(const char* src);
@@ -31,6 +34,7 @@ size_t fsize(FILE *f);
 
 uint64_t hex8(int x);
 uint64_t hex16(int x0, int x1);
+uint64_t hexb(unknown_t p, const size_t size);
 
 int strlen8(unknown_t s, const size_t maxsize);
 int strlen16(unknown_t s, const size_t maxsize);

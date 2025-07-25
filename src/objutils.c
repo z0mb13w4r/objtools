@@ -115,6 +115,26 @@ size_t fsize(FILE *f) {
   return siz;
 }
 
+bool_t ishex8(int x) {
+  if ('a' <= x && x <= 'f')      return TRUE;
+  else if ('A' <= x && x <= 'F') return TRUE;
+  else if ('0' <= x && x <= '9') return TRUE;
+  return FALSE;
+}
+
+bool_t ishexb(unknown_t p, const size_t size) {
+  if (p && 0 != size) {
+    puchar_t p0 = CAST(puchar_t, p);
+    for (size_t i = 0; i < size; ++i) {
+      if (!ishex8(p0[i])) return FALSE;
+    }
+
+    return TRUE;
+  }
+
+  return FALSE;
+}
+
 uint64_t hex8(int x) {
   if ('a' <= x && x <= 'f')      return x - 'a' + 10;
   else if ('A' <= x && x <= 'F') return x - 'A' + 10;
@@ -124,6 +144,19 @@ uint64_t hex8(int x) {
 
 uint64_t hex16(int x0, int x1) {
   return hex8(x0) << 8 | hex8(x1);
+}
+
+uint64_t hexb(unknown_t p, const size_t size) {
+  uint64_t x = 0;
+  if (p && 0 != size) {
+    puchar_t p0 = CAST(puchar_t, p);
+    for (size_t i = 0; i < size; ++i) {
+      if (!ishex8(p0[i])) break;
+      x = (x << 4) | hex8(p0[i]);
+    }
+  }
+
+  return x;
 }
 
 int strlen8(unknown_t s, const size_t maxsize) {

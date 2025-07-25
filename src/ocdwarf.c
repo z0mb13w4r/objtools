@@ -435,8 +435,10 @@ static int ocdwarf_spget0(handle_t p, Dwarf_Die die, Dwarf_Half tag, Dwarf_Addr 
           if (IS_DLV_ANY_ERROR(x)) {
             printf_e("dwarf_formaddr failed! errcode %d", x);
             return ECODE_DWARF;
-          } else if (DW_AT_low_pc == nattr && low_pc_addr) {
-            *low_pc_addr = xaddr;
+          } else if (DW_AT_low_pc == nattr) {
+            if (low_pc_addr) {
+              *low_pc_addr = xaddr;
+            }
             if (offset) {
               *offset = addr - xaddr;
             }

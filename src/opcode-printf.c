@@ -123,31 +123,28 @@ int opcode_printf_source(handle_t p, const uint64_t vaddr) {
   return ECODE_HANDLE;
 }
 
-int opcode_printf_detail(handle_t p, const uint64_t vaddr, unknown_t mnemonic, unknown_t opcodes) {
+int opcode_printf_detail(handle_t p, const uint64_t vaddr, unknown_t mnemonic, unknown_t operands) {
   if (isopcode(p)) {
     int n = 0;
     char *name = NULL;
     Dwarf_Off offset = 0;
-    Dwarf_Addr vaddr = 0;
 
-    pocexamine_t oe = oecreate(vaddr, mnemonic, opcodes);
+    pocexamine_t oe = oecreate(vaddr, mnemonic, operands);
 
-    if (0 == strncmp(mnemonic, "callq", 5)) {
-      vaddr = 0x159f;
-    }
+    if (oe && oe->op1) {
+      ocdwarf_spget(p, oe->op1->uvalue, &name, NULL, NULL, NULL, NULL, NULL, NULL, &offset, NULL);
 
-    ocdwarf_spget(p, vaddr, &name, NULL, NULL, NULL, NULL, NULL, NULL, &offset, NULL);
+      if (0 != name) {
+        if (0 != offset) {
+          n += printf_text(name, USE_LT | USE_SPACE | USE_TBLT);
+          n += printf_text("+", USE_LT);
+          n += printf_nice(offset, USE_FHEX | USE_TBRT | USE_NOSPACE);
+        } else {
+          n += printf_text(name, USE_LT | USE_SPACE | USE_TB);
+        }
 
-    if (0 != name) {
-      if (0 != offset) {
-        n += printf_text(name, USE_LT | USE_SPACE | USE_TBLT);
-        n += printf_text("+", USE_LT);
-        n += printf_nice(offset, USE_FHEX | USE_TBRT | USE_NOSPACE);
-      } else {
-        n += printf_text(name, USE_LT | USE_SPACE | USE_TB);
+        ocdwarf_dealloc(p, name, DW_DLA_STRING);
       }
-
-      ocdwarf_dealloc(p, name, DW_DLA_STRING);
     }
 
     oefree(oe);
