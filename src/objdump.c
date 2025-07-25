@@ -101,7 +101,7 @@ static void callback_sections(handle_t p, handle_t section, unknown_t param) {
 static void callback_programhdr(handle_t p, handle_t phdr, unknown_t param) {
   size_t name_size = *CAST(size_t*, param);
   int n = 0;
-  n += printf_pick(zPHDRTYPE, ocget_type(phdr), USE_LT | USE_TAB | SET_PAD(17));
+  n += printf_pick(zPHDRTYPE, ocget_type(phdr), USE_LT | USE_TAB | SET_PAD(name_size));
 
   n += printf_nice(ocget_offset(phdr), USE_LHEX64);
   n += printf_nice(ocget_vmaddress(phdr), USE_LHEX64);
@@ -182,25 +182,29 @@ static int dump_header(const handle_t p, const poptions_t o) {
 }
 
 static int dump_privatehdr(const handle_t p, const poptions_t o) {
+  int n = 0;
   size_t max_name_size = 20;
 // bfd/elf.c:1648:_bfd_elf_print_private_bfd_data (bfd *abfd, void *farg)
-//  printf_text("PROGRAM HEADER", USE_LT | USE_COLON | USE_EOL);
-//  printf_text("Type            Offset           VirtAddr         PhysAddr         Align FileSiz          MemSiz           Flg", USE_LT | USE_TAB | USE_EOL);
-//  ocdo_programs(p, callback_programhdr, &max_name_size);
-//  printf_eol();
+  if (MODE_ISSET(o->action, OPTPROGRAM_VERBOSE)) {
+    if (!bfd_print_private_bfd_data(ocgetbfd(p), stdout)) {
+      printf_w("private Headers incomplete: %s.", bfd_errmsg(bfd_get_error()));
+      return ECODE_BFD;
+    }
+    n += printf_eol();
+  } else {
+    n += printf_text("PROGRAM HEADER", USE_LT | USE_COLON | USE_EOL);
+    printf_text("Type            Offset           VirtAddr         PhysAddr         Align FileSiz          MemSiz           Flg", USE_LT | USE_TAB | USE_EOL);
+    ocdo_programs(p, callback_programhdr, &max_name_size);
+    n += printf_eol();
 
-//  printf_text("DYNAMIC SECTION", USE_LT | USE_COLON | USE_EOL);
-//  printf_eol();
+    n += printf_text("DYNAMIC SECTION", USE_LT | USE_COLON | USE_EOL);
+    n += printf_eol();
 
-//  printf_text("VERSION REFERENCES", USE_LT | USE_COLON | USE_EOL);
-
-  if (!bfd_print_private_bfd_data(ocgetbfd(p), stdout)) {
-    printf_w("private Headers incomplete: %s.", bfd_errmsg(bfd_get_error()));
-    return 1;
+    n += printf_text("VERSION REFERENCES", USE_LT | USE_COLON | USE_EOL);
+    n += printf_eol();
   }
-  printf_eol();
 
-  return 0;
+  return n;
 }
 
 static int dump_sectionhdr(const handle_t p, const poptions_t o) {

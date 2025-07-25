@@ -11,6 +11,7 @@ static const char zOBJDUMPARGS3[] = "--disassembler-options";
 static const args_t zOBJDUMPARGS[] = {
   {'H', "--help",              OPTPROGRAM_HELP},
   {'V', "--version",           OPTPROGRAM_VERSION},
+  {'v', "--verbose",           OPTPROGRAM_VERBOSE},
   {'D', "--disassemble-all",   OPTOBJDUMP_DISASSEMBLE_ALL | OPTPROGRAM_DISASSEMBLE},
   {'S', "--source",            OPTPROGRAM_SOURCE_CODE | OPTPROGRAM_DISASSEMBLE},
   {'T', "--dynamic-symbols",   OPTOBJDUMP_DYNAMIC_SYMBOLS,                               zDUMPDYNAMIC},
