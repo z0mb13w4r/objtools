@@ -21,6 +21,7 @@ typedef struct ocoperand_s {
 typedef struct ocexamine_s {
   smode_t    mode;
   uint64_t   vaddr;
+  char       comment[160];
 
   pocmnemonic_t mc;
   pocoperand_t  op1;

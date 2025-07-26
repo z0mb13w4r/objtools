@@ -44,11 +44,12 @@ handle_t oecreate(const uint64_t vaddr, unknown_t mnemonic, unknown_t operands) 
     else if (0 == strncmp(mnemonic, "jg", 2))              x = 2;
     else if (0 == strncmp(mnemonic, "js", 2))              x = 2;
 
+    int siz = strlen(mnemonic);
+
     if (x) {
 //printf("++++++++++++++");
       strncpy(p->mc->data, mnemonic, x);
 //printf("%s++", p->mc);
-      int siz = strlen(mnemonic);
       while (x < siz) {
         int c = CAST(uchar_t*, mnemonic)[x];
         if (c != ' ' && c != '\t') break;
@@ -62,6 +63,11 @@ handle_t oecreate(const uint64_t vaddr, unknown_t mnemonic, unknown_t operands) 
         p->op1->uvalue = hexb(CAST(puchar_t, mnemonic) + x, siz - x);
 //printf("%x++", p->op1->uvalue);
       }
+    }
+
+    const char* s = strchr(mnemonic, '#');
+    if (s) {
+      strcpy(p->comment, s);
     }
   }
 
