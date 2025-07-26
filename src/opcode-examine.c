@@ -92,15 +92,17 @@ handle_t oecreate(const uint64_t vaddr, unknown_t mnemonic, unknown_t operands) 
 //printf("++++++++++++++");
       strncpy(p->mc->data, pi->mc, pi->mcsize);
 //printf("%s++", p->mc->data);
-      char* op = oeskip(mnemonic + pi->mcsize, mcsize - pi->mcsize);
+      if (MODE_ISSET(pi->action, OCINSTRUCTION_OPERAND1)) {
+        char* op = oeskip(mnemonic + pi->mcsize, mcsize - pi->mcsize);
 //printf("%s--", op);
-      const size_t opsize = strlen(op);
-      bool ishex = ishexb(op, opsize);
+        const size_t opsize = strlen(op);
+        bool ishex = ishexb(op, opsize);
 //printf("%s++", ishex ? "T" : "F");
-      if (ishex) {
-        p->op1 = xmalloc(sizeof(ocoperand_t));
-        p->op1->uvalue = hexb(op, opsize);
+        if (ishex) {
+          p->op1 = xmalloc(sizeof(ocoperand_t));
+          p->op1->uvalue = hexb(op, opsize);
 //printf("%x++", p->op1->uvalue);
+        }
       }
     }
 
