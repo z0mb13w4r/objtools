@@ -34,6 +34,9 @@ handle_t oefree(handle_t p) {
 #define OCINSTRUCTION_CALL                         ((1) | OCINSTRUCTION_OPERAND1)
 #define OCINSTRUCTION_JMP                          ((2) | OCINSTRUCTION_OPERAND1)
 
+#define OCOPERAND_IVALUE                           (1)
+#define OCOPERAND_UVALUE                           (2)
+
 typedef struct ocinstructions_s {
   const char*   mc;
   const size_t  mcsize;
@@ -101,6 +104,7 @@ handle_t oecreate(const uint64_t vaddr, unknown_t mnemonic, unknown_t operands) 
         if (ishex) {
           p->op1 = xmalloc(sizeof(ocoperand_t));
           p->op1->uvalue = hexb(op, opsize);
+          p->op1->cvalue = OCOPERAND_UVALUE;
 //printf("%x++", p->op1->uvalue);
         }
       }
