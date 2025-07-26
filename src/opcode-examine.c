@@ -54,41 +54,52 @@ static ocinstructions_t zINSTRUCTIONS[] = {
   {NULL}
 };
 
+pocinstructions_t oeget(unknown_t m, const size_t size) {
+  if (m) {
+    for (pocinstructions_t p = zINSTRUCTIONS; 0 != p->mc; ++p) {
+      if (0 == strncmp(m, p->mc, p->mcsize)) {
+        return p;
+      }
+    }
+  }
+
+  return NULL;
+}
+
+unknown_t oeskip(unknown_t p, const size_t size) {
+  if (p && 0 != size) {
+    puchar_t p0 = CAST(puchar_t, p);
+    for (size_t i = 0; i < size && *p0; ++i, ++p0) {
+      if (*p0 != ' ' && *p0 != '\t') break;
+    }
+
+    return p0;
+  }
+
+  return NULL;
+}
+
 handle_t oecreate(const uint64_t vaddr, unknown_t mnemonic, unknown_t operands) {
   pocexamine_t p = oemalloc();
   if (p) {
     p->vaddr = vaddr;
     p->mc = xmalloc(sizeof(ocmnemonic_t));
 
-    int x = 0;
-    if (0 == strncmp(mnemonic, "callq", 5))                x = 5;
-    else if (0 == strncmp(mnemonic, "bnd jmpq", 8))        x = 8;
-    else if (0 == strncmp(mnemonic, "jmpq", 4))            x = 4;
-    else if (0 == strncmp(mnemonic, "jle", 3))             x = 3;
-    else if (0 == strncmp(mnemonic, "jmp", 3))             x = 3;
-    else if (0 == strncmp(mnemonic, "jne", 3))             x = 3;
-    else if (0 == strncmp(mnemonic, "jns", 3))             x = 3;
-    else if (0 == strncmp(mnemonic, "je", 2))              x = 2;
-    else if (0 == strncmp(mnemonic, "jg", 2))              x = 2;
-    else if (0 == strncmp(mnemonic, "js", 2))              x = 2;
+    const size_t mcsize = strlen(mnemonic);
+    pocinstructions_t pi = oeget(mnemonic, mcsize);
 
-    int siz = strlen(mnemonic);
-
-    if (x) {
+    if (pi) {
 //printf("++++++++++++++");
-      strncpy(p->mc->data, mnemonic, x);
-//printf("%s++", p->mc);
-      while (x < siz) {
-        int c = CAST(uchar_t*, mnemonic)[x];
-        if (c != ' ' && c != '\t') break;
-        ++x;
-      }
-//printf("%d+++%s++", x, CAST(puchar_t, mnemonic) + x);
-      bool ishex = ishexb(CAST(puchar_t, mnemonic) + x, siz - x);
-//printf("%d%s++", siz - x, ishex ? "T" : "F");
+      strncpy(p->mc->data, pi->mc, pi->mcsize);
+//printf("%s++", p->mc->data);
+      char* op = oeskip(mnemonic + pi->mcsize, mcsize - pi->mcsize);
+//printf("%s--", op);
+      const size_t opsize = strlen(op);
+      bool ishex = ishexb(op, opsize);
+//printf("%s++", ishex ? "T" : "F");
       if (ishex) {
         p->op1 = xmalloc(sizeof(ocoperand_t));
-        p->op1->uvalue = hexb(CAST(puchar_t, mnemonic) + x, siz - x);
+        p->op1->uvalue = hexb(op, opsize);
 //printf("%x++", p->op1->uvalue);
       }
     }
