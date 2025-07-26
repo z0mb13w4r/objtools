@@ -26,6 +26,34 @@ handle_t oefree(handle_t p) {
   return p;
 }
 
+#define OCINSTRUCTION(x) x, sizeof(x) - 1
+
+#define OCINSTRUCTION_OPERAND0                     U64MASK(60)
+#define OCINSTRUCTION_OPERAND1                     U64MASK(61)
+#define OCINSTRUCTION_OPERAND2                     U64MASK(62)
+#define OCINSTRUCTION_CALL                         ((1) | OCINSTRUCTION_OPERAND1)
+#define OCINSTRUCTION_JMP                          ((2) | OCINSTRUCTION_OPERAND1)
+
+typedef struct ocinstructions_s {
+  const char*   mc;
+  const size_t  mcsize;
+  const imode_t action;
+} ocinstructions_t, *pocinstructions_t;
+
+static ocinstructions_t zINSTRUCTIONS[] = {
+  {OCINSTRUCTION("callq"),    OCINSTRUCTION_CALL},
+  {OCINSTRUCTION("bnd jmpq"), OCINSTRUCTION_JMP},
+  {OCINSTRUCTION("jmpq"),     OCINSTRUCTION_JMP},
+  {OCINSTRUCTION("jle"),      OCINSTRUCTION_JMP},
+  {OCINSTRUCTION("jmp"),      OCINSTRUCTION_JMP},
+  {OCINSTRUCTION("jne"),      OCINSTRUCTION_JMP},
+  {OCINSTRUCTION("jns"),      OCINSTRUCTION_JMP},
+  {OCINSTRUCTION("je"),       OCINSTRUCTION_JMP},
+  {OCINSTRUCTION("jg"),       OCINSTRUCTION_JMP},
+  {OCINSTRUCTION("js"),       OCINSTRUCTION_JMP},
+  {NULL}
+};
+
 handle_t oecreate(const uint64_t vaddr, unknown_t mnemonic, unknown_t operands) {
   pocexamine_t p = oemalloc();
   if (p) {
