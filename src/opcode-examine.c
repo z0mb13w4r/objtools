@@ -88,7 +88,7 @@ unknown_t oeskip(unknown_t p, const size_t size) {
   return NULL;
 }
 
-unknown_t ocget_comment(handle_t p, unknown_t m) {
+unknown_t ocinsert_comment(handle_t p, unknown_t m) {
   if (isocexamine(p) && m) {
     pocexamine_t p0 = CAST(pocexamine_t, p);
     char* p1 = strchr(m, '#');
@@ -103,6 +103,42 @@ unknown_t ocget_comment(handle_t p, unknown_t m) {
   return NULL;
 }
 
+unknown_t ocinsert_mnemonic(handle_t p, unknown_t q, unknown_t m) {
+  if (isocexamine(p) && q && m) {
+    char *m0 = CAST(char*, m);
+    pocexamine_t p0 = CAST(pocexamine_t, p);
+    pocinstructions_t q0 = CAST(pocinstructions_t, q);
+
+    strncpy(p0->mc->data, q0->mc, q0->mcsize);
+    return oeskip(m0 + q0->mcsize, strlen(m0) - q0->mcsize);
+  }
+
+  return NULL;
+}
+
+unknown_t ocinsert_operands(handle_t p, unknown_t q, unknown_t m) {
+  if (isocexamine(p) && q && m) {
+    char *m0 = CAST(char*, m);
+    pocexamine_t p0 = CAST(pocexamine_t, p);
+    pocinstructions_t q0 = CAST(pocinstructions_t, q);
+
+    if (MODE_ISSET(q0->action, OCINSTRUCTION_OPERAND1)) {
+//printf("%s--", m0);
+      size_t m0size = strlen(m0);
+      bool ishex = ishexb(m0, m0size);
+//printf("%s++", ishex ? "T" : "F");
+      if (ishex) {
+        p0->op1 = xmalloc(sizeof(ocoperand_t));
+        p0->op1->uvalue = hexb(m0, m0size);
+        p0->op1->cvalue = OCOPERAND_UVALUE;
+//printf("%lx++", p0->op1->uvalue);
+      }
+    }
+  }
+
+  return NULL;
+}
+
 handle_t oecreate(const uint64_t vaddr, unknown_t mnemonic, unknown_t operands) {
   pocexamine_t p = oemalloc();
   if (p) {
@@ -111,7 +147,7 @@ handle_t oecreate(const uint64_t vaddr, unknown_t mnemonic, unknown_t operands) 
     p->vaddr = vaddr;
     p->mc = xmalloc(sizeof(ocmnemonic_t));
 
-    char* m1 = ocget_comment(p, m0);
+    char* m1 = ocinsert_comment(p, m0);
     size_t m1size = strlen(m1);
 
     pocinstructions_t pi = oeget(m1, m1size);
@@ -120,21 +156,10 @@ handle_t oecreate(const uint64_t vaddr, unknown_t mnemonic, unknown_t operands) 
 //printf("++++++++++++++");
 //printf("%s++", m1);
 //printf("%s++", p->comment);
-      strncpy(p->mc->data, pi->mc, pi->mcsize);
+      m1 = ocinsert_mnemonic(p, pi, m1);
+      m1size = strlen(m1);
 //printf("%s++", p->mc->data);
-      if (MODE_ISSET(pi->action, OCINSTRUCTION_OPERAND1)) {
-        char* op = oeskip(m1 + pi->mcsize, m1size - pi->mcsize);
-//printf("%s--", op);
-        const size_t opsize = strlen(op);
-        bool ishex = ishexb(op, opsize);
-//printf("%s++", ishex ? "T" : "F");
-        if (ishex) {
-          p->op1 = xmalloc(sizeof(ocoperand_t));
-          p->op1->uvalue = hexb(op, opsize);
-          p->op1->cvalue = OCOPERAND_UVALUE;
-//printf("%x++", p->op1->uvalue);
-        }
-      }
+      m1 = ocinsert_operands(p, pi, m1);
     }
   }
 
