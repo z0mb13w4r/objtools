@@ -26,13 +26,14 @@ handle_t oefree(handle_t p) {
   return p;
 }
 
-#define OCINSTRUCTION(x) x, sizeof(x) - 1
+#define OCINSTRUCTION(x,y) {x, sizeof(x) - 1, y}
 
 #define OCINSTRUCTION_OPERAND0                     U64MASK(60)
 #define OCINSTRUCTION_OPERAND1                     U64MASK(61)
 #define OCINSTRUCTION_OPERAND2                     U64MASK(62)
 #define OCINSTRUCTION_CALL                         ((1) | OCINSTRUCTION_OPERAND1)
 #define OCINSTRUCTION_JMP                          ((2) | OCINSTRUCTION_OPERAND1)
+#define OCINSTRUCTION_NOP                          ((3) | OCINSTRUCTION_OPERAND1)
 
 #define OCOPERAND_IVALUE                           (1)
 #define OCOPERAND_UVALUE                           (2)
@@ -44,16 +45,19 @@ typedef struct ocinstructions_s {
 } ocinstructions_t, *pocinstructions_t;
 
 static ocinstructions_t zINSTRUCTIONS[] = {
-  {OCINSTRUCTION("callq"),    OCINSTRUCTION_CALL},
-  {OCINSTRUCTION("bnd jmpq"), OCINSTRUCTION_JMP},
-  {OCINSTRUCTION("jmpq"),     OCINSTRUCTION_JMP},
-  {OCINSTRUCTION("jle"),      OCINSTRUCTION_JMP},
-  {OCINSTRUCTION("jmp"),      OCINSTRUCTION_JMP},
-  {OCINSTRUCTION("jne"),      OCINSTRUCTION_JMP},
-  {OCINSTRUCTION("jns"),      OCINSTRUCTION_JMP},
-  {OCINSTRUCTION("je"),       OCINSTRUCTION_JMP},
-  {OCINSTRUCTION("jg"),       OCINSTRUCTION_JMP},
-  {OCINSTRUCTION("js"),       OCINSTRUCTION_JMP},
+  OCINSTRUCTION("callq",     OCINSTRUCTION_CALL),
+
+  OCINSTRUCTION("bnd jmpq",  OCINSTRUCTION_JMP),
+  OCINSTRUCTION("jmpq",      OCINSTRUCTION_JMP),
+  OCINSTRUCTION("jle",       OCINSTRUCTION_JMP),
+  OCINSTRUCTION("jmp",       OCINSTRUCTION_JMP),
+  OCINSTRUCTION("jne",       OCINSTRUCTION_JMP),
+  OCINSTRUCTION("jns",       OCINSTRUCTION_JMP),
+  OCINSTRUCTION("je",        OCINSTRUCTION_JMP),
+  OCINSTRUCTION("jg",        OCINSTRUCTION_JMP),
+  OCINSTRUCTION("js",        OCINSTRUCTION_JMP),
+
+  OCINSTRUCTION("nopl",      OCINSTRUCTION_NOP),
   {NULL}
 };
 
@@ -69,16 +73,25 @@ static pocinstructions_t oeget(unknown_t m, const size_t size) {
   return NULL;
 }
 
+static bool oeisskipped(int c) {
+  return ' ' == c || '\t' == c || '*' == c ? TRUE : FALSE;
+}
+
 unknown_t oeskip(unknown_t p, const size_t size) {
   if (p && 0 != size) {
     puchar_t p0 = CAST(puchar_t, p);
     for (size_t i = 0; i < size && *p0; ++i, ++p0) {
-      if (*p0 != ' ' && *p0 != '\t') break;
+      if (!oeisskipped(*p0)) break;
     }
 
     puchar_t p1 = CAST(puchar_t, p) + size - 1;
     for (size_t i = 0; i < size && *p1; ++i, --p1) {
-      if (*p1 != ' ' && *p1 != '\t') break;
+      if (!oeisskipped(*p1)) break;
+      *p1 = 0;
+    }
+
+    if ('(' == *p0 && ')' == *p1) {
+      ++p0;
       *p1 = 0;
     }
 
