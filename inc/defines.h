@@ -30,8 +30,16 @@
 #define CAST(x,y)    ((x)(y))
 #endif
 
+#ifndef MALLOCX
+#define MALLOCX(x,y) CAST(x, mallocx(y))
+#endif
+
 #ifndef MALLOCA
 #define MALLOCA(x,y,z) x y[z]; memset(y, 0, sizeof(y))
+#endif
+
+#ifndef MALLOCACOPY
+#define MALLOCACOPY(x,y,z,s) MALLOCA(x,y,z); strncpy(y, s, sizeof(y))
 #endif
 
 #ifndef MALLOCS
@@ -39,11 +47,7 @@
 #endif
 
 #ifndef MALLOCSMODE
-#define MALLOCSMODE(x,y,z) x y; x* p##y = &y; memset(p##y, 0, sizeof(y)); setmode(p##y, z)
-#endif
-
-#ifndef MALLOCX
-#define MALLOCX(x,y) CAST(x, mallocx(y))
+#define MALLOCSMODE(x,y,z) MALLOCS(x,y); setmode(p##y, z)
 #endif
 
 #ifndef NELEMENTS

@@ -85,6 +85,14 @@ unknown_t oeskip(unknown_t p, const size_t size) {
 handle_t oecreate(const uint64_t vaddr, unknown_t mnemonic, unknown_t operands) {
   pocexamine_t p = oemalloc();
   if (p) {
+    MALLOCACOPY(char, m, 160, mnemonic);
+
+    const char* s = strchr(mnemonic, '#');
+    if (s) {
+      strncpy(p->comment, s, sizeof(p->comment));
+    }
+//    ocget_comment(p, m);
+
     p->vaddr = vaddr;
     p->mc = xmalloc(sizeof(ocmnemonic_t));
 
@@ -93,6 +101,8 @@ handle_t oecreate(const uint64_t vaddr, unknown_t mnemonic, unknown_t operands) 
 
     if (pi) {
 //printf("++++++++++++++");
+//printf("%s++", m);
+//printf("%s++", p->comment);
       strncpy(p->mc->data, pi->mc, pi->mcsize);
 //printf("%s++", p->mc->data);
       if (MODE_ISSET(pi->action, OCINSTRUCTION_OPERAND1)) {
@@ -108,11 +118,6 @@ handle_t oecreate(const uint64_t vaddr, unknown_t mnemonic, unknown_t operands) 
 //printf("%x++", p->op1->uvalue);
         }
       }
-    }
-
-    const char* s = strchr(mnemonic, '#');
-    if (s) {
-      strcpy(p->comment, s);
     }
   }
 
