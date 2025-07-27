@@ -76,6 +76,12 @@ unknown_t oeskip(unknown_t p, const size_t size) {
       if (*p0 != ' ' && *p0 != '\t') break;
     }
 
+    puchar_t p1 = CAST(puchar_t, p) + size - 1;
+    for (size_t i = 0; i < size && *p1; ++i, --p1) {
+      if (*p1 != ' ' && *p1 != '\t') break;
+      *p1 = 0;
+    }
+
     return p0;
   }
 
