@@ -38,6 +38,7 @@ handle_t oefree(handle_t p) {
 
 #define OCOPERAND_IVALUE                           (1)
 #define OCOPERAND_UVALUE                           (2)
+#define OCOPERAND_ABSOLUTE                         U64MASK(62)
 
 typedef struct ocinstructions_s {
   const char*   mc;
@@ -76,7 +77,23 @@ static pocinstructions_t oeget(unknown_t m, const size_t size) {
 }
 
 static bool oeisskipped(int c) {
-  return ' ' == c || '\t' == c || '*' == c ? TRUE : FALSE;
+  return ' ' == c || '\t' == c ? TRUE : FALSE;
+}
+
+static unknown_t oedo_absolute(handle_t p, unknown_t o, unknown_t m) {
+  if (isocexamine(p) && o && m) {
+    char *m0 = CAST(char*, m);
+    pocoperand_t o0 = CAST(pocoperand_t, o);
+
+    if ('*' == *m0) {
+      o0->cvalue |= OCOPERAND_ABSOLUTE;
+      ++m0;
+    }
+
+    return oeskip(m0, strlen(m0));
+  }
+
+  return NULL;
 }
 
 unknown_t oeskip(unknown_t p, const size_t size) {
@@ -133,18 +150,21 @@ unknown_t oeinsert_mnemonic(handle_t p, unknown_t q, unknown_t m) {
 
 unknown_t oeinsert_operand(handle_t p, unknown_t q, unknown_t m) {
   if (isocexamine(p) && q && m) {
-    size_t msize = strlen(m);
-    bool ishex = ishexb(m, msize);
+    pocoperand_t op = xmalloc(sizeof(ocoperand_t));
+
+    char *m0 = oedo_absolute(p, op, m);
+
+    size_t m0size = strlen(m0);
+    bool ishex = ishexb(m0, m0size);
     if (ishex) {
-      pocoperand_t op = xmalloc(sizeof(ocoperand_t));
 
-      op->uvalue = hexb(m, msize);
-      op->cvalue = OCOPERAND_UVALUE;
-
-      return op;
+      op->uvalue  = hexb(m0, m0size);
+      op->cvalue |= OCOPERAND_UVALUE;
     } else {
-//printf("++++%s++++", m);
+printf("++++%s++++", m0);
     }
+
+    return op;
   }
 
   return NULL;
