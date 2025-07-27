@@ -96,6 +96,27 @@ static unknown_t oedo_absolute(handle_t p, unknown_t o, unknown_t m) {
   return NULL;
 }
 
+static unknown_t oedo_hexidecimal(handle_t p, unknown_t o, unknown_t m) {
+  if (isocexamine(p) && o && m) {
+    char *m0 = CAST(char*, m);
+    pocoperand_t o0 = CAST(pocoperand_t, o);
+
+    size_t m0size = strlen(m0);
+    bool ishex = ishexb(m0, m0size);
+    if (ishex) {
+      o0->uvalue  = hexb(m0, m0size);
+      o0->cvalue |= OCOPERAND_UVALUE;
+    } else {
+//printf("++++%s++++", m0);
+    }
+
+
+    return oeskip(m0, strlen(m0));
+  }
+
+  return NULL;
+}
+
 unknown_t oeskip(unknown_t p, const size_t size) {
   if (p && 0 != size) {
     puchar_t p0 = CAST(puchar_t, p);
@@ -152,17 +173,9 @@ unknown_t oeinsert_operand(handle_t p, unknown_t q, unknown_t m) {
   if (isocexamine(p) && q && m) {
     pocoperand_t op = xmalloc(sizeof(ocoperand_t));
 
-    char *m0 = oedo_absolute(p, op, m);
-
-    size_t m0size = strlen(m0);
-    bool ishex = ishexb(m0, m0size);
-    if (ishex) {
-
-      op->uvalue  = hexb(m0, m0size);
-      op->cvalue |= OCOPERAND_UVALUE;
-    } else {
-printf("++++%s++++", m0);
-    }
+    char *m0 = CAST(char *, m);
+    m0 = oedo_absolute(p, op, m0);
+    m0 = oedo_hexidecimal(p, op, m0);
 
     return op;
   }
