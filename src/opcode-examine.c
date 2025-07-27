@@ -33,7 +33,8 @@ handle_t oefree(handle_t p) {
 #define OCINSTRUCTION_OPERAND2                     U64MASK(62)
 #define OCINSTRUCTION_CALL                         ((1) | OCINSTRUCTION_OPERAND1)
 #define OCINSTRUCTION_JMP                          ((2) | OCINSTRUCTION_OPERAND1)
-#define OCINSTRUCTION_NOP                          ((3) | OCINSTRUCTION_OPERAND1)
+#define OCINSTRUCTION_NOP0                         ((3) | OCINSTRUCTION_OPERAND0)
+#define OCINSTRUCTION_NOP1                         ((4) | OCINSTRUCTION_OPERAND1)
 
 #define OCOPERAND_IVALUE                           (1)
 #define OCOPERAND_UVALUE                           (2)
@@ -57,7 +58,8 @@ static ocinstructions_t zINSTRUCTIONS[] = {
   OCINSTRUCTION("jg",        OCINSTRUCTION_JMP),
   OCINSTRUCTION("js",        OCINSTRUCTION_JMP),
 
-  OCINSTRUCTION("nopl",      OCINSTRUCTION_NOP),
+  OCINSTRUCTION("nopl",      OCINSTRUCTION_NOP1),
+  OCINSTRUCTION("nop",       OCINSTRUCTION_NOP0),
   {NULL}
 };
 
