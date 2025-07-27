@@ -82,31 +82,42 @@ unknown_t oeskip(unknown_t p, const size_t size) {
   return NULL;
 }
 
+unknown_t ocget_comment(handle_t p, unknown_t m) {
+  if (isocexamine(p) && m) {
+    pocexamine_t p0 = CAST(pocexamine_t, p);
+    char* p1 = strchr(m, '#');
+    if (p1) {
+      strncpy(p0->comment, p1, sizeof(p0->comment));
+      *p1 = 0;
+    }
+
+    return oeskip(m, strlen(m));
+  }
+
+  return NULL;
+}
+
 handle_t oecreate(const uint64_t vaddr, unknown_t mnemonic, unknown_t operands) {
   pocexamine_t p = oemalloc();
   if (p) {
-    MALLOCACOPY(char, m, 160, mnemonic);
-
-    const char* s = strchr(mnemonic, '#');
-    if (s) {
-      strncpy(p->comment, s, sizeof(p->comment));
-    }
-//    ocget_comment(p, m);
+    MALLOCACOPY(char, m0, 160, mnemonic);
 
     p->vaddr = vaddr;
     p->mc = xmalloc(sizeof(ocmnemonic_t));
 
-    const size_t mcsize = strlen(mnemonic);
-    pocinstructions_t pi = oeget(mnemonic, mcsize);
+    char* m1 = ocget_comment(p, m0);
+    size_t m1size = strlen(m1);
+
+    pocinstructions_t pi = oeget(m1, m1size);
 
     if (pi) {
 //printf("++++++++++++++");
-//printf("%s++", m);
+//printf("%s++", m1);
 //printf("%s++", p->comment);
       strncpy(p->mc->data, pi->mc, pi->mcsize);
 //printf("%s++", p->mc->data);
       if (MODE_ISSET(pi->action, OCINSTRUCTION_OPERAND1)) {
-        char* op = oeskip(mnemonic + pi->mcsize, mcsize - pi->mcsize);
+        char* op = oeskip(m1 + pi->mcsize, m1size - pi->mcsize);
 //printf("%s--", op);
         const size_t opsize = strlen(op);
         bool ishex = ishexb(op, opsize);
