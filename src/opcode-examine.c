@@ -31,6 +31,7 @@ handle_t oefree(handle_t p) {
 #define OCINSTRUCTION_OPERAND0                     U64MASK(60)
 #define OCINSTRUCTION_OPERAND1                     U64MASK(61)
 #define OCINSTRUCTION_OPERAND2                     U64MASK(62)
+
 #define OCINSTRUCTION_CALL                         ((1) | OCINSTRUCTION_OPERAND1)
 #define OCINSTRUCTION_JMP                          ((2) | OCINSTRUCTION_OPERAND1)
 #define OCINSTRUCTION_NOP0                         ((3) | OCINSTRUCTION_OPERAND0)
@@ -40,6 +41,15 @@ handle_t oefree(handle_t p) {
 #define OCOPERAND_UVALUE                           (2)
 #define OCOPERAND_ABSOLUTE                         U64MASK(62)
 
+#define OCREGISTER_GENERAL                         U64MASK(49)
+#define OCREGISTER_BASEPTR                         U64MASK(50)
+#define OCREGISTER_STACKPTR                        U64MASK(51)
+#define OCREGISTER_DSTINDEX                        U64MASK(52)
+#define OCREGISTER_SRCINDEX                        U64MASK(53)
+#define OCREGISTER_DATA                            U64MASK(54)
+#define OCREGISTER_COUNTER                         U64MASK(55)
+#define OCREGISTER_BASE                            U64MASK(56)
+#define OCREGISTER_ACCUMULATOR                     U64MASK(57)
 #define OCREGISTER_8BITLO                          U64MASK(58)
 #define OCREGISTER_8BITHI                          U64MASK(59)
 #define OCREGISTER_16BIT                           U64MASK(60)
