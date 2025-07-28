@@ -40,6 +40,90 @@ handle_t oefree(handle_t p) {
 #define OCOPERAND_UVALUE                           (2)
 #define OCOPERAND_ABSOLUTE                         U64MASK(62)
 
+#define OCREGISTER_RAX                             (1)
+#define OCREGISTER_EAX                             (2)
+#define OCREGISTER_AX                              (3)
+#define OCREGISTER_AH                              (4)
+#define OCREGISTER_AL                              (5)
+
+#define OCREGISTER_RBX                             (6)
+#define OCREGISTER_EBX                             (7)
+#define OCREGISTER_BX                              (8)
+#define OCREGISTER_BH                              (9)
+#define OCREGISTER_BL                              (10)
+
+#define OCREGISTER_RCX                             (11)
+#define OCREGISTER_ECX                             (12)
+#define OCREGISTER_CX                              (13)
+#define OCREGISTER_CH                              (14)
+#define OCREGISTER_CL                              (15)
+
+#define OCREGISTER_RDX                             (16)
+#define OCREGISTER_EDX                             (17)
+#define OCREGISTER_DX                              (18)
+#define OCREGISTER_DH                              (19)
+#define OCREGISTER_DL                              (20)
+
+#define OCREGISTER_R8B                             (21)
+#define OCREGISTER_R8D                             (22)
+#define OCREGISTER_R8W                             (23)
+#define OCREGISTER_R8                              (24)
+
+#define OCREGISTER_R9B                             (25)
+#define OCREGISTER_R9D                             (26)
+#define OCREGISTER_R9W                             (27)
+#define OCREGISTER_R9                              (28)
+
+#define OCREGISTER_R10B                            (29)
+#define OCREGISTER_R10D                            (30)
+#define OCREGISTER_R10W                            (31)
+#define OCREGISTER_R10                             (32)
+
+#define OCREGISTER_R11B                            (33)
+#define OCREGISTER_R11D                            (34)
+#define OCREGISTER_R11W                            (35)
+#define OCREGISTER_R11                             (36)
+
+#define OCREGISTER_R12B                            (37)
+#define OCREGISTER_R12D                            (38)
+#define OCREGISTER_R12W                            (39)
+#define OCREGISTER_R12                             (40)
+
+#define OCREGISTER_R13B                            (41)
+#define OCREGISTER_R13D                            (42)
+#define OCREGISTER_R13W                            (43)
+#define OCREGISTER_R13                             (44)
+
+#define OCREGISTER_R14B                            (45)
+#define OCREGISTER_R14D                            (46)
+#define OCREGISTER_R14W                            (47)
+#define OCREGISTER_R14                             (48)
+
+#define OCREGISTER_R15B                            (49)
+#define OCREGISTER_R15D                            (50)
+#define OCREGISTER_R15W                            (51)
+#define OCREGISTER_R15                             (52)
+
+#define OCREGISTER_RSI                             (53)
+#define OCREGISTER_ESI                             (54)
+#define OCREGISTER_SI                              (55)
+
+#define OCREGISTER_RDI                             (56)
+#define OCREGISTER_EDI                             (57)
+#define OCREGISTER_DI                              (58)
+
+#define OCREGISTER_RSP                             (59)
+#define OCREGISTER_ESP                             (60)
+#define OCREGISTER_SP                              (61)
+
+#define OCREGISTER_RBP                             (62)
+#define OCREGISTER_EBP                             (63)
+#define OCREGISTER_BP                              (64)
+
+#define OCREGISTER_RIP                             (65)
+#define OCREGISTER_EIP                             (66)
+#define OCREGISTER_IP                              (67)
+
 typedef struct oestruct_s {
   const char*   mc;
   const size_t  mcsize;
@@ -61,6 +145,93 @@ static oestruct_t zINSTRUCTIONS[] = {
 
   OCSTRUCT("nopl",      OCINSTRUCTION_NOP1),
   OCSTRUCT("nop",       OCINSTRUCTION_NOP0),
+  {NULL}
+};
+
+static oestruct_t zREGISTERS[] = {
+  OCSTRUCT("%rax",     OCREGISTER_RAX),
+  OCSTRUCT("%eax",     OCREGISTER_EAX),
+  OCSTRUCT("%ax",      OCREGISTER_AX),
+  OCSTRUCT("%ah",      OCREGISTER_AH),
+  OCSTRUCT("%al",      OCREGISTER_AL),
+
+  OCSTRUCT("%rbx",     OCREGISTER_RBX),
+  OCSTRUCT("%ebx",     OCREGISTER_EBX),
+  OCSTRUCT("%bx",      OCREGISTER_BX),
+  OCSTRUCT("%bh",      OCREGISTER_BH),
+  OCSTRUCT("%bl",      OCREGISTER_BL),
+
+  OCSTRUCT("%rcx",     OCREGISTER_RCX),
+  OCSTRUCT("%ecx",     OCREGISTER_ECX),
+  OCSTRUCT("%cx",      OCREGISTER_CX),
+  OCSTRUCT("%ch",      OCREGISTER_CH),
+  OCSTRUCT("%cl",      OCREGISTER_CL),
+
+  OCSTRUCT("%rdx",     OCREGISTER_RDX),
+  OCSTRUCT("%edx",     OCREGISTER_EDX),
+  OCSTRUCT("%dx",      OCREGISTER_DX),
+  OCSTRUCT("%dh",      OCREGISTER_DH),
+  OCSTRUCT("%dl",      OCREGISTER_DL),
+
+  OCSTRUCT("%r8b",     OCREGISTER_R8B),
+  OCSTRUCT("%r8d",     OCREGISTER_R8D),
+  OCSTRUCT("%r8w",     OCREGISTER_R8W),
+  OCSTRUCT("%r8",      OCREGISTER_R8),
+
+  OCSTRUCT("%r9b",     OCREGISTER_R9B),
+  OCSTRUCT("%r9d",     OCREGISTER_R9D),
+  OCSTRUCT("%r9w",     OCREGISTER_R9W),
+  OCSTRUCT("%r9",      OCREGISTER_R9),
+
+  OCSTRUCT("%r10b",    OCREGISTER_R10B),
+  OCSTRUCT("%r10d",    OCREGISTER_R10D),
+  OCSTRUCT("%r10w",    OCREGISTER_R10W),
+  OCSTRUCT("%r10",     OCREGISTER_R10),
+
+  OCSTRUCT("%r11b",    OCREGISTER_R11B),
+  OCSTRUCT("%r11d",    OCREGISTER_R11D),
+  OCSTRUCT("%r11w",    OCREGISTER_R11W),
+  OCSTRUCT("%r11",     OCREGISTER_R11),
+
+  OCSTRUCT("%r12b",    OCREGISTER_R12B),
+  OCSTRUCT("%r12d",    OCREGISTER_R12D),
+  OCSTRUCT("%r12w",    OCREGISTER_R12W),
+  OCSTRUCT("%r12",     OCREGISTER_R12),
+
+  OCSTRUCT("%r13b",    OCREGISTER_R13B),
+  OCSTRUCT("%r13d",    OCREGISTER_R13D),
+  OCSTRUCT("%r13w",    OCREGISTER_R13W),
+  OCSTRUCT("%r13",     OCREGISTER_R13),
+
+  OCSTRUCT("%r14b",    OCREGISTER_R14B),
+  OCSTRUCT("%r14d",    OCREGISTER_R14D),
+  OCSTRUCT("%r14w",    OCREGISTER_R14W),
+  OCSTRUCT("%r14",     OCREGISTER_R14),
+
+  OCSTRUCT("%r15b",    OCREGISTER_R15B),
+  OCSTRUCT("%r15d",    OCREGISTER_R15D),
+  OCSTRUCT("%r15w",    OCREGISTER_R15W),
+  OCSTRUCT("%r15",     OCREGISTER_R15),
+
+  OCSTRUCT("%rsi",     OCREGISTER_RSI),
+  OCSTRUCT("%esi",     OCREGISTER_ESI),
+  OCSTRUCT("%si",      OCREGISTER_SI),
+
+  OCSTRUCT("%rdi",     OCREGISTER_RDI),
+  OCSTRUCT("%edi",     OCREGISTER_EDI),
+  OCSTRUCT("%di",      OCREGISTER_DI),
+
+  OCSTRUCT("%rsp",     OCREGISTER_RSP),
+  OCSTRUCT("%esp",     OCREGISTER_ESP),
+  OCSTRUCT("%sp",      OCREGISTER_SP),
+
+  OCSTRUCT("%rbp",     OCREGISTER_RBP),
+  OCSTRUCT("%ebp",     OCREGISTER_EBP),
+  OCSTRUCT("%bp",      OCREGISTER_BP),
+
+  OCSTRUCT("%rip",     OCREGISTER_RIP),
+  OCSTRUCT("%eip",     OCREGISTER_EIP),
+  OCSTRUCT("%ip",      OCREGISTER_IP),
   {NULL}
 };
 
