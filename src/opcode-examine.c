@@ -64,7 +64,7 @@ static oestruct_ zINSTRUCTIONS[] = {
   {NULL}
 };
 
-static poestruct_t oeget(unknown_t m, const size_t size) {
+static poestruct_t oepick(poestruct_t p, unknown_t m, const size_t size) {
   if (m) {
     for (poestruct_t pp = zINSTRUCTIONS; 0 != pp->mc; ++pp) {
       if (0 == strncmp(m, pp->mc, pp->mcsize)) {
@@ -205,7 +205,7 @@ handle_t oecreate(const uint64_t vaddr, unknown_t mnemonic, unknown_t operands) 
     p->mc = xmalloc(sizeof(ocmnemonic_t));
 
     char* m1 = oeinsert_comment(p, m0);
-    poestruct_t pi = oeget(m1, strlen(m1));
+    poestruct_t pi = oepick(zINSTRUCTIONS, m1, strlen(m1));
 
     if (pi) {
       m1 = oeinsert_mnemonic(p, pi, m1);
