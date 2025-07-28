@@ -44,9 +44,9 @@ typedef struct oestruct_s {
   const char*   mc;
   const size_t  mcsize;
   const imode_t action;
-} oestruct_, *poestruct_t;
+} oestruct_t, *poestruct_t;
 
-static oestruct_ zINSTRUCTIONS[] = {
+static oestruct_t zINSTRUCTIONS[] = {
   OCSTRUCT("callq",     OCINSTRUCTION_CALL),
 
   OCSTRUCT("bnd jmpq",  OCINSTRUCTION_JMP),
