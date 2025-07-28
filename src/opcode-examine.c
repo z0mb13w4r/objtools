@@ -26,7 +26,7 @@ handle_t oefree(handle_t p) {
   return p;
 }
 
-#define OCINSTRUCTION(x,y) {x, sizeof(x) - 1, y}
+#define OCSTRUCT(x,y) {x, sizeof(x) - 1, y}
 
 #define OCINSTRUCTION_OPERAND0                     U64MASK(60)
 #define OCINSTRUCTION_OPERAND1                     U64MASK(61)
@@ -40,35 +40,35 @@ handle_t oefree(handle_t p) {
 #define OCOPERAND_UVALUE                           (2)
 #define OCOPERAND_ABSOLUTE                         U64MASK(62)
 
-typedef struct ocinstructions_s {
+typedef struct oestruct_s {
   const char*   mc;
   const size_t  mcsize;
   const imode_t action;
-} ocinstructions_t, *pocinstructions_t;
+} oestruct_, *poestruct_t;
 
-static ocinstructions_t zINSTRUCTIONS[] = {
-  OCINSTRUCTION("callq",     OCINSTRUCTION_CALL),
+static oestruct_ zINSTRUCTIONS[] = {
+  OCSTRUCT("callq",     OCINSTRUCTION_CALL),
 
-  OCINSTRUCTION("bnd jmpq",  OCINSTRUCTION_JMP),
-  OCINSTRUCTION("jmpq",      OCINSTRUCTION_JMP),
-  OCINSTRUCTION("jle",       OCINSTRUCTION_JMP),
-  OCINSTRUCTION("jmp",       OCINSTRUCTION_JMP),
-  OCINSTRUCTION("jne",       OCINSTRUCTION_JMP),
-  OCINSTRUCTION("jns",       OCINSTRUCTION_JMP),
-  OCINSTRUCTION("je",        OCINSTRUCTION_JMP),
-  OCINSTRUCTION("jg",        OCINSTRUCTION_JMP),
-  OCINSTRUCTION("js",        OCINSTRUCTION_JMP),
+  OCSTRUCT("bnd jmpq",  OCINSTRUCTION_JMP),
+  OCSTRUCT("jmpq",      OCINSTRUCTION_JMP),
+  OCSTRUCT("jle",       OCINSTRUCTION_JMP),
+  OCSTRUCT("jmp",       OCINSTRUCTION_JMP),
+  OCSTRUCT("jne",       OCINSTRUCTION_JMP),
+  OCSTRUCT("jns",       OCINSTRUCTION_JMP),
+  OCSTRUCT("je",        OCINSTRUCTION_JMP),
+  OCSTRUCT("jg",        OCINSTRUCTION_JMP),
+  OCSTRUCT("js",        OCINSTRUCTION_JMP),
 
-  OCINSTRUCTION("nopl",      OCINSTRUCTION_NOP1),
-  OCINSTRUCTION("nop",       OCINSTRUCTION_NOP0),
+  OCSTRUCT("nopl",      OCINSTRUCTION_NOP1),
+  OCSTRUCT("nop",       OCINSTRUCTION_NOP0),
   {NULL}
 };
 
-static pocinstructions_t oeget(unknown_t m, const size_t size) {
+static poestruct_t oeget(unknown_t m, const size_t size) {
   if (m) {
-    for (pocinstructions_t p = zINSTRUCTIONS; 0 != p->mc; ++p) {
-      if (0 == strncmp(m, p->mc, p->mcsize)) {
-        return p;
+    for (poestruct_t pp = zINSTRUCTIONS; 0 != pp->mc; ++pp) {
+      if (0 == strncmp(m, pp->mc, pp->mcsize)) {
+        return pp;
       }
     }
   }
@@ -96,7 +96,7 @@ static unknown_t oedo_absolute(handle_t p, unknown_t o, unknown_t m) {
   return NULL;
 }
 
-static unknown_t oedo_hexidecimal(handle_t p, unknown_t o, unknown_t m) {
+static unknown_t oedo_value(handle_t p, unknown_t o, unknown_t m) {
   if (isocexamine(p) && o && m) {
     char *m0 = CAST(char*, m);
     pocoperand_t o0 = CAST(pocoperand_t, o);
@@ -160,7 +160,7 @@ unknown_t oeinsert_mnemonic(handle_t p, unknown_t q, unknown_t m) {
   if (isocexamine(p) && q && m) {
     char *m0 = CAST(char*, m);
     pocexamine_t p0 = CAST(pocexamine_t, p);
-    pocinstructions_t q0 = CAST(pocinstructions_t, q);
+    poestruct_t q0 = CAST(poestruct_t, q);
 
     strncpy(p0->mc->data, q0->mc, q0->mcsize);
     return oeskip(m0 + q0->mcsize, strlen(m0) - q0->mcsize);
@@ -175,7 +175,7 @@ unknown_t oeinsert_operand(handle_t p, unknown_t q, unknown_t m) {
 
     char *m0 = CAST(char *, m);
     m0 = oedo_absolute(p, op, m0);
-    m0 = oedo_hexidecimal(p, op, m0);
+    m0 = oedo_value(p, op, m0);
 
     return op;
   }
@@ -186,7 +186,7 @@ unknown_t oeinsert_operand(handle_t p, unknown_t q, unknown_t m) {
 unknown_t oeinsert_operands(handle_t p, unknown_t q, unknown_t m) {
   if (isocexamine(p) && q && m) {
     pocexamine_t p0 = CAST(pocexamine_t, p);
-    pocinstructions_t q0 = CAST(pocinstructions_t, q);
+    poestruct_t q0 = CAST(poestruct_t, q);
 
     if (MODE_ISSET(q0->action, OCINSTRUCTION_OPERAND1)) {
       p0->op1 = oeinsert_operand(p, q, m);
@@ -205,7 +205,7 @@ handle_t oecreate(const uint64_t vaddr, unknown_t mnemonic, unknown_t operands) 
     p->mc = xmalloc(sizeof(ocmnemonic_t));
 
     char* m1 = oeinsert_comment(p, m0);
-    pocinstructions_t pi = oeget(m1, strlen(m1));
+    poestruct_t pi = oeget(m1, strlen(m1));
 
     if (pi) {
       m1 = oeinsert_mnemonic(p, pi, m1);
