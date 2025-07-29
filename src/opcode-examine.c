@@ -47,7 +47,8 @@ handle_t oefree(handle_t p) {
 #define OCOPERAND_UVALUE                           (2)
 #define OCOPERAND_ABSOLUTE                         U64MASK(62)
 
-#define OCREGISTER_GENERAL                         U64MASK(49)
+#define OCREGISTER_GENERAL                         U64MASK(48)
+#define OCREGISTER_INSTRUCTIONPTR                  U64MASK(49)
 #define OCREGISTER_BASEPTR                         U64MASK(50)
 #define OCREGISTER_STACKPTR                        U64MASK(51)
 #define OCREGISTER_DSTINDEX                        U64MASK(52)
@@ -136,19 +137,19 @@ handle_t oefree(handle_t p) {
 #define OCREGISTER_DIL                             ((59) | OCREGISTER_8BITLO | OCREGISTER_DSTINDEX)
 #define OCREGISTER_DI                              ((60) | OCREGISTER_16BIT | OCREGISTER_DSTINDEX)
 
-#define OCREGISTER_RSP                             ((61) | OCREGISTER_64BIT)
-#define OCREGISTER_ESP                             ((62) | OCREGISTER_32BIT)
-#define OCREGISTER_SPL                             ((63) | OCREGISTER_8BITLO)
-#define OCREGISTER_SP                              ((64) | OCREGISTER_16BIT)
+#define OCREGISTER_RSP                             ((61) | OCREGISTER_64BIT | OCREGISTER_STACKPTR)
+#define OCREGISTER_ESP                             ((62) | OCREGISTER_32BIT | OCREGISTER_STACKPTR)
+#define OCREGISTER_SPL                             ((63) | OCREGISTER_8BITLO | OCREGISTER_STACKPTR)
+#define OCREGISTER_SP                              ((64) | OCREGISTER_16BIT | OCREGISTER_STACKPTR)
 
-#define OCREGISTER_RBP                             ((65) | OCREGISTER_64BIT)
-#define OCREGISTER_EBP                             ((66) | OCREGISTER_32BIT)
-#define OCREGISTER_BPL                             ((67) | OCREGISTER_8BITLO)
-#define OCREGISTER_BP                              ((68) | OCREGISTER_16BIT)
+#define OCREGISTER_RBP                             ((65) | OCREGISTER_64BIT | OCREGISTER_BASEPTR)
+#define OCREGISTER_EBP                             ((66) | OCREGISTER_32BIT | OCREGISTER_BASEPTR)
+#define OCREGISTER_BPL                             ((67) | OCREGISTER_8BITLO | OCREGISTER_BASEPTR)
+#define OCREGISTER_BP                              ((68) | OCREGISTER_16BIT | OCREGISTER_BASEPTR)
 
-#define OCREGISTER_RIP                             ((69) | OCREGISTER_64BIT)
-#define OCREGISTER_EIP                             ((70) | OCREGISTER_32BIT)
-#define OCREGISTER_IP                              ((71) | OCREGISTER_16BIT)
+#define OCREGISTER_RIP                             ((69) | OCREGISTER_64BIT | OCREGISTER_INSTRUCTIONPTR)
+#define OCREGISTER_EIP                             ((70) | OCREGISTER_32BIT | OCREGISTER_INSTRUCTIONPTR)
+#define OCREGISTER_IP                              ((71) | OCREGISTER_16BIT | OCREGISTER_INSTRUCTIONPTR)
 
 typedef struct oestruct_s {
   const char*   mc;
