@@ -126,15 +126,15 @@ handle_t oefree(handle_t p) {
 #define OCREGISTER_R15W                            ((51) | OCREGISTER_16BIT | OCREGISTER_GENERAL)
 #define OCREGISTER_R15                             ((52) | OCREGISTER_64BIT | OCREGISTER_GENERAL)
 
-#define OCREGISTER_RSI                             ((53) | OCREGISTER_64BIT)
-#define OCREGISTER_ESI                             ((54) | OCREGISTER_32BIT)
-#define OCREGISTER_SIL                             ((55) | OCREGISTER_8BITLO)
-#define OCREGISTER_SI                              ((56) | OCREGISTER_16BIT)
+#define OCREGISTER_RSI                             ((53) | OCREGISTER_64BIT | OCREGISTER_SRCINDEX)
+#define OCREGISTER_ESI                             ((54) | OCREGISTER_32BIT | OCREGISTER_SRCINDEX)
+#define OCREGISTER_SIL                             ((55) | OCREGISTER_8BITLO | OCREGISTER_SRCINDEX)
+#define OCREGISTER_SI                              ((56) | OCREGISTER_16BIT | OCREGISTER_SRCINDEX)
 
-#define OCREGISTER_RDI                             ((57) | OCREGISTER_64BIT)
-#define OCREGISTER_EDI                             ((58) | OCREGISTER_32BIT)
-#define OCREGISTER_DIL                             ((59) | OCREGISTER_8BITLO)
-#define OCREGISTER_DI                              ((60) | OCREGISTER_16BIT)
+#define OCREGISTER_RDI                             ((57) | OCREGISTER_64BIT | OCREGISTER_DSTINDEX)
+#define OCREGISTER_EDI                             ((58) | OCREGISTER_32BIT | OCREGISTER_DSTINDEX)
+#define OCREGISTER_DIL                             ((59) | OCREGISTER_8BITLO | OCREGISTER_DSTINDEX)
+#define OCREGISTER_DI                              ((60) | OCREGISTER_16BIT | OCREGISTER_DSTINDEX)
 
 #define OCREGISTER_RSP                             ((61) | OCREGISTER_64BIT)
 #define OCREGISTER_ESP                             ((62) | OCREGISTER_32BIT)
