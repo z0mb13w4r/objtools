@@ -65,86 +65,90 @@ handle_t oefree(handle_t p) {
 #define OCREGISTER_RAX                             ((1) | OCREGISTER_64BIT)
 #define OCREGISTER_EAX                             ((2) | OCREGISTER_32BIT)
 #define OCREGISTER_AX                              ((3) | OCREGISTER_16BIT)
-#define OCREGISTER_AH                              (4)
-#define OCREGISTER_AL                              (5)
+#define OCREGISTER_AH                              ((4) | OCREGISTER_8BITHI)
+#define OCREGISTER_AL                              ((5) | OCREGISTER_8BITLO)
 
 #define OCREGISTER_RBX                             ((6) | OCREGISTER_64BIT)
 #define OCREGISTER_EBX                             ((7) | OCREGISTER_32BIT)
 #define OCREGISTER_BX                              ((8) | OCREGISTER_16BIT)
-#define OCREGISTER_BH                              (9)
-#define OCREGISTER_BL                              (10)
+#define OCREGISTER_BH                              ((9) | OCREGISTER_8BITHI)
+#define OCREGISTER_BL                              ((10) | OCREGISTER_8BITLO)
 
 #define OCREGISTER_RCX                             ((11) | OCREGISTER_64BIT)
 #define OCREGISTER_ECX                             ((12) | OCREGISTER_32BIT)
 #define OCREGISTER_CX                              ((13) | OCREGISTER_16BIT)
-#define OCREGISTER_CH                              (14)
-#define OCREGISTER_CL                              (15)
+#define OCREGISTER_CH                              ((14) | OCREGISTER_8BITHI)
+#define OCREGISTER_CL                              ((15) | OCREGISTER_8BITLO)
 
 #define OCREGISTER_RDX                             ((16) | OCREGISTER_64BIT)
 #define OCREGISTER_EDX                             ((17) | OCREGISTER_32BIT)
 #define OCREGISTER_DX                              ((18) | OCREGISTER_16BIT)
-#define OCREGISTER_DH                              (19)
-#define OCREGISTER_DL                              (20)
+#define OCREGISTER_DH                              ((19) | OCREGISTER_8BITHI)
+#define OCREGISTER_DL                              ((20) | OCREGISTER_8BITLO)
 
-#define OCREGISTER_R8B                             (21)
+#define OCREGISTER_R8B                             ((21) | OCREGISTER_8BITLO)
 #define OCREGISTER_R8D                             ((22) | OCREGISTER_32BIT)
 #define OCREGISTER_R8W                             ((23) | OCREGISTER_16BIT)
 #define OCREGISTER_R8                              ((24) | OCREGISTER_64BIT)
 
-#define OCREGISTER_R9B                             (25)
+#define OCREGISTER_R9B                             ((25) | OCREGISTER_8BITLO)
 #define OCREGISTER_R9D                             ((26) | OCREGISTER_32BIT)
 #define OCREGISTER_R9W                             ((27) | OCREGISTER_16BIT)
 #define OCREGISTER_R9                              ((28) | OCREGISTER_64BIT)
 
-#define OCREGISTER_R10B                            (29)
+#define OCREGISTER_R10B                            ((29) | OCREGISTER_8BITLO)
 #define OCREGISTER_R10D                            ((30) | OCREGISTER_32BIT)
 #define OCREGISTER_R10W                            ((31) | OCREGISTER_16BIT)
 #define OCREGISTER_R10                             ((32) | OCREGISTER_64BIT)
 
-#define OCREGISTER_R11B                            (33)
+#define OCREGISTER_R11B                            ((33) | OCREGISTER_8BITLO)
 #define OCREGISTER_R11D                            ((34) | OCREGISTER_32BIT)
 #define OCREGISTER_R11W                            ((35) | OCREGISTER_16BIT)
 #define OCREGISTER_R11                             ((36) | OCREGISTER_64BIT)
 
-#define OCREGISTER_R12B                            (37)
+#define OCREGISTER_R12B                            ((37) | OCREGISTER_8BITLO)
 #define OCREGISTER_R12D                            ((38) | OCREGISTER_32BIT)
 #define OCREGISTER_R12W                            ((39) | OCREGISTER_16BIT)
 #define OCREGISTER_R12                             ((40) | OCREGISTER_64BIT)
 
-#define OCREGISTER_R13B                            (41)
+#define OCREGISTER_R13B                            ((41) | OCREGISTER_8BITLO)
 #define OCREGISTER_R13D                            ((42) | OCREGISTER_32BIT)
 #define OCREGISTER_R13W                            ((43) | OCREGISTER_16BIT)
 #define OCREGISTER_R13                             ((44) | OCREGISTER_64BIT)
 
-#define OCREGISTER_R14B                            (45)
+#define OCREGISTER_R14B                            ((45) | OCREGISTER_8BITLO)
 #define OCREGISTER_R14D                            ((46) | OCREGISTER_32BIT)
 #define OCREGISTER_R14W                            ((47) | OCREGISTER_16BIT)
 #define OCREGISTER_R14                             ((48) | OCREGISTER_64BIT)
 
-#define OCREGISTER_R15B                            (49)
+#define OCREGISTER_R15B                            ((49) | OCREGISTER_8BITLO)
 #define OCREGISTER_R15D                            ((50) | OCREGISTER_32BIT)
 #define OCREGISTER_R15W                            ((51) | OCREGISTER_16BIT)
 #define OCREGISTER_R15                             ((52) | OCREGISTER_64BIT)
 
 #define OCREGISTER_RSI                             ((53) | OCREGISTER_64BIT)
 #define OCREGISTER_ESI                             ((54) | OCREGISTER_32BIT)
-#define OCREGISTER_SI                              ((55) | OCREGISTER_16BIT)
+#define OCREGISTER_SIL                             ((55) | OCREGISTER_8BITLO)
+#define OCREGISTER_SI                              ((56) | OCREGISTER_16BIT)
 
-#define OCREGISTER_RDI                             ((56) | OCREGISTER_64BIT)
-#define OCREGISTER_EDI                             ((57) | OCREGISTER_32BIT)
-#define OCREGISTER_DI                              ((58) | OCREGISTER_16BIT)
+#define OCREGISTER_RDI                             ((57) | OCREGISTER_64BIT)
+#define OCREGISTER_EDI                             ((58) | OCREGISTER_32BIT)
+#define OCREGISTER_DIL                             ((59) | OCREGISTER_8BITLO)
+#define OCREGISTER_DI                              ((60) | OCREGISTER_16BIT)
 
-#define OCREGISTER_RSP                             ((59) | OCREGISTER_64BIT)
-#define OCREGISTER_ESP                             ((60) | OCREGISTER_32BIT)
-#define OCREGISTER_SP                              ((61) | OCREGISTER_16BIT)
+#define OCREGISTER_RSP                             ((61) | OCREGISTER_64BIT)
+#define OCREGISTER_ESP                             ((62) | OCREGISTER_32BIT)
+#define OCREGISTER_SPL                             ((63) | OCREGISTER_8BITLO)
+#define OCREGISTER_SP                              ((64) | OCREGISTER_16BIT)
 
-#define OCREGISTER_RBP                             ((62) | OCREGISTER_64BIT)
-#define OCREGISTER_EBP                             ((63) | OCREGISTER_32BIT)
-#define OCREGISTER_BP                              ((64) | OCREGISTER_16BIT)
+#define OCREGISTER_RBP                             ((65) | OCREGISTER_64BIT)
+#define OCREGISTER_EBP                             ((66) | OCREGISTER_32BIT)
+#define OCREGISTER_BPL                             ((67) | OCREGISTER_8BITLO)
+#define OCREGISTER_BP                              ((68) | OCREGISTER_16BIT)
 
-#define OCREGISTER_RIP                             ((65) | OCREGISTER_64BIT)
-#define OCREGISTER_EIP                             ((66) | OCREGISTER_32BIT)
-#define OCREGISTER_IP                              ((67) | OCREGISTER_16BIT)
+#define OCREGISTER_RIP                             ((69) | OCREGISTER_64BIT)
+#define OCREGISTER_EIP                             ((70) | OCREGISTER_32BIT)
+#define OCREGISTER_IP                              ((71) | OCREGISTER_16BIT)
 
 typedef struct oestruct_s {
   const char*   mc;
@@ -237,18 +241,22 @@ static oestruct_t zREGISTERS[] = {
 
   OCSTRUCT("%rsi",     OCREGISTER_RSI),
   OCSTRUCT("%esi",     OCREGISTER_ESI),
+  OCSTRUCT("%sil",     OCREGISTER_SIL),
   OCSTRUCT("%si",      OCREGISTER_SI),
 
   OCSTRUCT("%rdi",     OCREGISTER_RDI),
   OCSTRUCT("%edi",     OCREGISTER_EDI),
+  OCSTRUCT("%dil",     OCREGISTER_DIL),
   OCSTRUCT("%di",      OCREGISTER_DI),
 
   OCSTRUCT("%rsp",     OCREGISTER_RSP),
   OCSTRUCT("%esp",     OCREGISTER_ESP),
+  OCSTRUCT("%spl",     OCREGISTER_SPL),
   OCSTRUCT("%sp",      OCREGISTER_SP),
 
   OCSTRUCT("%rbp",     OCREGISTER_RBP),
   OCSTRUCT("%ebp",     OCREGISTER_EBP),
+  OCSTRUCT("%bpl",     OCREGISTER_BPL),
   OCSTRUCT("%bp",      OCREGISTER_BP),
 
   OCSTRUCT("%rip",     OCREGISTER_RIP),
