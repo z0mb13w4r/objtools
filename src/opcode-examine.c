@@ -80,6 +80,25 @@ static unknown_t oedo_register(handle_t p, unknown_t o, unknown_t m) {
   return NULL;
 }
 
+static unknown_t oedo_segment(handle_t p, unknown_t o, unknown_t m) {
+  if (isocexamine(p) && o && m) {
+    char *m0 = CAST(char*, m);
+    pocoperand_t o0 = CAST(pocoperand_t, o);
+
+    size_t m0size = strlen(m0);
+    poestruct_t r0 = oepick(zSEGMENTS, m0, m0size);
+    if (r0) {
+      o0->cvalue  = r0->action;
+//printf("++%s++", r0->mc);
+      return oeskip(m0 + r0->mcsize, m0size - r0->mcsize);
+    }
+
+    return m0;
+  }
+
+  return NULL;
+}
+
 static unknown_t oedo_value(handle_t p, unknown_t o, unknown_t m) {
   if (isocexamine(p) && o && m) {
     char *m0 = CAST(char*, m);
@@ -161,6 +180,7 @@ unknown_t oeinsert_operand(handle_t p, unknown_t q, unknown_t m) {
       strncpy(o0->data, m, sizeof(o0->data));
 
       m0 = oedo_absolute(p, o0, m0);
+      m0 = oedo_segment(p, o0, m0);
       m0 = oedo_register(p, o0, m0);
       m0 = oedo_value(p, o0, m0);
     }
