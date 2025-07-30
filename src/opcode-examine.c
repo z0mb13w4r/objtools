@@ -1,6 +1,8 @@
 #include "objutils.h"
 #include "opcode-examine.h"
 
+#include "static/opcode-examine.ci"
+
 bool_t isocexamine(handle_t p) {
   return ismode(p, MODE_OCEXAMINE);
 }
@@ -25,123 +27,6 @@ handle_t oefree(handle_t p) {
 
   return p;
 }
-
-#define OCSTRUCT(x,y) {x, sizeof(x) - 1, y}
-
-typedef struct oestruct_s {
-  const char*   mc;
-  const size_t  mcsize;
-  const imode_t action;
-} oestruct_t, *poestruct_t;
-
-static oestruct_t zINSTRUCTIONS[] = {
-  OCSTRUCT("callq",     OCINSTRUCTION_CALLQ),
-
-  OCSTRUCT("bnd jmpq",  OCINSTRUCTION_JMP),
-  OCSTRUCT("jmpq",      OCINSTRUCTION_JMPQ),
-  OCSTRUCT("jle",       OCINSTRUCTION_JMP),
-  OCSTRUCT("jmp",       OCINSTRUCTION_JMP),
-  OCSTRUCT("jne",       OCINSTRUCTION_JMP),
-  OCSTRUCT("jns",       OCINSTRUCTION_JMP),
-  OCSTRUCT("je",        OCINSTRUCTION_JMP),
-  OCSTRUCT("jg",        OCINSTRUCTION_JMP),
-  OCSTRUCT("js",        OCINSTRUCTION_JMP),
-
-  OCSTRUCT("nopl",      OCINSTRUCTION_NOP1),
-  OCSTRUCT("nop",       OCINSTRUCTION_NOP0),
-  {NULL}
-};
-
-static oestruct_t zREGISTERS[] = {
-  OCSTRUCT("\%rax",     OCREGISTER_RAX),
-  OCSTRUCT("\%eax",     OCREGISTER_EAX),
-  OCSTRUCT("\%ax",      OCREGISTER_AX),
-  OCSTRUCT("\%ah",      OCREGISTER_AH),
-  OCSTRUCT("\%al",      OCREGISTER_AL),
-
-  OCSTRUCT("\%rbx",     OCREGISTER_RBX),
-  OCSTRUCT("\%ebx",     OCREGISTER_EBX),
-  OCSTRUCT("\%bx",      OCREGISTER_BX),
-  OCSTRUCT("\%bh",      OCREGISTER_BH),
-  OCSTRUCT("\%bl",      OCREGISTER_BL),
-
-  OCSTRUCT("\%rcx",     OCREGISTER_RCX),
-  OCSTRUCT("\%ecx",     OCREGISTER_ECX),
-  OCSTRUCT("\%cx",      OCREGISTER_CX),
-  OCSTRUCT("\%ch",      OCREGISTER_CH),
-  OCSTRUCT("\%cl",      OCREGISTER_CL),
-
-  OCSTRUCT("\%rdx",     OCREGISTER_RDX),
-  OCSTRUCT("\%edx",     OCREGISTER_EDX),
-  OCSTRUCT("\%dx",      OCREGISTER_DX),
-  OCSTRUCT("\%dh",      OCREGISTER_DH),
-  OCSTRUCT("\%dl",      OCREGISTER_DL),
-
-  OCSTRUCT("\%r8b",     OCREGISTER_R8B),
-  OCSTRUCT("\%r8d",     OCREGISTER_R8D),
-  OCSTRUCT("\%r8w",     OCREGISTER_R8W),
-  OCSTRUCT("\%r8",      OCREGISTER_R8),
-
-  OCSTRUCT("\%r9b",     OCREGISTER_R9B),
-  OCSTRUCT("\%r9d",     OCREGISTER_R9D),
-  OCSTRUCT("\%r9w",     OCREGISTER_R9W),
-  OCSTRUCT("\%r9",      OCREGISTER_R9),
-
-  OCSTRUCT("\%r10b",    OCREGISTER_R10B),
-  OCSTRUCT("\%r10d",    OCREGISTER_R10D),
-  OCSTRUCT("\%r10w",    OCREGISTER_R10W),
-  OCSTRUCT("\%r10",     OCREGISTER_R10),
-
-  OCSTRUCT("\%r11b",    OCREGISTER_R11B),
-  OCSTRUCT("\%r11d",    OCREGISTER_R11D),
-  OCSTRUCT("\%r11w",    OCREGISTER_R11W),
-  OCSTRUCT("\%r11",     OCREGISTER_R11),
-
-  OCSTRUCT("\%r12b",    OCREGISTER_R12B),
-  OCSTRUCT("\%r12d",    OCREGISTER_R12D),
-  OCSTRUCT("\%r12w",    OCREGISTER_R12W),
-  OCSTRUCT("\%r12",     OCREGISTER_R12),
-
-  OCSTRUCT("\%r13b",    OCREGISTER_R13B),
-  OCSTRUCT("\%r13d",    OCREGISTER_R13D),
-  OCSTRUCT("\%r13w",    OCREGISTER_R13W),
-  OCSTRUCT("\%r13",     OCREGISTER_R13),
-
-  OCSTRUCT("\%r14b",    OCREGISTER_R14B),
-  OCSTRUCT("\%r14d",    OCREGISTER_R14D),
-  OCSTRUCT("\%r14w",    OCREGISTER_R14W),
-  OCSTRUCT("\%r14",     OCREGISTER_R14),
-
-  OCSTRUCT("\%r15b",    OCREGISTER_R15B),
-  OCSTRUCT("\%r15d",    OCREGISTER_R15D),
-  OCSTRUCT("\%r15w",    OCREGISTER_R15W),
-  OCSTRUCT("\%r15",     OCREGISTER_R15),
-
-  OCSTRUCT("\%rsi",     OCREGISTER_RSI),
-  OCSTRUCT("\%esi",     OCREGISTER_ESI),
-  OCSTRUCT("\%sil",     OCREGISTER_SIL),
-  OCSTRUCT("\%si",      OCREGISTER_SI),
-
-  OCSTRUCT("\%rdi",     OCREGISTER_RDI),
-  OCSTRUCT("\%edi",     OCREGISTER_EDI),
-  OCSTRUCT("\%dil",     OCREGISTER_DIL),
-  OCSTRUCT("\%di",      OCREGISTER_DI),
-
-  OCSTRUCT("\%rsp",     OCREGISTER_RSP),
-  OCSTRUCT("\%esp",     OCREGISTER_ESP),
-  OCSTRUCT("\%spl",     OCREGISTER_SPL),
-  OCSTRUCT("\%sp",      OCREGISTER_SP),
-
-  OCSTRUCT("\%rbp",     OCREGISTER_RBP),
-  OCSTRUCT("\%ebp",     OCREGISTER_EBP),
-  OCSTRUCT("\%bpl",     OCREGISTER_BPL),
-  OCSTRUCT("\%bp",      OCREGISTER_BP),
-
-  OCSTRUCT("\%rip",     OCREGISTER_RIP),
-  OCSTRUCT("\%eip",     OCREGISTER_EIP),
-  OCSTRUCT("\%ip",      OCREGISTER_IP),
-  {NULL}
-};
 
 static poestruct_t oepick(poestruct_t p, unknown_t m, const size_t size) {
   if (m) {
