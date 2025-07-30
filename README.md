@@ -19,6 +19,7 @@ readelf-ng
 ### Dependencies ###
 
 https://github.com/capstone-engine/capstone
+
 https://github.com/davea42/libdwarf-code
 
 ### License ###
