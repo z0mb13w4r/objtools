@@ -20,6 +20,7 @@ static oestruct_t zINSTRUCTIONS[] = {
   OCSTRUCT("js",        OCINSTRUCTION_JMP),
 
   OCSTRUCT("nopl",      OCINSTRUCTION_NOP1),
+  OCSTRUCT("nopw",      OCINSTRUCTION_NOP1),
   OCSTRUCT("nop",       OCINSTRUCTION_NOP0),
   {NULL}
 };
@@ -112,6 +113,17 @@ static oestruct_t zREGISTERS[] = {
   OCSTRUCT("\%rip",     OCREGISTER_RIP),
   OCSTRUCT("\%eip",     OCREGISTER_EIP),
   OCSTRUCT("\%ip",      OCREGISTER_IP),
+  {NULL}
+};
+
+static oestruct_t zSEGMENTS[] = {
+  OCSTRUCT("\%cs:",       OPSEGMENT_CS),
+  OCSTRUCT("\%ds:",       OPSEGMENT_DS),
+  OCSTRUCT("\%ss:",       OPSEGMENT_SS),
+  OCSTRUCT("\%es:",       OPSEGMENT_ES),
+  OCSTRUCT("\%fs:",       OPSEGMENT_FS),
+  OCSTRUCT("\%gs:",       OPSEGMENT_GS),
+
   {NULL}
 };
 

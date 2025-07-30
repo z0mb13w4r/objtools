@@ -18,10 +18,18 @@
 #define OCINSTRUCTION_NOP0             ((3) | OCINSTRUCTION_OPERAND0)
 #define OCINSTRUCTION_NOP1             ((4) | OCINSTRUCTION_OPERAND1)
 
-#define OCOPERAND_IVALUE               (1)
-#define OCOPERAND_UVALUE               (2)
-#define OPOPERAND_REGISTER             (3)
+#define OCOPERAND_IVALUE               (0x01)
+#define OCOPERAND_UVALUE               (0x02)
+#define OPOPERAND_REGISTER             (0x03)
+#define OPOPERAND_SEGMENT              U64MASK(55)
 #define OCOPERAND_ABSOLUTE             U64MASK(62)
+
+#define OPSEGMENT_CS                   (U64MASK(56) | OPOPERAND_SEGMENT)
+#define OPSEGMENT_DS                   (U64MASK(57) | OPOPERAND_SEGMENT)
+#define OPSEGMENT_SS                   (U64MASK(58) | OPOPERAND_SEGMENT)
+#define OPSEGMENT_ES                   (U64MASK(59) | OPOPERAND_SEGMENT)
+#define OPSEGMENT_GS                   (U64MASK(60) | OPOPERAND_SEGMENT)
+#define OPSEGMENT_FS                   (U64MASK(61) | OPSEGMENT_GS)
 
 #define OCREGISTER_GENERAL             U64MASK(48)
 #define OCREGISTER_INSTRUCTIONPTR      U64MASK(49)
