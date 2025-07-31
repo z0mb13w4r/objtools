@@ -127,7 +127,8 @@
 #define MODE_MASK32(x)          ((x) & 0xffffffff)
 #define MODE_MASK               (MODE_MASK0 | MODE_MASK1)
 
-#define MODE_ISSET(x,y)         (((x) & (y)) == (y))
+#define MODE_ISSET(x,y)         ((x) & (y))
+#define MODE_ISFIX(x,y)         (((x) & (y)) == (y))
 #define MODE_ISNOT(x,y)         (0 == MODE_ISSET(x, y))
 #define MODE_ISLOCKED(x,y)      ((x) == (y))
 #define MODE_ISLOCKED8(x,y)     (MODE_MASK8(x)  == MODE_MASK8(y))
