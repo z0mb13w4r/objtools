@@ -164,7 +164,7 @@ bool_t isocexamine(handle_t p);
 
 handle_t oemalloc();
 handle_t oefree(handle_t p);
-handle_t oecreate(const uint64_t vaddr, unknown_t mnemonic, unknown_t operands);
+handle_t oecreate(handle_t p, const uint64_t vaddr, unknown_t mnemonic, unknown_t operands);
 
 unknown_t oeskip(unknown_t p, const size_t size);
 unknown_t oeinsert_comment(handle_t p, unknown_t m);

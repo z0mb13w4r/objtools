@@ -204,21 +204,22 @@ unknown_t oeinsert_operands(handle_t p, unknown_t q, unknown_t m) {
   return NULL;
 }
 
-handle_t oecreate(const uint64_t vaddr, unknown_t mnemonic, unknown_t operands) {
-  pocexamine_t p = oemalloc();
-  if (p) {
+handle_t oecreate(handle_t p, const uint64_t vaddr, unknown_t mnemonic, unknown_t operands) {
+  pocexamine_t p0 = oemalloc();
+  if (p0) {
     MALLOCACOPY(char, m0, 160, mnemonic);
 
-    p->vaddr = vaddr;
-    p->mc = xmalloc(sizeof(ocmnemonic_t));
+    p0->vaddr = vaddr;
+    p0->mc = xmalloc(sizeof(ocmnemonic_t));
 
     char* m1 = oeinsert_comment(p, m0);
     poestruct_t pi = oepick(zINSTRUCTIONS, m1, strlen(m1));
 
     if (pi) {
 //printf("++");
-      m1 = oeinsert_mnemonic(p, pi, m1);
-      m1 = oeinsert_operands(p, pi, m1);
+      m1 = oeinsert_mnemonic(p0, pi, m1);
+      m1 = oeinsert_operands(p0, pi, m1);
+//      oeprintf_debug(p, p0);
     }
   }
 

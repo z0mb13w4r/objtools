@@ -129,7 +129,7 @@ int opcode_printf_detail(handle_t p, const uint64_t vaddr, unknown_t mnemonic, u
     char *name = NULL;
     Dwarf_Off offset = 0;
 
-    pocexamine_t oe = oecreate(vaddr, mnemonic, operands);
+    pocexamine_t oe = oecreate(p, vaddr, mnemonic, operands);
 
     if (oe && oe->op1) {
       ocdwarf_spget(p, oe->op1->uvalue, &name, NULL, NULL, NULL, NULL, NULL, NULL, &offset, NULL);
