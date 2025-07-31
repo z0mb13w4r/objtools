@@ -39,6 +39,20 @@ handle_t oefree(handle_t p) {
   return p;
 }
 
+unknown_t oeget(handle_t p, const imode_t mode) {
+  if (isocexamine(p) && OECODE_THIS == mode) {
+    return CAST(pocexamine_t, p);
+  } else if (isocexamine(p) && OECODE_MNEMONIC == mode) {
+    return CAST(pocexamine_t, p)->mc;
+  } else if (isocexamine(p) && OECODE_OPERAND1 == mode) {
+    return CAST(pocexamine_t, p)->op1;
+  } else if (isocexamine(p) && OECODE_OPERAND2 == mode) {
+    return CAST(pocexamine_t, p)->op2;
+  }
+
+  return NULL;
+}
+
 static poestruct_t oepick(poestruct_t p, unknown_t m, const size_t size) {
   if (m) {
     for (poestruct_t pp = p; 0 != pp->mc; ++pp) {
@@ -157,7 +171,7 @@ unknown_t oeskip(unknown_t p, const size_t size) {
 
 unknown_t oeinsert_comment(handle_t p, unknown_t m) {
   if (isocexamine(p) && m) {
-    pocexamine_t p0 = CAST(pocexamine_t, p);
+    pocexamine_t p0 = oeget(p, OECODE_THIS);
     char* p1 = strchr(m, '#');
     if (p1) {
       strncpy(p0->comment, p1, sizeof(p0->comment));
@@ -173,7 +187,7 @@ unknown_t oeinsert_comment(handle_t p, unknown_t m) {
 unknown_t oeinsert_mnemonic(handle_t p, unknown_t q, unknown_t m) {
   if (isocexamine(p) && q && m) {
     char *m0 = CAST(char*, m);
-    pocexamine_t p0 = CAST(pocexamine_t, p);
+    pocexamine_t p0 = oeget(p, OECODE_THIS);
     poestruct_t q0 = CAST(poestruct_t, q);
 
     strncpy(p0->mc->data, q0->mc, q0->mcsize);
@@ -204,7 +218,7 @@ unknown_t oeinsert_operand(handle_t p, unknown_t q, unknown_t m) {
 
 unknown_t oeinsert_operands(handle_t p, unknown_t q, unknown_t m) {
   if (isocexamine(p) && q && m) {
-    pocexamine_t p0 = CAST(pocexamine_t, p);
+    pocexamine_t p0 = oeget(p, OECODE_THIS);
     poestruct_t q0 = CAST(poestruct_t, q);
 
     if (MODE_ISSET(q0->action, OCINSTRUCTION_OPERAND1)) {
@@ -223,7 +237,7 @@ handle_t oecreate(handle_t p, const uint64_t vaddr, unknown_t mnemonic, unknown_
     p0->vaddr = vaddr;
     p0->mc = xmalloc(sizeof(ocmnemonic_t));
 
-    char* m1 = oeinsert_comment(p, m0);
+    char* m1 = oeinsert_comment(p0, m0);
     poestruct_t pi = oepick(zINSTRUCTIONS, m1, strlen(m1));
 
     if (pi) {

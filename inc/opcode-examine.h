@@ -3,6 +3,11 @@
 
 #include "opcode.h"
 
+#define OECODE_THIS                    (0)
+#define OECODE_MNEMONIC                (1)
+#define OECODE_OPERAND1                (2)
+#define OECODE_OPERAND2                (3)
+
 #define OCINSTRUCTION_8BIT             U64MASK(56)
 #define OCINSTRUCTION_16BIT            U64MASK(57)
 #define OCINSTRUCTION_32BIT            U64MASK(58)
@@ -165,6 +170,8 @@ bool_t isocexamine(handle_t p);
 handle_t oemalloc();
 handle_t oefree(handle_t p);
 handle_t oecreate(handle_t p, const uint64_t vaddr, unknown_t mnemonic, unknown_t operands);
+
+unknown_t oeget(handle_t p, const imode_t mode);
 
 unknown_t oeskip(unknown_t p, const size_t size);
 unknown_t oeinsert_comment(handle_t p, unknown_t m);
