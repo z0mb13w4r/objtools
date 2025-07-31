@@ -34,7 +34,7 @@
 #define OPSEGMENT_SS                   (U64MASK(58) | OPOPERAND_SEGMENT)
 #define OPSEGMENT_ES                   (U64MASK(59) | OPOPERAND_SEGMENT)
 #define OPSEGMENT_GS                   (U64MASK(60) | OPOPERAND_SEGMENT)
-#define OPSEGMENT_FS                   (U64MASK(61) | OPSEGMENT_GS)
+#define OPSEGMENT_FS                   (U64MASK(61) | OPOPERAND_SEGMENT)
 
 #define OCREGISTER_GENERAL             U64MASK(48)
 #define OCREGISTER_INSTRUCTIONPTR      U64MASK(49)

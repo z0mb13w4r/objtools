@@ -121,11 +121,19 @@
 
 #define MODE_MASK0              (0x00ffffff)
 #define MODE_MASK1              (0xff000000)
+#define MODE_MASK8(x)           ((x) & 0xff)
+#define MODE_MASK16(x)          ((x) & 0xffff)
+#define MODE_MASK24(x)          ((x) & 0xffffff)
+#define MODE_MASK32(x)          ((x) & 0xffffffff)
 #define MODE_MASK               (MODE_MASK0 | MODE_MASK1)
 
-#define MODE_ISSET(x, y)        ((x) & (y))
-#define MODE_ISNOT(x, y)        (0 == MODE_ISSET(x, y))
-#define MODE_ISLOCKED(x, y)     ((x) == (y))
+#define MODE_ISSET(x,y)         (((x) & (y)) == (y))
+#define MODE_ISNOT(x,y)         (0 == MODE_ISSET(x, y))
+#define MODE_ISLOCKED(x,y)      ((x) == (y))
+#define MODE_ISLOCKED8(x,y)     (MODE_MASK8(x)  == MODE_MASK8(y))
+#define MODE_ISLOCKED16(x,y)    (MODE_MASK16(x) == MODE_MASK16(y))
+#define MODE_ISLOCKED24(x,y)    (MODE_MASK24(x) == MODE_MASK24(y))
+#define MODE_ISLOCKED32(x,y)    (MODE_MASK32(x) == MODE_MASK32(y))
 
 typedef uint64_t addrz_t;
 typedef uint64_t maskz_t;
