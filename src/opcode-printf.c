@@ -10,11 +10,38 @@ static int ocprintf_debug(handle_t p, handle_t q) {
     int n = 0;
 
     pocexamine_t q0 = oeget(q, OECODE_THIS);
+    pocoperand_t o0 = oeget(q, OECODE_OPERAND1);
+    pocoperand_t o1 = oeget(q, OECODE_OPERAND2);
+    pocmnemonic_t m0 = oeget(q, OECODE_MNEMONIC);
 
     n += printf_eol();
 
     n += printf_text("VADDR", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
     n += opcode_printf_FADDR(p, q0->vaddr, USE_EOL);
+    if (0 != q0->comment[0]) {
+      n += printf_text("COMMENT", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_text(q0->comment, USE_LT | USE_EOL);
+    }
+    if (m0) {
+      n += printf_text("MNEMONIC", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_text(m0->data, USE_LT | USE_EOL);
+    }
+    if (o0) {
+      n += printf_text("OPERAND1", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_text(o0->data, USE_LT | USE_EOL);
+      n += printf_text("CVALUE", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_nice(o0->cvalue, USE_FHEX64 | USE_EOL);
+      n += printf_text("UVALUE", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_nice(o0->uvalue, USE_FHEX64 | USE_EOL);
+    }
+    if (o1) {
+      n += printf_text("OPERAND2", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_text(o1->data, USE_LT | USE_EOL);
+      n += printf_text("CVALUE", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_nice(o1->cvalue, USE_FHEX64 | USE_EOL);
+      n += printf_text("UVALUE", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_nice(o1->uvalue, USE_FHEX64 | USE_EOL);
+    }
 
     return n;
   }
