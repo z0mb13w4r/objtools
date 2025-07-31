@@ -3,6 +3,25 @@
 #include "opcode-printf.h"
 #include "opcode-examine.h"
 
+static const int MAXSIZE = 24;
+
+static int ocprintf_debug(handle_t p, handle_t q) {
+  if (isopcode(p) && isocexamine(q)) {
+    int n = 0;
+
+    pocexamine_t q0 = oeget(q, OECODE_THIS);
+
+    n += printf_eol();
+
+    n += printf_text("VADDR", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
+    n += opcode_printf_FADDR(p, q0->vaddr, USE_EOL);
+
+    return n;
+  }
+
+  return ECODE_HANDLE;
+}
+
 int opcode_printf_DEC(handle_t p, const uint64_t v, const imode_t mode) {
   if (isopcode(p)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
@@ -146,6 +165,8 @@ int opcode_printf_detail(handle_t p, const uint64_t vaddr, unknown_t mnemonic, u
         ocdwarf_dealloc(p, name, DW_DLA_STRING);
       }
     }
+
+    n += ocprintf_debug(p, oe);
 
     oefree(oe);
 

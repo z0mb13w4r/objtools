@@ -1,18 +1,8 @@
 #include "objutils.h"
+#include "opcode-printf.h"
 #include "opcode-examine.h"
 
 #include "static/opcode-examine.ci"
-
-static int oeprintf_debug(handle_t p, handle_t q) {
-  if (isopcode(p) && isocexamine(q)) {
-    int n = 0;
-
-    return n;
-  }
-
-  return ECODE_HANDLE;
-}
-
 
 bool_t isocexamine(handle_t p) {
   return ismode(p, MODE_OCEXAMINE);
@@ -244,10 +234,9 @@ handle_t oecreate(handle_t p, const uint64_t vaddr, unknown_t mnemonic, unknown_
 //printf("++");
       m1 = oeinsert_mnemonic(p0, pi, m1);
       m1 = oeinsert_operands(p0, pi, m1);
-      oeprintf_debug(p, p0);
     }
   }
 
-  return p;
+  return p0;
 }
 
