@@ -805,7 +805,7 @@ int printf_mask(const pconvert_t p, const maskz_t mask, const imode_t mode) {
     maskz_t v = mask;
     imode_t s = mode & USE_NOSPACE ? USE_NONE : USE_SPACE;
     for (pconvert_t x = p; 0 != x->text; ++x) {
-      if (x->type & v) {
+      if ((x->type & v) == x->type) {
         n += printf_work(data + n, sizeof(data) - n, x->text, (mode & ~USE_EOL) | s);
         v &= ~x->type;
       }
@@ -827,7 +827,7 @@ int printf_maskmute(const pconvert_t p, const maskz_t mask, const imode_t mode) 
   int n = 0;
   if (p) {
     for (pconvert_t x = p; 0 != x->text; ++x) {
-      if (x->type & mask) {
+      if ((x->type & mask) == x->type) {
         n += printf_text(x->text, (mode & ~USE_EOL) | USE_SPACE);
       }
     }
