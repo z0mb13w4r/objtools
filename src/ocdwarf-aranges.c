@@ -10,10 +10,10 @@ int ocdwarf_debug_aranges(handle_t p, handle_t s, handle_t d) {
   if (isopcode(p) && (isopshdr(s) || isopshdrNN(s))) {
     popcode_t oc = ocget(p, OPCODE_THIS);
 
-    const imode_t TRY_HEX      = MODE_ISSET(oc->ocdump, OPTDEBUGELF_ENHANCED) ? USE_FHEX32 : USE_FHEX;
-    const imode_t TRY_DECHEX32 = MODE_ISSET(oc->ocdump, OPTDEBUGELF_ENHANCED) ? USE_FHEX32 : USE_DEC;
+    const imode_t TRY_HEX      = MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED) ? USE_FHEX32 : USE_FHEX;
+    const imode_t TRY_DECHEX32 = MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED) ? USE_FHEX32 : USE_DEC;
 
-    if (MODE_ISSET(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+    if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
       n += ocdwarf_printf_groups(p, ocget(p, OPCODE_DWARF_ERROR));
     }
 

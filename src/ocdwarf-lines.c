@@ -13,7 +13,7 @@ int ocdwarf_debug_line(handle_t p, handle_t s, handle_t d) {
     pocdwarf_t ws = ocget(p, OPCODE_DWARF);
     popcode_t oc = ocget(p, OPCODE_THIS);
 
-    if (MODE_ISSET(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+    if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
       n += ocdwarf_printf_groups(p, ocget(p, OPCODE_DWARF_ERROR));
     }
 
@@ -38,7 +38,7 @@ int ocdwarf_debug_line(handle_t p, handle_t s, handle_t d) {
       return OCDWARF_ERRCODE(x, n);
     }
 
-    if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
+    if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
       n += printf_text("CU header length", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
       n += printf_nice(cu_header_length, USE_FHEX | USE_EOL);
       n += printf_text("Version stamp", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
@@ -67,7 +67,7 @@ int ocdwarf_debug_line(handle_t p, handle_t s, handle_t d) {
 
     x = dwarf_srclines_b(cu_die, &line_version, &table_count, &line_context, ocget(p, OPCODE_DWARF_ERROR));
     if (IS_DLV_OK(x)) {
-      if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
+      if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
         n += printf_text("Line version", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
         n += printf_nice(line_version, USE_DEC | USE_EOL);
         n += printf_text("Table count", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
@@ -110,7 +110,7 @@ int ocdwarf_debug_line(handle_t p, handle_t s, handle_t d) {
     n += printf_text("filepath", USE_LT | USE_SPACE | USE_DQ | USE_EOL);
 
     for (Dwarf_Signed i = 0; i < line_count; ++i) {
-      if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
+      if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
         n += printf_nice(i, USE_DEC3 | USE_TB);
       }
 

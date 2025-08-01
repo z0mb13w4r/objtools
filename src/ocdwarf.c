@@ -48,11 +48,11 @@ bool_t ocdwarf_isneeded(handle_t p, handle_t s) {
   if (isopcode(p)) {
     popcode_t p0 = ocget(p, OPCODE_THIS);
     pdwarf_display_t p1 = ocdwarf_get(s);
-    return p1 && MODE_ISSET(p1->action, p0->ocdump);
+    return p1 && MODE_ISANY(p1->action, p0->ocdump);
   } else if (isoptions(p)) {
     poptions_t p0 = CAST(poptions_t, p);
     pdwarf_display_t p1 = ocdwarf_get(s);
-    return p1 && MODE_ISSET(p1->action, p0->ocdump);
+    return p1 && MODE_ISANY(p1->action, p0->ocdump);
   }
 
   return FALSE;
@@ -318,7 +318,7 @@ int ocdwarf_sfcreate(handle_t p, Dwarf_Die die, Dwarf_Error *e) {
       sf->status = dwarf_srcfiles(die, &sf->data, &sf->size, e);
 
         int n = ECODE_OK;
-        if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE) && IS_DLV_OK(sf->status) && 0 != sf->size) {
+        if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE) && IS_DLV_OK(sf->status) && 0 != sf->size) {
           for (Dwarf_Signed i = 0; i < sf->size; ++i) {
             n += printf_nice(i, USE_DEC3 | USE_TB | USE_COLON);
             n += printf_text(sf->data[i], USE_LT | USE_EOL);
@@ -701,7 +701,7 @@ int ocdwarf_next_cu_header(handle_t p, Dwarf_Die *cu_die, Dwarf_Error *e) {
                      &abbrev_offset, &address_size, &ws->cu_offset_size, &extension_size, &type_signature, &type_offset,
                      &next_cu_header_offset, &header_cu_type, e);
 
-    if (IS_DLV_OK(x) && MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
+    if (IS_DLV_OK(x) && MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
       n += printf_text("CU header length", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
       n += printf_nice(cu_header_length, USE_FHEX | USE_EOL);
       n += printf_text("Version stamp", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));

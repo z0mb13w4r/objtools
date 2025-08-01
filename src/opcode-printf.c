@@ -22,28 +22,28 @@ static int ocdebugf_cvalue(handle_t p, uint64_t cv) {
       n += printf_nice(MODE_MASK8(cv), USE_UNKNOWN);
     }
 
-    if (MODE_ISSET(cv, OPOPERAND_SEGMENT)) {
+    if (MODE_ISANY(cv, OPOPERAND_SEGMENT)) {
       n += printf_text("| SEGMENT", USE_LT | USE_SPACE);
     }
-    if (MODE_ISSET(cv, OCOPERAND_ABSOLUTE)) {
+    if (MODE_ISANY(cv, OCOPERAND_ABSOLUTE)) {
       n += printf_text("| ABSOLUTE", USE_LT | USE_SPACE);
     }
-    if (MODE_ISSET(cv, OPSEGMENT_CS)) {
+    if (MODE_ISANY(cv, OPSEGMENT_CS)) {
       n += printf_text("| CS", USE_LT | USE_SPACE);
     }
-    if (MODE_ISSET(cv, OPSEGMENT_DS)) {
+    if (MODE_ISANY(cv, OPSEGMENT_DS)) {
       n += printf_text("| DS", USE_LT | USE_SPACE);
     }
-    if (MODE_ISSET(cv, OPSEGMENT_SS)) {
+    if (MODE_ISANY(cv, OPSEGMENT_SS)) {
       n += printf_text("| SS", USE_LT | USE_SPACE);
     }
-    if (MODE_ISSET(cv, OPSEGMENT_ES)) {
+    if (MODE_ISANY(cv, OPSEGMENT_ES)) {
       n += printf_text("| ES", USE_LT | USE_SPACE);
     }
-    if (MODE_ISSET(cv, OPSEGMENT_GS)) {
+    if (MODE_ISANY(cv, OPSEGMENT_GS)) {
       n += printf_text("| GS", USE_LT | USE_SPACE);
     }
-    if (MODE_ISSET(cv, OPSEGMENT_FS)) {
+    if (MODE_ISANY(cv, OPSEGMENT_FS)) {
       n += printf_text("| FS", USE_LT | USE_SPACE);
     }
 
@@ -66,49 +66,49 @@ static int ocdebugf_nvalue(handle_t p, const uint64_t cv, const uint64_t nv) {
     } else if (MODE_ISLOCKED8(OPOPERAND_REGISTER, cv)) {
       n += printf_text("REGISTER", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
 
-      if (MODE_ISSET(nv, OCREGISTER_GENERAL)) {
+      if (MODE_ISANY(nv, OCREGISTER_GENERAL)) {
         n += printf_text("| GENERAL", USE_LT | USE_SPACE);
       }
-      if (MODE_ISSET(nv, OCREGISTER_INSTRUCTIONPTR)) {
+      if (MODE_ISANY(nv, OCREGISTER_INSTRUCTIONPTR)) {
         n += printf_text("| INSTRUCTION PTR", USE_LT | USE_SPACE);
       }
-      if (MODE_ISSET(nv, OCREGISTER_BASEPTR)) {
+      if (MODE_ISANY(nv, OCREGISTER_BASEPTR)) {
         n += printf_text("| BASE PTR", USE_LT | USE_SPACE);
       }
-      if (MODE_ISSET(nv, OCREGISTER_STACKPTR)) {
+      if (MODE_ISANY(nv, OCREGISTER_STACKPTR)) {
         n += printf_text("| STACK PTR", USE_LT | USE_SPACE);
       }
-      if (MODE_ISSET(nv, OCREGISTER_DSTINDEX)) {
+      if (MODE_ISANY(nv, OCREGISTER_DSTINDEX)) {
         n += printf_text("| DST INDEX", USE_LT | USE_SPACE);
       }
-      if (MODE_ISSET(cv, OCREGISTER_SRCINDEX)) {
+      if (MODE_ISANY(cv, OCREGISTER_SRCINDEX)) {
         n += printf_text("| SRC INDEX", USE_LT | USE_SPACE);
       }
-      if (MODE_ISSET(nv, OCREGISTER_DATA)) {
+      if (MODE_ISANY(nv, OCREGISTER_DATA)) {
         n += printf_text("| DATA", USE_LT | USE_SPACE);
       }
-      if (MODE_ISSET(nv, OCREGISTER_COUNTER)) {
+      if (MODE_ISANY(nv, OCREGISTER_COUNTER)) {
         n += printf_text("| COUNTER", USE_LT | USE_SPACE);
       }
-      if (MODE_ISSET(cv, OCREGISTER_BASE)) {
+      if (MODE_ISANY(cv, OCREGISTER_BASE)) {
         n += printf_text("| BASE", USE_LT | USE_SPACE);
       }
-      if (MODE_ISSET(nv, OCREGISTER_ACCUMULATOR)) {
+      if (MODE_ISANY(nv, OCREGISTER_ACCUMULATOR)) {
         n += printf_text("| ACCUMULATOR", USE_LT | USE_SPACE);
       }
-      if (MODE_ISSET(nv, OCREGISTER_8BITLO)) {
+      if (MODE_ISANY(nv, OCREGISTER_8BITLO)) {
         n += printf_text("| 8 BIT LO", USE_LT | USE_SPACE);
       }
-      if (MODE_ISSET(nv, OCREGISTER_8BITHI)) {
+      if (MODE_ISANY(nv, OCREGISTER_8BITHI)) {
         n += printf_text("| 8 BIT HI", USE_LT | USE_SPACE);
       }
-      if (MODE_ISSET(nv, OCREGISTER_16BIT)) {
+      if (MODE_ISANY(nv, OCREGISTER_16BIT)) {
         n += printf_text("| 16 BIT", USE_LT | USE_SPACE);
       }
-      if (MODE_ISSET(nv, OCREGISTER_32BIT)) {
+      if (MODE_ISANY(nv, OCREGISTER_32BIT)) {
         n += printf_text("| 32 BIT", USE_LT | USE_SPACE);
       }
-      if (MODE_ISSET(nv, OCREGISTER_64BIT)) {
+      if (MODE_ISANY(nv, OCREGISTER_64BIT)) {
         n += printf_text("| 64 BIT", USE_LT | USE_SPACE);
       }
     } else {
@@ -169,7 +169,7 @@ static int ocdebugf(handle_t p, handle_t q) {
 int opcode_printf_DEC(handle_t p, const uint64_t v, const imode_t mode) {
   if (isopcode(p)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
-    if (MODE_ISSET(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+    if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
       return printf_nice(v, USE_DEC2 | mode);
     }
   }
@@ -180,7 +180,7 @@ int opcode_printf_DEC(handle_t p, const uint64_t v, const imode_t mode) {
 int opcode_printf_FHEX(handle_t p, const uint64_t v, const imode_t mode) {
   if (isopcode(p)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
-    if (MODE_ISSET(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+    if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
       return printf_nice(v, USE_FHEX32 | mode);
     }
   }
@@ -191,7 +191,7 @@ int opcode_printf_FHEX(handle_t p, const uint64_t v, const imode_t mode) {
 int opcode_printf_LHEX(handle_t p, const uint64_t v, const imode_t mode) {
   if (isopcode(p)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
-    if (MODE_ISSET(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+    if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
       return printf_nice(v, USE_LHEX32 | mode);
     }
   }
@@ -227,9 +227,9 @@ int opcode_printf_pluck(handle_t p, const pconvert_t z, const pick_t x, const im
   int n = 0;
   if (isopcode(p)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
-    if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
+    if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
       n += printf_nice(x, USE_FHEX16);
-    } else if (MODE_ISSET(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+    } else if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
       n += printf_nice(x, USE_FHEX8);
     }
 
@@ -257,14 +257,14 @@ int opcode_printf_source(handle_t p, const uint64_t vaddr) {
       n += opcode_printf_LADDR(p, vaddr, USE_NONE);
       n += printf_text(name, USE_LT | USE_SPACE | USE_TB | USE_COLON | USE_EOL);
 
-      if (MODE_ISSET(oc->action, OPTPROGRAM_LINE_NUMBERS)) {
+      if (MODE_ISANY(oc->action, OPTPROGRAM_LINE_NUMBERS)) {
         n += printf_yoke(name, "()", USE_LT | USE_COLON | USE_EOL);
       }
 
       ocdwarf_dealloc(p, name, DW_DLA_STRING);
     }
 
-    if (MODE_ISSET(oc->action, OPTPROGRAM_LINE_NUMBERS)) {
+    if (MODE_ISANY(oc->action, OPTPROGRAM_LINE_NUMBERS)) {
       if (isok && 0 != source) {
         n += printf_text(source, USE_LT | USE_COLON);
         n += printf_nice(nline, USE_DEC | USE_NOSPACE);

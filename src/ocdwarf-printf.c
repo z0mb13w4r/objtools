@@ -14,7 +14,7 @@ int ocdwarf_printf_me(handle_t p, const int x, const char *y, const char *z, con
   int n = 0;
   if (isopcode(p)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
-    if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
+    if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
       n += printf_nice(x, USE_DEC2 | USE_TB | USE_NOSPACE);
       n += printf_text(y, USE_LT | USE_SPACE | USE_COLON | SET_PAD(23));
       n += printf_text(z, USE_LT | USE_SPACE | USE_DQ | mode);
@@ -28,9 +28,9 @@ int ocdwarf_printf_pluck(handle_t p, const pconvert_t z, const pick_t x, const i
   int n = 0;
   if (isopcode(p)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
-    if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
+    if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
       n += printf_nice(x, USE_FHEX16);
-    } else if (MODE_ISSET(mode, USE_SPECIAL) && MODE_ISSET(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+    } else if (MODE_ISANY(mode, USE_SPECIAL) && MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
       n += printf_nice(x, USE_FHEX8);
     }
 
@@ -45,7 +45,7 @@ int ocdwarf_printf_DEC(handle_t p, const uint64_t v, const imode_t mode) {
 
   if (isopcode(p)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
-    if (MODE_ISSET(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+    if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
       return printf_nice(v, isset ? USE_DEC2 | mode : USE_DEC2 | USE_TB | mode);
     }
   }
@@ -56,7 +56,7 @@ int ocdwarf_printf_DEC(handle_t p, const uint64_t v, const imode_t mode) {
 int ocdwarf_printf_HEX(handle_t p, const uint64_t v, const imode_t mode) {
   if (isopcode(p)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
-    if (MODE_ISSET(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+    if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
       return printf_nice(v, USE_FHEX32 | USE_TB | mode);
     }
   }
@@ -67,7 +67,7 @@ int ocdwarf_printf_HEX(handle_t p, const uint64_t v, const imode_t mode) {
 int ocdwarf_printf_ADDR(handle_t p, const uint64_t v, const imode_t mode) {
   if (isopcode(p)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
-    if (MODE_ISSET(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+    if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
       return printf_nice(v, USE_FHEX32 | mode);
     }
   }
@@ -98,7 +98,7 @@ int ocdwarf_printf_TAG(handle_t p, const uint64_t v, const imode_t mode) {
 int ocdwarf_printf_EXPR(handle_t p, const uint64_t v, const imode_t mode) {
   if (isopcode(p)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
-    if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
+    if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
       return ocdwarf_printf_pluck(p, zDWEXPR, v, mode);
     }
   }
@@ -119,7 +119,7 @@ int ocdwarf_printf_LANG(handle_t p, const uint64_t v, const imode_t mode) {
 }
 
 int ocdwarf_printf_MACRO(handle_t p, const uint64_t v, const imode_t mode) {
-  if (0 == v && MODE_ISSET(USE_SPECIAL, mode)) {
+  if (0 == v && MODE_ISANY(USE_SPECIAL, mode)) {
     return printf_nice(v, USE_FHEX8) + printf_text("end-of-macros", USE_LT | USE_SPACE);
   }
 
@@ -179,7 +179,7 @@ static int ocdwarf_printf_fields_description_b(handle_t p, const char* fields_de
       n += printf_text("expr block len", USE_LT | USE_SPACE);
       n += printf_nice(expression_block->bl_len, USE_DEC);
       n += printf_hurt(expression_block->bl_data, expression_block->bl_len, USE_HEX | USE_SPACE | USE_0x);
-      if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
+      if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
         n += ocdwarf_printf_expression_block(p, expression_block);
       }
     }
@@ -204,7 +204,7 @@ static int ocdwarf_printf_fields_description_r(handle_t p, const char* fields_de
       } else if ('d' == fields_description[2]) {
         n += printf_nice(u1 * data_alignment_factor, USE_DEC);
 
-        if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
+        if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
           n += printf_tack(u1, USE_DEC, "*", data_alignment_factor, USE_DEC, USE_RB);
         }
       } else if ('a' == fields_description[2]) {
@@ -224,7 +224,7 @@ static int ocdwarf_printf_fields_description_r(handle_t p, const char* fields_de
           n += printf_text(", addrspace", USE_LT);
           n += printf_nice(u2, USE_DEC);
         }
-        if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
+        if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
           n += printf_tack(s1, USE_DEC, "*", data_alignment_factor, USE_DEC, USE_RB);
         }
       }
@@ -233,7 +233,7 @@ static int ocdwarf_printf_fields_description_r(handle_t p, const char* fields_de
       n += printf_text("expr block len", USE_LT | USE_SPACE);
       n += printf_nice(expression_block->bl_len, USE_DEC);
       n += printf_hurt(expression_block->bl_data, expression_block->bl_len, USE_HEX | USE_SPACE | USE_0x);
-      if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
+      if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
         n += ocdwarf_printf_expression_block(p, expression_block);
       }
     }
@@ -251,7 +251,7 @@ static int ocdwarf_printf_fields_description_s(handle_t p, const char* fields_de
 
     if ('d' == fields_description[1]) {
       n += printf_nice(s0 * data_alignment_factor, USE_DEC);
-      if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
+      if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
         n += printf_tack(s0, USE_DEC, "*", data_alignment_factor, USE_DEC, USE_RB);
       }
     }
@@ -271,7 +271,7 @@ static int ocdwarf_printf_fields_description_u(handle_t p, const char* fields_de
       n += printf_nice(u0, USE_DEC);
     } else if ('c' == fields_description[1]) {
       n += printf_nice(u0 * code_alignment_factor, USE_DEC);
-      if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
+      if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
         n += printf_tack(u0, USE_DEC, "*", code_alignment_factor, USE_DEC, USE_RB);
       }
     }
@@ -322,7 +322,7 @@ int ocdwarf_printf_worth(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
 
     n += printf_pack(MAXMERIT);
 
-    if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
+    if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
       n += ocdwarf_printf_DEC(p, index, USE_TAB);
     }
 
@@ -339,11 +339,11 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
   if (isopcode(p)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
 
-    const imode_t TRY_HEX      = MODE_ISSET(oc->ocdump, OPTDEBUGELF_ENHANCED) ? USE_FHEX32 : USE_FHEX;
-    const imode_t TRY_COLON    = MODE_ISSET(oc->ocdump, OPTDEBUGELF_ENHANCED) ? USE_NONE   : USE_COLON;
-    const imode_t TRY_HEXDEC   = MODE_ISSET(oc->ocdump, OPTDEBUGELF_ENHANCED) ? USE_DEC    : USE_FHEX;
-    const imode_t TRY_DECHEX16 = MODE_ISSET(oc->ocdump, OPTDEBUGELF_ENHANCED) ? USE_FHEX16 : USE_DEC;
-    const imode_t TRY_DECHEX32 = MODE_ISSET(oc->ocdump, OPTDEBUGELF_ENHANCED) ? USE_FHEX32 : USE_DEC;
+    const imode_t TRY_HEX      = MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED) ? USE_FHEX32 : USE_FHEX;
+    const imode_t TRY_COLON    = MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED) ? USE_NONE   : USE_COLON;
+    const imode_t TRY_HEXDEC   = MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED) ? USE_DEC    : USE_FHEX;
+    const imode_t TRY_DECHEX16 = MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED) ? USE_FHEX16 : USE_DEC;
+    const imode_t TRY_DECHEX32 = MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED) ? USE_FHEX32 : USE_DEC;
 
     Dwarf_Half nform = 0;
     x = dwarf_whatform(attr, &nform, e);
@@ -363,8 +363,8 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
       return OCDWARF_ERRCODE(x, n);
     }
 
-    if (MODE_ISSET(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
-      if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
+    if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+      if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
         n += ocdwarf_printf_HEX(p, offset, USE_NONE);
       }
     } else {
@@ -373,7 +373,7 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
 
     n += ocdwarf_printf_AT(p, nattr, TRY_COLON);
 
-    if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
+    if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
       n += ocdwarf_printf_FORM(p, nform, USE_NONE);
     }
 
@@ -472,7 +472,7 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
       }
 
       n += printf_nice(offset, TRY_HEX | USE_TB);
-      if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
+      if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
         n += printf_nice(isinfo, USE_BOOL);
       }
 
@@ -729,7 +729,7 @@ int ocdwarf_printf_sp(handle_t p, Dwarf_Die die, Dwarf_Half tag,
     n0 += ocdwarf_printf_DEC(p, level, USE_NONE);
     n0 += ocdwarf_printf_HEX(p, overall_offset, USE_NOSPACE);
     n0 += ocdwarf_printf_TAG(p, tag, USE_NONE);
-    if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
+    if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
       n0 += printf_text(name, USE_LT | USE_SPACE | USE_SQ);
     }
     n0 += printf_eol();
@@ -776,7 +776,7 @@ int ocdwarf_printf(handle_t p, Dwarf_Die die, Dwarf_Bool isinfo, int level, Dwar
       printf_x("dwarf_tag, level %d", level);
     }
 
-    if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
+    if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
       n += ocdwarf_printf_names(p, die, e);
     }
 

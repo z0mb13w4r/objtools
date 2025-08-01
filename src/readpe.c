@@ -1317,32 +1317,32 @@ static int dump_actionsNN(const pbuffer_t p, const poptions_t o) {
 
 int readpe(const pbuffer_t p, const poptions_t o) {
   if (isPE(p)) {
-    if (MODE_ISSET(o->action, OPTPROGRAM_INFO))               dump_summary(p, o);
-    if (MODE_ISSET(o->action, OPTREADELF_FILEHEADER))         dump_dosheaderNN(p, o);
+    if (MODE_ISANY(o->action, OPTPROGRAM_INFO))               dump_summary(p, o);
+    if (MODE_ISANY(o->action, OPTREADELF_FILEHEADER))         dump_dosheaderNN(p, o);
 
     if (isPE32(p)) {
-      if (MODE_ISSET(o->action, OPTREADELF_FILEHEADER))       dump_ntheader32(p, o);
-      if (MODE_ISSET(o->action, OPTREADELF_SECTIONHEADERS))   dump_sectionheaders32(p, o);
-      if (MODE_ISSET(o->action, OPTREADELF_SECTIONGROUPS))    dump_sectiongroups32(p, o);
-      if (MODE_ISSET(o->action, OPTREADELF_VERSION))          dump_versionNN(p, o);
-      if (MODE_ISSET(o->action, OPTREADELF_SYMBOLS))          dump_eatNN(p, o);
-      if (MODE_ISSET(o->action, OPTREADELF_SYMBOLS))          dump_iat32(p, o);
-      if (MODE_ISSET(o->action, OPTREADELF_NOTES))            dump_resourceNN(p, o);
-      if (MODE_ISSET(o->action, OPTREADELF_NOTES))            dump_config32(p, o);
+      if (MODE_ISANY(o->action, OPTREADELF_FILEHEADER))       dump_ntheader32(p, o);
+      if (MODE_ISANY(o->action, OPTREADELF_SECTIONHEADERS))   dump_sectionheaders32(p, o);
+      if (MODE_ISANY(o->action, OPTREADELF_SECTIONGROUPS))    dump_sectiongroups32(p, o);
+      if (MODE_ISANY(o->action, OPTREADELF_VERSION))          dump_versionNN(p, o);
+      if (MODE_ISANY(o->action, OPTREADELF_SYMBOLS))          dump_eatNN(p, o);
+      if (MODE_ISANY(o->action, OPTREADELF_SYMBOLS))          dump_iat32(p, o);
+      if (MODE_ISANY(o->action, OPTREADELF_NOTES))            dump_resourceNN(p, o);
+      if (MODE_ISANY(o->action, OPTREADELF_NOTES))            dump_config32(p, o);
     } else if (isPE64(p)) {
-      if (MODE_ISSET(o->action, OPTREADELF_FILEHEADER))       dump_ntheader64(p, o);
-      if (MODE_ISSET(o->action, OPTREADELF_SECTIONHEADERS))   dump_sectionheaders64(p, o);
-      if (MODE_ISSET(o->action, OPTREADELF_SECTIONGROUPS))    dump_sectiongroups64(p, o);
-      if (MODE_ISSET(o->action, OPTREADELF_VERSION))          dump_versionNN(p, o);
-      if (MODE_ISSET(o->action, OPTREADELF_SYMBOLS))          dump_eatNN(p, o);
-      if (MODE_ISSET(o->action, OPTREADELF_SYMBOLS))          dump_iat64(p, o);
-      if (MODE_ISSET(o->action, OPTREADELF_NOTES))            dump_resourceNN(p, o);
-      if (MODE_ISSET(o->action, OPTREADELF_NOTES))            dump_config64(p, o);
+      if (MODE_ISANY(o->action, OPTREADELF_FILEHEADER))       dump_ntheader64(p, o);
+      if (MODE_ISANY(o->action, OPTREADELF_SECTIONHEADERS))   dump_sectionheaders64(p, o);
+      if (MODE_ISANY(o->action, OPTREADELF_SECTIONGROUPS))    dump_sectiongroups64(p, o);
+      if (MODE_ISANY(o->action, OPTREADELF_VERSION))          dump_versionNN(p, o);
+      if (MODE_ISANY(o->action, OPTREADELF_SYMBOLS))          dump_eatNN(p, o);
+      if (MODE_ISANY(o->action, OPTREADELF_SYMBOLS))          dump_iat64(p, o);
+      if (MODE_ISANY(o->action, OPTREADELF_NOTES))            dump_resourceNN(p, o);
+      if (MODE_ISANY(o->action, OPTREADELF_NOTES))            dump_config64(p, o);
     }
 
-    if (MODE_ISSET(o->action, OPTREADELF_NOTES))              dump_debugNN(p, o);
-    if (MODE_ISSET(o->action, OPTREADELF_RELOCS))             dump_relocNN(p, o);
-    if (MODE_ISSET(o->action, OPTREADELF_UNWIND))             dump_runtimeNN(p, o);
+    if (MODE_ISANY(o->action, OPTREADELF_NOTES))              dump_debugNN(p, o);
+    if (MODE_ISANY(o->action, OPTREADELF_RELOCS))             dump_relocNN(p, o);
+    if (MODE_ISANY(o->action, OPTREADELF_UNWIND))             dump_runtimeNN(p, o);
 
     if (isPE32(p) || isPE64(p)) {
       if (o->actions)                                         dump_actionsNN(p, o);

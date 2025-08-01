@@ -185,7 +185,7 @@ static int dump_privatehdr(const handle_t p, const poptions_t o) {
   int n = 0;
   size_t max_name_size = 20;
 // bfd/elf.c:1648:_bfd_elf_print_private_bfd_data (bfd *abfd, void *farg)
-  if (MODE_ISSET(o->action, OPTPROGRAM_VERBOSE)) {
+  if (MODE_ISANY(o->action, OPTPROGRAM_VERBOSE)) {
     if (!bfd_print_private_bfd_data(ocgetbfd(p), stdout)) {
       printf_w("private Headers incomplete: %s.", bfd_errmsg(bfd_get_error()));
       return ECODE_BFD;
@@ -302,15 +302,15 @@ static int do_object(const handle_t p, const poptions_t o) {
   printf_text(ocget_fileformat(p), USE_SPACE | USE_EOL);
   printf_eol();
 
-  if (MODE_ISSET(o->action, OPTOBJDUMP_FILE_HEADER))        dump_header(p, o);
-  if (MODE_ISSET(o->action, OPTOBJDUMP_PRIVATE_HEADER))     dump_privatehdr(p, o);
-  if (MODE_ISSET(o->action, OPTOBJDUMP_SECTION_HEADER))     dump_sectionhdr(p, o);
-  if (MODE_ISSET(o->action, OPTOBJDUMP_SYMBOLS))            dump_symbols(p, o, OPCODE_SYMBOLS);
-  if (MODE_ISSET(o->action, OPTOBJDUMP_DYNAMIC_SYMBOLS))    dump_symbols(p, o, OPCODE_SYMBOLS_DYNAMIC);
-  if (MODE_ISSET(o->action, OPTOBJDUMP_RELOC))              dump_reloc(p, o);
-  if (MODE_ISSET(o->action, OPTOBJDUMP_SECTIONS))           dump_sections(p, o);
-  if (MODE_ISSET(o->action, OPTPROGRAM_DISASSEMBLE))        dump_disassemble(p, o);
-  if (MODE_ISSET(o->action, OPTDEBUGELF_DEBUGGING))         dump_dwarf(p, o);
+  if (MODE_ISANY(o->action, OPTOBJDUMP_FILE_HEADER))        dump_header(p, o);
+  if (MODE_ISANY(o->action, OPTOBJDUMP_PRIVATE_HEADER))     dump_privatehdr(p, o);
+  if (MODE_ISANY(o->action, OPTOBJDUMP_SECTION_HEADER))     dump_sectionhdr(p, o);
+  if (MODE_ISANY(o->action, OPTOBJDUMP_SYMBOLS))            dump_symbols(p, o, OPCODE_SYMBOLS);
+  if (MODE_ISANY(o->action, OPTOBJDUMP_DYNAMIC_SYMBOLS))    dump_symbols(p, o, OPCODE_SYMBOLS_DYNAMIC);
+  if (MODE_ISANY(o->action, OPTOBJDUMP_RELOC))              dump_reloc(p, o);
+  if (MODE_ISANY(o->action, OPTOBJDUMP_SECTIONS))           dump_sections(p, o);
+  if (MODE_ISANY(o->action, OPTPROGRAM_DISASSEMBLE))        dump_disassemble(p, o);
+  if (MODE_ISANY(o->action, OPTDEBUGELF_DEBUGGING))         dump_dwarf(p, o);
 
   return 0;
 }

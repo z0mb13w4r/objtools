@@ -32,7 +32,7 @@ static void custom_fprintf_address(bfd_vma vma, struct disassemble_info *di) {
   int n = 0;
   if (di && di->application_data) {
     popcode_t oc = CAST(popcode_t, di->application_data);
-    if (MODE_ISSET(oc->action, OPTPROGRAM_PREFIX_ADDR)) {
+    if (MODE_ISANY(oc->action, OPTPROGRAM_PREFIX_ADDR)) {
       n += custom_fprintf(oc, "%8.8" PRIx64, vma);
     } else {
       n += custom_fprintf(oc, "%" PRIx64, vma);
@@ -83,41 +83,41 @@ int opcodelib_open(handle_t p, handle_t o) {
         di->disassembler_options = NULL;
         di->print_address_func = custom_fprintf_address;
 
-        if (MODE_ISSET(op->ocdump, OPTDISASSEMBLE_ATT_MNEMONIC)) {
+        if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_ATT_MNEMONIC)) {
           di->disassembler_options = opcodelib_strncat(args, "att-mnemonic", ",", NELEMENTS(args));
-        } else if (MODE_ISSET(op->ocdump, OPTDISASSEMBLE_INTEL_MNEMONIC)) {
+        } else if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_INTEL_MNEMONIC)) {
           di->disassembler_options = opcodelib_strncat(args, "intel-mnemoic", ",", NELEMENTS(args));
-        } else if (MODE_ISSET(op->ocdump, OPTDISASSEMBLE_ATT)) {
+        } else if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_ATT)) {
           di->disassembler_options = opcodelib_strncat(args, "att", ",", NELEMENTS(args));
-        } else if (MODE_ISSET(op->ocdump, OPTDISASSEMBLE_INTEL)) {
+        } else if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_INTEL)) {
           di->disassembler_options = opcodelib_strncat(args, "intel", ",", NELEMENTS(args));
         }
 
-        if (MODE_ISSET(op->ocdump, OPTDISASSEMBLE_X86_64)) {
+        if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_X86_64)) {
           di->disassembler_options = opcodelib_strncat(args, "x86-64", ",", NELEMENTS(args));
-        } else if (MODE_ISSET(op->ocdump, OPTDISASSEMBLE_I386)) {
+        } else if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_I386)) {
           di->disassembler_options = opcodelib_strncat(args, "i386", ",", NELEMENTS(args));
-        } else if (MODE_ISSET(op->ocdump, OPTDISASSEMBLE_I8086)) {
+        } else if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_I8086)) {
           di->disassembler_options = opcodelib_strncat(args, "i8086", ",", NELEMENTS(args));
         }
 
-        if (MODE_ISSET(op->ocdump, OPTDISASSEMBLE_AMD64)) {
+        if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_AMD64)) {
           di->disassembler_options = opcodelib_strncat(args, "amd64", ",", NELEMENTS(args));
-        } else if (MODE_ISSET(op->ocdump, OPTDISASSEMBLE_INTEL64)) {
+        } else if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_INTEL64)) {
           di->disassembler_options = opcodelib_strncat(args, "intel64", ",", NELEMENTS(args));
         }
 
-        if (MODE_ISSET(op->ocdump, OPTDISASSEMBLE_ADDR16)) {
+        if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_ADDR16)) {
           di->disassembler_options = opcodelib_strncat(args, "addr16", ",", NELEMENTS(args));
-        } else if (MODE_ISSET(op->ocdump, OPTDISASSEMBLE_ADDR32)) {
+        } else if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_ADDR32)) {
           di->disassembler_options = opcodelib_strncat(args, "addr32", ",", NELEMENTS(args));
-        } else if (MODE_ISSET(op->ocdump, OPTDISASSEMBLE_ADDR64)) {
+        } else if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_ADDR64)) {
           di->disassembler_options = opcodelib_strncat(args, "addr64", ",", NELEMENTS(args));
         }
 
-        if (MODE_ISSET(op->ocdump, OPTDISASSEMBLE_DATA16)) {
+        if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_DATA16)) {
           di->disassembler_options = opcodelib_strncat(args, "data16", ",", NELEMENTS(args));
-        } else if (MODE_ISSET(op->ocdump, OPTDISASSEMBLE_DATA32)) {
+        } else if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_DATA32)) {
           di->disassembler_options = opcodelib_strncat(args, "data32", ",", NELEMENTS(args));
         }
 
@@ -168,7 +168,7 @@ int opcodelib_raw(handle_t p, handle_t s, unknown_t data, const size_t size, con
       if (ocuse_vaddr(oc, soffset)) {
         n0 += opcode_printf_source(p, soffset);
 
-        if (MODE_ISSET(oc->action, OPTPROGRAM_PREFIX_ADDR)) {
+        if (MODE_ISANY(oc->action, OPTPROGRAM_PREFIX_ADDR)) {
           n1 += printf_nice(soffset, USE_LHEX32 | USE_COLON);
         } else {
           n1 += opcode_printf_LHEX(p, soffset, USE_COLON);

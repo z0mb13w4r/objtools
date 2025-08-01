@@ -5,7 +5,7 @@
 
 static const int MAXSIZE = 24;
 
-#define PICK_ENHANCED(x,y,z)           (MODE_ISSET((x)->ocdump, OPTDEBUGELF_ENHANCED) ? (y) : (z))
+#define PICK_ENHANCED(x,y,z)           (MODE_ISANY((x)->ocdump, OPTDEBUGELF_ENHANCED) ? (y) : (z))
 
 int ocdwarf_debug_macro_ops(handle_t p, Dwarf_Die die, Dwarf_Macro_Context context, int level,
                      Dwarf_Half macro_version, Dwarf_Unsigned macro_unit_offset, Dwarf_Unsigned count, Dwarf_Error *e) {
@@ -30,7 +30,7 @@ int ocdwarf_debug_macro_ops(handle_t p, Dwarf_Die die, Dwarf_Macro_Context conte
       n += ocdwarf_printf_DEC(p, i, USE_SB);
       n += ocdwarf_printf_MACRO(p, macro_operator, USE_SPECIAL);
 
-      const imode_t TRY_COLON = MODE_ISSET(oc->ocdump, OPTDEBUGELF_ENHANCED) ? USE_NONE : USE_COLON;
+      const imode_t TRY_COLON = MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED) ? USE_NONE : USE_COLON;
 
       if (MODE_ISNOT(oc->ocdump, OPTDEBUGELF_ENHANCED) && (DW_MACRO_end_file != macro_operator)) {
         n += printf_text("-", USE_LT | USE_SPACE);
@@ -49,7 +49,7 @@ int ocdwarf_debug_macro_ops(handle_t p, Dwarf_Die die, Dwarf_Macro_Context conte
           n += printf_text("offset", USE_LT | USE_SPACE | TRY_COLON);
           n += ocdwarf_printf_ADDR(p, macro_offset, USE_EOL);
 
-          if (MODE_ISSET(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+          if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
             n += printf_text("Nested import level", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
             n += printf_nice(level + 1, USE_DEC | USE_EOL);
             n += printf_text("Macro version", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
@@ -98,7 +98,7 @@ int ocdwarf_debug_macro_ops(handle_t p, Dwarf_Die die, Dwarf_Macro_Context conte
 
         if (isused(zMACRODEFSTR, macro_operator)) {
           n += printf_text(PICK_ENHANCED(oc, "str offset", "macro"), USE_LT | USE_SPACE | TRY_COLON);
-          if (MODE_ISSET(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+          if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
             n += printf_nice(offset, USE_FHEX32);
           }
         }
@@ -185,7 +185,7 @@ int ocdwarf_debug_macro_context(handle_t p, Dwarf_Die die, Dwarf_Macro_Context c
       return OCDWARF_ERRCODE(x, n);
     }
 
-    if (MODE_ISSET(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+    if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
       n += printf_text("Nested import level", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
       n += printf_nice(level, USE_DEC | USE_EOL);
 
@@ -201,7 +201,7 @@ int ocdwarf_debug_macro_context(handle_t p, Dwarf_Die die, Dwarf_Macro_Context c
       n += printf_nice(ops_total_byte_len, USE_DEC | USE_EOL);
     }
 
-    if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
+    if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
       n += printf_text("Macro header length", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
       n += printf_nice(macro_header_len, USE_DEC | USE_EOL);
       n += printf_text("Macro flags", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
@@ -262,7 +262,7 @@ int ocdwarf_debug_macro(handle_t p, handle_t s, handle_t d) {
     pdwarf_statistics_t st = ocget(p, OPCODE_DWARF_STATISTICS);
     popcode_t oc = ocget(p, OPCODE_THIS);
 
-    if (MODE_ISSET(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+    if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
       n += ocdwarf_printf_groups(p, ocget(p, OPCODE_DWARF_ERROR));
     }
 
@@ -320,7 +320,7 @@ int ocdwarf_debug_macro(handle_t p, handle_t s, handle_t d) {
       ocdwarf_dealloc_error(p, NULL);
     }
 
-    if (MODE_ISSET(oc->action, OPTPROGRAM_VERBOSE)) {
+    if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
       n += printf_text("Macro unit offset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
       n += printf_nice(st->soffset, USE_DEC | USE_EOL);
     }
@@ -329,7 +329,7 @@ int ocdwarf_debug_macro(handle_t p, handle_t s, handle_t d) {
     n += ocdwarf_debug_macro_context(p, cu_die, macro_context, level, st->soffset,
                      number_of_ops, ops_total_byte_len, ocget(p, OPCODE_DWARF_ERROR));
 
-    if (MODE_ISSET(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+    if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
       n += printf_text("Macro unit count DWARF5 .debug_macro", USE_LT | USE_COLON);
       n += printf_nice(st->mcount, USE_DEC);
       n += printf_eol();
