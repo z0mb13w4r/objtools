@@ -103,7 +103,7 @@ static int dump_ntheader1(const pbuffer_t p, const uint16_t Machine, const uint1
   n += printf_nice(SizeOfOptionalHeader, USE_FHEX16 | USE_EOL);
   n += printf_text("Characteristics", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(Characteristics, USE_FHEX16);
-  n += printf_mask(zFILEHDR, Characteristics, USE_LT | USE_EOL);
+  n += printf_mask(zFILEHDR, Characteristics, USE_EOL);
   n += printf_eol();
 
   return n;
@@ -172,7 +172,7 @@ static int dump_ntheader2(const pbuffer_t p, const uint16_t Magic, const uint8_t
     n += printf_pick(zOPTHDRSUBSYSTEM, Subsystem, USE_LT | USE_SPACE | USE_EOL);
     n += printf_text("DllCharacteristics", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     n += printf_nice(DllCharacteristics, USE_FHEX16);
-    n += printf_mask(zOPTHDRCHARACTERISTICS, DllCharacteristics, USE_LT | USE_EOL);
+    n += printf_mask(zOPTHDRCHARACTERISTICS, DllCharacteristics, USE_EOL);
     n += printf_text("SizeOfStackReserve", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     n += printf_nice(SizeOfStackReserve, USE_FHEXNN | USE_EOL);
     n += printf_text("SizeOfStackCommit", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
@@ -265,7 +265,7 @@ static int dump_sectionheaders0(const pbuffer_t p, const uint16_t NumberOfSectio
       n += printf_nice(p0->NumberOfLinenumbers, USE_FHEX16 | USE_EOL);
       n += printf_text("Characteristics", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
       n += printf_nice(p0->Characteristics, USE_FHEX32);
-      n += printf_mask(zSECTIONHDR, p0->Characteristics, USE_LT | USE_EOL);
+      n += printf_mask(zSECTIONHDR, p0->Characteristics, USE_EOL);
       n += printf_eol();
     }
   }
@@ -444,7 +444,7 @@ static int dump_version3(const pbuffer_t p, const uint32_t dwSignature, const ui
   n += printf_nice(dwFileFlagsMask, USE_FHEX32 | USE_EOL);
   n += printf_text("dwFileFlags", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(dwFileFlags, USE_FHEX32);
-  n += printf_mask(zVERFILEFLAGS, dwFileFlags, USE_LT | USE_EOL);
+  n += printf_mask(zVERFILEFLAGS, dwFileFlags, USE_EOL);
   n += printf_text("dwFileOS", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(dwFileOS, USE_FHEX32);
   n += printf_pick(zVERFILEOS, dwFileOS, USE_SPACE | USE_EOL);

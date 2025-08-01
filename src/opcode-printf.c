@@ -65,52 +65,7 @@ static int ocdebugf_nvalue(handle_t p, const uint64_t cv, const uint64_t nv) {
       n += printf_text("UVALUE", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
     } else if (MODE_ISLOCKED8(OPOPERAND_REGISTER, cv)) {
       n += printf_text("REGISTER", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
-
-      if (MODE_ISSET(nv, OCREGISTER_GENERAL)) {
-        n += printf_text("| GENERAL", USE_LT | USE_SPACE);
-      }
-      if (MODE_ISSET(nv, OCREGISTER_INSTRUCTIONPTR)) {
-        n += printf_text("| INSTRUCTION PTR", USE_LT | USE_SPACE);
-      }
-      if (MODE_ISSET(nv, OCREGISTER_BASEPTR)) {
-        n += printf_text("| BASE PTR", USE_LT | USE_SPACE);
-      }
-      if (MODE_ISSET(nv, OCREGISTER_STACKPTR)) {
-        n += printf_text("| STACK PTR", USE_LT | USE_SPACE);
-      }
-      if (MODE_ISSET(nv, OCREGISTER_DSTINDEX)) {
-        n += printf_text("| DST INDEX", USE_LT | USE_SPACE);
-      }
-      if (MODE_ISSET(cv, OCREGISTER_SRCINDEX)) {
-        n += printf_text("| SRC INDEX", USE_LT | USE_SPACE);
-      }
-      if (MODE_ISSET(nv, OCREGISTER_DATA)) {
-        n += printf_text("| DATA", USE_LT | USE_SPACE);
-      }
-      if (MODE_ISSET(nv, OCREGISTER_COUNTER)) {
-        n += printf_text("| COUNTER", USE_LT | USE_SPACE);
-      }
-      if (MODE_ISSET(cv, OCREGISTER_BASE)) {
-        n += printf_text("| BASE", USE_LT | USE_SPACE);
-      }
-      if (MODE_ISSET(nv, OCREGISTER_ACCUMULATOR)) {
-        n += printf_text("| ACCUMULATOR", USE_LT | USE_SPACE);
-      }
-      if (MODE_ISSET(nv, OCREGISTER_8BITLO)) {
-        n += printf_text("| 8 BIT LO", USE_LT | USE_SPACE);
-      }
-      if (MODE_ISSET(nv, OCREGISTER_8BITHI)) {
-        n += printf_text("| 8 BIT HI", USE_LT | USE_SPACE);
-      }
-      if (MODE_ISSET(nv, OCREGISTER_16BIT)) {
-        n += printf_text("| 16 BIT", USE_LT | USE_SPACE);
-      }
-      if (MODE_ISSET(nv, OCREGISTER_32BIT)) {
-        n += printf_text("| 32 BIT", USE_LT | USE_SPACE);
-      }
-      if (MODE_ISSET(nv, OCREGISTER_64BIT)) {
-        n += printf_text("| 64 BIT", USE_LT | USE_SPACE);
-      }
+      n += printf_mask(zREGISTERSFLAGS, nv, USE_NONE);
     } else {
       n += printf_text("UNKNOWN", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
     }

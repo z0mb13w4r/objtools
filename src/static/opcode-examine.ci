@@ -139,21 +139,109 @@ convert_t zSEGMENTSFLAGS[] = {
 };
 
 convert_t zREGISTERSFLAGS[] = {
+  {"\%rax",             OCREGISTER_RAX},
+  {"\%eax",             OCREGISTER_EAX},
+  {"\%ax",              OCREGISTER_AX},
+  {"\%ah",              OCREGISTER_AH},
+  {"\%al",              OCREGISTER_AL},
+
+  {"\%rbx",             OCREGISTER_RBX},
+  {"\%ebx",             OCREGISTER_EBX},
+  {"\%bx",              OCREGISTER_BX},
+  {"\%bh",              OCREGISTER_BH},
+  {"\%bl",              OCREGISTER_BL},
+
+  {"\%rcx",             OCREGISTER_RCX},
+  {"\%ecx",             OCREGISTER_ECX},
+  {"\%cx",              OCREGISTER_CX},
+  {"\%ch",              OCREGISTER_CH},
+  {"\%cl",              OCREGISTER_CL},
+
+  {"\%rdx",             OCREGISTER_RDX},
+  {"\%edx",             OCREGISTER_EDX},
+  {"\%dx",              OCREGISTER_DX},
+  {"\%dh",              OCREGISTER_DH},
+  {"\%dl",              OCREGISTER_DL},
+
+  {"\%r8b",             OCREGISTER_R8B},
+  {"\%r8d",             OCREGISTER_R8D},
+  {"\%r8w",             OCREGISTER_R8W},
+  {"\%r8",              OCREGISTER_R8},
+
+  {"\%r9b",             OCREGISTER_R9B},
+  {"\%r9d",             OCREGISTER_R9D},
+  {"\%r9w",             OCREGISTER_R9W},
+  {"\%r9",              OCREGISTER_R9},
+
+  {"\%r10b",            OCREGISTER_R10B},
+  {"\%r10d",            OCREGISTER_R10D},
+  {"\%r10w",            OCREGISTER_R10W},
+  {"\%r10",             OCREGISTER_R10},
+
+  {"\%r11b",            OCREGISTER_R11B},
+  {"\%r11d",            OCREGISTER_R11D},
+  {"\%r11w",            OCREGISTER_R11W},
+  {"\%r11",             OCREGISTER_R11},
+
+  {"\%r12b",            OCREGISTER_R12B},
+  {"\%r12d",            OCREGISTER_R12D},
+  {"\%r12w",            OCREGISTER_R12W},
+  {"\%r12",             OCREGISTER_R12},
+
+  {"\%r13b",            OCREGISTER_R13B},
+  {"\%r13d",            OCREGISTER_R13D},
+  {"\%r13w",            OCREGISTER_R13W},
+  {"\%r13",             OCREGISTER_R13},
+
+  {"\%r14b",            OCREGISTER_R14B},
+  {"\%r14d",            OCREGISTER_R14D},
+  {"\%r14w",            OCREGISTER_R14W},
+  {"\%r14",             OCREGISTER_R14},
+
+  {"\%r15b",            OCREGISTER_R15B},
+  {"\%r15d",            OCREGISTER_R15D},
+  {"\%r15w",            OCREGISTER_R15W},
+  {"\%r15",             OCREGISTER_R15},
+
+  {"\%rsi",             OCREGISTER_RSI},
+  {"\%esi",             OCREGISTER_ESI},
+  {"\%sil",             OCREGISTER_SIL},
+  {"\%si",              OCREGISTER_SI},
+
+  {"\%rdi",             OCREGISTER_RDI},
+  {"\%edi",             OCREGISTER_EDI},
+  {"\%dil",             OCREGISTER_DIL},
+  {"\%di",              OCREGISTER_DI},
+
+  {"\%rsp",             OCREGISTER_RSP},
+  {"\%esp",             OCREGISTER_ESP},
+  {"\%spl",             OCREGISTER_SPL},
+  {"\%sp",              OCREGISTER_SP},
+
+  {"\%rbp",             OCREGISTER_RBP},
+  {"\%ebp",             OCREGISTER_EBP},
+  {"\%bpl",             OCREGISTER_BPL},
+  {"\%bp",              OCREGISTER_BP},
+
+  {"\%rip",             OCREGISTER_RIP},
+  {"\%eip",             OCREGISTER_EIP},
+  {"\%ip",              OCREGISTER_IP},
+
   {"GENERAL",           OCREGISTER_GENERAL},
-  {"INSTRUCTION PTR",   OCREGISTER_INSTRUCTIONPTR},
-  {"BASE PTR",          OCREGISTER_BASEPTR},
-  {"STACK PTR",         OCREGISTER_STACKPTR},
-  {"DST INDEX",         OCREGISTER_DSTINDEX},
-  {"SRC INDEX",         OCREGISTER_SRCINDEX},
+  {"INSTRUCTIONPTR",    OCREGISTER_INSTRUCTIONPTR},
+  {"BASEPTR",           OCREGISTER_BASEPTR},
+  {"STACKPTR",          OCREGISTER_STACKPTR},
+  {"DSTINDEX",          OCREGISTER_DSTINDEX},
+  {"SRCINDEX",          OCREGISTER_SRCINDEX},
   {"DATA",              OCREGISTER_DATA},
   {"COUNTER",           OCREGISTER_COUNTER},
   {"BASE",              OCREGISTER_BASE},
   {"ACCUMULATOR",       OCREGISTER_ACCUMULATOR},
-  {"8 BIT LO",          OCREGISTER_8BITLO},
-  {"8 BIT HI",          OCREGISTER_8BITHI},
-  {"16 BIT",            OCREGISTER_16BIT},
-  {"32 BIT",            OCREGISTER_32BIT},
-  {"64 BIT",            OCREGISTER_64BIT},
+  {"8BITLO",            OCREGISTER_8BITLO},
+  {"8BITHI",            OCREGISTER_8BITHI},
+  {"16BIT",             OCREGISTER_16BIT},
+  {"32BIT",             OCREGISTER_32BIT},
+  {"64BIT",             OCREGISTER_64BIT},
   {0, 0}
 };
 
