@@ -117,13 +117,43 @@ static oestruct_t zREGISTERS[] = {
 };
 
 static oestruct_t zSEGMENTS[] = {
-  OCSTRUCT("\%cs:",       OPSEGMENT_CS),
-  OCSTRUCT("\%ds:",       OPSEGMENT_DS),
-  OCSTRUCT("\%ss:",       OPSEGMENT_SS),
-  OCSTRUCT("\%es:",       OPSEGMENT_ES),
-  OCSTRUCT("\%fs:",       OPSEGMENT_FS),
-  OCSTRUCT("\%gs:",       OPSEGMENT_GS),
-
+  OCSTRUCT("\%cs:",     OPSEGMENT_CS),
+  OCSTRUCT("\%ds:",     OPSEGMENT_DS),
+  OCSTRUCT("\%ss:",     OPSEGMENT_SS),
+  OCSTRUCT("\%es:",     OPSEGMENT_ES),
+  OCSTRUCT("\%fs:",     OPSEGMENT_FS),
+  OCSTRUCT("\%gs:",     OPSEGMENT_GS),
   {NULL}
+};
+
+convert_t zSEGMENTSFLAGS[] = {
+  {"SEGMENT",           OPOPERAND_SEGMENT},
+  {"ABSOLUTE",          OCOPERAND_ABSOLUTE},
+  {"CS",                OPSEGMENT_CS},
+  {"DS",                OPSEGMENT_DS},
+  {"SS",                OPSEGMENT_SS},
+  {"ES",                OPSEGMENT_ES},
+  {"GS",                OPSEGMENT_GS},
+  {"FS",                OPSEGMENT_FS},
+  {0, 0}
+};
+
+convert_t zREGISTERSFLAGS[] = {
+  {"GENERAL",           OCREGISTER_GENERAL},
+  {"INSTRUCTION PTR",   OCREGISTER_INSTRUCTIONPTR},
+  {"BASE PTR",          OCREGISTER_BASEPTR},
+  {"STACK PTR",         OCREGISTER_STACKPTR},
+  {"DST INDEX",         OCREGISTER_DSTINDEX},
+  {"SRC INDEX",         OCREGISTER_SRCINDEX},
+  {"DATA",              OCREGISTER_DATA},
+  {"COUNTER",           OCREGISTER_COUNTER},
+  {"BASE",              OCREGISTER_BASE},
+  {"ACCUMULATOR",       OCREGISTER_ACCUMULATOR},
+  {"8 BIT LO",          OCREGISTER_8BITLO},
+  {"8 BIT HI",          OCREGISTER_8BITHI},
+  {"16 BIT",            OCREGISTER_16BIT},
+  {"32 BIT",            OCREGISTER_32BIT},
+  {"64 BIT",            OCREGISTER_64BIT},
+  {0, 0}
 };
 
