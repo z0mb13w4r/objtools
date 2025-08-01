@@ -10,7 +10,7 @@ static const char* get_SHNINDEX(const pick_t x) {
 
   const char* def = strpicknull(zSHNINDEX, x);
   if (NULL == def) {
-    snprintf(buff, sizeof(buff), "%3d", x);
+    snprintf(buff, sizeof(buff), "%3ld", x);
   } else {
     snprintf(buff, sizeof(buff), "%3s", def);
   }

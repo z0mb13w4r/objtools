@@ -21,6 +21,8 @@ convert_t zSHDRTYPE[] = {
   {"VERDEF",                       SHT_GNU_verdef},
   {"VERNEED",                      SHT_GNU_verneed},
   {"VERSYM",                       SHT_GNU_versym},
+  {"ARM_ATTRIBUTES",               SHT_ARM_ATTRIBUTES},
+  {"ARM_EXIDX",                    SHT_ARM_EXIDX},
   {0, 0}
 };
 
