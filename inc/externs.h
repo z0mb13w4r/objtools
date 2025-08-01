@@ -41,5 +41,34 @@ extern convert_t zSHDRTYPE[];
 extern convert_t zSEGMENTSFLAGS[];
 extern convert_t zREGISTERSFLAGS[];
 
+extern char zHEXDUMP[];
+extern char zSTRDUMP[];
+extern char zCODEDUMP[];
+
+extern char zDEBUGABBREV[];
+extern char zDEBUGADDR[];
+extern char zDEBUGCUINDEX[];
+extern char zDEBUGFRAME[];
+extern char zDEBUGFRAMEINTERP[];
+extern char zDEBUGINFO[];
+extern char zDEBUGLINKS[];
+extern char zDEBUGMACRO[];
+extern char zDEBUGLOC[];
+extern char zDEBUGARANGES[];
+extern char zDEBUGRANGES[];
+extern char zDEBUGSTR[];
+extern char zDEBUGGDBINDEX[];
+
+extern char zDISASSEMBLEARCH[];
+extern char zDISASSEMBLEATTSYNTAX[];
+extern char zDISASSEMBLEINTELSYNTAX[];
+extern char zDISASSEMBLEISA[];
+extern char zDISASSEMBLEDATA[];
+
+extern const char zDESCRIPTION[];
+
+extern const char *zALLSEE[];
+extern const char *zLICENSE[];
+
 #endif
 

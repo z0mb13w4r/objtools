@@ -1,7 +1,7 @@
 #ifndef __OPTIONS_H_
 #define __OPTIONS_H_
 
-#include "defines.h"
+#include "externs.h"
 
 #define MODE_OPTIONS            (MODE_PUT0('O') | MODE_PUT1('P') | MODE_PUT2('T'))
 #define MODE_ACTIONS            (MODE_PUT0('A') | MODE_PUT1('C') | MODE_PUT2('T'))
@@ -226,13 +226,6 @@ typedef struct imodeswap_s {
   imode_t mode2;
 } imodeswap_t, *pimodeswap_t;
 
-int get_options_convert(poptions_t o, int argc, char** argv, char* name);
-int get_options_readelf(poptions_t o, int argc, char** argv, char* name);
-int get_options_objcopy(poptions_t o, int argc, char** argv, char* name);
-int get_options_objdump(poptions_t o, int argc, char** argv, char* name);
-int get_options_objhash(poptions_t o, int argc, char** argv, char* name);
-int get_options_objdwarf(poptions_t o, int argc, char** argv, char* name);
-
 int isactions(handle_t p);
 int isoptions(handle_t p);
 
@@ -241,9 +234,26 @@ handle_t omalloc();
 handle_t afree(handle_t p);
 handle_t ofree(handle_t p);
 
+int usage0(poptions_t o, const char* name, const args_t args[]);
+int usage1(poptions_t o, const char* name, const args_t args0[], const char* more0, const char* more1);
+int usage2(poptions_t o, const char* name, const args_t args0[], const char* more0, const char* more1, const char* more2, const char* more3);
+int usage3(poptions_t o, const char* name, const args_t args0[], const char* more2, const char* more3);
+
+int version0(poptions_t o, const char* name, const args_t args[]);
+
+int breakup_args(char* args, char* dst0, const size_t dst0size, char* dst1, const size_t dst1size);
+
 int oinsert(handle_t o, handle_t p, const int action);
 int oinsertvalue(handle_t o, const int action, const uint64_t value);
 int oinsertsecname(handle_t o, const int action, const char *secname);
+
+imode_t get_options1(poptions_t o, const args_t args[], const char *argv);
+imode_t set_options1(poptions_t o, const args_t args[]);
+imode_t get_options2(poptions_t o, const args_t args[], const char *argv);
+imode_t get_ocdump(poptions_t o, const imodeswap_t args[], imode_t action);
+
+extern const args_t zDISASSEMBLEARGS[];
+extern const args_t zDEBUGELFARGS[];
 
 #endif
 

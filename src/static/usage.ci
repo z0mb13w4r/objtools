@@ -1,4 +1,4 @@
-static const char zDESCRIPTION[] = "display information about ELF and PE files.";
+const char zDESCRIPTION[] = "display information about ELF and PE files.";
 
 const char *zALLSEE[] = {
   "convert-ng",
@@ -35,7 +35,7 @@ const char *zLICENSE[] = {
   0
 };
 
-static char zHEXDUMP[]           = "Displays the contents of the indicated section as a hexadecimal bytes.";
-static char zSTRDUMP[]           = "Displays the contents of the indicated section as printable strings.";
-static char zCODEDUMP[]          = "Displays the contents of the indicated section as C Language Shell Code.";
+char zHEXDUMP[]           = "Displays the contents of the indicated section as a hexadecimal bytes.";
+char zSTRDUMP[]           = "Displays the contents of the indicated section as printable strings.";
+char zCODEDUMP[]          = "Displays the contents of the indicated section as C Language Shell Code.";
 

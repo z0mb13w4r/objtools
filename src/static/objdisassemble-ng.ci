@@ -1,10 +1,10 @@
-static char zDISASSEMBLEARCH[] = "Select disassembly for the given architecture.";
-static char zDISASSEMBLEATTSYNTAX[] = "Select the AT&T syntax mode.";
-static char zDISASSEMBLEINTELSYNTAX[] = "Select the Intel syntax mode.";
-static char zDISASSEMBLEISA[] = "Select between AMD64 ISA and Intel64 ISA.";
-static char zDISASSEMBLEDATA[] = "Specify the default address size and operand size.";
+char zDISASSEMBLEARCH[] = "Select disassembly for the given architecture.";
+char zDISASSEMBLEATTSYNTAX[] = "Select the AT&T syntax mode.";
+char zDISASSEMBLEINTELSYNTAX[] = "Select the Intel syntax mode.";
+char zDISASSEMBLEISA[] = "Select between AMD64 ISA and Intel64 ISA.";
+char zDISASSEMBLEDATA[] = "Specify the default address size and operand size.";
 
-static const args_t zDISASSEMBLEARGS[] = {
+const args_t zDISASSEMBLEARGS[] = {
   {0, "att",                 OPTDISASSEMBLE_ATT,                     NULL, 1},
   {0, "att-mnemonic",        OPTDISASSEMBLE_ATT_MNEMONIC,            zDISASSEMBLEATTSYNTAX, 1},
 

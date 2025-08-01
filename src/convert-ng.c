@@ -5,6 +5,52 @@
 #include "printf.h"
 #include "bstring.h"
 #include "options.h"
+#include "scripts.h"
+
+#include "static/convert-ng.ci"
+
+static int get_options_convert(poptions_t o, int argc, char** argv, char* name) {
+  if (0 == argc) {
+    usage0(o, "convert-ng", zCONVERTARGS);
+    return -1;
+  }
+
+  strname(o->prgname, name);
+  printf_errname(o->prgname);
+
+  for (int i = 0; i < argc; ++i) {
+    if ('-' == argv[i][0] && '-' == argv[i][1]) {
+      MALLOCA(char, arg0, 1024);
+      MALLOCA(char, arg1, 1024);
+
+      if (ECODE_ISOK(breakup_args(argv[i], arg0, NELEMENTS(arg0), arg1, NELEMENTS(arg1)))) {
+        if (0 == strcmp(arg0, "--output")) {
+          strncpy(o->outname, arg1, NELEMENTS(o->outname));
+        }
+      } else {
+        o->action |= get_options2(o, zCONVERTARGS, argv[i]);
+      }
+    } else if ('-' == argv[i][0] && 0 != argv[i][1]) {
+      if (0 == strcmp(argv[i], "-O")) {
+        strncpy(o->outname, argv[++i], NELEMENTS(o->outname));
+      } else {
+        o->action |= get_options1(o, zCONVERTARGS, argv[i]);
+      }
+    } else if (ECODE_ISEVIL(sinsert(o, argv[i]))) {
+      strncpy(o->inpname, argv[i], NELEMENTS(o->inpname));
+    }
+  }
+
+  if (o->action & OPTPROGRAM_VERSION) {
+    return version0(o, "convert-ng", zCONVERTARGS);
+  }
+
+  if (o->action & OPTPROGRAM_HELP) {
+    return usage0(o, "convert-ng", zCONVERTARGS);
+  }
+
+  return ECODE_OK;
+}
 
 int main(int argc, char* argv[]) {
   int r = -1;

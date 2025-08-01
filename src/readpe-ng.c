@@ -1,15 +1,15 @@
 #include "buffer.h"
 #include "printf.h"
-#include "readar.h"
-#include "scripts.h"
-#include "readelf.h"
+#include "readpe.h"
 #include "options.h"
+#include "scripts.h"
+#include "objutils.h"
 
-#include "static/readelf-ng.ci"
+#include "static/readpe-ng.ci"
 
-static int get_options_readelf(poptions_t o, int argc, char** argv, char* name) {
+static int get_options_readpe(poptions_t o, int argc, char** argv, char* name) {
   if (0 == argc) {
-    usage2(o, "readelf-ng", zREADELFARGS, zREADELFARGS0, zREADELFARGS1, zREADELFARGS2, zREADELFARGS3);
+    usage3(o, "readpe-ng", zREADPEARGS, zREADPEARGS2, zREADPEARGS3);
     return -1;
   }
 
@@ -22,9 +22,7 @@ static int get_options_readelf(poptions_t o, int argc, char** argv, char* name) 
       MALLOCA(char, arg1, 1024);
 
       if (ECODE_ISOK(breakup_args(argv[i], arg0, NELEMENTS(arg0), arg1, NELEMENTS(arg1)))) {
-        if (0 == strcmp(arg0, zREADELFARGS1)) {
-          o->ocdump |= get_options2(o, zDEBUGELFARGS, arg1);
-        } else if (0 == strcmp(arg0, "--hex-dump")) {
+        if (0 == strcmp(arg0, "--hex-dump")) {
           oinsertsecname(o, ACT_HEXDUMP, arg1);
         } else if (0 == strcmp(arg0, "--string-dump")) {
           oinsertsecname(o, ACT_STRDUMP8, arg1);
@@ -42,13 +40,10 @@ static int get_options_readelf(poptions_t o, int argc, char** argv, char* name) 
           sinsert(o, arg1);
         }
       } else {
-        o->action |= get_options2(o, zREADELFARGS, argv[i]);
+        o->action |= get_options2(o, zREADPEARGS, argv[i]);
       }
     } else if ('-' == argv[i][0]) {
-      if (0 == strcmp(argv[i], zREADELFARGS0)) {
-        imode_t ocdump = get_options1(o, zDEBUGELFARGS, argv[i] + 1);
-        o->ocdump |= ocdump ? ocdump : set_options1(o, zDEBUGELFARGS);
-      } else if (0 == strcmp(argv[i], "-x")) {
+      if (0 == strcmp(argv[i], "-x")) {
         oinsertsecname(o, ACT_HEXDUMP, argv[++i]);
       } else if (0 == strcmp(argv[i], "-p")) {
         oinsertsecname(o, ACT_STRDUMP8, argv[++i]);
@@ -65,7 +60,7 @@ static int get_options_readelf(poptions_t o, int argc, char** argv, char* name) 
       } else if (0 == strcmp(argv[i], "-T")) {
         sinsert(o, argv[++i]);
       } else {
-        o->action |= get_options1(o, zREADELFARGS, argv[i]);
+        o->action |= get_options1(o, zREADPEARGS, argv[i]);
       }
     } else {
       strncpy(o->inpname, argv[i], NELEMENTS(o->inpname));
@@ -73,29 +68,25 @@ static int get_options_readelf(poptions_t o, int argc, char** argv, char* name) 
   }
 
   if (o->action & OPTPROGRAM_VERSION) {
-    return version0(o, "readelf-ng", zREADELFARGS);
+    return version0(o, "readpe-ng", zREADPEARGS);
   }
 
   if (o->action & OPTPROGRAM_HELP) {
-    return usage2(o, "readelf-ng", zREADELFARGS, zREADELFARGS0, zREADELFARGS1, zREADELFARGS2, zREADELFARGS3);
+    return usage3(o, "readpe-ng", zREADPEARGS, zREADPEARGS2, zREADPEARGS3);
   }
 
   return ECODE_OK;
 }
 
 int main(int argc, char* argv[]) {
-  int r = -1;
+  int x = -1;
   poptions_t o = omalloc();
   if (o) {
-    r = get_options_readelf(o, argc - 1, argv + 1, argv[0]);
-    if (0 == r && o->inpname[0]) {
+    x = get_options_readpe(o, argc - 1, argv + 1, argv[0]);
+    if (ECODE_ISOK(x) && o->inpname[0]) {
       pbuffer_t p = bopen(o->inpname);
-      if (p) {
-        if (isAR(p)) {
-          r = readar(p, o);
-        } else if (isELF(p)) {
-          r = readelf(p, o);
-        }
+      if (isPE(p)) {
+        x = readpe(p, o);
       }
 
       xfree(p);
@@ -103,6 +94,6 @@ int main(int argc, char* argv[]) {
   }
 
   xfree(o);
-  return r;
+  return x;
 }
 

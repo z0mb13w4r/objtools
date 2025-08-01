@@ -1,18 +1,18 @@
-static char zDEBUGABBREV[]       = "Displays the contents of the .debug_abbrev section.";
-static char zDEBUGADDR[]         = "Displays the contents of the .debug_addr section.";
-static char zDEBUGCUINDEX[]      = "Displays the contents of the .debug_cu_index|.debug_tu_index sections.";
-static char zDEBUGFRAME[]        = "Display the raw contents of a .debug_frame section.";
-static char zDEBUGFRAMEINTERP[]  = "Display the interpreted contents of a .debug_frame section.";
-static char zDEBUGINFO[]         = "Displays the contents of the .debug_info section.";
-static char zDEBUGLINKS[]        = "Displays the contents of the .gnu_debuglink|.gnu_debugaltlink sections.";
-static char zDEBUGMACRO[]        = "Displays the contents of the .debug_macro|.debug_macinfo sections.";
-static char zDEBUGLOC[]          = "Displays the contents of the .debug_loc|.debug_loclists sections.";
-static char zDEBUGARANGES[]      = "Displays the contents of the .debug_aranges section.";
-static char zDEBUGRANGES[]       = "Displays the contents of the .debug_ranges|.debug_rnglists sections.";
-static char zDEBUGSTR[]          = "Displays the contents of the .debug_str|.debug_line_str|.debug_str_offsets sections.";
-static char zDEBUGGDBINDEX[]     = "Displays the contents of the .gdb_index|.debug_names sections.";
+char zDEBUGABBREV[]       = "Displays the contents of the .debug_abbrev section.";
+char zDEBUGADDR[]         = "Displays the contents of the .debug_addr section.";
+char zDEBUGCUINDEX[]      = "Displays the contents of the .debug_cu_index|.debug_tu_index sections.";
+char zDEBUGFRAME[]        = "Display the raw contents of a .debug_frame section.";
+char zDEBUGFRAMEINTERP[]  = "Display the interpreted contents of a .debug_frame section.";
+char zDEBUGINFO[]         = "Displays the contents of the .debug_info section.";
+char zDEBUGLINKS[]        = "Displays the contents of the .gnu_debuglink|.gnu_debugaltlink sections.";
+char zDEBUGMACRO[]        = "Displays the contents of the .debug_macro|.debug_macinfo sections.";
+char zDEBUGLOC[]          = "Displays the contents of the .debug_loc|.debug_loclists sections.";
+char zDEBUGARANGES[]      = "Displays the contents of the .debug_aranges section.";
+char zDEBUGRANGES[]       = "Displays the contents of the .debug_ranges|.debug_rnglists sections.";
+char zDEBUGSTR[]          = "Displays the contents of the .debug_str|.debug_line_str|.debug_str_offsets sections.";
+char zDEBUGGDBINDEX[]     = "Displays the contents of the .gdb_index|.debug_names sections.";
 
-static const args_t zDEBUGELFARGS[] = {
+const args_t zDEBUGELFARGS[] = {
   {'a', "abbrev",             OPTDEBUGELF_DEBUG_ABBREV,        zDEBUGABBREV},
   {'A', "addr",               OPTDEBUGELF_DEBUG_ADDR,          zDEBUGADDR},
   {'c', "cu_index",           OPTDEBUGELF_DEBUG_CU_INDEX,      zDEBUGCUINDEX},
