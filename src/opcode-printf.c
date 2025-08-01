@@ -22,31 +22,7 @@ static int ocdebugf_cvalue(handle_t p, uint64_t cv) {
       n += printf_nice(MODE_MASK8(cv), USE_UNKNOWN);
     }
 
-    if (MODE_ISSET(cv, OPOPERAND_SEGMENT)) {
-      n += printf_text("| SEGMENT", USE_LT | USE_SPACE);
-    }
-    if (MODE_ISSET(cv, OCOPERAND_ABSOLUTE)) {
-      n += printf_text("| ABSOLUTE", USE_LT | USE_SPACE);
-    }
-    if (MODE_ISSET(cv, OPSEGMENT_CS)) {
-      n += printf_text("| CS", USE_LT | USE_SPACE);
-    }
-    if (MODE_ISSET(cv, OPSEGMENT_DS)) {
-      n += printf_text("| DS", USE_LT | USE_SPACE);
-    }
-    if (MODE_ISSET(cv, OPSEGMENT_SS)) {
-      n += printf_text("| SS", USE_LT | USE_SPACE);
-    }
-    if (MODE_ISSET(cv, OPSEGMENT_ES)) {
-      n += printf_text("| ES", USE_LT | USE_SPACE);
-    }
-    if (MODE_ISSET(cv, OPSEGMENT_GS)) {
-      n += printf_text("| GS", USE_LT | USE_SPACE);
-    }
-    if (MODE_ISSET(cv, OPSEGMENT_FS)) {
-      n += printf_text("| FS", USE_LT | USE_SPACE);
-    }
-
+    n += printf_mask(zSEGMENTSFLAGS, cv & ~0xff, USE_NONE);
     n += printf_eol();
 
     return n;
