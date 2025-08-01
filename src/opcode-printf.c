@@ -22,28 +22,28 @@ static int ocdebugf_cvalue(handle_t p, uint64_t cv) {
       n += printf_nice(MODE_MASK8(cv), USE_UNKNOWN);
     }
 
-    if (MODE_ISANY(cv, OPOPERAND_SEGMENT)) {
+    if (MODE_ISSET(cv, OPOPERAND_SEGMENT)) {
       n += printf_text("| SEGMENT", USE_LT | USE_SPACE);
     }
-    if (MODE_ISANY(cv, OCOPERAND_ABSOLUTE)) {
+    if (MODE_ISSET(cv, OCOPERAND_ABSOLUTE)) {
       n += printf_text("| ABSOLUTE", USE_LT | USE_SPACE);
     }
-    if (MODE_ISANY(cv, OPSEGMENT_CS)) {
+    if (MODE_ISSET(cv, OPSEGMENT_CS)) {
       n += printf_text("| CS", USE_LT | USE_SPACE);
     }
-    if (MODE_ISANY(cv, OPSEGMENT_DS)) {
+    if (MODE_ISSET(cv, OPSEGMENT_DS)) {
       n += printf_text("| DS", USE_LT | USE_SPACE);
     }
-    if (MODE_ISANY(cv, OPSEGMENT_SS)) {
+    if (MODE_ISSET(cv, OPSEGMENT_SS)) {
       n += printf_text("| SS", USE_LT | USE_SPACE);
     }
-    if (MODE_ISANY(cv, OPSEGMENT_ES)) {
+    if (MODE_ISSET(cv, OPSEGMENT_ES)) {
       n += printf_text("| ES", USE_LT | USE_SPACE);
     }
-    if (MODE_ISANY(cv, OPSEGMENT_GS)) {
+    if (MODE_ISSET(cv, OPSEGMENT_GS)) {
       n += printf_text("| GS", USE_LT | USE_SPACE);
     }
-    if (MODE_ISANY(cv, OPSEGMENT_FS)) {
+    if (MODE_ISSET(cv, OPSEGMENT_FS)) {
       n += printf_text("| FS", USE_LT | USE_SPACE);
     }
 
@@ -66,49 +66,49 @@ static int ocdebugf_nvalue(handle_t p, const uint64_t cv, const uint64_t nv) {
     } else if (MODE_ISLOCKED8(OPOPERAND_REGISTER, cv)) {
       n += printf_text("REGISTER", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
 
-      if (MODE_ISANY(nv, OCREGISTER_GENERAL)) {
+      if (MODE_ISSET(nv, OCREGISTER_GENERAL)) {
         n += printf_text("| GENERAL", USE_LT | USE_SPACE);
       }
-      if (MODE_ISANY(nv, OCREGISTER_INSTRUCTIONPTR)) {
+      if (MODE_ISSET(nv, OCREGISTER_INSTRUCTIONPTR)) {
         n += printf_text("| INSTRUCTION PTR", USE_LT | USE_SPACE);
       }
-      if (MODE_ISANY(nv, OCREGISTER_BASEPTR)) {
+      if (MODE_ISSET(nv, OCREGISTER_BASEPTR)) {
         n += printf_text("| BASE PTR", USE_LT | USE_SPACE);
       }
-      if (MODE_ISANY(nv, OCREGISTER_STACKPTR)) {
+      if (MODE_ISSET(nv, OCREGISTER_STACKPTR)) {
         n += printf_text("| STACK PTR", USE_LT | USE_SPACE);
       }
-      if (MODE_ISANY(nv, OCREGISTER_DSTINDEX)) {
+      if (MODE_ISSET(nv, OCREGISTER_DSTINDEX)) {
         n += printf_text("| DST INDEX", USE_LT | USE_SPACE);
       }
-      if (MODE_ISANY(cv, OCREGISTER_SRCINDEX)) {
+      if (MODE_ISSET(cv, OCREGISTER_SRCINDEX)) {
         n += printf_text("| SRC INDEX", USE_LT | USE_SPACE);
       }
-      if (MODE_ISANY(nv, OCREGISTER_DATA)) {
+      if (MODE_ISSET(nv, OCREGISTER_DATA)) {
         n += printf_text("| DATA", USE_LT | USE_SPACE);
       }
-      if (MODE_ISANY(nv, OCREGISTER_COUNTER)) {
+      if (MODE_ISSET(nv, OCREGISTER_COUNTER)) {
         n += printf_text("| COUNTER", USE_LT | USE_SPACE);
       }
-      if (MODE_ISANY(cv, OCREGISTER_BASE)) {
+      if (MODE_ISSET(cv, OCREGISTER_BASE)) {
         n += printf_text("| BASE", USE_LT | USE_SPACE);
       }
-      if (MODE_ISANY(nv, OCREGISTER_ACCUMULATOR)) {
+      if (MODE_ISSET(nv, OCREGISTER_ACCUMULATOR)) {
         n += printf_text("| ACCUMULATOR", USE_LT | USE_SPACE);
       }
-      if (MODE_ISANY(nv, OCREGISTER_8BITLO)) {
+      if (MODE_ISSET(nv, OCREGISTER_8BITLO)) {
         n += printf_text("| 8 BIT LO", USE_LT | USE_SPACE);
       }
-      if (MODE_ISANY(nv, OCREGISTER_8BITHI)) {
+      if (MODE_ISSET(nv, OCREGISTER_8BITHI)) {
         n += printf_text("| 8 BIT HI", USE_LT | USE_SPACE);
       }
-      if (MODE_ISANY(nv, OCREGISTER_16BIT)) {
+      if (MODE_ISSET(nv, OCREGISTER_16BIT)) {
         n += printf_text("| 16 BIT", USE_LT | USE_SPACE);
       }
-      if (MODE_ISANY(nv, OCREGISTER_32BIT)) {
+      if (MODE_ISSET(nv, OCREGISTER_32BIT)) {
         n += printf_text("| 32 BIT", USE_LT | USE_SPACE);
       }
-      if (MODE_ISANY(nv, OCREGISTER_64BIT)) {
+      if (MODE_ISSET(nv, OCREGISTER_64BIT)) {
         n += printf_text("| 64 BIT", USE_LT | USE_SPACE);
       }
     } else {
