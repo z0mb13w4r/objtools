@@ -7,7 +7,10 @@ typedef struct oestruct_s {
 } oestruct_t, *poestruct_t;
 
 static oestruct_t zINSTRUCTIONS[] = {
+  OCSTRUCT("callb",     OCINSTRUCTION_CALLB),
+  OCSTRUCT("calll",     OCINSTRUCTION_CALLL),
   OCSTRUCT("callq",     OCINSTRUCTION_CALLQ),
+  OCSTRUCT("call",      OCINSTRUCTION_CALL),
 
   OCSTRUCT("bnd jmpq",  OCINSTRUCTION_JMP),
   OCSTRUCT("jmpq",      OCINSTRUCTION_JMPQ),
