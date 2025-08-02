@@ -211,10 +211,10 @@ unknown_t oeinsert_operands(handle_t p, unknown_t q, unknown_t m) {
     pocexamine_t p0 = oeget(p, OECODE_THIS);
     poestruct_t q0 = CAST(poestruct_t, q);
 
-    if (MODE_ISANY(q0->action, OCINSTRUCTION_OPERAND1)) {
-      p0->op1 = oeinsert_operand(p, q, m);
-    } else if (MODE_ISANY(q0->action, OCINSTRUCTION_OPERAND2)) {
+    if (MODE_ISANY(q0->action, OCINSTRUCTION_OPERAND2)) {
 //printf("+++++++");
+    } else if (MODE_ISANY(q0->action, OCINSTRUCTION_OPERAND1)) {
+      p0->op1 = oeinsert_operand(p, q, m);
     }
   }
 
