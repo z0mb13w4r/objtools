@@ -213,6 +213,8 @@ unknown_t oeinsert_operands(handle_t p, unknown_t q, unknown_t m) {
 
     if (MODE_ISANY(q0->action, OCINSTRUCTION_OPERAND1)) {
       p0->op1 = oeinsert_operand(p, q, m);
+    } else if (MODE_ISANY(q0->action, OCINSTRUCTION_OPERAND2)) {
+//printf("+++++++");
     }
   }
 
@@ -234,6 +236,8 @@ handle_t oecreate(handle_t p, const uint64_t vaddr, unknown_t mnemonic, unknown_
 //printf("++");
       m1 = oeinsert_mnemonic(p0, pi, m1);
       m1 = oeinsert_operands(p0, pi, m1);
+    } else {
+      printf_e("The mnemonic is missing from the table zINSTRUCTIONS");
     }
   }
 
