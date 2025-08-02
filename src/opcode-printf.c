@@ -22,7 +22,7 @@ static int ocdebugf_cvalue(handle_t p, uint64_t cv) {
       n += printf_nice(MODE_MASK8(cv), USE_UNKNOWN);
     }
 
-    n += printf_mask(zSEGMENTSFLAGS, cv & ~0xff, USE_NONE);
+    n += printf_mask(zSEGMENTFLAGS, cv & ~0xff, USE_NONE);
     n += printf_eol();
 
     return n;
@@ -41,7 +41,8 @@ static int ocdebugf_nvalue(handle_t p, const uint64_t cv, const uint64_t nv) {
       n += printf_text("UVALUE", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
     } else if (MODE_ISLOCKED8(OPOPERAND_REGISTER, cv)) {
       n += printf_text("REGISTER", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
-      n += printf_mask(zREGISTERSFLAGS, nv, USE_NONE);
+      n += printf_pick(zREGISTERNAMES, nv, USE_NONE);
+      n += printf_mask(zREGISTERFLAGS, nv & ~0xff, USE_NONE);
     } else {
       n += printf_text("UNKNOWN", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
     }
@@ -61,35 +62,38 @@ static int ocdebugf(handle_t p, handle_t q) {
   if (isopcode(p) && isocexamine(q)) {
     int n = 0;
 
-    pocexamine_t q0 = oeget(q, OECODE_THIS);
-    pocoperand_t o0 = oeget(q, OECODE_OPERAND1);
-    pocoperand_t o1 = oeget(q, OECODE_OPERAND2);
-    pocmnemonic_t m0 = oeget(q, OECODE_MNEMONIC);
+//    popcode_t oc = ocget(p, OPCODE_THIS);
+//    if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
+      pocexamine_t q0 = oeget(q, OECODE_THIS);
+      pocoperand_t o0 = oeget(q, OECODE_OPERAND1);
+      pocoperand_t o1 = oeget(q, OECODE_OPERAND2);
+      pocmnemonic_t m0 = oeget(q, OECODE_MNEMONIC);
 
-    n += printf_eol();
+      n += printf_eol();
 
-    n += printf_text("VADDR", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
-    n += opcode_printf_FADDR(p, q0->vaddr, USE_EOL);
-    if (0 != q0->comment[0]) {
-      n += printf_text("COMMENT", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
-      n += printf_text(q0->comment, USE_LT | USE_EOL);
-    }
-    if (m0) {
-      n += printf_text("MNEMONIC", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
-      n += printf_text(m0->data, USE_LT | USE_EOL);
-    }
-    if (o0) {
-      n += printf_text("OPERAND1", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
-      n += printf_text(o0->data, USE_LT | USE_EOL);
-      n += ocdebugf_cvalue(p, o0->cvalue);
-      n += ocdebugf_nvalue(p, o0->cvalue, o0->uvalue);
-    }
-    if (o1) {
-      n += printf_text("OPERAND2", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
-      n += printf_text(o1->data, USE_LT | USE_EOL);
-      n += ocdebugf_cvalue(p, o1->cvalue);
-      n += ocdebugf_nvalue(p, o1->cvalue, o1->uvalue);
-    }
+      n += printf_text("VADDR", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
+      n += opcode_printf_FADDR(p, q0->vaddr, USE_EOL);
+      if (0 != q0->comment[0]) {
+        n += printf_text("COMMENT", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
+        n += printf_text(q0->comment, USE_LT | USE_EOL);
+      }
+      if (m0) {
+        n += printf_text("MNEMONIC", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
+        n += printf_text(m0->data, USE_LT | USE_EOL);
+      }
+      if (o0) {
+        n += printf_text("OPERAND1", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
+        n += printf_text(o0->data, USE_LT | USE_EOL);
+        n += ocdebugf_cvalue(p, o0->cvalue);
+        n += ocdebugf_nvalue(p, o0->cvalue, o0->uvalue);
+      }
+      if (o1) {
+        n += printf_text("OPERAND2", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
+        n += printf_text(o1->data, USE_LT | USE_EOL);
+        n += ocdebugf_cvalue(p, o1->cvalue);
+        n += ocdebugf_nvalue(p, o1->cvalue, o1->uvalue);
+      }
+//    }
 
     return n;
   }

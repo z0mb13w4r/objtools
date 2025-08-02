@@ -182,7 +182,7 @@ static oestruct_t zSEGMENTS[] = {
   {NULL}
 };
 
-convert_t zSEGMENTSFLAGS[] = {
+convert_t zSEGMENTFLAGS[] = {
   {"SEGMENT",           OPOPERAND_SEGMENT},
   {"ABSOLUTE",          OCOPERAND_ABSOLUTE},
   {"CS",                OPSEGMENT_CS},
@@ -194,7 +194,26 @@ convert_t zSEGMENTSFLAGS[] = {
   {0, 0}
 };
 
-convert_t zREGISTERSFLAGS[] = {
+convert_t zREGISTERFLAGS[] = {
+  {"GENERAL",           OCREGISTER_GENERAL},
+  {"INSTRUCTIONPTR",    OCREGISTER_INSTRUCTIONPTR},
+  {"BASEPTR",           OCREGISTER_BASEPTR},
+  {"STACKPTR",          OCREGISTER_STACKPTR},
+  {"DSTINDEX",          OCREGISTER_DSTINDEX},
+  {"SRCINDEX",          OCREGISTER_SRCINDEX},
+  {"DATA",              OCREGISTER_DATA},
+  {"COUNTER",           OCREGISTER_COUNTER},
+  {"BASE",              OCREGISTER_BASE},
+  {"ACCUMULATOR",       OCREGISTER_ACCUMULATOR},
+  {"8BITLO",            OCREGISTER_8BITLO},
+  {"8BITHI",            OCREGISTER_8BITHI},
+  {"16BIT",             OCREGISTER_16BIT},
+  {"32BIT",             OCREGISTER_32BIT},
+  {"64BIT",             OCREGISTER_64BIT},
+  {0, 0}
+};
+
+convert_t zREGISTERNAMES[] = {
   {"\%rax",             OCREGISTER_RAX},
   {"\%eax",             OCREGISTER_EAX},
   {"\%ax",              OCREGISTER_AX},
@@ -282,22 +301,6 @@ convert_t zREGISTERSFLAGS[] = {
   {"\%rip",             OCREGISTER_RIP},
   {"\%eip",             OCREGISTER_EIP},
   {"\%ip",              OCREGISTER_IP},
-
-  {"GENERAL",           OCREGISTER_GENERAL},
-  {"INSTRUCTIONPTR",    OCREGISTER_INSTRUCTIONPTR},
-  {"BASEPTR",           OCREGISTER_BASEPTR},
-  {"STACKPTR",          OCREGISTER_STACKPTR},
-  {"DSTINDEX",          OCREGISTER_DSTINDEX},
-  {"SRCINDEX",          OCREGISTER_SRCINDEX},
-  {"DATA",              OCREGISTER_DATA},
-  {"COUNTER",           OCREGISTER_COUNTER},
-  {"BASE",              OCREGISTER_BASE},
-  {"ACCUMULATOR",       OCREGISTER_ACCUMULATOR},
-  {"8BITLO",            OCREGISTER_8BITLO},
-  {"8BITHI",            OCREGISTER_8BITHI},
-  {"16BIT",             OCREGISTER_16BIT},
-  {"32BIT",             OCREGISTER_32BIT},
-  {"64BIT",             OCREGISTER_64BIT},
   {0, 0}
 };
 

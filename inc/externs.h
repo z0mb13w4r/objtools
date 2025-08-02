@@ -38,8 +38,9 @@ extern convert_t zDWEXPRLITE[];
 extern convert_t zPHDRTYPE[];
 extern convert_t zSHDRTYPE[];
 
-extern convert_t zSEGMENTSFLAGS[];
-extern convert_t zREGISTERSFLAGS[];
+extern convert_t zSEGMENTFLAGS[];
+extern convert_t zREGISTERFLAGS[];
+extern convert_t zREGISTERNAMES[];
 
 extern char zHEXDUMP[];
 extern char zSTRDUMP[];
