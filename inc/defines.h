@@ -119,6 +119,11 @@
 
 #define MODE_MAKE(x0,x1,x2)     (MODE_PUT0(x0) | MODE_PUT1(x1) | MODE_PUT2(x2))
 
+#define MODE_HIDE8(x)           ((x) & ~0xff)
+#define MODE_HIDE16(x)          ((x) & ~0xffff)
+#define MODE_HIDE24(x)          ((x) & ~0xffffff)
+#define MODE_HIDE32(x)          ((x) & ~0xffffffff)
+
 #define MODE_MASK0              (0x00ffffff)
 #define MODE_MASK1              (0xff000000)
 #define MODE_MASK8(x)           ((x) & 0xff)

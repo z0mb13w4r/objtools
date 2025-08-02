@@ -42,7 +42,7 @@ static int ocdebugf_nvalue(handle_t p, const uint64_t cv, const uint64_t nv) {
     } else if (MODE_ISLOCKED8(OPOPERAND_REGISTER, cv)) {
       n += printf_text("REGISTER", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
       n += printf_pick(zREGISTERNAMES, nv, USE_NONE);
-      n += printf_mask(zREGISTERFLAGS, nv & ~0xff, USE_NONE);
+      n += printf_mask(zREGISTERFLAGS, MODE_HIDE8(nv), USE_NONE);
     } else {
       n += printf_text("UNKNOWN", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
     }
