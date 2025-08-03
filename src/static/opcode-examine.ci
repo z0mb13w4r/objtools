@@ -186,6 +186,19 @@ static oestruct_t zSEGMENTS[] = {
   {NULL}
 };
 
+convert_t zINSTRUCTIONFLAGS[] = {
+  {"DATA16",            OCINSTRUCTION_DATA16},
+  {"DATA32",            OCINSTRUCTION_DATA32},
+  {"8BIT",              OCINSTRUCTION_8BIT},
+  {"16BIT",             OCINSTRUCTION_16BIT},
+  {"32BIT",             OCINSTRUCTION_32BIT},
+  {"64BIT",             OCINSTRUCTION_64BIT},
+  {"OPERAND0",          OCINSTRUCTION_OPERAND0},
+  {"OPERAND1",          OCINSTRUCTION_OPERAND1},
+  {"OPERAND2",          OCINSTRUCTION_OPERAND2},
+  {0, 0}
+};
+
 convert_t zINSTRUCTIONNAMES[] = {
   {"CALL",              MODE_MASK16(OCINSTRUCTION_CALL)},
   {"ENDBR",             MODE_MASK16(OCINSTRUCTION_ENDBR)},

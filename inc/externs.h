@@ -41,6 +41,7 @@ extern convert_t zSHDRTYPE[];
 extern convert_t zSEGMENTFLAGS[];
 extern convert_t zREGISTERFLAGS[];
 extern convert_t zREGISTERNAMES[];
+extern convert_t zINSTRUCTIONFLAGS[];
 extern convert_t zINSTRUCTIONNAMES[];
 
 extern char zHEXDUMP[];
