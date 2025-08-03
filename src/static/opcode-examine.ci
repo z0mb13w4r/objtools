@@ -82,6 +82,7 @@ static oestruct_t zINSTRUCTIONS[] = {
   OCSTRUCT("mov",       OCINSTRUCTION_MOV),
 
   OCSTRUCT("lea",       OCINSTRUCTION_LEA),
+  OCSTRUCT("xchg",      OCINSTRUCTION_XCHG),
   {NULL}
 };
 
@@ -223,6 +224,7 @@ convert_t zINSTRUCTIONNAMES[] = {
   {"XOR",               MODE_MASK16(OCINSTRUCTION_XOR)},
   {"MOV",               MODE_MASK16(OCINSTRUCTION_MOV)},
   {"LEA",               MODE_MASK16(OCINSTRUCTION_LEA)},
+  {"XCHG",              MODE_MASK16(OCINSTRUCTION_XCHG)},
   {"NOP",               MODE_MASK16(OCINSTRUCTION_NOP)},
   {0, 0}
 };
