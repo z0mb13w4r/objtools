@@ -186,6 +186,34 @@ static oestruct_t zSEGMENTS[] = {
   {NULL}
 };
 
+convert_t zINSTRUCTIONNAMES[] = {
+  {"CALL",              MODE_MASK16(OCINSTRUCTION_CALL)},
+  {"ENDBR",             MODE_MASK16(OCINSTRUCTION_ENDBR)},
+  {"JMP",               MODE_MASK16(OCINSTRUCTION_JMP)},
+  {"TEST",              MODE_MASK16(OCINSTRUCTION_TEST)},
+  {"CMP",               MODE_MASK16(OCINSTRUCTION_CMP)},
+  {"RET",               MODE_MASK16(OCINSTRUCTION_RET)},
+  {"HLT",               MODE_MASK16(OCINSTRUCTION_HLT)},
+  {"PUSH",              MODE_MASK16(OCINSTRUCTION_PUSH)},
+  {"POP",               MODE_MASK16(OCINSTRUCTION_POP)},
+  {"ADD",               MODE_MASK16(OCINSTRUCTION_ADD)},
+  {"DEC",               MODE_MASK16(OCINSTRUCTION_DEC)},
+  {"INC",               MODE_MASK16(OCINSTRUCTION_INC)},
+  {"NEG",               MODE_MASK16(OCINSTRUCTION_NEG)},
+  {"NOT",               MODE_MASK16(OCINSTRUCTION_NOT)},
+  {"SUB",               MODE_MASK16(OCINSTRUCTION_SUB)},
+  {"AND",               MODE_MASK16(OCINSTRUCTION_AND)},
+  {"SAL",               MODE_MASK16(OCINSTRUCTION_SAL)},
+  {"SAR",               MODE_MASK16(OCINSTRUCTION_SAR)},
+  {"SHL",               MODE_MASK16(OCINSTRUCTION_SHL)},
+  {"SHR",               MODE_MASK16(OCINSTRUCTION_SHR)},
+  {"XOR",               MODE_MASK16(OCINSTRUCTION_XOR)},
+  {"MOV",               MODE_MASK16(OCINSTRUCTION_MOV)},
+  {"LEA",               MODE_MASK16(OCINSTRUCTION_LEA)},
+  {"NOP",               MODE_MASK16(OCINSTRUCTION_NOP)},
+  {0, 0}
+};
+
 convert_t zSEGMENTFLAGS[] = {
   {"SEGMENT",           OPOPERAND_SEGMENT},
   {"ABSOLUTE",          OCOPERAND_ABSOLUTE},

@@ -5,7 +5,23 @@
 
 static const int MAXSIZE = 24;
 
-static int ocdebugf_cvalue(handle_t p, uint64_t cv) {
+static int ocdebugf_cvalue0(handle_t p, uint64_t cv) {
+  if (isopcode(p)) {
+    int n = 0;
+
+    n += printf_text("CVALUE", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(cv, USE_FHEX64);
+    n += printf_pick(zINSTRUCTIONNAMES, MODE_MASK16(cv), USE_SPACE);
+
+    n += printf_eol();
+
+    return n;
+  }
+
+  return ECODE_HANDLE;
+}
+
+static int ocdebugf_cvalue1(handle_t p, uint64_t cv) {
   if (isopcode(p)) {
     int n = 0;
 
@@ -22,7 +38,7 @@ static int ocdebugf_cvalue(handle_t p, uint64_t cv) {
       n += printf_nice(MODE_MASK8(cv), USE_UNKNOWN);
     }
 
-    n += printf_mask(zSEGMENTFLAGS, cv & ~0xff, USE_NONE);
+    n += printf_mask(zSEGMENTFLAGS, MODE_HIDE8(cv), USE_NONE);
     n += printf_eol();
 
     return n;
@@ -80,17 +96,18 @@ static int ocdebugf(handle_t p, handle_t q) {
       if (m0) {
         n += printf_text("MNEMONIC", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
         n += printf_text(m0->data, USE_LT | USE_EOL);
+        n += ocdebugf_cvalue0(p, m0->cvalue);
       }
       if (o0) {
         n += printf_text("OPERAND1", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
         n += printf_text(o0->data, USE_LT | USE_EOL);
-        n += ocdebugf_cvalue(p, o0->cvalue);
+        n += ocdebugf_cvalue1(p, o0->cvalue);
         n += ocdebugf_nvalue(p, o0->cvalue, o0->uvalue);
       }
       if (o1) {
         n += printf_text("OPERAND2", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
         n += printf_text(o1->data, USE_LT | USE_EOL);
-        n += ocdebugf_cvalue(p, o1->cvalue);
+        n += ocdebugf_cvalue1(p, o1->cvalue);
         n += ocdebugf_nvalue(p, o1->cvalue, o1->uvalue);
       }
 //    }
