@@ -6,7 +6,8 @@ typedef struct oestruct_s {
   const imode_t action;
 } oestruct_t, *poestruct_t;
 
-static oestruct_t zDATATYPES[] = {
+static oestruct_t zPREFIXTYPES[] = {
+  OCSTRUCT("bnd",       OCINSTRUCTION_BND),
   OCSTRUCT("data16",    OCINSTRUCTION_DATA16),
   OCSTRUCT("data32",    OCINSTRUCTION_DATA32),
   {NULL}
@@ -18,7 +19,6 @@ static oestruct_t zINSTRUCTIONS[] = {
   OCSTRUCT("callq",     OCINSTRUCTION_CALLQ),
   OCSTRUCT("call",      OCINSTRUCTION_CALL),
 
-  OCSTRUCT("bnd jmpq",  OCINSTRUCTION_JMP),
   OCSTRUCT("jmpq",      OCINSTRUCTION_JMPQ),
   OCSTRUCT("jle",       OCINSTRUCTION_JMP),
   OCSTRUCT("jmp",       OCINSTRUCTION_JMP),
@@ -188,6 +188,7 @@ static oestruct_t zSEGMENTS[] = {
 };
 
 convert_t zINSTRUCTIONFLAGS[] = {
+  {"BND",               OCINSTRUCTION_BND},
   {"DATA16",            OCINSTRUCTION_DATA16},
   {"DATA32",            OCINSTRUCTION_DATA32},
   {"8BIT",              OCINSTRUCTION_8BIT},

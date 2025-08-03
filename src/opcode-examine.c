@@ -174,13 +174,13 @@ static unknown_t oeinsert_comment(handle_t p, unknown_t m) {
   return NULL;
 }
 
-static unknown_t oeinsert_data(handle_t p, unknown_t m) {
+static unknown_t oeinsert_prefix(handle_t p, unknown_t m) {
   if (isocexamine(p) && m) {
     char *m0 = CAST(char*, m);
     pocmnemonic_t p1 = oeget(p, OECODE_MNEMONIC);
 
     size_t m0size = strlen(m0);
-    poestruct_t d0 = oepick(zDATATYPES, m0, m0size);
+    poestruct_t d0 = oepick(zPREFIXTYPES, m0, m0size);
     if (p1 && d0) {
       p1->cvalue |= d0->action;
 //printf("++%s++", d0->mc);
@@ -253,7 +253,7 @@ handle_t oecreate(handle_t p, const uint64_t vaddr, unknown_t mnemonic, unknown_
 
     char* m1 = NULL;
     m1 = oeinsert_comment(p0, m0);
-    m1 = oeinsert_data(p0, m0);
+    m1 = oeinsert_prefix(p0, m0);
     poestruct_t pi = oepick(zINSTRUCTIONS, m1, strlen(m1));
 
     if (pi) {

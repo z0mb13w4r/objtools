@@ -8,6 +8,7 @@
 #define OECODE_OPERAND1                (2)
 #define OECODE_OPERAND2                (3)
 
+#define OCINSTRUCTION_BND              U64MASK(53)
 #define OCINSTRUCTION_DATA16           U64MASK(54)
 #define OCINSTRUCTION_DATA32           U64MASK(55)
 #define OCINSTRUCTION_8BIT             U64MASK(56)
