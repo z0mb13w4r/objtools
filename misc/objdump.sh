@@ -52,8 +52,8 @@ go_rm $OUT1
 go_rm $OUT2
 
 if [ "$1" == "-p" ] || [ "$1" == "--print" ]; then
-  echo $PRGNAME ${PICK1} $NAME
-  echo $PRGNAMENG ${PICK1} $NAME
+  echo $PRGNAME ${PICK} $NAME
+  echo $PRGNAMENG ${PICK} $NAME
 elif [ "$1" == "-r" ] || [ "$1" == "--raw" ]; then
   $PRGNAMENG ${PICK} $NAME > $OUT1
   $PRGNAME ${PICK} $NAME > $OUT2

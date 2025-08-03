@@ -6,6 +6,12 @@ typedef struct oestruct_s {
   const imode_t action;
 } oestruct_t, *poestruct_t;
 
+static oestruct_t zDATATYPES[] = {
+  OCSTRUCT("data16",    OCINSTRUCTION_DATA16),
+  OCSTRUCT("data32",    OCINSTRUCTION_DATA32),
+  {NULL}
+};
+
 static oestruct_t zINSTRUCTIONS[] = {
   OCSTRUCT("callb",     OCINSTRUCTION_CALLB),
   OCSTRUCT("calll",     OCINSTRUCTION_CALLL),
@@ -76,7 +82,6 @@ static oestruct_t zINSTRUCTIONS[] = {
   OCSTRUCT("mov",       OCINSTRUCTION_MOV),
 
   OCSTRUCT("lea",       OCINSTRUCTION_LEA),
-
   {NULL}
 };
 

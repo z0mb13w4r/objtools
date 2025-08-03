@@ -8,6 +8,8 @@
 #define OECODE_OPERAND1                (2)
 #define OECODE_OPERAND2                (3)
 
+#define OCINSTRUCTION_DATA16           U64MASK(54)
+#define OCINSTRUCTION_DATA32           U64MASK(55)
 #define OCINSTRUCTION_8BIT             U64MASK(56)
 #define OCINSTRUCTION_16BIT            U64MASK(57)
 #define OCINSTRUCTION_32BIT            U64MASK(58)
@@ -76,6 +78,7 @@
 #define OCOPERAND_UVALUE               (0x02)
 #define OPOPERAND_REGISTER             (0x03)
 #define OPOPERAND_SEGMENT              U64MASK(55)
+// ---- GAP OPSEGMENT ----
 #define OCOPERAND_ABSOLUTE             U64MASK(62)
 
 #define OPSEGMENT_CS                   (U64MASK(56) | OPOPERAND_SEGMENT)
@@ -193,6 +196,7 @@
 
 typedef struct ocmnemonic_s {
   char       data[160];
+  uint64_t   cvalue;
 } ocmnemonic_t, *pocmnemonic_t;
 
 typedef struct ocoperand_s {
@@ -221,12 +225,7 @@ handle_t oefree(handle_t p);
 handle_t oecreate(handle_t p, const uint64_t vaddr, unknown_t mnemonic, unknown_t operands);
 
 unknown_t oeget(handle_t p, const imode_t mode);
-
 unknown_t oeskip(unknown_t p, const size_t size);
-unknown_t oeinsert_comment(handle_t p, unknown_t m);
-unknown_t oeinsert_operand(handle_t p, unknown_t q, unknown_t m);
-unknown_t oeinsert_operands(handle_t p, unknown_t q, unknown_t m);
-unknown_t oeinsert_mnemonic(handle_t p, unknown_t q, unknown_t m);
 
 #endif
 

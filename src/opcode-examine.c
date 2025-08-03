@@ -101,11 +101,11 @@ static unknown_t oedo_segment(handle_t p, unknown_t o, unknown_t m) {
     pocoperand_t o0 = CAST(pocoperand_t, o);
 
     size_t m0size = strlen(m0);
-    poestruct_t r0 = oepick(zSEGMENTS, m0, m0size);
-    if (r0) {
-      o0->cvalue  = r0->action;
-//printf("++%s++", r0->mc);
-      return oeskip(m0 + r0->mcsize, m0size - r0->mcsize);
+    poestruct_t s0 = oepick(zSEGMENTS, m0, m0size);
+    if (s0) {
+      o0->cvalue  = s0->action;
+//printf("++%s++", s0->mc);
+      return oeskip(m0 + s0->mcsize, m0size - s0->mcsize);
     }
 
     return m0;
@@ -159,7 +159,7 @@ unknown_t oeskip(unknown_t p, const size_t size) {
   return NULL;
 }
 
-unknown_t oeinsert_comment(handle_t p, unknown_t m) {
+static unknown_t oeinsert_comment(handle_t p, unknown_t m) {
   if (isocexamine(p) && m) {
     pocexamine_t p0 = oeget(p, OECODE_THIS);
     char* p1 = strchr(m, '#');
@@ -174,20 +174,42 @@ unknown_t oeinsert_comment(handle_t p, unknown_t m) {
   return NULL;
 }
 
-unknown_t oeinsert_mnemonic(handle_t p, unknown_t q, unknown_t m) {
-  if (isocexamine(p) && q && m) {
+static unknown_t oeinsert_data(handle_t p, unknown_t m) {
+  if (isocexamine(p) && m) {
     char *m0 = CAST(char*, m);
-    pocexamine_t p0 = oeget(p, OECODE_THIS);
-    poestruct_t q0 = CAST(poestruct_t, q);
+    pocmnemonic_t p1 = oeget(p, OECODE_MNEMONIC);
 
-    strncpy(p0->mc->data, q0->mc, q0->mcsize);
-    return oeskip(m0 + q0->mcsize, strlen(m0) - q0->mcsize);
+    size_t m0size = strlen(m0);
+    poestruct_t d0 = oepick(zDATATYPES, m0, m0size);
+    if (p1 && d0) {
+      p1->cvalue |= d0->action;
+//printf("++%s++", d0->mc);
+      return oeskip(m0 + d0->mcsize, m0size - d0->mcsize);
+    }
+
+    return oeskip(m0, m0size);
   }
 
   return NULL;
 }
 
-unknown_t oeinsert_operand(handle_t p, unknown_t q, unknown_t m) {
+static unknown_t oeinsert_mnemonic(handle_t p, unknown_t q, unknown_t m) {
+  if (isocexamine(p) && q && m) {
+    char *m0 = CAST(char*, m);
+    pocmnemonic_t p1 = oeget(p, OECODE_MNEMONIC);
+    poestruct_t q0 = CAST(poestruct_t, q);
+
+    if (p1) {
+      p1->cvalue |= q0->action;
+      strncpy(p1->data, q0->mc, q0->mcsize);
+      return oeskip(m0 + q0->mcsize, strlen(m0) - q0->mcsize);
+    }
+  }
+
+  return NULL;
+}
+
+static unknown_t oeinsert_operand(handle_t p, unknown_t q, unknown_t m) {
   if (isocexamine(p) && q && m) {
     pocoperand_t o0 = xmalloc(sizeof(ocoperand_t));
     if (o0) {
@@ -206,7 +228,7 @@ unknown_t oeinsert_operand(handle_t p, unknown_t q, unknown_t m) {
   return NULL;
 }
 
-unknown_t oeinsert_operands(handle_t p, unknown_t q, unknown_t m) {
+static unknown_t oeinsert_operands(handle_t p, unknown_t q, unknown_t m) {
   if (isocexamine(p) && q && m) {
     pocexamine_t p0 = oeget(p, OECODE_THIS);
     poestruct_t q0 = CAST(poestruct_t, q);
@@ -229,7 +251,9 @@ handle_t oecreate(handle_t p, const uint64_t vaddr, unknown_t mnemonic, unknown_
     p0->vaddr = vaddr;
     p0->mc = xmalloc(sizeof(ocmnemonic_t));
 
-    char* m1 = oeinsert_comment(p0, m0);
+    char* m1 = NULL;
+    m1 = oeinsert_comment(p0, m0);
+    m1 = oeinsert_data(p0, m0);
     poestruct_t pi = oepick(zINSTRUCTIONS, m1, strlen(m1));
 
     if (pi) {
