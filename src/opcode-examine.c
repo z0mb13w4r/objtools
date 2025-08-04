@@ -83,23 +83,22 @@ unknown_t oeskip(unknown_t p, const size_t size) {
   return NULL;
 }
 
-unknown_t oesplit(handle_t p, unknown_t m, punknown_t o0, punknown_t o1, punknown_t o2) {
-  if (isocexamine(p) && m && o0 && o1 && o2) {
+unknown_t oesplit(handle_t p, unknown_t m, const size_t size, punknown_t o1, punknown_t o2, punknown_t o3) {
+  if (isocexamine(p) && m && o1 && o2 && o3) {
     char *m0 = CAST(char*, m);
-    size_t m0size = strlen(m0);
 
     size_t i = 0;
-    for ( ; i < m0size; ++i) {
+    for ( ; i < size; ++i) {
       char c = m0[i];
       if (',' == c) break;
     }
 
-    *o0 = m0;
+    *o1 = m0;
     m0[i++] = 0;
 
-    if (i < m0size) {
-      *o1 = m0 + i;
-      for ( ; i < m0size; ++i) {
+    if (i < size) {
+      *o2 = m0 + i;
+      for ( ; i < size; ++i) {
         char c = m0[i];
         if (',' == c) break;
       }
@@ -107,19 +106,21 @@ unknown_t oesplit(handle_t p, unknown_t m, punknown_t o0, punknown_t o1, punknow
       m0[i++] = 0;
     }
 
-    if (i < m0size) {
-      *o2 = m0 + i;
+    if (i < size) {
+      *o3 = m0 + i;
     }
 
-    if (*o0) {
-      printf("++%s++", CAST(char*, *o0));
-    }
     if (*o1) {
-      printf("%s++", CAST(char*, *o1));
+      printf("++%s++", CAST(char*, *o1));
     }
     if (*o2) {
       printf("%s++", CAST(char*, *o2));
     }
+    if (*o3) {
+      printf("%s++", CAST(char*, *o3));
+    }
+
+    return *o1;
   }
 
   return NULL;
@@ -275,10 +276,15 @@ static unknown_t oeinsert_operands(handle_t p, unknown_t q, unknown_t m) {
     pocexamine_t p0 = oeget(p, OECODE_THIS);
     poestruct_t q0 = CAST(poestruct_t, q);
 
-//    unknown_t m0 = NULL, m1 = NULL, m2 = NULL;
-//    oesplit(p, m, &m0, &m1, &m2);
-
     if (MODE_ISANY(q0->action, OCINSTRUCTION_OPERAND2)) {
+      unknown_t m1 = NULL, m2 = NULL, m3 = NULL;
+      oesplit(p, m, strlen(m), &m1, &m2, &m3);
+      if (m1) {
+        p0->op1 = oeinsert_operand(p, q, m1);
+      }
+      if (m2) {
+        p0->op2 = oeinsert_operand(p, q, m2);
+      }
 //printf("+++++++");
     } else if (MODE_ISANY(q0->action, OCINSTRUCTION_OPERAND1)) {
       p0->op1 = oeinsert_operand(p, q, m);
