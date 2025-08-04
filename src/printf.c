@@ -379,7 +379,7 @@ int printf_mark(const int c, const int size, const imode_t mode) {
 }
 
 int printf_pack(const int size) {
-  return size <= 0 ? 0 : fprintf(STDOUT, "%*s", size, " ");
+  return printf_mark(' ', size, USE_NONE);
 }
 
 int printf_open(const imode_t mode) {
