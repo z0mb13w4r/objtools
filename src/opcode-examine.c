@@ -91,17 +91,19 @@ unknown_t oesplit(handle_t p, unknown_t m, const size_t size, punknown_t o1, pun
     int sb1cnt = 0;
 
     size_t i = 0;
-    for ( ; i < size; ++i) {
-      char c = m0[i];
-      if ('(' == c) ++rb1cnt;
-      else if (')' == c) --rb1cnt;
-      else if ('[' == c) ++sb1cnt;
-      else if (']' == c) --sb1cnt;
-      else if (',' == c && 0 == rb1cnt && 0 == sb1cnt) break;
-    }
+    if (i < size) {
+      *o1 = m0 + i;
+      for ( ; i < size; ++i) {
+        char c = m0[i];
+        if ('(' == c) ++rb1cnt;
+        else if (')' == c) --rb1cnt;
+        else if ('[' == c) ++sb1cnt;
+        else if (']' == c) --sb1cnt;
+        else if (',' == c && 0 == rb1cnt && 0 == sb1cnt) break;
+      }
 
-    *o1 = m0;
-    m0[i++] = 0;
+      m0[i++] = 0;
+    }
 
     if (i < size) {
       *o2 = m0 + i;
