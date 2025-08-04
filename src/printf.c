@@ -364,8 +364,18 @@ int printf_eol() {
   return fprintf(STDOUT, "\n");
 }
 
-int printf_cram(const char* p, const int size) {
-  return size <= 0 ? 0 : fprintf(STDOUT, "%*s", size, p);
+int printf_mark(const int c, const int size, const imode_t mode) {
+  MALLOCA(char, o, MAX_BUFFER_SIZE + 1);
+
+  int n = 0;
+  if (0 < size) {
+    for (size_t i = 0; i < MIN(size, MAX_BUFFER_SIZE); ++i) {
+      snprintf(o + i, MAX_BUFFER_SIZE - i, "%c", c);
+    }
+    n += printf_post(o, mode);
+  }
+
+  return n;
 }
 
 int printf_pack(const int size) {

@@ -86,8 +86,7 @@ static int ocdebugf(handle_t p, handle_t q) {
       pocmnemonic_t m0 = oeget(q, OECODE_MNEMONIC);
 
       n += printf_eol();
-//      n += printf_cram('+', 100);
-//      n += printf_eol();
+      n += printf_mark('+', 100, USE_EOL);
 
       n += printf_text("VADDR", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
       n += opcode_printf_FADDR(p, q0->vaddr, USE_EOL);
@@ -112,8 +111,7 @@ static int ocdebugf(handle_t p, handle_t q) {
         n += ocdebugf_cvalue1(p, o1->cvalue);
         n += ocdebugf_nvalue(p, o1->cvalue, o1->uvalue);
       }
-//      n += printf_cram('+', 100);
-//      n += printf_eol();
+      n += printf_mark('+', 100, USE_EOL);
 //    }
 
     return n;
