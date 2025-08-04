@@ -145,6 +145,14 @@ unknown_t oesplit(handle_t p, unknown_t m, const size_t size, punknown_t o1, pun
   return NULL;
 }
 
+bool_t oeishexb(unknown_t p, const size_t size) {
+  return ishexb(p, size);
+}
+
+uint64_t oehexb(unknown_t p, const size_t size) {
+  return hexb(p, size);
+}
+
 static unknown_t oedo_absolute(handle_t p, unknown_t o, unknown_t m) {
   if (isocexamine(p) && o && m) {
     char *m0 = CAST(char*, m);
@@ -206,9 +214,9 @@ static unknown_t oedo_value(handle_t p, unknown_t o, unknown_t m) {
     pocoperand_t o0 = CAST(pocoperand_t, o);
 
     size_t m0size = strlen(m0);
-    bool ishex = ishexb(m0, m0size);
+    bool_t ishex = oeishexb(m0, m0size);
     if (ishex) {
-      o0->uvalue  = hexb(m0, m0size);
+      o0->uvalue  = oehexb(m0, m0size);
       o0->cvalue |= OCOPERAND_UVALUE;
     } else {
 //printf("++%s++", m0);
