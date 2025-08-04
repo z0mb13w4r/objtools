@@ -87,10 +87,17 @@ unknown_t oesplit(handle_t p, unknown_t m, const size_t size, punknown_t o1, pun
   if (isocexamine(p) && m && o1 && o2 && o3) {
     char *m0 = CAST(char*, m);
 
+    int rb1cnt = 0;
+    int sb1cnt = 0;
+
     size_t i = 0;
     for ( ; i < size; ++i) {
       char c = m0[i];
-      if (',' == c) break;
+      if ('(' == c) ++rb1cnt;
+      else if (')' == c) --rb1cnt;
+      else if ('[' == c) ++sb1cnt;
+      else if (']' == c) --sb1cnt;
+      else if (',' == c && 0 == rb1cnt && 0 == sb1cnt) break;
     }
 
     *o1 = m0;
@@ -100,7 +107,11 @@ unknown_t oesplit(handle_t p, unknown_t m, const size_t size, punknown_t o1, pun
       *o2 = m0 + i;
       for ( ; i < size; ++i) {
         char c = m0[i];
-        if (',' == c) break;
+        if ('(' == c) ++rb1cnt;
+        else if (')' == c) --rb1cnt;
+        else if ('[' == c) ++sb1cnt;
+        else if (']' == c) --sb1cnt;
+        else if (',' == c && 0 == rb1cnt && 0 == sb1cnt) break;
       }
 
       m0[i++] = 0;
