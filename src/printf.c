@@ -364,6 +364,10 @@ int printf_eol() {
   return fprintf(STDOUT, "\n");
 }
 
+int printf_cram(const char* p, const int size) {
+  return size <= 0 ? 0 : fprintf(STDOUT, "%*s", size, p);
+}
+
 int printf_pack(const int size) {
   return size <= 0 ? 0 : fprintf(STDOUT, "%*s", size, " ");
 }

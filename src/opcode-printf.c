@@ -57,7 +57,7 @@ static int ocdebugf_nvalue(handle_t p, const uint64_t cv, const uint64_t nv) {
       n += printf_text("UVALUE", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
     } else if (MODE_ISLOCKED8(OPOPERAND_REGISTER, cv)) {
       n += printf_text("REGISTER", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
-      n += printf_pick(zREGISTERNAMES, nv, USE_NONE);
+      n += printf_pick(zREGISTERNAMES, nv, USE_SPACE);
       n += printf_mask(zREGISTERFLAGS, MODE_HIDE8(nv), USE_NONE);
     } else {
       n += printf_text("UNKNOWN", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
@@ -86,30 +86,34 @@ static int ocdebugf(handle_t p, handle_t q) {
       pocmnemonic_t m0 = oeget(q, OECODE_MNEMONIC);
 
       n += printf_eol();
+//      n += printf_cram('+', 100);
+//      n += printf_eol();
 
       n += printf_text("VADDR", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
       n += opcode_printf_FADDR(p, q0->vaddr, USE_EOL);
       if (0 != q0->comment[0]) {
         n += printf_text("COMMENT", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
-        n += printf_text(q0->comment, USE_LT | USE_EOL);
+        n += printf_text(q0->comment, USE_LT | USE_SPACE | USE_EOL);
       }
       if (m0) {
         n += printf_text("MNEMONIC", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
-        n += printf_text(m0->data, USE_LT | USE_EOL);
+        n += printf_text(m0->data, USE_LT | USE_SPACE | USE_EOL);
         n += ocdebugf_cvalue0(p, m0->cvalue);
       }
       if (o0) {
         n += printf_text("OPERAND1", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
-        n += printf_text(o0->data, USE_LT | USE_EOL);
+        n += printf_text(o0->data, USE_LT | USE_SPACE | USE_EOL);
         n += ocdebugf_cvalue1(p, o0->cvalue);
         n += ocdebugf_nvalue(p, o0->cvalue, o0->uvalue);
       }
       if (o1) {
         n += printf_text("OPERAND2", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
-        n += printf_text(o1->data, USE_LT | USE_EOL);
+        n += printf_text(o1->data, USE_LT | USE_SPACE | USE_EOL);
         n += ocdebugf_cvalue1(p, o1->cvalue);
         n += ocdebugf_nvalue(p, o1->cvalue, o1->uvalue);
       }
+//      n += printf_cram('+', 100);
+//      n += printf_eol();
 //    }
 
     return n;
