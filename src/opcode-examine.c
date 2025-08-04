@@ -55,8 +55,74 @@ static poestruct_t oepick(poestruct_t p, unknown_t m, const size_t size) {
   return NULL;
 }
 
-static bool oeisskipped(int c) {
+static bool_t oeisskipped(int c) {
   return ' ' == c || '\t' == c ? TRUE : FALSE;
+}
+
+unknown_t oeskip(unknown_t p, const size_t size) {
+  if (p && 0 != size) {
+    puchar_t p0 = CAST(puchar_t, p);
+    for (size_t i = 0; i < size && *p0; ++i, ++p0) {
+      if (!oeisskipped(*p0)) break;
+    }
+
+    puchar_t p1 = CAST(puchar_t, p) + size - 1;
+    for (size_t i = 0; i < size && *p1; ++i, --p1) {
+      if (!oeisskipped(*p1)) break;
+      *p1 = 0;
+    }
+
+    if ('(' == *p0 && ')' == *p1) {
+      ++p0;
+      *p1 = 0;
+    }
+
+    return p0;
+  }
+
+  return NULL;
+}
+
+unknown_t oesplit(handle_t p, unknown_t m, punknown_t o0, punknown_t o1, punknown_t o2) {
+  if (isocexamine(p) && m && o0 && o1 && o2) {
+    char *m0 = CAST(char*, m);
+    size_t m0size = strlen(m0);
+
+    size_t i = 0;
+    for ( ; i < m0size; ++i) {
+      char c = m0[i];
+      if (',' == c) break;
+    }
+
+    *o0 = m0;
+    m0[i++] = 0;
+
+    if (i < m0size) {
+      *o1 = m0 + i;
+      for ( ; i < m0size; ++i) {
+        char c = m0[i];
+        if (',' == c) break;
+      }
+
+      m0[i++] = 0;
+    }
+
+    if (i < m0size) {
+      *o2 = m0 + i;
+    }
+
+    if (*o0) {
+      printf("++%s++", CAST(char*, *o0));
+    }
+    if (*o1) {
+      printf("%s++", CAST(char*, *o1));
+    }
+    if (*o2) {
+      printf("%s++", CAST(char*, *o2));
+    }
+  }
+
+  return NULL;
 }
 
 static unknown_t oedo_absolute(handle_t p, unknown_t o, unknown_t m) {
@@ -135,30 +201,6 @@ static unknown_t oedo_value(handle_t p, unknown_t o, unknown_t m) {
   return NULL;
 }
 
-unknown_t oeskip(unknown_t p, const size_t size) {
-  if (p && 0 != size) {
-    puchar_t p0 = CAST(puchar_t, p);
-    for (size_t i = 0; i < size && *p0; ++i, ++p0) {
-      if (!oeisskipped(*p0)) break;
-    }
-
-    puchar_t p1 = CAST(puchar_t, p) + size - 1;
-    for (size_t i = 0; i < size && *p1; ++i, --p1) {
-      if (!oeisskipped(*p1)) break;
-      *p1 = 0;
-    }
-
-    if ('(' == *p0 && ')' == *p1) {
-      ++p0;
-      *p1 = 0;
-    }
-
-    return p0;
-  }
-
-  return NULL;
-}
-
 static unknown_t oeinsert_comment(handle_t p, unknown_t m) {
   if (isocexamine(p) && m) {
     pocexamine_t p0 = oeget(p, OECODE_THIS);
@@ -232,6 +274,9 @@ static unknown_t oeinsert_operands(handle_t p, unknown_t q, unknown_t m) {
   if (isocexamine(p) && q && m) {
     pocexamine_t p0 = oeget(p, OECODE_THIS);
     poestruct_t q0 = CAST(poestruct_t, q);
+
+//    unknown_t m0 = NULL, m1 = NULL, m2 = NULL;
+//    oesplit(p, m, &m0, &m1, &m2);
 
     if (MODE_ISANY(q0->action, OCINSTRUCTION_OPERAND2)) {
 //printf("+++++++");
