@@ -127,15 +127,15 @@ unknown_t oesplit(handle_t p, unknown_t m, const size_t size, punknown_t o1, pun
     }
 
     if (*o1) {
-      printf("++%s++", CAST(char*, *o1));
+//      printf("++%s++", CAST(char*, *o1));
       *o1 = oeskip(*o1, strlen(*o1));
     }
     if (*o2) {
-      printf("%s++", CAST(char*, *o2));
+//      printf("%s++", CAST(char*, *o2));
       *o2 = oeskip(*o2, strlen(*o2));
     }
     if (*o3) {
-      printf("%s++", CAST(char*, *o3));
+//      printf("%s++", CAST(char*, *o3));
       *o3 = oeskip(*o3, strlen(*o3));
     }
 
@@ -146,10 +146,26 @@ unknown_t oesplit(handle_t p, unknown_t m, const size_t size, punknown_t o1, pun
 }
 
 bool_t oeishexb(unknown_t p, const size_t size) {
-  return ishexb(p, size);
+  if (p && 0 != size) {
+    puchar_t p0 = CAST(puchar_t, p);
+    if (size >= 3 && '$' == p0[0] && '0' == p0[1] && 'x' == p0[2]) {
+      return ishexb(p0 + 3, size - 3);
+    }
+
+    return ishexb(p, size);
+  }
+
+  return TRUE;
 }
 
 uint64_t oehexb(unknown_t p, const size_t size) {
+  if (p && 0 != size) {
+    puchar_t p0 = CAST(puchar_t, p);
+    if (size >= 3 && '$' == p0[0] && '0' == p0[1] && 'x' == p0[2]) {
+      return hexb(p0 + 3, size - 3);
+    }
+  }
+
   return hexb(p, size);
 }
 
