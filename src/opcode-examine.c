@@ -83,6 +83,20 @@ unknown_t oeskip(unknown_t p, const size_t size) {
   return NULL;
 }
 
+size_t oeskiphex(unknown_t p, const size_t size) {
+  if (p && 0 != size) {
+    puchar_t p0 = CAST(puchar_t, p);
+
+    if (size >= 3 && '$' == p0[0] && '0' == p0[1] && 'x' == p0[2]) {
+      return 3;
+    } else if (size >= 2 && '0' == p0[0] && 'x' == p0[1]) {
+      return 2;
+    }
+  }
+
+  return 0;
+}
+
 unknown_t oesplit(handle_t p, unknown_t m, const size_t size, punknown_t o1, punknown_t o2, punknown_t o3) {
   if (isocexamine(p) && m && o1 && o2 && o3) {
     char *m0 = CAST(char*, m);
@@ -147,12 +161,8 @@ unknown_t oesplit(handle_t p, unknown_t m, const size_t size, punknown_t o1, pun
 
 bool_t oeishexb(unknown_t p, const size_t size) {
   if (p && 0 != size) {
-    puchar_t p0 = CAST(puchar_t, p);
-    if (size >= 3 && '$' == p0[0] && '0' == p0[1] && 'x' == p0[2]) {
-      return ishexb(p0 + 3, size - 3);
-    }
-
-    return ishexb(p, size);
+    size_t sz = oeskiphex(p, size);
+    return ishexb(CAST(puchar_t, p) + sz, size - sz);
   }
 
   return TRUE;
@@ -160,10 +170,8 @@ bool_t oeishexb(unknown_t p, const size_t size) {
 
 uint64_t oehexb(unknown_t p, const size_t size) {
   if (p && 0 != size) {
-    puchar_t p0 = CAST(puchar_t, p);
-    if (size >= 3 && '$' == p0[0] && '0' == p0[1] && 'x' == p0[2]) {
-      return hexb(p0 + 3, size - 3);
-    }
+    size_t sz = oeskiphex(p, size);
+    return hexb(CAST(puchar_t, p) + sz, size - sz);
   }
 
   return hexb(p, size);
