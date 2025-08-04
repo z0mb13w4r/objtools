@@ -87,33 +87,36 @@ unknown_t oesplit(handle_t p, unknown_t m, const size_t size, punknown_t o1, pun
   if (isocexamine(p) && m && o1 && o2 && o3) {
     char *m0 = CAST(char*, m);
 
-    int rb1cnt = 0;
-    int sb1cnt = 0;
-
     size_t i = 0;
     if (i < size) {
+      int rbcnt = 0;
+      int sbcnt = 0;
+
       *o1 = m0 + i;
       for ( ; i < size; ++i) {
         char c = m0[i];
-        if ('(' == c) ++rb1cnt;
-        else if (')' == c) --rb1cnt;
-        else if ('[' == c) ++sb1cnt;
-        else if (']' == c) --sb1cnt;
-        else if (',' == c && 0 == rb1cnt && 0 == sb1cnt) break;
+        if ('(' == c) ++rbcnt;
+        else if (')' == c) --rbcnt;
+        else if ('[' == c) ++sbcnt;
+        else if (']' == c) --sbcnt;
+        else if (',' == c && 0 == rbcnt && 0 == sbcnt) break;
       }
 
       m0[i++] = 0;
     }
 
     if (i < size) {
+      int rbcnt = 0;
+      int sbcnt = 0;
+
       *o2 = m0 + i;
       for ( ; i < size; ++i) {
         char c = m0[i];
-        if ('(' == c) ++rb1cnt;
-        else if (')' == c) --rb1cnt;
-        else if ('[' == c) ++sb1cnt;
-        else if (']' == c) --sb1cnt;
-        else if (',' == c && 0 == rb1cnt && 0 == sb1cnt) break;
+        if ('(' == c) ++rbcnt;
+        else if (')' == c) --rbcnt;
+        else if ('[' == c) ++sbcnt;
+        else if (']' == c) --sbcnt;
+        else if (',' == c && 0 == rbcnt && 0 == sbcnt) break;
       }
 
       m0[i++] = 0;
@@ -125,12 +128,15 @@ unknown_t oesplit(handle_t p, unknown_t m, const size_t size, punknown_t o1, pun
 
     if (*o1) {
       printf("++%s++", CAST(char*, *o1));
+      *o1 = oeskip(*o1, strlen(*o1));
     }
     if (*o2) {
       printf("%s++", CAST(char*, *o2));
+      *o2 = oeskip(*o2, strlen(*o2));
     }
     if (*o3) {
       printf("%s++", CAST(char*, *o3));
+      *o3 = oeskip(*o3, strlen(*o3));
     }
 
     return *o1;
