@@ -10,23 +10,6 @@
 #include "static/has_flags.ci"
 #include "static/sectionhdr_flags.ci"
 
-extern convert_t zPHDRTYPE[];
-
-static bfd_vma get_signadjustment(bfd *f) {
-  /* If the target used signed addresses then we must make
-     sure that we sign extend the value that we calculate. */
-  bfd_vma sign_adjust = 0;
-  if (1 == bfd_get_sign_extend_vma(f)) {
-    sign_adjust = (bfd_vma) 1 << (bfd_get_arch_size(f) - 1);
-  }
-
-  return sign_adjust;
-}
-
-static bfd_vma fix_signadjustment(bfd_vma addr, bfd_vma sign_adjust) {
-  return ((addr & ((sign_adjust << 1) - 1)) ^ sign_adjust) - sign_adjust;
-}
-
 static void callback_disassemble(handle_t p, handle_t section, unknown_t param) {
   const poptions_t o = CAST(poptions_t, param);
 
