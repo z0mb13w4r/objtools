@@ -251,12 +251,15 @@ int opcode_printf_detail(handle_t p, const uint64_t vaddr, unknown_t mnemonic, u
   if (isopcode(p)) {
     int n = 0;
     char *name = NULL;
-    Dwarf_Off offset = 0;
+    uint64_t offset = 0;
 
     pocexamine_t oe = oecreate(p, vaddr, mnemonic, operands);
 
     if (oe && oe->op1) {
-      ocdwarf_spget(p, oe->op1->uvalue, &name, NULL, NULL, NULL, NULL, NULL, NULL, &offset, NULL);
+      ocget_symbol(p, oe->op1->uvalue, &name, NULL, NULL, NULL, NULL, NULL, NULL, &offset);
+      if (0 == name && 0x1181 == vaddr) {
+        ocget_symbol(p, 0x15fa, &name, NULL, NULL, NULL, NULL, NULL, NULL, &offset);
+      }
 
       if (0 != name) {
         if (0 != offset) {

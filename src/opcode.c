@@ -541,6 +541,33 @@ const char* ocget_fileformat(handle_t p) {
   return NULL;
 }
 
+const char* ocget_symbol(handle_t p, uint64_t vaddr, char **name,
+                     uint64_t *nline, uint64_t *ncolumn, uint64_t *discriminator, char **source,
+                     uint64_t *low_pc_addr, uint64_t *high_pc_addr, uint64_t *offset) {
+  if (isopcode(p)) {
+    Dwarf_Unsigned nline0 = 0;
+    Dwarf_Unsigned ncolumn0 = 0;
+    Dwarf_Unsigned discriminator0 = 0;
+    Dwarf_Addr     low_pc_addr0 = 0;
+    Dwarf_Addr     high_pc_addr0 = 0;
+    Dwarf_Off      offset0 = 0;
+
+    ocdwarf_spget(p, vaddr, name, nline ? &nline0 : NULL, ncolumn ? &ncolumn0 : NULL, discriminator ? &discriminator0 : NULL, source,
+                     low_pc_addr ? &low_pc_addr0 : NULL, high_pc_addr ? &high_pc_addr0 : NULL, offset ? &offset0 : NULL, NULL);
+
+    if (0 != nline)         *nline = nline0;
+    if (0 != ncolumn)       *ncolumn = ncolumn0;
+    if (0 != discriminator) *discriminator = discriminator0;
+    if (0 != low_pc_addr)   *low_pc_addr = low_pc_addr0;
+    if (0 != high_pc_addr)  *high_pc_addr = high_pc_addr0;
+    if (0 != offset)        *offset = offset0;
+
+    return name ? *name : NULL;
+  }
+
+  return NULL;
+}
+
 handle_t ocmalloc() {
   popcode_t p = xmalloc(sizeof(opcode_t));
   if (p) {
