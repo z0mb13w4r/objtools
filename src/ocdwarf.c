@@ -635,14 +635,13 @@ int ocdwarf_spget(handle_t p, Dwarf_Addr addr, char** name,
 
     for ( ; ; ) {
       Dwarf_Die cu_die = 0;
-//if (addr == 0x12cd || addr == 0x16b0) printf("+++A+\n");
       int x = ocdwarf_next_cu_header(p, &cu_die, e);
       if (ECODE_ISEVIL(x)) {
         if (ECODE_ISFAILED(x)) {
           ocdwarf_dealloc_error(p, e);
           printf_e("ocdwarf_next_cu_header failed! %d", x);
         }
-//if (addr == 0x12cd || addr == 0x16b0) printf("%d\n", x);
+
         return x;
       }
 
