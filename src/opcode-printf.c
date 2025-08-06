@@ -83,6 +83,7 @@ static int ocdebugf(handle_t p, handle_t q) {
       pocexamine_t q0 = oeget(q, OECODE_THIS);
       pocoperand_t o0 = oeget(q, OECODE_OPERAND1);
       pocoperand_t o1 = oeget(q, OECODE_OPERAND2);
+      pocoperand_t o2 = oeget(q, OECODE_OPERAND3);
       pocmnemonic_t m0 = oeget(q, OECODE_MNEMONIC);
 
       n += printf_eol();
@@ -110,6 +111,12 @@ static int ocdebugf(handle_t p, handle_t q) {
         n += printf_text(o1->data, USE_LT | USE_SPACE | USE_EOL);
         n += ocdebugf_cvalue1(p, o1->cvalue);
         n += ocdebugf_nvalue(p, o1->cvalue, o1->uvalue);
+      }
+      if (o2) {
+        n += printf_text("OPERAND3", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
+        n += printf_text(o2->data, USE_LT | USE_SPACE | USE_EOL);
+        n += ocdebugf_cvalue1(p, o2->cvalue);
+        n += ocdebugf_nvalue(p, o2->cvalue, o2->uvalue);
       }
       n += printf_mark('+', 100, USE_EOL);
 //    }

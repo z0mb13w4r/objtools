@@ -38,6 +38,8 @@ unknown_t oeget(handle_t p, const imode_t mode) {
     return CAST(pocexamine_t, p)->op1;
   } else if (isocexamine(p) && OECODE_OPERAND2 == mode) {
     return CAST(pocexamine_t, p)->op2;
+  } else if (isocexamine(p) && OECODE_OPERAND3 == mode) {
+    return CAST(pocexamine_t, p)->op3;
   }
 
   return NULL;
@@ -327,7 +329,7 @@ static unknown_t oeinsert_operands(handle_t p, unknown_t q, unknown_t m) {
     pocexamine_t p0 = oeget(p, OECODE_THIS);
     poestruct_t q0 = CAST(poestruct_t, q);
 
-    if (MODE_ISANY(q0->action, OCINSTRUCTION_OPERAND2)) {
+    if (MODE_ISANY(q0->action, OCINSTRUCTION_OPERAND3)) {
       unknown_t m1 = NULL, m2 = NULL, m3 = NULL;
       oesplit(p, m, strlen(m), &m1, &m2, &m3);
       if (m1) {
@@ -335,6 +337,24 @@ static unknown_t oeinsert_operands(handle_t p, unknown_t q, unknown_t m) {
       }
       if (m2) {
         p0->op2 = oeinsert_operand(p, q, m2);
+      } else if (MODE_ISNOT(q0->action, OCINSTRUCTION_OPERAND1)) {
+        printf_e("Missing operand #2");
+      }
+      if (m3) {
+        p0->op3 = oeinsert_operand(p, q, m3);
+      } else if (MODE_ISNOT(q0->action, OCINSTRUCTION_OPERAND2)) {
+        printf_e("Missing operand #3");
+      }
+    } else if (MODE_ISANY(q0->action, OCINSTRUCTION_OPERAND2)) {
+      unknown_t m1 = NULL, m2 = NULL, m3 = NULL;
+      oesplit(p, m, strlen(m), &m1, &m2, &m3);
+      if (m1) {
+        p0->op1 = oeinsert_operand(p, q, m1);
+      }
+      if (m2) {
+        p0->op2 = oeinsert_operand(p, q, m2);
+      } else if (MODE_ISNOT(q0->action, OCINSTRUCTION_OPERAND1)) {
+        printf_e("Missing operand #2");
       }
 //printf("+++++++");
     } else if (MODE_ISANY(q0->action, OCINSTRUCTION_OPERAND1)) {

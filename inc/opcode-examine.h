@@ -7,6 +7,7 @@
 #define OECODE_MNEMONIC                (1)
 #define OECODE_OPERAND1                (2)
 #define OECODE_OPERAND2                (3)
+#define OECODE_OPERAND3                (4)
 
 #define OCINSTRUCTION_BND              U64MASK(51)
 #define OCINSTRUCTION_DATA16           U64MASK(52)
@@ -242,6 +243,7 @@ typedef struct ocexamine_s {
   pocmnemonic_t mc;
   pocoperand_t  op1;
   pocoperand_t  op2;
+  pocoperand_t  op3;
 } ocexamine_t, *pocexamine_t;
 
 bool_t isocexamine(handle_t p);
