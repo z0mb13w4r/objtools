@@ -184,7 +184,7 @@ unknown_t ocget_data(handle_t p);
 
 const char* ocget_symbol(handle_t p, uint64_t vaddr, char **name,
                      uint64_t *nline, uint64_t *ncolumn, uint64_t *discriminator, char **source,
-                     uint64_t *low_pc_addr, uint64_t *high_pc_addr, uint64_t *offset);
+                     uint64_t *laddr, uint64_t *haddr, uint64_t *offset);
 
 const char* ocget_name(handle_t p);
 const char* ocget_fileformat(handle_t p);
