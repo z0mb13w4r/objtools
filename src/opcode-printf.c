@@ -78,8 +78,8 @@ static int ocdebugf(handle_t p, handle_t q) {
   if (isopcode(p) && isocexamine(q)) {
     int n = 0;
 
-//    popcode_t oc = ocget(p, OPCODE_THIS);
-//    if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
+    popcode_t oc = ocget(p, OPCODE_THIS);
+    if (MODE_ISANY(oc->action, OPTPROGRAM_DEBUGLEVEL1)) {
       pocexamine_t q0 = oeget(q, OECODE_THIS);
       pocoperand_t o0 = oeget(q, OECODE_OPERAND1);
       pocoperand_t o1 = oeget(q, OECODE_OPERAND2);
@@ -119,7 +119,7 @@ static int ocdebugf(handle_t p, handle_t q) {
         n += ocdebugf_nvalue(p, o2->cvalue, o2->uvalue);
       }
       n += printf_mark('+', 100, USE_EOL);
-//    }
+    }
 
     return n;
   }

@@ -9,13 +9,16 @@ NAME=samples/exampled-64
 #NAME=samples/example-043-arm64
 #NAME=samples/example-043-arm64.o
 #NAME=samples/bstrings.dll
+#PICK='-f'
+#PICK='-s'
+PICK='-h -R -t -T -d'
 #PICK='-p'
 #PICK='-g'
 #PICK='-e'
 #PICK='-r'
 #PICK='-dSl --prefix-addresses'
 #PICK='-dSl --start-address=0x001000 --stop-address=0x001300'
-PICK='-d'
+#PICK='-d'
 #PICK='-dSl'
 #PICK='-W'
 # x t T f h s p
@@ -57,7 +60,10 @@ if [ "$1" == "-p" ] || [ "$1" == "--print" ]; then
 elif [ "$1" == "-r" ] || [ "$1" == "--raw" ]; then
   $PRGNAMENG ${PICK} $NAME > $OUT1
   $PRGNAME ${PICK} $NAME > $OUT2
-elif [ "$1" == "-v" ] || [ "$1" == "--version" ]; then
+elif [ "$1" == "-d" ] || [ "$1" == "--debug" ]; then
+  $PRGNAMENG ${PICK} -1 $NAME > $OUT1
+  $PRGNAME ${PICK} $NAME > $OUT2
+elif [ "$1" == "-v" ] || [ "$1" == "--verbose" ]; then
   $PRGNAMENG ${PICK} -v $NAME > $OUT1
   $PRGNAME ${PICK} $NAME > $OUT2
 elif [ "$1" == "-d" ] || [ "$1" == "--debug" ]; then
