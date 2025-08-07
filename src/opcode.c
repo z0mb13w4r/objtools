@@ -544,7 +544,7 @@ const char* ocget_fileformat(handle_t p) {
 const char* ocget_symbol(handle_t p, uint64_t vaddr, char **name,
                      uint64_t *nline, uint64_t *ncolumn, uint64_t *discriminator, char **source,
                      uint64_t *laddr, uint64_t *haddr, uint64_t *offset) {
-  if (isopcode(p)) {
+  if (isopcode(p) && name) {
     Dwarf_Unsigned v0 = 0;
     Dwarf_Unsigned v1 = 0;
     Dwarf_Unsigned v2 = 0;
@@ -552,8 +552,18 @@ const char* ocget_symbol(handle_t p, uint64_t vaddr, char **name,
     Dwarf_Addr     v4 = 0;
     Dwarf_Off      v5 = 0;
 
-    ocdwarf_spget(p, vaddr, name, nline ? &v0 : NULL, ncolumn ? &v1 : NULL, discriminator ? &v2 : NULL, source,
+    int x = ocdwarf_spget(p, vaddr, name, nline ? &v0 : NULL, ncolumn ? &v1 : NULL, discriminator ? &v2 : NULL, source,
                      laddr ? &v3 : NULL, haddr ? &v4 : NULL, offset ? &v5 : NULL, NULL);
+
+    if (ECODE_ISNOENTRY(x)) {
+      if (ocget(p, OPCODE_BFD)) {
+
+      } else {
+        handle_t p0 = ocget(p, OPCODE_RAWDATA);
+        if (isELF(p0)) {
+        }
+      }
+    }
 
     if (0 != nline)         *nline = v0;
     if (0 != ncolumn)       *ncolumn = v1;
@@ -661,7 +671,9 @@ int ocdo_programs(handle_t p, opcbfunc_t cbfunc, unknown_t param) {
       return opcodebfd_programs(p, cbfunc, param);
     } else {
       handle_t p0 = ocget(p, OPCODE_RAWDATA);
-      if (isELF(p0))  return opcodeelf_programs(p, cbfunc, param);
+      if (isELF(p0)) {
+        return opcodeelf_programs(p, cbfunc, param);
+      }
     }
   }
 
@@ -674,7 +686,9 @@ int ocdo_sections(handle_t p, opcbfunc_t cbfunc, unknown_t param) {
       return opcodebfd_sections(p, cbfunc, param);
     } else {
       handle_t p0 = ocget(p, OPCODE_RAWDATA);
-      if (isELF(p0))  return opcodeelf_sections(p, cbfunc, param);
+      if (isELF(p0)) {
+        return opcodeelf_sections(p, cbfunc, param);
+      }
     }
   }
 
