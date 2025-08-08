@@ -88,6 +88,10 @@ const char* get_secnamebyoffset(const pbuffer_t p, const int offset);
 const char* _get_secname32byoffset(const pbuffer_t p, const int offset);
 const char* _get_secname64byoffset(const pbuffer_t p, const int offset);
 
+const char* ecget_secnamebyaddr(const pbuffer_t p, const int addr);
+const char* _ecget_secname32byaddr(const pbuffer_t p, const int addr);
+const char* _ecget_secname64byaddr(const pbuffer_t p, const int addr);
+
 void* _get32byshdr(const pbuffer_t p, Elf32_Shdr *shdr); // not safe - remove
 void* _get64byshdr(const pbuffer_t p, Elf64_Shdr *shdr); // replace by fgetXXbyYYYY & fnext
 

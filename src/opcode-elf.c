@@ -73,7 +73,12 @@ int opcodeelf_sections(handle_t p, opcbfunc_t cbfunc, unknown_t param) {
   return ECODE_HANDLE;
 }
 
-char* opcodeelf_getsymbol(handle_t p, uint64_t vaddr) {
-  return ".plt";
+char* opcodeelf_getsymbol(handle_t p, const uint64_t vaddr) {
+  if (isopcode(p)) {
+    handle_t p0 = ocget(p, OPCODE_RAWDATA);
+    return CAST(char*, ecget_secnamebyaddr(p0, vaddr));
+  }
+
+  return NULL;
 }
 

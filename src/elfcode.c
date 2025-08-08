@@ -660,6 +660,23 @@ const char* _get_secname64byoffset(const pbuffer_t p, const int offset) {
   return NULL;
 }
 
+const char* ecget_secnamebyaddr(const pbuffer_t p, const int addr) {
+  if (isELF(p)) {
+    if (isELF32(p))        return _ecget_secname32byaddr(p, addr);
+    else if (isELF64(p))   return _ecget_secname64byaddr(p, addr);
+  }
+
+  return NULL;
+}
+
+const char* _ecget_secname32byaddr(const pbuffer_t p, const int addr) {
+  return ".plt";
+}
+
+const char* _ecget_secname64byaddr(const pbuffer_t p, const int addr) {
+  return ".plt";
+}
+
 void* _get32byshdr(const pbuffer_t p, Elf32_Shdr *shdr) {
   if (shdr) {
     return getp(p, shdr->sh_offset, shdr->sh_size);
