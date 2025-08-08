@@ -207,12 +207,12 @@ int opcode_printf_source(handle_t p, const uint64_t vaddr) {
     int n = 0;
     char *name = NULL;
     char *source = NULL;
-    Dwarf_Unsigned nline = 0;
-    Dwarf_Unsigned discriminator = 0;
+    uint64_t nline = 0;
+    uint64_t discriminator = 0;
 
-    ocdwarf_spget(p, vaddr, &name, &nline, NULL, &discriminator, &source, NULL, NULL, NULL, NULL);
-
-    bool_t isok = oc->prev_nline != nline || oc->prev_discriminator != discriminator;
+    ocget_symbol(p, vaddr, &name, &nline, NULL, &discriminator, &source, NULL, NULL, NULL);
+    bool_t isok = oc->prev_nline != nline || oc->prev_discriminator != discriminator
+              || (0 != name && 0 != strcmp(oc->prev_name, name));
 
     if (isok && 0 != name) {
       n += opcode_printf_LADDR(p, vaddr, USE_NONE);
@@ -236,6 +236,7 @@ int opcode_printf_source(handle_t p, const uint64_t vaddr) {
 
         oc->prev_nline = nline;
         oc->prev_discriminator = discriminator;
+        strncpy(oc->prev_name, name, sizeof(oc->prev_name));
 
         ocdwarf_dealloc(p, source, DW_DLA_STRING);
       }

@@ -573,7 +573,7 @@ const char* ocget_symbol(handle_t p, uint64_t vaddr, char **name,
     if (0 != haddr)         *haddr = v4;
     if (0 != offset)        *offset = v5;
 
-    return name ? *name : NULL;
+    return *name ? *name : NULL;
   }
 
   return NULL;
