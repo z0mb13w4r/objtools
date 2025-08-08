@@ -557,10 +557,11 @@ const char* ocget_symbol(handle_t p, uint64_t vaddr, char **name,
 
     if (ECODE_ISNOENTRY(x)) {
       if (ocget(p, OPCODE_BFD)) {
-
+        *name = opcodeelf_getsymbol(p, vaddr);
       } else {
         handle_t p0 = ocget(p, OPCODE_RAWDATA);
         if (isELF(p0)) {
+          *name = opcodeelf_getsymbol(p, vaddr);
         }
       }
     }
