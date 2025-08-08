@@ -1066,7 +1066,7 @@ static int dump_gnuhash0(const pbuffer_t p, uint32_t *pb, const uint64_t sh_name
 
   int n = 0;
   n += printf_text("Histogram for", USE_LT);
-  n += printf_text(get_secnamebyoffset(p, sh_name), USE_LT | USE_DRTB | USE_SPACE);
+  n += printf_text(ecget_secnamebyoffset(p, sh_name), USE_LT | USE_DRTB | USE_SPACE);
   n += printf_text("bucket list length (total of", USE_LT | USE_SPACE);
   n += printf_nice(nbucket, USE_DEC);
   n += printf_text(nbucket == 1 ? "bucket)" : "buckets)", USE_LT | USE_SPACE | USE_COLON | USE_EOL);
@@ -1135,7 +1135,7 @@ static int dump_histogram64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *e
 static int dump_versionsym0(const pbuffer_t p, const uint64_t count, const uint64_t sh_name, const uint64_t sh_addr, const uint64_t sh_offset, const uint64_t sh_link) {
   int n = 0;
   n += printf_text("Version symbols section", USE_LT);
-  n += printf_text(get_secnamebyoffset(p, sh_name), USE_LT | USE_SQ | USE_SPACE);
+  n += printf_text(ecget_secnamebyoffset(p, sh_name), USE_LT | USE_SQ | USE_SPACE);
   n += printf_text("contains", USE_SPACE);
   n += printf_nice(count, USE_DEC);
   n += printf_text(1 == count ? "entry" : "entries", USE_LT | USE_SPACE | USE_COLON | USE_EOL);
@@ -1232,7 +1232,7 @@ static int dump_versionneed0(const pbuffer_t p, const uint64_t sh_name, const ui
                              const uint64_t sh_addr, const uint64_t sh_offset, const uint64_t sh_link) {
   int n = 0;
   n += printf_text("Version needs section", USE_LT);
-  n += printf_text(get_secnamebyoffset(p, sh_name),  USE_LT | USE_SQ | USE_SPACE);
+  n += printf_text(ecget_secnamebyoffset(p, sh_name),  USE_LT | USE_SQ | USE_SPACE);
   n += printf_text("contains", USE_SPACE);
   n += printf_nice(sh_info, USE_DEC);
   n += printf_text(1 == sh_info ? "entry" : "entries", USE_LT | USE_SPACE | USE_COLON | USE_EOL);
