@@ -41,9 +41,9 @@ static convert_t zEHDRFLAGS32ARMv5[] = {
 };
 
 pconvert_t get_EHDRFLAGS(const pbuffer_t p) {
-  switch (get_emachine(p)) {
+  switch (ecget_emachine(p)) {
   case EM_ARM:
-    switch (EF_ARM_EABI_VERSION(get_eflags(p))) {
+    switch (EF_ARM_EABI_VERSION(ecget_eflags(p))) {
     case EF_ARM_EABI_VER1:   return zEHDRFLAGS32ARMv1;
     case EF_ARM_EABI_VER2:   return zEHDRFLAGS32ARMv2;
     case EF_ARM_EABI_VER3:   return zEHDRFLAGS32ARMv3;

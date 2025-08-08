@@ -41,15 +41,15 @@ static int dump_create2(const pbuffer_t p, const poptions_t o, const char* name,
 }
 
 static int dump_createELF32(const pbuffer_t p, const poptions_t o, const imode_t mode) {
-  const int MAXSIZE = MAX(get_secnamemaxsize(p) + 1, 21);
+  const int MAXSIZE = MAX(ecget_secnamemaxsize(p) + 1, 21);
 
   int n = 0;
-  Elf32_Ehdr *ehdr = get_ehdr32(p);
+  Elf32_Ehdr *ehdr = ecget_ehdr32(p);
   if (ehdr) {
     n += dump_create0(p, mode, MAXSIZE);
 
     for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
-      Elf32_Shdr *shdr = get_shdr32byindex(p, i);
+      Elf32_Shdr *shdr = ecget_shdr32byindex(p, i);
       if (shdr) {
         if (OPTOBJHASH_HEADERS == mode) {
           n += dump_create1(p, o, ehdr->e_shoff + (ehdr->e_shentsize * i), ehdr->e_shentsize);
@@ -57,7 +57,7 @@ static int dump_createELF32(const pbuffer_t p, const poptions_t o, const imode_t
           n += dump_create1(p, o, shdr->sh_offset, shdr->sh_size);
         }
 
-        n += dump_create2(p, o, get_secnamebyindex(p, i), shdr->sh_type, shdr->sh_offset, shdr->sh_size, shdr->sh_addr, MAXSIZE);
+        n += dump_create2(p, o, ecget_secnamebyindex(p, i), shdr->sh_type, shdr->sh_offset, shdr->sh_size, shdr->sh_addr, MAXSIZE);
       }
     }
 
@@ -68,22 +68,22 @@ static int dump_createELF32(const pbuffer_t p, const poptions_t o, const imode_t
 }
 
 static int dump_createELF64(const pbuffer_t p, const poptions_t o, const imode_t mode) {
-  const int MAXSIZE = MAX(get_secnamemaxsize(p) + 1, 21);
+  const int MAXSIZE = MAX(ecget_secnamemaxsize(p) + 1, 21);
 
   int n = 0;
-  Elf64_Ehdr *ehdr = get_ehdr64(p);
+  Elf64_Ehdr *ehdr = ecget_ehdr64(p);
   if (ehdr) {
     n += dump_create0(p, mode, MAXSIZE);
 
     for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
-      Elf64_Shdr *shdr = get_shdr64byindex(p, i);
+      Elf64_Shdr *shdr = ecget_shdr64byindex(p, i);
       if (shdr) {
         if (OPTOBJHASH_HEADERS == mode) {
           n += dump_create1(p, o, ehdr->e_shoff + (ehdr->e_shentsize * i), ehdr->e_shentsize);
         } else if (OPTOBJHASH_SECTIONS == mode) {
           n += dump_create1(p, o, shdr->sh_offset, shdr->sh_size);
         }
-        n += dump_create2(p, o, get_secnamebyindex(p, i), shdr->sh_type, shdr->sh_offset, shdr->sh_size, shdr->sh_addr, MAXSIZE);
+        n += dump_create2(p, o, ecget_secnamebyindex(p, i), shdr->sh_type, shdr->sh_offset, shdr->sh_size, shdr->sh_addr, MAXSIZE);
       }
     }
 
@@ -143,7 +143,7 @@ static int dump_actionsELF32(const pbuffer_t p, const poptions_t o) {
   if (issafe(p)) {
     paction_t x = o->actions;
     while (x) {
-      Elf32_Shdr* shdr = get_shdr32byname(p, x->secname);
+      Elf32_Shdr* shdr = ecget_shdr32byname(p, x->secname);
       if (shdr) {
         n += dump_actionsELF0(p, o, x->secname, x->action, shdr->sh_type, shdr->sh_offset, shdr->sh_size, shdr->sh_addr);
       } else {
@@ -162,7 +162,7 @@ static int dump_actionsELF64(const pbuffer_t p, const poptions_t o) {
   if (issafe(p)) {
     paction_t x = o->actions;
     while (x) {
-      Elf64_Shdr* shdr = get_shdr64byname(p, x->secname);
+      Elf64_Shdr* shdr = ecget_shdr64byname(p, x->secname);
       if (shdr) {
         n += dump_actionsELF0(p, o, x->secname, x->action, shdr->sh_type, shdr->sh_offset, shdr->sh_size, shdr->sh_addr);
       } else {

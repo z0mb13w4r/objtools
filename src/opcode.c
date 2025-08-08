@@ -207,7 +207,7 @@ size_t ocget_maxsectionnamesize(handle_t p) {
   if (p0) {
     bfd_map_over_sections(p0, callback_find_max_sectionhdr_name, &maxsize);
   } else if (ismode(p, MODE_OCSHDR32) ||ismode(p, MODE_OCSHDR64)) {
-    return get_secnamemaxsize(ocget(p, OPCODE_PARAM2));
+    return ecget_secnamemaxsize(ocget(p, OPCODE_PARAM2));
   }
 
   return maxsize;

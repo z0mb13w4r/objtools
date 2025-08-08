@@ -94,7 +94,7 @@ static convert_t zNHDRTYPECORE[] = {
 };
 
 static pconvert_t get_NHDRTYPE(const pbuffer_t p) {
-  if (ET_CORE == get_etype(p)) {
+  if (ET_CORE == ecget_etype(p)) {
     return zNHDRTYPECORE;
   }
 

@@ -32,7 +32,7 @@
 typedef unsigned short version_t, *pversion_t;
 
 static int make_versionnames32(const pbuffer_t p, pversion_t vnames, const size_t maxvnames) {
-  Elf32_Shdr *vh = get_shdr32bytype(p, SHT_GNU_verneed);
+  Elf32_Shdr *vh = ecget_shdr32bytype(p, SHT_GNU_verneed);
   if (vh) {
     Elf32_Word offset = 0;
     vnames[0] = vh->sh_link;
@@ -62,7 +62,7 @@ static int make_versionnames32(const pbuffer_t p, pversion_t vnames, const size_
 }
 
 static int make_versionnames64(const pbuffer_t p, pversion_t vnames, const size_t maxvnames) {
-  Elf64_Shdr *vh = get_shdr64bytype(p, SHT_GNU_verneed);
+  Elf64_Shdr *vh = ecget_shdr64bytype(p, SHT_GNU_verneed);
   if (vh) {
     Elf64_Word offset = 0;
     vnames[0] = vh->sh_link;
@@ -93,8 +93,8 @@ static int make_versionnames64(const pbuffer_t p, pversion_t vnames, const size_
 
 static int dump_relocsdef0(const pbuffer_t p, const uint64_t sh_link,
                           const uint64_t st_value, const uint64_t st_name, const uint64_t st_shndx) {
-  const char* symname = get_namebyoffset(p, sh_link, st_name);
-  const char* secname = get_secnamebyindex(p, st_shndx);
+  const char* symname = ecget_namebyoffset(p, sh_link, st_name);
+  const char* secname = ecget_secnamebyindex(p, st_shndx);
 
   int n = 0;
   n += printf_nice(st_value, isELF32(p) ? USE_LHEX32: USE_LHEX64);
@@ -106,7 +106,7 @@ static int dump_relocsdef0(const pbuffer_t p, const uint64_t sh_link,
 
 static int dump_relocsdef32(const pbuffer_t p, const poptions_t o, Elf32_Shdr *shdr, const uint64_t r_info) {
   if (shdr) {
-    Elf32_Shdr *dshdr = get_shdr32byindex(p, shdr->sh_link);
+    Elf32_Shdr *dshdr = ecget_shdr32byindex(p, shdr->sh_link);
     if (dshdr) {
       Elf32_Off k = ELF32_R_SYM(r_info);
       Elf32_Sym *sym = getp(p, dshdr->sh_offset + (k * dshdr->sh_entsize), dshdr->sh_entsize);
@@ -121,7 +121,7 @@ static int dump_relocsdef32(const pbuffer_t p, const poptions_t o, Elf32_Shdr *s
 
 static int dump_relocsdef64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *shdr, const uint64_t r_info) {
   if (shdr) {
-    Elf64_Shdr *dshdr = get_shdr64byindex(p, shdr->sh_link);
+    Elf64_Shdr *dshdr = ecget_shdr64byindex(p, shdr->sh_link);
     if (dshdr) {
       Elf64_Off k = ELF64_R_SYM(r_info);
       Elf64_Sym *sym = getp(p, dshdr->sh_offset + (k * dshdr->sh_entsize), dshdr->sh_entsize);
@@ -136,22 +136,22 @@ static int dump_relocsdef64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *s
 
 static int dump_relocsver32(const pbuffer_t p, const poptions_t o, Elf32_Shdr *shdr, const uint64_t r_info, pversion_t vnames, const size_t maxvnames) {
   if (shdr) {
-    Elf32_Shdr *dshdr = get_shdr32byindex(p, shdr->sh_link);
+    Elf32_Shdr *dshdr = ecget_shdr32byindex(p, shdr->sh_link);
     if (dshdr) {
       Elf32_Off k = ELF32_R_SYM(r_info);
       Elf32_Sym *sym = getp(p, dshdr->sh_offset + (k * dshdr->sh_entsize), dshdr->sh_entsize);
       if (sym) {
         printf_nice(sym->st_value, USE_LHEX32);
 
-        printf_text(get_namebyoffset(p, dshdr->sh_link, sym->st_name), USE_LT | USE_SPACE);
+        printf_text(ecget_namebyoffset(p, dshdr->sh_link, sym->st_name), USE_LT | USE_SPACE);
 
-        Elf32_Shdr *vshdr = get_shdr32bytype(p, SHT_GNU_versym);
+        Elf32_Shdr *vshdr = ecget_shdr32bytype(p, SHT_GNU_versym);
         if (vshdr) {
           Elf32_Versym *vs = getp(p, vshdr->sh_offset + (k * vshdr->sh_entsize), vshdr->sh_entsize);
           if (vs) {
             *vs = *vs & VERSYM_VERSION;
             if (*vs && *vs < maxvnames) {
-              const char* namevs = get_namebyoffset(p, vnames[0], vnames[*vs]);
+              const char* namevs = ecget_namebyoffset(p, vnames[0], vnames[*vs]);
               if (namevs) {
                 printf_text(namevs, USE_LT | USE_AT);
               }
@@ -167,22 +167,22 @@ static int dump_relocsver32(const pbuffer_t p, const poptions_t o, Elf32_Shdr *s
 
 static int dump_relocsver64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *shdr, const uint64_t r_info, pversion_t vnames, const size_t maxvnames) {
   if (shdr) {
-    Elf64_Shdr *dshdr = get_shdr64byindex(p, shdr->sh_link);
+    Elf64_Shdr *dshdr = ecget_shdr64byindex(p, shdr->sh_link);
     if (dshdr) {
       Elf64_Off k = ELF64_R_SYM(r_info);
       Elf64_Sym *sym = getp(p, dshdr->sh_offset + (k * dshdr->sh_entsize), dshdr->sh_entsize);
       if (sym) {
         printf_nice(sym->st_value, USE_LHEX64);
 
-        printf_text(get_namebyoffset(p, dshdr->sh_link, sym->st_name), USE_LT | USE_SPACE);
+        printf_text(ecget_namebyoffset(p, dshdr->sh_link, sym->st_name), USE_LT | USE_SPACE);
 
-        Elf64_Shdr *vshdr = get_shdr64bytype(p, SHT_GNU_versym);
+        Elf64_Shdr *vshdr = ecget_shdr64bytype(p, SHT_GNU_versym);
         if (vshdr) {
           Elf64_Versym *vs = getp(p, vshdr->sh_offset + (k * vshdr->sh_entsize), vshdr->sh_entsize);
           if (vs) {
             *vs = *vs & VERSYM_VERSION;
             if (*vs && *vs < maxvnames) {
-              const char* namevs = get_namebyoffset(p, vnames[0], vnames[*vs]);
+              const char* namevs = ecget_namebyoffset(p, vnames[0], vnames[*vs]);
               if (namevs) {
                 printf_text(namevs, USE_LT | USE_AT);
               }
@@ -333,7 +333,7 @@ static int dump_sectionheaders1(const pbuffer_t p, const int index, const int ma
                                 const uint64_t sh_flags, const uint64_t sh_link, const uint64_t sh_info, const uint64_t sh_addralign) {
   int n = 0;
   n += printf_nice(index, USE_DEC2 | USE_TAB | USE_SB);
-  n += printf_text(get_secnamebyindex(p, index), USE_LT | USE_SPACE | SET_PAD(maxsize));
+  n += printf_text(ecget_secnamebyindex(p, index), USE_LT | USE_SPACE | SET_PAD(maxsize));
   n += printf_pick(zSHDRTYPE, sh_type, USE_LT | USE_SPACE | SET_PAD(16));
   n += printf_nice(sh_addr, isELF64(p) ? USE_LHEX64 : USE_LHEX32);
   n += printf_nice(sh_offset, USE_LHEX32);
@@ -359,13 +359,13 @@ static int dump_sectionheaders2(const pbuffer_t p) {
 }
 
 static int dump_sectionheaders32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
-  const int MAXSIZE = MAX(get_secnamemaxsize(p) + 1, 21);
+  const int MAXSIZE = MAX(ecget_secnamemaxsize(p) + 1, 21);
 
   int n = 0;
   n += dump_sectionheaders0(p, o, MAXSIZE);
 
   for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
-    Elf32_Shdr *shdr = get_shdr32byindex(p, i);
+    Elf32_Shdr *shdr = ecget_shdr32byindex(p, i);
     if (shdr) {
       n += dump_sectionheaders1(p, i, MAXSIZE, shdr->sh_type,
                shdr->sh_addr, shdr->sh_offset, shdr->sh_size, shdr->sh_entsize,
@@ -385,13 +385,13 @@ static int dump_sectionheaders32(const pbuffer_t p, const poptions_t o, Elf32_Eh
 }
 
 static int dump_sectionheaders64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
-  const int MAXSIZE = MAX(get_secnamemaxsize(p) + 2, 21);
+  const int MAXSIZE = MAX(ecget_secnamemaxsize(p) + 2, 21);
 
   int n = 0;
   n += dump_sectionheaders0(p, o, MAXSIZE);
 
   for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
-    Elf64_Shdr *shdr = get_shdr64byindex(p, i);
+    Elf64_Shdr *shdr = ecget_shdr64byindex(p, i);
     if (shdr) {
       n += dump_sectionheaders1(p, i, MAXSIZE, shdr->sh_type,
                shdr->sh_addr, shdr->sh_offset, shdr->sh_size, shdr->sh_entsize,
@@ -414,7 +414,7 @@ static int dump_sectiongroups32(const pbuffer_t p, const poptions_t o, Elf32_Ehd
   /* Scan the sections for the group section. */
   Elf32_Half cnt = 0;
   for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
-    Elf32_Shdr *shdr = get_shdr32byindex(p, i);
+    Elf32_Shdr *shdr = ecget_shdr32byindex(p, i);
     if (shdr && SHT_GROUP == shdr->sh_type) ++cnt;
   }
 
@@ -431,7 +431,7 @@ static int dump_sectiongroups64(const pbuffer_t p, const poptions_t o, Elf64_Ehd
   /* Scan the sections for the group section. */
   Elf64_Half cnt = 0;
   for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
-    Elf64_Shdr *shdr = get_shdr64byindex(p, i);
+    Elf64_Shdr *shdr = ecget_shdr64byindex(p, i);
     if (shdr && SHT_GROUP == shdr->sh_type) ++cnt;
   }
 
@@ -504,7 +504,7 @@ static int dump_programheaders32(const pbuffer_t p, const poptions_t o, Elf32_Eh
   dump_programheaders0(ehdr->e_phnum);
 
   for (Elf32_Half i = 0; i < ehdr->e_phnum; ++i) {
-    Elf32_Phdr *phdr = get_phdr32byindex(p, i);
+    Elf32_Phdr *phdr = ecget_phdr32byindex(p, i);
     if (phdr) {
       dump_programheaders3(p, phdr->p_type, phdr->p_offset, phdr->p_vaddr, phdr->p_paddr, phdr->p_filesz, phdr->p_memsz, phdr->p_flags, phdr->p_align);
     }
@@ -515,13 +515,13 @@ static int dump_programheaders32(const pbuffer_t p, const poptions_t o, Elf32_Eh
   for (Elf32_Half i = 0; i < ehdr->e_phnum; ++i) {
     printf_nice(i, USE_TAB | USE_DEC2Z);
 
-    Elf32_Phdr *phdr = get_phdr32byindex(p, i);
+    Elf32_Phdr *phdr = ecget_phdr32byindex(p, i);
     if (phdr) {
       for (Elf32_Half j = 1; j < ehdr->e_shnum; ++j) {
-        Elf32_Shdr *shdr = get_shdr32byindex(p, j);
+        Elf32_Shdr *shdr = ecget_shdr32byindex(p, j);
         if (shdr) {
           if (isshdrinphdr32(shdr, phdr)) {
-            printf_text(get_secnamebyindex(p, j), USE_SPACE);
+            printf_text(ecget_secnamebyindex(p, j), USE_SPACE);
           }
         }
       }
@@ -538,7 +538,7 @@ static int dump_programheaders64(const pbuffer_t p, const poptions_t o, Elf64_Eh
   dump_programheaders0(ehdr->e_phnum);
 
   for (Elf64_Half i = 0; i < ehdr->e_phnum; ++i) {
-    Elf64_Phdr *phdr = get_phdr64byindex(p, i);
+    Elf64_Phdr *phdr = ecget_phdr64byindex(p, i);
     if (phdr) {
       dump_programheaders3(p, phdr->p_type, phdr->p_offset, phdr->p_vaddr, phdr->p_paddr, phdr->p_filesz, phdr->p_memsz, phdr->p_flags, phdr->p_align);
     }
@@ -549,13 +549,13 @@ static int dump_programheaders64(const pbuffer_t p, const poptions_t o, Elf64_Eh
   for (Elf64_Half i = 0; i < ehdr->e_phnum; ++i) {
     printf_nice(i, USE_TAB | USE_DEC2Z);
 
-    Elf64_Phdr *phdr = get_phdr64byindex(p, i);
+    Elf64_Phdr *phdr = ecget_phdr64byindex(p, i);
     if (phdr) {
       for (Elf64_Half j = 1; j < ehdr->e_shnum; ++j) {
-        Elf64_Shdr *shdr = get_shdr64byindex(p, j);
+        Elf64_Shdr *shdr = ecget_shdr64byindex(p, j);
         if (shdr) {
           if (isshdrinphdr64(shdr, phdr)) {
-            printf_text(get_secnamebyindex(p, j), USE_SPACE);
+            printf_text(ecget_secnamebyindex(p, j), USE_SPACE);
           }
         }
       }
@@ -596,7 +596,7 @@ static int dump_dynamic1(const pbuffer_t p, const poptions_t o, const uint64_t d
   } else if (d_tag == DT_PLTREL) {
     n += printf_pick(zDYNTAG, d_un_d_val, USE_SPACE);
   } else if (d_tag == DT_NULL || isused(zDYNTAGNAME, d_tag)) {
-    const char *name = get_namebyoffset(p, sh_link, d_un_d_val);
+    const char *name = ecget_namebyoffset(p, sh_link, d_un_d_val);
     if (name && name[0]) {
       if (d_tag == DT_NEEDED) {
         n += printf(" Shared library: [%s]", name);
@@ -627,7 +627,7 @@ static int dump_dynamic1(const pbuffer_t p, const poptions_t o, const uint64_t d
 
 static int dump_dynamic32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
   for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
-    Elf32_Shdr *shdr = get_shdr32byindex(p, i);
+    Elf32_Shdr *shdr = ecget_shdr32byindex(p, i);
     if (shdr && SHT_DYNAMIC == shdr->sh_type) {
       size_t cnt = shdr->sh_size / shdr->sh_entsize;
       dump_dynamic0(p, shdr->sh_offset, cnt);
@@ -646,7 +646,7 @@ static int dump_dynamic32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehd
 
 static int dump_dynamic64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
   for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
-    Elf64_Shdr *shdr = get_shdr64byindex(p, i);
+    Elf64_Shdr *shdr = ecget_shdr64byindex(p, i);
     if (shdr && SHT_DYNAMIC == shdr->sh_type) {
       size_t cnt = shdr->sh_size / shdr->sh_entsize;
       dump_dynamic0(p, shdr->sh_offset, cnt);
@@ -819,7 +819,7 @@ static int dump_relocsrelr64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *
 static int dump_relocs0(const pbuffer_t p, const int index, const uint64_t sh_offset, const uint64_t count) {
   int n = 0;
   n += printf_text("Relocation section", USE_LT);
-  n += printf_text(get_secnamebyindex(p, index), USE_LT | USE_SPACE | USE_SQ);
+  n += printf_text(ecget_secnamebyindex(p, index), USE_LT | USE_SPACE | USE_SQ);
   n += printf_text("at offset", USE_LT | USE_SPACE);
   n += printf_nice(sh_offset, isELF64(p) ? USE_LHEX64 : USE_LHEX32);
   n += printf_text("contains", USE_LT | USE_SPACE);
@@ -831,7 +831,7 @@ static int dump_relocs0(const pbuffer_t p, const int index, const uint64_t sh_of
 
 static int dump_relocs32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
   for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
-    Elf32_Shdr *shdr = get_shdr32byindex(p, i);
+    Elf32_Shdr *shdr = ecget_shdr32byindex(p, i);
     if (shdr) {
       if (SHT_RELA == shdr->sh_type || SHT_REL == shdr->sh_type || SHT_RELR == shdr->sh_type) {
         size_t cnt = shdr->sh_size / shdr->sh_entsize;
@@ -854,7 +854,7 @@ static int dump_relocs32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr
 
 static int dump_relocs64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
   for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
-    Elf64_Shdr *shdr = get_shdr64byindex(p, i);
+    Elf64_Shdr *shdr = ecget_shdr64byindex(p, i);
     if (shdr) {
       if (SHT_RELA == shdr->sh_type || SHT_REL == shdr->sh_type || SHT_RELR == shdr->sh_type) {
         size_t cnt = shdr->sh_size / shdr->sh_entsize;
@@ -891,7 +891,7 @@ static int dump_symbols0(const pbuffer_t p, const poptions_t o,
                          const uint64_t secindex, const uint64_t count, const uint64_t sh_offset) {
   int n = 0;
   n += printf_text("Symbol table", USE_LT);
-  n += printf_text(get_secnamebyindex(p, secindex), USE_LT | USE_SQ | USE_SPACE);
+  n += printf_text(ecget_secnamebyindex(p, secindex), USE_LT | USE_SQ | USE_SPACE);
   n += printf_text("at offset", USE_SPACE);
   n += printf_nice(sh_offset, isELF64(p) ? USE_LHEX64 : USE_LHEX32);
   n += printf_text("contains", USE_SPACE);
@@ -917,7 +917,7 @@ static int dump_symbols1(const pbuffer_t p, const poptions_t o, const uint64_t s
 static int dump_symbols2(const pbuffer_t p, const poptions_t o,
                          const uint64_t sh_link, const uint64_t vna_name, const uint64_t vna_other, const uint64_t st_shndx, const uint64_t st_other) {
   int n = 0;
-  const char* namevs = get_namebyoffset(p, sh_link, vna_name);
+  const char* namevs = ecget_namebyoffset(p, sh_link, vna_name);
   if (namevs && namevs[0]) {
     if (SHN_UNDEF == st_shndx) {
       n += printf_text(namevs, USE_LT | USE_AT);
@@ -936,7 +936,7 @@ static int dump_symbols32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehd
   make_versionnames32(p, vnames, NELEMENTS(vnames));
 
   for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
-    Elf32_Shdr *shdr = get_shdr32byindex(p, i);
+    Elf32_Shdr *shdr = ecget_shdr32byindex(p, i);
     if (shdr) {
       if (SHT_SYMTAB == shdr->sh_type || SHT_DYNSYM == shdr->sh_type) {
         size_t cnt = shdr->sh_size / shdr->sh_entsize;
@@ -949,12 +949,12 @@ static int dump_symbols32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehd
             if (s) {
               dump_symbols1(p, o, j, s->st_value, s->st_size, s->st_info, s->st_other, s->st_shndx);
 
-              const char* name = get_namebyoffset(p, shdr->sh_link, s->st_name);
+              const char* name = ecget_namebyoffset(p, shdr->sh_link, s->st_name);
               if (name && 0 != name[0]) {
                 printf_text(name, USE_LT | USE_SPACE);
 
                 if (SHT_DYNSYM == shdr->sh_type) {
-                  Elf32_Shdr *vshdr = get_shdr32bytype(p, SHT_GNU_versym);
+                  Elf32_Shdr *vshdr = ecget_shdr32bytype(p, SHT_GNU_versym);
                   if (vshdr) {
                     Elf32_Versym *vs = getp(p, vshdr->sh_offset + (j * vshdr->sh_entsize), vshdr->sh_entsize);
                     if (vs && *vs && *vs < NELEMENTS(vnames)) {
@@ -981,7 +981,7 @@ static int dump_symbols64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
   make_versionnames64(p, vnames, NELEMENTS(vnames));
 
   for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
-    Elf64_Shdr *shdr = get_shdr64byindex(p, i);
+    Elf64_Shdr *shdr = ecget_shdr64byindex(p, i);
     if (shdr) {
       if (SHT_SYMTAB == shdr->sh_type || SHT_DYNSYM == shdr->sh_type) {
         size_t cnt = shdr->sh_size / shdr->sh_entsize;
@@ -995,12 +995,12 @@ static int dump_symbols64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
             if (s) {
               dump_symbols1(p, o, j, s->st_value, s->st_size, s->st_info, s->st_other, s->st_shndx);
 
-              const char* name = get_namebyoffset(p, shdr->sh_link, s->st_name);
+              const char* name = ecget_namebyoffset(p, shdr->sh_link, s->st_name);
               if (name && 0 != name[0]) {
                 printf_text(name, USE_LT | USE_SPACE);
 
                 if (SHT_DYNSYM == shdr->sh_type) {
-                  Elf64_Shdr *vshdr = get_shdr64bytype(p, SHT_GNU_versym);
+                  Elf64_Shdr *vshdr = ecget_shdr64bytype(p, SHT_GNU_versym);
                   if (vshdr) {
                     Elf64_Versym *vs = getp(p, vshdr->sh_offset + (j * vshdr->sh_entsize), vshdr->sh_entsize);
                     if (vs && *vs && *vs < NELEMENTS(vnames)) {
@@ -1101,7 +1101,7 @@ static int dump_gnuhash0(const pbuffer_t p, uint32_t *pb, const uint64_t sh_name
 static int dump_histogram32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
   int n = 0;
   for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
-    Elf32_Shdr *shdr = get_shdr32byindex(p, i);
+    Elf32_Shdr *shdr = ecget_shdr32byindex(p, i);
     if (shdr && SHT_GNU_HASH == shdr->sh_type) {
       uint32_t *pb = _get32byshdr(p, shdr);
       if (pb) {
@@ -1118,7 +1118,7 @@ static int dump_histogram32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *e
 static int dump_histogram64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
   int n = 0;
   for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
-    Elf64_Shdr *shdr = get_shdr64byindex(p, i);
+    Elf64_Shdr *shdr = ecget_shdr64byindex(p, i);
     if (shdr && SHT_GNU_HASH == shdr->sh_type) {
       uint32_t *pb = _get64byshdr(p, shdr);
       if (pb) {
@@ -1146,7 +1146,7 @@ static int dump_versionsym0(const pbuffer_t p, const uint64_t count, const uint6
   n += printf_nice(sh_offset, USE_FHEX24);
   n += printf_text("Link", USE_SPACE | USE_COLON);
   n += printf_nice(sh_link, USE_DEC);
-  n += printf_text(get_secnamebyindex(p, sh_link), USE_LT | USE_RB | USE_SPACE);
+  n += printf_text(ecget_secnamebyindex(p, sh_link), USE_LT | USE_RB | USE_SPACE);
 
   return n;
 }
@@ -1171,7 +1171,7 @@ static int dump_versionsym1(const pbuffer_t p, const int index, const version_t 
     n1 += printf_nice(vsx, USE_HEX4);
     n1 += printf_nice(vsh ? 'h' : ' ', USE_CHAR);
     if (vsx < maxvnames && vnames[vsx]) {
-      n1 += printf_text(get_namebyoffset(p, vnames[0], vnames[vsx]), USE_LT | USE_RB | USE_SPACE | SET_PAD(MAX(0, MAXSIZE - n1)));
+      n1 += printf_text(ecget_namebyoffset(p, vnames[0], vnames[vsx]), USE_LT | USE_RB | USE_SPACE | SET_PAD(MAX(0, MAXSIZE - n1)));
     } else {
       n1 += printf_text("???", USE_SPACE | SET_PAD(MAX(0, MAXSIZE - n1)));
     }
@@ -1243,7 +1243,7 @@ static int dump_versionneed0(const pbuffer_t p, const uint64_t sh_name, const ui
   n += printf_nice(sh_offset, USE_FHEX24);
   n += printf_text("Link", USE_SPACE | USE_COLON);
   n += printf_nice(sh_link, USE_DEC);
-  n += printf_text(get_secnamebyindex(p, sh_link), USE_LT | USE_RB | USE_SPACE | USE_EOL);
+  n += printf_text(ecget_secnamebyindex(p, sh_link), USE_LT | USE_RB | USE_SPACE | USE_EOL);
 
   return n;
 }
@@ -1255,7 +1255,7 @@ static int dump_versionneed1(const pbuffer_t p, const int offset, const uint64_t
   n += printf_text("Version", USE_SPACE | USE_COLON);
   n += printf_nice(vn_version, USE_DEC);
   n += printf_text("File", USE_SPACE | USE_COLON);
-  n += printf_text(get_namebyoffset(p, sh_link, vn_file), USE_LT | USE_SPACE);
+  n += printf_text(ecget_namebyoffset(p, sh_link, vn_file), USE_LT | USE_SPACE);
   n += printf_text("Cnt", USE_SPACE | USE_COLON);
   n += printf_nice(vn_cnt, USE_DEC | USE_EOL);
 
@@ -1267,7 +1267,7 @@ static int dump_versionneed2(const pbuffer_t p, const int offset, const uint64_t
   int n = 0;
   n += printf_nice(offset, USE_FHEX16 | USE_COLON);
   n += printf_text("Name", USE_TAB | USE_COLON);
-  n += printf_text(get_namebyoffset(p, sh_link, vna_name), USE_LT | USE_SPACE | SET_PAD(14));
+  n += printf_text(ecget_namebyoffset(p, sh_link, vna_name), USE_LT | USE_SPACE | SET_PAD(14));
   n += printf_text("Flags", USE_SPACE | USE_COLON);
   n += printf_masknone(zVNA_FLAGS, vna_flags, USE_LT);
   n += printf_text("Version", USE_TAB | USE_COLON);
@@ -1335,7 +1335,7 @@ static int dump_versionneed64(const pbuffer_t p, const poptions_t o, Elf64_Shdr 
 static int dump_version32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
   int n = 0;
   for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
-    Elf32_Shdr *shdr = get_shdr32byindex(p, i);
+    Elf32_Shdr *shdr = ecget_shdr32byindex(p, i);
     if (shdr) {
       if (SHT_GNU_versym == shdr->sh_type) {
         n += dump_versionsym32(p, o, ehdr, shdr);
@@ -1351,7 +1351,7 @@ static int dump_version32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehd
 static int dump_version64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
   int n = 0;
   for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
-    Elf64_Shdr *shdr = get_shdr64byindex(p, i);
+    Elf64_Shdr *shdr = ecget_shdr64byindex(p, i);
     if (shdr) {
       if (SHT_GNU_versym == shdr->sh_type) {
         n += dump_versionsym64(p, o, ehdr, shdr);
@@ -1370,7 +1370,7 @@ static int dump_actions32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehd
   paction_t x = o->actions;
   while (x) {
     if (x->secname[0]) {
-      Elf32_Shdr* shdr = get_shdr32byname(p, x->secname);
+      Elf32_Shdr* shdr = ecget_shdr32byname(p, x->secname);
       if (shdr) {
         MALLOCSWRAP(opwrap_t, s, MODE_OCSHDR32, shdr);
         if (!isnamedone(secdone, NELEMENTS(secdone), x->secname)) {
@@ -1395,7 +1395,7 @@ static int dump_actions64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
   paction_t x = o->actions;
   while (x) {
     if (x->secname[0]) {
-      Elf64_Shdr* shdr = get_shdr64byname(p, x->secname);
+      Elf64_Shdr* shdr = ecget_shdr64byname(p, x->secname);
       if (shdr) {
         MALLOCSWRAP(opwrap_t, s, MODE_OCSHDR64, shdr);
         if (!isnamedone(secdone, NELEMENTS(secdone), x->secname)) {
@@ -1417,13 +1417,13 @@ static int dump_notes0(const pbuffer_t p, const int index, const uint64_t e_mach
                        const uint64_t n_descsz, const uint64_t n_type, const unknown_t data) {
   int n = 0;
   n += printf_text("Displaying notes found in", USE_LT);
-  n += printf_text(get_secnamebyindex(p, index), USE_LT | USE_SPACE | USE_SQ | USE_COLON | USE_EOL);
+  n += printf_text(ecget_secnamebyindex(p, index), USE_LT | USE_SPACE | USE_SQ | USE_COLON | USE_EOL);
 
   n += printf_text("Owner", USE_LT | USE_TAB | SET_PAD(22));
   n += printf_text("Data size", USE_LT | USE_SPACE | SET_PAD(11));
   n += printf_text("Description", USE_LT | USE_SPACE | USE_EOL);
 
-  n += printf_text(get_nhdrnamebyindex(p, index), USE_LT | USE_TAB | SET_PAD(22));
+  n += printf_text(ecget_nhdrnamebyindex(p, index), USE_LT | USE_TAB | SET_PAD(22));
   n += printf_nice(n_descsz, USE_FHEX32);
   n += printf_pick(get_NHDRTYPE(p), n_type, USE_LT | USE_SPACE | USE_EOL);
 
@@ -1496,9 +1496,9 @@ static int dump_notes32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr)
   int n = 0;
   if (ET_CORE != ehdr->e_type) {
     for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
-      Elf32_Nhdr *nhdr = get_nhdr32byindex(p, i);
+      Elf32_Nhdr *nhdr = ecget_nhdr32byindex(p, i);
       if (nhdr) {
-        Elf32_Word *pc = get_nhdrdesc32byindex(p, i);
+        Elf32_Word *pc = ecget_nhdrdesc32byindex(p, i);
         n += dump_notes0(p, i, ehdr->e_machine, nhdr->n_descsz, nhdr->n_type, pc);
       }
     }
@@ -1511,9 +1511,9 @@ static int dump_notes64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr)
   int n = 0;
   if (ET_CORE != ehdr->e_type) {
     for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
-      Elf64_Nhdr *nhdr = get_nhdr64byindex(p, i);
+      Elf64_Nhdr *nhdr = ecget_nhdr64byindex(p, i);
       if (nhdr) {
-        Elf64_Word *pc = get_nhdrdesc64byindex(p, i);
+        Elf64_Word *pc = ecget_nhdrdesc64byindex(p, i);
         n += dump_notes0(p, i, ehdr->e_machine, nhdr->n_descsz, nhdr->n_type, pc);
       }
     }
@@ -1540,13 +1540,13 @@ static int dump_dwarf32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr)
   ocdwarf_open(oc, o);
 
   for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
-    Elf32_Shdr *shdr = get_shdr32byindex(p, i);
+    Elf32_Shdr *shdr = ecget_shdr32byindex(p, i);
     if (shdr) {
       MALLOCSWRAPEX(opwrap_t, sec, MODE_OCSHDR32, shdr, p);
 
       if (ocdwarf_isneeded(oc, psec)) {
         printf_text("Contents of section", USE_LT);
-        printf_text(get_secnamebyindex(p, i), USE_LT | USE_SPACE | USE_SQ);
+        printf_text(ecget_secnamebyindex(p, i), USE_LT | USE_SPACE | USE_SQ);
         printf_text("at offset", USE_LT | USE_SPACE);
         printf_nice(shdr->sh_offset, USE_FHEX16 | USE_COLON | USE_EOL);
 
@@ -1569,13 +1569,13 @@ static int dump_dwarf64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr)
   ocdwarf_open(oc, o);
 
   for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
-    Elf64_Shdr *shdr = get_shdr64byindex(p, i);
+    Elf64_Shdr *shdr = ecget_shdr64byindex(p, i);
     if (shdr) {
       MALLOCSWRAPEX(opwrap_t, sec, MODE_OCSHDR64, shdr, p);
 
       if (ocdwarf_isneeded(oc, psec)) {
         printf_text("Contents of section", USE_LT);
-        printf_text(get_secnamebyindex(p, i), USE_LT | USE_SPACE | USE_SQ);
+        printf_text(ecget_secnamebyindex(p, i), USE_LT | USE_SPACE | USE_SQ);
         printf_text("at offset", USE_LT | USE_SPACE);
         printf_nice(shdr->sh_offset, USE_FHEX16 | USE_COLON | USE_EOL);
 
@@ -1598,7 +1598,7 @@ int readelf(const pbuffer_t p, const poptions_t o) {
     if (MODE_ISANY(o->action, OPTREADELF_FILEHEADER))           dump_elfheader(p, o);
 
     if (isELF32(p)) {
-      Elf32_Ehdr *ehdr = get_ehdr32(p);
+      Elf32_Ehdr *ehdr = ecget_ehdr32(p);
       if (ehdr) {
         if (MODE_ISANY(o->action, OPTPROGRAM_INFO))             dump_information32(p, o, ehdr);
         if (MODE_ISANY(o->action, OPTREADELF_FILEHEADER))       dump_fileheader32(p, o, ehdr);
@@ -1617,7 +1617,7 @@ int readelf(const pbuffer_t p, const poptions_t o) {
         if (MODE_ISANY(o->ocdump, OPTDEBUGELF_DEBUGGING))       dump_dwarf32(p, o, ehdr);
       }
     } else if (isELF64(p)) {
-      Elf64_Ehdr *ehdr = get_ehdr64(p);
+      Elf64_Ehdr *ehdr = ecget_ehdr64(p);
       if (ehdr) {
         if (MODE_ISANY(o->action, OPTPROGRAM_INFO))             dump_information64(p, o, ehdr);
         if (MODE_ISANY(o->action, OPTREADELF_FILEHEADER))       dump_fileheader64(p, o, ehdr);
