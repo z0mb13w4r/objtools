@@ -214,7 +214,7 @@ int opcode_printf_source(handle_t p, const uint64_t vaddr) {
     bool_t isok = oc->prev_nline != nline || oc->prev_discriminator != discriminator
               || (0 != name && 0 != strcmp(oc->prev_name, name));
 
-    if (isok && 0 != name) {
+    if (isok && 0 != name && 0 != name[0]) {
       n += opcode_printf_LADDR(p, vaddr, USE_NONE);
       n += printf_text(name, USE_LT | USE_SPACE | USE_TB | USE_COLON | USE_EOL);
 
@@ -262,7 +262,7 @@ int opcode_printf_detail(handle_t p, const uint64_t vaddr, unknown_t mnemonic, u
         ocget_symbol(p, 0x15fa, &name, NULL, NULL, NULL, NULL, NULL, NULL, &offset);
       }
 
-      if (0 != name) {
+      if (0 != name && 0 != name[0]) {
         if (0 != offset) {
           n += printf_text(name, USE_LT | USE_SPACE | USE_TBLT);
           n += printf_text("+", USE_LT);
