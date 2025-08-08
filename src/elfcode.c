@@ -670,11 +670,31 @@ const char* ecget_secnamebyaddr(const pbuffer_t p, const int addr) {
 }
 
 const char* _ecget_secname32byaddr(const pbuffer_t p, const int addr) {
-  return ".plt";
+  Elf32_Ehdr *e = get_ehdr32(p);
+  if (e) {
+    for (Elf32_Half i = 0; i < e->e_shnum; ++i) {
+      Elf32_Shdr *s = get_shdr32byindex(p, i);
+      if (s && addr == s->sh_addr) {
+        return get_secname32byshdr(p, s);
+      }
+    }
+  }
+
+  return NULL;
 }
 
 const char* _ecget_secname64byaddr(const pbuffer_t p, const int addr) {
-  return ".plt";
+  Elf64_Ehdr *e = get_ehdr64(p);
+  if (e) {
+    for (Elf64_Half i = 0; i < e->e_shnum; ++i) {
+      Elf64_Shdr *s = get_shdr64byindex(p, i);
+      if (s && addr == s->sh_addr) {
+        return get_secname64byshdr(p, s);
+      }
+    }
+  }
+
+  return NULL;
 }
 
 void* _get32byshdr(const pbuffer_t p, Elf32_Shdr *shdr) {
