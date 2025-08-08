@@ -81,8 +81,8 @@ const char* _get_nhdrname64byindex(const pbuffer_t p, const int index);
 Elf32_Word* get_nhdrdesc32byindex(const pbuffer_t p, const int index);
 Elf64_Word* get_nhdrdesc64byindex(const pbuffer_t p, const int index);
 
-const char* get_secname32byshdr(const pbuffer_t p, Elf32_Shdr *s);
-const char* get_secname64byshdr(const pbuffer_t p, Elf64_Shdr *s);
+const char* ecget_secname32byshdr(const pbuffer_t p, Elf32_Shdr *s);
+const char* ecget_secname64byshdr(const pbuffer_t p, Elf64_Shdr *s);
 
 const char* ecget_secnamebyoffset(const pbuffer_t p, const int offset);
 const char* _ecget_secname32byoffset(const pbuffer_t p, const int offset);

@@ -579,7 +579,7 @@ Elf64_Word* get_nhdrdesc64byindex(const pbuffer_t p, const int index) {
   return NULL;
 }
 
-const char* get_secname32byshdr(const pbuffer_t p, Elf32_Shdr *s) {
+const char* ecget_secname32byshdr(const pbuffer_t p, Elf32_Shdr *s) {
   char *s0 = NULL;
 
   Elf32_Ehdr *e = get_ehdr32(p);
@@ -597,7 +597,7 @@ const char* get_secname32byshdr(const pbuffer_t p, Elf32_Shdr *s) {
   return NULL;
 }
 
-const char* get_secname64byshdr(const pbuffer_t p, Elf64_Shdr *s) {
+const char* ecget_secname64byshdr(const pbuffer_t p, Elf64_Shdr *s) {
   char *s0 = NULL;
 
   Elf64_Ehdr *e = get_ehdr64(p);
@@ -675,7 +675,7 @@ const char* _ecget_secname32byaddr(const pbuffer_t p, const int addr) {
     for (Elf32_Half i = 0; i < e->e_shnum; ++i) {
       Elf32_Shdr *s = get_shdr32byindex(p, i);
       if (s && addr == s->sh_addr) {
-        return get_secname32byshdr(p, s);
+        return ecget_secname32byshdr(p, s);
       }
     }
   }
@@ -689,7 +689,7 @@ const char* _ecget_secname64byaddr(const pbuffer_t p, const int addr) {
     for (Elf64_Half i = 0; i < e->e_shnum; ++i) {
       Elf64_Shdr *s = get_shdr64byindex(p, i);
       if (s && addr == s->sh_addr) {
-        return get_secname64byshdr(p, s);
+        return ecget_secname64byshdr(p, s);
       }
     }
   }

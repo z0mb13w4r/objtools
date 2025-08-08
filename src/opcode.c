@@ -524,9 +524,9 @@ const char* ocget_name(handle_t p) {
   } else if (ismode(p, MODE_OCSHDR)) {
     return bfd_section_name(ocget(p, MODE_OCSHDR));
   } else if (ismode(p, MODE_OCSHDR32)) {
-    return get_secname32byshdr(ocget(p, OPCODE_PARAM2), ocget(p, MODE_OCSHDR32));
+    return ecget_secname32byshdr(ocget(p, OPCODE_PARAM2), ocget(p, MODE_OCSHDR32));
   } else if (ismode(p, MODE_OCSHDR64)) {
-    return get_secname64byshdr(ocget(p, OPCODE_PARAM2), ocget(p, MODE_OCSHDR64));
+    return ecget_secname64byshdr(ocget(p, OPCODE_PARAM2), ocget(p, MODE_OCSHDR64));
   }
 
   return NULL;
