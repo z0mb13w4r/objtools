@@ -459,6 +459,88 @@ const char* ecget_secnamebyindex(const pbuffer_t p, const int index) {
   return NULL;
 }
 
+const char* ecget_secnamebyoffset(const pbuffer_t p, const int offset) {
+  if (isELF(p)) {
+    if (isELF32(p))        return _ecget_secname32byoffset(p, offset);
+    else if (isELF64(p))   return _ecget_secname64byoffset(p, offset);
+  }
+
+  return NULL;
+}
+
+const char* _ecget_secname32byoffset(const pbuffer_t p, const int offset) {
+  char *s0 = NULL;
+
+  Elf32_Ehdr *e = ecget_ehdr32(p);
+  if (e) {
+    Elf32_Shdr *s1 = ecget_shdr32byindex(p, e->e_shstrndx);
+    if (s1) {
+      s0 = getp(p, s1->sh_offset, s1->sh_size);
+    }
+
+    if (s0) {
+      return s0 + offset;
+    }
+  }
+
+  return NULL;
+}
+
+const char* _ecget_secname64byoffset(const pbuffer_t p, const int offset) {
+  char *s0 = NULL;
+
+  Elf64_Ehdr *e = ecget_ehdr64(p);
+  if (e) {
+    Elf64_Shdr *s1 = ecget_shdr64byindex(p, e->e_shstrndx);
+    if (s1) {
+      s0 = getp(p, s1->sh_offset, s1->sh_size);
+    }
+
+    if (s0) {
+      return s0 + offset;
+    }
+  }
+
+  return NULL;
+}
+
+const char* ecget_secnamebyaddr(const pbuffer_t p, const int addr) {
+  if (isELF(p)) {
+    if (isELF32(p))        return _ecget_secname32byaddr(p, addr);
+    else if (isELF64(p))   return _ecget_secname64byaddr(p, addr);
+  }
+
+  return NULL;
+}
+
+const char* _ecget_secname32byaddr(const pbuffer_t p, const int addr) {
+  Elf32_Ehdr *e = ecget_ehdr32(p);
+  if (e) {
+    for (Elf32_Half i = 0; i < e->e_shnum; ++i) {
+      Elf32_Shdr *s = ecget_shdr32byindex(p, i);
+      if (s && addr == s->sh_addr) {
+        return ecget_secname32byshdr(p, s);
+      }
+    }
+  }
+
+  return NULL;
+}
+
+const char* _ecget_secname64byaddr(const pbuffer_t p, const int addr) {
+  Elf64_Ehdr *e = ecget_ehdr64(p);
+  if (e) {
+    for (Elf64_Half i = 0; i < e->e_shnum; ++i) {
+      Elf64_Shdr *s = ecget_shdr64byindex(p, i);
+      if (s && addr == s->sh_addr) {
+        return ecget_secname64byshdr(p, s);
+      }
+    }
+  }
+
+  return NULL;
+}
+
 const char* _ecget_name32byoffset(const pbuffer_t p, const int index, const int offset) {
   Elf32_Ehdr *e = ecget_ehdr32(p);
   if (e) {
@@ -585,89 +667,7 @@ const char* ecget_secname64byshdr(const pbuffer_t p, Elf64_Shdr *s) {
   return NULL;
 }
 
-const char* ecget_secnamebyoffset(const pbuffer_t p, const int offset) {
-  if (isELF(p)) {
-    if (isELF32(p))        return _ecget_secname32byoffset(p, offset);
-    else if (isELF64(p))   return _ecget_secname64byoffset(p, offset);
-  }
-
-  return NULL;
-}
-
-const char* _ecget_secname32byoffset(const pbuffer_t p, const int offset) {
-  char *s0 = NULL;
-
-  Elf32_Ehdr *e = ecget_ehdr32(p);
-  if (e) {
-    Elf32_Shdr *s1 = ecget_shdr32byindex(p, e->e_shstrndx);
-    if (s1) {
-      s0 = getp(p, s1->sh_offset, s1->sh_size);
-    }
-
-    if (s0) {
-      return s0 + offset;
-    }
-  }
-
-  return NULL;
-}
-
-const char* _ecget_secname64byoffset(const pbuffer_t p, const int offset) {
-  char *s0 = NULL;
-
-  Elf64_Ehdr *e = ecget_ehdr64(p);
-  if (e) {
-    Elf64_Shdr *s1 = ecget_shdr64byindex(p, e->e_shstrndx);
-    if (s1) {
-      s0 = getp(p, s1->sh_offset, s1->sh_size);
-    }
-
-    if (s0) {
-      return s0 + offset;
-    }
-  }
-
-  return NULL;
-}
-
-const char* ecget_secnamebyaddr(const pbuffer_t p, const int addr) {
-  if (isELF(p)) {
-    if (isELF32(p))        return _ecget_secname32byaddr(p, addr);
-    else if (isELF64(p))   return _ecget_secname64byaddr(p, addr);
-  }
-
-  return NULL;
-}
-
-const char* _ecget_secname32byaddr(const pbuffer_t p, const int addr) {
-  Elf32_Ehdr *e = ecget_ehdr32(p);
-  if (e) {
-    for (Elf32_Half i = 0; i < e->e_shnum; ++i) {
-      Elf32_Shdr *s = ecget_shdr32byindex(p, i);
-      if (s && addr == s->sh_addr) {
-        return ecget_secname32byshdr(p, s);
-      }
-    }
-  }
-
-  return NULL;
-}
-
-const char* _ecget_secname64byaddr(const pbuffer_t p, const int addr) {
-  Elf64_Ehdr *e = ecget_ehdr64(p);
-  if (e) {
-    for (Elf64_Half i = 0; i < e->e_shnum; ++i) {
-      Elf64_Shdr *s = ecget_shdr64byindex(p, i);
-      if (s && addr == s->sh_addr) {
-        return ecget_secname64byshdr(p, s);
-      }
-    }
-  }
-
-  return NULL;
-}
-
-void* _get32byshdr(const pbuffer_t p, Elf32_Shdr *shdr) {
+unknown_t _get32byshdr(const pbuffer_t p, Elf32_Shdr *shdr) {
   if (shdr) {
     return getp(p, shdr->sh_offset, shdr->sh_size);
   }
@@ -675,7 +675,7 @@ void* _get32byshdr(const pbuffer_t p, Elf32_Shdr *shdr) {
   return NULL;
 }
 
-void* _get64byshdr(const pbuffer_t p, Elf64_Shdr *shdr) {
+unknown_t _get64byshdr(const pbuffer_t p, Elf64_Shdr *shdr) {
   if (shdr) {
     return getp(p, shdr->sh_offset, shdr->sh_size);
   }

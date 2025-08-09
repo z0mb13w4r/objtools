@@ -89,8 +89,8 @@ Elf64_Word* ecget_nhdrdesc64byindex(const pbuffer_t p, const int index);
 const char* ecget_secname32byshdr(const pbuffer_t p, Elf32_Shdr *s);
 const char* ecget_secname64byshdr(const pbuffer_t p, Elf64_Shdr *s);
 
-void* _get32byshdr(const pbuffer_t p, Elf32_Shdr *shdr); // not safe - remove
-void* _get64byshdr(const pbuffer_t p, Elf64_Shdr *shdr); // replace by fgetXXbyYYYY & fnext
+unknown_t _get32byshdr(const pbuffer_t p, Elf32_Shdr *shdr); // not safe - remove
+unknown_t _get64byshdr(const pbuffer_t p, Elf64_Shdr *shdr); // replace by fgetXXbyYYYY & fnext
 
 handle_t fget32byshdr(const pbuffer_t p, Elf32_Shdr *shdr);
 handle_t fget64byshdr(const pbuffer_t p, Elf64_Shdr *shdr);
