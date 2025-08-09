@@ -584,10 +584,61 @@ const char* ecget_namebyaddr(const pbuffer_t p, const int vaddr) {
 }
 
 const char* _ecget_name32byaddr(const pbuffer_t p, const int vaddr) {
+  Elf32_Ehdr *e = ecget_ehdr32(p);
+  if (e) {
+    for (Elf32_Half i = 0; i < e->e_shnum; ++i) {
+      Elf32_Shdr *sh = ecget_shdr32byindex(p, i);
+      if (sh) {
+        if (SHT_SYMTAB == sh->sh_type || SHT_DYNSYM == sh->sh_type) {
+          size_t cnt = sh->sh_size / sh->sh_entsize;
+
+          handle_t f = fget32byshdr(p, sh);
+          if (f) {
+            for (size_t j = 0; j < cnt; ++j) {
+              Elf32_Sym *st = fget(f);
+              if (st) {
+                if (st->st_value == vaddr) {
+                  return ecget_namebyoffset(p, sh->sh_link, st->st_name);
+                }
+                f = fnext(f);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
   return NULL;
 }
 
 const char* _ecget_name64byaddr(const pbuffer_t p, const int vaddr) {
+  Elf64_Ehdr *e = ecget_ehdr64(p);
+  if (e) {
+    for (Elf64_Half i = 0; i < e->e_shnum; ++i) {
+      Elf64_Shdr *sh = ecget_shdr64byindex(p, i);
+      if (sh) {
+        if (SHT_SYMTAB == sh->sh_type || SHT_DYNSYM == sh->sh_type) {
+          size_t cnt = sh->sh_size / sh->sh_entsize;
+
+          handle_t f = fget64byshdr(p, sh);
+          if (f) {
+            for (size_t j = 0; j < cnt; ++j) {
+              Elf64_Sym *st = fget(f);
+              if (st) {
+                if (st->st_value == vaddr) {
+//printf("+++");
+                  return ecget_namebyoffset(p, sh->sh_link, st->st_name);
+                }
+                f = fnext(f);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
   return NULL;
 }
 
