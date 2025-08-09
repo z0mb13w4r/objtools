@@ -266,6 +266,10 @@
 typedef struct ocmnemonic_s {
   char       data[160];
   uint64_t   cvalue;
+  union {
+    int64_t  ivalue;
+    uint64_t uvalue;
+  };
 } ocmnemonic_t, *pocmnemonic_t;
 
 typedef struct ocoperand_s {

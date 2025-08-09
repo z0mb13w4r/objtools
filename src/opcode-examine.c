@@ -93,6 +93,8 @@ size_t oeskiphex(unknown_t p, const size_t size) {
       return 3;
     } else if (size >= 2 && '0' == p0[0] && 'x' == p0[1]) {
       return 2;
+    } else if (size >= 2 && '#' == p0[0] && ' ' == p0[1]) {
+      return 2;
     }
   }
 
@@ -292,12 +294,17 @@ static unknown_t oeinsert_prefix(handle_t p, unknown_t m) {
 static unknown_t oeinsert_mnemonic(handle_t p, unknown_t q, unknown_t m) {
   if (isocexamine(p) && q && m) {
     char *m0 = CAST(char*, m);
+    pocexamine_t p0 = oeget(p, OECODE_THIS);
     pocmnemonic_t p1 = oeget(p, OECODE_MNEMONIC);
     poestruct_t q0 = CAST(poestruct_t, q);
 
     if (p1) {
       p1->cvalue |= q0->action;
       strncpy(p1->data, q0->mc, q0->mcsize);
+      if ('#' == p0->comment[0] && oeishexb(p0->comment, strlen(p0->comment))) {
+        p1->uvalue = oehexb(p0->comment, strlen(p0->comment));
+      }
+
       return oeskip(m0 + q0->mcsize, strlen(m0) - q0->mcsize);
     }
   }

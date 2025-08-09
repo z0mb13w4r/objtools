@@ -99,6 +99,10 @@ static int ocdebugf(handle_t p, handle_t q) {
         n += printf_text("MNEMONIC", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
         n += printf_text(m0->data, USE_LT | USE_SPACE | USE_EOL);
         n += ocdebugf_cvalue0(p, m0->cvalue);
+        if (0 != m0->uvalue) {
+          n += printf_text("UVALUE", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
+          n += opcode_printf_FADDR(p, m0->uvalue, USE_EOL);
+        }
       }
       if (o0) {
         n += printf_text("OPERAND1", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
@@ -255,12 +259,11 @@ int opcode_printf_detail(handle_t p, const uint64_t vaddr, unknown_t mnemonic, u
     uint64_t offset = 0;
 
     pocexamine_t oe = oecreate(p, vaddr, mnemonic, operands);
+    pocmnemonic_t m = oeget(p, OECODE_MNEMONIC);
+    pocoperand_t o1 = oeget(p, OECODE_OPERAND1);
 
-    if (oe && oe->op1) {
-      ocget_symbol(p, oe->op1->uvalue, &name, NULL, NULL, NULL, NULL, NULL, NULL, &offset);
-      if (0 == name && 0x1181 == vaddr) {
-        ocget_symbol(p, 0x15fa, &name, NULL, NULL, NULL, NULL, NULL, NULL, &offset);
-      }
+    if (m && o1) {
+      ocget_symbol(p, 0 != m->uvalue ? m->uvalue : o1->uvalue, &name, NULL, NULL, NULL, NULL, NULL, NULL, &offset);
 
       if (name && name[0]) {
         if (0 != offset) {
