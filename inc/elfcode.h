@@ -67,6 +67,14 @@ const char* ecget_secnamebyindex(const pbuffer_t p, const int index);
 const char* _ecget_secname32byindex(const pbuffer_t p, const int index);
 const char* _ecget_secname64byindex(const pbuffer_t p, const int index);
 
+const char* ecget_secnamebyoffset(const pbuffer_t p, const int offset);
+const char* _ecget_secname32byoffset(const pbuffer_t p, const int offset);
+const char* _ecget_secname64byoffset(const pbuffer_t p, const int offset);
+
+const char* ecget_secnamebyaddr(const pbuffer_t p, const int addr);
+const char* _ecget_secname32byaddr(const pbuffer_t p, const int addr);
+const char* _ecget_secname64byaddr(const pbuffer_t p, const int addr);
+
 const char* ecget_namebyoffset(const pbuffer_t p, const int index, const int offset);
 const char* _ecget_name32byoffset(const pbuffer_t p, const int index, const int offset);
 const char* _ecget_name64byoffset(const pbuffer_t p, const int index, const int offset);
@@ -80,14 +88,6 @@ Elf64_Word* ecget_nhdrdesc64byindex(const pbuffer_t p, const int index);
 
 const char* ecget_secname32byshdr(const pbuffer_t p, Elf32_Shdr *s);
 const char* ecget_secname64byshdr(const pbuffer_t p, Elf64_Shdr *s);
-
-const char* ecget_secnamebyoffset(const pbuffer_t p, const int offset);
-const char* _ecget_secname32byoffset(const pbuffer_t p, const int offset);
-const char* _ecget_secname64byoffset(const pbuffer_t p, const int offset);
-
-const char* ecget_secnamebyaddr(const pbuffer_t p, const int addr);
-const char* _ecget_secname32byaddr(const pbuffer_t p, const int addr);
-const char* _ecget_secname64byaddr(const pbuffer_t p, const int addr);
 
 void* _get32byshdr(const pbuffer_t p, Elf32_Shdr *shdr); // not safe - remove
 void* _get64byshdr(const pbuffer_t p, Elf64_Shdr *shdr); // replace by fgetXXbyYYYY & fnext
