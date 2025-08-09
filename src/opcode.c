@@ -544,7 +544,7 @@ const char* ocget_fileformat(handle_t p) {
 const char* ocget_symbol(handle_t p, uint64_t vaddr, char **name,
                      uint64_t *nline, uint64_t *ncolumn, uint64_t *discriminator, char **source,
                      uint64_t *laddr, uint64_t *haddr, uint64_t *offset) {
-  if (isopcode(p) && name) {
+  if (isopcode(p) && name && 0 != vaddr) {
     Dwarf_Unsigned v0 = 0;
     Dwarf_Unsigned v1 = 0;
     Dwarf_Unsigned v2 = 0;
