@@ -597,7 +597,7 @@ const char* _ecget_name32byaddr(const pbuffer_t p, const int vaddr) {
             for (size_t j = 0; j < cnt; ++j) {
               Elf32_Sym *st = fget(f);
               if (st) {
-                if (st->st_value == vaddr) {
+                if (st->st_value == vaddr && ELF_ST_TYPE(st->st_info) != STT_SECTION) {
                   return ecget_namebyoffset(p, sh->sh_link, st->st_name);
                 }
                 f = fnext(f);
@@ -626,8 +626,8 @@ const char* _ecget_name64byaddr(const pbuffer_t p, const int vaddr) {
             for (size_t j = 0; j < cnt; ++j) {
               Elf64_Sym *st = fget(f);
               if (st) {
-                if (st->st_value == vaddr) {
-//printf("+++");
+                if (st->st_value == vaddr && ELF_ST_TYPE(st->st_info) != STT_SECTION) {
+//printf("+++%x+++", vaddr);
                   return ecget_namebyoffset(p, sh->sh_link, st->st_name);
                 }
                 f = fnext(f);
