@@ -592,7 +592,7 @@ const char* _ecget_name32byaddr(const pbuffer_t p, const int vaddr) {
         if (SHT_SYMTAB == sh->sh_type || SHT_DYNSYM == sh->sh_type) {
           size_t cnt = sh->sh_size / sh->sh_entsize;
 
-          handle_t f = fget32byshdr(p, sh);
+          handle_t f = fgetbyshdr(p, sh);
           if (f) {
             for (size_t j = 0; j < cnt; ++j) {
               Elf32_Sym *st = fget(f);
@@ -621,7 +621,7 @@ const char* _ecget_name64byaddr(const pbuffer_t p, const int vaddr) {
         if (SHT_SYMTAB == sh->sh_type || SHT_DYNSYM == sh->sh_type) {
           size_t cnt = sh->sh_size / sh->sh_entsize;
 
-          handle_t f = fget64byshdr(p, sh);
+          handle_t f = fgetbyshdr(p, sh);
           if (f) {
             for (size_t j = 0; j < cnt; ++j) {
               Elf64_Sym *st = fget(f);
@@ -746,6 +746,15 @@ unknown_t _get32byshdr(const pbuffer_t p, Elf32_Shdr *shdr) {
 unknown_t _get64byshdr(const pbuffer_t p, Elf64_Shdr *shdr) {
   if (shdr) {
     return getp(p, shdr->sh_offset, shdr->sh_size);
+  }
+
+  return NULL;
+}
+
+handle_t fgetbyshdr(const pbuffer_t p, unknown_t shdr) {
+  if (isELF(p)) {
+    if (isELF32(p))        return fget32byshdr(p, shdr);
+    else if (isELF64(p))   return fget64byshdr(p, shdr);
   }
 
   return NULL;

@@ -96,6 +96,7 @@ const char* ecget_secname64byshdr(const pbuffer_t p, Elf64_Shdr *s);
 unknown_t _get32byshdr(const pbuffer_t p, Elf32_Shdr *shdr); // not safe - remove
 unknown_t _get64byshdr(const pbuffer_t p, Elf64_Shdr *shdr); // replace by fgetXXbyYYYY & fnext
 
+handle_t fgetbyshdr(const pbuffer_t p, unknown_t shdr);
 handle_t fget32byshdr(const pbuffer_t p, Elf32_Shdr *shdr);
 handle_t fget64byshdr(const pbuffer_t p, Elf64_Shdr *shdr);
 
