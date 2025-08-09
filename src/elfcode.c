@@ -351,6 +351,15 @@ Elf64_Shdr* ecget_shdr64byindex(const pbuffer_t p, const int index) {
   return NULL;
 }
 
+size_t ecget_secnamemaxsize(const pbuffer_t p) {
+  if (isELF(p)) {
+    if (isELF32(p))        return _ecget_secname32maxsize(p);
+    else if (isELF64(p))   return _ecget_secname64maxsize(p);
+  }
+
+  return 0;
+}
+
 size_t _ecget_secname32maxsize(const pbuffer_t p) {
   char *s0 = NULL;
   size_t siz = 0;
@@ -399,13 +408,13 @@ size_t _ecget_secname64maxsize(const pbuffer_t p) {
   return siz;
 }
 
-size_t ecget_secnamemaxsize(const pbuffer_t p) {
+const char* ecget_secnamebyindex(const pbuffer_t p, const int index) {
   if (isELF(p)) {
-    if (isELF32(p))        return _ecget_secname32maxsize(p);
-    else if (isELF64(p))   return _ecget_secname64maxsize(p);
+    if (isELF32(p))        return _ecget_secname32byindex(p, index);
+    else if (isELF64(p))   return _ecget_secname64byindex(p, index);
   }
 
-  return 0;
+  return NULL;
 }
 
 const char* _ecget_secname32byindex(const pbuffer_t p, const int index) {
@@ -445,15 +454,6 @@ const char* _ecget_secname64byindex(const pbuffer_t p, const int index) {
         return s0 + s2->sh_name;
       }
     }
-  }
-
-  return NULL;
-}
-
-const char* ecget_secnamebyindex(const pbuffer_t p, const int index) {
-  if (isELF(p)) {
-    if (isELF32(p))        return _ecget_secname32byindex(p, index);
-    else if (isELF64(p))   return _ecget_secname64byindex(p, index);
   }
 
   return NULL;
@@ -513,12 +513,12 @@ const char* ecget_secnamebyaddr(const pbuffer_t p, const int addr) {
   return NULL;
 }
 
-const char* _ecget_secname32byaddr(const pbuffer_t p, const int addr) {
+const char* _ecget_secname32byaddr(const pbuffer_t p, const int vaddr) {
   Elf32_Ehdr *e = ecget_ehdr32(p);
   if (e) {
     for (Elf32_Half i = 0; i < e->e_shnum; ++i) {
       Elf32_Shdr *s = ecget_shdr32byindex(p, i);
-      if (s && addr == s->sh_addr) {
+      if (s && vaddr == s->sh_addr) {
         return ecget_secname32byshdr(p, s);
       }
     }
@@ -527,15 +527,24 @@ const char* _ecget_secname32byaddr(const pbuffer_t p, const int addr) {
   return NULL;
 }
 
-const char* _ecget_secname64byaddr(const pbuffer_t p, const int addr) {
+const char* _ecget_secname64byaddr(const pbuffer_t p, const int vaddr) {
   Elf64_Ehdr *e = ecget_ehdr64(p);
   if (e) {
     for (Elf64_Half i = 0; i < e->e_shnum; ++i) {
       Elf64_Shdr *s = ecget_shdr64byindex(p, i);
-      if (s && addr == s->sh_addr) {
+      if (s && vaddr == s->sh_addr) {
         return ecget_secname64byshdr(p, s);
       }
     }
+  }
+
+  return NULL;
+}
+
+const char* ecget_namebyoffset(const pbuffer_t p, const int index, const int offset) {
+  if (isELF(p)) {
+    if (isELF32(p))        return _ecget_name32byoffset(p, index, offset);
+    else if (isELF64(p))   return _ecget_name64byoffset(p, index, offset);
   }
 
   return NULL;
@@ -565,10 +574,27 @@ const char* _ecget_name64byoffset(const pbuffer_t p, const int index, const int 
   return NULL;
 }
 
-const char* ecget_namebyoffset(const pbuffer_t p, const int index, const int offset) {
+const char* ecget_namebyaddr(const pbuffer_t p, const int vaddr) {
   if (isELF(p)) {
-    if (isELF32(p))        return _ecget_name32byoffset(p, index, offset);
-    else if (isELF64(p))   return _ecget_name64byoffset(p, index, offset);
+    if (isELF32(p))        return _ecget_name32byaddr(p, vaddr);
+    else if (isELF64(p))   return _ecget_name64byaddr(p, vaddr);
+  }
+
+  return NULL;
+}
+
+const char* _ecget_name32byaddr(const pbuffer_t p, const int vaddr) {
+  return NULL;
+}
+
+const char* _ecget_name64byaddr(const pbuffer_t p, const int vaddr) {
+  return NULL;
+}
+
+const char* ecget_nhdrnamebyindex(const pbuffer_t p, const int index) {
+  if (isELF(p)) {
+    if (isELF32(p))        return _ecget_nhdrname32byindex(p, index);
+    else if (isELF64(p))   return _ecget_nhdrname64byindex(p, index);
   }
 
   return NULL;
@@ -593,15 +619,6 @@ const char* _ecget_nhdrname64byindex(const pbuffer_t p, const int index) {
     if (s) {
       return getp(p, s->sh_offset + sizeof(Elf64_Nhdr), n->n_namesz);
     }
-  }
-
-  return NULL;
-}
-
-const char* ecget_nhdrnamebyindex(const pbuffer_t p, const int index) {
-  if (isELF(p)) {
-    if (isELF32(p))        return _ecget_nhdrname32byindex(p, index);
-    else if (isELF64(p))   return _ecget_nhdrname64byindex(p, index);
   }
 
   return NULL;

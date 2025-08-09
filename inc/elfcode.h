@@ -71,13 +71,17 @@ const char* ecget_secnamebyoffset(const pbuffer_t p, const int offset);
 const char* _ecget_secname32byoffset(const pbuffer_t p, const int offset);
 const char* _ecget_secname64byoffset(const pbuffer_t p, const int offset);
 
-const char* ecget_secnamebyaddr(const pbuffer_t p, const int addr);
-const char* _ecget_secname32byaddr(const pbuffer_t p, const int addr);
-const char* _ecget_secname64byaddr(const pbuffer_t p, const int addr);
+const char* ecget_secnamebyaddr(const pbuffer_t p, const int vaddr);
+const char* _ecget_secname32byaddr(const pbuffer_t p, const int vaddr);
+const char* _ecget_secname64byaddr(const pbuffer_t p, const int vaddr);
 
 const char* ecget_namebyoffset(const pbuffer_t p, const int index, const int offset);
 const char* _ecget_name32byoffset(const pbuffer_t p, const int index, const int offset);
 const char* _ecget_name64byoffset(const pbuffer_t p, const int index, const int offset);
+
+const char* ecget_namebyaddr(const pbuffer_t p, const int vaddr);
+const char* _ecget_name32byaddr(const pbuffer_t p, const int vaddr);
+const char* _ecget_name64byaddr(const pbuffer_t p, const int vaddr);
 
 const char* ecget_nhdrnamebyindex(const pbuffer_t p, const int index);
 const char* _ecget_nhdrname32byindex(const pbuffer_t p, const int index);
