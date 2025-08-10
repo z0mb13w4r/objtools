@@ -626,11 +626,29 @@ const char* _ecget_name64byaddr(const pbuffer_t p, const int vaddr, uint64_t *of
             for (size_t j = 0; j < cnt; ++j) {
               Elf64_Sym *st = fget(f);
               if (st) {
-                if (st->st_value == vaddr && ELF_ST_TYPE(st->st_info) != STT_SECTION) {
+                if (ELF_ST_TYPE(st->st_info) != STT_SECTION && st->st_value == vaddr) {
 //printf("+++%x+++", vaddr);
                   return ecget_namebyoffset(p, sh->sh_link, st->st_name);
                 }
                 f = fnext(f);
+              }
+            }
+          }
+
+          if (offset) {
+            f = fgetbyshdr(p, sh);
+            if (f) {
+              for (size_t j = 0; j < cnt; ++j) {
+                Elf64_Sym *st = fget(f);
+                if (st) {
+                  if (ELF_ST_TYPE(st->st_info) != STT_SECTION) {
+                    if (st->st_value <= vaddr && vaddr < (st->st_value + st->st_size)) {
+                      *offset = vaddr - st->st_value;
+                      return ecget_namebyoffset(p, sh->sh_link, st->st_name);
+                    }
+                  }
+                  f = fnext(f);
+                }
               }
             }
           }
