@@ -259,11 +259,12 @@ int opcode_printf_detail(handle_t p, const uint64_t vaddr, unknown_t mnemonic, u
     uint64_t offset = 0;
 
     pocexamine_t oe = oecreate(p, vaddr, mnemonic, operands);
-    pocmnemonic_t m = oeget(p, OECODE_MNEMONIC);
-    pocoperand_t o1 = oeget(p, OECODE_OPERAND1);
+    pocmnemonic_t m = oeget(oe, OECODE_MNEMONIC);
+    pocoperand_t o1 = oeget(oe, OECODE_OPERAND1);
 
     if (m && o1) {
-      ocget_symbol(p, 0 != m->uvalue ? m->uvalue : o1->uvalue, &name, NULL, NULL, NULL, NULL, NULL, NULL, &offset);
+      uint64_t uvalue = m->uvalue ? m->uvalue : o1->uvalue;
+      ocget_symbol(p, uvalue, &name, NULL, NULL, NULL, NULL, NULL, NULL, &offset);
 
       if (name && name[0]) {
         if (0 != offset) {
