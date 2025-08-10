@@ -574,16 +574,16 @@ const char* _ecget_name64byoffset(const pbuffer_t p, const int index, const int 
   return NULL;
 }
 
-const char* ecget_namebyaddr(const pbuffer_t p, const int vaddr) {
+const char* ecget_namebyaddr(const pbuffer_t p, const int vaddr, uint64_t *offset) {
   if (isELF(p)) {
-    if (isELF32(p))        return _ecget_name32byaddr(p, vaddr);
-    else if (isELF64(p))   return _ecget_name64byaddr(p, vaddr);
+    if (isELF32(p))        return _ecget_name32byaddr(p, vaddr, offset);
+    else if (isELF64(p))   return _ecget_name64byaddr(p, vaddr, offset);
   }
 
   return NULL;
 }
 
-const char* _ecget_name32byaddr(const pbuffer_t p, const int vaddr) {
+const char* _ecget_name32byaddr(const pbuffer_t p, const int vaddr, uint64_t *offset) {
   Elf32_Ehdr *e = ecget_ehdr32(p);
   if (e) {
     for (Elf32_Half i = 0; i < e->e_shnum; ++i) {
@@ -612,7 +612,7 @@ const char* _ecget_name32byaddr(const pbuffer_t p, const int vaddr) {
   return NULL;
 }
 
-const char* _ecget_name64byaddr(const pbuffer_t p, const int vaddr) {
+const char* _ecget_name64byaddr(const pbuffer_t p, const int vaddr, uint64_t *offset) {
   Elf64_Ehdr *e = ecget_ehdr64(p);
   if (e) {
     for (Elf64_Half i = 0; i < e->e_shnum; ++i) {

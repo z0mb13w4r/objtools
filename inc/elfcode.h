@@ -79,9 +79,9 @@ const char* ecget_namebyoffset(const pbuffer_t p, const int index, const int off
 const char* _ecget_name32byoffset(const pbuffer_t p, const int index, const int offset);
 const char* _ecget_name64byoffset(const pbuffer_t p, const int index, const int offset);
 
-const char* ecget_namebyaddr(const pbuffer_t p, const int vaddr);
-const char* _ecget_name32byaddr(const pbuffer_t p, const int vaddr);
-const char* _ecget_name64byaddr(const pbuffer_t p, const int vaddr);
+const char* ecget_namebyaddr(const pbuffer_t p, const int vaddr, uint64_t *offset);
+const char* _ecget_name32byaddr(const pbuffer_t p, const int vaddr, uint64_t *offset);
+const char* _ecget_name64byaddr(const pbuffer_t p, const int vaddr, uint64_t *offset);
 
 const char* ecget_nhdrnamebyindex(const pbuffer_t p, const int index);
 const char* _ecget_nhdrname32byindex(const pbuffer_t p, const int index);

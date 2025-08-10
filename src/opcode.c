@@ -557,21 +557,21 @@ const char* ocget_symbol(handle_t p, uint64_t vaddr, char **name,
 
     if (ECODE_ISNOENTRY(x)) {
       if (ocget(p, OPCODE_BFD)) {
-        *name = opcodeelf_getsymbol(p, vaddr);
+        *name = opcodeelf_getsymbol(p, vaddr, offset);
       } else {
         handle_t p0 = ocget(p, OPCODE_RAWDATA);
         if (isELF(p0)) {
-          *name = opcodeelf_getsymbol(p, vaddr);
+          *name = opcodeelf_getsymbol(p, vaddr, offset);
         }
       }
+    } else if (ECODE_ISOK(x)) {
+      if (0 != nline)         *nline = v0;
+      if (0 != ncolumn)       *ncolumn = v1;
+      if (0 != discriminator) *discriminator = v2;
+      if (0 != laddr)         *laddr = v3;
+      if (0 != haddr)         *haddr = v4;
+      if (0 != offset)        *offset = v5;
     }
-
-    if (0 != nline)         *nline = v0;
-    if (0 != ncolumn)       *ncolumn = v1;
-    if (0 != discriminator) *discriminator = v2;
-    if (0 != laddr)         *laddr = v3;
-    if (0 != haddr)         *haddr = v4;
-    if (0 != offset)        *offset = v5;
 
     return *name ? *name : NULL;
   }
