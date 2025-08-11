@@ -1,4 +1,4 @@
-static convert_t zHAS_FLAGS[] = {
+convert_t zHAS_FLAGS[] = {
   {"HAS_RELOC",                HAS_RELOC},
   {"EXEC_P",                   EXEC_P},
   {"HAS_LINENO",               HAS_LINENO},

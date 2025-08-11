@@ -7,9 +7,6 @@
 #include "ocdwarf.h"
 #include "objdump.h"
 
-#include "static/has_flags.ci"
-#include "static/sectionhdr_flags.ci"
-
 static void callback_disassemble(handle_t p, handle_t section, unknown_t param) {
   const poptions_t o = CAST(poptions_t, param);
 

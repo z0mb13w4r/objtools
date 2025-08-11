@@ -44,6 +44,19 @@ extern convert_t zREGISTERNAMES[];
 extern convert_t zINSTRUCTIONFLAGS[];
 extern convert_t zINSTRUCTIONNAMES[];
 
+extern convert_t zHAS_FLAGS[];
+
+extern convert_t zBFDSYMBOL_FLAGS[];
+
+extern convert_t zSECTIONHDR1_FLAGS[];
+extern convert_t zSECTIONHDR2_FLAGS[];
+extern convert_t zSECTIONHDR3_FLAGS[];
+extern convert_t zSECTIONHDRLINKDUP[];
+extern convert_t zSECTIONHDRELF_FLAGS[];
+extern convert_t zSECTIONHDRCOFF_FLAGS[];
+extern convert_t zSECTIONHDRTIC54X_FLAGS[];
+extern convert_t zSECTIONHDRARCHMEP_FLAGS[];
+
 extern char zHEXDUMP[];
 extern char zSTRDUMP[];
 extern char zCODEDUMP[];

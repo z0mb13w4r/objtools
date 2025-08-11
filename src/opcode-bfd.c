@@ -1,4 +1,9 @@
+#include "objutils.h"
 #include "opcode-bfd.h"
+
+#include "static/bfd.ci"
+#include "static/has_flags.ci"
+#include "static/sectionhdr_flags.ci"
 
 static void callback_section(bfd *f, asection *s, void *p) {
   popfunc_t pcb = CAST(popfunc_t, p);
@@ -43,7 +48,7 @@ char* opcodebfd_getsymbol(handle_t p, const uint64_t vaddr, uint64_t *offset) {
       asymbol **cs = ps->data;
       for (size_t i = 0; i < ps->size; ++i) {
         if (cs[i] && vaddr == bfd_asymbol_value(cs[i])) {
-//printf("+++");
+printf("+++%x", cs[i]->flags);
           return CAST(char*, bfd_asymbol_name(cs[i]));
         }
       }

@@ -1,0 +1,31 @@
+#define BSF_SECTION_SYM_USED       (1 << 24)
+
+convert_t zBFDSYMBOL_FLAGS[] = {
+  {"BSF_NO_FLAGS",                       BSF_NO_FLAGS},
+  {"BSF_LOCAL",                          BSF_LOCAL},
+  {"BSF_GLOBAL",                         BSF_GLOBAL},
+  {"BSF_DEBUGGING",                      BSF_DEBUGGING},
+  {"BSF_FUNCTION",                       BSF_FUNCTION},
+  {"BSF_KEEP",                           BSF_KEEP},
+  {"BSF_ELF_COMMON",                     BSF_ELF_COMMON},
+  {"BSF_WEAK",                           BSF_WEAK},
+  {"BSF_SECTION_SYM",                    BSF_SECTION_SYM},
+  {"BSF_OLD_COMMON",                     BSF_OLD_COMMON},
+  {"BSF_NOT_AT_END",                     BSF_NOT_AT_END},
+  {"BSF_CONSTRUCTOR",                    BSF_CONSTRUCTOR},
+  {"BSF_WARNING",                        BSF_WARNING},
+  {"BSF_INDIRECT",                       BSF_INDIRECT},
+  {"BSF_FILE",                           BSF_FILE},
+  {"BSF_DYNAMIC",                        BSF_DYNAMIC},
+  {"BSF_OBJECT",                         BSF_OBJECT},
+  {"BSF_DEBUGGING_RELOC",                BSF_DEBUGGING_RELOC},
+  {"BSF_THREAD_LOCAL",                   BSF_THREAD_LOCAL},
+  {"BSF_RELC",                           BSF_RELC},
+  {"BSF_SRELC",                          BSF_SRELC},
+  {"BSF_SYNTHETIC",                      BSF_SYNTHETIC},
+  {"BSF_GNU_INDIRECT_FUNCTION",          BSF_GNU_INDIRECT_FUNCTION},
+  {"BSF_GNU_UNIQUE",                     BSF_GNU_UNIQUE},
+  {"BSF_SECTION_SYM_USED",               BSF_SECTION_SYM_USED},
+  {0, 0},
+};
+
