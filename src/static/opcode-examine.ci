@@ -264,6 +264,8 @@ static oestruct_t zSEGMENTS[] = {
 };
 
 convert_t zINSTRUCTIONFLAGS[] = {
+  {"LT",                OCINSTRUCTION_LT},
+  {"RT",                OCINSTRUCTION_RT},
   {"A",                 OCINSTRUCTION_A},
   {"AE",                OCINSTRUCTION_AE},
   {"B",                 OCINSTRUCTION_B},
@@ -313,19 +315,15 @@ convert_t zINSTRUCTIONNAMES[] = {
   {"NOT",               MODE_MASK16(OCINSTRUCTION_NOT)},
   {"SUB",               MODE_MASK16(OCINSTRUCTION_SUB)},
   {"AND",               MODE_MASK16(OCINSTRUCTION_AND)},
-  {"SAL",               MODE_MASK16(OCINSTRUCTION_SAL)},
-  {"SAR",               MODE_MASK16(OCINSTRUCTION_SAR)},
-  {"SHL",               MODE_MASK16(OCINSTRUCTION_SHL)},
-  {"SHR",               MODE_MASK16(OCINSTRUCTION_SHR)},
+  {"SAx",               MODE_MASK16(OCINSTRUCTION_SAx)},
+  {"SHx",               MODE_MASK16(OCINSTRUCTION_SHx)},
   {"XOR",               MODE_MASK16(OCINSTRUCTION_XOR)},
   {"SET",               MODE_MASK16(OCINSTRUCTION_SET)},
   {"MOV",               MODE_MASK16(OCINSTRUCTION_MOV)},
   {"LEA",               MODE_MASK16(OCINSTRUCTION_LEA)},
   {"CMOV",              MODE_MASK16(OCINSTRUCTION_CMOV)},
   {"XCHG",              MODE_MASK16(OCINSTRUCTION_XCHG)},
-  {"CWTL",              MODE_MASK16(OCINSTRUCTION_CWTL)},
-  {"CLTQ",              MODE_MASK16(OCINSTRUCTION_CLTQ)},
-  {"CQTO",              MODE_MASK16(OCINSTRUCTION_CQTO)},
+  {"Cxxx",              MODE_MASK16(OCINSTRUCTION_Cxxx)},
   {"NOP",               MODE_MASK16(OCINSTRUCTION_NOP)},
   {0, 0}
 };
