@@ -36,3 +36,10 @@ int opcodebfd_sections(handle_t p, opcbfunc_t cbfunc, unknown_t param) {
   return ECODE_HANDLE;
 }
 
+char* opcodebfd_getsymbol(handle_t p, const uint64_t vaddr, uint64_t *offset) {
+  if (isopcode(p)) {
+  }
+
+  return NULL;
+}
+

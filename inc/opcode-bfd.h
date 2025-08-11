@@ -242,5 +242,7 @@ struct elf_obj_tdata {
 int opcodebfd_programs(handle_t p, opcbfunc_t cbfunc, unknown_t param);
 int opcodebfd_sections(handle_t p, opcbfunc_t cbfunc, unknown_t param);
 
+char* opcodebfd_getsymbol(handle_t p, const uint64_t vaddr, uint64_t *offset);
+
 #endif
 
