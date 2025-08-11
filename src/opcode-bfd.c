@@ -41,6 +41,7 @@ int opcodebfd_sections(handle_t p, opcbfunc_t cbfunc, unknown_t param) {
   return ECODE_HANDLE;
 }
 
+//#include "printf.h"
 char* opcodebfd_getsymbol(handle_t p, const uint64_t vaddr, uint64_t *offset) {
   if (isopcode(p)) {
     pbuffer_t ps = ocget(p, OPCODE_SYMBOLS);
@@ -48,8 +49,19 @@ char* opcodebfd_getsymbol(handle_t p, const uint64_t vaddr, uint64_t *offset) {
       asymbol **cs = ps->data;
       for (size_t i = 0; i < ps->size; ++i) {
         if (cs[i] && vaddr == bfd_asymbol_value(cs[i])) {
-printf("+++%x", cs[i]->flags);
-          return CAST(char*, bfd_asymbol_name(cs[i]));
+          if (0 == (cs[i]->flags & BSF_SECTION_SYM) && (BSF_GLOBAL != cs[i]->flags)) {
+//printf_mask(zBFDSYMBOL_FLAGS, cs[i]->flags, USE_NONE);
+            return CAST(char*, bfd_asymbol_name(cs[i]));
+          }
+        }
+      }
+
+      for (size_t i = 0; i < ps->size; ++i) {
+        if (cs[i] && vaddr == bfd_asymbol_value(cs[i])) {
+          if (0 != (cs[i]->flags & BSF_SECTION_SYM)) {
+//printf_mask(zBFDSYMBOL_FLAGS, cs[i]->flags, USE_NONE);
+            return CAST(char*, bfd_asymbol_name(cs[i]));
+          }
         }
       }
     }
