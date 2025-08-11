@@ -556,8 +556,8 @@ const char* ocget_symbol(handle_t p, uint64_t vaddr, char **name,
                      laddr ? &v3 : NULL, haddr ? &v4 : NULL, offset ? &v5 : NULL, NULL);
 
     if (ECODE_ISNOENTRY(x)) {
-      if (ocget(p, OPCODE_BFD)) {
-        *name = opcodeelf_getsymbol(p, vaddr, offset);
+      if (ochas(p, OPCODE_BFD)) {
+        *name = opcodebfd_getsymbol(p, vaddr, offset);
       } else {
         handle_t p0 = ocget(p, OPCODE_RAWDATA);
         if (isELF(p0)) {
