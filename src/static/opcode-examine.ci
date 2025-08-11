@@ -321,7 +321,7 @@ convert_t zINSTRUCTIONNAMES[] = {
   {"SET",               MODE_MASK16(OCINSTRUCTION_SET)},
   {"MOV",               MODE_MASK16(OCINSTRUCTION_MOV)},
   {"LEA",               MODE_MASK16(OCINSTRUCTION_LEA)},
-  {"CMOV",              MODE_MASK16(OCINSTRUCTION_CMOV)},
+  {"CMOVx",             MODE_MASK16(OCINSTRUCTION_CMOVx)},
   {"XCHG",              MODE_MASK16(OCINSTRUCTION_XCHG)},
   {"Cxxx",              MODE_MASK16(OCINSTRUCTION_Cxxx)},
   {"NOP",               MODE_MASK16(OCINSTRUCTION_NOP)},
