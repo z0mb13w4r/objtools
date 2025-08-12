@@ -249,6 +249,12 @@ static int dump_symbols(const handle_t p, const poptions_t o, const imode_t mode
   return 0;
 }
 
+static int dump_relocdynamic(const handle_t p, const poptions_t o) {
+
+  printf_eol();
+  return 0;
+}
+
 static int dump_reloc(const handle_t p, const poptions_t o) {
   ocdo_sections(p, callback_reloc, NULL);
   return 0;
@@ -288,6 +294,7 @@ static int do_object(const handle_t p, const poptions_t o) {
   if (MODE_ISANY(o->action, OPTOBJDUMP_SYMBOLS))            dump_symbols(p, o, OPCODE_SYMBOLS);
   if (MODE_ISANY(o->action, OPTOBJDUMP_DYNAMIC_SYMBOLS))    dump_symbols(p, o, OPCODE_SYMBOLS_DYNAMIC);
   if (MODE_ISANY(o->action, OPTOBJDUMP_RELOC))              dump_reloc(p, o);
+  if (MODE_ISANY(o->action, OPTOBJDUMP_DYNAMIC_RELOC))      dump_relocdynamic(p, o);
   if (MODE_ISANY(o->action, OPTOBJDUMP_SECTIONS))           dump_sections(p, o);
   if (MODE_ISANY(o->action, OPTPROGRAM_DISASSEMBLE))        dump_disassemble(p, o);
   if (MODE_ISANY(o->action, OPTDEBUGELF_DEBUGGING))         dump_dwarf(p, o);
