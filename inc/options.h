@@ -125,13 +125,14 @@
 
 #define OPTOBJDUMP_DISASSEMBLE_ALL                 U64MASK(0)
 #define OPTOBJDUMP_DYNAMIC_SYMBOLS                 U64MASK(1)
-#define OPTOBJDUMP_SECTIONS                        U64MASK(2)
-#define OPTOBJDUMP_SYMBOLS                         U64MASK(3)
-#define OPTOBJDUMP_FILE_HEADER                     U64MASK(4)
-#define OPTOBJDUMP_PRIVATE_HEADER                  U64MASK(5)
-#define OPTOBJDUMP_SECTION_HEADER                  U64MASK(6)
-#define OPTOBJDUMP_RELOC                           U64MASK(7)
-#define OPTOBJDUMP_DEBUGGING                       U64MASK(8)
+#define OPTOBJDUMP_DYNAMIC_RELOC                   U64MASK(2)
+#define OPTOBJDUMP_SECTIONS                        U64MASK(3)
+#define OPTOBJDUMP_SYMBOLS                         U64MASK(4)
+#define OPTOBJDUMP_FILE_HEADER                     U64MASK(5)
+#define OPTOBJDUMP_PRIVATE_HEADER                  U64MASK(6)
+#define OPTOBJDUMP_SECTION_HEADER                  U64MASK(7)
+#define OPTOBJDUMP_RELOC                           U64MASK(8)
+#define OPTOBJDUMP_DEBUGGING                       U64MASK(9)
 
 #define OPTOBJDUMP_HEADERS             (OPTOBJDUMP_FILE_HEADER | OPTOBJDUMP_PRIVATE_HEADER | OPTOBJDUMP_SECTION_HEADER \
                                            | OPTOBJDUMP_SYMBOLS | OPTOBJDUMP_RELOC)

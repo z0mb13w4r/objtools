@@ -15,6 +15,7 @@ static const args_t zOBJDUMPARGS[] = {
   {'D', "--disassemble-all",   OPTOBJDUMP_DISASSEMBLE_ALL | OPTPROGRAM_DISASSEMBLE},
   {'S', "--source",            OPTPROGRAM_SOURCE_CODE | OPTPROGRAM_DISASSEMBLE},
   {'T', "--dynamic-symbols",   OPTOBJDUMP_DYNAMIC_SYMBOLS,                               zDUMPDYNAMIC},
+  {'R', "--dynamic-reloc",     OPTOBJDUMP_DYNAMIC_RELOC},
   {'d', "--disassemble",       OPTPROGRAM_DISASSEMBLE},
   {'g', "--debugging",         OPTOBJDUMP_DEBUGGING},
   {'e', "--debugging-tags",    OPTPROGRAM_DEBUGGING_TAGS},
