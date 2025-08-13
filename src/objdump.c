@@ -262,8 +262,18 @@ static int dump_relocdynamic(const handle_t p, const poptions_t o) {
 
     arelent **p0 = CAST(arelent **, ps->data);
     for (size_t i = 0; i < ps->size; ++i, ++p0) {
-      if (*p0) {
-        printf_nice((*p0)->address, USE_LHEX64 | USE_NOSPACE);
+      arelent *p1 = *p0;
+      if (p1) {
+        printf_nice(p1->address, USE_LHEX64 | USE_NOSPACE);
+        if (p1->howto) {
+          if (p1->howto->name) {
+            printf_text(p1->howto->name, USE_LT | USE_SPACE | SET_PAD(10));
+          } else {
+            printf_nice(p1->howto->type, USE_DEC | SET_PAD(10));
+          }
+        } else {
+          printf_text("*unknown*", USE_LT | USE_SPACE | SET_PAD(10));
+        }
         printf_eol();
       }
     }
