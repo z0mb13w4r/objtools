@@ -250,14 +250,17 @@ static int dump_symbols(const handle_t p, const poptions_t o, const imode_t mode
 }
 
 static int dump_relocdynamic(const handle_t p, const poptions_t o) {
+  const int MAXSIZE1 = 17;
+  const int MAXSIZE2 = 18;
+
   printf_text("DYNAMIC RELOCATION RECORDS", USE_LT | USE_EOL);
 
   pbuffer_t ps = ocget(p, OPCODE_SYMBOLS_DYNAMICRELOC);
   if (NULL == ps || 0 == ps->size) {
     printf_text("no symbols", USE_LT | USE_EOL);
   } else {
-    printf_text("OFFSET", USE_LT | SET_PAD(17));
-    printf_text("TYPE", USE_LT | SET_PAD(10));
+    printf_text("OFFSET", USE_LT | SET_PAD(MAXSIZE1));
+    printf_text("TYPE", USE_LT | SET_PAD(MAXSIZE2));
     printf_text("VALUE", USE_LT | USE_EOL);
 
     arelent **p0 = CAST(arelent **, ps->data);
@@ -267,12 +270,12 @@ static int dump_relocdynamic(const handle_t p, const poptions_t o) {
         printf_nice(p1->address, USE_LHEX64 | USE_NOSPACE);
         if (p1->howto) {
           if (p1->howto->name) {
-            printf_text(p1->howto->name, USE_LT | USE_SPACE | SET_PAD(10));
+            printf_text(p1->howto->name, USE_LT | USE_SPACE | SET_PAD(MAXSIZE2));
           } else {
-            printf_nice(p1->howto->type, USE_DEC | SET_PAD(10));
+            printf_nice(p1->howto->type, USE_DEC | SET_PAD(MAXSIZE2));
           }
         } else {
-          printf_text("*unknown*", USE_LT | USE_SPACE | SET_PAD(10));
+          printf_text("*unknown*", USE_LT | USE_SPACE | SET_PAD(MAXSIZE2));
         }
         printf_eol();
       }
