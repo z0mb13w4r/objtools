@@ -250,6 +250,14 @@ static int dump_symbols(const handle_t p, const poptions_t o, const imode_t mode
 }
 
 static int dump_relocdynamic(const handle_t p, const poptions_t o) {
+  printf_text("DYNAMIC RELOCATION RECORDS", USE_LT | USE_EOL);
+
+  pbuffer_t ps = ocget(p, OPCODE_SYMBOLS_DYNAMICRELOC);
+  if (NULL == ps || 0 == ps->size) {
+    printf_text("no symbols", USE_LT | USE_EOL);
+  } else {
+
+  }
 
   printf_eol();
   return 0;
