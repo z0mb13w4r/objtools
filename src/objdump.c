@@ -256,7 +256,9 @@ static int dump_relocdynamic(const handle_t p, const poptions_t o) {
   if (NULL == ps || 0 == ps->size) {
     printf_text("no symbols", USE_LT | USE_EOL);
   } else {
-
+    printf_text("OFFSET", USE_LT | SET_PAD(10));
+    printf_text("TYPE", USE_LT | SET_PAD(10));
+    printf_text("VALUE", USE_LT | USE_EOL);
   }
 
   printf_eol();
