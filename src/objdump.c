@@ -278,12 +278,10 @@ static int dump_relocdynamic(const handle_t p, const poptions_t o) {
           printf_text("*unknown*", USE_LT | USE_SPACE | SET_PAD(MAXSIZE2));
         }
 
-        const char *symname = NULL;
-        const char *secname = NULL;
-        if (p1->sym_ptr_ptr && *p1->sym_ptr_ptr) {
-          symname = (*(p1->sym_ptr_ptr))->name;
-          secname = (*(p1->sym_ptr_ptr))->section->name;
-        }
+        asymbol *sym = p1->sym_ptr_ptr && *p1->sym_ptr_ptr ? *p1->sym_ptr_ptr : NULL;
+        asection *sec = sym && sym->section ? sym->section : NULL;
+        const char *symname = sym ? bfd_asymbol_name(sym) : NULL;
+        const char *secname = sec ? bfd_section_name(sec) : NULL;
 
         if (symname) {
           printf_text(symname, USE_LT | USE_SPACE);
