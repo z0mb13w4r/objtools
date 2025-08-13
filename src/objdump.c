@@ -251,7 +251,7 @@ static int dump_symbols(const handle_t p, const poptions_t o, const imode_t mode
 
 static int dump_relocdynamic(const handle_t p, const poptions_t o) {
   const int MAXSIZE1 = 17;
-  const int MAXSIZE2 = 18;
+  const int MAXSIZE2 = 24;
 
   printf_text("DYNAMIC RELOCATION RECORDS", USE_LT | USE_EOL);
 
@@ -276,6 +276,25 @@ static int dump_relocdynamic(const handle_t p, const poptions_t o) {
           }
         } else {
           printf_text("*unknown*", USE_LT | USE_SPACE | SET_PAD(MAXSIZE2));
+        }
+
+        const char *symname = NULL;
+        const char *secname = NULL;
+        if (p1->sym_ptr_ptr && *p1->sym_ptr_ptr) {
+          symname = (*(p1->sym_ptr_ptr))->name;
+          secname = (*(p1->sym_ptr_ptr))->section->name;
+        }
+
+        if (symname) {
+          printf_text(symname, USE_LT | USE_SPACE);
+        } else if (secname) {
+          printf_text(secname, USE_LT | USE_SPACE | USE_SB);
+        } else {
+          printf_text("*unknown*", USE_LT | USE_SPACE | USE_SB);
+        }
+
+        if (p1->addend) {
+          printf_nice(p1->addend, USE_SHEX64);
         }
         printf_eol();
       }
