@@ -294,7 +294,7 @@ static int dump_relocdynamic(const handle_t p, const poptions_t o) {
         }
 
         if (p1->addend) {
-          printf_nice(p1->addend, USE_SHEX64);
+          printf_nice(p1->addend, USE_SFHEX64 | USE_NOSPACE);
         }
         printf_eol();
       }

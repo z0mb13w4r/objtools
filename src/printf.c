@@ -307,9 +307,19 @@ int printf_neat(char* o, const size_t size, const uint64_t v, const imode_t mode
       else                         n += PRINT2("- %" PRIx64, (~v) + 1);
       break;
 
+    case USE_SFHEX8:
+      if (v < CHAR_MAX)            n += PRINT2("+0x%2.2" PRIx64, v);
+      else                         n += PRINT2("-0x%2.2" PRIx64, (~v) + 1);
+      break;
+
     case USE_SHEX16:
       if (v < SHRT_MAX)            n += PRINT2("+ %" PRIx64, v);
       else                         n += PRINT2("- %" PRIx64, (~v) + 1);
+      break;
+
+    case USE_SFHEX16:
+      if (v < SHRT_MAX)            n += PRINT2("+0x%4.4" PRIx64, v);
+      else                         n += PRINT2("-0x%4.4" PRIx64, (~v) + 1);
       break;
 
     case USE_SHEX32:
@@ -317,9 +327,19 @@ int printf_neat(char* o, const size_t size, const uint64_t v, const imode_t mode
       else                         n += PRINT2("- %" PRIx64, (~v) + 1);
       break;
 
+    case USE_SFHEX32:
+      if (v < INT_MAX)             n += PRINT2("+0x%8.8" PRIx64, v);
+      else                         n += PRINT2("-0x%8.8" PRIx64, (~v) + 1);
+      break;
+
     case USE_SHEX64:
       if (v < LONG_MAX)            n += PRINT2("+ %" PRIx64, v);
       else                         n += PRINT2("- %" PRIx64, (~v) + 1);
+      break;
+
+    case USE_SFHEX64:
+      if (v < LONG_MAX)            n += PRINT2("+0x%16.16" PRIx64, v);
+      else                         n += PRINT2("-0x%16.16" PRIx64, (~v) + 1);
       break;
 
     case USE_CHAR:
