@@ -24,13 +24,13 @@ static void callback_find_max_sectionhdr_name(bfd *f ATTRIBUTE_UNUSED, asection 
   }
 }
 
-static handle_t create_symbols(bfd *f) {
+static handle_t create_symbols(handle_t p, bfd *f) {
   if (f && bfd_get_file_flags(f) & HAS_SYMS) {
     long size = bfd_get_symtab_upper_bound(f);
     if (size > 0) {
       pbuffer_t bsy = bmalloc();
       if (bsy) {
-        asymbol **asy = (asymbol **) xmalloc(size);
+        asymbol **asy = CAST(asymbol **, xmalloc(size));
         if (asy) {
           long count = bfd_canonicalize_symtab(f, asy);
           bsy->data = asy;
@@ -46,13 +46,13 @@ static handle_t create_symbols(bfd *f) {
   return NULL;
 }
 
-static handle_t create_symbols_dynamic(bfd *f) {
+static handle_t create_symbols_dynamic(handle_t p, bfd *f) {
   if (f && bfd_get_file_flags(f) & DYNAMIC) {
     long size = bfd_get_dynamic_symtab_upper_bound(f);
     if (size > 0) {
       pbuffer_t bsy = bmalloc();
       if (bsy) {
-        asymbol **asy = (asymbol **) xmalloc(size);
+        asymbol **asy = CAST(asymbol **, xmalloc(size));
         if (asy) {
           long count = bfd_canonicalize_dynamic_symtab(f, asy);
           bsy->data = asy;
@@ -68,13 +68,21 @@ static handle_t create_symbols_dynamic(bfd *f) {
   return NULL;
 }
 
-static handle_t create_symbols_dynamic_reloc(bfd *f) {
-  if (f) {
+static handle_t create_symbols_dynamic_reloc(handle_t p, bfd *f) {
+  pbuffer_t ps = ocget(p, OPCODE_SYMBOLS_DYNAMIC);
+  if (f && ps && ps->size) {
     long size = bfd_get_dynamic_reloc_upper_bound(f);
     if (size > 0) {
       pbuffer_t bsy = bmalloc();
       if (bsy) {
-
+        arelent **asy = CAST(arelent **, xmalloc(size));
+        if (asy) {
+          long count = bfd_canonicalize_dynamic_reloc(f, asy, CAST(asymbol **, ps->data));
+          bsy->data = asy;
+          bsy->size = count;
+        } else {
+          bsy = bfree(bsy);
+        }
       }
       return bsy;
     }
@@ -155,11 +163,11 @@ unknown_t ocget(handle_t p, const imode_t mode) {
   if (isopcode(p) && mode < OPCODE_MAXITEMS) {
     popcode_t p0 = CAST(popcode_t, p);
     if (OPCODE_SYMBOLS == mode && NULL == p0->items[mode]) {
-      p0->items[mode] = create_symbols(p0->items[OPCODE_BFD]);
+      p0->items[mode] = create_symbols(p, p0->items[OPCODE_BFD]);
     } else if (OPCODE_SYMBOLS_DYNAMIC == mode && NULL == p0->items[mode]) {
-      p0->items[mode] = create_symbols_dynamic(p0->items[OPCODE_BFD]);
+      p0->items[mode] = create_symbols_dynamic(p, p0->items[OPCODE_BFD]);
     } else if (OPCODE_SYMBOLS_DYNAMICRELOC == mode && NULL == p0->items[mode]) {
-      p0->items[mode] = create_symbols_dynamic_reloc(p0->items[OPCODE_BFD]);
+      p0->items[mode] = create_symbols_dynamic_reloc(p, p0->items[OPCODE_BFD]);
     }
     return p0->items[mode];
   } else if (isopcode(p) && OPCODE_THIS == mode) {
