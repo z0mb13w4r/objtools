@@ -69,6 +69,17 @@ static handle_t create_symbols_dynamic(bfd *f) {
 }
 
 static handle_t create_symbols_dynamic_reloc(bfd *f) {
+  if (f) {
+    long size = bfd_get_dynamic_reloc_upper_bound(f);
+    if (size > 0) {
+      pbuffer_t bsy = bmalloc();
+      if (bsy) {
+
+      }
+      return bsy;
+    }
+  }
+
   return NULL;
 }
 
@@ -606,6 +617,7 @@ handle_t ocfree(handle_t p) {
     }
     bfree(p0->items[OPCODE_SYMBOLS]);
     bfree(p0->items[OPCODE_SYMBOLS_DYNAMIC]);
+    bfree(p0->items[OPCODE_SYMBOLS_DYNAMICRELOC]);
     xfree(p0->items[OPCODE_DISASSEMBLER]);
     xfree(p0->items[OPCODE_OUTDATA]);
     free(p);
