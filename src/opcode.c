@@ -68,6 +68,10 @@ static handle_t create_symbols_dynamic(bfd *f) {
   return NULL;
 }
 
+static handle_t create_symbols_dynamic_reloc(bfd *f) {
+  return NULL;
+}
+
 static bool_t ismodeopwrap(const imode_t mode) {
   return MODE_GET3(mode) == MODE_OPWRAP;
 }
@@ -143,6 +147,8 @@ unknown_t ocget(handle_t p, const imode_t mode) {
       p0->items[mode] = create_symbols(p0->items[OPCODE_BFD]);
     } else if (OPCODE_SYMBOLS_DYNAMIC == mode && NULL == p0->items[mode]) {
       p0->items[mode] = create_symbols_dynamic(p0->items[OPCODE_BFD]);
+    } else if (OPCODE_SYMBOLS_DYNAMICRELOC == mode && NULL == p0->items[mode]) {
+      p0->items[mode] = create_symbols_dynamic_reloc(p0->items[OPCODE_BFD]);
     }
     return p0->items[mode];
   } else if (isopcode(p) && OPCODE_THIS == mode) {
@@ -154,6 +160,9 @@ unknown_t ocget(handle_t p, const imode_t mode) {
     return p0 && p0->size && p0->data ? p0->data : NULL;
   } else if (isopcode(p) && OPCODE_RAWSYMBOLS_DYNAMIC == mode) {
     pbuffer_t p0 = ocget(p, OPCODE_SYMBOLS_DYNAMIC);
+    return p0 && p0->size && p0->data ? p0->data : NULL;
+  } else if (isopcode(p) && OPCODE_RAWSYMBOLS_DYNAMICRELOC == mode) {
+    pbuffer_t p0 = ocget(p, OPCODE_SYMBOLS_DYNAMICRELOC);
     return p0 && p0->size && p0->data ? p0->data : NULL;
   } else if (isopcode(p) && OPCODE_DWARF_DEBUG == mode) {
     pocdwarf_t p0 = ocget(p, OPCODE_DWARF);
