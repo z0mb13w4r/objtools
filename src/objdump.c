@@ -283,8 +283,22 @@ static int dump_relocdynamic(const handle_t p, const poptions_t o) {
         const char *symname = sym ? bfd_asymbol_name(sym) : NULL;
         const char *secname = sec ? bfd_section_name(sec) : NULL;
 
+        bool_t hidden = FALSE;
+        const char *vername = NULL;
+        if (0 == (sym->flags & (BSF_SECTION_SYM | BSF_SYNTHETIC))) {
+          bfd* f = ocget(p, OPCODE_BFD);
+
+          vername = bfd_get_symbol_version_string(f, sym, &hidden);
+          if (bfd_is_und_section(bfd_asymbol_section(sym))) {
+            hidden = TRUE;
+          }
+        }
+
         if (symname) {
           printf_text(symname, USE_LT | USE_SPACE);
+          if (vername && vername[0]) {
+            printf_text(vername, USE_LT | (hidden ? USE_AT : USE_ATAT));
+          }
         } else if (secname) {
           printf_text(secname, USE_LT | USE_SPACE | USE_SB);
         } else {
