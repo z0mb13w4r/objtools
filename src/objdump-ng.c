@@ -5,14 +5,16 @@
 
 #include "static/objdump-ng.ci"
 
+#define THIS_NAME "objdump-ng"
+
 static int get_options_objdump(poptions_t o, int argc, char** argv, char* name) {
   if (0 == argc) {
-    usage2(o, "objdump-ng", zOBJDUMPARGS, zOBJDUMPARGS0, zOBJDUMPARGS1, zOBJDUMPARGS2, zOBJDUMPARGS3);
+    usage2(o, THIS_NAME, zOBJDUMPARGS, zOBJDUMPARGS0, zOBJDUMPARGS1, zOBJDUMPARGS2, zOBJDUMPARGS3);
     return ECODE_ARGUMENTS;
   }
 
   strname(o->prgname, name);
-  printf_errname(o->prgname);
+  printf_errname(THIS_NAME);
 
   for (int i = 0; i < argc; ++i) {
     if ('-' == argv[i][0] && '-' == argv[i][1]) {
@@ -49,11 +51,11 @@ static int get_options_objdump(poptions_t o, int argc, char** argv, char* name) 
   o->ocdump |= get_ocdump(o, zOBJDUMPSWAP, o->action);
 
   if (o->action & OPTPROGRAM_VERSION) {
-    return version0(o, "objdump-ng", zOBJDUMPARGS);
+    return version0(o, THIS_NAME, zOBJDUMPARGS);
   }
 
   if (o->action & OPTPROGRAM_HELP) {
-    return usage2(o, "objdump-ng", zOBJDUMPARGS, zOBJDUMPARGS0, zOBJDUMPARGS1, zOBJDUMPARGS2, zOBJDUMPARGS3);
+    return usage2(o, THIS_NAME, zOBJDUMPARGS, zOBJDUMPARGS0, zOBJDUMPARGS1, zOBJDUMPARGS2, zOBJDUMPARGS3);
   }
 
   return ECODE_OK;
