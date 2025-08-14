@@ -12,14 +12,16 @@
 #define STDERR stdout
 #define STDOUT stdout
 
-#define MAX_BUFFER_SIZE  (1024)
-#define MAX_PADDING_SIZE (256)
+#define MAX_BUFFER_SIZE        (1024)
+#define MAX_PADDING_SIZE       (256)
 
-#define PRINT1(x)    snprintf(o + n, size - n, x)
-#define PRINT2(x,y)  snprintf(o + n, size - n, x, y)
+#define PRINT1(x)              snprintf(o + n, size - n, x)
+#define PRINT2(x,y)            snprintf(o + n, size - n, x, y)
 
-#define MODE_USESPACE(x)   (USE_SPACE == GET_POS0(x))
-#define MODE_USESPACES(x)  (USE_SPACE == GET_POS0(x) || USE_TAB1 == GET_POS0(x) || USE_TAB2 == GET_POS0(x))
+#define MODE_USESPACE(x)       (USE_SPACE == GET_POS0(x))
+#define MODE_USESPACES(x)      (USE_SPACE == GET_POS0(x) || USE_TAB1 == GET_POS0(x) || USE_TAB2 == GET_POS0(x))
+
+#define MODE_NOSPACES(x,y,z)   (MODE_ISANY(x, USE_NOSPACE) ? (y) : (z))
 
 static char errname[256] = {0};
 
@@ -303,63 +305,43 @@ int printf_neat(char* o, const size_t size, const uint64_t v, const imode_t mode
       break;
 
     case USE_SHEX8:
-      if (v < CHAR_MAX)            n += PRINT2("+ %" PRIx64, v);
-      else                         n += PRINT2("- %" PRIx64, (~v) + 1);
+      if (v < CHAR_MAX)            n += PRINT2(MODE_NOSPACES(mode, "+%" PRIx64, "+ %" PRIx64), v);
+      else                         n += PRINT2(MODE_NOSPACES(mode, "-%" PRIx64, "- %" PRIx64), (~v) + 1);
       break;
 
     case USE_SFHEX8:
-      if (MODE_ISANY(mode, USE_NOSPACE)) {
-        if (v < CHAR_MAX)            n += PRINT2("+0x%2.2" PRIx64, v);
-        else                         n += PRINT2("-0x%2.2" PRIx64, (~v) + 1);
-      } else {
-        if (v < CHAR_MAX)            n += PRINT2("+ 0x%2.2" PRIx64, v);
-        else                         n += PRINT2("- 0x%2.2" PRIx64, (~v) + 1);
-      }
+      if (v < CHAR_MAX)            n += PRINT2(MODE_NOSPACES(mode, "+0x%2.2" PRIx64, "+ 0x%2.2" PRIx64), v);
+      else                         n += PRINT2(MODE_NOSPACES(mode, "-0x%2.2" PRIx64, "- 0x%2.2" PRIx64), (~v) + 1);
       break;
 
     case USE_SHEX16:
-      if (v < SHRT_MAX)            n += PRINT2("+ %" PRIx64, v);
-      else                         n += PRINT2("- %" PRIx64, (~v) + 1);
+      if (v < SHRT_MAX)            n += PRINT2(MODE_NOSPACES(mode, "+%" PRIx64, "+ %" PRIx64), v);
+      else                         n += PRINT2(MODE_NOSPACES(mode, "-%" PRIx64, "- %" PRIx64), (~v) + 1);
       break;
 
     case USE_SFHEX16:
-      if (MODE_ISANY(mode, USE_NOSPACE)) {
-        if (v < SHRT_MAX)            n += PRINT2("+0x%4.4" PRIx64, v);
-        else                         n += PRINT2("-0x%4.4" PRIx64, (~v) + 1);
-      } else {
-        if (v < SHRT_MAX)            n += PRINT2("+ 0x%4.4" PRIx64, v);
-        else                         n += PRINT2("- 0x%4.4" PRIx64, (~v) + 1);
-      }
+      if (v < SHRT_MAX)            n += PRINT2(MODE_NOSPACES(mode, "+0x%4.4" PRIx64, "+ 0x%4.4" PRIx64), v);
+      else                         n += PRINT2(MODE_NOSPACES(mode, "-0x%4.4" PRIx64, "- 0x%4.4" PRIx64), (~v) + 1);
       break;
 
     case USE_SHEX32:
-      if (v < INT_MAX)             n += PRINT2("+ %" PRIx64, v);
-      else                         n += PRINT2("- %" PRIx64, (~v) + 1);
+      if (v < INT_MAX)             n += PRINT2(MODE_NOSPACES(mode, "+%" PRIx64, "+ %" PRIx64), v);
+      else                         n += PRINT2(MODE_NOSPACES(mode, "-%" PRIx64, "- %" PRIx64), (~v) + 1);
       break;
 
     case USE_SFHEX32:
-      if (MODE_ISANY(mode, USE_NOSPACE)) {
-        if (v < INT_MAX)             n += PRINT2("+0x%8.8" PRIx64, v);
-        else                         n += PRINT2("-0x%8.8" PRIx64, (~v) + 1);
-      } else {
-        if (v < INT_MAX)             n += PRINT2("+ 0x%8.8" PRIx64, v);
-        else                         n += PRINT2("- 0x%8.8" PRIx64, (~v) + 1);
-      }
+      if (v < INT_MAX)             n += PRINT2(MODE_NOSPACES(mode, "+0x%8.8" PRIx64, "+ 0x%8.8" PRIx64), v);
+      else                         n += PRINT2(MODE_NOSPACES(mode, "-0x%8.8" PRIx64, "- 0x%8.8" PRIx64), (~v) + 1);
       break;
 
     case USE_SHEX64:
-      if (v < LONG_MAX)            n += PRINT2("+ %" PRIx64, v);
-      else                         n += PRINT2("- %" PRIx64, (~v) + 1);
+      if (v < LONG_MAX)            n += PRINT2(MODE_NOSPACES(mode, "+%" PRIx64, "+ %" PRIx64), v);
+      else                         n += PRINT2(MODE_NOSPACES(mode, "-%" PRIx64, "- %" PRIx64), (~v) + 1);
       break;
 
     case USE_SFHEX64:
-      if (MODE_ISANY(mode, USE_NOSPACE)) {
-        if (v < LONG_MAX)            n += PRINT2("+0x%16.16" PRIx64, v);
-        else                         n += PRINT2("-0x%16.16" PRIx64, (~v) + 1);
-      } else {
-        if (v < LONG_MAX)            n += PRINT2("+ 0x%16.16" PRIx64, v);
-        else                         n += PRINT2("- 0x%16.16" PRIx64, (~v) + 1);
-      }
+      if (v < LONG_MAX)            n += PRINT2(MODE_NOSPACES(mode, "+0x%16.16" PRIx64, "+ 0x%16.16" PRIx64), v);
+      else                         n += PRINT2(MODE_NOSPACES(mode, "-0x%16.16" PRIx64, "- 0x%16.16" PRIx64), (~v) + 1);
       break;
 
     case USE_CHAR:
