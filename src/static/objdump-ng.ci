@@ -33,9 +33,9 @@ static const args_t zOBJDUMPARGS[] = {
   {  0, "--stop-address",      0},
   {'c', "--capstone",          OPTPROGRAM_CAPSTONE_ALL},
   {'X', "--hash",              OPTPROGRAM_HASH},
-  {'1', NULL,                  OPTPROGRAM_DEBUGLEVEL1},
-  {'2', NULL,                  OPTPROGRAM_DEBUGLEVEL2},
-  {'3', NULL,                  OPTPROGRAM_DEBUGLEVEL3},
+  {'1', NULL,                  OPTPROGRAM_DEBUGLEVEL1,                                   zDEBUGLEVEL1},
+  {'2', NULL,                  OPTPROGRAM_DEBUGLEVEL2,                                   zDEBUGLEVEL2},
+  {'3', NULL,                  OPTPROGRAM_DEBUGLEVEL3,                                   zDEBUGLEVEL3},
   {0, NULL}
 };
 
