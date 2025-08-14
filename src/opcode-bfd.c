@@ -43,6 +43,8 @@ int opcodebfd_sections(handle_t p, opcbfunc_t cbfunc, unknown_t param) {
 
 //#include "printf.h"
 char* opcodebfd_getsymbol(handle_t p, const uint64_t vaddr, uint64_t *offset) {
+  STATICA(char, name, 1024);
+
   if (isopcode(p)) {
     pbuffer_t ps = ocget(p, OPCODE_SYMBOLS);
     if (ps && ps->size) {
@@ -66,9 +68,27 @@ char* opcodebfd_getsymbol(handle_t p, const uint64_t vaddr, uint64_t *offset) {
           asymbol *sym = cr[i]->sym_ptr_ptr && *cr[i]->sym_ptr_ptr ? *cr[i]->sym_ptr_ptr : NULL;
 //          asection *sec = sym && sym->section ? sym->section : NULL;
           const char *symname = sym ? bfd_asymbol_name(sym) : NULL;
-//          const char *secname = sec ? bfd_section_name(sec) : NULL;
+          if (symname && symname[0]) {
+            bool_t hidden = FALSE;
+            const char *vername = NULL;
+            if (0 == (sym->flags & (BSF_SECTION_SYM | BSF_SYNTHETIC))) {
+              bfd* f = ocget(p, OPCODE_BFD);
+
+              vername = bfd_get_symbol_version_string(f, sym, &hidden);
+              if (bfd_is_und_section(bfd_asymbol_section(sym))) {
+                hidden = TRUE;
+              }
+            }
+
+            if (vername && vername[0]) {
+              snprintf(name, NELEMENTS(name), hidden ? "%s@%s" : "%s@@%s", symname, vername);
+            } else {
+              snprintf(name, NELEMENTS(name), "%s", symname);
+            }
 //printf("++++");
-          return CAST(char*, symname);
+            return name;
+          }
+//          const char *secname = sec ? bfd_section_name(sec) : NULL;
         }
       }
     }

@@ -36,6 +36,7 @@
 
 #ifndef MALLOCA
 #define MALLOCA(x,y,z) x y[z]; memset(y, 0, sizeof(y))
+#define STATICA(x,y,z) static MALLOCA(x,y,z)
 #endif
 
 #ifndef MALLOCACOPY
