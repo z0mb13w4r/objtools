@@ -2,11 +2,12 @@ const char zDESCRIPTION[] = "display information about ELF and PE files.";
 
 const char *zALLSEE[] = {
   "convert-ng",
-  "readelf-ng",
   "objcopy-ng",
   "objdump-ng",
-  "objhash-ng",
   "objdwarf-ng",
+  "objhash-ng",
+  "readelf-ng",
+  "readpe-ng",
   0
 };
 

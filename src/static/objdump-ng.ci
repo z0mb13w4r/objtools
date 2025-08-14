@@ -1,6 +1,14 @@
 static char zDUMPDYNAMIC[]      = "Print the dynamic symbol table entries of the file.";
+static char zDUMPDYNAMICRELOC[] = "Print the dynamic relocation entries of the file. This is only meaningful for dynamic objects, such as certain types of shared libraries.";
+static char zDUMPRELOC[]        = "Print the relocation entries of the file.";
 static char zDUMPSYMBOLS[]      = "Print the symbol table entries of the file.";
-static char zDUMPALLHEADERS[]   = "Display all available header information, including the symbol table and relocation entries.";
+static char zDUMPALLHDRS[]      = "Display all available header information, including the symbol table and relocation entries.";
+static char zDUMPLINENUMBERS[]  = "Label the display (using debugging information) with the filename and source line numbers corresponding to the object code or relocs shown. Only useful with -d, -D, or -r.";
+static char zDUMPPREFIXADDR[]   = "When disassembling, print the complete address on each line.";
+static char zDUMPSTARTADDR[]    = "Start displaying data at the specified address. This affects the output of the -d, -r and -s options.";
+static char zDUMPSTOPADDR[]     = "Stop displaying data at the specified address. This affects the output of the -d, -r and -s options.";
+static char zDUMPSECTIONHDR[]   = "Display summary information from the section headers of the object file.";
+static char zDUMPPRIVATEHDR[]   = "Print information that is specific to the object file format.";
 
 static const char zOBJDUMPARGS0[] = "-W";
 static const char zOBJDUMPARGS1[] = "--dwarf";
@@ -15,22 +23,22 @@ static const args_t zOBJDUMPARGS[] = {
   {'D', "--disassemble-all",   OPTOBJDUMP_DISASSEMBLE_ALL | OPTPROGRAM_DISASSEMBLE},
   {'S', "--source",            OPTPROGRAM_SOURCE_CODE | OPTPROGRAM_DISASSEMBLE},
   {'T', "--dynamic-symbols",   OPTOBJDUMP_DYNAMIC_SYMBOLS,                               zDUMPDYNAMIC},
-  {'R', "--dynamic-reloc",     OPTOBJDUMP_DYNAMIC_RELOC},
+  {'R', "--dynamic-reloc",     OPTOBJDUMP_DYNAMIC_RELOC,                                 zDUMPDYNAMICRELOC},
   {'d', "--disassemble",       OPTPROGRAM_DISASSEMBLE},
   {'g', "--debugging",         OPTOBJDUMP_DEBUGGING},
   {'e', "--debugging-tags",    OPTPROGRAM_DEBUGGING_TAGS},
   {'C', "--demangle",          OPTPROGRAM_DEMANGLE},
   {'s', "--full-contents",     OPTOBJDUMP_SECTIONS},
   {'t', "--symbols",           OPTOBJDUMP_SYMBOLS,                                       zDUMPSYMBOLS},
-  {'r', "--reloc",             OPTOBJDUMP_RELOC},
+  {'r', "--reloc",             OPTOBJDUMP_RELOC,                                         zDUMPRELOC},
   {'f', "--file-headers",      OPTOBJDUMP_FILE_HEADER},
-  {'p', "--private-headers",   OPTOBJDUMP_PRIVATE_HEADER},
-  {'h', "--section-headers",   OPTOBJDUMP_SECTION_HEADER},
-  {'x', "--all-headers",       OPTOBJDUMP_HEADERS,                                       zDUMPALLHEADERS},
-  {'l', "--line-numbers",      OPTPROGRAM_LINE_NUMBERS},
-  {  0, "--prefix-addresses",  OPTPROGRAM_PREFIX_ADDR},
-  {  0, "--start-address",     0},
-  {  0, "--stop-address",      0},
+  {'p', "--private-headers",   OPTOBJDUMP_PRIVATE_HEADER,                                zDUMPPRIVATEHDR},
+  {'h', "--section-headers",   OPTOBJDUMP_SECTION_HEADER,                                zDUMPSECTIONHDR},
+  {'x', "--all-headers",       OPTOBJDUMP_HEADERS,                                       zDUMPALLHDRS},
+  {'l', "--line-numbers",      OPTPROGRAM_LINE_NUMBERS,                                  zDUMPLINENUMBERS},
+  {  0, "--prefix-addresses",  OPTPROGRAM_PREFIX_ADDR,                                   zDUMPPREFIXADDR},
+  {  0, "--start-address",     0,                                                        zDUMPSTARTADDR},
+  {  0, "--stop-address",      0,                                                        zDUMPSTOPADDR},
   {'c', "--capstone",          OPTPROGRAM_CAPSTONE_ALL},
   {'X', "--hash",              OPTPROGRAM_HASH},
   {'1', NULL,                  OPTPROGRAM_DEBUGLEVEL1,                                   zDEBUGLEVEL1},
