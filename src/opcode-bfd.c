@@ -124,32 +124,16 @@ char* opcodebfd_getsymbol2(handle_t p, const uint64_t vaddr, uint64_t *offset) {
 }
 
 char* opcodebfd_getsymbol(handle_t p, const uint64_t vaddr, uint64_t *offset) {
-//  STATICA(char, name, 1024);
-
   if (isopcode(p)) {
-//    pbuffer_t ps = ocget(p, OPCODE_SYMBOLS);
+    char* name = opcodebfd_getsymbol0(p, vaddr, NULL);
+    if (NULL == name) {
+      name = opcodebfd_getsymbol1(p, vaddr, NULL);
+    }
+    if (NULL == name) {
+      name = opcodebfd_getsymbol2(p, vaddr, NULL);
+    }
 
-    char* namex = NULL;
-    namex = opcodebfd_getsymbol0(p, vaddr, NULL);
-    if (namex) return namex;
-
-    namex = opcodebfd_getsymbol1(p, vaddr, NULL);
-    if (namex) return namex;
-
-    namex = opcodebfd_getsymbol2(p, vaddr, NULL);
-    if (namex) return namex;
-
-//    if (ps && ps->size) {
-//      asymbol **cs = ps->data;
-//      for (size_t i = 0; i < ps->size; ++i) {
-//        if (cs[i] && vaddr == bfd_asymbol_value(cs[i])) {
-//          if (0 != (cs[i]->flags & BSF_SECTION_SYM)) {
-//printf_mask(zBFDSYMBOL_FLAGS, cs[i]->flags, USE_NONE);
-//            return CAST(char*, bfd_asymbol_name(cs[i]));
-//          }
-//        }
-//      }
-//    }
+    return name;
   }
 
   return NULL;
