@@ -11,8 +11,8 @@ static int ocdebugf_cvalue0(handle_t p, uint64_t cv) {
 
     n += printf_text("CVALUE", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
     n += printf_nice(cv, USE_FHEX64);
-    n += printf_pick(zINSTRUCTIONNAMES, MODE_MASK16(cv), USE_SPACE);
-    n += printf_mask(zINSTRUCTIONFLAGS, MODE_HIDE16(cv), USE_NONE);
+    n += printf_pick(oeINSTRUCTIONNAMES, MODE_MASK16(cv), USE_SPACE);
+    n += printf_mask(oeINSTRUCTIONFLAGS, MODE_HIDE16(cv), USE_NONE);
     n += printf_eol();
 
     return n;
@@ -38,7 +38,7 @@ static int ocdebugf_cvalue1(handle_t p, uint64_t cv) {
       n += printf_nice(MODE_MASK8(cv), USE_UNKNOWN);
     }
 
-    n += printf_mask(zSEGMENTFLAGS, MODE_HIDE8(cv), USE_NONE);
+    n += printf_mask(oeSEGMENTFLAGS, MODE_HIDE8(cv), USE_NONE);
     n += printf_eol();
 
     return n;
@@ -57,8 +57,8 @@ static int ocdebugf_nvalue(handle_t p, const uint64_t cv, const uint64_t nv) {
       n += printf_text("UVALUE", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
     } else if (MODE_ISLOCKED8(OPOPERAND_REGISTER, cv)) {
       n += printf_text("REGISTER", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
-      n += printf_pick(zREGISTERNAMES, nv, USE_SPACE);
-      n += printf_mask(zREGISTERFLAGS, MODE_HIDE8(nv), USE_NONE);
+      n += printf_pick(oeREGISTERNAMES, nv, USE_SPACE);
+      n += printf_mask(oeREGISTERFLAGS, MODE_HIDE8(nv), USE_NONE);
     } else {
       n += printf_text("UNKNOWN", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
     }

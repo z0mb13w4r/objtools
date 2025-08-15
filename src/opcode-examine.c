@@ -203,7 +203,7 @@ static unknown_t oedo_register(handle_t p, unknown_t o, unknown_t m) {
     pocoperand_t o0 = CAST(pocoperand_t, o);
 
     size_t m0size = strlen(m0);
-    poestruct_t r0 = oepick(zREGISTERS, m0, m0size);
+    poestruct_t r0 = oepick(oeREGISTERS, m0, m0size);
     if (r0) {
       o0->uvalue  = r0->action;
       o0->cvalue |= OPOPERAND_REGISTER;
@@ -223,7 +223,7 @@ static unknown_t oedo_segment(handle_t p, unknown_t o, unknown_t m) {
     pocoperand_t o0 = CAST(pocoperand_t, o);
 
     size_t m0size = strlen(m0);
-    poestruct_t s0 = oepick(zSEGMENTS, m0, m0size);
+    poestruct_t s0 = oepick(oeSEGMENTS, m0, m0size);
     if (s0) {
       o0->cvalue  = s0->action;
 //printf("++%s++", s0->mc);
@@ -278,7 +278,7 @@ static unknown_t oeinsert_prefix(handle_t p, unknown_t m) {
     pocmnemonic_t p1 = oeget(p, OECODE_MNEMONIC);
 
     size_t m0size = strlen(m0);
-    poestruct_t d0 = oepick(zPREFIXTYPES, m0, m0size);
+    poestruct_t d0 = oepick(oePREFIXTYPES, m0, m0size);
     if (p1 && d0) {
       p1->cvalue |= d0->action;
 //printf("++%s++", d0->mc);
@@ -383,14 +383,14 @@ handle_t oecreate(handle_t p, const uint64_t vaddr, unknown_t mnemonic, unknown_
     char* m1 = NULL;
     m1 = oeinsert_comment(p0, m0);
     m1 = oeinsert_prefix(p0, m0);
-    poestruct_t pi = oepick(zINSTRUCTIONS, m1, strlen(m1));
+    poestruct_t pi = oepick(oeINSTRUCTIONS, m1, strlen(m1));
 
     if (pi) {
 //printf("++");
       m1 = oeinsert_mnemonic(p0, pi, m1);
       m1 = oeinsert_operands(p0, pi, m1);
     } else {
-      printf_e("The mnemonic is missing from the table zINSTRUCTIONS");
+      printf_e("The mnemonic is missing from the table oeINSTRUCTIONS");
     }
   }
 

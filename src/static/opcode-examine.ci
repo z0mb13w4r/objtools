@@ -6,14 +6,14 @@ typedef struct oestruct_s {
   const imode_t action;
 } oestruct_t, *poestruct_t;
 
-static oestruct_t zPREFIXTYPES[] = {
+static oestruct_t oePREFIXTYPES[] = {
   OCSTRUCT("bnd",       OCINSTRUCTION_BND),
   OCSTRUCT("data16",    OCINSTRUCTION_DATA16),
   OCSTRUCT("data32",    OCINSTRUCTION_DATA32),
   {NULL}
 };
 
-static oestruct_t zINSTRUCTIONS[] = {
+static oestruct_t oeINSTRUCTIONS[] = {
   OCSTRUCT("callb",     OCINSTRUCTION_CALLB),
   OCSTRUCT("calll",     OCINSTRUCTION_CALLL),
   OCSTRUCT("callq",     OCINSTRUCTION_CALLQ),
@@ -175,7 +175,7 @@ static oestruct_t zINSTRUCTIONS[] = {
   {NULL}
 };
 
-static oestruct_t zREGISTERS[] = {
+static oestruct_t oeREGISTERS[] = {
   OCSTRUCT("\%rax",     OCREGISTER_RAX),
   OCSTRUCT("\%eax",     OCREGISTER_EAX),
   OCSTRUCT("\%ax",      OCREGISTER_AX),
@@ -266,7 +266,7 @@ static oestruct_t zREGISTERS[] = {
   {NULL}
 };
 
-static oestruct_t zSEGMENTS[] = {
+static oestruct_t oeSEGMENTS[] = {
   OCSTRUCT("\%cs:",     OPSEGMENT_CS),
   OCSTRUCT("\%ds:",     OPSEGMENT_DS),
   OCSTRUCT("\%ss:",     OPSEGMENT_SS),
@@ -276,7 +276,7 @@ static oestruct_t zSEGMENTS[] = {
   {NULL}
 };
 
-convert_t zINSTRUCTIONFLAGS[] = {
+convert_t oeINSTRUCTIONFLAGS[] = {
   {"LT",                OCINSTRUCTION_LT},
   {"RT",                OCINSTRUCTION_RT},
   {"A",                 OCINSTRUCTION_A},
@@ -306,7 +306,7 @@ convert_t zINSTRUCTIONFLAGS[] = {
   {0, 0}
 };
 
-convert_t zINSTRUCTIONNAMES[] = {
+convert_t oeINSTRUCTIONNAMES[] = {
   {"CALL",              MODE_MASK16(OCINSTRUCTION_CALL)},
   {"ENDBR",             MODE_MASK16(OCINSTRUCTION_ENDBR)},
   {"JMP",               MODE_MASK16(OCINSTRUCTION_JMP)},
@@ -341,7 +341,7 @@ convert_t zINSTRUCTIONNAMES[] = {
   {0, 0}
 };
 
-convert_t zSEGMENTFLAGS[] = {
+convert_t oeSEGMENTFLAGS[] = {
   {"SEGMENT",           OPOPERAND_SEGMENT},
   {"ABSOLUTE",          OCOPERAND_ABSOLUTE},
   {"CS",                OPSEGMENT_CS},
@@ -353,7 +353,7 @@ convert_t zSEGMENTFLAGS[] = {
   {0, 0}
 };
 
-convert_t zREGISTERFLAGS[] = {
+convert_t oeREGISTERFLAGS[] = {
   {"GENERAL",           OCREGISTER_GENERAL},
   {"INSTRUCTIONPTR",    OCREGISTER_INSTRUCTIONPTR},
   {"BASEPTR",           OCREGISTER_BASEPTR},
@@ -372,7 +372,7 @@ convert_t zREGISTERFLAGS[] = {
   {0, 0}
 };
 
-convert_t zREGISTERNAMES[] = {
+convert_t oeREGISTERNAMES[] = {
   {"\%rax",             OCREGISTER_RAX},
   {"\%eax",             OCREGISTER_EAX},
   {"\%ax",              OCREGISTER_AX},

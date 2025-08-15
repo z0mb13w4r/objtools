@@ -40,11 +40,11 @@ extern convert_t zDWEXPRLITE[];
 extern convert_t zPHDRTYPE[];
 extern convert_t zSHDRTYPE[];
 
-extern convert_t zSEGMENTFLAGS[];
-extern convert_t zREGISTERFLAGS[];
-extern convert_t zREGISTERNAMES[];
-extern convert_t zINSTRUCTIONFLAGS[];
-extern convert_t zINSTRUCTIONNAMES[];
+extern convert_t oeSEGMENTFLAGS[];
+extern convert_t oeREGISTERFLAGS[];
+extern convert_t oeREGISTERNAMES[];
+extern convert_t oeINSTRUCTIONFLAGS[];
+extern convert_t oeINSTRUCTIONNAMES[];
 
 extern convert_t zHAS_FLAGS[];
 
