@@ -42,22 +42,45 @@ int opcodebfd_sections(handle_t p, opcbfunc_t cbfunc, unknown_t param) {
 }
 
 //#include "printf.h"
+char* opcodebfd_getsymbol0(handle_t p, const uint64_t vaddr, uint64_t *offset) {
+  if (isopcode(p)) {
+    pbuffer_t ps = ocget(p, OPCODE_SYMBOLS);
+    if (ps && ps->size) {
+      asymbol **cs = CAST(asymbol**, ps->data);
+      for (size_t i = 0; i < ps->size; ++i) {
+        if (0 == (cs[i]->flags & BSF_SECTION_SYM) && (BSF_GLOBAL != cs[i]->flags)) {
+          if (cs[i] && vaddr == bfd_asymbol_value(cs[i])) {
+//printf_mask(zBFDSYMBOL_FLAGS, cs[i]->flags, USE_NONE);
+            char* name = CAST(char*, bfd_asymbol_name(cs[i]));
+            return name && name[0] ? name : NULL;
+          }
+        }
+      }
+    }
+  }
+
+  return NULL;
+}
+
 char* opcodebfd_getsymbol(handle_t p, const uint64_t vaddr, uint64_t *offset) {
   STATICA(char, name, 1024);
 
   if (isopcode(p)) {
     pbuffer_t ps = ocget(p, OPCODE_SYMBOLS);
-    if (ps && ps->size) {
-      asymbol **cs = ps->data;
-      for (size_t i = 0; i < ps->size; ++i) {
-        if (0 == (cs[i]->flags & BSF_SECTION_SYM) && (BSF_GLOBAL != cs[i]->flags)) {
-          if (cs[i] && vaddr == bfd_asymbol_value(cs[i])) {
+//    if (ps && ps->size) {
+//      asymbol **cs = ps->data;
+//      for (size_t i = 0; i < ps->size; ++i) {
+//        if (0 == (cs[i]->flags & BSF_SECTION_SYM) && (BSF_GLOBAL != cs[i]->flags)) {
+//          if (cs[i] && vaddr == bfd_asymbol_value(cs[i])) {
 //printf_mask(zBFDSYMBOL_FLAGS, cs[i]->flags, USE_NONE);
-            return CAST(char*, bfd_asymbol_name(cs[i]));
-          }
-        }
-      }
-    }
+//            return CAST(char*, bfd_asymbol_name(cs[i]));
+//          }
+//        }
+//      }
+//    }
+    char* namex = NULL;
+    namex = opcodebfd_getsymbol0(p, vaddr, NULL);
+    if (namex && namex[0]) return namex;
 
     pbuffer_t pr = ocget(p, OPCODE_SYMBOLS_DYNAMICRELOC);
     if (pr && pr->size) {
