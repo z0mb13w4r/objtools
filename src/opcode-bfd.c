@@ -46,16 +46,29 @@ char* opcodebfd_getsymbol0(handle_t p, const uint64_t vaddr, uint64_t *offset) {
   if (isopcode(p)) {
     pbuffer_t ps = ocget(p, OPCODE_SYMBOLS);
     if (ps && ps->size) {
+      char *name = NULL;
       asymbol **cs = CAST(asymbol**, ps->data);
       for (size_t i = 0; i < ps->size; ++i) {
-        if (0 == (cs[i]->flags & BSF_SECTION_SYM) && (BSF_GLOBAL != cs[i]->flags)) {
-          if (cs[i] && vaddr == bfd_asymbol_value(cs[i])) {
+        if (cs[i] && 0 == (cs[i]->flags & BSF_SECTION_SYM) && (BSF_GLOBAL != cs[i]->flags)) {
+          if (offset) {
+            uint64_t caddr = bfd_asymbol_value(cs[i]);
+            if (caddr <= vaddr) {
+              uint64_t offset0 = vaddr - caddr;
+              if (offset0 < *offset) {
 //printf_mask(zBFDSYMBOL_FLAGS, cs[i]->flags, USE_NONE);
-            char* name = CAST(char*, bfd_asymbol_name(cs[i]));
-            return name && name[0] ? name : NULL;
+                name = CAST(char*, bfd_asymbol_name(cs[i]));
+                *offset = offset0;
+              }
+            }
+          } else if (bfd_asymbol_value(cs[i]) == vaddr) {
+//printf_mask(zBFDSYMBOL_FLAGS, cs[i]->flags, USE_NONE);
+            name = CAST(char*, bfd_asymbol_name(cs[i]));
+            break;
           }
         }
       }
+
+      return name && name[0] ? name : NULL;
     }
   }
 
@@ -89,7 +102,7 @@ char* opcodebfd_getsymbol1(handle_t p, const uint64_t vaddr, uint64_t *offset) {
 
             int n = snprintf(name, NELEMENTS(name), "%s", symname);
             if (vername && vername[0]) {
-              snprintf(name + n, NELEMENTS(name) - n, hidden ? "%s@%s" : "%s@@%s", symname, vername);
+              snprintf(name + n, NELEMENTS(name) - n, hidden ? "@%s" : "@@%s", vername);
             }
 //printf("++++");
             return name;
@@ -132,7 +145,11 @@ char* opcodebfd_getsymbol(handle_t p, const uint64_t vaddr, uint64_t *offset) {
     if (NULL == name) {
       name = opcodebfd_getsymbol2(p, vaddr, NULL);
     }
-
+    if (NULL == name && offset) {
+      uint64_t offset0 = UINT_MAX;
+      name = opcodebfd_getsymbol0(p, vaddr, &offset0);
+      *offset = offset0;
+    }
     return name;
   }
 
