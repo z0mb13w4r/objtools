@@ -13,7 +13,7 @@
 #define GNU_PROPERTY_X86_COMPAT_2_ISA_1_USED    (GNU_PROPERTY_X86_UINT32_OR_AND_LO + 0)
 #define GNU_PROPERTY_X86_COMPAT_2_ISA_1_NEEDED  (GNU_PROPERTY_X86_UINT32_OR_LO + 0)
 
-static convert_t zGNUPROPERTY[] = {
+static convert_t ecGNUPROPERTY[] = {
   {"x86 ISA used",               GNU_PROPERTY_X86_ISA_1_USED},
   {"x86 ISA needed",             GNU_PROPERTY_X86_ISA_1_NEEDED},
   {"x86 feature",                GNU_PROPERTY_X86_FEATURE_1_AND},
@@ -26,7 +26,7 @@ static convert_t zGNUPROPERTY[] = {
   {0, 0}
 };
 
-static convert_t zGNUPROPERTY_X86_FEATURE_1_AND[] = {
+static convert_t ecGNUPROPERTY_X86_FEATURE_1_AND[] = {
   {"IBT",   GNU_PROPERTY_X86_FEATURE_1_IBT},
   {"SHSTK", GNU_PROPERTY_X86_FEATURE_1_SHSTK},
   {0, 0}

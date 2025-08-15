@@ -46,7 +46,7 @@ extern convert_t oeREGISTERNAMES[];
 extern convert_t oeINSTRUCTIONFLAGS[];
 extern convert_t oeINSTRUCTIONNAMES[];
 
-extern convert_t zHAS_FLAGS[];
+extern convert_t ecHAS_FLAGS[];
 
 extern convert_t zBFDSYMBOL_FLAGS[];
 

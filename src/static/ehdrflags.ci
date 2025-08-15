@@ -1,11 +1,11 @@
 
-static convert_t zEHDRFLAGS32ARMv1[] = {
+static convert_t ecEHDRFLAGS32ARMv1[] = {
   {"EABIv1",                             EF_ARM_EABI_VER1},
   {"sorted symbol tables",               EF_ARM_SYMSARESORTED},
   {0, 0}
 };
 
-static convert_t zEHDRFLAGS32ARMv2[] = {
+static convert_t ecEHDRFLAGS32ARMv2[] = {
   {"EABIv2",                             EF_ARM_EABI_VER2},
   {"sorted symbol tables",               EF_ARM_SYMSARESORTED},
   {"dynamic symbols use segment index",  EF_ARM_DYNSYMSUSESEGIDX},
@@ -13,14 +13,14 @@ static convert_t zEHDRFLAGS32ARMv2[] = {
   {0, 0}
 };
 
-static convert_t zEHDRFLAGS32ARMv3[] = {
+static convert_t ecEHDRFLAGS32ARMv3[] = {
   {"EABIv3",                             EF_ARM_EABI_VER3},
   {"relocatable executable",             EF_ARM_RELEXEC},
-  {"position independent",   EF_ARM_PIC},
+  {"position independent",               EF_ARM_PIC},
   {0, 0}
 };
 
-static convert_t zEHDRFLAGS32ARMv4[] = {
+static convert_t ecEHDRFLAGS32ARMv4[] = {
   {"EABIv4",                 EF_ARM_EABI_VER4},
   {"BE8",                    EF_ARM_BE8},
   {"LE8",                    EF_ARM_LE8},
@@ -29,7 +29,7 @@ static convert_t zEHDRFLAGS32ARMv4[] = {
   {0, 0}
 };
 
-static convert_t zEHDRFLAGS32ARMv5[] = {
+static convert_t ecEHDRFLAGS32ARMv5[] = {
   {"EABIv5",                 EF_ARM_EABI_VER5},
   {"BE8",                    EF_ARM_BE8},
   {"LE8",                    EF_ARM_LE8},
@@ -44,11 +44,11 @@ pconvert_t get_EHDRFLAGS(const pbuffer_t p) {
   switch (ecget_emachine(p)) {
   case EM_ARM:
     switch (EF_ARM_EABI_VERSION(ecget_eflags(p))) {
-    case EF_ARM_EABI_VER1:   return zEHDRFLAGS32ARMv1;
-    case EF_ARM_EABI_VER2:   return zEHDRFLAGS32ARMv2;
-    case EF_ARM_EABI_VER3:   return zEHDRFLAGS32ARMv3;
-    case EF_ARM_EABI_VER4:   return zEHDRFLAGS32ARMv4;
-    case EF_ARM_EABI_VER5:   return zEHDRFLAGS32ARMv5;
+    case EF_ARM_EABI_VER1:   return ecEHDRFLAGS32ARMv1;
+    case EF_ARM_EABI_VER2:   return ecEHDRFLAGS32ARMv2;
+    case EF_ARM_EABI_VER3:   return ecEHDRFLAGS32ARMv3;
+    case EF_ARM_EABI_VER4:   return ecEHDRFLAGS32ARMv4;
+    case EF_ARM_EABI_VER5:   return ecEHDRFLAGS32ARMv5;
     default:
       break;
      }

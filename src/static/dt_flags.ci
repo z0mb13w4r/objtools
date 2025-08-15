@@ -1,4 +1,4 @@
-static convert_t zDT_FLAGS[] = {
+static convert_t ecDT_FLAGS[] = {
   {"ORIGIN", DF_ORIGIN},
   {"SYMBOLIC", DF_SYMBOLIC},
   {"TEXTREL", DF_TEXTREL},

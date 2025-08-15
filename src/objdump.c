@@ -154,7 +154,7 @@ static int dump_header(const handle_t p, const poptions_t o) {
 
   printf_text("Flags", USE_LT | USE_TAB | USE_COLON | SET_PAD(18));
   printf_nice(ocget_flags(p) & ~BFD_FLAGS_FOR_BFD_USE_MASK, USE_FHEX32);
-  printf_mask(zHAS_FLAGS, ocget_flags(p), USE_EOL);
+  printf_mask(ecHAS_FLAGS, ocget_flags(p), USE_EOL);
   printf_text("Start Address", USE_LT | USE_TAB | USE_COLON | SET_PAD(18));
   printf_nice(ocget_saddress(p), USE_FHEX64 | USE_EOL);
 

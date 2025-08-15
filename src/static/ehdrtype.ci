@@ -1,4 +1,4 @@
-static convert_t zEHDRTYPE[] = {
+static convert_t ecEHDRTYPE[] = {
   {"NONE (No file type)",          ET_NONE},
   {"REL (Relocatable file)",       ET_REL},
   {"EXEC (Executable file)",       ET_EXEC},

@@ -7,7 +7,7 @@
 #define GNU_ABI_TAG_SYLLABLE    5
 #define GNU_ABI_TAG_NACL        6
 
-static convert_t zGNUABITAB[] = {
+static convert_t ecGNUABITAB[] = {
   {"Linux",                        GNU_ABI_TAG_LINUX},
   {"Hurd",                         GNU_ABI_TAG_HURD},
   {"Solaris",                      GNU_ABI_TAG_SOLARIS},

@@ -12,7 +12,7 @@
 #define ELFOSABI_ARM_FDPIC     65 /* ARM FDPIC */
 #define ELFOSABI_AMDGPU_MESA3D 66 /* AMD Mesa3D Runtime */
 
-static convert_t zEHDROSABI[] = {
+static convert_t ecEHDROSABI[] = {
   {"UNIX - System V",              ELFOSABI_NONE},
   {"UNIX - HP-UX",                 ELFOSABI_HPUX},
   {"UNIX - NetBSD",                ELFOSABI_NETBSD},
@@ -33,25 +33,25 @@ static convert_t zEHDROSABI[] = {
   {0, 0}
 };
 
-static convert_t zEHDROSABIAMDGPU[] = {
+static convert_t ecEHDROSABIAMDGPU[] = {
   {"AMD HSA",    ELFOSABI_AMDGPU_HSA},
   {"AMD PAL",    ELFOSABI_AMDGPU_PAL},
   {"AMD Mesa3D", ELFOSABI_AMDGPU_MESA3D},
   {0, 0}
 };
 
-static convert_t zEHDROSABIARM[] = {
+static convert_t ecEHDROSABIARM[] = {
   {"ARM",        ELFOSABI_ARM},
   {"ARM FDPIC",  ELFOSABI_ARM_FDPIC},
   {0, 0}
 };
 
-static convert_t zEHDROSABIMSP430[] = {
+static convert_t ecEHDROSABIMSP430[] = {
   {"Standalone App",   ELFOSABI_STANDALONE},
   {0, 0}
 };
 
-static convert_t zEHDROSABIC6000[] = {
+static convert_t ecEHDROSABIC6000[] = {
   {"Bare-metal C6000", ELFOSABI_C6000_ELFABI},
   {"Linux C6000",      ELFOSABI_C6000_LINUX},
   {0, 0}
@@ -60,22 +60,22 @@ static convert_t zEHDROSABIC6000[] = {
 static const char* get_EHDROSABI(pbuffer_t p) {
   if (p) {
     const unsigned int osabi = getb(p, EI_OSABI);
-    const char* s = strpicknull(zEHDROSABI, osabi);
+    const char* s = strpicknull(ecEHDROSABI, osabi);
     if (NULL == s) {
       if (osabi >= 64) {
         switch (ecget_emachine(p)) {
         case EM_AMDGPU:
-          return strpick(zEHDROSABIAMDGPU, osabi);
+          return strpick(ecEHDROSABIAMDGPU, osabi);
 
         case EM_ARM:
-          return strpick(zEHDROSABIARM, osabi);
+          return strpick(ecEHDROSABIARM, osabi);
 
         case EM_MSP430:
         case EM_VISIUM:
-          return strpick(zEHDROSABIMSP430, osabi);
+          return strpick(ecEHDROSABIMSP430, osabi);
 
         case EM_TI_C6000:
-          return strpick(zEHDROSABIC6000, osabi);
+          return strpick(ecEHDROSABIC6000, osabi);
 
         default:
           break;

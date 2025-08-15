@@ -1,4 +1,4 @@
-static convert_t zEHDRMACHINE[] = {
+static convert_t ecEHDRMACHINE[] = {
   {"None",                         EM_NONE},
   {"ARM",                          EM_ARM},
   {"Intel 80386",                  EM_386},

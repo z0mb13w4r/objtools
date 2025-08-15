@@ -261,9 +261,9 @@ static int dump_fileheader0(const pbuffer_t p, const poptions_t o, const uint64_
 
   int n = 0;
   n += printf_text("Type", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  n += printf_pick(zEHDRTYPE, e_type, USE_LT | USE_SPACE | USE_EOL);
+  n += printf_pick(ecEHDRTYPE, e_type, USE_LT | USE_SPACE | USE_EOL);
   n += printf_text("Machine", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  n += printf_pick(zEHDRMACHINE, e_machine, USE_LT | USE_SPACE | USE_EOL);
+  n += printf_pick(ecEHDRMACHINE, e_machine, USE_LT | USE_SPACE | USE_EOL);
   n += printf_text("Version", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(e_version, USE_FHEX | USE_EOL);
   n += printf_text("Entry point address", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
@@ -582,20 +582,20 @@ static int dump_dynamic0(const pbuffer_t p, const uint64_t sh_offset, const uint
 static int dump_dynamic1(const pbuffer_t p, const poptions_t o, const uint64_t d_tag, const uint64_t d_un_d_val, const uint64_t sh_link) {
   int n = 0;
   n += printf_nice(d_tag, isELF32(p) ? USE_FHEX32 : USE_FHEX64);
-  n += printf_pick(zDYNTAG, d_tag, USE_SPACE | USE_RB | SET_PAD(20));
+  n += printf_pick(ecDYNTAG, d_tag, USE_SPACE | USE_RB | SET_PAD(20));
 
   if (d_tag == DT_FLAGS_1) {
     n += printf_text("Flags", USE_LT | USE_SPACE | USE_COLON);
-    n += printf_masknone(zDT_FLAGS_1, d_un_d_val, USE_LT);
+    n += printf_masknone(ecDT_FLAGS_1, d_un_d_val, USE_LT);
   } else if (d_tag == DT_POSFLAG_1) {
     n += printf_text("Flags", USE_LT | USE_SPACE | USE_COLON);
-    n += printf_masknone(zDT_POSFLAG_1, d_un_d_val, USE_LT);
+    n += printf_masknone(ecDT_POSFLAG_1, d_un_d_val, USE_LT);
   } else if (d_tag == DT_FLAGS) {
     n += printf_text("Flags", USE_LT | USE_SPACE | USE_COLON);
-    n += printf_masknone(zDT_FLAGS,d_un_d_val, USE_LT);
+    n += printf_masknone(ecDT_FLAGS,d_un_d_val, USE_LT);
   } else if (d_tag == DT_PLTREL) {
-    n += printf_pick(zDYNTAG, d_un_d_val, USE_SPACE);
-  } else if (d_tag == DT_NULL || isused(zDYNTAGNAME, d_tag)) {
+    n += printf_pick(ecDYNTAG, d_un_d_val, USE_SPACE);
+  } else if (d_tag == DT_NULL || isused(ecDYNTAGNAME, d_tag)) {
     const char *name = ecget_namebyoffset(p, sh_link, d_un_d_val);
     if (name && name[0]) {
       if (d_tag == DT_NEEDED) {
@@ -608,11 +608,11 @@ static int dump_dynamic1(const pbuffer_t p, const poptions_t o, const uint64_t d
     } else {
       n += printf_nice(d_un_d_val, USE_FHEX);
     }
-  } else if (isused(zDYNTAGBYTES, d_tag)) {
+  } else if (isused(ecDYNTAGBYTES, d_tag)) {
     n += printf_nice(d_un_d_val, USE_DEC | USE_BYTES);
-  } else if (isused(zDYNTAGDEC, d_tag)) {
+  } else if (isused(ecDYNTAGDEC, d_tag)) {
     n += printf_nice(d_un_d_val, USE_DEC);
-  } else if (isused(zDYNTAGFHEX, d_tag)) {
+  } else if (isused(ecDYNTAGFHEX, d_tag)) {
     n += printf_nice(d_un_d_val, USE_FHEX);
   } else if (d_tag == DT_GNU_PRELINKED) {
     n += printf_nice(d_un_d_val, USE_TIMEDATE);
@@ -876,13 +876,13 @@ static int dump_relocs64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr
 }
 
 static int dump_unwind32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
-  printf_w("The decoding of unwind sections for machine type %s is not currently supported.", strpick(zEHDRMACHINE, ehdr->e_machine));
+  printf_w("The decoding of unwind sections for machine type %s is not currently supported.", strpick(ecEHDRMACHINE, ehdr->e_machine));
 
   return 0;
 }
 
 static int dump_unwind64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
-  printf_w("The decoding of unwind sections for machine type %s is not currently supported.", strpick(zEHDRMACHINE, ehdr->e_machine));
+  printf_w("The decoding of unwind sections for machine type %s is not currently supported.", strpick(ecEHDRMACHINE, ehdr->e_machine));
 
   return 0;
 }
@@ -1439,7 +1439,7 @@ static int dump_notes0(const pbuffer_t p, const int index, const uint64_t e_mach
     n += printf_eol();
   } else if (NT_GNU_ABI_TAG == n_type) {
     n += printf_text("OS", USE_LT | USE_TAB | USE_COLON);
-    n += printf_pick(zGNUABITAB, pc[0], USE_LT | USE_SPACE);
+    n += printf_pick(ecGNUABITAB, pc[0], USE_LT | USE_SPACE);
     n += printf_text("ABI", USE_LT | USE_TAB | USE_COLON);
     n += printf_nice(pc[1], USE_DEC);
     n += printf_nice(pc[2], USE_DEC | USE_DOT);
@@ -1465,14 +1465,14 @@ static int dump_notes0(const pbuffer_t p, const int index, const uint64_t e_mach
           if (x >= GNU_PROPERTY_LOPROC && x <= GNU_PROPERTY_HIPROC) {
             if (e_machine == EM_X86_64 || e_machine == EM_IAMCU || e_machine == EM_386) {
               if (size0 != datasz) {
-                n += printf_pick(zGNUPROPERTY, x, USE_LT | USE_SPACE);
+                n += printf_pick(ecGNUPROPERTY, x, USE_LT | USE_SPACE);
                 n += printf_nice(datasz, USE_CORRUPT | USE_COLON);
               } else {
-                n += printf_pick(zGNUPROPERTY, x, USE_LT | USE_SPACE | USE_COLON);
+                n += printf_pick(ecGNUPROPERTY, x, USE_LT | USE_SPACE | USE_COLON);
               }
 
               if (x == GNU_PROPERTY_X86_FEATURE_1_AND) {
-                n += printf_mask(zGNUPROPERTY_X86_FEATURE_1_AND, pc[i++], USE_LT);
+                n += printf_mask(ecGNUPROPERTY_X86_FEATURE_1_AND, pc[i++], USE_LT);
               }
             }
           }

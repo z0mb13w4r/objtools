@@ -1,4 +1,4 @@
-static convert_t zDT_POSFLAG_1[] = {
+static convert_t ecDT_POSFLAG_1[] = {
   {"LAZYLOAD", DF_P1_LAZYLOAD},
   {"GROUPPERM", DF_P1_GROUPPERM},
   {0, 0}

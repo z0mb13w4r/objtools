@@ -42,7 +42,7 @@ ppefunc_t funcchoice(const ppefunc_t p, const char* name) {
 
 const char* get_ORDDLL(const pbuffer_t p, const char* name, const pick_t x) {
   if (name) {
-    for (ppeobject_t pp = zPEOBJECTS; 0 != pp->name; ++pp) {
+    for (ppeobject_t pp = pePEOBJECTS; 0 != pp->name; ++pp) {
       if (0 == strcasecmp(name, pp->name)) {
         return funcpick(pp->func, x);
       }
@@ -54,7 +54,7 @@ const char* get_ORDDLL(const pbuffer_t p, const char* name, const pick_t x) {
 
 imode_t get_MODEFUNC(const pbuffer_t p, const char* name) {
   if (name) {
-    for (ppeobject_t pp = zPEOBJECTS; 0 != pp->name; ++pp) {
+    for (ppeobject_t pp = pePEOBJECTS; 0 != pp->name; ++pp) {
       ppefunc_t p0 = funcchoice(pp->func, name);
       if (p0) {
         return p0->mode;

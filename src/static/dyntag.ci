@@ -1,4 +1,4 @@
-static convert_t zDYNTAG[] = {
+static convert_t ecDYNTAG[] = {
   {"NULL",            DT_NULL},
   {"NEEDED",          DT_NEEDED},
   {"PLTRELSZ",        DT_PLTRELSZ},
@@ -68,7 +68,7 @@ static convert_t zDYNTAG[] = {
   {0, 0}
 };
 
-static pick_t zDYNTAGBYTES[] = {
+static pick_t ecDYNTAGBYTES[] = {
   DT_PLTRELSZ,
   DT_RELASZ,
   DT_STRSZ,
@@ -87,7 +87,7 @@ static pick_t zDYNTAGBYTES[] = {
   PICK_END
 };
 
-static pick_t zDYNTAGDEC[] = {
+static pick_t ecDYNTAGDEC[] = {
   DT_VERDEFNUM,
   DT_VERNEEDNUM,
   DT_RELACOUNT,
@@ -95,7 +95,7 @@ static pick_t zDYNTAGDEC[] = {
   PICK_END
 };
 
-static pick_t zDYNTAGFHEX[] = {
+static pick_t ecDYNTAGFHEX[] = {
   DT_SYMINSZ,
   DT_SYMINENT,
   DT_SYMINFO,
@@ -105,7 +105,7 @@ static pick_t zDYNTAGFHEX[] = {
   PICK_END
 };
 
-static pick_t zDYNTAGNAME[] = {
+static pick_t ecDYNTAGNAME[] = {
   DT_NULL,
   DT_NEEDED,
   DT_PLTGOT,

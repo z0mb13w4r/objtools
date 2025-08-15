@@ -103,7 +103,7 @@ static int dump_ntheader1(const pbuffer_t p, const uint16_t Machine, const uint1
   n += printf_nice(SizeOfOptionalHeader, USE_FHEX16 | USE_EOL);
   n += printf_text("Characteristics", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(Characteristics, USE_FHEX16);
-  n += printf_mask(zFILEHDR, Characteristics, USE_EOL);
+  n += printf_mask(peFILEHDR, Characteristics, USE_EOL);
   n += printf_eol();
 
   return n;
@@ -126,7 +126,7 @@ static int dump_ntheader2(const pbuffer_t p, const uint16_t Magic, const uint8_t
     n += printf_text("IMAGE OPTIONAL HEADER", USE_LT | USE_COLON | USE_EOL);
     n += printf_text("Magic", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     n += printf_nice(Magic, USE_FHEX16);
-    n += printf_pick(zOPTHDRMAGIC, Magic, USE_LT | USE_SPACE | USE_EOL);
+    n += printf_pick(peOPTHDRMAGIC, Magic, USE_LT | USE_SPACE | USE_EOL);
     n += printf_text("LinkerVersion", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     n += printf_nice(MajorLinkerVersion, USE_DEC);
     n += printf_nice(MinorLinkerVersion, USE_DEC | USE_DOT | USE_EOL);
@@ -169,10 +169,10 @@ static int dump_ntheader2(const pbuffer_t p, const uint16_t Magic, const uint8_t
     n += printf_nice(CheckSum, USE_FHEX32 | USE_EOL);
     n += printf_text("Subsystem", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     n += printf_nice(Subsystem, USE_FHEX16);
-    n += printf_pick(zOPTHDRSUBSYSTEM, Subsystem, USE_LT | USE_SPACE | USE_EOL);
+    n += printf_pick(peOPTHDRSUBSYSTEM, Subsystem, USE_LT | USE_SPACE | USE_EOL);
     n += printf_text("DllCharacteristics", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     n += printf_nice(DllCharacteristics, USE_FHEX16);
-    n += printf_mask(zOPTHDRCHARACTERISTICS, DllCharacteristics, USE_EOL);
+    n += printf_mask(peOPTHDRCHARACTERISTICS, DllCharacteristics, USE_EOL);
     n += printf_text("SizeOfStackReserve", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     n += printf_nice(SizeOfStackReserve, USE_FHEXNN | USE_EOL);
     n += printf_text("SizeOfStackCommit", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
@@ -294,7 +294,7 @@ static int dump_sectionheaders64(const pbuffer_t p, const poptions_t o) {
 }
 
 static int dump_sectiongroups0(const pbuffer_t p) {
-  const int MAXSIZE = strlenpick(zOPTHDRENTRY) + 2;
+  const int MAXSIZE = strlenpick(peOPTHDRENTRY) + 2;
 
   int n = 0;
   n += printf_text("IMAGE DIRECTORY", USE_LT | USE_COLON | USE_EOL);
@@ -306,10 +306,10 @@ static int dump_sectiongroups0(const pbuffer_t p) {
 }
 
 static int dump_sectiongroups1(const pbuffer_t p, const int index, const uint32_t VirtualAddress, const uint32_t Size) {
-  const int MAXSIZE = strlenpick(zOPTHDRENTRY) + 2;
+  const int MAXSIZE = strlenpick(peOPTHDRENTRY) + 2;
 
   int n = 0;
-  n += printf_pick(zOPTHDRENTRY, index, USE_LT | USE_TAB | SET_PAD(MAXSIZE));
+  n += printf_pick(peOPTHDRENTRY, index, USE_LT | USE_TAB | SET_PAD(MAXSIZE));
   if (0 != VirtualAddress) n += printf_nice(VirtualAddress, USE_FHEX32);
   else                     n += printf_text("NONE", USE_LT | USE_SPACE | SET_PAD(11));
   if (0 != Size)           n += printf_nice(Size, USE_FHEX32 | USE_EOL);
@@ -1131,7 +1131,7 @@ static int dump_debugNN(const pbuffer_t p, const poptions_t o) {
     n += printf_nice(p0->MinorVersion, USE_DEC | USE_DOT | USE_EOL);
     n += printf_text("Type", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     n += printf_nice(p0->Type, USE_FHEX32);
-    n += printf_pick(zDEBUGHDR, p0->Type, USE_SPACE | USE_EOL);
+    n += printf_pick(peDEBUGHDR, p0->Type, USE_SPACE | USE_EOL);
     n += printf_text("SizeOfData", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     n += printf_nice(p0->SizeOfData, USE_FHEX32 | USE_EOL);
     n += printf_text("AddressOfRawData", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));

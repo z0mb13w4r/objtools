@@ -1,4 +1,4 @@
-static convert_t zDT_FLAGS_1[] = {
+static convert_t ecDT_FLAGS_1[] = {
   {"NOW", DF_1_NOW},
   {"GLOBAL", DF_1_GLOBAL},
   {"GROUP",  DF_1_GROUP},
