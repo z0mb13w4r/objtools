@@ -50,8 +50,8 @@ char* opcodebfd_getsymbol(handle_t p, const uint64_t vaddr, uint64_t *offset) {
     if (ps && ps->size) {
       asymbol **cs = ps->data;
       for (size_t i = 0; i < ps->size; ++i) {
-        if (cs[i] && vaddr == bfd_asymbol_value(cs[i])) {
-          if (0 == (cs[i]->flags & BSF_SECTION_SYM) && (BSF_GLOBAL != cs[i]->flags)) {
+        if (0 == (cs[i]->flags & BSF_SECTION_SYM) && (BSF_GLOBAL != cs[i]->flags)) {
+          if (cs[i] && vaddr == bfd_asymbol_value(cs[i])) {
 //printf_mask(zBFDSYMBOL_FLAGS, cs[i]->flags, USE_NONE);
             return CAST(char*, bfd_asymbol_name(cs[i]));
           }
@@ -80,10 +80,9 @@ char* opcodebfd_getsymbol(handle_t p, const uint64_t vaddr, uint64_t *offset) {
               }
             }
 
+            int n = snprintf(name, NELEMENTS(name), "%s", symname);
             if (vername && vername[0]) {
-              snprintf(name, NELEMENTS(name), hidden ? "%s@%s" : "%s@@%s", symname, vername);
-            } else {
-              snprintf(name, NELEMENTS(name), "%s", symname);
+              snprintf(name + n, NELEMENTS(name) - n, hidden ? "%s@%s" : "%s@@%s", symname, vername);
             }
 //printf("++++");
             return name;
