@@ -21,6 +21,8 @@ extern pick_t zFORMSTRING[];
 extern pick_t zMACRODEF[];
 extern pick_t zMACRODEFSTR[];
 
+extern pick_t oeADDRLOOKUP[];
+
 extern convert_t zDWAT[];
 extern convert_t zDWOP[];
 extern convert_t zDWATE[];

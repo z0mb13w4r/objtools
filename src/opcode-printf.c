@@ -262,7 +262,7 @@ int opcode_printf_detail(handle_t p, const uint64_t vaddr, unknown_t mnemonic, u
     pocmnemonic_t m = oeget(oe, OECODE_MNEMONIC);
     pocoperand_t o1 = oeget(oe, OECODE_OPERAND1);
 
-    if (m && o1) {
+    if (m && o1 && (m->uvalue || isused(oeADDRLOOKUP, MODE_MASK16(m->cvalue)))) {
       uint64_t uvalue = m->uvalue ? m->uvalue : o1->uvalue;
       ocget_symbol(p, uvalue, &name, NULL, NULL, NULL, NULL, NULL, NULL, &offset);
 
