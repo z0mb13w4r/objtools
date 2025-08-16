@@ -102,6 +102,7 @@ handle_t fgetbyshdr(const pbuffer_t p, unknown_t shdr);
 handle_t fget32byshdr(const pbuffer_t p, Elf32_Shdr *shdr);
 handle_t fget64byshdr(const pbuffer_t p, Elf64_Shdr *shdr);
 
+int ecmake_versionnames32(const pbuffer_t p, pversion_t vnames, const size_t maxvnames);
 int ecmake_versionnames64(const pbuffer_t p, pversion_t vnames, const size_t maxvnames);
 
 ppick_t get_RELTYPEDEF(const pbuffer_t p);

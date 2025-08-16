@@ -29,36 +29,6 @@
 #include "static/stvvisibility.ci"
 #include "static/vna_flags.ci"
 
-static int make_versionnames32(const pbuffer_t p, pversion_t vnames, const size_t maxvnames) {
-  Elf32_Shdr *vh = ecget_shdr32bytype(p, SHT_GNU_verneed);
-  if (vh) {
-    Elf32_Word offset = 0;
-    vnames[0] = vh->sh_link;
-
-    for (Elf32_Word j = 0; j < vh->sh_info; ++j) {
-      Elf32_Verneed *vn = getp(p, vh->sh_offset, sizeof(Elf32_Verneed));
-      if (vn) {
-        Elf32_Word xoffset = offset + vn->vn_aux;
-        for (Elf64_Half k = 0; k < vn->vn_cnt; ++k) {
-          Elf32_Vernaux *va = getp(p, vh->sh_offset + xoffset, sizeof(Elf32_Vernaux));
-          if (va) {
-            if (va->vna_other < maxvnames) {
-              vnames[va->vna_other] = va->vna_name;
-            }
-            xoffset += va->vna_next;
-          }
-        }
-      }
-
-      offset += vn->vn_next;
-    }
-
-    return vh->sh_link;
-  }
-
-  return 0;
-}
-
 static int dump_relocsdef0(const pbuffer_t p, const uint64_t sh_link,
                           const uint64_t st_value, const uint64_t st_name, const uint64_t st_shndx) {
   const char* symname = ecget_namebyoffset(p, sh_link, st_name);
@@ -633,7 +603,7 @@ static int dump_dynamic64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
 
 static int dump_relocsrel32(const pbuffer_t p, const poptions_t o, Elf32_Shdr *shdr) {
   MALLOCA(version_t, vnames, 1024);
-  make_versionnames32(p, vnames, NELEMENTS(vnames));
+  ecmake_versionnames32(p, vnames, NELEMENTS(vnames));
 
   const int MAXSIZE = strlenpick(get_RELTYPE(p)) + 2;
 
@@ -901,7 +871,7 @@ static int dump_symbols2(const pbuffer_t p, const poptions_t o,
 
 static int dump_symbols32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
   MALLOCA(version_t, vnames, 1024);
-  make_versionnames32(p, vnames, NELEMENTS(vnames));
+  ecmake_versionnames32(p, vnames, NELEMENTS(vnames));
 
   for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
     Elf32_Shdr *shdr = ecget_shdr32byindex(p, i);
@@ -1158,7 +1128,7 @@ static int dump_versionsym2(const pbuffer_t p, const uint64_t count) {
 
 static int dump_versionsym32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr, Elf32_Shdr *shdr) {
   MALLOCA(version_t, vnames, 1024);
-  make_versionnames32(p, vnames, NELEMENTS(vnames));
+  ecmake_versionnames32(p, vnames, NELEMENTS(vnames));
 
   int n = 0;
   size_t cnt = shdr->sh_size / shdr->sh_entsize;

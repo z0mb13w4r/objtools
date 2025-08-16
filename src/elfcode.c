@@ -903,6 +903,36 @@ handle_t fget64byshdr(const pbuffer_t p, Elf64_Shdr *shdr) {
   return NULL;
 }
 
+int ecmake_versionnames32(const pbuffer_t p, pversion_t vnames, const size_t maxvnames) {
+  Elf32_Shdr *vh = ecget_shdr32bytype(p, SHT_GNU_verneed);
+  if (vh) {
+    Elf32_Word offset = 0;
+    vnames[0] = vh->sh_link;
+
+    for (Elf32_Word j = 0; j < vh->sh_info; ++j) {
+      Elf32_Verneed *vn = getp(p, vh->sh_offset, sizeof(Elf32_Verneed));
+      if (vn) {
+        Elf32_Word offset0 = offset + vn->vn_aux;
+        for (Elf64_Half k = 0; k < vn->vn_cnt; ++k) {
+          Elf32_Vernaux *va = getp(p, vh->sh_offset + offset0, sizeof(Elf32_Vernaux));
+          if (va) {
+            if (va->vna_other < maxvnames) {
+              vnames[va->vna_other] = va->vna_name;
+            }
+            offset0 += va->vna_next;
+          }
+        }
+      }
+
+      offset += vn->vn_next;
+    }
+
+    return vh->sh_link;
+  }
+
+  return 0;
+}
+
 int ecmake_versionnames64(const pbuffer_t p, pversion_t vnames, const size_t maxvnames) {
   Elf64_Shdr *vh = ecget_shdr64bytype(p, SHT_GNU_verneed);
   if (vh) {
