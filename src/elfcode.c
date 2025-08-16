@@ -680,6 +680,56 @@ static const char* _ecget_name64byaddr0(const pbuffer_t p, const int vaddr, uint
 }
 
 static const char* _ecget_name64byaddr1(const pbuffer_t p, const int vaddr, uint64_t *offset) {
+  Elf64_Ehdr *e = ecget_ehdr64(p);
+  if (e) {
+    for (Elf64_Half i = 0; i < e->e_shnum; ++i) {
+      Elf64_Shdr *sh = ecget_shdr64byindex(p, i);
+      if (sh) {
+        if (SHT_RELA == sh->sh_type || SHT_REL == sh->sh_type || SHT_RELR == sh->sh_type) {
+          size_t cnt = sh->sh_size / sh->sh_entsize;
+
+          if (SHT_REL == sh->sh_type) {
+//printf("++%d++", __LINE__);
+//            dump_relocsrel64(p, o, shdr);
+          } else if (SHT_RELA == sh->sh_type) {
+            Elf64_Rela *r = _get64byshdr(p, sh);
+            if (r) {
+              for (size_t j = 0; j < cnt; ++j, ++r) {
+                if (r->r_offset == vaddr) {
+                  if (isused(get_RELTYPEDEF(p), ELF64_R_TYPE(r->r_info))) {
+//printf("++RTD++");
+//          dump_relocsdef64(p, o, shdr, r->r_info);
+                  } else if (isused(get_RELTYPEVER(p), ELF64_R_TYPE(r->r_info))) {
+//printf("++RTV++");
+//          dump_relocsver64(p, o, shdr, r->r_info, vnames, NELEMENTS(vnames));
+                  }
+
+//      if (isused(get_RELTYPESHEX8(p), ELF64_R_TYPE(r->r_info))) {
+//        printf_nice(r->r_addend, USE_SHEX8);
+//      } else if (isused(get_RELTYPESHEX16(p), ELF64_R_TYPE(r->r_info))) {
+//        printf_nice(r->r_addend, USE_SHEX16);
+//      } else if (isused(get_RELTYPESHEX32(p), ELF64_R_TYPE(r->r_info))) {
+//        printf_nice(r->r_addend, USE_SHEX32);
+//      } else if (isused(get_RELTYPESHEX64(p), ELF64_R_TYPE(r->r_info))) {
+//        printf_nice(r->r_addend, USE_SHEX64);
+//      } else if (isused(get_RELTYPEPACK(p), ELF64_R_TYPE(r->r_info))) {
+//        printf_pack(17);
+//        printf_nice(r->r_addend, USE_LHEX);
+//      } else if (!isused(get_RELTYPESAFE(p), ELF64_R_TYPE(r->r_info))) {
+//        printf_nice(r->r_info & 0xffff, USE_UNKNOWN);
+//      }
+                }
+              }
+            }
+          } else if (SHT_RELR == sh->sh_type) {
+//printf("++%d++", __LINE__);
+//            dump_relocsrelr64(p, o, shdr);
+          }
+        }
+      }
+    }
+  }
+
   return NULL;
 }
 

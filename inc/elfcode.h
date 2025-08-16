@@ -100,5 +100,8 @@ handle_t fgetbyshdr(const pbuffer_t p, unknown_t shdr);
 handle_t fget32byshdr(const pbuffer_t p, Elf32_Shdr *shdr);
 handle_t fget64byshdr(const pbuffer_t p, Elf64_Shdr *shdr);
 
+ppick_t get_RELTYPEDEF(const pbuffer_t p);
+ppick_t get_RELTYPEVER(const pbuffer_t p);
+
 #endif
 

@@ -240,7 +240,7 @@ static pconvert_t get_RELTYPE(const pbuffer_t p) {
   return NULL;
 }
 
-static ppick_t get_RELTYPEDEF(const pbuffer_t p) {
+ppick_t get_RELTYPEDEF(const pbuffer_t p) {
   switch (ecget_emachine(p)) {
   case EM_386:               return zRELTYPE32DEF;
   case EM_ARM:               return zRELTYPE32ARMDEF;
@@ -253,7 +253,7 @@ static ppick_t get_RELTYPEDEF(const pbuffer_t p) {
   return NULL;
 }
 
-static ppick_t get_RELTYPEVER(const pbuffer_t p) {
+ppick_t get_RELTYPEVER(const pbuffer_t p) {
   switch (ecget_emachine(p)) {
   case EM_386:               return zRELTYPE32VER;
   case EM_ARM:               return zRELTYPE32ARMVER;
