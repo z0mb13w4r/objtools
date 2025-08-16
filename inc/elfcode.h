@@ -27,6 +27,8 @@
    the st_other field.  The STV_ defines specify the actual visibility.  */
 #define ELF_ST_VISIBILITY(x)       ((x) & 0x03)
 
+typedef unsigned short version_t, *pversion_t;
+
 bool_t isTBSS32(Elf64_Shdr *s, Elf64_Phdr *p);
 bool_t isTBSS64(Elf64_Shdr *s, Elf64_Phdr *p);
 
@@ -99,6 +101,8 @@ unknown_t _get64byshdr(const pbuffer_t p, Elf64_Shdr *shdr); // replace by fgetX
 handle_t fgetbyshdr(const pbuffer_t p, unknown_t shdr);
 handle_t fget32byshdr(const pbuffer_t p, Elf32_Shdr *shdr);
 handle_t fget64byshdr(const pbuffer_t p, Elf64_Shdr *shdr);
+
+int ecmake_versionnames64(const pbuffer_t p, pversion_t vnames, const size_t maxvnames);
 
 ppick_t get_RELTYPEDEF(const pbuffer_t p);
 ppick_t get_RELTYPEVER(const pbuffer_t p);

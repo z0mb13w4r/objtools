@@ -29,8 +29,6 @@
 #include "static/stvvisibility.ci"
 #include "static/vna_flags.ci"
 
-typedef unsigned short version_t, *pversion_t;
-
 static int make_versionnames32(const pbuffer_t p, pversion_t vnames, const size_t maxvnames) {
   Elf32_Shdr *vh = ecget_shdr32bytype(p, SHT_GNU_verneed);
   if (vh) {
@@ -43,36 +41,6 @@ static int make_versionnames32(const pbuffer_t p, pversion_t vnames, const size_
         Elf32_Word xoffset = offset + vn->vn_aux;
         for (Elf64_Half k = 0; k < vn->vn_cnt; ++k) {
           Elf32_Vernaux *va = getp(p, vh->sh_offset + xoffset, sizeof(Elf32_Vernaux));
-          if (va) {
-            if (va->vna_other < maxvnames) {
-              vnames[va->vna_other] = va->vna_name;
-            }
-            xoffset += va->vna_next;
-          }
-        }
-      }
-
-      offset += vn->vn_next;
-    }
-
-    return vh->sh_link;
-  }
-
-  return 0;
-}
-
-static int make_versionnames64(const pbuffer_t p, pversion_t vnames, const size_t maxvnames) {
-  Elf64_Shdr *vh = ecget_shdr64bytype(p, SHT_GNU_verneed);
-  if (vh) {
-    Elf64_Word offset = 0;
-    vnames[0] = vh->sh_link;
-
-    for (Elf64_Word j = 0; j < vh->sh_info; ++j) {
-      Elf64_Verneed *vn = getp(p, vh->sh_offset, sizeof(Elf64_Verneed));
-      if (vn) {
-        Elf64_Word xoffset = offset + vn->vn_aux;
-        for (Elf64_Half k = 0; k < vn->vn_cnt; ++k) {
-          Elf64_Vernaux *va = getp(p, vh->sh_offset + xoffset, sizeof(Elf64_Vernaux));
           if (va) {
             if (va->vna_other < maxvnames) {
               vnames[va->vna_other] = va->vna_name;
@@ -751,7 +719,7 @@ static int dump_relocsrela32(const pbuffer_t p, const poptions_t o, Elf32_Shdr *
 
 static int dump_relocsrela64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *shdr) {
   MALLOCA(version_t, vnames, 1024);
-  make_versionnames64(p, vnames, NELEMENTS(vnames));
+  ecmake_versionnames64(p, vnames, NELEMENTS(vnames));
 
   const int MAXSIZE = strlenpick(get_RELTYPE(p)) + 2;
 
@@ -978,7 +946,7 @@ static int dump_symbols32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehd
 
 static int dump_symbols64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
   MALLOCA(version_t, vnames, 1024);
-  make_versionnames64(p, vnames, NELEMENTS(vnames));
+  ecmake_versionnames64(p, vnames, NELEMENTS(vnames));
 
   for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
     Elf64_Shdr *shdr = ecget_shdr64byindex(p, i);
@@ -1210,7 +1178,7 @@ static int dump_versionsym32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *
 
 static int dump_versionsym64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr, Elf64_Shdr *shdr) {
   MALLOCA(version_t, vnames, 1024);
-  make_versionnames64(p, vnames, NELEMENTS(vnames));
+  ecmake_versionnames64(p, vnames, NELEMENTS(vnames));
 
   int n = 0;
   size_t cnt = shdr->sh_size / shdr->sh_entsize;

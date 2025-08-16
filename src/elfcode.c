@@ -680,6 +680,10 @@ static const char* _ecget_name64byaddr0(const pbuffer_t p, const int vaddr, uint
 }
 
 static const char* _ecget_name64byaddr1(const pbuffer_t p, const int vaddr, uint64_t *offset) {
+  STATICA(char, name, 1024);
+  MALLOCA(version_t, vnames, 1024);
+  ecmake_versionnames64(p, vnames, NELEMENTS(vnames));
+
   Elf64_Ehdr *e = ecget_ehdr64(p);
   if (e) {
     for (Elf64_Half i = 0; i < e->e_shnum; ++i) {
@@ -706,39 +710,30 @@ static const char* _ecget_name64byaddr1(const pbuffer_t p, const int vaddr, uint
                       Elf64_Off k = ELF64_R_SYM(r->r_info);
                       Elf64_Sym *sym = getp(p, dh->sh_offset + (k * dh->sh_entsize), dh->sh_entsize);
                       if (sym) {
-                        return ecget_namebyoffset(p, dh->sh_link, sym->st_name);
+                        const char *symname = ecget_namebyoffset(p, dh->sh_link, sym->st_name);
+                        if (symname && symname[0]) {
+                          const char *vername = NULL;
+                          Elf64_Shdr *vh = ecget_shdr64bytype(p, SHT_GNU_versym);
+                          if (vh) {
+                            Elf64_Versym *vs = getp(p, vh->sh_offset + (k * vh->sh_entsize), vh->sh_entsize);
+                            if (vs) {
+                              *vs = *vs & VERSYM_VERSION;
+                              if (*vs && *vs < NELEMENTS(vnames)) {
+                                vername = ecget_namebyoffset(p, vnames[0], vnames[*vs]);
+                              }
+                            }
+                          }
 
-//        Elf64_Shdr *vshdr = ecget_shdr64bytype(p, SHT_GNU_versym);
-//        if (vshdr) {
-//          Elf64_Versym *vs = getp(p, vshdr->sh_offset + (k * vshdr->sh_entsize), vshdr->sh_entsize);
-//          if (vs) {
-//            *vs = *vs & VERSYM_VERSION;
-//            if (*vs && *vs < maxvnames) {
-//              const char* namevs = ecget_namebyoffset(p, vnames[0], vnames[*vs]);
-//              if (namevs) {
-//                printf_text(namevs, USE_LT | USE_AT);
-//              }
-//            }
-//          }
-//        }
+                          int n = snprintf(name, NELEMENTS(name), "%s", symname);
+                          if (vername && vername[0]) {
+                            snprintf(name + n, NELEMENTS(name) - n, "@%s", vername);
+                          }
+//printf("++++");
+                          return name;
+                        }
                       }
                     }
                   }
-
-//      if (isused(get_RELTYPESHEX8(p), ELF64_R_TYPE(r->r_info))) {
-//        printf_nice(r->r_addend, USE_SHEX8);
-//      } else if (isused(get_RELTYPESHEX16(p), ELF64_R_TYPE(r->r_info))) {
-//        printf_nice(r->r_addend, USE_SHEX16);
-//      } else if (isused(get_RELTYPESHEX32(p), ELF64_R_TYPE(r->r_info))) {
-//        printf_nice(r->r_addend, USE_SHEX32);
-//      } else if (isused(get_RELTYPESHEX64(p), ELF64_R_TYPE(r->r_info))) {
-//        printf_nice(r->r_addend, USE_SHEX64);
-//      } else if (isused(get_RELTYPEPACK(p), ELF64_R_TYPE(r->r_info))) {
-//        printf_pack(17);
-//        printf_nice(r->r_addend, USE_LHEX);
-//      } else if (!isused(get_RELTYPESAFE(p), ELF64_R_TYPE(r->r_info))) {
-//        printf_nice(r->r_info & 0xffff, USE_UNKNOWN);
-//      }
                 }
               }
             }
@@ -906,5 +901,35 @@ handle_t fget64byshdr(const pbuffer_t p, Elf64_Shdr *shdr) {
   }
 
   return NULL;
+}
+
+int ecmake_versionnames64(const pbuffer_t p, pversion_t vnames, const size_t maxvnames) {
+  Elf64_Shdr *vh = ecget_shdr64bytype(p, SHT_GNU_verneed);
+  if (vh) {
+    Elf64_Word offset = 0;
+    vnames[0] = vh->sh_link;
+
+    for (Elf64_Word j = 0; j < vh->sh_info; ++j) {
+      Elf64_Verneed *vn = getp(p, vh->sh_offset, sizeof(Elf64_Verneed));
+      if (vn) {
+        Elf64_Word offset0 = offset + vn->vn_aux;
+        for (Elf64_Half k = 0; k < vn->vn_cnt; ++k) {
+          Elf64_Vernaux *va = getp(p, vh->sh_offset + offset0, sizeof(Elf64_Vernaux));
+          if (va) {
+            if (va->vna_other < maxvnames) {
+              vnames[va->vna_other] = va->vna_name;
+            }
+            offset0 += va->vna_next;
+          }
+        }
+      }
+
+      offset += vn->vn_next;
+    }
+
+    return vh->sh_link;
+  }
+
+  return 0;
 }
 
