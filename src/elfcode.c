@@ -701,7 +701,28 @@ static const char* _ecget_name64byaddr1(const pbuffer_t p, const int vaddr, uint
 //          dump_relocsdef64(p, o, shdr, r->r_info);
                   } else if (isused(get_RELTYPEVER(p), ELF64_R_TYPE(r->r_info))) {
 //printf("++RTV++");
-//          dump_relocsver64(p, o, shdr, r->r_info, vnames, NELEMENTS(vnames));
+                    Elf64_Shdr *dh = ecget_shdr64byindex(p, sh->sh_link);
+                    if (dh) {
+                      Elf64_Off k = ELF64_R_SYM(r->r_info);
+                      Elf64_Sym *sym = getp(p, dh->sh_offset + (k * dh->sh_entsize), dh->sh_entsize);
+                      if (sym) {
+                        return ecget_namebyoffset(p, dh->sh_link, sym->st_name);
+
+//        Elf64_Shdr *vshdr = ecget_shdr64bytype(p, SHT_GNU_versym);
+//        if (vshdr) {
+//          Elf64_Versym *vs = getp(p, vshdr->sh_offset + (k * vshdr->sh_entsize), vshdr->sh_entsize);
+//          if (vs) {
+//            *vs = *vs & VERSYM_VERSION;
+//            if (*vs && *vs < maxvnames) {
+//              const char* namevs = ecget_namebyoffset(p, vnames[0], vnames[*vs]);
+//              if (namevs) {
+//                printf_text(namevs, USE_LT | USE_AT);
+//              }
+//            }
+//          }
+//        }
+                      }
+                    }
                   }
 
 //      if (isused(get_RELTYPESHEX8(p), ELF64_R_TYPE(r->r_info))) {
