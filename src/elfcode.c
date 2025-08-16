@@ -612,7 +612,38 @@ const char* _ecget_name32byaddr(const pbuffer_t p, const int vaddr, uint64_t *of
   return NULL;
 }
 
+static const char* _ecget_name64byaddr0(const pbuffer_t p, const int vaddr, uint64_t *offset) {
+  Elf64_Shdr *sh = ecget_shdr64bytype(p, SHT_SYMTAB);
+  if (sh) {
+    size_t cnt = sh->sh_size / sh->sh_entsize;
+    handle_t f = fgetbyshdr(p, sh);
+    if (f) {
+      for (size_t j = 0; j < cnt; ++j) {
+        Elf64_Sym *st = fget(f);
+        if (st) {
+          if (ELF_ST_TYPE(st->st_info) != STT_SECTION && st->st_value == vaddr) {
+//printf("+++%x+++", vaddr);
+            return ecget_namebyoffset(p, sh->sh_link, st->st_name);
+          }
+          f = fnext(f);
+        }
+      }
+    }
+  }
+
+  return NULL;
+}
+
+static const char* _ecget_name64byaddr1(const pbuffer_t p, const int vaddr, uint64_t *offset) {
+  return NULL;
+}
+
+static const char* _ecget_name64byaddr2(const pbuffer_t p, const int vaddr, uint64_t *offset) {
+  return _ecget_secname64byaddr(p, vaddr);
+}
+
 const char* _ecget_name64byaddr(const pbuffer_t p, const int vaddr, uint64_t *offset) {
+#if 0
   const char* name = _ecget_secname64byaddr(p, vaddr);
   Elf64_Shdr *sh = ecget_shdr64bytype(p, SHT_SYMTAB);
   if (sh) {
@@ -653,6 +684,20 @@ const char* _ecget_name64byaddr(const pbuffer_t p, const int vaddr, uint64_t *of
   }
 
   return name && name[0] ? name : NULL;
+#endif
+  const char* name = _ecget_name64byaddr0(p, vaddr, NULL);
+  if (NULL == name) {
+    name = _ecget_name64byaddr1(p, vaddr, NULL);
+  }
+  if (NULL == name) {
+    name = _ecget_name64byaddr2(p, vaddr, NULL);
+  }
+  if (NULL == name && offset) {
+    uint64_t offset0 = UINT_MAX;
+    name = _ecget_name64byaddr0(p, vaddr, &offset0);
+    *offset = offset0;
+  }
+  return name;
 }
 
 const char* ecget_nhdrnamebyindex(const pbuffer_t p, const int index) {
