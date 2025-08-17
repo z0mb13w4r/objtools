@@ -78,52 +78,49 @@ static int ocdebugf(handle_t p, handle_t q) {
   if (isopcode(p) && isocexamine(q)) {
     int n = 0;
 
-    popcode_t oc = ocget(p, OPCODE_THIS);
-    if (MODE_ISANY(oc->action, OPTPROGRAM_DEBUGLEVEL1)) {
-      pocexamine_t q0 = oeget(q, OECODE_THIS);
-      pocoperand_t o0 = oeget(q, OECODE_OPERAND1);
-      pocoperand_t o1 = oeget(q, OECODE_OPERAND2);
-      pocoperand_t o2 = oeget(q, OECODE_OPERAND3);
-      pocmnemonic_t m0 = oeget(q, OECODE_MNEMONIC);
+    pocexamine_t q0 = oeget(q, OECODE_THIS);
+    pocoperand_t o0 = oeget(q, OECODE_OPERAND1);
+    pocoperand_t o1 = oeget(q, OECODE_OPERAND2);
+    pocoperand_t o2 = oeget(q, OECODE_OPERAND3);
+    pocmnemonic_t m0 = oeget(q, OECODE_MNEMONIC);
 
-      n += printf_eol();
-      n += printf_mark('+', 100, USE_EOL);
+    n += printf_eol();
+    n += printf_mark('+', 100, USE_EOL);
 
-      n += printf_text("VADDR", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
-      n += opcode_printf_FADDR(p, q0->vaddr, USE_EOL);
-      if (0 != q0->comment[0]) {
-        n += printf_text("COMMENT", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
-        n += printf_text(q0->comment, USE_LT | USE_SPACE | USE_EOL);
-      }
-      if (m0) {
-        n += printf_text("MNEMONIC", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
-        n += printf_text(m0->data, USE_LT | USE_SPACE | USE_EOL);
-        n += ocdebugf_cvalue0(p, m0->cvalue);
-        if (0 != m0->uvalue) {
-          n += printf_text("UVALUE", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
-          n += opcode_printf_FADDR(p, m0->uvalue, USE_EOL);
-        }
-      }
-      if (o0) {
-        n += printf_text("OPERAND1", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
-        n += printf_text(o0->data, USE_LT | USE_SPACE | USE_EOL);
-        n += ocdebugf_cvalue1(p, o0->cvalue);
-        n += ocdebugf_nvalue(p, o0->cvalue, o0->uvalue);
-      }
-      if (o1) {
-        n += printf_text("OPERAND2", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
-        n += printf_text(o1->data, USE_LT | USE_SPACE | USE_EOL);
-        n += ocdebugf_cvalue1(p, o1->cvalue);
-        n += ocdebugf_nvalue(p, o1->cvalue, o1->uvalue);
-      }
-      if (o2) {
-        n += printf_text("OPERAND3", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
-        n += printf_text(o2->data, USE_LT | USE_SPACE | USE_EOL);
-        n += ocdebugf_cvalue1(p, o2->cvalue);
-        n += ocdebugf_nvalue(p, o2->cvalue, o2->uvalue);
-      }
-      n += printf_mark('+', 100, USE_EOL);
+    n += printf_text("VADDR", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
+    n += opcode_printf_FADDR(p, q0->vaddr, USE_EOL);
+    if (0 != q0->comment[0]) {
+      n += printf_text("COMMENT", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_text(q0->comment, USE_LT | USE_SPACE | USE_EOL);
     }
+    if (m0) {
+      n += printf_text("MNEMONIC", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_text(m0->data, USE_LT | USE_SPACE | USE_EOL);
+      n += ocdebugf_cvalue0(p, m0->cvalue);
+      if (0 != m0->uvalue) {
+        n += printf_text("UVALUE", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
+        n += opcode_printf_FADDR(p, m0->uvalue, USE_EOL);
+      }
+    }
+    if (o0) {
+      n += printf_text("OPERAND1", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_text(o0->data, USE_LT | USE_SPACE | USE_EOL);
+      n += ocdebugf_cvalue1(p, o0->cvalue);
+      n += ocdebugf_nvalue(p, o0->cvalue, o0->uvalue);
+    }
+    if (o1) {
+      n += printf_text("OPERAND2", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_text(o1->data, USE_LT | USE_SPACE | USE_EOL);
+      n += ocdebugf_cvalue1(p, o1->cvalue);
+      n += ocdebugf_nvalue(p, o1->cvalue, o1->uvalue);
+    }
+    if (o2) {
+      n += printf_text("OPERAND3", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_text(o2->data, USE_LT | USE_SPACE | USE_EOL);
+      n += ocdebugf_cvalue1(p, o2->cvalue);
+      n += ocdebugf_nvalue(p, o2->cvalue, o2->uvalue);
+    }
+    n += printf_mark('+', 100, USE_EOL);
 
     return n;
   }
@@ -261,8 +258,12 @@ int opcode_printf_detail(handle_t p, const uint64_t vaddr, unknown_t mnemonic, u
     pocexamine_t oe = oecreate(p, vaddr, mnemonic, operands);
     pocmnemonic_t m = oeget(oe, OECODE_MNEMONIC);
     pocoperand_t o1 = oeget(oe, OECODE_OPERAND1);
+    popcode_t    oc = ocget(p, OPCODE_THIS);
 
-    if (m && o1 && (m->uvalue || isused(oeADDRLOOKUP, MODE_MASK16(m->cvalue)))) {
+    const bool_t isok = m && o1 && isused(oeADDRLOOKUP, MODE_MASK16(m->cvalue)) &&
+      (MODE_ISLOCKED8(OCOPERAND_IVALUE, o1->cvalue) || MODE_ISLOCKED8(OCOPERAND_UVALUE, o1->cvalue));
+
+    if (m && o1 && (m->uvalue || isok)) {
       uint64_t uvalue = m->uvalue ? m->uvalue : o1->uvalue;
       ocget_symbol(p, uvalue, &name, NULL, NULL, NULL, NULL, NULL, NULL, &offset);
 
@@ -279,8 +280,9 @@ int opcode_printf_detail(handle_t p, const uint64_t vaddr, unknown_t mnemonic, u
       }
     }
 
-    n += ocdebugf(p, oe);
-
+    if (MODE_ISANY(oc->action, OPTPROGRAM_DEBUGLEVEL1)) {
+      n += ocdebugf(p, oe);
+    }
     oefree(oe);
 
     return n;
