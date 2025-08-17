@@ -620,6 +620,23 @@ static const char* _ecget_name32byaddr0(const pbuffer_t p, const int vaddr, uint
 }
 
 static const char* _ecget_name32byaddr1(const pbuffer_t p, const int vaddr, uint64_t *offset) {
+  STATICA(char, name, 1024);
+  MALLOCA(version_t, vnames, 1024);
+  ecmake_versionnames32(p, vnames, NELEMENTS(vnames));
+
+  Elf32_Ehdr *e = ecget_ehdr32(p);
+  if (e) {
+    for (Elf32_Half i = 0; i < e->e_shnum; ++i) {
+      Elf32_Shdr *sh = ecget_shdr32byindex(p, i);
+      if (sh) {
+        if (SHT_RELA == sh->sh_type || SHT_REL == sh->sh_type || SHT_RELR == sh->sh_type) {
+          size_t cnt = sh->sh_size / sh->sh_entsize;
+// TBD
+        }
+      }
+    }
+  }
+
   return NULL;
 }
 
