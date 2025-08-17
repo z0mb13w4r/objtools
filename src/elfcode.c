@@ -593,7 +593,7 @@ static const char* _ecget_name32byaddr0(const pbuffer_t p, const int vaddr, uint
       for (size_t j = 0; j < cnt; ++j) {
         Elf32_Sym *st = fget(f);
         if (st) {
-          if (ELF_ST_TYPE(st->st_info) != STT_SECTION) {
+          if (ELF_ST_TYPE(st->st_info) != STT_SECTION && ELF_ST_TYPE(st->st_info) != STT_NOTYPE) {
             if (offset) {
               if (st->st_value <= vaddr) {
                 uint64_t offset0 = vaddr - st->st_value;
@@ -652,7 +652,7 @@ static const char* _ecget_name64byaddr0(const pbuffer_t p, const int vaddr, uint
       const char *name = NULL;
       for (size_t j = 0; j < cnt; ++j) {
         Elf64_Sym *st = fget(f);
-        if (st) { /* && ELF_ST_BIND(st->st_info) != STB_GLOBAL*/
+        if (st) {
           if (ELF_ST_TYPE(st->st_info) != STT_SECTION && ELF_ST_TYPE(st->st_info) != STT_NOTYPE) {
             if (offset) {
               if (st->st_value <= vaddr) {
@@ -664,7 +664,6 @@ static const char* _ecget_name64byaddr0(const pbuffer_t p, const int vaddr, uint
               }
             } else if (st->st_value == vaddr) {
 //printf("+++%x+++", vaddr);
-//printf("+++%s+++", ELF_ST_BIND(st->st_info) == STB_GLOBAL ? "y" : "n");
               name = ecget_namebyoffset(p, sh->sh_link, st->st_name);
               break;
             }
