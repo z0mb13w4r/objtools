@@ -444,20 +444,20 @@ static int dump_version3(const pbuffer_t p, const uint32_t dwSignature, const ui
   n += printf_nice(dwFileFlagsMask, USE_FHEX32 | USE_EOL);
   n += printf_text("dwFileFlags", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(dwFileFlags, USE_FHEX32);
-  n += printf_mask(zVERFILEFLAGS, dwFileFlags, USE_EOL);
+  n += printf_mask(peVERFILEFLAGS, dwFileFlags, USE_EOL);
   n += printf_text("dwFileOS", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(dwFileOS, USE_FHEX32);
-  n += printf_pick(zVERFILEOS, dwFileOS, USE_SPACE | USE_EOL);
+  n += printf_pick(peVERFILEOS, dwFileOS, USE_SPACE | USE_EOL);
   n += printf_text("dwFileType", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(dwFileType, USE_FHEX32);
-  n += printf_pick(zVERFILETYPE, dwFileType, USE_SPACE | USE_EOL);
+  n += printf_pick(peVERFILETYPE, dwFileType, USE_SPACE | USE_EOL);
   n += printf_text("dwFileSubtype", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   if (VFT_DRV == dwFileType) {
     n += printf_nice(dwFileSubtype, USE_FHEX32 | USE_EOL);
-    n += printf_pick(zVERFILESUBTYPEDRV, dwFileSubtype, USE_SPACE | USE_EOL);
+    n += printf_pick(peVERFILESUBTYPEDRV, dwFileSubtype, USE_SPACE | USE_EOL);
   } else if (VFT_FONT == dwFileType) {
     n += printf_nice(dwFileSubtype, USE_FHEX32 | USE_EOL);
-    n += printf_pick(zVERFILESUBTYPEFONT, dwFileSubtype, USE_SPACE | USE_EOL);
+    n += printf_pick(peVERFILESUBTYPEFONT, dwFileSubtype, USE_SPACE | USE_EOL);
   } else if (VFT_VXD == dwFileType) {
     n += printf_nice(dwFileSubtype, USE_UNKNOWN | USE_EOL);
   } else {

@@ -1207,7 +1207,7 @@ static int dump_versionneed2(const pbuffer_t p, const int offset, const uint64_t
   n += printf_text("Name", USE_TAB | USE_COLON);
   n += printf_text(ecget_namebyoffset(p, sh_link, vna_name), USE_LT | USE_SPACE | SET_PAD(14));
   n += printf_text("Flags", USE_SPACE | USE_COLON);
-  n += printf_masknone(zVNA_FLAGS, vna_flags, USE_LT);
+  n += printf_masknone(ecVNA_FLAGS, vna_flags, USE_LT);
   n += printf_text("Version", USE_TAB | USE_COLON);
   n += printf_nice(vna_other, USE_DEC | USE_EOL);
 

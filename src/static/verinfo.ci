@@ -5,7 +5,7 @@
 #define VS_FF_INFOINFERRED (0x00000010)
 #define VS_FF_SPECIALBUILD (0x00000020)
 
-static convert_t zVERFILEFLAGS[] = {
+static convert_t peVERFILEFLAGS[] = {
   {"VS_FF_DEBUG",          VS_FF_DEBUG},
   {"VS_FF_INFOINFERRED",   VS_FF_INFOINFERRED},
   {"VS_FF_PATCHED",        VS_FF_PATCHED},
@@ -30,7 +30,7 @@ static convert_t zVERFILEFLAGS[] = {
 #define VOS_NT             (0x00040000)
 #define VOS_NT_WINDOWS32   (0x00040004)
 
-static convert_t zVERFILEOS[] = {
+static convert_t peVERFILEOS[] = {
   {"VOS_DOS",              VOS_DOS},
   {"VOS_NT",               VOS_NT},
   {"VOS_WINDOWS16",        VOS_WINDOWS16},
@@ -56,7 +56,7 @@ static convert_t zVERFILEOS[] = {
 #define VFT_VXD            (0x00000005)
 #define VFT_STATIC_LIB     (0x00000007)
 
-static convert_t zVERFILETYPE[] = {
+static convert_t peVERFILETYPE[] = {
   {"VFT_APP",              VFT_APP},
   {"VFT_DLL",              VFT_DLL},
   {"VFT_DRV",              VFT_DRV},
@@ -80,7 +80,7 @@ static convert_t zVERFILETYPE[] = {
 #define VFT2_DRV_COMM              (0x0000000A)
 #define VFT2_DRV_VERSIONED_PRINTER (0x0000000C)
 
-static convert_t zVERFILESUBTYPEDRV[] = {
+static convert_t peVERFILESUBTYPEDRV[] = {
   {"VFT2_DRV_COMM",                VFT2_DRV_COMM},
   {"VFT2_DRV_DISPLAY",             VFT2_DRV_DISPLAY},
   {"VFT2_DRV_INSTALLABLE",         VFT2_DRV_INSTALLABLE},
@@ -101,7 +101,7 @@ static convert_t zVERFILESUBTYPEDRV[] = {
 #define VFT2_FONT_VECTOR           (0x00000002)
 #define VFT2_FONT_TRUETYPE         (0x00000003)
 
-static convert_t zVERFILESUBTYPEFONT[] = {
+static convert_t peVERFILESUBTYPEFONT[] = {
   {"VFT2_FONT_RASTER",             VFT2_FONT_RASTER},
   {"VFT2_FONT_TRUETYPE",           VFT2_FONT_TRUETYPE},
   {"VFT2_FONT_VECTOR",             VFT2_FONT_VECTOR},
