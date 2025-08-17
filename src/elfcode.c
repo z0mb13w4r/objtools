@@ -652,8 +652,8 @@ static const char* _ecget_name64byaddr0(const pbuffer_t p, const int vaddr, uint
       const char *name = NULL;
       for (size_t j = 0; j < cnt; ++j) {
         Elf64_Sym *st = fget(f);
-        if (st) {
-          if (ELF_ST_TYPE(st->st_info) != STT_SECTION) {
+        if (st) { /* && ELF_ST_BIND(st->st_info) != STB_GLOBAL*/
+          if (ELF_ST_TYPE(st->st_info) != STT_SECTION && ELF_ST_TYPE(st->st_info) != STT_NOTYPE) {
             if (offset) {
               if (st->st_value <= vaddr) {
                 uint64_t offset0 = vaddr - st->st_value;
@@ -664,6 +664,7 @@ static const char* _ecget_name64byaddr0(const pbuffer_t p, const int vaddr, uint
               }
             } else if (st->st_value == vaddr) {
 //printf("+++%x+++", vaddr);
+//printf("+++%s+++", ELF_ST_BIND(st->st_info) == STB_GLOBAL ? "y" : "n");
               name = ecget_namebyoffset(p, sh->sh_link, st->st_name);
               break;
             }
@@ -693,7 +694,7 @@ static const char* _ecget_name64byaddr1(const pbuffer_t p, const int vaddr, uint
           size_t cnt = sh->sh_size / sh->sh_entsize;
 
           if (SHT_REL == sh->sh_type) {
-//printf("++%d++", __LINE__);
+//printf("++R++");
 //            dump_relocsrel64(p, o, shdr);
           } else if (SHT_RELA == sh->sh_type) {
             Elf64_Rela *r = _get64byshdr(p, sh);
@@ -738,7 +739,7 @@ static const char* _ecget_name64byaddr1(const pbuffer_t p, const int vaddr, uint
               }
             }
           } else if (SHT_RELR == sh->sh_type) {
-//printf("++%d++", __LINE__);
+//printf("++RR++");
 //            dump_relocsrelr64(p, o, shdr);
           }
         }

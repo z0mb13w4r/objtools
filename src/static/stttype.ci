@@ -1,4 +1,4 @@
-static convert_t zSTTTYPE[] = {
+static convert_t ecSTTTYPE[] = {
   {"NOTYPE",  STT_NOTYPE},
   {"OBJECT",  STT_OBJECT},
   {"FUNC",    STT_FUNC},
