@@ -580,8 +580,11 @@ const char* ocget_symbol(handle_t p, uint64_t vaddr, char **name,
     Dwarf_Addr     v4 = 0;
     Dwarf_Off      v5 = 0;
 
-    int x = ocdwarf_spget(p, vaddr, name, nline ? &v0 : NULL, ncolumn ? &v1 : NULL, discriminator ? &v2 : NULL, source,
+    int x = ECODE_NOENTRY;
+    if (nline || ncolumn || discriminator || source || laddr || haddr) {
+      x = ocdwarf_spget(p, vaddr, name, nline ? &v0 : NULL, ncolumn ? &v1 : NULL, discriminator ? &v2 : NULL, source,
                      laddr ? &v3 : NULL, haddr ? &v4 : NULL, offset ? &v5 : NULL, NULL);
+    }
 
     if (ECODE_ISNOENTRY(x)) {
       if (ochas(p, OPCODE_BFD)) {

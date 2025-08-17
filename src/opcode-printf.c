@@ -219,12 +219,13 @@ int opcode_printf_source(handle_t p, const uint64_t vaddr) {
       n += opcode_printf_LADDR(p, vaddr, USE_NONE);
       n += printf_text(name, USE_LT | USE_SPACE | USE_TB | USE_COLON | USE_EOL);
 
-      if (MODE_ISANY(oc->action, OPTPROGRAM_LINE_NUMBERS)) {
+      if (MODE_ISANY(oc->action, OPTPROGRAM_LINE_NUMBERS) && '.' != name[0]) {
         n += printf_yoke(name, "()", USE_LT | USE_COLON | USE_EOL);
       }
-
-      ocdwarf_dealloc(p, name, DW_DLA_STRING);
     }
+
+    ocdwarf_dealloc(p, name, DW_DLA_STRING);
+    ocdwarf_dealloc(p, source, DW_DLA_STRING);
 
     if (MODE_ISANY(oc->action, OPTPROGRAM_LINE_NUMBERS)) {
       if (isok && 0 != source) {
@@ -275,9 +276,9 @@ int opcode_printf_detail(handle_t p, const uint64_t vaddr, unknown_t mnemonic, u
         } else {
           n += printf_text(name, USE_LT | USE_SPACE | USE_TB);
         }
-
-        ocdwarf_dealloc(p, name, DW_DLA_STRING);
       }
+
+      ocdwarf_dealloc(p, name, DW_DLA_STRING);
     }
 
     if (MODE_ISANY(oc->action, OPTPROGRAM_DEBUGLEVEL1)) {

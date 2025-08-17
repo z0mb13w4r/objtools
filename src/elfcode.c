@@ -711,7 +711,6 @@ static const char* _ecget_name64byaddr1(const pbuffer_t p, const int vaddr, uint
 
           if (SHT_REL == sh->sh_type) {
 //printf("++R++");
-//            dump_relocsrel64(p, o, shdr);
           } else if (SHT_RELA == sh->sh_type) {
             Elf64_Rela *r = _get64byshdr(p, sh);
             if (r) {
