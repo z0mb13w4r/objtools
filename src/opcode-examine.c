@@ -388,7 +388,7 @@ handle_t oecreate(handle_t p, const uint64_t vaddr, unknown_t mnemonic, unknown_
     if (pi) {
 //printf("++");
       m1 = oeinsert_mnemonic(p0, pi, m1);
-      m1 = oeinsert_operands(p0, pi, m1);
+      m1 = oeinsert_operands(p0, pi, operands ? operands : m1);
     } else {
       printf_e("The mnemonic is missing from the table oeINSTRUCTIONS");
     }
