@@ -160,7 +160,7 @@ size_t ocget_maxsectionnamesize(handle_t p);
 
 bool_t   ochas_phdr(handle_t p);
 bool_t   ochas_shdr(handle_t p);
-bool_t   ocuse_vaddr(handle_t p, uint64_t vaddr);
+bool_t   ocuse_vaddr(handle_t p, const uint64_t vaddr);
 
 bool_t   ocis32(handle_t p);
 bool_t   ocis64(handle_t p);

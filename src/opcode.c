@@ -220,7 +220,7 @@ bool_t ochas(handle_t p, const imode_t mode) {
   return ocget(p, mode) ? TRUE : FALSE;
 }
 
-bool_t ocuse_vaddr(handle_t p, uint64_t vaddr) {
+bool_t ocuse_vaddr(handle_t p, const uint64_t vaddr) {
   if (isopcode(p)) {
     popcode_t p0 = ocget(p, OPCODE_THIS);
     return (vaddr == OPCODE_NULLADDR) ||
