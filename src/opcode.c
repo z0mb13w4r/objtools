@@ -10,6 +10,7 @@
 #include "opcode-bfd.h"
 #include "opcode-elf.h"
 #include "opcode-lib.h"
+#include "opcode-engine.h"
 #include "opcode-capstone.h"
 
 static void callback_find_max_sectionhdr_name(bfd *f ATTRIBUTE_UNUSED, asection *s, void *p) {
@@ -168,6 +169,8 @@ unknown_t ocget(handle_t p, const imode_t mode) {
       p0->items[mode] = create_symbols_dynamic(p, p0->items[OPCODE_BFD]);
     } else if (OPCODE_SYMBOLS_DYNAMICRELOC == mode && NULL == p0->items[mode]) {
       p0->items[mode] = create_symbols_dynamic_reloc(p, p0->items[OPCODE_BFD]);
+    } else if (OPCODE_ENGINE == mode && NULL == p0->items[mode]) {
+      p0->items[mode] = oecreate_engine(p);
     }
     return p0->items[mode];
   } else if (isopcode(p) && OPCODE_THIS == mode) {
