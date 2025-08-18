@@ -1226,7 +1226,7 @@ static int dump_runtimeNN(const pbuffer_t p, const poptions_t o) {
           n += printf_nice(p2->Version, USE_FHEX32 | USE_EOL);
           n += printf_text("Flags", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
           n += printf_nice(p2->Flags, USE_FHEX32);
-          n += printf_pick(zUNW_FLAGS, p2->Flags, USE_SPACE | USE_EOL);
+          n += printf_pick(peUNW_FLAGS, p2->Flags, USE_SPACE | USE_EOL);
           n += printf_text("SizeOfProlog", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
           n += printf_nice(p2->SizeOfProlog, USE_FHEX32 | USE_EOL);
           n += printf_text("CountOfCodes", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
@@ -1245,7 +1245,7 @@ static int dump_runtimeNN(const pbuffer_t p, const poptions_t o) {
             n += printf_nice(p3->OffsetProlog, USE_FHEX8 | USE_EOL);
             n += printf_text("UnwindCode", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
             n += printf_nice(p3->UnwindCode, USE_FHEX8);
-            n += printf_pick(zUNW_CODES, p3->UnwindCode, USE_SPACE | USE_EOL);
+            n += printf_pick(peUNW_CODES, p3->UnwindCode, USE_SPACE | USE_EOL);
             n += printf_text("OpInfo", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
             n += printf_nice(p3->OpInfo, USE_FHEX8);
             if (UWOP_ALLOC_SMALL == p3->UnwindCode) {
@@ -1260,12 +1260,12 @@ static int dump_runtimeNN(const pbuffer_t p, const poptions_t o) {
               }
             } else if (UWOP_PUSH_NONVOL == p3->UnwindCode) {
               n += printf_text(".PUSHREG", USE_LT | USE_SPACE);
-              n += printf_pick(zUNW_INFO, p3->OpInfo, USE_SPACE | USE_EOL);
+              n += printf_pick(peUNW_INFO, p3->OpInfo, USE_SPACE | USE_EOL);
             } else if (UWOP_SAVE_NONVOL == p3->UnwindCode || UWOP_SAVE_NONVOL_FAR == p3->UnwindCode) {
               n += printf_nice(x3[2], USE_FHEX8);
               n += printf_nice(x3[3], USE_FHEX8);
               n += printf_text(".SAVEREG", USE_LT | USE_SPACE);
-              n += printf_pick(zUNW_INFO, p3->OpInfo, USE_SPACE);
+              n += printf_pick(peUNW_INFO, p3->OpInfo, USE_SPACE);
               n += printf_nice(x3[2] * 8, USE_FHEX8 | USE_COMMA | USE_EOL);
               x3 += 2;
               ++i;

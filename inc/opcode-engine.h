@@ -7,6 +7,7 @@
 
 typedef struct ocengine_s {
   smode_t    mode;
+  size_t     cpos, spos, epos;
 
 } ocengine_t, *pocengine_t;
 

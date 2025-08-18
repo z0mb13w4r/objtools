@@ -4,7 +4,7 @@
 #define UNW_FLAG_FHANDLER    (3)
 #define UNW_FLAG_CHAININFO   (4)
 
-static convert_t zUNW_FLAGS[] = {
+static convert_t peUNW_FLAGS[] = {
   {"UNW_FLAG_NHANDLER",  UNW_FLAG_NHANDLER},
   {"UNW_FLAG_EHANDLER",  UNW_FLAG_EHANDLER},
   {"UNW_FLAG_UHANDLER",  UNW_FLAG_UHANDLER},
@@ -23,7 +23,7 @@ static convert_t zUNW_FLAGS[] = {
 #define UWOP_SAVE_XMM128_FAR (9)
 #define UWOP_PUSH_MACHFRAME  (10)
 
-static convert_t zUNW_CODES[] = {
+static convert_t peUNW_CODES[] = {
   {"UWOP_PUSH_NONVOL",     UWOP_PUSH_NONVOL},
   {"UWOP_ALLOC_LARGE",     UWOP_ALLOC_LARGE},
   {"UWOP_ALLOC_SMALL",     UWOP_ALLOC_SMALL},
@@ -36,7 +36,7 @@ static convert_t zUNW_CODES[] = {
   {0, 0}
 };
 
-static convert_t zUNW_INFO[] = {
+static convert_t peUNW_INFO[] = {
   {"RAX",  0},
   {"RCX",  1},
   {"RDX",  2},
