@@ -634,6 +634,7 @@ handle_t ocfree(handle_t p) {
     bfree(p0->items[OPCODE_SYMBOLS_DYNAMICRELOC]);
     xfree(p0->items[OPCODE_DISASSEMBLER]);
     xfree(p0->items[OPCODE_OUTDATA]);
+    efree(p0->items[OPCODE_ENGINE]);
     free(p);
     return NULL;
   }

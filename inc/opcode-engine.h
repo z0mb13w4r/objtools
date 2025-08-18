@@ -3,6 +3,18 @@
 
 #include "opcode-examine.h"
 
+#define MODE_OCENGINE                  (MODE_PUT0('O') | MODE_PUT1('C') | MODE_PUT2('X'))
+
+typedef struct ocengine_s {
+  smode_t    mode;
+
+} ocengine_t, *pocengine_t;
+
+bool_t isocengine(handle_t p);
+
+handle_t emalloc();
+handle_t efree(handle_t p);
+
 handle_t oecreate_engine(handle_t p);
 
 handle_t oegetbyaddr(handle_t p, const uint64_t vaddr, const imode_t mode);
