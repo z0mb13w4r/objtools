@@ -9,6 +9,9 @@ static char zDUMPSTARTADDR[]    = "Start displaying data at the specified addres
 static char zDUMPSTOPADDR[]     = "Stop displaying data at the specified address. This affects the output of the -d, -r and -s options.";
 static char zDUMPSECTIONHDR[]   = "Display summary information from the section headers of the object file.";
 static char zDUMPPRIVATEHDR[]   = "Print information that is specific to the object file format.";
+static char zDUMPDEMANGLE[]     = "Decode (demangle) low-level symbol names into user-level names.";
+static char zDUMPSECTIONS[]     = "Display the full contents of any sections requested.";
+static char zDUMPFILEHDR[]      = "Display summary information from the overall header of each of the objfile files.";
 
 static const char zOBJDUMPARGS0[] = "-W";
 static const char zOBJDUMPARGS1[] = "--dwarf";
@@ -27,11 +30,11 @@ static const args_t zOBJDUMPARGS[] = {
   {'d', "--disassemble",       OPTPROGRAM_DISASSEMBLE},
   {'g', "--debugging",         OPTOBJDUMP_DEBUGGING},
   {'e', "--debugging-tags",    OPTPROGRAM_DEBUGGING_TAGS},
-  {'C', "--demangle",          OPTPROGRAM_DEMANGLE},
-  {'s', "--full-contents",     OPTOBJDUMP_SECTIONS},
+  {'C', "--demangle",          OPTPROGRAM_DEMANGLE,                                      zDUMPDEMANGLE},
+  {'s', "--full-contents",     OPTOBJDUMP_SECTIONS,                                      zDUMPSECTIONS},
   {'t', "--symbols",           OPTOBJDUMP_SYMBOLS,                                       zDUMPSYMBOLS},
   {'r', "--reloc",             OPTOBJDUMP_RELOC,                                         zDUMPRELOC},
-  {'f', "--file-headers",      OPTOBJDUMP_FILE_HEADER},
+  {'f', "--file-headers",      OPTOBJDUMP_FILE_HEADER,                                   zDUMPFILEHDR},
   {'p', "--private-headers",   OPTOBJDUMP_PRIVATE_HEADER,                                zDUMPPRIVATEHDR},
   {'h', "--section-headers",   OPTOBJDUMP_SECTION_HEADER,                                zDUMPSECTIONHDR},
   {'x', "--all-headers",       OPTOBJDUMP_HEADERS,                                       zDUMPALLHDRS},
