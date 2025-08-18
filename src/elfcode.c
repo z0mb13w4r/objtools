@@ -631,7 +631,57 @@ static const char* _ecget_name32byaddr1(const pbuffer_t p, const int vaddr, uint
       if (sh) {
         if (SHT_RELA == sh->sh_type || SHT_REL == sh->sh_type || SHT_RELR == sh->sh_type) {
           size_t cnt = sh->sh_size / sh->sh_entsize;
-// TBD
+
+          if (SHT_REL == sh->sh_type) {
+//printf("++R++");
+          } else if (SHT_RELA == sh->sh_type) {
+            Elf32_Rela *r = _get32byshdr(p, sh);
+            if (r) {
+              for (size_t j = 0; j < cnt; ++j, ++r) {
+                if (r->r_offset == vaddr) {
+                  Elf32_Shdr *dh = ecget_shdr32byindex(p, sh->sh_link);
+                  if (dh) {
+                    Elf32_Off  off = ELF32_R_SYM(r->r_info);
+                    Elf32_Sym *sym = getp(p, dh->sh_offset + (off * dh->sh_entsize), dh->sh_entsize);
+                    if (sym) {
+                      const char* symname = ecget_namebyoffset(p, dh->sh_link, sym->st_name);
+                      const char* secname = ecget_secnamebyindex(p, sym->st_shndx);
+
+                      if (isused(get_RELTYPEDEF(p), ELF32_R_TYPE(r->r_info))) {
+//printf("++RTD++");
+                        if (symname && symname[0])         return symname;
+                        else if (secname && secname[0])    return secname;
+                      } else if (isused(get_RELTYPEVER(p), ELF32_R_TYPE(r->r_info))) {
+//printf("++RTV++");
+                        if (symname && symname[0]) {
+                          const char *vername = NULL;
+                          Elf32_Shdr *vh = ecget_shdr32bytype(p, SHT_GNU_versym);
+                          if (vh) {
+                            Elf32_Versym *vs = getp(p, vh->sh_offset + (off * vh->sh_entsize), vh->sh_entsize);
+                            if (vs) {
+                              *vs = *vs & VERSYM_VERSION;
+                              if (*vs && *vs < NELEMENTS(vnames)) {
+                                vername = ecget_namebyoffset(p, vnames[0], vnames[*vs]);
+                              }
+                            }
+                          }
+
+                          int n = snprintf(name, NELEMENTS(name), "%s", symname);
+                          if (vername && vername[0]) {
+                            snprintf(name + n, NELEMENTS(name) - n, "@%s", vername);
+                          }
+//printf("++++");
+                          return name;
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          } else if (SHT_RELR == sh->sh_type) {
+//printf("++RR++");
+          }
         }
       }
     }
