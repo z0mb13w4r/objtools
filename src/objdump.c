@@ -44,12 +44,20 @@ static void callback_dwarf(handle_t p, handle_t section, unknown_t param) {
   printf_eol();
 }
 
-static int dump_reloc0(handle_t p, arelent *r) {
+static int dump_reloc0(handle_t p) {
+  int n = 0;
+  n += printf_text("OFFSET", USE_LT | SET_PAD(ocis64(p) ? 17 : 9));
+  n += printf_text("TYPE", USE_LT | SET_PAD(24));
+  n += printf_text("VALUE", USE_LT | USE_EOL);
+  return n;
+}
+
+static int dump_reloc1(handle_t p, arelent *r) {
   const int MAXSIZE = 24;
 
   int n = 0;
   if (isopcode(p) && r) {
-    n += printf_nice(r->address, USE_LHEX64 | USE_NOSPACE);
+    n += printf_nice(r->address, (ocis64(p) ? USE_LHEX64 : USE_LHEX32) | USE_NOSPACE);
     if (r->howto) {
       if (r->howto->name) {
         n += printf_text(r->howto->name, USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
@@ -103,7 +111,7 @@ static void callback_reloc(handle_t p, handle_t section, unknown_t param) {
 
   printf_text("RELOCATION RECORDS FOR", USE_LT);
   printf_text(ocget_name(section), USE_LT | USE_SPACE | USE_SB | USE_COLON | USE_EOL);
-  printf_text("OFFSET TYPE VALUE", USE_LT | USE_EOL);
+  dump_reloc0(p);
 
   asection *s0 = ocget(section, MODE_OCSHDR);
   if (s0) {
@@ -119,7 +127,7 @@ static void callback_reloc(handle_t p, handle_t section, unknown_t param) {
           printf_text("no symbols", USE_LT);
         } else {
           for (size_t i = 0; i < count; ++i) {
-            dump_reloc0(p, rsyms[i]);
+            dump_reloc1(p, rsyms[i]);
           }
         }
 
@@ -163,12 +171,14 @@ static void callback_programhdr(handle_t p, handle_t phdr, unknown_t param) {
   int n = 0;
   n += printf_pick(zPHDRTYPE, ocget_type(phdr), USE_LT | USE_TAB | SET_PAD(name_size));
 
-  n += printf_nice(ocget_offset(phdr), USE_LHEX64);
-  n += printf_nice(ocget_vmaddress(phdr), USE_LHEX64);
-  n += printf_nice(ocget_paddress(phdr), USE_LHEX64);
+  const imode_t USE_LHEXNN = ocis64(p) ? USE_LHEX64 : USE_LHEX32;
+
+  n += printf_nice(ocget_offset(phdr), USE_LHEXNN);
+  n += printf_nice(ocget_vmaddress(phdr), USE_LHEXNN);
+  n += printf_nice(ocget_paddress(phdr), USE_LHEXNN);
   n += printf_nice(ocget_alignment(phdr), USE_POWER2);
-  n += printf_nice(ocget_size(phdr), USE_LHEX64);
-  n += printf_nice(ocget_memsize(phdr), USE_LHEX64);
+  n += printf_nice(ocget_size(phdr), USE_LHEXNN);
+  n += printf_nice(ocget_memsize(phdr), USE_LHEXNN);
 
   n += printf_nice(ocget_flags(phdr) & PF_R ? 'r' : '-', USE_SPACE | USE_CHAR);
   n += printf_nice(ocget_flags(phdr) & PF_W ? 'w' : '-', USE_CHAR);
@@ -252,14 +262,16 @@ static int dump_privatehdr(const handle_t p, const poptions_t o) {
     }
     n += printf_eol();
   } else {
+    const int MAXSIZE = ocis64(p) ? 17 : 9;
+
     n += printf_text("PROGRAM HEADER", USE_LT | USE_COLON | USE_EOL);
     n += printf_text("Type", USE_LT | USE_TAB | SET_PAD(max_name_size));
-    n += printf_text("Offset", USE_LT | USE_SPACE | SET_PAD(17));
-    n += printf_text("VirtAddr", USE_LT | USE_SPACE | SET_PAD(17));
-    n += printf_text("PhysAddr", USE_LT | USE_SPACE | SET_PAD(17));
+    n += printf_text("Offset", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+    n += printf_text("VirtAddr", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+    n += printf_text("PhysAddr", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
     n += printf_text("Align", USE_LT | USE_SPACE | SET_PAD(6));
-    n += printf_text("FileSiz", USE_LT | USE_SPACE | SET_PAD(17));
-    n += printf_text("MemSiz", USE_LT | USE_SPACE | SET_PAD(17));
+    n += printf_text("FileSiz", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+    n += printf_text("MemSiz", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
     n += printf_text("Flg", USE_LT | USE_SPACE);
     n += printf_eol();
 
@@ -330,9 +342,6 @@ static int dump_symbols(const handle_t p, const poptions_t o, const imode_t mode
 }
 
 static int dump_relocdynamic(const handle_t p, const poptions_t o) {
-  const int MAXSIZE1 = 17;
-  const int MAXSIZE2 = 24;
-
   int n = 0;
   n += printf_text("DYNAMIC RELOCATION RECORDS", USE_LT | USE_EOL);
 
@@ -340,13 +349,11 @@ static int dump_relocdynamic(const handle_t p, const poptions_t o) {
   if (NULL == ps || 0 == ps->size) {
     n += printf_text("no symbols", USE_LT | USE_EOL);
   } else {
-    n += printf_text("OFFSET", USE_LT | SET_PAD(MAXSIZE1));
-    n += printf_text("TYPE", USE_LT | SET_PAD(MAXSIZE2));
-    n += printf_text("VALUE", USE_LT | USE_EOL);
+    n += dump_reloc0(p);
 
     arelent **p0 = CAST(arelent **, ps->data);
     for (size_t i = 0; i < ps->size; ++i) {
-      n += dump_reloc0(p, p0[i]);
+      n += dump_reloc1(p, p0[i]);
     }
   }
 
