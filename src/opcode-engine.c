@@ -7,6 +7,8 @@ bool_t isocengine(handle_t p) {
 handle_t emalloc() {
   pocengine_t p = xmalloc(sizeof(ocengine_t));
   if (p) {
+    p->sizemax = 10000;
+    p->groups = xmalloc(sizeof(ocgroups_t) * p->sizemax);
   }
 
   return setmode(p, MODE_OCENGINE);
@@ -34,6 +36,22 @@ handle_t oegetbyaddr(handle_t p, const uint64_t vaddr, const imode_t mode) {
 }
 
 handle_t oeseebyaddr(handle_t p, const uint64_t vaddr, const imode_t mode) {
+  if (isopcode(p)) {
+    pocengine_t p0 = ocget(p, OPCODE_ENGINE);
+    pocgroups_t q0 = p0 ? p0->groups : NULL;
+    if (q0) {
+      for (p0->cpos = 0; p0->cpos < p0->size; ++p0->cpos, ++q0) {
+        if (vaddr == q0->vaddr) {
+          if (OPENGINE_GROUP == mode) {
+            return q0;
+          } else if (OPENGINE_EXAMINE == mode) {
+            return q0->examine;
+          }
+        }
+      }
+    }
+  }
+
   return NULL;
 }
 
