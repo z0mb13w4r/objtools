@@ -51,6 +51,26 @@ static void callback_reloc(handle_t p, handle_t section, unknown_t param) {
   printf_text("RELOCATION RECORDS FOR", USE_LT);
   printf_text(ocget_name(section), USE_LT | USE_SPACE | USE_SB | USE_COLON | USE_EOL);
   printf_text("OFFSET TYPE VALUE", USE_LT | USE_EOL);
+
+  asection *s0 = ocget(section, MODE_OCSHDR);
+  if (s0) {
+printf("+++rsection+++");
+    long size = bfd_get_reloc_upper_bound(ocget(p, OPCODE_BFD), s0);
+    if (0 >= size) {
+      printf_text("none", USE_LT | USE_RB);
+    } else {
+      arelent **rsyms = CAST(arelent **, xmalloc(size));
+      long count = bfd_canonicalize_reloc(ocget(p, OPCODE_BFD), s0, rsyms, ocget(p, OPCODE_SYMBOLS));
+      if (0 >= count) {
+        printf_text("none", USE_LT | USE_RB);
+      } else {
+      }
+
+      free(rsyms);
+    }
+  }
+
+  printf_eol();
 }
 
 static void callback_sections(handle_t p, handle_t section, unknown_t param) {
