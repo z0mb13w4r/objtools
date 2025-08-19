@@ -44,24 +44,57 @@ static void callback_dwarf(handle_t p, handle_t section, unknown_t param) {
   printf_eol();
 }
 
-static void dump_reloc0(handle_t p, arelent *r) {
-  const int MAXSIZE1 = 17;
-  const int MAXSIZE2 = 24;
+static int dump_reloc0(handle_t p, arelent *r) {
+  const int MAXSIZE = 24;
 
+  int n = 0;
   if (isopcode(p) && r) {
-    printf_nice(r->address, USE_LHEX64 | USE_NOSPACE);
+    n += printf_nice(r->address, USE_LHEX64 | USE_NOSPACE);
     if (r->howto) {
       if (r->howto->name) {
-        printf_text(r->howto->name, USE_LT | USE_SPACE | SET_PAD(MAXSIZE2));
+        n += printf_text(r->howto->name, USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
       } else {
-        printf_nice(r->howto->type, USE_DEC | SET_PAD(MAXSIZE2));
+        n += printf_nice(r->howto->type, USE_DEC | SET_PAD(MAXSIZE));
       }
     } else {
-      printf_text("*unknown*", USE_LT | USE_SPACE | SET_PAD(MAXSIZE2));
+      n += printf_text("*unknown*", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+    }
+
+    asymbol *sym = r->sym_ptr_ptr && *r->sym_ptr_ptr ? *r->sym_ptr_ptr : NULL;
+    asection *sec = sym && sym->section ? sym->section : NULL;
+    const char *symname = sym ? bfd_asymbol_name(sym) : NULL;
+    const char *secname = sec ? bfd_section_name(sec) : NULL;
+
+    bool_t hidden = FALSE;
+    const char *vername = NULL;
+    if (0 == (sym->flags & (BSF_SECTION_SYM | BSF_SYNTHETIC))) {
+      bfd* f = ocget(p, OPCODE_BFD);
+
+      vername = bfd_get_symbol_version_string(f, sym, &hidden);
+      if (bfd_is_und_section(bfd_asymbol_section(sym))) {
+        hidden = TRUE;
+      }
+    }
+
+    if (symname) {
+      printf_text(symname, USE_LT | USE_SPACE);
+      if (vername && vername[0]) {
+        printf_text(vername, USE_LT | (hidden ? USE_AT : USE_ATAT));
+      }
+    } else if (secname) {
+      printf_text(secname, USE_LT | USE_SPACE | USE_SB);
+    } else {
+      printf_text("*unknown*", USE_LT | USE_SPACE | USE_SB);
+    }
+
+    if (r->addend) {
+      printf_nice(r->addend, USE_SFHEX64 | USE_NOSPACE);
     }
 
     printf_eol();
   }
+
+  return n;
 }
 
 static void callback_reloc(handle_t p, handle_t section, unknown_t param) {
@@ -76,19 +109,24 @@ static void callback_reloc(handle_t p, handle_t section, unknown_t param) {
   if (s0) {
     size_t size = bfd_get_reloc_upper_bound(ocget(p, OPCODE_BFD), s0);
     if (0 >= size) {
-      printf_text("none", USE_LT | USE_RB);
+      printf_text("no symbols", USE_LT);
     } else {
-      arelent **rsyms = CAST(arelent **, xmalloc(size));
-      size_t count = bfd_canonicalize_reloc(ocget(p, OPCODE_BFD), s0, rsyms, ocget(p, OPCODE_SYMBOLS));
-      if (0 >= count) {
-        printf_text("none", USE_LT | USE_RB);
-      } else {
-        for (size_t i = 0; i < count; ++i) {
-          dump_reloc0(p, rsyms[i]);
+      pbuffer_t ps = ocget(p, OPCODE_SYMBOLS);
+      if (ps && ps->size) {
+        arelent **rsyms = CAST(arelent **, xmalloc(size));
+        size_t count = bfd_canonicalize_reloc(ocget(p, OPCODE_BFD), s0, rsyms, ps->data);
+        if (0 >= count) {
+          printf_text("no symbols", USE_LT);
+        } else {
+          for (size_t i = 0; i < count; ++i) {
+            dump_reloc0(p, rsyms[i]);
+          }
         }
-      }
 
-      free(rsyms);
+        free(rsyms);
+      } else {
+        printf_text("no symbols", USE_LT);
+      }
     }
   }
 
@@ -295,68 +333,25 @@ static int dump_relocdynamic(const handle_t p, const poptions_t o) {
   const int MAXSIZE1 = 17;
   const int MAXSIZE2 = 24;
 
-  printf_text("DYNAMIC RELOCATION RECORDS", USE_LT | USE_EOL);
+  int n = 0;
+  n += printf_text("DYNAMIC RELOCATION RECORDS", USE_LT | USE_EOL);
 
   pbuffer_t ps = ocget(p, OPCODE_SYMBOLS_DYNAMICRELOC);
   if (NULL == ps || 0 == ps->size) {
-    printf_text("no symbols", USE_LT | USE_EOL);
+    n += printf_text("no symbols", USE_LT | USE_EOL);
   } else {
-    printf_text("OFFSET", USE_LT | SET_PAD(MAXSIZE1));
-    printf_text("TYPE", USE_LT | SET_PAD(MAXSIZE2));
-    printf_text("VALUE", USE_LT | USE_EOL);
+    n += printf_text("OFFSET", USE_LT | SET_PAD(MAXSIZE1));
+    n += printf_text("TYPE", USE_LT | SET_PAD(MAXSIZE2));
+    n += printf_text("VALUE", USE_LT | USE_EOL);
 
     arelent **p0 = CAST(arelent **, ps->data);
-    for (size_t i = 0; i < ps->size; ++i, ++p0) {
-      arelent *p1 = *p0;
-      if (p1) {
-        printf_nice(p1->address, USE_LHEX64 | USE_NOSPACE);
-        if (p1->howto) {
-          if (p1->howto->name) {
-            printf_text(p1->howto->name, USE_LT | USE_SPACE | SET_PAD(MAXSIZE2));
-          } else {
-            printf_nice(p1->howto->type, USE_DEC | SET_PAD(MAXSIZE2));
-          }
-        } else {
-          printf_text("*unknown*", USE_LT | USE_SPACE | SET_PAD(MAXSIZE2));
-        }
-
-        asymbol *sym = p1->sym_ptr_ptr && *p1->sym_ptr_ptr ? *p1->sym_ptr_ptr : NULL;
-        asection *sec = sym && sym->section ? sym->section : NULL;
-        const char *symname = sym ? bfd_asymbol_name(sym) : NULL;
-        const char *secname = sec ? bfd_section_name(sec) : NULL;
-
-        bool_t hidden = FALSE;
-        const char *vername = NULL;
-        if (0 == (sym->flags & (BSF_SECTION_SYM | BSF_SYNTHETIC))) {
-          bfd* f = ocget(p, OPCODE_BFD);
-
-          vername = bfd_get_symbol_version_string(f, sym, &hidden);
-          if (bfd_is_und_section(bfd_asymbol_section(sym))) {
-            hidden = TRUE;
-          }
-        }
-
-        if (symname) {
-          printf_text(symname, USE_LT | USE_SPACE);
-          if (vername && vername[0]) {
-            printf_text(vername, USE_LT | (hidden ? USE_AT : USE_ATAT));
-          }
-        } else if (secname) {
-          printf_text(secname, USE_LT | USE_SPACE | USE_SB);
-        } else {
-          printf_text("*unknown*", USE_LT | USE_SPACE | USE_SB);
-        }
-
-        if (p1->addend) {
-          printf_nice(p1->addend, USE_SFHEX64 | USE_NOSPACE);
-        }
-        printf_eol();
-      }
+    for (size_t i = 0; i < ps->size; ++i) {
+      n += dump_reloc0(p, p0[i]);
     }
   }
 
-  printf_eol();
-  return 0;
+  n += printf_eol();
+  return n;
 }
 
 static int dump_reloc(const handle_t p, const poptions_t o) {
