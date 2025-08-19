@@ -44,6 +44,26 @@ static void callback_dwarf(handle_t p, handle_t section, unknown_t param) {
   printf_eol();
 }
 
+static void dump_reloc0(handle_t p, arelent *r) {
+  const int MAXSIZE1 = 17;
+  const int MAXSIZE2 = 24;
+
+  if (isopcode(p) && r) {
+    printf_nice(r->address, USE_LHEX64 | USE_NOSPACE);
+    if (r->howto) {
+      if (r->howto->name) {
+        printf_text(r->howto->name, USE_LT | USE_SPACE | SET_PAD(MAXSIZE2));
+      } else {
+        printf_nice(r->howto->type, USE_DEC | SET_PAD(MAXSIZE2));
+      }
+    } else {
+      printf_text("*unknown*", USE_LT | USE_SPACE | SET_PAD(MAXSIZE2));
+    }
+
+    printf_eol();
+  }
+}
+
 static void callback_reloc(handle_t p, handle_t section, unknown_t param) {
   if ((ocget_flags(section) & SEC_HAS_CONTENTS) == 0) return;
   if ((ocget_flags(section) & SEC_RELOC) == 0) return;
@@ -54,16 +74,18 @@ static void callback_reloc(handle_t p, handle_t section, unknown_t param) {
 
   asection *s0 = ocget(section, MODE_OCSHDR);
   if (s0) {
-printf("+++rsection+++");
-    long size = bfd_get_reloc_upper_bound(ocget(p, OPCODE_BFD), s0);
+    size_t size = bfd_get_reloc_upper_bound(ocget(p, OPCODE_BFD), s0);
     if (0 >= size) {
       printf_text("none", USE_LT | USE_RB);
     } else {
       arelent **rsyms = CAST(arelent **, xmalloc(size));
-      long count = bfd_canonicalize_reloc(ocget(p, OPCODE_BFD), s0, rsyms, ocget(p, OPCODE_SYMBOLS));
+      size_t count = bfd_canonicalize_reloc(ocget(p, OPCODE_BFD), s0, rsyms, ocget(p, OPCODE_SYMBOLS));
       if (0 >= count) {
         printf_text("none", USE_LT | USE_RB);
       } else {
+        for (size_t i = 0; i < count; ++i) {
+          dump_reloc0(p, rsyms[i]);
+        }
       }
 
       free(rsyms);
