@@ -32,6 +32,23 @@ handle_t oecreate_engine(handle_t p) {
 }
 
 handle_t oegetbyaddr(handle_t p, const uint64_t vaddr, const imode_t mode) {
+  if (isopcode(p)) {
+    pocengine_t p0 = ocget(p, OPCODE_ENGINE);
+    pocgroups_t q0 = p0 ? p0->groups : NULL;
+    if (q0) {
+      for (p0->cpos = 0; p0->cpos < p0->size; ++p0->cpos, ++q0) {
+        if (vaddr == q0->vaddr) {
+          if (OPENGINE_GROUP == mode) {
+            return q0;
+          } else if (OPENGINE_EXAMINE == mode) {
+            return q0->examine;
+          }
+        } else if (vaddr > q0->vaddr) {
+        }
+      }
+    }
+  }
+
   return NULL;
 }
 
@@ -41,7 +58,8 @@ handle_t oeseebyaddr(handle_t p, const uint64_t vaddr, const imode_t mode) {
     pocgroups_t q0 = p0 ? p0->groups : NULL;
     if (q0) {
       for (p0->cpos = 0; p0->cpos < p0->size; ++p0->cpos, ++q0) {
-        if (vaddr == q0->vaddr) {
+        if (vaddr > q0->vaddr) break;
+        else if (vaddr == q0->vaddr) {
           if (OPENGINE_GROUP == mode) {
             return q0;
           } else if (OPENGINE_EXAMINE == mode) {
