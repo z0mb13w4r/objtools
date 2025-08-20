@@ -166,11 +166,39 @@ static void callback_sections(handle_t p, handle_t section, unknown_t param) {
   printf_eol();
 }
 
-static void callback_dynamichdr(handle_t p, handle_t phdr, unknown_t param) {
+static void callback_dynamichdr(handle_t p, handle_t dyn, unknown_t param) {
   size_t name_size = *CAST(size_t*, param);
   int n = 0;
 
-  n += printf_eol();
+  const imode_t USE_FHEXNN = ocis64(p) ? USE_FHEX64 : USE_FHEX32;
+  const uint64_t d_un_d_val = ocget_value(dyn);
+  const uint64_t d_tag = ocget_type(dyn);
+
+  if (DT_NULL != d_tag) {
+    n += printf_pick(ecDYNTAG, d_tag, USE_SPACE | SET_PAD(name_size));
+
+    if (isused(ecDYNTAGNAME, d_tag)) {
+//      const char *name = ecget_namebyoffset(p, sh_link, d_un_d_val);
+//      if (name && name[0]) {
+//        if (d_tag == DT_NEEDED) {
+//          n += printf(" Shared library: [%s]", name);
+//        } else if (d_tag == DT_SONAME)        n += printf(" Library soname: [%s]", name);
+//          else if (d_tag == DT_RPATH)         n += printf(" Library rpath: [%s]", name);
+//          else if (d_tag == DT_RUNPATH)       n += printf(" Library runpath: [%s]", name);
+//          else                                n += printf_nice(d_un_d_val, USE_FHEXNN);
+//      } else {
+//        n += printf_nice(d_un_d_val, USE_FHEXNN);
+//      }
+    } else if (DT_GNU_PRELINKED == d_tag) {
+      n += printf_nice(d_un_d_val, USE_TIMEDATE);
+    } else if (d_tag >= DT_VERSYM && d_tag <= DT_VERNEEDNUM) {
+      n += printf_nice(d_un_d_val, USE_FHEXNN);
+    } else {
+      n += printf_nice(d_un_d_val, USE_FHEXNN);
+    }
+
+    n += printf_eol();
+  }
 }
 
 static void callback_programhdr(handle_t p, handle_t phdr, unknown_t param) {
@@ -178,14 +206,14 @@ static void callback_programhdr(handle_t p, handle_t phdr, unknown_t param) {
   int n = 0;
   n += printf_pick(zPHDRTYPE, ocget_type(phdr), USE_LT | USE_TAB | SET_PAD(name_size));
 
-  const imode_t USE_LHEXNN = ocis64(p) ? USE_LHEX64 : USE_LHEX32;
+  const imode_t USE_FHEXNN = ocis64(p) ? USE_FHEX64 : USE_FHEX32;
 
-  n += printf_nice(ocget_offset(phdr), USE_LHEXNN);
-  n += printf_nice(ocget_vmaddress(phdr), USE_LHEXNN);
-  n += printf_nice(ocget_paddress(phdr), USE_LHEXNN);
+  n += printf_nice(ocget_offset(phdr), USE_FHEXNN);
+  n += printf_nice(ocget_vmaddress(phdr), USE_FHEXNN);
+  n += printf_nice(ocget_paddress(phdr), USE_FHEXNN);
   n += printf_nice(ocget_alignment(phdr), USE_POWER2);
-  n += printf_nice(ocget_size(phdr), USE_LHEXNN);
-  n += printf_nice(ocget_memsize(phdr), USE_LHEXNN);
+  n += printf_nice(ocget_size(phdr), USE_FHEXNN);
+  n += printf_nice(ocget_memsize(phdr), USE_FHEXNN);
 
   n += printf_nice(ocget_flags(phdr) & PF_R ? 'r' : '-', USE_SPACE | USE_CHAR);
   n += printf_nice(ocget_flags(phdr) & PF_W ? 'w' : '-', USE_CHAR);

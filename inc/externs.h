@@ -21,6 +21,8 @@ extern pick_t zFORMSTRING[];
 extern pick_t zMACRODEF[];
 extern pick_t zMACRODEFSTR[];
 
+extern pick_t ecDYNTAGNAME[];
+
 extern pick_t oeADDRLOOKUP[];
 
 extern convert_t zDWAT[];
@@ -45,6 +47,8 @@ extern convert_t oeREGISTERFLAGS[];
 extern convert_t oeREGISTERNAMES[];
 extern convert_t oeINSTRUCTIONFLAGS[];
 extern convert_t oeINSTRUCTIONNAMES[];
+
+extern convert_t ecDYNTAG[];
 
 extern convert_t ecHAS_FLAGS[];
 

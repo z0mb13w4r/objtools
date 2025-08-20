@@ -171,6 +171,7 @@ bool_t   ocis64(handle_t p);
 
 uint64_t ocget_type(handle_t p);
 uint64_t ocget_flags(handle_t p);
+uint64_t ocget_value(handle_t p);
 
 uint64_t ocget_size(handle_t p);
 uint64_t ocget_memsize(handle_t p);

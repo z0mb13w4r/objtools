@@ -278,6 +278,12 @@ uint64_t ocget_type(handle_t p) {
   if (ismode(p, MODE_OCPHDR)) {
     pbfd_phdr_t p0 = ocget(p, MODE_OCPHDR);
     return p0 ? p0->p_type : 0;
+  } else if (ismode(p, MODE_OCDHDR32)) {
+    Elf32_Dyn* p0 = ocget(p, MODE_OCDHDR32);
+    return p0 ? p0->d_tag : 0;
+  } else if (ismode(p, MODE_OCDHDR64)) {
+    Elf64_Dyn* p0 = ocget(p, MODE_OCDHDR64);
+    return p0 ? p0->d_tag : 0;
   } else if (ismode(p, MODE_OCSHDR32)) {
     Elf32_Shdr* p0 = ocget(p, MODE_OCSHDR32);
     return p0 ? p0->sh_type : 0;
@@ -317,6 +323,18 @@ uint64_t ocget_flags(handle_t p) {
   } else if (ismode(p, MODE_OCPHDR64)) {
     Elf64_Phdr* p0 = ocget(p, MODE_OCPHDR64);
     return p0 ? p0->p_flags : 0;
+  }
+
+  return 0;
+}
+
+uint64_t ocget_value(handle_t p) {
+  if (ismode(p, MODE_OCDHDR32)) {
+    Elf32_Dyn* p0 = ocget(p, MODE_OCDHDR32);
+    return p0 ? p0->d_un.d_val : 0;
+  } else if (ismode(p, MODE_OCDHDR64)) {
+    Elf64_Dyn* p0 = ocget(p, MODE_OCDHDR64);
+    return p0 ? p0->d_un.d_val : 0;
   }
 
   return 0;
@@ -469,6 +487,12 @@ uint64_t ocget_vmaddress(handle_t p) {
   } else if (ismode(p, MODE_OCPHDR)) {
     pbfd_phdr_t p0 = ocget(p, MODE_OCPHDR);
     return p0 ? p0->p_vaddr : 0;
+  } else if (ismode(p, MODE_OCDHDR32)) {
+    Elf32_Dyn* p0 = ocget(p, MODE_OCDHDR32);
+    return p0 ? p0->d_un.d_ptr : 0;
+  } else if (ismode(p, MODE_OCDHDR64)) {
+    Elf64_Dyn* p0 = ocget(p, MODE_OCDHDR64);
+    return p0 ? p0->d_un.d_ptr : 0;
   } else if (ismode(p, MODE_OCSHDR32)) {
     Elf32_Shdr* p0 = ocget(p, MODE_OCSHDR32);
     return p0 ? p0->sh_addr : 0;
