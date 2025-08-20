@@ -37,14 +37,21 @@ handle_t oegetbyaddr(handle_t p, const uint64_t vaddr, const imode_t mode) {
     pocgroups_t q0 = p0 ? p0->groups : NULL;
     if (q0) {
       for (p0->cpos = 0; p0->cpos < p0->size; ++p0->cpos, ++q0) {
-        if (vaddr == q0->vaddr) {
+        if (vaddr < q0->vaddr) break;
+        else if (vaddr == q0->vaddr) {
           if (OPENGINE_GROUP == mode) {
             return q0;
           } else if (OPENGINE_EXAMINE == mode) {
             return q0->examine;
           }
-        } else if (vaddr > q0->vaddr) {
         }
+      }
+
+      if (OPENGINE_GROUP == mode && p0->size < p0->sizemax) {
+//printf("+++%ld %ld %lx+++", p0->cpos, p0->size + 1, vaddr);
+        ++p0->size;
+        q0->vaddr = vaddr;
+        return q0;
       }
     }
   }
@@ -58,7 +65,7 @@ handle_t oeseebyaddr(handle_t p, const uint64_t vaddr, const imode_t mode) {
     pocgroups_t q0 = p0 ? p0->groups : NULL;
     if (q0) {
       for (p0->cpos = 0; p0->cpos < p0->size; ++p0->cpos, ++q0) {
-        if (vaddr > q0->vaddr) break;
+        if (vaddr < q0->vaddr) break;
         else if (vaddr == q0->vaddr) {
           if (OPENGINE_GROUP == mode) {
             return q0;

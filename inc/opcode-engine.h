@@ -3,8 +3,8 @@
 
 #include "opcode-examine.h"
 
-#define OPENGINE_GROUP                 (0)
-#define OPENGINE_EXAMINE               (1)
+#define OPENGINE_GROUP                 (1)
+#define OPENGINE_EXAMINE               (2)
 
 #define MODE_OCENGINE                  (MODE_PUT0('O') | MODE_PUT1('C') | MODE_PUT2('X'))
 
