@@ -1,7 +1,7 @@
 #include "ocdwarf.h"
 #include "options.h"
+#include "opcode-engine.h"
 #include "opcode-printf.h"
-#include "opcode-examine.h"
 
 static const int MAXSIZE = 24;
 

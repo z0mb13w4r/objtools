@@ -39,7 +39,7 @@ handle_t oegetbyaddr(handle_t p, const uint64_t vaddr, const imode_t mode) {
       pocgroups_t q1 = p1 && p1->groups ? p1->groups + p1->cpos : NULL;
 
       if (q1 && p1->size < p1->sizemax) {
-printf("+++%ld %ld %lx+++", p1->cpos, p1->size + 1, vaddr);
+//printf("+++%ld %ld %lx+++", p1->cpos, p1->size + 1, vaddr);
         ++p1->size;
         q1->vaddr = vaddr;
         return q1;
