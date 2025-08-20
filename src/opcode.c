@@ -702,6 +702,17 @@ void occonfig(const char* name, const char* target) {
   }
 }
 
+int ocdo_dynamics(handle_t p, opcbfunc_t cbfunc, unknown_t param) {
+  if (isopcode(p) && cbfunc) {
+    handle_t p0 = ocget(p, OPCODE_RAWDATA);
+    if (isELF(p0)) {
+      return opcodeelf_dynamics(p, cbfunc, param);
+    }
+  }
+
+  return ECODE_HANDLE;
+}
+
 int ocdo_programs(handle_t p, opcbfunc_t cbfunc, unknown_t param) {
   if (isopcode(p) && cbfunc) {
     if (ocget(p, OPCODE_BFD)) {

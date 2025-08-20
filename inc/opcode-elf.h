@@ -3,6 +3,7 @@
 
 #include "opcode.h"
 
+int opcodeelf_dynamics(handle_t p, opcbfunc_t cbfunc, unknown_t param);
 int opcodeelf_programs(handle_t p, opcbfunc_t cbfunc, unknown_t param);
 int opcodeelf_sections(handle_t p, opcbfunc_t cbfunc, unknown_t param);
 

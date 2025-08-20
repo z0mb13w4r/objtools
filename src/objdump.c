@@ -166,6 +166,13 @@ static void callback_sections(handle_t p, handle_t section, unknown_t param) {
   printf_eol();
 }
 
+static void callback_dynamichdr(handle_t p, handle_t phdr, unknown_t param) {
+  size_t name_size = *CAST(size_t*, param);
+  int n = 0;
+
+  n += printf_eol();
+}
+
 static void callback_programhdr(handle_t p, handle_t phdr, unknown_t param) {
   size_t name_size = *CAST(size_t*, param);
   int n = 0;
@@ -279,6 +286,7 @@ static int dump_privatehdr(const handle_t p, const poptions_t o) {
     n += printf_eol();
 
     n += printf_text("DYNAMIC SECTION", USE_LT | USE_COLON | USE_EOL);
+    ocdo_dynamics(p, callback_dynamichdr, &max_name_size);
     n += printf_eol();
 
     n += printf_text("VERSION REFERENCES", USE_LT | USE_COLON | USE_EOL);

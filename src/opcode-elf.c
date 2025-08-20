@@ -1,6 +1,18 @@
 #include "elfcode.h"
 #include "opcode-elf.h"
 
+int opcodeelf_dynamics(handle_t p, opcbfunc_t cbfunc, unknown_t param) {
+  if (isopcode(p) && cbfunc) {
+    handle_t p0 = ocget(p, OPCODE_RAWDATA);
+
+    if (isELF32(p0)) {
+    } else if (isELF64(p0)) {
+    }
+  }
+
+  return ECODE_HANDLE;
+}
+
 int opcodeelf_programs(handle_t p, opcbfunc_t cbfunc, unknown_t param) {
   if (isopcode(p) && cbfunc) {
     handle_t p0 = ocget(p, OPCODE_RAWDATA);
