@@ -8,6 +8,7 @@
 
 #include "buffer.h"
 
+#define MODE_OPDHDR                    'D'
 #define MODE_OPEHDR                    'E'
 #define MODE_OPSHDR                    'S'
 #define MODE_OPPHDR                    'P'
@@ -27,6 +28,7 @@
 
 #define MODE_OPCODE                    (MODE_PUT0('O') | MODE_PUT1('P') | MODE_PUT2('C'))
 
+#define MODE_OPDHDRWRAP                (MODE_PUT0(MODE_OPDHDR) | MODE_PUT3(MODE_OPWRAP))
 #define MODE_OPEHDRWRAP                (MODE_PUT0(MODE_OPEHDR) | MODE_PUT3(MODE_OPWRAP))
 #define MODE_OCSHDRWRAP                (MODE_PUT0(MODE_OPSHDR) | MODE_PUT3(MODE_OPWRAP))
 #define MODE_OPPHDRWRAP                (MODE_PUT0(MODE_OPPHDR) | MODE_PUT3(MODE_OPWRAP))
@@ -39,6 +41,8 @@
 
 #define MODE_OPCBFUNC                  (MODE_PUT0(MODE_OPCBKF) | MODE_PUT1('B') | MODE_PUT2('F') | MODE_PUT3(MODE_OPWRAP))
 
+#define MODE_OCDHDR32                  (MODE_OPDHDRWRAP | MODE_PUT1(MODE_OPELF) | MODE_PUT2(MODE_BIT32))
+#define MODE_OCDHDR64                  (MODE_OPDHDRWRAP | MODE_PUT1(MODE_OPELF) | MODE_PUT2(MODE_BIT64))
 #define MODE_OCEHDR32                  (MODE_OPEHDRWRAP | MODE_PUT1(MODE_OPELF) | MODE_PUT2(MODE_BIT32))
 #define MODE_OCEHDR64                  (MODE_OPEHDRWRAP | MODE_PUT1(MODE_OPELF) | MODE_PUT2(MODE_BIT64))
 #define MODE_OCPHDR32                  (MODE_OPPHDRWRAP | MODE_PUT1(MODE_OPELF) | MODE_PUT2(MODE_BIT32))

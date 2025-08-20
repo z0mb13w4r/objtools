@@ -6,7 +6,35 @@ int opcodeelf_dynamics(handle_t p, opcbfunc_t cbfunc, unknown_t param) {
     handle_t p0 = ocget(p, OPCODE_RAWDATA);
 
     if (isELF32(p0)) {
+      Elf32_Ehdr *ehdr = ecget_ehdr32(p0);
+      if (ehdr) {
+        for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
+          Elf32_Shdr *shdr = ecget_shdr32byindex(p, i);
+          if (shdr && SHT_DYNAMIC == shdr->sh_type) {
+            size_t cnt = shdr->sh_size / shdr->sh_entsize;
+            Elf32_Dyn *dyn = _get32byshdr(p, shdr);
+            for (size_t j = 0; j < cnt; ++j, ++dyn) {
+              MALLOCSWRAPEX(opwrap_t, oc, MODE_OCDHDR32, dyn, shdr);
+              cbfunc(p, poc, param);
+            }
+          }
+        }
+      }
     } else if (isELF64(p0)) {
+      Elf64_Ehdr *ehdr = ecget_ehdr64(p0);
+      if (ehdr) {
+        for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
+          Elf64_Shdr *shdr = ecget_shdr64byindex(p, i);
+          if (shdr && SHT_DYNAMIC == shdr->sh_type) {
+            size_t cnt = shdr->sh_size / shdr->sh_entsize;
+            Elf64_Dyn *dyn = _get64byshdr(p, shdr);
+            for (size_t j = 0; j < cnt; ++j, ++dyn) {
+              MALLOCSWRAPEX(opwrap_t, oc, MODE_OCDHDR64, dyn, shdr);
+              cbfunc(p, poc, param);
+            }
+          }
+        }
+      }
     }
   }
 
