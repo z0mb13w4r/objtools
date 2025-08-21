@@ -13,7 +13,7 @@ int opcodeelf_dynamics(handle_t p, opcbfunc_t cbfunc, unknown_t param) {
             size_t cnt = shdr->sh_size / shdr->sh_entsize;
             Elf32_Dyn *dyn = _get32byshdr(p0, shdr);
             for (size_t j = 0; j < cnt; ++j, ++dyn) {
-              MALLOCSPARAMS(opwrap_t, oc, MODE_OCDHDR32, dyn, shdr, p);
+              MALLOCSPARAMS(opwrap_t, oc, MODE_OCDHDR32, dyn, shdr, p0);
               cbfunc(p, poc, param);
             }
           }
@@ -28,7 +28,7 @@ int opcodeelf_dynamics(handle_t p, opcbfunc_t cbfunc, unknown_t param) {
             size_t cnt = shdr->sh_size / shdr->sh_entsize;
             Elf64_Dyn *dyn = _get64byshdr(p0, shdr);
             for (size_t j = 0; j < cnt; ++j, ++dyn) {
-              MALLOCSPARAMS(opwrap_t, oc, MODE_OCDHDR64, dyn, shdr, p);
+              MALLOCSPARAMS(opwrap_t, oc, MODE_OCDHDR64, dyn, shdr, p0);
               cbfunc(p, poc, param);
             }
           }
@@ -50,7 +50,7 @@ int opcodeelf_programs(handle_t p, opcbfunc_t cbfunc, unknown_t param) {
         for (Elf32_Half i = 0; i < ehdr->e_phnum; ++i) {
           Elf32_Phdr *phdr = ecget_phdr32byindex(p0, i);
           if (phdr) {
-            MALLOCSWRAPEX(opwrap_t, oc, MODE_OCPHDR32, phdr, p);
+            MALLOCSWRAPEX(opwrap_t, oc, MODE_OCPHDR32, phdr, p0);
             cbfunc(p, poc, param);
           }
         }
@@ -63,7 +63,7 @@ int opcodeelf_programs(handle_t p, opcbfunc_t cbfunc, unknown_t param) {
         for (Elf64_Half i = 0; i < ehdr->e_phnum; ++i) {
           Elf64_Phdr *phdr = ecget_phdr64byindex(p0, i);
           if (phdr) {
-            MALLOCSWRAPEX(opwrap_t, oc, MODE_OCPHDR64, phdr, p);
+            MALLOCSWRAPEX(opwrap_t, oc, MODE_OCPHDR64, phdr, p0);
             cbfunc(p, poc, param);
           }
         }
@@ -86,7 +86,7 @@ int opcodeelf_sections(handle_t p, opcbfunc_t cbfunc, unknown_t param) {
         for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
           Elf32_Shdr *shdr = ecget_shdr32byindex(p0, i);
           if (shdr) {
-            MALLOCSWRAPEX(opwrap_t, oc, MODE_OCSHDR32, shdr, p);
+            MALLOCSWRAPEX(opwrap_t, oc, MODE_OCSHDR32, shdr, p0);
             cbfunc(p, poc, param);
           }
         }
@@ -99,7 +99,7 @@ int opcodeelf_sections(handle_t p, opcbfunc_t cbfunc, unknown_t param) {
         for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
           Elf64_Shdr *shdr = ecget_shdr64byindex(p0, i);
           if (shdr) {
-            MALLOCSWRAPEX(opwrap_t, oc, MODE_OCSHDR64, shdr, p);
+            MALLOCSWRAPEX(opwrap_t, oc, MODE_OCSHDR64, shdr, p0);
             cbfunc(p, poc, param);
           }
         }

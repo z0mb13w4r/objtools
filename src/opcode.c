@@ -202,6 +202,8 @@ unknown_t ocget(handle_t p, const imode_t mode) {
     return CAST(popwrap_t, p)->param1;
   } else if (isopwrap(p) && mode == OPCODE_PARAM2) {
     return CAST(popwrap_t, p)->param2;
+  } else if (isopwrap(p) && mode == OPCODE_PARAM3) {
+    return CAST(popwrap_t, p)->param3;
   }
 
   return NULL;
@@ -578,6 +580,14 @@ const char* ocget_name(handle_t p) {
     return bfd_get_filename(p0);
   } else if (ismode(p, MODE_OCSHDR)) {
     return bfd_section_name(ocget(p, MODE_OCSHDR));
+  } else if (ismode(p, MODE_OCDHDR32)) {
+    Elf32_Dyn *p0 = ocget(p, MODE_OCDHDR32);
+    Elf32_Shdr *p1 = ocget(p, OPCODE_PARAM2);
+    return p0 && p1 ? ecget_namebyoffset(ocget(p, OPCODE_PARAM3), p1->sh_link, p0->d_un.d_val) : NULL;
+  } else if (ismode(p, MODE_OCDHDR64)) {
+    Elf64_Dyn *p0 = ocget(p, MODE_OCDHDR64);
+    Elf64_Shdr *p1 = ocget(p, OPCODE_PARAM2);
+    return p0 && p1 ? ecget_namebyoffset(ocget(p, OPCODE_PARAM3), p1->sh_link, p0->d_un.d_val) : NULL;
   } else if (ismode(p, MODE_OCSHDR32)) {
     return ecget_secname32byshdr(ocget(p, OPCODE_PARAM2), ocget(p, MODE_OCSHDR32));
   } else if (ismode(p, MODE_OCSHDR64)) {
