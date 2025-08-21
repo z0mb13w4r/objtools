@@ -50,7 +50,7 @@ int opcodeelf_programs(handle_t p, opcbfunc_t cbfunc, unknown_t param) {
         for (Elf32_Half i = 0; i < ehdr->e_phnum; ++i) {
           Elf32_Phdr *phdr = ecget_phdr32byindex(p0, i);
           if (phdr) {
-            MALLOCSWRAP(opwrap_t, oc, MODE_OCPHDR32, phdr);
+            MALLOCSWRAPEX(opwrap_t, oc, MODE_OCPHDR32, phdr, p);
             cbfunc(p, poc, param);
           }
         }
@@ -63,7 +63,7 @@ int opcodeelf_programs(handle_t p, opcbfunc_t cbfunc, unknown_t param) {
         for (Elf64_Half i = 0; i < ehdr->e_phnum; ++i) {
           Elf64_Phdr *phdr = ecget_phdr64byindex(p0, i);
           if (phdr) {
-            MALLOCSWRAP(opwrap_t, oc, MODE_OCPHDR64, phdr);
+            MALLOCSWRAPEX(opwrap_t, oc, MODE_OCPHDR64, phdr, p);
             cbfunc(p, poc, param);
           }
         }
@@ -86,7 +86,7 @@ int opcodeelf_sections(handle_t p, opcbfunc_t cbfunc, unknown_t param) {
         for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
           Elf32_Shdr *shdr = ecget_shdr32byindex(p0, i);
           if (shdr) {
-            MALLOCSWRAP(opwrap_t, oc, MODE_OCSHDR32, shdr);
+            MALLOCSWRAPEX(opwrap_t, oc, MODE_OCSHDR32, shdr, p);
             cbfunc(p, poc, param);
           }
         }
@@ -99,7 +99,7 @@ int opcodeelf_sections(handle_t p, opcbfunc_t cbfunc, unknown_t param) {
         for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
           Elf64_Shdr *shdr = ecget_shdr64byindex(p0, i);
           if (shdr) {
-            MALLOCSWRAP(opwrap_t, oc, MODE_OCSHDR64, shdr);
+            MALLOCSWRAPEX(opwrap_t, oc, MODE_OCSHDR64, shdr, p);
             cbfunc(p, poc, param);
           }
         }
