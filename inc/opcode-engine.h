@@ -27,6 +27,7 @@ bool_t isocengine(handle_t p);
 
 handle_t emalloc();
 handle_t efree(handle_t p);
+handle_t eresize(handle_t p, const size_t sizemax);
 
 handle_t oecreate_engine(handle_t p);
 
