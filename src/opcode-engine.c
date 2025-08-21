@@ -61,10 +61,14 @@ handle_t oegetbyaddr(handle_t p, const uint64_t vaddr, const imode_t mode) {
       }
 
       pocgroups_t g1 = p1 && p1->groups ? p1->groups + p1->cpos : NULL;
+      if (g1) {
+        if (p1->cpos != p1->size) {
+          for (size_t i = p1->size; p1->cpos < i; --i) {
+            memcpy(p1->groups + i, p1->groups + i - 1, sizeof(ocgroups_t));
+          }
+        }
 
-      if (g1 && p1->size < p1->sizemax) {
         ++p1->size;
-//printf("+++%ld %ld %lx+++", p1->cpos, p1->size, vaddr);
         g1->vaddr = vaddr;
         return g1;
       }
