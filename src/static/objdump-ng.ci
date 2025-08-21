@@ -1,17 +1,22 @@
-static char zDUMPDYNAMIC[]      = "Print the dynamic symbol table entries of the file.";
-static char zDUMPDYNAMICRELOC[] = "Print the dynamic relocation entries of the file. This is only meaningful for dynamic objects, such as certain types of shared libraries.";
-static char zDUMPRELOC[]        = "Print the relocation entries of the file.";
-static char zDUMPSYMBOLS[]      = "Print the symbol table entries of the file.";
-static char zDUMPALLHDRS[]      = "Display all available header information, including the symbol table and relocation entries.";
-static char zDUMPLINENUMBERS[]  = "Label the display (using debugging information) with the filename and source line numbers corresponding to the object code or relocs shown. Only useful with -d, -D, or -r.";
-static char zDUMPPREFIXADDR[]   = "When disassembling, print the complete address on each line.";
-static char zDUMPSTARTADDR[]    = "Start displaying data at the specified address. This affects the output of the -d, -r and -s options.";
-static char zDUMPSTOPADDR[]     = "Stop displaying data at the specified address. This affects the output of the -d, -r and -s options.";
-static char zDUMPSECTIONHDR[]   = "Display summary information from the section headers of the object file.";
-static char zDUMPPRIVATEHDR[]   = "Print information that is specific to the object file format.";
-static char zDUMPDEMANGLE[]     = "Decode (demangle) low-level symbol names into user-level names.";
-static char zDUMPSECTIONS[]     = "Display the full contents of any sections requested.";
-static char zDUMPFILEHDR[]      = "Display summary information from the overall header of each of the objfile files.";
+static char zDUMPDYNAMIC[]         = "Print the dynamic symbol table entries of the file.";
+static char zDUMPDYNAMICRELOC[]    = "Print the dynamic relocation entries of the file. This is only meaningful for dynamic objects, such as certain types of shared libraries.";
+static char zDUMPRELOC[]           = "Print the relocation entries of the file.";
+static char zDUMPSYMBOLS[]         = "Print the symbol table entries of the file.";
+static char zDUMPALLHDRS[]         = "Display all available header information, including the symbol table and relocation entries.";
+static char zDUMPLINENUMBERS[]     = "Label the display (using debugging information) with the filename and source line numbers corresponding to the object code or relocs shown. Only useful with -d, -D, or -r.";
+static char zDUMPPREFIXADDR[]      = "When disassembling, print the complete address on each line.";
+static char zDUMPSTARTADDR[]       = "Start displaying data at the specified address. This affects the output of the -d, -r and -s options.";
+static char zDUMPSTOPADDR[]        = "Stop displaying data at the specified address. This affects the output of the -d, -r and -s options.";
+static char zDUMPSECTIONHDR[]      = "Display summary information from the section headers of the object file.";
+static char zDUMPPRIVATEHDR[]      = "Print information that is specific to the object file format.";
+static char zDUMPDEMANGLE[]        = "Decode (demangle) low-level symbol names into user-level names.";
+static char zDUMPSECTIONS[]        = "Display the full contents of any sections requested.";
+static char zDUMPFILEHDR[]         = "Display summary information from the overall header of each of the objfile files.";
+static char zDUMPDISASSEMBLE[]     = "Display the assembler mnemonics for the machine instructions from the input file.";
+static char zDUMPDISASSEMBLEALL[]  = "Like -d, but disassemble the contents of all sections, not just those expected to contain instructions.";
+static char zDUMPDEBUGGING[]       = "Display debugging information.";
+static char zDUMPDEBUGGINGTAGS[]   = "Like -g, but the information is generated in a format compatible with ctags tool.";
+static char zDUMPSOURCE[]          = "Display source code intermixed with disassembly, if possible.  Implies -d.";
 
 static const char zOBJDUMPARGS0[] = "-W";
 static const char zOBJDUMPARGS1[] = "--dwarf";
@@ -20,16 +25,16 @@ static const char zOBJDUMPARGS2[] = "-M";
 static const char zOBJDUMPARGS3[] = "--disassembler-options";
 
 static const args_t zOBJDUMPARGS[] = {
-  {'H', "--help",              OPTPROGRAM_HELP},
-  {'V', "--version",           OPTPROGRAM_VERSION},
+  {'H', "--help",              OPTPROGRAM_HELP,                                          NULL},
+  {'V', "--version",           OPTPROGRAM_VERSION,                                       NULL},
   {'v', "--verbose",           OPTPROGRAM_VERBOSE},
-  {'D', "--disassemble-all",   OPTOBJDUMP_DISASSEMBLE_ALL | OPTPROGRAM_DISASSEMBLE},
-  {'S', "--source",            OPTPROGRAM_SOURCE_CODE | OPTPROGRAM_DISASSEMBLE},
+  {'D', "--disassemble-all",   OPTOBJDUMP_DISASSEMBLE_ALL | OPTPROGRAM_DISASSEMBLE,      zDUMPDISASSEMBLEALL},
+  {'S', "--source",            OPTPROGRAM_SOURCE_CODE | OPTPROGRAM_DISASSEMBLE,          zDUMPSOURCE},
   {'T', "--dynamic-symbols",   OPTOBJDUMP_DYNAMIC_SYMBOLS,                               zDUMPDYNAMIC},
   {'R', "--dynamic-reloc",     OPTOBJDUMP_DYNAMIC_RELOC,                                 zDUMPDYNAMICRELOC},
-  {'d', "--disassemble",       OPTPROGRAM_DISASSEMBLE},
-  {'g', "--debugging",         OPTOBJDUMP_DEBUGGING},
-  {'e', "--debugging-tags",    OPTPROGRAM_DEBUGGING_TAGS},
+  {'d', "--disassemble",       OPTPROGRAM_DISASSEMBLE,                                   zDUMPDISASSEMBLE},
+  {'g', "--debugging",         OPTOBJDUMP_DEBUGGING,                                     zDUMPDEBUGGING},
+  {'e', "--debugging-tags",    OPTPROGRAM_DEBUGGING_TAGS,                                zDUMPDEBUGGINGTAGS},
   {'C', "--demangle",          OPTPROGRAM_DEMANGLE,                                      zDUMPDEMANGLE},
   {'s', "--full-contents",     OPTOBJDUMP_SECTIONS,                                      zDUMPSECTIONS},
   {'t', "--symbols",           OPTOBJDUMP_SYMBOLS,                                       zDUMPSYMBOLS},
