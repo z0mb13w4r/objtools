@@ -178,17 +178,17 @@ static void callback_dynamichdr(handle_t p, handle_t dyn, unknown_t param) {
     n += printf_pick(ecDYNTAG, d_tag, USE_SPACE | SET_PAD(name_size));
 
     if (isused(ecDYNTAGNAME, d_tag)) {
-//      const char *name = ecget_namebyoffset(p, sh_link, d_un_d_val);
-//      if (name && name[0]) {
-//        if (d_tag == DT_NEEDED) {
-//          n += printf(" Shared library: [%s]", name);
-//        } else if (d_tag == DT_SONAME)        n += printf(" Library soname: [%s]", name);
-//          else if (d_tag == DT_RPATH)         n += printf(" Library rpath: [%s]", name);
-//          else if (d_tag == DT_RUNPATH)       n += printf(" Library runpath: [%s]", name);
-//          else                                n += printf_nice(d_un_d_val, USE_FHEXNN);
-//      } else {
-//        n += printf_nice(d_un_d_val, USE_FHEXNN);
-//      }
+      const char *name = NULL;//ecget_namebyoffset(p, sh_link, d_un_d_val);
+      if (name && name[0]) {
+        if (d_tag == DT_NEEDED) {
+          n += printf(" Shared library: [%s]", name);
+        } else if (d_tag == DT_SONAME)        n += printf(" Library soname: [%s]", name);
+          else if (d_tag == DT_RPATH)         n += printf(" Library rpath: [%s]", name);
+          else if (d_tag == DT_RUNPATH)       n += printf(" Library runpath: [%s]", name);
+          else                                n += printf_nice(d_un_d_val, USE_FHEXNN);
+      } else {
+        n += printf_nice(d_un_d_val, USE_FHEXNN);
+      }
     } else if (DT_GNU_PRELINKED == d_tag) {
       n += printf_nice(d_un_d_val, USE_TIMEDATE);
     } else if (d_tag >= DT_VERSYM && d_tag <= DT_VERNEEDNUM) {
