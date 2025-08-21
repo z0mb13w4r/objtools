@@ -178,7 +178,7 @@ static void callback_dynamichdr(handle_t p, handle_t dyn, unknown_t param) {
     n += printf_pick(ecDYNTAG, d_tag, USE_SPACE | SET_PAD(name_size));
 
     if (isused(ecDYNTAGNAME, d_tag)) {
-      const char *name = NULL;//ecget_namebyoffset(p, sh_link, d_un_d_val);
+      const char *name = ocget_name(dyn);//ecget_namebyoffset(p, sh_link, d_un_d_val);
       if (name && name[0]) {
         if (d_tag == DT_NEEDED) {
           n += printf(" Shared library: [%s]", name);

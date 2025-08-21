@@ -13,7 +13,7 @@ int opcodeelf_dynamics(handle_t p, opcbfunc_t cbfunc, unknown_t param) {
             size_t cnt = shdr->sh_size / shdr->sh_entsize;
             Elf32_Dyn *dyn = _get32byshdr(p0, shdr);
             for (size_t j = 0; j < cnt; ++j, ++dyn) {
-              MALLOCSWRAPEX(opwrap_t, oc, MODE_OCDHDR32, dyn, shdr);
+              MALLOCSPARAMS(opwrap_t, oc, MODE_OCDHDR32, dyn, shdr, p);
               cbfunc(p, poc, param);
             }
           }
@@ -28,7 +28,7 @@ int opcodeelf_dynamics(handle_t p, opcbfunc_t cbfunc, unknown_t param) {
             size_t cnt = shdr->sh_size / shdr->sh_entsize;
             Elf64_Dyn *dyn = _get64byshdr(p0, shdr);
             for (size_t j = 0; j < cnt; ++j, ++dyn) {
-              MALLOCSWRAPEX(opwrap_t, oc, MODE_OCDHDR64, dyn, shdr);
+              MALLOCSPARAMS(opwrap_t, oc, MODE_OCDHDR64, dyn, shdr, p);
               cbfunc(p, poc, param);
             }
           }
