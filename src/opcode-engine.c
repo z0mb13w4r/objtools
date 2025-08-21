@@ -1,6 +1,6 @@
 #include "opcode-engine.h"
 
-#define OPENGINE_MAXSIZE (10)
+#define OPENGINE_MAXSIZE (1000)
 
 bool_t isocengine(handle_t p) {
   return ismode(p, MODE_OCENGINE);
@@ -73,6 +73,8 @@ handle_t oegetbyaddr(handle_t p, const uint64_t vaddr, const imode_t mode) {
         return g1;
       }
     }
+
+    return p0;
   }
 
   return NULL;
