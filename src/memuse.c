@@ -20,18 +20,34 @@ unknown_t xfree(unknown_t p) {
   return NULL;
 }
 
-char* xstrdup(const char *s) {
-  if (s) {
-    return xstrndup(s, strlen(s));
+char *xstrcpy(char *dst, const char *src) {
+  if (dst && src) {
+    return xstrncpy(dst, src, strlen(src));
   }
 
   return NULL;
 }
 
-char* xstrndup(const char *s, size_t size) {
-  if (s && size) {
+char *xstrncpy(char *dst, const char *src, size_t count) {
+  if (dst && src && count) {
+    return strncpy(dst, src, count);
+  }
+
+  return NULL;
+}
+
+char* xstrdup(const char *src) {
+  if (src) {
+    return xstrndup(src, strlen(src));
+  }
+
+  return NULL;
+}
+
+char* xstrndup(const char *src, size_t size) {
+  if (src && size) {
     char*  p = xmalloc(size);
-    return strncpy(p, s, size);
+    return xstrncpy(p, src, size);
   }
 
   return NULL;

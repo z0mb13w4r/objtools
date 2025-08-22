@@ -8,8 +8,11 @@ unknown_t xfree(unknown_t p);
 
 unknown_t zfree(punknown_t p);
 
-char* xstrdup(const char *s);
-char* xstrndup(const char *s, size_t size);
+char *xstrcpy(char *dst, const char *src);
+char *xstrncpy(char *dst, const char *src, size_t count);
+
+char* xstrdup(const char *src);
+char* xstrndup(const char *src, size_t size);
 
 #endif
 
