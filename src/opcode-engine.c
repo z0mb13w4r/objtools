@@ -66,7 +66,10 @@ handle_t odmalloc() {
 
 handle_t odfree(handle_t p) {
   if (isocdebug(p)) {
-    free(p);
+    pocdebug_t p0 = CAST(pocdebug_t, p);
+    free(p0->source);
+    free(p0->name);
+    free(p0);
     return NULL;
   }
 

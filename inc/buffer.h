@@ -1,7 +1,7 @@
 #ifndef __BUFFER_H_
 #define __BUFFER_H_
 
-#include "defines.h"
+#include "memuse.h"
 
 #define MODE_BUFFER             (MODE_PUT0('B') | MODE_PUT1('U') | MODE_PUT2('F'))
 
@@ -27,10 +27,8 @@ handle_t setmode(handle_t p, const nmode_t mode);
 bool_t issafe(pbuffer_t p);
 bool_t isbuffer(handle_t p);
 
-unknown_t xmalloc(const size_t size);
 unknown_t xdump(unknown_t p);
 unknown_t xfree(unknown_t p);
-unknown_t zfree(punknown_t p);
 
 size_t xget(unknown_t p, size_t size, size_t count, unknown_t f);
 size_t xput(unknown_t p, size_t size, size_t count, unknown_t f);

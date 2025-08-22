@@ -19,6 +19,7 @@ SRCS_C = \
 	buffer.c \
 	decode.c \
 	encode.c \
+	memuse.c \
 	opcode.c \
 	pecode.c \
 	pefunc.c \

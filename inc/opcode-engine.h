@@ -20,8 +20,8 @@ typedef struct ocdebug_s {
   uint64_t   laddr;
   uint64_t   haddr;
 
-  char       name[NAME_MAX];
-  char       source[PATH_MAX];
+  char      *name;
+  char      *source;
 } ocdebug_t, *pocdebug_t;
 
 typedef struct ocgroups_s {
