@@ -20,28 +20,20 @@ unknown_t xfree(unknown_t p) {
   return NULL;
 }
 
-char *xstrcpy(char *dst, const char *src) {
-  if (dst && src) {
-    return xstrncpy(dst, src, strlen(src));
-  }
+size_t xstrlen(const char *src) {
+  return src ? strlen(src) : 0;
+}
 
-  return NULL;
+char *xstrcpy(char *dst, const char *src) {
+  return dst && src ? xstrncpy(dst, src, strlen(src)) : NULL;
 }
 
 char *xstrncpy(char *dst, const char *src, size_t count) {
-  if (dst && src && count) {
-    return strncpy(dst, src, count);
-  }
-
-  return NULL;
+  return dst && src && count ? strncpy(dst, src, count) : NULL;
 }
 
 char* xstrdup(const char *src) {
-  if (src) {
-    return xstrndup(src, strlen(src));
-  }
-
-  return NULL;
+  return src ? xstrndup(src, strlen(src)) : NULL;
 }
 
 char* xstrndup(const char *src, size_t size) {

@@ -8,6 +8,8 @@ unknown_t xfree(unknown_t p);
 
 unknown_t zfree(punknown_t p);
 
+size_t xstrlen(const char *src);
+
 char *xstrcpy(char *dst, const char *src);
 char *xstrncpy(char *dst, const char *src, size_t count);
 
