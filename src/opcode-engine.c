@@ -29,7 +29,7 @@ handle_t eresize(handle_t p, const size_t sizemax) {
     pocgroups_t g0 = xmalloc(s2);
     if (g0) {
       memcpy(g0, p0->groups, s1);
-      free(p0->groups);
+      xfree(p0->groups);
       p0->sizemax = sizemax;
       p0->groups = g0;
     }
@@ -48,8 +48,8 @@ handle_t efree(handle_t p) {
         odfree(g0->debug);
       }
     }
-    free(p0->groups);
-    free(p0);
+    xfree(p0->groups);
+    xfree(p0);
     return NULL;
   }
 
@@ -67,9 +67,9 @@ handle_t odmalloc() {
 handle_t odfree(handle_t p) {
   if (isocdebug(p)) {
     pocdebug_t p0 = CAST(pocdebug_t, p);
-    free(p0->source);
-    free(p0->name);
-    free(p0);
+    xfree(p0->source);
+    xfree(p0->name);
+    xfree(p0);
     return NULL;
   }
 

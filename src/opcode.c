@@ -669,7 +669,7 @@ handle_t ocfree(handle_t p) {
     nfree(p0->items[OPCODE_DISASSEMBLER]);
     nfree(p0->items[OPCODE_OUTDATA]);
     efree(p0->items[OPCODE_ENGINE]);
-    free(p);
+    xfree(p);
     return NULL;
   }
 

@@ -49,7 +49,7 @@ handle_t fmalloc(unknown_t data, const size_t size, const size_t chunksize) {
 
 handle_t ffree(handle_t p) {
   if (isfind(p)) {
-    free(p);
+    xfree(p);
     return NULL;
   }
 

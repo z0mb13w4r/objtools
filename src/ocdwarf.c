@@ -107,8 +107,8 @@ int ocdwarf_close(handle_t p) {
     if (oc) {
       pocdwarf_t ws = CAST(pocdwarf_t, oc->items[OPCODE_DWARF]);
       if (ws) {
-        free(ws->sf);
-        free(ws->st);
+        xfree(ws->sf);
+        xfree(ws->st);
       }
 
       zfree(&oc->items[OPCODE_DWARF]);

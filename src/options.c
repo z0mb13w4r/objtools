@@ -409,7 +409,7 @@ handle_t omalloc() {
 handle_t afree(handle_t p) {
   if (isactions(p)) {
     afree(CAST(paction_t, p)->actions);
-    free(p);
+    xfree(p);
     return NULL;
   }
 
@@ -419,7 +419,7 @@ handle_t afree(handle_t p) {
 handle_t ofree(handle_t p) {
   if (isoptions(p)) {
     afree(CAST(poptions_t, p)->actions);
-    free(p);
+    xfree(p);
     return NULL;
   }
 

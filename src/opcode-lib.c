@@ -204,7 +204,7 @@ int opcodelib_run(handle_t p, handle_t s) {
         n += opcodelib_raw(p, s, di->buffer, ocget_size(s), ocget_vmaddress(s));
       }
 
-      free(di->buffer);
+      xfree(di->buffer);
       di->buffer = NULL;
     }
   }

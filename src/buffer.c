@@ -96,7 +96,7 @@ unknown_t nfree(unknown_t p) {
       return bstrfree(p);
     }
 
-    free(p);
+    xfree(p);
   }
 
   return NULL;
@@ -137,8 +137,8 @@ handle_t bmallocsize(const size_t size) {
 
 handle_t bfree(handle_t p) {
   if (ismode(p, MODE_BUFFER)) {
-    free(CAST(pbuffer_t, p)->data);
-    free(p);
+    xfree(CAST(pbuffer_t, p)->data);
+    xfree(p);
     return NULL;
   }
 
@@ -179,7 +179,7 @@ handle_t bresize(handle_t p, const size_t size) {
     unknown_t p1 = xmalloc(size);
     if (p0 && p1) {
       memcpy(p1, p0->data, MIN(p0->size, size));
-      free(p0->data);
+      xfree(p0->data);
       p0->data = p1;
       p0->size = size;
     }

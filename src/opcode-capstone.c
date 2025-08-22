@@ -123,7 +123,7 @@ int capstone_run(handle_t p, handle_t s) {
         n += capstone_raw(p, s, p0, sz, ocget_vmaddress(s));
       }
 
-      free(p0);
+      xfree(p0);
     }
   } else if (isopcode(p) && ismodeNXXN(s, MODE_OCSHDRWRAP)) {
     const size_t sz = ocget_size(s);

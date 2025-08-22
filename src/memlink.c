@@ -160,7 +160,7 @@ handle_t lmalloc() {
 
 handle_t lfree(handle_t p) {
   if (islink(p)) {
-    free(p);
+    xfree(p);
     return NULL;
   }
 

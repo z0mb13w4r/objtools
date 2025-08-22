@@ -12,6 +12,14 @@ unknown_t xmalloc(const size_t size) {
   return p;
 }
 
+unknown_t xfree(unknown_t p) {
+  if (p) {
+    free(p);
+  }
+
+  return NULL;
+}
+
 char* xstrdup(const char *s) {
   if (s) {
     return xstrndup(s, strlen(s));
@@ -31,7 +39,7 @@ char* xstrndup(const char *s, size_t size) {
 
 unknown_t zfree(punknown_t p) {
   if (p && *p) {
-    free(*p);
+    xfree(*p);
     *p = NULL;
   }
 

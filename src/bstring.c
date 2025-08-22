@@ -30,8 +30,8 @@ handle_t bstrmallocsize(const size_t size) {
 
 handle_t bstrfree(handle_t p) {
   if (ismode(p, MODE_BSTRING)) {
-    free(CAST(pbstring_t, p)->data);
-    free(p);
+    xfree(CAST(pbstring_t, p)->data);
+    xfree(p);
     return NULL;
   }
 
@@ -77,7 +77,7 @@ handle_t bstring2(handle_t p, const int offset, const size_t size) {
 handle_t bstring4(handle_t dst, handle_t src) {
   if (isbstring(dst) && isbstring(src)) {
     pbstring_t dst0 = CAST(pbstring_t, dst);
-    free(dst0->data);
+    xfree(dst0->data);
 
     pbstring_t src0 = CAST(pbstring_t, src);
     dst0->data = src0->data;
@@ -86,7 +86,7 @@ handle_t bstring4(handle_t dst, handle_t src) {
     dst0->cpos = src0->cpos;
     dst0->spos = src0->spos;
 
-    free(src0);
+    xfree(src0);
     return dst;
   }
 
@@ -242,7 +242,7 @@ handle_t bstrcut(handle_t p) {
       if (p1) {
         p0->size = p0->epos - p0->spos + 1;
         memcpy(p1, CAST(puchar_t, p0->data) + p0->spos, p0->size);
-        free(p0->data);
+        xfree(p0->data);
         p0->data = p1;
 
         p0->epos = p0->size - 1;

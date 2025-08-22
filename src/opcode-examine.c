@@ -19,10 +19,10 @@ handle_t oemalloc() {
 handle_t oefree(handle_t p) {
   if (isocexamine(p)) {
     pocexamine_t p0 = CAST(pocexamine_t, p);
-    free(p0->op1);
-    free(p0->op2);
-    free(p0->mc);
-    free(p);
+    xfree(p0->op1);
+    xfree(p0->op2);
+    xfree(p0->mc);
+    xfree(p);
     return NULL;
   }
 

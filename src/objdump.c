@@ -131,7 +131,7 @@ static void callback_reloc(handle_t p, handle_t section, unknown_t param) {
           }
         }
 
-        free(rsyms);
+        xfree(rsyms);
       } else {
         printf_text("no symbols", USE_LT);
       }
