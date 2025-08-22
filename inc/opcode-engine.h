@@ -4,13 +4,30 @@
 #include "opcode-examine.h"
 
 #define OPENGINE_GROUP                 (1)
-#define OPENGINE_EXAMINE               (2)
+#define OPENGINE_DEBUG                 (2)
+#define OPENGINE_EXAMINE               (3)
 
+#define MODE_OCDEBUG                   (MODE_PUT0('O') | MODE_PUT1('C') | MODE_PUT2('D'))
 #define MODE_OCENGINE                  (MODE_PUT0('O') | MODE_PUT1('C') | MODE_PUT2('X'))
 
-typedef struct ocgroups_s {
-  uint64_t vaddr;
+typedef struct ocdebug_s {
+  smode_t    mode;
 
+  int32_t    nline;
+  int32_t    ncolumn;
+  int32_t    discriminator;
+
+  uint64_t   laddr;
+  uint64_t   haddr;
+
+  char       name[NAME_MAX];
+  char       source[PATH_MAX];
+} ocdebug_t, *pocdebug_t;
+
+typedef struct ocgroups_s {
+  uint64_t     vaddr;
+
+  pocdebug_t   debug;
   pocexamine_t examine;
 } ocgroups_t, *pocgroups_t;
 
@@ -20,14 +37,17 @@ typedef struct ocengine_s {
   size_t     size, sizemax;
 
   pocgroups_t groups;
-
 } ocengine_t, *pocengine_t;
 
+bool_t isocdebug(handle_t p);
 bool_t isocengine(handle_t p);
 
 handle_t emalloc();
 handle_t efree(handle_t p);
 handle_t eresize(handle_t p, const size_t sizemax);
+
+handle_t odmalloc();
+handle_t odfree(handle_t p);
 
 handle_t oecreate_engine(handle_t p);
 

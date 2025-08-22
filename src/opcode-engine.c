@@ -2,6 +2,10 @@
 
 #define OPENGINE_MAXSIZE (1000)
 
+bool_t isocdebug(handle_t p) {
+  return ismode(p, MODE_OCDEBUG);
+}
+
 bool_t isocengine(handle_t p) {
   return ismode(p, MODE_OCENGINE);
 }
@@ -36,6 +40,32 @@ handle_t eresize(handle_t p, const size_t sizemax) {
 
 handle_t efree(handle_t p) {
   if (isocengine(p)) {
+    pocengine_t p0 = CAST(pocengine_t, p);
+    pocgroups_t g0 = p0 && p0->groups ? p0->groups : NULL;
+    if (g0) {
+      for (p0->cpos = 0; p0->cpos < p0->size; ++p0->cpos, ++g0) {
+        oefree(g0->examine);
+        odfree(g0->debug);
+      }
+    }
+    free(p0->groups);
+    free(p0);
+    return NULL;
+  }
+
+  return p;
+}
+
+handle_t odmalloc() {
+  pocdebug_t p = xmalloc(sizeof(ocdebug_t));
+  if (p) {
+  }
+
+  return setmode(p, MODE_OCDEBUG);
+}
+
+handle_t odfree(handle_t p) {
+  if (isocdebug(p)) {
     free(p);
     return NULL;
   }
