@@ -5,7 +5,7 @@ unknown_t xmalloc(const size_t size) {
   if (0 != size) {
     p = malloc(size);
     if (p) {
-      memset(p, 0, size);
+      xmemset(p, 0, size);
     }
   }
 
@@ -47,6 +47,10 @@ char* xstrndup(const char *src, size_t size) {
 
 unknown_t xmemcpy(unknown_t dst, const unknown_t src, size_t count) {
   return dst && src && count ? memcpy(dst, src, count) : NULL;
+}
+
+unknown_t xmemset(unknown_t ptr, int value, size_t count) {
+  return ptr && count ? memset(ptr, value, count) : NULL;
 }
 
 unknown_t zfree(punknown_t p) {
