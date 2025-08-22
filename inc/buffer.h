@@ -28,7 +28,7 @@ bool_t issafe(pbuffer_t p);
 bool_t isbuffer(handle_t p);
 
 unknown_t ndump(unknown_t p);
-unknown_t xfree(unknown_t p);
+unknown_t nfree(unknown_t p);
 
 size_t xget(unknown_t p, size_t size, size_t count, unknown_t f);
 size_t xput(unknown_t p, size_t size, size_t count, unknown_t f);

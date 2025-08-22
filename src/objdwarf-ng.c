@@ -77,11 +77,11 @@ int main(int argc, char* argv[]) {
         }
       }
 
-      xfree(p);
+      nfree(p);
     }
   }
 
-  xfree(o);
+  nfree(o);
   return r;
 }
 

@@ -84,15 +84,15 @@ int main(int argc, char* argv[]) {
           } else {
             printf_text(b0->data, USE_LT | USE_EOL);
           }
-          xfree(b0);
+          nfree(b0);
         }
       }
 
-      xfree(p);
+      nfree(p);
     }
   }
 
-  xfree(o);
+  nfree(o);
   return r;
 }
 

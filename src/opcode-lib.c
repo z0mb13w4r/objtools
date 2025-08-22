@@ -140,7 +140,7 @@ int opcodelib_open(handle_t p, handle_t o) {
 int opcodelib_close(handle_t p) {
   if (isopcode(p)) {
     popcode_t oc = CAST(popcode_t, p);
-    xfree(oc->items[OPCODE_OUTDATA]);
+    nfree(oc->items[OPCODE_OUTDATA]);
     oc->items[OPCODE_OUTDATA] = NULL;
   }
 

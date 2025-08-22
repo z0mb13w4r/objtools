@@ -81,7 +81,7 @@ unknown_t ndump(unknown_t p) {
   return NULL;
 }
 
-unknown_t xfree(unknown_t p) {
+unknown_t nfree(unknown_t p) {
   if (p) {
     if (ismodeNNN(p, MODE_BUFFER)) {
       return bfree(p);
@@ -90,7 +90,7 @@ unknown_t xfree(unknown_t p) {
     } else if (ismodeNNN(p, MODE_ACTIONS)) {
       return afree(p);
     } else if (ismodeNNN(p, MODE_LINK)) {
-      xfree(CAST(pnode_t, p)->item);
+      nfree(CAST(pnode_t, p)->item);
       return lfree(p);
     } if (ismodeNNN(p, MODE_BSTRING)) {
       return bstrfree(p);
@@ -210,7 +210,7 @@ handle_t bopen(const char* name) {
         p->size = fsize(f);
         p->data = xmalloc(p->size);
         if (p->size != xget(p->data, 1, p->size, f)) {
-          p = xfree(p);
+          p = nfree(p);
         }
 
         fclose(f);

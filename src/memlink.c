@@ -112,7 +112,7 @@ handle_t ldetach(handle_t p) {
 handle_t ldestroy(handle_t p) {
   if (islink(p)) {
     pnode_t p1 = lnext(p);
-    xfree(p);
+    nfree(p);
     return p1;
   }
 
@@ -145,7 +145,7 @@ handle_t ldestroye(handle_t p) {
     }
 
     if (islnext(p1)) {
-      xfree(lnext(p1));
+      nfree(lnext(p1));
       p1->next = NULL;
     }
   }

@@ -75,11 +75,11 @@ int main(int argc, char* argv[]) {
         r = objhash(p, o);
       }
 
-      xfree(p);
+      nfree(p);
     }
   }
 
-  xfree(o);
+  nfree(o);
   return r;
 }
 

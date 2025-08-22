@@ -89,11 +89,11 @@ int main(int argc, char* argv[]) {
         x = readpe(p, o);
       }
 
-      xfree(p);
+      nfree(p);
     }
   }
 
-  xfree(o);
+  nfree(o);
   return x;
 }
 

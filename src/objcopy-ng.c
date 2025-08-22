@@ -96,11 +96,11 @@ int main(int argc, char* argv[]) {
         r = objcopy(p, o);
       }
 
-      xfree(p);
+      nfree(p);
     }
   }
 
-  xfree(o);
+  nfree(o);
   return r;
 }
 
