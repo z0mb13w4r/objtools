@@ -6,5 +6,8 @@
 unknown_t xmalloc(const size_t size);
 unknown_t zfree(punknown_t p);
 
+char* xstrdup(const char *s);
+char* xstrndup(const char *s, size_t size);
+
 #endif
 
