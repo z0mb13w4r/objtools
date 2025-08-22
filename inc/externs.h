@@ -80,6 +80,14 @@ extern char zDEBUGARANGES[];
 extern char zDEBUGRANGES[];
 extern char zDEBUGSTR[];
 extern char zDEBUGGDBINDEX[];
+extern char zDEBUGLINKSFOLLOW[];
+extern char zDEBUGLINE[];
+extern char zDEBUGLINEDECODED[];
+extern char zDEBUGPUBNAMES[];
+extern char zDEBUGPUBTYPES[];
+extern char zDEBUGTRACEARANGES[];
+extern char zDEBUGTRACEABBREV[];
+extern char zDEBUGTRACEINFO[];
 
 extern char zDISASSEMBLEARCH[];
 extern char zDISASSEMBLEATTSYNTAX[];

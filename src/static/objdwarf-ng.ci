@@ -1,10 +1,12 @@
 static const char zOBJDWARFARGS0[] = "-w";
 static const char zOBJDWARFARGS1[] = "--dwarf-dump";
 
+static char zDWARFVERBOSE[]        = "Display additional information.";
+
 static const args_t zOBJDWARFARGS[] = {
-  {'H', "--help",            OPTPROGRAM_HELP},
-  {'v', "--version",         OPTPROGRAM_VERSION},
-  {'V', "--verbose",         OPTPROGRAM_VERBOSE},
+  {'H', "--help",            OPTPROGRAM_HELP,              NULL},
+  {'v', "--version",         OPTPROGRAM_VERSION,           NULL},
+  {'V', "--verbose",         OPTPROGRAM_VERBOSE,           zDWARFVERBOSE},
   {'x', "--hex-dump",        0,                            zHEXDUMP},
   {'p', "--string-dump",     0,                            zSTRDUMP},
   {0, NULL}

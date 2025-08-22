@@ -17,15 +17,17 @@ static char zELFNOTES[]          = "Displays the contents of the NOTE segments."
 static char zELFRELOCS[]         = "Displays the contents of the file's relocation section.";
 static char zELFSYMBOLS[]        = "Displays the entries in symbol table section of the file.";
 static char zELFUNWIND[]         = "Displays the contents of the file's unwind section.";
+static char zELFDECOMPRESS[]     = "Requests that the section(s) being dumped by x, R or p options are decompressed before being displayed.";
+static char zELFDISASSEMBLE[]    = "Display the assembler mnemonics for the machine instructions from the input file.";
 
 static const args_t zREADELFARGS[] = {
-  {'H', "--help",            OPTPROGRAM_HELP},
-  {'v', "--version",         OPTPROGRAM_VERSION},
+  {'H', "--help",            OPTPROGRAM_HELP,              NULL},
+  {'v', "--version",         OPTPROGRAM_VERSION,           NULL},
   {'A', "--arch-specific",   OPTREADELF_ARCHSPECIFIC,      zELFARCHSPECIFIC},
   {'I', "--histogram",       OPTREADELF_HISTOGRAM,         zELFHISTOGRAM},
   {'S', "--section-headers", OPTREADELF_SECTIONHEADERS,    zELFSECTIONHEADERS},
   {'V', "--version-info",    OPTREADELF_VERSION,           zELFVERSIONINFO},
-  {'a', "--all",             OPTREADELF_ALL},
+  {'a', "--all",             OPTREADELF_ALL,               NULL},
   {'d', "--dynamic",         OPTREADELF_DYNAMIC,           zELFDYNAMIC},
   {'e', "--headers",         OPTREADELF_HEADERS,           zELFHEADERS},
   {'g', "--section-groups",  OPTREADELF_SECTIONGROUPS,     zELFSECTIONGROUPS},
@@ -40,8 +42,8 @@ static const args_t zREADELFARGS[] = {
   {'p', "--string-dump",     0,                            zSTRDUMP},
   {'U', "--unicode-dump",    0,                            zSTRDUMP},
   {'R', "--relocated-dump",  0,                            zHEXDUMP},
-  {'z', "--decompress",      0},
-  {'C', "--disassemble",     0},
+  {'z', "--decompress",      0,                            zELFDECOMPRESS},
+  {'C', "--disassemble",     0,                            zELFDISASSEMBLE},
   {'T', "--script",          0},
   {'I', "--info",            OPTPROGRAM_INFO},
   {'X', "--hash",            OPTPROGRAM_HASH},
