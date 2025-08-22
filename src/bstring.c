@@ -54,7 +54,7 @@ handle_t bstring2(handle_t p, const int offset, const size_t size) {
     if ((offset + size - 1) < p0->size) {
       pbstring_t p1 = bstrmallocsize(size);
       if (p1) {
-        memcpy(p1->data, CAST(puchar_t, p0->data) + offset, size);
+        xmemcpy(p1->data, CAST(puchar_t, p0->data) + offset, size);
       }
 
       return p1;
@@ -64,7 +64,7 @@ handle_t bstring2(handle_t p, const int offset, const size_t size) {
     if ((offset + size - 1) < p0->size) {
       pbstring_t p1 = bstrmallocsize(size);
       if (p1) {
-        memcpy(p1->data, CAST(puchar_t, p0->data) + offset, size);
+        xmemcpy(p1->data, CAST(puchar_t, p0->data) + offset, size);
       }
 
       return p1;
@@ -157,7 +157,7 @@ handle_t bstrncat(handle_t dst, handle_t src, size_t size) {
 handle_t bstrclr(handle_t p) {
   if (isbstring(p)) {
     pbstring_t p0 = CAST(pbstring_t, p);
-    memset(p0->data, 0, p0->size);
+    xmemset(p0->data, 0, p0->size);
     return p;
   }
 
@@ -241,7 +241,7 @@ handle_t bstrcut(handle_t p) {
       unknown_t p1 = xmalloc(p0->epos - p0->spos + 1);
       if (p1) {
         p0->size = p0->epos - p0->spos + 1;
-        memcpy(p1, CAST(puchar_t, p0->data) + p0->spos, p0->size);
+        xmemcpy(p1, CAST(puchar_t, p0->data) + p0->spos, p0->size);
         xfree(p0->data);
         p0->data = p1;
 

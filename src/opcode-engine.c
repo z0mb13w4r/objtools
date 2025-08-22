@@ -28,7 +28,7 @@ handle_t eresize(handle_t p, const size_t sizemax) {
 
     pocgroups_t g0 = xmalloc(s2);
     if (g0) {
-      memcpy(g0, p0->groups, s1);
+      xmemcpy(g0, p0->groups, s1);
       xfree(p0->groups);
       p0->sizemax = sizemax;
       p0->groups = g0;
@@ -97,7 +97,7 @@ handle_t oegetbyaddr(handle_t p, const uint64_t vaddr, const imode_t mode) {
       if (g1) {
         if (p1->cpos != p1->size) {
           for (size_t i = p1->size; p1->cpos < i; --i) {
-            memcpy(p1->groups + i, p1->groups + i - 1, sizeof(ocgroups_t));
+            xmemcpy(p1->groups + i, p1->groups + i - 1, sizeof(ocgroups_t));
           }
         }
 

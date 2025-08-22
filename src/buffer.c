@@ -104,7 +104,7 @@ unknown_t nfree(unknown_t p) {
 
 size_t xget(unknown_t p, size_t size, size_t count, unknown_t f) {
   if (p && f) {
-    memset(p, 0, size * count);
+    xmemset(p, 0, size * count);
     return fread(p, size, count, f);
   }
 
@@ -151,7 +151,7 @@ handle_t bclone(handle_t p, const int offset, const size_t size) {
     if (p0) {
       pbuffer_t p1 = bmalloc(size);
       if (issafe(p1)) {
-        memcpy(p1->data, p0, size);
+        xmemcpy(p1->data, p0, size);
         return p1;
       }
     }
@@ -166,7 +166,7 @@ handle_t bappend(handle_t p, unknown_t px, const size_t size) {
     p = bresize(p, epos + size);
     if (ismode(p, MODE_BUFFER)) {
       pbuffer_t p0 = CAST(pbuffer_t, p);
-      memcpy(CAST(puchar_t, p0->data) + epos, px, size);
+      xmemcpy(CAST(puchar_t, p0->data) + epos, px, size);
     }
   }
 
@@ -178,7 +178,7 @@ handle_t bresize(handle_t p, const size_t size) {
     pbuffer_t p0 = CAST(pbuffer_t, p);
     unknown_t p1 = xmalloc(size);
     if (p0 && p1) {
-      memcpy(p1, p0->data, MIN(p0->size, size));
+      xmemcpy(p1, p0->data, MIN(p0->size, size));
       xfree(p0->data);
       p0->data = p1;
       p0->size = size;
