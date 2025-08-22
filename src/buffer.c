@@ -73,7 +73,7 @@ handle_t setmode(handle_t p, const nmode_t mode) {
   return p;
 }
 
-unknown_t xdump(unknown_t p) {
+unknown_t ndump(unknown_t p) {
   if (ismodeNNN(p, MODE_LINK)) {
     lfree(p);
   }

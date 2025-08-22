@@ -27,7 +27,7 @@ handle_t setmode(handle_t p, const nmode_t mode);
 bool_t issafe(pbuffer_t p);
 bool_t isbuffer(handle_t p);
 
-unknown_t xdump(unknown_t p);
+unknown_t ndump(unknown_t p);
 unknown_t xfree(unknown_t p);
 
 size_t xget(unknown_t p, size_t size, size_t count, unknown_t f);

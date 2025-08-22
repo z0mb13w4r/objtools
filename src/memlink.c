@@ -102,7 +102,7 @@ handle_t lattache(handle_t p, handle_t item) {
 handle_t ldetach(handle_t p) {
   if (islink(p)) {
     pnode_t p1 = lnext(p);
-    xdump(p);
+    ndump(p);
     return p1;
   }
 
@@ -128,7 +128,7 @@ handle_t ldetache(handle_t p) {
     }
 
     if (islnext(p1)) {
-      xdump(lnext(p1));
+      ndump(lnext(p1));
       p1->next = NULL;
     }
   }
