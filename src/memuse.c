@@ -25,7 +25,7 @@ size_t xstrlen(const char *src) {
 }
 
 char *xstrcpy(char *dst, const char *src) {
-  return dst && src ? xstrncpy(dst, src, strlen(src)) : NULL;
+  return dst && src ? xstrncpy(dst, src, xstrlen(src)) : NULL;
 }
 
 char *xstrncpy(char *dst, const char *src, size_t count) {
@@ -33,7 +33,7 @@ char *xstrncpy(char *dst, const char *src, size_t count) {
 }
 
 char* xstrdup(const char *src) {
-  return src ? xstrndup(src, strlen(src)) : NULL;
+  return src ? xstrndup(src, xstrlen(src)) : NULL;
 }
 
 char* xstrndup(const char *src, size_t size) {
@@ -43,6 +43,10 @@ char* xstrndup(const char *src, size_t size) {
   }
 
   return NULL;
+}
+
+unknown_t xmemcpy(unknown_t dst, const unknown_t src, size_t count) {
+  return dst && src && count ? memcpy(dst, src, count) : NULL;
 }
 
 unknown_t zfree(punknown_t p) {

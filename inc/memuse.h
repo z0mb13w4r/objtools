@@ -16,5 +16,7 @@ char *xstrncpy(char *dst, const char *src, size_t count);
 char* xstrdup(const char *src);
 char* xstrndup(const char *src, size_t size);
 
+unknown_t xmemcpy(unknown_t dst, const unknown_t src, size_t count);
+
 #endif
 
