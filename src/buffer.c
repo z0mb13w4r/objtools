@@ -246,19 +246,3 @@ int getb(const pbuffer_t p, const int offset) {
   return v ? *v : ECODE_PARAM;
 }
 
-int isBigEndian(const pbuffer_t p) {
-  if (issafe(p)) {
-    return ELFDATA2MSB == getb(p, EI_DATA);
-  }
-
-  return ECODE_HANDLE;
-}
-
-int isLittleEndian(const pbuffer_t p) {
-  if (issafe(p)) {
-    return ELFDATA2LSB == getb(p, EI_DATA);
-  }
-
-  return ECODE_HANDLE;
-}
-

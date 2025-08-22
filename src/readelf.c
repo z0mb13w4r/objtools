@@ -152,9 +152,9 @@ static int dump_elfheader(const pbuffer_t p, const poptions_t o) {
   }
 
   n += printf_text("Data", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  if (isLittleEndian(p)) {
+  if (isELFle(p)) {
     n += printf_text("2's complement, little endian", USE_LT | USE_SPACE | USE_EOL);
-  } else if (isBigEndian(p)) {
+  } else if (isELFbe(p)) {
     n += printf_text("2's complement, big endian", USE_LT | USE_SPACE | USE_EOL);
   } else {
     n += printf_text("none", USE_LT | USE_SPACE | USE_EOL);

@@ -38,6 +38,8 @@ bool_t isshdrinphdr64(Elf64_Shdr *s, Elf64_Phdr *p);
 bool_t isELF(const pbuffer_t p);
 bool_t isELF32(const pbuffer_t p);
 bool_t isELF64(const pbuffer_t p);
+bool_t isELFbe(const pbuffer_t p);
+bool_t isELFle(const pbuffer_t p);
 
 uint64_t ecget_etype(const pbuffer_t p);
 uint64_t ecget_eflags(const pbuffer_t p);

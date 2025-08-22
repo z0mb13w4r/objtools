@@ -212,19 +212,19 @@ bool_t isELF(const pbuffer_t p) {
 }
 
 bool_t isELF32(const pbuffer_t p) {
-  if (isELF(p)) {
-    return 1 == getb(p, EI_CLASS) ? TRUE : FALSE;
-  }
-
-  return FALSE;
+  return isELF(p) && 1 == getb(p, EI_CLASS) ? TRUE : FALSE;
 }
 
 bool_t isELF64(const pbuffer_t p) {
-  if (isELF(p)) {
-    return 2 == getb(p, EI_CLASS) ? TRUE : FALSE;
-  }
+  return isELF(p) && 2 == getb(p, EI_CLASS) ? TRUE : FALSE;
+}
 
-  return FALSE;
+bool_t isELFbe(const pbuffer_t p) {
+  return isELF(p) && ELFDATA2MSB == getb(p, EI_DATA) ? TRUE : FALSE;
+}
+
+bool_t isELFle(const pbuffer_t p) {
+  return isELF(p) && ELFDATA2LSB == getb(p, EI_DATA) ? TRUE : FALSE;
 }
 
 Elf32_Ehdr* ecget_ehdr32(const pbuffer_t p) {
