@@ -49,7 +49,7 @@ int ror16(const unknown_t p, const uint16_t v, const size_t size);
 int shl16(const unknown_t p, const uint16_t v, const size_t size);
 int shr16(const unknown_t p, const uint16_t v, const size_t size);
 int sub16(const unknown_t p, const uint16_t v, const size_t size);
-int xor16(const unknown_t p, const uint16_t v, const size_t size);
+int xor16(const unknown_t p, const uint16_t v, const size_t size, const int32_t step);
 
 int add32(const unknown_t p, const uint32_t v, const size_t size);
 int rol32(const unknown_t p, const uint32_t v, const size_t size);
@@ -57,7 +57,7 @@ int ror32(const unknown_t p, const uint32_t v, const size_t size);
 int shl32(const unknown_t p, const uint32_t v, const size_t size);
 int shr32(const unknown_t p, const uint32_t v, const size_t size);
 int sub32(const unknown_t p, const uint32_t v, const size_t size);
-int xor32(const unknown_t p, const uint32_t v, const size_t size);
+int xor32(const unknown_t p, const uint32_t v, const size_t size, const int32_t step);
 
 int aes_encrypt(const int mode, puchar_t src, const size_t srcsize,
                 puchar_t key, const size_t keysize, puchar_t ivec, puchar_t dst);

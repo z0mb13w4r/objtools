@@ -68,7 +68,6 @@ int main(int argc, char* argv[]) {
           int32_t step = 0;
           paction_t x0 = o->actions;
           while (x0) {
-            dump_actions0(p, x0, b0->data, b0->size, step);
             if (ACT_BASE64D == x0->action) {
               b0 = bstring4(b0, base64_decode(b0->data, b0->size));
             } else if (ACT_BASE64E == x0->action) {
@@ -85,6 +84,8 @@ int main(int argc, char* argv[]) {
               step =  x0->value;
             } else if (ACT_DEC == x0->action) {
               step = -x0->value;
+            } else {
+              dump_actions0(p, x0, b0->data, b0->size, step);
             }
 
             x0 = x0->actions;

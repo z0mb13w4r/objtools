@@ -30,7 +30,7 @@ int dump_actions0(const pbuffer_t p, const paction_t x, const unknown_t p0, cons
     case ACT_SHL16:  shl16(p0, x->value, p0size); break;
     case ACT_SHR16:  shr16(p0, x->value, p0size); break;
     case ACT_SUB16:  sub16(p0, x->value, p0size); break;
-    case ACT_XOR16:  xor16(p0, x->value, p0size); break;
+    case ACT_XOR16:  xor16(p0, x->value, p0size, step); break;
 
     case ACT_ADD32:  add32(p0, x->value, p0size); break;
     case ACT_ROL32:  rol32(p0, x->value, p0size); break;
@@ -38,7 +38,7 @@ int dump_actions0(const pbuffer_t p, const paction_t x, const unknown_t p0, cons
     case ACT_SHL32:  shl32(p0, x->value, p0size); break;
     case ACT_SHR32:  shr32(p0, x->value, p0size); break;
     case ACT_SUB32:  sub32(p0, x->value, p0size); break;
-    case ACT_XOR32:  xor32(p0, x->value, p0size); break;
+    case ACT_XOR32:  xor32(p0, x->value, p0size, step); break;
 
     default:
       break;
@@ -48,11 +48,18 @@ int dump_actions0(const pbuffer_t p, const paction_t x, const unknown_t p0, cons
   return 0;
 }
 
-int dump_actions1(const pbuffer_t p, const poptions_t o, const uint64_t offset, const size_t size, const int32_t step) {
+int dump_actions1(const pbuffer_t p, const poptions_t o, const uint64_t offset, const size_t size) {
+  int32_t step = 0;
   paction_t x = o->actions;
   while (x) {
     if (0 != size) {
-      dump_actions0(p, x, getp(p, offset, size), size, step);
+      if (ACT_INC == x->action) {
+        step =  x->value;
+      } else if (ACT_DEC == x->action) {
+        step = -x->value;
+      } else {
+        dump_actions0(p, x, getp(p, offset, size), size, step);
+      }
     }
 
     x = x->actions;
