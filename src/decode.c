@@ -451,6 +451,27 @@ int aes_encrypt(const int mode, puchar_t src, const size_t srcsize,
   return dstsize;
 }
 
+handle_t dec8_decode(unknown_t src, size_t srcsize) {
+  if (src && srcsize) {
+    puchar_t psrc = CAST(puchar_t, src);
+
+    pbstring_t dst = bstrmallocsize(srcsize);
+    if (dst) {
+      int c = 0;
+      puchar_t pdst = CAST(puchar_t, dst->data);
+
+      for (size_t i = 0; i < srcsize; ++i) {
+
+      }
+
+      pdst[c] = '\0';   /* string padding character */
+      return dst;
+    }
+  }
+
+  return NULL;
+}
+
 handle_t base64_decode(unknown_t src, size_t srcsize) {
   if (src && srcsize) {
     size_t maxsize = srcsize * 3 / 4;
