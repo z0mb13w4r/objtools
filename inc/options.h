@@ -179,6 +179,8 @@
 #define ACT_XOR8                                   (522)
 #define ACT_XOR16                                  (523)
 #define ACT_XOR32                                  (524)
+#define ACT_DEC                                    (525)
+#define ACT_INC                                    (526)
 #define ACT_BASE64D                                (600)
 #define ACT_BASE64E                                (601)
 #define ACT_DEC8D                                  (602)
