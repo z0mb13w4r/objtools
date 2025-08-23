@@ -53,46 +53,46 @@ static int get_options_convert(poptions_t o, int argc, char** argv, char* name) 
 }
 
 int main(int argc, char* argv[]) {
-  int r = -1;
+  int x = ECODE_MALLOC;
   poptions_t o = omalloc();
   if (o) {
-    r = get_options_convert(o, argc - 1, argv + 1, argv[0]);
-    if (0 == r && o->inpname[0]) {
+    x = get_options_convert(o, argc - 1, argv + 1, argv[0]);
+    if (ECODE_ISOK(x) && o->inpname[0]) {
       pbuffer_t p = bopen(o->inpname);
       if (issafe(p)) {
         pbstring_t b0 = bstring1(p);
         if (b0) {
-          paction_t x = o->actions;
-          while (x) {
-            dump_actions0(p, x, b0->data, b0->size);
-            if (ACT_BASE64D == x->action) {
+          paction_t xx = o->actions;
+          while (xx) {
+            dump_actions0(p, xx, b0->data, b0->size);
+            if (ACT_BASE64D == xx->action) {
               b0 = bstring4(b0, base64_decode(b0->data, b0->size));
-            } else if (ACT_BASE64E == x->action) {
+            } else if (ACT_BASE64E == xx->action) {
               b0 = bstring4(b0, base64_encode(b0->data, b0->size));
-            } else if (ACT_HEX8E == x->action) {
+            } else if (ACT_HEX8E == xx->action) {
               b0 = bstring4(b0, hex8_encode(b0->data, b0->size));
-            } else if (ACT_HEX16E == x->action) {
+            } else if (ACT_HEX16E == xx->action) {
               b0 = bstring4(b0, hex16_encode(b0->data, b0->size));
-            } else if (ACT_HEX32E == x->action) {
+            } else if (ACT_HEX32E == xx->action) {
               b0 = bstring4(b0, hex32_encode(b0->data, b0->size));
             }
 
-            x = x->actions;
+            xx = xx->actions;
           }
           if (o->outname[0]) {
             bstrsave(b0, o->outname);
           } else {
             printf_text(b0->data, USE_LT | USE_EOL);
           }
-          nfree(b0);
+          bstrfree(b0);
         }
       }
 
-      nfree(p);
+      bfree(p);
     }
   }
 
-  nfree(o);
-  return r;
+  ofree(o);
+  return x;
 }
 
