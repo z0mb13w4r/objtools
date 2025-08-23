@@ -487,6 +487,64 @@ handle_t dec8_decode(unknown_t src, size_t srcsize) {
   return NULL;
 }
 
+handle_t dec16_decode(unknown_t src, size_t srcsize) {
+  if (src && srcsize) {
+    puchar_t psrc = CAST(puchar_t, src);
+
+    pbstring_t dst = bstrmallocsize(srcsize);
+    if (dst) {
+      int c = -1;
+      pushort_t pdst = CAST(pushort_t, dst->data);
+
+      bool_t isok = FALSE;
+      for (size_t i = 0; i < srcsize; ++i) {
+        uchar_t ch = psrc[i];
+        bool_t isnum = isdigit(ch);
+        if (isnum) {
+          if (!isok) ++c;
+          pdst[c] = (pdst[c] * 10) + (ch - '0');
+        }
+        isok = isnum;
+      }
+
+      pdst[++c] = '\0';   /* string padding character */
+      dst->size = c;
+      return dst;
+    }
+  }
+
+  return NULL;
+}
+
+handle_t dec32_decode(unknown_t src, size_t srcsize) {
+  if (src && srcsize) {
+    puchar_t psrc = CAST(puchar_t, src);
+
+    pbstring_t dst = bstrmallocsize(srcsize);
+    if (dst) {
+      int c = -1;
+      pulong_t pdst = CAST(pulong_t, dst->data);
+
+      bool_t isok = FALSE;
+      for (size_t i = 0; i < srcsize; ++i) {
+        uchar_t ch = psrc[i];
+        bool_t isnum = isdigit(ch);
+        if (isnum) {
+          if (!isok) ++c;
+          pdst[c] = (pdst[c] * 10) + (ch - '0');
+        }
+        isok = isnum;
+      }
+
+      pdst[++c] = '\0';   /* string padding character */
+      dst->size = c;
+      return dst;
+    }
+  }
+
+  return NULL;
+}
+
 handle_t base64_decode(unknown_t src, size_t srcsize) {
   if (src && srcsize) {
     size_t maxsize = srcsize * 3 / 4;

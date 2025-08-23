@@ -184,9 +184,11 @@
 #define ACT_BASE64D                                (600)
 #define ACT_BASE64E                                (601)
 #define ACT_DEC8D                                  (602)
-#define ACT_HEX8E                                  (603)
-#define ACT_HEX16E                                 (604)
-#define ACT_HEX32E                                 (605)
+#define ACT_DEC16D                                 (603)
+#define ACT_DEC32D                                 (604)
+#define ACT_HEX8E                                  (605)
+#define ACT_HEX16E                                 (606)
+#define ACT_HEX32E                                 (607)
 #define ACT_ZLIB                                   (700)
 
 typedef struct action_s {

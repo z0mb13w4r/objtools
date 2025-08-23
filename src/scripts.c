@@ -33,6 +33,8 @@ static convert_t SCRIPTCOMMANDS[] = {
   {"dec",      ACT_DEC},
   {"inc",      ACT_INC},
   {"dec8d",    ACT_DEC8D},
+  {"dec16d",   ACT_DEC16D},
+  {"dec32d",   ACT_DEC32D},
   {"hex8e",    ACT_HEX8E},
   {"hex16e",   ACT_HEX16E},
   {"hex32e",   ACT_HEX32E},
