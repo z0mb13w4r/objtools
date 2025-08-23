@@ -62,22 +62,22 @@ int main(int argc, char* argv[]) {
       if (issafe(p)) {
         pbstring_t b0 = bstring1(p);
         if (b0) {
-          paction_t xx = o->actions;
-          while (xx) {
-            dump_actions0(p, xx, b0->data, b0->size);
-            if (ACT_BASE64D == xx->action) {
+          paction_t x0 = o->actions;
+          while (x0) {
+            dump_actions0(p, x0, b0->data, b0->size);
+            if (ACT_BASE64D == x0->action) {
               b0 = bstring4(b0, base64_decode(b0->data, b0->size));
-            } else if (ACT_BASE64E == xx->action) {
+            } else if (ACT_BASE64E == x0->action) {
               b0 = bstring4(b0, base64_encode(b0->data, b0->size));
-            } else if (ACT_HEX8E == xx->action) {
+            } else if (ACT_HEX8E == x0->action) {
               b0 = bstring4(b0, hex8_encode(b0->data, b0->size));
-            } else if (ACT_HEX16E == xx->action) {
+            } else if (ACT_HEX16E == x0->action) {
               b0 = bstring4(b0, hex16_encode(b0->data, b0->size));
-            } else if (ACT_HEX32E == xx->action) {
+            } else if (ACT_HEX32E == x0->action) {
               b0 = bstring4(b0, hex32_encode(b0->data, b0->size));
             }
 
-            xx = xx->actions;
+            x0 = x0->actions;
           }
           if (o->outname[0]) {
             bstrsave(b0, o->outname);

@@ -30,6 +30,7 @@ static convert_t SCRIPTCOMMANDS[] = {
   {"xor8",     ACT_XOR8},
   {"xor16",    ACT_XOR16},
   {"xor32",    ACT_XOR32},
+  {"dec8d",    ACT_DEC8D},
   {"hex8e",    ACT_HEX8E},
   {"hex16e",   ACT_HEX16E},
   {"hex32e",   ACT_HEX32E},
