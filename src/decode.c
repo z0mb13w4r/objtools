@@ -1,3 +1,4 @@
+#include <ctype.h>
 #include <openssl/aes.h>
 #include <openssl/conf.h>
 #include <openssl/evp.h>
@@ -457,14 +458,21 @@ handle_t dec8_decode(unknown_t src, size_t srcsize) {
 
     pbstring_t dst = bstrmallocsize(srcsize);
     if (dst) {
-      int c = 0;
+      int c = -1;
       puchar_t pdst = CAST(puchar_t, dst->data);
 
+      bool_t isok = FALSE;
       for (size_t i = 0; i < srcsize; ++i) {
-
+        uchar_t ch = psrc[i];
+        bool_t isnum = isdigit(ch);
+        if (isnum) {
+          if (!isok) ++c;
+          pdst[c] = (pdst[c] * 10) + (ch - '0');
+        }
+        isok = isnum;
       }
 
-      pdst[c] = '\0';   /* string padding character */
+      pdst[++c] = '\0';   /* string padding character */
       return dst;
     }
   }
