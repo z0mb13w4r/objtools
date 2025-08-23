@@ -28,19 +28,19 @@ static int get_options_convert(poptions_t o, int argc, char** argv, char* name) 
 
       if (ECODE_ISOK(breakup_args(argv[i], arg0, NELEMENTS(arg0), arg1, NELEMENTS(arg1)))) {
         if (0 == strcmp(arg0, "--output")) {
-          strncpy(o->outname, arg1, NELEMENTS(o->outname));
+          xstrncpy(o->outname, arg1, NELEMENTS(o->outname));
         }
       } else {
         o->action |= get_options2(o, zCONVERTARGS, argv[i]);
       }
     } else if ('-' == argv[i][0] && 0 != argv[i][1]) {
       if (0 == strcmp(argv[i], "-O")) {
-        strncpy(o->outname, argv[++i], NELEMENTS(o->outname));
+        xstrncpy(o->outname, argv[++i], NELEMENTS(o->outname));
       } else {
         o->action |= get_options1(o, zCONVERTARGS, argv[i]);
       }
     } else if (ECODE_ISEVIL(sinsert(o, argv[i]))) {
-      strncpy(o->inpname, argv[i], NELEMENTS(o->inpname));
+      xstrncpy(o->inpname, argv[i], NELEMENTS(o->inpname));
     }
   }
 
@@ -68,7 +68,7 @@ int main(int argc, char* argv[]) {
           int32_t step = 0;
           paction_t x0 = o->actions;
           while (x0) {
-            dump_actions0(p, x0, b0->data, b0->size);
+            dump_actions0(p, x0, b0->data, b0->size, step);
             if (ACT_BASE64D == x0->action) {
               b0 = bstring4(b0, base64_decode(b0->data, b0->size));
             } else if (ACT_BASE64E == x0->action) {

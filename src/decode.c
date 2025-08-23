@@ -196,11 +196,13 @@ int shr32(const unknown_t p, const uint32_t v, const size_t size) {
   return ECODE_HANDLE;
 }
 
-int xor8(const unknown_t p, const uint8_t v, const size_t size) {
+int xor8(const unknown_t p, const uint8_t v, const size_t size, const int32_t step) {
   if (p) {
     uint8_t *p0 = CAST(uint8_t*, p);
+    uint8_t  v0 = v;
     for (size_t i = 0; i < size; ++i) {
-      p0[i] ^= v;
+      p0[i] ^= v0;
+      v0 += step;
     }
 
     return ECODE_OK;
@@ -473,6 +475,7 @@ handle_t dec8_decode(unknown_t src, size_t srcsize) {
       }
 
       pdst[++c] = '\0';   /* string padding character */
+      dst->size = c;
       return dst;
     }
   }

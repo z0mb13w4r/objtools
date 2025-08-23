@@ -1301,7 +1301,7 @@ static int dump_actionsNN(const pbuffer_t p, const poptions_t o) {
       if (p0) {
         MALLOCSWRAP(opwrap_t, s, MODE_OCSHDRPE, p0);
         if (!isnamedone(secdone, NELEMENTS(secdone), x->secname)) {
-          n += dump_actions1(p, o, peconvert2va(p0, p0->VirtualAddress), p0->SizeOfRawData);
+          n += dump_actions1(p, o, peconvert2va(p0, p0->VirtualAddress), p0->SizeOfRawData, 0 /*TBD*/);
         }
         n += dump_actions2(p, o, ps, x->secname, x->action, peconvert2va(p0, p0->VirtualAddress), p0->SizeOfRawData, p0->VirtualAddress);
       } else {

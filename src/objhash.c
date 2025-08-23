@@ -103,7 +103,7 @@ static int dump_actionsELF0(const pbuffer_t p, const poptions_t o, const char* n
   else if (OPTFUNCTION_ROT13 == o->convert)      rot13(p0, sh_size);
   else if (OPTFUNCTION_ROT18 == o->convert)      rot18(p0, sh_size);
   else if (OPTFUNCTION_XOR1 <= o->convert && o->convert <= OPTFUNCTION_XOR255) {
-    xor8(p0, o->convert & 0xff, sh_size);
+    xor8(p0, o->convert & 0xff, sh_size, 0);
   }
 
   if (ACT_HEXDUMP == action) {

@@ -5,8 +5,8 @@
 #include "printf.h"
 #include "elfcode.h"
 
-int dump_actions0(const pbuffer_t p, const paction_t x, const unknown_t p0, const uint64_t p0size) {
-  if (x && p0 && 0 != p0size) {
+int dump_actions0(const pbuffer_t p, const paction_t x, const unknown_t p0, const size_t p0size, const int32_t step) {
+  if (x && p0 && p0size) {
     switch (x->action) {
     case ACT_ROT5:   rot5(p0, p0size);            break;
     case ACT_NOT8:   not8(p0, p0size);            break;
@@ -22,7 +22,7 @@ int dump_actions0(const pbuffer_t p, const paction_t x, const unknown_t p0, cons
     case ACT_SHL8:   shl8(p0, x->value, p0size);  break;
     case ACT_SHR8:   shr8(p0, x->value, p0size);  break;
     case ACT_SUB8:   sub8(p0, x->value, p0size);  break;
-    case ACT_XOR8:   xor8(p0, x->value, p0size);  break;
+    case ACT_XOR8:   xor8(p0, x->value, p0size, step);  break;
 
     case ACT_ADD16:  add16(p0, x->value, p0size); break;
     case ACT_ROL16:  rol16(p0, x->value, p0size); break;
@@ -48,11 +48,11 @@ int dump_actions0(const pbuffer_t p, const paction_t x, const unknown_t p0, cons
   return 0;
 }
 
-int dump_actions1(const pbuffer_t p, const poptions_t o, const uint64_t offset, const uint64_t size) {
+int dump_actions1(const pbuffer_t p, const poptions_t o, const uint64_t offset, const size_t size, const int32_t step) {
   paction_t x = o->actions;
   while (x) {
     if (0 != size) {
-      dump_actions0(p, x, getp(p, offset, size), size);
+      dump_actions0(p, x, getp(p, offset, size), size, step);
     }
 
     x = x->actions;
@@ -62,7 +62,7 @@ int dump_actions1(const pbuffer_t p, const poptions_t o, const uint64_t offset, 
 }
 
 int dump_actions2(const pbuffer_t p, const poptions_t o, const handle_t s, const char* name, const int action,
-                  const uint64_t offset, const uint64_t size, const uint64_t vaddr) {
+                  const uint64_t offset, const size_t size, const uint64_t vaddr) {
   int n = 0;
 
   handle_t oc = ocattach(p);

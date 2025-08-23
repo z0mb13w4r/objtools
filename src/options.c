@@ -431,8 +431,18 @@ int oinsert(handle_t o, handle_t p, const int action) {
     poptions_t o0 = CAST(poptions_t, o);
     paction_t p0 = CAST(paction_t, p);
     p0->action  = action;
-    p0->actions = o0->actions;
-    o0->actions = p0;
+
+    if (o0->actions) {
+      paction_t p1 = o0->actions;
+      while (p1->actions) {
+        p1 = p1->actions;
+      }
+
+      p1->actions = p0;
+    } else {
+      o0->actions = p0;
+    }
+
     return ECODE_OK;
   }
 

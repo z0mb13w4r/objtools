@@ -41,7 +41,7 @@ int ror8(const unknown_t p, const uint8_t v, const size_t size);
 int shl8(const unknown_t p, const uint8_t v, const size_t size);
 int shr8(const unknown_t p, const uint8_t v, const size_t size);
 int sub8(const unknown_t p, const uint8_t v, const size_t size);
-int xor8(const unknown_t p, const uint8_t v, const size_t size);
+int xor8(const unknown_t p, const uint8_t v, const size_t size, const int32_t step);
 
 int add16(const unknown_t p, const uint16_t v, const size_t size);
 int rol16(const unknown_t p, const uint16_t v, const size_t size);
