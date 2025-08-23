@@ -9,9 +9,12 @@
 
 #include "static/convert-ng.ci"
 
+#define THIS_NAME "convert-ng"
+
+
 static int get_options_convert(poptions_t o, int argc, char** argv, char* name) {
   if (0 == argc) {
-    usage0(o, "convert-ng", zCONVERTARGS);
+    usage0(o, THIS_NAME, zCONVERTARGS);
     return -1;
   }
 
@@ -42,11 +45,11 @@ static int get_options_convert(poptions_t o, int argc, char** argv, char* name) 
   }
 
   if (o->action & OPTPROGRAM_VERSION) {
-    return version0(o, "convert-ng", zCONVERTARGS);
+    return version0(o, THIS_NAME, zCONVERTARGS);
   }
 
   if (o->action & OPTPROGRAM_HELP) {
-    return usage0(o, "convert-ng", zCONVERTARGS);
+    return usage0(o, THIS_NAME, zCONVERTARGS);
   }
 
   return ECODE_OK;
@@ -62,6 +65,7 @@ int main(int argc, char* argv[]) {
       if (issafe(p)) {
         pbstring_t b0 = bstring1(p);
         if (b0) {
+          int32_t step = 0;
           paction_t x0 = o->actions;
           while (x0) {
             dump_actions0(p, x0, b0->data, b0->size);
@@ -77,6 +81,10 @@ int main(int argc, char* argv[]) {
               b0 = bstring4(b0, hex16_encode(b0->data, b0->size));
             } else if (ACT_HEX32E == x0->action) {
               b0 = bstring4(b0, hex32_encode(b0->data, b0->size));
+            } else if (ACT_INC == x0->action) {
+              step =  x0->value;
+            } else if (ACT_DEC == x0->action) {
+              step = -x0->value;
             }
 
             x0 = x0->actions;
