@@ -578,10 +578,64 @@ handle_t hex8_decode(unknown_t src, size_t srcsize) {
 }
 
 handle_t hex16_decode(unknown_t src, size_t srcsize) {
+  if (src && srcsize) {
+    puchar_t psrc = CAST(puchar_t, src);
+
+    pbstring_t dst = bstrmallocsize(srcsize);
+    if (dst) {
+      int c = -1;
+      pushort_t pdst = CAST(pushort_t, dst->data);
+
+      bool_t isok = FALSE;
+      for (size_t i = 0; i < srcsize; ++i) {
+        uchar_t ch0 = psrc[i];
+        uchar_t ch1 = psrc[i + 1];
+        if ('0' == ch0 && ('x' == ch1 || 'X' == ch1)) continue;
+        bool_t ishex = ishex8(ch0);
+        if (ishex) {
+          if (!isok) ++c;
+          pdst[c] = (pdst[c] << 4) + hex8(ch0);
+        }
+        isok = ishex;
+      }
+
+      pdst[++c] = 0;   /* string padding character */
+      dst->size = c;
+      return dst;
+    }
+  }
+
   return NULL;
 }
 
 handle_t hex32_decode(unknown_t src, size_t srcsize) {
+  if (src && srcsize) {
+    puchar_t psrc = CAST(puchar_t, src);
+
+    pbstring_t dst = bstrmallocsize(srcsize);
+    if (dst) {
+      int c = -1;
+      pulong_t pdst = CAST(pulong_t, dst->data);
+
+      bool_t isok = FALSE;
+      for (size_t i = 0; i < srcsize; ++i) {
+        uchar_t ch0 = psrc[i];
+        uchar_t ch1 = psrc[i + 1];
+        if ('0' == ch0 && ('x' == ch1 || 'X' == ch1)) continue;
+        bool_t ishex = ishex8(ch0);
+        if (ishex) {
+          if (!isok) ++c;
+          pdst[c] = (pdst[c] << 4) + hex8(ch0);
+        }
+        isok = ishex;
+      }
+
+      pdst[++c] = 0;   /* string padding character */
+      dst->size = c;
+      return dst;
+    }
+  }
+
   return NULL;
 }
 
