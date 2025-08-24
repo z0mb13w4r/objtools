@@ -474,12 +474,12 @@ handle_t dec8_decode(unknown_t src, size_t srcsize) {
         bool_t isnum = isnum8(ch);
         if (isnum) {
           if (!isok) ++c;
-          pdst[c] = (pdst[c] * 10) + (ch - '0');
+          pdst[c] = (pdst[c] * 10) + dec8(ch);
         }
         isok = isnum;
       }
 
-      pdst[++c] = '\0';   /* string padding character */
+      pdst[++c] = 0;   /* string padding character */
       dst->size = c;
       return dst;
     }
@@ -503,12 +503,12 @@ handle_t dec16_decode(unknown_t src, size_t srcsize) {
         bool_t isnum = isnum8(ch);
         if (isnum) {
           if (!isok) ++c;
-          pdst[c] = (pdst[c] * 10) + (ch - '0');
+          pdst[c] = (pdst[c] * 10) + dec8(ch);
         }
         isok = isnum;
       }
 
-      pdst[++c] = '\0';   /* string padding character */
+      pdst[++c] = 0;   /* string padding character */
       dst->size = c;
       return dst;
     }
@@ -532,12 +532,12 @@ handle_t dec32_decode(unknown_t src, size_t srcsize) {
         bool_t isnum = isnum8(ch);
         if (isnum) {
           if (!isok) ++c;
-          pdst[c] = (pdst[c] * 10) + (ch - '0');
+          pdst[c] = (pdst[c] * 10) + dec8(ch);
         }
         isok = isnum;
       }
 
-      pdst[++c] = '\0';   /* string padding character */
+      pdst[++c] = 0;   /* string padding character */
       dst->size = c;
       return dst;
     }
@@ -557,16 +557,18 @@ handle_t hex8_decode(unknown_t src, size_t srcsize) {
 
       bool_t isok = FALSE;
       for (size_t i = 0; i < srcsize; ++i) {
-        uchar_t ch = psrc[i];
-        bool_t ishex = ishex8(ch);
+        uchar_t ch0 = psrc[i];
+        uchar_t ch1 = psrc[i + 1];
+        if ('0' == ch0 && ('x' == ch1 || 'X' == ch1)) continue;
+        bool_t ishex = ishex8(ch0);
         if (ishex) {
           if (!isok) ++c;
-          pdst[c] = (pdst[c] * 16) + hex8(ch);
+          pdst[c] = (pdst[c] << 4) + hex8(ch0);
         }
         isok = ishex;
       }
 
-      pdst[++c] = '\0';   /* string padding character */
+      pdst[++c] = 0;   /* string padding character */
       dst->size = c;
       return dst;
     }
