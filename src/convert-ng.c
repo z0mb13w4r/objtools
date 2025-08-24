@@ -74,6 +74,10 @@ int main(int argc, char* argv[]) {
               b0 = bstring4(b0, base64_encode(b0->data, b0->size));
             } else if (ACT_DEC8D == x0->action) {
               b0 = bstring4(b0, dec8_decode(b0->data, b0->size));
+            } else if (ACT_DEC16D == x0->action) {
+              b0 = bstring4(b0, dec16_decode(b0->data, b0->size));
+            } else if (ACT_DEC32D == x0->action) {
+              b0 = bstring4(b0, dec32_decode(b0->data, b0->size));
             } else if (ACT_HEX8E == x0->action) {
               b0 = bstring4(b0, hex8_encode(b0->data, b0->size));
             } else if (ACT_HEX16E == x0->action) {
