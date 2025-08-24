@@ -7,6 +7,7 @@
 #include "buffer.h"
 #include "decode.h"
 #include "bstring.h"
+#include "objutils.h"
 
 uchar_t base64_map[] = {
   'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
@@ -470,7 +471,7 @@ handle_t dec8_decode(unknown_t src, size_t srcsize) {
       bool_t isok = FALSE;
       for (size_t i = 0; i < srcsize; ++i) {
         uchar_t ch = psrc[i];
-        bool_t isnum = isdigit(ch);
+        bool_t isnum = isnum8(ch);
         if (isnum) {
           if (!isok) ++c;
           pdst[c] = (pdst[c] * 10) + (ch - '0');
@@ -499,7 +500,7 @@ handle_t dec16_decode(unknown_t src, size_t srcsize) {
       bool_t isok = FALSE;
       for (size_t i = 0; i < srcsize; ++i) {
         uchar_t ch = psrc[i];
-        bool_t isnum = isdigit(ch);
+        bool_t isnum = isnum8(ch);
         if (isnum) {
           if (!isok) ++c;
           pdst[c] = (pdst[c] * 10) + (ch - '0');
@@ -528,7 +529,7 @@ handle_t dec32_decode(unknown_t src, size_t srcsize) {
       bool_t isok = FALSE;
       for (size_t i = 0; i < srcsize; ++i) {
         uchar_t ch = psrc[i];
-        bool_t isnum = isdigit(ch);
+        bool_t isnum = isnum8(ch);
         if (isnum) {
           if (!isok) ++c;
           pdst[c] = (pdst[c] * 10) + (ch - '0');
@@ -546,6 +547,31 @@ handle_t dec32_decode(unknown_t src, size_t srcsize) {
 }
 
 handle_t hex8_decode(unknown_t src, size_t srcsize) {
+  if (src && srcsize) {
+    puchar_t psrc = CAST(puchar_t, src);
+
+    pbstring_t dst = bstrmallocsize(srcsize);
+    if (dst) {
+      int c = -1;
+      puchar_t pdst = CAST(puchar_t, dst->data);
+
+      bool_t isok = FALSE;
+      for (size_t i = 0; i < srcsize; ++i) {
+        uchar_t ch = psrc[i];
+        bool_t ishex = ishex8(ch);
+        if (ishex) {
+          if (!isok) ++c;
+          pdst[c] = (pdst[c] * 16) + hex8(ch);
+        }
+        isok = ishex;
+      }
+
+      pdst[++c] = '\0';   /* string padding character */
+      dst->size = c;
+      return dst;
+    }
+  }
+
   return NULL;
 }
 

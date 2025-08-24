@@ -18,6 +18,8 @@ bool_t isnamedone(const char* names[], const size_t maxnames, const char* check)
 bool_t ishex8(int x);
 bool_t ishexb(unknown_t p, const size_t size);
 
+bool_t isnum8(int x);
+
 uint64_t ulog2(uint64_t  x);
 uint64_t atoimode(const char* src);
 uint64_t atovalue(const char* src);
@@ -31,6 +33,8 @@ const char* strpickunknown(const pick_t x);
 size_t strlenpick(const pconvert_t p);
 
 size_t fsize(FILE *f);
+
+uint64_t dec8(int x);
 
 uint64_t hex8(int x);
 uint64_t hex16(int x0, int x1);
