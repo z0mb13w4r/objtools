@@ -78,10 +78,16 @@ int main(int argc, char* argv[]) {
               b0 = bstring4(b0, dec16_decode(b0->data, b0->size));
             } else if (ACT_DEC32D == x0->action) {
               b0 = bstring4(b0, dec32_decode(b0->data, b0->size));
+            } else if (ACT_HEX8D == x0->action) {
+              b0 = bstring4(b0, hex8_decode(b0->data, b0->size));
             } else if (ACT_HEX8E == x0->action) {
               b0 = bstring4(b0, hex8_encode(b0->data, b0->size));
+            } else if (ACT_HEX16D == x0->action) {
+              b0 = bstring4(b0, hex16_decode(b0->data, b0->size));
             } else if (ACT_HEX16E == x0->action) {
               b0 = bstring4(b0, hex16_encode(b0->data, b0->size));
+            } else if (ACT_HEX32D == x0->action) {
+              b0 = bstring4(b0, hex32_decode(b0->data, b0->size));
             } else if (ACT_HEX32E == x0->action) {
               b0 = bstring4(b0, hex32_encode(b0->data, b0->size));
             } else if (ACT_INC == x0->action) {
