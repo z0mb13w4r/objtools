@@ -116,10 +116,9 @@ size_t fsize(FILE *f) {
 }
 
 bool_t ishex8(int x) {
-  if (isnum8(x))                 return TRUE;
-  else if ('a' <= x && x <= 'f') return TRUE;
+  if ('a' <= x && x <= 'f') return TRUE;
   else if ('A' <= x && x <= 'F') return TRUE;
-  return FALSE;
+  return isnum8(x);
 }
 
 bool_t ishexb(unknown_t p, const size_t size) {
@@ -146,8 +145,7 @@ uint64_t dec8(int x) {
 uint64_t hex8(int x) {
   if ('a' <= x && x <= 'f')      return x - 'a' + 10;
   else if ('A' <= x && x <= 'F') return x - 'A' + 10;
-  else if ('0' <= x && x <= '9') return x - '0';
-  return 0;
+  return dec8(x);
 }
 
 uint64_t hex16(int x0, int x1) {
