@@ -545,6 +545,18 @@ handle_t dec32_decode(unknown_t src, size_t srcsize) {
   return NULL;
 }
 
+handle_t hex8_decode(unknown_t src, size_t srcsize) {
+  return NULL;
+}
+
+handle_t hex16_decode(unknown_t src, size_t srcsize) {
+  return NULL;
+}
+
+handle_t hex32_decode(unknown_t src, size_t srcsize) {
+  return NULL;
+}
+
 handle_t base64_decode(unknown_t src, size_t srcsize) {
   if (src && srcsize) {
     size_t maxsize = srcsize * 3 / 4;

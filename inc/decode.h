@@ -66,6 +66,10 @@ handle_t dec8_decode(unknown_t src, size_t srcsize);
 handle_t dec16_decode(unknown_t src, size_t srcsize);
 handle_t dec32_decode(unknown_t src, size_t srcsize);
 
+handle_t hex8_decode(unknown_t src, size_t srcsize);
+handle_t hex16_decode(unknown_t src, size_t srcsize);
+handle_t hex32_decode(unknown_t src, size_t srcsize);
+
 handle_t base64_decode(unknown_t src, size_t srcsize);
 
 uint64_t sleb128_decode(unknown_t src, size_t srcsize);
