@@ -201,10 +201,18 @@ static void callback_dynamichdr(handle_t p, handle_t dyn, unknown_t param) {
   }
 }
 
+static void callback_versionrefs(handle_t p, handle_t section, unknown_t param) {
+  size_t name_size = *CAST(size_t*, param);
+//  if (SHT_GNU_verneed != ocget_type(section)) return;
+
+  int n = 0;
+  n += printf_eol();
+}
+
 static void callback_programhdr(handle_t p, handle_t phdr, unknown_t param) {
   size_t name_size = *CAST(size_t*, param);
   int n = 0;
-  n += printf_pick(zPHDRTYPE, ocget_type(phdr), USE_LT | USE_TAB | SET_PAD(name_size));
+  n += printf_pick(ecPHDRTYPE, ocget_type(phdr), USE_LT | USE_TAB | SET_PAD(name_size));
 
   const imode_t USE_FHEXNN = ocis64(p) ? USE_FHEX64 : USE_FHEX32;
 
@@ -318,6 +326,8 @@ static int dump_privatehdr(const handle_t p, const poptions_t o) {
     n += printf_eol();
 
     n += printf_text("VERSION REFERENCES", USE_LT | USE_COLON | USE_EOL);
+    ocdo_sections(p, callback_versionrefs, &max_name_size);
+
     n += printf_eol();
   }
 

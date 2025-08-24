@@ -418,7 +418,7 @@ static int dump_programheaders3(const pbuffer_t p, const uint64_t p_type, const 
                                const uint64_t p_vaddr, const uint64_t p_paddr, const uint64_t p_filesz, const uint64_t p_memsz,
                                const uint64_t p_flags, const uint64_t p_align) {
   int n = 0;
-  n += printf_pick(zPHDRTYPE, p_type, USE_LT | USE_TAB | SET_PAD(17));
+  n += printf_pick(ecPHDRTYPE, p_type, USE_LT | USE_TAB | SET_PAD(17));
   n += printf_nice(p_offset, USE_FHEX24);
   n += printf_nice(p_vaddr,  USE_FHEX64);
   n += printf_nice(p_paddr,  USE_FHEX64);

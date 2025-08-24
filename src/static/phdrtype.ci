@@ -4,7 +4,7 @@
 #define PT_OPENBSD_WXNEEDED    (PT_LOOS + 0x5a3dbe7) /* Program does W^X violations.  */
 #define PT_OPENBSD_BOOTDATA    (PT_LOOS + 0x5a41be6) /* Section for boot arguments.  */
 
-convert_t zPHDRTYPE[] = {
+convert_t ecPHDRTYPE[] = {
   {"NULL",                         PT_NULL},
   {"LOAD",                         PT_LOAD},
   {"DYNAMIC",                      PT_DYNAMIC},
