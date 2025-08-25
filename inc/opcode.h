@@ -203,6 +203,7 @@ const char* ocget_symbol(handle_t p, uint64_t vaddr, char **name,
                      uint64_t *laddr, uint64_t *haddr, uint64_t *offset);
 
 const char* ocget_name(handle_t p);
+const char* ocget_namebyoffset(handle_t p, const int offset);
 const char* ocget_fileformat(handle_t p);
 
 void occonfig(const char* name, const char* target);
