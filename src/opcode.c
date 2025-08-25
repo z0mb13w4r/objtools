@@ -277,7 +277,20 @@ bool_t ochas_shdr(handle_t p) {
 }
 
 uint64_t ocget_type(handle_t p) {
-  if (ismode(p, MODE_OCPHDR)) {
+  if (ismode(p, MODE_OCSHDR)) {
+    asection* p0 = ocget(p, MODE_OCSHDR);
+    handle_t p1 = ocget(p, OPCODE_PARAM2);
+    if (p0 && isopcode(p1)) {
+      handle_t e0 = ocget(p1, OPCODE_RAWDATA);
+      if (isELF32(e0)) {
+        Elf32_Shdr* e1 = ecget_shdr32byindex(e0, p0->index + 1);
+        return e1 ? e1->sh_type : 0;
+      } else if (isELF64(e0)) {
+        Elf64_Shdr* e1 = ecget_shdr64byindex(e0, p0->index + 1);
+        return e1 ? e1->sh_type : 0;
+      }
+    }
+  } else if (ismode(p, MODE_OCPHDR)) {
     pbfd_phdr_t p0 = ocget(p, MODE_OCPHDR);
     return p0 ? p0->p_type : 0;
   } else if (ismode(p, MODE_OCDHDR32)) {

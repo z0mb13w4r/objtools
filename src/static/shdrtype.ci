@@ -1,4 +1,4 @@
-convert_t zSHDRTYPE[] = {
+convert_t ecSHDRTYPE[] = {
   {"NULL",                         SHT_NULL},
   {"PROGBITS",                     SHT_PROGBITS},
   {"SYMTAB",                       SHT_SYMTAB},

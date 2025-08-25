@@ -203,9 +203,11 @@ static void callback_dynamichdr(handle_t p, handle_t dyn, unknown_t param) {
 
 static void callback_versionrefs(handle_t p, handle_t section, unknown_t param) {
   size_t name_size = *CAST(size_t*, param);
-//  if (SHT_GNU_verneed != ocget_type(section)) return;
-
   int n = 0;
+  if (SHT_GNU_verneed != ocget_type(section)) return;
+asection *sec = ocget(section, MODE_OCSHDR);
+printf("%s %d %d", ocget_name(section), sec->index, ocget_type(section));
+n += printf_pick(ecSHDRTYPE, ocget_type(section), USE_SPACE);
   n += printf_eol();
 }
 

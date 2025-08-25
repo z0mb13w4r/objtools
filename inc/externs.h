@@ -40,7 +40,7 @@ extern convert_t zDWEXPR[];
 extern convert_t zDWEXPRLITE[];
 
 extern convert_t ecPHDRTYPE[];
-extern convert_t zSHDRTYPE[];
+extern convert_t ecSHDRTYPE[];
 
 extern convert_t oeSEGMENTFLAGS[];
 extern convert_t oeREGISTERFLAGS[];
