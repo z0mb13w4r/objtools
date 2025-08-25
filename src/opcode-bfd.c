@@ -8,7 +8,7 @@
 static void callback_section(bfd *f, asection *s, void *p) {
   popfunc_t pcb = CAST(popfunc_t, p);
   if (pcb && pcb->cbfunc) {
-    MALLOCSWRAPEX(opwrap_t, sec, MODE_OCSHDR, s, p);
+    MALLOCSWRAPEX(opwrap_t, sec, MODE_OCSHDR, s, pcb->handle);
     pcb->cbfunc(pcb->handle, psec, pcb->param);
   }
 }
