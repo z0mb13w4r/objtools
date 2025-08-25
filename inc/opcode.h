@@ -195,7 +195,7 @@ uint64_t ocget_opb(handle_t p, handle_t s);
 uint64_t ocget_soffset(handle_t p, handle_t s);
 uint64_t ocget_eoffset(handle_t p, handle_t s);
 
-unknown_t ocget_data(handle_t p);
+unknown_t ocget_rawdata(handle_t p);
 
 const char* ocget_symbol(handle_t p, uint64_t vaddr, char **name,
                      uint64_t *nline, uint64_t *ncolumn, uint64_t *discriminator, char **source,

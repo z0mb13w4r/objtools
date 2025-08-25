@@ -575,8 +575,21 @@ uint64_t ocget_eoffset(handle_t p, handle_t s) {
   return eoffset;
 }
 
-unknown_t ocget_data(handle_t p) {
-  if (ismode(p, MODE_OCSHDR32)) {
+unknown_t ocget_rawdata(handle_t p) {
+  if (ismode(p, MODE_OCSHDR)) {
+    asection* p0 = ocget(p, MODE_OCSHDR);
+    handle_t p1 = ocget(p, OPCODE_PARAM2);
+    if (p0 && isopcode(p1)) {
+      handle_t e0 = ocget(p1, OPCODE_RAWDATA);
+      if (isELF32(e0)) {
+        Elf32_Shdr* e1 = ecget_shdr32byindex(e0, p0->index + 1);
+        return e1 ? getp(e0, e1->sh_offset, e1->sh_size) : 0;
+      } else if (isELF64(e0)) {
+        Elf64_Shdr* e1 = ecget_shdr64byindex(e0, p0->index + 1);
+        return e1 ? getp(e0, e1->sh_offset, e1->sh_size) : 0;
+      }
+    }
+  } else if (ismode(p, MODE_OCSHDR32)) {
     Elf32_Shdr* p0 = ocget(p, MODE_OCSHDR32);
     return p0 ? getp(ocget(p, OPCODE_PARAM2), p0->sh_offset, p0->sh_size) : 0;
   } else if (ismode(p, MODE_OCSHDR64)) {
