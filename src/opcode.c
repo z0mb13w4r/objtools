@@ -222,6 +222,10 @@ bool_t ochas(handle_t p, const imode_t mode) {
   return ocget(p, mode) ? TRUE : FALSE;
 }
 
+bool_t ocisELF(handle_t p) {
+  return isopcode(p) && isELF(ocget(p, OPCODE_RAWDATA)) ? TRUE : FALSE;
+}
+
 bool_t ocuse_vaddr(handle_t p, const uint64_t vaddr) {
   if (isopcode(p)) {
     popcode_t p0 = ocget(p, OPCODE_THIS);

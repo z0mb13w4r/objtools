@@ -203,11 +203,39 @@ static void callback_dynamichdr(handle_t p, handle_t dyn, unknown_t param) {
 
 static void callback_versionrefs(handle_t p, handle_t section, unknown_t param) {
   size_t name_size = *CAST(size_t*, param);
-  int n = 0;
   if (SHT_GNU_verneed != ocget_type(section)) return;
-asection *sec = ocget(section, MODE_OCSHDR);
-printf("%s %d %d", ocget_name(section), sec->index, ocget_type(section));
-n += printf_pick(ecSHDRTYPE, ocget_type(section), USE_SPACE);
+
+  int n = 0;
+  if (ocisELF(p)) {
+    n += printf_text("VERSION REFERENCES", USE_LT | USE_COLON | USE_EOL);
+    if (ocis32(p)) {
+      Elf32_Word offset = 0;
+//  for (Elf32_Word j = 0; j < shdr->sh_info; ++j) {
+//    Elf32_Verneed *vn = getp(p, shdr->sh_offset, sizeof(Elf32_Verneed));
+      puchar_t p0 = ocget_rawdata(section);
+      Elf32_Verneed *vn = CAST(Elf32_Verneed *, p0 + offset);
+      if (vn) {
+//      n += dump_versionneed1(p, offset, shdr->sh_link, vn->vn_version, vn->vn_file, vn->vn_cnt);
+//
+        Elf32_Word offset0 = offset + vn->vn_aux;
+        for (Elf32_Half k = 0; k < vn->vn_cnt; ++k) {
+//        Elf32_Vernaux *va = getp(p, shdr->sh_offset + xoffset, sizeof(Elf32_Vernaux));
+          Elf32_Vernaux *va = CAST(Elf32_Vernaux *, p0 + offset0);
+          if (va) {
+            n += printf_nice(va->vna_hash, USE_FHEX32);
+            n += printf_nice(va->vna_flags, USE_FHEX8);
+            n += printf_nice(va->vna_other, USE_LHEX8);
+            n += printf_eol();
+//          n += dump_versionneed2(p, xoffset, shdr->sh_link, va->vna_name, va->vna_flags, va->vna_other);
+            offset0 += va->vna_next;
+          }
+        }
+      }
+
+      offset += vn->vn_next;
+    }
+  }
+
   n += printf_eol();
 }
 
@@ -327,7 +355,6 @@ static int dump_privatehdr(const handle_t p, const poptions_t o) {
     ocdo_dynamics(p, callback_dynamichdr, &max_name_size);
     n += printf_eol();
 
-    n += printf_text("VERSION REFERENCES", USE_LT | USE_COLON | USE_EOL);
     ocdo_sections(p, callback_versionrefs, &max_name_size);
 
     n += printf_eol();
