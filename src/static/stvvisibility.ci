@@ -1,4 +1,4 @@
-static convert_t zSTVVISIBILITY[] = {
+static convert_t ecSTVVISIBILITY[] = {
   {"DEFAULT",    STV_DEFAULT},
   {"INTERNAL",   STV_INTERNAL},
   {"HIDDEN",     STV_HIDDEN},

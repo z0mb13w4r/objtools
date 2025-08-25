@@ -277,7 +277,7 @@ static int dump_sectionheaders1(const pbuffer_t p, const int index, const int ma
   n += printf_nice(sh_offset, USE_LHEX32);
   n += printf_nice(sh_size, USE_LHEX32);
   n += printf_nice(sh_entsize, USE_LHEX8);
-  n += printf_mask(zSHDRFLAGS, sh_flags, USE_RT | USE_NOSPACE | SET_PAD(4));
+  n += printf_mask(ecSHDRFLAGS, sh_flags, USE_RT | USE_NOSPACE | SET_PAD(4));
   n += printf_nice(sh_link, USE_DEC2);
   n += printf_nice(sh_info, USE_DEC3);
   n += printf_nice(sh_addralign, USE_DEC3);
@@ -847,7 +847,7 @@ static int dump_symbols1(const pbuffer_t p, const poptions_t o, const uint64_t s
   n += printf_nice(st_size, USE_DEC5);
   n += printf_pick(ecSTTTYPE, ELF_ST_TYPE(st_info), USE_LT | USE_SPACE | SET_PAD(8));
   n += printf_pick(ecSTBBIND, ELF_ST_BIND(st_info), USE_LT | USE_SPACE | SET_PAD(7));
-  n += printf_pick(zSTVVISIBILITY, ELF_ST_VISIBILITY(st_other), USE_LT | USE_SPACE | SET_PAD(9));
+  n += printf_pick(ecSTVVISIBILITY, ELF_ST_VISIBILITY(st_other), USE_LT | USE_SPACE | SET_PAD(9));
   n += printf_text(get_SHNINDEX(st_shndx), USE_LT | USE_SPACE);
   return n;
 }

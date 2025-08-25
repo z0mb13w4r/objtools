@@ -1,4 +1,4 @@
-static convert_t zSHNINDEX[] = {
+static convert_t ecSHNINDEX[] = {
   {"UND",  SHN_UNDEF},
   {"ABS",  SHN_ABS},
   {"COM",  SHN_COMMON},
@@ -8,7 +8,7 @@ static convert_t zSHNINDEX[] = {
 static const char* get_SHNINDEX(const pick_t x) {
   static char buff[32];
 
-  const char* def = strpicknull(zSHNINDEX, x);
+  const char* def = strpicknull(ecSHNINDEX, x);
   if (NULL == def) {
     snprintf(buff, sizeof(buff), "%3ld", x);
   } else {

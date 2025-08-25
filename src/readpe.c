@@ -366,7 +366,7 @@ static int dump_version0(const pbuffer_t p, const uint16_t wLength, const uint16
   n += printf_nice(wValueLength, USE_FHEX16 | USE_EOL);
   n += printf_text("wType", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(wType, USE_FHEX16);
-  n += printf_pick(zSTRINGTYPE, wType, USE_SPACE | USE_EOL);
+  n += printf_pick(peSTRINGTYPE, wType, USE_SPACE | USE_EOL);
   n += printf_text("szKey", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE + 1));
   if (0 == strcmp(name, "StringTable")) {
     n += printf_sore(szKey, szKeySize, USE_STR16);
@@ -390,7 +390,7 @@ static int dump_version1(const pbuffer_t p, const uint16_t wLength, const uint16
   n += printf_nice(wValueLength, USE_FHEX16 | USE_EOL);
   n += printf_text("wType", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(wType, USE_FHEX16);
-  n += printf_pick(zSTRINGTYPE, wType, USE_SPACE | USE_EOL);
+  n += printf_pick(peSTRINGTYPE, wType, USE_SPACE | USE_EOL);
   n += printf_text("szKey", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE + 1));
   n += printf_sore(szKey, szKeySize, USE_STR16 | USE_EOL);
   n += printf_text("szValue", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE + 1));
@@ -410,7 +410,7 @@ static int dump_version2(const pbuffer_t p, const uint16_t wLength, const uint16
   n += printf_nice(wValueLength, USE_FHEX16 | USE_EOL);
   n += printf_text("wType", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(wType, USE_FHEX16);
-  n += printf_pick(zSTRINGTYPE, wType, USE_SPACE | USE_EOL);
+  n += printf_pick(peSTRINGTYPE, wType, USE_SPACE | USE_EOL);
   n += printf_text("szKey", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE + 1));
   n += printf_sore(szKey, szKeySize, USE_STR16 | USE_EOL);
   n += printf_text("Value", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE + 1));

@@ -1,4 +1,4 @@
-static convert_t zSHDRFLAGS[] = {
+static convert_t ecSHDRFLAGS[] = {
   {"W",                            SHF_WRITE},
   {"A",                            SHF_ALLOC},
   {"X",                            SHF_EXECINSTR},
