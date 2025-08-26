@@ -15,11 +15,11 @@ typedef struct find_s {
 int isfind(handle_t p);
 
 unknown_t fget(handle_t p);
+unknown_t fmove(handle_t p, const size_t cpos);
+unknown_t fstep(handle_t p, const size_t chunksize);
+unknown_t fupdate(handle_t p, const size_t cpos, const size_t chunksize);
 
 handle_t fnext(handle_t p);
-handle_t fmove(handle_t p, const size_t cpos);
-handle_t fstep(handle_t p, const size_t chunksize);
-handle_t fupdate(handle_t p, const size_t cpos, const size_t chunksize);
 handle_t fmalloc(unknown_t data, const size_t size, const size_t chunksize);
 handle_t ffree(handle_t p);
 

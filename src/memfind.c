@@ -28,44 +28,44 @@ handle_t fnext(handle_t p) {
   return p;
 }
 
-handle_t fmove(handle_t p, const size_t cpos) {
+unknown_t fmove(handle_t p, const size_t cpos) {
   if (isfind(p)) {
     pfind_t p0 = CAST(pfind_t, p);
     if (p0) {
       p0->cpos = cpos;
-      if (p0->cpos < p0->epos) return p;
+      if (p0->cpos < p0->epos) return fget(p);
       p0->item = NULL;
     }
   }
 
-  return p;
+  return NULL;
 }
 
-handle_t fstep(handle_t p, const size_t chunksize) {
+unknown_t fstep(handle_t p, const size_t chunksize) {
   if (isfind(p)) {
     pfind_t p0 = CAST(pfind_t, p);
     if (p0) {
       p0->cpos += chunksize;
-      if (p0->cpos < p0->epos) return p;
+      if (p0->cpos < p0->epos) return fget(p);
       p0->item = NULL;
     }
   }
 
-  return p;
+  return NULL;
 }
 
-handle_t fupdate(handle_t p, const size_t cpos, const size_t chunksize) {
+unknown_t fupdate(handle_t p, const size_t cpos, const size_t chunksize) {
   if (isfind(p)) {
     pfind_t p0 = CAST(pfind_t, p);
     if (p0) {
       p0->cpos = cpos;
       p0->chunksize = chunksize;
-      if (p0->cpos < p0->epos) return p;
+      if (p0->cpos < p0->epos) return fget(p);
       p0->item = NULL;
     }
   }
 
-  return p;
+  return NULL;
 }
 
 handle_t fmalloc(unknown_t data, const size_t size, const size_t chunksize) {

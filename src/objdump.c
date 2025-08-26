@@ -4,6 +4,7 @@
 
 #include "printf.h"
 #include "opcode.h"
+#include "memfind.h"
 #include "ocdwarf.h"
 #include "objdump.h"
 
@@ -220,22 +221,25 @@ static void callback_versionrefs(handle_t p, handle_t section, unknown_t param) 
     n += printf_text("VERSION REFERENCES", USE_LT | USE_COLON | USE_EOL);
     if (ocis32(p)) {
       Elf32_Word offset = 0;
+      handle_t f = ocfget_rawdata(section);
+      if (f) {
 //  for (Elf32_Word j = 0; j < shdr->sh_info; ++j) {
-      puchar_t p0 = ocget_rawdata(section);
-      Elf32_Verneed *vn = CAST(Elf32_Verneed *, p0 + offset);
-      if (vn) {
-        Elf32_Word offset0 = offset + vn->vn_aux;
-        for (Elf32_Half k = 0; k < vn->vn_cnt; ++k) {
-          Elf32_Vernaux *va = CAST(Elf32_Vernaux *, p0 + offset0);
-          if (va) {
-            callback_versionrefs0(p, section, va->vna_hash, va->vna_flags, va->vna_other, va->vna_name);
-            offset0 += va->vna_next;
+        Elf32_Verneed *vn = fupdate(f, offset, sizeof(Elf32_Verneed));
+        if (vn) {
+          Elf32_Word offset0 = offset + vn->vn_aux;
+          for (Elf32_Half k = 0; k < vn->vn_cnt; ++k) {
+            Elf32_Vernaux *va = fupdate(f, offset0, sizeof(Elf32_Vernaux));
+            if (va) {
+              callback_versionrefs0(p, section, va->vna_hash, va->vna_flags, va->vna_other, va->vna_name);
+              offset0 += va->vna_next;
+            }
           }
         }
-      }
 
-      offset += vn->vn_next;
+        offset += vn->vn_next;
 //  }
+        ffree(f);
+      }
     }
   }
 

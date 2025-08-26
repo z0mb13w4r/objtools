@@ -4,6 +4,7 @@
 #include "pecode.h"
 #include "printf.h"
 #include "elfcode.h"
+#include "memfind.h"
 #include "ocdwarf.h"
 #include "options.h"
 #include "objutils.h"
@@ -577,6 +578,10 @@ uint64_t ocget_eoffset(handle_t p, handle_t s) {
   }
 
   return eoffset;
+}
+
+handle_t ocfget_rawdata(handle_t p) {
+  return fmalloc(ocget_rawdata(p), ocget_size(p), 12345);
 }
 
 unknown_t ocget_rawdata(handle_t p) {
