@@ -201,6 +201,17 @@ static void callback_dynamichdr(handle_t p, handle_t dyn, unknown_t param) {
   }
 }
 
+static int callback_versionrefs0(handle_t p, handle_t section,
+                     const uint64_t vna_hash, const uint64_t vna_flags, const uint64_t vna_other, const uint64_t vna_name) {
+  int n = 0;
+  n += printf_nice(vna_hash, USE_FHEX32);
+  n += printf_nice(vna_flags, USE_FHEX8);
+  n += printf_nice(vna_other, USE_LHEX8);
+  n += printf_text(ocget_namebyoffset(section, vna_name), USE_LT | USE_SPACE);
+  n += printf_eol();
+  return n;
+}
+
 static void callback_versionrefs(handle_t p, handle_t section, unknown_t param) {
   if (SHT_GNU_verneed != ocget_type(section)) return;
 
@@ -217,11 +228,7 @@ static void callback_versionrefs(handle_t p, handle_t section, unknown_t param) 
         for (Elf32_Half k = 0; k < vn->vn_cnt; ++k) {
           Elf32_Vernaux *va = CAST(Elf32_Vernaux *, p0 + offset0);
           if (va) {
-            n += printf_nice(va->vna_hash, USE_FHEX32);
-            n += printf_nice(va->vna_flags, USE_FHEX8);
-            n += printf_nice(va->vna_other, USE_LHEX8);
-            n += printf_text(ocget_namebyoffset(section, va->vna_name), USE_LT);
-            n += printf_eol();
+            callback_versionrefs0(p, section, va->vna_hash, va->vna_flags, va->vna_other, va->vna_name);
             offset0 += va->vna_next;
           }
         }
