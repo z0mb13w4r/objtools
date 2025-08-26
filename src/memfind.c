@@ -22,8 +22,44 @@ unknown_t fget(handle_t p) {
 handle_t fnext(handle_t p) {
   if (isfind(p)) {
     pfind_t p0 = CAST(pfind_t, p);
+    return p0 ? fstep(p, p0->chunksize) : NULL;
+  }
+
+  return p;
+}
+
+handle_t fmove(handle_t p, const size_t cpos) {
+  if (isfind(p)) {
+    pfind_t p0 = CAST(pfind_t, p);
     if (p0) {
-      p0->cpos += p0->chunksize;
+      p0->cpos = cpos;
+      if (p0->cpos < p0->epos) return p;
+      p0->item = NULL;
+    }
+  }
+
+  return p;
+}
+
+handle_t fstep(handle_t p, const size_t chunksize) {
+  if (isfind(p)) {
+    pfind_t p0 = CAST(pfind_t, p);
+    if (p0) {
+      p0->cpos += chunksize;
+      if (p0->cpos < p0->epos) return p;
+      p0->item = NULL;
+    }
+  }
+
+  return p;
+}
+
+handle_t fupdate(handle_t p, const size_t cpos, const size_t chunksize) {
+  if (isfind(p)) {
+    pfind_t p0 = CAST(pfind_t, p);
+    if (p0) {
+      p0->cpos = cpos;
+      p0->chunksize = chunksize;
       if (p0->cpos < p0->epos) return p;
       p0->item = NULL;
     }
