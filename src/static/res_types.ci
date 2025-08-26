@@ -1,4 +1,4 @@
-static convert_t zRESOURCETYPE[] = {
+static convert_t peRESOURCETYPE[] = {
   {"RT_CURSOR",         RT_CURSOR},
   {"RT_BITMAP",         RT_BITMAP},
   {"RT_ICON",           RT_ICON},

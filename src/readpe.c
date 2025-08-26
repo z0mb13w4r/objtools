@@ -265,7 +265,7 @@ static int dump_sectionheaders0(const pbuffer_t p, const uint16_t NumberOfSectio
       n += printf_nice(p0->NumberOfLinenumbers, USE_FHEX16 | USE_EOL);
       n += printf_text("Characteristics", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
       n += printf_nice(p0->Characteristics, USE_FHEX32);
-      n += printf_mask(zSECTIONHDR, p0->Characteristics, USE_EOL);
+      n += printf_mask(peSECTIONHDR, p0->Characteristics, USE_EOL);
       n += printf_eol();
     }
   }
@@ -801,7 +801,7 @@ static int dump_resource1(const pbuffer_t p, const uint32_t NameIsString, const 
     n += printf_nice(Name, USE_FHEX32 | USE_EOL);
   } else {
     n += printf_nice(Name, USE_FHEX32);
-    n += printf_pick(zRESOURCETYPE, Name, USE_SPACE | USE_EOL);
+    n += printf_pick(peRESOURCETYPE, Name, USE_SPACE | USE_EOL);
   }
   n += printf_text("OffsetToData", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(OffsetToData, USE_FHEX32 | USE_EOL);
