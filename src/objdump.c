@@ -202,7 +202,14 @@ static void callback_dynamichdr(handle_t p, handle_t dyn, unknown_t param) {
   }
 }
 
-static int callback_versionrefs0(handle_t p, handle_t section,
+static int callback_versionrefs0(handle_t p, handle_t section, const uint64_t vn_file) {
+  int n = 0;
+  n += printf_text("Required from", USE_LT);
+  n += printf_text(ocget_namebyoffset(section, vn_file), USE_LT | USE_SPACE | USE_COLON | USE_EOL);
+  return n;
+}
+
+static int callback_versionrefs1(handle_t p, handle_t section,
                      const uint64_t vna_hash, const uint64_t vna_flags, const uint64_t vna_other, const uint64_t vna_name) {
   int n = 0;
   n += printf_nice(vna_hash, USE_FHEX32);
@@ -226,11 +233,36 @@ static void callback_versionrefs(handle_t p, handle_t section, unknown_t param) 
         for (Elf32_Word j = 0; j < ocget_value(section); ++j) {
           Elf32_Verneed *vn = fupdate(f, offset, sizeof(Elf32_Verneed));
           if (vn) {
+            n += callback_versionrefs0(p, section, vn->vn_file);
+
             Elf32_Word offset0 = offset + vn->vn_aux;
             for (Elf32_Half k = 0; k < vn->vn_cnt; ++k) {
               Elf32_Vernaux *va = fupdate(f, offset0, sizeof(Elf32_Vernaux));
               if (va) {
-                callback_versionrefs0(p, section, va->vna_hash, va->vna_flags, va->vna_other, va->vna_name);
+                n += callback_versionrefs1(p, section, va->vna_hash, va->vna_flags, va->vna_other, va->vna_name);
+                offset0 += va->vna_next;
+              }
+            }
+          }
+
+          offset += vn->vn_next;
+        }
+        ffree(f);
+      }
+    } else if (ocis64(p)) {
+      Elf64_Word offset = 0;
+      handle_t f = ocfget_rawdata(section);
+      if (f) {
+        for (Elf64_Word j = 0; j < ocget_value(section); ++j) {
+          Elf64_Verneed *vn = fupdate(f, offset, sizeof(Elf64_Verneed));
+          if (vn) {
+            n += callback_versionrefs0(p, section, vn->vn_file);
+
+            Elf64_Word offset0 = offset + vn->vn_aux;
+            for (Elf64_Half k = 0; k < vn->vn_cnt; ++k) {
+              Elf64_Vernaux *va = fupdate(f, offset0, sizeof(Elf64_Vernaux));
+              if (va) {
+                n += callback_versionrefs1(p, section, va->vna_hash, va->vna_flags, va->vna_other, va->vna_name);
                 offset0 += va->vna_next;
               }
             }
@@ -344,26 +376,27 @@ static int dump_privatehdr(const handle_t p, const poptions_t o) {
   } else {
     const int MAXSIZE = ocis64(p) ? 17 : 9;
 
-    n += printf_text("PROGRAM HEADER", USE_LT | USE_COLON | USE_EOL);
-    n += printf_text("Type", USE_LT | USE_TAB | SET_PAD(max_name_size));
-    n += printf_text("Offset", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
-    n += printf_text("VirtAddr", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
-    n += printf_text("PhysAddr", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
-    n += printf_text("Align", USE_LT | USE_SPACE | SET_PAD(6));
-    n += printf_text("FileSiz", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
-    n += printf_text("MemSiz", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
-    n += printf_text("Flg", USE_LT | USE_SPACE);
-    n += printf_eol();
+    if (ochas_phdr(p)) {
+      n += printf_text("PROGRAM HEADER", USE_LT | USE_COLON | USE_EOL);
+      n += printf_text("Type", USE_LT | USE_TAB | SET_PAD(max_name_size));
+      n += printf_text("Offset", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+      n += printf_text("VirtAddr", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+      n += printf_text("PhysAddr", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+      n += printf_text("Align", USE_LT | USE_SPACE | SET_PAD(6));
+      n += printf_text("FileSiz", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+      n += printf_text("MemSiz", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+      n += printf_text("Flg", USE_LT | USE_SPACE);
+      n += printf_eol();
 
-    ocdo_programs(p, callback_programhdr, &max_name_size);
-    n += printf_eol();
+      ocdo_programs(p, callback_programhdr, &max_name_size);
+      n += printf_eol();
+    }
 
     n += printf_text("DYNAMIC SECTION", USE_LT | USE_COLON | USE_EOL);
     ocdo_dynamics(p, callback_dynamichdr, &max_name_size);
     n += printf_eol();
 
     ocdo_sections(p, callback_versionrefs, &max_name_size);
-
     n += printf_eol();
   }
 
