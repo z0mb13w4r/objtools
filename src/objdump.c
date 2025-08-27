@@ -223,21 +223,21 @@ static void callback_versionrefs(handle_t p, handle_t section, unknown_t param) 
       Elf32_Word offset = 0;
       handle_t f = ocfget_rawdata(section);
       if (f) {
-//  for (Elf32_Word j = 0; j < shdr->sh_info; ++j) {
-        Elf32_Verneed *vn = fupdate(f, offset, sizeof(Elf32_Verneed));
-        if (vn) {
-          Elf32_Word offset0 = offset + vn->vn_aux;
-          for (Elf32_Half k = 0; k < vn->vn_cnt; ++k) {
-            Elf32_Vernaux *va = fupdate(f, offset0, sizeof(Elf32_Vernaux));
-            if (va) {
-              callback_versionrefs0(p, section, va->vna_hash, va->vna_flags, va->vna_other, va->vna_name);
-              offset0 += va->vna_next;
+        for (Elf32_Word j = 0; j < ocget_value(section); ++j) {
+          Elf32_Verneed *vn = fupdate(f, offset, sizeof(Elf32_Verneed));
+          if (vn) {
+            Elf32_Word offset0 = offset + vn->vn_aux;
+            for (Elf32_Half k = 0; k < vn->vn_cnt; ++k) {
+              Elf32_Vernaux *va = fupdate(f, offset0, sizeof(Elf32_Vernaux));
+              if (va) {
+                callback_versionrefs0(p, section, va->vna_hash, va->vna_flags, va->vna_other, va->vna_name);
+                offset0 += va->vna_next;
+              }
             }
           }
-        }
 
-        offset += vn->vn_next;
-//  }
+          offset += vn->vn_next;
+        }
         ffree(f);
       }
     }
