@@ -93,6 +93,24 @@
                                            | OPTREADELF_SECTIONGROUPS | OPTREADELF_PROGRAMHEADERS | OPTREADELF_VERSION \
                                            | OPTREADELF_HISTOGRAM | OPTREADELF_ARCHSPECIFIC | OPTREADELF_NOTES)
 
+#define OPTREADPE_DOSHEADER                        U64MASK(0)
+#define OPTREADPE_NTHEADER                         U64MASK(1)
+#define OPTREADPE_SECTIONGROUPS                    U64MASK(2)
+#define OPTREADPE_SECTIONHEADERS                   U64MASK(3)
+#define OPTREADPE_RESOURCE                         U64MASK(4)
+#define OPTREADPE_CONFIG                           U64MASK(5)
+#define OPTREADPE_DEBUG                            U64MASK(6)
+#define OPTREADPE_RUNTIME                          U64MASK(7)
+#define OPTREADPE_RELOCS                           U64MASK(8)
+#define OPTREADPE_IAT                              U64MASK(9)
+#define OPTREADPE_EAT                              U64MASK(10)
+#define OPTREADPE_VERSION                          U64MASK(11)
+
+#define OPTREADPE_HEADERS              (OPTREADPE_DOSHEADER | OPTREADPE_NTHEADER | OPTREADPE_SECTIONHEADERS)
+
+#define OPTREADPE_ALL                  (OPTREADPE_DOSHEADER | OPTREADPE_NTHEADER | OPTREADPE_SECTIONGROUPS \
+                                           | OPTREADPE_SECTIONHEADERS | OPTREADPE_RUNTIME | OPTREADPE_RELOCS \
+                                           | OPTREADPE_IAT | OPTREADPE_EAT)
 
 #define OPTOBJCOPY_CHANGE_WARNINGS                 U64MASK(0)
 #define OPTOBJCOPY_DEBUGGING                       U64MASK(1)

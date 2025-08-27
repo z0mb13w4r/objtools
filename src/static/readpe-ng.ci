@@ -1,48 +1,33 @@
 static const char zREADPEARGS2[] = "-M";
 static const char zREADPEARGS3[] = "--disassembler-options";
 
-static char zARCHSPECIFIC[]   = "Displays architecture-specific information in the file.";
-static char zHISTOGRAM[]      = "Display a histogram of bucket list lengths when displaying the contents of the symbol tables.";
-static char zSECTIONHEADERS[] = "Displays the information contained in the file's section headers";
-static char zVERSIONINFO[]    = "Displays the contents of the version sections in the file.";
-static char zDYNAMIC[]        = "Displays the contents of the file's dynamic section.";
-static char zHEADERS[]        = "Display all the headers in the file.";
-static char zSECTIONGROUPS[]  = "Displays the information contained in the file's section groups.";
-static char zFILEHEADER[]     = "Displays the information contained in the ELF header at the start of the file.";
-static char zPROGRAMHEADERS[] = "Displays the information contained in the file's segment headers.";
-static char zNOTES[]          = "Displays the contents of the NOTE segments.";
-static char zRELOCS[]         = "Displays the contents of the file's relocation section.";
-static char zSYMBOLS[]        = "Displays the entries in symbol table section of the file.";
-static char zUNWIND[]         = "Displays the contents of the file's unwind section.";
-
 static const args_t zREADPEARGS[] = {
-  {'H', "--help",            OPTPROGRAM_HELP},
+  {'h', "--help",            OPTPROGRAM_HELP},
   {'v', "--version",         OPTPROGRAM_VERSION},
-  {'A', "--arch-specific",   OPTREADELF_ARCHSPECIFIC,      zARCHSPECIFIC},
-  {'I', "--histogram",       OPTREADELF_HISTOGRAM,         zHISTOGRAM},
-  {'S', "--section-headers", OPTREADELF_SECTIONHEADERS,    zSECTIONHEADERS},
-  {'V', "--version-info",    OPTREADELF_VERSION,           zVERSIONINFO},
-  {'a', "--all",             OPTREADELF_ALL},
-  {'d', "--dynamic",         OPTREADELF_DYNAMIC,           zDYNAMIC},
-  {'e', "--headers",         OPTREADELF_HEADERS,           zHEADERS},
-  {'g', "--section-groups",  OPTREADELF_SECTIONGROUPS,     zSECTIONGROUPS},
-  {'h', "--file-header",     OPTREADELF_FILEHEADER,        zFILEHEADER},
-  {'l', "--program-headers", OPTREADELF_PROGRAMHEADERS,    zPROGRAMHEADERS},
-  {'n', "--notes",           OPTREADELF_NOTES,             zNOTES},
-  {'r', "--relocs",          OPTREADELF_RELOCS,            zRELOCS},
-  {'s', "--symbols",         OPTREADELF_SYMBOLS,           zSYMBOLS},
-  {'u', "--unwind",          OPTREADELF_UNWIND,            zUNWIND},
+  {'S', "--section-headers", OPTREADPE_SECTIONHEADERS},
+  {'V', "--version-info",    OPTREADPE_VERSION},
+  {'A', "--all",             OPTREADPE_ALL},
+  {'H', "--headers",         OPTREADPE_HEADERS},
+  {'G', "--section-groups",  OPTREADPE_SECTIONGROUPS},
+  {'D', "--dos-header",      OPTREADPE_DOSHEADER},
+  {'N', "--nt-header",       OPTREADPE_NTHEADER},
+  {'R', "--relocs",          OPTREADPE_RELOCS},
+  {'E', "--eat",             OPTREADPE_EAT},
+  {'I', "--iat",             OPTREADPE_IAT},
+  {'m', "--runtime",         OPTREADPE_RUNTIME},
+  {'g', "--debug",           OPTREADPE_DEBUG},
+  {'f',  "--config",         OPTREADPE_CONFIG},
+  {'o',  "--resource",       OPTREADPE_RESOURCE},
   {'x', "--hex-dump",        0,                            zHEXDUMP},
-  {'Z', "--code-dump",       0,                            zCODEDUMP},
-  {'p', "--string-dump",     0,                            zSTRDUMP},
-  {'U', "--unicode-dump",    0,                            zSTRDUMP},
-  {'R', "--relocated-dump",  0,                            zHEXDUMP},
-  {'z', "--decompress",      0},
-  {'C', "--disassemble",     0},
-  {'T', "--script",          0},
-  {'I', "--info",            OPTPROGRAM_INFO},
+  {'c', "--code-dump",       0,                            zCODEDUMP},
+  {'s', "--string-dump",     0,                            zSTRDUMP},
+  {'u', "--unicode-dump",    0,                            zSTRDUMP},
+  {'r', "--relocated-dump",  0,                            zHEXDUMP},
+  {'d', "--disassemble",     0},
+  {'t', "--script",          0},
+  {'i', "--info",            OPTPROGRAM_INFO},
   {'X', "--hash",            OPTPROGRAM_HASH},
-  {'E', "--entropy",         OPTPROGRAM_ENTROPY},
+  {'e', "--entropy",         OPTPROGRAM_ENTROPY},
   {0, NULL}
 };
 
