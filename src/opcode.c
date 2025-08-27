@@ -212,7 +212,6 @@ unknown_t ocget(handle_t p, const imode_t mode) {
 
 bool_t ocis32(handle_t p) {
   return 32 == ocget_archsize(p) ? TRUE : FALSE;
-
 }
 
 bool_t ocis64(handle_t p) {
@@ -224,7 +223,21 @@ bool_t ochas(handle_t p, const imode_t mode) {
 }
 
 bool_t ocisELF(handle_t p) {
-  return isopcode(p) && isELF(ocget(p, OPCODE_RAWDATA)) ? TRUE : FALSE;
+  if (ismode(p, MODE_OCSHDR)) {
+    handle_t p0 = ocget(p, OPCODE_PARAM2);
+    return isopcode(p0) && isELF(ocget(p0, OPCODE_RAWDATA)) ? TRUE : FALSE;
+  }
+
+  return (isopcode(p) && isELF(ocget(p, OPCODE_RAWDATA)))
+    || isopehdrNN(p) || isopphdrNN(p) || isopshdrNN(p) ? TRUE : FALSE;
+}
+
+bool_t   ocisELF32(handle_t p) {
+  return ocisELF(p) && ocis32(p) ? TRUE : FALSE;
+}
+
+bool_t   ocisELF64(handle_t p) {
+  return ocisELF(p) && ocis64(p) ? TRUE : FALSE;
 }
 
 bool_t ocuse_vaddr(handle_t p, const uint64_t vaddr) {
@@ -283,17 +296,12 @@ bool_t ochas_shdr(handle_t p) {
 
 uint64_t ocget_type(handle_t p) {
   if (ismode(p, MODE_OCSHDR)) {
-    asection* p0 = ocget(p, MODE_OCSHDR);
-    handle_t p1 = ocget(p, OPCODE_PARAM2);
-    if (p0 && isopcode(p1)) {
-      handle_t e0 = ocget(p1, OPCODE_RAWDATA);
-      if (isELF32(e0)) {
-        Elf32_Shdr* e1 = ecget_shdr32byindex(e0, p0->index + 1);
-        return e1 ? e1->sh_type : 0;
-      } else if (isELF64(e0)) {
-        Elf64_Shdr* e1 = ecget_shdr64byindex(e0, p0->index + 1);
-        return e1 ? e1->sh_type : 0;
-      }
+    if (ocisELF32(p)) {
+      Elf32_Shdr* s0 = ocget_rawshdr(p);
+      return s0 ? s0->sh_type : 0;
+    } else if (ocisELF64(p)) {
+      Elf64_Shdr* s0 = ocget_rawshdr(p);
+      return s0 ? s0->sh_type : 0;
     }
   } else if (ismode(p, MODE_OCPHDR)) {
     pbfd_phdr_t p0 = ocget(p, MODE_OCPHDR);
@@ -426,6 +434,17 @@ uint64_t ocget_archsize(handle_t p) {
       if (isELF32(p1) || isPE32(p1))       return 32;
       else if (isELF64(p1) || isPE64(p1))  return 64;
     }
+  } else if (ismode(p, MODE_OCSHDR)) {
+    handle_t  p0 = ocget(p, OPCODE_PARAM2);
+    if (isopcode(p0)) {
+      handle_t p1 = ocget(p0, OPCODE_RAWDATA);
+      if (isELF32(p1))                     return 32;
+      else if (isELF64(p1))                return 64;
+    }
+  } else if (ismode(p, MODE_OCEHDR32) || ismode(p, MODE_OCPHDR32) || ismode(p, MODE_OCSHDR32)) {
+    return 32;
+  } else if (ismode(p, MODE_OCEHDR64) || ismode(p, MODE_OCPHDR64) || ismode(p, MODE_OCSHDR64)) {
+    return 64;
   }
 
   return 0;
@@ -623,6 +642,23 @@ unknown_t ocget_rawdata(handle_t p) {
   } else if (ismode(p, MODE_OCSHDR64)) {
     Elf64_Shdr* p0 = ocget(p, MODE_OCSHDR64);
     return p0 ? getp(ocget(p, OPCODE_PARAM2), p0->sh_offset, p0->sh_size) : 0;
+  }
+
+  return NULL;
+}
+
+unknown_t ocget_rawshdr(handle_t p) {
+  if (ismode(p, MODE_OCSHDR)) {
+    asection* s0 = ocget(p, MODE_OCSHDR);
+    handle_t  p0 = ocget(p, OPCODE_PARAM2);
+    if (s0 && isopcode(p0)) {
+      handle_t p1 = ocget(p0, OPCODE_RAWDATA);
+      if (isELF32(p1)) {
+        return ecget_shdr32byindex(p1, s0->index + 1);
+      } else if (isELF64(p1)) {
+        return ecget_shdr64byindex(p1, s0->index + 1);
+      }
+    }
   }
 
   return NULL;

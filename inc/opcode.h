@@ -175,6 +175,8 @@ bool_t   ocuse_vaddr(handle_t p, const uint64_t vaddr);
 bool_t   ocis32(handle_t p);
 bool_t   ocis64(handle_t p);
 bool_t   ocisELF(handle_t p);
+bool_t   ocisELF32(handle_t p);
+bool_t   ocisELF64(handle_t p);
 
 uint64_t ocget_type(handle_t p);
 uint64_t ocget_flags(handle_t p);
@@ -197,6 +199,7 @@ uint64_t ocget_soffset(handle_t p, handle_t s);
 uint64_t ocget_eoffset(handle_t p, handle_t s);
 
 unknown_t ocget_rawdata(handle_t p);
+unknown_t ocget_rawshdr(handle_t p);
 handle_t  ocfget_rawdata(handle_t p);
 
 const char* ocget_symbol(handle_t p, uint64_t vaddr, char **name,
