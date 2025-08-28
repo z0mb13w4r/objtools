@@ -259,6 +259,15 @@ Elf64_Nhdr* ecget_nhdr64byindex(const pbuffer_t p, const int index) {
   return NULL;
 }
 
+unknown_t ecget_nhdrbyindex(const pbuffer_t p, const int index) {
+  if (isELF(p)) {
+    if (isELF32(p))        return ecget_nhdr32byindex(p, index);
+    else if (isELF64(p))   return ecget_nhdr64byindex(p, index);
+  }
+
+  return NULL;
+}
+
 Elf32_Phdr* ecget_phdr32byindex(const pbuffer_t p, const int index) {
   Elf32_Ehdr *e = ecget_ehdr32(p);
   if (e) {
