@@ -793,31 +793,28 @@ void ocdwarf_object_finish(handle_t p) {
 
 int ocdwarf_run(handle_t p, handle_t s) {
   int n = 0;
-  if (isopcode(p) && isopshdr(s)) {
-    pocdwarf_t ws = ocget(p, OPCODE_DWARF);
-    if (ws) {
-      int x = dwarf_object_init_b(&dw_interface, 0, 0, DW_GROUPNUMBER_ANY, &ws->dbg, &ws->err);
-      if (IS_DLV_NO_ENTRY(x)) {
-        printf_x("Cannot dwarf_object_init_b() NO ENTRY.");
-      } else if (IS_DLV_ERROR(x)) {
-        ocdwarf_dealloc_error(p, &ws->err);
-        printf_x("Cannot dwarf_object_init_b().");
-      }
-
-      pdwarf_display_t d = ocdwarf_get(s);
-      n = d && d->func ? d->func(p, s, &d->section) : -1;
-
-      ocdwarf_object_finish(p);
-    }
-  } else if (isopcode(p) && isopshdrNN(s)) {
+//  if (isopcode(p) && isopshdr(s)) {
+//    pocdwarf_t ws = ocget(p, OPCODE_DWARF);
+//    if (ws) {
+//      int x = dwarf_object_init_b(&dw_interface, 0, 0, DW_GROUPNUMBER_ANY, &ws->dbg, &ws->err);
+//      if (IS_DLV_NO_ENTRY(x)) {
+//        printf_x("Cannot dwarf_object_init_b() NO ENTRY.");
+//      } else if (IS_DLV_ERROR(x)) {
+//        ocdwarf_dealloc_error(p, &ws->err);
+//        printf_x("Cannot dwarf_object_init_b().");
+//      }
+//
+//      pdwarf_display_t d = ocdwarf_get(s);
+//      n = d && d->func ? d->func(p, s, &d->section) : -1;
+//
+//      ocdwarf_object_finish(p);
+//    }
+//  } else if (isopcode(p) && isopshdrNN(s)) {
+  if (isopcode(p)) {
     pocdwarf_t ws = ocget(p, OPCODE_DWARF);
     if (ws) {
     pdwarf_display_t d = ocdwarf_get(s);
       if (d && d->func) {
-//      sectiondata[1].sd_sectionsize = ocget_size(s);
-//      sectiondata[1].sd_secname = ocget_name(s);
-//      sectiondata[1].sd_content = ocget_data(s);
-
         n = d && d->func ? d->func(p, s, &d->section) : -1;
       }
     }
