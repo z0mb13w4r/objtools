@@ -1,7 +1,7 @@
 #!/bin/bash
 
-#NAME=samples/exampled-32
-NAME=samples/exampled-64
+NAME=samples/exampled-32
+#NAME=samples/exampled-64
 #NAME=samples/exampled-32.o
 #NAME=samples/exampled-64.o
 #NAME=samples/example-043-arm32
@@ -10,6 +10,10 @@ NAME=samples/exampled-64
 #NAME=samples/example-043-arm64.o
 
 PICK1='-a'
+#PICK1='-s'
+#PICK1='-d'
+#PICK1='-V'
+
 #PICK1='--debug-dump=macro'
 #PICK2='--print-macinfo'
 #PICK1='--debug-dump=info'
@@ -24,8 +28,8 @@ PICK1='-a'
 #PICK1='--debug-dump=decodedline'
 #PICK1='--debug-dump=rawline'
 #PICK2='--print-lines'
-#PICK1='--debug-dump=frames'
-#PICK2='--print-eh-frame'
+PICK1='--debug-dump=frames'
+PICK2='--print-eh-frame'
 
 PRGNAME=readelf
 PRGNAMENG=./$PRGNAME-ng
@@ -77,6 +81,8 @@ go_rm $OUT2
 if [ "$1" == "-p" ] || [ "$1" == "--print" ]; then
   echo $PRGNAME ${PICK1} $NAME
   echo $PRGNAMENG ${PICK1} $NAME
+elif [ "$1" == "-g" ] || [ "$1" == "--go" ]; then
+  $PRGNAMENG ${PICK1} $NAME
 elif [ "$1" == "-r" ] || [ "$1" == "--raw" ]; then
   $PRGNAMENG ${PICK1} $NAME > $OUT1
   $PRGNAME ${PICK1} $NAME > $OUT2
