@@ -392,7 +392,7 @@ static int dump_privatehdr(const handle_t p, const poptions_t o) {
       n += printf_eol();
     }
 
-    if (ochas_shdrtype(p, SHT_DYNAMIC)) {
+    if (ochas_shdrbytype(p, SHT_DYNAMIC)) {
       n += printf_text("DYNAMIC SECTION", USE_LT | USE_COLON | USE_EOL);
       ocdo_dynamics(p, callback_dynamichdr, &max_name_size);
       n += printf_eol();

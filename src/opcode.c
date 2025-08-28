@@ -294,7 +294,7 @@ bool_t ochas_shdr(handle_t p) {
   return FALSE;
 }
 
-bool_t ochas_shdrtype(handle_t p, const int type) {
+bool_t ochas_shdrbytype(handle_t p, const int type) {
   if (ochas_shdr(p)) {
     if (isopcode(p)) {
       handle_t p0 = ocget(p, OPCODE_RAWDATA);
