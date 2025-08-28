@@ -58,7 +58,9 @@ static int dump_reloc1(handle_t p, arelent *r) {
 
   int n = 0;
   if (isopcode(p) && r) {
-    n += printf_nice(r->address, (ocis64(p) ? USE_LHEX64 : USE_LHEX32) | USE_NOSPACE);
+    const imode_t USE_LHEXNN = ocis64(p) ? USE_LHEX64 : USE_LHEX32;
+
+    n += printf_nice(r->address, USE_LHEXNN | USE_NOSPACE);
     if (r->howto) {
       if (r->howto->name) {
         n += printf_text(r->howto->name, USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
@@ -308,11 +310,13 @@ static void callback_sectionhdr(handle_t p, handle_t shdr, unknown_t param) {
   /* Ignore linker created section.  See elfNN_ia64_object_p in bfd/elfxx-ia64.c.  */
   if (flags & SEC_LINKER_CREATED) return;
 
+  const imode_t USE_LHEXNN = ocis64(p) ? USE_LHEX64 : USE_LHEX32;
+
   printf_nice(s->index, USE_TAB | USE_DEC2);
   printf_text(ocget_name(shdr), USE_LT | USE_SPACE | SET_PAD(name_size));
   printf_nice(ocget_size(shdr) / ocget_opb(p, shdr), USE_LHEX32);
-  printf_nice(ocget_vmaddress(shdr), USE_LHEX64);
-  printf_nice(ocget_lmaddress(shdr), USE_LHEX64);
+  printf_nice(ocget_vmaddress(shdr), USE_LHEXNN);
+  printf_nice(ocget_lmaddress(shdr), USE_LHEXNN);
   printf_nice(ocget_position(shdr), USE_LHEX32);
   printf_nice(ocget_alignment(shdr), USE_POWER2);
 
@@ -408,12 +412,14 @@ static int dump_privatehdr(const handle_t p, const poptions_t o) {
 static int dump_sectionhdr(const handle_t p, const poptions_t o) {
   size_t max_name_size = ocget_maxsectionnamesize(p) + 2;
 
+  const int MAXSIZE = ocis64(p) ? 17 : 9;
+
   printf_text("SECTIONS", USE_LT | USE_COLON | USE_EOL);
   printf_text("Idx", USE_LT | USE_SPACE);
   printf_text("Name", USE_LT | USE_SPACE | SET_PAD(max_name_size));
   printf_text("Size", USE_LT | USE_SPACE | SET_PAD(9));
-  printf_text("VMA", USE_LT | USE_SPACE | SET_PAD(17));
-  printf_text("LMA", USE_LT | USE_SPACE | SET_PAD(17));
+  printf_text("VMA", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+  printf_text("LMA", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
   printf_text("File Off", USE_LT | USE_SPACE);
   printf_text("Algn", USE_LT | USE_SPACE | SET_PAD(6));
   printf_text("Flags", USE_LT | USE_SPACE | USE_EOL);
