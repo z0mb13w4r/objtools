@@ -369,6 +369,15 @@ Elf64_Shdr* ecget_shdr64byindex(const pbuffer_t p, const int index) {
   return NULL;
 }
 
+unknown_t ecget_shdrbyindex(const pbuffer_t p, const int index) {
+  if (isELF(p)) {
+    if (isELF32(p))        return ecget_shdr32byindex(p, index);
+    else if (isELF64(p))   return ecget_shdr64byindex(p, index);
+  }
+
+  return NULL;
+}
+
 size_t ecget_secnamemaxsize(const pbuffer_t p) {
   if (isELF(p)) {
     if (isELF32(p))        return _ecget_secname32maxsize(p);
