@@ -53,6 +53,7 @@ Elf64_Nhdr* ecget_nhdr64byindex(const pbuffer_t p, const int index);
 
 Elf32_Phdr* ecget_phdr32byindex(const pbuffer_t p, const int index);
 Elf64_Phdr* ecget_phdr64byindex(const pbuffer_t p, const int index);
+unknown_t   ecget_phdrbyindex(const pbuffer_t p, const int index);
 
 Elf32_Shdr* ecget_shdr32byindex(const pbuffer_t p, const int index);
 Elf64_Shdr* ecget_shdr64byindex(const pbuffer_t p, const int index);
