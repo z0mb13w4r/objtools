@@ -35,7 +35,7 @@ static const args_t zOBJDUMPARGS[] = {
   {'R', "--dynamic-reloc",     OPTOBJDUMP_DYNAMIC_RELOC,                                 zDUMPDYNAMICRELOC},
   {'d', "--disassemble",       OPTPROGRAM_DISASSEMBLE,                                   zDUMPDISASSEMBLE},
   {'g', "--debugging",         OPTOBJDUMP_DEBUGGING,                                     zDUMPDEBUGGING},
-  {'e', "--debugging-tags",    OPTPROGRAM_DEBUGGING_TAGS,                                zDUMPDEBUGGINGTAGS},
+  {'e', "--debugging-tags",    OPTOBJDUMP_DEBUGGING_TAGS,                                zDUMPDEBUGGINGTAGS},
   {'C', "--demangle",          OPTPROGRAM_DEMANGLE,                                      zDUMPDEMANGLE},
   {'s', "--full-contents",     OPTOBJDUMP_SECTIONS,                                      zDUMPSECTIONS},
   {'t', "--symbols",           OPTOBJDUMP_SYMBOLS,                                       zDUMPSYMBOLS},
