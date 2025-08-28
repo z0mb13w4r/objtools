@@ -294,6 +294,19 @@ bool_t ochas_shdr(handle_t p) {
   return FALSE;
 }
 
+bool_t ochas_shdrtype(handle_t p, const int type) {
+  if (ochas_shdr(p)) {
+    if (isopcode(p)) {
+      handle_t p0 = ocget(p, OPCODE_RAWDATA);
+      if (isELF(p0)) {
+        return ecget_shdrbytype(p0, type) ? TRUE : FALSE;
+      }
+    }
+  }
+
+  return FALSE;
+}
+
 uint64_t ocget_type(handle_t p) {
   if (ismode(p, MODE_OCSHDR)) {
     if (ocisELF32(p)) {

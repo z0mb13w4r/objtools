@@ -305,6 +305,15 @@ Elf64_Shdr* ecget_shdr64bytype(const pbuffer_t p, const int type) {
   return NULL;
 }
 
+unknown_t ecget_shdrbytype(const pbuffer_t p, const int type) {
+  if (isELF(p)) {
+    if (isELF32(p))        return ecget_shdr32bytype(p, type);
+    else if (isELF64(p))   return ecget_shdr64bytype(p, type);
+  }
+
+  return NULL;
+}
+
 Elf32_Shdr* ecget_shdr32byname(const pbuffer_t p, const char* name) {
   Elf32_Ehdr *e = ecget_ehdr32(p);
   if (e && name && name[0]) {
