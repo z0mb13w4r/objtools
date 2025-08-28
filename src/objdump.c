@@ -378,7 +378,7 @@ static int dump_privatehdr(const handle_t p, const poptions_t o) {
     }
     n += printf_eol();
   } else {
-    const int MAXSIZE = ocis64(p) ? 17 : 9;
+    const int MAXSIZE = ocis64(p) ? 19 : 11;
 
     if (ochas_phdr(p)) {
       n += printf_text("PROGRAM HEADER", USE_LT | USE_COLON | USE_EOL);
@@ -452,6 +452,7 @@ static int dump_symbols(const handle_t p, const poptions_t o, const imode_t mode
       } else if ((cf = bfd_asymbol_bfd(*cs)) == NULL) {
         printf_w("could not determine the type of symbol number %ld.", i);
       } else {
+// TBD write my own code just like dump_privatehdr
         bfd_print_symbol(cf, stdout, *cs, bfd_print_symbol_all);
         printf_eol();
       }
