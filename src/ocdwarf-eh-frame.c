@@ -10,7 +10,11 @@ int ocdwarf_eh_frame_cies(handle_t p, Dwarf_Cie *cie_data, Dwarf_Signed cie_elem
   int n = 0;
 
   if (isopcode(p)) {
-    n += printf_text("CIE", USE_LT | USE_SB | USE_EOL);
+    popcode_t oc = ocget(p, OPCODE_THIS);
+
+    if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+      n += printf_text("CIE", USE_LT | USE_SB | USE_EOL);
+    }
 
     for (Dwarf_Signed i = 0; i < cie_element_count; ++i) {
       char*          augmenter = "";
@@ -32,33 +36,35 @@ int ocdwarf_eh_frame_cies(handle_t p, Dwarf_Cie *cie_data, Dwarf_Signed cie_elem
         return OCDWARF_ERRCODE(x, n);
       }
 
-      n += ocdwarf_printf_DEC(p, i, USE_NONE);
-      n += printf_text("version", USE_LT | USE_SPACE | USE_COLON | SET_PAD(MAXSIZE));
+      if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+        n += ocdwarf_printf_DEC(p, i, USE_NONE);
+      }
+      n += printf_text("Version", USE_LT | USE_SPACE | USE_COLON | SET_PAD(MAXSIZE));
       n += printf_nice(version, USE_DEC);
       n += printf_eol();
 
       Dwarf_Off cie_off = 0;
       x = dwarf_cie_section_offset(ocget(p, OPCODE_DWARF_DEBUG), cie, &cie_off, e);
       if (IS_DLV_OK(x)) {
-        n += printf_text("cie section offset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        n += printf_text("CIE section offset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
         n += printf_nice(cie_off, USE_DEC);
         n += printf_nice(cie_off, USE_FHEX32);
         n += printf_eol();
       }
 
-      n += printf_text("augmentation", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-      n += printf_text(augmenter, USE_LT);
+      n += printf_text("Augmentation", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_text(augmenter, USE_LT | USE_DQ);
       n += printf_eol();
 
-      n += printf_text("code_alignment_factor", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_text("Code alignment factor", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
       n += printf_nice(code_alignment_factor, USE_DEC);
       n += printf_eol();
 
-      n += printf_text("data_alignment_factor", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_text("Data alignment factor", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
       n += printf_nice(data_alignment_factor, USE_DEC);
       n += printf_eol();
 
-      n += printf_text("address_register_rule", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_text("Return address column", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
       n += printf_nice(address_register_rule, USE_DEC);
       n += printf_eol();
 
@@ -66,9 +72,11 @@ int ocdwarf_eh_frame_cies(handle_t p, Dwarf_Cie *cie_data, Dwarf_Signed cie_elem
       Dwarf_Unsigned augdata_len = 0;
       n += dwarf_get_cie_augmentation_data(cie, &augdata, &augdata_len, e);
       if (IS_DLV_OK(x)) {
-        n += printf_text("eh aug data len", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-        n += printf_nice(augdata_len, USE_FHEX);
-        n += printf_text("bytes", USE_LT | USE_COMMA);
+        n += printf_text("Augmentation data", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+          n += printf_nice(augdata_len, USE_FHEX);
+          n += printf_text("bytes", USE_LT | USE_COMMA);
+        }
         n += printf_hurt(augdata, augdata_len, USE_HEX | USE_SPACE | USE_0x);
         n += printf_eol();
       }
@@ -91,7 +99,7 @@ int ocdwarf_eh_frame_cies(handle_t p, Dwarf_Cie *cie_data, Dwarf_Signed cie_elem
         return OCDWARF_ERRCODE(x, n);
       }
 
-      if (0 != instr_count) {
+      if (0 != instr_count && MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
         printf_text("[  ] offset name                 operands", USE_LT | USE_TAB | USE_EOL);
       }
 
@@ -117,8 +125,10 @@ int ocdwarf_eh_frame_cies(handle_t p, Dwarf_Cie *cie_data, Dwarf_Signed cie_elem
           return OCDWARF_ERRCODE(x, n);
         }
 
-        n += ocdwarf_printf_DEC(p, j, USE_SB);
-        n += printf_nice(instr_offset_in_instrs, USE_DEC2);
+        if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+          n += ocdwarf_printf_DEC(p, j, USE_SB);
+          n += printf_nice(instr_offset_in_instrs, USE_DEC2);
+        }
         n += ocdwarf_printf_CFA(p, cfa_operation, USE_NONE);
         n += ocdwarf_printf_fields_description(p, fields_description, u0, u1, u2, s0, s1,
                      code_alignment_factor, data_alignment_factor, &expression_block);
@@ -137,7 +147,11 @@ int ocdwarf_eh_frame_fdes(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed fde_elem
   int n = 0;
 
   if (isopcode(p)) {
-    n += printf_text("FDE", USE_LT | USE_SB | USE_EOL);
+    popcode_t oc = ocget(p, OPCODE_THIS);
+
+    if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+      n += printf_text("FDE", USE_LT | USE_SB | USE_EOL);
+    }
 
     for (Dwarf_Signed i = 0; i < fde_element_count; ++i) {
       Dwarf_Addr     low_pc = 0;
@@ -162,28 +176,41 @@ int ocdwarf_eh_frame_fdes(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed fde_elem
       char* name = 0;
       n += ocdwarf_spget(p, low_pc, &name, NULL, NULL, NULL, NULL, NULL, NULL, NULL, e);
 
-      // < 0>
-      n += ocdwarf_printf_DEC(p, i, USE_NONE);
+      if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+        // < 0>
+        n += ocdwarf_printf_DEC(p, i, USE_NONE);
 
-      // <0x00001020:0x000010c0>
-      n += ocdwarf_printf_ADDR(p, low_pc, USE_TBLT | USE_COLON | USE_NOSPACE);
-      n += ocdwarf_printf_ADDR(p, end_func_addr, USE_TBRT | USE_NOSPACE);
+        // <0x00001020:0x000010c0>
+        n += ocdwarf_printf_ADDR(p, low_pc, USE_TBLT | USE_COLON | USE_NOSPACE);
+        n += ocdwarf_printf_ADDR(p, end_func_addr, USE_TBRT | USE_NOSPACE);
 
-      // <_getchar>
-      n += printf_text(name, USE_LT | USE_TB);
+        // <_getchar>
+        n += printf_text(name, USE_LT | USE_TB);
 
-      // <cie offset 0x00000034::cie index 0>
-      n += printf_text("cie offset", USE_LT | USE_TBLT);
-      n += ocdwarf_printf_ADDR(p, cie_offset, USE_NONE);
-      n += printf_text("::cie index", USE_LT);
-      n += printf_nice(cie_index, USE_DEC | USE_TBRT);
+        // <cie offset 0x00000034::cie index 0>
+        n += printf_text("cie offset", USE_LT | USE_TBLT);
+        n += ocdwarf_printf_ADDR(p, cie_offset, USE_NONE);
+        n += printf_text("::cie index", USE_LT);
+        n += printf_nice(cie_index, USE_DEC | USE_TBRT);
 
-      // <fde offset 0x00000030::length 0x00000024>
-      n += printf_text("fde offset", USE_LT | USE_TBLT);
-      n += ocdwarf_printf_ADDR(p, fde_offset, USE_NONE);
-      n += printf_text("::length", USE_LT);
-      n += printf_nice(fde_bytes_length, USE_FHEX32 | USE_TBRT);
-      n += printf_eol();
+        // <fde offset 0x00000030::length 0x00000024>
+        n += printf_text("fde offset", USE_LT | USE_TBLT);
+        n += ocdwarf_printf_ADDR(p, fde_offset, USE_NONE);
+        n += printf_text("::length", USE_LT);
+        n += printf_nice(fde_bytes_length, USE_FHEX32 | USE_TBRT);
+        n += printf_eol();
+      } else {
+        n += printf_nice(fde_offset, USE_LHEX32);
+        n += printf_nice(fde_bytes_length, USE_LHEX64);
+        n += printf_nice(cie_offset, USE_LHEX32);
+        n += printf_text("FDE cie=", USE_LT | USE_SPACE);
+        n += printf_nice(cie_index, USE_LHEX32 | USE_NOSPACE);
+        n += printf_text("pc=", USE_LT | USE_SPACE);
+        n += printf_nice(low_pc, USE_LHEX64 | USE_NOSPACE);
+        n += printf_text("..", USE_LT);
+        n += printf_nice(end_func_addr, USE_LHEX64 | USE_NOSPACE);
+        n += printf_eol();
+      }
 
       Dwarf_Small *augdata = 0;
       Dwarf_Unsigned augdata_len = 0;
@@ -193,15 +220,17 @@ int ocdwarf_eh_frame_fdes(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed fde_elem
         return OCDWARF_ERRCODE(x, n);
       }
 
-      n += printf_text("eh aug data len", USE_LT | USE_TBLT);
-      if (0 == augdata_len) {
-        n += printf_nice(augdata_len, USE_FHEX | USE_TBRT);
-      } else {
-        n += printf_nice(augdata_len, USE_FHEX);
-        n += printf_hurt(augdata, augdata_len, USE_HEX | USE_SPACE | USE_0x | USE_TBRT);
-      }
+      if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+        n += printf_text("eh aug data len", USE_LT | USE_TBLT);
+        if (0 == augdata_len) {
+          n += printf_nice(augdata_len, USE_FHEX | USE_TBRT);
+        } else {
+          n += printf_nice(augdata_len, USE_FHEX);
+          n += printf_hurt(augdata, augdata_len, USE_HEX | USE_SPACE | USE_0x | USE_TBRT);
+        }
 
-      n += printf_eol();
+        n += printf_eol();
+      }
 
       for (Dwarf_Addr j = low_pc; j < end_func_addr; ++j) {
         Dwarf_Addr     cur_pc = j;
@@ -315,8 +344,14 @@ int ocdwarf_eh_frame(handle_t p, handle_t s, handle_t d) {
     if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
       n += ocdwarf_printf_groups(p, ocget(p, OPCODE_DWARF_ERROR));
     }
-    n += ocdwarf_eh_frame_fdes(p, fde_data, fde_element_count, ocget(p, OPCODE_DWARF_ERROR));
-    n += ocdwarf_eh_frame_cies(p, cie_data, cie_element_count, ocget(p, OPCODE_DWARF_ERROR));
+
+    if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+      n += ocdwarf_eh_frame_fdes(p, fde_data, fde_element_count, ocget(p, OPCODE_DWARF_ERROR));
+      n += ocdwarf_eh_frame_cies(p, cie_data, cie_element_count, ocget(p, OPCODE_DWARF_ERROR));
+    } else {
+      n += ocdwarf_eh_frame_cies(p, cie_data, cie_element_count, ocget(p, OPCODE_DWARF_ERROR));
+      n += ocdwarf_eh_frame_fdes(p, fde_data, fde_element_count, ocget(p, OPCODE_DWARF_ERROR));
+    }
 
     ocdwarf_dealloc_fde_cie_list(p, cie_data, cie_element_count, fde_data, fde_element_count);
   }
