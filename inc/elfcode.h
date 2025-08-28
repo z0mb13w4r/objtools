@@ -47,6 +47,7 @@ uint64_t ecget_emachine(const pbuffer_t p);
 
 Elf32_Ehdr* ecget_ehdr32(const pbuffer_t p);
 Elf64_Ehdr* ecget_ehdr64(const pbuffer_t p);
+unknown_t   ecget_ehdr(const pbuffer_t p);
 
 Elf32_Nhdr* ecget_nhdr32byindex(const pbuffer_t p, const int index);
 Elf64_Nhdr* ecget_nhdr64byindex(const pbuffer_t p, const int index);
