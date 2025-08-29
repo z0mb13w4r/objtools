@@ -759,7 +759,11 @@ void ocdwarf_dealloc_error(handle_t p, Dwarf_Error *e) {
   if (isopcode(p)) {
     Dwarf_Error *e0 = e ? e : ocget(p, OPCODE_DWARF_ERROR);
     if (e0 && *e0) {
-      printf_e("message = %s", dwarf_errmsg(*e0));
+      popcode_t oc = ocget(p, OPCODE_THIS);
+
+      if (MODE_ISANY(oc->ocdump, OPTPROGRAM_DEBUGLEVEL1)) {
+        printf_e("message = %s", dwarf_errmsg(*e0));
+      }
 
       pocdwarf_t p0 = ocget(p, OPCODE_DWARF);
       if (p0) {
@@ -772,7 +776,6 @@ void ocdwarf_dealloc_error(handle_t p, Dwarf_Error *e) {
 void ocdwarf_finish(handle_t p, Dwarf_Error *e) {
   if (isopcode(p)) {
     ocdwarf_dealloc_error(p, e);
-
     pocdwarf_t p0 = ocget(p, OPCODE_DWARF);
     if (p0) {
       dwarf_finish(p0->dbg);
