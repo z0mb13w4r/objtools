@@ -151,7 +151,7 @@ int ocdwarf_debug_line(handle_t p, handle_t s, handle_t d) {
         char* lf = NULL;
         x = dwarf_linesrc(k, &lf, ocget(p, OPCODE_DWARF_ERROR));
         if (IS_DLV_OK(x) && 0 != lf && 0 != *lf) {
-          n += printf_text(lf, USE_LT | USE_SPACE);
+          n += printf_text(lf, USE_LT | USE_SHORTEN);
         }
         ocdwarf_dealloc(p, lf, DW_DLA_STRING);
 

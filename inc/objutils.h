@@ -26,6 +26,8 @@ uint64_t atovalue(const char* src);
 
 char* strname(char* dst, const char* src);
 
+const char* strshorten(const char* p);
+
 const char* strpick(const pconvert_t p, const pick_t x);
 const char* strpicknull(const pconvert_t p, const pick_t x);
 const char* strpickunknown(const pick_t x);

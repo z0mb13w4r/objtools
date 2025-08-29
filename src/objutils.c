@@ -59,10 +59,15 @@ uint64_t atovalue(const char* src) {
   return atol(src);
 }
 
+const char* strshorten(const char* p) {
+  const char *p0 = strrchr(p, '/');
+  return p0 ? p0 + 1 : p;
+}
+
 char* strname(char* dst, const char* src) {
-  char *p = strrchr(src, '/');
+  const char *p = strshorten(src);
   if (p) {
-    return strcpy(dst, ++p);
+    return strcpy(dst, p);
   }
 
   return strcpy(dst, src);

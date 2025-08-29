@@ -173,6 +173,7 @@
 #define USE_EOL           SET_FLAG(1)
 #define USE_NOTEXT        SET_FLAG(2)
 #define USE_NOSPACE       SET_FLAG(4)
+#define USE_SHORTEN       SET_FLAG(8)
 #define USE_SPECIAL       SET_FLAG(32ULL)
 #define USE_FLAGMASK      SET_FLAG(63ULL)
 
