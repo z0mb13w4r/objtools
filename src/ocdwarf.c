@@ -100,7 +100,7 @@ int ocdwarf_open(handle_t p, handle_t o) {
 int ocdwarf_close(handle_t p) {
   if (isopcode(p)) {
     ocdwarf_sfreset(p);
-    ocdwarf_object_finish(p);
+//    ocdwarf_object_finish(p);
     ocdwarf_finish(p, NULL);
 
     popcode_t oc = ocget(p, OPCODE_THIS);
@@ -777,9 +777,9 @@ void ocdwarf_finish(handle_t p, Dwarf_Error *e) {
   if (isopcode(p)) {
     ocdwarf_dealloc_error(p, e);
     pocdwarf_t p0 = ocget(p, OPCODE_DWARF);
-    if (p0) {
+    if (p0 && p0->dbg) {
       dwarf_finish(p0->dbg);
-//      p0->dbg = NULL;
+      p0->dbg = NULL;
     }
   }
 }
@@ -787,9 +787,9 @@ void ocdwarf_finish(handle_t p, Dwarf_Error *e) {
 void ocdwarf_object_finish(handle_t p) {
   if (isopcode(p)) {
     pocdwarf_t p0 = ocget(p, OPCODE_DWARF);
-    if (p0) {
+    if (p0 && p0->dbg) {
       dwarf_object_finish(p0->dbg);
-//      p0->dbg = NULL;
+      p0->dbg = NULL;
     }
   }
 }
