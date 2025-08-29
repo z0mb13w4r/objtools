@@ -27,14 +27,16 @@ extern pick_t oeADDRLOOKUP[];
 
 extern convert_t zDWAT[];
 extern convert_t zDWOP[];
-extern convert_t zDWATE[];
+extern convert_t ecDWATE[];
+extern convert_t ecDWATEEX[];
 extern convert_t zDWCFA[];
 extern convert_t zDWTAG[];
 extern convert_t zDWGNUM[];
 extern convert_t zDWFORM[];
 extern convert_t zDWLANG[];
 extern convert_t zDWMACRO[];
-extern convert_t zDWCHILDREN[];
+extern convert_t ecDWCHILDREN[];
+extern convert_t ecDWCHILDRENEX[];
 
 extern convert_t zDWEXPR[];
 extern convert_t zDWEXPRLITE[];

@@ -238,7 +238,7 @@ convert_t zDWAT[] = {
   {0, 0}
 };
 
-convert_t zDWATE[] = {
+convert_t ecDWATE[] = {
   {"DW_ATE_address",                0x01},
   {"DW_ATE_boolean",                0x02},
   {"DW_ATE_complex_float",          0x03},
@@ -247,6 +247,50 @@ convert_t zDWATE[] = {
   {"DW_ATE_signed_char",            0x06},
   {"DW_ATE_unsigned",               0x07},
   {"DW_ATE_unsigned_char",          0x08},
+  {"DW_ATE_imaginary_float",        0x09},
+  {"DW_ATE_packed_decimal",         0x0a},
+  {"DW_ATE_numeric_string",         0x0b},
+  {"DW_ATE_edited",                 0x0c},
+  {"DW_ATE_signed_fixed",           0x0d},
+  {"DW_ATE_unsigned_fixed",         0x0e},
+  {"DW_ATE_decimal_float",          0x0f},
+  {"DW_ATE_UTF",                    0x10},
+  {"DW_ATE_UCS",                    0x11},
+  {"DW_ATE_ASCII",                  0x12},
+  {"DW_ATE_ALTIUM_fract",           0x80},
+  {"DW_ATE_lo_user",                0x80},
+  {"DW_ATE_ALTIUM_accum",           0x81},
+  {"DW_ATE_HP_float80",             0x80},
+  {"DW_ATE_HP_complex_float80",     0x81},
+  {"DW_ATE_HP_float128",            0x82},
+  {"DW_ATE_HP_complex_float128",    0x83},
+  {"DW_ATE_HP_floathpintel",        0x84},
+  {"DW_ATE_HP_imaginary_float80",   0x85},
+  {"DW_ATE_HP_imaginary_float128",  0x86},
+  {"DW_ATE_HP_VAX_float",           0x88},
+  {"DW_ATE_HP_VAX_float_d",         0x89},
+  {"DW_ATE_HP_packed_decimal",      0x8a},
+  {"DW_ATE_HP_zoned_decimal",       0x8b},
+  {"DW_ATE_HP_edited",              0x8c},
+  {"DW_ATE_HP_signed_fixed",        0x8d},
+  {"DW_ATE_HP_unsigned_fixed",      0x8e},
+  {"DW_ATE_HP_VAX_complex_float",   0x8f},
+  {"DW_ATE_HP_VAX_complex_float_d", 0x90},
+  {"DW_ATE_SUN_interval_float",     0x91},
+  {"DW_ATE_SUN_imaginary_float",    0x92},
+  {"DW_ATE_hi_user",                0xff},
+  {0, 0}
+};
+
+convert_t ecDWATEEX[] = {
+  {"address",                       0x01},
+  {"boolean",                       0x02},
+  {"DW_ATE_complex_float",          0x03},
+  {"float",                         0x04},
+  {"signed",                        0x05},
+  {"signed char",                   0x06},
+  {"unsigned",                      0x07},
+  {"unsigned char",                 0x08},
   {"DW_ATE_imaginary_float",        0x09},
   {"DW_ATE_packed_decimal",         0x0a},
   {"DW_ATE_numeric_string",         0x0b},
@@ -313,9 +357,15 @@ convert_t zDWCFA[] = {
   {0, 0}
 };
 
-convert_t zDWCHILDREN[] = {
+convert_t ecDWCHILDREN[] = {
   {"DW_CHILDREN_no",                0x00},
   {"DW_CHILDREN_yes",               0x01},
+  {0, 0},
+};
+
+convert_t ecDWCHILDRENEX[] = {
+  {"no children",                   0x00},
+  {"has children",                  0x01},
   {0, 0},
 };
 
