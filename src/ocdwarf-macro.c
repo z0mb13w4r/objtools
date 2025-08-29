@@ -27,12 +27,14 @@ int ocdwarf_debug_macro_ops(handle_t p, Dwarf_Die die, Dwarf_Macro_Context conte
         return OCDWARF_ERRCODE(x, n);
       }
 
-      n += ocdwarf_printf_DEC(p, i, USE_SB);
+      if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+        n += ocdwarf_printf_DEC(p, i, USE_SB);
+      }
       n += ocdwarf_printf_MACRO(p, macro_operator, USE_SPECIAL);
 
       const imode_t TRY_COLON = MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED) ? USE_NONE : USE_COLON;
 
-      if (MODE_ISNOT(oc->ocdump, OPTDEBUGELF_ENHANCED) && (DW_MACRO_end_file != macro_operator)) {
+      if (MODE_ISNOT(oc->ocdump, OPTDEBUGELF_ENHANCED) && (DW_MACRO_end_file != macro_operator) && (0 != macro_operator)) {
         n += printf_text("-", USE_LT | USE_SPACE);
       }
 
@@ -107,13 +109,15 @@ int ocdwarf_debug_macro_ops(handle_t p, Dwarf_Die die, Dwarf_Macro_Context conte
           n += printf_text(macro_string, USE_LT | USE_SPACE);
         }
       } else if (0 == macro_operator) {
-        n += printf_text("op offset", USE_LT | USE_SPACE);
-        n += ocdwarf_printf_ADDR(p, op_start_section_offset, USE_NONE);
-        n += printf_text("macro unit length", USE_LT | USE_SPACE);
-        n += printf_nice(op_start_section_offset + 1 - macro_unit_offset, USE_DEC);
-        n += printf_text("next byte offset", USE_LT | USE_SPACE);
-        n += ocdwarf_printf_ADDR(p, op_start_section_offset + 1, USE_NONE);
-        n += printf_eol();
+        if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+          n += printf_text("op offset", USE_LT | USE_SPACE);
+          n += ocdwarf_printf_ADDR(p, op_start_section_offset, USE_NONE);
+          n += printf_text("macro unit length", USE_LT | USE_SPACE);
+          n += printf_nice(op_start_section_offset + 1 - macro_unit_offset, USE_DEC);
+          n += printf_text("next byte offset", USE_LT | USE_SPACE);
+          n += ocdwarf_printf_ADDR(p, op_start_section_offset + 1, USE_NONE);
+          n += printf_eol();
+        }
 
         n += ocdwarf_debug_macro_offset(p, die, level, op_start_section_offset + 1, e);
       }
