@@ -9,9 +9,11 @@ int ocdwarf_die_and_siblings(handle_t p, Dwarf_Die die,
   int n = 0;
 
   if (isopcode(p)) {
+    popcode_t oc = ocget(p, OPCODE_THIS);
+
     n += ocdwarf_printf(p, die, isinfo, level, e);
 
-    if (0 == level) {
+    if ((0 == level) && MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
       n += printf_text("LOCAL_SYMBOLS", USE_LT | USE_COLON | USE_EOL);
     }
 
