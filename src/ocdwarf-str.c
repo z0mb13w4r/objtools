@@ -3,7 +3,7 @@
 #include "options.h"
 #include "ocdwarf-str.h"
 
-int ocdwarf_debug_str(handle_t p, handle_t s, handle_t d) {
+static int ocdwarf_debug_str0(handle_t p, handle_t s, handle_t d) {
   int x = DW_DLV_ERROR;
   int n = 0;
 
@@ -28,8 +28,24 @@ int ocdwarf_debug_str(handle_t p, handle_t s, handle_t d) {
       offset += length + 1;
       x = dwarf_get_str(ocget(p, OPCODE_DWARF_DEBUG), offset, &string, &length, ocget(p, OPCODE_DWARF_ERROR));
     }
+
+    return OCDWARF_ERRCODE(x, n);
   }
 
-  return OCDWARF_ERRCODE(x, n);
+  return ECODE_HANDLE;
+}
+
+int ocdwarf_debug_str(handle_t p, handle_t s, handle_t d) {
+  if (isopcode(p) && (isopshdr(s) || isopshdrNN(s))) {
+    popcode_t oc = ocget(p, OPCODE_THIS);
+
+    if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+      return ocdwarf_debug_str0(p, s, d);
+    } else {
+      return printf_data(ocget_rawdata(s), ocget_size(s), 0, USE_HEXDUMP);
+    }
+  }
+
+  return ECODE_HANDLE;
 }
 
