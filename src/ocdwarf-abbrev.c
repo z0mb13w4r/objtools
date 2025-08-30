@@ -41,7 +41,9 @@ int ocdwarf_abbrev_one(handle_t p, Dwarf_Unsigned offset, Dwarf_Unsigned nabbrev
           n += printf_text("Abbrev 0: null abbrev entry", USE_LT | USE_SPACE);
         }
       } else {
-        n += printf_nice(nabbrev, USE_DEC | USE_NOSPACE);
+        if (MODE_ISNOT(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+          n += printf_nice(nabbrev, USE_DEC | USE_NOSPACE);
+        }
         n += ocdwarf_printf_TAG(p, abbrev_tag, USE_NONE);
       }
     }
