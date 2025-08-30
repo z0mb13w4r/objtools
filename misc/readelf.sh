@@ -29,6 +29,7 @@ PICK1='-a'
 #PICK1='--debug-dump=rawline'
 #PICK2='--print-lines'
 PICK1='--debug-dump=frames'
+PICK1='--debug-dump=frames-interp'
 PICK2='--print-eh-frame'
 
 PRGNAME=readelf

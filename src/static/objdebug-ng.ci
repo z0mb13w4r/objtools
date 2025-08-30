@@ -2,7 +2,7 @@ char zDEBUGABBREV[]       = "Displays the contents of the .debug_abbrev section.
 char zDEBUGADDR[]         = "Displays the contents of the .debug_addr section.";
 char zDEBUGCUINDEX[]      = "Displays the contents of the .debug_cu_index|.debug_tu_index sections.";
 char zDEBUGFRAME[]        = "Display the raw contents of a .debug_frame section.";
-char zDEBUGFRAMEINTERP[]  = "Display the interpreted contents of a .debug_frame section.";
+char zDEBUGFRAMEDECODED[] = "Display the interpreted contents of a .debug_frame section.";
 char zDEBUGINFO[]         = "Displays the contents of the .debug_info section.";
 char zDEBUGLINKS[]        = "Displays the contents of the .gnu_debuglink|.gnu_debugaltlink sections.";
 char zDEBUGMACRO[]        = "Displays the contents of the .debug_macro|.debug_macinfo sections.";
@@ -25,7 +25,7 @@ const args_t zDEBUGELFARGS[] = {
   {'A', "addr",               OPTDEBUGELF_DEBUG_ADDR,          zDEBUGADDR},
   {'c', "cu_index",           OPTDEBUGELF_DEBUG_CU_INDEX,      zDEBUGCUINDEX},
   {'f', "frames",             OPTDEBUGELF_DEBUG_FRAME,         zDEBUGFRAME},
-  {'F', "frames_interp",      OPTDEBUGELF_DEBUG_FRAME_INTERP,  zDEBUGFRAMEINTERP},
+  {'F', "frames-interp",      OPTDEBUGELF_DEBUG_FRAME_DECODED, zDEBUGFRAMEDECODED},
   {'i', "info",               OPTDEBUGELF_DEBUG_INFO,          zDEBUGINFO},
   {'k', "links",              OPTDEBUGELF_DEBUG_LINK,          zDEBUGLINKS},
   {'K', "follow-links",       OPTDEBUGELF_DEBUG_LINK_FOLLOW,   zDEBUGLINKSFOLLOW},
