@@ -90,7 +90,7 @@ int ocdwarf_printf_ATE(handle_t p, const uint64_t v, const imode_t mode) {
     if (MODE_ISNOT(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
       int n = 0;
       n += printf_nice(v, USE_DEC);
-      n += ocdwarf_printf_pluck(p, ecDWATEEX, v, USE_RB | mode);
+      n += ocdwarf_printf_pluck(p, ecDWATELITE, v, USE_RB | mode);
       return n;
     }
   }
@@ -144,7 +144,7 @@ int ocdwarf_printf_CHILDREN(handle_t p, const uint64_t v, const imode_t mode) {
   if (isopcode(p)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
     if (MODE_ISNOT(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
-      return ocdwarf_printf_pluck(p, ecDWCHILDRENEX, v, USE_SB | mode);
+      return ocdwarf_printf_pluck(p, ecDWCHILDRENLITE, v, USE_SB | mode);
     }
   }
 

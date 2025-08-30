@@ -41,11 +41,11 @@ extern convert_t ecDWMACRO[];
 extern convert_t ecDWMACINFO[];
 
 extern convert_t ecDWATE[];
-extern convert_t ecDWATEEX[];
+extern convert_t ecDWATELITE[];
 extern convert_t ecDWEXPR[];
 extern convert_t ecDWEXPRLITE[];
 extern convert_t ecDWCHILDREN[];
-extern convert_t ecDWCHILDRENEX[];
+extern convert_t ecDWCHILDRENLITE[];
 
 extern convert_t ecPHDRTYPE[];
 extern convert_t ecSHDRTYPE[];

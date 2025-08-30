@@ -282,7 +282,7 @@ convert_t ecDWATE[] = {
   {0, 0}
 };
 
-convert_t ecDWATEEX[] = {
+convert_t ecDWATELITE[] = {
   {"address",                       0x01},
   {"boolean",                       0x02},
   {"DW_ATE_complex_float",          0x03},
@@ -363,7 +363,7 @@ convert_t ecDWCHILDREN[] = {
   {0, 0},
 };
 
-convert_t ecDWCHILDRENEX[] = {
+convert_t ecDWCHILDRENLITE[] = {
   {"no children",                   0x00},
   {"has children",                  0x01},
   {0, 0},
