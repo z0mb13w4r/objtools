@@ -398,7 +398,7 @@ static int ocdwarf_spget0(handle_t p, Dwarf_Die die, Dwarf_Half tag, Dwarf_Addr 
         if (IS_DLV_ANY_ERROR(x)) {
           printf_e("dwarf_whatattr failed! errcode %d", x);
           return ECODE_DWARF;
-        } else if (isused(zFORMSTRING, nform)) {
+        } else if (isused(ecFORMSTRING, nform)) {
           if (name) {
             char *value = NULL;
             x = dwarf_formstring(attr, &value, e);
@@ -409,7 +409,7 @@ static int ocdwarf_spget0(handle_t p, Dwarf_Die die, Dwarf_Half tag, Dwarf_Addr 
               *name = value;
             }
           }
-        } else if (isused(zFORMUDATA, nform)) {
+        } else if (isused(ecFORMUDATA, nform)) {
           Dwarf_Unsigned value = 0;
           x = dwarf_formudata(attr, &value, e);
           if (IS_DLV_ANY_ERROR(x)) {
@@ -429,7 +429,7 @@ static int ocdwarf_spget0(handle_t p, Dwarf_Die die, Dwarf_Half tag, Dwarf_Addr 
               *source = sf->data[value - 1];
             }
           }
-        } else if (isused(zFORMADDR, nform)) {
+        } else if (isused(ecFORMADDR, nform)) {
           Dwarf_Addr xaddr = 0;
           x = dwarf_formaddr(attr, &xaddr, e);
           if (IS_DLV_ANY_ERROR(x)) {

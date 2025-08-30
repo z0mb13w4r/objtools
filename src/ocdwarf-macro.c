@@ -82,7 +82,7 @@ int ocdwarf_debug_macro_ops(handle_t p, Dwarf_Die die, Dwarf_Macro_Context conte
         n += printf_nice(nline, USE_DEC);
         n += printf_text(PICK_ENHANCED(oc, "file number", "filenum"), USE_LT | USE_SPACE | TRY_COLON);
         n += ocdwarf_printf_SRCFILE(p, index, USE_DEC);
-      } else if (isused(zMACRODEF, macro_operator)) {
+      } else if (isused(ecMACRODEF, macro_operator)) {
         Dwarf_Unsigned nline = 0;
         Dwarf_Unsigned index = 0;
         Dwarf_Unsigned offset = 0;
@@ -98,7 +98,7 @@ int ocdwarf_debug_macro_ops(handle_t p, Dwarf_Die die, Dwarf_Macro_Context conte
         n += printf_text(PICK_ENHANCED(oc, "line", "lineno"), USE_LT | USE_SPACE | TRY_COLON);
         n += printf_nice(nline, USE_DEC);
 
-        if (isused(zMACRODEFSTR, macro_operator) && MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+        if (isused(ecMACRODEFSTR, macro_operator) && MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
           n += printf_text("str offset", USE_LT | USE_SPACE | TRY_COLON);
           n += printf_nice(offset, USE_FHEX32);
         }

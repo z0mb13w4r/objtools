@@ -3,43 +3,49 @@
 
 #include "objutils.h"
 
-extern pick_t zATE[];
-extern pick_t zATDEC[];
-extern pick_t zATDEC8[];
-extern pick_t zATDEC16[];
-extern pick_t zATHEX32[];
-extern pick_t zATSRCFILE[];
+extern pick_t ecATE[];
+extern pick_t ecATDEC[];
+extern pick_t ecATDEC8[];
+extern pick_t ecATDEC16[];
+extern pick_t ecATHEX32[];
+extern pick_t ecATSRCFILE[];
 
-extern pick_t zFORMBOOL[];
-extern pick_t zFORMADDR[];
-extern pick_t zFORMGREF[];
-extern pick_t zFORMBLOCK[];
-extern pick_t zFORMUDATA[];
-extern pick_t zFORMOFFSET[];
-extern pick_t zFORMSTRING[];
+extern pick_t ecFORMBOOL[];
+extern pick_t ecFORMADDR[];
+extern pick_t ecFORMGREF[];
+extern pick_t ecFORMBLOCK[];
+extern pick_t ecFORMUDATA[];
+extern pick_t ecFORMOFFSET[];
+extern pick_t ecFORMSTRING[];
 
-extern pick_t zMACRODEF[];
-extern pick_t zMACRODEFSTR[];
+extern pick_t ecMACRODEF[];
+extern pick_t ecMACRODEFSTR[];
 
 extern pick_t ecDYNTAGNAME[];
 
 extern pick_t oeADDRLOOKUP[];
 
-extern convert_t zDWAT[];
-extern convert_t zDWOP[];
+extern convert_t ecDWAT[];
+extern convert_t ecDWOP[];
+extern convert_t ecDWUT[];
+extern convert_t ecDWCFA[];
+extern convert_t ecDWEND[];
+extern convert_t ecDWLLE[];
+extern convert_t ecDWRLE[];
+extern convert_t ecDWTAG[];
+extern convert_t ecDWGNUM[];
+extern convert_t ecDWFORM[];
+extern convert_t ecDWLANG[];
+extern convert_t ecDWADDR[];
+extern convert_t ecDWMACRO[];
+extern convert_t ecDWMACINFO[];
+
 extern convert_t ecDWATE[];
 extern convert_t ecDWATEEX[];
-extern convert_t zDWCFA[];
-extern convert_t zDWTAG[];
-extern convert_t zDWGNUM[];
-extern convert_t zDWFORM[];
-extern convert_t zDWLANG[];
-extern convert_t zDWMACRO[];
+extern convert_t ecDWEXPR[];
+extern convert_t ecDWEXPRLITE[];
 extern convert_t ecDWCHILDREN[];
 extern convert_t ecDWCHILDRENEX[];
-
-extern convert_t zDWEXPR[];
-extern convert_t zDWEXPRLITE[];
 
 extern convert_t ecPHDRTYPE[];
 extern convert_t ecSHDRTYPE[];

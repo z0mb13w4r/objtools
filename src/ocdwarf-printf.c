@@ -77,11 +77,11 @@ int ocdwarf_printf_ADDR(handle_t p, const uint64_t v, const imode_t mode) {
 }
 
 int ocdwarf_printf_AT(handle_t p, const uint64_t v, const imode_t mode) {
-  return ocdwarf_printf_pluck(p, zDWAT, v, mode | SET_PAD(30));
+  return ocdwarf_printf_pluck(p, ecDWAT, v, mode | SET_PAD(30));
 }
 
 int ocdwarf_printf_OP(handle_t p, const uint64_t v, const imode_t mode) {
-  return ocdwarf_printf_pluck(p, zDWOP, v, mode);
+  return ocdwarf_printf_pluck(p, ecDWOP, v, mode);
 }
 
 int ocdwarf_printf_ATE(handle_t p, const uint64_t v, const imode_t mode) {
@@ -99,34 +99,34 @@ int ocdwarf_printf_ATE(handle_t p, const uint64_t v, const imode_t mode) {
 }
 
 int ocdwarf_printf_CFA(handle_t p, const uint64_t v, const imode_t mode) {
-  return ocdwarf_printf_pluck(p, zDWCFA, v, mode);
+  return ocdwarf_printf_pluck(p, ecDWCFA, v, mode);
 }
 
 int ocdwarf_printf_TAG(handle_t p, const uint64_t v, const imode_t mode) {
-  return ocdwarf_printf_pluck(p, zDWTAG, v, mode);
+  return ocdwarf_printf_pluck(p, ecDWTAG, v, mode);
 }
 
 int ocdwarf_printf_EXPR(handle_t p, const uint64_t v, const imode_t mode) {
   if (isopcode(p)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
     if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
-      return ocdwarf_printf_pluck(p, zDWEXPR, v, mode);
+      return ocdwarf_printf_pluck(p, ecDWEXPR, v, mode);
     }
   }
 
-  return ocdwarf_printf_pluck(p, zDWEXPRLITE, v, mode);
+  return ocdwarf_printf_pluck(p, ecDWEXPRLITE, v, mode);
 }
 
 int ocdwarf_printf_GNUM(handle_t p, const uint64_t v, const imode_t mode) {
-  return ocdwarf_printf_pluck(p, zDWGNUM, v, mode);
+  return ocdwarf_printf_pluck(p, ecDWGNUM, v, mode);
 }
 
 int ocdwarf_printf_FORM(handle_t p, const uint64_t v, const imode_t mode) {
-  return ocdwarf_printf_pluck(p, zDWFORM, v, mode | SET_PAD(22));
+  return ocdwarf_printf_pluck(p, ecDWFORM, v, mode | SET_PAD(22));
 }
 
 int ocdwarf_printf_LANG(handle_t p, const uint64_t v, const imode_t mode) {
-  return ocdwarf_printf_pluck(p, zDWLANG, v, mode);
+  return ocdwarf_printf_pluck(p, ecDWLANG, v, mode);
 }
 
 int ocdwarf_printf_MACRO(handle_t p, const uint64_t v, const imode_t mode) {
@@ -137,7 +137,7 @@ int ocdwarf_printf_MACRO(handle_t p, const uint64_t v, const imode_t mode) {
       printf_nice(v, USE_FHEX8) + printf_text("end-of-macros", USE_LT | USE_SPACE) : 0;
   }
 
-  return ocdwarf_printf_pluck(p, zDWMACRO, v, mode);
+  return ocdwarf_printf_pluck(p, ecDWMACRO, v, mode);
 }
 
 int ocdwarf_printf_CHILDREN(handle_t p, const uint64_t v, const imode_t mode) {
@@ -398,7 +398,7 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
       n += ocdwarf_printf_FORM(p, nform, USE_NONE);
     }
 
-    if (isused(zFORMSTRING, nform)) {
+    if (isused(ecFORMSTRING, nform)) {
       char *str = NULL;
       x = dwarf_formstring(attr, &str, e);
       if (IS_DLV_ANY_ERROR(x)) {
@@ -407,7 +407,7 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
       }
 
       n += printf_text(str, USE_LT | USE_SPACE);
-    } else if (isused(zFORMUDATA, nform)) {
+    } else if (isused(ecFORMUDATA, nform)) {
       Dwarf_Unsigned value = 0;
       x = dwarf_formudata(attr, &value, e);
       if (IS_DLV_ANY_ERROR(x)) {
@@ -428,20 +428,20 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
         n += ocdwarf_printf_ADDR(p, low_pc_addr + value, USE_TBRT);
       } else if (DW_AT_language == nattr) {
         n += ocdwarf_printf_LANG(p, value, USE_NONE);
-      } else if (isused(zATE, nattr)) {
+      } else if (isused(ecATE, nattr)) {
         n += ocdwarf_printf_ATE(p, value, USE_NONE);
-      } else if (isused(zATDEC, nattr)) {
+      } else if (isused(ecATDEC, nattr)) {
         n += printf_nice(value, USE_DEC);
         if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
-          if (isused(zATDEC8, nattr) && (CHAR_MAX <= value)) {
+          if (isused(ecATDEC8, nattr) && (CHAR_MAX <= value)) {
             n += printf_nice(value, USE_SDEC8 | USE_RB);
-          } else if (isused(zATDEC16, nattr) && (SHRT_MAX <= value)) {
+          } else if (isused(ecATDEC16, nattr) && (SHRT_MAX <= value)) {
             n += printf_nice(value, USE_SDEC16 | USE_RB);
           }
         }
-      } else if (isused(zATHEX32, nattr)) {
+      } else if (isused(ecATHEX32, nattr)) {
         n += printf_nice(value, TRY_DECHEX32);
-      } else if (isused(zATSRCFILE, nattr)) {
+      } else if (isused(ecATSRCFILE, nattr)) {
         if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
           n += ocdwarf_printf_SRCFILE(p, value, TRY_DECHEX32);
         } else {
@@ -450,7 +450,7 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
       } else {
         n += printf_nice(value, USE_FHEX16);
       }
-    } else if (isused(zFORMADDR, nform)) {
+    } else if (isused(ecFORMADDR, nform)) {
       Dwarf_Addr addr = 0;
       x = dwarf_formaddr(attr, &addr, e);
       if (IS_DLV_ANY_ERROR(x)) {
@@ -463,7 +463,7 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
       }
 
       n += ocdwarf_printf_ADDR(p, addr, USE_NONE);
-    } else if (isused(zFORMBOOL, nform)) {
+    } else if (isused(ecFORMBOOL, nform)) {
       Dwarf_Unsigned value = 0;
       x = dwarf_formudata(attr, &value, e);
       if (IS_DLV_ANY_ERROR(x)) {
@@ -472,7 +472,7 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
       }
 
       n += printf_nice(value, USE_YESNO);
-    } else if (isused(zFORMGREF, nform)) {
+    } else if (isused(ecFORMGREF, nform)) {
       Dwarf_Unsigned value = 0;
       x = dwarf_global_formref(attr, &value, e);
       if (IS_DLV_ANY_ERROR(x)) {
@@ -481,7 +481,7 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
       }
 
       n += printf_nice(value, TRY_HEX);
-    } else if (isused(zFORMOFFSET, nform)) {
+    } else if (isused(ecFORMOFFSET, nform)) {
       Dwarf_Off offset = 0;
       Dwarf_Bool isinfo = FALSE;
       if (DW_AT_type == nattr) {
@@ -520,7 +520,7 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
           n += printf_text(name, USE_LT | USE_SPACE | USE_TB);
         }
       }
-    } else if (isused(zFORMBLOCK, nform)) {
+    } else if (isused(ecFORMBLOCK, nform)) {
       Dwarf_Block *block = 0;
       int x0 = dwarf_formblock(attr, &block, e);
       if (IS_DLV_ERROR(x0)) {
