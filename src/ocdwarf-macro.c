@@ -98,14 +98,15 @@ int ocdwarf_debug_macro_ops(handle_t p, Dwarf_Die die, Dwarf_Macro_Context conte
         n += printf_text(PICK_ENHANCED(oc, "line", "lineno"), USE_LT | USE_SPACE | TRY_COLON);
         n += printf_nice(nline, USE_DEC);
 
-        if (isused(zMACRODEFSTR, macro_operator)) {
-          n += printf_text(PICK_ENHANCED(oc, "str offset", "macro"), USE_LT | USE_SPACE | TRY_COLON);
-          if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
-            n += printf_nice(offset, USE_FHEX32);
-          }
+        if (isused(zMACRODEFSTR, macro_operator) && MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+          n += printf_text("str offset", USE_LT | USE_SPACE | TRY_COLON);
+          n += printf_nice(offset, USE_FHEX32);
         }
 
         if (macro_string) {
+          if (MODE_ISNOT(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+            n += printf_text("macro", USE_LT | USE_SPACE | USE_COLON);
+          }
           n += printf_text(macro_string, USE_LT | USE_SPACE);
         }
       } else if (0 == macro_operator) {
