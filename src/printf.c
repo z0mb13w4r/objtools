@@ -500,9 +500,12 @@ int printf_text(const char* p, const imode_t mode) {
   MALLOCA(char, o2, MAX_BUFFER_SIZE + MAX_PADDING_SIZE);
 
   int n = 0;
-
-  const char* p0 = p ? (MODE_ISANY(mode, USE_SHORTEN) ? strshorten(p) : p) : "";
-  n += printf_work(o1, sizeof(o1), p0, mode);
+  const char* p0 = p ? p : "";
+  if (MODE_ISANY(mode, USE_SHORTEN)) {
+    n += printf_work(o1, sizeof(o1), strshorten(p0), mode);
+  } else {
+    n += printf_work(o1, sizeof(o1), p0, mode);
+  }
 
   int sz = MIN(MAX(0, CAST(int, GET_PAD(mode)) - n), MAX_PADDING_SIZE);
   if (sz) {

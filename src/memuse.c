@@ -1,3 +1,5 @@
+#include <unistd.h>
+
 #include "memuse.h"
 
 unknown_t xmalloc(const size_t size) {
@@ -63,11 +65,11 @@ unknown_t zfree(punknown_t p) {
 }
 
 const char* strshorten(const char* p) {
-  const char *p0 = strrchr(p, '/');
-  return p0 ? p0 + 1 : p;
-}
+  if (p) {
+    const char *p0 = strrchr(p, '/');
+    return p0 ? p0 + 1 : p;
+  }
 
-const char* strshortendir(const char* p) {
-  return NULL;
+  return p;
 }
 
