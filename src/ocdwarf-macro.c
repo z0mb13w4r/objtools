@@ -136,12 +136,15 @@ int ocdwarf_debug_macro_offset(handle_t p, Dwarf_Die die, int level,
   int n = 0;
 
   if (isopcode(p)) {
+    popcode_t oc = ocget(p, OPCODE_THIS);
     pdwarf_statistics_t st = ocget(p, OPCODE_DWARF_STATISTICS);
 
     Dwarf_Unsigned version = 0;
     Dwarf_Unsigned number_of_ops = 0;
     Dwarf_Unsigned ops_total_byte_len = 0;
     Dwarf_Macro_Context macro_context = 0;
+
+    const imode_t TRY_COLON = MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED) ? USE_NONE : USE_COLON;
 
     st->mcount ++;
     st->eoffset = MAX(st->eoffset, macro_offset);
@@ -150,7 +153,7 @@ int ocdwarf_debug_macro_offset(handle_t p, Dwarf_Die die, int level,
                      &number_of_ops, &ops_total_byte_len, e);
     if (IS_DLV_OK(x)) {
       n += printf_text(".debug_macro: Macro info for imported macro unit at macro offset", USE_LT | USE_SPACE);
-      n += ocdwarf_printf_ADDR(p, macro_offset, USE_COLON | USE_EOL);
+      n += ocdwarf_printf_ADDR(p, macro_offset, TRY_COLON | USE_EOL);
 
       n += ocdwarf_debug_macro_context(p, die, macro_context, level, macro_offset,
                      number_of_ops, ops_total_byte_len, e);
