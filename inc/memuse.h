@@ -19,5 +19,8 @@ char* xstrndup(const char *src, size_t size);
 unknown_t xmemcpy(unknown_t dst, const unknown_t src, size_t count);
 unknown_t xmemset(unknown_t ptr, int value, size_t count);
 
+const char* strshorten(const char* p);
+const char* strshortendir(const char* p);
+
 #endif
 

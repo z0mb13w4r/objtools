@@ -62,3 +62,12 @@ unknown_t zfree(punknown_t p) {
   return NULL;
 }
 
+const char* strshorten(const char* p) {
+  const char *p0 = strrchr(p, '/');
+  return p0 ? p0 + 1 : p;
+}
+
+const char* strshortendir(const char* p) {
+  return NULL;
+}
+

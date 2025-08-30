@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "memuse.h"
 #include "printf.h"
 #include "objutils.h"
 
@@ -57,11 +58,6 @@ uint64_t atovalue(const char* src) {
   }
 
   return atol(src);
-}
-
-const char* strshorten(const char* p) {
-  const char *p0 = strrchr(p, '/');
-  return p0 ? p0 + 1 : p;
 }
 
 char* strname(char* dst, const char* src) {

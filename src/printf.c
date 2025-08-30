@@ -5,6 +5,7 @@
 #include <inttypes.h>
 
 #include "decode.h"
+#include "memuse.h"
 #include "printf.h"
 
 #include "static/color.ci"
