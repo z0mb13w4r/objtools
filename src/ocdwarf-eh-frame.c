@@ -45,7 +45,7 @@ int ocdwarf_eh_frame_cies(handle_t p, Dwarf_Cie *cie_data, Dwarf_Signed cie_elem
 
       Dwarf_Off cie_off = 0;
       x = dwarf_cie_section_offset(ocget(p, OPCODE_DWARF_DEBUG), cie, &cie_off, e);
-      if (IS_DLV_OK(x)) {
+      if (IS_DLV_OK(x) && MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
         n += printf_text("CIE section offset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
         n += printf_nice(cie_off, USE_DEC);
         n += printf_nice(cie_off, USE_FHEX32);
@@ -81,13 +81,15 @@ int ocdwarf_eh_frame_cies(handle_t p, Dwarf_Cie *cie_data, Dwarf_Signed cie_elem
         n += printf_eol();
       }
 
-      n += printf_text("bytes of initial instructions", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
-      n += printf_nice(cie_initial_instructions_length, USE_DEC);
-      n += printf_eol();
+      if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+        n += printf_text("bytes of initial instructions", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
+        n += printf_nice(cie_initial_instructions_length, USE_DEC);
+        n += printf_eol();
 
-      n += printf_text("cie length", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
-      n += printf_nice(bytes_in_cie, USE_DEC);
-      n += printf_eol();
+        n += printf_text("cie length", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
+        n += printf_nice(bytes_in_cie, USE_DEC);
+        n += printf_eol();
+      }
 
       Dwarf_Frame_Instr_Head instr_head = 0;
       Dwarf_Unsigned         instr_count = 0;
@@ -350,7 +352,7 @@ int ocdwarf_eh_frame(handle_t p, handle_t s, handle_t d) {
       n += ocdwarf_eh_frame_cies(p, cie_data, cie_element_count, ocget(p, OPCODE_DWARF_ERROR));
     } else {
       n += ocdwarf_eh_frame_cies(p, cie_data, cie_element_count, ocget(p, OPCODE_DWARF_ERROR));
-      n += ocdwarf_eh_frame_fdes(p, fde_data, fde_element_count, ocget(p, OPCODE_DWARF_ERROR));
+//      n += ocdwarf_eh_frame_fdes(p, fde_data, fde_element_count, ocget(p, OPCODE_DWARF_ERROR));
     }
 
     ocdwarf_dealloc_fde_cie_list(p, cie_data, cie_element_count, fde_data, fde_element_count);
