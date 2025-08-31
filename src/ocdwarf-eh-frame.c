@@ -3,6 +3,8 @@
 #include "options.h"
 #include "ocdwarf-eh-frame.h"
 
+#define PICK_ENHANCED(x,y,z)           (MODE_ISANY((x)->ocdump, OPTDEBUGELF_ENHANCED) ? (y) : (z))
+
 static const int MAXSIZE = 24;
 
 static int ocdwarf_eh_frame_cies(handle_t p, Dwarf_Cie *cie_data, Dwarf_Signed cie_element_count, Dwarf_Error *e) {
@@ -90,7 +92,7 @@ static int ocdwarf_eh_frame_cies(handle_t p, Dwarf_Cie *cie_data, Dwarf_Signed c
           n += printf_nice(augdata_len, USE_FHEX);
           n += printf_text("bytes", USE_LT | USE_COMMA);
         }
-        n += printf_hurt(augdata, augdata_len, USE_HEX | USE_SPACE | USE_0x);
+        n += printf_hurt(augdata, augdata_len, USE_HEX | USE_SPACE | PICK_ENHANCED(oc, USE_0x, USE_NONE));
         n += printf_eol();
       }
 
