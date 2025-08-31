@@ -28,7 +28,6 @@ extern pick_t oeADDRLOOKUP[];
 extern convert_t ecDWAT[];
 extern convert_t ecDWOP[];
 extern convert_t ecDWUT[];
-extern convert_t ecDWCFA[];
 extern convert_t ecDWEND[];
 extern convert_t ecDWLLE[];
 extern convert_t ecDWRLE[];
@@ -40,6 +39,8 @@ extern convert_t ecDWADDR[];
 extern convert_t ecDWMACRO[];
 extern convert_t ecDWMACINFO[];
 
+extern convert_t ecDWCFA[];
+extern convert_t ecDWCFAJOIN[];
 extern convert_t ecDWATE[];
 extern convert_t ecDWATELITE[];
 extern convert_t ecDWEXPR[];

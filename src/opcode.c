@@ -395,6 +395,17 @@ uint64_t ocget_value(handle_t p) {
   return 0;
 }
 
+uint64_t ocget_machine(handle_t p) {
+  if (isopcode(p)) {
+    handle_t p0 = ocget(p, OPCODE_RAWDATA);
+    if (isELF(p0)) {
+      return ecget_emachine(p0);
+    }
+  }
+
+  return 0;
+}
+
 uint64_t ocget_size(handle_t p) {
   if (ismode(p, MODE_OCSHDR)) {
     asection* p0 = ocget(p, MODE_OCSHDR);

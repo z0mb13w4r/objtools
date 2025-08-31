@@ -357,6 +357,22 @@ convert_t ecDWCFA[] = {
   {0, 0}
 };
 
+convert_t ecDWCFAJOIN[] = {
+  {" to ",                          0x40},
+  {" at cfa",                       0x80},
+  {" to ",                          0x02},
+  {" to ",                          0x03},
+  {" to ",                          0x04},
+  {" at cfa",                       0x05},
+  {" in ",                          0x09},
+  {" ofs ",                         0x0c},
+  {" at cfa",                       0x11},
+  {" ofs ",                         0x12},
+  {" is cfa",                       0x14},
+  {" is cfa",                       0x15},
+  {0, 0}
+};
+
 convert_t ecDWCHILDREN[] = {
   {"DW_CHILDREN_no",                0x00},
   {"DW_CHILDREN_yes",               0x01},

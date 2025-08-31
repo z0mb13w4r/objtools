@@ -174,7 +174,14 @@ int ocdwarf_printf_REGISTER(handle_t p, const uint32_t v, const imode_t mode) {
 
     n += printf_join("r", v, USE_DEC | USE_SPACE);
     if (MODE_ISNOT(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
-      n += ocdwarf_printf_pluck(p, ecREGISTERS_i386, v, USE_RB | mode);
+      if (ocisELF(p)) {
+        const uint64_t e = ocget_machine(p);
+        if (EM_386 == e) {
+          n += ocdwarf_printf_pluck(p, ecREGISTERS_i386, v, USE_RB | mode);
+        } else if (EM_X86_64 == e) {
+          n += ocdwarf_printf_pluck(p, ecREGISTERS_x86_64, v, USE_RB | mode);
+        }
+      }
     }
   }
 
