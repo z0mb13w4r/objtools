@@ -3,8 +3,6 @@
 #include "options.h"
 #include "ocdwarf-eh-frame.h"
 
-#define PICK_ENHANCED(x,y,z)           (MODE_ISANY((x)->ocdump, OPTDEBUGELF_ENHANCED) ? (y) : (z))
-
 static const int MAXSIZE = 24;
 
 static int ocdwarf_eh_frame_cies(handle_t p, Dwarf_Cie *cie_data, Dwarf_Signed cie_element_count, Dwarf_Error *e) {
@@ -142,11 +140,14 @@ static int ocdwarf_eh_frame_cies(handle_t p, Dwarf_Cie *cie_data, Dwarf_Signed c
           return OCDWARF_ERRCODE(x, n);
         }
 
+        const imode_t TRY_COLON = MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)
+                     ? USE_NONE : (fields_description && fields_description[0] ? USE_COLON : USE_NONE);
+
         if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
           n += ocdwarf_printf_DEC(p, j, USE_SB);
           n += printf_nice(instr_offset_in_instrs, USE_DEC2);
         }
-        n += ocdwarf_printf_CFA(p, cfa_operation, USE_NONE);
+        n += ocdwarf_printf_CFA(p, cfa_operation, TRY_COLON);
         n += ocdwarf_printf_fields_description(p, fields_description, u0, u1, u2, s0, s1,
                      code_alignment_factor, data_alignment_factor, &expression_block);
         n += printf_eol();

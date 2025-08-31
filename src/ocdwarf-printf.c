@@ -9,8 +9,6 @@ Dwarf_Addr low_pc_addr = 0;
 static const int MAXMERIT = 18;
 static const int MAXGROUP = 24;
 
-#define PICK_ENHANCED(x,y,z)           (MODE_ISANY((x)->ocdump, OPTDEBUGELF_ENHANCED) ? (y) : (z))
-
 int ocdwarf_printf_me(handle_t p, const int x, const char *y, const char *z, const imode_t mode) {
   int n = 0;
   if (isopcode(p)) {

@@ -5,8 +5,6 @@
 
 static const int MAXSIZE = 24;
 
-#define PICK_ENHANCED(x,y,z)           (MODE_ISANY((x)->ocdump, OPTDEBUGELF_ENHANCED) ? (y) : (z))
-
 int ocdwarf_debug_line(handle_t p, handle_t s, handle_t d) {
   int x = DW_DLV_ERROR;
   int n = 0;
