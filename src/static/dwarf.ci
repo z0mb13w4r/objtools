@@ -43,7 +43,7 @@ static dwarf_display_t zDWARFDISPLAY[] = {
   {{RAGE_DWARF, ".gnu_debuglink",         "",                        "",         eDWARF_GNU_DEBUGLINK},         OPTDEBUGELF_DEBUG_LINK,       NULL},
   {{RAGE_DWARF, ".trace_abbrev",          "",                        "",         eDWARF_TRACE_ABBREV},          OPTDEBUGELF_TRACE_ABBREV,     NULL},
   {{RAGE_DWARF, ".trace_aranges",         "",                        "",         eDWARF_TRACE_ARANGES},         OPTDEBUGELF_TRACE_ARANGES,    NULL},
-  {{RAGE_DWARF, ".trace_info",            "",                        "",         eDWARF_TRACE_INFO},            OPTDEBUGELF_TRACE_INFO,       NULL},
+  {{RAGE_DWARF, ".trace_info",            "",                        "",         eDWARF_TRACE_INFO},            OPTDEBUGELF_TRACE_INFO,       NULL}
 };
 
 convert_t ecDWADDR[] = {
@@ -360,13 +360,13 @@ convert_t ecDWCFA[] = {
 convert_t ecDWCHILDREN[] = {
   {"DW_CHILDREN_no",                0x00},
   {"DW_CHILDREN_yes",               0x01},
-  {0, 0},
+  {0, 0}
 };
 
 convert_t ecDWCHILDRENLITE[] = {
   {"no children",                   0x00},
   {"has children",                  0x01},
-  {0, 0},
+  {0, 0}
 };
 
 convert_t ecDWEND[] = {
@@ -383,7 +383,7 @@ convert_t ecDWEXPR[] = {
   {"DW_EXPR_VAL_OFFSET",            1},
   {"DW_EXPR_EXPRESSION",            2},
   {"DW_EXPR_VAL_EXPRESSION",        3},
-  {0, 0},
+  {0, 0}
 };
 
 convert_t ecDWEXPRLITE[] = {
@@ -391,7 +391,7 @@ convert_t ecDWEXPRLITE[] = {
   {"valoff",                        1},
   {"expr",                          2},
   {"valexpr",                       3},
-  {0, 0},
+  {0, 0}
 };
 
 convert_t ecDWFORM[] = {
@@ -446,7 +446,7 @@ convert_t ecDWGNUM[] = {
   {"DW_GROUPNUMBER_ANY",                 0},
   {"DW_GROUPNUMBER_BASE",                1},
   {"DW_GROUPNUMBER_DWO",                 2},
-  {0, 0},
+  {0, 0}
 };
 
 convert_t ecDWLANG[] = {
@@ -909,7 +909,7 @@ convert_t ecDWTAG[] = {
   {"DW_TAG_BORLAND_Delphi_set",               0xb003},
   {"DW_TAG_BORLAND_Delphi_variant",           0xb004},
   {"DW_TAG_hi_user",                          0xffff},
-  {0, 0},
+  {0, 0}
 };
 
 convert_t ecDWUT[] = {
@@ -921,7 +921,155 @@ convert_t ecDWUT[] = {
   {"DW_UT_split_type",                   0x06},
   {"DW_UT_lo_user",                      0x80},
   {"DW_UT_hi_user",                      0xff},
-  {0, 0},
+  {0, 0}
+};
+
+convert_t ecREGISTERS_i386[] = {
+  {"eax",                                0},
+  {"ecx",                                1},
+  {"edx",                                2},
+  {"ebx",                                3},
+  {"esp",                                4},
+  {"ebp",                                5},
+  {"esi",                                6},
+  {"edi",                                7},
+  {"eip",                                8},
+  {"eflags",                             9},
+  {"st0",                                11},
+  {"st1",                                12},
+  {"st2",                                13},
+  {"st3",                                14},
+  {"st4",                                15},
+  {"st5",                                16},
+  {"st6",                                17},
+  {"st7",                                18},
+  {"xmm0",                               21},
+  {"xmm1",                               22},
+  {"xmm2",                               23},
+  {"xmm3",                               24},
+  {"xmm4",                               25},
+  {"xmm5",                               26},
+  {"xmm6",                               27},
+  {"xmm7",                               28},
+  {"mm0",                                29},
+  {"mm1",                                30},
+  {"mm2",                                31},
+  {"mm3",                                32},
+  {"mm4",                                33},
+  {"mm5",                                34},
+  {"mm6",                                35},
+  {"mm7",                                36},
+  {"fcw",                                37},
+  {"fsw",                                38},
+  {"mxcsr",                              39},
+  {"es",                                 40},
+  {"cs",                                 41},
+  {"ss",                                 42},
+  {"ds",                                 43},
+  {"fs",                                 44},
+  {"gs",                                 45},
+  {"tr",                                 48},
+  {"ldtr",                               49},
+  {"k0",                                 93},
+  {"k1",                                 94},
+  {"k2",                                 95},
+  {"k3",                                 96},
+  {"k4",                                 97},
+  {"k5",                                 98},
+  {"k6",                                 99},
+  {"k7",                                 100},
+  {0, 0}
+};
+
+convert_t ecREGISTERS_x86_64[] = {
+  {"rax",                                0},
+  {"rdx",                                1},
+  {"rcx",                                2},
+  {"rbx",                                3},
+  {"rsi",                                4},
+  {"rdi",                                5},
+  {"rbp",                                6},
+  {"rsp",                                7},
+  {"r8",                                 8},
+  {"r9",                                 9},
+  {"r10",                                10},
+  {"r11",                                11},
+  {"r12",                                12},
+  {"r13",                                13},
+  {"r14",                                14},
+  {"r15",                                15},
+  {"rip",                                16},
+  {"xmm0",                               17},
+  {"xmm1",                               18},
+  {"xmm2",                               19},
+  {"xmm3",                               20},
+  {"xmm4",                               21},
+  {"xmm5",                               22},
+  {"xmm6",                               23},
+  {"xmm7",                               24},
+  {"xmm8",                               25},
+  {"xmm9",                               26},
+  {"xmm10",                              27},
+  {"xmm11",                              28},
+  {"xmm12",                              29},
+  {"xmm13",                              30},
+  {"xmm14",                              31},
+  {"xmm15",                              32},
+  {"st0",                                33},
+  {"st1",                                34},
+  {"st2",                                35},
+  {"st3",                                36},
+  {"st4",                                37},
+  {"st5",                                38},
+  {"st6",                                39},
+  {"st7",                                40},
+  {"mm0",                                41},
+  {"mm1",                                42},
+  {"mm2",                                43},
+  {"mm3",                                44},
+  {"mm4",                                45},
+  {"mm5",                                46},
+  {"mm6",                                47},
+  {"mm7",                                48},
+  {"rflags",                             49},
+  {"es",                                 50},
+  {"cs",                                 51},
+  {"ss",                                 52},
+  {"ds",                                 53},
+  {"fs",                                 54},
+  {"gs",                                 55},
+  {"fs.base",                            58},
+  {"gs.base",                            59},
+  {"tr",                                 62},
+  {"ldtr",                               63},
+  {"mxcsr",                              64},
+  {"fcw",                                65},
+  {"fsw",                                66},
+  {"xmm16",                              67},
+  {"xmm17",                              68},
+  {"xmm18",                              69},
+  {"xmm19",                              70},
+  {"xmm20",                              71},
+  {"xmm21",                              72},
+  {"xmm22",                              73},
+  {"xmm23",                              74},
+  {"xmm24",                              75},
+  {"xmm25",                              76},
+  {"xmm26",                              77},
+  {"xmm27",                              78},
+  {"xmm28",                              79},
+  {"xmm29",                              80},
+  {"xmm30",                              81},
+  {"xmm31",                              82},
+  {"k0",                                 118},
+  {"k1",                                 119},
+  {"k2",                                 120},
+  {"k3",                                 121},
+  {"k4",                                 122},
+  {"k5",                                 123},
+  {"k6",                                 124},
+  {"k7",                                 125},
+  {0, 0}
 };
 
 pick_t ecATDEC[] = {
