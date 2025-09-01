@@ -349,7 +349,10 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
       }
 
       fde_item->high_pc = fde_item->low_pc + fde_item->func_length;
+    }
 
+    fde_item = fde_items;
+    for (Dwarf_Signed i = 0; i < fde_count; ++i, ++fde_item) {
       char* name = 0;
       n += ocdwarf_spget(p, fde_item->low_pc, &name, NULL, NULL, NULL, NULL, NULL, NULL, NULL, e);
 
