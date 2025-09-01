@@ -79,7 +79,7 @@ static int ocdwarf_eh_frame_cies(handle_t p, Dwarf_Cie *cie_data, Dwarf_Signed c
         n += printf_eol();
       }
 
-      if (MODE_ISSET(oc->ocdump, OPTDEBUGELF_DEBUG_FRAME_DECODED)) {
+      if (MODE_ISSET(oc->ocdump, OPTDEBUGELF_DEBUG_FRAME_DECODED) && MODE_ISNOT(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
         n += printf_text(augmenter, USE_LT | USE_SPACE | USE_DQ);
         n += printf_text("cf=", USE_LT | USE_SPACE);
         n += printf_nice(code_alignment_factor, USE_DEC | USE_NOSPACE);
@@ -112,7 +112,7 @@ static int ocdwarf_eh_frame_cies(handle_t p, Dwarf_Cie *cie_data, Dwarf_Signed c
       Dwarf_Unsigned augdata_len = 0;
       n += dwarf_get_cie_augmentation_data(cie, &augdata, &augdata_len, e);
       if (IS_DLV_OK(x)) {
-        if (MODE_ISNOT(oc->ocdump, OPTDEBUGELF_DEBUG_FRAME_DECODED)) {
+        if (MODE_ISNOT(oc->ocdump, OPTDEBUGELF_DEBUG_FRAME_DECODED) || MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
           n += printf_text("Augmentation data", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
           if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
             n += printf_nice(augdata_len, USE_FHEX);
@@ -362,8 +362,6 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
 
     const imode_t USE_LHEXNN = ocis64(p) ? USE_LHEX64 : USE_LHEX32;
 
-    const imode_t TRY_COLON  = PICK_ENHANCED(oc, USE_COLON, USE_NONE);
-
     pfdes_item_t fde_items = xmalloc(sizeof(fdes_item_t) * fde_count);
     pfdes_item_t fde_item = fde_items;
 
@@ -428,16 +426,24 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
         }
 
         if (MODE_ISSET(oc->ocdump, OPTDEBUGELF_DEBUG_FRAME_DECODED)) {
-          n += ocdwarf_printf_ADDR(p, j, TRY_COLON);
+          n += ocdwarf_printf_ADDR(p, j, PICK_ENHANCED(oc, USE_COLON, USE_NONE));
         }
-        n += ocdwarf_printf_EXPR(p, value_type, USE_SPACE | USE_TBLT);
+//        n += ocdwarf_printf_EXPR(p, value_type, USE_SPACE | USE_TBLT);
 //        n += printf_text("cfa=", USE_LT | USE_SPACE);
         if (DW_EXPR_EXPRESSION == value_type || DW_EXPR_VAL_EXPRESSION == value_type) {
           n += printf_text("expr-block-len=", USE_LT);
           n += printf_nice(block.bl_len, USE_DEC | USE_NOSPACE);
         } else {
-          n += printf_nice(offset, USE_DEC2Z | USE_NOSPACE);
-          n += printf_join("r", reg, USE_DEC | USE_RB);
+          if (MODE_ISSET(oc->ocdump, OPTDEBUGELF_DEBUG_FRAME_DECODED)) {
+            n += ocdwarf_printf_REGISTER(p, reg, USE_NONE);
+            if (offset) {
+              n += printf_text("+", USE_LT);
+              n += printf_nice(offset, USE_DEC | USE_NOSPACE);
+            }
+          } else {
+            n += printf_nice(offset, USE_DEC2Z | USE_NOSPACE);
+            n += printf_join("r", reg, USE_DEC | USE_RB);
+          }
         }
 //        n += printf_stop(USE_TBRT);
 

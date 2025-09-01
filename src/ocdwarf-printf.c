@@ -176,14 +176,17 @@ int ocdwarf_printf_REGISTER(handle_t p, const uint32_t v, const imode_t mode) {
   if (isopcode(p)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
 
-    n += printf_join("r", v, USE_DEC | USE_SPACE);
+    if (MODE_ISNOT(oc->ocdump, OPTDEBUGELF_DEBUG_FRAME_DECODED) || MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+      n += printf_join("r", v, USE_DEC | USE_SPACE);
+    }
+
     if (MODE_ISNOT(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
       if (ocisELF(p)) {
         const uint64_t e = ocget_machine(p);
         if (EM_386 == e) {
-          n += ocdwarf_printf_pluck(p, ecREGISTERS_i386, v, USE_RB | mode);
+          n += ocdwarf_printf_pluck(p, ecREGISTERS_i386, v, mode);
         } else if (EM_X86_64 == e) {
-          n += ocdwarf_printf_pluck(p, ecREGISTERS_x86_64, v, USE_RB | mode);
+          n += ocdwarf_printf_pluck(p, ecREGISTERS_x86_64, v, mode);
         }
       }
     }
@@ -240,9 +243,9 @@ static int ocdwarf_printf_fields_description_r(handle_t p, const char* fields_de
     popcode_t oc = ocget(p, OPCODE_THIS);
 
     if (0 == fields_description[1]) {
-      n += ocdwarf_printf_REGISTER(p, u0, USE_NONE);
+      n += ocdwarf_printf_REGISTER(p, u0, USE_RB);
     } else if ('u' == fields_description[1]) {
-      n += ocdwarf_printf_REGISTER(p, u0, USE_NONE);
+      n += ocdwarf_printf_REGISTER(p, u0, USE_RB);
       if (0 == fields_description[2]) {
         n += printf_nice(u1, USE_SDEC8);
       } else if ('d' == fields_description[2]) {
@@ -258,11 +261,11 @@ static int ocdwarf_printf_fields_description_r(handle_t p, const char* fields_de
         n += printf_nice(u2, USE_DEC | USE_RBRT);
       }
     } else if ('r' == fields_description[1]) {
-      n += ocdwarf_printf_REGISTER(p, u0, USE_NONE);
-      n += ocdwarf_printf_REGISTER(p, u1, USE_NONE);
+      n += ocdwarf_printf_REGISTER(p, u0, USE_RB);
+      n += ocdwarf_printf_REGISTER(p, u1, USE_RB);
     } else if ('s' == fields_description[1]) {
       if ('d' == fields_description[2]) {
-        n += ocdwarf_printf_REGISTER(p, u0, USE_NONE);
+        n += ocdwarf_printf_REGISTER(p, u0, USE_RB);
         n += printf_nice(s1 * data_alignment_factor, USE_DEC);
         if ('a' == fields_description[3]) {
           n += printf_text(", addrspace", USE_LT);
@@ -273,7 +276,7 @@ static int ocdwarf_printf_fields_description_r(handle_t p, const char* fields_de
         }
       }
     } else if ('b' == fields_description[1]) {
-      n += ocdwarf_printf_REGISTER(p, u0, USE_NONE);
+      n += ocdwarf_printf_REGISTER(p, u0, USE_RB);
       n += printf_text("expr block len", USE_LT | USE_SPACE);
       n += printf_nice(expression_block->bl_len, USE_DEC);
       n += printf_hurt(expression_block->bl_data, expression_block->bl_len, USE_HEX | USE_SPACE | USE_0x);
