@@ -8,8 +8,8 @@ static const int MAXSIZE = 24;
 typedef struct fdes_item_s {
   Dwarf_Signed   idx;
   Dwarf_Fde      fde;
-  Dwarf_Addr     low_pc;
-  Dwarf_Addr     high_pc;
+  Dwarf_Addr     lo_pc;
+  Dwarf_Addr     hi_pc;
   Dwarf_Unsigned func_length;
   Dwarf_Small   *fde_bytes;
   Dwarf_Unsigned fde_bytes_length;
@@ -351,7 +351,7 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
     for (Dwarf_Signed i = 0; i < fde_count; ++i, ++fde_item) {
       fde_item->idx = i;
       fde_item->fde = fde_data[i];
-      x = dwarf_get_fde_range(fde_item->fde, &fde_item->low_pc, &fde_item->func_length,
+      x = dwarf_get_fde_range(fde_item->fde, &fde_item->lo_pc, &fde_item->func_length,
                      &fde_item->fde_bytes, &fde_item->fde_bytes_length, &fde_item->cie_offset,
                      &fde_item->cie_index, &fde_item->fde_offset, e);
       if (IS_DLV_NO_ENTRY(x)) break;
@@ -360,7 +360,7 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
         return OCDWARF_ERRCODE(x, n);
       }
 
-      fde_item->high_pc = fde_item->low_pc + fde_item->func_length;
+      fde_item->hi_pc = fde_item->lo_pc + fde_item->func_length;
     }
 
     qsort (fde_items, fde_count, sizeof(fdes_item_t), fdes_comp);
@@ -368,7 +368,7 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
     fde_item = fde_items;
     for (Dwarf_Signed i = 0; i < fde_count; ++i, ++fde_item) {
       char* name = 0;
-      n += ocdwarf_spget(p, fde_item->low_pc, &name, NULL, NULL, NULL, NULL, NULL, NULL, NULL, e);
+      n += ocdwarf_spget(p, fde_item->lo_pc, &name, NULL, NULL, NULL, NULL, NULL, NULL, NULL, e);
 
       n += printf_nice(fde_item->fde_offset, USE_LHEX32);
       n += printf_nice(fde_item->fde_bytes_length, USE_LHEXNN);
@@ -376,9 +376,9 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
       n += printf_text("FDE cie=", USE_LT | USE_SPACE);
       n += printf_nice(fde_item->cie_index, USE_LHEX32 | USE_NOSPACE);
       n += printf_text("pc=", USE_LT | USE_SPACE);
-      n += printf_nice(fde_item->low_pc, USE_LHEXNN | USE_NOSPACE);
+      n += printf_nice(fde_item->lo_pc, USE_LHEXNN | USE_NOSPACE);
       n += printf_text("..", USE_LT);
-      n += printf_nice(fde_item->high_pc, USE_LHEXNN | USE_NOSPACE);
+      n += printf_nice(fde_item->hi_pc, USE_LHEXNN | USE_NOSPACE);
       n += printf_eol();
 
       Dwarf_Small *augdata = 0;
@@ -389,7 +389,7 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
         return OCDWARF_ERRCODE(x, n);
       }
 
-      for (Dwarf_Addr j = fde_item->low_pc; j < fde_item->high_pc; ++j) {
+      for (Dwarf_Addr j = fde_item->lo_pc; j < fde_item->hi_pc; ++j) {
         Dwarf_Addr     cur_pc = j;
         Dwarf_Addr     row_pc = 0;
         Dwarf_Addr     subsequent_pc = 0;
@@ -421,7 +421,7 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
 //        n += printf_stop(USE_TBRT);
 
         if (!has_more_rows) {
-          j = fde_item->high_pc - 1;
+          j = fde_item->hi_pc - 1;
         } else if (subsequent_pc > j) {
           j = subsequent_pc - 1;
         }
