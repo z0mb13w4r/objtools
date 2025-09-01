@@ -69,42 +69,58 @@ static int ocdwarf_eh_frame_cies(handle_t p, Dwarf_Cie *cie_data, Dwarf_Signed c
           n += printf_nice(cie_off, USE_LHEX32);
           n += printf_text("CIE", USE_LT | USE_SPACE);
         }
-        n += printf_eol();
       }
 
-      if (MODE_ISNOT(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+      if (MODE_ISNOT(oc->ocdump, OPTDEBUGELF_ENHANCED | OPTDEBUGELF_DEBUG_FRAME_DECODED)) {
+        n += printf_eol();
+
         n += printf_text("Version", USE_LT | USE_SPACE | USE_COLON | SET_PAD(MAXSIZE));
         n += printf_nice(version, USE_DEC);
         n += printf_eol();
       }
 
-      n += printf_text("Augmentation", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-      n += printf_text(augmenter, USE_LT | USE_DQ);
-      n += printf_eol();
+      if (MODE_ISSET(oc->ocdump, OPTDEBUGELF_DEBUG_FRAME_DECODED)) {
+        n += printf_text(augmenter, USE_LT | USE_SPACE | USE_DQ);
+        n += printf_text("cf=", USE_LT | USE_SPACE);
+        n += printf_nice(code_alignment_factor, USE_DEC | USE_NOSPACE);
+        n += printf_text("df=", USE_LT | USE_SPACE);
+        n += printf_nice(data_alignment_factor, USE_DEC | USE_NOSPACE);
+        n += printf_text("ra=", USE_LT | USE_SPACE);
+        n += printf_nice(address_register_rule, USE_DEC | USE_NOSPACE);
+        n += printf_eol();
+      } else {
+        n += printf_eol();
 
-      n += printf_text("Code alignment factor", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-      n += printf_nice(code_alignment_factor, USE_DEC);
-      n += printf_eol();
+        n += printf_text("Augmentation", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        n += printf_text(augmenter, USE_LT | USE_DQ);
+        n += printf_eol();
 
-      n += printf_text("Data alignment factor", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-      n += printf_nice(data_alignment_factor, USE_DEC);
-      n += printf_eol();
+        n += printf_text("Code alignment factor", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        n += printf_nice(code_alignment_factor, USE_DEC);
+        n += printf_eol();
 
-      n += printf_text("Return address column", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-      n += printf_nice(address_register_rule, USE_DEC);
-      n += printf_eol();
+        n += printf_text("Data alignment factor", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        n += printf_nice(data_alignment_factor, USE_DEC);
+        n += printf_eol();
+
+        n += printf_text("Return address column", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        n += printf_nice(address_register_rule, USE_DEC);
+        n += printf_eol();
+      }
 
       Dwarf_Small *augdata = 0;
       Dwarf_Unsigned augdata_len = 0;
       n += dwarf_get_cie_augmentation_data(cie, &augdata, &augdata_len, e);
       if (IS_DLV_OK(x)) {
-        n += printf_text("Augmentation data", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-        if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
-          n += printf_nice(augdata_len, USE_FHEX);
-          n += printf_text("bytes", USE_LT | USE_COMMA);
+        if (MODE_ISNOT(oc->ocdump, OPTDEBUGELF_DEBUG_FRAME_DECODED)) {
+          n += printf_text("Augmentation data", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+          if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+            n += printf_nice(augdata_len, USE_FHEX);
+            n += printf_text("bytes", USE_LT | USE_COMMA);
+          }
+          n += printf_hurt(augdata, augdata_len, USE_HEX | USE_SPACE | PICK_ENHANCED(oc, USE_0x, USE_NONE));
+          n += printf_eol();
         }
-        n += printf_hurt(augdata, augdata_len, USE_HEX | USE_SPACE | PICK_ENHANCED(oc, USE_0x, USE_NONE));
-        n += printf_eol();
       }
 
       if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
@@ -160,6 +176,7 @@ static int ocdwarf_eh_frame_cies(handle_t p, Dwarf_Cie *cie_data, Dwarf_Signed c
           n += ocdwarf_printf_DEC(p, j, USE_SB);
           n += printf_nice(instr_offset_in_instrs, USE_DEC2);
         }
+
         n += ocdwarf_printf_CFA(p, cfa_operation, TRY_COLON);
         n += ocdwarf_printf_fields_description(p, fields_description, u0, u1, u2, s0, s1,
                      code_alignment_factor, data_alignment_factor, &expression_block);
@@ -264,7 +281,7 @@ static int ocdwarf_eh_frame_fdes0(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
         }
 
         n += ocdwarf_printf_ADDR(p, j, USE_COLON);
-        n += ocdwarf_printf_EXPR(p, value_type, USE_LT | USE_SPACE | USE_TBLT);
+        n += ocdwarf_printf_EXPR(p, value_type, USE_SPACE | USE_TBLT);
         n += printf_text("cfa=", USE_LT | USE_SPACE);
         if (DW_EXPR_EXPRESSION == value_type || DW_EXPR_VAL_EXPRESSION == value_type) {
           n += printf_text("expr-block-len=", USE_LT);
@@ -301,7 +318,7 @@ static int ocdwarf_eh_frame_fdes0(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
 //printf("\n+++%d %d[k] %d[cpc] %d[vt] %d[ofr] %d[reg] %d[off] %d[rpc] %d[has] %d[spc]+++\n",
 //  x, k, cur_pc, value_type, offset_relevant, reg, offset, row_pc, has_more_rows, subsequent_pc);
 
-          n += ocdwarf_printf_EXPR(p, value_type, USE_LT | USE_TBLT);
+          n += ocdwarf_printf_EXPR(p, value_type, USE_TBLT);
           n += printf_join("r", k, USE_DEC | USE_SPACE);
           n += printf_text("=", USE_LT);
           if (DW_EXPR_EXPRESSION == value_type || DW_EXPR_VAL_EXPRESSION == value_type) {
@@ -409,7 +426,7 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
         }
 
 //        n += ocdwarf_printf_ADDR(p, j, USE_COLON);
-//        n += ocdwarf_printf_EXPR(p, value_type, USE_LT | USE_SPACE | USE_TBLT);
+        n += ocdwarf_printf_EXPR(p, value_type, USE_SPACE | USE_TBLT);
 //        n += printf_text("cfa=", USE_LT | USE_SPACE);
 //        if (DW_EXPR_EXPRESSION == value_type || DW_EXPR_VAL_EXPRESSION == value_type) {
 //          n += printf_text("expr-block-len=", USE_LT);
@@ -459,7 +476,7 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
 //          n += printf_stop(USE_TBRT);
 //        }
 //
-//        n += printf_eol();
+        n += printf_eol();
       }
 
       n += printf_eol();

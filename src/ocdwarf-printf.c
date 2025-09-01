@@ -109,10 +109,12 @@ int ocdwarf_printf_EXPR(handle_t p, const uint64_t v, const imode_t mode) {
     popcode_t oc = ocget(p, OPCODE_THIS);
     if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
       return ocdwarf_printf_pluck(p, ecDWEXPR, v, mode);
+    } else if (MODE_ISSET(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+      return ocdwarf_printf_pluck(p, ecDWEXPRLITE, v, mode);
     }
   }
 
-  return ocdwarf_printf_pluck(p, ecDWEXPRLITE, v, mode);
+  return ocdwarf_printf_pluck(p, ecDWEXPR, v, mode);
 }
 
 int ocdwarf_printf_GNUM(handle_t p, const uint64_t v, const imode_t mode) {
