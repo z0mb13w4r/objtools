@@ -324,6 +324,18 @@ static int ocdwarf_eh_frame_fdes0(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
   return OCDWARF_ERRCODE(x, n);
 }
 
+int fdes_comp(const void* p0, const void* p1) {
+  if (p0 && p1) {
+    pfdes_item_t x0 = CAST(pfdes_item_t, p0);
+    pfdes_item_t x1 = CAST(pfdes_item_t, p1);
+
+    if (x0->fde_offset > x1->fde_offset) return  1;
+    if (x0->fde_offset < x1->fde_offset) return -1;
+  }
+
+  return 0;
+}
+
 static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed fde_count, Dwarf_Error *e) {
   int x = DW_DLV_ERROR;
   int n = 0;
@@ -333,7 +345,7 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
 
     const imode_t USE_LHEXNN = ocis64(p) ? USE_LHEX64 : USE_LHEX32;
 
-    pfdes_item_t fde_items = xmalloc(sizeof(pfdes_item_t) * fde_count);
+    pfdes_item_t fde_items = xmalloc(sizeof(fdes_item_t) * fde_count);
     pfdes_item_t fde_item = fde_items;
 
     for (Dwarf_Signed i = 0; i < fde_count; ++i, ++fde_item) {
@@ -350,6 +362,8 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
 
       fde_item->high_pc = fde_item->low_pc + fde_item->func_length;
     }
+
+    qsort (fde_items, fde_count, sizeof(fdes_item_t), fdes_comp);
 
     fde_item = fde_items;
     for (Dwarf_Signed i = 0; i < fde_count; ++i, ++fde_item) {
