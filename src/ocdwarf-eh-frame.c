@@ -431,15 +431,18 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
 //        n += ocdwarf_printf_EXPR(p, value_type, USE_SPACE | USE_TBLT);
 //        n += printf_text("cfa=", USE_LT | USE_SPACE);
         if (DW_EXPR_EXPRESSION == value_type || DW_EXPR_VAL_EXPRESSION == value_type) {
-          n += printf_text("expr-block-len=", USE_LT);
-          n += printf_nice(block.bl_len, USE_DEC | USE_NOSPACE);
+          if (MODE_ISSET(oc->ocdump, OPTDEBUGELF_DEBUG_FRAME_DECODED)) {
+            n += printf_text("exp", USE_LT | USE_SPACE);
+//            n += printf_hurt(block.bl_data, block.bl_len, USE_HEX | USE_SPACE);
+          } else {
+            n += printf_text("expr-block-len=", USE_LT);
+            n += printf_nice(block.bl_len, USE_DEC | USE_NOSPACE);
+          }
         } else {
           if (MODE_ISSET(oc->ocdump, OPTDEBUGELF_DEBUG_FRAME_DECODED)) {
             n += ocdwarf_printf_REGISTER(p, reg, USE_NONE);
-            if (offset) {
-              n += printf_text("+", USE_LT);
-              n += printf_nice(offset, USE_DEC | USE_NOSPACE);
-            }
+            n += printf_text("+", USE_LT);
+            n += printf_nice(offset, USE_DEC | USE_NOSPACE);
           } else {
             n += printf_nice(offset, USE_DEC2Z | USE_NOSPACE);
             n += printf_join("r", reg, USE_DEC | USE_RB);
@@ -453,39 +456,47 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
           j = subsequent_pc - 1;
         }
 
-//        for (Dwarf_Half k = 0; k < 100; ++k) {
-//          Dwarf_Addr     row_pc = 0;
-//          Dwarf_Addr     subsequent_pc = 0;
-//          Dwarf_Bool     has_more_rows = 0;
-//          Dwarf_Small    value_type = 0;
-//          Dwarf_Block    block = ZEROBLOCK;
-//          Dwarf_Signed   offset = 0;
-//          Dwarf_Unsigned offset_relevant = 0;
-//          Dwarf_Unsigned reg = 0;
-//
-//          x = dwarf_get_fde_info_for_reg3_c(fde, k, cur_pc, &value_type, &offset_relevant,
-//                     &reg, &offset, &block, &row_pc, &has_more_rows, &subsequent_pc, e);
-//          if (IS_DLV_ERROR(x)) {
-//            printf_e("dwarf_get_fde_info_for_reg3_c failed! - %d", x);
-//            return OCDWARF_ERRCODE(x, n);
-//          } else if (IS_DLV_NO_ENTRY(x) || row_pc != cur_pc || (0 == value_type && 0 == offset)) continue;
+        for (Dwarf_Half k = 0; k < 100; ++k) {
+          Dwarf_Addr     row_pc = 0;
+          Dwarf_Addr     subsequent_pc = 0;
+          Dwarf_Bool     has_more_rows = 0;
+          Dwarf_Small    value_type = 0;
+          Dwarf_Block    block = ZEROBLOCK;
+          Dwarf_Signed   offset = 0;
+          Dwarf_Unsigned offset_relevant = 0;
+          Dwarf_Unsigned reg = 0;
+
+          x = dwarf_get_fde_info_for_reg3_c(fde_item->fde, k, cur_pc, &value_type, &offset_relevant,
+                     &reg, &offset, &block, &row_pc, &has_more_rows, &subsequent_pc, e);
+          if (IS_DLV_ERROR(x)) {
+            printf_e("dwarf_get_fde_info_for_reg3_c failed! - %d", x);
+            return OCDWARF_ERRCODE(x, n);
+          } else if (IS_DLV_NO_ENTRY(x) || row_pc != cur_pc || (0 == value_type && 0 == offset)) continue;
 
 //printf("\n+++%d %d[k] %d[cpc] %d[vt] %d[ofr] %d[reg] %d[off] %d[rpc] %d[has] %d[spc]+++\n",
 //  x, k, cur_pc, value_type, offset_relevant, reg, offset, row_pc, has_more_rows, subsequent_pc);
 
-//          n += ocdwarf_printf_EXPR(p, value_type, USE_LT | USE_TBLT);
+//          n += ocdwarf_printf_EXPR(p, value_type, USE_SPACE);
 //          n += printf_join("r", k, USE_DEC | USE_SPACE);
 //          n += printf_text("=", USE_LT);
-//          if (DW_EXPR_EXPRESSION == value_type || DW_EXPR_VAL_EXPRESSION == value_type) {
-//            n += printf_text("expr-block-len=", USE_LT);
-//            n += printf_nice(block.bl_len, USE_DEC | USE_NOSPACE);
-//          } else {
-//            n += printf_nice(offset, USE_DEC | USE_NOSPACE);
-//            n += printf_text("cfa", USE_LT | USE_RB);
-//          }
+          if (DW_EXPR_EXPRESSION == value_type || DW_EXPR_VAL_EXPRESSION == value_type) {
+            if (MODE_ISSET(oc->ocdump, OPTDEBUGELF_DEBUG_FRAME_DECODED)) {
+              n += printf_nice(CAST(puchar_t, block.bl_data)[0], USE_CHAR | USE_SPACE);
+              n += printf_text("exp", USE_LT | USE_SPACE);
+//              n += printf_hurt(block.bl_data, block.bl_len, USE_HEX | USE_SPACE);
+            } else {
+              n += printf_text("expr-block-len=", USE_LT);
+              n += printf_nice(block.bl_len, USE_DEC | USE_NOSPACE);
+            }
+          } else if (block.bl_len) {
+printf(" * ");
+          } else {
+            n += printf_text("c", USE_LT | USE_SPACE);
+            n += printf_nice(offset, USE_DEC | USE_NOSPACE);
+          }
 //          n += printf_stop(USE_TBRT);
-//        }
-//
+        }
+
         n += printf_eol();
       }
 
