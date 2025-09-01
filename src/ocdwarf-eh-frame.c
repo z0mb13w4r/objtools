@@ -362,6 +362,8 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
 
     const imode_t USE_LHEXNN = ocis64(p) ? USE_LHEX64 : USE_LHEX32;
 
+    const imode_t TRY_COLON  = PICK_ENHANCED(oc, USE_COLON, USE_NONE);
+
     pfdes_item_t fde_items = xmalloc(sizeof(fdes_item_t) * fde_count);
     pfdes_item_t fde_item = fde_items;
 
@@ -425,16 +427,18 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
           return OCDWARF_ERRCODE(x, n);
         }
 
-//        n += ocdwarf_printf_ADDR(p, j, USE_COLON);
+        if (MODE_ISSET(oc->ocdump, OPTDEBUGELF_DEBUG_FRAME_DECODED)) {
+          n += ocdwarf_printf_ADDR(p, j, TRY_COLON);
+        }
         n += ocdwarf_printf_EXPR(p, value_type, USE_SPACE | USE_TBLT);
 //        n += printf_text("cfa=", USE_LT | USE_SPACE);
-//        if (DW_EXPR_EXPRESSION == value_type || DW_EXPR_VAL_EXPRESSION == value_type) {
-//          n += printf_text("expr-block-len=", USE_LT);
-//          n += printf_nice(block.bl_len, USE_DEC | USE_NOSPACE);
-//        } else {
-//          n += printf_nice(offset, USE_DEC2Z | USE_NOSPACE);
-//          n += printf_join("r", reg, USE_DEC | USE_RB);
-//        }
+        if (DW_EXPR_EXPRESSION == value_type || DW_EXPR_VAL_EXPRESSION == value_type) {
+          n += printf_text("expr-block-len=", USE_LT);
+          n += printf_nice(block.bl_len, USE_DEC | USE_NOSPACE);
+        } else {
+          n += printf_nice(offset, USE_DEC2Z | USE_NOSPACE);
+          n += printf_join("r", reg, USE_DEC | USE_RB);
+        }
 //        n += printf_stop(USE_TBRT);
 
         if (!has_more_rows) {

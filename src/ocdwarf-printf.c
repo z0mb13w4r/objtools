@@ -68,6 +68,8 @@ int ocdwarf_printf_ADDR(handle_t p, const uint64_t v, const imode_t mode) {
     popcode_t oc = ocget(p, OPCODE_THIS);
     if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
       return printf_nice(v, USE_FHEX32 | mode);
+    } else if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_DEBUG_FRAME_DECODED)) {
+      return printf_nice(v, USE_LHEX32 | mode);
     }
   }
 
