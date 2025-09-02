@@ -79,7 +79,7 @@ static int ocdwarf_eh_frame_cies(handle_t p, Dwarf_Cie *cie_data, Dwarf_Signed c
         n += printf_eol();
       }
 
-      if (MODE_ISSET(oc->ocdump, OPTDEBUGELF_DEBUG_FRAME_DECODED) && MODE_ISNOT(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+      if (MODE_ISFIX(oc->ocdump, OPTDEBUGELF_DEBUG_FRAME_DECODED, OPTDEBUGELF_ENHANCED)) {
         n += printf_text(augmenter, USE_LT | USE_SPACE | USE_DQ);
         n += printf_text("cf=", USE_LT | USE_SPACE);
         n += printf_nice(code_alignment_factor, USE_DEC | USE_NOSPACE);
@@ -177,10 +177,13 @@ static int ocdwarf_eh_frame_cies(handle_t p, Dwarf_Cie *cie_data, Dwarf_Signed c
           n += printf_nice(instr_offset_in_instrs, USE_DEC2);
         }
 
-        n += ocdwarf_printf_CFA(p, cfa_operation, TRY_COLON);
-        n += ocdwarf_printf_fields_description(p, fields_description, u0, u1, u2, s0, s1,
+        if (MODE_ISFIX(oc->ocdump, OPTDEBUGELF_DEBUG_FRAME_DECODED, OPTDEBUGELF_ENHANCED)) {
+        } else {
+          n += ocdwarf_printf_CFA(p, cfa_operation, TRY_COLON);
+          n += ocdwarf_printf_fields_description(p, fields_description, u0, u1, u2, s0, s1,
                      code_alignment_factor, data_alignment_factor, &expression_block);
-        n += printf_eol();
+          n += printf_eol();
+        }
       }
 
       dwarf_dealloc_frame_instr_head(instr_head);

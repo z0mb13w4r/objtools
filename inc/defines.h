@@ -136,6 +136,8 @@
 #define MODE_ISANY(x,y)         ((x) & (y))
 #define MODE_ISSET(x,y)         (((x) & (y)) == (y))
 #define MODE_ISNOT(x,y)         (0 == MODE_ISANY(x, y))
+#define MODE_ISFIX(x,y,z)       (MODE_ISSET(x, y) && MODE_ISNOT(x, z))
+
 #define MODE_ISLOCKED(x,y)      ((x) == (y))
 #define MODE_ISLOCKED8(x,y)     (MODE_MASK8(x)  == MODE_MASK8(y))
 #define MODE_ISLOCKED16(x,y)    (MODE_MASK16(x) == MODE_MASK16(y))
