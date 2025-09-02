@@ -41,6 +41,7 @@ extern convert_t ecDWMACINFO[];
 
 extern convert_t ecDWCFA[];
 extern convert_t ecDWCFAJOIN[];
+extern convert_t ecDWCFALITE[];
 extern convert_t ecDWATE[];
 extern convert_t ecDWATELITE[];
 extern convert_t ecDWEXPR[];

@@ -373,6 +373,16 @@ convert_t ecDWCFAJOIN[] = {
   {0, 0}
 };
 
+convert_t ecDWCFALITE[] = {
+  {"c",                             0x80},
+  {"u",                             0x07},
+  {"s",                             0x08},
+  {"v",                             0x14},
+  {"exp",                           0x10},
+  {"vexp",                          0x16},
+  {0, 0}
+};
+
 convert_t ecDWCHILDREN[] = {
   {"DW_CHILDREN_no",                0x00},
   {"DW_CHILDREN_yes",               0x01},
