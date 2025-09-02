@@ -147,6 +147,10 @@ static int ocdwarf_eh_frame_cies(handle_t p, Dwarf_Cie *cie_data, Dwarf_Signed c
         printf_text("[  ] offset name                 operands", USE_LT | USE_TAB | USE_EOL);
       }
 
+      if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_DEBUG_FRAME_DECODED)) {
+        n += printf_nice(cie_off, USE_LHEX32);
+      }
+
       for (Dwarf_Unsigned j = 0; j < instr_count; ++j) {
         const char     *fields_description = 0;
         Dwarf_Small     cfa_operation = 0;
@@ -178,12 +182,18 @@ static int ocdwarf_eh_frame_cies(handle_t p, Dwarf_Cie *cie_data, Dwarf_Signed c
         }
 
         if (MODE_ISFIX(oc->ocdump, OPTDEBUGELF_DEBUG_FRAME_DECODED, OPTDEBUGELF_ENHANCED)) {
+          n += ocdwarf_printf_fields_description(p, fields_description, u0, u1, u2, s0, s1,
+                     code_alignment_factor, data_alignment_factor, &expression_block);
         } else {
           n += ocdwarf_printf_CFA(p, cfa_operation, TRY_COLON);
           n += ocdwarf_printf_fields_description(p, fields_description, u0, u1, u2, s0, s1,
                      code_alignment_factor, data_alignment_factor, &expression_block);
           n += printf_eol();
         }
+      }
+
+      if (MODE_ISFIX(oc->ocdump, OPTDEBUGELF_DEBUG_FRAME_DECODED, OPTDEBUGELF_ENHANCED)) {
+        n += printf_eol();
       }
 
       dwarf_dealloc_frame_instr_head(instr_head);
