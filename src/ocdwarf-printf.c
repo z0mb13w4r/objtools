@@ -265,7 +265,7 @@ static int ocdwarf_printf_fields_description_r(handle_t p, const char* fields_de
   if (isopcode(p) && fields_description && expression_block) {
     popcode_t oc = ocget(p, OPCODE_THIS);
 
-    const imode_t TRY_RB    = PICK_ENHANCED(oc, USE_RB, USE_NONE);
+    const imode_t TRY_RB    = (MODE_ISNOT(oc->ocdump, OPTDEBUGELF_DEBUG_FRAME_DECODED) || MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) ? USE_RB : USE_NONE;
     const imode_t TRY_SDEC8 = PICK_ENHANCED(oc, USE_SDEC8, USE_SDEC8P | USE_NOSPACE);
 
     if (0 == fields_description[1]) {
