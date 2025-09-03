@@ -64,7 +64,7 @@ static int ocdwarf_eh_frame_cies(handle_t p, Dwarf_Cie *cie_data, Dwarf_Signed c
           n += printf_nice(cie_off, USE_DEC);
           n += printf_nice(cie_off, USE_FHEX32);
         } else {
-          n += printf_nice(0x0, USE_LHEX32); // TBD saved_start - section_start
+          n += printf_nice(0x0, USE_LHEX32 | USE_NOSPACE); // TBD saved_start - section_start
           n += printf_nice(bytes_in_cie, USE_LHEX32);
           n += printf_nice(cie_off, USE_LHEX32);
           n += printf_text("CIE", USE_LT | USE_SPACE);
@@ -144,11 +144,13 @@ static int ocdwarf_eh_frame_cies(handle_t p, Dwarf_Cie *cie_data, Dwarf_Signed c
       }
 
       if (0 != instr_count && MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
-        printf_text("[  ] offset name                 operands", USE_LT | USE_TAB | USE_EOL);
+        n += printf_text("[  ] off name                      operands", USE_LT | USE_SPACE | USE_EOL);
+      } else {
+        n += printf_text("   LOC   CFA   ra", USE_LT | USE_EOL);
       }
 
       if (MODE_ISFIX(oc->ocdump, OPTDEBUGELF_DEBUG_FRAME_DECODED, OPTDEBUGELF_ENHANCED)) {
-        n += printf_nice(cie_off, USE_LHEX32);
+        n += printf_nice(cie_off, USE_LHEX32 | USE_NOSPACE);
       }
 
       for (Dwarf_Unsigned j = 0; j < instr_count; ++j) {
@@ -178,7 +180,7 @@ static int ocdwarf_eh_frame_cies(handle_t p, Dwarf_Cie *cie_data, Dwarf_Signed c
 
         if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
           n += ocdwarf_printf_DEC(p, j, USE_SB);
-          n += printf_nice(instr_offset_in_instrs, USE_DEC2);
+          n += printf_nice(instr_offset_in_instrs, USE_DEC3);
         }
 
         if (MODE_ISFIX(oc->ocdump, OPTDEBUGELF_DEBUG_FRAME_DECODED, OPTDEBUGELF_ENHANCED)) {
@@ -190,7 +192,7 @@ static int ocdwarf_eh_frame_cies(handle_t p, Dwarf_Cie *cie_data, Dwarf_Signed c
             n += printf_nice(u1 * data_alignment_factor, USE_DEC | USE_NOSPACE);
           }
         } else {
-          n += ocdwarf_printf_CFA(p, cfa_operation, TRY_COLON);
+          n += ocdwarf_printf_CFA(p, cfa_operation, TRY_COLON | SET_PAD(26));
           n += ocdwarf_printf_fields_description(p, fields_description, u0, u1, u2, s0, s1,
                    code_alignment_factor, data_alignment_factor, &expression_block);
 
@@ -204,6 +206,8 @@ static int ocdwarf_eh_frame_cies(handle_t p, Dwarf_Cie *cie_data, Dwarf_Signed c
 
       dwarf_dealloc_frame_instr_head(instr_head);
     }
+
+    n += printf_eol();
   }
 
   return OCDWARF_ERRCODE(x, n);
@@ -240,7 +244,7 @@ static int ocdwarf_eh_frame_fdes0(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
       n += ocdwarf_spget(p, low_pc, &name, NULL, NULL, NULL, NULL, NULL, NULL, NULL, e);
 
       // < 0>
-      n += ocdwarf_printf_DEC(p, i, USE_NONE);
+      n += ocdwarf_printf_DEC(p, i, USE_NOSPACE);
 
       // <0x00001020:0x000010c0>
       n += ocdwarf_printf_ADDR(p, low_pc, USE_TBLT | USE_COLON | USE_NOSPACE);
@@ -270,7 +274,7 @@ static int ocdwarf_eh_frame_fdes0(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
         return OCDWARF_ERRCODE(x, n);
       }
 
-      n += printf_text("eh aug data len", USE_LT | USE_TBLT);
+      n += printf_text("eh aug data len", USE_LT | USE_SPACE | USE_TBLT);
       if (0 == augdata_len) {
         n += printf_nice(augdata_len, USE_FHEX | USE_TBRT);
       } else {
@@ -406,7 +410,7 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
       char* name = 0;
       n += ocdwarf_spget(p, fde_item->lo_pc, &name, NULL, NULL, NULL, NULL, NULL, NULL, NULL, e);
 
-      n += printf_nice(fde_item->fde_offset, USE_LHEX32);
+      n += printf_nice(fde_item->fde_offset, USE_LHEX32 | USE_NOSPACE);
       n += printf_nice(fde_item->fde_bytes_length, USE_LHEXNN);
       n += printf_nice(fde_item->cie_offset, USE_LHEX32);
       n += printf_text("FDE cie=", USE_LT | USE_SPACE);
@@ -423,6 +427,10 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
       if (IS_DLV_ERROR(x)) {
         printf_e("dwarf_get_fde_augmentation_data failed! - %d", x);
         return OCDWARF_ERRCODE(x, n);
+      }
+
+      if (MODE_ISSET(oc->ocdump, OPTDEBUGELF_DEBUG_FRAME_DECODED)) {
+        n += printf_text("   LOC   CFA      ebx   ebp   esi   ra", USE_LT | USE_EOL);
       }
 
       for (Dwarf_Addr j = fde_item->lo_pc; j < fde_item->hi_pc; ++j) {
@@ -445,7 +453,7 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
         }
 
         if (MODE_ISSET(oc->ocdump, OPTDEBUGELF_DEBUG_FRAME_DECODED)) {
-          n += ocdwarf_printf_ADDR(p, j, PICK_ENHANCED(oc, USE_COLON, USE_NONE));
+          n += ocdwarf_printf_ADDR(p, j, PICK_ENHANCED(oc, USE_COLON, USE_NOSPACE));
         }
 //        n += ocdwarf_printf_EXPR(p, value_type, USE_SPACE | USE_TBLT);
 //        n += printf_text("cfa=", USE_LT | USE_SPACE);
