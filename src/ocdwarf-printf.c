@@ -39,6 +39,20 @@ int ocdwarf_printf_pick(handle_t p, const pconvert_t z, const pick_t x, const im
   return n;
 }
 
+int ocdwarf_printf_picknull(handle_t p, const pconvert_t z, const pick_t x, const imode_t mode) {
+  int n = 0;
+  if (isopcode(p)) {
+    popcode_t oc = ocget(p, OPCODE_THIS);
+    if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
+      n += printf_nice(x, USE_FHEX16);
+    }
+
+    n += printf_picknull(z, x, USE_SPACE | (mode & ~USE_SPECIAL));
+  }
+
+  return n;
+}
+
 int ocdwarf_printf_DEC(handle_t p, const uint64_t v, const imode_t mode) {
   const bool_t isset = GET_BRACKET(mode) ? TRUE : FALSE;
 
@@ -104,7 +118,7 @@ int ocdwarf_printf_CFA(handle_t p, const uint64_t v, const imode_t mode) {
     if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
       return ocdwarf_printf_pick(p, ecDWCFA, v, mode);
     } else if (MODE_ISFIX(oc->ocdump, OPTDEBUGELF_DEBUG_FRAME_DECODED, OPTDEBUGELF_ENHANCED)) {
-      return ocdwarf_printf_pick(p, ecDWCFALITE, v, mode);
+      return ocdwarf_printf_picknull(p, ecDWCFALITE, v, mode);
     }
   }
 
