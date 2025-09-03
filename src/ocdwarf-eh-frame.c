@@ -124,11 +124,11 @@ static int ocdwarf_eh_frame_cies(handle_t p, Dwarf_Cie *cie_data, Dwarf_Signed c
       }
 
       if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
-        n += printf_text("bytes of initial instructions", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
+        n += printf_text("Bytes of initial instructions", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
         n += printf_nice(cie_initial_instructions_length, USE_DEC);
         n += printf_eol();
 
-        n += printf_text("cie length", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
+        n += printf_text("CIE length", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
         n += printf_nice(bytes_in_cie, USE_DEC);
         n += printf_eol();
       }
@@ -147,7 +147,7 @@ static int ocdwarf_eh_frame_cies(handle_t p, Dwarf_Cie *cie_data, Dwarf_Signed c
         printf_text("[  ] offset name                 operands", USE_LT | USE_TAB | USE_EOL);
       }
 
-      if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_DEBUG_FRAME_DECODED)) {
+      if (MODE_ISFIX(oc->ocdump, OPTDEBUGELF_DEBUG_FRAME_DECODED, OPTDEBUGELF_ENHANCED)) {
         n += printf_nice(cie_off, USE_LHEX32);
       }
 
