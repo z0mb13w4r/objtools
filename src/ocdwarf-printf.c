@@ -265,14 +265,15 @@ static int ocdwarf_printf_fields_description_r(handle_t p, const char* fields_de
   if (isopcode(p) && fields_description && expression_block) {
     popcode_t oc = ocget(p, OPCODE_THIS);
 
-    const imode_t TRY_RB = PICK_ENHANCED(oc, USE_RB, USE_NONE);
+    const imode_t TRY_RB    = PICK_ENHANCED(oc, USE_RB, USE_NONE);
+    const imode_t TRY_SDEC8 = PICK_ENHANCED(oc, USE_SDEC8, USE_SDEC8P | USE_NOSPACE);
 
     if (0 == fields_description[1]) {
       n += ocdwarf_printf_REGISTER(p, u0, TRY_RB);
     } else if ('u' == fields_description[1]) {
       n += ocdwarf_printf_REGISTER(p, u0, TRY_RB);
       if (0 == fields_description[2]) {
-        n += printf_nice(u1, USE_SDEC8);
+        n += printf_nice(u1, TRY_SDEC8);
       } else if ('d' == fields_description[2]) {
         n += printf_nice(u1 * data_alignment_factor, USE_DEC);
 
