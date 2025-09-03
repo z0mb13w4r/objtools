@@ -893,6 +893,10 @@ int printf_pick(const pconvert_t p, const pick_t x, const imode_t mode) {
   return printf_text(strpick(p, x), mode);
 }
 
+int printf_picknull(const pconvert_t p, const pick_t x, const imode_t mode) {
+  return printf_text(strpicknull(p, x), mode);
+}
+
 int printf_d(const char* format, ...) {
   MALLOCA(char, data, MAX_BUFFER_SIZE);
 
