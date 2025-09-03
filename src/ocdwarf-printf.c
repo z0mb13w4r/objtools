@@ -23,7 +23,7 @@ int ocdwarf_printf_me(handle_t p, const int x, const char *y, const char *z, con
   return n;
 }
 
-int ocdwarf_printf_pluck(handle_t p, const pconvert_t z, const pick_t x, const imode_t mode) {
+int ocdwarf_printf_pick(handle_t p, const pconvert_t z, const pick_t x, const imode_t mode) {
   int n = 0;
   if (isopcode(p)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
@@ -77,11 +77,11 @@ int ocdwarf_printf_ADDR(handle_t p, const uint64_t v, const imode_t mode) {
 }
 
 int ocdwarf_printf_AT(handle_t p, const uint64_t v, const imode_t mode) {
-  return ocdwarf_printf_pluck(p, ecDWAT, v, mode | SET_PAD(30));
+  return ocdwarf_printf_pick(p, ecDWAT, v, mode | SET_PAD(30));
 }
 
 int ocdwarf_printf_OP(handle_t p, const uint64_t v, const imode_t mode) {
-  return ocdwarf_printf_pluck(p, ecDWOP, v, mode);
+  return ocdwarf_printf_pick(p, ecDWOP, v, mode);
 }
 
 int ocdwarf_printf_ATE(handle_t p, const uint64_t v, const imode_t mode) {
@@ -90,45 +90,54 @@ int ocdwarf_printf_ATE(handle_t p, const uint64_t v, const imode_t mode) {
     if (MODE_ISNOT(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
       int n = 0;
       n += printf_nice(v, USE_DEC);
-      n += ocdwarf_printf_pluck(p, ecDWATELITE, v, USE_RB | mode);
+      n += ocdwarf_printf_pick(p, ecDWATELITE, v, USE_RB | mode);
       return n;
     }
   }
 
-  return ocdwarf_printf_pluck(p, ecDWATE, v, mode);
+  return ocdwarf_printf_pick(p, ecDWATE, v, mode);
 }
 
 int ocdwarf_printf_CFA(handle_t p, const uint64_t v, const imode_t mode) {
-  return ocdwarf_printf_pluck(p, ecDWCFA, v, mode);
+  if (isopcode(p)) {
+    popcode_t oc = ocget(p, OPCODE_THIS);
+    if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
+      return ocdwarf_printf_pick(p, ecDWCFA, v, mode);
+    } else if (MODE_ISFIX(oc->ocdump, OPTDEBUGELF_DEBUG_FRAME_DECODED, OPTDEBUGELF_ENHANCED)) {
+      return ocdwarf_printf_pick(p, ecDWCFALITE, v, mode);
+    }
+  }
+
+  return ocdwarf_printf_pick(p, ecDWCFA, v, mode);
 }
 
 int ocdwarf_printf_TAG(handle_t p, const uint64_t v, const imode_t mode) {
-  return ocdwarf_printf_pluck(p, ecDWTAG, v, mode);
+  return ocdwarf_printf_pick(p, ecDWTAG, v, mode);
 }
 
 int ocdwarf_printf_EXPR(handle_t p, const uint64_t v, const imode_t mode) {
   if (isopcode(p)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
     if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
-      return ocdwarf_printf_pluck(p, ecDWEXPR, v, mode);
+      return ocdwarf_printf_pick(p, ecDWEXPR, v, mode);
     } else if (MODE_ISSET(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
-      return ocdwarf_printf_pluck(p, ecDWEXPRLITE, v, mode);
+      return ocdwarf_printf_pick(p, ecDWEXPRLITE, v, mode);
     }
   }
 
-  return ocdwarf_printf_pluck(p, ecDWEXPR, v, mode);
+  return ocdwarf_printf_pick(p, ecDWEXPR, v, mode);
 }
 
 int ocdwarf_printf_GNUM(handle_t p, const uint64_t v, const imode_t mode) {
-  return ocdwarf_printf_pluck(p, ecDWGNUM, v, mode);
+  return ocdwarf_printf_pick(p, ecDWGNUM, v, mode);
 }
 
 int ocdwarf_printf_FORM(handle_t p, const uint64_t v, const imode_t mode) {
-  return ocdwarf_printf_pluck(p, ecDWFORM, v, mode | SET_PAD(22));
+  return ocdwarf_printf_pick(p, ecDWFORM, v, mode | SET_PAD(22));
 }
 
 int ocdwarf_printf_LANG(handle_t p, const uint64_t v, const imode_t mode) {
-  return ocdwarf_printf_pluck(p, ecDWLANG, v, mode);
+  return ocdwarf_printf_pick(p, ecDWLANG, v, mode);
 }
 
 int ocdwarf_printf_MACRO(handle_t p, const uint64_t v, const imode_t mode) {
@@ -139,18 +148,18 @@ int ocdwarf_printf_MACRO(handle_t p, const uint64_t v, const imode_t mode) {
       printf_nice(v, USE_FHEX8) + printf_text("end-of-macros", USE_LT | USE_SPACE) : 0;
   }
 
-  return ocdwarf_printf_pluck(p, ecDWMACRO, v, mode);
+  return ocdwarf_printf_pick(p, ecDWMACRO, v, mode);
 }
 
 int ocdwarf_printf_CHILDREN(handle_t p, const uint64_t v, const imode_t mode) {
   if (isopcode(p)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
     if (MODE_ISNOT(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
-      return ocdwarf_printf_pluck(p, ecDWCHILDRENLITE, v, USE_SB | mode);
+      return ocdwarf_printf_pick(p, ecDWCHILDRENLITE, v, USE_SB | mode);
     }
   }
 
-  return ocdwarf_printf_pluck(p, ecDWCHILDREN, v, mode);
+  return ocdwarf_printf_pick(p, ecDWCHILDREN, v, mode);
 }
 
 int ocdwarf_printf_SRCFILE(handle_t p, const uint32_t v, const imode_t mode) {
@@ -184,9 +193,9 @@ int ocdwarf_printf_REGISTER(handle_t p, const uint32_t v, const imode_t mode) {
       if (ocisELF(p)) {
         const uint64_t e = ocget_machine(p);
         if (EM_386 == e) {
-          n += ocdwarf_printf_pluck(p, ecREGISTERS_i386, v, mode);
+          n += ocdwarf_printf_pick(p, ecREGISTERS_i386, v, mode);
         } else if (EM_X86_64 == e) {
-          n += ocdwarf_printf_pluck(p, ecREGISTERS_x86_64, v, mode);
+          n += ocdwarf_printf_pick(p, ecREGISTERS_x86_64, v, mode);
         }
       }
     }
