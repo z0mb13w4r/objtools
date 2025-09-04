@@ -30,7 +30,7 @@ int ocdwarf_printf_ADDR(handle_t p, const uint64_t v, const imode_t mode);
 
 int ocdwarf_printf_SRCFILE(handle_t p, const uint32_t v, const imode_t mode);
 
-int ocdwarf_printf_fields_description(handle_t p, const char* fields_description,
+int ocdwarf_printf_fields_description(handle_t p, Dwarf_Small cfa_operation, const char* fields_description,
                      Dwarf_Unsigned u0, Dwarf_Unsigned u1, Dwarf_Unsigned u2, Dwarf_Signed s0, Dwarf_Signed s1,
                      Dwarf_Unsigned code_alignment_factor, Dwarf_Signed data_alignment_factor,
                      Dwarf_Block *expression_block);
