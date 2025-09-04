@@ -86,6 +86,8 @@
 #define USE_ROT18         (21)
 #define USE_BASE64        (22)
 #define USE_GUID          (23)
+#define USE_SLEB128       (24)
+#define USE_ULEB128       (25)
 
 #define GET_XX2(x,y)      ((x) & (0x03 << (y)))
 #define SET_XX2(x,y)      (((x) & 0x03) << (y))

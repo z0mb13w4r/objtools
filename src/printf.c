@@ -730,8 +730,6 @@ int printf_sore(const unknown_t p, const size_t size, const imode_t mode) {
         n += printf_sore(p0, size, USE_HEX | ymode);
       }
     }
-  } else if (USE_BASE64 == modex) {
-
   } else if (USE_GUID == modex) {
     n += printf_spos(o, sizeof(o), mode, MODE_USESPACES(mode));
 
@@ -745,6 +743,18 @@ int printf_sore(const unknown_t p, const size_t size, const imode_t mode) {
 
     n += printf_epos(o, sizeof(o), mode);
     n += printf_post(o, mode);
+  } else if (USE_SLEB128 == modex) {
+    n += printf_spos(o, sizeof(o), mode, MODE_USESPACES(mode));
+    n += printf_neat(o + n, sizeof(o) - n, sleb128_decode(p, size), USE_DEC);
+    n += printf_epos(o, sizeof(o), mode);
+    n += printf_post(o, mode);
+  } else if (USE_ULEB128 == modex) {
+    n += printf_spos(o, sizeof(o), mode, MODE_USESPACES(mode));
+    n += printf_neat(o + n, sizeof(o) - n, uleb128_decode(p, size), USE_DEC);
+    n += printf_epos(o, sizeof(o), mode);
+    n += printf_post(o, mode);
+  } else if (USE_BASE64 == modex) {
+
   }
 
   return n;
