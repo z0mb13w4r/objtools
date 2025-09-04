@@ -513,10 +513,14 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
       }
 
       if (DW_AT_high_pc == nattr) {
-        n += printf_text("offset-from-lowpc", USE_LT | USE_SPACE | USE_TB);
-        n += printf_nice(value, TRY_HEXDEC);
-        n += printf_text("highpc", USE_LT | USE_SPACE | USE_TBLT | USE_COLON);
-        n += ocdwarf_printf_ADDR(p, low_pc_addr + value, USE_TBRT);
+        if (MODE_ISANY(oc->action, OPTDEBUGELF_ENHANCED | OPTPROGRAM_VERBOSE)) {
+          n += printf_text("offset-from-lowpc", USE_LT | USE_SPACE | USE_TB);
+          n += printf_nice(value, TRY_HEXDEC);
+          n += printf_text("highpc", USE_LT | USE_SPACE | USE_TBLT | USE_COLON);
+          n += ocdwarf_printf_ADDR(p, low_pc_addr + value, USE_TBRT);
+        } else {
+          n += printf_nice(value, TRY_HEXDEC);
+        }
       } else if (DW_AT_language == nattr) {
         n += ocdwarf_printf_LANG(p, value, USE_NONE);
       } else if (isused(ecATE, nattr)) {
