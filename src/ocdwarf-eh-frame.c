@@ -441,7 +441,7 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
         }
       }
 
-      if (MODE_ISSET(oc->ocdump, OPTDEBUGELF_DEBUG_FRAME_DECODED)) {
+      if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_DEBUG_FRAME_DECODED)) {
         n += printf_text("   LOC   CFA      ebx   ebp   esi   ra", USE_LT | USE_EOL);
       }
 
@@ -464,13 +464,16 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
           return OCDWARF_ERRCODE(x, n);
         }
 
-        if (MODE_ISSET(oc->ocdump, OPTDEBUGELF_DEBUG_FRAME_DECODED)) {
+        if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_DEBUG_FRAME_DECODED | OPTPROGRAM_VERBOSE)) {
           n += ocdwarf_printf_ADDR(p, j, PICK_ENHANCED(oc, USE_COLON, USE_NOSPACE));
         }
-//        n += ocdwarf_printf_EXPR(p, value_type, USE_SPACE | USE_TBLT);
+
+        if (MODE_ISANY(oc->ocdump, OPTPROGRAM_VERBOSE)) {
+          n += ocdwarf_printf_EXPR(p, value_type, USE_SPACE | USE_TB);
+        }
 //        n += printf_text("cfa=", USE_LT | USE_SPACE);
         if (DW_EXPR_EXPRESSION == value_type || DW_EXPR_VAL_EXPRESSION == value_type) {
-          if (MODE_ISSET(oc->ocdump, OPTDEBUGELF_DEBUG_FRAME_DECODED)) {
+          if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_DEBUG_FRAME_DECODED)) {
             n += printf_text("exp", USE_LT | USE_SPACE);
             if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
               n += printf_hurt(block.bl_data, block.bl_len, USE_HEX | USE_SPACE | USE_TB);
@@ -480,7 +483,7 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
             n += printf_nice(block.bl_len, USE_DEC | USE_NOSPACE);
           }
         } else {
-          if (MODE_ISSET(oc->ocdump, OPTDEBUGELF_DEBUG_FRAME_DECODED)) {
+          if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_DEBUG_FRAME_DECODED)) {
             n += ocdwarf_printf_REGISTER(p, reg, USE_NONE);
             n += printf_text("+", USE_LT);
             n += printf_nice(offset, USE_DEC | USE_NOSPACE);
@@ -521,7 +524,7 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
 //          n += printf_text("=", USE_LT);
 
           if (DW_EXPR_EXPRESSION == value_type || DW_EXPR_VAL_EXPRESSION == value_type) {
-            if (MODE_ISSET(oc->ocdump, OPTDEBUGELF_DEBUG_FRAME_DECODED)) {
+            if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_DEBUG_FRAME_DECODED)) {
 //              n += printf_nice(CAST(puchar_t, block.bl_data)[0], USE_CHAR | USE_SPACE);
               n += printf_text("exp", USE_LT | USE_SPACE);
 //              n += printf_hurt(block.bl_data, block.bl_len, USE_HEX | USE_SPACE);
