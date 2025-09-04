@@ -244,6 +244,9 @@ static int ocdwarf_printf_fields_description_b(handle_t p, Dwarf_Small cfa_opera
   int n = 0;
   if (isopcode(p) && fields_description && expression_block) {
     popcode_t oc = ocget(p, OPCODE_THIS);
+    if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
+      printf_nice(fields_description[1], USE_CHARCTRL | USE_TB);
+    }
 
     if (0 != fields_description[1]) {
       n += printf_text("expr block len", USE_LT | USE_SPACE);
@@ -264,18 +267,35 @@ static int ocdwarf_printf_fields_description_r(handle_t p, Dwarf_Small cfa_opera
   int n = 0;
   if (isopcode(p) && fields_description && expression_block) {
     popcode_t oc = ocget(p, OPCODE_THIS);
+    if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
+      printf_nice(fields_description[1], USE_CHARCTRL | USE_TB);
+    }
 
-    const imode_t TRY_RB    = (MODE_ISNOT(oc->ocdump, OPTDEBUGELF_DEBUG_FRAME_DECODED) || MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) ? USE_RB : USE_NONE;
-    const imode_t TRY_SDEC8 = PICK_ENHANCED(oc, USE_SDEC8, USE_SDEC8P | USE_NOSPACE);
+    const bool_t  TRY_MODE  = MODE_ISNOT(oc->ocdump, OPTDEBUGELF_DEBUG_FRAME_DECODED) || MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED);
+    const imode_t TRY_RB    = TRY_MODE ? USE_RB : USE_NONE;
+    const imode_t TRY_SDEC8 = TRY_MODE ? USE_SDEC8 : USE_SDEC8P | USE_NOSPACE;
 
     if (0 == fields_description[1]) {
       n += ocdwarf_printf_REGISTER(p, u0, TRY_RB);
     } else if ('u' == fields_description[1]) {
+      if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
+        printf_nice(fields_description[2], USE_CHARCTRL | USE_TB);
+      }
+
       n += ocdwarf_printf_REGISTER(p, u0, TRY_RB);
       if (0 == fields_description[2]) {
+        if (MODE_ISNOT(oc->ocdump, OPTDEBUGELF_DEBUG_FRAME_DECODED | OPTDEBUGELF_ENHANCED)) {
+          n += ocdwarf_printf_pick(p, ecDWCFAJOIN, cfa_operation, USE_SPACE);
+        }
+
         n += printf_nice(u1, TRY_SDEC8);
       } else if ('d' == fields_description[2]) {
-        n += printf_nice(u1 * data_alignment_factor, USE_DEC);
+        if (MODE_ISNOT(oc->ocdump, OPTDEBUGELF_DEBUG_FRAME_DECODED | OPTDEBUGELF_ENHANCED)) {
+          n += ocdwarf_printf_pick(p, ecDWCFAJOIN, cfa_operation, USE_SPACE);
+          n += printf_nice(u1 * data_alignment_factor, USE_DEC | USE_NOSPACE);
+        } else {
+          n += printf_nice(u1 * data_alignment_factor, USE_DEC);
+        }
 
         if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
           n += printf_tack(u1, USE_DEC, "*", data_alignment_factor, USE_DEC, USE_RB);
@@ -290,7 +310,15 @@ static int ocdwarf_printf_fields_description_r(handle_t p, Dwarf_Small cfa_opera
       n += ocdwarf_printf_REGISTER(p, u0, TRY_RB);
       n += ocdwarf_printf_REGISTER(p, u1, TRY_RB);
     } else if ('s' == fields_description[1]) {
+      if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
+        printf_nice(fields_description[2], USE_CHARCTRL | USE_TB);
+      }
+
       if ('d' == fields_description[2]) {
+        if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
+          printf_nice(fields_description[3], USE_CHARCTRL | USE_TB);
+        }
+
         n += ocdwarf_printf_REGISTER(p, u0, TRY_RB);
         n += printf_nice(s1 * data_alignment_factor, USE_DEC);
         if ('a' == fields_description[3]) {
@@ -321,6 +349,9 @@ static int ocdwarf_printf_fields_description_s(handle_t p, Dwarf_Small cfa_opera
   int n = 0;
   if (isopcode(p) && fields_description && expression_block) {
     popcode_t oc = ocget(p, OPCODE_THIS);
+    if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
+      printf_nice(fields_description[1], USE_CHARCTRL | USE_TB);
+    }
 
     if ('d' == fields_description[1]) {
       n += printf_nice(s0 * data_alignment_factor, USE_DEC);
@@ -339,6 +370,9 @@ static int ocdwarf_printf_fields_description_u(handle_t p, Dwarf_Small cfa_opera
   int n = 0;
   if (isopcode(p) && fields_description && expression_block) {
     popcode_t oc = ocget(p, OPCODE_THIS);
+    if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
+      printf_nice(fields_description[1], USE_CHARCTRL | USE_TB);
+    }
 
     if (0 == fields_description[1]) {
       n += printf_nice(u0, USE_DEC);
@@ -358,6 +392,11 @@ int ocdwarf_printf_fields_description(handle_t p, Dwarf_Small cfa_operation, con
                      Dwarf_Unsigned code_alignment_factor, Dwarf_Signed data_alignment_factor, Dwarf_Block *expression_block) {
   int n = 0;
   if (isopcode(p) && fields_description) {
+    popcode_t oc = ocget(p, OPCODE_THIS);
+    if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
+      printf_nice(fields_description[0], USE_CHARCTRL | USE_TB);
+    }
+
     if ('u' == fields_description[0]) {
       n += ocdwarf_printf_fields_description_u(p, cfa_operation, fields_description, u0, u1, u2, s0, s1,
                      code_alignment_factor, data_alignment_factor, expression_block);
