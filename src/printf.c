@@ -26,7 +26,7 @@
 
 static char errname[256] = {0};
 
-static imode_t make_spos(const imode_t mode) {
+imode_t make_spos(const imode_t mode) {
   switch (GET_BRACKET(mode)) {
   case USE_CB:                     return USE_CBLT;
   case USE_RB:                     return USE_RBLT;
@@ -39,7 +39,7 @@ static imode_t make_spos(const imode_t mode) {
   return USE_NONE;
 }
 
-static imode_t make_epos(const imode_t mode) {
+imode_t make_epos(const imode_t mode) {
   switch (GET_BRACKET(mode)) {
   case USE_CB:                     return USE_CBRT;
   case USE_RB:                     return USE_RBRT;

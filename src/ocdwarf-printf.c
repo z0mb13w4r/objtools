@@ -95,6 +95,18 @@ int ocdwarf_printf_AT(handle_t p, const uint64_t v, const imode_t mode) {
 }
 
 int ocdwarf_printf_OP(handle_t p, const uint64_t v, const imode_t mode) {
+  if (DW_OP_breg0 <= v && v <= DW_OP_breg31) {
+    int n = 0;
+
+    const imode_t modex = mode & ~(USE_BRACKETMASK | USE_POS0MASK | USE_POS1MASK);
+    const imode_t mode0 = GET_POS0(mode) | make_spos(mode);
+    const imode_t mode1 = GET_POS1(mode) | make_epos(mode);
+
+    n += ocdwarf_printf_pick(p, ecDWOP, v, modex | mode0);
+    n += ocdwarf_printf_REG(p, v - DW_OP_breg0, modex | mode1);
+    return n;
+  }
+
   return ocdwarf_printf_pick(p, ecDWOP, v, mode);
 }
 
@@ -194,6 +206,20 @@ int ocdwarf_printf_SRCFILE(handle_t p, const uint32_t v, const imode_t mode) {
   return n;
 }
 
+int ocdwarf_printf_REG(handle_t p, const uint32_t v, const imode_t mode) {
+  int n = 0;
+  if (ocisELF(p)) {
+    const uint64_t e = ocget_machine(p);
+    if (EM_386 == e) {
+      n += ocdwarf_printf_pick(p, ecREGISTERS_i386, v, mode);
+    } else if (EM_X86_64 == e) {
+      n += ocdwarf_printf_pick(p, ecREGISTERS_x86_64, v, mode);
+    }
+  }
+
+  return n;
+}
+
 int ocdwarf_printf_REGISTER(handle_t p, const uint32_t v, const imode_t mode) {
   int n = 0;
   if (isopcode(p)) {
@@ -204,14 +230,7 @@ int ocdwarf_printf_REGISTER(handle_t p, const uint32_t v, const imode_t mode) {
     }
 
     if (MODE_ISNOT(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
-      if (ocisELF(p)) {
-        const uint64_t e = ocget_machine(p);
-        if (EM_386 == e) {
-          n += ocdwarf_printf_pick(p, ecREGISTERS_i386, v, mode);
-        } else if (EM_X86_64 == e) {
-          n += ocdwarf_printf_pick(p, ecREGISTERS_x86_64, v, mode);
-        }
-      }
+      n += ocdwarf_printf_REG(p, v, mode);
     }
   }
 
@@ -486,7 +505,7 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
     n += ocdwarf_printf_AT(p, nattr, TRY_COLON);
 
     if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
-      n += ocdwarf_printf_FORM(p, nform, USE_NONE);
+      n += ocdwarf_printf_FORM(p, nform, USE_COLON);
     }
 
     if (isused(ecFORMSTRING, nform)) {
@@ -496,6 +515,17 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
         printf_e("dwarf_formstring failed! errcode %d", x);
         return OCDWARF_ERRCODE(x, n);
       }
+
+//      Dwarf_Off soffset = 0;
+//      Dwarf_Bool isinfo = FALSE;
+//      x = dwarf_global_formref_b(attr, &soffset, &isinfo, e);
+//      if (IS_DLV_ANY_ERROR(x)) {
+//        printf_e("dwarf_formstring failed! errcode %d", x);
+//        return OCDWARF_ERRCODE(x, n);
+//      }
+
+//      n += printf_text("indirect string, offset", USE_LT | USE_RBLT | USE_COLON | USE_SPACE);
+//      n += printf_nice(soffset, USE_FHEX | USE_RBRT | USE_COLON);
 
       n += printf_text(str, USE_LT | USE_SPACE);
     } else if (isused(ecFORMUDATA, nform)) {
@@ -513,7 +543,7 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
       }
 
       if (DW_AT_high_pc == nattr) {
-        if (MODE_ISANY(oc->action, OPTDEBUGELF_ENHANCED | OPTPROGRAM_VERBOSE)) {
+        if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED | OPTPROGRAM_VERBOSE)) {
           n += printf_text("offset-from-lowpc", USE_LT | USE_SPACE | USE_TB);
           n += printf_nice(value, TRY_HEXDEC);
           n += printf_text("highpc", USE_LT | USE_SPACE | USE_TBLT | USE_COLON);
@@ -622,12 +652,12 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
         printf_e("dwarf_formblock failed! errcode %d", x0);
         return OCDWARF_ERRCODE(x0, n);
       } else if (IS_DLV_OK(x0) && block && 0 != block->bl_len) {
-        n += printf_text("len", USE_LT | USE_SPACE);
-        n += printf_nice(block->bl_len, TRY_DECHEX16 | USE_COLON);
+        n += printf_nice(block->bl_len, TRY_DECHEX16);
+        n += printf_text("byte block", USE_LT | USE_SPACE | USE_COLON);
         n += printf_hurt(block->bl_data, block->bl_len, USE_HEX | USE_SPACE | USE_COLON | USE_0x);
         if (block->bl_len >= 1) {
           uchar_t v0 = CAST(puchar_t, block->bl_data)[0];
-          n += ocdwarf_printf_OP(p, v0, USE_SPACE | TRY_COLON);
+          n += ocdwarf_printf_OP(p, v0, block->bl_len == 1 ? USE_SPACE : USE_SPACE | TRY_COLON);
           if (block->bl_len >= 2) {
             uchar_t v1 = CAST(puchar_t, block->bl_data)[1];
             if (DW_OP_fbreg == v0) {

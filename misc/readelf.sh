@@ -18,8 +18,8 @@ PICK1='-a'
 #PICK2='--print-macinfo'
 #PICK1='--debug-dump=info'
 #PICK2='--print-info'
-#PICK1='--debug-dump=aranges'
-#PICK2='--print-aranges'
+PICK1='--debug-dump=aranges'
+PICK2='--print-aranges'
 #PICK1='--debug-dump=abbrev'
 #PICK2='--print-abbrev'
 #PICK1='--debug-dump=str'
@@ -28,9 +28,9 @@ PICK1='-a'
 #PICK1='--debug-dump=decodedline'
 #PICK1='--debug-dump=rawline'
 #PICK2='--print-lines'
-PICK1='--debug-dump=frames'
-PICK1='--debug-dump=frames-interp'
-PICK2='--print-eh-frame'
+#PICK1='--debug-dump=frames'
+#PICK1='--debug-dump=frames-interp'
+#PICK2='--print-eh-frame'
 
 PRGNAME=readelf
 PRGNAMENG=./$PRGNAME-ng
@@ -63,17 +63,26 @@ function go_2() {
 }
 
 function go_3() {
-  $PRGNAMENG ${PICK1} --debug-dump=enhanced $NAME \
-    | sed 's/^[ \t]*//;s/[ \t]*$//' \
-    | sed 's/\t/ /g' \
-    | tr -s '[:space:]' | tr -d '\r' > $OUT1
+  if [ "$1" == "-r" ] || [ "$1" == "--raw" ]; then
+    $PRGNAMENG ${PICK1} --debug-dump=enhanced $NAME > $OUT1
+  else
+    $PRGNAMENG ${PICK1} --debug-dump=enhanced $NAME \
+      | sed 's/^[ \t]*//;s/[ \t]*$//' \
+      | sed 's/\t/ /g' \
+      | tr -s '[:space:]' | tr -d '\r' > $OUT1
+  fi
 }
 
 function go_4() {
-  $DWARFDUMP ${PICK2} $NAME \
-    | sed 's/^[ \t]*//;s/[ \t]*$//' \
-    | sed 's/\t/ /g' \
-    | tr -s '[:space:]' | tr -d '\r' > $OUT2
+  if [ "$1" == "-r" ] || [ "$1" == "--raw" ]; then
+    $DWARFDUMP ${PICK2} $NAME \
+      | sed 's/[ \t]*$//' > $OUT2
+  else
+    $DWARFDUMP ${PICK2} $NAME \
+      | sed 's/^[ \t]*//;s/[ \t]*$//' \
+      | sed 's/\t/ /g' \
+      | tr -s '[:space:]' | tr -d '\r' > $OUT2
+  fi
 }
 
 go_rm $OUT1
@@ -86,15 +95,16 @@ elif [ "$1" == "-g" ] || [ "$1" == "--go" ]; then
   $PRGNAMENG ${PICK1} $NAME
 elif [ "$1" == "-r" ] || [ "$1" == "--raw" ]; then
   $PRGNAMENG ${PICK1} $NAME > $OUT1
-  $PRGNAME ${PICK1} $NAME > $OUT2
+  $PRGNAME ${PICK1} $NAME \
+    | sed 's/[ \t]*$//' > $OUT2
 elif [ "$1" == "-v" ] || [ "$1" == "--verbose" ]; then
   $PRGNAMENG ${PICK1} -V $NAME > $OUT1
   $PRGNAME ${PICK1} $NAME > $OUT2
 elif [ "$1" == "-d" ] || [ "$1" == "--debug" ]; then
   gdb --args $PRGNAMENGd ${PICK1} $NAME
 elif [ "$1" == "-e" ]; then
-  go_3
-  go_4
+  go_3 "$2"
+  go_4 "$2"
 else
   go_1
   go_2

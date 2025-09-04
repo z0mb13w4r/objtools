@@ -180,6 +180,9 @@
 #define USE_SPECIAL       SET_FLAG(32ULL)
 #define USE_FLAGMASK      SET_FLAG(63ULL)
 
+imode_t make_spos(const imode_t mode);
+imode_t make_epos(const imode_t mode);
+
 int printf_eol();
 
 int printf_spos(char* o, const size_t size, const imode_t mode, const bool_t usespace);
