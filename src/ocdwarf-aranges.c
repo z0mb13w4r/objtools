@@ -10,12 +10,15 @@ int ocdwarf_debug_aranges(handle_t p, handle_t s, handle_t d) {
   if (isopcode(p) && (isopshdr(s) || isopshdrNN(s))) {
     popcode_t oc = ocget(p, OPCODE_THIS);
 
+    const int MAXSIZE = ocis64(p) ? 17 : 9;
     const imode_t USE_LHEXNN = ocis64(p) ? USE_LHEX64 : USE_LHEX32;
 
     if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
       n += ocdwarf_printf_groups(p, ocget(p, OPCODE_DWARF_ERROR));
     } else {
-      n += printf_text("Address  Length", USE_EOL);
+      n += printf_text("Address", USE_LT | SET_PAD(MAXSIZE));
+      n += printf_text("Length", USE_LT);
+      n += printf_eol();
     }
 
     Dwarf_Signed arange_count = 0;
