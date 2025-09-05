@@ -30,18 +30,35 @@ static int get_options_objdump(poptions_t o, int argc, char** argv, char* name) 
           o->saddress = atovalue(arg1);
         } else if (0 == strcmp(arg0, "--stop-address")) {
           o->eaddress = atovalue(arg1);
+        } else {
+          return odeath(o, THIS_NAME, arg0 + 2);
         }
       } else {
-        o->action |= get_options2(o, zOBJDUMPARGS, argv[i]);
+        imode_t action = get_options2(o, zOBJDUMPARGS, argv[i]);
+        if (0 == action) {
+          return odeath(o, THIS_NAME, argv[i] + 2);
+        }
+        o->action |= action;
       }
     } else if ('-' == argv[i][0]) {
-      if (0 == strcmp(argv[i], zOBJDUMPARGS0)) {
+      if (argv[i][0] == zOBJDUMPARGS0[0] && argv[i][1] == zOBJDUMPARGS0[1]) {
         imode_t ocdump = get_options1(o, zDEBUGELFARGS, argv[i] + 1);
+        if (0 == ocdump && argv[i][2]) {
+          return odeath(o, THIS_NAME, argv[i] + 1);
+        }
         o->ocdump |= ocdump ? ocdump : set_options1(o, zDEBUGELFARGS);
       } else if (0 == strcmp(argv[i], zOBJDUMPARGS2)) {
-        o->ocdump |= get_options2(o, zDISASSEMBLEARGS, argv[++i]);
+        imode_t ocdump = get_options2(o, zDISASSEMBLEARGS, argv[++i]);
+        if (0 == ocdump) {
+          return odeath(o, THIS_NAME, argv[i]);
+        }
+        o->ocdump |= ocdump;
       } else {
-        o->action |= get_options1(o, zOBJDUMPARGS, argv[i]);
+        imode_t action = get_options1(o, zOBJDUMPARGS, argv[i]);
+        if (0 == action) {
+          return odeath(o, THIS_NAME, argv[i] + 1);
+        }
+        o->action |= action;
       }
     } else {
       strncpy(o->inpname, argv[i], NELEMENTS(o->inpname));

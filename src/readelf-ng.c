@@ -56,8 +56,11 @@ static int get_options_readelf(poptions_t o, int argc, char** argv, char* name) 
         o->action |= action;
       }
     } else if ('-' == argv[i][0]) {
-      if (0 == strcmp(argv[i], zREADELFARGS0)) {
+      if (argv[i][0] == zREADELFARGS0[0] && argv[i][1] == zREADELFARGS0[1]) {
         imode_t ocdump = get_options1(o, zDEBUGELFARGS, argv[i] + 1);
+        if (0 == ocdump && argv[i][2]) {
+          return odeath(o, THIS_NAME, argv[i] + 1);
+        }
         o->ocdump |= ocdump ? ocdump : set_options1(o, zDEBUGELFARGS);
       } else if (0 == strcmp(argv[i], "-x")) {
         oinsertsecname(o, ACT_HEXDUMP, argv[++i]);
