@@ -24,7 +24,11 @@ static int get_options_readelf(poptions_t o, int argc, char** argv, char* name) 
 
       if (ECODE_ISOK(breakup_args(argv[i], arg0, NELEMENTS(arg0), arg1, NELEMENTS(arg1)))) {
         if (0 == strcmp(arg0, zREADELFARGS1)) {
-          o->ocdump |= get_options2(o, zDEBUGELFARGS, arg1);
+          imode_t ocdump = get_options2(o, zDEBUGELFARGS, arg1);
+          if (0 == ocdump) {
+            return odeath(o, THIS_NAME, arg1);
+          }
+          o->ocdump |= ocdump;
         } else if (0 == strcmp(arg0, "--hex-dump")) {
           oinsertsecname(o, ACT_HEXDUMP, arg1);
         } else if (0 == strcmp(arg0, "--string-dump")) {
@@ -41,9 +45,15 @@ static int get_options_readelf(poptions_t o, int argc, char** argv, char* name) 
           oinsertsecname(o, ACT_ZLIB, arg1);
         } else if (0 == strcmp(arg0, "--script")) {
           sinsert(o, arg1);
+        } else {
+          return odeath(o, THIS_NAME, arg0 + 2);
         }
       } else {
-        o->action |= get_options2(o, zREADELFARGS, argv[i]);
+        imode_t action = get_options2(o, zREADELFARGS, argv[i]);
+        if (0 == action) {
+          return odeath(o, THIS_NAME, argv[i] + 2);
+        }
+        o->action |= action;
       }
     } else if ('-' == argv[i][0]) {
       if (0 == strcmp(argv[i], zREADELFARGS0)) {
@@ -66,7 +76,11 @@ static int get_options_readelf(poptions_t o, int argc, char** argv, char* name) 
       } else if (0 == strcmp(argv[i], "-T")) {
         sinsert(o, argv[++i]);
       } else {
-        o->action |= get_options1(o, zREADELFARGS, argv[i]);
+        imode_t action = get_options1(o, zREADELFARGS, argv[i]);
+        if (0 == action) {
+          return odeath(o, THIS_NAME, argv[i] + 1);
+        }
+        o->action |= action;
       }
     } else {
       strncpy(o->inpname, argv[i], NELEMENTS(o->inpname));

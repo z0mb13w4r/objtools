@@ -277,7 +277,7 @@ handle_t omalloc();
 handle_t afree(handle_t p);
 handle_t ofree(handle_t p);
 
-int death(poptions_t o, const char* name, const char* argument, const int ecode);
+int odeath(poptions_t o, const char* name, const char* argument);
 
 int usage0(poptions_t o, const char* name, const args_t args[]);
 int usage1(poptions_t o, const char* name, const args_t args0[], const char* more0, const char* more1);
