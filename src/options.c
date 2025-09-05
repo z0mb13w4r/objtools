@@ -252,6 +252,10 @@ static int usage_copyright(poptions_t o, const char* name, const args_t args[]) 
   return n;
 }
 
+int death(poptions_t o, const char* name, const char* argument) {
+  return ECODE_ARGUMENTS;
+}
+
 int usage0(poptions_t o, const char* name, const args_t args[]) {
   int n = 0;
   n += usage_name(o, name, args, zDESCRIPTION);
@@ -293,7 +297,7 @@ int usage2(poptions_t o, const char* name, const args_t args0[],
   n += usage_seealso(o, name, args0);
   n += usage_copyright(o, name, args0);
 
-  return n;
+  return ECODE_ARGUMENTS;
 }
 
 int usage3(poptions_t o, const char* name, const args_t args0[],
@@ -316,7 +320,7 @@ int version0(poptions_t o, const char* name, const args_t args[]) {
   n += usage_version(o, name, args);
   n += usage_copyright(o, name, args);
 
-  return n;
+  return ECODE_OK;
 }
 
 imode_t get_options1(poptions_t o, const args_t args[], const char *argv) {

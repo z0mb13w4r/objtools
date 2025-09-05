@@ -10,8 +10,7 @@
 
 static int get_options_objdump(poptions_t o, int argc, char** argv, char* name) {
   if (0 == argc) {
-    usage2(o, THIS_NAME, zOBJDUMPARGS, zOBJDUMPARGS0, zOBJDUMPARGS1, zOBJDUMPARGS2, zOBJDUMPARGS3);
-    return ECODE_ARGUMENTS;
+    return usage2(o, THIS_NAME, zOBJDUMPARGS, zOBJDUMPARGS0, zOBJDUMPARGS1, zOBJDUMPARGS2, zOBJDUMPARGS3);
   }
 
   strname(o->prgname, name);
@@ -56,7 +55,7 @@ static int get_options_objdump(poptions_t o, int argc, char** argv, char* name) 
   }
 
   if (o->action & OPTPROGRAM_HELP) {
-    return usage2(o, THIS_NAME, zOBJDUMPARGS, zOBJDUMPARGS0, zOBJDUMPARGS1, zOBJDUMPARGS2, zOBJDUMPARGS3);
+    usage2(o, THIS_NAME, zOBJDUMPARGS, zOBJDUMPARGS0, zOBJDUMPARGS1, zOBJDUMPARGS2, zOBJDUMPARGS3);
   }
 
   return ECODE_OK;
@@ -67,7 +66,7 @@ int main(int argc, char* argv[]) {
   poptions_t o = omalloc();
   if (o) {
     r = get_options_objdump(o, argc - 1, argv + 1, argv[0]);
-    if (ECODE_ISOK(r) && 0 != o->inpname[0]) {
+    if (ECODE_ISOK(r) && o->inpname[0]) {
       occonfig(o->prgname, "x86_64-pc-linux-gnu");
 
       handle_t p = ocopen(o->inpname);
