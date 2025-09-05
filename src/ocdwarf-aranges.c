@@ -10,11 +10,12 @@ int ocdwarf_debug_aranges(handle_t p, handle_t s, handle_t d) {
   if (isopcode(p) && (isopshdr(s) || isopshdrNN(s))) {
     popcode_t oc = ocget(p, OPCODE_THIS);
 
-    const imode_t TRY_HEX      = MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED) ? USE_FHEX32 : USE_FHEX;
-    const imode_t TRY_DECHEX32 = MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED) ? USE_FHEX32 : USE_DEC;
+    const imode_t USE_LHEXNN = ocis64(p) ? USE_LHEX64 : USE_LHEX32;
 
     if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
       n += ocdwarf_printf_groups(p, ocget(p, OPCODE_DWARF_ERROR));
+    } else {
+      n += printf_text("Address  Length", USE_EOL);
     }
 
     Dwarf_Signed arange_count = 0;
@@ -40,24 +41,33 @@ int ocdwarf_debug_aranges(handle_t p, handle_t s, handle_t d) {
       Dwarf_Bool isinfo = TRUE;
       x = dwarf_offdie_b(ocget(p, OPCODE_DWARF_DEBUG), cu_die_offset, isinfo, &cu_die, ocget(p, OPCODE_DWARF_ERROR));
       if (IS_DLV_OK(x) && (0 != start || 0 != length)) {
-        n += ocdwarf_printf(p, cu_die, isinfo, i, ocget(p, OPCODE_DWARF_ERROR));
+        if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+          n += ocdwarf_printf(p, cu_die, isinfo, i, ocget(p, OPCODE_DWARF_ERROR));
 
-        if (segment_entry_size) {
-          n += printf_text("arange starts at segment", USE_LT);
-          n += printf_nice(segment, TRY_HEX);
-          n += printf_text(", offset", USE_LT);
+          if (segment_entry_size) {
+            n += printf_text("arange starts at segment", USE_LT);
+            n += printf_nice(segment, USE_FHEX32);
+            n += printf_text(", offset", USE_LT);
+          } else {
+            n += printf_text("arange starts at", USE_LT);
+          }
+
+          n += printf_nice(start, USE_FHEX32);
+          n += printf_text("length of", USE_LT | USE_COMMA);
+          n += printf_nice(length, USE_FHEX32);
+          n += printf_text("cu_die_offset =", USE_LT | USE_COMMA);
+          n += printf_nice(cu_die_offset, USE_FHEX32);
         } else {
-          n += printf_text("arange starts at", USE_LT);
+          n += printf_nice(start,  USE_LHEXNN | USE_NOSPACE);
+          n += printf_nice(length, USE_LHEXNN);
         }
 
-        n += printf_nice(start, TRY_HEX);
-        n += printf_text("length of", USE_LT | USE_COMMA);
-        n += printf_nice(length, TRY_DECHEX32);
-        n += printf_text("cu_die_offset =", USE_LT | USE_COMMA);
-        n += printf_nice(cu_die_offset, TRY_HEX);
         n += printf_eol();
-      } else {
+      } else if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
         n += printf_text("arange end", USE_LT);
+      } else {
+        n += printf_nice(0, USE_LHEXNN | USE_NOSPACE);
+        n += printf_nice(0, USE_LHEXNN);
       }
 
       ocdwarf_dealloc(p, cu_die, DW_DLA_DIE);

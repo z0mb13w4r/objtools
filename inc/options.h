@@ -222,6 +222,7 @@
 #define ACT_HEX32E                                 (613)
 #define ACT_ZLIB                                   (700)
 
+#define PICK_VERBOSE(x,y,z)            (MODE_ISANY((x)->ocdump, OPTPROGRAM_VERBOSE) ? (y) : (z))
 #define PICK_ENHANCED(x,y,z)           (MODE_ISANY((x)->ocdump, OPTDEBUGELF_ENHANCED) ? (y) : (z))
 
 typedef struct action_s {
