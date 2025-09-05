@@ -253,6 +253,12 @@ static int usage_copyright(poptions_t o, const char* name, const args_t args[]) 
 }
 
 int death(poptions_t o, const char* name, const char* argument) {
+  int n = 0;
+  n += printf_text(name, USE_LT | USE_COLON);
+  n += printf_text("invalid option --", USE_LT | USE_SPACE);
+  n += printf_text(argument, USE_LT | USE_SPACE | USE_SQ);
+  n += printf_eol();
+
   return ECODE_ARGUMENTS;
 }
 

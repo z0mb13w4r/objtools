@@ -62,16 +62,16 @@ static int get_options_objdump(poptions_t o, int argc, char** argv, char* name) 
 }
 
 int main(int argc, char* argv[]) {
-  int r = ECODE_MALLOC;
+  int x = ECODE_MALLOC;
   poptions_t o = omalloc();
   if (o) {
-    r = get_options_objdump(o, argc - 1, argv + 1, argv[0]);
-    if (ECODE_ISOK(r) && o->inpname[0]) {
+    x = get_options_objdump(o, argc - 1, argv + 1, argv[0]);
+    if (ECODE_ISOK(x) && o->inpname[0]) {
       occonfig(o->prgname, "x86_64-pc-linux-gnu");
 
       handle_t p = ocopen(o->inpname);
       if (p) {
-        r = objdump(p, o);
+        x = objdump(p, o);
       } else {
         printf_e("'%s': no such file.", o->inpname);
       }
@@ -80,7 +80,7 @@ int main(int argc, char* argv[]) {
     }
   }
 
-  nfree(o);
-  return r;
+  ofree(o);
+  return x;
 }
 

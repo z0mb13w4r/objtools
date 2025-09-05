@@ -7,9 +7,11 @@
 
 #include "static/readelf-ng.ci"
 
+#define THIS_NAME "readelf-ng"
+
 static int get_options_readelf(poptions_t o, int argc, char** argv, char* name) {
   if (0 == argc) {
-    return usage2(o, "readelf-ng", zREADELFARGS, zREADELFARGS0, zREADELFARGS1, zREADELFARGS2, zREADELFARGS3);
+    return usage2(o, THIS_NAME, zREADELFARGS, zREADELFARGS0, zREADELFARGS1, zREADELFARGS2, zREADELFARGS3);
   }
 
   strname(o->prgname, name);
@@ -72,34 +74,34 @@ static int get_options_readelf(poptions_t o, int argc, char** argv, char* name) 
   }
 
   if (o->action & OPTPROGRAM_VERSION) {
-    return version0(o, "readelf-ng", zREADELFARGS);
+    return version0(o, THIS_NAME, zREADELFARGS);
   }
 
   if (o->action & OPTPROGRAM_HELP) {
-    usage2(o, "readelf-ng", zREADELFARGS, zREADELFARGS0, zREADELFARGS1, zREADELFARGS2, zREADELFARGS3);
+    usage2(o, THIS_NAME, zREADELFARGS, zREADELFARGS0, zREADELFARGS1, zREADELFARGS2, zREADELFARGS3);
   }
 
   return ECODE_OK;
 }
 
 int main(int argc, char* argv[]) {
-  int r = ECODE_MALLOC;
+  int x = ECODE_MALLOC;
   poptions_t o = omalloc();
   if (o) {
-    r = get_options_readelf(o, argc - 1, argv + 1, argv[0]);
-    if (ECODE_ISOK(r) && o->inpname[0]) {
+    x = get_options_readelf(o, argc - 1, argv + 1, argv[0]);
+    if (ECODE_ISOK(x) && o->inpname[0]) {
       pbuffer_t p = bopen(o->inpname);
       if (isAR(p)) {
-        r = readar(p, o);
+        x = readar(p, o);
       } else if (isELF(p)) {
-        r = readelf(p, o);
+        x = readelf(p, o);
       }
 
-      nfree(p);
+      bfree(p);
     }
   }
 
-  nfree(o);
-  return r;
+  ofree(o);
+  return x;
 }
 
