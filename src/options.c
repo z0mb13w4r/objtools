@@ -252,14 +252,14 @@ static int usage_copyright(poptions_t o, const char* name, const args_t args[]) 
   return n;
 }
 
-int death(poptions_t o, const char* name, const char* argument) {
+int death(poptions_t o, const char* name, const char* argument, const int ecode) {
   int n = 0;
   n += printf_text(name, USE_LT | USE_COLON);
   n += printf_text("invalid option --", USE_LT | USE_SPACE);
   n += printf_text(argument, USE_LT | USE_SPACE | USE_SQ);
   n += printf_eol();
 
-  return ECODE_ARGUMENTS;
+  return ecode;
 }
 
 int usage0(poptions_t o, const char* name, const args_t args[]) {
@@ -290,7 +290,8 @@ int usage1(poptions_t o, const char* name, const args_t args0[],
 }
 
 int usage2(poptions_t o, const char* name, const args_t args0[],
-                     const char* more0, const char* more1, const char* more2, const char* more3) {
+                     const char* more0, const char* more1, const char* more2, const char* more3,
+                     const int ecode) {
   int n = 0;
   n += usage_name(o, name, args0, zDESCRIPTION);
   n += usage_synopsis0(o, name, args0);

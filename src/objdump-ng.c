@@ -10,7 +10,7 @@
 
 static int get_options_objdump(poptions_t o, int argc, char** argv, char* name) {
   if (0 == argc) {
-    return usage2(o, THIS_NAME, zOBJDUMPARGS, zOBJDUMPARGS0, zOBJDUMPARGS1, zOBJDUMPARGS2, zOBJDUMPARGS3);
+    return usage2(o, THIS_NAME, zOBJDUMPARGS, zOBJDUMPARGS0, zOBJDUMPARGS1, zOBJDUMPARGS2, zOBJDUMPARGS3, ECODE_ARGUMENTS);
   }
 
   strname(o->prgname, name);
@@ -55,7 +55,7 @@ static int get_options_objdump(poptions_t o, int argc, char** argv, char* name) 
   }
 
   if (o->action & OPTPROGRAM_HELP) {
-    usage2(o, THIS_NAME, zOBJDUMPARGS, zOBJDUMPARGS0, zOBJDUMPARGS1, zOBJDUMPARGS2, zOBJDUMPARGS3);
+    return usage2(o, THIS_NAME, zOBJDUMPARGS, zOBJDUMPARGS0, zOBJDUMPARGS1, zOBJDUMPARGS2, zOBJDUMPARGS3, ECODE_OK);
   }
 
   return ECODE_OK;
