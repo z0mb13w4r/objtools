@@ -79,7 +79,7 @@ static int get_options_objcopy(poptions_t o, int argc, char** argv, char* name) 
   }
 
   if (o->action & OPTPROGRAM_HELP) {
-    return usage0(o, "objcopy-ng", OBJCOPYARGS);
+    return usage0(o, "objcopy-ng", OBJCOPYARGS, ECODE_OK);
   }
 
   return ECODE_OK;

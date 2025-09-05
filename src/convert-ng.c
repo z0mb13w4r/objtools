@@ -11,11 +11,9 @@
 
 #define THIS_NAME "convert-ng"
 
-
 static int get_options_convert(poptions_t o, int argc, char** argv, char* name) {
   if (0 == argc) {
-    usage0(o, THIS_NAME, zCONVERTARGS);
-    return -1;
+    return usage0(o, THIS_NAME, zCONVERTARGS, ECODE_ARGUMENTS);
   }
 
   strname(o->prgname, name);
@@ -29,15 +27,25 @@ static int get_options_convert(poptions_t o, int argc, char** argv, char* name) 
       if (ECODE_ISOK(breakup_args(argv[i], arg0, NELEMENTS(arg0), arg1, NELEMENTS(arg1)))) {
         if (0 == strcmp(arg0, "--output")) {
           xstrncpy(o->outname, arg1, NELEMENTS(o->outname));
+        } else {
+          return odeath(o, THIS_NAME, arg0 + 2);
         }
       } else {
-        o->action |= get_options2(o, zCONVERTARGS, argv[i]);
+        imode_t action = get_options2(o, zCONVERTARGS, argv[i]);
+        if (0 == action) {
+          return odeath(o, THIS_NAME, argv[i] + 2);
+        }
+        o->action |= action;
       }
     } else if ('-' == argv[i][0] && 0 != argv[i][1]) {
       if (0 == strcmp(argv[i], "-O")) {
         xstrncpy(o->outname, argv[++i], NELEMENTS(o->outname));
       } else {
-        o->action |= get_options1(o, zCONVERTARGS, argv[i]);
+        imode_t action = get_options1(o, zCONVERTARGS, argv[i]);
+        if (0 == action) {
+          return odeath(o, THIS_NAME, argv[i] + 1);
+        }
+        o->action |= action;
       }
     } else if (ECODE_ISEVIL(sinsert(o, argv[i]))) {
       xstrncpy(o->inpname, argv[i], NELEMENTS(o->inpname));
@@ -49,7 +57,7 @@ static int get_options_convert(poptions_t o, int argc, char** argv, char* name) 
   }
 
   if (o->action & OPTPROGRAM_HELP) {
-    return usage0(o, THIS_NAME, zCONVERTARGS);
+    return usage0(o, THIS_NAME, zCONVERTARGS, ECODE_OK);
   }
 
   return ECODE_OK;

@@ -58,7 +58,7 @@ static int get_options_objhash(poptions_t o, int argc, char** argv, char* name) 
   }
 
   if (o->action & OPTPROGRAM_HELP) {
-    return usage0(o, "objhash-ng", OBJHASHARGS);
+    return usage0(o, "objhash-ng", OBJHASHARGS, ECODE_OK);
   }
 
   return ECODE_OK;

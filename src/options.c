@@ -262,7 +262,7 @@ int odeath(poptions_t o, const char* name, const char* argument) {
   return ECODE_ARGUMENTS;
 }
 
-int usage0(poptions_t o, const char* name, const args_t args[]) {
+int usage0(poptions_t o, const char* name, const args_t args[], const int ecode) {
   int n = 0;
   n += usage_name(o, name, args, zDESCRIPTION);
   n += usage_synopsis0(o, name, args);
@@ -271,7 +271,7 @@ int usage0(poptions_t o, const char* name, const args_t args[]) {
   n += usage_seealso(o, name, args);
   n += usage_copyright(o, name, args);
 
-  return n;
+  return ecode;
 }
 
 int usage1(poptions_t o, const char* name, const args_t args0[],
@@ -333,12 +333,20 @@ int version0(poptions_t o, const char* name, const args_t args[]) {
 imode_t get_options1(poptions_t o, const args_t args[], const char *argv) {
   imode_t action = 0;
   for (int k = 1; k < strlen(argv); ++k) {
+    imode_t action0 = 0;
     for (int j = 0; (0 != args[j].option1) || (0 != args[j].option2); ++j) {
       if (argv[k] == args[j].option1) {
-        action |= args[j].action;
+        action0 = args[j].action;
         break;
       }
     }
+
+    if (0 == action0) {
+printf_w("TBD - %c", argv[k]);
+// return 0;
+    }
+
+    action |= action0;
   }
 
   return action;
