@@ -9,7 +9,7 @@ int ocdwarf_debug_line(handle_t p, handle_t s, handle_t d) {
   int x = DW_DLV_ERROR;
   int n = 0;
 
-  if (isopcode(p) && (isopshdr(s) || isopshdrNN(s))) {
+  if (isopcode(p)) {
     pocdwarf_t ws = ocget(p, OPCODE_DWARF);
     popcode_t oc = ocget(p, OPCODE_THIS);
 
