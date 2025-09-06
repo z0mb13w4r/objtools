@@ -23,20 +23,33 @@ static int get_options_objdwarf(poptions_t o, int argc, char** argv, char* name)
 
       if (ECODE_ISOK(breakup_args(argv[i], arg0, NELEMENTS(arg0), arg1, NELEMENTS(arg1)))) {
         if (0 == strcmp(arg0, zOBJDWARFARGS1)) {
-          o->ocdump |= get_options2(o, zDEBUGELFARGS, arg1);
+          imode_t ocdump = get_options2(o, zDEBUGELFARGS, arg1);
+          if (0 == ocdump) {
+            return odeath(o, THIS_NAME, arg1);
+          }
+          o->ocdump |= ocdump;
         } else if (0 == strcmp(arg0, "--hex-dump")) {
           oinsertsecname(o, ACT_HEXDUMP, arg1);
         } else if (0 == strcmp(arg0, "--string-dump")) {
           oinsertsecname(o, ACT_STRDUMP8, arg1);
         } else if (0 == strcmp(arg0, "--decompress")) {
           oinsertsecname(o, ACT_ZLIB, arg1);
+        } else {
+          return odeath(o, THIS_NAME, arg0 + 2);
         }
       } else {
-        o->action |= get_options2(o, zOBJDWARFARGS, argv[i]);
+        imode_t action = get_options2(o, zOBJDWARFARGS, argv[i]);
+        if (0 == action) {
+          return odeath(o, THIS_NAME, argv[i] + 2);
+        }
+        o->action |= action;
       }
     } else if ('-' == argv[i][0]) {
-      if (0 == strcmp(argv[i], zOBJDWARFARGS0)) {
+      if (argv[i][0] == zOBJDWARFARGS0[0] && argv[i][1] == zOBJDWARFARGS0[1]) {
         imode_t ocdump = get_options1(o, zDEBUGELFARGS, argv[i] + 1);
+        if (0 == ocdump && argv[i][2]) {
+          return odeath(o, THIS_NAME, argv[i] + 1);
+        }
         o->ocdump |= ocdump ? ocdump : set_options1(o, zDEBUGELFARGS);
       } else if (0 == strcmp(argv[i], "-x")) {
         oinsertsecname(o, ACT_HEXDUMP, argv[++i]);
@@ -45,7 +58,11 @@ static int get_options_objdwarf(poptions_t o, int argc, char** argv, char* name)
       } else if (0 == strcmp(argv[i], "-z")) {
         oinsertsecname(o, ACT_ZLIB, argv[++i]);
       } else {
-        o->action |= get_options1(o, zOBJDWARFARGS, argv[i]);
+        imode_t action = get_options1(o, zOBJDWARFARGS, argv[i]);
+        if (0 == action) {
+          return odeath(o, THIS_NAME, argv[i] + 1);
+        }
+        o->action |= action;
       }
     } else {
       strncpy(o->inpname, argv[i], NELEMENTS(o->inpname));
