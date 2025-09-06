@@ -5,7 +5,7 @@
 
 static const int MAXSIZE = 24;
 
-int ocdwarf_debug_line(handle_t p, handle_t s, handle_t d) {
+static int ocdwarf_debug_line0(handle_t p, handle_t s, handle_t d) {
   int x = DW_DLV_ERROR;
   int n = 0;
 
@@ -239,5 +239,30 @@ int ocdwarf_debug_line(handle_t p, handle_t s, handle_t d) {
   }
 
   return OCDWARF_ERRCODE(x, n);
+}
+
+static int ocdwarf_debug_line1(handle_t p, handle_t s, handle_t d) {
+  int x = DW_DLV_ERROR;
+  int n = 0;
+
+  if (isopcode(p)) {
+    pocdwarf_t ws = ocget(p, OPCODE_DWARF);
+    popcode_t oc = ocget(p, OPCODE_THIS);
+
+  }
+
+  return OCDWARF_ERRCODE(x, n);
+}
+
+int ocdwarf_debug_line(handle_t p, handle_t s, handle_t d) {
+  if (isopcode(p)) {
+    popcode_t oc = ocget(p, OPCODE_THIS);
+
+    if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED | OPTDEBUGELF_DEBUG_LINE_DECODED)) {
+      return ocdwarf_debug_line0(p, s, d);
+    }
+  }
+
+  return ocdwarf_debug_line1(p, s, d);
 }
 
