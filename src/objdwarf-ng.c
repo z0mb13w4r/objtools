@@ -64,25 +64,25 @@ static int get_options_objdwarf(poptions_t o, int argc, char** argv, char* name)
 }
 
 int main(int argc, char* argv[]) {
-  int r = -1;
+  int x = ECODE_MALLOC;
   poptions_t o = omalloc();
   if (o) {
-    r = get_options_objdwarf(o, argc - 1, argv + 1, argv[0]);
-    if (0 == r && o->inpname[0]) {
+    x = get_options_objdwarf(o, argc - 1, argv + 1, argv[0]);
+    if (ECODE_ISOK(x) && o->inpname[0]) {
       pbuffer_t p = bopen(o->inpname);
       if (p) {
         if (isAR(p)) {
-          r = readar(p, o);
+          x = readar(p, o);
         } else if (isELF(p)) {
-          r = readelf(p, o);
+          x = readelf(p, o);
         }
       }
 
-      nfree(p);
+      bfree(p);
     }
   }
 
-  nfree(o);
-  return r;
+  ofree(o);
+  return x;
 }
 
