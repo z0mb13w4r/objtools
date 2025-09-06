@@ -280,7 +280,7 @@ handle_t ofree(handle_t p);
 int odeath(poptions_t o, const char* name, const char* argument);
 
 int usage0(poptions_t o, const char* name, const args_t args[], const int ecode);
-int usage1(poptions_t o, const char* name, const args_t args0[], const char* more0, const char* more1);
+int usage1(poptions_t o, const char* name, const args_t args0[], const char* more0, const char* more1, const int ecode);
 int usage2(poptions_t o, const char* name, const args_t args0[], const char* more0, const char* more1, const char* more2, const char* more3, const int ecode);
 int usage3(poptions_t o, const char* name, const args_t args0[], const char* more2, const char* more3);
 

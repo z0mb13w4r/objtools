@@ -6,10 +6,11 @@
 
 #include "static/objdwarf-ng.ci"
 
+#define THIS_NAME "objdwarf-ng"
+
 static int get_options_objdwarf(poptions_t o, int argc, char** argv, char* name) {
   if (0 == argc) {
-    usage1(o, "objdwarf-ng", zOBJDWARFARGS, zOBJDWARFARGS0, zOBJDWARFARGS1);
-    return -1;
+    return usage1(o, THIS_NAME, zOBJDWARFARGS, zOBJDWARFARGS0, zOBJDWARFARGS1, ECODE_ARGUMENTS);
   }
 
   strname(o->prgname, name);
@@ -52,11 +53,11 @@ static int get_options_objdwarf(poptions_t o, int argc, char** argv, char* name)
   }
 
   if (o->action & OPTPROGRAM_VERSION) {
-    return version0(o, "objdwarf-ng", zOBJDWARFARGS);
+    return version0(o, THIS_NAME, zOBJDWARFARGS);
   }
 
   if (o->action & OPTPROGRAM_HELP) {
-    return usage1(o, "objdwarf-ng", zOBJDWARFARGS, zOBJDWARFARGS0, zOBJDWARFARGS1);
+    return usage1(o, THIS_NAME, zOBJDWARFARGS, zOBJDWARFARGS0, zOBJDWARFARGS1, ECODE_OK);
   }
 
   return ECODE_OK;

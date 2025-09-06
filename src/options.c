@@ -275,7 +275,7 @@ int usage0(poptions_t o, const char* name, const args_t args[], const int ecode)
 }
 
 int usage1(poptions_t o, const char* name, const args_t args0[],
-                     const char* more0, const char* more1) {
+                     const char* more0, const char* more1, const int ecode) {
   int n = 0;
   n += usage_name(o, name, args0, zDESCRIPTION);
   n += usage_synopsis0(o, name, args0);
@@ -286,7 +286,7 @@ int usage1(poptions_t o, const char* name, const args_t args0[],
   n += usage_seealso(o, name, args0);
   n += usage_copyright(o, name, args0);
 
-  return 0;
+  return ecode;
 }
 
 int usage2(poptions_t o, const char* name, const args_t args0[],
@@ -304,7 +304,7 @@ int usage2(poptions_t o, const char* name, const args_t args0[],
   n += usage_seealso(o, name, args0);
   n += usage_copyright(o, name, args0);
 
-  return ECODE_ARGUMENTS;
+  return ecode;
 }
 
 int usage3(poptions_t o, const char* name, const args_t args0[],
