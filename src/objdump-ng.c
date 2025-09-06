@@ -23,9 +23,17 @@ static int get_options_objdump(poptions_t o, int argc, char** argv, char* name) 
 
       if (ECODE_ISOK(breakup_args(argv[i], arg0, NELEMENTS(arg0), arg1, NELEMENTS(arg1)))) {
         if (0 == strcmp(arg0, zOBJDUMPARGS1)) {
-          o->ocdump |= get_options2(o, zDEBUGELFARGS, arg1);
+          imode_t ocdump = get_options2(o, zDEBUGELFARGS, arg1);
+          if (0 == ocdump) {
+            return odeath(o, THIS_NAME, arg1);
+          }
+          o->ocdump |= ocdump;
         } else if (0 == strcmp(arg0, zOBJDUMPARGS3)) {
-          o->ocdump |= get_options2(o, zDISASSEMBLEARGS, arg1);
+          imode_t ocdump = get_options2(o, zDISASSEMBLEARGS, arg1);
+          if (0 == ocdump) {
+            return odeath(o, THIS_NAME, arg1);
+          }
+          o->ocdump |= ocdump;
         } else if (0 == strcmp(arg0, "--start-address")) {
           o->saddress = atovalue(arg1);
         } else if (0 == strcmp(arg0, "--stop-address")) {
