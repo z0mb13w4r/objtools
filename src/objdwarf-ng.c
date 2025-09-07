@@ -64,8 +64,10 @@ static int get_options_objdwarf(poptions_t o, int argc, char** argv, char* name)
         }
         o->action |= action;
       }
+    } else if (0 == o->inpname[0]) {
+      xstrncpy(o->inpname, argv[i], NELEMENTS(o->inpname));
     } else {
-      strncpy(o->inpname, argv[i], NELEMENTS(o->inpname));
+      return odeath(o, THIS_NAME, argv[i]);
     }
   }
 

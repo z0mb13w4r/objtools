@@ -59,9 +59,9 @@ static int get_options_objhash(poptions_t o, int argc, char** argv, char* name) 
         o->action |= action;
       }
     } else if (0 == o->inpname0[0]) {
-      strncpy(o->inpname0, argv[i], NELEMENTS(o->inpname0));
+      xstrncpy(o->inpname0, argv[i], NELEMENTS(o->inpname0));
     } else if (0 == o->inpname1[0]) {
-      strncpy(o->inpname1, argv[i], NELEMENTS(o->inpname1));
+      xstrncpy(o->inpname1, argv[i], NELEMENTS(o->inpname1));
     } else {
       return odeath(o, THIS_NAME, argv[i]);
     }

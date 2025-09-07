@@ -48,7 +48,11 @@ static int get_options_convert(poptions_t o, int argc, char** argv, char* name) 
         o->action |= action;
       }
     } else if (ECODE_ISEVIL(sinsert(o, argv[i]))) {
-      xstrncpy(o->inpname, argv[i], NELEMENTS(o->inpname));
+      if (0 == o->inpname[0]) {
+        xstrncpy(o->inpname, argv[i], NELEMENTS(o->inpname));
+      } else {
+        return odeath(o, THIS_NAME, argv[i]);
+      }
     }
   }
 
