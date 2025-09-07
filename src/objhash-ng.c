@@ -34,9 +34,15 @@ static int get_options_objhash(poptions_t o, int argc, char** argv, char* name) 
           oinsertsecname(o, ACT_STRDUMP8, arg1);
         } else if (0 == strcmp(arg0, "--convert")) {
           o->convert = atol(arg1);
+        } else {
+          return odeath(o, THIS_NAME, arg0 + 2);
         }
       } else {
-        o->action |= get_options2(o, OBJHASHARGS, argv[i]);
+        imode_t action = get_options2(o, OBJHASHARGS, argv[i]);
+        if (0 == action) {
+          return odeath(o, THIS_NAME, argv[i] + 2);
+        }
+        o->action |= action;
       }
     } else if ('-' == argv[i][0]) {
       if (0 == strcmp(argv[i], "-x")) {
@@ -46,12 +52,18 @@ static int get_options_objhash(poptions_t o, int argc, char** argv, char* name) 
       } else if (0 == strcmp(argv[i], "-C")) {
         o->convert = atoimode(argv[++i]);
       } else {
-        o->action |= get_options1(o, OBJHASHARGS, argv[i]);
+        imode_t action = get_options1(o, OBJHASHARGS, argv[i]);
+        if (0 == action) {
+          return odeath(o, THIS_NAME, argv[i] + 1);
+        }
+        o->action |= action;
       }
     } else if (0 == o->inpname0[0]) {
       strncpy(o->inpname0, argv[i], NELEMENTS(o->inpname0));
     } else if (0 == o->inpname1[0]) {
       strncpy(o->inpname1, argv[i], NELEMENTS(o->inpname1));
+    } else {
+      return odeath(o, THIS_NAME, argv[i]);
     }
   }
 
