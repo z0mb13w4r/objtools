@@ -54,7 +54,7 @@ static int breakup_script(const pconvert_t p, const char *name, uint64_t *value)
 
   int x = -1;
   if (p && name && value) {
-    strncpy(tmp, name, NELEMENTS(tmp));
+    xstrncpy(tmp, name, NELEMENTS(tmp));
 
     const char DELIMITS[] = "(){},";
     char* tok = strtok(tmp, DELIMITS);
@@ -81,7 +81,7 @@ static int breakup_script(const pconvert_t p, const char *name, uint64_t *value)
 int sprocess(poptions_t o, const char *script) {
   MALLOCA(char, tmp, 1024);
   if (isoptions(o) && script && script[0]) {
-    strncpy(tmp, script, NELEMENTS(tmp));
+    xstrncpy(tmp, script, NELEMENTS(tmp));
 
     const char DELIMIT = ';';
     char *p0 = tmp;

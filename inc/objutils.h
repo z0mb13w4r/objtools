@@ -3,6 +3,7 @@
 
 #include "crc.h"
 #include "hash.h"
+#include "memuse.h"
 
 #define PICK_END               (~0)
 

@@ -70,7 +70,7 @@ static int get_options_objcopy(poptions_t o, int argc, char** argv, char* name) 
     } else if ('-' == argv[i][0]) {
       o->action |= get_options1(o, OBJCOPYARGS, argv[i]);
     } else {
-      strncpy(o->inpname, argv[i], NELEMENTS(o->inpname));
+      xstrncpy(o->inpname, argv[i], NELEMENTS(o->inpname));
     }
   }
 

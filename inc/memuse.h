@@ -10,6 +10,9 @@ unknown_t zfree(punknown_t p);
 
 size_t xstrlen(const char *src);
 
+char *xstrcat(char *dst, const char *src);
+char *xstrncat(char *dst, const char *src, size_t count);
+
 char *xstrcpy(char *dst, const char *src);
 char *xstrncpy(char *dst, const char *src, size_t count);
 

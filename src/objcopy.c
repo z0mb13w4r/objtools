@@ -14,9 +14,9 @@ static void callback_dumpcreate(bfd *f, asection *s, void *p) {
 
   paction_t pp = amalloc();
   if (p) {
-    strncpy(pp->outname, po->inpname, NELEMENTS(pp->outname));
-    strncat(pp->outname, bfd_section_name(s), NELEMENTS(pp->outname));
-    strncpy(pp->secname, bfd_section_name(s), NELEMENTS(pp->secname));
+    xstrncpy(pp->outname, po->inpname, NELEMENTS(pp->outname));
+    xstrncat(pp->outname, bfd_section_name(s), NELEMENTS(pp->outname));
+    xstrncpy(pp->secname, bfd_section_name(s), NELEMENTS(pp->secname));
 
     pp->action = ACT_DUMPSECTION;
     pp->actions = po->actions;

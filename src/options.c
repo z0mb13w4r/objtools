@@ -385,15 +385,15 @@ imode_t get_ocdump(poptions_t o, const imodeswap_t args[], imode_t action) {
 
 int breakup_args(char* args, char* dst0, const size_t dst0size, char* dst1, const size_t dst1size) {
   MALLOCA(char, tmp, 1024);
-  strncpy(tmp, args, NELEMENTS(tmp));
+  xstrncpy(tmp, args, NELEMENTS(tmp));
 
   const char DELIMITS[] = "=";
   char* tok = strtok(tmp, DELIMITS);
   if (tok) {
-    strncpy(dst0, tok, dst0size);
+    xstrncpy(dst0, tok, dst0size);
     tok = strtok(NULL, DELIMITS);
     if (tok) {
-      strncpy(dst1, tok, dst1size);
+      xstrncpy(dst1, tok, dst1size);
       return ECODE_OK;
     }
   }
@@ -484,7 +484,7 @@ int oinsertsecname(handle_t o, const int action, const char *secname) {
   if (isoptions(o)) {
     paction_t p = amalloc();
     if (isactions(p)) {
-      strncpy(p->secname, secname, NELEMENTS(p->secname));
+      xstrncpy(p->secname, secname, NELEMENTS(p->secname));
       oinsert(o, p, action);
       return ECODE_OK;
     }

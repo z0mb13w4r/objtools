@@ -262,7 +262,7 @@ static unknown_t oeinsert_comment(handle_t p, unknown_t m) {
     pocexamine_t p0 = oeget(p, OECODE_THIS);
     char* p1 = strchr(m, '#');
     if (p1) {
-      strncpy(p0->comment, p1, sizeof(p0->comment));
+      xstrncpy(p0->comment, p1, sizeof(p0->comment));
       *p1 = 0;
     }
 
@@ -300,7 +300,7 @@ static unknown_t oeinsert_mnemonic(handle_t p, unknown_t q, unknown_t m) {
 
     if (p1) {
       p1->cvalue |= q0->action;
-      strncpy(p1->data, q0->mc, q0->mcsize);
+      xstrncpy(p1->data, q0->mc, q0->mcsize);
       if ('#' == p0->comment[0] && oeishexb(p0->comment, strlen(p0->comment))) {
         p1->uvalue = oehexb(p0->comment, strlen(p0->comment));
       }
@@ -317,7 +317,7 @@ static unknown_t oeinsert_operand(handle_t p, unknown_t q, unknown_t m) {
     pocoperand_t o0 = xmalloc(sizeof(ocoperand_t));
     if (o0) {
       char *m0 = CAST(char *, m);
-      strncpy(o0->data, m, sizeof(o0->data));
+      xstrncpy(o0->data, m, sizeof(o0->data));
 
       m0 = oedo_absolute(p, o0, m0);
       m0 = oedo_segment(p, o0, m0);

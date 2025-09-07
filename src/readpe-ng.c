@@ -63,7 +63,7 @@ static int get_options_readpe(poptions_t o, int argc, char** argv, char* name) {
         o->action |= get_options1(o, zREADPEARGS, argv[i]);
       }
     } else {
-      strncpy(o->inpname, argv[i], NELEMENTS(o->inpname));
+      xstrncpy(o->inpname, argv[i], NELEMENTS(o->inpname));
     }
   }
 

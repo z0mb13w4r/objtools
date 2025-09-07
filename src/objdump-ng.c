@@ -69,7 +69,7 @@ static int get_options_objdump(poptions_t o, int argc, char** argv, char* name) 
         o->action |= action;
       }
     } else if (0 == o->inpname[0]) {
-      strncpy(o->inpname, argv[i], NELEMENTS(o->inpname));
+      xstrncpy(o->inpname, argv[i], NELEMENTS(o->inpname));
     } else {
       return odeath(o, THIS_NAME, argv[i]);
     }

@@ -69,7 +69,7 @@ static int printf_post(const char* o, const imode_t mode) {
 }
 
 int printf_errname(const char* name) {
-  strncpy(errname, name, sizeof(errname));
+  xstrncpy(errname, name, sizeof(errname));
   return 0;
 }
 

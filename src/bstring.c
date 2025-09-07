@@ -119,7 +119,7 @@ handle_t bstrncpy(handle_t dst, handle_t src, size_t size) {
     pbstring_t dst0 = CAST(pbstring_t, dst);
     pbstring_t src0 = CAST(pbstring_t, src);
     if (size <= dst0->size) {
-      strncpy(dst0->data, src0->data, size);
+      xstrncpy(dst0->data, src0->data, size);
       return dst;
     }
   }
