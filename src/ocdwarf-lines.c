@@ -376,21 +376,47 @@ static int ocdwarf_debug_line1(handle_t p, handle_t s, handle_t d) {
       n += printf_text("Set column to", USE_LT | USE_SPACE);
       n += printf_nice(column, USE_DEC);
       n += printf_eol();
+      xx += 2;
 
-      n += printf_nice(xx, USE_FHEX32 | USE_SB);
-      n += printf_text("to", USE_LT | USE_SPACE);
-      n += ocdwarf_printf_ADDR(p, pc, USE_NONE);
-      n += printf_text("and Line by", USE_LT | USE_SPACE);
-      n += printf_nice(5, USE_DEC);
-      n += printf_text("to", USE_LT | USE_SPACE);
-      n += printf_nice(nline, USE_DEC);
-      n += printf_eol();
+      if (0 == i) {
+        n += printf_nice(xx, USE_FHEX32 | USE_SB);
+        n += printf_text("Extended opcode", USE_LT | USE_SPACE);
+        n += printf_nice(0, USE_DEC | USE_COLON);
+        n += printf_text("set Address to", USE_LT | USE_SPACE);
+        n += ocdwarf_printf_ADDR(p, pc, USE_NONE);
+        n += printf_eol();
+        xx += 11;
+
+        n += printf_nice(xx, USE_FHEX32 | USE_SB);
+        n += printf_text("Advance Line by", USE_LT | USE_SPACE);
+        n += printf_nice(0, USE_DEC);
+        n += printf_text("to", USE_LT | USE_SPACE);
+        n += printf_nice(0, USE_DEC);
+        n += printf_eol();
+        xx += 2;
+
+        n += printf_nice(xx, USE_FHEX32 | USE_SB);
+        n += printf_text("Copy", USE_LT | USE_SPACE);
+        n += printf_eol();
+        xx += 1;
+      } else {
+        n += printf_nice(xx, USE_FHEX32 | USE_SB);
+        n += printf_text("to", USE_LT | USE_SPACE);
+        n += ocdwarf_printf_ADDR(p, pc, USE_NONE);
+        n += printf_text("and Line by", USE_LT | USE_SPACE);
+        n += printf_nice(5, USE_DEC);
+        n += printf_text("to", USE_LT | USE_SPACE);
+        n += printf_nice(nline, USE_DEC);
+        n += printf_eol();
+        xx += 2;
+      }
 
       if (discriminator) {
         n += printf_nice(xx, USE_FHEX32 | USE_SB);
         n += printf_text("set Discriminator to", USE_LT | USE_SPACE);
         n += printf_nice(discriminator, USE_DEC);
         n += printf_eol();
+        x += 2;
       }
 
     }
