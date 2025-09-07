@@ -12,9 +12,11 @@ static const args_t OBJHASHARGS[] = {
   {0, NULL}
 };
 
+#define THIS_NAME "objhash-ng"
+
 static int get_options_objhash(poptions_t o, int argc, char** argv, char* name) {
   if (argc < 1) {
-    return -1;
+    return usage0(o, THIS_NAME, OBJHASHARGS, ECODE_ARGUMENTS);
   }
 
   strname(o->prgname, name);
@@ -54,11 +56,11 @@ static int get_options_objhash(poptions_t o, int argc, char** argv, char* name) 
   }
 
   if (o->action & OPTPROGRAM_VERSION) {
-    return version0(o, "objhash-ng", OBJHASHARGS);
+    return version0(o, THIS_NAME, OBJHASHARGS);
   }
 
   if (o->action & OPTPROGRAM_HELP) {
-    return usage0(o, "objhash-ng", OBJHASHARGS, ECODE_OK);
+    return usage0(o, THIS_NAME, OBJHASHARGS, ECODE_OK);
   }
 
   return ECODE_OK;
