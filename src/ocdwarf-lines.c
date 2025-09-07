@@ -333,6 +333,7 @@ static int ocdwarf_debug_line1(handle_t p, handle_t s, handle_t d) {
 
     n += ocdwarf_sfcreate(p, cu_die, ocget(p, OPCODE_DWARF_ERROR));
 
+    uint64_t xx = 0x00000457;
     for (Dwarf_Signed i = 0; i < line_count; ++i) {
 //      if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
 //        n += printf_nice(i, USE_DEC3 | USE_TB);
@@ -371,10 +372,12 @@ static int ocdwarf_debug_line1(handle_t p, handle_t s, handle_t d) {
       if (IS_DLV_OK(x)) {
       }
 
-      n += printf_text("Set column to", USE_LT);
+      n += printf_nice(xx, USE_FHEX32 | USE_SB);
+      n += printf_text("Set column to", USE_LT | USE_SPACE);
       n += printf_nice(column, USE_DEC);
       n += printf_eol();
 
+      n += printf_nice(xx, USE_FHEX32 | USE_SB);
       n += printf_text("to", USE_LT | USE_SPACE);
       n += ocdwarf_printf_ADDR(p, pc, USE_NONE);
       n += printf_text("and Line by", USE_LT | USE_SPACE);
@@ -384,6 +387,7 @@ static int ocdwarf_debug_line1(handle_t p, handle_t s, handle_t d) {
       n += printf_eol();
 
       if (discriminator) {
+        n += printf_nice(xx, USE_FHEX32 | USE_SB);
         n += printf_text("set Discriminator to", USE_LT | USE_SPACE);
         n += printf_nice(discriminator, USE_DEC);
         n += printf_eol();
