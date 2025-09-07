@@ -97,9 +97,10 @@ int main(int argc, char* argv[]) {
 
       bfree(p);
     }
+
+    ofree(o);
   }
 
-  ofree(o);
   return x;
 }
 

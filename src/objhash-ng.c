@@ -67,21 +67,24 @@ static int get_options_objhash(poptions_t o, int argc, char** argv, char* name) 
 }
 
 int main(int argc, char* argv[]) {
-  int r = -1;
+  int x = ECODE_MALLOC;
   poptions_t o = omalloc();
   if (o) {
-    r = get_options_objhash(o, argc - 1, argv + 1, argv[0]);
-    if (0 == r) {
+    x = get_options_objhash(o, argc - 1, argv + 1, argv[0]);
+    if (ECODE_ISOK(x) && o->inpname[0]) {
       pbuffer_t p = bopen(o->inpname);
       if (p) {
-        r = objhash(p, o);
+        x = objhash(p, o);
+      } else {
+        printf_e("'%s': no such file.", o->inpname);
       }
 
-      nfree(p);
+      bfree(p);
     }
+
+    ofree(o);
   }
 
-  nfree(o);
-  return r;
+  return x;
 }
 
