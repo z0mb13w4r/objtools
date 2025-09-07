@@ -108,10 +108,16 @@ int main(int argc, char* argv[]) {
     x = get_options_readelf(o, argc - 1, argv + 1, argv[0]);
     if (ECODE_ISOK(x) && o->inpname[0]) {
       pbuffer_t p = bopen(o->inpname);
-      if (isAR(p)) {
-        x = readar(p, o);
-      } else if (isELF(p)) {
-        x = readelf(p, o);
+      if (p) {
+        if (isAR(p)) {
+          x = readar(p, o);
+        } else if (isELF(p)) {
+          x = readelf(p, o);
+        } else {
+          printf_e("'%s': invalid file format.", o->inpname);
+        }
+      } else {
+        printf_e("'%s': no such file.", o->inpname);
       }
 
       bfree(p);
