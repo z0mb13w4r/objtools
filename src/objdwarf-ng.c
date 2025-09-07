@@ -92,7 +92,11 @@ int main(int argc, char* argv[]) {
           x = readar(p, o);
         } else if (isELF(p)) {
           x = readelf(p, o);
+        } else {
+          printf_e("'%s': invalid file format.", o->inpname);
         }
+      } else {
+        printf_e("'%s': no such file.", o->inpname);
       }
 
       bfree(p);
