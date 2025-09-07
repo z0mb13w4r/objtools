@@ -115,6 +115,8 @@ int main(int argc, char* argv[]) {
           }
           bstrfree(b0);
         }
+      } else {
+        printf_e("'%s': no such file.", o->inpname);
       }
 
       bfree(p);
