@@ -67,12 +67,22 @@ static int get_options_objcopy(poptions_t o, int argc, char** argv, char* name) 
           oinsert(o, p, ACT_UPDATESECTION);
         }
       } else {
-        o->action |= get_options2(o, OBJCOPYARGS, argv[i]);
+        imode_t action = get_options2(o, OBJCOPYARGS, argv[i]);
+        if (0 == action) {
+          return odeath(o, THIS_NAME, argv[i] + 2);
+        }
+        o->action |= action;
       }
     } else if ('-' == argv[i][0]) {
-      o->action |= get_options1(o, OBJCOPYARGS, argv[i]);
-    } else {
+      imode_t action = get_options1(o, OBJCOPYARGS, argv[i]);
+      if (0 == action) {
+        return odeath(o, THIS_NAME, argv[i] + 1);
+      }
+      o->action |= action;
+    } else if (0 == o->inpname[0]) {
       xstrncpy(o->inpname, argv[i], NELEMENTS(o->inpname));
+    } else {
+      return odeath(o, THIS_NAME, argv[i]);
     }
   }
 
@@ -91,7 +101,7 @@ int main(int argc, char* argv[]) {
   int r = -1;
   poptions_t o = omalloc();
   if (o) {
-    r = get_options_objcopy(o, argc, argv, argv[0]);
+    r = get_options_objcopy(o, argc - 1, argv + 1, argv[0]);
     if (0 == r) {
       pbuffer_t p = bopen(o->inpname);
       if (p) {
