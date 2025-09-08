@@ -162,6 +162,10 @@ int ocdwarf_printf_FORM(handle_t p, const uint64_t v, const imode_t mode) {
   return ocdwarf_printf_pick(p, ecDWFORM, v, mode | SET_PAD(22));
 }
 
+int ocdwarf_printf_LNS(handle_t p, const uint64_t v, const imode_t mode) {
+  return ocdwarf_printf_pick(p, ecDWLNS, v, mode);
+}
+
 int ocdwarf_printf_LANG(handle_t p, const uint64_t v, const imode_t mode) {
   return ocdwarf_printf_pick(p, ecDWLANG, v, mode);
 }

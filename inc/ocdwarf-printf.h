@@ -15,6 +15,7 @@ int ocdwarf_printf_AT(handle_t p, const uint64_t v, const imode_t mode);
 int ocdwarf_printf_OP(handle_t p, const uint64_t v, const imode_t mode);
 int ocdwarf_printf_ATE(handle_t p, const uint64_t v, const imode_t mode);
 int ocdwarf_printf_CFA(handle_t p, const uint64_t v, const imode_t mode);
+int ocdwarf_printf_LNS(handle_t p, const uint64_t v, const imode_t mode);
 int ocdwarf_printf_REG(handle_t p, const uint32_t v, const imode_t mode);
 int ocdwarf_printf_TAG(handle_t p, const uint64_t v, const imode_t mode);
 int ocdwarf_printf_EXPR(handle_t p, const uint64_t v, const imode_t mode);
