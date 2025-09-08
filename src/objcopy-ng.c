@@ -39,9 +39,11 @@ static const args_t OBJCOPYARGS[] = {
   {0, NULL},
 };
 
+#define THIS_NAME "objcopy-ng"
+
 static int get_options_objcopy(poptions_t o, int argc, char** argv, char* name) {
   if (argc < 1) {
-    return -1;
+    return usage0(o, THIS_NAME, OBJCOPYARGS, ECODE_ARGUMENTS);
   }
 
   strname(o->prgname, name);
@@ -75,11 +77,11 @@ static int get_options_objcopy(poptions_t o, int argc, char** argv, char* name) 
   }
 
   if (o->action & OPTPROGRAM_VERSION) {
-    return version0(o, "objcopy-ng", OBJCOPYARGS);
+    return version0(o, THIS_NAME, OBJCOPYARGS);
   }
 
   if (o->action & OPTPROGRAM_HELP) {
-    return usage0(o, "objcopy-ng", OBJCOPYARGS, ECODE_OK);
+    return usage0(o, THIS_NAME, OBJCOPYARGS, ECODE_OK);
   }
 
   return ECODE_OK;
