@@ -308,7 +308,8 @@ int usage2(poptions_t o, const char* name, const args_t args0[],
 }
 
 int usage3(poptions_t o, const char* name, const args_t args0[],
-                     const char* more2, const char* more3) {
+                     const char* more2, const char* more3,
+                     const int ecode) {
   int n = 0;
   n += usage_name(o, name, args0, zDESCRIPTION);
   n += usage_synopsis0(o, name, args0);
@@ -319,7 +320,7 @@ int usage3(poptions_t o, const char* name, const args_t args0[],
   n += usage_seealso(o, name, args0);
   n += usage_copyright(o, name, args0);
 
-  return n;
+  return ecode;
 }
 
 int version0(poptions_t o, const char* name, const args_t args[]) {

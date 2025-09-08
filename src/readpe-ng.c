@@ -7,10 +7,11 @@
 
 #include "static/readpe-ng.ci"
 
+#define THIS_NAME "readpe-ng"
+
 static int get_options_readpe(poptions_t o, int argc, char** argv, char* name) {
   if (0 == argc) {
-    usage3(o, "readpe-ng", zREADPEARGS, zREADPEARGS2, zREADPEARGS3);
-    return -1;
+    return usage3(o, THIS_NAME, zREADPEARGS, zREADPEARGS2, zREADPEARGS3, ECODE_ARGUMENTS);
   }
 
   strname(o->prgname, name);
@@ -23,77 +24,142 @@ static int get_options_readpe(poptions_t o, int argc, char** argv, char* name) {
 
       if (ECODE_ISOK(breakup_args(argv[i], arg0, NELEMENTS(arg0), arg1, NELEMENTS(arg1)))) {
         if (0 == strcmp(arg0, "--hex-dump")) {
+          if (argc <= (i + 1)) {
+            return odeath(o, THIS_NAME, arg0 + 2);
+          }
           oinsertsecname(o, ACT_HEXDUMP, arg1);
         } else if (0 == strcmp(arg0, "--string-dump")) {
+          if (argc <= (i + 1)) {
+            return odeath(o, THIS_NAME, arg0 + 2);
+          }
           oinsertsecname(o, ACT_STRDUMP8, arg1);
         } else if (0 == strcmp(arg0, "--unicode-dump")) {
+          if (argc <= (i + 1)) {
+            return odeath(o, THIS_NAME, arg0 + 2);
+          }
           oinsertsecname(o, ACT_STRDUMP16, arg1);
         } else if (0 == strcmp(arg0, "--relocated-dump")) {
+          if (argc <= (i + 1)) {
+            return odeath(o, THIS_NAME, arg0 + 2);
+          }
           oinsertsecname(o, ACT_RELDUMP, arg1);
         } else if (0 == strcmp(arg0, "--code-dump")) {
+          if (argc <= (i + 1)) {
+            return odeath(o, THIS_NAME, arg0 + 2);
+          }
           oinsertsecname(o, ACT_CODEDUMP, arg1);
         } else if (0 == strcmp(arg0, "--disassemble")) {
+          if (argc <= (i + 1)) {
+            return odeath(o, THIS_NAME, arg0 + 2);
+          }
           oinsertsecname(o, ACT_DISASSEMBLE, arg1);
         } else if (0 == strcmp(arg0, "--decompress")) {
+          if (argc <= (i + 1)) {
+            return odeath(o, THIS_NAME, arg0 + 2);
+          }
           oinsertsecname(o, ACT_ZLIB, arg1);
         } else if (0 == strcmp(arg0, "--script")) {
+          if (argc <= (i + 1)) {
+            return odeath(o, THIS_NAME, arg0 + 2);
+          }
           sinsert(o, arg1);
         }
       } else {
-        o->action |= get_options2(o, zREADPEARGS, argv[i]);
+        imode_t action = get_options2(o, zREADPEARGS, argv[i]);
+        if (0 == action) {
+          return odeath(o, THIS_NAME, argv[i] + 2);
+        }
+        o->action |= action;
       }
     } else if ('-' == argv[i][0]) {
       if (0 == strcmp(argv[i], "-x")) {
+        if (argc <= (i + 1)) {
+          return odeath(o, THIS_NAME, argv[i] + 1);
+        }
         oinsertsecname(o, ACT_HEXDUMP, argv[++i]);
       } else if (0 == strcmp(argv[i], "-p")) {
+        if (argc <= (i + 1)) {
+          return odeath(o, THIS_NAME, argv[i] + 1);
+        }
         oinsertsecname(o, ACT_STRDUMP8, argv[++i]);
       } else if (0 == strcmp(argv[i], "-U")) {
+        if (argc <= (i + 1)) {
+          return odeath(o, THIS_NAME, argv[i] + 1);
+        }
         oinsertsecname(o, ACT_STRDUMP16, argv[++i]);
       } else if (0 == strcmp(argv[i], "-R")) {
+        if (argc <= (i + 1)) {
+          return odeath(o, THIS_NAME, argv[i] + 1);
+        }
         oinsertsecname(o, ACT_RELDUMP, argv[++i]);
       } else if (0 == strcmp(argv[i], "-Z")) {
+        if (argc <= (i + 1)) {
+          return odeath(o, THIS_NAME, argv[i] + 1);
+        }
         oinsertsecname(o, ACT_CODEDUMP, argv[++i]);
       } else if (0 == strcmp(argv[i], "-C")) {
+        if (argc <= (i + 1)) {
+          return odeath(o, THIS_NAME, argv[i] + 1);
+        }
         oinsertsecname(o, ACT_DISASSEMBLE, argv[++i]);
       } else if (0 == strcmp(argv[i], "-z")) {
+        if (argc <= (i + 1)) {
+          return odeath(o, THIS_NAME, argv[i] + 1);
+        }
         oinsertsecname(o, ACT_ZLIB, argv[++i]);
       } else if (0 == strcmp(argv[i], "-T")) {
+        if (argc <= (i + 1)) {
+          return odeath(o, THIS_NAME, argv[i] + 1);
+        }
         sinsert(o, argv[++i]);
       } else {
-        o->action |= get_options1(o, zREADPEARGS, argv[i]);
+        imode_t action = get_options1(o, zREADPEARGS, argv[i]);
+        if (0 == action) {
+          return odeath(o, THIS_NAME, argv[i] + 1);
+        }
+        o->action |= action;
       }
-    } else {
+    } else if (0 == o->inpname[0]) {
       xstrncpy(o->inpname, argv[i], NELEMENTS(o->inpname));
+    } else {
+      return odeath(o, THIS_NAME, argv[i]);
     }
   }
 
   if (o->action & OPTPROGRAM_VERSION) {
-    return version0(o, "readpe-ng", zREADPEARGS);
+    return version0(o, THIS_NAME, zREADPEARGS);
   }
 
   if (o->action & OPTPROGRAM_HELP) {
-    return usage3(o, "readpe-ng", zREADPEARGS, zREADPEARGS2, zREADPEARGS3);
+    return usage3(o, THIS_NAME, zREADPEARGS, zREADPEARGS2, zREADPEARGS3, ECODE_OK);
   }
 
   return ECODE_OK;
 }
 
 int main(int argc, char* argv[]) {
-  int x = -1;
+  int x = ECODE_MALLOC;
   poptions_t o = omalloc();
   if (o) {
     x = get_options_readpe(o, argc - 1, argv + 1, argv[0]);
     if (ECODE_ISOK(x) && o->inpname[0]) {
       pbuffer_t p = bopen(o->inpname);
-      if (isPE(p)) {
-        x = readpe(p, o);
+      if (p) {
+        if (isPE(p)) {
+          x = readpe(p, o);
+        } else {
+          printf_e("'%s': invalid file format.", o->inpname);
+        }
+      } else {
+        printf_e("'%s': no such file.", o->inpname);
       }
 
-      nfree(p);
+      bfree(p);
     }
+
+    ofree(o);
   }
 
-  nfree(o);
   return x;
 }
 
