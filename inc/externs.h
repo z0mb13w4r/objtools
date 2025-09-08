@@ -30,6 +30,7 @@ extern convert_t ecDWOP[];
 extern convert_t ecDWUT[];
 extern convert_t ecDWEND[];
 extern convert_t ecDWLLE[];
+extern convert_t ecDELNS[];
 extern convert_t ecDWRLE[];
 extern convert_t ecDWTAG[];
 extern convert_t ecDWGNUM[];
