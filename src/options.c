@@ -481,7 +481,7 @@ int oinsertvalue(handle_t o, const int action, const uint64_t value) {
 }
 
 int oinsertsecname(handle_t o, const int action, const char *secname) {
-  if (isoptions(o)) {
+  if (isoptions(o) && secname) {
     paction_t p = amalloc();
     if (isactions(p)) {
       xstrncpy(p->secname, secname, NELEMENTS(p->secname));
