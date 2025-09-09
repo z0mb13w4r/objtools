@@ -46,10 +46,19 @@ static int get_options_objhash(poptions_t o, int argc, char** argv, char* name) 
       }
     } else if ('-' == argv[i][0]) {
       if (0 == strcmp(argv[i], "-x")) {
+        if (argc <= (i + 1)) {
+          return odeath(o, THIS_NAME, argv[i] + 1);
+        }
         oinsertsecname(o, ACT_HEXDUMP, argv[++i]);
       } else if (0 == strcmp(argv[i], "-p")) {
+        if (argc <= (i + 1)) {
+          return odeath(o, THIS_NAME, argv[i] + 1);
+        }
         oinsertsecname(o, ACT_STRDUMP8, argv[++i]);
       } else if (0 == strcmp(argv[i], "-C")) {
+        if (argc <= (i + 1)) {
+          return odeath(o, THIS_NAME, argv[i] + 1);
+        }
         o->convert = atoimode(argv[++i]);
       } else {
         imode_t action = get_options1(o, OBJHASHARGS, argv[i]);

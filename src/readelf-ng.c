@@ -98,6 +98,9 @@ static int get_options_readelf(poptions_t o, int argc, char** argv, char* name) 
         }
         oinsertsecname(o, ACT_ZLIB, argv[++i]);
       } else if (0 == strcmp(argv[i], "-T")) {
+        if (argc <= (i + 1)) {
+          return odeath(o, THIS_NAME, argv[i] + 1);
+        }
         sinsert(o, argv[++i]);
       } else {
         imode_t action = get_options1(o, zREADELFARGS, argv[i]);
