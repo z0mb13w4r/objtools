@@ -122,7 +122,7 @@ int sinsert(poptions_t o, const char *script) {
           sprocess(o, tmp);
         }
         fclose(fp);
-        return 0;
+        return ECODE_OK;
       }
     } else {
       return sprocess(o, script);
