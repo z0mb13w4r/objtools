@@ -19,6 +19,36 @@ unknown_t fget(handle_t p) {
   return NULL;
 }
 
+unknown_t fgetp(handle_t p, const size_t chunksize) {
+  unknown_t p0 = fget(p);
+  if (p0) {
+    pfind_t p1 = CAST(pfind_t, p);
+    if (p1) {
+      p1->cpos += chunksize;
+
+      if (p1->cpos < p1->epos) return p0;
+      p1->item = NULL;
+    }
+  }
+
+  return NULL;
+}
+
+uint64_t fgetu8(handle_t p) {
+  unknown_t p0 = fgetp(p, sizeof(uint8_t));
+  return p0 ? *CAST(uint8_t*, p0) : 0;
+}
+
+uint64_t fgetu16(handle_t p) {
+  unknown_t p0 = fgetp(p, sizeof(uint16_t));
+  return p0 ? *CAST(uint16_t*, p0) : 0;
+}
+
+uint64_t fgetu32(handle_t p) {
+  unknown_t p0 = fgetp(p, sizeof(uint32_t));
+  return p0 ? *CAST(uint32_t*, p0) : 0;
+}
+
 handle_t fnext(handle_t p) {
   if (isfind(p)) {
     pfind_t p0 = CAST(pfind_t, p);
