@@ -1,3 +1,10 @@
+#include <stddef.h>
+#include <dwarf.h>
+#include <libdwarf.h>
+#include <dwarf_base_types.h>
+#include <dwarf_opaque.h>
+#include <dwarf_line.h>
+
 #include "printf.h"
 #include "externs.h"
 #include "options.h"
@@ -294,6 +301,8 @@ static int ocdwarf_debug_line1(handle_t p, handle_t s, handle_t d) {
     Dwarf_Line  *line_array = NULL;
     Dwarf_Small  table_count = 0;
     Dwarf_Unsigned line_version = 0;
+
+// struct Dwarf_Line_Context_s [dwarf_line.h:115]
     Dwarf_Line_Context line_context = 0;
 
     x = dwarf_srclines_b(cu_die, &line_version, &table_count, &line_context, ocget(p, OPCODE_DWARF_ERROR));
@@ -331,11 +340,27 @@ static int ocdwarf_debug_line1(handle_t p, handle_t s, handle_t d) {
       ocdwarf_dealloc_error(p, NULL);
     }
 
+printf("lc_unit_length %d[0x%x]\n", line_context->lc_unit_length, line_context->lc_unit_length);
+printf("lc_length_field_length %d[0x%x]\n", line_context->lc_length_field_length, line_context->lc_length_field_length);
+printf("lc_address_size %d[0x%x]\n", line_context->lc_address_size, line_context->lc_address_size);
+printf("lc_segment_selector_size %d[0x%x]\n", line_context->lc_segment_selector_size, line_context->lc_segment_selector_size);
+printf("Offset: %d[0x%x]\n", line_context->lc_section_offset, line_context->lc_section_offset);
+printf("Length: %d[0x%x]\n", line_context->lc_total_length, line_context->lc_total_length);
+
+printf("DWARF Version: %d[0x%x]\n", line_context->lc_version_number, line_context->lc_version_number);
+printf("Prologue Length: %d[0x%x]\n", line_context->lc_prologue_length, line_context->lc_prologue_length);
+printf("Minimum Instruction Length: %d[0x%x]\n", line_context->lc_minimum_instruction_length, line_context->lc_minimum_instruction_length);
+printf("Initial value of 'is_stmt': %d[0x%x]\n", line_context->lc_default_is_stmt, line_context->lc_default_is_stmt);
+printf("Line Base: %d[0x%x]\n", line_context->lc_line_base, line_context->lc_line_base);
+printf("Line Range: %d[0x%x]\n", line_context->lc_line_range, line_context->lc_line_range);
+printf("Opcode Base: %d[0x%x]\n", line_context->lc_opcode_base, line_context->lc_opcode_base);
+
     n += ocdwarf_sfcreate(p, cu_die, ocget(p, OPCODE_DWARF_ERROR));
 
     Dwarf_Addr prev_pc = 0;
-    Dwarf_Bool prev_ns = FALSE;
-    Dwarf_Unsigned prev_nline = 0;
+    Dwarf_Bool prev_ns = line_context->lc_default_is_stmt;
+    Dwarf_Unsigned prev_nline = 1;
+    Dwarf_Unsigned prev_column = 0;
 
     uint64_t xx = 0x00000000;
     for (Dwarf_Signed i = 0; i < line_count; ++i) {
@@ -344,6 +369,7 @@ static int ocdwarf_debug_line1(handle_t p, handle_t s, handle_t d) {
 //      }
 
       Dwarf_Addr curr_pc = 0;
+// struct Dwarf_Line_s [dwarf_line.h:303]
       Dwarf_Line k = line_array[i];
       x = dwarf_lineaddr(k, &curr_pc, ocget(p, OPCODE_DWARF_ERROR));
       if (IS_DLV_ANY_ERROR(x)) {
@@ -356,10 +382,10 @@ static int ocdwarf_debug_line1(handle_t p, handle_t s, handle_t d) {
         curr_nline = 0;
       }
 
-      Dwarf_Unsigned column = 0;
-      x = dwarf_lineoff_b(k, &column, ocget(p, OPCODE_DWARF_ERROR));
+      Dwarf_Unsigned curr_column = 0;
+      x = dwarf_lineoff_b(k, &curr_column, ocget(p, OPCODE_DWARF_ERROR));
       if (IS_DLV_ANY_ERROR(x)) {
-        column = 0;
+        curr_column = 0;
       }
 
       Dwarf_Bool pe = FALSE;
@@ -375,15 +401,27 @@ static int ocdwarf_debug_line1(handle_t p, handle_t s, handle_t d) {
       if (IS_DLV_OK(x)) {
       }
 
-      n += printf_nice(xx, USE_FHEX32 | USE_SB);
-      n += printf_text("Set column to", USE_LT | USE_SPACE);
-      n += printf_nice(column, USE_DEC);
-      n += printf_eol();
+      Dwarf_Bool isaddrset = FALSE;
+      x = dwarf_line_is_addr_set(k, &isaddrset, ocget(p, OPCODE_DWARF_ERROR));
+      if (IS_DLV_OK(x)) {
+      }
+
+      Dwarf_Bool et = FALSE;
+      x = dwarf_lineendsequence(k, &et, ocget(p, OPCODE_DWARF_ERROR));
+      if (IS_DLV_OK(x)) {
+      }
+
+      if (curr_column != prev_column) {
+        n += printf_nice(xx, USE_FHEX32 | USE_SB);
+        n += printf_text("Set column to", USE_LT | USE_SPACE);
+        n += printf_nice(curr_column, USE_DEC);
+        n += printf_eol();
+      }
 
       if (discriminator) {
         n += printf_nice(xx, USE_FHEX32 | USE_SB);
         n += printf_text("Extended opcode", USE_LT | USE_SPACE);
-        n += printf_nice(0, USE_DEC | USE_COLON);
+        n += printf_nice(DW_LNE_set_discriminator, USE_DEC | USE_COLON);
         n += printf_text("set Discriminator to", USE_LT | USE_SPACE);
         n += printf_nice(discriminator, USE_DEC);
         n += printf_eol();
@@ -391,15 +429,15 @@ static int ocdwarf_debug_line1(handle_t p, handle_t s, handle_t d) {
 
       if (curr_ns != prev_ns) {
         n += printf_nice(xx, USE_FHEX32 | USE_SB);
-        n += printf_text("Set is_stmt to", USE_LT);
+        n += printf_text("Set is_stmt to", USE_LT | USE_SPACE);
         n += printf_nice(curr_ns ? 1 : 0, USE_DEC);
         n += printf_eol();
       }
 
-      if (0 == i) {
+      if (isaddrset) {
         n += printf_nice(xx, USE_FHEX32 | USE_SB);
         n += printf_text("Extended opcode", USE_LT | USE_SPACE);
-        n += printf_nice(0, USE_DEC | USE_COLON);
+        n += printf_nice(DW_LNE_set_address, USE_DEC | USE_COLON);
         n += printf_text("set Address to", USE_LT | USE_SPACE);
         n += ocdwarf_printf_ADDR(p, curr_pc, USE_NONE);
         n += printf_eol();
@@ -413,6 +451,19 @@ static int ocdwarf_debug_line1(handle_t p, handle_t s, handle_t d) {
 
         n += printf_nice(xx, USE_FHEX32 | USE_SB);
         n += printf_text("Copy", USE_LT | USE_SPACE);
+        n += printf_eol();
+      } else if (et) {
+        n += printf_nice(xx, USE_FHEX32 | USE_SB);
+        n += printf_text("Advance PC by", USE_LT | USE_SPACE);
+        n += printf_nice(curr_pc - prev_pc, USE_DEC);
+        n += printf_text("to", USE_LT | USE_SPACE);
+        n += ocdwarf_printf_ADDR(p, curr_pc, USE_NONE);
+        n += printf_eol();
+
+        n += printf_nice(xx, USE_FHEX32 | USE_SB);
+        n += printf_text("Extended opcode", USE_LT | USE_SPACE);
+        n += printf_nice(DW_LNE_end_sequence, USE_DEC | USE_COLON);
+        n += printf_text("End of Sequence", USE_LT | USE_SPACE);
         n += printf_eol();
       } else {
         n += printf_nice(xx, USE_FHEX32 | USE_SB);
@@ -432,6 +483,7 @@ static int ocdwarf_debug_line1(handle_t p, handle_t s, handle_t d) {
       prev_pc = curr_pc;
       prev_ns = curr_ns;
       prev_nline = curr_nline;
+      prev_column = curr_column;
     }
   }
 
