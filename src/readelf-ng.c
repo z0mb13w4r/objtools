@@ -63,18 +63,39 @@ static int get_options_readelf(poptions_t o, int argc, char** argv, char* name) 
         }
         o->ocdump |= ocdump ? ocdump : set_options1(o, zDEBUGELFARGS);
       } else if (0 == strcmp(argv[i], "-x")) {
+        if (argc <= (i + 1)) {
+          return odeath(o, THIS_NAME, argv[i] + 1);
+        }
         oinsertsecname(o, ACT_HEXDUMP, argv[++i]);
       } else if (0 == strcmp(argv[i], "-p")) {
+        if (argc <= (i + 1)) {
+          return odeath(o, THIS_NAME, argv[i] + 1);
+        }
         oinsertsecname(o, ACT_STRDUMP8, argv[++i]);
       } else if (0 == strcmp(argv[i], "-U")) {
+        if (argc <= (i + 1)) {
+          return odeath(o, THIS_NAME, argv[i] + 1);
+        }
         oinsertsecname(o, ACT_STRDUMP16, argv[++i]);
       } else if (0 == strcmp(argv[i], "-R")) {
+        if (argc <= (i + 1)) {
+          return odeath(o, THIS_NAME, argv[i] + 1);
+        }
         oinsertsecname(o, ACT_RELDUMP, argv[++i]);
       } else if (0 == strcmp(argv[i], "-Z")) {
+        if (argc <= (i + 1)) {
+          return odeath(o, THIS_NAME, argv[i] + 1);
+        }
         oinsertsecname(o, ACT_CODEDUMP, argv[++i]);
       } else if (0 == strcmp(argv[i], "-C")) {
+        if (argc <= (i + 1)) {
+          return odeath(o, THIS_NAME, argv[i] + 1);
+        }
         oinsertsecname(o, ACT_DISASSEMBLE, argv[++i]);
       } else if (0 == strcmp(argv[i], "-z")) {
+        if (argc <= (i + 1)) {
+          return odeath(o, THIS_NAME, argv[i] + 1);
+        }
         oinsertsecname(o, ACT_ZLIB, argv[++i]);
       } else if (0 == strcmp(argv[i], "-T")) {
         sinsert(o, argv[++i]);
@@ -108,23 +129,26 @@ int main(int argc, char* argv[]) {
   poptions_t o = omalloc();
   if (o) {
     x = get_options_readelf(o, argc - 1, argv + 1, argv[0]);
-    if (ECODE_ISOK(x) && o->inpname[0]) {
-      pbuffer_t p = bopen(o->inpname);
-      if (p) {
-        if (isAR(p)) {
-          x = readar(p, o);
-        } else if (isELF(p)) {
-          x = readelf(p, o);
+    if (ECODE_ISOK(x)) {
+      if (o->inpname[0]) {
+        pbuffer_t p = bopen(o->inpname);
+        if (p) {
+          if (isAR(p)) {
+            x = readar(p, o);
+          } else if (isELF(p)) {
+            x = readelf(p, o);
+          } else {
+            printf_e("'%s': invalid file format.", o->inpname);
+          }
         } else {
-          printf_e("'%s': invalid file format.", o->inpname);
+          printf_e("'%s': no such file.", o->inpname);
         }
+
+        bfree(p);
       } else {
-        printf_e("'%s': no such file.", o->inpname);
+        printf_e("no file specified.");
       }
-
-      bfree(p);
     }
-
     ofree(o);
   }
 
