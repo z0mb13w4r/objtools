@@ -374,6 +374,15 @@ static int ocdwarf_debug_line1(handle_t p, handle_t s, handle_t d) {
       n += printf_nice(column, USE_DEC);
       n += printf_eol();
 
+      if (discriminator) {
+        n += printf_nice(xx, USE_FHEX32 | USE_SB);
+        n += printf_text("Extended opcode", USE_LT | USE_SPACE);
+        n += printf_nice(0, USE_DEC | USE_COLON);
+        n += printf_text("set Discriminator to", USE_LT | USE_SPACE);
+        n += printf_nice(discriminator, USE_DEC);
+        n += printf_eol();
+      }
+
       if (0 == i) {
         n += printf_nice(xx, USE_FHEX32 | USE_SB);
         n += printf_text("Extended opcode", USE_LT | USE_SPACE);
@@ -404,13 +413,6 @@ static int ocdwarf_debug_line1(handle_t p, handle_t s, handle_t d) {
         n += printf_nice(curr_nline - prev_nline, USE_DEC);
         n += printf_text("to", USE_LT | USE_SPACE);
         n += printf_nice(curr_nline, USE_DEC);
-        n += printf_eol();
-      }
-
-      if (discriminator) {
-        n += printf_nice(xx, USE_FHEX32 | USE_SB);
-        n += printf_text("set Discriminator to", USE_LT | USE_SPACE);
-        n += printf_nice(discriminator, USE_DEC);
         n += printf_eol();
       }
 
