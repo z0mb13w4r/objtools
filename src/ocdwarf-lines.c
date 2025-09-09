@@ -334,6 +334,7 @@ static int ocdwarf_debug_line1(handle_t p, handle_t s, handle_t d) {
     n += ocdwarf_sfcreate(p, cu_die, ocget(p, OPCODE_DWARF_ERROR));
 
     Dwarf_Addr prev_pc = 0;
+    Dwarf_Bool prev_ns = FALSE;
     Dwarf_Unsigned prev_nline = 0;
 
     uint64_t xx = 0x00000000;
@@ -369,6 +370,11 @@ static int ocdwarf_debug_line1(handle_t p, handle_t s, handle_t d) {
       if (IS_DLV_OK(x)) {
       }
 
+      Dwarf_Bool curr_ns = FALSE;
+      x = dwarf_linebeginstatement(k, &curr_ns, ocget(p, OPCODE_DWARF_ERROR));
+      if (IS_DLV_OK(x)) {
+      }
+
       n += printf_nice(xx, USE_FHEX32 | USE_SB);
       n += printf_text("Set column to", USE_LT | USE_SPACE);
       n += printf_nice(column, USE_DEC);
@@ -380,6 +386,13 @@ static int ocdwarf_debug_line1(handle_t p, handle_t s, handle_t d) {
         n += printf_nice(0, USE_DEC | USE_COLON);
         n += printf_text("set Discriminator to", USE_LT | USE_SPACE);
         n += printf_nice(discriminator, USE_DEC);
+        n += printf_eol();
+      }
+
+      if (curr_ns != prev_ns) {
+        n += printf_nice(xx, USE_FHEX32 | USE_SB);
+        n += printf_text("Set is_stmt to", USE_LT);
+        n += printf_nice(curr_ns ? 1 : 0, USE_DEC);
         n += printf_eol();
       }
 
@@ -417,6 +430,7 @@ static int ocdwarf_debug_line1(handle_t p, handle_t s, handle_t d) {
       }
 
       prev_pc = curr_pc;
+      prev_ns = curr_ns;
       prev_nline = curr_nline;
     }
   }
