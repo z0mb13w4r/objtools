@@ -333,34 +333,31 @@ static int ocdwarf_debug_line1(handle_t p, handle_t s, handle_t d) {
 
     n += ocdwarf_sfcreate(p, cu_die, ocget(p, OPCODE_DWARF_ERROR));
 
-    uint64_t xx = 0x00000457;
+    Dwarf_Addr prev_pc = 0;
+    Dwarf_Unsigned prev_nline = 0;
+
+    uint64_t xx = 0x00000000;
     for (Dwarf_Signed i = 0; i < line_count; ++i) {
 //      if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
 //        n += printf_nice(i, USE_DEC3 | USE_TB);
 //      }
 
-      Dwarf_Addr pc = 0;
+      Dwarf_Addr curr_pc = 0;
       Dwarf_Line k = line_array[i];
-      x = dwarf_lineaddr(k, &pc, ocget(p, OPCODE_DWARF_ERROR));
-      if (IS_DLV_ERROR(x)) {
-        pc = 0;
-      } else if (IS_DLV_NO_ENTRY(x)) {
-        pc = 0;
+      x = dwarf_lineaddr(k, &curr_pc, ocget(p, OPCODE_DWARF_ERROR));
+      if (IS_DLV_ANY_ERROR(x)) {
+        curr_pc = 0;
       }
 
-      Dwarf_Unsigned nline = 0;
-      x = dwarf_lineno(k, &nline, ocget(p, OPCODE_DWARF_ERROR));
-      if (IS_DLV_ERROR(x)) {
-        nline = 0;
-      } else if (IS_DLV_NO_ENTRY(x)) {
-        nline = 0;
+      Dwarf_Unsigned curr_nline = 0;
+      x = dwarf_lineno(k, &curr_nline, ocget(p, OPCODE_DWARF_ERROR));
+      if (IS_DLV_ANY_ERROR(x)) {
+        curr_nline = 0;
       }
 
       Dwarf_Unsigned column = 0;
       x = dwarf_lineoff_b(k, &column, ocget(p, OPCODE_DWARF_ERROR));
-      if (IS_DLV_ERROR(x)) {
-        column = 0;
-      } else if (IS_DLV_NO_ENTRY(x)) {
+      if (IS_DLV_ANY_ERROR(x)) {
         column = 0;
       }
 
@@ -376,43 +373,38 @@ static int ocdwarf_debug_line1(handle_t p, handle_t s, handle_t d) {
       n += printf_text("Set column to", USE_LT | USE_SPACE);
       n += printf_nice(column, USE_DEC);
       n += printf_eol();
-      xx += 2;
 
       if (0 == i) {
         n += printf_nice(xx, USE_FHEX32 | USE_SB);
         n += printf_text("Extended opcode", USE_LT | USE_SPACE);
         n += printf_nice(0, USE_DEC | USE_COLON);
         n += printf_text("set Address to", USE_LT | USE_SPACE);
-        n += ocdwarf_printf_ADDR(p, pc, USE_NONE);
+        n += ocdwarf_printf_ADDR(p, curr_pc, USE_NONE);
         n += printf_eol();
-        xx += 11;
 
         n += printf_nice(xx, USE_FHEX32 | USE_SB);
         n += printf_text("Advance Line by", USE_LT | USE_SPACE);
-        n += printf_nice(0, USE_DEC);
+        n += printf_nice(curr_nline - prev_nline, USE_DEC);
         n += printf_text("to", USE_LT | USE_SPACE);
-        n += printf_nice(nline, USE_DEC);
+        n += printf_nice(curr_nline, USE_DEC);
         n += printf_eol();
-        xx += 2;
 
         n += printf_nice(xx, USE_FHEX32 | USE_SB);
         n += printf_text("Copy", USE_LT | USE_SPACE);
         n += printf_eol();
-        xx += 1;
       } else {
         n += printf_nice(xx, USE_FHEX32 | USE_SB);
         n += printf_text("Special opcode", USE_LT | USE_SPACE);
         n += printf_nice(0, USE_DEC | USE_COLON);
         n += printf_text("advance Address by", USE_LT | USE_SPACE);
-        n += printf_nice(0, USE_DEC);
+        n += printf_nice(curr_pc - prev_pc, USE_DEC);
         n += printf_text("to", USE_LT | USE_SPACE);
-        n += ocdwarf_printf_ADDR(p, pc, USE_NONE);
+        n += ocdwarf_printf_ADDR(p, curr_pc, USE_NONE);
         n += printf_text("and Line by", USE_LT | USE_SPACE);
-        n += printf_nice(0, USE_DEC);
+        n += printf_nice(curr_nline - prev_nline, USE_DEC);
         n += printf_text("to", USE_LT | USE_SPACE);
-        n += printf_nice(nline, USE_DEC);
+        n += printf_nice(curr_nline, USE_DEC);
         n += printf_eol();
-        xx += 1;
       }
 
       if (discriminator) {
@@ -420,9 +412,10 @@ static int ocdwarf_debug_line1(handle_t p, handle_t s, handle_t d) {
         n += printf_text("set Discriminator to", USE_LT | USE_SPACE);
         n += printf_nice(discriminator, USE_DEC);
         n += printf_eol();
-        x += 2;
       }
 
+      prev_pc = curr_pc;
+      prev_nline = curr_nline;
     }
   }
 
