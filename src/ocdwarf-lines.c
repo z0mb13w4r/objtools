@@ -475,6 +475,26 @@ printf("lc_segment_selector_size %d[0x%x]\n", line_context->lc_segment_selector_
         n += printf_text("End of Sequence", USE_LT | USE_SPACE);
         n += printf_eol();
       } else {
+        Dwarf_Addr size_pc = 17;
+        Dwarf_Addr diff_pc = curr_pc - prev_pc;
+        if (diff_pc >= (size_pc + size_pc)) {
+          prev_pc += diff_pc;
+          n += printf_nice(xx, USE_FHEX32 | USE_SB);
+          n += printf_text("Advance PC by", USE_LT | USE_SPACE);
+          n += printf_nice(diff_pc, USE_DEC);
+          n += printf_text("to", USE_LT | USE_SPACE);
+          n += ocdwarf_printf_ADDR(p, prev_pc, USE_NONE);
+          n += printf_eol();
+        } else if (diff_pc >= size_pc) {
+          prev_pc += size_pc;
+          n += printf_nice(xx, USE_FHEX32 | USE_SB);
+          n += printf_text("Advance PC by constant", USE_LT | USE_SPACE);
+          n += printf_nice(size_pc, USE_DEC);
+          n += printf_text("to", USE_LT | USE_SPACE);
+          n += ocdwarf_printf_ADDR(p, prev_pc, USE_NONE);
+          n += printf_eol();
+        }
+
         n += printf_nice(xx, USE_FHEX32 | USE_SB);
         n += printf_text("Special opcode", USE_LT | USE_SPACE);
         n += printf_nice(0, USE_DEC | USE_COLON);
