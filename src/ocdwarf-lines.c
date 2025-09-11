@@ -361,6 +361,12 @@ printf("lc_unit_length %d[0x%x]\n", line_context->lc_unit_length, line_context->
 printf("lc_length_field_length %d[0x%x]\n", line_context->lc_length_field_length, line_context->lc_length_field_length);
 printf("lc_address_size %d[0x%x]\n", line_context->lc_address_size, line_context->lc_address_size);
 printf("lc_segment_selector_size %d[0x%x]\n", line_context->lc_segment_selector_size, line_context->lc_segment_selector_size);
+printf("lc_prologue_length %d[0x%x]\n", line_context->lc_prologue_length, line_context->lc_prologue_length);
+printf("lc_actuals_table_offset %d[0x%x]\n", line_context->lc_actuals_table_offset, line_context->lc_actuals_table_offset);
+printf("lc_logicals_table_offset %d[0x%x]\n", line_context->lc_logicals_table_offset, line_context->lc_logicals_table_offset);
+printf("lc_minimum_instruction_length %d[0x%x]\n", line_context->lc_minimum_instruction_length, line_context->lc_minimum_instruction_length);
+printf("lc_maximum_ops_per_instruction %d[0x%x]\n", line_context->lc_maximum_ops_per_instruction, line_context->lc_maximum_ops_per_instruction);
+
 
     n += printf_text("Offset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     n += printf_nice(section_offset, USE_FHEX | USE_EOL);
