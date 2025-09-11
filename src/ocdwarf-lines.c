@@ -397,6 +397,11 @@ printf("lc_segment_selector_size %d[0x%x]\n", line_context->lc_segment_selector_
         curr_column = 0;
       }
 
+      Dwarf_Bool isaddrset = FALSE;
+      x = dwarf_line_is_addr_set(k, &isaddrset, ocget(p, OPCODE_DWARF_ERROR));
+      if (IS_DLV_OK(x)) {
+      }
+
       Dwarf_Bool pe = FALSE;
       Dwarf_Bool eb = FALSE;
       Dwarf_Unsigned isa = 0;
@@ -407,11 +412,6 @@ printf("lc_segment_selector_size %d[0x%x]\n", line_context->lc_segment_selector_
 
       Dwarf_Bool curr_ns = FALSE;
       x = dwarf_linebeginstatement(k, &curr_ns, ocget(p, OPCODE_DWARF_ERROR));
-      if (IS_DLV_OK(x)) {
-      }
-
-      Dwarf_Bool isaddrset = FALSE;
-      x = dwarf_line_is_addr_set(k, &isaddrset, ocget(p, OPCODE_DWARF_ERROR));
       if (IS_DLV_OK(x)) {
       }
 
