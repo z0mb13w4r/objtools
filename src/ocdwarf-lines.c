@@ -9,6 +9,7 @@
 #include "externs.h"
 #include "options.h"
 #include "ocdwarf-lines.h"
+#include "ocdwarf-magic.h"
 
 static const int MAXSIZE = 24;
 
@@ -340,6 +341,19 @@ static int ocdwarf_debug_line1(handle_t p, handle_t s, handle_t d) {
       ocdwarf_dealloc_error(p, NULL);
     }
 
+    Dwarf_Bool is_stmt = FALSE;
+    Dwarf_Unsigned prologue_length = 0;
+    Dwarf_Small minimum_instruction_length = 0;
+    Dwarf_Ubyte maximum_ops_per_instruction = 0;
+    Dwarf_Sbyte line_base = 0;
+    Dwarf_Small line_range = 0;
+    Dwarf_Small opcode_base = 0;
+
+    x = dwarf_info_from_linecontext(line_context, &prologue_length, &minimum_instruction_length, &maximum_ops_per_instruction,
+                                &is_stmt, &line_base, &line_range, &opcode_base, ocget(p, OPCODE_DWARF_ERROR));
+    if (IS_DLV_ANY_ERROR(x)) {
+    }
+
 printf("lc_unit_length %d[0x%x]\n", line_context->lc_unit_length, line_context->lc_unit_length);
 printf("lc_length_field_length %d[0x%x]\n", line_context->lc_length_field_length, line_context->lc_length_field_length);
 printf("lc_address_size %d[0x%x]\n", line_context->lc_address_size, line_context->lc_address_size);
@@ -352,17 +366,17 @@ printf("lc_segment_selector_size %d[0x%x]\n", line_context->lc_segment_selector_
     n += printf_text("DWARF Version", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     n += printf_nice(line_version, USE_DEC | USE_EOL);
     n += printf_text("Prologue Length", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-    n += printf_nice(line_context->lc_prologue_length, USE_DEC | USE_EOL);
+    n += printf_nice(prologue_length, USE_DEC | USE_EOL);
     n += printf_text("Minimum Instruction Length", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-    n += printf_nice(line_context->lc_minimum_instruction_length, USE_DEC | USE_EOL);
+    n += printf_nice(minimum_instruction_length, USE_DEC | USE_EOL);
     n += printf_text("Initial value of 'is_stmt'", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-    n += printf_nice(line_context->lc_default_is_stmt, USE_DEC | USE_EOL);
+    n += printf_nice(is_stmt, USE_DEC | USE_EOL);
     n += printf_text("Line Base", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-    n += printf_nice(line_context->lc_line_base, USE_DEC | USE_EOL);
+    n += printf_nice(line_base, USE_DEC | USE_EOL);
     n += printf_text("Line Range", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-    n += printf_nice(line_context->lc_line_range, USE_DEC | USE_EOL);
+    n += printf_nice(line_range, USE_DEC | USE_EOL);
     n += printf_text("Opcode Base", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-    n += printf_nice(line_context->lc_opcode_base, USE_DEC | USE_EOL);
+    n += printf_nice(opcode_base, USE_DEC | USE_EOL);
 
     n += ocdwarf_sfcreate(p, cu_die, ocget(p, OPCODE_DWARF_ERROR));
 

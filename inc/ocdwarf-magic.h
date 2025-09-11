@@ -1,5 +1,5 @@
-#ifndef __OCDWARF_LINES_H_
-#define __OCDWARF_LINES_H_
+#ifndef __OCDWARF_MAGIC_H_
+#define __OCDWARF_MAGIC_H_
 
 #include "ocdwarf.h"
 
