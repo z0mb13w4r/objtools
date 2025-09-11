@@ -342,6 +342,7 @@ static int ocdwarf_debug_line1(handle_t p, handle_t s, handle_t d) {
     }
 
     Dwarf_Bool is_stmt = FALSE;
+    Dwarf_Unsigned section_offset = 0;
     Dwarf_Unsigned prologue_length = 0;
     Dwarf_Small minimum_instruction_length = 0;
     Dwarf_Ubyte maximum_ops_per_instruction = 0;
@@ -349,7 +350,7 @@ static int ocdwarf_debug_line1(handle_t p, handle_t s, handle_t d) {
     Dwarf_Small line_range = 0;
     Dwarf_Small opcode_base = 0;
 
-    x = dwarf_info_from_linecontext(line_context, &prologue_length, &minimum_instruction_length, &maximum_ops_per_instruction,
+    x = dwarf_info_from_linecontext(line_context, &section_offset, &prologue_length, &minimum_instruction_length, &maximum_ops_per_instruction,
                                 &is_stmt, &line_base, &line_range, &opcode_base, ocget(p, OPCODE_DWARF_ERROR));
     if (IS_DLV_ANY_ERROR(x)) {
     }
@@ -360,7 +361,7 @@ printf("lc_address_size %d[0x%x]\n", line_context->lc_address_size, line_context
 printf("lc_segment_selector_size %d[0x%x]\n", line_context->lc_segment_selector_size, line_context->lc_segment_selector_size);
 
     n += printf_text("Offset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-    n += printf_nice(line_context->lc_section_offset, USE_FHEX | USE_EOL);
+    n += printf_nice(section_offset, USE_FHEX | USE_EOL);
     n += printf_text("Length", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     n += printf_nice(line_context->lc_total_length, USE_DEC | USE_EOL);
     n += printf_text("DWARF Version", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));

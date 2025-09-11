@@ -10,6 +10,7 @@
 #include "ocdwarf-magic.h"
 
 int dwarf_info_from_linecontext(Dwarf_Line_Context line_context,
+                                Dwarf_Unsigned *section_offset,
                                 Dwarf_Unsigned *prologue_length, Dwarf_Small *minimum_instruction_length, Dwarf_Ubyte *maximum_ops_per_instruction,
                                 Dwarf_Bool *is_stmt, Dwarf_Sbyte *line_base, Dwarf_Small *line_range, Dwarf_Small *opcode_base,
                                 Dwarf_Error *error) {
@@ -20,6 +21,8 @@ int dwarf_info_from_linecontext(Dwarf_Line_Context line_context,
     _dwarf_error(line_context->lc_dbg, error, DW_DLE_LINE_CONTEXT_BOTCH);
     return DW_DLV_ERROR;
   }
+
+  *section_offset =  line_context->lc_section_offset;
 
   *prologue_length = line_context->lc_prologue_length;
   *minimum_instruction_length = line_context->lc_minimum_instruction_length;
