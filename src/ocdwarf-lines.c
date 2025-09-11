@@ -366,7 +366,7 @@ printf("lc_actuals_table_offset %d[0x%x]\n", line_context->lc_actuals_table_offs
 printf("lc_logicals_table_offset %d[0x%x]\n", line_context->lc_logicals_table_offset, line_context->lc_logicals_table_offset);
 printf("lc_minimum_instruction_length %d[0x%x]\n", line_context->lc_minimum_instruction_length, line_context->lc_minimum_instruction_length);
 printf("lc_maximum_ops_per_instruction %d[0x%x]\n", line_context->lc_maximum_ops_per_instruction, line_context->lc_maximum_ops_per_instruction);
-
+printf("lc_std_op_count %d[0x%x]\n", line_context->lc_std_op_count, line_context->lc_std_op_count);
 
     n += printf_text("Offset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     n += printf_nice(section_offset, USE_FHEX | USE_EOL);
