@@ -342,6 +342,7 @@ static int ocdwarf_debug_line1(handle_t p, handle_t s, handle_t d) {
     }
 
     Dwarf_Bool is_stmt = FALSE;
+    Dwarf_Unsigned total_length = 0;
     Dwarf_Unsigned section_offset = 0;
     Dwarf_Unsigned prologue_length = 0;
     Dwarf_Small minimum_instruction_length = 0;
@@ -350,7 +351,8 @@ static int ocdwarf_debug_line1(handle_t p, handle_t s, handle_t d) {
     Dwarf_Small line_range = 0;
     Dwarf_Small opcode_base = 0;
 
-    x = dwarf_info_from_linecontext(line_context, &section_offset, &prologue_length, &minimum_instruction_length, &maximum_ops_per_instruction,
+    x = dwarf_info_from_linecontext(line_context, &section_offset, &total_length, &prologue_length,
+                                &minimum_instruction_length, &maximum_ops_per_instruction,
                                 &is_stmt, &line_base, &line_range, &opcode_base, ocget(p, OPCODE_DWARF_ERROR));
     if (IS_DLV_ANY_ERROR(x)) {
     }
