@@ -18,6 +18,11 @@ static char zCOPYSTRIPDWO[]                = "Remove the contents of all DWARF .
 static char zCOPYWEAKEN[]                  = "Change all global symbols in the file to be weak.";
 static char zCOPYLOCALIZEHIDDEN[]          = "In an ELF object, mark all symbols that have hidden or internal visibility as local.";
 static char zCOPYMERGENOTES[]              = "For ELF files, attempt (or do not attempt) to reduce the size of any SHT_NOTE type sections by removing duplicate notes.";
+static char zCOPYPRESERVEDATES[]           = "Set the access and modification dates of the output file to be the same as those of the input file.";
+static char zCOPYSTRIPDEBUG[]              = "Do not copy debugging symbols or sections from the source file.";
+static char zCOPYSTRIPUNNEEDED[]           = "Strip all symbols that are not needed for relocation processing.";
+static char zCOPYSTRIPALL[]                = "Do not copy relocation and symbol information from the source file.";
+static char zCOPYDUMPSECTIONS[]            = "Place the contents of all sections into the file filename, overwriting any contents that may have been there previously.";
 
 static const args_t zOBJCOPYARGS[] = {
   {'H', "--help",                           OPTPROGRAM_HELP,                             NULL},
@@ -42,16 +47,15 @@ static const args_t zOBJCOPYARGS[] = {
   {0,   "--localize-hidden",                OPTOBJCOPY_LOCALIZE_HIDDEN,                  zCOPYLOCALIZEHIDDEN},
   {'M', "--merge-notes",                    OPTOBJCOPY_MERGE_NOTES},
   {0,   "--no-merge-notes",                 OPTOBJCOPY_NO_MERGE_NOTES,                   zCOPYMERGENOTES},
-  {'p', "--preserve-dates",                 OPTOBJCOPY_PRESERVE_DATES},
+  {'p', "--preserve-dates",                 OPTOBJCOPY_PRESERVE_DATES,                   zCOPYPRESERVEDATES},
   {0,   "--readonly-text",                  OPTOBJCOPY_READONLY_TEXT,                    zCOPYREADONLY},
   {0,   "--writable-text",                  OPTOBJCOPY_WRITABLE_TEXT,                    zCOPYWRITABLE},
-  {0,   "--strip-section-headers",          OPTOBJCOPY_STRIP_SECTION_HEADERS},
-  {'S', "--strip-all",                      OPTOBJCOPY_STRIP_ALL},
-  {'g', "--strip-debug",                    OPTOBJCOPY_STRIP_DEBUG},
+  {'S', "--strip-all",                      OPTOBJCOPY_STRIP_ALL,                        zCOPYSTRIPALL},
+  {'g', "--strip-debug",                    OPTOBJCOPY_STRIP_DEBUG,                      zCOPYSTRIPDEBUG},
   {0,   "--strip-dwo",                      OPTOBJCOPY_STRIP_DWO,                        zCOPYSTRIPDWO},
-  {0,   "--strip-unneeded",                 OPTOBJCOPY_STRIP_UNNEEDED},
+  {0,   "--strip-unneeded",                 OPTOBJCOPY_STRIP_UNNEEDED,                   zCOPYSTRIPUNNEEDED},
   {0,   "--weaken",                         OPTOBJCOPY_WEAKEN,                           zCOPYWEAKEN},
-  {0,   "--dump-sections-all",              OPTOBJCOPY_DUMP_SECTIONS_ALL},
+  {0,   "--dump-sections-all",              OPTOBJCOPY_DUMP_SECTIONS_ALL,                zCOPYDUMPSECTIONS},
   {0, NULL},
 };
 
