@@ -46,7 +46,7 @@ static const args_t zREADELFARGS[] = {
   {'C', "--disassemble",     0,                            zELFDISASSEMBLE},
   {'T', "--script",          0},
   {'I', "--info",            OPTPROGRAM_INFO},
-  {'X', "--hash",            OPTPROGRAM_HASH},
+  {'X', "--hash",            OPTPROGRAM_HASH,              NULL},
   {'E', "--entropy",         OPTPROGRAM_ENTROPY},
   {0, NULL}
 };
