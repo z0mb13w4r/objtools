@@ -5,8 +5,20 @@
 #include "printf.h"
 #include "objutils.h"
 
+int countbits(const imode_t x) {
+  imode_t v = x;
+  int c = 0;
+
+  while (v) {
+    c += v & 1;
+    v >>= 1;
+  }
+
+  return c;
+}
+
 bool_t isbits(const imode_t x) {
-  return x & (x - 1);
+  return countbits(x) < 2 ? FALSE : TRUE;
 }
 
 bool_t isused(ppick_t p, const pick_t x) {

@@ -12,6 +12,8 @@ typedef struct convert_s {
   const pick_t type;
 } convert_t, *pconvert_t;
 
+int countbits(const imode_t x);
+
 bool_t isbits(const imode_t x);
 bool_t isused(ppick_t p, const pick_t x);
 bool_t isnamedone(const char* names[], const size_t maxnames, const char* check);
