@@ -23,11 +23,17 @@ static char zCOPYSTRIPDEBUG[]              = "Do not copy debugging symbols or s
 static char zCOPYSTRIPUNNEEDED[]           = "Strip all symbols that are not needed for relocation processing.";
 static char zCOPYSTRIPALL[]                = "Do not copy relocation and symbol information from the source file.";
 static char zCOPYDUMPSECTIONS[]            = "Place the contents of all sections into the file filename, overwriting any contents that may have been there previously.";
+static char zCOPYADDSECTION[]              = "Add a new section named sectionname while copying the file.";
+static char zCOPYDUMPSECTION[]             = "Place the contents of section named sectionname into the file filename, overwriting any contents that may have been there previously.";
+static char zCOPYUPDATESECTION[]           = "Replace the existing contents of a section named sectionname with the contents of file filename.";
 
 static const args_t zOBJCOPYARGS[] = {
   {'H', "--help",                           OPTPROGRAM_HELP,                             NULL},
   {'V', "--version",                        OPTPROGRAM_VERSION,                          NULL},
   {'v', "--verbose",                        OPTPROGRAM_VERBOSE,                          NULL},
+  {0,   "--add-section",                    0,                                           zCOPYADDSECTION},
+  {0,   "--dump-section",                   0,                                           zCOPYDUMPSECTION},
+  {0,   "--update-section",                 0,                                           zCOPYUPDATESECTION},
   {0,   "--adjust-warnings",                OPTOBJCOPY_CHANGE_WARNINGS},
   {0,   "--change-warnings",                OPTOBJCOPY_CHANGE_WARNINGS,                  zCOPYADJUSTWARNINGS},
   {0,   "--no-adjust-warnings",             OPTOBJCOPY_NO_CHANGE_WARNINGS},
