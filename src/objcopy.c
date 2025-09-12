@@ -48,7 +48,7 @@ static int dump_actions(const pbuffer_t p, const poptions_t o, bfd *f) {
           printf_w("could not create section '%s' dump file '%s'.", x->secname, o->outname);
         } else {
           bfd_byte *data = NULL;
-	  if (bfd_malloc_and_get_section(f, osec, &data)) {
+          if (bfd_malloc_and_get_section(f, osec, &data)) {
             if (size != fwrite(data, 1, size, fp)) {
               printf_e("writing section '%s' contents to '%s' (%s)", x->secname, o->outname, strerror(errno));
             }

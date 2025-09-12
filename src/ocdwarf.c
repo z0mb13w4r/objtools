@@ -614,8 +614,8 @@ int ocdwarf_dfget3(handle_t p, Dwarf_Die die, Dwarf_Addr addr, Dwarf_Bool isinfo
           }
         }
 
-	dwarf_srclines_dealloc_b(line_context);
-	return ECODE_OK;
+        dwarf_srclines_dealloc_b(line_context);
+        return ECODE_OK;
       }
 
       dwarf_srclines_dealloc_b(line_context);
