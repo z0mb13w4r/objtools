@@ -3,7 +3,6 @@
 #include "objdump.h"
 #include "options.h"
 
-#include "static/options.ci"
 #include "static/objdump-ng.ci"
 
 #define THIS_NAME "objdump-ng"

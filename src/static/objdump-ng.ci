@@ -17,6 +17,7 @@ static char zDUMPDISASSEMBLEALL[]  = "Like -d, but disassemble the contents of a
 static char zDUMPDEBUGGING[]       = "Display debugging information.";
 static char zDUMPDEBUGGINGTAGS[]   = "Like -g, but the information is generated in a format compatible with ctags tool.";
 static char zDUMPSOURCE[]          = "Display source code intermixed with disassembly, if possible.  Implies -d.";
+static char zDUMPCAPSTONEALL[]     = "When disassembling, use the Capstone Disassembler Framework.";
 
 static const char zOBJDUMPARGS0[] = "-W";
 static const char zOBJDUMPARGS1[] = "--dwarf";
@@ -29,6 +30,7 @@ static const args_t zOBJDUMPARGS[] = {
   {'V', "--version",           OPTPROGRAM_VERSION,                                       NULL},
   {'v', "--verbose",           OPTPROGRAM_VERBOSE,                                       NULL},
   {'D', "--disassemble-all",   OPTOBJDUMP_DISASSEMBLE_ALL | OPTPROGRAM_DISASSEMBLE,      zDUMPDISASSEMBLEALL},
+  {'c', "--capstone-all",      OPTPROGRAM_CAPSTONE_ALL,                                  zDUMPCAPSTONEALL},
   {'S', "--source",            OPTPROGRAM_SOURCE_CODE | OPTPROGRAM_DISASSEMBLE,          zDUMPSOURCE},
   {'T', "--dynamic-symbols",   OPTOBJDUMP_DYNAMIC_SYMBOLS,                               zDUMPDYNAMIC},
   {'R', "--dynamic-reloc",     OPTOBJDUMP_DYNAMIC_RELOC,                                 zDUMPDYNAMICRELOC},
@@ -47,11 +49,11 @@ static const args_t zOBJDUMPARGS[] = {
   {  0, "--prefix-addresses",  OPTPROGRAM_PREFIX_ADDR,                                   zDUMPPREFIXADDR},
   {  0, "--start-address",     0,                                                        zDUMPSTARTADDR},
   {  0, "--stop-address",      0,                                                        zDUMPSTOPADDR},
-  {'c', "--capstone",          OPTPROGRAM_CAPSTONE_ALL},
-  {'X', "--hash",              OPTPROGRAM_HASH},
-  {'1', NULL,                  OPTPROGRAM_DEBUGLEVEL1,                                   zDEBUGLEVEL1},
-  {'2', NULL,                  OPTPROGRAM_DEBUGLEVEL2,                                   zDEBUGLEVEL2},
-  {'3', NULL,                  OPTPROGRAM_DEBUGLEVEL3,                                   zDEBUGLEVEL3},
+  {  0, "--capstone",          OPTPROGRAM_CAPSTONE,                                      NULL},
+  {'X', "--hash",              OPTPROGRAM_HASH,                                          NULL},
+  {'1', NULL,                  OPTPROGRAM_DEBUGLEVEL1,                                   NULL},
+  {'2', NULL,                  OPTPROGRAM_DEBUGLEVEL2,                                   NULL},
+  {'3', NULL,                  OPTPROGRAM_DEBUGLEVEL3,                                   NULL},
   {0, NULL}
 };
 

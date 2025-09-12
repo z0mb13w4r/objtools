@@ -1,4 +1,0 @@
-static char zDEBUGLEVEL1[]      = "Print the level 1 code development debugging information.";
-static char zDEBUGLEVEL2[]      = "Print the level 2 code development debugging information.";
-static char zDEBUGLEVEL3[]      = "Print the level 3 code development debugging information.";
-
