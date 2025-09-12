@@ -9,7 +9,7 @@
 
 static int get_options_objcopy(poptions_t o, int argc, char** argv, char* name) {
   if (argc < 1) {
-    return usage0(o, THIS_NAME, OBJCOPYARGS, ECODE_ARGUMENTS);
+    return usage0(o, THIS_NAME, zOBJCOPYARGS, ECODE_ARGUMENTS);
   }
 
   strname(o->prgname, name);
@@ -33,14 +33,14 @@ static int get_options_objcopy(poptions_t o, int argc, char** argv, char* name) 
           oinsert(o, p, ACT_UPDATESECTION);
         }
       } else {
-        imode_t action = get_options2(o, OBJCOPYARGS, argv[i]);
+        imode_t action = get_options2(o, zOBJCOPYARGS, argv[i]);
         if (0 == action) {
           return odeath(o, THIS_NAME, argv[i] + 2);
         }
         o->action |= action;
       }
     } else if ('-' == argv[i][0]) {
-      imode_t action = get_options1(o, OBJCOPYARGS, argv[i]);
+      imode_t action = get_options1(o, zOBJCOPYARGS, argv[i]);
       if (0 == action) {
         return odeath(o, THIS_NAME, argv[i] + 1);
       }
@@ -53,11 +53,11 @@ static int get_options_objcopy(poptions_t o, int argc, char** argv, char* name) 
   }
 
   if (o->action & OPTPROGRAM_VERSION) {
-    return version0(o, THIS_NAME, OBJCOPYARGS);
+    return version0(o, THIS_NAME, zOBJCOPYARGS);
   }
 
   if (o->action & OPTPROGRAM_HELP) {
-    return usage0(o, THIS_NAME, OBJCOPYARGS, ECODE_OK);
+    return usage0(o, THIS_NAME, zOBJCOPYARGS, ECODE_OK);
   }
 
   return ECODE_OK;

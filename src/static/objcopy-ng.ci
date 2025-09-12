@@ -1,6 +1,6 @@
-static const args_t OBJCOPYARGS[] = {
-  {'H', "--help",                           OPTPROGRAM_HELP},
-  {'V', "--version",                        OPTPROGRAM_VERSION},
+static const args_t zOBJCOPYARGS[] = {
+  {'H', "--help",                           OPTPROGRAM_HELP,                             NULL},
+  {'V', "--version",                        OPTPROGRAM_VERSION,                          NULL},
   {0,   "--adjust-warnings",                OPTOBJCOPY_CHANGE_WARNINGS},
   {0,   "--change-warnings",                OPTOBJCOPY_CHANGE_WARNINGS},
   {0,   "--debugging",                      OPTOBJCOPY_DEBUGGING},
