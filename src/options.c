@@ -143,7 +143,11 @@ static int usage_options0(poptions_t o, const char* name, const args_t args[]) {
       } else if (name && MODE_ISLOCKED(args[j].action, OPTPROGRAM_VERSION)) {
         snprintf(m, sizeof(m), "Print the version number of %s and exit.", name);
         n += printf_text(m, USE_LT | USE_TAB | USE_EOL);
+      } else if (name && MODE_ISLOCKED(args[j].action, OPTPROGRAM_VERBOSE)) {
+        snprintf(m, sizeof(m), "Print additional information.");
+        n += printf_text(m, USE_LT | USE_TAB | USE_EOL);
       }
+
       n += printf_eol();
     }
   }

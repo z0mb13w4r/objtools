@@ -142,10 +142,9 @@
 #define OPTOBJCOPY_STRIP_DWO                       U64MASK(21)
 #define OPTOBJCOPY_STRIP_SECTION_HEADERS           U64MASK(22)
 #define OPTOBJCOPY_STRIP_UNNEEDED                  U64MASK(23)
-#define OPTOBJCOPY_VERBOSE                         U64MASK(24)
-#define OPTOBJCOPY_WEAKEN                          U64MASK(25)
-#define OPTOBJCOPY_WRITABLE_TEXT                   U64MASK(26)
-#define OPTOBJCOPY_DUMP_SECTIONS_ALL               U64MASK(27)
+#define OPTOBJCOPY_WEAKEN                          U64MASK(24)
+#define OPTOBJCOPY_WRITABLE_TEXT                   U64MASK(25)
+#define OPTOBJCOPY_DUMP_SECTIONS_ALL               U64MASK(26)
 
 #define OPTOBJDUMP_DISASSEMBLE_ALL                 U64MASK(0)
 #define OPTOBJDUMP_DYNAMIC_SYMBOLS                 U64MASK(1)

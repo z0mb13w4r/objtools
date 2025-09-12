@@ -2,12 +2,15 @@ static char zCOPYADJUSTWARNINGS[]          = "If --change-section-address or --c
 static char zCOPYNOADJUSTWARNINGS[]        = "Do not issue a warning if --change-section-address or --adjust-section-lma or --adjust-section-vma is used, even if the section pattern does not match any sections.";
 static char zCOPYDEBBUGING[]               = "Convert debugging information, if possible. This is not the default because only certain debugging formats are supported, and the conversion process can be time consuming.";
 static char zCOPYDECOMPRESSDEBUGSECTIONS[] = "Decompress DWARF debug sections using zlib.";
-
-static char zCOPYENABLEDETERMINISTIC[]     = "Operate in deterministic mode.  When copying archive members and writing the archive index, use zero for UIDs, GIDs, timestamps, and use consistent file modes for all files.";
+static char zCOPYENABLEDETERMINISTIC[]     = "Operate in deterministic mode. When copying archive members and writing the archive index, use zero for UIDs, GIDs, timestamps, and use consistent file modes for all files.";
+static char zCOPYDISABLEDETERMINISTIC[]    = "Do not operate in deterministic mode. This is the inverse of the -D option, above: when copying archive members and writing the archive index, use their actual UID, GID, timestamp, and file mode values.";
+static char zCOPYDISCARDALL[]              = "Do not copy non-global symbols from the source file.";
+static char zCOPYDISCARDLOCALS[]           = "";
 
 static const args_t zOBJCOPYARGS[] = {
   {'H', "--help",                           OPTPROGRAM_HELP,                             NULL},
   {'V', "--version",                        OPTPROGRAM_VERSION,                          NULL},
+  {'v', "--verbose",                        OPTPROGRAM_VERBOSE,                          NULL},
   {0,   "--adjust-warnings",                OPTOBJCOPY_CHANGE_WARNINGS},
   {0,   "--change-warnings",                OPTOBJCOPY_CHANGE_WARNINGS,                  zCOPYADJUSTWARNINGS},
   {0,   "--no-adjust-warnings",             OPTOBJCOPY_NO_CHANGE_WARNINGS},
@@ -15,9 +18,9 @@ static const args_t zOBJCOPYARGS[] = {
   {0,   "--debugging",                      OPTOBJCOPY_DEBUGGING,                        zCOPYDEBBUGING},
   {0,   "--decompress-debug-sections",      OPTOBJCOPY_DECOMPRESS_DEBUG_SECTIONS,        zCOPYDECOMPRESSDEBUGSECTIONS},
   {'D', "--enable-deterministic-archives",  OPTOBJCOPY_ENABLE_DETERMINISTIC_ARCHIVES,    zCOPYENABLEDETERMINISTIC},
-  {'U', "--disable-deterministic-archives", OPTOBJCOPY_DISABLE_DETERMINISTIC_ARCHIVES},
-  {'x', "--discard-all",                    OPTOBJCOPY_DISCARD_ALL},
-  {'X', "--discard-locals",                 OPTOBJCOPY_DISCARD_LOCALS},
+  {'U', "--disable-deterministic-archives", OPTOBJCOPY_DISABLE_DETERMINISTIC_ARCHIVES,   zCOPYDISABLEDETERMINISTIC},
+  {'x', "--discard-all",                    OPTOBJCOPY_DISCARD_ALL,                      zCOPYDISCARDALL},
+  {'X', "--discard-locals",                 OPTOBJCOPY_DISCARD_LOCALS,                   zCOPYDISCARDLOCALS},
   {0,   "--extract-dwo",                    OPTOBJCOPY_EXTRACT_DWO},
   {0,   "--extract-symbol",                 OPTOBJCOPY_EXTRACT_SYMBOL},
   {0,   "--impure",                         OPTOBJCOPY_IMPURE},
@@ -34,7 +37,6 @@ static const args_t zOBJCOPYARGS[] = {
   {'g', "--strip-debug",                    OPTOBJCOPY_STRIP_DEBUG},
   {0,   "--strip-dwo",                      OPTOBJCOPY_STRIP_DWO},
   {0,   "--strip-unneeded",                 OPTOBJCOPY_STRIP_UNNEEDED},
-  {'v', "--verbose",                        OPTOBJCOPY_VERBOSE},
   {0,   "--weaken",                         OPTOBJCOPY_WEAKEN},
   {0,   "--writable-text",                  OPTOBJCOPY_WRITABLE_TEXT},
   {0,   "--dump-sections-all",              OPTOBJCOPY_DUMP_SECTIONS_ALL},
