@@ -5,7 +5,19 @@ static char zCOPYDECOMPRESSDEBUGSECTIONS[] = "Decompress DWARF debug sections us
 static char zCOPYENABLEDETERMINISTIC[]     = "Operate in deterministic mode. When copying archive members and writing the archive index, use zero for UIDs, GIDs, timestamps, and use consistent file modes for all files.";
 static char zCOPYDISABLEDETERMINISTIC[]    = "Do not operate in deterministic mode. This is the inverse of the -D option, above: when copying archive members and writing the archive index, use their actual UID, GID, timestamp, and file mode values.";
 static char zCOPYDISCARDALL[]              = "Do not copy non-global symbols from the source file.";
-static char zCOPYDISCARDLOCALS[]           = "";
+static char zCOPYDISCARDLOCALS[]           = "Do not copy compiler-generated local symbols.";
+static char zCOPYEXTRACTDWO[]              = "Extract the contents of all DWARF .dwo sections.";
+static char zCOPYEXTRACTSYMBOL[]           = "Keep the file's section flags and symbols but remove all section data.";
+static char zCOPYPURE[]                    = "Mark the output file as demand paged.";
+static char zCOPYIMPURE[]                  = "Mark the output file as impure.";
+static char zCOPYREADONLY[]                = "Make the output text write protected.";
+static char zCOPYWRITABLE[]                = "Mark the output text as writable.";
+static char zCOPYKEEPSYMBOLS[]             = "When stripping a file, perhaps with --strip-debug or --strip-unneeded, retain any symbols specifying source file names, which would otherwise get stripped.";
+static char zCOPYONLYKEEPDEBUG[]           = "Strip a file, removing contents of any sections that would not be stripped by --strip-debug and leaving the debugging sections intact.";
+static char zCOPYSTRIPDWO[]                = "Remove the contents of all DWARF .dwo sections, leaving the remaining debugging sections and all symbols intact.";
+static char zCOPYWEAKEN[]                  = "Change all global symbols in the file to be weak.";
+static char zCOPYLOCALIZEHIDDEN[]          = "In an ELF object, mark all symbols that have hidden or internal visibility as local.";
+static char zCOPYMERGENOTES[]              = "For ELF files, attempt (or do not attempt) to reduce the size of any SHT_NOTE type sections by removing duplicate notes.";
 
 static const args_t zOBJCOPYARGS[] = {
   {'H', "--help",                           OPTPROGRAM_HELP,                             NULL},
@@ -21,24 +33,24 @@ static const args_t zOBJCOPYARGS[] = {
   {'U', "--disable-deterministic-archives", OPTOBJCOPY_DISABLE_DETERMINISTIC_ARCHIVES,   zCOPYDISABLEDETERMINISTIC},
   {'x', "--discard-all",                    OPTOBJCOPY_DISCARD_ALL,                      zCOPYDISCARDALL},
   {'X', "--discard-locals",                 OPTOBJCOPY_DISCARD_LOCALS,                   zCOPYDISCARDLOCALS},
-  {0,   "--extract-dwo",                    OPTOBJCOPY_EXTRACT_DWO},
-  {0,   "--extract-symbol",                 OPTOBJCOPY_EXTRACT_SYMBOL},
-  {0,   "--impure",                         OPTOBJCOPY_IMPURE},
-  {0,   "--keep-file-symbols",              OPTOBJCOPY_KEEP_FILE_SYMBOLS},
-  {0,   "--localize-hidden",                OPTOBJCOPY_LOCALIZE_HIDDEN},
+  {0,   "--extract-dwo",                    OPTOBJCOPY_EXTRACT_DWO,                      zCOPYEXTRACTDWO},
+  {0,   "--extract-symbol",                 OPTOBJCOPY_EXTRACT_SYMBOL,                   zCOPYEXTRACTSYMBOL},
+  {0,   "--pure",                           OPTOBJCOPY_PURE,                             zCOPYPURE},
+  {0,   "--impure",                         OPTOBJCOPY_IMPURE,                           zCOPYIMPURE},
+  {0,   "--keep-file-symbols",              OPTOBJCOPY_KEEP_FILE_SYMBOLS,                zCOPYKEEPSYMBOLS},
+  {0,   "--only-keep-debug",                OPTOBJCOPY_ONLY_KEEP_DEBUG,                  zCOPYONLYKEEPDEBUG},
+  {0,   "--localize-hidden",                OPTOBJCOPY_LOCALIZE_HIDDEN,                  zCOPYLOCALIZEHIDDEN},
   {'M', "--merge-notes",                    OPTOBJCOPY_MERGE_NOTES},
-  {0,   "--no-merge-notes",                 OPTOBJCOPY_NO_MERGE_NOTES},
-  {0,   "--only-keep-debug",                OPTOBJCOPY_ONLY_KEEP_DEBUG},
+  {0,   "--no-merge-notes",                 OPTOBJCOPY_NO_MERGE_NOTES,                   zCOPYMERGENOTES},
   {'p', "--preserve-dates",                 OPTOBJCOPY_PRESERVE_DATES},
-  {0,   "--pure",                           OPTOBJCOPY_PURE},
-  {0,   "--readonly-text",                  OPTOBJCOPY_READONLY_TEXT},
+  {0,   "--readonly-text",                  OPTOBJCOPY_READONLY_TEXT,                    zCOPYREADONLY},
+  {0,   "--writable-text",                  OPTOBJCOPY_WRITABLE_TEXT,                    zCOPYWRITABLE},
   {0,   "--strip-section-headers",          OPTOBJCOPY_STRIP_SECTION_HEADERS},
   {'S', "--strip-all",                      OPTOBJCOPY_STRIP_ALL},
   {'g', "--strip-debug",                    OPTOBJCOPY_STRIP_DEBUG},
-  {0,   "--strip-dwo",                      OPTOBJCOPY_STRIP_DWO},
+  {0,   "--strip-dwo",                      OPTOBJCOPY_STRIP_DWO,                        zCOPYSTRIPDWO},
   {0,   "--strip-unneeded",                 OPTOBJCOPY_STRIP_UNNEEDED},
-  {0,   "--weaken",                         OPTOBJCOPY_WEAKEN},
-  {0,   "--writable-text",                  OPTOBJCOPY_WRITABLE_TEXT},
+  {0,   "--weaken",                         OPTOBJCOPY_WEAKEN,                           zCOPYWEAKEN},
   {0,   "--dump-sections-all",              OPTOBJCOPY_DUMP_SECTIONS_ALL},
   {0, NULL},
 };
