@@ -389,7 +389,6 @@ printf("lc_std_op_count %d[0x%x]\n", line_context->lc_std_op_count, line_context
 
     n += ocdwarf_sfcreate(p, cu_die, ocget(p, OPCODE_DWARF_ERROR));
 
-
     n += printf_text("Opcodes", USE_LT | USE_COLON | USE_EOL);
     for (Dwarf_Small i = 1; i < opcode_base; ++i) {
       uint64_t args = 1;
@@ -399,6 +398,20 @@ printf("lc_std_op_count %d[0x%x]\n", line_context->lc_std_op_count, line_context
       n += printf_nice(args, USE_DEC);
       n += printf_text(args ? "args" : "arg", USE_LT | USE_SPACE);
       n += printf_eol();
+    }
+
+    n += printf_text("The File Name Table", USE_LT);
+    n += printf_nice(0, USE_FHEX | USE_OFFSET | USE_COLON | USE_EOL);
+    n += printf_text("Entry Dir Time Size Name", USE_LT | USE_EOL);
+    pdwarf_srcfiles_t sf = ocget(p, OPCODE_DWARF_SRCFILES);
+    if (sf) {
+      for (Dwarf_Signed i = 0; i < sf->size; ++i) {
+        n += printf_nice(i + 1, USE_DEC3);
+        n += printf_nice(0, USE_DEC);
+        n += printf_nice(0, USE_DEC);
+        n += printf_nice(0, USE_DEC);
+        n += printf_text(sf->data[i], USE_LT | USE_SPACE | USE_SHORTEN | USE_EOL);
+      }
     }
 
     n += printf_text("Line Number Statements", USE_LT | USE_COLON | USE_EOL);
