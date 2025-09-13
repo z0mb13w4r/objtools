@@ -389,6 +389,20 @@ printf("lc_std_op_count %d[0x%x]\n", line_context->lc_std_op_count, line_context
 
     n += ocdwarf_sfcreate(p, cu_die, ocget(p, OPCODE_DWARF_ERROR));
 
+
+    n += printf_text("Opcodes", USE_LT | USE_COLON | USE_EOL);
+    for (Dwarf_Small i = 1; i < opcode_base; ++i) {
+      uint64_t args = 1;
+      n += printf_text("Opcode", USE_LT);
+      n += printf_nice(i, USE_DEC);
+      n += printf_text("has", USE_LT | USE_SPACE);
+      n += printf_nice(args, USE_DEC);
+      n += printf_text(args ? "args" : "arg", USE_LT | USE_SPACE);
+      n += printf_eol();
+    }
+
+    n += printf_text("Line Number Statements", USE_LT | USE_COLON | USE_EOL);
+
     Dwarf_Addr prev_pc = 0;
     Dwarf_Bool prev_ns = line_context->lc_default_is_stmt;
     Dwarf_Unsigned prev_nline = 1;
