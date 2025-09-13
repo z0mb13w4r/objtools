@@ -394,7 +394,7 @@ printf("lc_std_op_count %d[0x%x]\n", line_context->lc_std_op_count, line_context
     Dwarf_Unsigned prev_nline = 1;
     Dwarf_Unsigned prev_column = 0;
 
-    uint64_t xx = 0x00000413;
+    uint64_t xx = prologue_length + 10;
     for (Dwarf_Signed i = 0; i < line_count; ++i) {
 //      if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
 //        n += printf_nice(i, USE_DEC3 | USE_TB);
@@ -476,7 +476,7 @@ printf("lc_std_op_count %d[0x%x]\n", line_context->lc_std_op_count, line_context
         n += printf_text("set Address to", USE_LT | USE_SPACE);
         n += ocdwarf_printf_ADDR(p, curr_pc, USE_NONE);
         n += printf_eol();
-        xx += 7;
+        xx += ocis64(p) ? 11 : 7;
 
         n += printf_nice(xx, USE_FHEX32 | USE_SB);
         n += printf_text("Advance Line by", USE_LT | USE_SPACE);
