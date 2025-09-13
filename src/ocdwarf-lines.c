@@ -394,7 +394,7 @@ printf("lc_std_op_count %d[0x%x]\n", line_context->lc_std_op_count, line_context
     Dwarf_Unsigned prev_nline = 1;
     Dwarf_Unsigned prev_column = 0;
 
-    uint64_t xx = 0x00000000;
+    uint64_t xx = 0x00000413;
     for (Dwarf_Signed i = 0; i < line_count; ++i) {
 //      if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
 //        n += printf_nice(i, USE_DEC3 | USE_TB);
@@ -448,6 +448,7 @@ printf("lc_std_op_count %d[0x%x]\n", line_context->lc_std_op_count, line_context
         n += printf_text("Set column to", USE_LT | USE_SPACE);
         n += printf_nice(curr_column, USE_DEC);
         n += printf_eol();
+        xx += 2;
       }
 
       if (discriminator) {
@@ -457,6 +458,7 @@ printf("lc_std_op_count %d[0x%x]\n", line_context->lc_std_op_count, line_context
         n += printf_text("set Discriminator to", USE_LT | USE_SPACE);
         n += printf_nice(discriminator, USE_DEC);
         n += printf_eol();
+        xx += 4;
       }
 
       if (curr_ns != prev_ns) {
@@ -464,6 +466,7 @@ printf("lc_std_op_count %d[0x%x]\n", line_context->lc_std_op_count, line_context
         n += printf_text("Set is_stmt to", USE_LT | USE_SPACE);
         n += printf_nice(curr_ns ? 1 : 0, USE_DEC);
         n += printf_eol();
+        xx += 1;
       }
 
       if (isaddrset) {
@@ -473,6 +476,7 @@ printf("lc_std_op_count %d[0x%x]\n", line_context->lc_std_op_count, line_context
         n += printf_text("set Address to", USE_LT | USE_SPACE);
         n += ocdwarf_printf_ADDR(p, curr_pc, USE_NONE);
         n += printf_eol();
+        xx += 7;
 
         n += printf_nice(xx, USE_FHEX32 | USE_SB);
         n += printf_text("Advance Line by", USE_LT | USE_SPACE);
@@ -480,10 +484,12 @@ printf("lc_std_op_count %d[0x%x]\n", line_context->lc_std_op_count, line_context
         n += printf_text("to", USE_LT | USE_SPACE);
         n += printf_nice(curr_nline, USE_DEC);
         n += printf_eol();
+        xx += 2;
 
         n += printf_nice(xx, USE_FHEX32 | USE_SB);
         n += printf_text("Copy", USE_LT | USE_SPACE);
         n += printf_eol();
+        xx += 1;
       } else if (et) {
         n += printf_nice(xx, USE_FHEX32 | USE_SB);
         n += printf_text("Advance PC by", USE_LT | USE_SPACE);
@@ -491,6 +497,7 @@ printf("lc_std_op_count %d[0x%x]\n", line_context->lc_std_op_count, line_context
         n += printf_text("to", USE_LT | USE_SPACE);
         n += ocdwarf_printf_ADDR(p, curr_pc, USE_NONE);
         n += printf_eol();
+        xx += 2;
 
         n += printf_nice(xx, USE_FHEX32 | USE_SB);
         n += printf_text("Extended opcode", USE_LT | USE_SPACE);
@@ -508,6 +515,7 @@ printf("lc_std_op_count %d[0x%x]\n", line_context->lc_std_op_count, line_context
           n += printf_text("to", USE_LT | USE_SPACE);
           n += ocdwarf_printf_ADDR(p, prev_pc, USE_NONE);
           n += printf_eol();
+          xx += 2;
         } else if (diff_pc >= size_pc) {
           prev_pc += size_pc;
           n += printf_nice(xx, USE_FHEX32 | USE_SB);
@@ -516,6 +524,7 @@ printf("lc_std_op_count %d[0x%x]\n", line_context->lc_std_op_count, line_context
           n += printf_text("to", USE_LT | USE_SPACE);
           n += ocdwarf_printf_ADDR(p, prev_pc, USE_NONE);
           n += printf_eol();
+          xx += 1;
         }
 
         n += printf_nice(xx, USE_FHEX32 | USE_SB);
@@ -530,6 +539,7 @@ printf("lc_std_op_count %d[0x%x]\n", line_context->lc_std_op_count, line_context
         n += printf_text("to", USE_LT | USE_SPACE);
         n += printf_nice(curr_nline, USE_DEC);
         n += printf_eol();
+        xx += 1;
       }
 
       prev_pc = curr_pc;
