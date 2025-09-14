@@ -23,21 +23,21 @@ static int get_options_readpe(poptions_t o, int argc, char** argv, char* name) {
       MALLOCA(char, arg1, 1024);
 
       if (ECODE_ISOK(breakup_args(argv[i], arg0, NELEMENTS(arg0), arg1, NELEMENTS(arg1)))) {
-        if (0 == strcmp(arg0, "--hex-dump")) {
+        if (0 == xstrcmp(arg0, "--hex-dump")) {
           oinsertsecname(o, ACT_HEXDUMP, arg1);
-        } else if (0 == strcmp(arg0, "--string-dump")) {
+        } else if (0 == xstrcmp(arg0, "--string-dump")) {
           oinsertsecname(o, ACT_STRDUMP8, arg1);
-        } else if (0 == strcmp(arg0, "--unicode-dump")) {
+        } else if (0 == xstrcmp(arg0, "--unicode-dump")) {
           oinsertsecname(o, ACT_STRDUMP16, arg1);
-        } else if (0 == strcmp(arg0, "--relocated-dump")) {
+        } else if (0 == xstrcmp(arg0, "--relocated-dump")) {
           oinsertsecname(o, ACT_RELDUMP, arg1);
-        } else if (0 == strcmp(arg0, "--code-dump")) {
+        } else if (0 == xstrcmp(arg0, "--code-dump")) {
           oinsertsecname(o, ACT_CODEDUMP, arg1);
-        } else if (0 == strcmp(arg0, "--disassemble")) {
+        } else if (0 == xstrcmp(arg0, "--disassemble")) {
           oinsertsecname(o, ACT_DISASSEMBLE, arg1);
-        } else if (0 == strcmp(arg0, "--decompress")) {
+        } else if (0 == xstrcmp(arg0, "--decompress")) {
           oinsertsecname(o, ACT_ZLIB, arg1);
-        } else if (0 == strcmp(arg0, "--script")) {
+        } else if (0 == xstrcmp(arg0, "--script")) {
           sinsert(o, arg1);
         }
       } else {
@@ -48,42 +48,42 @@ static int get_options_readpe(poptions_t o, int argc, char** argv, char* name) {
         o->action |= action;
       }
     } else if ('-' == argv[i][0]) {
-      if (0 == strcmp(argv[i], "-x")) {
+      if (0 == xstrcmp(argv[i], "-x")) {
         if (argc <= (i + 1)) {
           return odeath(o, THIS_NAME, argv[i] + 1);
         }
         oinsertsecname(o, ACT_HEXDUMP, argv[++i]);
-      } else if (0 == strcmp(argv[i], "-p")) {
+      } else if (0 == xstrcmp(argv[i], "-p")) {
         if (argc <= (i + 1)) {
           return odeath(o, THIS_NAME, argv[i] + 1);
         }
         oinsertsecname(o, ACT_STRDUMP8, argv[++i]);
-      } else if (0 == strcmp(argv[i], "-U")) {
+      } else if (0 == xstrcmp(argv[i], "-U")) {
         if (argc <= (i + 1)) {
           return odeath(o, THIS_NAME, argv[i] + 1);
         }
         oinsertsecname(o, ACT_STRDUMP16, argv[++i]);
-      } else if (0 == strcmp(argv[i], "-R")) {
+      } else if (0 == xstrcmp(argv[i], "-R")) {
         if (argc <= (i + 1)) {
           return odeath(o, THIS_NAME, argv[i] + 1);
         }
         oinsertsecname(o, ACT_RELDUMP, argv[++i]);
-      } else if (0 == strcmp(argv[i], "-Z")) {
+      } else if (0 == xstrcmp(argv[i], "-Z")) {
         if (argc <= (i + 1)) {
           return odeath(o, THIS_NAME, argv[i] + 1);
         }
         oinsertsecname(o, ACT_CODEDUMP, argv[++i]);
-      } else if (0 == strcmp(argv[i], "-C")) {
+      } else if (0 == xstrcmp(argv[i], "-C")) {
         if (argc <= (i + 1)) {
           return odeath(o, THIS_NAME, argv[i] + 1);
         }
         oinsertsecname(o, ACT_DISASSEMBLE, argv[++i]);
-      } else if (0 == strcmp(argv[i], "-z")) {
+      } else if (0 == xstrcmp(argv[i], "-z")) {
         if (argc <= (i + 1)) {
           return odeath(o, THIS_NAME, argv[i] + 1);
         }
         oinsertsecname(o, ACT_ZLIB, argv[++i]);
-      } else if (0 == strcmp(argv[i], "-T")) {
+      } else if (0 == xstrcmp(argv[i], "-T")) {
         if (argc <= (i + 1)) {
           return odeath(o, THIS_NAME, argv[i] + 1);
         }

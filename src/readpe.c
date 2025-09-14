@@ -368,7 +368,7 @@ static int dump_version0(const pbuffer_t p, const uint16_t wLength, const uint16
   n += printf_nice(wType, USE_FHEX16);
   n += printf_pick(peSTRINGTYPE, wType, USE_SPACE | USE_EOL);
   n += printf_text("szKey", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE + 1));
-  if (0 == strcmp(name, "StringTable")) {
+  if (0 == xstrcmp(name, "StringTable")) {
     n += printf_sore(szKey, szKeySize, USE_STR16);
     n += printf_text(get_LANG(szKey), USE_LT | USE_SPACE | USE_EOL);
   } else {

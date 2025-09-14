@@ -60,7 +60,7 @@ static int breakup_script(const pconvert_t p, const char *name, uint64_t *value)
     char* tok = strtok(tmp, DELIMITS);
     if (tok) {
       for (pconvert_t pp = p; 0 != pp->text; ++pp) {
-        if (0 == strcmp(pp->text, tok)) {
+        if (0 == xstrcmp(pp->text, tok)) {
           x = pp->type;
           break;
         }

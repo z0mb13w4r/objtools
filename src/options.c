@@ -392,7 +392,7 @@ imode_t set_options1(poptions_t o, const args_t args[]) {
 imode_t get_options2(poptions_t o, const args_t args[], const char *argv) {
   imode_t action = 0;
   for (int j = 0; (0 != args[j].option1) || (0 != args[j].option2); ++j) {
-    if (args[j].option2 && 0 == strcmp(argv, args[j].option2)) {
+    if (args[j].option2 && 0 == xstrcmp(argv, args[j].option2)) {
       action |= args[j].action;
     }
   }
