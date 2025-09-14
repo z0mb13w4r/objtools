@@ -207,7 +207,7 @@ int ocdwarf_debug_macro_context(handle_t p, Dwarf_Die die, Dwarf_Macro_Context c
       n += printf_nice(ops_total_byte_len, USE_DEC | USE_EOL);
     }
 
-    if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
+    if (MODE_ISANY(oc->ocdump, OPTDWARF_VERBOSE)) {
       n += printf_text("Macro header length", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
       n += printf_nice(macro_header_len, USE_DEC | USE_EOL);
       n += printf_text("Macro flags", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
@@ -326,7 +326,7 @@ int ocdwarf_debug_macro(handle_t p, handle_t s, handle_t d) {
       ocdwarf_dealloc_error(p, NULL);
     }
 
-    if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
+    if (MODE_ISANY(oc->ocdump, OPTDWARF_VERBOSE)) {
       n += printf_text("Macro unit offset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
       n += printf_nice(st->soffset, USE_DEC | USE_EOL);
     }

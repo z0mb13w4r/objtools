@@ -20,6 +20,8 @@
 #define OPTDISASSEMBLE_ADDR64                      U64MASK(11)
 #define OPTDISASSEMBLE_DATA16                      U64MASK(12)
 #define OPTDISASSEMBLE_DATA32                      U64MASK(13)
+#define OPTDISASSEMBLE_ENHANCED                    U64MASK(14)
+#define OPTDISASSEMBLE_VERBOSE                     U64MASK(15)
 
 #define OPTDWARF_DEBUG_ABBREV                      U64MASK(30)
 #define OPTDWARF_DEBUG_ADDR                        U64MASK(31)
@@ -43,7 +45,8 @@
 #define OPTDWARF_TRACE_INFO                        U64MASK(49)
 #define OPTDWARF_GDB_INDEX                         U64MASK(50)
 #define OPTDWARF_ENHANCED                          U64MASK(51)
-#define OPTDWARF_TAGS                              U64MASK(52)
+#define OPTDWARF_VERBOSE                           U64MASK(52)
+#define OPTDWARF_TAGS                              U64MASK(53)
 #define OPTDWARF_DEBUGGING                        (0x1FFFFFULL << 30)
 
 #define OPTDWARF_DEBUGGING_DBGS        (OPTDWARF_DEBUG_FRAME | OPTDWARF_DEBUG_ARANGES | OPTDWARF_DEBUG_INFO \
@@ -220,7 +223,7 @@
 #define ACT_HEX32E                                 (613)
 #define ACT_ZLIB                                   (700)
 
-#define PICK_VERBOSE(x,y,z)            (MODE_ISANY((x)->ocdump, OPTPROGRAM_VERBOSE) ? (y) : (z))
+#define PICK_VERBOSE(x,y,z)            (MODE_ISANY((x)->ocdump, OPTDWARF_VERBOSE) ? (y) : (z))
 #define PICK_ENHANCED(x,y,z)           (MODE_ISANY((x)->ocdump, OPTDWARF_ENHANCED) ? (y) : (z))
 
 typedef struct action_s {

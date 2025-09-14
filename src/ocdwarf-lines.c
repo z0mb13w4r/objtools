@@ -46,7 +46,7 @@ static int ocdwarf_debug_line0(handle_t p, handle_t s, handle_t d) {
       return OCDWARF_ERRCODE(x, n);
     }
 
-    if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
+    if (MODE_ISANY(oc->ocdump, OPTDWARF_VERBOSE)) {
       n += printf_text("CU header length", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
       n += printf_nice(cu_header_length, USE_FHEX | USE_EOL);
       n += printf_text("Version stamp", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
@@ -75,7 +75,7 @@ static int ocdwarf_debug_line0(handle_t p, handle_t s, handle_t d) {
 
     x = dwarf_srclines_b(cu_die, &line_version, &table_count, &line_context, ocget(p, OPCODE_DWARF_ERROR));
     if (IS_DLV_OK(x)) {
-      if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
+      if (MODE_ISANY(oc->ocdump, OPTDWARF_VERBOSE)) {
         n += printf_text("Line version", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
         n += printf_nice(line_version, USE_DEC | USE_EOL);
         n += printf_text("Table count", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
@@ -119,7 +119,7 @@ static int ocdwarf_debug_line0(handle_t p, handle_t s, handle_t d) {
     }
 
     for (Dwarf_Signed i = 0; i < line_count; ++i) {
-      if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
+      if (MODE_ISANY(oc->ocdump, OPTDWARF_VERBOSE)) {
         n += printf_nice(i, USE_DEC3 | USE_TB);
       }
 
@@ -277,7 +277,7 @@ static int ocdwarf_debug_line1(handle_t p, handle_t s, handle_t d) {
       return OCDWARF_ERRCODE(x, n);
     }
 
-//    if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
+//    if (MODE_ISANY(oc->ocdump, OPTDWARF_VERBOSE)) {
       n += printf_text("CU header length", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
       n += printf_nice(cu_header_length, USE_FHEX | USE_EOL);
       n += printf_text("Version stamp", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
@@ -308,7 +308,7 @@ static int ocdwarf_debug_line1(handle_t p, handle_t s, handle_t d) {
 
     x = dwarf_srclines_b(cu_die, &line_version, &table_count, &line_context, ocget(p, OPCODE_DWARF_ERROR));
     if (IS_DLV_OK(x)) {
-//      if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
+//      if (MODE_ISANY(oc->ocdump, OPTDWARF_VERBOSE)) {
         n += printf_text("Line version", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
         n += printf_nice(line_version, USE_DEC | USE_EOL);
         n += printf_text("Table count", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
@@ -425,7 +425,7 @@ printf("lc_include_directories_count %d[0x%x]\n", line_context->lc_include_direc
 
     uint64_t xx = prologue_length + 10;
     for (Dwarf_Signed i = 0; i < line_count; ++i) {
-//      if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
+//      if (MODE_ISANY(oc->ocdump, OPTDWARF_VERBOSE)) {
 //        n += printf_nice(i, USE_DEC3 | USE_TB);
 //      }
 

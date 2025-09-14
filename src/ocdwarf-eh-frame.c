@@ -431,7 +431,7 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
         return OCDWARF_ERRCODE(x, n);
       }
 
-      if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
+      if (MODE_ISANY(oc->ocdump, OPTDWARF_VERBOSE)) {
         n += printf_text("eh aug data len", USE_LT | USE_SPACE | USE_TBLT);
         if (0 == augdata_len) {
           n += printf_nice(augdata_len, USE_FHEX | USE_TBRT | USE_EOL);
@@ -464,18 +464,18 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
           return OCDWARF_ERRCODE(x, n);
         }
 
-        if (MODE_ISANY(oc->ocdump, OPTDWARF_DEBUG_FRAME_DECODED | OPTPROGRAM_VERBOSE)) {
+        if (MODE_ISANY(oc->ocdump, OPTDWARF_DEBUG_FRAME_DECODED | OPTDWARF_VERBOSE)) {
           n += ocdwarf_printf_ADDR(p, j, PICK_ENHANCED(oc, USE_COLON, USE_NOSPACE));
         }
 
-        if (MODE_ISANY(oc->ocdump, OPTPROGRAM_VERBOSE)) {
+        if (MODE_ISANY(oc->ocdump, OPTDWARF_VERBOSE)) {
           n += ocdwarf_printf_EXPR(p, value_type, USE_SPACE | USE_TB);
         }
 //        n += printf_text("cfa=", USE_LT | USE_SPACE);
         if (DW_EXPR_EXPRESSION == value_type || DW_EXPR_VAL_EXPRESSION == value_type) {
           if (MODE_ISANY(oc->ocdump, OPTDWARF_DEBUG_FRAME_DECODED)) {
             n += printf_text("exp", USE_LT | USE_SPACE);
-            if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
+            if (MODE_ISANY(oc->ocdump, OPTDWARF_VERBOSE)) {
               n += printf_hurt(block.bl_data, block.bl_len, USE_HEX | USE_SPACE | USE_TB);
             }
           } else {
@@ -517,7 +517,7 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
             return OCDWARF_ERRCODE(x, n);
           } else if (IS_DLV_NO_ENTRY(x) || row_pc != cur_pc || (0 == value_type && 0 == offset)) continue;
 
-          if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
+          if (MODE_ISANY(oc->ocdump, OPTDWARF_VERBOSE)) {
             n += ocdwarf_printf_EXPR(p, value_type, USE_SPACE);
           }
 //          n += printf_join("r", k, USE_DEC | USE_SPACE);

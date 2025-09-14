@@ -131,7 +131,7 @@ static int ocdebugf(handle_t p, handle_t q) {
 int opcode_printf_DEC(handle_t p, const uint64_t v, const imode_t mode) {
   if (isopcode(p)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
-    if (MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED)) {
+    if (MODE_ISANY(oc->ocdump, OPTDISASSEMBLE_ENHANCED)) {
       return printf_nice(v, USE_DEC2 | mode);
     }
   }
@@ -142,7 +142,7 @@ int opcode_printf_DEC(handle_t p, const uint64_t v, const imode_t mode) {
 int opcode_printf_FHEX(handle_t p, const uint64_t v, const imode_t mode) {
   if (isopcode(p)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
-    if (MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED)) {
+    if (MODE_ISANY(oc->ocdump, OPTDISASSEMBLE_ENHANCED)) {
       return printf_nice(v, USE_FHEX32 | mode);
     }
   }
@@ -153,7 +153,7 @@ int opcode_printf_FHEX(handle_t p, const uint64_t v, const imode_t mode) {
 int opcode_printf_LHEX(handle_t p, const uint64_t v, const imode_t mode) {
   if (isopcode(p)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
-    if (MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED)) {
+    if (MODE_ISANY(oc->ocdump, OPTDISASSEMBLE_ENHANCED)) {
       return printf_nice(v, USE_LHEX32 | mode);
     }
   }
@@ -185,13 +185,13 @@ int opcode_printf_LADDR(handle_t p, const uint64_t v, const imode_t mode) {
   return printf_nice(v, USE_LHEX32 | mode);
 }
 
-int opcode_printf_pluck(handle_t p, const pconvert_t z, const pick_t x, const imode_t mode) {
+int opcode_printf_pick(handle_t p, const pconvert_t z, const pick_t x, const imode_t mode) {
   int n = 0;
   if (isopcode(p)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
-    if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
+    if (MODE_ISANY(oc->ocdump, OPTDISASSEMBLE_VERBOSE)) {
       n += printf_nice(x, USE_FHEX16);
-    } else if (MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED)) {
+    } else if (MODE_ISANY(oc->ocdump, OPTDISASSEMBLE_ENHANCED)) {
       n += printf_nice(x, USE_FHEX8);
     }
 
