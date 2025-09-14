@@ -17,17 +17,17 @@ static int get_options_objcopy(poptions_t o, int argc, char** argv, char* name) 
 
   for (int i = 0; i < argc; ++i) {
     if ('-' == argv[i][0] && '-' == argv[i][1]) {
-      if (0 == strcmp(argv[i], "--add-section")) {
+      if (0 == xstrcmp(argv[i], "--add-section")) {
         paction_t p = amalloc();
         if (p && ECODE_ISOK(breakup_args(argv[++i], p->secname, NELEMENTS(p->secname), p->outname, NELEMENTS(p->outname)))) {
           oinsert(o, p, ACT_ADDSECTION);
         }
-      } else if (0 == strcmp(argv[i], "--dump-section")) {
+      } else if (0 == xstrcmp(argv[i], "--dump-section")) {
         paction_t p = amalloc();
         if (p && ECODE_ISOK(breakup_args(argv[++i], p->secname, NELEMENTS(p->secname), p->outname, NELEMENTS(p->outname)))) {
           oinsert(o, p, ACT_DUMPSECTION);
         }
-      } else if (0 == strcmp(argv[i], "--update-section")) {
+      } else if (0 == xstrcmp(argv[i], "--update-section")) {
         paction_t p = amalloc();
         if (p && ECODE_ISOK(breakup_args(argv[++i], p->secname, NELEMENTS(p->secname), p->outname, NELEMENTS(p->outname)))) {
           oinsert(o, p, ACT_UPDATESECTION);
