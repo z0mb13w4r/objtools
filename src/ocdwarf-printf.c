@@ -29,7 +29,7 @@ int ocdwarf_printf_pick(handle_t p, const pconvert_t z, const pick_t x, const im
     popcode_t oc = ocget(p, OPCODE_THIS);
     if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
       n += printf_nice(x, USE_FHEX16);
-    } else if (MODE_ISANY(mode, USE_SPECIAL) && MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+    } else if (MODE_ISANY(mode, USE_SPECIAL) && MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED)) {
       n += printf_nice(x, USE_FHEX8);
     }
 
@@ -58,7 +58,7 @@ int ocdwarf_printf_DEC(handle_t p, const uint64_t v, const imode_t mode) {
 
   if (isopcode(p)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
-    if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+    if (MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED)) {
       return printf_nice(v, isset ? USE_DEC2 | mode : USE_DEC2 | USE_TB | mode);
     }
   }
@@ -69,7 +69,7 @@ int ocdwarf_printf_DEC(handle_t p, const uint64_t v, const imode_t mode) {
 int ocdwarf_printf_HEX(handle_t p, const uint64_t v, const imode_t mode) {
   if (isopcode(p)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
-    if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+    if (MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED)) {
       return printf_nice(v, USE_FHEX32 | USE_TB | mode);
     }
   }
@@ -80,9 +80,9 @@ int ocdwarf_printf_HEX(handle_t p, const uint64_t v, const imode_t mode) {
 int ocdwarf_printf_ADDR(handle_t p, const uint64_t v, const imode_t mode) {
   if (isopcode(p)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
-    if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+    if (MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED)) {
       return printf_nice(v, USE_FHEX32 | mode);
-    } else if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_DEBUG_FRAME_DECODED)) {
+    } else if (MODE_ISANY(oc->ocdump, OPTDWARF_DEBUG_FRAME_DECODED)) {
       return printf_nice(v, USE_LHEX32 | mode);
     }
   }
@@ -113,7 +113,7 @@ int ocdwarf_printf_OP(handle_t p, const uint64_t v, const imode_t mode) {
 int ocdwarf_printf_ATE(handle_t p, const uint64_t v, const imode_t mode) {
   if (isopcode(p)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
-    if (MODE_ISNOT(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+    if (MODE_ISNOT(oc->ocdump, OPTDWARF_ENHANCED)) {
       int n = 0;
       n += printf_nice(v, USE_DEC);
       n += ocdwarf_printf_pick(p, ecDWATELITE, v, USE_RB | mode);
@@ -129,7 +129,7 @@ int ocdwarf_printf_CFA(handle_t p, const uint64_t v, const imode_t mode) {
     popcode_t oc = ocget(p, OPCODE_THIS);
     if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
       return ocdwarf_printf_pick(p, ecDWCFA, v, mode);
-    } else if (MODE_ISFIX(oc->ocdump, OPTDEBUGELF_DEBUG_FRAME_DECODED, OPTDEBUGELF_ENHANCED)) {
+    } else if (MODE_ISFIX(oc->ocdump, OPTDWARF_DEBUG_FRAME_DECODED, OPTDWARF_ENHANCED)) {
       return ocdwarf_printf_picknull(p, ecDWCFALITE, v, mode);
     }
   }
@@ -146,7 +146,7 @@ int ocdwarf_printf_EXPR(handle_t p, const uint64_t v, const imode_t mode) {
     popcode_t oc = ocget(p, OPCODE_THIS);
     if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
       return ocdwarf_printf_pick(p, ecDWEXPR, v, mode);
-    } else if (MODE_ISSET(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+    } else if (MODE_ISSET(oc->ocdump, OPTDWARF_ENHANCED)) {
       return ocdwarf_printf_pick(p, ecDWEXPRLITE, v, mode);
     }
   }
@@ -174,7 +174,7 @@ int ocdwarf_printf_MACRO(handle_t p, const uint64_t v, const imode_t mode) {
   if (0 == v && MODE_ISANY(USE_SPECIAL, mode)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
 
-    return MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED) ?
+    return MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED) ?
       printf_nice(v, USE_FHEX8) + printf_text("end-of-macros", USE_LT | USE_SPACE) : 0;
   }
 
@@ -184,7 +184,7 @@ int ocdwarf_printf_MACRO(handle_t p, const uint64_t v, const imode_t mode) {
 int ocdwarf_printf_CHILDREN(handle_t p, const uint64_t v, const imode_t mode) {
   if (isopcode(p)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
-    if (MODE_ISNOT(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+    if (MODE_ISNOT(oc->ocdump, OPTDWARF_ENHANCED)) {
       return ocdwarf_printf_pick(p, ecDWCHILDRENLITE, v, USE_SB | mode);
     }
   }
@@ -200,7 +200,7 @@ int ocdwarf_printf_SRCFILE(handle_t p, const uint32_t v, const imode_t mode) {
       popcode_t oc = ocget(p, OPCODE_THIS);
 
       n += printf_nice(v, mode);
-      if (MODE_ISNOT(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+      if (MODE_ISNOT(oc->ocdump, OPTDWARF_ENHANCED)) {
         n += printf_text("filename", USE_LT | USE_SPACE | USE_COLON);
       }
       n += printf_text(sf->data[v - 1], USE_LT | USE_SPACE);
@@ -229,11 +229,11 @@ int ocdwarf_printf_REGISTER(handle_t p, const uint32_t v, const imode_t mode) {
   if (isopcode(p)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
 
-    if (MODE_ISNOT(oc->ocdump, OPTDEBUGELF_DEBUG_FRAME_DECODED) || MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+    if (MODE_ISNOT(oc->ocdump, OPTDWARF_DEBUG_FRAME_DECODED) || MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED)) {
       n += printf_join("r", v, USE_DEC | USE_SPACE);
     }
 
-    if (MODE_ISNOT(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+    if (MODE_ISNOT(oc->ocdump, OPTDWARF_ENHANCED)) {
       n += ocdwarf_printf_REG(p, v, mode);
     }
   }
@@ -294,7 +294,7 @@ static int ocdwarf_printf_fields_description_r(handle_t p, Dwarf_Small cfa_opera
       printf_nice(fields_description[1], USE_CHARCTRL | USE_TB);
     }
 
-    const bool_t  TRY_MODE  = MODE_ISNOT(oc->ocdump, OPTDEBUGELF_DEBUG_FRAME_DECODED) || MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED);
+    const bool_t  TRY_MODE  = MODE_ISNOT(oc->ocdump, OPTDWARF_DEBUG_FRAME_DECODED) || MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED);
     const imode_t TRY_RB    = TRY_MODE ? USE_RB : USE_NONE;
     const imode_t TRY_SDEC8 = TRY_MODE ? USE_SDEC8 : USE_SDEC8P | USE_NOSPACE;
 
@@ -307,13 +307,13 @@ static int ocdwarf_printf_fields_description_r(handle_t p, Dwarf_Small cfa_opera
 
       n += ocdwarf_printf_REGISTER(p, u0, TRY_RB);
       if (0 == fields_description[2]) {
-        if (MODE_ISNOT(oc->ocdump, OPTDEBUGELF_DEBUG_FRAME_DECODED | OPTDEBUGELF_ENHANCED)) {
+        if (MODE_ISNOT(oc->ocdump, OPTDWARF_DEBUG_FRAME_DECODED | OPTDWARF_ENHANCED)) {
           n += ocdwarf_printf_pick(p, ecDWCFAJOIN, cfa_operation, USE_SPACE);
         }
 
         n += printf_nice(u1, TRY_SDEC8);
       } else if ('d' == fields_description[2]) {
-        if (MODE_ISNOT(oc->ocdump, OPTDEBUGELF_DEBUG_FRAME_DECODED | OPTDEBUGELF_ENHANCED)) {
+        if (MODE_ISNOT(oc->ocdump, OPTDWARF_DEBUG_FRAME_DECODED | OPTDWARF_ENHANCED)) {
           n += ocdwarf_printf_pick(p, ecDWCFAJOIN, cfa_operation, USE_SPACE);
           n += printf_nice(u1 * data_alignment_factor, USE_DEC | USE_NOSPACE);
         } else {
@@ -498,7 +498,7 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
       return OCDWARF_ERRCODE(x, n);
     }
 
-    if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+    if (MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED)) {
       if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
         n += ocdwarf_printf_HEX(p, offset, USE_NONE);
       }
@@ -547,7 +547,7 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
       }
 
       if (DW_AT_high_pc == nattr) {
-        if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED | OPTPROGRAM_VERBOSE)) {
+        if (MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED | OPTPROGRAM_VERBOSE)) {
           n += printf_text("offset-from-lowpc", USE_LT | USE_SPACE | USE_TB);
           n += printf_nice(value, TRY_HEXDEC);
           n += printf_text("highpc", USE_LT | USE_SPACE | USE_TBLT | USE_COLON);
@@ -561,7 +561,7 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
         n += ocdwarf_printf_ATE(p, value, USE_NONE);
       } else if (isused(ecATDEC, nattr)) {
         n += printf_nice(value, USE_DEC);
-        if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+        if (MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED)) {
           if (isused(ecATDEC8, nattr) && (CHAR_MAX <= value)) {
             n += printf_nice(value, USE_SDEC8 | USE_RB);
           } else if (isused(ecATDEC16, nattr) && (SHRT_MAX <= value)) {
@@ -571,7 +571,7 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
       } else if (isused(ecATHEX32, nattr)) {
         n += printf_nice(value, TRY_DECHEX32);
       } else if (isused(ecATSRCFILE, nattr)) {
-        if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+        if (MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED)) {
           n += ocdwarf_printf_SRCFILE(p, value, TRY_DECHEX32);
         } else {
           n += printf_nice(value, USE_DEC);
@@ -632,7 +632,7 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
         n += printf_nice(isinfo, USE_BOOL);
       }
 
-      if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+      if (MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED)) {
         Dwarf_Die tdie = 0;
         x = dwarf_offdie_b(ocget(p, OPCODE_DWARF_DEBUG), offset, isinfo, &tdie, e);
         if (IS_DLV_ANY_ERROR(x)) {

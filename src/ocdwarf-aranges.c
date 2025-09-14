@@ -13,7 +13,7 @@ int ocdwarf_debug_aranges(handle_t p, handle_t s, handle_t d) {
     const int MAXSIZE = ocis64(p) ? 17 : 9;
     const imode_t USE_LHEXNN = ocis64(p) ? USE_LHEX64 : USE_LHEX32;
 
-    if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+    if (MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED)) {
       n += ocdwarf_printf_groups(p, ocget(p, OPCODE_DWARF_ERROR));
     } else {
       n += printf_text("Address", USE_LT | SET_PAD(MAXSIZE));
@@ -44,7 +44,7 @@ int ocdwarf_debug_aranges(handle_t p, handle_t s, handle_t d) {
       Dwarf_Bool isinfo = TRUE;
       x = dwarf_offdie_b(ocget(p, OPCODE_DWARF_DEBUG), cu_die_offset, isinfo, &cu_die, ocget(p, OPCODE_DWARF_ERROR));
       if (IS_DLV_OK(x) && (0 != start || 0 != length)) {
-        if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+        if (MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED)) {
           n += ocdwarf_printf(p, cu_die, isinfo, i, ocget(p, OPCODE_DWARF_ERROR));
 
           if (segment_entry_size) {
@@ -66,7 +66,7 @@ int ocdwarf_debug_aranges(handle_t p, handle_t s, handle_t d) {
         }
 
         n += printf_eol();
-      } else if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+      } else if (MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED)) {
         n += printf_text("arange end", USE_LT);
       } else {
         n += printf_nice(0, USE_LHEXNN | USE_NOSPACE);

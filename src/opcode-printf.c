@@ -131,7 +131,7 @@ static int ocdebugf(handle_t p, handle_t q) {
 int opcode_printf_DEC(handle_t p, const uint64_t v, const imode_t mode) {
   if (isopcode(p)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
-    if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+    if (MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED)) {
       return printf_nice(v, USE_DEC2 | mode);
     }
   }
@@ -142,7 +142,7 @@ int opcode_printf_DEC(handle_t p, const uint64_t v, const imode_t mode) {
 int opcode_printf_FHEX(handle_t p, const uint64_t v, const imode_t mode) {
   if (isopcode(p)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
-    if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+    if (MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED)) {
       return printf_nice(v, USE_FHEX32 | mode);
     }
   }
@@ -153,7 +153,7 @@ int opcode_printf_FHEX(handle_t p, const uint64_t v, const imode_t mode) {
 int opcode_printf_LHEX(handle_t p, const uint64_t v, const imode_t mode) {
   if (isopcode(p)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
-    if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+    if (MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED)) {
       return printf_nice(v, USE_LHEX32 | mode);
     }
   }
@@ -191,7 +191,7 @@ int opcode_printf_pluck(handle_t p, const pconvert_t z, const pick_t x, const im
     popcode_t oc = ocget(p, OPCODE_THIS);
     if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE)) {
       n += printf_nice(x, USE_FHEX16);
-    } else if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+    } else if (MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED)) {
       n += printf_nice(x, USE_FHEX8);
     }
 
@@ -213,7 +213,7 @@ int opcode_printf_source(handle_t p, const uint64_t vaddr) {
 
     ocget_symbol(p, vaddr, &name, &nline, NULL, &discriminator, &source, NULL, NULL, NULL);
     bool_t isok = oc->prev_nline != nline || oc->prev_discriminator != discriminator
-              || (name && 0 != strcmp(oc->prev_name, name));
+              || (name && 0 != xstrcmp(oc->prev_name, name));
 
     if (isok && name && name[0]) {
       n += opcode_printf_LADDR(p, vaddr, USE_NONE);
@@ -223,6 +223,10 @@ int opcode_printf_source(handle_t p, const uint64_t vaddr) {
         n += printf_yoke(name, "()", USE_LT | USE_COLON | USE_EOL);
       }
     }
+
+//static uint64_t caddr = 0x8000;
+//oegetbyaddr(p, --caddr, OPENGINE_GROUP);
+//oegetbyaddr(p, vaddr, OPENGINE_GROUP);
 
     ocdwarf_dealloc(p, name, DW_DLA_STRING);
     ocdwarf_dealloc(p, source, DW_DLA_STRING);
@@ -238,7 +242,7 @@ int opcode_printf_source(handle_t p, const uint64_t vaddr) {
 
         oc->prev_nline = nline;
         oc->prev_discriminator = discriminator;
-        strncpy(oc->prev_name, name, sizeof(oc->prev_name));
+        xstrncpy(oc->prev_name, name, sizeof(oc->prev_name));
 
         ocdwarf_dealloc(p, source, DW_DLA_STRING);
       }

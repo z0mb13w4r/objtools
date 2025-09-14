@@ -10,7 +10,7 @@ static int ocdwarf_debug_str0(handle_t p, handle_t s, handle_t d) {
   if (isopcode(p) && (isopshdr(s) || isopshdrNN(s))) {
     popcode_t oc = ocget(p, OPCODE_THIS);
 
-    if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+    if (MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED)) {
       n += ocdwarf_printf_groups(p, ocget(p, OPCODE_DWARF_ERROR));
     }
 
@@ -39,7 +39,7 @@ int ocdwarf_debug_str(handle_t p, handle_t s, handle_t d) {
   if (isopcode(p) && (isopshdr(s) || isopshdrNN(s))) {
     popcode_t oc = ocget(p, OPCODE_THIS);
 
-    if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+    if (MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED)) {
       return ocdwarf_debug_str0(p, s, d);
     } else {
       return printf_data(ocget_rawdata(s), ocget_size(s), 0, USE_HEXDUMP);

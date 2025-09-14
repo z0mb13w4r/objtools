@@ -21,7 +21,7 @@ int ocdwarf_abbrev_one(handle_t p, Dwarf_Unsigned offset, Dwarf_Unsigned nabbrev
       return OCDWARF_ERRCODE(x, n);
     }
 
-    if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+    if (MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED)) {
       n += ocdwarf_printf_DEC(p, nabbrev, USE_NOSPACE);
       n += ocdwarf_printf_HEX(p, offset, USE_NOSPACE);
 
@@ -37,11 +37,11 @@ int ocdwarf_abbrev_one(handle_t p, Dwarf_Unsigned offset, Dwarf_Unsigned nabbrev
     x = dwarf_get_abbrev_tag(abbrev, &abbrev_tag, e);
     if (IS_DLV_OK(x)) {
       if (0 == abbrev_tag) {
-        if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+        if (MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED)) {
           n += printf_text("Abbrev 0: null abbrev entry", USE_LT | USE_SPACE);
         }
       } else {
-        if (MODE_ISNOT(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+        if (MODE_ISNOT(oc->ocdump, OPTDWARF_ENHANCED)) {
           n += printf_nice(nabbrev, USE_DEC | USE_NOSPACE);
         }
         n += ocdwarf_printf_TAG(p, abbrev_tag, USE_NONE);
@@ -59,7 +59,7 @@ int ocdwarf_abbrev_one(handle_t p, Dwarf_Unsigned offset, Dwarf_Unsigned nabbrev
     n += printf_eol();
 
     if (abbrev_entry_count < 1) {
-      if (0 != abbrev_tag && MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+      if (0 != abbrev_tag && MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED)) {
         n += printf_text("This abbreviation code has no entries", USE_LT | USE_TAB | USE_EOL);
       }
       if (*size == 0 || *size == 1) {
@@ -74,7 +74,7 @@ int ocdwarf_abbrev_one(handle_t p, Dwarf_Unsigned offset, Dwarf_Unsigned nabbrev
         Dwarf_Bool filter_outliers = FALSE;
         x = dwarf_get_abbrev_entry_b(abbrev, i, filter_outliers, &nattr, &nform, &impl_const, &offset2, e);
         if (IS_DLV_OK(x)) {
-          if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+          if (MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED)) {
             n += ocdwarf_printf_HEX(p, offset2, USE_TAB);
           }
           n += ocdwarf_printf_AT(p, nattr, USE_NONE);
@@ -97,7 +97,7 @@ int ocdwarf_debug_abbrev(handle_t p, handle_t s, handle_t d) {
   if (isopcode(p) && (isopshdr(s) || isopshdrNN(s))) {
     popcode_t oc = ocget(p, OPCODE_THIS);
 
-    if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+    if (MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED)) {
       n0 += ocdwarf_printf_groups(p, ocget(p, OPCODE_DWARF_ERROR));
     }
 

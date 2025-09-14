@@ -13,7 +13,7 @@ int ocdwarf_die_and_siblings(handle_t p, Dwarf_Die die,
 
     n += ocdwarf_printf(p, die, isinfo, level, e);
 
-    if ((0 == level) && MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+    if ((0 == level) && MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED)) {
       n += printf_text("LOCAL_SYMBOLS", USE_LT | USE_COLON | USE_EOL);
     }
 
@@ -61,7 +61,7 @@ int ocdwarf_debug_info(handle_t p, handle_t s, handle_t d) {
     Dwarf_Bool isinfo = TRUE; /* our data is not DWARF4 .debug_types. */
     int        level = 0;
 
-    if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+    if (MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED)) {
       n0 += ocdwarf_printf_groups(p, ocget(p, OPCODE_DWARF_ERROR));
     }
 

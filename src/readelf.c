@@ -1552,7 +1552,7 @@ int readelf(const pbuffer_t p, const poptions_t o) {
         if (o->actions)                                         dump_actions32(p, o, ehdr);
         if (MODE_ISANY(o->action, OPTREADELF_NOTES))            dump_notes32(p, o, ehdr);
         if (MODE_ISANY(o->action, OPTREADELF_ARCHSPECIFIC))     dump_archspecific32(p, o, ehdr);
-        if (MODE_ISANY(o->ocdump, OPTDEBUGELF_DEBUGGING))       dump_dwarf32(p, o, ehdr);
+        if (MODE_ISANY(o->ocdump, OPTDWARF_DEBUGGING))          dump_dwarf32(p, o, ehdr);
       }
     } else if (isELF64(p)) {
       Elf64_Ehdr *ehdr = ecget_ehdr64(p);
@@ -1571,7 +1571,7 @@ int readelf(const pbuffer_t p, const poptions_t o) {
         if (o->actions)                                         dump_actions64(p, o, ehdr);
         if (MODE_ISANY(o->action, OPTREADELF_NOTES))            dump_notes64(p, o, ehdr);
         if (MODE_ISANY(o->action, OPTREADELF_ARCHSPECIFIC))     dump_archspecific64(p, o, ehdr);
-        if (MODE_ISANY(o->ocdump, OPTDEBUGELF_DEBUGGING))       dump_dwarf64(p, o, ehdr);
+        if (MODE_ISANY(o->ocdump, OPTDWARF_DEBUGGING))          dump_dwarf64(p, o, ehdr);
       }
     }
   } else {

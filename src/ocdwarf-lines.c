@@ -21,7 +21,7 @@ static int ocdwarf_debug_line0(handle_t p, handle_t s, handle_t d) {
     pocdwarf_t ws = ocget(p, OPCODE_DWARF);
     popcode_t oc = ocget(p, OPCODE_THIS);
 
-    if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+    if (MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED)) {
       n += ocdwarf_printf_groups(p, ocget(p, OPCODE_DWARF_ERROR));
     }
 
@@ -110,7 +110,7 @@ static int ocdwarf_debug_line0(handle_t p, handle_t s, handle_t d) {
 
     n += ocdwarf_sfcreate(p, cu_die, ocget(p, OPCODE_DWARF_ERROR));
 
-    if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+    if (MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED)) {
       n += printf_text("NS new statement, BB new basic block, ET end of text sequence", USE_LT | USE_EOL);
       n += printf_text("PE prologue end, EB epilogue begin", USE_LT | USE_EOL);
       n += printf_text("IS=val ISA number, DI=val discriminator value", USE_LT | USE_EOL);
@@ -148,7 +148,7 @@ static int ocdwarf_debug_line0(handle_t p, handle_t s, handle_t d) {
         column = 0;
       }
 
-      if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+      if (MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED)) {
         n += ocdwarf_printf_ADDR(p, pc, USE_NONE);
         n += printf_nice(nline, USE_DEC4 | USE_SBLT);
         n += printf_nice(column, USE_DEC2 | USE_COMMA | USE_SBRT);
@@ -170,7 +170,7 @@ static int ocdwarf_debug_line0(handle_t p, handle_t s, handle_t d) {
         n += printf_text(PICK_ENHANCED(oc, "NS", "x"), USE_LT | USE_SPACE);
       }
 
-      if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+      if (MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED)) {
         Dwarf_Bool bb = FALSE;
         x = dwarf_lineblock(k, &bb, ocget(p, OPCODE_DWARF_ERROR));
         if (IS_DLV_OK(x) && bb) {
@@ -178,7 +178,7 @@ static int ocdwarf_debug_line0(handle_t p, handle_t s, handle_t d) {
         }
       }
 
-      if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+      if (MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED)) {
         Dwarf_Bool et = FALSE;
         x = dwarf_lineendsequence(k, &et, ocget(p, OPCODE_DWARF_ERROR));
         if (IS_DLV_OK(x) && et) {
@@ -186,7 +186,7 @@ static int ocdwarf_debug_line0(handle_t p, handle_t s, handle_t d) {
         }
       }
 
-      if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+      if (MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED)) {
         Dwarf_Bool pe = FALSE;
         Dwarf_Bool eb = FALSE;
         Dwarf_Unsigned isa = 0;
@@ -210,7 +210,7 @@ static int ocdwarf_debug_line0(handle_t p, handle_t s, handle_t d) {
         }
       }
 
-      if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+      if (MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED)) {
         Dwarf_Unsigned cc = 0;
         x = dwarf_linecontext(k, &cc, ocget(p, OPCODE_DWARF_ERROR));
         if (IS_DLV_OK(x) && cc) {
@@ -219,7 +219,7 @@ static int ocdwarf_debug_line0(handle_t p, handle_t s, handle_t d) {
         }
       }
 
-      if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+      if (MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED)) {
         char* sn = NULL;
         char* sf = NULL;
         Dwarf_Unsigned sl = 0;
@@ -231,7 +231,7 @@ static int ocdwarf_debug_line0(handle_t p, handle_t s, handle_t d) {
         ocdwarf_dealloc(p, sf, DW_DLA_STRING);
       }
 
-      if ((0 == i) && MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED)) {
+      if ((0 == i) && MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED)) {
         char* lf = NULL;
         x = dwarf_linesrc(k, &lf, ocget(p, OPCODE_DWARF_ERROR));
         if (IS_DLV_OK(x) && 0 != lf && 0 != *lf) {
@@ -367,6 +367,8 @@ printf("lc_logicals_table_offset %d[0x%x]\n", line_context->lc_logicals_table_of
 printf("lc_minimum_instruction_length %d[0x%x]\n", line_context->lc_minimum_instruction_length, line_context->lc_minimum_instruction_length);
 printf("lc_maximum_ops_per_instruction %d[0x%x]\n", line_context->lc_maximum_ops_per_instruction, line_context->lc_maximum_ops_per_instruction);
 printf("lc_std_op_count %d[0x%x]\n", line_context->lc_std_op_count, line_context->lc_std_op_count);
+printf("lc_table_count %d[0x%x]\n", line_context->lc_table_count, line_context->lc_table_count);
+printf("lc_include_directories_count %d[0x%x]\n", line_context->lc_include_directories_count, line_context->lc_include_directories_count);
 
     n += printf_text("Offset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     n += printf_nice(section_offset, USE_FHEX | USE_EOL);
@@ -583,7 +585,7 @@ int ocdwarf_debug_line(handle_t p, handle_t s, handle_t d) {
   if (isopcode(p)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
 
-    if (MODE_ISANY(oc->ocdump, OPTDEBUGELF_ENHANCED | OPTDEBUGELF_DEBUG_LINE_DECODED)) {
+    if (MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED | OPTDWARF_DEBUG_LINE_DECODED)) {
       return ocdwarf_debug_line0(p, s, d);
     }
   }

@@ -527,7 +527,7 @@ static int do_object(const handle_t p, const poptions_t o) {
   if (MODE_ISANY(o->action, OPTOBJDUMP_DYNAMIC_RELOC))      dump_relocdynamic(p, o);
   if (MODE_ISANY(o->action, OPTOBJDUMP_SECTIONS))           dump_sections(p, o);
   if (MODE_ISANY(o->action, OPTPROGRAM_DISASSEMBLE))        dump_disassemble(p, o);
-  if (MODE_ISANY(o->ocdump, OPTDEBUGELF_DEBUGGING))         dump_dwarf(p, o);
+  if (MODE_ISANY(o->ocdump, OPTDWARF_DEBUGGING))            dump_dwarf(p, o);
 
   return 0;
 }
