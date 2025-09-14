@@ -63,9 +63,10 @@
 #define OPTFUNCTION_ROT13                          (257)
 #define OPTFUNCTION_ROT18                          (258)
 
-#define OPTPROGRAM_DEBUGLEVEL1                     U64MASK(50)
-#define OPTPROGRAM_DEBUGLEVEL2                     U64MASK(51)
-#define OPTPROGRAM_DEBUGLEVEL3                     U64MASK(52)
+#define OPTPROGRAM_DEBUGLEVEL1                     U64MASK(49)
+#define OPTPROGRAM_DEBUGLEVEL2                     U64MASK(50)
+#define OPTPROGRAM_DEBUGLEVEL3                     U64MASK(51)
+#define OPTPROGRAM_ENHANCED                        U64MASK(52)
 #define OPTPROGRAM_VERBOSE                         U64MASK(53)
 #define OPTPROGRAM_HASH                            U64MASK(54)
 #define OPTPROGRAM_ENTROPY                         U64MASK(55)
