@@ -22,6 +22,10 @@ unknown_t xfree(unknown_t p) {
   return NULL;
 }
 
+int xstrcmp(const char *x, const char *y) {
+  return x && y ? strcmp(x, y) : INT_MAX;
+}
+
 size_t xstrlen(const char *src) {
   return src ? strlen(src) : 0;
 }
