@@ -25,7 +25,7 @@ static int get_options_convert(poptions_t o, int argc, char** argv, char* name) 
       MALLOCA(char, arg1, 1024);
 
       if (ECODE_ISOK(breakup_args(argv[i], arg0, NELEMENTS(arg0), arg1, NELEMENTS(arg1)))) {
-        if (0 == strcmp(arg0, "--output")) {
+        if (0 == xstrcmp(arg0, "--output")) {
           xstrncpy(o->outname, arg1, NELEMENTS(o->outname));
         } else {
           return odeath(o, THIS_NAME, arg0 + 2);
@@ -38,7 +38,7 @@ static int get_options_convert(poptions_t o, int argc, char** argv, char* name) 
         o->action |= action;
       }
     } else if ('-' == argv[i][0] && 0 != argv[i][1]) {
-      if (0 == strcmp(argv[i], "-O")) {
+      if (0 == xstrcmp(argv[i], "-O")) {
         xstrncpy(o->outname, argv[++i], NELEMENTS(o->outname));
       } else {
         imode_t action = get_options1(o, zCONVERTARGS, argv[i]);
