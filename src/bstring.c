@@ -140,13 +140,13 @@ handle_t bstrncat(handle_t dst, handle_t src, size_t size) {
     pbstring_t dst0 = CAST(pbstring_t, dst);
     pbstring_t src0 = CAST(pbstring_t, src);
     if (size <= dst0->size) {
-      strncat(dst0->data, src0->data, size);
+      xstrncat(dst0->data, src0->data, size);
       return dst;
     }
   } else if (isbstring(dst)) {
     pbstring_t dst0 = CAST(pbstring_t, dst);
     if (size <= dst0->size) {
-      strncat(dst0->data, src, size);
+      xstrncat(dst0->data, src, size);
       return dst;
     }
   }

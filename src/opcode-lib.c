@@ -43,9 +43,9 @@ static void custom_fprintf_address(bfd_vma vma, struct disassemble_info *di) {
 char* opcodelib_strncat(char* dst, char* src, char* sep, size_t size) {
   if (dst && src && sep && 0 != size) {
     if (dst[0]) {
-      dst = strncat(dst, sep, size);
+      dst = xstrncat(dst, sep, size);
     }
-    return strncat(dst, src, size);
+    return xstrncat(dst, src, size);
   }
 
   return NULL;
