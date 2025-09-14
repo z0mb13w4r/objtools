@@ -21,21 +21,21 @@ static int get_options_objdump(poptions_t o, int argc, char** argv, char* name) 
       MALLOCA(char, arg1, 256);
 
       if (ECODE_ISOK(breakup_args(argv[i], arg0, NELEMENTS(arg0), arg1, NELEMENTS(arg1)))) {
-        if (0 == strcmp(arg0, zOBJDUMPARGS1)) {
+        if (0 == xstrcmp(arg0, zOBJDUMPARGS1)) {
           imode_t ocdump = get_options2(o, zDEBUGELFARGS, arg1);
           if (0 == ocdump) {
             return odeath(o, THIS_NAME, arg1);
           }
           o->ocdump |= ocdump;
-        } else if (0 == strcmp(arg0, zOBJDUMPARGS3)) {
+        } else if (0 == xstrcmp(arg0, zOBJDUMPARGS3)) {
           imode_t ocdump = get_options2(o, zDISASSEMBLEARGS, arg1);
           if (0 == ocdump) {
             return odeath(o, THIS_NAME, arg1);
           }
           o->ocdump |= ocdump;
-        } else if (0 == strcmp(arg0, "--start-address")) {
+        } else if (0 == xstrcmp(arg0, "--start-address")) {
           o->saddress = atovalue(arg1);
-        } else if (0 == strcmp(arg0, "--stop-address")) {
+        } else if (0 == xstrcmp(arg0, "--stop-address")) {
           o->eaddress = atovalue(arg1);
         } else {
           return odeath(o, THIS_NAME, arg0 + 2);
@@ -54,7 +54,7 @@ static int get_options_objdump(poptions_t o, int argc, char** argv, char* name) 
           return odeath(o, THIS_NAME, argv[i] + 1);
         }
         o->ocdump |= ocdump ? ocdump : set_options1(o, zDEBUGELFARGS);
-      } else if (0 == strcmp(argv[i], zOBJDUMPARGS2)) {
+      } else if (0 == xstrcmp(argv[i], zOBJDUMPARGS2)) {
         imode_t ocdump = get_options2(o, zDISASSEMBLEARGS, argv[++i]);
         if (0 == ocdump) {
           return odeath(o, THIS_NAME, argv[i]);
