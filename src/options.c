@@ -403,7 +403,7 @@ imode_t get_options2(poptions_t o, const args_t args[], const char *argv) {
 imode_t get_ocdump(poptions_t o, const imodeswap_t args[], imode_t action) {
   imode_t ocdump = 0;
   for (int j = 0; (0 != args[j].mode1) || (0 != args[j].mode2); ++j) {
-    if (MODE_ISSET(args[j].mode1, action)) {
+    if (MODE_ISSET(action, args[j].mode1)) {
       ocdump |= args[j].mode2;
     }
   }
