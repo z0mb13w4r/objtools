@@ -29,9 +29,9 @@ pdwarf_display_t ocdwarf_get(handle_t s) {
     for (size_t i = 0; i < eDWARF_MAX; ++i, ++p) {
       pdwarf_section_t x = &p->section;
 
-      if (x->uncompressed_name && 0 == strcmp(x->uncompressed_name, name)) return p;
-      else if (x->compressed_name && 0 == strcmp(x->compressed_name, name)) return p;
-      else if (x->xcoff_name && 0 == strcmp(x->xcoff_name, name)) return p;
+      if (x->uncompressed_name && 0 == xstrcmp(x->uncompressed_name, name)) return p;
+      else if (x->compressed_name && 0 == xstrcmp(x->compressed_name, name)) return p;
+      else if (x->xcoff_name && 0 == xstrcmp(x->xcoff_name, name)) return p;
     }
   }
 
