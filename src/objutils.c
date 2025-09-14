@@ -75,10 +75,10 @@ uint64_t atovalue(const char* src) {
 char* strname(char* dst, const char* src) {
   const char *p = strshorten(src);
   if (p) {
-    return strcpy(dst, p);
+    return xstrcpy(dst, p);
   }
 
-  return strcpy(dst, src);
+  return xstrcpy(dst, src);
 }
 
 const char* strpick(const pconvert_t p, const pick_t x) {

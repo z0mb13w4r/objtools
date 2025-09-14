@@ -31,7 +31,7 @@ size_t xstrlen(const char *src) {
 }
 
 char *xstrcat(char *dst, const char *src) {
-  return dst && src ? xstrncat(dst, src, xstrlen(src)) : NULL;
+  return dst && src ? strcat(dst, src) : NULL;
 }
 
 char *xstrncat(char *dst, const char *src, size_t count) {
@@ -39,7 +39,7 @@ char *xstrncat(char *dst, const char *src, size_t count) {
 }
 
 char *xstrcpy(char *dst, const char *src) {
-  return dst && src ? xstrncpy(dst, src, xstrlen(src)) : NULL;
+  return dst && src ? strcpy(dst, src) : NULL;
 }
 
 char *xstrncpy(char *dst, const char *src, size_t count) {
