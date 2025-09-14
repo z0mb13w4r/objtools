@@ -116,6 +116,8 @@ static int get_options_readelf(poptions_t o, int argc, char** argv, char* name) 
     }
   }
 
+  o->ocdump |= get_ocdump(o, zREADELFSWAP, o->action);
+
   if (o->action & OPTPROGRAM_VERSION) {
     return version0(o, THIS_NAME, zREADELFARGS);
   }
