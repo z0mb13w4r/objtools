@@ -28,11 +28,11 @@ static int get_options_objhash(poptions_t o, int argc, char** argv, char* name) 
       MALLOCA(char, arg1, 256);
 
       if (ECODE_ISOK(breakup_args(argv[i], arg0, NELEMENTS(arg0), arg1, NELEMENTS(arg1)))) {
-        if (0 == strcmp(arg0, "--hex-dump")) {
+        if (0 == xstrcmp(arg0, "--hex-dump")) {
           oinsertsecname(o, ACT_HEXDUMP, arg1);
-        } else if (0 == strcmp(arg0, "--string-dump")) {
+        } else if (0 == xstrcmp(arg0, "--string-dump")) {
           oinsertsecname(o, ACT_STRDUMP8, arg1);
-        } else if (0 == strcmp(arg0, "--convert")) {
+        } else if (0 == xstrcmp(arg0, "--convert")) {
           o->convert = atol(arg1);
         } else {
           return odeath(o, THIS_NAME, arg0 + 2);
@@ -45,17 +45,17 @@ static int get_options_objhash(poptions_t o, int argc, char** argv, char* name) 
         o->action |= action;
       }
     } else if ('-' == argv[i][0]) {
-      if (0 == strcmp(argv[i], "-x")) {
+      if (0 == xstrcmp(argv[i], "-x")) {
         if (argc <= (i + 1)) {
           return odeath(o, THIS_NAME, argv[i] + 1);
         }
         oinsertsecname(o, ACT_HEXDUMP, argv[++i]);
-      } else if (0 == strcmp(argv[i], "-p")) {
+      } else if (0 == xstrcmp(argv[i], "-p")) {
         if (argc <= (i + 1)) {
           return odeath(o, THIS_NAME, argv[i] + 1);
         }
         oinsertsecname(o, ACT_STRDUMP8, argv[++i]);
-      } else if (0 == strcmp(argv[i], "-C")) {
+      } else if (0 == xstrcmp(argv[i], "-C")) {
         if (argc <= (i + 1)) {
           return odeath(o, THIS_NAME, argv[i] + 1);
         }
