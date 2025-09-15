@@ -389,7 +389,7 @@ printf("lc_include_directories_count %lld[0x%llx]\n", line_context->lc_include_d
     n += printf_text("Opcode Base", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     n += printf_nice(opcode_base, USE_DEC | USE_EOL);
 
-    n += ocdwarf_sfcreate(p, cu_die, ocget(p, OPCODE_DWARF_ERROR));
+//    n += ocdwarf_sfcreate(p, cu_die, ocget(p, OPCODE_DWARF_ERROR));
 
     n += printf_text("Opcodes", USE_LT | USE_COLON | USE_EOL);
     for (Dwarf_Small i = 1; i < opcode_base; ++i) {
@@ -402,17 +402,35 @@ printf("lc_include_directories_count %lld[0x%llx]\n", line_context->lc_include_d
       n += printf_eol();
     }
 
-    n += printf_text("The File Name Table", USE_LT);
+// dwarf_srclines_include_dir_data [dwarf_line.c:1622]
+    n += printf_text("The Directory Table", USE_LT);
     n += printf_nice(0, USE_FHEX | USE_OFFSET | USE_COLON | USE_EOL);
-    n += printf_text("Entry Dir Time Size Name", USE_LT | USE_EOL);
-    pdwarf_srcfiles_t sf = ocget(p, OPCODE_DWARF_SRCFILES);
-    if (sf) {
-      for (Dwarf_Signed i = 0; i < sf->size; ++i) {
-        n += printf_nice(i + 1, USE_DEC3);
-        n += printf_nice(0, USE_DEC);
-        n += printf_nice(0, USE_DEC);
-        n += printf_nice(0, USE_DEC);
-        n += printf_text(sf->data[i], USE_LT | USE_SPACE | USE_SHORTEN | USE_EOL);
+
+// dwarf_srclines_files_data_b [dwarf_line.c:1487]
+    Dwarf_Signed endindex = 0;
+    Dwarf_Signed baseindex = 0;
+    Dwarf_Signed file_count = 0;
+    x = dwarf_srclines_files_indexes(line_context, &baseindex, &file_count, &endindex, ocget(p, OPCODE_DWARF_ERROR));
+    if (IS_DLV_OK(x)) {
+      n += printf_text("The File Name Table", USE_LT);
+      n += printf_nice(0, USE_FHEX | USE_OFFSET | USE_COLON | USE_EOL);
+      n += printf_text("Entry Dir Time Size Name", USE_LT | USE_EOL);
+
+      for (Dwarf_Signed i = baseindex; i < endindex; ++i) {
+        const char *name = 0;
+        Dwarf_Unsigned modtime = 0;
+        Dwarf_Unsigned flength = 0;
+        Dwarf_Form_Data16 *md5data = 0;
+        Dwarf_Unsigned dirindex = 0;
+        x = dwarf_srclines_files_data_b(line_context, i, &name, &dirindex, &modtime, &flength, &md5data, ocget(p, OPCODE_DWARF_ERROR));
+        if (IS_DLV_OK(x)) {
+          n += printf_nice(i, USE_DEC3);
+          n += printf_nice(dirindex, USE_DEC);
+          n += printf_nice(modtime, USE_DEC);
+          n += printf_nice(flength, USE_DEC);
+          n += printf_text(name, USE_LT | USE_SPACE);
+          n += printf_eol();
+        }
       }
     }
 
