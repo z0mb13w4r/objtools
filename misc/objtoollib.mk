@@ -38,6 +38,7 @@ SRCS_C = \
 	ocdwarf-magic.c \
 	ocdwarf-types.c \
 	ocdwarf-abbrev.c \
+	ocdwarf-engine.c \
 	ocdwarf-printf.c \
 	ocdwarf-aranges.c \
 	ocdwarf-eh-frame.c \
