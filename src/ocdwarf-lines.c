@@ -402,21 +402,35 @@ printf("lc_include_directories_count %lld[0x%llx]\n", line_context->lc_include_d
       n += printf_eol();
     }
 
-// dwarf_srclines_include_dir_data [dwarf_line.c:1622]
-    n += printf_text("The Directory Table", USE_LT);
-    n += printf_nice(0, USE_FHEX | USE_OFFSET | USE_COLON | USE_EOL);
+    Dwarf_Signed dir_count = 0;
+    x = dwarf_srclines_include_dir_count(line_context, &dir_count, ocget(p, OPCODE_DWARF_ERROR));
+    if (IS_DLV_OK(x)) {
+      n += printf_text("The Directory Table", USE_LT);
+      n += printf_nice(0, USE_FHEX | USE_OFFSET | USE_COLON | USE_EOL);
+      Dwarf_Signed min = DW_LINE_VERSION5 == line_version ? 0 : 1;
+      Dwarf_Signed max = DW_LINE_VERSION5 == line_version ? dir_count : dir_count + 1;
 
-// dwarf_srclines_files_data_b [dwarf_line.c:1487]
-    Dwarf_Signed endindex = 0;
-    Dwarf_Signed baseindex = 0;
-    Dwarf_Signed file_count = 0;
-    x = dwarf_srclines_files_indexes(line_context, &baseindex, &file_count, &endindex, ocget(p, OPCODE_DWARF_ERROR));
+      for (Dwarf_Signed i = min; i < max; ++i) {
+        const char *name = 0;
+        x = dwarf_srclines_include_dir_data(line_context, i, &name, ocget(p, OPCODE_DWARF_ERROR));
+        if (IS_DLV_OK(x)) {
+          n += printf_nice(i, USE_DEC3);
+          n += printf_text(name, USE_LT | USE_SPACE);
+          n += printf_eol();
+        }
+      }
+    }
+
+    Dwarf_Signed min = 0;
+    Dwarf_Signed max = 0;
+    Dwarf_Signed cnt = 0;
+    x = dwarf_srclines_files_indexes(line_context, &min, &cnt, &max, ocget(p, OPCODE_DWARF_ERROR));
     if (IS_DLV_OK(x)) {
       n += printf_text("The File Name Table", USE_LT);
       n += printf_nice(0, USE_FHEX | USE_OFFSET | USE_COLON | USE_EOL);
       n += printf_text("Entry Dir Time Size Name", USE_LT | USE_EOL);
 
-      for (Dwarf_Signed i = baseindex; i < endindex; ++i) {
+      for (Dwarf_Signed i = min; i < max; ++i) {
         const char *name = 0;
         Dwarf_Unsigned modtime = 0;
         Dwarf_Unsigned flength = 0;
