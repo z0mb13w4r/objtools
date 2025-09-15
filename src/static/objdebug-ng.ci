@@ -19,7 +19,7 @@ char zDEBUGPUBTYPES[]     = "Displays the contents of the .debug_pubtypes|.debug
 char zDEBUGTRACEARANGES[] = "Displays the contents of the .trace_aranges section.";
 char zDEBUGTRACEABBREV[]  = "Displays the contents of the .trace_abbrev section.";
 char zDEBUGTRACEINFO[]    = "Displays the contents of the .trace_info section.";
-char zDEBUGENHANCED[]     = "Displays the contents in the enhanced format.";
+char zDEBUGENHANCED[]     = "Displays the contents in the enhanced mode format.";
 
 const args_t zDEBUGELFARGS[] = {
   {'a', "abbrev",             OPTDWARF_DEBUG_ABBREV,        zDEBUGABBREV},
