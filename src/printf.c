@@ -93,8 +93,17 @@ int printf_spos(char* o, const size_t size, const imode_t mode, const bool_t use
     case USE_DQ:                   n += PRINT1(" \"");   break;
     case USE_LINE:                 n += PRINT1(" (line ");     break;
     case USE_OFFSET:               n += PRINT1(" (offset ");   break;
+    case USE_OFFSETEQ:             n += PRINT1(" offset=");    break;
     case USE_ADDRESS:              n += PRINT1(" (address ");  break;
+    case USE_ADDRESSEQ:            n += PRINT1(" address=");   break;
+    case USE_SIZEOF:               n += PRINT1(" (sizeof ");   break;
+    case USE_SIZEOFEQ:             n += PRINT1(" sizeof=");    break;
+    case USE_COPYOF:               n += PRINT1(" (copyof ");   break;
+    case USE_COPYOFEQ:             n += PRINT1(" copyof=");    break;
+    case USE_ALIGN:                n += PRINT1(" (align ");    break;
+    case USE_ALIGNEQ:              n += PRINT1(" align=");     break;
     case USE_DISCRIMINATOR:        n += PRINT1(" (discriminator "); break;
+
     default:
       if (usespace)                n += PRINT1(" ");
       switch (GET_BRACKET(mode)) {
@@ -127,6 +136,9 @@ int printf_epos(char* o, const size_t size, const imode_t mode) {
     case USE_LINE:
     case USE_OFFSET:
     case USE_ADDRESS:
+    case USE_SIZEOF:
+    case USE_COPYOF:
+    case USE_ALIGN:
     case USE_DISCRIMINATOR:
     case USE_RB:
     case USE_RBRT:                 n += PRINT1(")");         break;
