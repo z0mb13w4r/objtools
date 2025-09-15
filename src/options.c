@@ -169,6 +169,14 @@ static int usage_options0(poptions_t o, const char* name, const args_t args[]) {
         snprintf(m, sizeof(m), zOPTHASH);
         n += printf_pack(2);
         n += printf_text(m, USE_LT | USE_TAB | USE_EOL);
+      } else if (name && MODE_ISLOCKED(args[j].action, OPTPROGRAM_INFO)) {
+        snprintf(m, sizeof(m), zOPTINFO);
+        n += printf_pack(2);
+        n += printf_text(m, USE_LT | USE_TAB | USE_EOL);
+      } else if (name && MODE_ISLOCKED(args[j].action, OPTPROGRAM_ENTROPY)) {
+        snprintf(m, sizeof(m), zOPTENTROPY);
+        n += printf_pack(2);
+        n += printf_text(m, USE_LT | USE_TAB | USE_EOL);
       }
 
       n += printf_eol();

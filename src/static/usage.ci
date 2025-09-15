@@ -39,11 +39,14 @@ const char *zLICENSE[] = {
 char zHEXDUMP[]          = "Displays the contents of the indicated section as a hexadecimal bytes.";
 char zSTRDUMP[]          = "Displays the contents of the indicated section as printable strings.";
 char zCODEDUMP[]         = "Displays the contents of the indicated section as C Language Shell Code.";
+char zSCRIPTING[]        = ".";
 
 const char zOPTDEBUGLEVEL1[]      = "Print the level 1 code development debugging information.";
 const char zOPTDEBUGLEVEL2[]      = "Print the level 2 code development debugging information.";
 const char zOPTDEBUGLEVEL3[]      = "Print the level 3 code development debugging information.";
 
-const char zOPTCAPSTONE[]         = "When disassembling, use the Capstone Disassembler Framework.";
 const char zOPTHASH[]             = "Calculates and displays the SHA-256 hash.";
+const char zOPTINFO[]             = ".";
+const char zOPTENTROPY[]          = ".";
+const char zOPTCAPSTONE[]         = "When disassembling, use the Capstone Disassembler Framework.";
 

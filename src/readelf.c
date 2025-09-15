@@ -177,20 +177,6 @@ static int dump_elfheader(const pbuffer_t p, const poptions_t o) {
   return n;
 }
 
-static int dump_information32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
-  int n = 0;
-  n += dump_summary(p, o);
-
-  return n;
-}
-
-static int dump_information64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
-  int n = 0;
-  n += dump_summary(p, o);
-
-  return n;
-}
-
 static int dump_fileheader0(const pbuffer_t p, const poptions_t o, const uint64_t e_type, const uint64_t e_machine, const uint64_t e_version,
                             const uint64_t e_entry, const uint64_t e_phoff, const uint64_t e_shoff, const uint64_t e_flags,
                             const uint64_t e_ehsize, const uint64_t e_phentsize, const uint64_t e_phnum, const uint64_t e_shentsize,
@@ -1538,7 +1524,7 @@ int readelf(const pbuffer_t p, const poptions_t o) {
     if (isELF32(p)) {
       Elf32_Ehdr *ehdr = ecget_ehdr32(p);
       if (ehdr) {
-        if (MODE_ISANY(o->action, OPTPROGRAM_INFO))             dump_information32(p, o, ehdr);
+        if (MODE_ISANY(o->action, OPTPROGRAM_INFO))             dump_summary(p, o);
         if (MODE_ISANY(o->action, OPTREADELF_FILEHEADER))       dump_fileheader32(p, o, ehdr);
         if (MODE_ISANY(o->action, OPTREADELF_SECTIONHEADERS))   dump_sectionheaders32(p, o, ehdr);
         if (MODE_ISANY(o->action, OPTREADELF_SECTIONGROUPS))    dump_sectiongroups32(p, o, ehdr);
@@ -1557,7 +1543,7 @@ int readelf(const pbuffer_t p, const poptions_t o) {
     } else if (isELF64(p)) {
       Elf64_Ehdr *ehdr = ecget_ehdr64(p);
       if (ehdr) {
-        if (MODE_ISANY(o->action, OPTPROGRAM_INFO))             dump_information64(p, o, ehdr);
+        if (MODE_ISANY(o->action, OPTPROGRAM_INFO))             dump_summary(p, o);
         if (MODE_ISANY(o->action, OPTREADELF_FILEHEADER))       dump_fileheader64(p, o, ehdr);
         if (MODE_ISANY(o->action, OPTREADELF_SECTIONHEADERS))   dump_sectionheaders64(p, o, ehdr);
         if (MODE_ISANY(o->action, OPTREADELF_SECTIONGROUPS))    dump_sectiongroups64(p, o, ehdr);

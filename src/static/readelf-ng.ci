@@ -44,10 +44,10 @@ static const args_t zREADELFARGS[] = {
   {'R', "--relocated-dump",  0,                            zHEXDUMP},
   {'z', "--decompress",      0,                            zELFDECOMPRESS},
   {'C', "--disassemble",     0,                            zELFDISASSEMBLE},
-  {'T', "--script",          0},
-  {'I', "--info",            OPTPROGRAM_INFO},
+  {'T', "--script",          0,                            zSCRIPTING},
+  {'I', "--info",            OPTPROGRAM_INFO,              NULL},
   {'X', "--hash",            OPTPROGRAM_HASH,              NULL},
-  {'E', "--entropy",         OPTPROGRAM_ENTROPY},
+  {'E', "--entropy",         OPTPROGRAM_ENTROPY,           NULL},
   {0, NULL}
 };
 

@@ -81,6 +81,7 @@ extern convert_t ecREGISTERS_x86_64[];
 extern char zHEXDUMP[];
 extern char zSTRDUMP[];
 extern char zCODEDUMP[];
+extern char zSCRIPTING[];
 
 extern char zDEBUGABBREV[];
 extern char zDEBUGADDR[];
