@@ -254,7 +254,7 @@ static int ocdwarf_debug_line1(handle_t p, handle_t s, handle_t d) {
 
   if (isopcode(p)) {
     pocdwarf_t ws = ocget(p, OPCODE_DWARF);
-    popcode_t oc = ocget(p, OPCODE_THIS);
+//    popcode_t oc = ocget(p, OPCODE_THIS);
 
     Dwarf_Bool isinfo = TRUE; /* our data is not DWARF4 .debug_types. */
     Dwarf_Unsigned next_cu_header_offset = 0;
@@ -357,18 +357,18 @@ static int ocdwarf_debug_line1(handle_t p, handle_t s, handle_t d) {
     if (IS_DLV_ANY_ERROR(x)) {
     }
 
-printf("lc_unit_length %d[0x%x]\n", line_context->lc_unit_length, line_context->lc_unit_length);
+printf("lc_unit_length %lld[0x%llx]\n", line_context->lc_unit_length, line_context->lc_unit_length);
 printf("lc_length_field_length %d[0x%x]\n", line_context->lc_length_field_length, line_context->lc_length_field_length);
 printf("lc_address_size %d[0x%x]\n", line_context->lc_address_size, line_context->lc_address_size);
 printf("lc_segment_selector_size %d[0x%x]\n", line_context->lc_segment_selector_size, line_context->lc_segment_selector_size);
-printf("lc_prologue_length %d[0x%x]\n", line_context->lc_prologue_length, line_context->lc_prologue_length);
-printf("lc_actuals_table_offset %d[0x%x]\n", line_context->lc_actuals_table_offset, line_context->lc_actuals_table_offset);
-printf("lc_logicals_table_offset %d[0x%x]\n", line_context->lc_logicals_table_offset, line_context->lc_logicals_table_offset);
+printf("lc_prologue_length %lld[0x%llx]\n", line_context->lc_prologue_length, line_context->lc_prologue_length);
+printf("lc_actuals_table_offset %lld[0x%llx]\n", line_context->lc_actuals_table_offset, line_context->lc_actuals_table_offset);
+printf("lc_logicals_table_offset %lld[0x%llx]\n", line_context->lc_logicals_table_offset, line_context->lc_logicals_table_offset);
 printf("lc_minimum_instruction_length %d[0x%x]\n", line_context->lc_minimum_instruction_length, line_context->lc_minimum_instruction_length);
 printf("lc_maximum_ops_per_instruction %d[0x%x]\n", line_context->lc_maximum_ops_per_instruction, line_context->lc_maximum_ops_per_instruction);
 printf("lc_std_op_count %d[0x%x]\n", line_context->lc_std_op_count, line_context->lc_std_op_count);
 printf("lc_table_count %d[0x%x]\n", line_context->lc_table_count, line_context->lc_table_count);
-printf("lc_include_directories_count %d[0x%x]\n", line_context->lc_include_directories_count, line_context->lc_include_directories_count);
+printf("lc_include_directories_count %lld[0x%llx]\n", line_context->lc_include_directories_count, line_context->lc_include_directories_count);
 
     n += printf_text("Offset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     n += printf_nice(section_offset, USE_FHEX | USE_EOL);
