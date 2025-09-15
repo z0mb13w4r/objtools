@@ -2,8 +2,8 @@ static const char zREADPEARGS2[] = "-M";
 static const char zREADPEARGS3[] = "--disassembler-options";
 
 static const args_t zREADPEARGS[] = {
-  {'h', "--help",            OPTPROGRAM_HELP},
-  {'v', "--version",         OPTPROGRAM_VERSION},
+  {'h', "--help",            OPTPROGRAM_HELP,              NULL},
+  {'v', "--version",         OPTPROGRAM_VERSION,           NULL},
   {'S', "--section-headers", OPTREADPE_SECTIONHEADERS},
   {'V', "--version-info",    OPTREADPE_VERSION},
   {'A', "--all",             OPTREADPE_ALL},
@@ -16,18 +16,18 @@ static const args_t zREADPEARGS[] = {
   {'I', "--iat",             OPTREADPE_IAT},
   {'m', "--runtime",         OPTREADPE_RUNTIME},
   {'g', "--debug",           OPTREADPE_DEBUG},
-  {'f',  "--config",         OPTREADPE_CONFIG},
-  {'o',  "--resource",       OPTREADPE_RESOURCE},
+  {'f', "--config",          OPTREADPE_CONFIG},
+  {'o', "--resource",        OPTREADPE_RESOURCE},
   {'x', "--hex-dump",        0,                            zHEXDUMP},
   {'c', "--code-dump",       0,                            zCODEDUMP},
   {'s', "--string-dump",     0,                            zSTRDUMP},
   {'u', "--unicode-dump",    0,                            zSTRDUMP},
   {'r', "--relocated-dump",  0,                            zHEXDUMP},
   {'d', "--disassemble",     0},
-  {'t', "--script",          0},
-  {'i', "--info",            OPTPROGRAM_INFO},
-  {'X', "--hash",            OPTPROGRAM_HASH},
-  {'e', "--entropy",         OPTPROGRAM_ENTROPY},
+  {'t', "--script",          0,                            zSCRIPTING},
+  {'i', "--info",            OPTPROGRAM_INFO,              NULL},
+  {'X', "--hash",            OPTPROGRAM_HASH,              NULL},
+  {'e', "--entropy",         OPTPROGRAM_ENTROPY,           NULL},
   {0, NULL}
 };
 
