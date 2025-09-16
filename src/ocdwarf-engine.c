@@ -1,5 +1,14 @@
 #include "ocdwarf-engine.h"
 
+static int execute_die_and_siblings(handle_t p, handle_t q, Dwarf_Die die,
+                  Dwarf_Bool isinfo, Dwarf_Error *e) {
+  if (isopcode(p) && isocengine(q)) {
+
+  }
+
+  return DW_DLV_ERROR;
+}
+
 static int execute_next_cu_header(handle_t p, Dwarf_Die *cu_die, Dwarf_Error *e) {
   if (isopcode(p) && cu_die) {
     pocdwarf_t ws = ocget(p, OPCODE_DWARF);
@@ -35,22 +44,25 @@ static handle_t execute_info(handle_t p, handle_t q, Dwarf_Error *e) {
         x = dwarf_siblingof_b(ocget(p, OPCODE_DWARF_DEBUG), no_die, isinfo, &cu_die, e);
       }
 
-
       if (IS_DLV_ANY_ERROR(x)) {
         if (IS_DLV_ERROR(x)) {
           ocdwarf_dealloc_error(p, NULL);
         }
 
-        return e;
+        return q;
       }
 
-
+      x = execute_die_and_siblings(p, q, cu_die, isinfo, e);
 
       dwarf_dealloc_die(cu_die);
       ocdwarf_sfreset(p);
+
+      if (IS_DLV_ANY_ERROR(x)) {
+        return q;
+      }
     }
 
-    return e;
+    return q;
   }
 
   return NULL;
