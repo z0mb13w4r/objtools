@@ -3,7 +3,37 @@
 static int execute_die_and_siblings(handle_t p, handle_t q, Dwarf_Die die,
                   Dwarf_Bool isinfo, Dwarf_Error *e) {
   if (isopcode(p) && isocengine(q)) {
+    Dwarf_Die cur_die = die;
 
+    for ( ; ; ) {
+      Dwarf_Die child = 0;
+      int x = dwarf_child(cur_die, &child, e);
+      if (IS_DLV_ERROR(x)) {
+        dwarf_dealloc_die(cur_die);
+        ocdwarf_finish(p, e);
+        return DW_DLV_ERROR;
+      } else if (IS_DLV_OK(x)) {
+        x = execute_die_and_siblings(p, q, child, isinfo, e);
+        dwarf_dealloc_die(child);
+        child = 0;
+      }
+
+      /* x == DW_DLV_NO_ENTRY or DW_DLV_OK */
+      Dwarf_Die sib_die = 0;
+      x = dwarf_siblingof_b(ocget(p, OPCODE_DWARF_DEBUG), cur_die, isinfo, &sib_die, e);
+      if (IS_DLV_NO_ENTRY(x)) {
+        return DW_DLV_NO_ENTRY;
+      } else if (IS_DLV_ERROR(x)) {
+        ocdwarf_finish(p, e);
+        return DW_DLV_ERROR;
+      }
+
+      if (cur_die != die) {
+        dwarf_dealloc_die(cur_die);
+      }
+      cur_die = sib_die;
+//      n += ocdwarf_printf(p, cur_die, isinfo, level, e);
+    }
   }
 
   return DW_DLV_ERROR;
