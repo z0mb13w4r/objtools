@@ -1,4 +1,5 @@
 #include "opcode-engine.h"
+#include "ocdwarf-engine.h"
 
 #define OPENGINE_MAXSIZE (1000)
 
@@ -78,7 +79,7 @@ handle_t odfree(handle_t p) {
 
 handle_t oecreate_engine(handle_t p) {
   if (isopcode(p)) {
-    return emalloc();
+    return ocdwarf_create(p, emalloc());
   }
 
   return NULL;
@@ -123,6 +124,8 @@ handle_t oeseebyaddr(handle_t p, const uint64_t vaddr, const imode_t mode) {
         else if (vaddr == q0->vaddr) {
           if (OPENGINE_GROUP == mode) {
             return q0;
+          } else if (OPENGINE_DEBUG == mode) {
+            return q0->debug;
           } else if (OPENGINE_EXAMINE == mode) {
             return q0->examine;
           }
