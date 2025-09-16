@@ -743,6 +743,28 @@ const char* ocget_fileformat(handle_t p) {
 const char* ocget_symbol(handle_t p, uint64_t vaddr, char **name,
                      uint64_t *nline, uint64_t *ncolumn, uint64_t *discriminator, char **source,
                      uint64_t *laddr, uint64_t *haddr, uint64_t *offset) {
+#if 1
+  if (isopcode(p) && name && 0 != vaddr) {
+    pocdebug_t p0 = oeseebyaddr(p, vaddr, OPENGINE_DEBUG);
+    if (isocdebug(p0)) {
+      if (name)          *name  = p0->name;
+      if (nline)         *nline = p0->nline;
+      if (laddr)         *laddr = p0->laddr;
+      if (haddr)         *haddr = p0->haddr;
+      if (ncolumn)       *ncolumn = p0->ncolumn;
+      if (discriminator) *discriminator = p0->discriminator;
+//      if (offset)        *offset = v5;
+      if (source)        *source = p0->source;
+    } else if (ochas(p, OPCODE_BFD)) {
+      *name = opcodebfd_getsymbol(p, vaddr, offset);
+    } else {
+      handle_t p0 = ocget(p, OPCODE_RAWDATA);
+      if (isELF(p0)) {
+        *name = opcodeelf_getsymbol(p, vaddr, offset);
+      }
+    }
+  }
+#else
   if (isopcode(p) && name && 0 != vaddr) {
     Dwarf_Unsigned v0 = 0;
     Dwarf_Unsigned v1 = 0;
@@ -777,7 +799,7 @@ const char* ocget_symbol(handle_t p, uint64_t vaddr, char **name,
 
     return *name ? *name : NULL;
   }
-
+#endif
   return NULL;
 }
 
