@@ -1,5 +1,49 @@
 #include "ocdwarf-engine.h"
 
+static int execute_store_cu(handle_t p, handle_t q, Dwarf_Die die,
+                  Dwarf_Half tag, Dwarf_Bool isinfo, Dwarf_Error *e) {
+  if (isopcode(p) && isocengine(q)) {
+    return DW_DLV_OK;
+  }
+
+  return DW_DLV_ERROR;
+}
+
+static int execute_store_sp(handle_t p, handle_t q, Dwarf_Die die,
+                  Dwarf_Half tag, Dwarf_Bool isinfo, Dwarf_Error *e) {
+  if (isopcode(p) && isocengine(q)) {
+    return DW_DLV_OK;
+  }
+
+  return DW_DLV_ERROR;
+}
+
+static int execute_store(handle_t p, handle_t q, Dwarf_Die die,
+                  Dwarf_Bool isinfo, Dwarf_Error *e) {
+  if (isopcode(p) && isocengine(q)) {
+    Dwarf_Half tag = 0;
+    int x = dwarf_tag(die, &tag, e);
+    if (IS_DLV_ANY_ERROR(x)) {
+      if (IS_DLV_ERROR(x) && e) {
+        ocdwarf_dealloc_error(p, e);
+      }
+      ocdwarf_object_finish(p);
+      return x;
+    }
+
+    if (DW_TAG_subprogram == tag) {
+      return execute_store_sp(p, q, die, tag, isinfo, e);
+    } else if (DW_TAG_compile_unit == tag || DW_TAG_partial_unit == tag  || DW_TAG_type_unit == tag) {
+      ocdwarf_sfreset(p);
+      return execute_store_cu(p, q, die, tag, isinfo, e);
+    }
+
+    return  execute_store_sp(p, q, die, tag, isinfo, e);
+  }
+
+  return DW_DLV_ERROR;
+}
+
 static int execute_die_and_siblings(handle_t p, handle_t q, Dwarf_Die die,
                   Dwarf_Bool isinfo, Dwarf_Error *e) {
   if (isopcode(p) && isocengine(q)) {
@@ -26,13 +70,12 @@ static int execute_die_and_siblings(handle_t p, handle_t q, Dwarf_Die die,
       } else if (IS_DLV_ERROR(x)) {
         ocdwarf_finish(p, e);
         return DW_DLV_ERROR;
-      }
-
-      if (cur_die != die) {
+      } else if (cur_die != die) {
         dwarf_dealloc_die(cur_die);
       }
+
       cur_die = sib_die;
-//      n += ocdwarf_printf(p, cur_die, isinfo, level, e);
+      x = execute_store(p, q, cur_die, isinfo, e);
     }
   }
 

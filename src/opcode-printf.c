@@ -224,10 +224,6 @@ int opcode_printf_source(handle_t p, const uint64_t vaddr) {
       }
     }
 
-//static uint64_t caddr = 0x8000;
-//oegetbyaddr(p, --caddr, OPENGINE_GROUP);
-//oegetbyaddr(p, vaddr, OPENGINE_GROUP);
-
     ocdwarf_dealloc(p, name, DW_DLA_STRING);
     ocdwarf_dealloc(p, source, DW_DLA_STRING);
 
