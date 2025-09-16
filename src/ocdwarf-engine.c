@@ -1,18 +1,39 @@
 #include "ocdwarf-engine.h"
 
-static int execute_store_cu(handle_t p, handle_t q, Dwarf_Die die,
+static int execute_store_sp(handle_t p, handle_t q, Dwarf_Die die,
                   Dwarf_Half tag, Dwarf_Bool isinfo, Dwarf_Error *e) {
   if (isopcode(p) && isocengine(q)) {
-    return DW_DLV_OK;
+    Dwarf_Signed cattr = 0;
+    Dwarf_Attribute *pattr = 0;
+    int x = dwarf_attrlist(die, &pattr, &cattr, e);
+    if (IS_DLV_OK(x)) {
+      for (Dwarf_Signed i = 0; IS_DLV_OK(x) && (i < cattr); ++i) {
+        Dwarf_Half nattr = 0;
+        x = dwarf_whatattr(pattr[i], &nattr, e);
+        if (IS_DLV_OK(x)) {
+//        n += ocdwarf_printf_merit(p, die, attr, nattr, e);
+        }
+      }
+
+      ocdwarf_dealloc_attribute(p, pattr, cattr);
+    }
+
+    return x;
   }
 
   return DW_DLV_ERROR;
 }
 
-static int execute_store_sp(handle_t p, handle_t q, Dwarf_Die die,
+static int execute_store_cu(handle_t p, handle_t q, Dwarf_Die die,
                   Dwarf_Half tag, Dwarf_Bool isinfo, Dwarf_Error *e) {
   if (isopcode(p) && isocengine(q)) {
-    return DW_DLV_OK;
+
+    int x = execute_store_sp(p, q, die, tag, isinfo, e);
+    if (IS_DLV_OK(x)) {
+      x = ocdwarf_sfcreate(p, die, e);
+    }
+
+    return x;
   }
 
   return DW_DLV_ERROR;
@@ -141,7 +162,7 @@ static handle_t execute_info(handle_t p, handle_t q, Dwarf_Error *e) {
   return NULL;
 }
 
-handle_t ocdwarf_create(handle_t p, handle_t e) {
-  return execute_info(p, e, ocget(p, OPCODE_DWARF_ERROR));
+handle_t ocdwarf_create(handle_t p, handle_t q) {
+  return execute_info(p, q, ocget(p, OPCODE_DWARF_ERROR));
 }
 
