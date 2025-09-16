@@ -743,7 +743,7 @@ const char* ocget_fileformat(handle_t p) {
 const char* ocget_symbol(handle_t p, uint64_t vaddr, char **name,
                      uint64_t *nline, uint64_t *ncolumn, uint64_t *discriminator, char **source,
                      uint64_t *laddr, uint64_t *haddr, uint64_t *offset) {
-#if 1
+#if 0
   if (isopcode(p) && name && 0 != vaddr) {
     pocdebug_t p0 = oeseebyaddr(p, vaddr, OPENGINE_DEBUG);
     if (isocdebug(p0)) {
