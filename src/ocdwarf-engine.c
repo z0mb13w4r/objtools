@@ -9,9 +9,35 @@ static int execute_store_sp(handle_t p, handle_t q, Dwarf_Die die,
     if (IS_DLV_OK(x)) {
       for (Dwarf_Signed i = 0; IS_DLV_OK(x) && (i < cattr); ++i) {
         Dwarf_Half nattr = 0;
+        Dwarf_Half nform = 0;
+
         x = dwarf_whatattr(pattr[i], &nattr, e);
         if (IS_DLV_OK(x)) {
+          x = dwarf_whatform(pattr[i], &nform, e);
 //        n += ocdwarf_printf_merit(p, die, attr, nattr, e);
+        }
+        if (IS_DLV_OK(x)) {
+          if (isused(ecFORMSTRING, nform)) {
+            char *str = NULL;
+            if (IS_DLV_OK(dwarf_formstring(pattr[i], &str, e))) {
+            }
+          } else if (isused(ecFORMUDATA, nform)) {
+            Dwarf_Unsigned value = 0;
+            if (IS_DLV_OK(dwarf_formudata(pattr[i], &value, e))) {
+            }
+          } else if (isused(ecFORMADDR, nform)) {
+            Dwarf_Addr addr = 0;
+            if (IS_DLV_OK(dwarf_formaddr(pattr[i], &addr, e))) {
+            }
+          } else if (isused(ecFORMBOOL, nform)) {
+            Dwarf_Unsigned value = 0;
+            if (IS_DLV_OK(dwarf_formudata(pattr[i], &value, e))) {
+            }
+          } else if (isused(ecFORMGREF, nform)) {
+            Dwarf_Unsigned value = 0;
+            if (IS_DLV_OK(dwarf_global_formref(pattr[i], &value, e))) {
+            }
+          }
         }
       }
 
