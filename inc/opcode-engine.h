@@ -51,6 +51,7 @@ handle_t odfree(handle_t p);
 
 handle_t oecreate_engine(handle_t p);
 
+handle_t oeaskbyaddr(handle_t p, const uint64_t vaddr, const imode_t mode);
 handle_t oegetbyaddr(handle_t p, const uint64_t vaddr, const imode_t mode);
 handle_t oeseebyaddr(handle_t p, const uint64_t vaddr, const imode_t mode);
 
