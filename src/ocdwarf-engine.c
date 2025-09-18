@@ -17,7 +17,7 @@ static int execute_store_sp(handle_t p, handle_t q, Dwarf_Die die,
           if (IS_DLV_OK(dwarf_formaddr(pattr[i], &vaddr, e))) {
             g0 = oegetbyaddr(q, vaddr, OPENGINE_GROUP);
             if (g0 && (NULL == g0->debug)) {
-              g0->debug = xmalloc(sizeof(ocdebug_t));
+              g0->debug = odmalloc();
               g0->debug->laddr = vaddr;
             }
             d0 = g0->debug;
@@ -187,7 +187,7 @@ static int execute_next_cu_header(handle_t p, Dwarf_Die *cu_die, Dwarf_Error *e)
   return DW_DLV_ERROR;
 }
 
-static handle_t execute_info(handle_t p, handle_t q, Dwarf_Error *e) {
+static handle_t execute_inf(handle_t p, handle_t q, Dwarf_Error *e) {
   if (isopcode(p) && isocengine(q)) {
     Dwarf_Bool isinfo = TRUE; /* our data is not DWARF4 .debug_types. */
 
@@ -227,7 +227,76 @@ static handle_t execute_info(handle_t p, handle_t q, Dwarf_Error *e) {
   return NULL;
 }
 
+static handle_t execute_src(handle_t p, handle_t q, Dwarf_Error *e) {
+  if (isopcode(p) && isocengine(q)) {
+    Dwarf_Die cu_die = 0;
+
+    if (IS_DLV_OK(execute_next_cu_header(p, &cu_die, e))) {
+      Dwarf_Signed line_count = 0;
+      Dwarf_Line  *line_array = NULL;
+      Dwarf_Small  table_count = 0;
+      Dwarf_Unsigned line_version = 0;
+      Dwarf_Line_Context line_context = 0;
+
+      if (IS_DLV_OK(dwarf_srclines_b(cu_die, &line_version, &table_count, &line_context, e))) {
+        if (IS_DLV_OK(dwarf_srclines_from_linecontext(line_context, &line_array, &line_count, e))) {
+          for (Dwarf_Signed i = 0; i < line_count; ++i) {
+            Dwarf_Line k = line_array[i];
+
+            Dwarf_Addr pc = 0;
+            pocdebug_t d0 = NULL;
+            pocgroups_t g0 = NULL;
+            if (IS_DLV_OK(dwarf_lineaddr(k, &pc, e))) {
+              g0 = oegetbyaddr(q, pc, OPENGINE_GROUP);
+              if (g0 && (NULL == g0->debug)) {
+                g0->debug = odmalloc();
+                g0->debug->laddr = pc;
+                g0->debug->haddr = pc;
+              }
+              d0 = g0->debug;
+
+              Dwarf_Unsigned value0 = 0;
+              Dwarf_Unsigned value1 = 0;
+              Dwarf_Bool value2 = FALSE;
+              Dwarf_Bool value3 = FALSE;
+              char *value4 = NULL;
+
+              if (IS_DLV_OK(dwarf_lineno(k, &value0, e))) {
+               d0->nline = value0;
+              }
+
+              if (IS_DLV_OK(dwarf_lineoff_b(k, &value0, e))) {
+                d0->ncolumn = value0;
+              }
+
+              if (IS_DLV_OK(dwarf_prologue_end_etc(k, &value2, &value3, &value0, &value1, e))) {
+                d0->discriminator = value1;
+              }
+
+              if (IS_DLV_OK(dwarf_linesrc(k, &value4, e))) {
+                d0->source = xstrdup(value4);
+              }
+            }
+          }
+
+          dwarf_srclines_dealloc_b(line_context);
+        }
+      }
+
+      dwarf_dealloc_die(cu_die);
+    }
+
+    return q;
+  }
+
+  return NULL;
+}
+
 handle_t ocdwarf_create(handle_t p, handle_t q) {
-  return execute_info(p, q, ocget(p, OPCODE_DWARF_ERROR));
+  if (execute_inf(p, q, ocget(p, OPCODE_DWARF_ERROR))) {
+    return execute_src(p, q, ocget(p, OPCODE_DWARF_ERROR));
+  }
+
+  return NULL;
 }
 
