@@ -47,7 +47,7 @@ char *xstrncpy(char *dst, const char *src, size_t count) {
 }
 
 char* xstrdup(const char *src) {
-  return src ? xstrndup(src, xstrlen(src)) : NULL;
+  return src ? xstrndup(src, xstrlen(src) + 1) : NULL;
 }
 
 char* xstrndup(const char *src, size_t size) {
