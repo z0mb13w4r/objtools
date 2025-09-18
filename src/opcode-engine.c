@@ -94,9 +94,11 @@ handle_t oeaskbyaddr(handle_t p, const uint64_t vaddr, const imode_t mode) {
 
 handle_t oegetbyaddr(handle_t p, const uint64_t vaddr, const imode_t mode) {
   if (isopcode(p)) {
+    return oegetbyaddr(ocget(p, OPCODE_ENGINE), vaddr, mode);
+  } else if (isocengine(p)) {
     handle_t p0 = oeseebyaddr(p, vaddr, mode);
     if (NULL == p0 && OPENGINE_GROUP == mode) {
-      pocengine_t p1 = ocget(p, OPCODE_ENGINE);
+      pocengine_t p1 = CAST(pocengine_t, p);
       if (p1->size == p1->sizemax) {
         p1 = eresize(p1, p1->sizemax + OPENGINE_MAXSIZE);
       }
