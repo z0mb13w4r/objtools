@@ -315,7 +315,7 @@ int ocdwarf_sfcreate(handle_t p, Dwarf_Die die, Dwarf_Error *e) {
     pdwarf_srcfiles_t sf = ocget(p, OPCODE_DWARF_SRCFILES);
     if (sf) {
       if (ECODE_ISOK(ocdwarf_sfreset(p))) {
-      sf->status = dwarf_srcfiles(die, &sf->data, &sf->size, e);
+        sf->status = dwarf_srcfiles(die, &sf->data, &sf->size, e);
 
         int n = ECODE_OK;
         if (MODE_ISANY(oc->action, OPTPROGRAM_VERBOSE) && IS_DLV_OK(sf->status) && 0 != sf->size) {

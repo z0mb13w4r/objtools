@@ -42,7 +42,7 @@ static int execute_store_sp(handle_t p, handle_t q, Dwarf_Die die,
               if (IS_DLV_OK(dwarf_formstring(pattr[i], &value, e))) {
 
                 if (DW_AT_name == nattr) {
-                  d0->name = value;
+                  d0->name = xstrdup(value);
                 }
 
               }
@@ -54,6 +54,10 @@ static int execute_store_sp(handle_t p, handle_t q, Dwarf_Die die,
                   d0->nline = value + 1;
                 } else if (DW_AT_decl_file == nattr) {
                   d0->nfile = value;
+                  pdwarf_srcfiles_t sf = ocget(p, OPCODE_DWARF_SRCFILES);
+                  if (sf && IS_DLV_OK(sf->status) && (0 != sf->size) && ((value - 1) < sf->size)) {
+                    d0->source = xstrdup(sf->data[value - 1]);
+                  }
                 } else if (DW_AT_decl_column == nattr) {
                   d0->ncolumn = value;
                 } else if (DW_AT_high_pc == nattr) {
@@ -85,17 +89,17 @@ static int execute_store_sp(handle_t p, handle_t q, Dwarf_Die die,
 
 static int execute_store_cu(handle_t p, handle_t q, Dwarf_Die die,
                   Dwarf_Half tag, Dwarf_Bool isinfo, Dwarf_Error *e) {
-  if (isopcode(p) && isocengine(q)) {
-
-    int x = execute_store_sp(p, q, die, tag, isinfo, e);
-    if (IS_DLV_OK(x)) {
-      x = ocdwarf_sfcreate(p, die, e);
-    }
-
-    return x;
-  }
-
-  return DW_DLV_ERROR;
+  return execute_store_sp(p, q, die, tag, isinfo, e);
+//  if (isopcode(p) && isocengine(q)) {
+//    int x = execute_store_sp(p, q, die, tag, isinfo, e);
+//    if (IS_DLV_OK(x)) {
+//      x = ocdwarf_sfcreate(p, die, e);
+//    }
+//
+//    return x;
+//  }
+//
+//  return DW_DLV_ERROR;
 }
 
 static int execute_store(handle_t p, handle_t q, Dwarf_Die die,
@@ -114,7 +118,6 @@ static int execute_store(handle_t p, handle_t q, Dwarf_Die die,
     if (DW_TAG_subprogram == tag) {
       return execute_store_sp(p, q, die, tag, isinfo, e);
     } else if (DW_TAG_compile_unit == tag || DW_TAG_partial_unit == tag  || DW_TAG_type_unit == tag) {
-      ocdwarf_sfreset(p);
       return execute_store_cu(p, q, die, tag, isinfo, e);
     }
 
@@ -205,7 +208,10 @@ static handle_t execute_info(handle_t p, handle_t q, Dwarf_Error *e) {
         return q;
       }
 
-      x = execute_die_and_siblings(p, q, cu_die, isinfo, e);
+      x = ocdwarf_sfcreate(p, cu_die, e);
+      if (IS_DLV_OK(x)) {
+        x = execute_die_and_siblings(p, q, cu_die, isinfo, e);
+      }
 
       dwarf_dealloc_die(cu_die);
       ocdwarf_sfreset(p);
