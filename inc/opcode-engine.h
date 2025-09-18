@@ -47,7 +47,7 @@ handle_t emalloc();
 handle_t efree(handle_t p);
 handle_t eresize(handle_t p, const size_t sizemax);
 
-handle_t odmalloc();
+handle_t odmalloc(const uint64_t vaddr);
 handle_t odfree(handle_t p);
 
 handle_t oecreate_engine(handle_t p);

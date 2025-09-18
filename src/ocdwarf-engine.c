@@ -17,8 +17,7 @@ static int execute_store_sp(handle_t p, handle_t q, Dwarf_Die die,
           if (IS_DLV_OK(dwarf_formaddr(pattr[i], &vaddr, e))) {
             g0 = oegetbyaddr(q, vaddr, OPENGINE_GROUP);
             if (g0 && (NULL == g0->debug)) {
-              g0->debug = odmalloc();
-              g0->debug->laddr = vaddr;
+              g0->debug = odmalloc(vaddr);
             }
             d0 = g0->debug;
           }
@@ -26,7 +25,6 @@ static int execute_store_sp(handle_t p, handle_t q, Dwarf_Die die,
         }
       }
 
-// ocdwarf_printf_merit(p, die, attr, nattr, e);
       if (d0) {
         for (Dwarf_Signed i = 0; IS_DLV_OK(x) && (i < cattr); ++i) {
           Dwarf_Half nattr = 0;
@@ -117,11 +115,12 @@ static int execute_store(handle_t p, handle_t q, Dwarf_Die die,
 
     if (DW_TAG_subprogram == tag) {
       return execute_store_sp(p, q, die, tag, isinfo, e);
-    } else if (DW_TAG_compile_unit == tag || DW_TAG_partial_unit == tag  || DW_TAG_type_unit == tag) {
-      return execute_store_cu(p, q, die, tag, isinfo, e);
+//    } else if (DW_TAG_compile_unit == tag || DW_TAG_partial_unit == tag  || DW_TAG_type_unit == tag) {
+//      return execute_store_cu(p, q, die, tag, isinfo, e);
     }
 
-    return  execute_store_sp(p, q, die, tag, isinfo, e);
+//    return  execute_store_sp(p, q, die, tag, isinfo, e);
+    return DW_DLV_OK;
   }
 
   return DW_DLV_ERROR;
@@ -132,9 +131,11 @@ static int execute_die_and_siblings(handle_t p, handle_t q, Dwarf_Die die,
   if (isopcode(p) && isocengine(q)) {
     Dwarf_Die cur_die = die;
 
+    int x = execute_store(p, q, cur_die, isinfo, e);
+
     for ( ; ; ) {
       Dwarf_Die child = 0;
-      int x = dwarf_child(cur_die, &child, e);
+      x = dwarf_child(cur_die, &child, e);
       if (IS_DLV_ERROR(x)) {
         dwarf_dealloc_die(cur_die);
         ocdwarf_finish(p, e);
@@ -149,7 +150,7 @@ static int execute_die_and_siblings(handle_t p, handle_t q, Dwarf_Die die,
       Dwarf_Die sib_die = 0;
       x = dwarf_siblingof_b(ocget(p, OPCODE_DWARF_DEBUG), cur_die, isinfo, &sib_die, e);
       if (IS_DLV_NO_ENTRY(x)) {
-        return DW_DLV_NO_ENTRY;
+        return DW_DLV_OK;
       } else if (IS_DLV_ERROR(x)) {
         ocdwarf_finish(p, e);
         return DW_DLV_ERROR;
@@ -249,9 +250,7 @@ static handle_t execute_src(handle_t p, handle_t q, Dwarf_Error *e) {
             if (IS_DLV_OK(dwarf_lineaddr(k, &pc, e))) {
               g0 = oegetbyaddr(q, pc, OPENGINE_GROUP);
               if (g0 && (NULL == g0->debug)) {
-                g0->debug = odmalloc();
-                g0->debug->laddr = pc;
-                g0->debug->haddr = pc;
+                g0->debug = odmalloc(pc);
               }
               d0 = g0->debug;
 
@@ -262,7 +261,7 @@ static handle_t execute_src(handle_t p, handle_t q, Dwarf_Error *e) {
               char *value4 = NULL;
 
               if (IS_DLV_OK(dwarf_lineno(k, &value0, e))) {
-               d0->nline = value0;
+                d0->nline = value0;
               }
 
               if (IS_DLV_OK(dwarf_lineoff_b(k, &value0, e))) {

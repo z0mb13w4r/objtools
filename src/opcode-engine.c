@@ -57,9 +57,11 @@ handle_t efree(handle_t p) {
   return p;
 }
 
-handle_t odmalloc() {
+handle_t odmalloc(const uint64_t vaddr) {
   pocdebug_t p = xmalloc(sizeof(ocdebug_t));
   if (p) {
+    p->laddr = vaddr;
+    p->haddr = vaddr;
   }
 
   return setmode(p, MODE_OCDEBUG);
@@ -112,6 +114,7 @@ handle_t oegetbyaddr(handle_t p, const uint64_t vaddr, const imode_t mode) {
         }
 
         ++p1->size;
+        xmemclr(g1, sizeof(ocgroups_t));
         g1->vaddr = vaddr;
         return g1;
       }
