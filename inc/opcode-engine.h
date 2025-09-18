@@ -13,6 +13,7 @@
 typedef struct ocdebug_s {
   smode_t    mode;
 
+  int32_t    nfile;
   int32_t    nline;
   int32_t    ncolumn;
   int32_t    discriminator;
