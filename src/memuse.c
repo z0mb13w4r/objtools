@@ -67,6 +67,10 @@ unknown_t xmemset(unknown_t ptr, int value, size_t count) {
   return ptr && count ? memset(ptr, value, count) : NULL;
 }
 
+unknown_t xmemclr(unknown_t ptr, size_t count) {
+  return xmemset(ptr, 0, count);
+}
+
 unknown_t zfree(punknown_t p) {
   if (p && *p) {
     xfree(*p);
