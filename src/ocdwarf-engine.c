@@ -7,42 +7,52 @@ static int execute_store_sp(handle_t p, handle_t q, Dwarf_Die die,
     Dwarf_Attribute *pattr = 0;
     int x = dwarf_attrlist(die, &pattr, &cattr, e);
     if (IS_DLV_OK(x)) {
+      pocdebug_t d0 = NULL;
+      pocgroups_t g0 = NULL;
       for (Dwarf_Signed i = 0; IS_DLV_OK(x) && (i < cattr); ++i) {
         Dwarf_Half nattr = 0;
         x = dwarf_whatattr(pattr[i], &nattr, e);
         if (IS_DLV_OK(x) && (DW_AT_low_pc == nattr)) {
-          Dwarf_Addr addr = 0;
-          if (IS_DLV_OK(dwarf_formaddr(pattr[i], &addr, e))) {
+          Dwarf_Addr vaddr = 0;
+          if (IS_DLV_OK(dwarf_formaddr(pattr[i], &vaddr, e))) {
+            g0 = oegetbyaddr(q, vaddr, OPENGINE_GROUP);
+            if (g0 && (NULL == g0->debug)) {
+              g0->debug = xmalloc(sizeof(ocdebug_t));
+              g0->debug->laddr = vaddr;
+            }
+            d0 = g0->debug;
           }
           break;
         }
       }
 
 // ocdwarf_printf_merit(p, die, attr, nattr, e);
-      for (Dwarf_Signed i = 0; IS_DLV_OK(x) && (i < cattr); ++i) {
-        Dwarf_Half nattr = 0;
-        Dwarf_Half nform = 0;
+      if (d0) {
+        for (Dwarf_Signed i = 0; IS_DLV_OK(x) && (i < cattr); ++i) {
+          Dwarf_Half nattr = 0;
+          Dwarf_Half nform = 0;
 
-        x = dwarf_whatattr(pattr[i], &nattr, e);
-        if (IS_DLV_OK(x)) {
-          x = dwarf_whatform(pattr[i], &nform, e);
-        }
-        if (IS_DLV_OK(x)) {
-          if (isused(ecFORMSTRING, nform)) {
-            char *str = NULL;
-            if (IS_DLV_OK(dwarf_formstring(pattr[i], &str, e))) {
-            }
-          } else if (isused(ecFORMUDATA, nform) || isused(ecFORMBOOL, nform)) {
-            Dwarf_Unsigned value = 0;
-            if (IS_DLV_OK(dwarf_formudata(pattr[i], &value, e))) {
-            }
-          } else if (isused(ecFORMADDR, nform)) {
-            Dwarf_Addr addr = 0;
-            if (IS_DLV_OK(dwarf_formaddr(pattr[i], &addr, e))) {
-            }
-          } else if (isused(ecFORMGREF, nform)) {
-            Dwarf_Unsigned value = 0;
-            if (IS_DLV_OK(dwarf_global_formref(pattr[i], &value, e))) {
+          x = dwarf_whatattr(pattr[i], &nattr, e);
+          if (IS_DLV_OK(x)) {
+            x = dwarf_whatform(pattr[i], &nform, e);
+          }
+          if (IS_DLV_OK(x)) {
+            if (isused(ecFORMSTRING, nform)) {
+              char *str = NULL;
+              if (IS_DLV_OK(dwarf_formstring(pattr[i], &str, e))) {
+              }
+            } else if (isused(ecFORMUDATA, nform) || isused(ecFORMBOOL, nform)) {
+              Dwarf_Unsigned value = 0;
+              if (IS_DLV_OK(dwarf_formudata(pattr[i], &value, e))) {
+              }
+            } else if (isused(ecFORMADDR, nform)) {
+              Dwarf_Addr addr = 0;
+              if (IS_DLV_OK(dwarf_formaddr(pattr[i], &addr, e))) {
+              }
+            } else if (isused(ecFORMGREF, nform)) {
+              Dwarf_Unsigned value = 0;
+              if (IS_DLV_OK(dwarf_global_formref(pattr[i], &value, e))) {
+              }
             }
           }
         }
