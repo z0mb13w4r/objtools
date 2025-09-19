@@ -13,6 +13,10 @@
 typedef struct ocdebug_s {
   smode_t    mode;
 
+  bool_t     pe;
+  bool_t     eb;
+
+  int32_t    isa;
   int32_t    nfile;
   int32_t    nline;
   int32_t    ncolumn;

@@ -85,20 +85,20 @@ static int execute_store_sp(handle_t p, handle_t q, Dwarf_Die die,
   return DW_DLV_ERROR;
 }
 
-static int execute_store_cu(handle_t p, handle_t q, Dwarf_Die die,
-                  Dwarf_Half tag, Dwarf_Bool isinfo, Dwarf_Error *e) {
-  return execute_store_sp(p, q, die, tag, isinfo, e);
-//  if (isopcode(p) && isocengine(q)) {
-//    int x = execute_store_sp(p, q, die, tag, isinfo, e);
-//    if (IS_DLV_OK(x)) {
-//      x = ocdwarf_sfcreate(p, die, e);
-//    }
-//
-//    return x;
-//  }
-//
-//  return DW_DLV_ERROR;
-}
+//static int execute_store_cu(handle_t p, handle_t q, Dwarf_Die die,
+//                  Dwarf_Half tag, Dwarf_Bool isinfo, Dwarf_Error *e) {
+//  return execute_store_sp(p, q, die, tag, isinfo, e);
+////  if (isopcode(p) && isocengine(q)) {
+////    int x = execute_store_sp(p, q, die, tag, isinfo, e);
+////    if (IS_DLV_OK(x)) {
+////      x = ocdwarf_sfcreate(p, die, e);
+////    }
+////
+////    return x;
+////  }
+////
+////  return DW_DLV_ERROR;
+//}
 
 static int execute_store(handle_t p, handle_t q, Dwarf_Die die,
                   Dwarf_Bool isinfo, Dwarf_Error *e) {
@@ -269,6 +269,9 @@ static handle_t execute_src(handle_t p, handle_t q, Dwarf_Error *e) {
               }
 
               if (IS_DLV_OK(dwarf_prologue_end_etc(k, &value2, &value3, &value0, &value1, e))) {
+                d0->pe = value2;
+                d0->eb = value3;
+                d0->isa = value0;
                 d0->discriminator = value1;
               }
 
