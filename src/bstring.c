@@ -157,7 +157,7 @@ handle_t bstrncat(handle_t dst, handle_t src, size_t size) {
 handle_t bstrclr(handle_t p) {
   if (isbstring(p)) {
     pbstring_t p0 = CAST(pbstring_t, p);
-    xmemset(p0->data, 0, p0->size);
+    xmemclr(p0->data, p0->size);
     return p;
   }
 

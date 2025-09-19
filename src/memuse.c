@@ -7,7 +7,7 @@ unknown_t xmalloc(const size_t size) {
   if (0 != size) {
     p = malloc(size);
     if (p) {
-      xmemset(p, 0, size);
+      xmemclr(p, size);
     }
   }
 
