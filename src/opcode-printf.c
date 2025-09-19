@@ -224,9 +224,6 @@ int opcode_printf_source(handle_t p, const uint64_t vaddr) {
       }
     }
 
-    ocdwarf_dealloc(p, name, DW_DLA_STRING);
-    ocdwarf_dealloc(p, source, DW_DLA_STRING);
-
     if (MODE_ISANY(oc->action, OPTPROGRAM_LINE_NUMBERS)) {
       if (isok && 0 != source) {
         n += printf_text(source, USE_LT | USE_COLON);
@@ -239,8 +236,6 @@ int opcode_printf_source(handle_t p, const uint64_t vaddr) {
         oc->prev_nline = nline;
         oc->prev_discriminator = discriminator;
         xstrncpy(oc->prev_name, name, sizeof(oc->prev_name));
-
-        ocdwarf_dealloc(p, source, DW_DLA_STRING);
       }
     }
 
@@ -277,8 +272,6 @@ int opcode_printf_detail(handle_t p, const uint64_t vaddr, unknown_t mnemonic, u
           n += printf_text(name, USE_LT | USE_SPACE | USE_TB);
         }
       }
-
-      ocdwarf_dealloc(p, name, DW_DLA_STRING);
     }
 
     if (MODE_ISANY(oc->action, OPTPROGRAM_DEBUGLEVEL1)) {
