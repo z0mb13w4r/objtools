@@ -245,7 +245,7 @@ static int ocdwarf_eh_frame_fdes0(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
       Dwarf_Addr end_func_addr = low_pc + func_length;
 
       char* name = 0;
-      n += ocdwarf_spget(p, low_pc, &name, NULL, NULL, NULL, NULL, NULL, NULL, NULL, e);
+      ocget_symbol(p, low_pc, &name, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
       // < 0>
       n += ocdwarf_printf_DEC(p, i, USE_NOSPACE);
@@ -410,7 +410,7 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
     fde_item = fde_items;
     for (Dwarf_Signed i = 0; i < fde_count; ++i, ++fde_item) {
       char* name = 0;
-      n += ocdwarf_spget(p, fde_item->lo_pc, &name, NULL, NULL, NULL, NULL, NULL, NULL, NULL, e);
+      ocget_symbol(p, fde_item->lo_pc, &name, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
       n += printf_nice(fde_item->fde_offset, USE_LHEX32 | USE_NOSPACE);
       n += printf_nice(fde_item->fde_bytes_length, USE_LHEXNN);
