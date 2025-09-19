@@ -745,7 +745,7 @@ const char* ocget_symbol(handle_t p, uint64_t vaddr, char **name,
                      uint64_t *laddr, uint64_t *haddr, uint64_t *offset) {
   if (isopcode(p) && name && 0 != vaddr) {
     pocdebug_t p0 = oeseebyaddr(p, vaddr, OPENGINE_DEBUG);
-    if ((NULL == p0 || NULL == p0->name || 0 == p0->name[0]) && offset) {
+    if ((NULL == p0 || MODE_ISNOT(p0->role, OPDEBUG_NAME)) && offset) {
       p0 = oeaskbyaddr(p, vaddr, OPENGINE_DEBUG);
     }
 
@@ -768,7 +768,7 @@ const char* ocget_symbol(handle_t p, uint64_t vaddr, char **name,
     }
   }
 
-  return NULL;
+  return (name) && (*name) && (*name)[0] ? (*name) : NULL;
 }
 
 handle_t ocmalloc() {
