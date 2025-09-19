@@ -38,16 +38,13 @@ static int execute_store_sp(handle_t p, handle_t q, Dwarf_Die die,
             if (isused(ecFORMSTRING, nform)) {
               char *value = NULL;
               if (IS_DLV_OK(dwarf_formstring(pattr[i], &value, e))) {
-
                 if (DW_AT_name == nattr) {
                   d0->name = xstrdup(value);
                 }
-
               }
             } else if (isused(ecFORMUDATA, nform) || isused(ecFORMBOOL, nform)) {
               Dwarf_Unsigned value = 0;
               if (IS_DLV_OK(dwarf_formudata(pattr[i], &value, e))) {
-
                 if (DW_AT_decl_line == nattr) {
                   d0->nline = value + 1;
                 } else if (DW_AT_decl_file == nattr) {
@@ -61,7 +58,6 @@ static int execute_store_sp(handle_t p, handle_t q, Dwarf_Die die,
                 } else if (DW_AT_high_pc == nattr) {
                   d0->haddr = d0->laddr + value;
                 }
-
               }
             } else if (isused(ecFORMADDR, nform)) {
               Dwarf_Addr addr = 0;

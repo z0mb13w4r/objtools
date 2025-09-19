@@ -89,6 +89,24 @@ handle_t oecreate_engine(handle_t p) {
 
 handle_t oeaskbyaddr(handle_t p, const uint64_t vaddr, const imode_t mode) {
   if (isopcode(p)) {
+    return oeaskbyaddr(ocget(p, OPCODE_ENGINE), vaddr, mode);
+  } else if (isocengine(p)) {
+    pocengine_t p0 = CAST(pocengine_t, p);
+    pocgroups_t q0 = p0 ? p0->groups : NULL;
+    pocgroups_t q1 = NULL;
+    if (q0) {
+      for (p0->cpos = 0; p0->cpos < p0->size; ++p0->cpos, ++q0) {
+        if (vaddr < q0->vaddr) return q1;
+        else if ((OPENGINE_DEBUG == mode) && q0->debug) {
+          pocdebug_t d0 = CAST(pocdebug_t, q0->debug);
+          if (d0->laddr <= vaddr && vaddr <= d0->haddr) {
+            return d0;
+          }
+        }
+
+        q1 = q0;
+      }
+    }
   }
 
   return NULL;
