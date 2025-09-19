@@ -27,11 +27,11 @@ int main(int argc, char* argv[]) {
         printf_e("'%s': no such file.", o->inpname);
       }
 
-      nfree(p);
+      bfree(p);
     }
   }
 
-  nfree(o);
+  ofree(o);
   return r;
 }
 

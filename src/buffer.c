@@ -210,7 +210,7 @@ handle_t bopen(const char* name) {
         p->size = fsize(f);
         p->data = xmalloc(p->size);
         if (p->size != xget(p->data, 1, p->size, f)) {
-          p = nfree(p);
+          p = bfree(p);
         }
 
         fclose(f);
