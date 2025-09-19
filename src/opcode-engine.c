@@ -60,6 +60,7 @@ handle_t efree(handle_t p) {
 handle_t odmalloc(const uint64_t vaddr) {
   pocdebug_t p = xmalloc(sizeof(ocdebug_t));
   if (p) {
+    p->role = OPDEBUG_LADDR;
     p->laddr = vaddr;
     p->haddr = vaddr;
   }

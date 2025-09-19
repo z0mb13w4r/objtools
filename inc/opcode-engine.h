@@ -7,11 +7,25 @@
 #define OPENGINE_DEBUG                 (2)
 #define OPENGINE_EXAMINE               (3)
 
+#define OPDEBUG_PE                     U64MASK(0)
+#define OPDEBUG_EB                     U64MASK(1)
+#define OPDEBUG_CC                     U64MASK(2)
+#define OPDEBUG_ISA                    U64MASK(3)
+#define OPDEBUG_FILENO                 U64MASK(4)
+#define OPDEBUG_LINENO                 U64MASK(5)
+#define OPDEBUG_COLUMN                 U64MASK(6)
+#define OPDEBUG_DISCRIMINATOR          U64MASK(7)
+#define OPDEBUG_LADDR                  U64MASK(8)
+#define OPDEBUG_HADDR                  U64MASK(9)
+#define OPDEBUG_NAME                   U64MASK(10)
+#define OPDEBUG_SOURCE                 U64MASK(11)
+
 #define MODE_OCDEBUG                   (MODE_PUT0('O') | MODE_PUT1('C') | MODE_PUT2('D'))
 #define MODE_OCENGINE                  (MODE_PUT0('O') | MODE_PUT1('C') | MODE_PUT2('X'))
 
 typedef struct ocdebug_s {
   smode_t    mode;
+  imode_t    role;
 
   bool_t     pe;
   bool_t     eb;

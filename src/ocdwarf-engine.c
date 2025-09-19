@@ -19,7 +19,7 @@ static int execute_store_sp(handle_t p, handle_t q, Dwarf_Die die,
             if (g0 && (NULL == g0->debug)) {
               g0->debug = odmalloc(vaddr);
             }
-            d0 = g0->debug;
+            d0 = g0 ? g0->debug : NULL;
           }
           break;
         }
@@ -39,6 +39,7 @@ static int execute_store_sp(handle_t p, handle_t q, Dwarf_Die die,
               char *value = NULL;
               if (IS_DLV_OK(dwarf_formstring(pattr[i], &value, e))) {
                 if (DW_AT_name == nattr) {
+                  d0->role |= OPDEBUG_NAME;
                   d0->name = xstrdup(value);
                 }
               }
@@ -46,16 +47,21 @@ static int execute_store_sp(handle_t p, handle_t q, Dwarf_Die die,
               Dwarf_Unsigned value = 0;
               if (IS_DLV_OK(dwarf_formudata(pattr[i], &value, e))) {
                 if (DW_AT_decl_line == nattr) {
+                  d0->role |= OPDEBUG_LINENO;
                   d0->nline = value + 1;
                 } else if (DW_AT_decl_file == nattr) {
+                  d0->role |= OPDEBUG_FILENO;
                   d0->nfile = value;
                   pdwarf_srcfiles_t sf = ocget(p, OPCODE_DWARF_SRCFILES);
                   if (sf && IS_DLV_OK(sf->status) && (0 != sf->size) && ((value - 1) < sf->size)) {
+                    d0->role |= OPDEBUG_SOURCE;
                     d0->source = xstrdup(sf->data[value - 1]);
                   }
                 } else if (DW_AT_decl_column == nattr) {
+                  d0->role |= OPDEBUG_COLUMN;
                   d0->ncolumn = value;
                 } else if (DW_AT_high_pc == nattr) {
+                  d0->role |= OPDEBUG_HADDR;
                   d0->haddr = d0->laddr + value;
                 }
               }
@@ -257,18 +263,22 @@ static handle_t execute_src(handle_t p, handle_t q, Dwarf_Error *e) {
               char *value4 = NULL;
 
               if (IS_DLV_OK(dwarf_lineno(k, &value0, e))) {
+                d0->role |= OPDEBUG_LINENO;
                 d0->nline = value0;
               }
 
               if (IS_DLV_OK(dwarf_lineoff_b(k, &value0, e))) {
+                d0->role |= OPDEBUG_COLUMN;
                 d0->ncolumn = value0;
               }
 
               if (IS_DLV_OK(dwarf_linecontext(k, &value0, e))) {
+                d0->role |= OPDEBUG_CC;
                 d0->cc = value0;
               }
 
               if (IS_DLV_OK(dwarf_prologue_end_etc(k, &value2, &value3, &value0, &value1, e))) {
+                d0->role |= OPDEBUG_PE | OPDEBUG_EB | OPDEBUG_ISA | OPDEBUG_DISCRIMINATOR;
                 d0->pe = value2;
                 d0->eb = value3;
                 d0->isa = value0;
@@ -276,6 +286,7 @@ static handle_t execute_src(handle_t p, handle_t q, Dwarf_Error *e) {
               }
 
               if (IS_DLV_OK(dwarf_linesrc(k, &value4, e))) {
+                d0->role |= OPDEBUG_SOURCE;
                 d0->source = xstrdup(value4);
                 ocdwarf_dealloc(p, value4, DW_DLA_STRING);
               }
