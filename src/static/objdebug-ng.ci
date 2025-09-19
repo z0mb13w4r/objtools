@@ -30,7 +30,7 @@ const args_t zDEBUGELFARGS[] = {
   {'i', "info",               OPTDWARF_DEBUG_INFO,          zDEBUGINFO},
   {'k', "links",              OPTDWARF_DEBUG_LINK,          zDEBUGLINKS},
   {'K', "follow-links",       OPTDWARF_DEBUG_LINK_FOLLOW,   zDEBUGLINKSFOLLOW},
-  {'l', "rawline",            OPTDWARF_DEBUG_LINE,          zDEBUGLINE},
+//  {'l', "rawline",            OPTDWARF_DEBUG_LINE,          zDEBUGLINE},
   {'L', "decodedline",        OPTDWARF_DEBUG_LINE_DECODED,  zDEBUGLINEDECODED},
   {'m', "macro",              OPTDWARF_DEBUG_MACRO,         zDEBUGMACRO},
   {'o', "loc",                OPTDWARF_DEBUG_LOC,           zDEBUGLOC},
