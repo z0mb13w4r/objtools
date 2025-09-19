@@ -16,6 +16,7 @@ typedef struct ocdebug_s {
   bool_t     pe;
   bool_t     eb;
 
+  int32_t    cc;
   int32_t    isa;
   int32_t    nfile;
   int32_t    nline;

@@ -268,6 +268,10 @@ static handle_t execute_src(handle_t p, handle_t q, Dwarf_Error *e) {
                 d0->ncolumn = value0;
               }
 
+              if (IS_DLV_OK(dwarf_linecontext(k, &value0, e))) {
+                d0->cc = value0;
+              }
+
               if (IS_DLV_OK(dwarf_prologue_end_etc(k, &value2, &value3, &value0, &value1, e))) {
                 d0->pe = value2;
                 d0->eb = value3;
@@ -277,6 +281,7 @@ static handle_t execute_src(handle_t p, handle_t q, Dwarf_Error *e) {
 
               if (IS_DLV_OK(dwarf_linesrc(k, &value4, e))) {
                 d0->source = xstrdup(value4);
+                ocdwarf_dealloc(p, value4, DW_DLA_STRING);
               }
             }
           }
