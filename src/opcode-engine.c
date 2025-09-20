@@ -1,4 +1,5 @@
 #include "opcode-engine.h"
+#include "opcode-engine-got.h"
 #include "ocdwarf-engine.h"
 
 #define OPENGINE_MAXSIZE (1000)
@@ -108,7 +109,10 @@ handle_t osfree(handle_t p) {
 
 handle_t oecreate_engine(handle_t p) {
   if (isopcode(p)) {
-    return ocdwarf_create(p, emalloc());
+    handle_t q = ocdwarf_create(p, emalloc());
+    if (isocengine(q)) {
+      return opcode_create(p, q);
+    }
   }
 
   return NULL;

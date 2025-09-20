@@ -3,5 +3,7 @@
 
 #include "opcode-engine.h"
 
+handle_t opcode_create(handle_t p, handle_t q);
+
 #endif
 
