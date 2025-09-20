@@ -5,7 +5,8 @@
 
 #define OPENGINE_GROUP                 (1)
 #define OPENGINE_DEBUG                 (2)
-#define OPENGINE_EXAMINE               (3)
+#define OPENGINE_SYMBOL                (3)
+#define OPENGINE_EXAMINE               (4)
 
 #define OPDEBUG_PE                     U64MASK(0)
 #define OPDEBUG_EB                     U64MASK(1)
@@ -20,28 +21,33 @@
 #define OPDEBUG_NAME                   U64MASK(10)
 #define OPDEBUG_SOURCE                 U64MASK(11)
 
+#define OPSYMBOL_LADDR                 U64MASK(0)
+#define OPSYMBOL_HADDR                 U64MASK(1)
+#define OPSYMBOL_NAME                  U64MASK(2)
+
 #define MODE_OCDEBUG                   (MODE_PUT0('O') | MODE_PUT1('C') | MODE_PUT2('D'))
 #define MODE_OCENGINE                  (MODE_PUT0('O') | MODE_PUT1('C') | MODE_PUT2('X'))
+#define MODE_OCSYMBOL                  (MODE_PUT0('O') | MODE_PUT1('C') | MODE_PUT2('S'))
 
 typedef struct ocdebug_s {
-  smode_t    mode;
-  imode_t    role;
+  smode_t   mode;
+  imode_t   role;
 
-  bool_t     pe;
-  bool_t     eb;
+  bool_t    pe;
+  bool_t    eb;
 
-  int32_t    cc;
-  int32_t    isa;
-  int32_t    nfile;
-  int32_t    nline;
-  int32_t    ncolumn;
-  int32_t    discriminator;
+  int32_t   cc;
+  int32_t   isa;
+  int32_t   nfile;
+  int32_t   nline;
+  int32_t   ncolumn;
+  int32_t   discriminator;
 
-  uint64_t   laddr;
-  uint64_t   haddr;
+  uint64_t  laddr;
+  uint64_t  haddr;
 
-  char      *name;
-  char      *source;
+  char     *name;
+  char     *source;
 } ocdebug_t, *pocdebug_t;
 
 typedef struct ocgroups_s {
@@ -58,6 +64,16 @@ typedef struct ocengine_s {
 
   pocgroups_t groups;
 } ocengine_t, *pocengine_t;
+
+typedef struct ocsymbol_s {
+  smode_t   mode;
+  imode_t   role;
+
+  uint64_t  laddr;
+  uint64_t  haddr;
+
+  char     *name;
+} ocsymbol_t, *pocsymbol_t;
 
 bool_t isocdebug(handle_t p);
 bool_t isocengine(handle_t p);
