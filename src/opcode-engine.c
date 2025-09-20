@@ -51,6 +51,7 @@ handle_t efree(handle_t p) {
     if (g0) {
       for (p0->cpos = 0; p0->cpos < p0->size; ++p0->cpos, ++g0) {
         oefree(g0->examine);
+        osfree(g0->symbol);
         odfree(g0->debug);
       }
     }
