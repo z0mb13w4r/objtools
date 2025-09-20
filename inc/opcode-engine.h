@@ -50,10 +50,21 @@ typedef struct ocdebug_s {
   char     *source;
 } ocdebug_t, *pocdebug_t;
 
+typedef struct ocsymbol_s {
+  smode_t   mode;
+  imode_t   role;
+
+  uint64_t  laddr;
+  uint64_t  haddr;
+
+  char     *name;
+} ocsymbol_t, *pocsymbol_t;
+
 typedef struct ocgroups_s {
   uint64_t     vaddr;
 
   pocdebug_t   debug;
+  pocsymbol_t  symbol;
   pocexamine_t examine;
 } ocgroups_t, *pocgroups_t;
 
@@ -64,16 +75,6 @@ typedef struct ocengine_s {
 
   pocgroups_t groups;
 } ocengine_t, *pocengine_t;
-
-typedef struct ocsymbol_s {
-  smode_t   mode;
-  imode_t   role;
-
-  uint64_t  laddr;
-  uint64_t  haddr;
-
-  char     *name;
-} ocsymbol_t, *pocsymbol_t;
 
 bool_t isocdebug(handle_t p);
 bool_t isocengine(handle_t p);

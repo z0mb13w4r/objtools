@@ -123,11 +123,17 @@ handle_t oeaskbyaddr(handle_t p, const uint64_t vaddr, const imode_t mode) {
     pocgroups_t q1 = NULL;
     if (q0) {
       for (p0->cpos = 0; p0->cpos < p0->size; ++p0->cpos, ++q0) {
-        if (vaddr < q0->vaddr) return q1;
-        else if ((OPENGINE_DEBUG == mode) && q0->debug) {
+        if (vaddr < q0->vaddr) {
+          return q1;
+        } else if ((OPENGINE_DEBUG == mode) && q0->debug) {
           pocdebug_t d0 = CAST(pocdebug_t, q0->debug);
           if (d0->laddr <= vaddr && vaddr <= d0->haddr) {
             return d0;
+          }
+        } else if ((OPENGINE_SYMBOL == mode) && q0->symbol) {
+          pocsymbol_t s0 = CAST(pocsymbol_t, q0->symbol);
+          if (s0->laddr <= vaddr && vaddr <= s0->haddr) {
+            return s0;
           }
         }
 
@@ -185,6 +191,8 @@ handle_t oeseebyaddr(handle_t p, const uint64_t vaddr, const imode_t mode) {
             return q0;
           } else if (OPENGINE_DEBUG == mode) {
             return q0->debug;
+          } else if (OPENGINE_SYMBOL == mode) {
+            return q0->symbol;
           } else if (OPENGINE_EXAMINE == mode) {
             return q0->examine;
           }
