@@ -11,6 +11,10 @@ bool_t isocengine(handle_t p) {
   return ismode(p, MODE_OCENGINE);
 }
 
+bool_t isocsymbol(handle_t p) {
+  return ismode(p, MODE_OCSYMBOL);
+}
+
 handle_t emalloc() {
   pocengine_t p = xmalloc(sizeof(ocengine_t));
   if (p) {
@@ -72,6 +76,28 @@ handle_t odfree(handle_t p) {
   if (isocdebug(p)) {
     pocdebug_t p0 = CAST(pocdebug_t, p);
     xfree(p0->source);
+    xfree(p0->name);
+    xfree(p0);
+    return NULL;
+  }
+
+  return p;
+}
+
+handle_t osmalloc(const uint64_t vaddr) {
+  pocsymbol_t p = xmalloc(sizeof(ocsymbol_t));
+  if (p) {
+    p->role = OPSYMBOL_LADDR;
+    p->laddr = vaddr;
+    p->haddr = vaddr;
+  }
+
+  return setmode(p, MODE_OCSYMBOL);
+}
+
+handle_t osfree(handle_t p) {
+  if (isocsymbol(p)) {
+    pocsymbol_t p0 = CAST(pocsymbol_t, p);
     xfree(p0->name);
     xfree(p0);
     return NULL;

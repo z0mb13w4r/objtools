@@ -77,6 +77,7 @@ typedef struct ocsymbol_s {
 
 bool_t isocdebug(handle_t p);
 bool_t isocengine(handle_t p);
+bool_t isocsymbol(handle_t p);
 
 handle_t emalloc();
 handle_t efree(handle_t p);
@@ -84,6 +85,9 @@ handle_t eresize(handle_t p, const size_t sizemax);
 
 handle_t odmalloc(const uint64_t vaddr);
 handle_t odfree(handle_t p);
+
+handle_t osmalloc(const uint64_t vaddr);
+handle_t osfree(handle_t p);
 
 handle_t oecreate_engine(handle_t p);
 
