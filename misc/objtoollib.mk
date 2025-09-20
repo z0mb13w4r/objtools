@@ -56,7 +56,8 @@ SRCS_C = \
 	opcode-printf.c \
 	opcode-engine.c \
 	opcode-examine.c \
-	opcode-capstone.c
+	opcode-capstone.c \
+	opcode-engine-got.c
 
 # Name of cpp source files to be included in build.
 #---------------------------------------------------------------------
