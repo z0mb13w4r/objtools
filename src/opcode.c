@@ -744,20 +744,20 @@ const char* ocget_symbol(handle_t p, uint64_t vaddr, char **name,
                      uint64_t *nline, uint64_t *ncolumn, uint64_t *discriminator, char **source,
                      uint64_t *laddr, uint64_t *haddr, uint64_t *offset) {
   if (isopcode(p) && name && 0 != vaddr) {
-    pocdebug_t p0 = oeseebyaddr(p, vaddr, OPENGINE_DEBUG);
-    if ((NULL == p0 || MODE_ISNOT(p0->role, OPDEBUG_NAME)) && offset) {
-      p0 = oeaskbyaddr(p, vaddr, OPENGINE_DEBUG);
+    pocdebug_t d0 = oeseebyaddr(p, vaddr, OPENGINE_DEBUG);
+    if ((NULL == d0 || MODE_ISNOT(d0->role, OPDEBUG_NAME)) && offset) {
+      d0 = oeaskbyaddr(p, vaddr, OPENGINE_DEBUG);
     }
 
-    if (isocdebug(p0)) {
-      if (name)          *name = p0->name;
-      if (nline)         *nline = p0->nline;
-      if (laddr)         *laddr = p0->laddr;
-      if (haddr)         *haddr = p0->haddr;
-      if (offset)        *offset = vaddr - p0->laddr;
-      if (source)        *source = p0->source;
-      if (ncolumn)       *ncolumn = p0->ncolumn;
-      if (discriminator) *discriminator = p0->discriminator;
+    if (isocdebug(d0)) {
+      if (name)          *name = d0->name;
+      if (nline)         *nline = d0->nline;
+      if (laddr)         *laddr = d0->laddr;
+      if (haddr)         *haddr = d0->haddr;
+      if (offset)        *offset = vaddr - d0->laddr;
+      if (source)        *source = d0->source;
+      if (ncolumn)       *ncolumn = d0->ncolumn;
+      if (discriminator) *discriminator = d0->discriminator;
     } else if (ochas(p, OPCODE_BFD)) {
       *name = opcodebfd_getsymbol(p, vaddr, offset);
     } else {
