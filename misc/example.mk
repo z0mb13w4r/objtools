@@ -21,8 +21,10 @@ SRCS_CPP =
 #---------------------------------------------------------------------
 TARGETBASE = example
 
-ifeq ($(CROSS),ARM)
+ifeq ($(CROSS),ARM32)
+else ifeq ($(CROSS),ARM64)
 else ifeq ($(CROSS),WIN32)
+else ifeq ($(CROSS),WIN64)
 else ifeq ($(CROSS),LINUX32)
 else
 	CROSS = LINUX64
@@ -70,19 +72,19 @@ LIB_PATHS = \
 #---------------------------------------------------------------------
 
 ifeq ($(DEBUG),y)
-	CFLAGS = -O0 -Wall -Wno-unknown-pragmas -c -fmessage-length=0 -fshort-enums -MMD -MP -ggdb -g3
+	CFLAGS = -Og -Wall -Wno-unknown-pragmas -c -fmessage-length=0 -MMD -MP -ggdb -g3
 else
-	CFLAGS = -O0 -Wall -c -fmessage-length=0 -fshort-enums -MMD -MP
+	CFLAGS = -O0 -Wall -c -fmessage-length=0 -MMD -MP
 	DFLAGS += -DNDEBUG
 endif
 
 # Set profile flags, dependant on PROFILE flag being set.
 
-ifeq ($(PROFILE),TRUE)
+ifeq ($(PROFILE),y)
 	CFLAGS += -pg
 	LFLAGS += -pg
 else
-	PROFILE = FALSE
+	PROFILE = n
 endif
 
 KPROF_FILE = $(TARGET).kprof
@@ -90,14 +92,24 @@ PROFILE_FILE = gmon.out
 
 # GNU toolchain definitions
 #---------------------------------------------------------------------
-ifeq ($(CROSS),ARM)
-	CROSS_COMPILE = /home/WF_3.02/wrlinux-3.0/sysroots/arm-mm6-glibc-small/x86-linux2/arm-wrs-linux-gnueabi-arm_iwmmxt_el-glibc_small-
-	DFLAGS += -DENV_LINUX -DLINUX -DTARGET_ARM
+ifeq ($(CROSS),ARM32)
+	CROSS_COMPILE = arm-linux-gnueabihf-
+	DFLAGS += -DENV_LINUX -DLINUX -DTARGET_ARM32
+	EFLAGS  = -Wl,--no-enum-size-warning
+	LFLAGS +=
+else ifeq ($(CROSS),ARM64)
+	CROSS_COMPILE = aarch64-linux-gnu-
+	DFLAGS += -DENV_LINUX -DLINUX -DTARGET_ARM64
 	EFLAGS  = -Wl,--no-enum-size-warning
 	LFLAGS +=
 else ifeq ($(CROSS),WIN32)
 	CROSS_COMPILE = x86_64-w64-mingw32-
 	DFLAGS += -DWIN32
+	EFLAGS  =
+	LFLAGS += -static-libgcc -static-libstdc++
+else ifeq ($(CROSS),WIN64)
+	CROSS_COMPILE = i686-w64-mingw32-
+	DFLAGS += -DWIN64
 	EFLAGS  =
 	LFLAGS += -static-libgcc -static-libstdc++
 else ifeq ($(CROSS),LINUX32)
@@ -251,9 +263,13 @@ ifeq ($(DEBUG),y)
 	@echo 'Finished stripping target: $@'
 else
 ifeq ($(CROSS),WIN32)
-	-$(CP) $(TARGET).exe ../bin/$(TARGET).exe
-else ifeq ($(CROSS),ARM)
-	-$(CP) $(TARGET) ../bin/$(TARGET)-arm
+	-$(CP) $(TARGET).exe ../bin/$(TARGET)-32.exe
+else ifeq ($(CROSS),WIN32)
+	-$(CP) $(TARGET) ../bin/$(TARGET)-64-arm
+else ifeq ($(CROSS),ARM32)
+	-$(CP) $(TARGET) ../bin/$(TARGET)-32-arm
+else ifeq ($(CROSS),ARM64)
+	-$(CP) $(TARGET) ../bin/$(TARGET)-64-arm
 else ifeq ($(CROSS),LINUX32)
 	-$(CP) $(TARGET) ../bin/$(TARGET)-32
 else
