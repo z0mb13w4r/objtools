@@ -2,7 +2,7 @@
 
 static int execute_store_sp(handle_t p, handle_t q, Dwarf_Die die,
                   Dwarf_Half tag, Dwarf_Bool isinfo, Dwarf_Error *e) {
-  if (isopcode(p) && isocengine(q)) {
+  if (isopcode(p) && isoengine(q)) {
     Dwarf_Signed cattr = 0;
     Dwarf_Attribute *pattr = 0;
     int x = dwarf_attrlist(die, &pattr, &cattr, e);
@@ -90,7 +90,7 @@ static int execute_store_sp(handle_t p, handle_t q, Dwarf_Die die,
 //static int execute_store_cu(handle_t p, handle_t q, Dwarf_Die die,
 //                  Dwarf_Half tag, Dwarf_Bool isinfo, Dwarf_Error *e) {
 //  return execute_store_sp(p, q, die, tag, isinfo, e);
-////  if (isopcode(p) && isocengine(q)) {
+////  if (isopcode(p) && isoengine(q)) {
 ////    int x = execute_store_sp(p, q, die, tag, isinfo, e);
 ////    if (IS_DLV_OK(x)) {
 ////      x = ocdwarf_sfcreate(p, die, e);
@@ -104,7 +104,7 @@ static int execute_store_sp(handle_t p, handle_t q, Dwarf_Die die,
 
 static int execute_store(handle_t p, handle_t q, Dwarf_Die die,
                   Dwarf_Bool isinfo, Dwarf_Error *e) {
-  if (isopcode(p) && isocengine(q)) {
+  if (isopcode(p) && isoengine(q)) {
     Dwarf_Half tag = 0;
     int x = dwarf_tag(die, &tag, e);
     if (IS_DLV_ANY_ERROR(x)) {
@@ -130,7 +130,7 @@ static int execute_store(handle_t p, handle_t q, Dwarf_Die die,
 
 static int execute_die_and_siblings(handle_t p, handle_t q, Dwarf_Die die,
                   Dwarf_Bool isinfo, Dwarf_Error *e) {
-  if (isopcode(p) && isocengine(q)) {
+  if (isopcode(p) && isoengine(q)) {
     Dwarf_Die cur_die = die;
 
     int x = execute_store(p, q, cur_die, isinfo, e);
@@ -191,7 +191,7 @@ static int execute_next_cu_header(handle_t p, Dwarf_Die *cu_die, Dwarf_Error *e)
 }
 
 static handle_t execute_inf(handle_t p, handle_t q, Dwarf_Error *e) {
-  if (isopcode(p) && isocengine(q)) {
+  if (isopcode(p) && isoengine(q)) {
     Dwarf_Bool isinfo = TRUE; /* our data is not DWARF4 .debug_types. */
 
     for ( ; ; ) {
@@ -231,7 +231,7 @@ static handle_t execute_inf(handle_t p, handle_t q, Dwarf_Error *e) {
 }
 
 static handle_t execute_src(handle_t p, handle_t q, Dwarf_Error *e) {
-  if (isopcode(p) && isocengine(q)) {
+  if (isopcode(p) && isoengine(q)) {
     Dwarf_Die cu_die = 0;
 
     if (IS_DLV_OK(execute_next_cu_header(p, &cu_die, e))) {

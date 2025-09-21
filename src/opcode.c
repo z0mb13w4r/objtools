@@ -744,12 +744,25 @@ const char* ocget_symbol(handle_t p, uint64_t vaddr, char **name,
                      uint64_t *nline, uint64_t *ncolumn, uint64_t *discriminator, char **source,
                      uint64_t *laddr, uint64_t *haddr, uint64_t *offset) {
   if (isopcode(p) && name && 0 != vaddr) {
-    pocdebug_t d0 = oeseebyaddr(p, vaddr, OPENGINE_DEBUG);
-    if ((NULL == d0 || MODE_ISNOT(d0->role, OPDEBUG_NAME)) && offset) {
-      d0 = oeaskbyaddr(p, vaddr, OPENGINE_DEBUG);
+    pocdebug_t d0 = NULL;
+    pocsymbol_t s0 = NULL;
+
+    d0 = oeseebyaddr(p, vaddr, OPENGINE_DEBUG);
+    d0 = !isodebug(d0) || MODE_ISNOT(d0->role, OPDEBUG_NAME) ? NULL : d0;
+
+    if (NULL == d0) {
+      s0 = oeaskbyaddr(p, vaddr, OPENGINE_SYMBOL);
+      s0 = !isosymbol(s0) || MODE_ISNOT(s0->role, OPSYMBOL_NAME) ? NULL : s0;
     }
 
-    if (isocdebug(d0)) {
+    if ((NULL == d0) && (NULL == s0) && offset) {
+      d0 = oeaskbyaddr(p, vaddr, OPENGINE_DEBUG);
+      d0 = !isodebug(d0) || MODE_ISNOT(d0->role, OPDEBUG_NAME) ? NULL : d0;
+    }
+
+    if (isosymbol(s0)) {
+      if (name)          *name = s0->name;
+    } else if (isodebug(d0)) {
       if (name)          *name = d0->name;
       if (nline)         *nline = d0->nline;
       if (laddr)         *laddr = d0->laddr;

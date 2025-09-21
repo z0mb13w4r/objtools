@@ -4,15 +4,15 @@
 
 #define OPENGINE_MAXSIZE (1000)
 
-bool_t isocdebug(handle_t p) {
+bool_t isodebug(handle_t p) {
   return ismode(p, MODE_OCDEBUG);
 }
 
-bool_t isocengine(handle_t p) {
+bool_t isoengine(handle_t p) {
   return ismode(p, MODE_OCENGINE);
 }
 
-bool_t isocsymbol(handle_t p) {
+bool_t isosymbol(handle_t p) {
   return ismode(p, MODE_OCSYMBOL);
 }
 
@@ -27,7 +27,7 @@ handle_t emalloc() {
 }
 
 handle_t eresize(handle_t p, const size_t sizemax) {
-  if (isocengine(p)) {
+  if (isoengine(p)) {
     pocengine_t p0 = CAST(pocengine_t, p);
     size_t s1 = sizeof(ocgroups_t) * p0->sizemax;
     size_t s2 = sizeof(ocgroups_t) * sizemax;
@@ -45,7 +45,7 @@ handle_t eresize(handle_t p, const size_t sizemax) {
 }
 
 handle_t efree(handle_t p) {
-  if (isocengine(p)) {
+  if (isoengine(p)) {
     pocengine_t p0 = CAST(pocengine_t, p);
     pocgroups_t g0 = p0 && p0->groups ? p0->groups : NULL;
     if (g0) {
@@ -75,7 +75,7 @@ handle_t odmalloc(const uint64_t vaddr) {
 }
 
 handle_t odfree(handle_t p) {
-  if (isocdebug(p)) {
+  if (isodebug(p)) {
     pocdebug_t p0 = CAST(pocdebug_t, p);
     xfree(p0->source);
     xfree(p0->name);
@@ -98,7 +98,7 @@ handle_t osmalloc(const uint64_t vaddr) {
 }
 
 handle_t osfree(handle_t p) {
-  if (isocsymbol(p)) {
+  if (isosymbol(p)) {
     pocsymbol_t p0 = CAST(pocsymbol_t, p);
     xfree(p0->name);
     xfree(p0);
@@ -111,7 +111,7 @@ handle_t osfree(handle_t p) {
 handle_t oecreate_engine(handle_t p) {
   if (isopcode(p)) {
     handle_t q = ocdwarf_create(p, emalloc());
-    if (isocengine(q)) {
+    if (isoengine(q)) {
       return opcode_create(p, q);
     }
   }
@@ -122,7 +122,7 @@ handle_t oecreate_engine(handle_t p) {
 handle_t oeaskbyaddr(handle_t p, const uint64_t vaddr, const imode_t mode) {
   if (isopcode(p)) {
     return oeaskbyaddr(ocget(p, OPCODE_ENGINE), vaddr, mode);
-  } else if (isocengine(p)) {
+  } else if (isoengine(p)) {
     pocengine_t p0 = CAST(pocengine_t, p);
     pocgroups_t q0 = p0 ? p0->groups : NULL;
     pocgroups_t q1 = NULL;
@@ -153,7 +153,7 @@ handle_t oeaskbyaddr(handle_t p, const uint64_t vaddr, const imode_t mode) {
 handle_t oegetbyaddr(handle_t p, const uint64_t vaddr, const imode_t mode) {
   if (isopcode(p)) {
     return oegetbyaddr(ocget(p, OPCODE_ENGINE), vaddr, mode);
-  } else if (isocengine(p)) {
+  } else if (isoengine(p)) {
     handle_t p0 = oeseebyaddr(p, vaddr, mode);
     if (NULL == p0 && OPENGINE_GROUP == mode) {
       pocengine_t p1 = CAST(pocengine_t, p);
@@ -185,7 +185,7 @@ handle_t oegetbyaddr(handle_t p, const uint64_t vaddr, const imode_t mode) {
 handle_t oeseebyaddr(handle_t p, const uint64_t vaddr, const imode_t mode) {
   if (isopcode(p)) {
     return oeseebyaddr(ocget(p, OPCODE_ENGINE), vaddr, mode);
-  } else if (isocengine(p)) {
+  } else if (isoengine(p)) {
     pocengine_t p0 = CAST(pocengine_t, p);
     pocgroups_t q0 = p0 ? p0->groups : NULL;
     if (q0) {

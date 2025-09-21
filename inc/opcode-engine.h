@@ -76,9 +76,9 @@ typedef struct ocengine_s {
   pocgroups_t groups;
 } ocengine_t, *pocengine_t;
 
-bool_t isocdebug(handle_t p);
-bool_t isocengine(handle_t p);
-bool_t isocsymbol(handle_t p);
+bool_t isodebug(handle_t p);
+bool_t isoengine(handle_t p);
+bool_t isosymbol(handle_t p);
 
 handle_t emalloc();
 handle_t efree(handle_t p);

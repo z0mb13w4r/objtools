@@ -1,7 +1,7 @@
 #include "opcode-engine-got.h"
 
 static handle_t execute_new(handle_t p, const uint64_t vaddr, const char* name) {
-  if (isocengine(p)) {
+  if (isoengine(p)) {
     pocgroups_t g0 = oegetbyaddr(p, vaddr, OPENGINE_GROUP);
     if (g0) {
       if (NULL == g0->symbol) {
@@ -16,7 +16,7 @@ static handle_t execute_new(handle_t p, const uint64_t vaddr, const char* name) 
 }
 
 handle_t opcode_create(handle_t p, handle_t q) {
-  if (isopcode(p) && isocengine(q)) {
+  if (isopcode(p) && isoengine(q)) {
     execute_new(q, 0x10b0, "__cxa_finalize@plt");
     execute_new(q, 0x10c0, "strcpy@plt");
     execute_new(q, 0x10d0, "puts@plt");
