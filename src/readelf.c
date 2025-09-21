@@ -814,22 +814,32 @@ static int dump_unwind64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr
 static int dump_symbols0(const pbuffer_t p, const poptions_t o,
                          const uint64_t secindex, const uint64_t count, const uint64_t sh_offset) {
   int n = 0;
+
+  const int MAXSIZE = isELF64(p) ? 18 : 10;
+
+  const imode_t USE_LHEXNN = isELF64(p) ? USE_LHEX64 : USE_LHEX32;
+
   n += printf_text("Symbol table", USE_LT);
   n += printf_text(ecget_secnamebyindex(p, secindex), USE_LT | USE_SQ | USE_SPACE);
   n += printf_text("at offset", USE_SPACE);
-  n += printf_nice(sh_offset, isELF64(p) ? USE_LHEX64 : USE_LHEX32);
+  n += printf_nice(sh_offset, USE_LHEXNN);
   n += printf_text("contains", USE_SPACE);
   n += printf_nice(count, USE_DEC);
   n += printf_text(1 == count ? "entry" : "entries", USE_LT | USE_SPACE | USE_COLON | USE_EOL);
-  n += printf_text("   Num: Value             Size Type    Bind   Vis      Ndx Name", USE_LT | USE_EOL);
+  n += printf_text("   Num", USE_LT | USE_COLON);
+  n += printf_text("Value", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+  n += printf_text("Size Type    Bind   Vis      Ndx Name", USE_LT | USE_SPACE | USE_EOL);
   return n;
 }
 
 static int dump_symbols1(const pbuffer_t p, const poptions_t o, const uint64_t symindex,
                          const uint64_t st_value, const uint64_t st_size, const uint64_t st_info, const uint64_t st_other, const uint64_t st_shndx) {
   int n = 0;
+
+  const imode_t USE_LHEXNN = isELF64(p) ? USE_LHEX64 : USE_LHEX32;
+
   n += printf_nice(symindex, USE_DEC5 | USE_COLON);
-  n += printf_nice(st_value, USE_LHEX64);
+  n += printf_nice(st_value, USE_LHEXNN);
   n += printf_nice(st_size, USE_DEC5);
   n += printf_pick(ecSTTTYPE, ELF_ST_TYPE(st_info), USE_LT | USE_SPACE | SET_PAD(8));
   n += printf_pick(ecSTBBIND, ELF_ST_BIND(st_info), USE_LT | USE_SPACE | SET_PAD(7));
