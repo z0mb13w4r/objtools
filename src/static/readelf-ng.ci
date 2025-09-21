@@ -11,6 +11,7 @@ static char zELFVERSIONINFO[]    = "Displays the contents of the version section
 static char zELFDYNAMIC[]        = "Displays the contents of the file's dynamic section.";
 static char zELFHEADERS[]        = "Display all the headers in the file.";
 static char zELFSECTIONGROUPS[]  = "Displays the information contained in the file's section groups.";
+static char zElFSECTIONDETAILS[] = "Displays the detailed section information. Implies -S.";
 static char zELFFILEHEADER[]     = "Displays the information contained in the ELF header at the start of the file.";
 static char zELFPROGRAMHEADERS[] = "Displays the information contained in the file's segment headers.";
 static char zELFNOTES[]          = "Displays the contents of the NOTE segments.";
@@ -31,6 +32,7 @@ static const args_t zREADELFARGS[] = {
   {'d', "--dynamic",         OPTREADELF_DYNAMIC,           zELFDYNAMIC},
   {'e', "--headers",         OPTREADELF_HEADERS,           zELFHEADERS},
   {'g', "--section-groups",  OPTREADELF_SECTIONGROUPS,     zELFSECTIONGROUPS},
+  {'t', "--section-details", OPTREADELF_SECTIONDETAILS,    zElFSECTIONDETAILS},
   {'h', "--file-header",     OPTREADELF_FILEHEADER,        zELFFILEHEADER},
   {'l', "--program-headers", OPTREADELF_PROGRAMHEADERS,    zELFPROGRAMHEADERS},
   {'n', "--notes",           OPTREADELF_NOTES,             zELFNOTES},
