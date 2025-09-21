@@ -213,7 +213,8 @@ int opcode_printf_source(handle_t p, const uint64_t vaddr) {
 
     ocget_symbol(p, vaddr, &name, &nline, NULL, &discriminator, &source, NULL, NULL, NULL);
     bool_t isok = oc->prev_nline != nline || oc->prev_discriminator != discriminator
-              || (name && 0 != xstrcmp(oc->prev_name, name));
+              || (source && xstrcrc32(source) != oc->prev_source)
+              || (name && xstrcrc32(name) != oc->prev_name);
 
     if (isok && name && name[0]) {
       n += opcode_printf_LADDR(p, vaddr, USE_NONE);
@@ -235,7 +236,8 @@ int opcode_printf_source(handle_t p, const uint64_t vaddr) {
 
         oc->prev_nline = nline;
         oc->prev_discriminator = discriminator;
-        xstrncpy(oc->prev_name, name, sizeof(oc->prev_name));
+        oc->prev_source = xstrcrc32(source);
+        oc->prev_name = xstrcrc32(name);
       }
     }
 

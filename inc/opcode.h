@@ -102,7 +102,8 @@ typedef struct opcode_s {
   uint64_t   eaddress; /* --stop-address */
   uint64_t   prev_nline;
   uint64_t   prev_discriminator;
-  char       prev_name[160];
+  uint32_t   prev_source;
+  uint32_t   prev_name;
 
   union {
     csh                cs;
