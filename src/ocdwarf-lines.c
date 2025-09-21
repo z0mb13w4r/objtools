@@ -126,6 +126,8 @@ int ocdwarf_debug_line(handle_t p, handle_t s, handle_t d) {
       n += printf_eol();
     }
 
+    uint32_t prev_uri = 0;
+
     for (Dwarf_Signed i = 0; i < line_count; ++i) {
       if (MODE_ISANY(oc->ocdump, OPTDWARF_VERBOSE)) {
         n += printf_nice(i, USE_DEC3 | USE_TB);
@@ -240,14 +242,18 @@ int ocdwarf_debug_line(handle_t p, handle_t s, handle_t d) {
         ocdwarf_dealloc(p, sf, DW_DLA_STRING);
       }
 
-      if ((0 == i) && MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED)) {
+      if (MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED)) {
         char* lf = NULL;
         x = dwarf_linesrc(k, &lf, ocget(p, OPCODE_DWARF_ERROR));
-        if (IS_DLV_OK(x) && 0 != lf && 0 != *lf) {
-          n += printf_text("uri", USE_LT | USE_COLON | USE_SPACE);
-          n += printf_text(lf, USE_LT | USE_SPACE | USE_DQ);
+        if (IS_DLV_OK(x) && lf && lf[0]) {
+          uint32_t curr_uri = xstrcrc32(lf);
+          if (prev_uri != curr_uri) {
+            n += printf_text("uri", USE_LT | USE_COLON | USE_SPACE);
+            n += printf_text(lf, USE_LT | USE_SPACE | USE_DQ);
+          }
+          prev_uri = curr_uri;
+          ocdwarf_dealloc(p, lf, DW_DLA_STRING);
         }
-        ocdwarf_dealloc(p, lf, DW_DLA_STRING);
       }
 
       n += printf_eol();
