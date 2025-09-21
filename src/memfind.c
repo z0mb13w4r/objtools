@@ -52,10 +52,16 @@ uint64_t fgetu32(handle_t p) {
 handle_t fnext(handle_t p) {
   if (isfind(p)) {
     pfind_t p0 = CAST(pfind_t, p);
-    return p0 ? fstep(p, p0->chunksize) : NULL;
+    if (p0) {
+      p0->cpos += p0->chunksize;
+      if (p0->cpos < p0->epos) return p0;
+      p0->item = NULL;
+    }
+
+    return p0;
   }
 
-  return p;
+  return NULL;
 }
 
 unknown_t fmove(handle_t p, const size_t cpos) {
