@@ -1,5 +1,6 @@
 #include <unistd.h>
 
+#include "crc.h"
 #include "memuse.h"
 
 unknown_t xmalloc(const size_t size) {
@@ -57,6 +58,30 @@ char* xstrndup(const char *src, size_t size) {
   }
 
   return NULL;
+}
+
+uchar_t xstrcrc8(const char* src) {
+  return xstrncrc8(src, xstrlen(src));
+}
+
+uchar_t xstrncrc8(const char* src, size_t count) {
+  return crc8_calculate(CRC_DEF8, CAST(puchar_t, src), count);
+}
+
+ushort_t xstrcrc16(const char* src) {
+  return xstrncrc16(src, xstrlen(src));
+}
+
+ushort_t xstrncrc16(const char* src, size_t count) {
+  return crc16_calculate(CRC_DEF16, CAST(puchar_t, src), count);
+}
+
+ulong_t xstrcrc32(const char* src) {
+  return xstrncrc32(src, xstrlen(src));
+}
+
+ulong_t xstrncrc32(const char* src, size_t count) {
+  return crc32_calculate(CRC_DEF32, CAST(puchar_t, src), count);
 }
 
 unknown_t xmemcpy(unknown_t dst, const unknown_t src, size_t count) {
