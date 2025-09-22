@@ -315,8 +315,13 @@ static handle_t execute_acc(handle_t p, handle_t q) {
         pocdebug_t d0 = g0->debug ? g0->debug : NULL;
         if (d0->source) {
           d0->sourcecode = xstrgrab(d0->source, d0->nline, d0->ncolumn);
+          if (d0->sourcecode) {
+            d0->role |= OPDEBUG_SOURCECODE;
+          }
         }
       }
+
+      return q;
     }
   }
 

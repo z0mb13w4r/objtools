@@ -20,6 +20,7 @@
 #define OPDEBUG_HADDR                  U64MASK(9)
 #define OPDEBUG_NAME                   U64MASK(10)
 #define OPDEBUG_SOURCE                 U64MASK(11)
+#define OPDEBUG_SOURCECODE             U64MASK(12)
 
 #define OPSYMBOL_LADDR                 U64MASK(0)
 #define OPSYMBOL_HADDR                 U64MASK(1)
