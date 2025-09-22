@@ -235,13 +235,14 @@ int opcode_printf_source(handle_t p, const uint64_t vaddr) {
         }
         n += printf_eol();
 
-        if (sourcecode && MODE_ISANY(oc->action, OPTPROGRAM_SOURCE_CODE)) {
+        if (sourcecode && (xstrcrc32(sourcecode) != oc->prev_sourcecode) && MODE_ISANY(oc->action, OPTPROGRAM_SOURCE_CODE)) {
           n += printf_text(sourcecode, USE_LT);
           n += printf_eol();
         }
 
         oc->prev_nline = nline;
         oc->prev_discriminator = discriminator;
+        oc->prev_sourcecode = xstrcrc32(sourcecode);
         oc->prev_source = xstrcrc32(source);
         oc->prev_name = xstrcrc32(name);
       }
