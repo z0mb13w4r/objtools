@@ -60,24 +60,25 @@ char* xstrndup(const char *src, size_t size) {
   return NULL;
 }
 
-char* xstrgrab(const char* name, int nline, size_t count) {
+char* xstrgrab(const char* name, int spos, int epos) {
   MALLOCA(char, ii, 2 * 1024);
 
-  if (name && nline && count) {
+  if (name && spos && epos) {
     FILE *fp = fopen(name, "rt");
     if (fp) {
       int i = 0;
-      char* p = NULL;
-      while (fgets(ii, sizeof(ii), fp)) {
+      int n = 0;
+      while (fgets(ii + n, sizeof(ii) - n, fp)) {
         ++i;
-        if (nline == i) {
-          p = xstrdup(ii);
+        if (spos <= i && i < epos) {
+          n = xstrlen(ii);
+        } else if (epos == i) {
           break;
         }
       }
 
       fclose(fp);
-      return p;
+      return xstrdup(ii);
     }
   }
 
