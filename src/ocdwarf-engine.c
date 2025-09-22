@@ -306,9 +306,28 @@ static handle_t execute_src(handle_t p, handle_t q, Dwarf_Error *e) {
   return NULL;
 }
 
+static handle_t execute_acc(handle_t p, handle_t q) {
+  if (isopcode(p) && isoengine(q)) {
+    pocengine_t e0 = CAST(pocengine_t, q);
+    pocgroups_t g0 = e0 ? e0->groups : NULL;
+    if (g0) {
+      for (e0->cpos = 0; e0->cpos < e0->size; ++e0->cpos, ++g0) {
+        pocdebug_t d0 = g0->debug ? g0->debug : NULL;
+        if (d0->source) {
+          d0->sourcecode = xstrgrab(d0->source, d0->nline, d0->ncolumn);
+        }
+      }
+    }
+  }
+
+  return NULL;
+}
+
 handle_t ocdwarf_create(handle_t p, handle_t q) {
   if (execute_inf(p, q, ocget(p, OPCODE_DWARF_ERROR))) {
-    return execute_src(p, q, ocget(p, OPCODE_DWARF_ERROR));
+    if (execute_src(p, q, ocget(p, OPCODE_DWARF_ERROR))) {
+      return execute_acc(p, q);
+    }
   }
 
   return NULL;

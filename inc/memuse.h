@@ -21,6 +21,8 @@ char *xstrncpy(char *dst, const char *src, size_t count);
 char* xstrdup(const char *src);
 char* xstrndup(const char *src, size_t size);
 
+char* xstrgrab(const char* name, int nline, size_t count);
+
 uchar_t  xstrcrc8(const char* src);
 uchar_t  xstrncrc8(const char* src, size_t count);
 ushort_t xstrcrc16(const char* src);
