@@ -208,10 +208,11 @@ int opcode_printf_source(handle_t p, const uint64_t vaddr) {
     int n = 0;
     char *name = NULL;
     char *source = NULL;
+    char *sourcecode = NULL;
     uint64_t nline = 0;
     uint64_t discriminator = 0;
 
-    ocget_symbol(p, vaddr, &name, &nline, NULL, &discriminator, &source, NULL, NULL, NULL);
+    ocget_symbol(p, vaddr, &name, &nline, NULL, &discriminator, &source, &sourcecode, NULL, NULL, NULL);
     bool_t isok = oc->prev_nline != nline || oc->prev_discriminator != discriminator
               || (source && xstrcrc32(source) != oc->prev_source)
               || (name && xstrcrc32(name) != oc->prev_name);
@@ -226,13 +227,18 @@ int opcode_printf_source(handle_t p, const uint64_t vaddr) {
     }
 
     if (MODE_ISANY(oc->action, OPTPROGRAM_LINE_NUMBERS)) {
-      if (isok && 0 != source) {
+      if (isok && source) {
         n += printf_text(source, USE_LT | USE_COLON);
         n += printf_nice(nline, USE_DEC | USE_NOSPACE);
         if (0 != discriminator) {
           n += printf_nice(discriminator, USE_DISCRIMINATOR);
         }
         n += printf_eol();
+
+        if (sourcecode && MODE_ISANY(oc->action, OPTPROGRAM_SOURCE_CODE)) {
+          n += printf_text(sourcecode, USE_LT);
+          n += printf_eol();
+        }
 
         oc->prev_nline = nline;
         oc->prev_discriminator = discriminator;
@@ -263,7 +269,7 @@ int opcode_printf_detail(handle_t p, const uint64_t vaddr, unknown_t mnemonic, u
 
     if (m && o1 && (m->uvalue || isok)) {
       uint64_t uvalue = m->uvalue ? m->uvalue : o1->uvalue;
-      ocget_symbol(p, uvalue, &name, NULL, NULL, NULL, NULL, NULL, NULL, &offset);
+      ocget_symbol(p, uvalue, &name, NULL, NULL, NULL, NULL, NULL, NULL, NULL, &offset);
 
       if (name && name[0]) {
         if (0 != offset) {

@@ -741,7 +741,7 @@ const char* ocget_fileformat(handle_t p) {
 }
 
 const char* ocget_symbol(handle_t p, uint64_t vaddr, char **name,
-                     uint64_t *nline, uint64_t *ncolumn, uint64_t *discriminator, char **source,
+                     uint64_t *nline, uint64_t *ncolumn, uint64_t *discriminator, char **source, char **sourcecode,
                      uint64_t *laddr, uint64_t *haddr, uint64_t *offset) {
   if (isopcode(p) && name && 0 != vaddr) {
     pocdebug_t d0 = oeseebyaddr(p, vaddr, OPENGINE_DEBUG);
@@ -753,6 +753,7 @@ const char* ocget_symbol(handle_t p, uint64_t vaddr, char **name,
       if (offset && MODE_ISANY(d0->role, OPDEBUG_LADDR))   *offset = vaddr - d0->laddr;
       if (source && MODE_ISANY(d0->role, OPDEBUG_SOURCE))  *source = d0->source;
       if (ncolumn && MODE_ISANY(d0->role, OPDEBUG_COLUMN)) *ncolumn = d0->ncolumn;
+      if (sourcecode && MODE_ISANY(d0->role, OPDEBUG_SOURCECODE)) *sourcecode = d0->sourcecode;
       if (discriminator && MODE_ISANY(d0->role, OPDEBUG_DISCRIMINATOR)) *discriminator = d0->discriminator;
     }
 
