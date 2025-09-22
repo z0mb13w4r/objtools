@@ -599,7 +599,7 @@ int printf_sore(const unknown_t p, const size_t size, const imode_t mode) {
     n += printf_eol();
   }
 
-  MALLOCA(char, o, 1024);
+  MALLOCA(char, o, MAX_BUFFER_SIZE);
 
   puchar_t p0 = CAST(puchar_t, p);
   if (USE_STR == modex || USE_STRSIZE == modex) {
@@ -877,7 +877,7 @@ int printf_data(const unknown_t p, const size_t size, const addrz_t addr, const 
 }
 
 int printf_mask(const pconvert_t p, const maskz_t mask, const imode_t mode) {
-  MALLOCA(char, data, MAX_BUFFER_SIZE);
+  MALLOCA(char, o, MAX_BUFFER_SIZE);
 
   int n = 0;
   if (p) {
@@ -885,16 +885,16 @@ int printf_mask(const pconvert_t p, const maskz_t mask, const imode_t mode) {
     imode_t s = mode & USE_NOSPACE ? USE_NONE : USE_SPACE;
     for (pconvert_t x = p; 0 != x->text; ++x) {
       if ((x->type & mask) == x->type) {
-        n += printf_work(data + n, sizeof(data) - n, x->text, (mode & ~USE_EOL) | s);
+        n += printf_work(o + n, sizeof(o) - n, x->text, (mode & ~USE_EOL) | s);
         v &= ~x->type;
       }
     }
 
     if (v) {
-      n += printf_neat(data + n, sizeof(data) - n, v, USE_UNKNOWN | USE_SPACE | (mode & ~USE_EOL));
+      n += printf_neat(o + n, sizeof(o) - n, v, USE_UNKNOWN | USE_SPACE | (mode & ~USE_EOL));
     }
 
-    n += printf_text(data, mode);
+    n += printf_text(o, mode);
   } else if (mode & USE_EOL) {
     n += printf_eol();
   }
@@ -936,77 +936,77 @@ int printf_picknull(const pconvert_t p, const pick_t x, const imode_t mode) {
 }
 
 int printf_d(const char* format, ...) {
-  MALLOCA(char, data, MAX_BUFFER_SIZE);
+  MALLOCA(char, o, MAX_BUFFER_SIZE);
 
   va_list pVAList;
   va_start(pVAList, format);
-  vsnprintf(data, sizeof(data), format, pVAList);
+  vsnprintf(o, sizeof(o), format, pVAList);
   va_end(pVAList);
 
   if (errname[0]) {
-    return fprintf(STDOUT, "%s: DEBUG: %s\n\n", errname, data);
+    return fprintf(STDOUT, "%s: DEBUG: %s\n\n", errname, o);
   }
 
-  return fprintf(STDOUT, "DEBUG: %s\n\n", data);
+  return fprintf(STDOUT, "DEBUG: %s\n\n", o);
 }
 
 int printf_e(const char* format, ...) {
-  MALLOCA(char, data, MAX_BUFFER_SIZE);
+  MALLOCA(char, o, MAX_BUFFER_SIZE);
 
   va_list pVAList;
   va_start(pVAList, format);
-  vsnprintf(data, sizeof(data), format, pVAList);
+  vsnprintf(o, sizeof(o), format, pVAList);
   va_end(pVAList);
 
   if (errname[0]) {
-    return fprintf(STDERR, "%s: ERROR: %s\n\n", errname, data);
+    return fprintf(STDERR, "%s: ERROR: %s\n\n", errname, o);
   }
 
-  return fprintf(STDERR, "ERROR: %s\n\n", data);
+  return fprintf(STDERR, "ERROR: %s\n\n", o);
 }
 
 int printf_i(const char* format, ...) {
-  MALLOCA(char, data, MAX_BUFFER_SIZE);
+  MALLOCA(char, o, MAX_BUFFER_SIZE);
 
   va_list pVAList;
   va_start(pVAList, format);
-  vsnprintf(data, sizeof(data), format, pVAList);
+  vsnprintf(o, sizeof(o), format, pVAList);
   va_end(pVAList);
 
   if (errname[0]) {
-    return fprintf(STDOUT, "%s: INFO: %s\n\n", errname, data);
+    return fprintf(STDOUT, "%s: INFO: %s\n\n", errname, o);
   }
 
-  return fprintf(STDOUT, "INFO: %s\n\n", data);
+  return fprintf(STDOUT, "INFO: %s\n\n", o);
 }
 
 int printf_w(const char* format, ...) {
-  MALLOCA(char, data, MAX_BUFFER_SIZE);
+  MALLOCA(char, o, MAX_BUFFER_SIZE);
 
   va_list pVAList;
   va_start(pVAList, format);
-  vsnprintf(data, sizeof(data), format, pVAList);
+  vsnprintf(o, sizeof(o), format, pVAList);
   va_end(pVAList);
 
   if (errname[0]) {
-    return fprintf(STDOUT, "%s: WARNING: %s\n\n", errname, data);
+    return fprintf(STDOUT, "%s: WARNING: %s\n\n", errname, o);
   }
 
-  return fprintf(STDOUT, "WARNING: %s\n\n", data);
+  return fprintf(STDOUT, "WARNING: %s\n\n", o);
 }
 
 void printf_x(const char* format, ...) {
-  MALLOCA(char, data, MAX_BUFFER_SIZE);
+  MALLOCA(char, o, MAX_BUFFER_SIZE);
 
   va_list pVAList;
   va_start(pVAList, format);
-  vsnprintf(data, sizeof(data), format, pVAList);
+  vsnprintf(o, sizeof(o), format, pVAList);
   va_end(pVAList);
 
   if (errname[0]) {
-    fprintf(STDERR, "%s: FAIL: %s\n\n", errname, data);
+    fprintf(STDERR, "%s: FAIL: %s\n\n", errname, o);
   } else {
-    fprintf(STDERR, "ERROR: %s\n\n", data);
+    fprintf(STDERR, "ERROR: %s\n\n", o);
   }
 
   exit(EXIT_FAILURE);
