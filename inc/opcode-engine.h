@@ -44,7 +44,10 @@ typedef struct ocdebug_s {
   int32_t   ncolumn;
   int32_t   discriminator;
 
-  uint64_t  laddr;
+  union {
+    uint64_t  laddr;
+    uint64_t  vaddr;
+  };
   uint64_t  haddr;
 
   char     *name;

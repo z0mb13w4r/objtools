@@ -209,15 +209,20 @@ int opcode_printf_source(handle_t p, const uint64_t vaddr) {
     char *name = NULL;
     char *source = NULL;
     char *sourcecode = NULL;
-    uint64_t nline = 0;
-    uint64_t discriminator = 0;
+    uint64_t curr_nline = 0;
+    uint64_t curr_discriminator = 0;
 
-    ocget_symbol(p, vaddr, &name, &nline, NULL, &discriminator, &source, &sourcecode, NULL, NULL, NULL);
-    bool_t isok = oc->prev_nline != nline || oc->prev_discriminator != discriminator
-              || (source && xstrcrc32(source) != oc->prev_source)
-              || (name && xstrcrc32(name) != oc->prev_name);
+    ocget_symbol(p, vaddr, &name, &curr_nline, NULL, &curr_discriminator, &source, &sourcecode, NULL, NULL, NULL);
 
-    if (isok && name && name[0]) {
+    uint32_t curr_name = xstrcrc32(name);
+    uint32_t curr_source = xstrcrc32(source);
+    uint32_t curr_sourcecode = xstrcrc32(sourcecode);
+
+    bool_t isok = oc->prev_nline != curr_nline || oc->prev_discriminator != curr_discriminator
+              || (source && curr_source != oc->prev_source)
+              || (name && curr_name != oc->prev_name);
+
+    if (isok && name && name[0] && (curr_name != oc->prev_name)) {
       n += opcode_printf_LADDR(p, vaddr, USE_NONE);
       n += printf_text(name, USE_LT | USE_SPACE | USE_TB | USE_COLON | USE_EOL);
 
@@ -229,22 +234,22 @@ int opcode_printf_source(handle_t p, const uint64_t vaddr) {
     if (MODE_ISANY(oc->action, OPTPROGRAM_LINE_NUMBERS)) {
       if (isok && source) {
         n += printf_text(source, USE_LT | USE_COLON);
-        n += printf_nice(nline, USE_DEC | USE_NOSPACE);
-        if (0 != discriminator) {
-          n += printf_nice(discriminator, USE_DISCRIMINATOR);
+        n += printf_nice(curr_nline, USE_DEC | USE_NOSPACE);
+        if (0 != curr_discriminator) {
+          n += printf_nice(curr_discriminator, USE_DISCRIMINATOR);
         }
         n += printf_eol();
 
-        if (sourcecode && (xstrcrc32(sourcecode) != oc->prev_sourcecode) && MODE_ISANY(oc->action, OPTPROGRAM_SOURCE_CODE)) {
+        if (sourcecode && (curr_sourcecode != oc->prev_sourcecode) && MODE_ISANY(oc->action, OPTPROGRAM_SOURCE_CODE)) {
           n += printf_text(sourcecode, USE_LT);
           n += printf_eol();
         }
 
-        oc->prev_nline = nline;
-        oc->prev_discriminator = discriminator;
-        oc->prev_sourcecode = xstrcrc32(sourcecode);
-        oc->prev_source = xstrcrc32(source);
-        oc->prev_name = xstrcrc32(name);
+        oc->prev_nline = curr_nline;
+        oc->prev_discriminator = curr_discriminator;
+        oc->prev_sourcecode = curr_sourcecode;
+        oc->prev_source = curr_source;
+        oc->prev_name = curr_name;
       }
     }
 

@@ -757,26 +757,18 @@ const char* ocget_symbol(handle_t p, uint64_t vaddr, char **name,
       if (discriminator && MODE_ISANY(d0->role, OPDEBUG_DISCRIMINATOR)) *discriminator = d0->discriminator;
     }
 
-//    if (!isodebug(d0) || MODE_ISNOT(d0->role, OPDEBUG_NAME)) {
+    if (name && (NULL == *name)) {
+      pocdebug_t d1 = oeaskbyaddr(p, vaddr, OPENGINE_DEBUG);
+      if (isodebug(d1)) {
+        if (name && MODE_ISANY(d1->role, OPDEBUG_NAME))      *name = d1->name;
+        if (offset && MODE_ISANY(d1->role, OPDEBUG_LADDR))   *offset = vaddr - d1->laddr;
+      }
+    }
+
     if (name && (NULL == *name)) {
       pocsymbol_t s0 = oeaskbyaddr(p, vaddr, OPENGINE_SYMBOL);
       if (isosymbol(s0)) {
         if (MODE_ISANY(s0->role, OPSYMBOL_NAME)) *name = s0->name;
-      }
-    }
-
-//      if ((!isosymbol(s0) || MODE_ISNOT(s0->role, OPSYMBOL_NAME)) && offset) {
-    if (offset && name && (NULL == *name)) {
-      pocdebug_t d1 = oeaskbyaddr(p, vaddr, OPENGINE_DEBUG);
-      if (isodebug(d1)) {
-        if (name && MODE_ISANY(d1->role, OPDEBUG_NAME))      *name = d1->name;
-//          if (nline && MODE_ISANY(d1->role, OPDEBUG_LINENO))   *nline = d1->nline;
-//          if (laddr && MODE_ISANY(d1->role, OPDEBUG_LADDR))    *laddr = d1->laddr;
-//          if (haddr && MODE_ISANY(d1->role, OPDEBUG_HADDR))    *haddr = d1->haddr;
-        if (offset && MODE_ISANY(d1->role, OPDEBUG_LADDR))   *offset = vaddr - d1->laddr;
-//          if (source && MODE_ISANY(d1->role, OPDEBUG_SOURCE))  *source = d1->source;
-//          if (ncolumn && MODE_ISANY(d1->role, OPDEBUG_COLUMN)) *ncolumn = d1->ncolumn;
-//          if (discriminator && MODE_ISANY(d1->role, OPDEBUG_DISCRIMINATOR)) *discriminator = d1->discriminator;
       }
     }
 

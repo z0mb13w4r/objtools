@@ -311,13 +311,22 @@ static handle_t execute_acc(handle_t p, handle_t q) {
     pocengine_t e0 = CAST(pocengine_t, q);
     pocgroups_t g0 = e0 ? e0->groups : NULL;
     if (g0) {
+      uint32_t prev_nline = 0;
+      uint32_t prev_source = 0;
       for (e0->cpos = 0; e0->cpos < e0->size; ++e0->cpos, ++g0) {
         pocdebug_t d0 = g0->debug ? g0->debug : NULL;
         if (d0->source) {
-          d0->sourcecode = xstrgrab(d0->source, d0->nline - 2, d0->nline);
+          uint32_t curr_source = xstrcrc32(d0->source);
+          if (prev_source == curr_source) {
+            d0->sourcecode = xstrgrab(d0->source, prev_nline + 1, d0->nline);
+          } else {
+            d0->sourcecode = xstrgrab(d0->source, d0->nline - 5, d0->nline);
+          }
           if (d0->sourcecode) {
             d0->role |= OPDEBUG_SOURCECODE;
           }
+          prev_source = curr_source;
+          prev_nline = d0->nline;
         }
       }
 
