@@ -77,6 +77,7 @@ handle_t odmalloc(const uint64_t vaddr) {
 handle_t odfree(handle_t p) {
   if (isodebug(p)) {
     pocdebug_t p0 = CAST(pocdebug_t, p);
+    xfree(p0->sourcecode);
     xfree(p0->source);
     xfree(p0->name);
     xfree(p0);

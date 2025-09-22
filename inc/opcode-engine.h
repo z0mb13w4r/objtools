@@ -48,6 +48,7 @@ typedef struct ocdebug_s {
 
   char     *name;
   char     *source;
+  char     *sourcecode;
 } ocdebug_t, *pocdebug_t;
 
 typedef struct ocsymbol_s {
