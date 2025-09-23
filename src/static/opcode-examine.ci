@@ -8,6 +8,13 @@ typedef struct oestruct_s {
 
 static oestruct_t oePREFIXTYPES[] = {
   OCSTRUCT("bnd",       OCINSTRUCTION_BND),
+
+  OCSTRUCT("repne",     OCINSTRUCTION_REPNE),
+  OCSTRUCT("repnz",     OCINSTRUCTION_REPNE),
+  OCSTRUCT("repe",      OCINSTRUCTION_REPE),
+  OCSTRUCT("repz",      OCINSTRUCTION_REPE),
+  OCSTRUCT("rep",       OCINSTRUCTION_REP),
+
   OCSTRUCT("data16",    OCINSTRUCTION_DATA16),
   OCSTRUCT("data32",    OCINSTRUCTION_DATA32),
   {NULL}
@@ -189,6 +196,9 @@ static oestruct_t oeINSTRUCTIONS[] = {
   OCSTRUCT("cwtl",      OCINSTRUCTION_CWTL),
   OCSTRUCT("cltq",      OCINSTRUCTION_CLTQ),
   OCSTRUCT("cqto",      OCINSTRUCTION_CQTO),
+
+  OCSTRUCT("scas",      OCINSTRUCTION_SCAS),
+
   {NULL}
 };
 
@@ -309,6 +319,7 @@ convert_t oeINSTRUCTIONFLAGS[] = {
   {"NS",                OCINSTRUCTION_NS},
   {"S",                 OCINSTRUCTION_S},
   {"BND",               OCINSTRUCTION_BND},
+  {"REP",               OCINSTRUCTION_REP},
   {"DATA16",            OCINSTRUCTION_DATA16},
   {"DATA32",            OCINSTRUCTION_DATA32},
   {"8BIT",              OCINSTRUCTION_8BIT},
@@ -355,6 +366,7 @@ convert_t oeINSTRUCTIONNAMES[] = {
   {"XCHG",              MODE_MASK16(OCINSTRUCTION_XCHG)},
   {"Cxxx",              MODE_MASK16(OCINSTRUCTION_Cxxx)},
   {"NOP",               MODE_MASK16(OCINSTRUCTION_NOP)},
+  {"SCAS",              MODE_MASK16(OCINSTRUCTION_SCAS)},
   {0, 0}
 };
 
