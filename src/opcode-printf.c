@@ -212,7 +212,7 @@ int opcode_printf_source(handle_t p, const uint64_t vaddr) {
     uint64_t curr_nline = 0;
     uint64_t curr_discriminator = 0;
 
-    ocget_symbol(p, vaddr, &name, &curr_nline, NULL, &curr_discriminator, &source, &sourcecode, NULL, NULL, NULL);
+    bool_t issp = ocget_symbol(p, vaddr, &name, &curr_nline, NULL, &curr_discriminator, &source, &sourcecode, NULL, NULL, NULL);
 
     uint32_t curr_name = xstrcrc32(name);
     uint32_t curr_source = xstrcrc32(source);
@@ -226,7 +226,7 @@ int opcode_printf_source(handle_t p, const uint64_t vaddr) {
       n += opcode_printf_LADDR(p, vaddr, USE_NONE);
       n += printf_text(name, USE_LT | USE_SPACE | USE_TB | USE_COLON | USE_EOL);
 
-      if (MODE_ISANY(oc->action, OPTPROGRAM_LINE_NUMBERS) && '.' != name[0]) {
+      if (MODE_ISANY(oc->action, OPTPROGRAM_LINE_NUMBERS) && issp) {
         n += printf_yoke(name, "()", USE_LT | USE_COLON | USE_EOL);
       }
     }

@@ -740,9 +740,10 @@ const char* ocget_fileformat(handle_t p) {
   return NULL;
 }
 
-const char* ocget_symbol(handle_t p, uint64_t vaddr, char **name,
+bool_t ocget_symbol(handle_t p, uint64_t vaddr, char **name,
                      uint64_t *nline, uint64_t *ncolumn, uint64_t *discriminator, char **source, char **sourcecode,
                      uint64_t *laddr, uint64_t *haddr, uint64_t *offset) {
+  bool_t issp = FALSE;
   if (isopcode(p) && name && 0 != vaddr) {
     pocdebug_t d0 = oeseebyaddr(p, vaddr, OPENGINE_DEBUG);
     if (isodebug(d0)) {
@@ -755,6 +756,8 @@ const char* ocget_symbol(handle_t p, uint64_t vaddr, char **name,
       if (ncolumn && MODE_ISANY(d0->role, OPDEBUG_COLUMN)) *ncolumn = d0->ncolumn;
       if (sourcecode && MODE_ISANY(d0->role, OPDEBUG_SOURCECODE)) *sourcecode = d0->sourcecode;
       if (discriminator && MODE_ISANY(d0->role, OPDEBUG_DISCRIMINATOR)) *discriminator = d0->discriminator;
+
+      issp = MODE_ISANY(d0->role, OPDEBUG_NAME) ? TRUE : issp;
     }
 
     if (name && (NULL == *name)) {
@@ -762,6 +765,8 @@ const char* ocget_symbol(handle_t p, uint64_t vaddr, char **name,
       if (isodebug(d1)) {
         if (name && MODE_ISANY(d1->role, OPDEBUG_NAME))      *name = d1->name;
         if (offset && MODE_ISANY(d1->role, OPDEBUG_LADDR))   *offset = vaddr - d1->laddr;
+
+        issp = MODE_ISANY(d1->role, OPDEBUG_NAME) ? TRUE : issp;
       }
     }
 
@@ -781,10 +786,12 @@ const char* ocget_symbol(handle_t p, uint64_t vaddr, char **name,
           *name = opcodeelf_getsymbol(p, vaddr, offset);
         }
       }
+
+      issp = (name) && (*name) && (*name)[0] ? '.' != (*name)[0] : issp;
     }
   }
 
-  return (name) && (*name) && (*name)[0] ? (*name) : NULL;
+  return issp;
 }
 
 handle_t ocmalloc() {
