@@ -705,8 +705,7 @@ const char* ocget_name(handle_t p) {
   return NULL;
 }
 
-const char* ocget_namebyoffset(handle_t p, const int offset) {
-
+const char* ocget_namebyoffset(handle_t p, const uint64_t offset) {
   if (ismode(p, MODE_OCSHDR)) {
     asection* s0 = ocget(p, MODE_OCSHDR);
     handle_t  p0 = ocget(p, OPCODE_PARAM2);
@@ -726,6 +725,19 @@ const char* ocget_namebyoffset(handle_t p, const int offset) {
   } else if (ismode(p, MODE_OCSHDR64)) {
     Elf64_Shdr* p0 = ocget(p, MODE_OCSHDR64);
     return p0 ? ecget_namebyoffset(ocget(p, OPCODE_PARAM1), p0->sh_link, offset) : NULL;
+  }
+
+  return NULL;
+}
+
+const char* ocget_namebyvaddr(handle_t p, const uint64_t vaddr, uint64_t *offset) {
+  if (ochas(p, OPCODE_BFD)) {
+    return opcodebfd_getsymbol(p, vaddr, offset);
+  } else {
+    handle_t p0 = ocget(p, OPCODE_RAWDATA);
+    if (isELF(p0)) {
+      return opcodeelf_getsymbol(p, vaddr, offset);
+    }
   }
 
   return NULL;
@@ -778,14 +790,7 @@ bool_t ocget_symbol(handle_t p, uint64_t vaddr, char **name,
     }
 
     if (name && NULL == *name) {
-      if (ochas(p, OPCODE_BFD)) {
-        *name = opcodebfd_getsymbol(p, vaddr, offset);
-      } else {
-        handle_t p0 = ocget(p, OPCODE_RAWDATA);
-        if (isELF(p0)) {
-          *name = opcodeelf_getsymbol(p, vaddr, offset);
-        }
-      }
+      *name = CAST(char*, ocget_namebyvaddr(p, vaddr, offset));
 
       issp = (name) && (*name) && (*name)[0] ? '.' != (*name)[0] : issp;
     }
