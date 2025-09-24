@@ -3,19 +3,6 @@
 
 #include "printf.h"
 
-static void callback_sections(handle_t p, handle_t shdr, unknown_t param) {
-  printf_text(ocget_name(shdr), USE_LT);
-  printf_nice(ocget_size(shdr), USE_LHEX32);
-  printf_nice(ocget_vmaddress(shdr), USE_LHEX32);
-  printf_nice(ocget_lmaddress(shdr), USE_LHEX32);
-  printf_nice(ocget_position(shdr), USE_LHEX32);
-
-  uint64_t flags = ocget_flags(shdr);
-
-
-  printf_eol();
-}
-
 static handle_t execute_new(handle_t p, const uint64_t vaddr, const char* name) {
   if (isoengine(p)) {
     pocgroups_t g0 = oegetbyaddr(p, vaddr, OPENGINE_GROUP);
@@ -29,6 +16,26 @@ static handle_t execute_new(handle_t p, const uint64_t vaddr, const char* name) 
   }
 
   return p;
+}
+
+static void execute_section(handle_t p, handle_t s, handle_t q) {
+  printf_text(ocget_name(s), USE_LT);
+  printf_nice(ocget_size(s), USE_LHEX32);
+  printf_nice(ocget_vmaddress(s), USE_LHEX32);
+  printf_nice(ocget_lmaddress(s), USE_LHEX32);
+  printf_nice(ocget_position(s), USE_LHEX32);
+  printf_eol();
+}
+
+static void callback_sections(handle_t p, handle_t shdr, unknown_t param) {
+  const char* name = ocget_name(shdr);
+  if (0 == xstrcmp(ocget_name(shdr), ".plt.got")) {
+    execute_section(p, shdr, param);
+  } else if (0 == xstrcmp(name, ".plt.sec")) {
+    execute_section(p, shdr, param);
+  } else if (0 == xstrcmp(name, ".plt")) {
+    execute_section(p, shdr, param);
+  }
 }
 
 handle_t opcode_create(handle_t p, handle_t q) {
