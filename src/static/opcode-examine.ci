@@ -197,6 +197,10 @@ static oestruct_t oeINSTRUCTIONS[] = {
   OCSTRUCT("cltq",      OCINSTRUCTION_CLTQ),
   OCSTRUCT("cqto",      OCINSTRUCTION_CQTO),
 
+  OCSTRUCT("ins",       OCINSTRUCTION_INS),
+  OCSTRUCT("cmps",      OCINSTRUCTION_CMPS),
+  OCSTRUCT("lods",      OCINSTRUCTION_LODS),
+  OCSTRUCT("outs",      OCINSTRUCTION_OUTS),
   OCSTRUCT("scas",      OCINSTRUCTION_SCAS),
 
   {NULL}
@@ -366,6 +370,10 @@ convert_t oeINSTRUCTIONNAMES[] = {
   {"XCHG",              MODE_MASK16(OCINSTRUCTION_XCHG)},
   {"Cxxx",              MODE_MASK16(OCINSTRUCTION_Cxxx)},
   {"NOP",               MODE_MASK16(OCINSTRUCTION_NOP)},
+  {"INS",               MODE_MASK16(OCINSTRUCTION_INS)},
+  {"CMPS",              MODE_MASK16(OCINSTRUCTION_CMPS)},
+  {"LODS",              MODE_MASK16(OCINSTRUCTION_LODS)},
+  {"OUTS",              MODE_MASK16(OCINSTRUCTION_OUTS)},
   {"SCAS",              MODE_MASK16(OCINSTRUCTION_SCAS)},
   {0, 0}
 };
