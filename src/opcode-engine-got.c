@@ -27,7 +27,13 @@ static void execute_section(handle_t p, handle_t s, handle_t q) {
     uint64_t prev_vaddr = 0;
     uint64_t curr_vaddr = ocget_vmaddress(s);
     for (uint64_t i = 0; i < ocget_size(s); ) {
-      if (0xff == pp[i + 0] && 0x35 == pp[i + 1]) {
+      if (0x0f == pp[i + 0] && 0x1f == pp[i + 1] && 0x00 == pp[i + 2]) {
+        printf(" nopl %02x %02x %02x\n", pp[i + 0], pp[i + 1], pp[i + 2]);
+        i += 3;
+      } else if (0xf2 == pp[i + 0] && 0xff == pp[i + 1] && 0x25 == pp[i + 2]) {
+        printf(" bnd jmpq %02x %02x %02x %08lx\n", pp[i + 0], pp[i + 1], pp[i + 2], execute_addr(p, pp[i + 3], pp[i + 4], pp[i + 5], pp[i + 6]));
+        i += 7;
+      } else if (0xff == pp[i + 0] && 0x35 == pp[i + 1]) {
         printf(" pushq %02x %02x %08lx\n", pp[i + 0], pp[i + 1], execute_addr(p, pp[i + 2], pp[i + 3], pp[i + 4], pp[i + 5]));
         i += 6;
       } else {
