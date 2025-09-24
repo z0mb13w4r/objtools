@@ -27,34 +27,44 @@ static void execute_section(handle_t p, handle_t s, handle_t q) {
     uint64_t prev_vaddr = 0;
     uint64_t curr_vaddr = ocget_vmaddress(s);
     for (uint64_t i = 0; i < ocget_size(s); ) {
+      uint64_t siz = 1;
       if (0xf3 == pp[i + 0] && 0x0f == pp[i + 1] && 0x1e == pp[i + 2] && 0xfa == pp[i + 3]) {
+        printf(" %04lx", curr_vaddr);
         printf(" endbr64 %02x %02x %02x %02x\n", pp[i + 0], pp[i + 1], pp[i + 2], pp[i + 3]);
-        i += 4;
+        siz = 4;
       } else if (0x0f == pp[i + 0] && 0x1f == pp[i + 1] && 0x44 == pp[i + 2] && 0x00 == pp[i + 3] && 0x00 == pp[i + 4]) {
+        printf(" %04lx", curr_vaddr);
         printf(" nopl %02x %02x %02x %02x %02x\n", pp[i + 0], pp[i + 1], pp[i + 2], pp[i + 3], pp[i + 4]);
-        i += 5;
+        siz = 5;
       } else if (0x0f == pp[i + 0] && 0x1f == pp[i + 1] && 0x00 == pp[i + 2]) {
+        printf(" %04lx", curr_vaddr);
         printf(" nopl %02x %02x %02x\n", pp[i + 0], pp[i + 1], pp[i + 2]);
-        i += 3;
+        siz = 3;
       } else if (0xf2 == pp[i + 0] && 0xff == pp[i + 1] && 0x25 == pp[i + 2]) {
+        printf(" %04lx", curr_vaddr);
         printf(" bnd jmpq %02x %02x %02x %08x\n", pp[i + 0], pp[i + 1], pp[i + 2], execute_addr(p, pp[i + 3], pp[i + 4], pp[i + 5], pp[i + 6]));
-        i += 7;
+        siz = 7;
       } else if (0xf2 == pp[i + 0] && 0xe9 == pp[i + 1]) {
+        printf(" %04lx", curr_vaddr);
         printf(" bnd jmpq %02x %02x %08x\n", pp[i + 0], pp[i + 1], execute_addr(p, pp[i + 2], pp[i + 3], pp[i + 4], pp[i + 5]));
-        i += 6;
+        siz = 6;
       } else if (0xff == pp[i + 0] && 0x35 == pp[i + 1]) {
+        printf(" %04lx", curr_vaddr);
         printf(" pushq %02x %02x %08x\n", pp[i + 0], pp[i + 1], execute_addr(p, pp[i + 2], pp[i + 3], pp[i + 4], pp[i + 5]));
-        i += 6;
+        siz = 6;
       } else if (0x68 == pp[i + 0]) {
+        printf(" %04lx", curr_vaddr);
         printf(" pushq %02x %08x\n", pp[i + 0], execute_addr(p, pp[i + 1], pp[i + 2], pp[i + 3], pp[i + 4]));
-        i += 5;
+        siz = 5;
       } else if (0x90 == pp[i + 0]) {
+        printf(" %04lx", curr_vaddr);
         printf(" nop %02x\n", pp[i + 0]);
-        i += 1;
       } else {
         printf(" %02x", pp[i]);
-        i += 1;
       }
+
+      i += siz;
+      curr_vaddr += siz;
     }
   }
 
@@ -63,12 +73,12 @@ static void execute_section(handle_t p, handle_t s, handle_t q) {
 
 static void callback_sections(handle_t p, handle_t shdr, unknown_t param) {
   const char* name = ocget_name(shdr);
-  if (0 == xstrcmp(ocget_name(shdr), ".plt.got")) {
+  if (0 == xstrcmp(name, ".plt.got")) {
     execute_section(p, shdr, param);
   } else if (0 == xstrcmp(name, ".plt.sec")) {
     execute_section(p, shdr, param);
-  } else if (0 == xstrcmp(name, ".plt")) {
-    execute_section(p, shdr, param);
+//  } else if (0 == xstrcmp(name, ".plt")) {
+//    execute_section(p, shdr, param);
   }
 }
 
