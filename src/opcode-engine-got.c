@@ -30,6 +30,9 @@ static void execute_section(handle_t p, handle_t s, handle_t q) {
       if (0xf3 == pp[i + 0] && 0x0f == pp[i + 1] && 0x1e == pp[i + 2] && 0xfa == pp[i + 3]) {
         printf(" endbr64 %02x %02x %02x %02x\n", pp[i + 0], pp[i + 1], pp[i + 2], pp[i + 3]);
         i += 4;
+      } else if (0x0f == pp[i + 0] && 0x1f == pp[i + 1] && 0x44 == pp[i + 2] && 0x00 == pp[i + 3] && 0x00 == pp[i + 4]) {
+        printf(" nopl %02x %02x %02x %02x %02x\n", pp[i + 0], pp[i + 1], pp[i + 2], pp[i + 3], pp[i + 4]);
+        i += 5;
       } else if (0x0f == pp[i + 0] && 0x1f == pp[i + 1] && 0x00 == pp[i + 2]) {
         printf(" nopl %02x %02x %02x\n", pp[i + 0], pp[i + 1], pp[i + 2]);
         i += 3;
