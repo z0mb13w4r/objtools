@@ -15,7 +15,7 @@ static handle_t execute_new(handle_t p, const uint64_t vaddr, const char* name) 
   return p;
 }
 
-static uint64_t execute_addr(handle_t p, const uchar_t v0, const uchar_t v1, const uchar_t v2, const uchar_t v3) {
+static uint32_t execute_addr(handle_t p, const uchar_t v0, const uchar_t v1, const uchar_t v2, const uchar_t v3) {
   return v0 | (v1 << 8) | (v2 << 16) | (v3 << 24);
 }
 
@@ -34,11 +34,20 @@ static void execute_section(handle_t p, handle_t s, handle_t q) {
         printf(" nopl %02x %02x %02x\n", pp[i + 0], pp[i + 1], pp[i + 2]);
         i += 3;
       } else if (0xf2 == pp[i + 0] && 0xff == pp[i + 1] && 0x25 == pp[i + 2]) {
-        printf(" bnd jmpq %02x %02x %02x %08lx\n", pp[i + 0], pp[i + 1], pp[i + 2], execute_addr(p, pp[i + 3], pp[i + 4], pp[i + 5], pp[i + 6]));
+        printf(" bnd jmpq %02x %02x %02x %08x\n", pp[i + 0], pp[i + 1], pp[i + 2], execute_addr(p, pp[i + 3], pp[i + 4], pp[i + 5], pp[i + 6]));
         i += 7;
-      } else if (0xff == pp[i + 0] && 0x35 == pp[i + 1]) {
-        printf(" pushq %02x %02x %08lx\n", pp[i + 0], pp[i + 1], execute_addr(p, pp[i + 2], pp[i + 3], pp[i + 4], pp[i + 5]));
+      } else if (0xf2 == pp[i + 0] && 0xe9 == pp[i + 1]) {
+        printf(" bnd jmpq %02x %02x %08x\n", pp[i + 0], pp[i + 1], execute_addr(p, pp[i + 2], pp[i + 3], pp[i + 4], pp[i + 5]));
         i += 6;
+      } else if (0xff == pp[i + 0] && 0x35 == pp[i + 1]) {
+        printf(" pushq %02x %02x %08x\n", pp[i + 0], pp[i + 1], execute_addr(p, pp[i + 2], pp[i + 3], pp[i + 4], pp[i + 5]));
+        i += 6;
+      } else if (0x68 == pp[i + 0]) {
+        printf(" pushq %02x %08x\n", pp[i + 0], execute_addr(p, pp[i + 1], pp[i + 2], pp[i + 3], pp[i + 4]));
+        i += 5;
+      } else if (0x90 == pp[i + 0]) {
+        printf(" nop %02x\n", pp[i + 0]);
+        i += 1;
       } else {
         printf(" %02x", pp[i]);
         i += 1;
