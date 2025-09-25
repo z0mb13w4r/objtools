@@ -1,13 +1,23 @@
 #include "opcode-engine-got.h"
 
 static handle_t execute_new(handle_t p, const uint64_t vaddr, const char* name) {
+  MALLOCA(char, oname, 1024);
+
   if (isoengine(p)) {
     pocgroups_t g0 = oegetbyaddr(p, vaddr, OPENGINE_GROUP);
     if (g0) {
       if (NULL == g0->symbol) {
         g0->symbol = osmalloc(vaddr);
       }
-      g0->symbol->name = xstrdup(name);
+
+      int epos = snprintf(oname, sizeof(oname), "%s", name);
+      char *cpos = strchr(oname, '@');
+      if (cpos) {
+        epos = cpos - oname;
+      }
+      snprintf(oname + epos, sizeof(oname) - epos, "@plt");
+
+      g0->symbol->name = xstrdup(oname);
       g0->symbol->role |= OPSYMBOL_NAME;
     }
   }
@@ -20,8 +30,6 @@ static uint32_t execute_u32(handle_t p, const uchar_t v0, const uchar_t v1, cons
 }
 
 static void execute_section32(handle_t p, handle_t s, handle_t q) {
-  MALLOCA(char, o, 1024);
-
   puchar_t pp = ocget_rawdata(s);
   if (pp) {
     uint64_t curr_vaddr = ocget_vmaddress(s);
@@ -74,8 +82,6 @@ static void execute_section32(handle_t p, handle_t s, handle_t q) {
 }
 
 static void execute_section64(handle_t p, handle_t s, handle_t q) {
-  MALLOCA(char, o, 1024);
-
   puchar_t pp = ocget_rawdata(s);
   if (pp) {
     uint64_t curr_vaddr = ocget_vmaddress(s);
@@ -88,14 +94,7 @@ static void execute_section64(handle_t p, handle_t s, handle_t q) {
         siz = 4;
       } else if (0x0f == pp[i + 0] && 0x1f == pp[i + 1] && 0x44 == pp[i + 2] && 0x00 == pp[i + 3] && 0x00 == pp[i + 4]) { // nopl
         uint64_t this_vaddr = curr_vaddr + prev_vaddr1;
-
-        int epos = snprintf(o, sizeof(o), "%s", ocget_namebyvaddr(p, this_vaddr, NULL));
-        char *cpos = strchr(o, '@');
-        if (cpos) {
-          epos = cpos - o;
-        }
-        snprintf(o + epos, sizeof(o) - epos, "@plt");
-        execute_new(q, prev_vaddr0, o);
+        execute_new(q, prev_vaddr0, ocget_namebyvaddr(p, this_vaddr, NULL));
         siz = 5;
       } else if (0x0f == pp[i + 0] && 0x1f == pp[i + 1] && 0x00 == pp[i + 2]) { // nopl
         siz = 3;
