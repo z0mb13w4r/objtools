@@ -584,6 +584,21 @@ uint64_t ocget_vmaddress(handle_t p) {
   return 0;
 }
 
+uint64_t ocget_vaddressbyname(handle_t p, const char* name) {
+  if (isopcode(p) && name) {
+    handle_t p0 = ocget(p, OPCODE_RAWDATA);
+    if (isELF32(p0)) {
+      Elf32_Shdr* p1 = ecget_shdr32byname(p0, name);
+      return p1 ? p1->sh_addr : 0;
+    } else if (isELF64(p0)) {
+      Elf64_Shdr* p1 = ecget_shdr64byname(p0, name);
+      return p1 ? p1->sh_addr : 0;
+    }
+  }
+
+  return 0;
+}
+
 uint64_t ocget_opb(handle_t p, handle_t s) {
   uint64_t opb = 1;
 

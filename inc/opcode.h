@@ -197,6 +197,7 @@ uint64_t ocget_paddress(handle_t p);
 uint64_t ocget_saddress(handle_t p);
 uint64_t ocget_lmaddress(handle_t p);
 uint64_t ocget_vmaddress(handle_t p);
+uint64_t ocget_vaddressbyname(handle_t p, const char* name);
 
 uint64_t ocget_opb(handle_t p, handle_t s);
 uint64_t ocget_soffset(handle_t p, handle_t s);
