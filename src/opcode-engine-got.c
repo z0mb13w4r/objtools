@@ -41,6 +41,11 @@ static void execute_section32(handle_t p, handle_t s, handle_t q) {
         printf(" %04lx", curr_vaddr);
         printf(" jmp ff a3 %04x\n", this_vaddr);
         siz = 6;
+      } else if (0x66 == pp[i + 0] && 0x0f == pp[i + 1] && 0x1f == pp[i + 2] && 0x44 == pp[i + 3] && 0x00 == pp[i + 4] && 0x00 == pp[i + 5]) { // nopw
+        printf(" %04lx", curr_vaddr);
+        printf(" nopw 66 0f 1f 44 00 00\n");
+
+        siz = 6;
       } else {
         printf(" %02x", pp[i]);
       }
