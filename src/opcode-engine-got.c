@@ -31,8 +31,16 @@ static void execute_section32(handle_t p, handle_t s, handle_t q) {
     for (uint64_t i = 0; i < ocget_size(s); ) {
       uint64_t siz = 1;
 
-      if (0xf3 == pp[i + 0] && 0x0f == pp[i + 1] && 0x1e == pp[i + 2] && 0xfb == pp[i + 3]) {
+      if (0xf3 == pp[i + 0] && 0x0f == pp[i + 1] && 0x1e == pp[i + 2] && 0xfb == pp[i + 3]) { // endbr32
+        printf(" %04lx", curr_vaddr);
         printf(" endbr32 f3 0f 1e fb\n");
+        siz = 4;
+      } else if (0xff == pp[i + 0] && 0xa3 == pp[i + 1]) { // jmp
+        uint32_t this_vaddr = execute_u32(p, pp[i + 2], pp[i + 3], pp[i + 4], pp[i + 5]);
+
+        printf(" %04lx", curr_vaddr);
+        printf(" jmp ff a3 %04x\n", this_vaddr);
+        siz = 6;
       } else {
         printf(" %02x", pp[i]);
       }
