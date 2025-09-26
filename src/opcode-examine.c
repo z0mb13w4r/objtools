@@ -184,7 +184,7 @@ unknown_t oesplit(handle_t p, unknown_t m, const size_t size, punknown_t o1, pun
 bool_t oeisdecb(unknown_t p, const size_t size) {
   if (p && 0 != size) {
     size_t sz = oeskipdec(p, size);
-    return isnumb(CAST(puchar_t, p) + sz, size - sz);
+    return isdecb(CAST(puchar_t, p) + sz, size - sz);
   }
 
   return TRUE;
@@ -197,6 +197,15 @@ bool_t oeishexb(unknown_t p, const size_t size) {
   }
 
   return TRUE;
+}
+
+uint64_t oedecb(unknown_t p, const size_t size) {
+  if (p && 0 != size) {
+    size_t sz = oeskipdec(p, size);
+    return decb(CAST(puchar_t, p) + sz, size - sz);
+  }
+
+  return decb(p, size);
 }
 
 uint64_t oehexb(unknown_t p, const size_t size) {
@@ -270,8 +279,12 @@ static unknown_t oedo_value(handle_t p, unknown_t o, unknown_t m) {
 
     size_t m0size = strlen(m0);
     bool_t ishex = oeishexb(m0, m0size);
+    bool_t isnum = oeisdecb(m0, m0size);
     if (ishex) {
       o0->uvalue  = oehexb(m0, m0size);
+      o0->cvalue |= OCOPERAND_UVALUE;
+    } else if (isnum) {
+      o0->uvalue  = oedecb(m0, m0size);
       o0->cvalue |= OCOPERAND_UVALUE;
     } else {
 //printf("++%s++", m0);

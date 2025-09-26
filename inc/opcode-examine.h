@@ -389,6 +389,7 @@ unknown_t oeskip(unknown_t p, const size_t size);
 size_t    oeskipdec(unknown_t p, const size_t size);
 size_t    oeskiphex(unknown_t p, const size_t size);
 
+uint64_t  oedecb(unknown_t p, const size_t size);
 uint64_t  oehexb(unknown_t p, const size_t size);
 bool_t    oeisdecb(unknown_t p, const size_t size);
 bool_t    oeishexb(unknown_t p, const size_t size);

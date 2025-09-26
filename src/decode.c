@@ -471,7 +471,7 @@ handle_t dec8_decode(unknown_t src, size_t srcsize) {
       bool_t isok = FALSE;
       for (size_t i = 0; i < srcsize; ++i) {
         uchar_t ch = psrc[i];
-        bool_t isnum = isnum8(ch);
+        bool_t isnum = isdec8(ch);
         if (isnum) {
           if (!isok) ++c;
           pdst[c] = (pdst[c] * 10) + dec8(ch);
@@ -500,7 +500,7 @@ handle_t dec16_decode(unknown_t src, size_t srcsize) {
       bool_t isok = FALSE;
       for (size_t i = 0; i < srcsize; ++i) {
         uchar_t ch = psrc[i];
-        bool_t isnum = isnum8(ch);
+        bool_t isnum = isdec8(ch);
         if (isnum) {
           if (!isok) ++c;
           pdst[c] = (pdst[c] * 10) + dec8(ch);
@@ -529,7 +529,7 @@ handle_t dec32_decode(unknown_t src, size_t srcsize) {
       bool_t isok = FALSE;
       for (size_t i = 0; i < srcsize; ++i) {
         uchar_t ch = psrc[i];
-        bool_t isnum = isnum8(ch);
+        bool_t isnum = isdec8(ch);
         if (isnum) {
           if (!isok) ++c;
           pdst[c] = (pdst[c] * 10) + dec8(ch);

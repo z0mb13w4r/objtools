@@ -131,7 +131,7 @@ size_t fsize(FILE *f) {
 bool_t ishex8(int x) {
   if ('a' <= x && x <= 'f') return TRUE;
   else if ('A' <= x && x <= 'F') return TRUE;
-  return isnum8(x);
+  return isdec8(x);
 }
 
 bool_t ishexb(unknown_t p, const size_t size) {
@@ -147,15 +147,15 @@ bool_t ishexb(unknown_t p, const size_t size) {
   return FALSE;
 }
 
-bool_t isnum8(int x) {
+bool_t isdec8(int x) {
   return '0' <= x && x <= '9' ? TRUE : FALSE;
 }
 
-bool_t isnumb(unknown_t p, const size_t size) {
+bool_t isdecb(unknown_t p, const size_t size) {
   if (p && 0 != size) {
     puchar_t p0 = CAST(puchar_t, p);
     for (size_t i = 0; i < size; ++i) {
-      if (!isnum8(p0[i])) return FALSE;
+      if (!isdec8(p0[i])) return FALSE;
     }
 
     return TRUE;
@@ -164,8 +164,21 @@ bool_t isnumb(unknown_t p, const size_t size) {
   return FALSE;
 }
 
-uint64_t dec8(int x) {
+int64_t dec8(int x) {
   return '0' <= x && x <= '9' ? x - '0' : 0;
+}
+
+int64_t decb(unknown_t p, const size_t size) {
+  int64_t x = 0;
+  if (p && 0 != size) {
+    puchar_t p0 = CAST(puchar_t, p);
+    for (size_t i = 0; i < size; ++i) {
+      if (!isdec8(p0[i])) break;
+      x = (x * 10) + dec8(p0[i]);
+    }
+  }
+
+  return x;
 }
 
 uint64_t hex8(int x) {
