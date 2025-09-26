@@ -22,6 +22,7 @@ bool_t ishex8(int x);
 bool_t ishexb(unknown_t p, const size_t size);
 
 bool_t isnum8(int x);
+bool_t isnumb(unknown_t p, const size_t size);
 
 uint64_t ulog2(uint64_t  x);
 uint64_t atoimode(const char* src);

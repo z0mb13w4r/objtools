@@ -151,6 +151,19 @@ bool_t isnum8(int x) {
   return '0' <= x && x <= '9' ? TRUE : FALSE;
 }
 
+bool_t isnumb(unknown_t p, const size_t size) {
+  if (p && 0 != size) {
+    puchar_t p0 = CAST(puchar_t, p);
+    for (size_t i = 0; i < size; ++i) {
+      if (!isnum8(p0[i])) return FALSE;
+    }
+
+    return TRUE;
+  }
+
+  return FALSE;
+}
+
 uint64_t dec8(int x) {
   return '0' <= x && x <= '9' ? x - '0' : 0;
 }

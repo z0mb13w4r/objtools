@@ -89,6 +89,20 @@ unknown_t oeskip(unknown_t p, const size_t size) {
   return NULL;
 }
 
+size_t oeskipdec(unknown_t p, const size_t size) {
+  if (p && 0 != size) {
+    puchar_t p0 = CAST(puchar_t, p);
+
+    if (size >= 3 && '$' == p0[0] && '0' == p0[1] && 'x' == p0[2]) {
+      return 0;
+    } else if (size >= 1 && '$' == p0[0]) {
+      return 1;
+    }
+  }
+
+  return 0;
+}
+
 size_t oeskiphex(unknown_t p, const size_t size) {
   if (p && 0 != size) {
     puchar_t p0 = CAST(puchar_t, p);
@@ -165,6 +179,15 @@ unknown_t oesplit(handle_t p, unknown_t m, const size_t size, punknown_t o1, pun
   }
 
   return NULL;
+}
+
+bool_t oeisdecb(unknown_t p, const size_t size) {
+  if (p && 0 != size) {
+    size_t sz = oeskipdec(p, size);
+    return isnumb(CAST(puchar_t, p) + sz, size - sz);
+  }
+
+  return TRUE;
 }
 
 bool_t oeishexb(unknown_t p, const size_t size) {
