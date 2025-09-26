@@ -45,10 +45,14 @@ unknown_t oeget(handle_t p, const imode_t mode) {
   return NULL;
 }
 
+static bool_t oeisok(const uchar_t c) {
+  return 0 == c || ' ' == c || ':' == c || ',' == c;
+}
+
 static poestruct_t oepick(poestruct_t p, unknown_t m, const size_t size) {
   if (m) {
     for (poestruct_t pp = p; 0 != pp->mc; ++pp) {
-      if (0 == strncmp(m, pp->mc, pp->mcsize)) {
+      if (0 == strncmp(m, pp->mc, pp->mcsize) && oeisok(CAST(puchar_t, m)[pp->mcsize])) {
         return pp;
       }
     }
