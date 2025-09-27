@@ -52,7 +52,7 @@ static bool_t oeisok(const uchar_t c) {
 static poestruct_t oepick(poestruct_t p, unknown_t m, const size_t size) {
   if (m) {
     for (poestruct_t pp = p; 0 != pp->mc; ++pp) {
-      if (0 == strncmp(m, pp->mc, pp->mcsize) && oeisok(CAST(puchar_t, m)[pp->mcsize])) {
+      if (0 == xstrncmp(m, pp->mc, pp->mcsize) && oeisok(CAST(puchar_t, m)[pp->mcsize])) {
         return pp;
       }
     }

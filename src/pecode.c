@@ -184,7 +184,7 @@ PIMAGE_SECTION_HEADER peget_sectionhdrbyname(const pbuffer_t p, const char* name
     if (p0) {
       for (int i = 0; i < p0->FileHeader.NumberOfSections; ++i) {
         PIMAGE_SECTION_HEADER p1 = peget_sectionhdrbyindex(p, i);
-        if (p1 && 0 == strncmp(CAST(const char*, p1->Name), name, sizeof(p1->Name))) return p1;
+        if (p1 && 0 == xstrncmp(CAST(const char*, p1->Name), name, sizeof(p1->Name))) return p1;
       }
     }
   } else if (isPE64(p)) {
@@ -192,7 +192,7 @@ PIMAGE_SECTION_HEADER peget_sectionhdrbyname(const pbuffer_t p, const char* name
     if (p0) {
       for (int i = 0; i < p0->FileHeader.NumberOfSections; ++i) {
         PIMAGE_SECTION_HEADER p1 = peget_sectionhdrbyindex(p, i);
-        if (p1 && 0 == strncmp(CAST(const char*, p1->Name), name, sizeof(p1->Name))) return p1;
+        if (p1 && 0 == xstrncmp(CAST(const char*, p1->Name), name, sizeof(p1->Name))) return p1;
       }
     }
   }

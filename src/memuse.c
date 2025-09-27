@@ -27,6 +27,10 @@ int xstrcmp(const char *x, const char *y) {
   return x && y ? strcmp(x, y) : INT_MAX;
 }
 
+int xstrncmp(const char *x, const char *y, size_t count) {
+  return x && y ? strncmp(x, y, count) : INT_MAX;
+}
+
 size_t xstrlen(const char *src) {
   return src ? strlen(src) : 0;
 }

@@ -198,20 +198,20 @@ int bstrcmp(handle_t s1, handle_t s2) {
   if (isbstring(s1) && isbstring(s2)) {
     pbstring_t s10 = CAST(pbstring_t, s1);
     pbstring_t s20 = CAST(pbstring_t, s2);
-    return strncmp(s10->data, s20->data, MIN(s10->size, s20->size));
+    return xstrncmp(s10->data, s20->data, MIN(s10->size, s20->size));
   }
 
-  return -1;
+  return ECODE_HANDLE;
 }
 
 int bstrncmp(handle_t s1, handle_t s2, size_t size) {
   if (isbstring(s1) && isbstring(s2)) {
     pbstring_t s10 = CAST(pbstring_t, s1);
     pbstring_t s20 = CAST(pbstring_t, s2);
-    return strncmp(s10->data, s20->data, size);
+    return xstrncmp(s10->data, s20->data, size);
   }
 
-  return -1;
+  return ECODE_HANDLE;
 }
 
 int bstrcasecmp(handle_t s1, handle_t s2) {
@@ -221,7 +221,7 @@ int bstrcasecmp(handle_t s1, handle_t s2) {
     return strncasecmp(s10->data, s20->data, MIN(s10->size, s20->size));
   }
 
-  return -1;
+  return ECODE_HANDLE;
 }
 
 int bstrncasecmp(handle_t s1, handle_t s2, size_t size) {
@@ -231,7 +231,7 @@ int bstrncasecmp(handle_t s1, handle_t s2, size_t size) {
     return strncasecmp(s10->data, s20->data, size);
   }
 
-  return -1;
+  return ECODE_HANDLE;
 }
 
 handle_t bstrcut(handle_t p) {
