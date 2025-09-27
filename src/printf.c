@@ -276,6 +276,10 @@ int printf_neat(char* o, const size_t size, const uint64_t v, const imode_t mode
     case USE_DEC4Z:                n += PRINT2("%4.4" PRId64, v);                  break;
     case USE_DEC5:                 n += PRINT2("%5" PRId64, v);                    break;
     case USE_DEC5Z:                n += PRINT2("%5.5" PRId64, v);                  break;
+    case USE_DEC8:                 n += PRINT2("%8" PRId64, v);                    break;
+    case USE_DEC8Z:                n += PRINT2("%8.8" PRId64, v);                  break;
+    case USE_DEC16:                n += PRINT2("%16" PRId64, v);                   break;
+    case USE_DEC16Z:               n += PRINT2("%16.16" PRId64, v);                break;
     case USE_HEX2:                 n += PRINT2("%2" PRIx64, v);                    break;
     case USE_HEX4:                 n += PRINT2("%4" PRIx64, v);                    break;
     case USE_OCT:                  n += PRINT2("%" PRIo64, v);                     break;
