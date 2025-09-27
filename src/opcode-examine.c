@@ -284,8 +284,8 @@ static unknown_t oedo_value(handle_t p, unknown_t o, unknown_t m) {
       o0->uvalue  = oehexb(m0, m0size);
       o0->cvalue |= OCOPERAND_UVALUE;
     } else if (isnum) {
-      o0->uvalue  = oedecb(m0, m0size);
-      o0->cvalue |= OCOPERAND_UVALUE;
+      o0->ivalue  = oedecb(m0, m0size);
+      o0->cvalue |= OCOPERAND_IVALUE;
     } else {
 //printf("++%s++", m0);
     }

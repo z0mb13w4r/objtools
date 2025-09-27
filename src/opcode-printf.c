@@ -53,19 +53,19 @@ static int ocdebugf_nvalue(handle_t p, const uint64_t cv, const uint64_t nv) {
 
     if (MODE_ISLOCKED8(OCOPERAND_IVALUE, cv)) {
       n += printf_text("IVALUE", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_nice(nv, USE_DEC);
     } else if (MODE_ISLOCKED8(OCOPERAND_UVALUE, cv)) {
       n += printf_text("UVALUE", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_nice(nv, USE_FHEX64);
     } else if (MODE_ISLOCKED8(OPOPERAND_REGISTER, cv)) {
       n += printf_text("REGISTER", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
       n += printf_pick(oeREGISTERNAMES, nv, USE_SPACE);
       n += printf_mask(oeREGISTERFLAGS, MODE_HIDE8(nv), USE_NONE);
     } else {
       n += printf_text("UNKNOWN", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
-    }
-
-    if (!MODE_ISLOCKED8(OPOPERAND_REGISTER, cv)) {
       n += printf_nice(nv, USE_FHEX64);
     }
+
     n += printf_eol();
 
     return n;
