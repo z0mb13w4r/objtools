@@ -1,4 +1,20 @@
 static convert_t ecSHDRFLAGS[] = {
+  {"WRITE",                        SHF_WRITE},
+  {"ALLOC",                        SHF_ALLOC},
+  {"EXEC",                         SHF_EXECINSTR},
+  {"MERGE",                        SHF_MERGE},
+  {"STRINGS",                      SHF_STRINGS},
+  {"INFO_LINK",                    SHF_INFO_LINK},
+  {"LINK_ORDER",                   SHF_LINK_ORDER},
+  {"OS_NONCONFORMING",             SHF_OS_NONCONFORMING},
+  {"GROUP",                        SHF_GROUP},
+  {"TLS",                          SHF_TLS},
+  {"EXCLUDE",                      SHF_EXCLUDE},
+  {"COMPRESSED",                   SHF_COMPRESSED},
+  {0, 0}
+};
+
+static convert_t ecSHDRFLAGSLITE[] = {
   {"W",                            SHF_WRITE},
   {"A",                            SHF_ALLOC},
   {"X",                            SHF_EXECINSTR},

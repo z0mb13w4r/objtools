@@ -241,7 +241,7 @@ static int dump_sectionheaders0(const pbuffer_t p, const poptions_t o, const int
   n += printf_text("SECTION HEADERS", USE_LT | USE_COLON | USE_EOL);
   n += printf_text("[Nr]", USE_LT | USE_TAB);
   n += printf_text("Name", USE_LT | USE_SPACE | SET_PAD(maxsize));
-  n += printf_text("Type", USE_LT | USE_SPACE | SET_PAD(16));
+  n += printf_text("Type", USE_LT | USE_SPACE | SET_PAD(17));
   n += printf_text("Address", USE_LT | USE_SPACE | SET_PAD(isELF64(p) ? 17 : 9));
   n += printf_text("Off      Size     ES Flg Lk Inf  Al", USE_LT | USE_SPACE);
   if (MODE_ISANY(o->action, OPTPROGRAM_HASH)) {
@@ -252,32 +252,65 @@ static int dump_sectionheaders0(const pbuffer_t p, const poptions_t o, const int
   return n;
 }
 
-static int dump_sectionheaders1(const pbuffer_t p, const int index, const int maxsize, const uint64_t sh_type,
+static int dump_sectionheaders1(const pbuffer_t p, const poptions_t o, const int index, const int maxsize, const uint64_t sh_type,
                                 const uint64_t sh_addr, const uint64_t sh_offset, const uint64_t sh_size, const uint64_t sh_entsize,
                                 const uint64_t sh_flags, const uint64_t sh_link, const uint64_t sh_info, const uint64_t sh_addralign) {
   int n = 0;
+
+  const imode_t USE_LHEXNN = isELF64(p) ? USE_LHEX64 : USE_LHEX32;
+  const imode_t USE_LHEXAA = isELF64(p) ? USE_LHEX64 : USE_LHEX24;
+  const imode_t USE_LHEXBB = isELF64(p) ? USE_LHEX64 : USE_LHEX8;
+  const imode_t USE_DECNN  = isELF64(p) ? USE_DEC16 : USE_DEC3;
+
   n += printf_nice(index, USE_DEC2 | USE_TAB | USE_SB);
-  n += printf_text(ecget_secnamebyindex(p, index), USE_LT | USE_SPACE | SET_PAD(maxsize));
-  n += printf_pick(ecSHDRTYPE, sh_type, USE_LT | USE_SPACE | SET_PAD(16));
-  n += printf_nice(sh_addr, isELF64(p) ? USE_LHEX64 : USE_LHEX32);
-  n += printf_nice(sh_offset, USE_LHEX32);
-  n += printf_nice(sh_size, USE_LHEX32);
-  n += printf_nice(sh_entsize, USE_LHEX8);
-  n += printf_mask(ecSHDRFLAGS, sh_flags, USE_RT | USE_NOSPACE | SET_PAD(4));
-  n += printf_nice(sh_link, USE_DEC2);
-  n += printf_nice(sh_info, USE_DEC3);
-  n += printf_nice(sh_addralign, USE_DEC3);
+  if (MODE_ISSET(o->action, OPTREADELF_SECTIONDETAILS)) {
+    n += printf_text(ecget_secnamebyindex(p, index), USE_LT | USE_SPACE);
+    n += printf_packeol(5);
+  } else {
+    n += printf_text(ecget_secnamebyindex(p, index), USE_LT | USE_SPACE | SET_PAD(maxsize));
+  }
+
+  n += printf_pick(ecSHDRTYPE, sh_type, USE_LT | USE_SPACE | SET_PAD(17));
+  n += printf_nice(sh_addr, USE_LHEXNN);
+
+  if (MODE_ISSET(o->action, OPTREADELF_SECTIONDETAILS)) {
+    n += printf_nice(sh_offset, USE_LHEXAA);
+    if (isELF64(p)) {
+      n += printf_nice(sh_link, USE_DEC2);
+      n += printf_packeol(5);
+    }
+    n += printf_nice(sh_size, USE_LHEXAA);
+    n += printf_nice(sh_entsize, USE_LHEXBB);
+    if (isELF32(p)) {
+      n += printf_nice(sh_link, USE_DEC2);
+    }
+    n += printf_nice(sh_info, USE_DEC2);
+    n += printf_nice(sh_addralign, USE_DECNN);
+    n += printf_packeol(5);
+    n += printf_nice(sh_flags, USE_LHEXNN | USE_SB | USE_COLON);
+    n += printf_mask(ecSHDRFLAGS, sh_flags, USE_NONE);
+  } else {
+    n += printf_nice(sh_offset, USE_LHEX32);
+    n += printf_nice(sh_size, USE_LHEX32);
+    n += printf_nice(sh_entsize, USE_LHEX8);
+    n += printf_mask(ecSHDRFLAGSLITE, sh_flags, USE_RT | USE_NOSPACE | SET_PAD(4));
+    n += printf_nice(sh_link, USE_DEC2);
+    n += printf_nice(sh_info, USE_DEC3);
+    n += printf_nice(sh_addralign, USE_DEC3);
+  }
 
   return n;
 }
 
-static int dump_sectionheaders2(const pbuffer_t p) {
+static int dump_sectionheaders2(const pbuffer_t p, const poptions_t o) {
   int n = 0;
-  n += printf_text("Key to Flags", USE_LT | USE_COLON | USE_EOL);
-  n += printf_text("W (write), A (alloc), X (execute), M (merge), S (strings), I (info),", USE_LT | USE_TAB | USE_EOL);
-  n += printf_text("L (link order), O (extra OS processing required), G (group), T (TLS),", USE_LT | USE_TAB | USE_EOL);
-  n += printf_text("C (compressed), x (unknown), o (OS specific), E (exclude),", USE_LT | USE_TAB | USE_EOL);
-  n += printf_text("l (large), p (processor specific)", USE_LT | USE_TAB | USE_EOL);
+  if (MODE_ISNOT(o->action, OPTREADELF_SECTIONDETAILS)) {
+    n += printf_text("Key to Flags", USE_LT | USE_COLON | USE_EOL);
+    n += printf_text("W (write), A (alloc), X (execute), M (merge), S (strings), I (info),", USE_LT | USE_TAB | USE_EOL);
+    n += printf_text("L (link order), O (extra OS processing required), G (group), T (TLS),", USE_LT | USE_TAB | USE_EOL);
+    n += printf_text("C (compressed), x (unknown), o (OS specific), E (exclude),", USE_LT | USE_TAB | USE_EOL);
+    n += printf_text("l (large), p (processor specific)", USE_LT | USE_TAB | USE_EOL);
+  }
 
   return n;
 }
@@ -291,7 +324,7 @@ static int dump_sectionheaders32(const pbuffer_t p, const poptions_t o, Elf32_Eh
   for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
     Elf32_Shdr *shdr = ecget_shdr32byindex(p, i);
     if (shdr) {
-      n += dump_sectionheaders1(p, i, MAXSIZE, shdr->sh_type,
+      n += dump_sectionheaders1(p, o, i, MAXSIZE, shdr->sh_type,
                shdr->sh_addr, shdr->sh_offset, shdr->sh_size, shdr->sh_entsize,
                shdr->sh_flags, shdr->sh_link, shdr->sh_info, shdr->sh_addralign);
 
@@ -303,7 +336,7 @@ static int dump_sectionheaders32(const pbuffer_t p, const poptions_t o, Elf32_Eh
     }
   }
 
-  n += dump_sectionheaders2(p);
+  n += dump_sectionheaders2(p, o);
 
   return n;
 }
@@ -317,7 +350,7 @@ static int dump_sectionheaders64(const pbuffer_t p, const poptions_t o, Elf64_Eh
   for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
     Elf64_Shdr *shdr = ecget_shdr64byindex(p, i);
     if (shdr) {
-      n += dump_sectionheaders1(p, i, MAXSIZE, shdr->sh_type,
+      n += dump_sectionheaders1(p, o, i, MAXSIZE, shdr->sh_type,
                shdr->sh_addr, shdr->sh_offset, shdr->sh_size, shdr->sh_entsize,
                shdr->sh_flags, shdr->sh_link, shdr->sh_info, shdr->sh_addralign);
 
@@ -329,7 +362,7 @@ static int dump_sectionheaders64(const pbuffer_t p, const poptions_t o, Elf64_Eh
     }
   }
 
-  n += dump_sectionheaders2(p);
+  n += dump_sectionheaders2(p, o);
 
   return n;
 }
