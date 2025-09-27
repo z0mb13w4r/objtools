@@ -1569,7 +1569,7 @@ int readelf(const pbuffer_t p, const poptions_t o) {
       if (ehdr) {
         if (MODE_ISANY(o->action, OPTPROGRAM_INFO))             dump_summary(p, o);
         if (MODE_ISANY(o->action, OPTREADELF_FILEHEADER))       dump_fileheader32(p, o, ehdr);
-        if (MODE_ISANY(o->action, OPTREADELF_SECTIONHEADERS))   dump_sectionheaders32(p, o, ehdr);
+        if (MODE_ISANY(o->action, OPTREADELF_SECTIONMASK))      dump_sectionheaders32(p, o, ehdr);
         if (MODE_ISANY(o->action, OPTREADELF_SECTIONGROUPS))    dump_sectiongroups32(p, o, ehdr);
         if (MODE_ISANY(o->action, OPTREADELF_PROGRAMHEADERS))   dump_programheaders32(p, o, ehdr);
         if (MODE_ISANY(o->action, OPTREADELF_DYNAMIC))          dump_dynamic32(p, o, ehdr);
