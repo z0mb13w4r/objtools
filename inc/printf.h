@@ -232,6 +232,7 @@ int printf_masknone(const pconvert_t p, const maskz_t mask, const imode_t mode);
 int printf_pick(const pconvert_t p, const pick_t x, const imode_t mode);
 int printf_picknull(const pconvert_t p, const pick_t x, const imode_t mode);
 int printf_mark(const int c, const int size, const imode_t mode);
+int printf_packeol(const int size);
 int printf_pack(const int size);
 
 int printf_errname(const char* name);

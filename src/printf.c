@@ -433,6 +433,13 @@ int printf_mark(const int c, const int size, const imode_t mode) {
   return n;
 }
 
+int printf_packeol(const int size) {
+  int n = 0;
+  n += printf_eol();
+  n += printf_pack(size);
+  return n;
+}
+
 int printf_pack(const int size) {
   return printf_mark(' ', size, USE_NONE);
 }
