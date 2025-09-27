@@ -239,15 +239,32 @@ static int dump_fileheader64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *
 static int dump_sectionheaders0(const pbuffer_t p, const poptions_t o, const int maxsize) {
   int n = 0;
   n += printf_text("SECTION HEADERS", USE_LT | USE_COLON | USE_EOL);
-  n += printf_text("[Nr]", USE_LT | USE_TAB);
-  n += printf_text("Name", USE_LT | USE_SPACE | SET_PAD(maxsize));
-  n += printf_text("Type", USE_LT | USE_SPACE | SET_PAD(17));
-  n += printf_text("Address", USE_LT | USE_SPACE | SET_PAD(isELF64(p) ? 17 : 9));
-  n += printf_text("Off      Size     ES Flg Lk Inf  Al", USE_LT | USE_SPACE);
-  if (MODE_ISANY(o->action, OPTPROGRAM_HASH)) {
-    n += printf_text("SHA-256", USE_LT | USE_SPACE);
+  if (MODE_ISSET(o->action, OPTREADELF_SECTIONDETAILS)) {
+    n += printf_text("[Nr] Name", USE_LT | USE_TAB);
+    n += printf_packeol(7);
+    if (isELF64(p)) {
+      n += printf_text("Type            Address          Offset            Link", USE_LT);
+      n += printf_packeol(7);
+      n += printf_text("Size            EntSize          Info              Align", USE_LT);
+      n += printf_packeol(7);
+      n += printf_text("Flags", USE_LT);
+    } else {
+      n += printf_text("Type            Addr     Off    Size   ES  Lk Inf Al", USE_LT);
+      n += printf_packeol(7);
+      n += printf_text("Flags", USE_LT);
+    }
+    n += printf_eol();
+  } else {
+    n += printf_text("[Nr]", USE_LT | USE_TAB);
+    n += printf_text("Name", USE_LT | USE_SPACE | SET_PAD(maxsize));
+    n += printf_text("Type", USE_LT | USE_SPACE | SET_PAD(17));
+    n += printf_text("Address", USE_LT | USE_SPACE | SET_PAD(isELF64(p) ? 17 : 9));
+    n += printf_text("Off      Size     ES Flg Lk Inf  Al", USE_LT | USE_SPACE);
+    if (MODE_ISANY(o->action, OPTPROGRAM_HASH)) {
+      n += printf_text("SHA-256", USE_LT | USE_SPACE);
+    }
+    n += printf_eol();
   }
-  n += printf_eol();
 
   return n;
 }
@@ -1588,7 +1605,7 @@ int readelf(const pbuffer_t p, const poptions_t o) {
       if (ehdr) {
         if (MODE_ISANY(o->action, OPTPROGRAM_INFO))             dump_summary(p, o);
         if (MODE_ISANY(o->action, OPTREADELF_FILEHEADER))       dump_fileheader64(p, o, ehdr);
-        if (MODE_ISANY(o->action, OPTREADELF_SECTIONHEADERS))   dump_sectionheaders64(p, o, ehdr);
+        if (MODE_ISANY(o->action, OPTREADELF_SECTIONMASK))      dump_sectionheaders64(p, o, ehdr);
         if (MODE_ISANY(o->action, OPTREADELF_SECTIONGROUPS))    dump_sectiongroups64(p, o, ehdr);
         if (MODE_ISANY(o->action, OPTREADELF_PROGRAMHEADERS))   dump_programheaders64(p, o, ehdr);
         if (MODE_ISANY(o->action, OPTREADELF_DYNAMIC))          dump_dynamic64(p, o, ehdr);
