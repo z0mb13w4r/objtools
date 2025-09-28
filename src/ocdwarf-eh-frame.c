@@ -25,6 +25,8 @@ static int ocdwarf_eh_frame_cies(handle_t p, Dwarf_Cie *cie_data, Dwarf_Signed c
   if (isopcode(p)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
 
+    const imode_t USE_LHEXNN = ocis64(p) ? USE_LHEX64 : USE_LHEX32;
+
     if (MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED)) {
       n += printf_text("CIE", USE_LT | USE_SB | USE_EOL);
     }
@@ -66,7 +68,7 @@ static int ocdwarf_eh_frame_cies(handle_t p, Dwarf_Cie *cie_data, Dwarf_Signed c
           n += printf_eol();
         } else {
           n += printf_nice(0x0, USE_LHEX32 | USE_NOSPACE); // TBD saved_start - section_start
-          n += printf_nice(bytes_in_cie, USE_LHEX32);
+          n += printf_nice(bytes_in_cie, USE_LHEXNN);
           n += printf_nice(cie_off, USE_LHEX32);
           n += printf_text("CIE", USE_LT | USE_SPACE);
         }
