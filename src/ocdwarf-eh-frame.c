@@ -392,6 +392,7 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
     pfdes_item_t fde_items = xmalloc(sizeof(fdes_item_t) * fde_count);
     pfdes_item_t fde_item = fde_items;
 
+    Dwarf_Half prev_reg = 0;
     for (Dwarf_Signed i = 0; i < fde_count; ++i, ++fde_item) {
       fde_item->idx = i;
       fde_item->fde = fde_data[i];
@@ -485,7 +486,7 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
         if (MODE_ISANY(oc->ocdump, OPTDWARF_VERBOSE)) {
           n += ocdwarf_printf_EXPR(p, value_type, USE_SPACE | USE_TB);
         }
-//        n += printf_text("cfa=", USE_LT | USE_SPACE);
+
         if (DW_EXPR_EXPRESSION == value_type || DW_EXPR_VAL_EXPRESSION == value_type) {
           if (MODE_ISANY(oc->ocdump, OPTDWARF_DEBUG_FRAME_DECODED)) {
             n += printf_text("exp", USE_LT | USE_SPACE);
@@ -506,7 +507,6 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
             n += printf_nice(offset, USE_DEC2 | USE_EOL);
           }
         }
-//        n += printf_stop(USE_TBRT);
 
         if (!has_more_rows) {
           j = fde_item->hi_pc - 1;
@@ -516,7 +516,7 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
 
         prev_pc = curr_pc;
 
-        for (Dwarf_Half k = 0; k < 100; ++k) {
+        for (Dwarf_Half curr_reg = 0; curr_reg < 100; ++curr_reg) {
           Dwarf_Addr     row_pc = 0;
           Dwarf_Addr     subsequent_pc = 0;
           Dwarf_Bool     has_more_rows = 0;
@@ -526,7 +526,7 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
           Dwarf_Unsigned offset_relevant = 0;
           Dwarf_Unsigned reg = 0;
 
-          x = dwarf_get_fde_info_for_reg3_c(fde_item->fde, k, curr_pc, &value_type, &offset_relevant,
+          x = dwarf_get_fde_info_for_reg3_c(fde_item->fde, curr_reg, curr_pc, &value_type, &offset_relevant,
                      &reg, &offset, &block, &row_pc, &has_more_rows, &subsequent_pc, e);
           if (IS_DLV_ERROR(x)) {
             printf_e("dwarf_get_fde_info_for_reg3_c failed! - %d", x);
@@ -538,9 +538,15 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
           }
 
           if (MODE_ISNOT(oc->ocdump, OPTDWARF_DEBUG_FRAME_DECODED)) {
-            n += printf_text("DW_CFA_offset", USE_LT | USE_COLON);
-            n += printf_join("r", k, USE_DEC | USE_SPACE);
-            n += ocdwarf_printf_REG(p, k, USE_RB);
+            if (prev_reg != curr_reg) {
+              n += printf_text("DW_CFA_offset", USE_LT | USE_COLON);
+              n += printf_join("r", curr_reg, USE_DEC | USE_SPACE);
+              n += ocdwarf_printf_REG(p, curr_reg, USE_RB);
+            } else if (MODE_ISANY(oc->ocdump, OPTDWARF_VERBOSE)) {
+              printf_text("SKIPPING - DW_CFA_offset", USE_LT | USE_COLON);
+              n += printf_join("r", curr_reg, USE_DEC | USE_SPACE);
+              n += ocdwarf_printf_REG(p, curr_reg, USE_RB);
+            }
           }
 
           if (DW_EXPR_EXPRESSION == value_type || DW_EXPR_VAL_EXPRESSION == value_type) {
@@ -556,11 +562,12 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
             if (MODE_ISANY(oc->ocdump, OPTDWARF_DEBUG_FRAME_DECODED)) {
               n += printf_text("c", USE_LT | USE_SPACE);
               n += printf_nice(offset, USE_DEC | USE_NOSPACE);
-            } else {
+            } else if (prev_reg != curr_reg || MODE_ISANY(oc->ocdump, OPTDWARF_VERBOSE)) {
               n += printf_join("at cfa", offset, USE_DEC | USE_SPACE);
             }
           }
-//          n += printf_stop(USE_TBRT);
+
+          prev_reg = curr_reg;
           if (MODE_ISNOT(oc->ocdump, OPTDWARF_DEBUG_FRAME_DECODED)) {
             break;
           }
@@ -571,6 +578,11 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
 
       n += printf_eol();
     }
+
+    fde_item = fde_items + fde_count -1;
+    n += printf_nice(fde_item->cie_offset + fde_item->fde_bytes_length, USE_LHEX32);
+    n += printf_text("ZERO terminator", USE_LT | USE_SPACE);
+    n += printf_eol();
 
     xfree(fde_items);
   }
