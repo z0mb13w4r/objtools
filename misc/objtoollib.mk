@@ -31,6 +31,7 @@ SRCS_C = \
 	memfind.c \
 	memlink.c \
 	ocdwarf.c \
+	ocdwarf-loc.c \
 	ocdwarf-str.c \
 	ocdwarf-info.c \
 	ocdwarf-lines.c \

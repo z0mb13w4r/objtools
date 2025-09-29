@@ -1,6 +1,10 @@
 #ifndef __OCDWARF_MAGIC_H_
 #define __OCDWARF_MAGIC_H_
 
+#include <dwarf.h>
+#include <libdwarf.h>
+#include <dwarf_base_types.h>
+
 #include "ocdwarf.h"
 
 int dwarf_info_from_linecontext(Dwarf_Line_Context line_context,

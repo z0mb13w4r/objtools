@@ -2,6 +2,7 @@
 
 #include "ocdwarf.h"
 #include "options.h"
+#include "ocdwarf-loc.h"
 #include "ocdwarf-str.h"
 #include "ocdwarf-info.h"
 #include "ocdwarf-lines.h"

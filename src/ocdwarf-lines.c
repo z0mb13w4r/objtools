@@ -1,10 +1,3 @@
-#include <stddef.h>
-#include <dwarf.h>
-#include <libdwarf.h>
-#include <dwarf_base_types.h>
-#include <dwarf_opaque.h>
-#include <dwarf_line.h>
-
 #include "printf.h"
 #include "externs.h"
 #include "options.h"
