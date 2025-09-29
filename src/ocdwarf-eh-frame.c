@@ -541,18 +541,6 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
             n += ocdwarf_printf_EXPR(p, value_type, USE_SPACE | USE_TB);
           }
 
-          if (MODE_ISNOT(oc->ocdump, OPTDWARF_DEBUG_FRAME_DECODED)) {
-            if (prev_reg != curr_reg) {
-              n += printf_text("DW_CFA_offset", USE_LT | USE_COLON);
-              n += printf_join("r", curr_reg, USE_DEC | USE_SPACE);
-              n += ocdwarf_printf_REG(p, curr_reg, USE_RB);
-            } else if (MODE_ISANY(oc->ocdump, OPTDWARF_VERBOSE)) {
-              printf_text("SKIPPING: DW_CFA_offset", USE_LT | USE_COLON);
-              n += printf_join("r", curr_reg, USE_DEC | USE_SPACE);
-              n += ocdwarf_printf_REG(p, curr_reg, USE_RB);
-            }
-          }
-
           if (DW_EXPR_EXPRESSION == value_type || DW_EXPR_VAL_EXPRESSION == value_type) {
             if (MODE_ISANY(oc->ocdump, OPTDWARF_DEBUG_FRAME_DECODED)) {
 //              n += printf_nice(CAST(puchar_t, block.bl_data)[0], USE_CHAR | USE_SPACE);
@@ -566,7 +554,15 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
             if (MODE_ISANY(oc->ocdump, OPTDWARF_DEBUG_FRAME_DECODED)) {
               n += printf_text("c", USE_LT | USE_SPACE);
               n += printf_nice(offset, USE_DEC | USE_NOSPACE);
-            } else if (prev_reg != curr_reg || MODE_ISANY(oc->ocdump, OPTDWARF_VERBOSE)) {
+            } else if (prev_reg != curr_reg) {
+              n += printf_text("DW_CFA_offset", USE_LT | USE_COLON);
+              n += printf_join("r", curr_reg, USE_DEC | USE_SPACE);
+              n += ocdwarf_printf_REG(p, curr_reg, USE_RB);
+              n += printf_join("at cfa", offset, USE_DEC | USE_SPACE);
+            } else if (MODE_ISANY(oc->ocdump, OPTDWARF_VERBOSE)) {
+              printf_text("SKIPPING: DW_CFA_offset", USE_LT | USE_COLON);
+              n += printf_join("r", curr_reg, USE_DEC | USE_SPACE);
+              n += ocdwarf_printf_REG(p, curr_reg, USE_RB);
               n += printf_join("at cfa", offset, USE_DEC | USE_SPACE);
             }
           }
