@@ -1,29 +1,44 @@
 static const char zREADPEARGS2[] = "-M";
 static const char zREADPEARGS3[] = "--disassembler-options";
 
+static char zPESECTIONHDRS[]     = ".";
+static char zPESECTIONGROUPS[]   = ".";
+static char zPEVERSIONINFO[]     = ".";
+static char zPEHDRS[]            = ".";
+static char zPEDOSHDR[]          = ".";
+static char zPENTHDR[]           = ".";
+static char zPERELOCS[]          = ".";
+static char zPEEAT[]             = ".";
+static char zPEIAT[]             = ".";
+static char zPERUNTIME[]         = ".";
+static char zPEDEBUG[]           = ".";
+static char zPECONFIG[]          = ".";
+static char zPERESOURCE[]        = ".";
+static char zPEDISASSEMBLE[]     = "Display the assembler mnemonics for the machine instructions from the input file.";
+
 static const args_t zREADPEARGS[] = {
   {'h', "--help",            OPTPROGRAM_HELP,              NULL},
   {'v', "--version",         OPTPROGRAM_VERSION,           NULL},
-  {'S', "--section-headers", OPTREADPE_SECTIONHEADERS},
-  {'V', "--version-info",    OPTREADPE_VERSION},
-  {'A', "--all",             OPTREADPE_ALL},
-  {'H', "--headers",         OPTREADPE_HEADERS},
-  {'G', "--section-groups",  OPTREADPE_SECTIONGROUPS},
-  {'D', "--dos-header",      OPTREADPE_DOSHEADER},
-  {'N', "--nt-header",       OPTREADPE_NTHEADER},
-  {'R', "--relocs",          OPTREADPE_RELOCS},
-  {'E', "--eat",             OPTREADPE_EAT},
-  {'I', "--iat",             OPTREADPE_IAT},
-  {'m', "--runtime",         OPTREADPE_RUNTIME},
-  {'g', "--debug",           OPTREADPE_DEBUG},
-  {'f', "--config",          OPTREADPE_CONFIG},
-  {'o', "--resource",        OPTREADPE_RESOURCE},
+  {'S', "--section-headers", OPTREADPE_SECTIONHEADERS,     zPESECTIONHDRS},
+  {'V', "--version-info",    OPTREADPE_VERSION,            zPEVERSIONINFO},
+  {'A', "--all",             OPTREADPE_ALL,                NULL},
+  {'H', "--headers",         OPTREADPE_HEADERS,            zPEHDRS},
+  {'G', "--section-groups",  OPTREADPE_SECTIONGROUPS,      zPESECTIONGROUPS},
+  {'D', "--dos-header",      OPTREADPE_DOSHEADER,          zPEDOSHDR},
+  {'N', "--nt-header",       OPTREADPE_NTHEADER,           zPENTHDR},
+  {'R', "--relocs",          OPTREADPE_RELOCS,             zPERELOCS},
+  {'E', "--eat",             OPTREADPE_EAT,                zPEEAT},
+  {'I', "--iat",             OPTREADPE_IAT,                zPEIAT},
+  {'m', "--runtime",         OPTREADPE_RUNTIME,            zPERUNTIME},
+  {'g', "--debug",           OPTREADPE_DEBUG,              zPEDEBUG},
+  {'f', "--config",          OPTREADPE_CONFIG,             zPECONFIG},
+  {'o', "--resource",        OPTREADPE_RESOURCE,           zPERESOURCE},
   {'x', "--hex-dump",        0,                            zHEXDUMP},
   {'c', "--code-dump",       0,                            zCODEDUMP},
   {'s', "--string-dump",     0,                            zSTRDUMP},
   {'u', "--unicode-dump",    0,                            zSTRDUMP},
   {'r', "--relocated-dump",  0,                            zHEXDUMP},
-  {'d', "--disassemble",     0},
+  {'d', "--disassemble",     0,                            zPEDISASSEMBLE},
   {'t', "--script",          0,                            zSCRIPTING},
   {'i', "--info",            OPTPROGRAM_INFO,              NULL},
   {'X', "--hash",            OPTPROGRAM_HASH,              NULL},
