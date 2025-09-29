@@ -14,14 +14,13 @@ static char zPERUNTIME[]         = ".";
 static char zPEDEBUG[]           = ".";
 static char zPECONFIG[]          = ".";
 static char zPERESOURCE[]        = ".";
-static char zPEDISASSEMBLE[]     = "Display the assembler mnemonics for the machine instructions from the input file.";
 
 static const args_t zREADPEARGS[] = {
   {'h', "--help",            OPTPROGRAM_HELP,              NULL},
   {'v', "--version",         OPTPROGRAM_VERSION,           NULL},
   {'S', "--section-headers", OPTREADPE_SECTIONHEADERS,     zPESECTIONHDRS},
   {'V', "--version-info",    OPTREADPE_VERSION,            zPEVERSIONINFO},
-  {'A', "--all",             OPTREADPE_ALL,                NULL},
+  {'a', "--all",             OPTREADPE_ALL,                NULL},
   {'H', "--headers",         OPTREADPE_HEADERS,            zPEHDRS},
   {'G', "--section-groups",  OPTREADPE_SECTIONGROUPS,      zPESECTIONGROUPS},
   {'D', "--dos-header",      OPTREADPE_DOSHEADER,          zPEDOSHDR},
@@ -38,7 +37,6 @@ static const args_t zREADPEARGS[] = {
   {'s', "--string-dump",     0,                            zSTRDUMP},
   {'u', "--unicode-dump",    0,                            zSTRDUMP},
   {'r', "--relocated-dump",  0,                            zHEXDUMP},
-  {'d', "--disassemble",     0,                            zPEDISASSEMBLE},
   {'t', "--script",          0,                            zSCRIPTING},
   {'i', "--info",            OPTPROGRAM_INFO,              NULL},
   {'X', "--hash",            OPTPROGRAM_HASH,              NULL},
