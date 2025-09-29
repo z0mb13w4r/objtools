@@ -547,8 +547,9 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
               n += printf_text("exp", USE_LT | USE_SPACE);
 //              n += printf_hurt(block.bl_data, block.bl_len, USE_HEX | USE_SPACE);
             } else {
-              n += printf_text("expr-block-len=", USE_LT);
-              n += printf_nice(block.bl_len, USE_DEC | USE_NOSPACE);
+              n += printf_text("DW_CFA_expression", USE_LT | USE_COLON);
+              n += printf_nice(block.bl_len, USE_DEC | USE_SPACE);
+              n += printf_hurt(block.bl_data, block.bl_len, USE_HEX | USE_SPACE | USE_TB);
             }
           } else if (DW_EXPR_OFFSET == value_type || DW_EXPR_VAL_OFFSET == value_type) {
             if (MODE_ISANY(oc->ocdump, OPTDWARF_DEBUG_FRAME_DECODED)) {
