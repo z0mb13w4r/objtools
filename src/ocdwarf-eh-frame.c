@@ -469,7 +469,7 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
         }
 
         if (MODE_ISANY(oc->ocdump, OPTDWARF_DEBUG_FRAME_DECODED | OPTDWARF_VERBOSE)) {
-          n += ocdwarf_printf_ADDR(p, curr_pc, USE_NONE);
+          n += printf_nice(curr_pc, USE_LHEXNN);
         }
 
         if (MODE_ISNOT(oc->ocdump, OPTDWARF_DEBUG_FRAME_DECODED)) {
