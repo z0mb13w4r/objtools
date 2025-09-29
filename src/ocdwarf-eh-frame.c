@@ -502,8 +502,11 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
             n += ocdwarf_printf_REGISTER(p, reg, USE_NONE);
             n += printf_text("+", USE_LT);
             n += printf_nice(offset, USE_DEC | USE_NOSPACE);
-          } else {
+          } else if (offset) {
             n += printf_text("DW_CFA_def_cfa_offset", USE_LT | USE_COLON);
+            n += printf_nice(offset, USE_DEC2 | USE_EOL);
+          } else if (MODE_ISANY(oc->ocdump, OPTDWARF_VERBOSE)) {
+            n += printf_text("SKIPPING: DW_CFA_def_cfa_offset", USE_LT | USE_COLON);
             n += printf_nice(offset, USE_DEC2 | USE_EOL);
           }
         }
@@ -543,7 +546,7 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
               n += printf_join("r", curr_reg, USE_DEC | USE_SPACE);
               n += ocdwarf_printf_REG(p, curr_reg, USE_RB);
             } else if (MODE_ISANY(oc->ocdump, OPTDWARF_VERBOSE)) {
-              printf_text("SKIPPING - DW_CFA_offset", USE_LT | USE_COLON);
+              printf_text("SKIPPING: DW_CFA_offset", USE_LT | USE_COLON);
               n += printf_join("r", curr_reg, USE_DEC | USE_SPACE);
               n += ocdwarf_printf_REG(p, curr_reg, USE_RB);
             }
