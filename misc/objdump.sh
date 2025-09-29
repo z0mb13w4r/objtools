@@ -1,7 +1,7 @@
 #!/bin/bash
 
 NAME=samples/exampled-32
-#NAME=samples/exampled-64
+NAME=samples/exampled-64
 #NAME=samples/exampled-32.o
 #NAME=samples/exampled-64.o
 #NAME=samples/example-043-arm32
@@ -22,10 +22,10 @@ NAME=samples/exampled-32
 #PICK='-dSl --prefix-addresses'
 #PICK='-dSl --start-address=0x001000 --stop-address=0x001300'
 
-#PICK='-g'
-#PICK='-e'
+PICK='-g'
+PICK='-e'
 #PICK='-d'
-PICK='-dSl'
+#PICK='-dSl'
 #PICK='-W'
 
 #PICK='--dwarf=info'
@@ -35,13 +35,14 @@ PICK='-dSl'
 #PICK='--dwarf=frames-interp'
 #PICK='--dwarf=rawline --dwarf=enhanced'
 #PICK='--dwarf=decodedline'
-#PICK='--dwarf=macro'
+PICK='--dwarf=macro'
 #PICK='--dwarf=str'
+#PICK='--dwarf=loc'
+
 
 # not supported by:
 #   exampled-64
 #PICK='--dwarf=pubnames'
-#PICK='--dwarf=loc'
 #PICK='--dwarf=Ranges'
 #PICK='--dwarf=pubtypes'
 #PICK='--dwarf=trace_info'

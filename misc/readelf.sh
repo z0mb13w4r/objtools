@@ -10,27 +10,31 @@ NAME=samples/exampled-32
 #NAME=samples/example-043-arm64.o
 
 PICK1='-a'
+#PICK1='-t'
+#PICK1='-S'
 #PICK1='-s'
 #PICK1='-d'
 #PICK1='-V'
 
-#PICK1='--debug-dump=macro'
-#PICK2='--print-macinfo'
+PICK1='--debug-dump=macro'
+PICK2='--print-macinfo'
 #PICK1='--debug-dump=info'
 #PICK2='--print-info'
-PICK1='--debug-dump=aranges'
-PICK2='--print-aranges'
+#PICK1='--debug-dump=aranges'
+#PICK2='--print-aranges'
 #PICK1='--debug-dump=abbrev'
 #PICK2='--print-abbrev'
 #PICK1='--debug-dump=str'
 #PICK2='--print-strings'
 
 #PICK1='--debug-dump=decodedline'
-#PICK1='--debug-dump=rawline'
+#PICK1='--debug-dump=rawline' # not to be implemented.
 #PICK2='--print-lines'
 #PICK1='--debug-dump=frames'
 #PICK1='--debug-dump=frames-interp'
 #PICK2='--print-eh-frame'
+#PICK1='--debug-dump=loc'
+#PICK2='--print-loc'
 
 PRGNAME=readelf
 PRGNAMENG=./$PRGNAME-ng
@@ -95,8 +99,7 @@ elif [ "$1" == "-g" ] || [ "$1" == "--go" ]; then
   $PRGNAMENG ${PICK1} $NAME
 elif [ "$1" == "-r" ] || [ "$1" == "--raw" ]; then
   $PRGNAMENG ${PICK1} $NAME > $OUT1
-  $PRGNAME ${PICK1} $NAME \
-    | sed 's/[ \t]*$//' > $OUT2
+  $PRGNAME ${PICK1} $NAME | sed 's/[ \t]*$//' > $OUT2
 elif [ "$1" == "-v" ] || [ "$1" == "--verbose" ]; then
   $PRGNAMENG ${PICK1} -V $NAME > $OUT1
   $PRGNAME ${PICK1} $NAME > $OUT2
