@@ -478,7 +478,7 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
             n += printf_text("DW_CFA_advance_loc", USE_LT | USE_COLON);
 	    n += printf_nice(diff_pc, USE_DEC);
             n += printf_text("to", USE_LT | USE_SPACE);
-            n += printf_nice(curr_pc, USE_LHEX64);
+            n += printf_nice(curr_pc, USE_LHEXNN);
             n += printf_eol();
           }
         }
