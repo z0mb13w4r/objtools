@@ -8,6 +8,7 @@ typedef struct oestruct_s {
 
 static oestruct_t oePREFIXTYPES[] = {
   OCSTRUCT("bnd",       OCINSTRUCTION_BND),
+  OCSTRUCT("lock",      OCINSTRUCTION_LOCK),
 
   OCSTRUCT("repne",     OCINSTRUCTION_REPNE),
   OCSTRUCT("repnz",     OCINSTRUCTION_REPNE),
@@ -58,6 +59,7 @@ static oestruct_t oeINSTRUCTIONS[] = {
   OCSTRUCT("testq",     OCINSTRUCTION_TESTQ),
   OCSTRUCT("testw",     OCINSTRUCTION_TESTW),
   OCSTRUCT("test",      OCINSTRUCTION_TEST),
+  OCSTRUCT("cmpxchg",   OCINSTRUCTION_CMPXCHG),
   OCSTRUCT("cmpb",      OCINSTRUCTION_CMPB),
   OCSTRUCT("cmpl",      OCINSTRUCTION_CMPL),
   OCSTRUCT("cmpq",      OCINSTRUCTION_CMPQ),
@@ -378,8 +380,8 @@ convert_t oeINSTRUCTIONFLAGS[] = {
   {"S",                 OCINSTRUCTION_S},
   {"BND",               OCINSTRUCTION_BND},
   {"REP",               OCINSTRUCTION_REP},
-  {"DATA16",            OCINSTRUCTION_DATA16},
-  {"DATA32",            OCINSTRUCTION_DATA32},
+  {"DATA",              OCINSTRUCTION_DATA},
+  {"LOCK",              OCINSTRUCTION_LOCK},
   {"8BIT",              OCINSTRUCTION_8BIT},
   {"16BIT",             OCINSTRUCTION_16BIT},
   {"32BIT",             OCINSTRUCTION_32BIT},
@@ -397,6 +399,7 @@ convert_t oeINSTRUCTIONNAMES[] = {
   {"ENDBR",             MODE_MASK16(OCINSTRUCTION_ENDBR)},
   {"JMP",               MODE_MASK16(OCINSTRUCTION_JMP)},
   {"TEST",              MODE_MASK16(OCINSTRUCTION_TEST)},
+  {"CMPXCHG",           MODE_MASK16(OCINSTRUCTION_CMPXCHG)},
   {"CMP",               MODE_MASK16(OCINSTRUCTION_CMP)},
   {"LEAVE",             MODE_MASK16(OCINSTRUCTION_LEAVE)},
   {"RET",               MODE_MASK16(OCINSTRUCTION_RET)},
