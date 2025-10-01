@@ -248,6 +248,14 @@ static oestruct_t oeINSTRUCTIONS[] = {
   OCSTRUCT("movw",      OCINSTRUCTION_MOVW),
   OCSTRUCT("mov",       OCINSTRUCTION_MOV),
 
+  OCSTRUCT("fldl2e",    OCINSTRUCTION_FLDL2E),
+  OCSTRUCT("fldl2t",    OCINSTRUCTION_FLDL2T),
+  OCSTRUCT("fldlg2",    OCINSTRUCTION_FLDLG2),
+  OCSTRUCT("fldn2",     OCINSTRUCTION_FLDLN2),
+  OCSTRUCT("fldpi",     OCINSTRUCTION_FLDPI),
+  OCSTRUCT("fld1",      OCINSTRUCTION_FLD1),
+  OCSTRUCT("fldz",      OCINSTRUCTION_FLDZ),
+
   OCSTRUCT("fldb",      OCINSTRUCTION_FLDB),
   OCSTRUCT("fldl",      OCINSTRUCTION_FLDL),
   OCSTRUCT("fldq",      OCINSTRUCTION_FLDQ),
@@ -392,6 +400,16 @@ static oestruct_t oeSEGMENTS[] = {
 };
 
 convert_t oeINSTRUCTIONFLAGS[] = {
+  {"PI",                OCINSTRUCTION_PI},
+  {"ONE",               OCINSTRUCTION_ONE},
+  {"TEN",               OCINSTRUCTION_TEN},
+  {"TWO",               OCINSTRUCTION_TWO},
+  {"ZERO",              OCINSTRUCTION_ZERO},
+  {"LOG2",              OCINSTRUCTION_LOG2},
+  {"LOGE",              OCINSTRUCTION_LOGE},
+  {"LOG10",             OCINSTRUCTION_LOG10},
+  {"EULER",             OCINSTRUCTION_EULER},
+
   {"LT",                OCINSTRUCTION_LT},
   {"RT",                OCINSTRUCTION_RT},
   {"A",                 OCINSTRUCTION_A},
