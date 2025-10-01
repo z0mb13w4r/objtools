@@ -241,8 +241,8 @@ static unknown_t oedo_register(handle_t p, unknown_t o, unknown_t m) {
     size_t m0size = strlen(m0);
     poestruct_t r0 = oepick(oeREGISTERS, m0, m0size);
     if (r0) {
-      o0->uvalue  = r0->action;
-      o0->cvalue |= OPOPERAND_REGISTER;
+      o0->uvalue0 = r0->action;
+      o0->cvalue |= OPOPERAND_REGISTER0;
 //printf("++%s++", m0);
       return oeskip(m0 + r0->mcsize, m0size - r0->mcsize);
     }
@@ -281,15 +281,14 @@ static unknown_t oedo_value(handle_t p, unknown_t o, unknown_t m) {
     bool_t ishex = oeishexb(m0, m0size);
     bool_t isnum = oeisdecb(m0, m0size);
     if (ishex) {
-      o0->uvalue  = oehexb(m0, m0size);
-      o0->cvalue |= OCOPERAND_UVALUE;
+      o0->uvalue0 = oehexb(m0, m0size);
+      o0->cvalue |= OCOPERAND_UVALUE0;
     } else if (isnum) {
-      o0->ivalue  = oedecb(m0, m0size);
-      o0->cvalue |= OCOPERAND_IVALUE;
+      o0->ivalue0 = oedecb(m0, m0size);
+      o0->cvalue |= OCOPERAND_IVALUE0;
     } else {
 //printf("++%s++", m0);
     }
-
 
     return oeskip(m0, strlen(m0));
   }

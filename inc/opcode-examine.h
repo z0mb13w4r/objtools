@@ -284,9 +284,14 @@
 #define OCINSTRUCTION_STOSQ            (OCINSTRUCTION_STOS | OCINSTRUCTION_64BIT)
 #define OCINSTRUCTION_STOSW            (OCINSTRUCTION_STOS | OCINSTRUCTION_16BIT)
 
-#define OCOPERAND_IVALUE               (0x01)
-#define OCOPERAND_UVALUE               (0x02)
-#define OPOPERAND_REGISTER             (0x03)
+#define OCOPERAND_IVALUE0              (0x01)
+#define OCOPERAND_UVALUE0              (0x02)
+#define OPOPERAND_REGISTER0            (0x03)
+#define OCOPERAND_IVALUE1              (0x04)
+#define OCOPERAND_UVALUE1              (0x08)
+#define OPOPERAND_REGISTER1            (0x0c)
+
+
 #define OPOPERAND_SEGMENT              U64MASK(55)
 // ---- GAP OPSEGMENT ----
 #define OCOPERAND_ABSOLUTE             U64MASK(62)
@@ -417,8 +422,12 @@ typedef struct ocoperand_s {
   char       data[160];
   uint64_t   cvalue;
   union {
-    int64_t  ivalue;
-    uint64_t uvalue;
+    int64_t  ivalue0;
+    uint64_t uvalue0;
+  };
+  union {
+    int64_t  ivalue1;
+    uint64_t uvalue1;
   };
 } ocoperand_t, *pocoperand_t;
 
