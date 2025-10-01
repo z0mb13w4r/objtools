@@ -164,15 +164,15 @@ unknown_t oesplit(handle_t p, unknown_t m, const size_t size, punknown_t o1, pun
 
     if (*o1) {
 //      printf("++%s++", CAST(char*, *o1));
-      *o1 = oeskip(*o1, strlen(*o1));
+      *o1 = oeskip(*o1, xstrlen(*o1));
     }
     if (*o2) {
 //      printf("%s++", CAST(char*, *o2));
-      *o2 = oeskip(*o2, strlen(*o2));
+      *o2 = oeskip(*o2, xstrlen(*o2));
     }
     if (*o3) {
 //      printf("%s++", CAST(char*, *o3));
-      *o3 = oeskip(*o3, strlen(*o3));
+      *o3 = oeskip(*o3, xstrlen(*o3));
     }
 
     return *o1;
@@ -227,7 +227,7 @@ static unknown_t oedo_absolute(handle_t p, unknown_t o, unknown_t m) {
       ++m0;
     }
 
-    return oeskip(m0, strlen(m0));
+    return oeskip(m0, xstrlen(m0));
   }
 
   return NULL;
@@ -238,7 +238,7 @@ static unknown_t oedo_register(handle_t p, unknown_t o, unknown_t m) {
     char *m0 = CAST(char*, m);
     pocoperand_t o0 = CAST(pocoperand_t, o);
 
-    size_t m0size = strlen(m0);
+    size_t m0size = xstrlen(m0);
     poestruct_t r0 = oepick(oeREGISTERS, m0, m0size);
     if (r0) {
       o0->uvalue0 = r0->action;
@@ -258,7 +258,7 @@ static unknown_t oedo_segment(handle_t p, unknown_t o, unknown_t m) {
     char *m0 = CAST(char*, m);
     pocoperand_t o0 = CAST(pocoperand_t, o);
 
-    size_t m0size = strlen(m0);
+    size_t m0size = xstrlen(m0);
     poestruct_t s0 = oepick(oeSEGMENTS, m0, m0size);
     if (s0) {
       o0->cvalue  = s0->action;
@@ -277,7 +277,7 @@ static unknown_t oedo_value(handle_t p, unknown_t o, unknown_t m) {
     char *m0 = CAST(char*, m);
     pocoperand_t o0 = CAST(pocoperand_t, o);
 
-    size_t m0size = strlen(m0);
+    size_t m0size = xstrlen(m0);
     bool_t ishex = oeishexb(m0, m0size);
     bool_t isnum = oeisdecb(m0, m0size);
     if (ishex) {
@@ -290,7 +290,7 @@ static unknown_t oedo_value(handle_t p, unknown_t o, unknown_t m) {
 //printf("++%s++", m0);
     }
 
-    return oeskip(m0, strlen(m0));
+    return oeskip(m0, xstrlen(m0));
   }
 
   return NULL;
@@ -305,7 +305,7 @@ static unknown_t oeinsert_comment(handle_t p, unknown_t m) {
       *p1 = 0;
     }
 
-    return oeskip(m, strlen(m));
+    return oeskip(m, xstrlen(m));
   }
 
   return NULL;
@@ -316,7 +316,7 @@ static unknown_t oeinsert_prefix(handle_t p, unknown_t m) {
     char *m0 = CAST(char*, m);
     pocmnemonic_t p1 = oeget(p, OECODE_MNEMONIC);
 
-    size_t m0size = strlen(m0);
+    size_t m0size = xstrlen(m0);
     poestruct_t d0 = oepick(oePREFIXTYPES, m0, m0size);
     if (p1 && d0) {
       p1->cvalue |= d0->action;
@@ -340,11 +340,11 @@ static unknown_t oeinsert_mnemonic(handle_t p, unknown_t q, unknown_t m) {
     if (p1) {
       p1->cvalue |= q0->action;
       xstrncpy(p1->data, q0->mc, q0->mcsize);
-      if ('#' == p0->comment[0] && oeishexb(p0->comment, strlen(p0->comment))) {
-        p1->uvalue = oehexb(p0->comment, strlen(p0->comment));
+      if ('#' == p0->comment[0] && oeishexb(p0->comment, xstrlen(p0->comment))) {
+        p1->uvalue = oehexb(p0->comment, xstrlen(p0->comment));
       }
 
-      return oeskip(m0 + q0->mcsize, strlen(m0) - q0->mcsize);
+      return oeskip(m0 + q0->mcsize, xstrlen(m0) - q0->mcsize);
     }
   }
 
@@ -377,7 +377,7 @@ static unknown_t oeinsert_operands(handle_t p, unknown_t q, unknown_t m) {
 
     if (MODE_ISANY(q0->action, OCINSTRUCTION_OPERAND3)) {
       unknown_t m1 = NULL, m2 = NULL, m3 = NULL;
-      oesplit(p, m, strlen(m), &m1, &m2, &m3);
+      oesplit(p, m, xstrlen(m), &m1, &m2, &m3);
       if (m1) {
         p0->op1 = oeinsert_operand(p, q, m1);
       }
@@ -393,7 +393,7 @@ static unknown_t oeinsert_operands(handle_t p, unknown_t q, unknown_t m) {
       }
     } else if (MODE_ISANY(q0->action, OCINSTRUCTION_OPERAND2)) {
       unknown_t m1 = NULL, m2 = NULL, m3 = NULL;
-      oesplit(p, m, strlen(m), &m1, &m2, &m3);
+      oesplit(p, m, xstrlen(m), &m1, &m2, &m3);
       if (m1) {
         p0->op1 = oeinsert_operand(p, q, m1);
       }
@@ -422,7 +422,7 @@ handle_t oecreate(handle_t p, const uint64_t vaddr, unknown_t mnemonic, unknown_
     char* m1 = NULL;
     m1 = oeinsert_comment(p0, m0);
     m1 = oeinsert_prefix(p0, m0);
-    poestruct_t pi = oepick(oeINSTRUCTIONS, m1, strlen(m1));
+    poestruct_t pi = oepick(oeINSTRUCTIONS, m1, xstrlen(m1));
 
     if (pi) {
 //printf("++");

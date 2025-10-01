@@ -60,7 +60,7 @@ static int usage_synopsis1(poptions_t o, const char* name, const args_t args[], 
   MALLOCA(char, m, 1024);
 
   int n = 0;
-  int z = strlen(name) + 2;
+  int z = xstrlen(name) + 2;
   if (more0 && args) {
     int x = snprintf(m, sizeof(m), "%s|[", more0);
     for (int j = 0; (0 != args[j].option1) || (0 != args[j].option2); ++j) {
@@ -368,7 +368,7 @@ int version0(poptions_t o, const char* name, const args_t args[]) {
 
 imode_t get_options1(poptions_t o, const args_t args[], const char *argv) {
   imode_t action = 0;
-  for (int k = 1; k < strlen(argv); ++k) {
+  for (int k = 1; k < xstrlen(argv); ++k) {
     imode_t action0 = 0;
     for (int j = 0; (0 != args[j].option1) || (0 != args[j].option2); ++j) {
       if (argv[k] == args[j].option1) {

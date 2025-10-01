@@ -429,7 +429,7 @@ size_t _ecget_secname32maxsize(const pbuffer_t p) {
       for (Elf32_Half i = 0; i < e->e_shnum; ++i) {
         Elf32_Shdr *s2 = ecget_shdr32byindex(p, i);
         if (s2) {
-          siz = MAX(siz, strlen(s0 + s2->sh_name));
+          siz = MAX(siz, xstrlen(s0 + s2->sh_name));
         }
       }
     }
@@ -453,7 +453,7 @@ size_t _ecget_secname64maxsize(const pbuffer_t p) {
       for (Elf64_Half i = 0; i < e->e_shnum; ++i) {
         Elf64_Shdr *s2 = ecget_shdr64byindex(p, i);
         if (s2) {
-          siz = MAX(siz, strlen(s0 + s2->sh_name));
+          siz = MAX(siz, xstrlen(s0 + s2->sh_name));
         }
       }
     }

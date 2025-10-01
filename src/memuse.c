@@ -31,8 +31,21 @@ int xstrncmp(const char *x, const char *y, size_t count) {
   return x && y ? strncmp(x, y, count) : INT_MAX;
 }
 
-size_t xstrlen(const char *src) {
-  return src ? strlen(src) : 0;
+int xstrichr(const char *str, int ch) {
+  if (ch) {
+    char *p = xstrchr(str, ch);
+    return p ? str - p : -1;
+  }
+
+  return xstrlen(str);
+}
+
+size_t xstrlen(const char *str) {
+  return str ? strlen(str) : 0;
+}
+
+char *xstrchr(const char* str, int ch) {
+  return str ? strchr(str, ch) : NULL;
 }
 
 char *xstrcat(char *dst, const char *src) {
@@ -51,14 +64,14 @@ char *xstrncpy(char *dst, const char *src, size_t count) {
   return dst && src && count ? strncpy(dst, src, count) : NULL;
 }
 
-char* xstrdup(const char *src) {
-  return src ? xstrndup(src, xstrlen(src) + 1) : NULL;
+char* xstrdup(const char *str) {
+  return str ? xstrndup(str, xstrlen(str) + 1) : NULL;
 }
 
-char* xstrndup(const char *src, size_t size) {
-  if (src && size) {
+char* xstrndup(const char *str, size_t size) {
+  if (str && size) {
     char*  p = xmalloc(size);
-    return xstrncpy(p, src, size);
+    return xstrncpy(p, str, size);
   }
 
   return NULL;

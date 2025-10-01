@@ -11,16 +11,20 @@ unknown_t zfree(punknown_t p);
 int xstrcmp(const char *x, const char *y);
 int xstrncmp(const char *x, const char *y, size_t count);
 
-size_t xstrlen(const char *src);
+int xstrichr(const char *str, int ch);
+
+size_t xstrlen(const char *str);
 
 char *xstrcat(char *dst, const char *src);
 char *xstrncat(char *dst, const char *src, size_t count);
 
+char *xstrchr(const char* str, int ch);
+
 char *xstrcpy(char *dst, const char *src);
 char *xstrncpy(char *dst, const char *src, size_t count);
 
-char* xstrdup(const char *src);
-char* xstrndup(const char *src, size_t size);
+char* xstrdup(const char *str);
+char* xstrndup(const char *str, size_t size);
 
 char* xstrgrab(const char* name, int spos, int epos);
 
