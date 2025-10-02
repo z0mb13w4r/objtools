@@ -66,7 +66,9 @@ static bool_t oeisskipped(int c) {
 }
 
 unknown_t oeskip(unknown_t p, const size_t size) {
-  if (p && 0 != size) {
+  if (p && -1 == size) {
+    return oeskip(p, xstrlen(p));
+  } else if (p && 0 != size) {
     puchar_t p0 = CAST(puchar_t, p);
     for (size_t i = 0; i < size && *p0; ++i, ++p0) {
       if (!oeisskipped(*p0)) break;
@@ -277,7 +279,9 @@ static unknown_t oedo_value(handle_t p, unknown_t o, unknown_t m) {
     char *m0 = CAST(char*, m);
     pocoperand_t o0 = CAST(pocoperand_t, o);
 
-    size_t m0size = xstrlen(m0);
+    size_t m0size = xstrichr(m0, '(');
+    m0size = -1 == m0size ? xstrlen(m0) : m0size;
+
     bool_t ishex = oeishexb(m0, m0size);
     bool_t isnum = oeisdecb(m0, m0size);
     if (ishex) {
@@ -290,7 +294,18 @@ static unknown_t oedo_value(handle_t p, unknown_t o, unknown_t m) {
 //printf("++%s++", m0);
     }
 
-    return oeskip(m0, xstrlen(m0));
+    m0 = oeskip(m0 + m0size, -1);
+    if (m0) {
+//printf("++%s++\n", m0);
+      m0size = xstrlen(m0);
+      poestruct_t r0 = oepick(oeREGISTERS, m0, m0size);
+      if (r0) {
+        o0->uvalue1 = r0->action;
+        o0->cvalue |= OPOPERAND_REGISTER1;
+//printf("++%s++", m0);
+        return oeskip(m0 + r0->mcsize, m0size - r0->mcsize);
+      }
+    }
   }
 
   return NULL;

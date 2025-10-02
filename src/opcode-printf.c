@@ -28,20 +28,20 @@ static int ocdebugf_cvalue1(handle_t p, uint64_t cv) {
     n += printf_text("CVALUE", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
     n += printf_nice(cv, USE_FHEX64);
 
-    if (MODE_ISLOCKED8(OCOPERAND_IVALUE0, cv)) {
-      n += printf_text("IVALUE0", USE_LT | USE_SPACE);
-    } else if (MODE_ISLOCKED8(OCOPERAND_UVALUE0, cv)) {
-      n += printf_text("UVALUE0", USE_LT | USE_SPACE);
-    } else if (MODE_ISLOCKED8(OPOPERAND_REGISTER0, cv)) {
+    if (MODE_ISSET(cv, OPOPERAND_REGISTER0)) {
       n += printf_text("REGISTER0", USE_LT | USE_SPACE);
+    } else if (MODE_ISSET(cv, OCOPERAND_IVALUE0)) {
+      n += printf_text("IVALUE0", USE_LT | USE_SPACE);
+    } else if (MODE_ISSET(cv, OCOPERAND_UVALUE0)) {
+      n += printf_text("UVALUE0", USE_LT | USE_SPACE);
     }
 
-    if (MODE_ISLOCKED8(OCOPERAND_IVALUE1, cv)) {
-      n += printf_text("IVALUE1", USE_LT | USE_SPACE);
-    } else if (MODE_ISLOCKED8(OCOPERAND_UVALUE1, cv)) {
-      n += printf_text("UVALUE1", USE_LT | USE_SPACE);
-    } else if (MODE_ISLOCKED8(OPOPERAND_REGISTER1, cv)) {
+    if (MODE_ISSET(cv, OPOPERAND_REGISTER1)) {
       n += printf_text("REGISTER1", USE_LT | USE_SPACE);
+    } else if (MODE_ISSET(cv, OCOPERAND_IVALUE1)) {
+      n += printf_text("IVALUE1", USE_LT | USE_SPACE);
+    } else if (MODE_ISSET(cv, OCOPERAND_UVALUE1)) {
+      n += printf_text("UVALUE1", USE_LT | USE_SPACE);
     }
 
     if (0 == cv) {
@@ -61,16 +61,16 @@ static int ocdebugf_nvalue0(handle_t p, const uint64_t cv, const uint64_t nv) {
   if (isopcode(p)) {
     int n = 0;
 
-    if (MODE_ISLOCKED8(OCOPERAND_IVALUE0, cv)) {
-      n += printf_text("IVALUE0", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
-      n += printf_nice(nv, USE_DEC);
-    } else if (MODE_ISLOCKED8(OCOPERAND_UVALUE0, cv)) {
-      n += printf_text("UVALUE0", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
-      n += printf_nice(nv, USE_FHEX64);
-    } else if (MODE_ISLOCKED8(OPOPERAND_REGISTER0, cv)) {
+    if (MODE_ISSET(cv, OPOPERAND_REGISTER0)) {
       n += printf_text("REGISTER0", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
       n += printf_pick(oeREGISTERNAMES, nv, USE_SPACE);
       n += printf_mask(oeREGISTERFLAGS, MODE_HIDE8(nv), USE_NONE);
+    } else if (MODE_ISSET(cv, OCOPERAND_IVALUE0)) {
+      n += printf_text("IVALUE0", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_nice(nv, USE_DEC);
+    } else if (MODE_ISSET(cv, OCOPERAND_UVALUE0)) {
+      n += printf_text("UVALUE0", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_nice(nv, USE_FHEX64);
     } else {
       n += printf_text("UNKNOWN0", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
       n += printf_nice(nv, USE_FHEX64);
@@ -88,21 +88,20 @@ static int ocdebugf_nvalue1(handle_t p, const uint64_t cv, const uint64_t nv) {
   if (isopcode(p)) {
     int n = 0;
 
-    if (MODE_ISLOCKED8(OCOPERAND_IVALUE1, cv)) {
-      n += printf_text("IVALUE1", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
-      n += printf_nice(nv, USE_DEC);
-      n += printf_eol();
-    } else if (MODE_ISLOCKED8(OCOPERAND_UVALUE1, cv)) {
-      n += printf_text("UVALUE1", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
-      n += printf_nice(nv, USE_FHEX64);
-      n += printf_eol();
-    } else if (MODE_ISLOCKED8(OPOPERAND_REGISTER1, cv)) {
+    if (MODE_ISSET(cv, OPOPERAND_REGISTER1)) {
       n += printf_text("REGISTER1", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
       n += printf_pick(oeREGISTERNAMES, nv, USE_SPACE);
       n += printf_mask(oeREGISTERFLAGS, MODE_HIDE8(nv), USE_NONE);
       n += printf_eol();
+    } else if (MODE_ISSET(cv, OCOPERAND_IVALUE1)) {
+      n += printf_text("IVALUE1", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_nice(nv, USE_DEC);
+      n += printf_eol();
+    } else if (MODE_ISSET(cv, OCOPERAND_UVALUE1)) {
+      n += printf_text("UVALUE1", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_nice(nv, USE_FHEX64);
+      n += printf_eol();
     }
-
 
     return n;
   }
