@@ -629,6 +629,24 @@ convert_t oeREGISTERNAMES[] = {
   {"\%rip",             OCREGISTER_RIP},
   {"\%eip",             OCREGISTER_EIP},
   {"\%ip",              OCREGISTER_IP},
+
+  {"\%xmm0",            OCREGISTER_XMM0},
+  {"\%xmm1",            OCREGISTER_XMM1},
+  {"\%xmm2",            OCREGISTER_XMM2},
+  {"\%xmm3",            OCREGISTER_XMM3},
+  {"\%xmm4",            OCREGISTER_XMM4},
+  {"\%xmm5",            OCREGISTER_XMM5},
+  {"\%xmm6",            OCREGISTER_XMM6},
+  {"\%xmm7",            OCREGISTER_XMM7},
+  {"\%xmm8",            OCREGISTER_XMM8},
+  {"\%xmm9",            OCREGISTER_XMM9},
+  {"\%xmm10",           OCREGISTER_XMM10},
+  {"\%xmm11",           OCREGISTER_XMM11},
+  {"\%xmm12",           OCREGISTER_XMM12},
+  {"\%xmm13",           OCREGISTER_XMM13},
+  {"\%xmm14",           OCREGISTER_XMM14},
+  {"\%xmm15",           OCREGISTER_XMM15},
+
   {0, 0}
 };
 
