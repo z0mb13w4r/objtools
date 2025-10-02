@@ -60,7 +60,7 @@ uint64_t atoimode(const char* src) {
 }
 
 uint64_t atovalue(const char* src) {
-  const size_t siz = strlen(src);
+  const size_t siz = xstrlen(src);
   if (3 <= siz && '0' == src[0] && ('x' == src[1] || 'X' == src[1])) {
     return strtol(src + 2, NULL, 16);
   } else if (2 <= siz && ('h' == src[siz - 1] || 'H' == src[siz - 1])) {
@@ -112,7 +112,7 @@ size_t strlenpick(const pconvert_t p) {
   size_t siz = 0;
 
   for (pconvert_t pp = p; 0 != pp->text; ++pp) {
-    siz = MAX(siz, strlen(pp->text));
+    siz = MAX(siz, xstrlen(pp->text));
   }
 
   return siz;
