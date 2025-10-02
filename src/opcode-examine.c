@@ -52,7 +52,7 @@ static bool_t oeisok(const uchar_t c) {
 static poestruct_t oepick(poestruct_t p, unknown_t m, const size_t size) {
   if (m) {
     for (poestruct_t pp = p; 0 != pp->mc; ++pp) {
-      if (0 == xstrncmp(m, pp->mc, pp->mcsize) && oeisok(CAST(puchar_t, m)[pp->mcsize])) {
+      if (0 == xstrncmp(m, pp->mc, pp->mcsize) && (':' == pp->mc[pp->mcsize - 1] || oeisok(CAST(puchar_t, m)[pp->mcsize]))) {
         return pp;
       }
     }
@@ -259,11 +259,10 @@ static unknown_t oedo_segment(handle_t p, unknown_t o, unknown_t m) {
   if (isocexamine(p) && o && m) {
     char *m0 = CAST(char*, m);
     pocoperand_t o0 = CAST(pocoperand_t, o);
-
     size_t m0size = xstrlen(m0);
     poestruct_t s0 = oepick(oeSEGMENTS, m0, m0size);
     if (s0) {
-      o0->cvalue  = s0->action;
+      o0->cvalue = s0->action;
 //printf("++%s++", s0->mc);
       return oeskip(m0 + s0->mcsize, m0size - s0->mcsize);
     }
