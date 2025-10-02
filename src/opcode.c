@@ -20,7 +20,7 @@ static void callback_find_max_sectionhdr_name(bfd *f ATTRIBUTE_UNUSED, asection 
 
   size_t *max_name_size = (size_t *) p;
   const char* name = bfd_section_name(s);
-  size_t name_size = strlen(name);
+  size_t name_size = xstrlen(name);
   if (name_size > *max_name_size) {
     *max_name_size = name_size;
   }
