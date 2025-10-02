@@ -34,7 +34,7 @@ int xstrncmp(const char *x, const char *y, size_t count) {
 int xstrichr(const char *str, int ch) {
   if (ch) {
     char *p = xstrchr(str, ch);
-    return p ? str - p : -1;
+    return p ? p - str : -1;
   }
 
   return xstrlen(str);
