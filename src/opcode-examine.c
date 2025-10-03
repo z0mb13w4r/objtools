@@ -4,6 +4,8 @@
 
 #include "static/opcode-examine.ci"
 
+#define USE_STRLEN             (-1)
+
 bool_t isocexamine(handle_t p) {
   return ismode(p, MODE_OCEXAMINE);
 }
@@ -66,7 +68,7 @@ static bool_t oeisskipped(int c) {
 }
 
 unknown_t oeskip(unknown_t p, const size_t size) {
-  if (p && -1 == size) {
+  if (p && USE_STRLEN == size) {
     return oeskip(p, xstrlen(p));
   } else if (p && 0 != size) {
     puchar_t p0 = CAST(puchar_t, p);
@@ -168,15 +170,15 @@ unknown_t oesplit(handle_t p, unknown_t m, const size_t size, punknown_t o1, pun
 
     if (*o1) {
 //      printf("++%s++", CAST(char*, *o1));
-      *o1 = oeskip(*o1, xstrlen(*o1));
+      *o1 = oeskip(*o1, USE_STRLEN);
     }
     if (*o2) {
 //      printf("%s++", CAST(char*, *o2));
-      *o2 = oeskip(*o2, xstrlen(*o2));
+      *o2 = oeskip(*o2, USE_STRLEN);
     }
     if (*o3) {
 //      printf("%s++", CAST(char*, *o3));
-      *o3 = oeskip(*o3, xstrlen(*o3));
+      *o3 = oeskip(*o3, USE_STRLEN);
     }
 
     return *o1;
@@ -232,7 +234,7 @@ static unknown_t oedo_absolute(handle_t p, unknown_t o, unknown_t m) {
       ++m0;
     }
 
-    return oeskip(m0, xstrlen(m0));
+    return oeskip(m0, USE_STRLEN);
   }
 
   return NULL;
@@ -296,10 +298,15 @@ static unknown_t oedo_value(handle_t p, unknown_t o, unknown_t m) {
 //printf("++%s++", m0);
     }
 
-    m0 = oeskip(m0 + m0size, -1);
+    m0 = oeskip(m0 + m0size, USE_STRLEN);
     if (m0) {
 //printf("++%s++\n", m0);
       m0size = xstrlen(m0);
+
+      unknown_t m1 = NULL, m2 = NULL, m3 = NULL;
+      oesplit(p, m0, m0size, &m1, &m2, &m3);
+//printf("++%s+%s+%s++", m1, m2, m3);
+
       poestruct_t r0 = oepick(oeREGISTERS, m0, m0size);
       if (r0) {
         o0->uvalue1 = r0->action;
@@ -322,7 +329,7 @@ static unknown_t oeinsert_comment(handle_t p, unknown_t m) {
       *p1 = 0;
     }
 
-    return oeskip(m, xstrlen(m));
+    return oeskip(m, USE_STRLEN);
   }
 
   return NULL;
