@@ -522,6 +522,7 @@ convert_t oeSEGMENTFLAGS[] = {
 };
 
 convert_t oeREGISTERFLAGS[] = {
+  {"XMM",               OCREGISTER_XMM},
   {"GENERAL",           OCREGISTER_GENERAL},
   {"INSTRUCTIONPTR",    OCREGISTER_INSTRUCTIONPTR},
   {"BASEPTR",           OCREGISTER_BASEPTR},
