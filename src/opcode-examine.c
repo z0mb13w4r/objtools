@@ -128,7 +128,9 @@ size_t oeskiphex(unknown_t p, const size_t size) {
 }
 
 unknown_t oesplit(handle_t p, unknown_t m, const size_t size, punknown_t o1, punknown_t o2, punknown_t o3) {
-  if (isocexamine(p) && m && o1 && o2 && o3) {
+  if (m && USE_STRLEN == size) {
+    return oesplit(p, m, xstrlen(m), o1, o2, o3);
+  } else if (isocexamine(p) && m && o1 && o2 && o3) {
     char *m0 = CAST(char*, m);
 
     size_t i = 0;
@@ -306,7 +308,7 @@ static unknown_t oedo_value(handle_t p, unknown_t o, unknown_t m) {
       m0size = xstrlen(m0);
 
       unknown_t m1 = NULL, m2 = NULL, m3 = NULL;
-      oesplit(p, m0, m0size, &m1, &m2, &m3);
+      oesplit(p, m0, USE_STRLEN, &m1, &m2, &m3);
 //printf("++%s+%s+%s++", m1, m2, m3);
 
       poestruct_t r1 = oepick(oeREGISTERS, m1, USE_STRLEN);
@@ -403,7 +405,7 @@ static unknown_t oeinsert_operands(handle_t p, unknown_t q, unknown_t m) {
 
     if (MODE_ISANY(q0->action, OCINSTRUCTION_OPERAND3)) {
       unknown_t m1 = NULL, m2 = NULL, m3 = NULL;
-      oesplit(p, m, xstrlen(m), &m1, &m2, &m3);
+      oesplit(p, m, USE_STRLEN, &m1, &m2, &m3);
       if (m1) {
         p0->op1 = oeinsert_operand(p, q, m1);
       }
@@ -419,7 +421,7 @@ static unknown_t oeinsert_operands(handle_t p, unknown_t q, unknown_t m) {
       }
     } else if (MODE_ISANY(q0->action, OCINSTRUCTION_OPERAND2)) {
       unknown_t m1 = NULL, m2 = NULL, m3 = NULL;
-      oesplit(p, m, xstrlen(m), &m1, &m2, &m3);
+      oesplit(p, m, USE_STRLEN, &m1, &m2, &m3);
       if (m1) {
         p0->op1 = oeinsert_operand(p, q, m1);
       }
