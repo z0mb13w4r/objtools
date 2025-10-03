@@ -111,6 +111,8 @@ size_t oeskiphex(unknown_t p, const size_t size) {
 
     if (size >= 3 && '$' == p0[0] && '0' == p0[1] && 'x' == p0[2]) {
       return 3;
+    } else if (size >= 3 && '-' == p0[0] && '0' == p0[1] && 'x' == p0[2]) {
+      return 3;
     } else if (size >= 2 && '0' == p0[0] && 'x' == p0[1]) {
       return 2;
     } else if (size >= 2 && '#' == p0[0] && ' ' == p0[1]) {
@@ -213,7 +215,8 @@ uint64_t oedecb(unknown_t p, const size_t size) {
 uint64_t oehexb(unknown_t p, const size_t size) {
   if (p && 0 != size) {
     size_t sz = oeskiphex(p, size);
-    return hexb(CAST(puchar_t, p) + sz, size - sz);
+    puchar_t p0 = CAST(puchar_t, p);
+    return '-' == p0[0] ? -hexb(p0 + sz, size - sz) : hexb(p0 + sz, size - sz);
   }
 
   return hexb(p, size);
