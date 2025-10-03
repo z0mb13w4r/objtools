@@ -309,12 +309,12 @@ static unknown_t oedo_value(handle_t p, unknown_t o, unknown_t m) {
       oesplit(p, m0, m0size, &m1, &m2, &m3);
 //printf("++%s+%s+%s++", m1, m2, m3);
 
-      poestruct_t r0 = oepick(oeREGISTERS, m0, m0size);
-      if (r0) {
-        o0->uvalue1 = r0->action;
+      poestruct_t r1 = oepick(oeREGISTERS, m1, USE_STRLEN);
+      if (r1) {
+        o0->uvalue1 = r1->action;
         o0->cvalue |= OPOPERAND_REGISTER1;
 //printf("++%s++", m0);
-        return oeskip(m0 + r0->mcsize, m0size - r0->mcsize);
+//        return oeskip(m1 + r0->mcsize, xstrlen(m1) - r0->mcsize);
       }
     }
   }
