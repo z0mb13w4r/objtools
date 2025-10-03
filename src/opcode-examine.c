@@ -54,7 +54,7 @@ static bool_t oeisok(const uchar_t c) {
 static poestruct_t oepick(poestruct_t p, unknown_t m, const size_t size) {
   if (m && USE_STRLEN == size) {
     return oepick(p, m, xstrlen(m));
-  } else if (m) {
+  } else if (m && size) {
     for (poestruct_t pp = p; 0 != pp->mc; ++pp) {
       if (0 == xstrncmp(m, pp->mc, pp->mcsize) && (':' == pp->mc[pp->mcsize - 1] || oeisok(CAST(puchar_t, m)[pp->mcsize]))) {
         return pp;
@@ -192,25 +192,31 @@ unknown_t oesplit(handle_t p, unknown_t m, const size_t size, punknown_t o1, pun
 }
 
 bool_t oeisdecb(unknown_t p, const size_t size) {
-  if (p && 0 != size) {
+  if (p && USE_STRLEN == size) {
+    return oeisdecb(p, xstrlen(p));
+  } else if (p && size) {
     size_t sz = oeskipdec(p, size);
     return isdecb(CAST(puchar_t, p) + sz, size - sz);
   }
 
-  return TRUE;
+  return FALSE;
 }
 
 bool_t oeishexb(unknown_t p, const size_t size) {
-  if (p && 0 != size) {
+  if (p && USE_STRLEN == size) {
+    return oeishexb(p, xstrlen(p));
+  } else if (p && size) {
     size_t sz = oeskiphex(p, size);
     return ishexb(CAST(puchar_t, p) + sz, size - sz);
   }
 
-  return TRUE;
+  return FALSE;
 }
 
 uint64_t oedecb(unknown_t p, const size_t size) {
-  if (p && 0 != size) {
+  if (p && USE_STRLEN == size) {
+    return oedecb(p, xstrlen(p));
+  } else if (p && size) {
     size_t sz = oeskipdec(p, size);
     return decb(CAST(puchar_t, p) + sz, size - sz);
   }
@@ -219,7 +225,9 @@ uint64_t oedecb(unknown_t p, const size_t size) {
 }
 
 uint64_t oehexb(unknown_t p, const size_t size) {
-  if (p && 0 != size) {
+  if (p && USE_STRLEN == size) {
+    return oehexb(p, xstrlen(p));
+  } else if (p && size) {
     size_t sz = oeskiphex(p, size);
     puchar_t p0 = CAST(puchar_t, p);
     return '-' == p0[0] ? -hexb(p0 + sz, size - sz) : hexb(p0 + sz, size - sz);
@@ -309,14 +317,36 @@ static unknown_t oedo_value(handle_t p, unknown_t o, unknown_t m) {
 
       unknown_t m1 = NULL, m2 = NULL, m3 = NULL;
       oesplit(p, m0, USE_STRLEN, &m1, &m2, &m3);
-//printf("++%s+%s+%s++", m1, m2, m3);
+//printf("++%s+%s+%s++", CAST(char*, m1), CAST(char*, m2), CAST(char*, m3));
 
       poestruct_t r1 = oepick(oeREGISTERS, m1, USE_STRLEN);
       if (r1) {
         o0->uvalue1 = r1->action;
         o0->cvalue |= OPOPERAND_REGISTER1;
 //printf("++%s++", m0);
-//        return oeskip(m1 + r0->mcsize, xstrlen(m1) - r0->mcsize);
+      } else if (oeishexb(m1, USE_STRLEN)) {
+        o0->uvalue1 = oehexb(m1, USE_STRLEN);
+        o0->cvalue |= OCOPERAND_UVALUE1;
+      }
+
+      poestruct_t r2 = oepick(oeREGISTERS, m2, USE_STRLEN);
+      if (r2) {
+        o0->uvalue2 = r2->action;
+        o0->cvalue |= OPOPERAND_REGISTER2;
+//printf("++%s++", m2);
+      } else if (oeishexb(m2, USE_STRLEN)) {
+        o0->uvalue2 = oehexb(m2, USE_STRLEN);
+        o0->cvalue |= OCOPERAND_UVALUE2;
+      }
+
+      poestruct_t r3 = oepick(oeREGISTERS, m3, USE_STRLEN);
+      if (r3) {
+        o0->uvalue3 = r3->action;
+        o0->cvalue |= OPOPERAND_REGISTER3;
+//printf("++%s++", m3);
+      } else if (oeishexb(m3, USE_STRLEN)) {
+        o0->uvalue3 = oehexb(m3, USE_STRLEN);
+        o0->cvalue |= OCOPERAND_UVALUE3;
       }
     }
   }
@@ -368,7 +398,7 @@ static unknown_t oeinsert_mnemonic(handle_t p, unknown_t q, unknown_t m) {
     if (p1) {
       p1->cvalue |= q0->action;
       xstrncpy(p1->data, q0->mc, q0->mcsize);
-      if ('#' == p0->comment[0] && oeishexb(p0->comment, xstrlen(p0->comment))) {
+      if ('#' == p0->comment[0] && oeishexb(p0->comment, USE_STRLEN)) {
         p1->uvalue = oehexb(p0->comment, xstrlen(p0->comment));
       }
 
