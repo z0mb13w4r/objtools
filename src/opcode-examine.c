@@ -52,7 +52,9 @@ static bool_t oeisok(const uchar_t c) {
 }
 
 static poestruct_t oepick(poestruct_t p, unknown_t m, const size_t size) {
-  if (m) {
+  if (m && USE_STRLEN == size) {
+    return oepick(p, m, xstrlen(m));
+  } else if (m) {
     for (poestruct_t pp = p; 0 != pp->mc; ++pp) {
       if (0 == xstrncmp(m, pp->mc, pp->mcsize) && (':' == pp->mc[pp->mcsize - 1] || oeisok(CAST(puchar_t, m)[pp->mcsize]))) {
         return pp;
@@ -446,7 +448,7 @@ handle_t oecreate(handle_t p, const uint64_t vaddr, unknown_t mnemonic, unknown_
     char* m1 = NULL;
     m1 = oeinsert_comment(p0, m0);
     m1 = oeinsert_prefix(p0, m0);
-    poestruct_t pi = oepick(oeINSTRUCTIONS, m1, xstrlen(m1));
+    poestruct_t pi = oepick(oeINSTRUCTIONS, m1, USE_STRLEN);
 
     if (pi) {
 //printf("++");
