@@ -290,7 +290,12 @@
 #define OCOPERAND_IVALUE1              (0x04)
 #define OCOPERAND_UVALUE1              (0x08)
 #define OPOPERAND_REGISTER1            (0x0c)
-
+#define OCOPERAND_IVALUE2              (0x10)
+#define OCOPERAND_UVALUE2              (0x20)
+#define OPOPERAND_REGISTER2            (0x30)
+#define OCOPERAND_IVALUE3              (0x40)
+#define OCOPERAND_UVALUE3              (0x80)
+#define OPOPERAND_REGISTER3            (0xc0)
 
 #define OPOPERAND_SEGMENT              U64MASK(55)
 // ---- GAP OPSEGMENT ----
@@ -447,6 +452,14 @@ typedef struct ocoperand_s {
   union {
     int64_t  ivalue1;
     uint64_t uvalue1;
+  };
+  union {
+    int64_t  ivalue2;
+    uint64_t uvalue2;
+  };
+  union {
+    int64_t  ivalue3;
+    uint64_t uvalue3;
   };
 } ocoperand_t, *pocoperand_t;
 
