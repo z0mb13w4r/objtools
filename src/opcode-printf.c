@@ -398,7 +398,7 @@ int opcode_printf_detail(handle_t p, const uint64_t vaddr, unknown_t mnemonic, u
       }
     }
 
-    if (MODE_ISANY(oc->action, OPTPROGRAM_DEBUGLEVEL1)) {
+    if (MODE_ISANY(oc->ocdump, OPTDISASSEMBLE_VERBOSE)) {
       n += ocdebugf(p, oe);
     }
     oefree(oe);
