@@ -476,7 +476,7 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
         if (MODE_ISNOT(oc->ocdump, OPTDWARF_DEBUG_FRAME_DECODED)) {
           Dwarf_Addr diff_pc = curr_pc - prev_pc;
           if (diff_pc) {
-            n += printf_text("DW_CFA_advance_loc", USE_LT | USE_COLON);
+            n += printf_text(diff_pc < 50 ? "DW_CFA_advance_loc" : "DW_CFA_advance_loc1", USE_LT | USE_COLON);
 	    n += printf_nice(diff_pc, USE_DEC);
             n += printf_text("to", USE_LT | USE_SPACE);
             n += printf_nice(curr_pc, USE_LHEXNN);
