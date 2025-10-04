@@ -3,6 +3,16 @@
 #include "options.h"
 #include "ocdwarf-eh-frame.h"
 
+#define REG_EAX                        (0)
+#define REG_ECX                        (1)
+#define REG_EDX                        (2)
+#define REG_EBX                        (3)
+#define REG_ESP                        (4)
+#define REG_EBP                        (5)
+#define REG_ESI                        (6)
+#define REG_EDI                        (7)
+#define REG_EIP                        (8)
+
 static const int MAXSIZE = 24;
 
 typedef struct fdes_item_s {
@@ -17,6 +27,19 @@ typedef struct fdes_item_s {
   Dwarf_Signed   cie_index;
   Dwarf_Off      fde_offset;
 } fdes_item_t, *pfdes_item_t;
+
+static pick_t REGUSE[] = {
+  REG_EBX,
+  REG_EBP,
+  REG_ESI,
+  REG_EDI,
+  PICK_END
+};
+
+static pick_t REGSKIP[] = {
+  REG_EIP,
+  PICK_END
+};
 
 static int ocdwarf_eh_frame_cies0(handle_t p, Dwarf_Cie *cie_data, Dwarf_Signed cie_element_count, Dwarf_Error *e) {
   int x = DW_DLV_ERROR;
