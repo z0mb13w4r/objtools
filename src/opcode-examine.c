@@ -47,8 +47,12 @@ unknown_t oeget(handle_t p, const imode_t mode) {
   return NULL;
 }
 
-static bool_t oeisok(const uchar_t c) {
-  return 0 == c || ' ' == c || ':' == c || ',' == c;
+static bool_t oeisok0(const uchar_t c) {
+  return 0 == c || ':' == c;
+}
+
+static bool_t oeisok1(const uchar_t c) {
+  return oeisok0(c) || ' ' == c || ',' == c;
 }
 
 static poestruct_t oepick(poestruct_t p, unknown_t m, const size_t size) {
@@ -56,7 +60,7 @@ static poestruct_t oepick(poestruct_t p, unknown_t m, const size_t size) {
     return oepick(p, m, xstrlen(m));
   } else if (m && size) {
     for (poestruct_t pp = p; 0 != pp->mc; ++pp) {
-      if (0 == xstrncmp(m, pp->mc, pp->mcsize) && (':' == pp->mc[pp->mcsize - 1] || oeisok(CAST(puchar_t, m)[pp->mcsize]))) {
+      if (0 == xstrncmp(m, pp->mc, pp->mcsize) && (oeisok0(pp->mc[pp->mcsize - 1]) || oeisok1(CAST(puchar_t, m)[pp->mcsize]))) {
         return pp;
       }
     }
