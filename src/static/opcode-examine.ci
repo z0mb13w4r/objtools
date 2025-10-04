@@ -295,6 +295,9 @@ static oestruct_t oeINSTRUCTIONS[] = {
   OCSTRUCT("stosw",     OCINSTRUCTION_STOSW),
   OCSTRUCT("stos",      OCINSTRUCTION_STOS),
 
+  OCSTRUCT("finit",     OCINSTRUCTION_FINIT),
+  OCSTRUCT("fninit",    OCINSTRUCTION_FNINIT),
+
   {NULL}
 };
 
@@ -435,6 +438,8 @@ static oestruct_t oeSEGMENTS[] = {
 };
 
 convert_t oeINSTRUCTIONFLAGS[] = {
+  {"NOCHECK",           OCINSTRUCTION_NOCHECK},
+
   {"PI",                OCINSTRUCTION_PI},
   {"ONE",               OCINSTRUCTION_ONE},
   {"TEN",               OCINSTRUCTION_TEN},
@@ -523,6 +528,7 @@ convert_t oeINSTRUCTIONNAMES[] = {
   {"OUTS",              MODE_MASK16(OCINSTRUCTION_OUTS)},
   {"SCAS",              MODE_MASK16(OCINSTRUCTION_SCAS)},
   {"STOS",              MODE_MASK16(OCINSTRUCTION_STOS)},
+  {"FINIT",             MODE_MASK16(OCINSTRUCTION_FINIT)},
   {0, 0}
 };
 
