@@ -653,23 +653,29 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
             continue;
           }
 
-          if (MODE_ISANY(oc->ocdump, OPTDWARF_VERBOSE)) {
-            n += ocdwarf_printf_EXPR(p, value_type, USE_SPACE | USE_TB);
-          }
-
-          if (DW_EXPR_EXPRESSION == value_type || DW_EXPR_VAL_EXPRESSION == value_type) {
-            if (MODE_ISANY(oc->ocdump, OPTDWARF_DEBUG_FRAME_DECODED)) {
-              n += printf_text("exp", USE_LT | USE_SPACE);
+          if (MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED)) {
+            n += ocdwarf_printf_EXPR(p, value_type, USE_TBLT);
+            n += printf_join("r", curr_reg, USE_DEC | USE_SPACE);
+            n += printf_text("=", USE_LT);
+            if (DW_EXPR_EXPRESSION == value_type || DW_EXPR_VAL_EXPRESSION == value_type) {
+              n += printf_text("expr-block-len=", USE_LT);
+              n += printf_nice(block.bl_len, USE_DEC | USE_NOSPACE);
+            } else {
+              n += printf_nice(offset, USE_DEC | USE_NOSPACE);
+              n += printf_text("cfa", USE_LT | USE_RB);
             }
-          } else if (DW_EXPR_OFFSET == value_type || DW_EXPR_VAL_OFFSET == value_type) {
-            if (MODE_ISANY(oc->ocdump, OPTDWARF_DEBUG_FRAME_DECODED)) {
+            n += printf_stop(USE_TBRT);
+          } else if (MODE_ISANY(oc->ocdump, OPTDWARF_DEBUG_FRAME_DECODED)) {
+            if (MODE_ISANY(oc->ocdump, OPTDWARF_VERBOSE)) {
+              n += ocdwarf_printf_EXPR(p, value_type, USE_SPACE | USE_TB);
+            }
+
+            if (DW_EXPR_EXPRESSION == value_type || DW_EXPR_VAL_EXPRESSION == value_type) {
+              n += printf_text("exp", USE_LT | USE_SPACE);
+            } else if (DW_EXPR_OFFSET == value_type || DW_EXPR_VAL_OFFSET == value_type) {
               n += printf_text("c", USE_LT | USE_SPACE);
               n += printf_nice(offset, USE_DEC | USE_NOSPACE);
             }
-          }
-
-          if (MODE_ISNOT(oc->ocdump, OPTDWARF_DEBUG_FRAME_DECODED)) {
-            break;
           }
         }
 
