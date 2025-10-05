@@ -485,7 +485,7 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
         return OCDWARF_ERRCODE(x, n);
       }
 
-      if (MODE_ISANY(oc->ocdump, OPTDWARF_VERBOSE)) {
+      if (MODE_ISANY(oc->ocdump, OPTDWARF_VERBOSE | OPTDWARF_ENHANCED)) {
         n += printf_text("eh aug data len", USE_LT | USE_SPACE | USE_TBLT);
         if (0 == augdata_len) {
           n += printf_nice(augdata_len, USE_FHEX | USE_TBRT | USE_EOL);
@@ -546,7 +546,7 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
         }
       }
 
-      if (MODE_ISANY(oc->ocdump, OPTDWARF_DEBUG_FRAME_DECODED)) {
+      if (MODE_ISFIX(oc->ocdump, OPTDWARF_DEBUG_FRAME_DECODED, OPTDWARF_ENHANCED)) {
         n += printf_text("LOC", USE_LT | USE_TAB | SET_PAD(10));
         n += printf_text("CFA", USE_LT | USE_SPACE | SET_PAD(10));
         if (xx[REG_EAX]) {
@@ -594,23 +594,31 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
           return OCDWARF_ERRCODE(x, n);
         }
 
-        if (MODE_ISANY(oc->ocdump, OPTDWARF_DEBUG_FRAME_DECODED | OPTDWARF_VERBOSE)) {
+        if (MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED)) {
+          n += ocdwarf_printf_ADDR(p, j, USE_COLON);
+          n += ocdwarf_printf_EXPR(p, value_type, USE_SPACE | USE_TBLT);
+          n += printf_text("cfa=", USE_LT | USE_SPACE);
+          if (DW_EXPR_EXPRESSION == value_type || DW_EXPR_VAL_EXPRESSION == value_type) {
+            n += printf_text("expr-block-len=", USE_LT);
+            n += printf_nice(block.bl_len, USE_DEC | USE_NOSPACE);
+          } else {
+            n += printf_nice(curr_offset, USE_DEC2Z | USE_NOSPACE);
+            n += printf_join("r", reg, USE_DEC | USE_RB);
+          }
+          n += printf_stop(USE_TBRT);
+        } else if (MODE_ISANY(oc->ocdump, OPTDWARF_DEBUG_FRAME_DECODED)) {
           n += printf_nice(curr_pc, USE_LHEXNN);
-        }
 
-        if (MODE_ISANY(oc->ocdump, OPTDWARF_VERBOSE)) {
-          n += ocdwarf_printf_EXPR(p, value_type, USE_SPACE | USE_TB);
-        }
+          if (MODE_ISANY(oc->ocdump, OPTDWARF_VERBOSE)) {
+            n += ocdwarf_printf_EXPR(p, value_type, USE_SPACE | USE_TB);
+          }
 
-        if (DW_EXPR_EXPRESSION == value_type || DW_EXPR_VAL_EXPRESSION == value_type) {
-          if (MODE_ISANY(oc->ocdump, OPTDWARF_DEBUG_FRAME_DECODED)) {
+          if (DW_EXPR_EXPRESSION == value_type || DW_EXPR_VAL_EXPRESSION == value_type) {
             n += printf_text("exp", USE_LT | USE_SPACE);
             if (MODE_ISANY(oc->ocdump, OPTDWARF_VERBOSE)) {
               n += printf_hurt(block.bl_data, block.bl_len, USE_HEX | USE_SPACE | USE_TB);
             }
-          }
-        } else {
-          if (MODE_ISANY(oc->ocdump, OPTDWARF_DEBUG_FRAME_DECODED)) {
+          } else {
             n += ocdwarf_printf_REGISTER(p, reg, USE_NONE);
             n += printf_text("+", USE_LT);
             n += printf_nice(curr_offset, USE_DEC | USE_NOSPACE);
