@@ -3,7 +3,7 @@
 static handle_t execute_new(handle_t p, const uint64_t vaddr, const char* name) {
   MALLOCA(char, oname, 1024);
 
-  if (isoengine(p)) {
+  if (isoengine(p) && name) {
     pocgroups_t g0 = oegetbyaddr(p, vaddr, OPENGINE_GROUP);
     if (g0) {
       if (NULL == g0->symbol) {
