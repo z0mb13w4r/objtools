@@ -679,10 +679,12 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
       n += printf_eol();
     }
 
-    fde_item = fde_items + fde_count -1;
-    n += printf_nice(fde_item->cie_offset + fde_item->fde_bytes_length, USE_LHEX32);
-    n += printf_text("ZERO terminator", USE_LT | USE_SPACE);
-    n += printf_eol();
+    if (MODE_ISNOT(oc->ocdump, OPTDWARF_ENHANCED)) {
+      fde_item = fde_items + fde_count -1;
+      n += printf_nice(fde_item->cie_offset + fde_item->fde_bytes_length, USE_LHEX32);
+      n += printf_text("ZERO terminator", USE_LT | USE_SPACE);
+      n += printf_eol();
+    }
 
     xfree(fde_items);
   }
