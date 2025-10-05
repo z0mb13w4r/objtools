@@ -39,11 +39,6 @@ static pick_t REGUSE[] = {
   PICK_END
 };
 
-static pick_t REGSKIP[] = {
-  REG_EIP,
-  PICK_END
-};
-
 static int ocdwarf_eh_frame_cies0(handle_t p, Dwarf_Cie *cie_data, Dwarf_Signed cie_element_count, Dwarf_Error *e) {
   int x = DW_DLV_ERROR;
   int n = 0;
@@ -470,10 +465,6 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
         }
       }
 
-      if (MODE_ISANY(oc->ocdump, OPTDWARF_DEBUG_FRAME_DECODED)) {
-        n += printf_text("   LOC   CFA      ebx   ebp   esi   ra", USE_LT | USE_EOL);
-      }
-
       MALLOCA(bool_t, xx, 100);
       for (Dwarf_Addr j = fde_item->lo_pc; j < fde_item->hi_pc; ++j) {
         Dwarf_Addr     curr_pc = j;
@@ -492,6 +483,10 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
         else if (IS_DLV_ERROR(x)) {
           printf_e("dwarf_get_fde_info_for_cfa_reg3_c failed! - %d", x);
           return OCDWARF_ERRCODE(x, n);
+        }
+
+        if (DW_EXPR_EXPRESSION != value_type && DW_EXPR_VAL_EXPRESSION != value_type) {
+          xx[reg] = TRUE;
         }
 
         if (!has_more_rows) {
@@ -519,6 +514,35 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
 
           xx[curr_reg] = TRUE;
         }
+      }
+
+      if (MODE_ISANY(oc->ocdump, OPTDWARF_DEBUG_FRAME_DECODED)) {
+        n += printf_text("LOC", USE_LT | USE_TAB | SET_PAD(10));
+        n += printf_text("CFA", USE_LT | USE_SPACE | SET_PAD(10));
+        if (xx[REG_EAX]) {
+          n += printf_text("eax", USE_LT | USE_SPACE | SET_PAD(10));
+        }
+        if (xx[REG_ECX]) {
+          n += printf_text("ecx", USE_LT | USE_SPACE | SET_PAD(10));
+        }
+        if (xx[REG_EDX]) {
+          n += printf_text("edx", USE_LT | USE_SPACE | SET_PAD(10));
+        }
+        if (xx[REG_EBX]) {
+          n += printf_text("ebx", USE_LT | USE_SPACE | SET_PAD(10));
+        }
+        if (xx[REG_EBP]) {
+          n += printf_text("ebp", USE_LT | USE_SPACE | SET_PAD(10));
+        }
+        if (xx[REG_ESI]) {
+          n += printf_text("esi", USE_LT | USE_SPACE | SET_PAD(10));
+        }
+        if (xx[REG_EDI]) {
+          n += printf_text("edi", USE_LT | USE_SPACE | SET_PAD(10));
+        }
+
+        n += printf_text("ra", USE_LT | USE_SPACE);
+        n += printf_eol();
       }
 
       Dwarf_Addr   prev_pc = fde_item->lo_pc;
