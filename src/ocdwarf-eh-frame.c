@@ -430,7 +430,6 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
 
     qsort (fde_items, fde_count, sizeof(fdes_item_t), fdes_comp);
 
-    Dwarf_Half prev_reg = 0;
     fde_item = fde_items;
     for (Dwarf_Signed i = 0; i < fde_count; ++i, ++fde_item) {
 //      char* name = 0;
@@ -636,7 +635,7 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
             return OCDWARF_ERRCODE(x, n);
           } else if (IS_DLV_NO_ENTRY(x) || row_pc != curr_pc || (0 == value_type && 0 == offset)) {
             if (xx[curr_reg] && isused(REGUSE, curr_reg)) {
-printf(" u");
+              n += printf_text("u", USE_LT | USE_SPACE | SET_PAD(10));
             }
             continue;
           }
@@ -647,32 +646,15 @@ printf(" u");
 
           if (DW_EXPR_EXPRESSION == value_type || DW_EXPR_VAL_EXPRESSION == value_type) {
             if (MODE_ISANY(oc->ocdump, OPTDWARF_DEBUG_FRAME_DECODED)) {
-//              n += printf_nice(CAST(puchar_t, block.bl_data)[0], USE_CHAR | USE_SPACE);
               n += printf_text("exp", USE_LT | USE_SPACE);
-//              n += printf_hurt(block.bl_data, block.bl_len, USE_HEX | USE_SPACE);
-            } else {
-              n += printf_text("DW_CFA_expression", USE_LT | USE_COLON);
-              n += printf_nice(block.bl_len, USE_DEC | USE_SPACE);
-              n += printf_hurt(block.bl_data, block.bl_len, USE_HEX | USE_SPACE | USE_TB);
             }
           } else if (DW_EXPR_OFFSET == value_type || DW_EXPR_VAL_OFFSET == value_type) {
             if (MODE_ISANY(oc->ocdump, OPTDWARF_DEBUG_FRAME_DECODED)) {
               n += printf_text("c", USE_LT | USE_SPACE);
               n += printf_nice(offset, USE_DEC | USE_NOSPACE);
-            } else if (prev_reg != curr_reg) {
-              n += printf_text("DW_CFA_offset", USE_LT | USE_COLON);
-              n += printf_join("r", curr_reg, USE_DEC | USE_SPACE);
-              n += ocdwarf_printf_REG(p, curr_reg, USE_RB);
-              n += printf_join("at cfa", offset, USE_DEC | USE_SPACE);
-            } else if (MODE_ISANY(oc->ocdump, OPTDWARF_VERBOSE)) {
-              printf_text("SKIPPING: DW_CFA_offset", USE_LT | USE_COLON);
-              n += printf_join("r", curr_reg, USE_DEC | USE_SPACE);
-              n += ocdwarf_printf_REG(p, curr_reg, USE_RB);
-              n += printf_join("at cfa", offset, USE_DEC | USE_SPACE);
             }
           }
 
-          prev_reg = curr_reg;
           if (MODE_ISNOT(oc->ocdump, OPTDWARF_DEBUG_FRAME_DECODED)) {
             break;
           }
