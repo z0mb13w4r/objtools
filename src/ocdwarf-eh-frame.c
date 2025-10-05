@@ -544,8 +544,6 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
         n += printf_eol();
       }
 
-      Dwarf_Addr   prev_pc = fde_item->lo_pc;
-      Dwarf_Signed prev_offset = 0;
       for (Dwarf_Addr j = fde_item->lo_pc; j < fde_item->hi_pc; ++j) {
         Dwarf_Addr     curr_pc = j;
         Dwarf_Addr     row_pc = 0;
@@ -569,17 +567,6 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
           n += printf_nice(curr_pc, USE_LHEXNN);
         }
 
-        if (MODE_ISNOT(oc->ocdump, OPTDWARF_DEBUG_FRAME_DECODED)) {
-          Dwarf_Addr diff_pc = curr_pc - prev_pc;
-          if (diff_pc) {
-            n += printf_text(diff_pc < 50 ? "DW_CFA_advance_loc" : "DW_CFA_advance_loc1", USE_LT | USE_COLON);
-	    n += printf_nice(diff_pc, USE_DEC);
-            n += printf_text("to", USE_LT | USE_SPACE);
-            n += printf_nice(curr_pc, USE_LHEXNN);
-            n += printf_eol();
-          }
-        }
-
         if (MODE_ISANY(oc->ocdump, OPTDWARF_VERBOSE)) {
           n += ocdwarf_printf_EXPR(p, value_type, USE_SPACE | USE_TB);
         }
@@ -590,22 +577,12 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
             if (MODE_ISANY(oc->ocdump, OPTDWARF_VERBOSE)) {
               n += printf_hurt(block.bl_data, block.bl_len, USE_HEX | USE_SPACE | USE_TB);
             }
-          } else {
-            n += printf_text("DW_CFA_def_cfa_expression", USE_LT);
-            n += printf_nice(block.bl_len, USE_DEC | USE_SPACE);
-            n += printf_hurt(block.bl_data, block.bl_len, USE_HEX | USE_SPACE | USE_TB | USE_EOL);
           }
         } else {
           if (MODE_ISANY(oc->ocdump, OPTDWARF_DEBUG_FRAME_DECODED)) {
             n += ocdwarf_printf_REGISTER(p, reg, USE_NONE);
             n += printf_text("+", USE_LT);
             n += printf_nice(curr_offset, USE_DEC | USE_NOSPACE);
-          } else if (curr_offset && prev_offset != curr_offset) {
-            n += printf_text("DW_CFA_def_cfa_offset", USE_LT | USE_COLON);
-            n += printf_nice(curr_offset, USE_DEC2 | USE_EOL);
-          } else if (MODE_ISANY(oc->ocdump, OPTDWARF_VERBOSE)) {
-            n += printf_text("SKIPPING: DW_CFA_def_cfa_offset", USE_LT | USE_COLON);
-            n += printf_nice(curr_offset, USE_DEC2 | USE_EOL);
           }
         }
 
@@ -614,9 +591,6 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
         } else if (subsequent_pc > j) {
           j = subsequent_pc - 1;
         }
-
-        prev_pc = curr_pc;
-        prev_offset = curr_offset;
 
         for (Dwarf_Half curr_reg = 0; curr_reg < 100; ++curr_reg) {
           Dwarf_Addr     row_pc = 0;
