@@ -647,8 +647,10 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
             printf_e("dwarf_get_fde_info_for_reg3_c failed! - %d", x);
             return OCDWARF_ERRCODE(x, n);
           } else if (IS_DLV_NO_ENTRY(x) || row_pc != curr_pc || (0 == value_type && 0 == offset)) {
-            if (xx[curr_reg] && isused(REGUSE, curr_reg)) {
-              n += printf_text("u", USE_LT | USE_SPACE | SET_PAD(10));
+            if (MODE_ISFIX(oc->ocdump, OPTDWARF_DEBUG_FRAME_DECODED, OPTDWARF_ENHANCED)) {
+              if (xx[curr_reg] && isused(REGUSE, curr_reg)) {
+                n += printf_text("u", USE_LT | USE_SPACE | SET_PAD(10));
+              }
             }
             continue;
           }
