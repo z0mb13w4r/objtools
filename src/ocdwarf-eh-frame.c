@@ -1,6 +1,7 @@
 #include "printf.h"
 #include "externs.h"
 #include "options.h"
+#include "opcode-engine.h"
 #include "ocdwarf-eh-frame.h"
 
 #define REG_EAX                        (0)
@@ -438,8 +439,11 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
 
     fde_item = fde_items;
     for (Dwarf_Signed i = 0; i < fde_count; ++i, ++fde_item) {
-      char* name = 0;
-      ocget_symbol(p, fde_item->lo_pc, &name, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+      char* name = NULL;
+      pocdebug_t d0 = oeseebyaddr(p, fde_item->lo_pc, OPENGINE_DEBUG);
+      if (isodebug(d0) && MODE_ISANY(d0->role, OPDEBUG_NAME)) {
+        name = d0->name;
+      }
 
       if (MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED)) {
         // < 0>
