@@ -25,7 +25,7 @@ const args_t zDEBUGELFARGS[] = {
   {'a', "abbrev",             OPTDWARF_DEBUG_ABBREV,        zDEBUGABBREV},
   {'A', "addr",               OPTDWARF_DEBUG_ADDR,          zDEBUGADDR},
   {'c', "cu_index",           OPTDWARF_DEBUG_CU_INDEX,      zDEBUGCUINDEX},
-  {'f', "frames",             OPTDWARF_DEBUG_FRAME,         zDEBUGFRAME},
+//  {'f', "frames",             OPTDWARF_DEBUG_FRAME,         zDEBUGFRAME},
   {'F', "frames-interp",      OPTDWARF_DEBUG_FRAME_DECODED, zDEBUGFRAMEDECODED},
   {'i', "info",               OPTDWARF_DEBUG_INFO,          zDEBUGINFO},
   {'k', "links",              OPTDWARF_DEBUG_LINK,          zDEBUGLINKS},
