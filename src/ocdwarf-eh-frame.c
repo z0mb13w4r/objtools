@@ -40,7 +40,7 @@ static pick_t REGUSE[] = {
   PICK_END
 };
 
-static int ocdwarf_eh_frame_cies0(handle_t p, Dwarf_Cie *cie_data, Dwarf_Signed cie_element_count, Dwarf_Error *e) {
+static int ocdwarf_eh_frame_cies(handle_t p, Dwarf_Cie *cie_data, Dwarf_Signed cie_element_count, Dwarf_Error *e) {
   int x = DW_DLV_ERROR;
   int n = 0;
 
@@ -253,7 +253,7 @@ int fdes_comp(const void* p0, const void* p1) {
   return 0;
 }
 
-static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed fde_count, Dwarf_Error *e) {
+static int ocdwarf_eh_frame_fdes(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed fde_count, Dwarf_Error *e) {
   int x = DW_DLV_ERROR;
   int n = 0;
 
@@ -586,11 +586,11 @@ int ocdwarf_eh_frame(handle_t p, handle_t s, handle_t d) {
 
     if (MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED)) {
       n += ocdwarf_printf_groups(p, ocget(p, OPCODE_DWARF_ERROR));
-      n += ocdwarf_eh_frame_fdes1(p, fde_data, fde_element_count, ocget(p, OPCODE_DWARF_ERROR));
-      n += ocdwarf_eh_frame_cies0(p, cie_data, cie_element_count, ocget(p, OPCODE_DWARF_ERROR));
+      n += ocdwarf_eh_frame_fdes(p, fde_data, fde_element_count, ocget(p, OPCODE_DWARF_ERROR));
+      n += ocdwarf_eh_frame_cies(p, cie_data, cie_element_count, ocget(p, OPCODE_DWARF_ERROR));
     } else {
-      n += ocdwarf_eh_frame_cies0(p, cie_data, cie_element_count, ocget(p, OPCODE_DWARF_ERROR));
-      n += ocdwarf_eh_frame_fdes1(p, fde_data, fde_element_count, ocget(p, OPCODE_DWARF_ERROR));
+      n += ocdwarf_eh_frame_cies(p, cie_data, cie_element_count, ocget(p, OPCODE_DWARF_ERROR));
+      n += ocdwarf_eh_frame_fdes(p, fde_data, fde_element_count, ocget(p, OPCODE_DWARF_ERROR));
     }
 
     ocdwarf_dealloc_fde_cie_list(p, cie_data, cie_element_count, fde_data, fde_element_count);
