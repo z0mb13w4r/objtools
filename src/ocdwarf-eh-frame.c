@@ -413,6 +413,10 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
     pfdes_item_t fde_items = xmalloc(sizeof(fdes_item_t) * fde_count);
     pfdes_item_t fde_item = fde_items;
 
+    if (MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED)) {
+      n += printf_text("FDE", USE_LT | USE_SB | USE_EOL);
+    }
+
     for (Dwarf_Signed i = 0; i < fde_count; ++i, ++fde_item) {
       fde_item->idx = i;
       fde_item->fde = fde_data[i];
@@ -428,23 +432,50 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
       fde_item->hi_pc = fde_item->lo_pc + fde_item->func_length;
     }
 
-    qsort (fde_items, fde_count, sizeof(fdes_item_t), fdes_comp);
+    if (MODE_ISNOT(oc->ocdump, OPTDWARF_ENHANCED)) {
+      qsort (fde_items, fde_count, sizeof(fdes_item_t), fdes_comp);
+    }
 
     fde_item = fde_items;
     for (Dwarf_Signed i = 0; i < fde_count; ++i, ++fde_item) {
-//      char* name = 0;
-//      ocget_symbol(p, fde_item->lo_pc, &name, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+      char* name = 0;
+      ocget_symbol(p, fde_item->lo_pc, &name, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
-      n += printf_nice(fde_item->fde_offset, USE_LHEX32 | USE_NOSPACE);
-      n += printf_nice(fde_item->fde_bytes_length, USE_LHEXNN);
-      n += printf_nice(fde_item->cie_offset, USE_LHEX32);
-      n += printf_text("FDE cie=", USE_LT | USE_SPACE);
-      n += printf_nice(fde_item->cie_index, USE_LHEX32 | USE_NOSPACE);
-      n += printf_text("pc=", USE_LT | USE_SPACE);
-      n += printf_nice(fde_item->lo_pc, USE_LHEXNN | USE_NOSPACE);
-      n += printf_text("..", USE_LT);
-      n += printf_nice(fde_item->hi_pc, USE_LHEXNN | USE_NOSPACE);
-      n += printf_eol();
+      if (MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED)) {
+        // < 0>
+        n += ocdwarf_printf_DEC(p, i, USE_NOSPACE);
+
+        // <0x00001020:0x000010c0>
+        n += ocdwarf_printf_ADDR(p, fde_item->lo_pc, USE_TBLT | USE_COLON | USE_NOSPACE);
+        n += ocdwarf_printf_ADDR(p, fde_item->hi_pc, USE_TBRT | USE_NOSPACE);
+
+        // <_getchar>
+        n += printf_text(name, USE_LT | USE_TB);
+
+        // <cie offset 0x00000034::cie index 0>
+        n += printf_text("cie offset", USE_LT | USE_TBLT);
+        n += ocdwarf_printf_ADDR(p, fde_item->cie_offset, USE_NONE);
+        n += printf_text("::cie index", USE_LT);
+        n += printf_nice(fde_item->cie_index, USE_DEC | USE_TBRT);
+
+        // <fde offset 0x00000030::length 0x00000024>
+        n += printf_text("fde offset", USE_LT | USE_TBLT);
+        n += ocdwarf_printf_ADDR(p, fde_item->fde_offset, USE_NONE);
+        n += printf_text("::length", USE_LT);
+        n += printf_nice(fde_item->fde_bytes_length, USE_FHEX32 | USE_TBRT);
+        n += printf_eol();
+      } else {
+        n += printf_nice(fde_item->fde_offset, USE_LHEX32 | USE_NOSPACE);
+        n += printf_nice(fde_item->fde_bytes_length, USE_LHEXNN);
+        n += printf_nice(fde_item->cie_offset, USE_LHEX32);
+        n += printf_text("FDE cie=", USE_LT | USE_SPACE);
+        n += printf_nice(fde_item->cie_index, USE_LHEX32 | USE_NOSPACE);
+        n += printf_text("pc=", USE_LT | USE_SPACE);
+        n += printf_nice(fde_item->lo_pc, USE_LHEXNN | USE_NOSPACE);
+        n += printf_text("..", USE_LT);
+        n += printf_nice(fde_item->hi_pc, USE_LHEXNN | USE_NOSPACE);
+        n += printf_eol();
+      }
 
       Dwarf_Small *augdata = 0;
       Dwarf_Unsigned augdata_len = 0;
@@ -682,7 +713,7 @@ int ocdwarf_eh_frame(handle_t p, handle_t s, handle_t d) {
 
     if (MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED)) {
       n += ocdwarf_printf_groups(p, ocget(p, OPCODE_DWARF_ERROR));
-      n += ocdwarf_eh_frame_fdes0(p, fde_data, fde_element_count, ocget(p, OPCODE_DWARF_ERROR));
+      n += ocdwarf_eh_frame_fdes1(p, fde_data, fde_element_count, ocget(p, OPCODE_DWARF_ERROR));
       n += ocdwarf_eh_frame_cies0(p, cie_data, cie_element_count, ocget(p, OPCODE_DWARF_ERROR));
     } else {
       n += ocdwarf_eh_frame_cies0(p, cie_data, cie_element_count, ocget(p, OPCODE_DWARF_ERROR));
