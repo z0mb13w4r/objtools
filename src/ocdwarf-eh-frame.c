@@ -29,6 +29,9 @@ typedef struct fdes_item_s {
 } fdes_item_t, *pfdes_item_t;
 
 static pick_t REGUSE[] = {
+  REG_EAX,
+  REG_ECX,
+  REG_EDX,
   REG_EBX,
   REG_EBP,
   REG_ESI,
@@ -415,7 +418,6 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
     pfdes_item_t fde_items = xmalloc(sizeof(fdes_item_t) * fde_count);
     pfdes_item_t fde_item = fde_items;
 
-    Dwarf_Half prev_reg = 0;
     for (Dwarf_Signed i = 0; i < fde_count; ++i, ++fde_item) {
       fde_item->idx = i;
       fde_item->fde = fde_data[i];
@@ -433,6 +435,7 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
 
     qsort (fde_items, fde_count, sizeof(fdes_item_t), fdes_comp);
 
+    Dwarf_Half prev_reg = 0;
     fde_item = fde_items;
     for (Dwarf_Signed i = 0; i < fde_count; ++i, ++fde_item) {
 //      char* name = 0;
@@ -469,6 +472,53 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
 
       if (MODE_ISANY(oc->ocdump, OPTDWARF_DEBUG_FRAME_DECODED)) {
         n += printf_text("   LOC   CFA      ebx   ebp   esi   ra", USE_LT | USE_EOL);
+      }
+
+      MALLOCA(bool_t, xx, 100);
+      for (Dwarf_Addr j = fde_item->lo_pc; j < fde_item->hi_pc; ++j) {
+        Dwarf_Addr     curr_pc = j;
+        Dwarf_Addr     row_pc = 0;
+        Dwarf_Addr     subsequent_pc = 0;
+        Dwarf_Bool     has_more_rows = 0;
+        Dwarf_Small    value_type = 0;
+        Dwarf_Block    block = ZEROBLOCK;
+        Dwarf_Signed   curr_offset = 0;
+        Dwarf_Unsigned offset_relevant = 0;
+        Dwarf_Unsigned reg = 0;
+
+        x = dwarf_get_fde_info_for_cfa_reg3_c(fde_item->fde, curr_pc, &value_type, &offset_relevant,
+                     &reg, &curr_offset, &block, &row_pc, &has_more_rows, &subsequent_pc, e);
+        if (IS_DLV_NO_ENTRY(x)) continue;
+        else if (IS_DLV_ERROR(x)) {
+          printf_e("dwarf_get_fde_info_for_cfa_reg3_c failed! - %d", x);
+          return OCDWARF_ERRCODE(x, n);
+        }
+
+        if (!has_more_rows) {
+          j = fde_item->hi_pc - 1;
+        } else if (subsequent_pc > j) {
+          j = subsequent_pc - 1;
+        }
+
+        for (Dwarf_Half curr_reg = 0; curr_reg < 100; ++curr_reg) {
+          Dwarf_Addr     row_pc = 0;
+          Dwarf_Addr     subsequent_pc = 0;
+          Dwarf_Bool     has_more_rows = 0;
+          Dwarf_Small    value_type = 0;
+          Dwarf_Block    block = ZEROBLOCK;
+          Dwarf_Signed   offset = 0;
+          Dwarf_Unsigned offset_relevant = 0;
+          Dwarf_Unsigned reg = 0;
+
+          x = dwarf_get_fde_info_for_reg3_c(fde_item->fde, curr_reg, curr_pc, &value_type, &offset_relevant,
+                     &reg, &offset, &block, &row_pc, &has_more_rows, &subsequent_pc, e);
+          if (IS_DLV_ERROR(x)) {
+            printf_e("dwarf_get_fde_info_for_reg3_c failed! - %d", x);
+            return OCDWARF_ERRCODE(x, n);
+          } else if (IS_DLV_NO_ENTRY(x) || row_pc != curr_pc || (0 == value_type && 0 == offset)) continue;
+
+          xx[curr_reg] = TRUE;
+        }
       }
 
       Dwarf_Addr   prev_pc = fde_item->lo_pc;
@@ -560,7 +610,12 @@ static int ocdwarf_eh_frame_fdes1(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed 
           if (IS_DLV_ERROR(x)) {
             printf_e("dwarf_get_fde_info_for_reg3_c failed! - %d", x);
             return OCDWARF_ERRCODE(x, n);
-          } else if (IS_DLV_NO_ENTRY(x) || row_pc != curr_pc || (0 == value_type && 0 == offset)) continue;
+          } else if (IS_DLV_NO_ENTRY(x) || row_pc != curr_pc || (0 == value_type && 0 == offset)) {
+            if (xx[curr_reg] && isused(REGUSE, curr_reg)) {
+printf(" u");
+            }
+            continue;
+          }
 
           if (MODE_ISANY(oc->ocdump, OPTDWARF_VERBOSE)) {
             n += ocdwarf_printf_EXPR(p, value_type, USE_SPACE | USE_TB);
