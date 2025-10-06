@@ -294,6 +294,8 @@ static int ocdwarf_eh_frame_fdes(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed f
   if (isopcode(p)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
 
+    const int MAXSIZE = 10;
+
     const imode_t USE_LHEXNN = ocis64(p) ? USE_LHEX64 : USE_LHEX32;
 
     pfdes_item_t fde_items = xmalloc(sizeof(fdes_item_t) * fde_count);
@@ -440,24 +442,24 @@ static int ocdwarf_eh_frame_fdes(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed f
       }
 
       if (MODE_ISFIX(oc->ocdump, OPTDWARF_DEBUG_FRAME_DECODED, OPTDWARF_ENHANCED)) {
-        n0 += printf_text("LOC", USE_LT | USE_TAB | SET_PAD(10));
-        n0 += printf_text("CFA", USE_LT | USE_SPACE | SET_PAD(10));
+        n0 += printf_text("LOC", USE_LT | USE_TAB | SET_PAD(MAXSIZE));
+        n0 += printf_text("CFA", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
 
         if (ocisELF32(p)) {
-          if (isneeded[REG_EAX])   n0 += printf_text("eax", USE_LT | USE_SPACE | SET_PAD(10));
-          if (isneeded[REG_ECX])   n0 += printf_text("ecx", USE_LT | USE_SPACE | SET_PAD(10));
-          if (isneeded[REG_EDX])   n0 += printf_text("edx", USE_LT | USE_SPACE | SET_PAD(10));
-          if (isneeded[REG_EBX])   n0 += printf_text("ebx", USE_LT | USE_SPACE | SET_PAD(10));
-          if (isneeded[REG_EBP])   n0 += printf_text("ebp", USE_LT | USE_SPACE | SET_PAD(10));
-          if (isneeded[REG_ESI])   n0 += printf_text("esi", USE_LT | USE_SPACE | SET_PAD(10));
-          if (isneeded[REG_EDI])   n0 += printf_text("edi", USE_LT | USE_SPACE | SET_PAD(10));
+          if (isneeded[REG_EAX])   n0 += printf_text("eax", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+          if (isneeded[REG_ECX])   n0 += printf_text("ecx", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+          if (isneeded[REG_EDX])   n0 += printf_text("edx", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+          if (isneeded[REG_EBX])   n0 += printf_text("ebx", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+          if (isneeded[REG_EBP])   n0 += printf_text("ebp", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+          if (isneeded[REG_ESI])   n0 += printf_text("esi", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+          if (isneeded[REG_EDI])   n0 += printf_text("edi", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
         } else if (ocisELF64(p)) {
-          if (isneeded[REG_RBX])   n0 += printf_text("rbx", USE_LT | USE_SPACE | SET_PAD(10));
-          if (isneeded[REG_RBP])   n0 += printf_text("rbp", USE_LT | USE_SPACE | SET_PAD(10));
-          if (isneeded[REG_R12])   n0 += printf_text("r12", USE_LT | USE_SPACE | SET_PAD(10));
-          if (isneeded[REG_R13])   n0 += printf_text("r13", USE_LT | USE_SPACE | SET_PAD(10));
-          if (isneeded[REG_R14])   n0 += printf_text("r14", USE_LT | USE_SPACE | SET_PAD(10));
-          if (isneeded[REG_R15])   n0 += printf_text("r15", USE_LT | USE_SPACE | SET_PAD(10));
+          if (isneeded[REG_RBX])   n0 += printf_text("rbx", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+          if (isneeded[REG_RBP])   n0 += printf_text("rbp", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+          if (isneeded[REG_R12])   n0 += printf_text("r12", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+          if (isneeded[REG_R13])   n0 += printf_text("r13", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+          if (isneeded[REG_R14])   n0 += printf_text("r14", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+          if (isneeded[REG_R15])   n0 += printf_text("r15", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
         }
 
         n0 += printf_text("ra", USE_LT | USE_SPACE);
@@ -503,7 +505,7 @@ static int ocdwarf_eh_frame_fdes(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed f
           }
 
           if (DW_EXPR_EXPRESSION == value_type || DW_EXPR_VAL_EXPRESSION == value_type) {
-            n0 += printf_text("exp", USE_LT | USE_SPACE | SET_PAD(10));
+            n0 += printf_text("exp", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
             if (MODE_ISANY(oc->ocdump, OPTDWARF_VERBOSE)) {
               n0 += printf_hurt(block.bl_data, block.bl_len, USE_HEX | USE_SPACE | USE_TB);
             }
@@ -512,7 +514,7 @@ static int ocdwarf_eh_frame_fdes(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed f
             n1 += ocdwarf_printf_REGISTER(p, reg, USE_NONE);
             n1 += printf_text("+", USE_LT);
             n1 += printf_nice(curr_offset, USE_DEC | USE_NOSPACE);
-            n0 += printf_pack(10 - n1) + n1;
+            n0 += printf_pack(MAXSIZE - n1) + n1;
           }
         }
 
@@ -540,7 +542,7 @@ static int ocdwarf_eh_frame_fdes(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed f
           } else if (IS_DLV_NO_ENTRY(x) || row_pc != curr_pc || (0 == value_type && 0 == offset)) {
             if (MODE_ISFIX(oc->ocdump, OPTDWARF_DEBUG_FRAME_DECODED, OPTDWARF_ENHANCED)) {
               if (isneeded[curr_reg]) {
-                n0 += printf_text("u", USE_LT | USE_SPACE | SET_PAD(10));
+                n0 += printf_text("u", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
 //printf(" u(%d)", curr_reg);
               }
             }
@@ -565,12 +567,12 @@ static int ocdwarf_eh_frame_fdes(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed f
             }
 
             if (DW_EXPR_EXPRESSION == value_type || DW_EXPR_VAL_EXPRESSION == value_type) {
-              n0 += printf_text("exp", USE_LT | USE_SPACE | SET_PAD(10));
+              n0 += printf_text("exp", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
             } else if (DW_EXPR_OFFSET == value_type || DW_EXPR_VAL_OFFSET == value_type) {
               int n1 = 0;
               n1 += printf_text("c", USE_LT | USE_SPACE);
               n1 += printf_nice(offset, USE_DEC | USE_NOSPACE);
-              n0  += printf_pack(10 - n1) + n0;
+              n0  += printf_pack(MAXSIZE - n1) + n0;
             }
           }
         }
