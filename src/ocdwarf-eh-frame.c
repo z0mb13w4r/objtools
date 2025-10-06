@@ -4,8 +4,6 @@
 #include "opcode-engine.h"
 #include "ocdwarf-eh-frame.h"
 
-static const int MAXSIZE = 24;
-
 typedef struct fdes_item_s {
   Dwarf_Signed   idx;
   Dwarf_Fde      fde;
@@ -80,6 +78,10 @@ static int ocdwarf_eh_frame_cies(handle_t p, Dwarf_Cie *cie_data, Dwarf_Signed c
 
   if (isopcode(p)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
+
+    const int MAXSIZE = 24;
+    const int MAXSIZEN = 10;
+    const int MAXSIZENN = ocis64(p) ? 16 : 8;
 
     const imode_t USE_LHEXNN = ocis64(p) ? USE_LHEX64 : USE_LHEX32;
 
@@ -202,7 +204,10 @@ static int ocdwarf_eh_frame_cies(handle_t p, Dwarf_Cie *cie_data, Dwarf_Signed c
       if (0 != instr_count && MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED)) {
         n += printf_text("[  ] off name                      operands", USE_LT | USE_SPACE | USE_EOL);
       } else if (MODE_ISANY(oc->ocdump, OPTDWARF_DEBUG_FRAME_DECODED)) {
-        n += printf_text("   LOC   CFA   ra", USE_LT | USE_EOL);
+        n += printf_text("LOC", USE_LT | USE_TAB | SET_PAD(MAXSIZENN));
+        n += printf_text("CFA", USE_LT | USE_SPACE | SET_PAD(MAXSIZEN));
+        n += printf_text("ra", USE_LT | USE_SPACE);
+        n += printf_eol();
       }
 
       if (MODE_ISFIX(oc->ocdump, OPTDWARF_DEBUG_FRAME_DECODED, OPTDWARF_ENHANCED)) {
