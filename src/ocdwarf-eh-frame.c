@@ -295,6 +295,7 @@ static int ocdwarf_eh_frame_fdes(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed f
     popcode_t oc = ocget(p, OPCODE_THIS);
 
     const int MAXSIZE = 10;
+    const int MAXSIZENN = ocis64(p) ? 16 : 8;
 
     const imode_t USE_LHEXNN = ocis64(p) ? USE_LHEX64 : USE_LHEX32;
 
@@ -442,7 +443,7 @@ static int ocdwarf_eh_frame_fdes(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed f
       }
 
       if (MODE_ISFIX(oc->ocdump, OPTDWARF_DEBUG_FRAME_DECODED, OPTDWARF_ENHANCED)) {
-        n0 += printf_text("LOC", USE_LT | USE_TAB | SET_PAD(MAXSIZE));
+        n0 += printf_text("LOC", USE_LT | USE_TAB | SET_PAD(MAXSIZENN));
         n0 += printf_text("CFA", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
 
         if (ocisELF32(p)) {
