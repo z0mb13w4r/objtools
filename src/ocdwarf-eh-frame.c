@@ -206,7 +206,7 @@ static int ocdwarf_eh_frame_cies(handle_t p, Dwarf_Cie *cie_data, Dwarf_Signed c
       }
 
       if (MODE_ISFIX(oc->ocdump, OPTDWARF_DEBUG_FRAME_DECODED, OPTDWARF_ENHANCED)) {
-        n += printf_nice(cie_off, USE_LHEX32 | USE_NOSPACE);
+        n += printf_nice(cie_off, USE_LHEXNN | USE_NOSPACE);
       }
 
       for (Dwarf_Unsigned j = 0; j < instr_count; ++j) {
