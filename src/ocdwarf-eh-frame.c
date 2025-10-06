@@ -275,7 +275,7 @@ static int ocdwarf_eh_frame_cies(handle_t p, Dwarf_Cie *cie_data, Dwarf_Signed c
   return OCDWARF_ERRCODE(x, n);
 }
 
-int fdes_comp(const void* p0, const void* p1) {
+static int fdes_comp(const void* p0, const void* p1) {
   if (p0 && p1) {
     pfdes_item_t x0 = CAST(pfdes_item_t, p0);
     pfdes_item_t x1 = CAST(pfdes_item_t, p1);
