@@ -496,21 +496,23 @@ static int ocdwarf_eh_frame_fdes(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed f
           }
           n += printf_stop(USE_TBRT);
         } else if (MODE_ISANY(oc->ocdump, OPTDWARF_DEBUG_FRAME_DECODED)) {
-          n += printf_nice(curr_pc, USE_LHEXNN);
+          n += printf_nice(curr_pc, USE_LHEXNN | USE_NOSPACE);
 
           if (MODE_ISANY(oc->ocdump, OPTDWARF_VERBOSE)) {
             n += ocdwarf_printf_EXPR(p, value_type, USE_SPACE | USE_TB);
           }
 
           if (DW_EXPR_EXPRESSION == value_type || DW_EXPR_VAL_EXPRESSION == value_type) {
-            n += printf_text("exp", USE_LT | USE_SPACE);
+            n += printf_text("exp", USE_LT | USE_SPACE | SET_PAD(10));
             if (MODE_ISANY(oc->ocdump, OPTDWARF_VERBOSE)) {
               n += printf_hurt(block.bl_data, block.bl_len, USE_HEX | USE_SPACE | USE_TB);
             }
           } else {
-            n += ocdwarf_printf_REGISTER(p, reg, USE_NONE);
-            n += printf_text("+", USE_LT);
-            n += printf_nice(curr_offset, USE_DEC | USE_NOSPACE);
+            int n1 = 0;
+            n1 += ocdwarf_printf_REGISTER(p, reg, USE_NONE);
+            n1 += printf_text("+", USE_LT);
+            n1 += printf_nice(curr_offset, USE_DEC | USE_NOSPACE);
+            n += printf_pack(10 - n1) + n1;
           }
         }
 
@@ -563,10 +565,12 @@ static int ocdwarf_eh_frame_fdes(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed f
             }
 
             if (DW_EXPR_EXPRESSION == value_type || DW_EXPR_VAL_EXPRESSION == value_type) {
-              n += printf_text("exp", USE_LT | USE_SPACE);
+              n += printf_text("exp", USE_LT | USE_SPACE | SET_PAD(10));
             } else if (DW_EXPR_OFFSET == value_type || DW_EXPR_VAL_OFFSET == value_type) {
-              n += printf_text("c", USE_LT | USE_SPACE);
-              n += printf_nice(offset, USE_DEC | USE_NOSPACE);
+              int n1 = 0;
+              n1 += printf_text("c", USE_LT | USE_SPACE);
+              n1 += printf_nice(offset, USE_DEC | USE_NOSPACE);
+              n  += printf_pack(10 - n1) + n;
             }
           }
         }
