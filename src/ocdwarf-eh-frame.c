@@ -245,12 +245,15 @@ static int ocdwarf_eh_frame_cies(handle_t p, Dwarf_Cie *cie_data, Dwarf_Signed c
         }
 
         if (MODE_ISFIX(oc->ocdump, OPTDWARF_DEBUG_FRAME_DECODED, OPTDWARF_ENHANCED)) {
+          int n1 = 0;
           if (0 == j) {
-            n0 += ocdwarf_printf_fields_description(p, cfa_operation, fields_description, u0, u1, u2, s0, s1,
+            n1 += ocdwarf_printf_fields_description(p, cfa_operation, fields_description, u0, u1, u2, s0, s1,
                      code_alignment_factor, data_alignment_factor, &expression_block);
+            n0 += printf_pack(MAXSIZEN - n1) + n1;
           } else if (DW_CFA_nop != cfa_operation) {
-            n0 += ocdwarf_printf_CFA(p, cfa_operation, USE_NONE);
-            n0 += printf_nice(u1 * data_alignment_factor, USE_DEC | USE_NOSPACE);
+            n1 += ocdwarf_printf_CFA(p, cfa_operation, USE_NONE);
+            n1 += printf_nice(u1 * data_alignment_factor, USE_DEC | USE_NOSPACE);
+            n0 += printf_pack(MAXSIZEN - n1) + n1;
           }
         } else if (MODE_ISNOT(oc->ocdump, OPTDWARF_DEBUG_FRAME_DECODED)) {
           n0 += ocdwarf_printf_CFA(p, cfa_operation, TRY_COLON);
