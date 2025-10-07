@@ -204,6 +204,7 @@ uint64_t ocget_soffset(handle_t p, handle_t s);
 uint64_t ocget_eoffset(handle_t p, handle_t s);
 
 unknown_t ocget_rawdata(handle_t p);
+unknown_t ocget_rawdatabyname(handle_t p, const char* name);
 unknown_t ocget_rawshdr(handle_t p);
 handle_t  ocfget_rawdata(handle_t p);
 

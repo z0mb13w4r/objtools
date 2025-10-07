@@ -680,6 +680,15 @@ unknown_t ocget_rawdata(handle_t p) {
   return NULL;
 }
 
+unknown_t ocget_rawdatabyname(handle_t p, const char* name) {
+  if (isopcode(p) && name) {
+    handle_t p0 = ocget(p, OPCODE_RAWDATA);
+    return p0 ? ecget_rawdatabyname(p0, name) : NULL;
+  }
+
+  return NULL;
+}
+
 unknown_t ocget_rawshdr(handle_t p) {
   if (ismode(p, MODE_OCSHDR)) {
     asection* s0 = ocget(p, MODE_OCSHDR);
