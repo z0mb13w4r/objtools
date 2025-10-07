@@ -984,6 +984,25 @@ const char* ecget_secname64byshdr(const pbuffer_t p, Elf64_Shdr *s) {
   return NULL;
 }
 
+unknown_t ecget_rawdatabyname(const pbuffer_t p, const char* name) {
+  if (isELF(p)) {
+    if (isELF32(p))        return _ecget_rawdata32byname(p, name);
+    else if (isELF64(p))   return _ecget_rawdata64byname(p, name);
+  }
+
+  return NULL;
+}
+
+unknown_t _ecget_rawdata32byname(const pbuffer_t p, const char* name) {
+  Elf32_Shdr* shdr = ecget_shdr32byname(p, name);
+  return shdr ? getp(p, shdr->sh_offset, shdr->sh_size) : NULL;
+}
+
+unknown_t _ecget_rawdata64byname(const pbuffer_t p, const char* name) {
+  Elf64_Shdr* shdr = ecget_shdr64byname(p, name);
+  return shdr ? getp(p, shdr->sh_offset, shdr->sh_size) : NULL;
+}
+
 unknown_t _get32byshdr(const pbuffer_t p, Elf32_Shdr *shdr) {
   if (shdr) {
     return getp(p, shdr->sh_offset, shdr->sh_size);
