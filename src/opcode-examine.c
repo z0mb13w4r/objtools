@@ -409,7 +409,7 @@ static unknown_t oeinsert_mnemonic(handle_t p, unknown_t q, unknown_t m) {
       p1->cvalue |= q0->action;
       xstrncpy(p1->data, q0->mc, q0->mcsize);
       if ('#' == p0->comment[0] && oeishexb(p0->comment, USE_STRLEN)) {
-        p1->uvalue = oehexb(p0->comment, xstrlen(p0->comment));
+        p1->uvalue = oehexb(p0->comment, USE_STRLEN);
       }
 
       return oeskip(m0 + q0->mcsize, xstrlen(m0) - q0->mcsize);

@@ -36,9 +36,9 @@ int capstone_open(handle_t p, handle_t o) {
     poptions_t op = CAST(poptions_t, o);
     popcode_t oc = ocget(p, OPCODE_THIS);
     if (CS_ERR_OK == cs_open(get_csarch(p, o), get_csmode(p, o), &oc->cs)) {
-      if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_ATT_MNEMONIC)) {
+      if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_ATT | OPTDISASSEMBLE_ATT_MNEMONIC)) {
         cs_option(oc->cs, CS_OPT_SYNTAX, CS_OPT_SYNTAX_ATT);
-      } else if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_INTEL_MNEMONIC)) {
+      } else if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_INTEL | OPTDISASSEMBLE_INTEL_MNEMONIC)) {
         cs_option(oc->cs, CS_OPT_SYNTAX, CS_OPT_SYNTAX_INTEL);
       } else {
         cs_option(oc->cs, CS_OPT_SYNTAX, CS_OPT_SYNTAX_ATT);
