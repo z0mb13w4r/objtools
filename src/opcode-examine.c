@@ -52,7 +52,7 @@ static bool_t oeisok0(const uchar_t c) {
 }
 
 static bool_t oeisok1(const uchar_t c) {
-  return oeisok0(c) || ' ' == c || ',' == c;
+  return oeisok0(c) || ' ' == c || ',' == c || '(' == c;
 }
 
 static poestruct_t oepick(poestruct_t p, unknown_t m, const size_t size) {
@@ -266,7 +266,7 @@ static unknown_t oedo_register(handle_t p, unknown_t o, unknown_t m) {
     if (r0) {
       o0->uvalue0 = r0->action;
       o0->cvalue |= OPOPERAND_REGISTER0;
-//printf("++%s++", m0);
+//printf("++%s:%s:%lx++", m0, r0->mc, r0->action);
       return oeskip(m0 + r0->mcsize, m0size - r0->mcsize);
     }
 

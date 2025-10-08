@@ -312,11 +312,12 @@
 #define OPSEGMENT_GS                   (U64MASK(60) | OPOPERAND_SEGMENT)
 #define OPSEGMENT_FS                   (U64MASK(61) | OPOPERAND_SEGMENT)
 
-#define OCREGISTER_XMM                 U64MASK(44)
-#define OCREGISTER_YMM                 U64MASK(45)
-#define OCREGISTER_GENERAL             U64MASK(46)
-#define OCREGISTER_INSTRUCTIONPTR      U64MASK(47)
-#define OCREGISTER_BASEPTR             U64MASK(48)
+#define OCREGISTER_XMM                 U64MASK(43)
+#define OCREGISTER_YMM                 U64MASK(44)
+#define OCREGISTER_GENERAL             U64MASK(45)
+#define OCREGISTER_INSTRUCTIONPTR      U64MASK(46)
+#define OCREGISTER_BASEPTR             U64MASK(47)
+#define OCREGISTER_STACKIDX            U64MASK(48)
 #define OCREGISTER_STACKPTR            U64MASK(49)
 #define OCREGISTER_DSTINDEX            U64MASK(50)
 #define OCREGISTER_SRCINDEX            U64MASK(51)
@@ -453,6 +454,8 @@
 #define OCREGISTER_YMM13               ((0x65) | OCREGISTER_256BIT | OCREGISTER_YMM)
 #define OCREGISTER_YMM14               ((0x66) | OCREGISTER_256BIT | OCREGISTER_YMM)
 #define OCREGISTER_YMM15               ((0x67) | OCREGISTER_256BIT | OCREGISTER_YMM)
+
+#define OCREGISTER_ST                  ((0x68) | OCREGISTER_STACKIDX)
 
 #define MODE_OCEXAMINE                 (MODE_PUT0('O') | MODE_PUT1('C') | MODE_PUT2('E'))
 

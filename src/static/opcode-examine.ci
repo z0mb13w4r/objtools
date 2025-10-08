@@ -392,6 +392,8 @@ static oestruct_t oeREGISTERS[] = {
   OCSTRUCT("\%eip",     OCREGISTER_EIP),
   OCSTRUCT("\%ip",      OCREGISTER_IP),
 
+  OCSTRUCT("\%st",      OCREGISTER_ST),
+
   OCSTRUCT("\%xmm0",    OCREGISTER_XMM0),
   OCSTRUCT("\%xmm1",    OCREGISTER_XMM1),
   OCSTRUCT("\%xmm2",    OCREGISTER_XMM2),
@@ -553,6 +555,7 @@ convert_t oeREGISTERFLAGS[] = {
   {"GENERAL",           OCREGISTER_GENERAL},
   {"INSTRUCTIONPTR",    OCREGISTER_INSTRUCTIONPTR},
   {"BASEPTR",           OCREGISTER_BASEPTR},
+  {"STACKIDX",          OCREGISTER_STACKIDX},
   {"STACKPTR",          OCREGISTER_STACKPTR},
   {"DSTINDEX",          OCREGISTER_DSTINDEX},
   {"SRCINDEX",          OCREGISTER_SRCINDEX},
@@ -658,6 +661,8 @@ convert_t oeREGISTERNAMES[] = {
   {"RIP",               OCREGISTER_RIP},
   {"EIP",               OCREGISTER_EIP},
   {"IP",                OCREGISTER_IP},
+
+  {"ST",                OCREGISTER_ST},
 
   {"XMM0",              OCREGISTER_XMM0},
   {"XMM1",              OCREGISTER_XMM1},
