@@ -267,7 +267,13 @@ static unknown_t oedo_register(handle_t p, unknown_t o, unknown_t m) {
       o0->uvalue0 = r0->action;
       o0->cvalue |= OPOPERAND_REGISTER0;
 //printf("++%s:%s:%lx++", m0, r0->mc, r0->action);
-      return oeskip(m0 + r0->mcsize, m0size - r0->mcsize);
+      m0 = oeskip(m0 + r0->mcsize, m0size - r0->mcsize);
+      if (oeisdecb(m0, USE_STRLEN)) {
+        o0->uvalue1 = oedecb(m0, USE_STRLEN);
+        o0->cvalue |= OCOPERAND_IVALUE1;
+      }
+
+      return NULL;
     }
 
     return m0;
@@ -418,7 +424,7 @@ static unknown_t oeinsert_operand(handle_t p, unknown_t q, unknown_t m) {
     pocoperand_t o0 = xmalloc(sizeof(ocoperand_t));
     if (o0) {
       char *m0 = CAST(char *, m);
-      xstrncpy(o0->data, m, sizeof(o0->data));
+      xstrncpy(o0->data, m0, sizeof(o0->data));
 
       m0 = oedo_absolute(p, o0, m0);
       m0 = oedo_segment(p, o0, m0);
