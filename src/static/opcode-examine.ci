@@ -520,6 +520,7 @@ convert_t oeINSTRUCTIONNAMES[] = {
   {"LEA",               MODE_MASK16(OCINSTRUCTION_LEA)},
   {"FST",               MODE_MASK16(OCINSTRUCTION_FST)},
   {"FSTP",              MODE_MASK16(OCINSTRUCTION_FSTP)},
+  {"FXCH",              MODE_MASK16(OCINSTRUCTION_FXCH)},
   {"CMOVx",             MODE_MASK16(OCINSTRUCTION_CMOVx)},
   {"XCHG",              MODE_MASK16(OCINSTRUCTION_XCHG)},
   {"Cxxx",              MODE_MASK16(OCINSTRUCTION_Cxxx)},
