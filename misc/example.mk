@@ -55,6 +55,8 @@ LIB_INCS = \
 
 ifeq ($(CROSS),WIN32)
 SYS_OBJS =
+else ifeq ($(CROSS),WIN64)
+SYS_OBJS =
 else
 SYS_OBJS = \
 	-lrt
@@ -103,12 +105,12 @@ else ifeq ($(CROSS),ARM64)
 	EFLAGS  = -Wl,--no-enum-size-warning
 	LFLAGS +=
 else ifeq ($(CROSS),WIN32)
-	CROSS_COMPILE = x86_64-w64-mingw32-
+	CROSS_COMPILE = i686-w64-mingw32-
 	DFLAGS += -DWIN32
 	EFLAGS  =
 	LFLAGS += -static-libgcc -static-libstdc++
 else ifeq ($(CROSS),WIN64)
-	CROSS_COMPILE = i686-w64-mingw32-
+	CROSS_COMPILE = x86_64-w64-mingw32-
 	DFLAGS += -DWIN64
 	EFLAGS  =
 	LFLAGS += -static-libgcc -static-libstdc++
@@ -259,13 +261,19 @@ $(TARGET): build
 	-$(CPP) -o $(TARGET) $(OBJS) $(LFLAGS) $(LIB_PATHS) -Wl,--start-group $(LIB_OBJS) $(SYS_OBJS) -Wl,--end-group $(EFLAGS) -Wl,-Map=$(MAP_FILE)
 	@echo 'Finished building target: $@'
 ifeq ($(DEBUG),y)
+ifeq ($(CROSS),WIN32)
+	-$(STRIP) -o $(STRIPPED_FILE) -s $(TARGET).exe
+else ifeq ($(CROSS),WIN64)
+	-$(STRIP) -o $(STRIPPED_FILE) -s $(TARGET).exe
+else
 	-$(STRIP) -o $(STRIPPED_FILE) -s $(TARGET)
+endif
 	@echo 'Finished stripping target: $@'
 else
 ifeq ($(CROSS),WIN32)
 	-$(CP) $(TARGET).exe ../bin/$(TARGET)-32.exe
-else ifeq ($(CROSS),WIN32)
-	-$(CP) $(TARGET) ../bin/$(TARGET)-64-arm
+else ifeq ($(CROSS),WIN64)
+	-$(CP) $(TARGET) ../bin/$(TARGET)-64.exe
 else ifeq ($(CROSS),ARM32)
 	-$(CP) $(TARGET) ../bin/$(TARGET)-32-arm
 else ifeq ($(CROSS),ARM64)
