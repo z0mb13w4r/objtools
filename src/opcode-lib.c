@@ -86,7 +86,7 @@ int opcodelib_open(handle_t p, handle_t o) {
         if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_ATT_MNEMONIC)) {
           di->disassembler_options = opcodelib_strncat(args, "att-mnemonic", ",", NELEMENTS(args));
         } else if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_INTEL_MNEMONIC)) {
-          di->disassembler_options = opcodelib_strncat(args, "intel-mnemoic", ",", NELEMENTS(args));
+          di->disassembler_options = opcodelib_strncat(args, "intel-mnemonic", ",", NELEMENTS(args));
         } else if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_ATT)) {
           di->disassembler_options = opcodelib_strncat(args, "att", ",", NELEMENTS(args));
         } else if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_INTEL)) {
@@ -120,7 +120,7 @@ int opcodelib_open(handle_t p, handle_t o) {
         } else if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_DATA32)) {
           di->disassembler_options = opcodelib_strncat(args, "data32", ",", NELEMENTS(args));
         }
-
+//printf("*** %s ***\n", di->disassembler_options);
         if (bfd_big_endian(bf))          di->endian_code = di->display_endian = di->endian = BFD_ENDIAN_BIG;
         else if (bfd_little_endian(bf))  di->endian_code = di->display_endian = di->endian = BFD_ENDIAN_LITTLE;
         else                             di->endian_code = di->endian = BFD_ENDIAN_UNKNOWN;
