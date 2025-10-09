@@ -304,9 +304,15 @@
 #define OCOPERAND_UVALUE3              (0x80)
 #define OPOPERAND_REGISTER3            (0xc0)
 
+#define OPOPERAND_SIZE                 U64MASK(51)
+// ----- GAP OPSIZE -----
 #define OPOPERAND_SEGMENT              U64MASK(55)
 // ---- GAP OPSEGMENT ----
 #define OCOPERAND_ABSOLUTE             U64MASK(62)
+
+#define OPSIZE_BYTEPTR                 (U64MASK(52) | OPOPERAND_SIZE)
+#define OPSIZE_WORDPTR                 (U64MASK(53) | OPOPERAND_SIZE)
+#define OPSIZE_DWORDPTR                (U64MASK(54) | OPOPERAND_SIZE)
 
 #define OPSEGMENT_CS                   (U64MASK(56) | OPOPERAND_SEGMENT)
 #define OPSEGMENT_DS                   (U64MASK(57) | OPOPERAND_SEGMENT)
