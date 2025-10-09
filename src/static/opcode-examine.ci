@@ -437,12 +437,12 @@ static oestruct_t oeREGISTERS[] = {
 };
 
 static oestruct_t oeSEGMENTS[] = {
-  OCSTRUCT("\%cs:",     OPSEGMENT_CS),
-  OCSTRUCT("\%ds:",     OPSEGMENT_DS),
-  OCSTRUCT("\%ss:",     OPSEGMENT_SS),
-  OCSTRUCT("\%es:",     OPSEGMENT_ES),
-  OCSTRUCT("\%fs:",     OPSEGMENT_FS),
-  OCSTRUCT("\%gs:",     OPSEGMENT_GS),
+  OCSTRUCT("cs:",       OPSEGMENT_CS),
+  OCSTRUCT("ds:",       OPSEGMENT_DS),
+  OCSTRUCT("ss:",       OPSEGMENT_SS),
+  OCSTRUCT("es:",       OPSEGMENT_ES),
+  OCSTRUCT("fs:",       OPSEGMENT_FS),
+  OCSTRUCT("gs:",       OPSEGMENT_GS),
 
   OCSTRUCT("byte ptr",  OPSIZE_BYTEPTR),
   OCSTRUCT("word ptr",  OPSIZE_WORDPTR),

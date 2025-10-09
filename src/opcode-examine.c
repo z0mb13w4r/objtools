@@ -73,8 +73,24 @@ static poestruct_t oepick_REG(unknown_t m, const size_t size) {
   if (m && USE_STRLEN == size) {
     return oepick_REG(m, xstrlen(m));
   } else if (m && size) {
-    const char* m0 = CAST(const char*, m);
-    return '%' == m0[0] ? oepick_REG(CAST(unknown_t, m0 + 1), size - 1) : oepick(oeREGISTERS, m, size);
+    char* m0 = CAST(char*, m);
+    return '%' == m0[0] ? oepick_REG(m0 + 1, size - 1) : oepick(oeREGISTERS, m, size);
+  }
+
+  return NULL;
+}
+
+static poestruct_t oepick_SEG(unknown_t m, const size_t size) {
+  if (m && USE_STRLEN == size) {
+    return oepick_SEG(m, xstrlen(m));
+  } else if (m && size) {
+    char* m0 = CAST(char*, m);
+    poestruct_t p0 = '%' == m0[0] ? oepick(oeSEGMENTS,  m0 + 1, size - 1) : oepick(oeSEGMENTS, m, size);
+    if (NULL == p0) {
+    } else {
+    }
+
+    return p0;
   }
 
   return NULL;
@@ -298,9 +314,9 @@ static unknown_t oedo_segment(handle_t p, unknown_t o, unknown_t m) {
     char *m0 = CAST(char*, m);
     pocoperand_t o0 = CAST(pocoperand_t, o);
     size_t m0size = xstrlen(m0);
-    poestruct_t s0 = oepick(oeSEGMENTS, m0, m0size);
+    poestruct_t s0 = oepick_SEG(m0, m0size);
     if (s0) {
-      o0->cvalue = s0->action;
+      o0->cvalue |= s0->action;
 //printf("++%s++", s0->mc);
       return oeskip(m0 + s0->mcsize, m0size - s0->mcsize);
     }
