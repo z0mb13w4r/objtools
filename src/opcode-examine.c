@@ -69,6 +69,17 @@ static poestruct_t oepick(poestruct_t p, unknown_t m, const size_t size) {
   return NULL;
 }
 
+static poestruct_t oepick_REG(unknown_t m, const size_t size) {
+  if (m && USE_STRLEN == size) {
+    return oepick_REG(m, xstrlen(m));
+  } else if (m && size) {
+    const char* m0 = CAST(const char*, m);
+    return '%' == m0[0] ? oepick_REG(CAST(unknown_t, m0 + 1), size - 1) : oepick(oeREGISTERS, m, size);
+  }
+
+  return NULL;
+}
+
 static bool_t oeisskipped(int c) {
   return ' ' == c || '\t' == c ? TRUE : FALSE;
 }
@@ -262,7 +273,7 @@ static unknown_t oedo_register(handle_t p, unknown_t o, unknown_t m) {
     pocoperand_t o0 = CAST(pocoperand_t, o);
 
     size_t m0size = xstrlen(m0);
-    poestruct_t r0 = oepick(oeREGISTERS, m0, m0size);
+    poestruct_t r0 = oepick_REG(m0, m0size);
     if (r0) {
       o0->uvalue0 = r0->action;
       o0->cvalue |= OPOPERAND_REGISTER0;
@@ -329,7 +340,7 @@ static unknown_t oedo_value(handle_t p, unknown_t o, unknown_t m) {
       oesplit(p, m0, USE_STRLEN, &m1, &m2, &m3);
 //printf("++%s+%s+%s++", CAST(char*, m1), CAST(char*, m2), CAST(char*, m3));
 
-      poestruct_t r1 = oepick(oeREGISTERS, m1, USE_STRLEN);
+      poestruct_t r1 = oepick_REG(m1, USE_STRLEN);
       if (r1) {
         o0->uvalue1 = r1->action;
         o0->cvalue |= OPOPERAND_REGISTER1;
@@ -339,7 +350,7 @@ static unknown_t oedo_value(handle_t p, unknown_t o, unknown_t m) {
         o0->cvalue |= OCOPERAND_UVALUE1;
       }
 
-      poestruct_t r2 = oepick(oeREGISTERS, m2, USE_STRLEN);
+      poestruct_t r2 = oepick_REG(m2, USE_STRLEN);
       if (r2) {
         o0->uvalue2 = r2->action;
         o0->cvalue |= OPOPERAND_REGISTER2;
@@ -349,7 +360,7 @@ static unknown_t oedo_value(handle_t p, unknown_t o, unknown_t m) {
         o0->cvalue |= OCOPERAND_UVALUE2;
       }
 
-      poestruct_t r3 = oepick(oeREGISTERS, m3, USE_STRLEN);
+      poestruct_t r3 = oepick_REG(m3, USE_STRLEN);
       if (r3) {
         o0->uvalue3 = r3->action;
         o0->cvalue |= OPOPERAND_REGISTER3;
