@@ -516,6 +516,7 @@ handle_t oefree(handle_t p);
 handle_t oecreate(handle_t p, const uint64_t vaddr, unknown_t mnemonic, unknown_t operands);
 
 unknown_t oeget(handle_t p, const imode_t mode);
+unknown_t oejump(unknown_t p, const size_t size);
 unknown_t oeskip(unknown_t p, const size_t size);
 size_t    oeskipdec(unknown_t p, const size_t size);
 size_t    oeskiphex(unknown_t p, const size_t size);

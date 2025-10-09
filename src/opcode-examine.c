@@ -100,6 +100,10 @@ static bool_t oeisstripped(int c0, int c1) {
   return ('(' == c0 && ')' == c1) || ('[' == c0 && ']' == c1);
 }
 
+unknown_t oejump(unknown_t p, const size_t size) {
+  return p ? oeskip(CAST(char*, p) + size, xstrlen(p) - size) : NULL;
+}
+
 unknown_t oeskip(unknown_t p, const size_t size) {
   if (p && USE_STRLEN == size) {
     return oeskip(p, xstrlen(p));
@@ -132,6 +136,10 @@ size_t oeskipdec(unknown_t p, const size_t size) {
 
     if (size >= 3 && '$' == p0[0] && '0' == p0[1] && 'x' == p0[2]) {
       return 0;
+    } else if (size >= 2 && '+' == p0[0] && ' ' == p0[1]) {
+      return 2;
+    } else if (size >= 1 && '+' == p0[0]) {
+      return 1;
     } else if (size >= 1 && '$' == p0[0]) {
       return 1;
     }
@@ -147,6 +155,10 @@ size_t oeskiphex(unknown_t p, const size_t size) {
     if (size >= 3 && '$' == p0[0] && '0' == p0[1] && 'x' == p0[2]) {
       return 3;
     } else if (size >= 3 && '-' == p0[0] && '0' == p0[1] && 'x' == p0[2]) {
+      return 3;
+    } else if (size >= 4 && '+' == p0[0] && ' ' == p0[1] && '0' == p0[2] && 'x' == p0[3]) {
+      return 4;
+    } else if (size >= 3 && '+' == p0[0] && '0' == p0[1] && 'x' == p0[2]) {
       return 3;
     } else if (size >= 2 && '0' == p0[0] && 'x' == p0[1]) {
       return 2;
@@ -295,9 +307,22 @@ static unknown_t oedo_register(handle_t p, unknown_t o, unknown_t m) {
       o0->cvalue |= OPOPERAND_REGISTER0;
 //printf("++%s:%s:%lx++", m0, r0->mc, r0->action);
       m0 = oeskip(m0 + r0->mcsize, m0size - r0->mcsize);
-      if (oeisdecb(m0, USE_STRLEN)) {
-        o0->uvalue1 = oedecb(m0, USE_STRLEN);
+      if (oeishexb(m0, USE_STRLEN)) {
+        o0->uvalue1 = oehexb(m0, USE_STRLEN);
+        o0->cvalue |= OCOPERAND_UVALUE1;
+      } else if (oeisdecb(m0, USE_STRLEN)) {
+        o0->ivalue1 = oedecb(m0, USE_STRLEN);
         o0->cvalue |= OCOPERAND_IVALUE1;
+      } else if (m0 && '+' == m0[0]) {
+        m0 = oeskip(m0 + 1, USE_STRLEN);
+
+        poestruct_t r1 = oepick_REG(m0, USE_STRLEN);
+        if (r1) {
+          o0->uvalue1 = r1->action;
+          o0->cvalue |= OPOPERAND_REGISTER1;
+//printf("++%s:%s:%lx++", m0, r1->mc, r1->action);
+          m0 = oeskip(m0 + r1->mcsize, xstrlen(m0) - r1->mcsize);
+        }
       }
 
       return NULL;
