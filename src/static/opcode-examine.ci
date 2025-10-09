@@ -444,6 +444,10 @@ static oestruct_t oeSEGMENTS[] = {
   OCSTRUCT("fs:",       OPSEGMENT_FS),
   OCSTRUCT("gs:",       OPSEGMENT_GS),
 
+  {NULL}
+};
+
+static oestruct_t oeSIZEPTR[] = {
   OCSTRUCT("byte ptr",  OPSIZE_BYTEPTR),
   OCSTRUCT("word ptr",  OPSIZE_WORDPTR),
   OCSTRUCT("dword ptr", OPSIZE_DWORDPTR),
