@@ -96,6 +96,10 @@ static bool_t oeisskipped(int c) {
   return ' ' == c || '\t' == c ? TRUE : FALSE;
 }
 
+static bool_t oeisstripped(int c0, int c1) {
+  return ('(' == c0 && ')' == c1) || ('[' == c0 && ']' == c1);
+}
+
 unknown_t oeskip(unknown_t p, const size_t size) {
   if (p && USE_STRLEN == size) {
     return oeskip(p, xstrlen(p));
@@ -111,7 +115,7 @@ unknown_t oeskip(unknown_t p, const size_t size) {
       *p1 = 0;
     }
 
-    if ('(' == *p0 && ')' == *p1) {
+    if (oeisstripped(*p0, *p1)) {
       ++p0;
       *p1 = 0;
     }
@@ -480,16 +484,24 @@ static unknown_t oeinsert_operands(handle_t p, unknown_t q, unknown_t m) {
       oesplit(p, m, USE_STRLEN, &m1, &m2, &m3);
       if (m1) {
         p0->op1 = oeinsert_operand(p, q, m1);
+      } else if (MODE_ISNOT(q0->action, OCINSTRUCTION_OPERAND0)) {
+        printf_e("Missing operand #1");
+      } else {
+        p0->mc->cvalue &= ~OCINSTRUCTION_OPERAND1;
       }
       if (m2) {
         p0->op2 = oeinsert_operand(p, q, m2);
       } else if (MODE_ISNOT(q0->action, OCINSTRUCTION_OPERAND1)) {
         printf_e("Missing operand #2");
+      } else {
+        p0->mc->cvalue &= ~OCINSTRUCTION_OPERAND2;
       }
       if (m3) {
         p0->op3 = oeinsert_operand(p, q, m3);
       } else if (MODE_ISNOT(q0->action, OCINSTRUCTION_OPERAND2)) {
         printf_e("Missing operand #3");
+      } else {
+        p0->mc->cvalue &= ~OCINSTRUCTION_OPERAND3;
       }
     } else if (MODE_ISANY(q0->action, OCINSTRUCTION_OPERAND2)) {
       unknown_t m1 = NULL, m2 = NULL, m3 = NULL;
@@ -501,10 +513,20 @@ static unknown_t oeinsert_operands(handle_t p, unknown_t q, unknown_t m) {
         p0->op2 = oeinsert_operand(p, q, m2);
       } else if (MODE_ISNOT(q0->action, OCINSTRUCTION_OPERAND1)) {
         printf_e("Missing operand #2");
+      } else {
+        p0->mc->cvalue &= ~OCINSTRUCTION_OPERAND2;
       }
 //printf("+++++++");
     } else if (MODE_ISANY(q0->action, OCINSTRUCTION_OPERAND1)) {
-      p0->op1 = oeinsert_operand(p, q, m);
+      unknown_t m1 = NULL, m2 = NULL, m3 = NULL;
+      oesplit(p, m, USE_STRLEN, &m1, &m2, &m3);
+      if (m1) {
+        p0->op1 = oeinsert_operand(p, q, m1);
+      } else if (MODE_ISNOT(q0->action, OCINSTRUCTION_OPERAND0)) {
+        printf_e("Missing operand #1");
+      } else {
+        p0->mc->cvalue &= ~OCINSTRUCTION_OPERAND1;
+      }
     }
   }
 
