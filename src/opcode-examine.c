@@ -331,6 +331,15 @@ static unknown_t oedo_register(handle_t p, unknown_t o, unknown_t m) {
           o0->cvalue |= OPOPERAND_REGISTER1;
 //printf("++%s:%s:%lx++", m0, r1->mc, r1->action);
           m0 = oeskip(m0 + r1->mcsize, xstrlen(m0) - r1->mcsize);
+          if (oeishexb(m0, USE_STRLEN)) {
+            o0->uvalue2 = oehexb(m0, USE_STRLEN);
+            o0->cvalue |= OCOPERAND_UVALUE2;
+            m0 = NULL;
+          } else if (oeisdecb(m0, USE_STRLEN)) {
+            o0->ivalue2 = oedecb(m0, USE_STRLEN);
+            o0->cvalue |= OCOPERAND_IVALUE2;
+            m0 = NULL;
+          }
         }
       }
 
