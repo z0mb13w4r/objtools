@@ -136,6 +136,10 @@ size_t oeskipdec(unknown_t p, const size_t size) {
 
     if (size >= 3 && '$' == p0[0] && '0' == p0[1] && 'x' == p0[2]) {
       return 0;
+    } else if (size >= 2 && '-' == p0[0] && ' ' == p0[1]) {
+      return 2;
+    } else if (size >= 1 && '-' == p0[0]) {
+      return 1;
     } else if (size >= 2 && '+' == p0[0] && ' ' == p0[1]) {
       return 2;
     } else if (size >= 1 && '+' == p0[0]) {
@@ -263,7 +267,8 @@ uint64_t oedecb(unknown_t p, const size_t size) {
     return oedecb(p, xstrlen(p));
   } else if (p && size) {
     size_t sz = oeskipdec(p, size);
-    return decb(CAST(puchar_t, p) + sz, size - sz);
+    puchar_t p0 = CAST(puchar_t, p);
+    return '-' == p0[0] ? -decb(p0 + sz, size - sz) : decb(p0 + sz, size - sz);
   }
 
   return decb(p, size);
@@ -332,6 +337,8 @@ static unknown_t oedo_register(handle_t p, unknown_t o, unknown_t m) {
       if (m0) {
         printf_e("The operand has not been processed");
       }
+
+      return NULL;
     }
 
     return m0;

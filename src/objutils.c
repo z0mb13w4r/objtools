@@ -154,13 +154,11 @@ bool_t isdec8(int x) {
 bool_t isdecb(unknown_t p, const size_t size) {
   if (p && 0 != size) {
     puchar_t p0 = CAST(puchar_t, p);
-    if ('-' == p0[0] || '+' == p0[0] || isdec8(p0[0])) {
-      for (size_t i = 1; i < size; ++i) {
-        if (!isdec8(p0[i])) return FALSE;
-      }
-
-      return TRUE;
+    for (size_t i = 0; i < size; ++i) {
+      if (!isdec8(p0[i])) return FALSE;
     }
+
+    return TRUE;
   }
 
   return FALSE;
@@ -174,17 +172,9 @@ int64_t decb(unknown_t p, const size_t size) {
   int64_t x = 0;
   if (p && 0 != size) {
     puchar_t p0 = CAST(puchar_t, p);
-    if (isdec8(p0[0])) {
-      x = dec8(p0[0]);
-    }
-
-    for (size_t i = 1; i < size; ++i) {
+    for (size_t i = 0; i < size; ++i) {
       if (!isdec8(p0[i])) break;
       x = (x * 10) + dec8(p0[i]);
-    }
-
-    if ('-' == p0[0]) {
-      x = -x;
     }
   }
 
