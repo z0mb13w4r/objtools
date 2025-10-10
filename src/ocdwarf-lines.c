@@ -37,7 +37,9 @@ int ocdwarf_debug_line(handle_t p, handle_t s, handle_t d) {
                      &next_cu_header_offset, &header_cu_type, ocget(p, OPCODE_DWARF_ERROR));
     if (IS_DLV_NO_ENTRY(x)) return n;
     else if (IS_DLV_ERROR(x)) {
+#ifdef OPCODE_DWARF_DEBUG
       printf_e("dwarf_next_cu_header_e failed! - %d", x);
+#endif
       return OCDWARF_ERRCODE(x, n);
     }
 

@@ -15,9 +15,11 @@ int ocdwarf_abbrev_one(handle_t p, Dwarf_Unsigned offset, Dwarf_Unsigned nabbrev
     Dwarf_Unsigned abbrev_entry_count = 0;
     x = dwarf_get_abbrev(ocget(p, OPCODE_DWARF_DEBUG), offset, &abbrev, size, &abbrev_entry_count, e);
     if (IS_DLV_ANY_ERROR(x)) {
+#ifdef OPCODE_DWARF_DEBUG
       if (IS_DLV_ERROR(x)) {
         printf_e("dwarf_get_abbrev failed! - %d", x);
       }
+#endif
       return OCDWARF_ERRCODE(x, n);
     }
 

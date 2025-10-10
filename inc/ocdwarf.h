@@ -1,6 +1,8 @@
 #ifndef __OCDWARF_H_
 #define __OCDWARF_H_
 
+//#define OPCODE_DWARF_DEBUG
+
 #include <dwarf.h>
 #include <libdwarf.h>
 

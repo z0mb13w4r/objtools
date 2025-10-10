@@ -25,9 +25,11 @@ int ocdwarf_debug_aranges(handle_t p, handle_t s, handle_t d) {
     Dwarf_Arange *arange_array = NULL;
     x = dwarf_get_aranges(ocget(p, OPCODE_DWARF_DEBUG), &arange_array, &arange_count, ocget(p, OPCODE_DWARF_ERROR));
     if (IS_DLV_ANY_ERROR(x)) {
+#ifdef OPCODE_DWARF_DEBUG
       if (IS_DLV_ERROR(x)) {
         printf_e("dwarf_get_aranges failed! - %d", x);
       }
+#endif
       return OCDWARF_ERRCODE(x, n);
     }
 

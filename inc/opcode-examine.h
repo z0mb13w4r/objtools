@@ -1,6 +1,8 @@
 #ifndef __OPCODE_EXAMINE_H_
 #define __OPCODE_EXAMINE_H_
 
+//#define OPCODE_EXAMINE_DEBUG
+
 #include "opcode.h"
 
 #define OECODE_THIS                    (0)
