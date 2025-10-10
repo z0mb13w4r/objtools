@@ -310,9 +310,11 @@ static unknown_t oedo_register(handle_t p, unknown_t o, unknown_t m) {
       if (oeishexb(m0, USE_STRLEN)) {
         o0->uvalue1 = oehexb(m0, USE_STRLEN);
         o0->cvalue |= OCOPERAND_UVALUE1;
+        m0 = NULL;
       } else if (oeisdecb(m0, USE_STRLEN)) {
         o0->ivalue1 = oedecb(m0, USE_STRLEN);
         o0->cvalue |= OCOPERAND_IVALUE1;
+        m0 = NULL;
       } else if (m0 && '+' == m0[0]) {
         m0 = oeskip(m0 + 1, USE_STRLEN);
 
@@ -325,7 +327,9 @@ static unknown_t oedo_register(handle_t p, unknown_t o, unknown_t m) {
         }
       }
 
-      return NULL;
+      if (m0) {
+        printf_e("The operand has not been processed");
+      }
     }
 
     return m0;
@@ -395,9 +399,11 @@ static unknown_t oedo_value(handle_t p, unknown_t o, unknown_t m) {
         o0->uvalue1 = r1->action;
         o0->cvalue |= OPOPERAND_REGISTER1;
 //printf("++%s++", m0);
+        m1 = oeskip(m1 + r1->mcsize, xstrlen(m1) - r1->mcsize);
       } else if (oeishexb(m1, USE_STRLEN)) {
         o0->uvalue1 = oehexb(m1, USE_STRLEN);
         o0->cvalue |= OCOPERAND_UVALUE1;
+        m1 = NULL;
       }
 
       poestruct_t r2 = oepick_REG(m2, USE_STRLEN);
@@ -405,9 +411,11 @@ static unknown_t oedo_value(handle_t p, unknown_t o, unknown_t m) {
         o0->uvalue2 = r2->action;
         o0->cvalue |= OPOPERAND_REGISTER2;
 //printf("++%s++", m2);
+        m2 = oeskip(m2 + r2->mcsize, xstrlen(m2) - r2->mcsize);
       } else if (oeishexb(m2, USE_STRLEN)) {
         o0->uvalue2 = oehexb(m2, USE_STRLEN);
         o0->cvalue |= OCOPERAND_UVALUE2;
+        m2 = NULL;
       }
 
       poestruct_t r3 = oepick_REG(m3, USE_STRLEN);
@@ -415,9 +423,15 @@ static unknown_t oedo_value(handle_t p, unknown_t o, unknown_t m) {
         o0->uvalue3 = r3->action;
         o0->cvalue |= OPOPERAND_REGISTER3;
 //printf("++%s++", m3);
+        m3 = oeskip(m3 + r3->mcsize, xstrlen(m3) - r3->mcsize);
       } else if (oeishexb(m3, USE_STRLEN)) {
         o0->uvalue3 = oehexb(m3, USE_STRLEN);
         o0->cvalue |= OCOPERAND_UVALUE3;
+        m3 = NULL;
+      }
+
+      if (m1 || m2 || m3) {
+        printf_e("The operand has not been processed");
       }
     }
   }
