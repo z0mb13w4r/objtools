@@ -73,8 +73,7 @@ static poestruct_t oepick_REG(unknown_t m, const size_t size) {
   if (m && USE_STRLEN == size) {
     return oepick_REG(m, xstrlen(m));
   } else if (m && size) {
-    char* m0 = CAST(char*, m);
-    return '%' == m0[0] ? oepick_REG(m0 + 1, size - 1) : oepick(oeREGISTERS, m, size);
+    return oepick(oeREGISTERS, m, size);
   }
 
   return NULL;
@@ -84,24 +83,19 @@ static poestruct_t oepick_SEG(unknown_t m, const size_t size) {
   if (m && USE_STRLEN == size) {
     return oepick_SEG(m, xstrlen(m));
   } else if (m && size) {
-    char* m0 = CAST(char*, m);
-    poestruct_t p0 = '%' == m0[0] ? oepick(oeSEGMENTS,  m0 + 1, size - 1) : oepick(oeSEGMENTS, m, size);
-    return p0 ? p0 : oepick(oeSIZEPTR, m, size);
+    poestruct_t p0 = oepick(oeSEGMENTS, m, size);
+    return p0 ? p0 : oepick(oeSIZEPTRS, m, size);
   }
 
   return NULL;
 }
 
 static bool_t oeisskipped(int c) {
-  return ' ' == c || '\t' == c ? TRUE : FALSE;
+  return ' ' == c || '\t' == c || '%' == c ? TRUE : FALSE;
 }
 
 static bool_t oeisstripped(int c0, int c1) {
   return ('(' == c0 && ')' == c1) || ('[' == c0 && ']' == c1);
-}
-
-unknown_t oejump(unknown_t p, const size_t size) {
-  return p ? oeskip(CAST(char*, p) + size, xstrlen(p) - size) : NULL;
 }
 
 unknown_t oeskip(unknown_t p, const size_t size) {
@@ -314,6 +308,10 @@ static unknown_t oedo_register(handle_t p, unknown_t o, unknown_t m) {
       o0->cvalue |= OPOPERAND_REGISTER0;
 //printf("++%s:%s:%lx++", m0, r0->mc, r0->action);
       m0 = oeskip(m0 + r0->mcsize, m0size - r0->mcsize);
+      if (m0 && (',' == m0[0] || '+' == m0[0])) {
+        m0 = oeskip(m0 + 1, USE_STRLEN);
+      }
+
       if (oeishexb(m0, USE_STRLEN)) {
         o0->uvalue1 = oehexb(m0, USE_STRLEN);
         o0->cvalue |= OCOPERAND_UVALUE1;
@@ -322,30 +320,33 @@ static unknown_t oedo_register(handle_t p, unknown_t o, unknown_t m) {
         o0->ivalue1 = oedecb(m0, USE_STRLEN);
         o0->cvalue |= OCOPERAND_IVALUE1;
         m0 = NULL;
-      } else if (m0 && '+' == m0[0]) {
-        m0 = oeskip(m0 + 1, USE_STRLEN);
-
+      } else {
         poestruct_t r1 = oepick_REG(m0, USE_STRLEN);
         if (r1) {
           o0->uvalue1 = r1->action;
           o0->cvalue |= OPOPERAND_REGISTER1;
 //printf("++%s:%s:%lx++", m0, r1->mc, r1->action);
           m0 = oeskip(m0 + r1->mcsize, xstrlen(m0) - r1->mcsize);
-          if (oeishexb(m0, USE_STRLEN)) {
-            o0->uvalue2 = oehexb(m0, USE_STRLEN);
-            o0->cvalue |= OCOPERAND_UVALUE2;
-            m0 = NULL;
-          } else if (oeisdecb(m0, USE_STRLEN)) {
-            o0->ivalue2 = oedecb(m0, USE_STRLEN);
-            o0->cvalue |= OCOPERAND_IVALUE2;
-            m0 = NULL;
-          }
         }
+      }
+
+      if (m0 && (',' == m0[0] || '+' == m0[0])) {
+        m0 = oeskip(m0 + 1, USE_STRLEN);
+      }
+
+      if (oeishexb(m0, USE_STRLEN)) {
+        o0->uvalue2 = oehexb(m0, USE_STRLEN);
+        o0->cvalue |= OCOPERAND_UVALUE2;
+        m0 = NULL;
+      } else if (oeisdecb(m0, USE_STRLEN)) {
+        o0->ivalue2 = oedecb(m0, USE_STRLEN);
+        o0->cvalue |= OCOPERAND_IVALUE2;
+        m0 = NULL;
       }
 
 #ifdef OPCODE_EXAMINE_DEBUG
       if (m0) {
-        printf_e("The operand has not been processed");
+        printf_e("The operand has not been processed '%s'", m0);
       }
 #endif
       return NULL;
@@ -450,7 +451,7 @@ static unknown_t oedo_value(handle_t p, unknown_t o, unknown_t m) {
       }
 #ifdef OPCODE_EXAMINE_DEBUG
       if (m1 || m2 || m3) {
-        printf_e("The operand has not been processed");
+        printf_e("The operand has not been processed '%s:%s:%s'", m1, m2, m3);
       }
 #endif
     }

@@ -9,6 +9,7 @@ typedef struct oestruct_s {
 static oestruct_t oePREFIXTYPES[] = {
   OCSTRUCT("bnd",       OCINSTRUCTION_BND),
   OCSTRUCT("lock",      OCINSTRUCTION_LOCK),
+  OCSTRUCT("notrack",   OCINSTRUCTION_NOTRACK),
 
   OCSTRUCT("repne",     OCINSTRUCTION_REPNE),
   OCSTRUCT("repnz",     OCINSTRUCTION_REPNE),
@@ -145,6 +146,11 @@ static oestruct_t oeINSTRUCTIONS[] = {
   OCSTRUCT("notq",      OCINSTRUCTION_NOTQ),
   OCSTRUCT("notw",      OCINSTRUCTION_NOTW),
   OCSTRUCT("not",       OCINSTRUCTION_NOT),
+  OCSTRUCT("sbbb",      OCINSTRUCTION_SBBB),
+  OCSTRUCT("sbbl",      OCINSTRUCTION_SBBL),
+  OCSTRUCT("sbbq",      OCINSTRUCTION_SBBQ),
+  OCSTRUCT("sbbw",      OCINSTRUCTION_SBBW),
+  OCSTRUCT("sbb",       OCINSTRUCTION_SBB),
   OCSTRUCT("subb",      OCINSTRUCTION_SUBB),
   OCSTRUCT("subl",      OCINSTRUCTION_SUBL),
   OCSTRUCT("subq",      OCINSTRUCTION_SUBQ),
@@ -186,6 +192,7 @@ static oestruct_t oeINSTRUCTIONS[] = {
   OCSTRUCT("xorq",      OCINSTRUCTION_XORQ),
   OCSTRUCT("xorw",      OCINSTRUCTION_XORW),
   OCSTRUCT("xor",       OCINSTRUCTION_XOR),
+  OCSTRUCT("pxor",       OCINSTRUCTION_XOR),
 
   OCSTRUCT("setnae",    OCINSTRUCTION_SETB),
   OCSTRUCT("setnbe",    OCINSTRUCTION_SETA),
@@ -207,6 +214,7 @@ static oestruct_t oeINSTRUCTIONS[] = {
   OCSTRUCT("sete",      OCINSTRUCTION_SETE),
   OCSTRUCT("setg",      OCINSTRUCTION_SETG),
   OCSTRUCT("setl",      OCINSTRUCTION_SETL),
+  OCSTRUCT("seto",      OCINSTRUCTION_SETO),
   OCSTRUCT("sets",      OCINSTRUCTION_SETS),
   OCSTRUCT("setz",      OCINSTRUCTION_SETE),
 
@@ -237,6 +245,7 @@ static oestruct_t oeINSTRUCTIONS[] = {
   OCSTRUCT("movsbq",    OCINSTRUCTION_MOVSBQ),
   OCSTRUCT("movslq",    OCINSTRUCTION_MOVSLQ),
   OCSTRUCT("movswl",    OCINSTRUCTION_MOVSWL),
+  OCSTRUCT("movswq",    OCINSTRUCTION_MOVSWQ),
   OCSTRUCT("movzbl",    OCINSTRUCTION_MOVZBL),
   OCSTRUCT("movzwl",    OCINSTRUCTION_MOVZWL),
 
@@ -291,6 +300,10 @@ static oestruct_t oeINSTRUCTIONS[] = {
   OCSTRUCT("xchg",      OCINSTRUCTION_XCHG),
 
   OCSTRUCT("ins",       OCINSTRUCTION_INS),
+  OCSTRUCT("cmpsb",     OCINSTRUCTION_CMPSB),
+  OCSTRUCT("cmpsl",     OCINSTRUCTION_CMPSL),
+  OCSTRUCT("cmpsq",     OCINSTRUCTION_CMPSQ),
+  OCSTRUCT("cmpsw",     OCINSTRUCTION_CMPSW),
   OCSTRUCT("cmps",      OCINSTRUCTION_CMPS),
   OCSTRUCT("lods",      OCINSTRUCTION_LODS),
   OCSTRUCT("outs",      OCINSTRUCTION_OUTS),
@@ -450,7 +463,7 @@ static oestruct_t oeSEGMENTS[] = {
   {NULL}
 };
 
-static oestruct_t oeSIZEPTR[] = {
+static oestruct_t oeSIZEPTRS[] = {
   OCSTRUCT("byte ptr",  OPSIZE_BYTEPTR),
   OCSTRUCT("word ptr",  OPSIZE_WORDPTR),
   OCSTRUCT("dword ptr", OPSIZE_DWORDPTR),
@@ -484,11 +497,13 @@ convert_t oeINSTRUCTIONFLAGS[] = {
   {"LE",                OCINSTRUCTION_LE},
   {"NE",                OCINSTRUCTION_NE},
   {"NS",                OCINSTRUCTION_NS},
+  {"O",                 OCINSTRUCTION_O},
   {"S",                 OCINSTRUCTION_S},
   {"BND",               OCINSTRUCTION_BND},
   {"REP",               OCINSTRUCTION_REP},
   {"DATA",              OCINSTRUCTION_DATA},
   {"LOCK",              OCINSTRUCTION_LOCK},
+  {"NOTRACK",           OCINSTRUCTION_NOTRACK},
   {"8BIT",              OCINSTRUCTION_8BIT},
   {"16BIT",             OCINSTRUCTION_16BIT},
   {"32BIT",             OCINSTRUCTION_32BIT},
@@ -522,6 +537,7 @@ convert_t oeINSTRUCTIONNAMES[] = {
   {"MUL",               MODE_MASK16(OCINSTRUCTION_MUL)},
   {"NEG",               MODE_MASK16(OCINSTRUCTION_NEG)},
   {"NOT",               MODE_MASK16(OCINSTRUCTION_NOT)},
+  {"SBB",               MODE_MASK16(OCINSTRUCTION_SBB)},
   {"SUB",               MODE_MASK16(OCINSTRUCTION_SUB)},
   {"AND",               MODE_MASK16(OCINSTRUCTION_AND)},
   {"OR",                MODE_MASK16(OCINSTRUCTION_OR)},
