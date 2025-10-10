@@ -154,6 +154,8 @@ size_t oeskiphex(unknown_t p, const size_t size) {
 
     if (size >= 3 && '$' == p0[0] && '0' == p0[1] && 'x' == p0[2]) {
       return 3;
+    } else if (size >= 4 && '-' == p0[0] && ' ' == p0[1] && '0' == p0[2] && 'x' == p0[3]) {
+      return 4;
     } else if (size >= 3 && '-' == p0[0] && '0' == p0[1] && 'x' == p0[2]) {
       return 3;
     } else if (size >= 4 && '+' == p0[0] && ' ' == p0[1] && '0' == p0[2] && 'x' == p0[3]) {
