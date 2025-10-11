@@ -1,6 +1,6 @@
 # objtools
 
-These tools were originally designed to be a research project and drop in replacement for readelf, objcopy and objdump using Capstone disassembly framework. The project then started to grow to become a collection of tools for malware and binary analysis.
+These tools were originally designed to be a research project and drop-in replacement for readelf, objcopy and objdump utilising Capstone disassembly framework. The project then started to grow to become a collection of tools for malware and binary analysis.
 
 convert-ng
 
