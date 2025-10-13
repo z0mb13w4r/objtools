@@ -1051,7 +1051,7 @@ int ecmake_versionnames32(const pbuffer_t p, pversion_t vnames, const size_t max
     vnames[0] = vh->sh_link;
 
     for (Elf32_Word j = 0; j < vh->sh_info; ++j) {
-      Elf32_Verneed *vn = getp(p, vh->sh_offset, sizeof(Elf32_Verneed));
+      Elf32_Verneed *vn = getp(p, vh->sh_offset + offset, sizeof(Elf32_Verneed));
       if (vn) {
         Elf32_Word offset0 = offset + vn->vn_aux;
         for (Elf64_Half k = 0; k < vn->vn_cnt; ++k) {
@@ -1063,9 +1063,9 @@ int ecmake_versionnames32(const pbuffer_t p, pversion_t vnames, const size_t max
             offset0 += va->vna_next;
           }
         }
-      }
 
-      offset += vn->vn_next;
+        offset += vn->vn_next;
+      }
     }
 
     return vh->sh_link;
@@ -1081,7 +1081,7 @@ int ecmake_versionnames64(const pbuffer_t p, pversion_t vnames, const size_t max
     vnames[0] = vh->sh_link;
 
     for (Elf64_Word j = 0; j < vh->sh_info; ++j) {
-      Elf64_Verneed *vn = getp(p, vh->sh_offset, sizeof(Elf64_Verneed));
+      Elf64_Verneed *vn = getp(p, vh->sh_offset + offset, sizeof(Elf64_Verneed));
       if (vn) {
         Elf64_Word offset0 = offset + vn->vn_aux;
         for (Elf64_Half k = 0; k < vn->vn_cnt; ++k) {
@@ -1093,9 +1093,9 @@ int ecmake_versionnames64(const pbuffer_t p, pversion_t vnames, const size_t max
             offset0 += va->vna_next;
           }
         }
-      }
 
-      offset += vn->vn_next;
+        offset += vn->vn_next;
+      }
     }
 
     return vh->sh_link;
