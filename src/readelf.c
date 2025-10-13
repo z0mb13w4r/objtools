@@ -1006,7 +1006,7 @@ static int dump_symbols64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
   return 0;
 }
 
-static int dump_gnuhash0(const pbuffer_t p, uint32_t *pb, const uint64_t sh_name) {
+static int dump_gnuhash32(const pbuffer_t p, uint32_t *pb, const uint64_t sh_name) {
   uint32_t nbucket  = pb[0];
   uint32_t symbias  = pb[1];
   uint32_t sbitmask = isELF32(p) ? pb[2] : 2 * pb[2];
@@ -1082,6 +1082,12 @@ static int dump_gnuhash0(const pbuffer_t p, uint32_t *pb, const uint64_t sh_name
   return n;
 }
 
+static int dump_gnuhash64(const pbuffer_t p, uint32_t *pb, const uint64_t sh_name) {
+  int n = 0;
+
+  return n;
+}
+
 static int dump_histogram32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
   int n = 0;
   for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
@@ -1089,7 +1095,7 @@ static int dump_histogram32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *e
     if (shdr && SHT_GNU_HASH == shdr->sh_type) {
       uint32_t *pb = _get32byshdr(p, shdr);
       if (pb) {
-        n += dump_gnuhash0(p, pb, shdr->sh_name);
+        n += dump_gnuhash32(p, pb, shdr->sh_name);
       }
     } if (shdr && SHT_HASH == shdr->sh_type) {
       // TBD
@@ -1104,9 +1110,10 @@ static int dump_histogram64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *e
   for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
     Elf64_Shdr *shdr = ecget_shdr64byindex(p, i);
     if (shdr && SHT_GNU_HASH == shdr->sh_type) {
-      uint32_t *pb = _get64byshdr(p, shdr);
+      uint64_t *pb = _get64byshdr(p, shdr);
       if (pb) {
-        n += dump_gnuhash0(p, pb, shdr->sh_name);
+        n += dump_gnuhash32(p, pb, shdr->sh_name);
+//        n += dump_gnuhash64(p, pb, shdr->sh_name);
       }
     } if (shdr && SHT_HASH == shdr->sh_type) {
       // TBD
