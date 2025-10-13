@@ -11,7 +11,7 @@ static int ocdebugf_cvalue0(handle_t p, uint64_t cv) {
 
     n += printf_text("CVALUE", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
     n += printf_nice(cv, USE_FHEX64);
-    n += printf_pick(oeINSTRUCTIONNAMES, MODE_MASK16(cv), USE_SPACE);
+    n += printf_pick(oeINSTRUCTIONNAMES, OCINSN_MASK(cv), USE_SPACE);
     n += printf_mask(oeINSTRUCTIONFLAGS, MODE_HIDE16(cv), USE_NONE);
     n += printf_eol();
 
@@ -380,7 +380,7 @@ int opcode_printf_detail(handle_t p, const uint64_t vaddr, unknown_t mnemonic, u
     pocoperand_t o1 = oeget(oe, OECODE_OPERAND1);
     popcode_t    oc = ocget(p, OPCODE_THIS);
 
-    const bool_t isok = m && o1 && isused(oeADDRLOOKUP, MODE_MASK16(m->cvalue)) &&
+    const bool_t isok = m && o1 && isused(oeADDRLOOKUP, OCINSN_MASK(m->cvalue)) &&
       (MODE_ISLOCKED8(OCOPERAND_IVALUE0, o1->cvalue) || MODE_ISLOCKED8(OCOPERAND_UVALUE0, o1->cvalue));
 
     if (m && o1 && (m->uvalue || isok)) {

@@ -5,6 +5,9 @@
 
 #include "opcode.h"
 
+#define OCINSN_MASK(x)                 MODE_MASK16(x)
+#define OCFLAG_MASK(x)                 MODE_HIDE16(x)
+
 #define OECODE_THIS                    (0)
 #define OECODE_MNEMONIC                (1)
 #define OECODE_OPERAND1                (2)
