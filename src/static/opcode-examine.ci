@@ -57,6 +57,8 @@ static oestruct_t oeINSTRUCTIONS[] = {
   OCSTRUCT("js",        OCINSTRUCTION_JS),
   OCSTRUCT("jz",        OCINSTRUCTION_JE),
 
+  OCSTRUCT("bts",       OCINSTRUCTION_BTS),
+  OCSTRUCT("bt",        OCINSTRUCTION_BT),
   OCSTRUCT("testb",     OCINSTRUCTION_TESTB),
   OCSTRUCT("testl",     OCINSTRUCTION_TESTL),
   OCSTRUCT("testq",     OCINSTRUCTION_TESTQ),
@@ -558,6 +560,7 @@ convert_t oeINSTRUCTIONFLAGS[] = {
 };
 
 convert_t oeINSTRUCTIONNAMES[] = {
+  {"BT",                MODE_MASK16(OCINSTRUCTION_BT)},
   {"CALL",              MODE_MASK16(OCINSTRUCTION_CALL)},
   {"ENDBR",             MODE_MASK16(OCINSTRUCTION_ENDBR)},
   {"JMP",               MODE_MASK16(OCINSTRUCTION_JMP)},
