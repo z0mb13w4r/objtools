@@ -345,6 +345,10 @@ static oestruct_t oeINSTRUCTIONS[] = {
 
   OCSTRUCT("bswap",     OCINSTRUCTION_BSWAP),
 
+  OCSTRUCT("ud0",       OCINSTRUCTION_UNDEF),
+  OCSTRUCT("ud1",       OCINSTRUCTION_UNDEF1),
+  OCSTRUCT("ud2",       OCINSTRUCTION_UNDEF2),
+
   {NULL}
 };
 
@@ -624,6 +628,7 @@ convert_t oeINSTRUCTIONNAMES[] = {
   {"STOS",              MODE_MASK16(OCINSTRUCTION_STOS)},
   {"FINIT",             MODE_MASK16(OCINSTRUCTION_FINIT)},
   {"BSWAP",             MODE_MASK16(OCINSTRUCTION_BSWAP)},
+  {"UNDEF",             MODE_MASK16(OCINSTRUCTION_UNDEF)},
   {0, 0}
 };
 
