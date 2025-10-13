@@ -29,7 +29,7 @@
 
 typedef unsigned short version_t, *pversion_t;
 
-bool_t isTBSS32(Elf64_Shdr *s, Elf64_Phdr *p);
+bool_t isTBSS32(Elf32_Shdr *s, Elf32_Phdr *p);
 bool_t isTBSS64(Elf64_Shdr *s, Elf64_Phdr *p);
 
 bool_t isshdrinphdr32(Elf32_Shdr *s, Elf32_Phdr *p);

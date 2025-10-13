@@ -494,7 +494,7 @@ static int dump_programheaders32(const pbuffer_t p, const poptions_t o, Elf32_Eh
       for (Elf32_Half j = 1; j < ehdr->e_shnum; ++j) {
         Elf32_Shdr *shdr = ecget_shdr32byindex(p, j);
         if (shdr) {
-          if (isshdrinphdr32(shdr, phdr)) {
+          if (!isTBSS32(shdr, phdr) && isshdrinphdr32(shdr, phdr)) {
             printf_text(ecget_secnamebyindex(p, j), USE_SPACE);
           }
         }
@@ -528,7 +528,7 @@ static int dump_programheaders64(const pbuffer_t p, const poptions_t o, Elf64_Eh
       for (Elf64_Half j = 1; j < ehdr->e_shnum; ++j) {
         Elf64_Shdr *shdr = ecget_shdr64byindex(p, j);
         if (shdr) {
-          if (isshdrinphdr64(shdr, phdr)) {
+          if (!isTBSS64(shdr, phdr) && isshdrinphdr64(shdr, phdr)) {
             printf_text(ecget_secnamebyindex(p, j), USE_SPACE);
           }
         }

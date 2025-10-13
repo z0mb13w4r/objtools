@@ -81,7 +81,7 @@ static bool_t check_x4c(const uint64_t sh_flags, const uint64_t sh_type, const u
          ((sh_flags & SHF_ALLOC) == 0 || (sh_addr > p_vaddr && (sh_addr - p_vaddr < p_memsz)));
 }
 
-bool_t isTBSS32(Elf64_Shdr *s, Elf64_Phdr *p) {
+bool_t isTBSS32(Elf32_Shdr *s, Elf32_Phdr *p) {
   return s && p && check_tbss(s->sh_flags, s->sh_type, p->p_type);
 }
 
