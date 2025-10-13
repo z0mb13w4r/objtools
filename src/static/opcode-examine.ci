@@ -342,6 +342,8 @@ static oestruct_t oeINSTRUCTIONS[] = {
   OCSTRUCT("finit",     OCINSTRUCTION_FINIT),
   OCSTRUCT("fninit",    OCINSTRUCTION_FNINIT),
 
+  OCSTRUCT("bswap",     OCINSTRUCTION_BSWAP),
+
   {NULL}
 };
 
@@ -619,6 +621,7 @@ convert_t oeINSTRUCTIONNAMES[] = {
   {"SCAS",              MODE_MASK16(OCINSTRUCTION_SCAS)},
   {"STOS",              MODE_MASK16(OCINSTRUCTION_STOS)},
   {"FINIT",             MODE_MASK16(OCINSTRUCTION_FINIT)},
+  {"BSWAP",             MODE_MASK16(OCINSTRUCTION_BSWAP)},
   {0, 0}
 };
 
