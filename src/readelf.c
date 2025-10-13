@@ -1063,8 +1063,8 @@ static int dump_gnuhash0(const pbuffer_t p, uint32_t *pb, const uint64_t sh_name
   n += printf_nice((counts[0] * 1000.0) / nbucket, USE_PERCENT);
   n += printf_eol();
 
-  uint32_t nzeros = 0;
-  for (uint32_t i = 1; i < nbucket; ++i) {
+  uint64_t nzeros = 0;
+  for (uint32_t i = 1; i <= msize; ++i) {
     nzeros += counts[i] * i;
 
     n += printf_nice(i, USE_DEC5);
