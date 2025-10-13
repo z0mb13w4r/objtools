@@ -22,6 +22,7 @@ convert_t ecPHDRTYPE[] = {
   {"OPENBSD_RANDOMIZE",            PT_OPENBSD_RANDOMIZE},
   {"OPENBSD_WXNEEDED",             PT_OPENBSD_WXNEEDED},
   {"OPENBSD_BOOTDATA",             PT_OPENBSD_BOOTDATA},
+  {"EXIDX",                        PT_ARM_EXIDX},
   {0, 0}
 };
 
