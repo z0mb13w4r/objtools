@@ -57,6 +57,7 @@ static oestruct_t oeINSTRUCTIONS[] = {
   OCSTRUCT("js",        OCINSTRUCTION_JS),
   OCSTRUCT("jz",        OCINSTRUCTION_JE),
 
+  OCSTRUCT("btc",       OCINSTRUCTION_BTC),
   OCSTRUCT("bts",       OCINSTRUCTION_BTS),
   OCSTRUCT("bt",        OCINSTRUCTION_BT),
   OCSTRUCT("testb",     OCINSTRUCTION_TESTB),
@@ -534,6 +535,7 @@ convert_t oeINSTRUCTIONFLAGS[] = {
   {"AE",                OCINSTRUCTION_AE},
   {"B",                 OCINSTRUCTION_B},
   {"BE",                OCINSTRUCTION_BE},
+  {"C",                 OCINSTRUCTION_C},
   {"E",                 OCINSTRUCTION_E},
   {"G",                 OCINSTRUCTION_G},
   {"GE",                OCINSTRUCTION_GE},
