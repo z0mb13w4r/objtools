@@ -378,7 +378,9 @@ int opcode_printf_detail(handle_t p, const uint64_t vaddr, unknown_t mnemonic, u
     pocexamine_t oe = oecreate(p, vaddr, mnemonic, operands);
     pocmnemonic_t m = oeget(oe, OECODE_MNEMONIC);
     pocoperand_t o1 = oeget(oe, OECODE_OPERAND1);
+#ifndef OPCODE_EXAMINE_DEBUGX
     popcode_t    oc = ocget(p, OPCODE_THIS);
+#endif
 
     const bool_t isok = m && o1 && isused(oeADDRLOOKUP, OCINSN_MASK(m->cvalue)) &&
       (MODE_ISLOCKED8(OCOPERAND_IVALUE0, o1->cvalue) || MODE_ISLOCKED8(OCOPERAND_UVALUE0, o1->cvalue));
