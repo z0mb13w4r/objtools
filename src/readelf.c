@@ -384,6 +384,38 @@ static int dump_sectionheaders64(const pbuffer_t p, const poptions_t o, Elf64_Eh
   return n;
 }
 
+static int dump_sectiongroups0(const pbuffer_t p, const poptions_t o, const int index, const int maxsize, const uint64_t flags, const uint64_t sh_info) {
+  int n = 0;
+
+  if (GRP_COMDAT == flags) {
+    n += printf_text("COMDAT", USE_LT);
+  }
+
+  n += printf_text("group section", USE_LT | USE_SPACE);
+  n += printf_nice(index, USE_DEC3 | USE_SB);
+  n += printf_text(ecget_secnamebyindex(p, index), USE_LT | USE_SPACE | USE_SQ);
+  n += printf_text(ecget_symnamebyindex(p, sh_info), USE_LT | USE_SPACE | USE_SB);
+  n += printf_text("contains", USE_LT | USE_SPACE);
+  n += printf_nice(maxsize, USE_DEC);
+  n += printf_text("sections", USE_LT | USE_SPACE | USE_COLON);
+  n += printf_eol();
+
+  n += printf_text("Index", USE_LT | USE_TAB | USE_SB);
+  n += printf_text("Name", USE_LT | USE_SPACE);
+  n += printf_eol();
+
+  return n;
+}
+
+static int dump_sectiongroups1(const pbuffer_t p, const poptions_t o, const int index) {
+  int n = 0;
+  n += printf_nice(index, USE_DEC5 | USE_SB);
+  n += printf_text(ecget_secnamebyindex(p, index), USE_LT | USE_SPACE);
+ n += printf_eol();
+
+  return n;
+}
+
 static int dump_sectiongroups32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
   /* Scan the sections for the group section. */
   Elf32_Half cnt = 0;
@@ -416,30 +448,14 @@ static int dump_sectiongroups64(const pbuffer_t p, const poptions_t o, Elf64_Ehd
     for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
       Elf64_Shdr *shdr = ecget_shdr64byindex(p, i);
       if (shdr && SHT_GROUP == shdr->sh_type) {
-        size_t size = (shdr->sh_size / shdr->sh_entsize) - 1;
-
         uint32_t *pb = _get64byshdr(p, shdr);
-        if (GRP_COMDAT == pb[0]) {
-          n += printf_text("COMDAT", USE_LT);
-        }
+        if (pb) {
+          size_t size = (shdr->sh_size / shdr->sh_entsize) - 1;
+          n += dump_sectiongroups0(p, o, i, size, pb[0], shdr->sh_info);
 
-        n += printf_text("group section", USE_LT | USE_SPACE);
-        n += printf_nice(i, USE_DEC3 | USE_SB);
-        n += printf_text(ecget_secnamebyindex(p, i), USE_LT | USE_SPACE | USE_SQ);
-        n += printf_text("name", USE_LT | USE_SPACE | USE_SB);
-        n += printf_text("contains", USE_LT | USE_SPACE);
-        n += printf_nice(size, USE_DEC);
-        n += printf_text("sections", USE_LT | USE_SPACE | USE_COLON);
-        n += printf_eol();
-
-        n += printf_text("Index", USE_LT | USE_TAB | USE_SB);
-        n += printf_text("Name", USE_LT | USE_SPACE);
-        n += printf_eol();
-
-        for (size_t k = 0; k < size; ++k) {
-          n += printf_nice(pb[k + 1], USE_DEC5 | USE_SB);
-          n += printf_text(ecget_secnamebyindex(p, pb[k + 1]), USE_LT | USE_SPACE);
-          n += printf_eol();
+          for (size_t k = 0; k < size; ++k) {
+            n += dump_sectiongroups1(p, o, pb[k + 1]);
+          }
         }
       }
     }
