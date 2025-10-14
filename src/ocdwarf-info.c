@@ -82,7 +82,7 @@ int ocdwarf_debug_info(handle_t p, handle_t s, handle_t d) {
       if (IS_DLV_NO_ENTRY(x)) return n0;
       else if (IS_DLV_ERROR(x)) {
         ocdwarf_dealloc_error(p, NULL);
-#ifdef OPCODE_DWARF_DEBUG
+#ifdef OPCODE_DWARF_DEBUGX
         printf_e("dwarf_siblingof_b failed, no CU die");
 #endif
         return OCDWARF_ERRCODE(x, n0);
@@ -91,7 +91,7 @@ int ocdwarf_debug_info(handle_t p, handle_t s, handle_t d) {
       n1 = ocdwarf_die_and_siblings(p, cu_die, isinfo, level, ocget(p, OPCODE_DWARF_ERROR));
       if (ECODE_ISFAILED(n1)) {
         dwarf_dealloc_die(cu_die);
-#ifdef OPCODE_DWARF_DEBUG
+#ifdef OPCODE_DWARF_DEBUGX
         printf_e("ocdwarf_die_and_siblings failed! %d", n1);
 #endif
         return n1;

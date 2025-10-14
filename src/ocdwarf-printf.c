@@ -451,7 +451,7 @@ int ocdwarf_printf_worth(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
     Dwarf_Half nattr = 0;
     x = dwarf_whatattr(attr, &nattr, e);
     if (IS_DLV_ANY_ERROR(x)) {
-#ifdef OPCODE_DWARF_DEBUG
+#ifdef OPCODE_DWARF_DEBUGX
       printf_e("dwarf_whatattr failed! errcode %d", x);
 #endif
       return OCDWARF_ERRCODE(x, n);
@@ -496,7 +496,7 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
     Dwarf_Off offset = 0;
     x = dwarf_attr_offset(die, attr, &offset, e);
     if (IS_DLV_ANY_ERROR(x)) {
-#ifdef OPCODE_DWARF_DEBUG
+#ifdef OPCODE_DWARF_DEBUGX
       printf_e("dwarf_attr_offset failed! errcode %d", x);
 #endif
       return OCDWARF_ERRCODE(x, n);
@@ -520,7 +520,7 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
       char *str = NULL;
       x = dwarf_formstring(attr, &str, e);
       if (IS_DLV_ANY_ERROR(x)) {
-#ifdef OPCODE_DWARF_DEBUG
+#ifdef OPCODE_DWARF_DEBUGX
         printf_e("dwarf_formstring failed! errcode %d", x);
 #endif
         return OCDWARF_ERRCODE(x, n);
@@ -542,7 +542,7 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
       Dwarf_Unsigned value = 0;
       x = dwarf_formudata(attr, &value, e);
       if (IS_DLV_ANY_ERROR(x)) {
-#ifdef OPCODE_DWARF_DEBUG
+#ifdef OPCODE_DWARF_DEBUGX
         printf_e("dwarf_formudata failed! errcode %d", x);
 #endif
         return OCDWARF_ERRCODE(x, n);
@@ -591,7 +591,7 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
       Dwarf_Addr addr = 0;
       x = dwarf_formaddr(attr, &addr, e);
       if (IS_DLV_ANY_ERROR(x)) {
-#ifdef OPCODE_DWARF_DEBUG
+#ifdef OPCODE_DWARF_DEBUGX
         printf_e("dwarf_formaddr failed! errcode %d", x);
 #endif
         return OCDWARF_ERRCODE(x, n);
@@ -606,7 +606,7 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
       Dwarf_Unsigned value = 0;
       x = dwarf_formudata(attr, &value, e);
       if (IS_DLV_ANY_ERROR(x)) {
-#ifdef OPCODE_DWARF_DEBUG
+#ifdef OPCODE_DWARF_DEBUGX
         printf_e("dwarf_formudata failed! errcode %d", x);
 #endif
         return OCDWARF_ERRCODE(x, n);
@@ -617,7 +617,7 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
       Dwarf_Unsigned value = 0;
       x = dwarf_global_formref(attr, &value, e);
       if (IS_DLV_ANY_ERROR(x)) {
-#ifdef OPCODE_DWARF_DEBUG
+#ifdef OPCODE_DWARF_DEBUGX
         printf_e("dwarf_global_formref failed! errcode %d", x);
 #endif
         return OCDWARF_ERRCODE(x, n);
@@ -630,7 +630,7 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
       if (DW_AT_type == nattr) {
         x = dwarf_dietype_offset(die, &offset, &isinfo, e);
         if (IS_DLV_ANY_ERROR(x)) {
-#ifdef OPCODE_DWARF_DEBUG
+#ifdef OPCODE_DWARF_DEBUGX
           printf_e("dwarf_dietype_offset failed! errcode %d", x);
 #endif
           return OCDWARF_ERRCODE(x, n);
@@ -638,7 +638,7 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
       } else {
         x = dwarf_global_formref_b(attr, &offset, &isinfo, e);
         if (IS_DLV_ANY_ERROR(x)) {
-#ifdef OPCODE_DWARF_DEBUG
+#ifdef OPCODE_DWARF_DEBUGX
           printf_e("dwarf_global_formref_b failed! errcode %d", x);
 #endif
           return OCDWARF_ERRCODE(x, n);
@@ -654,7 +654,7 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
         Dwarf_Die tdie = 0;
         x = dwarf_offdie_b(ocget(p, OPCODE_DWARF_DEBUG), offset, isinfo, &tdie, e);
         if (IS_DLV_ANY_ERROR(x)) {
-#ifdef OPCODE_DWARF_DEBUG
+#ifdef OPCODE_DWARF_DEBUGX
           printf_e("dwarf_offdie_b failed! errcode %d", x);
 #endif
           return OCDWARF_ERRCODE(x, n);
@@ -663,7 +663,7 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
         char *name = 0;
         int x0 = dwarf_diename(tdie, &name, e);
         if (IS_DLV_ERROR(x0)) {
-#ifdef OPCODE_DWARF_DEBUG
+#ifdef OPCODE_DWARF_DEBUGX
           printf_e("dwarf_diename failed! errcode %d", x0);
 #endif
           return OCDWARF_ERRCODE(x0, n);
@@ -675,7 +675,7 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
       Dwarf_Block *block = 0;
       int x0 = dwarf_formblock(attr, &block, e);
       if (IS_DLV_ERROR(x0)) {
-#ifdef OPCODE_DWARF_DEBUG
+#ifdef OPCODE_DWARF_DEBUGX
         printf_e("dwarf_formblock failed! errcode %d", x0);
 #endif
         return OCDWARF_ERRCODE(x0, n);
@@ -851,7 +851,7 @@ int ocdwarf_printf_cu(handle_t p, Dwarf_Die die, Dwarf_Half tag,
     Dwarf_Off overall_offset = 0;
     x = dwarf_dieoffset(die, &overall_offset, e);
     if (IS_DLV_ANY_ERROR(x)) {
-#ifdef OPCODE_DWARF_DEBUG
+#ifdef OPCODE_DWARF_DEBUGX
       printf_e("dwarf_dieoffset failed! errcode %d", x);
 #endif
       return OCDWARF_ERRCODE(x, n0);
@@ -860,7 +860,7 @@ int ocdwarf_printf_cu(handle_t p, Dwarf_Die die, Dwarf_Half tag,
     Dwarf_Off offset = 0;
     x = dwarf_die_CU_offset(die, &offset, e);
     if (IS_DLV_ANY_ERROR(x)) {
-#ifdef OPCODE_DWARF_DEBUG
+#ifdef OPCODE_DWARF_DEBUGX
       printf_e("dwarf_die_CU_offset failed! res %d", x);
 #endif
       return OCDWARF_ERRCODE(x, n0);
@@ -901,7 +901,7 @@ int ocdwarf_printf_sp(handle_t p, Dwarf_Die die, Dwarf_Half tag,
     if (IS_DLV_NO_ENTRY(x)) {
       return n0;
     } else if (IS_DLV_ERROR(x)) {
-#ifdef OPCODE_DWARF_DEBUG
+#ifdef OPCODE_DWARF_DEBUGX
       printf_e("dwarf_attrlist failed! errcode %d", x);
 #endif
       return OCDWARF_ERRCODE(x, n0);
@@ -910,7 +910,7 @@ int ocdwarf_printf_sp(handle_t p, Dwarf_Die die, Dwarf_Half tag,
     Dwarf_Off overall_offset = 0;
     x = dwarf_dieoffset(die, &overall_offset, e);
     if (IS_DLV_ANY_ERROR(x)) {
-#ifdef OPCODE_DWARF_DEBUG
+#ifdef OPCODE_DWARF_DEBUGX
       printf_e("dwarf_dieoffset failed! errcode %d", x);
 #endif
       return OCDWARF_ERRCODE(x, n0);

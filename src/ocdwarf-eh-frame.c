@@ -105,7 +105,7 @@ static int ocdwarf_eh_frame_cies(handle_t p, Dwarf_Cie *cie_data, Dwarf_Signed c
                      &address_register_rule, &cie_initial_instructions, &cie_initial_instructions_length, &offset_size, e);
       if (IS_DLV_NO_ENTRY(x)) break;
       else if (IS_DLV_ERROR(x)) {
-#ifdef OPCODE_DWARF_DEBUG
+#ifdef OPCODE_DWARF_DEBUGX
         printf_e("dwarf_get_cie_info_b failed! - %d", x);
 #endif
         return OCDWARF_ERRCODE(x, n0);
@@ -199,7 +199,7 @@ static int ocdwarf_eh_frame_cies(handle_t p, Dwarf_Cie *cie_data, Dwarf_Signed c
                      &instr_head, &instr_count, e);
       if (IS_DLV_NO_ENTRY(x)) break;
       else if (IS_DLV_ERROR(x)) {
-#ifdef OPCODE_DWARF_DEBUG
+#ifdef OPCODE_DWARF_DEBUGX
         printf_e("dwarf_expand_frame_instructions failed! - %d", x);
 #endif
         return OCDWARF_ERRCODE(x, n0);
@@ -235,7 +235,7 @@ static int ocdwarf_eh_frame_cies(handle_t p, Dwarf_Cie *cie_data, Dwarf_Signed c
                      &expression_block, e);
         if (IS_DLV_NO_ENTRY(x)) break;
         else if (IS_DLV_ERROR(x)) {
-#ifdef OPCODE_DWARF_DEBUG
+#ifdef OPCODE_DWARF_DEBUGX
           printf_e("dwarf_get_frame_instruction_a failed! - %d", x);
 #endif
           ocdwarf_dealloc_error(p, e);
@@ -328,7 +328,7 @@ static int ocdwarf_eh_frame_fdes(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed f
                      &fde_item->cie_index, &fde_item->fde_offset, e);
       if (IS_DLV_NO_ENTRY(x)) break;
       else if (IS_DLV_ERROR(x)) {
-#ifdef OPCODE_DWARF_DEBUG
+#ifdef OPCODE_DWARF_DEBUGX
         printf_e("dwarf_get_fde_range failed! - %d", x);
 #endif
         return OCDWARF_ERRCODE(x, n0);
@@ -389,7 +389,7 @@ static int ocdwarf_eh_frame_fdes(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed f
       Dwarf_Unsigned augdata_len = 0;
       x = dwarf_get_fde_augmentation_data(fde_item->fde, &augdata, &augdata_len, e);
       if (IS_DLV_ERROR(x)) {
-#ifdef OPCODE_DWARF_DEBUG
+#ifdef OPCODE_DWARF_DEBUGX
         printf_e("dwarf_get_fde_augmentation_data failed! - %d", x);
 #endif
         return OCDWARF_ERRCODE(x, n0);
@@ -421,7 +421,7 @@ static int ocdwarf_eh_frame_fdes(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed f
                      &reg, &curr_offset, &block, &row_pc, &has_more_rows, &subsequent_pc, e);
         if (IS_DLV_NO_ENTRY(x)) continue;
         else if (IS_DLV_ERROR(x)) {
-#ifdef OPCODE_DWARF_DEBUG
+#ifdef OPCODE_DWARF_DEBUGX
           printf_e("dwarf_get_fde_info_for_cfa_reg3_c failed! - %d", x);
 #endif
           return OCDWARF_ERRCODE(x, n0);
@@ -452,7 +452,7 @@ static int ocdwarf_eh_frame_fdes(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed f
           x = dwarf_get_fde_info_for_reg3_c(fde_item->fde, curr_reg, curr_pc, &value_type, &offset_relevant,
                      &reg, &offset, &block, &row_pc, &has_more_rows, &subsequent_pc, e);
           if (IS_DLV_ERROR(x)) {
-#ifdef OPCODE_DWARF_DEBUG
+#ifdef OPCODE_DWARF_DEBUGX
             printf_e("dwarf_get_fde_info_for_reg3_c failed! - %d", x);
 #endif
             return OCDWARF_ERRCODE(x, n0);
@@ -504,7 +504,7 @@ static int ocdwarf_eh_frame_fdes(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed f
                      &reg, &curr_offset, &block, &row_pc, &has_more_rows, &subsequent_pc, e);
         if (IS_DLV_NO_ENTRY(x)) continue;
         else if (IS_DLV_ERROR(x)) {
-#ifdef OPCODE_DWARF_DEBUG
+#ifdef OPCODE_DWARF_DEBUGX
           printf_e("dwarf_get_fde_info_for_cfa_reg3_c failed! - %d", x);
 #endif
           return OCDWARF_ERRCODE(x, n0);
@@ -562,7 +562,7 @@ static int ocdwarf_eh_frame_fdes(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed f
           x = dwarf_get_fde_info_for_reg3_c(fde_item->fde, curr_reg, curr_pc, &value_type, &offset_relevant,
                      &reg, &offset, &block, &row_pc, &has_more_rows, &subsequent_pc, e);
           if (IS_DLV_ERROR(x)) {
-#ifdef OPCODE_DWARF_DEBUG
+#ifdef OPCODE_DWARF_DEBUGX
             printf_e("dwarf_get_fde_info_for_reg3_c failed! - %d", x);
 #endif
             return OCDWARF_ERRCODE(x, n0);
@@ -638,7 +638,7 @@ int ocdwarf_eh_frame(handle_t p, handle_t s, handle_t d) {
                      &fde_data, &fde_element_count, ocget(p, OPCODE_DWARF_ERROR));
     if (IS_DLV_NO_ENTRY(x)) return n;
     else if (IS_DLV_ERROR(x)) {
-#ifdef OPCODE_DWARF_DEBUG
+#ifdef OPCODE_DWARF_DEBUGX
       printf_e("dwarf_get_fde_list_eh failed! - %d", x);
 #endif
       return OCDWARF_ERRCODE(x, n);
