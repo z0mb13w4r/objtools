@@ -418,6 +418,7 @@ static int dump_sectiongroups1(const pbuffer_t p, const poptions_t o, const int 
 
 static int dump_sectiongroups32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
   /* Scan the sections for the group section. */
+  int n = 0;
   Elf32_Half cnt = 0;
   for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
     Elf32_Shdr *shdr = ecget_shdr32byindex(p, i);
@@ -427,10 +428,23 @@ static int dump_sectiongroups32(const pbuffer_t p, const poptions_t o, Elf32_Ehd
   if (0 == cnt) {
     printf_w("There are no section groups in this file.");
   } else {
-    // TBD
+    for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
+      Elf32_Shdr *shdr = ecget_shdr32byindex(p, i);
+      if (shdr && SHT_GROUP == shdr->sh_type) {
+        uint32_t *pb = _get32byshdr(p, shdr);
+        if (pb) {
+          size_t size = (shdr->sh_size / shdr->sh_entsize) - 1;
+          n += dump_sectiongroups0(p, o, i, size, pb[0], shdr->sh_info);
+
+          for (size_t k = 0; k < size; ++k) {
+            n += dump_sectiongroups1(p, o, pb[k + 1]);
+          }
+        }
+      }
+    }
   }
 
-  return 0;
+  return n;
 }
 
 static int dump_sectiongroups64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
