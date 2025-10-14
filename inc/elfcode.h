@@ -97,6 +97,10 @@ const char* ecget_nhdrnamebyindex(const pbuffer_t p, const int index);
 const char* _ecget_nhdrname32byindex(const pbuffer_t p, const int index);
 const char* _ecget_nhdrname64byindex(const pbuffer_t p, const int index);
 
+const char* ecget_symnamebyindex(const pbuffer_t p, const int index);
+const char* _ecget_symname32byindex(const pbuffer_t p, const int index);
+const char* _ecget_symname64byindex(const pbuffer_t p, const int index);
+
 Elf32_Word* ecget_nhdrdesc32byindex(const pbuffer_t p, const int index);
 Elf64_Word* ecget_nhdrdesc64byindex(const pbuffer_t p, const int index);
 
