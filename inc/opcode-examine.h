@@ -1,7 +1,7 @@
 #ifndef __OPCODE_EXAMINE_H_
 #define __OPCODE_EXAMINE_H_
 
-//#define OPCODE_EXAMINE_DEBUG
+//#define OPCODE_EXAMINE_DEBUGX
 
 #include "opcode.h"
 
