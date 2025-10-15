@@ -235,6 +235,7 @@ int ocdwarf_debug_line(handle_t p, handle_t s, handle_t d) {
           n += printf_text(sn, USE_LT | USE_SPACE | USE_DQ);
         }
         ocdwarf_dealloc(p, sf, DW_DLA_STRING);
+        ocdwarf_dealloc(p, sn, DW_DLA_STRING);
       }
 
       if (MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED)) {

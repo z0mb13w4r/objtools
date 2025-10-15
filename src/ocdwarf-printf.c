@@ -538,6 +538,7 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
 //      n += printf_nice(soffset, USE_FHEX | USE_RBRT | USE_COLON);
 
       n += printf_text(str, USE_LT | USE_SPACE);
+      ocdwarf_dealloc(p, str, DW_DLA_STRING);
     } else if (isused(ecFORMUDATA, nform)) {
       Dwarf_Unsigned value = 0;
       x = dwarf_formudata(attr, &value, e);
@@ -669,6 +670,7 @@ int ocdwarf_printf_merit(handle_t p, Dwarf_Die die, Dwarf_Attribute attr, Dwarf_
           return OCDWARF_ERRCODE(x0, n);
         } else if (IS_DLV_OK(x0)) {
           n += printf_text(name, USE_LT | USE_SPACE | USE_TB);
+          ocdwarf_dealloc(p, name, DW_DLA_STRING);
         }
       }
     } else if (isused(ecFORMBLOCK, nform)) {
@@ -720,6 +722,7 @@ int ocdwarf_printf_value(handle_t p, Dwarf_Die die, Dwarf_Half nattr, pdwarf_src
     if (IS_DLV_OK(x)) {
       n += printf_pack(MAXMERIT);
       n += ocdwarf_printf_merit(p, die, attr, nattr, e);
+      dwarf_dealloc_attribute(attr);
     }
   }
 
