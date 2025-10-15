@@ -253,6 +253,9 @@ int ocdwarf_debug_line(handle_t p, handle_t s, handle_t d) {
 
       n += printf_eol();
     }
+
+    dwarf_dealloc_die(cu_die);
+    cu_die = 0;
   }
 
   return OCDWARF_ERRCODE(x, n);
