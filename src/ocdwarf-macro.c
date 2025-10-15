@@ -5,7 +5,14 @@
 
 static const int MAXSIZE = 24;
 
-int ocdwarf_debug_macro_ops(handle_t p, Dwarf_Die die, Dwarf_Macro_Context context, int level,
+static int ocdwarf_debug_macro_offset(handle_t p, Dwarf_Die die, int level,
+                     Dwarf_Unsigned macro_offset, Dwarf_Error *e);
+
+static int ocdwarf_debug_macro_context(handle_t p, Dwarf_Die die, Dwarf_Macro_Context context, int level,
+                     Dwarf_Unsigned macro_unit_offset, Dwarf_Unsigned number_of_ops,
+                     Dwarf_Unsigned ops_total_byte_len, Dwarf_Error *e);
+
+static int ocdwarf_debug_macro_ops(handle_t p, Dwarf_Die die, Dwarf_Macro_Context context, int level,
                      Dwarf_Half macro_version, Dwarf_Unsigned macro_unit_offset, Dwarf_Unsigned count, Dwarf_Error *e) {
   int x = DW_DLV_ERROR;
   int n = 0;
@@ -136,7 +143,7 @@ int ocdwarf_debug_macro_ops(handle_t p, Dwarf_Die die, Dwarf_Macro_Context conte
   return OCDWARF_ERRCODE(x, n);
 }
 
-int ocdwarf_debug_macro_offset(handle_t p, Dwarf_Die die, int level,
+static int ocdwarf_debug_macro_offset(handle_t p, Dwarf_Die die, int level,
                      Dwarf_Unsigned macro_offset, Dwarf_Error *e) {
   int x = DW_DLV_ERROR;
   int n = 0;
@@ -171,7 +178,7 @@ int ocdwarf_debug_macro_offset(handle_t p, Dwarf_Die die, int level,
   return n;
 }
 
-int ocdwarf_debug_macro_context(handle_t p, Dwarf_Die die, Dwarf_Macro_Context context, int level,
+static int ocdwarf_debug_macro_context(handle_t p, Dwarf_Die die, Dwarf_Macro_Context context, int level,
                      Dwarf_Unsigned macro_unit_offset, Dwarf_Unsigned number_of_ops,
                      Dwarf_Unsigned ops_total_byte_len, Dwarf_Error *e) {
   int x = DW_DLV_ERROR;
@@ -272,37 +279,21 @@ int ocdwarf_debug_macro_context(handle_t p, Dwarf_Die die, Dwarf_Macro_Context c
   return OCDWARF_ERRCODE(x, n);
 }
 
-int ocdwarf_debug_macro(handle_t p, handle_t s, handle_t d) {
+static int ocdwarf_debug_macro_next(handle_t p, Dwarf_Die die, int level, Dwarf_Error *e) {
   int x = DW_DLV_ERROR;
   int n = 0;
 
-  if (isopcode(p) && (isopshdr(s) || isopshdrNN(s))) {
+  if (isopcode(p)) {
     pdwarf_statistics_t st = ocget(p, OPCODE_DWARF_STATISTICS);
     popcode_t oc = ocget(p, OPCODE_THIS);
-
-    if (MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED)) {
-      n += ocdwarf_printf_groups(p, ocget(p, OPCODE_DWARF_ERROR));
-    }
-
-    int level = 0;
-    Dwarf_Die cu_die = 0;
-
-    x = ocdwarf_next_cu_header(p, &cu_die, ocget(p, OPCODE_DWARF_ERROR));
-    if (ECODE_ISNOENTRY(x)) return n;
-    else if (ECODE_ISFAILED(x)) {
-      ocdwarf_dealloc_error(p, NULL);
-      return x;
-    }
-
-    n += x;
 
     Dwarf_Unsigned version = 0;
     Dwarf_Unsigned number_of_ops = 0;
     Dwarf_Unsigned ops_total_byte_len = 0;
     Dwarf_Macro_Context macro_context = 0;
 
-    x = dwarf_get_macro_context(cu_die, &version, &macro_context, &st->soffset,
-                     &number_of_ops, &ops_total_byte_len, ocget(p, OPCODE_DWARF_ERROR));
+    x = dwarf_get_macro_context(die, &version, &macro_context, &st->soffset,
+                     &number_of_ops, &ops_total_byte_len, e);
     if (IS_DLV_NO_ENTRY(x)) return n;
     else if (IS_DLV_ERROR(x)) {
 #ifdef OPCODE_DWARF_DEBUGX
@@ -317,11 +308,11 @@ int ocdwarf_debug_macro(handle_t p, handle_t s, handle_t d) {
     n += printf_nice(st->soffset, USE_FHEX32 | USE_EOL);
 
     Dwarf_Off offset = 0;
-    x = dwarf_dieoffset(cu_die, &offset, ocget(p, OPCODE_DWARF_ERROR));
+    x = dwarf_dieoffset(die, &offset, e);
     if (IS_DLV_OK(x)) {
       const char *sec_name = 0;
 
-      x = dwarf_get_die_section_name_b(cu_die, &sec_name, ocget(p, OPCODE_DWARF_ERROR));
+      x = dwarf_get_die_section_name_b(die, &sec_name, e);
       if (IS_DLV_ANY_ERROR(x) ||  0 == sec_name || 0 == *sec_name) {
         sec_name = ".debug_info";
       }
@@ -345,9 +336,9 @@ int ocdwarf_debug_macro(handle_t p, handle_t s, handle_t d) {
       n += printf_nice(st->soffset, USE_DEC | USE_EOL);
     }
 
-    n += ocdwarf_sfcreate(p, cu_die, ocget(p, OPCODE_DWARF_ERROR));
-    n += ocdwarf_debug_macro_context(p, cu_die, macro_context, level, st->soffset,
-                     number_of_ops, ops_total_byte_len, ocget(p, OPCODE_DWARF_ERROR));
+    n += ocdwarf_sfcreate(p, die, e);
+    n += ocdwarf_debug_macro_context(p, die, macro_context, level, st->soffset,
+                     number_of_ops, ops_total_byte_len, e);
 
     if (MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED)) {
       n += printf_text("Macro unit count DWARF5 .debug_macro", USE_LT | USE_COLON);
@@ -370,6 +361,37 @@ int ocdwarf_debug_macro(handle_t p, handle_t s, handle_t d) {
     }
 
     dwarf_dealloc_macro_context(macro_context);
+  }
+
+  return OCDWARF_ERRCODE(x, n);
+}
+
+int ocdwarf_debug_macro(handle_t p, handle_t s, handle_t d) {
+  int x = DW_DLV_ERROR;
+  int n = 0;
+
+  if (isopcode(p) && (isopshdr(s) || isopshdrNN(s))) {
+    popcode_t oc = ocget(p, OPCODE_THIS);
+
+    if (MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED)) {
+      n += ocdwarf_printf_groups(p, ocget(p, OPCODE_DWARF_ERROR));
+    }
+
+    int level = 0;
+    Dwarf_Die cu_die = 0;
+
+    x = ocdwarf_next_cu_header(p, &cu_die, ocget(p, OPCODE_DWARF_ERROR));
+    if (ECODE_ISNOENTRY(x)) return n;
+    else if (ECODE_ISFAILED(x)) {
+      ocdwarf_dealloc_error(p, NULL);
+      return x;
+    }
+
+    n += x;
+    x = ocdwarf_debug_macro_next(p, cu_die, level, ocget(p, OPCODE_DWARF_ERROR));
+
+    dwarf_dealloc_die(cu_die);
+    cu_die = 0;
   }
 
   return OCDWARF_ERRCODE(x, n);
