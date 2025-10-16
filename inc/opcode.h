@@ -72,6 +72,9 @@
 #define OPCODE_DWARF_SRCFILES          (OPCODE_MAXITEMS + 11)
 #define OPCODE_DWARF_STATISTICS        (OPCODE_MAXITEMS + 12)
 
+#define OPCODE_BYLINK                  (0)
+#define OPCODE_BYDEBUGSTR              (1)
+
 #define OPCODE_NULLADDR                CAST(uint64_t, -1)
 
 #define ocgetbfd(x)                    CAST(bfd*, ocget(x, OPCODE_BFD))
@@ -214,7 +217,7 @@ bool_t ocget_symbol(handle_t p, uint64_t vaddr, char **name,
 
 const char* ocget_name(handle_t p);
 const char* ocget_namebyvaddr(handle_t p, const uint64_t vaddr, uint64_t *offset);
-const char* ocget_namebyoffset(handle_t p, const uint64_t offset);
+const char* ocget_namebyoffset(handle_t p, const imode_t mode, const uint64_t offset);
 const char* ocget_fileformat(handle_t p);
 
 void occonfig(const char* name, const char* target);

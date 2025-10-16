@@ -207,7 +207,7 @@ static void callback_dynamichdr(handle_t p, handle_t dyn, unknown_t param) {
 static int callback_versionrefs0(handle_t p, handle_t section, const uint64_t vn_file) {
   int n = 0;
   n += printf_text("Required from", USE_LT);
-  n += printf_text(ocget_namebyoffset(section, vn_file), USE_LT | USE_SPACE | USE_COLON | USE_EOL);
+  n += printf_text(ocget_namebyoffset(section, OPCODE_BYLINK, vn_file), USE_LT | USE_SPACE | USE_COLON | USE_EOL);
   return n;
 }
 
@@ -217,7 +217,7 @@ static int callback_versionrefs1(handle_t p, handle_t section,
   n += printf_nice(vna_hash, USE_FHEX32);
   n += printf_nice(vna_flags, USE_FHEX8);
   n += printf_nice(vna_other, USE_LHEX8);
-  n += printf_text(ocget_namebyoffset(section, vna_name), USE_LT | USE_SPACE);
+  n += printf_text(ocget_namebyoffset(section, OPCODE_BYLINK, vna_name), USE_LT | USE_SPACE);
   n += printf_eol();
   return n;
 }

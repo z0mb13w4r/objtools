@@ -729,26 +729,34 @@ const char* ocget_name(handle_t p) {
   return NULL;
 }
 
-const char* ocget_namebyoffset(handle_t p, const uint64_t offset) {
+const char* ocget_namebyoffset(handle_t p, const imode_t mode, const uint64_t offset) {
   if (ismode(p, MODE_OCSHDR)) {
     asection* s0 = ocget(p, MODE_OCSHDR);
     handle_t  p0 = ocget(p, OPCODE_PARAM2);
     if (s0 && isopcode(p0)) {
       handle_t p1 = ocget(p0, OPCODE_RAWDATA);
       if (isELF32(p1)) {
-        Elf32_Shdr* s1 = ecget_shdr32byindex(p1, s0->index + 1);
-        return s1 ? ecget_namebyoffset(p1, s1->sh_link, offset) : NULL;
+        if (OPCODE_BYLINK == mode) {
+          Elf32_Shdr* s1 = ecget_shdr32byindex(p1, s0->index + 1);
+          return s1 ? ecget_namebyoffset(p1, s1->sh_link, offset) : NULL;
+        }
       } else if (isELF64(p1)) {
-        Elf64_Shdr* s1 = ecget_shdr64byindex(p1, s0->index + 1);
-        return s1 ? ecget_namebyoffset(p1, s1->sh_link, offset) : NULL;
+        if (OPCODE_BYLINK == mode) {
+          Elf64_Shdr* s1 = ecget_shdr64byindex(p1, s0->index + 1);
+          return s1 ? ecget_namebyoffset(p1, s1->sh_link, offset) : NULL;
+        }
       }
     }
   } else if (ismode(p, MODE_OCSHDR32)) {
-    Elf32_Shdr* p0 = ocget(p, MODE_OCSHDR32);
-    return p0 ? ecget_namebyoffset(ocget(p, OPCODE_PARAM1), p0->sh_link, offset) : NULL;
+    if (OPCODE_BYLINK == mode) {
+      Elf32_Shdr* p0 = ocget(p, MODE_OCSHDR32);
+      return p0 ? ecget_namebyoffset(ocget(p, OPCODE_PARAM1), p0->sh_link, offset) : NULL;
+    }
   } else if (ismode(p, MODE_OCSHDR64)) {
-    Elf64_Shdr* p0 = ocget(p, MODE_OCSHDR64);
-    return p0 ? ecget_namebyoffset(ocget(p, OPCODE_PARAM1), p0->sh_link, offset) : NULL;
+    if (OPCODE_BYLINK == mode) {
+      Elf64_Shdr* p0 = ocget(p, MODE_OCSHDR64);
+      return p0 ? ecget_namebyoffset(ocget(p, OPCODE_PARAM1), p0->sh_link, offset) : NULL;
+    }
   }
 
   return NULL;
