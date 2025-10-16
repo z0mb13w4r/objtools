@@ -24,6 +24,11 @@ handle_t fnext(handle_t p);
 handle_t fmalloc(unknown_t data, const size_t size, const size_t chunksize);
 handle_t ffree(handle_t p);
 
+int64_t  fgets8(handle_t p);
+int64_t  fgets16(handle_t p);
+int64_t  fgets32(handle_t p);
+int64_t  fgets64(handle_t p);
+
 uint64_t fgetu8(handle_t p);
 uint64_t fgetu16(handle_t p);
 uint64_t fgetu32(handle_t p);

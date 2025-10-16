@@ -34,6 +34,26 @@ unknown_t fgetp(handle_t p, const size_t chunksize) {
   return NULL;
 }
 
+int64_t fgets8(handle_t p) {
+  unknown_t p0 = fgetp(p, sizeof(int8_t));
+  return p0 ? *CAST(int8_t*, p0) : 0;
+}
+
+int64_t fgets16(handle_t p) {
+  unknown_t p0 = fgetp(p, sizeof(int16_t));
+  return p0 ? *CAST(int16_t*, p0) : 0;
+}
+
+int64_t fgets32(handle_t p) {
+  unknown_t p0 = fgetp(p, sizeof(int32_t));
+  return p0 ? *CAST(int32_t*, p0) : 0;
+}
+
+int64_t fgets64(handle_t p) {
+  unknown_t p0 = fgetp(p, sizeof(int64_t));
+  return p0 ? *CAST(int64_t*, p0) : 0;
+}
+
 uint64_t fgetu8(handle_t p) {
   unknown_t p0 = fgetp(p, sizeof(uint8_t));
   return p0 ? *CAST(uint8_t*, p0) : 0;
