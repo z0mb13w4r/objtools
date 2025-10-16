@@ -69,6 +69,10 @@ Elf32_Shdr* ecget_shdr32bytype(const pbuffer_t p, const int type);
 Elf64_Shdr* ecget_shdr64bytype(const pbuffer_t p, const int type);
 unknown_t   ecget_shdrbytype(const pbuffer_t p, const int type);
 
+int ecget_indexbyname(const pbuffer_t p, const char* name);
+int _ecget_index32byname(const pbuffer_t p, const char* name);
+int _ecget_index64byname(const pbuffer_t p, const char* name);
+
 size_t ecget_secnamemaxsize(const pbuffer_t p);
 size_t _ecget_secname32maxsize(const pbuffer_t p);
 size_t _ecget_secname64maxsize(const pbuffer_t p);
