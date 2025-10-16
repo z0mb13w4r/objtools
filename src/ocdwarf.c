@@ -474,7 +474,7 @@ int ocdwarf_run(handle_t p, handle_t s) {
     if (ws) {
     pdwarf_display_t d = ocdwarf_get(s);
       if (d && d->func) {
-        n = d && d->func ? d->func(p, s, &d->section) : -1;
+        n = d && d->func ? d->func(p, s, &d->section) : ECODE_HANDLE;
       }
     }
   }
