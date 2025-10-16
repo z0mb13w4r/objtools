@@ -74,6 +74,24 @@ uint64_t fgetu64(handle_t p) {
   return p0 ? *CAST(uint64_t*, p0) : 0;
 }
 
+uint64_t fgetuleb128(handle_t p) {
+  uint64_t n = 0;
+
+  if (isfind(p)) {
+    uint64_t y = 0;
+    unknown_t p0 = fgetp(p, sizeof(uint8_t));
+    while (p0) {
+      uchar_t x = *CAST(uint8_t*, p0);
+      n |= (x & 0x7f) << y;
+      y += 7;
+      if ((x & 0x80) == 0) break;
+      p0 = fgetp(p, sizeof(uint8_t));
+    }
+  }
+
+  return n;
+}
+
 handle_t fnext(handle_t p) {
   if (isfind(p)) {
     pfind_t p0 = CAST(pfind_t, p);

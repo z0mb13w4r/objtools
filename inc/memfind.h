@@ -34,5 +34,7 @@ uint64_t fgetu16(handle_t p);
 uint64_t fgetu32(handle_t p);
 uint64_t fgetu64(handle_t p);
 
+uint64_t fgetuleb128(handle_t p);
+
 #endif
 
