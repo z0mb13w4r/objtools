@@ -49,6 +49,11 @@ uint64_t fgetu32(handle_t p) {
   return p0 ? *CAST(uint32_t*, p0) : 0;
 }
 
+uint64_t fgetu64(handle_t p) {
+  unknown_t p0 = fgetp(p, sizeof(uint64_t));
+  return p0 ? *CAST(uint64_t*, p0) : 0;
+}
+
 handle_t fnext(handle_t p) {
   if (isfind(p)) {
     pfind_t p0 = CAST(pfind_t, p);
