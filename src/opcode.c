@@ -750,12 +750,18 @@ const char* ocget_namebyoffset(handle_t p, const imode_t mode, const uint64_t of
   } else if (ismode(p, MODE_OCSHDR32)) {
     if (OPCODE_BYLINK == mode) {
       Elf32_Shdr* p0 = ocget(p, MODE_OCSHDR32);
-      return p0 ? ecget_namebyoffset(ocget(p, OPCODE_PARAM1), p0->sh_link, offset) : NULL;
+      return p0 ? ecget_namebyoffset(ocget(p, OPCODE_PARAM2), p0->sh_link, offset) : NULL;
+    } else if (OPCODE_BYDEBUGSTR == mode) {
+      handle_t p0 = ocget(p, OPCODE_PARAM2);
+      return ecget_namebyoffset(p0, ecget_indexbyname(p0, ".debug_str"), offset);
     }
   } else if (ismode(p, MODE_OCSHDR64)) {
     if (OPCODE_BYLINK == mode) {
       Elf64_Shdr* p0 = ocget(p, MODE_OCSHDR64);
-      return p0 ? ecget_namebyoffset(ocget(p, OPCODE_PARAM1), p0->sh_link, offset) : NULL;
+      return p0 ? ecget_namebyoffset(ocget(p, OPCODE_PARAM2), p0->sh_link, offset) : NULL;
+    } else if (OPCODE_BYDEBUGSTR == mode) {
+      handle_t p0 = ocget(p, OPCODE_PARAM2);
+      return ecget_namebyoffset(p0, ecget_indexbyname(p0, ".debug_str"), offset);
     }
   }
 
