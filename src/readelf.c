@@ -1416,7 +1416,7 @@ static int dump_actions32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehd
     if (x->secname[0]) {
       Elf32_Shdr* shdr = ecget_shdr32byname(p, x->secname);
       if (shdr) {
-        MALLOCSWRAP(opwrap_t, s, MODE_OCSHDR32, shdr);
+        MALLOCSWRAPEX(opwrap_t, s, MODE_OCSHDR32, shdr, p);
         if (!isnamedone(secdone, NELEMENTS(secdone), x->secname)) {
           dump_actions1(p, o, shdr->sh_offset, shdr->sh_type != SHT_NOBITS ? shdr->sh_size : 0);
         }
@@ -1441,7 +1441,7 @@ static int dump_actions64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
     if (x->secname[0]) {
       Elf64_Shdr* shdr = ecget_shdr64byname(p, x->secname);
       if (shdr) {
-        MALLOCSWRAP(opwrap_t, s, MODE_OCSHDR64, shdr);
+        MALLOCSWRAPEX(opwrap_t, s, MODE_OCSHDR64, shdr, p);
         if (!isnamedone(secdone, NELEMENTS(secdone), x->secname)) {
           dump_actions1(p, o, shdr->sh_offset, shdr->sh_type != SHT_NOBITS ? shdr->sh_size : 0);
         }
