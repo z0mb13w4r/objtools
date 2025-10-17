@@ -653,7 +653,7 @@ uint64_t ocget_eoffset(handle_t p, handle_t s) {
 }
 
 handle_t ocfget_rawdata(handle_t p) {
-  return fmalloc(ocget_rawdata(p), ocget_size(p), 12345);
+  return fcalloc(ocget_rawdata(p), ocget_size(p), 12345);
 }
 
 unknown_t ocget_rawdata(handle_t p) {

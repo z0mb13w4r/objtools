@@ -4,6 +4,7 @@
 #include "buffer.h"
 
 #define MODE_FIND               (MODE_PUT0('F') | MODE_PUT1('N') | MODE_PUT2('D'))
+#define MODE_FINDC              (MODE_PUT0('F') | MODE_PUT1('N') | MODE_PUT2('D') | MODE_PUT3('C'))
 
 typedef struct find_s {
   smode_t   mode;
@@ -24,6 +25,7 @@ unknown_t fupdate(handle_t p, const size_t cpos, const size_t chunksize);
 
 handle_t fnext(handle_t p);
 handle_t fmalloc(unknown_t data, const size_t size, const size_t chunksize);
+handle_t fcalloc(unknown_t data, const size_t size, const size_t chunksize);
 handle_t ffree(handle_t p);
 
 int64_t  fgets8(handle_t p);

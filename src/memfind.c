@@ -1,11 +1,7 @@
 #include "memfind.h"
 
 int isfind(handle_t p) {
-  if (p) {
-    return ismode(p, MODE_FIND);
-  }
-
-  return 0;
+  return ismodeNNN(p, MODE_FIND);
 }
 
 unknown_t fget(handle_t p) {
@@ -105,7 +101,7 @@ uint64_t fgetuleb128(handle_t p) {
 
 char* fgetstring(handle_t p) {
   if (isfind(p)) {
-    const char* p0 = fget(p);
+    char* p0 = fget(p);
     while (fgets8(p));
     fgets8(p); // skip null terminator
 
@@ -185,9 +181,28 @@ handle_t fmalloc(unknown_t data, const size_t size, const size_t chunksize) {
   return NULL;
 }
 
+handle_t fcalloc(unknown_t data, const size_t size, const size_t chunksize) {
+  if (data) {
+    pfind_t p = xmalloc(sizeof(find_t));
+    if (p) {
+      p->cpos = 0;
+      p->epos = size;
+      p->item = cmalloc(data, size);
+      p->chunksize = chunksize;
+    }
+    return setmode(p, MODE_FINDC);
+  }
+
+  return NULL;
+}
+
 handle_t ffree(handle_t p) {
-  if (isfind(p)) {
-    xfree(p);
+  if (ismodeNNN(p, MODE_FIND)) {
+    pfind_t p0 = CAST(pfind_t, p);
+    if (ismode(p, MODE_FINDC)) {
+      xfree(p0->item);
+    }
+    xfree(p0);
     return NULL;
   }
 

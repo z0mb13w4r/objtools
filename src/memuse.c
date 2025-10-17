@@ -3,6 +3,16 @@
 #include "crc.h"
 #include "memuse.h"
 
+unknown_t cmalloc(const unknown_t p, const size_t size) {
+  if (p) {
+    unknown_t p0 = xmalloc(size);
+    xmemcpy(p0, p, size);
+    return p0;
+  }
+
+  return NULL;
+}
+
 unknown_t xmalloc(const size_t size) {
   unknown_t p = NULL;
   if (0 != size) {
