@@ -65,7 +65,7 @@ printf("offset into .debug_line: 0x%lx\n", offset_line);
 n += printf_sore(fget(f), 16, USE_HEX | USE_EOL);
 
           uint64_t nline = fgetuleb128(f);
-          uint64_t offset = 4 == offset_size ? fgetu32(f) : fgetu64(f);
+          uint64_t offset = 4 == version && isdwo ? fgetuleb128(f) : 4 == offset_size ? fgetu32(f) : fgetu64(f);
 //offset_str = 0x70b2;
           char*    name = NULL; // ocget_namebyoffset(s, OPCODE_BYDEBUGSTR, offset_str); /* TBD */
           n += printf_text("- lineno", USE_LT | USE_SPACE | USE_COLON);
