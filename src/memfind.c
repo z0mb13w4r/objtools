@@ -92,6 +92,18 @@ uint64_t fgetuleb128(handle_t p) {
   return n;
 }
 
+char* fgetstring(handle_t p) {
+  if (isfind(p)) {
+    const char* p0 = fget(p);
+    while (fgets8(p));
+    fgets8(p); // skip null terminator
+
+    return p0;
+  }
+
+  return NULL;
+}
+
 handle_t fnext(handle_t p) {
   if (isfind(p)) {
     pfind_t p0 = CAST(pfind_t, p);
