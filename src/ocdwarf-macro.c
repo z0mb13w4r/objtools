@@ -87,6 +87,16 @@ printf("offset into .debug_line: 0x%lx\n", offset_line);
 
           n += printf_text("offset", USE_LT | USE_SPACE | USE_COLON);
           n += printf_nice(offset_macro, USE_FHEX);
+        } else if (DW_MACRO_define_strx == op || DW_MACRO_undef_strx == op) {
+          uint64_t nline = fgetuleb128(f);
+          uint64_t offset_str = fgetuleb128(f);
+
+          n += printf_text("- lineno", USE_LT | USE_SPACE | USE_COLON);
+          n += printf_nice(nline, USE_DEC);
+          n += printf_text("offset", USE_LT | USE_SPACE | USE_COLON);
+          n += printf_nice(offset_str, USE_FHEX);
+          n += printf_text("macro", USE_LT | USE_SPACE | USE_COLON);
+          n += printf_text(ocget_namebyoffset(s, OPCODE_BYDEBUGSTR, offset_str), USE_LT | USE_SPACE); /* TBD */
         }
 
         n += printf_eol();
