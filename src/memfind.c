@@ -19,6 +19,17 @@ unknown_t fget(handle_t p) {
   return NULL;
 }
 
+size_t fgetsize(handle_t p) {
+  if (isfind(p)) {
+    pfind_t p0 = CAST(pfind_t, p);
+    if (p0 && p0->item) {
+      return p0->epos - p0->cpos + 1;
+    }
+  }
+
+  return 0;
+}
+
 unknown_t fgetp(handle_t p, const size_t chunksize) {
   unknown_t p0 = fget(p);
   if (p0) {
