@@ -1,10 +1,97 @@
 #include "printf.h"
 #include "externs.h"
+#include "memfind.h"
 #include "options.h"
 #include "ocdwarf-macro.h"
 
 static const int MAXSIZE = 24;
+#ifdef OPCODE_DWARF_DEBUGX
+static int ocdwarf_debug_macro_crude(handle_t p, handle_t s, handle_t d) {
+  int n = 0;
 
+  if (isopcode(p) && (isopshdr(s) || isopshdrNN(s))) {
+    handle_t f = ocfget_rawdata(s);
+    if (f) {
+     uint64_t version = fgetu16(f);
+printf("version = %ld\n", version);
+      if (4 != version && 5 != version) {
+        printf_e("incorrect dwarf version expecting 4 or 5 but found %d", version);
+      }
+
+      uint64_t flags = fgetu8(f);
+printf("flags = %ld\n", flags);
+
+      uint64_t offset_size = (1 & flags) ? 8 : 4;
+printf("offset_size = %ld\n", offset_size);
+
+      uint64_t offset_line = 0;
+      if (2 & flags) {
+        offset_line = 4 == offset_size ? fgetu32(f) : fgetu64(f);
+printf("offset into .debug_line: 0x%lx\n", offset_line);
+      }
+
+      for ( ; ; ) {
+        uint64_t op = fgetu8(f);
+        if (0 == op) break;
+
+        if (DW_MACRO_define_strp == op) {
+          n += ocdwarf_printf_MACRO(p, op, USE_NONE);
+
+          uint64_t nline = fgetuleb128(f);
+          uint64_t offset_str = 4 == offset_size ? fgetu32(f) : fgetu64(f);
+//offset_str = 0x70b2;
+          n += printf_text("- lineno", USE_LT | USE_SPACE | USE_COLON);
+          n += printf_nice(nline, USE_DEC);
+          n += printf_text("macro", USE_LT | USE_SPACE | USE_COLON);
+//printf("+++%lx+++", offset_str);
+          n += printf_text(ocget_namebyoffset(s, OPCODE_BYDEBUGSTR, offset_str), USE_LT | USE_SPACE);
+          n += printf_eol();
+        } else if (DW_MACRO_undef_strp == op) {
+          n += ocdwarf_printf_MACRO(p, op, USE_NONE);
+
+          uint64_t nline = fgetuleb128(f);
+          uint64_t offset_str = 4 == offset_size ? fgetu32(f) : fgetu64(f);
+//offset_str = 0x70b2;
+          n += printf_text("- lineno", USE_LT | USE_SPACE | USE_COLON);
+          n += printf_nice(nline, USE_DEC);
+          n += printf_text("macro", USE_LT | USE_SPACE | USE_COLON);
+//printf("+++%lx+++", offset_str);
+          n += printf_text(ocget_namebyoffset(s, OPCODE_BYDEBUGSTR, offset_str), USE_LT | USE_SPACE);
+          n += printf_eol();
+        } else if (DW_MACRO_import == op) {
+          n += ocdwarf_printf_MACRO(p, op, USE_NONE);
+
+          uint64_t offset_import = 4 == offset_size ? fgetu32(f) : fgetu64(f);
+
+          n += printf_text("- offset", USE_LT | USE_SPACE | USE_COLON);
+          n += printf_nice(offset_import, USE_FHEX);
+        } else if (DW_MACRO_start_file == op) {
+          n += ocdwarf_printf_MACRO(p, op, USE_NONE);
+
+          uint64_t nline = fgetuleb128(f);
+          uint64_t nfile = fgetuleb128(f);
+
+          n += printf_text("- lineno", USE_LT | USE_SPACE | USE_COLON);
+          n += printf_nice(nline, USE_DEC);
+          n += printf_text("filenumber", USE_LT | USE_SPACE | USE_COLON);
+          n += printf_nice(nfile, USE_DEC);
+          n += printf_text("filename", USE_LT | USE_SPACE | USE_COLON);
+          n += printf_text("none", USE_LT | USE_SPACE);
+          n += printf_eol();
+        } else if (DW_MACRO_end_file == op) {
+          n += ocdwarf_printf_MACRO(p, op, USE_NONE);
+
+          n += printf_eol();
+        }
+      }
+
+      ffree(f);
+    }
+  }
+
+  return n;
+}
+#else
 static int ocdwarf_debug_macro_offset(handle_t p, Dwarf_Die die, int level,
                      Dwarf_Unsigned macro_offset, Dwarf_Error *e);
 
@@ -365,8 +452,11 @@ static int ocdwarf_debug_macro_next(handle_t p, Dwarf_Die die, int level, Dwarf_
 
   return OCDWARF_ERRCODE(x, n);
 }
-
+#endif
 int ocdwarf_debug_macro(handle_t p, handle_t s, handle_t d) {
+#ifdef OPCODE_DWARF_DEBUGX
+  return ocdwarf_debug_macro_crude(p, s, d);
+#else
   int x = DW_DLV_ERROR;
   int n = 0;
 
@@ -395,5 +485,6 @@ int ocdwarf_debug_macro(handle_t p, handle_t s, handle_t d) {
   }
 
   return OCDWARF_ERRCODE(x, n);
+#endif
 }
 
