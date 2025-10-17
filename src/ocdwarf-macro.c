@@ -82,6 +82,11 @@ printf("offset into .debug_line: 0x%lx\n", offset_line);
           n += printf_nice(nline, USE_DEC);
           n += printf_text("macro offset", USE_LT | USE_SPACE | USE_COLON);
           n += printf_nice(offset_macro, USE_FHEX);
+        } else if (DW_MACRO_import_sup == op) {
+          uint64_t offset_macro = 4 == offset_size ? fgetu32(f) : fgetu64(f);
+
+          n += printf_text("offset", USE_LT | USE_SPACE | USE_COLON);
+          n += printf_nice(offset_macro, USE_FHEX);
         }
 
         n += printf_eol();
