@@ -10,24 +10,26 @@ static int ocdwarf_debug_macro_crude(handle_t p, handle_t s, handle_t d, bool_t 
   int n = 0;
 
   if (isopcode(p) && (isopshdr(s) || isopshdrNN(s))) {
+    popcode_t oc = ocget(p, OPCODE_THIS);
+
     handle_t f = ocfget_rawdata(s);
     if (f) {
      uint64_t version = fgetu16(f);
-printf("version = %ld\n", version);
+//printf("version = %ld\n", version);
       if (4 != version && 5 != version) {
         printf_e("incorrect dwarf version expecting 4 or 5 but found %d", version);
       }
 
       uint64_t flags = fgetu8(f);
-printf("flags = %ld\n", flags);
+//printf("flags = %ld\n", flags);
 
       uint64_t offset_size = (1 & flags) ? 8 : 4;
-printf("offset_size = %ld\n", offset_size);
+//printf("offset_size = %ld\n", offset_size);
 
       uint64_t offset_line = 0;
       if (2 & flags) {
         offset_line = 4 == offset_size ? fgetu32(f) : fgetu64(f);
-printf("offset into .debug_line: 0x%lx\n", offset_line);
+//printf("offset into .debug_line: 0x%lx\n", offset_line);
       }
 
       for ( ; ; ) {
@@ -61,20 +63,18 @@ printf("offset into .debug_line: 0x%lx\n", offset_line);
             n += printf_text("unknown", USE_LT | USE_SPACE | USE_TB);
           }
         } else if (DW_MACRO_define_strp == op || DW_MACRO_undef_strp == op) {
-
-n += printf_sore(fget(f), 16, USE_HEX | USE_EOL);
+//n += printf_sore(fget(f), 16, USE_HEX | USE_EOL);
 
           uint64_t nline = fgetuleb128(f);
           uint64_t offset = 4 == version && isdwo ? fgetuleb128(f) : 4 == offset_size ? fgetu32(f) : fgetu64(f);
-//offset_str = 0x70b2;
-          char*    name = NULL; // ocget_namebyoffset(s, OPCODE_BYDEBUGSTR, offset_str); /* TBD */
+          const char* name = ocget_namebyoffset(s, OPCODE_BYDEBUGSTR, offset);
           n += printf_text("- lineno", USE_LT | USE_SPACE | USE_COLON);
           n += printf_nice(nline, USE_DEC);
 
-//          if (MODE_ISANY(oc->ocdump, OPTDISASSEMBLE_VERBOSE)) {
+          if (MODE_ISANY(oc->ocdump, OPTDISASSEMBLE_VERBOSE)) {
             n += printf_text("offset", USE_LT | USE_SPACE | USE_COLON);
             n += printf_nice(offset, USE_FHEX);
-//          }
+          }
 
           n += printf_text("macro", USE_LT | USE_SPACE | USE_COLON);
           n += printf_text(name, USE_LT | USE_SPACE);
@@ -98,16 +98,16 @@ n += printf_sore(fget(f), 16, USE_HEX | USE_EOL);
           n += printf_nice(offset_macro, USE_FHEX);
         } else if (DW_MACRO_define_strx == op || DW_MACRO_undef_strx == op) {
           uint64_t nline = fgetuleb128(f);
-          uint64_t offset_str = fgetuleb128(f);
-          char*    name = NULL; // ocget_namebyoffset(s, OPCODE_BYDEBUGSTR, offset_str); /* TBD */
+          uint64_t offset = fgetuleb128(f);
+          const char* name = ocget_namebyoffset(s, OPCODE_BYDEBUGSTR, offset);
 
           n += printf_text("- lineno", USE_LT | USE_SPACE | USE_COLON);
           n += printf_nice(nline, USE_DEC);
 
-//          if (MODE_ISANY(oc->ocdump, OPTDISASSEMBLE_VERBOSE)) {
+          if (MODE_ISANY(oc->ocdump, OPTDISASSEMBLE_VERBOSE)) {
             n += printf_text("offset", USE_LT | USE_SPACE | USE_COLON);
-            n += printf_nice(offset_str, USE_FHEX);
-//          }
+            n += printf_nice(offset, USE_FHEX);
+          }
 
           n += printf_text("macro", USE_LT | USE_SPACE | USE_COLON);
           n += printf_text(name, USE_LT | USE_SPACE);
