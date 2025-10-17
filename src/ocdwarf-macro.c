@@ -6,7 +6,7 @@
 
 static const int MAXSIZE = 24;
 #ifdef OPCODE_DWARF_DEBUGX
-static int ocdwarf_debug_macro_crude(handle_t p, handle_t s, handle_t d) {
+static int ocdwarf_debug_macro_crude(handle_t p, handle_t s, handle_t d, bool_t isdwo) {
   int n = 0;
 
   if (isopcode(p) && (isopshdr(s) || isopshdrNN(s))) {
@@ -55,20 +55,28 @@ printf("offset into .debug_line: 0x%lx\n", offset_line);
           n += printf_nice(nfile, USE_DEC);
           if (sfile) {
             n += printf_text("filename", USE_LT | USE_SPACE | USE_COLON);
-            n += printf_text("none", USE_LT | USE_SPACE);
+            n += printf_text(sfile, USE_LT | USE_SPACE);
           } else if (0 == (flags & 2)) {
             n += printf_text("filename", USE_LT | USE_SPACE | USE_COLON);
             n += printf_text("unknown", USE_LT | USE_SPACE | USE_TB);
           }
         } else if (DW_MACRO_define_strp == op || DW_MACRO_undef_strp == op) {
+
+n += printf_sore(fget(f), 16, USE_HEX | USE_EOL);
+
           uint64_t nline = fgetuleb128(f);
-          uint64_t offset_str = 4 == offset_size ? fgetu32(f) : fgetu64(f);
+          uint64_t offset = 4 == offset_size ? fgetu32(f) : fgetu64(f);
 //offset_str = 0x70b2;
           char*    name = NULL; // ocget_namebyoffset(s, OPCODE_BYDEBUGSTR, offset_str); /* TBD */
           n += printf_text("- lineno", USE_LT | USE_SPACE | USE_COLON);
           n += printf_nice(nline, USE_DEC);
+
+//          if (MODE_ISANY(oc->ocdump, OPTDISASSEMBLE_VERBOSE)) {
+            n += printf_text("offset", USE_LT | USE_SPACE | USE_COLON);
+            n += printf_nice(offset, USE_FHEX);
+//          }
+
           n += printf_text("macro", USE_LT | USE_SPACE | USE_COLON);
-//printf("+++%lx+++", offset_str);
           n += printf_text(name, USE_LT | USE_SPACE);
         } else if (DW_MACRO_import == op) {
           uint64_t offset_import = 4 == offset_size ? fgetu32(f) : fgetu64(f);
@@ -95,8 +103,12 @@ printf("offset into .debug_line: 0x%lx\n", offset_line);
 
           n += printf_text("- lineno", USE_LT | USE_SPACE | USE_COLON);
           n += printf_nice(nline, USE_DEC);
-          n += printf_text("offset", USE_LT | USE_SPACE | USE_COLON);
-          n += printf_nice(offset_str, USE_FHEX);
+
+//          if (MODE_ISANY(oc->ocdump, OPTDISASSEMBLE_VERBOSE)) {
+            n += printf_text("offset", USE_LT | USE_SPACE | USE_COLON);
+            n += printf_nice(offset_str, USE_FHEX);
+//          }
+
           n += printf_text("macro", USE_LT | USE_SPACE | USE_COLON);
           n += printf_text(name, USE_LT | USE_SPACE);
         }
@@ -474,7 +486,7 @@ static int ocdwarf_debug_macro_next(handle_t p, Dwarf_Die die, int level, Dwarf_
 #endif
 int ocdwarf_debug_macro(handle_t p, handle_t s, handle_t d) {
 #ifdef OPCODE_DWARF_DEBUGX
-  return ocdwarf_debug_macro_crude(p, s, d);
+  return ocdwarf_debug_macro_crude(p, s, d, FALSE);
 #else
   int x = DW_DLV_ERROR;
   int n = 0;
@@ -507,3 +519,10 @@ int ocdwarf_debug_macro(handle_t p, handle_t s, handle_t d) {
 #endif
 }
 
+int ocdwarf_debug_macro_dwo(handle_t p, handle_t s, handle_t d) {
+#ifdef OPCODE_DWARF_DEBUGX
+  return ocdwarf_debug_macro_crude(p, s, d, TRUE);
+#else
+  return ocdwarf_debug_macro(p, s, d);
+#endif
+}
