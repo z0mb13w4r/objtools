@@ -36,7 +36,7 @@ printf("offset into .debug_line: 0x%lx\n", offset_line);
 
         n += ocdwarf_printf_MACRO(p, op, USE_NONE);
 
-        if (DW_MACRO_define == op) {
+        if (DW_MACRO_define == op || DW_MACRO_undef == op) {
           uint64_t nline = fgetuleb128(f);
           char* string = fgetstring(f);
 
@@ -44,6 +44,22 @@ printf("offset into .debug_line: 0x%lx\n", offset_line);
           n += printf_nice(nline, USE_DEC);
           n += printf_text("macro", USE_LT | USE_SPACE | USE_COLON);
           n += printf_text(string, USE_LT);
+        } else if (DW_MACRO_start_file == op) {
+          uint64_t nline = fgetuleb128(f);
+          uint64_t nfile = fgetuleb128(f);
+          char*    sfile = 2 & flags ? NULL/*--*/ : NULL;
+
+          n += printf_text("- lineno", USE_LT | USE_SPACE | USE_COLON);
+          n += printf_nice(nline, USE_DEC);
+          n += printf_text("filenum", USE_LT | USE_SPACE | USE_COLON);
+          n += printf_nice(nfile, USE_DEC);
+          if (sfile) {
+            n += printf_text("filename", USE_LT | USE_SPACE | USE_COLON);
+            n += printf_text("none", USE_LT | USE_SPACE);
+          } else if (0 == (flags & 2)) {
+            n += printf_text("filename", USE_LT | USE_SPACE | USE_COLON);
+            n += printf_text("unknown", USE_LT | USE_SPACE | USE_TB);
+          }
         } else if (DW_MACRO_define_strp == op) {
           uint64_t nline = fgetuleb128(f);
           uint64_t offset_str = 4 == offset_size ? fgetu32(f) : fgetu64(f);
@@ -67,16 +83,6 @@ printf("offset into .debug_line: 0x%lx\n", offset_line);
 
           n += printf_text("- offset", USE_LT | USE_SPACE | USE_COLON);
           n += printf_nice(offset_import, USE_FHEX);
-        } else if (DW_MACRO_start_file == op) {
-          uint64_t nline = fgetuleb128(f);
-          uint64_t nfile = fgetuleb128(f);
-
-          n += printf_text("- lineno", USE_LT | USE_SPACE | USE_COLON);
-          n += printf_nice(nline, USE_DEC);
-          n += printf_text("filenum", USE_LT | USE_SPACE | USE_COLON);
-          n += printf_nice(nfile, USE_DEC);
-          n += printf_text("filename", USE_LT | USE_SPACE | USE_COLON);
-          n += printf_text("none", USE_LT | USE_SPACE);
         }
 
         n += printf_eol();
