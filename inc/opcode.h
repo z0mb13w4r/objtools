@@ -88,7 +88,8 @@
 #define ocgetshdr64(x)                 CAST(Elf64_Shdr*, ocget(x, MODE_OCPSDR64))
 
 #define MALLOCSWRAP(x,y,z,a)           MALLOCSPARAMS(x,y,z,a,NULL,NULL)
-#define MALLOCSWRAPEX(x,y,z,a,b)       MALLOCSPARAMS(x,y,z,a,b,NULL)
+#define MALLOCSWRAP2(x,y,z,a,b)        MALLOCSPARAMS(x,y,z,a,b,NULL)
+#define MALLOCSWRAP3(x,y,z,a,b,c)      MALLOCSMODE(x,y,z); (p##y)->param1 = a; (p##y)->param2 = b; (p##y)->value3 = c
 #define MALLOCSPARAMS(x,y,z,a,b,c)     MALLOCSMODE(x,y,z); (p##y)->param1 = a; (p##y)->param2 = b; (p##y)->param3 = c
 
 #define MALLOCSCBFUNC(x,y,z,a,b,c)     MALLOCSMODE(x,y,z); (p##y)->param = a; (p##y)->cbfunc = b; (p##y)->handle = c
@@ -136,6 +137,10 @@ typedef struct opwrap_s {
   union {
     unknown_t param3;
     uint64_t  value3;
+  };
+  union {
+    unknown_t param4;
+    uint64_t  value4;
   };
 } opwrap_t, *popwrap_t;
 

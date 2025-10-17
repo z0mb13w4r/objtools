@@ -8,7 +8,7 @@
 static void callback_section(bfd *f, asection *s, void *p) {
   popfunc_t pcb = CAST(popfunc_t, p);
   if (pcb && pcb->cbfunc) {
-    MALLOCSWRAPEX(opwrap_t, sec, MODE_OCSHDR, s, pcb->handle);
+    MALLOCSWRAP2(opwrap_t, sec, MODE_OCSHDR, s, pcb->handle);
     pcb->cbfunc(pcb->handle, psec, pcb->param);
   }
 }
@@ -20,7 +20,7 @@ int opcodebfd_programs(handle_t p, opcbfunc_t cbfunc, unknown_t param) {
     if (phdr) {
       size_t e_phnum = bfdget_ehdr(p0)->e_phnum;
       for (size_t i = 0; i < e_phnum; ++i, ++phdr) {
-        MALLOCSWRAPEX(opwrap_t, oc, MODE_OCPHDR, phdr, p);
+        MALLOCSWRAP2(opwrap_t, oc, MODE_OCPHDR, phdr, p);
         cbfunc(p, poc, param);
       }
       return ECODE_OK;
