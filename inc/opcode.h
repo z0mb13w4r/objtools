@@ -63,14 +63,15 @@
 #define OPCODE_PARAM1                  (OPCODE_MAXITEMS + 2)
 #define OPCODE_PARAM2                  (OPCODE_MAXITEMS + 3)
 #define OPCODE_PARAM3                  (OPCODE_MAXITEMS + 4)
-#define OPCODE_RAWDATA                 (OPCODE_MAXITEMS + 5)
-#define OPCODE_RAWSYMBOLS              (OPCODE_MAXITEMS + 6)
-#define OPCODE_RAWSYMBOLS_DYNAMIC      (OPCODE_MAXITEMS + 7)
-#define OPCODE_RAWSYMBOLS_DYNAMICRELOC (OPCODE_MAXITEMS + 8)
-#define OPCODE_DWARF_DEBUG             (OPCODE_MAXITEMS + 9)
-#define OPCODE_DWARF_ERROR             (OPCODE_MAXITEMS + 10)
-#define OPCODE_DWARF_SRCFILES          (OPCODE_MAXITEMS + 11)
-#define OPCODE_DWARF_STATISTICS        (OPCODE_MAXITEMS + 12)
+#define OPCODE_PARAM4                  (OPCODE_MAXITEMS + 5)
+#define OPCODE_RAWDATA                 (OPCODE_MAXITEMS + 6)
+#define OPCODE_RAWSYMBOLS              (OPCODE_MAXITEMS + 7)
+#define OPCODE_RAWSYMBOLS_DYNAMIC      (OPCODE_MAXITEMS + 8)
+#define OPCODE_RAWSYMBOLS_DYNAMICRELOC (OPCODE_MAXITEMS + 9)
+#define OPCODE_DWARF_DEBUG             (OPCODE_MAXITEMS + 10)
+#define OPCODE_DWARF_ERROR             (OPCODE_MAXITEMS + 11)
+#define OPCODE_DWARF_SRCFILES          (OPCODE_MAXITEMS + 12)
+#define OPCODE_DWARF_STATISTICS        (OPCODE_MAXITEMS + 13)
 
 #define OPCODE_BYLINK                  (0)
 #define OPCODE_BYDEBUGSTR              (1)
@@ -173,8 +174,9 @@ handle_t ocopen(const char* name);
 handle_t ocattach(handle_t p);
 int occlose(handle_t p);
 
-unknown_t ocget(handle_t p, const imode_t mode);
 bool_t    ochas(handle_t p, const imode_t mode);
+unknown_t ocget(handle_t p, const imode_t mode);
+uint64_t  ocgetv(handle_t p, const imode_t mode);
 
 size_t ocget_maxsectionnamesize(handle_t p);
 

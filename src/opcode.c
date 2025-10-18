@@ -205,9 +205,25 @@ unknown_t ocget(handle_t p, const imode_t mode) {
     return CAST(popwrap_t, p)->param2;
   } else if (isopwrap(p) && mode == OPCODE_PARAM3) {
     return CAST(popwrap_t, p)->param3;
+  } else if (isopwrap(p) && mode == OPCODE_PARAM4) {
+    return CAST(popwrap_t, p)->param4;
   }
 
   return NULL;
+}
+
+uint64_t  ocgetv(handle_t p, const imode_t mode) {
+  if (isopwrap(p) && mode == OPCODE_PARAM1) {
+    return CAST(popwrap_t, p)->value1;
+  } else if (isopwrap(p) && mode == OPCODE_PARAM2) {
+    return CAST(popwrap_t, p)->value2;
+  } else if (isopwrap(p) && mode == OPCODE_PARAM3) {
+    return CAST(popwrap_t, p)->value3;
+  } else if (isopwrap(p) && mode == OPCODE_PARAM4) {
+    return CAST(popwrap_t, p)->value4;
+  }
+
+  return -1;
 }
 
 bool_t ocis32(handle_t p) {
