@@ -127,6 +127,10 @@ int ecmake_versionnames64(const pbuffer_t p, pversion_t vnames, const size_t max
 
 ppick_t get_RELTYPEDEF(const pbuffer_t p);
 ppick_t get_RELTYPEVER(const pbuffer_t p);
+ppick_t get_RELTYPESHEX8(const pbuffer_t p);
+ppick_t get_RELTYPESHEX16(const pbuffer_t p);
+ppick_t get_RELTYPESHEX32(const pbuffer_t p);
+ppick_t get_RELTYPESHEX64(const pbuffer_t p);
 
 #endif
 

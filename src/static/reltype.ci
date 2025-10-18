@@ -279,7 +279,7 @@ static ppick_t get_RELTYPESAFE(const pbuffer_t p) {
   return NULL;
 }
 
-static ppick_t get_RELTYPESHEX8(const pbuffer_t p) {
+ppick_t get_RELTYPESHEX8(const pbuffer_t p) {
   switch (ecget_emachine(p)) {
   case EM_X86_64:            return zRELTYPE64SHEX8;
   default:
@@ -289,7 +289,7 @@ static ppick_t get_RELTYPESHEX8(const pbuffer_t p) {
   return NULL;
 }
 
-static ppick_t get_RELTYPESHEX16(const pbuffer_t p) {
+ppick_t get_RELTYPESHEX16(const pbuffer_t p) {
   switch (ecget_emachine(p)) {
   case EM_X86_64:            return zRELTYPE64SHEX16;
   default:
@@ -299,7 +299,7 @@ static ppick_t get_RELTYPESHEX16(const pbuffer_t p) {
   return NULL;
 }
 
-static ppick_t get_RELTYPESHEX32(const pbuffer_t p) {
+ppick_t get_RELTYPESHEX32(const pbuffer_t p) {
   switch (ecget_emachine(p)) {
   case EM_X86_64:            return zRELTYPE64SHEX32;
   case EM_AARCH64:           return zRELTYPE64SHEX32ARM;
@@ -310,7 +310,7 @@ static ppick_t get_RELTYPESHEX32(const pbuffer_t p) {
   return NULL;
 }
 
-static ppick_t get_RELTYPESHEX64(const pbuffer_t p) {
+ppick_t get_RELTYPESHEX64(const pbuffer_t p) {
   switch (ecget_emachine(p)) {
   case EM_X86_64:            return zRELTYPE64SHEX64;
   case EM_AARCH64:           return zRELTYPE64SHEX64ARM;
