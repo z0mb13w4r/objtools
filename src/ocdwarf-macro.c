@@ -6,13 +6,78 @@
 
 static const int MAXSIZE = 24;
 #ifdef OPCODE_DWARF_DEBUGX
+#include "elfcode.h"
+
+handle_t ocfget_xxxdata(handle_t p) {
+  handle_t p0 = fcalloc(ocget_rawdata(p), ocget_size(p), 12345);
+  if (p0) {
+    handle_t    p9 = ocget(p, OPCODE_PARAM2);
+    uint64_t    i9 = ocgetv(p, OPCODE_PARAM3);
+//printf("index = %ld %s\n", i9, p9 ? "y" : "n");
+
+    Elf64_Ehdr *ehdr = ecget_ehdr64(p9);
+    if (ehdr) {
+      for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
+        Elf64_Shdr *shdr = ecget_shdr64byindex(p9, i);
+        if (shdr && SHT_GROUP == shdr->sh_type) {
+          uint32_t *pb = _get64byshdr(p9, shdr);
+          if (pb) {
+            size_t size = (shdr->sh_size / shdr->sh_entsize) - 1;
+            bool_t ismatch = FALSE;
+//printf("size = %ld\n", size);
+            for (size_t k = 0; k < size; ++k) {
+//printf("section = %d\n", pb[k + 1]);
+              if (i9 == pb[k + 1]) ismatch = TRUE;
+            }
+
+            if (ismatch) {
+              for (size_t k = 0; k < size; ++k) {
+printf("section = %d\n", pb[k + 1]);
+                if (i9 != pb[k + 1]) {
+                  Elf64_Shdr *s9 = ecget_shdr64byindex(p9, pb[k + 1]);
+                  if (s9 && SHT_RELA == s9->sh_type) {
+printf("found rela\n");
+                    size_t cnt = s9->sh_size / s9->sh_entsize;
+                    Elf64_Rela *r9 = _get64byshdr(p9, s9);
+                    if (r9) {
+                      for (size_t j = 0; j < cnt; ++j, ++r9) {
+printf("offset = 0x%lx\n", r9->r_offset);
+                        if (isused(get_RELTYPESHEX8(p9), ELF64_R_TYPE(r9->r_info))) {
+printf("shex8 0x%lx\n", r9->r_addend);
+                        } else if (isused(get_RELTYPESHEX16(p9), ELF64_R_TYPE(r9->r_info))) {
+printf("shex16 0x%lx\n", r9->r_addend);
+                        } else if (isused(get_RELTYPESHEX32(p9), ELF64_R_TYPE(r9->r_info))) {
+printf("shex32 0x%lx\n", r9->r_addend);
+                        } else if (isused(get_RELTYPESHEX64(p9), ELF64_R_TYPE(r9->r_info))) {
+printf("shex64 0x%lx\n", r9->r_addend);
+                        }
+                      }
+                    }
+                  } else if (s9 && SHT_RELR == s9->sh_type) {
+printf("found relr\n");
+                  } else if (s9 && SHT_REL == s9->sh_type) {
+printf("found rel\n");
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  return p0;
+}
+
+
 static int ocdwarf_debug_macro_crude(handle_t p, handle_t s, handle_t d, bool_t isdwo) {
   int n = 0;
 
   if (isopcode(p) && (isopshdr(s) || isopshdrNN(s))) {
     popcode_t oc = ocget(p, OPCODE_THIS);
 
-    handle_t f = ocfget_rawdata(s);
+    handle_t f = ocfget_xxxdata(s);
     if (f) {
      uint64_t version = fgetu16(f);
 //printf("version = %ld\n", version);
