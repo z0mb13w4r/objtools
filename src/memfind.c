@@ -111,6 +111,81 @@ char* fgetstring(handle_t p) {
   return NULL;
 }
 
+handle_t fsetu8byoffset(handle_t p, const uint64_t offset, const int8_t v) {
+  if (isfind(p)) {
+    pfind_t p0 = CAST(pfind_t, p);
+    if (p0) {
+      p0->cpos = offset;
+
+      if (p0->item && p0->cpos < p0->epos) {
+        CAST(puchar_t, p0->item)[p0->cpos++] = v;
+        return p;
+      }
+    }
+  }
+
+  return NULL;
+}
+
+handle_t fsetu16byoffset(handle_t p, const uint64_t offset, const int16_t v) {
+  if (isfind(p)) {
+    pfind_t p0 = CAST(pfind_t, p);
+    if (p0) {
+      p0->cpos = offset;
+
+      if (p0->item && p0->cpos < p0->epos) {
+        CAST(puchar_t, p0->item)[p0->cpos++] = (v >> 0x00) & 0xff;
+        CAST(puchar_t, p0->item)[p0->cpos++] = (v >> 0x08) & 0xff;
+        return p;
+      }
+    }
+  }
+
+  return NULL;
+}
+
+handle_t fsetu32byoffset(handle_t p, const uint64_t offset, const int32_t v) {
+  if (isfind(p)) {
+    pfind_t p0 = CAST(pfind_t, p);
+    if (p0) {
+      p0->cpos = offset;
+
+      if (p0->item && p0->cpos < p0->epos) {
+        CAST(puchar_t, p0->item)[p0->cpos++] = (v >> 0x00) & 0xff;
+        CAST(puchar_t, p0->item)[p0->cpos++] = (v >> 0x08) & 0xff;
+        CAST(puchar_t, p0->item)[p0->cpos++] = (v >> 0x10) & 0xff;
+        CAST(puchar_t, p0->item)[p0->cpos++] = (v >> 0x18) & 0xff;
+        return p;
+      }
+    }
+  }
+
+  return NULL;
+}
+
+handle_t fsetu64byoffset(handle_t p, const uint64_t offset, const int64_t v) {
+  if (isfind(p)) {
+    pfind_t p0 = CAST(pfind_t, p);
+    if (p0) {
+      p0->cpos = offset;
+
+      if (p0->item && p0->cpos < p0->epos) {
+        CAST(puchar_t, p0->item)[p0->cpos++] = (v >> 0x00) & 0xff;
+        CAST(puchar_t, p0->item)[p0->cpos++] = (v >> 0x08) & 0xff;
+        CAST(puchar_t, p0->item)[p0->cpos++] = (v >> 0x10) & 0xff;
+        CAST(puchar_t, p0->item)[p0->cpos++] = (v >> 0x18) & 0xff;
+        CAST(puchar_t, p0->item)[p0->cpos++] = (v >> 0x20) & 0xff;
+        CAST(puchar_t, p0->item)[p0->cpos++] = (v >> 0x28) & 0xff;
+        CAST(puchar_t, p0->item)[p0->cpos++] = (v >> 0x30) & 0xff;
+        CAST(puchar_t, p0->item)[p0->cpos++] = (v >> 0x38) & 0xff;
+        return p;
+      }
+    }
+  }
+
+  return NULL;
+}
+
 handle_t fnext(handle_t p) {
   if (isfind(p)) {
     pfind_t p0 = CAST(pfind_t, p);
@@ -126,11 +201,25 @@ handle_t fnext(handle_t p) {
   return NULL;
 }
 
+handle_t freset(handle_t p) {
+  if (isfind(p)) {
+    pfind_t p0 = CAST(pfind_t, p);
+    if (p0) {
+      p0->cpos = 0;
+    }
+
+    return p0;
+  }
+
+  return NULL;
+}
+
 unknown_t fmove(handle_t p, const size_t cpos) {
   if (isfind(p)) {
     pfind_t p0 = CAST(pfind_t, p);
     if (p0) {
       p0->cpos = cpos;
+
       if (p0->cpos < p0->epos) return fget(p);
       p0->item = NULL;
     }
