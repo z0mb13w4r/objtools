@@ -8,35 +8,39 @@ static const int MAXSIZE = 24;
 #ifdef OPCODE_DWARF_DEBUGX
 #include "elfcode.h"
 
-handle_t ocfget_xxxdata(handle_t p) {
+static const char* getname(handle_t p, const uint64_t offset, const uint64_t index) {
+  return NULL;
+}
+
+static handle_t ocfget_xxxdata(handle_t p) {
   handle_t p0 = fcalloc(ocget_rawdata(p), ocget_size(p), 12345);
   if (p0) {
-    handle_t    p9 = ocget(p, OPCODE_PARAM2);
-    uint64_t    i9 = ocgetv(p, OPCODE_PARAM3);
+    handle_t    p1 = ocget(p, OPCODE_PARAM2);
+    uint64_t    ii = ocgetv(p, OPCODE_PARAM3);
 //printf("index = %ld %s\n", i9, p9 ? "y" : "n");
-    Elf64_Ehdr *ehdr = ecget_ehdr64(p9);
+    Elf64_Ehdr *ehdr = ecget_ehdr64(p1);
     if (ehdr) {
       for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
-        Elf64_Shdr *shdr = ecget_shdr64byindex(p9, i);
-        if (shdr && SHT_RELA == shdr->sh_type && i9 == shdr->sh_info) {
-//printf("matched = %ld with %d\n", i9, i);
+        Elf64_Shdr *shdr = ecget_shdr64byindex(p1, i);
+        if (shdr && SHT_RELA == shdr->sh_type && ii == shdr->sh_info) {
+//printf("matched = %ld with %d\n", ii, i);
           size_t cnt = shdr->sh_size / shdr->sh_entsize;
-          Elf64_Rela *r9 = _get64byshdr(p9, shdr);
-          if (r9) {
-            for (size_t j = 0; j < cnt; ++j, ++r9) {
-//printf("offset = 0x%lx\n", r9->r_offset);
-              if (isused(get_RELTYPESHEX8(p9), ELF64_R_TYPE(r9->r_info))) {
-//printf("shex8 0x%lx\n", r9->r_addend);
-                fsetu8byoffset(p0, r9->r_offset, r9->r_addend);
-              } else if (isused(get_RELTYPESHEX16(p9), ELF64_R_TYPE(r9->r_info))) {
-//printf("shex16 0x%lx\n", r9->r_addend);
-                fsetu16byoffset(p0, r9->r_offset, r9->r_addend);
-              } else if (isused(get_RELTYPESHEX32(p9), ELF64_R_TYPE(r9->r_info))) {
-//printf("shex32 0x%lx\n", r9->r_addend);
-                fsetu32byoffset(p0, r9->r_offset, r9->r_addend);
-              } else if (isused(get_RELTYPESHEX64(p9), ELF64_R_TYPE(r9->r_info))) {
-//printf("shex64 0x%lx\n", r9->r_addend);
-                fsetu64byoffset(p0, r9->r_offset, r9->r_addend);
+          Elf64_Rela *r = _get64byshdr(p1, shdr);
+          if (r) {
+            for (size_t j = 0; j < cnt; ++j, ++r) {
+//printf("offset = 0x%lx\n", r->r_offset);
+              if (isused(get_RELTYPESHEX8(p1), ELF64_R_TYPE(r->r_info))) {
+//printf("shex8 0x%lx\n", r->r_addend);
+                fsetu8byoffset(p0, r->r_offset, r->r_addend);
+              } else if (isused(get_RELTYPESHEX16(p1), ELF64_R_TYPE(r->r_info))) {
+//printf("shex16 0x%lx\n", r->r_addend);
+                fsetu16byoffset(p0, r->r_offset, r->r_addend);
+              } else if (isused(get_RELTYPESHEX32(p1), ELF64_R_TYPE(r->r_info))) {
+//printf("shex32 0x%lx\n", r->r_addend);
+                fsetu32byoffset(p0, r->r_offset, r->r_addend);
+              } else if (isused(get_RELTYPESHEX64(p1), ELF64_R_TYPE(r->r_info))) {
+//printf("shex64 0x%lx\n", r->r_addend);
+                fsetu64byoffset(p0, r->r_offset, r->r_addend);
               }
             }
           }
@@ -84,16 +88,16 @@ static int ocdwarf_debug_macro_crude(handle_t p, handle_t s, handle_t d, bool_t 
 
         if (DW_MACRO_define == op || DW_MACRO_undef == op) {
           uint64_t nline = fgetuleb128(f);
-          char* string = fgetstring(f);
+          const char* name = fgetstring(f);
 
           n += printf_text("- lineno", USE_LT | USE_SPACE | USE_COLON);
           n += printf_nice(nline, USE_DEC);
           n += printf_text("macro", USE_LT | USE_SPACE | USE_COLON);
-          n += printf_text(string, USE_LT | USE_SPACE);
+          n += printf_text(name, USE_LT | USE_SPACE);
         } else if (DW_MACRO_start_file == op) {
           uint64_t nline = fgetuleb128(f);
           uint64_t nfile = fgetuleb128(f);
-          char*    sfile = 2 & flags ? NULL/* TBD */ : NULL;
+          char*    sfile = 2 & flags ? getname(s, offset_line, nfile) : NULL;
 
           n += printf_text("- lineno", USE_LT | USE_SPACE | USE_COLON);
           n += printf_nice(nline, USE_DEC);
@@ -107,8 +111,6 @@ static int ocdwarf_debug_macro_crude(handle_t p, handle_t s, handle_t d, bool_t 
             n += printf_text("unknown", USE_LT | USE_SPACE | USE_TB);
           }
         } else if (DW_MACRO_define_strp == op || DW_MACRO_undef_strp == op) {
-//n += printf_sore(fget(f), 16, USE_HEX | USE_EOL);
-
           uint64_t nline = fgetuleb128(f);
           uint64_t offset = 4 == version && isdwo ? fgetuleb128(f) : 4 == offset_size ? fgetu32(f) : fgetu64(f);
           const char* name = ocget_namebyoffset(s, OPCODE_BYDEBUGSTR, offset);
