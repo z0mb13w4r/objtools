@@ -103,7 +103,6 @@ char* fgetstring(handle_t p) {
   if (isfind(p)) {
     char* p0 = fget(p);
     while (fgets8(p));
-    fgets8(p); // skip null terminator
 
     return p0;
   }
