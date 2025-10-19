@@ -115,7 +115,7 @@ static int ocdwarf_debug_macro_crude(handle_t p, handle_t s, handle_t d, bool_t 
           n += printf_text("- lineno", USE_LT | USE_SPACE | USE_COLON);
           n += printf_nice(nline, USE_DEC);
           n += printf_text("macro", USE_LT | USE_SPACE | USE_COLON);
-          n += printf_text(string, USE_LT);
+          n += printf_text(string, USE_LT | USE_SPACE);
         } else if (DW_MACRO_start_file == op) {
           uint64_t nline = fgetuleb128(f);
           uint64_t nfile = fgetuleb128(f);
