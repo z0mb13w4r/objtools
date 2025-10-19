@@ -3,10 +3,10 @@
 #include "memfind.h"
 #include "options.h"
 #include "ocdwarf-macro.h"
+#include "elfcode-memfind.h"
 
 static const int MAXSIZE = 24;
 #ifdef OPCODE_DWARF_DEBUGX
-#include "elfcode.h"
 
 static const char* getname(handle_t p, const uint64_t offset, const uint64_t index) {
   return NULL;
@@ -18,39 +18,7 @@ static handle_t ocfget_xxxdata(handle_t p) {
     handle_t p1 = ocget(p, OPCODE_PARAM2);
     uint64_t ii = ocgetv(p, OPCODE_PARAM3);
 //printf("index = %ld %s\n", ii, p1 ? "y" : "n");
-    if (isELF64(p1)) {
-      Elf64_Ehdr *ehdr = ecget_ehdr64(p1);
-      if (ehdr) {
-        for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
-          Elf64_Shdr *shdr = ecget_shdr64byindex(p1, i);
-          if (shdr && SHT_RELA == shdr->sh_type && ii == shdr->sh_info) {
-//printf("matched = %ld with %d\n", ii, i);
-            size_t cnt = shdr->sh_size / shdr->sh_entsize;
-            Elf64_Rela *r = _get64byshdr(p1, shdr);
-            if (r) {
-              for (size_t j = 0; j < cnt; ++j, ++r) {
-//printf("offset = 0x%lx\n", r->r_offset);
-                if (isused(get_RELTYPESHEX8(p1), ELF64_R_TYPE(r->r_info))) {
-//printf("shex8 0x%lx\n", r->r_addend);
-                  fsetu8byoffset(p0, r->r_offset, r->r_addend);
-                } else if (isused(get_RELTYPESHEX16(p1), ELF64_R_TYPE(r->r_info))) {
-//printf("shex16 0x%lx\n", r->r_addend);
-                  fsetu16byoffset(p0, r->r_offset, r->r_addend);
-                } else if (isused(get_RELTYPESHEX32(p1), ELF64_R_TYPE(r->r_info))) {
-//printf("shex32 0x%lx\n", r->r_addend);
-                  fsetu32byoffset(p0, r->r_offset, r->r_addend);
-                } else if (isused(get_RELTYPESHEX64(p1), ELF64_R_TYPE(r->r_info))) {
-//printf("shex64 0x%lx\n", r->r_addend);
-                  fsetu64byoffset(p0, r->r_offset, r->r_addend);
-                }
-              }
-            }
-          }
-        }
-      }
-
-      return freset(p0);
-    }
+    return ecapply_relocs(p0, p1, ii);
   }
 
   return p0;

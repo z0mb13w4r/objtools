@@ -28,6 +28,7 @@ SRCS_C = \
 	readpe.c \
 	bstring.c \
 	elfcode.c \
+	elfcode-memfind.c \
 	memfind.c \
 	memlink.c \
 	ocdwarf.c \
