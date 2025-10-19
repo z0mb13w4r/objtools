@@ -14,7 +14,6 @@ handle_t ocfget_xxxdata(handle_t p) {
     handle_t    p9 = ocget(p, OPCODE_PARAM2);
     uint64_t    i9 = ocgetv(p, OPCODE_PARAM3);
 //printf("index = %ld %s\n", i9, p9 ? "y" : "n");
-
     Elf64_Ehdr *ehdr = ecget_ehdr64(p9);
     if (ehdr) {
       for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
@@ -32,31 +31,35 @@ handle_t ocfget_xxxdata(handle_t p) {
 
             if (ismatch) {
               for (size_t k = 0; k < size; ++k) {
-printf("section = %d\n", pb[k + 1]);
+//printf("section = %d\n", pb[k + 1]);
                 if (i9 != pb[k + 1]) {
                   Elf64_Shdr *s9 = ecget_shdr64byindex(p9, pb[k + 1]);
                   if (s9 && SHT_RELA == s9->sh_type) {
-printf("found rela\n");
+//printf("found rela\n");
                     size_t cnt = s9->sh_size / s9->sh_entsize;
                     Elf64_Rela *r9 = _get64byshdr(p9, s9);
                     if (r9) {
                       for (size_t j = 0; j < cnt; ++j, ++r9) {
-printf("offset = 0x%lx\n", r9->r_offset);
+//printf("offset = 0x%lx\n", r9->r_offset);
                         if (isused(get_RELTYPESHEX8(p9), ELF64_R_TYPE(r9->r_info))) {
-printf("shex8 0x%lx\n", r9->r_addend);
+//printf("shex8 0x%lx\n", r9->r_addend);
+                          fsetu8byoffset(p0, r9->r_offset, r9->r_addend);
                         } else if (isused(get_RELTYPESHEX16(p9), ELF64_R_TYPE(r9->r_info))) {
-printf("shex16 0x%lx\n", r9->r_addend);
+//printf("shex16 0x%lx\n", r9->r_addend);
+                          fsetu16byoffset(p0, r9->r_offset, r9->r_addend);
                         } else if (isused(get_RELTYPESHEX32(p9), ELF64_R_TYPE(r9->r_info))) {
-printf("shex32 0x%lx\n", r9->r_addend);
+//printf("shex32 0x%lx\n", r9->r_addend);
+                          fsetu32byoffset(p0, r9->r_offset, r9->r_addend);
                         } else if (isused(get_RELTYPESHEX64(p9), ELF64_R_TYPE(r9->r_info))) {
-printf("shex64 0x%lx\n", r9->r_addend);
+//printf("shex64 0x%lx\n", r9->r_addend);
+                          fsetu64byoffset(p0, r9->r_offset, r9->r_addend);
                         }
                       }
                     }
                   } else if (s9 && SHT_RELR == s9->sh_type) {
-printf("found relr\n");
+//printf("found relr\n");
                   } else if (s9 && SHT_REL == s9->sh_type) {
-printf("found rel\n");
+//printf("found rel\n");
                   }
                 }
               }
@@ -65,6 +68,8 @@ printf("found rel\n");
         }
       }
     }
+
+    return freset(p0);
   }
 
   return p0;
