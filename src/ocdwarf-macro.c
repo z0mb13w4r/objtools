@@ -18,50 +18,25 @@ handle_t ocfget_xxxdata(handle_t p) {
     if (ehdr) {
       for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
         Elf64_Shdr *shdr = ecget_shdr64byindex(p9, i);
-        if (shdr && SHT_GROUP == shdr->sh_type) {
-          uint32_t *pb = _get64byshdr(p9, shdr);
-          if (pb) {
-            size_t size = (shdr->sh_size / shdr->sh_entsize) - 1;
-            bool_t ismatch = FALSE;
-//printf("size = %ld\n", size);
-            for (size_t k = 0; k < size; ++k) {
-//printf("section = %d\n", pb[k + 1]);
-              if (i9 == pb[k + 1]) ismatch = TRUE;
-            }
-
-            if (ismatch) {
-              for (size_t k = 0; k < size; ++k) {
-//printf("section = %d\n", pb[k + 1]);
-                if (i9 != pb[k + 1]) {
-                  Elf64_Shdr *s9 = ecget_shdr64byindex(p9, pb[k + 1]);
-                  if (s9 && SHT_RELA == s9->sh_type) {
-//printf("found rela\n");
-                    size_t cnt = s9->sh_size / s9->sh_entsize;
-                    Elf64_Rela *r9 = _get64byshdr(p9, s9);
-                    if (r9) {
-                      for (size_t j = 0; j < cnt; ++j, ++r9) {
+        if (shdr && SHT_RELA == shdr->sh_type && i9 == shdr->sh_info) {
+//printf("matched = %ld with %d\n", i9, i);
+          size_t cnt = shdr->sh_size / shdr->sh_entsize;
+          Elf64_Rela *r9 = _get64byshdr(p9, shdr);
+          if (r9) {
+            for (size_t j = 0; j < cnt; ++j, ++r9) {
 //printf("offset = 0x%lx\n", r9->r_offset);
-                        if (isused(get_RELTYPESHEX8(p9), ELF64_R_TYPE(r9->r_info))) {
+              if (isused(get_RELTYPESHEX8(p9), ELF64_R_TYPE(r9->r_info))) {
 //printf("shex8 0x%lx\n", r9->r_addend);
-                          fsetu8byoffset(p0, r9->r_offset, r9->r_addend);
-                        } else if (isused(get_RELTYPESHEX16(p9), ELF64_R_TYPE(r9->r_info))) {
+                fsetu8byoffset(p0, r9->r_offset, r9->r_addend);
+              } else if (isused(get_RELTYPESHEX16(p9), ELF64_R_TYPE(r9->r_info))) {
 //printf("shex16 0x%lx\n", r9->r_addend);
-                          fsetu16byoffset(p0, r9->r_offset, r9->r_addend);
-                        } else if (isused(get_RELTYPESHEX32(p9), ELF64_R_TYPE(r9->r_info))) {
+                fsetu16byoffset(p0, r9->r_offset, r9->r_addend);
+              } else if (isused(get_RELTYPESHEX32(p9), ELF64_R_TYPE(r9->r_info))) {
 //printf("shex32 0x%lx\n", r9->r_addend);
-                          fsetu32byoffset(p0, r9->r_offset, r9->r_addend);
-                        } else if (isused(get_RELTYPESHEX64(p9), ELF64_R_TYPE(r9->r_info))) {
+                fsetu32byoffset(p0, r9->r_offset, r9->r_addend);
+              } else if (isused(get_RELTYPESHEX64(p9), ELF64_R_TYPE(r9->r_info))) {
 //printf("shex64 0x%lx\n", r9->r_addend);
-                          fsetu64byoffset(p0, r9->r_offset, r9->r_addend);
-                        }
-                      }
-                    }
-                  } else if (s9 && SHT_RELR == s9->sh_type) {
-//printf("found relr\n");
-                  } else if (s9 && SHT_REL == s9->sh_type) {
-//printf("found rel\n");
-                  }
-                }
+                fsetu64byoffset(p0, r9->r_offset, r9->r_addend);
               }
             }
           }
@@ -74,7 +49,6 @@ handle_t ocfget_xxxdata(handle_t p) {
 
   return p0;
 }
-
 
 static int ocdwarf_debug_macro_crude(handle_t p, handle_t s, handle_t d, bool_t isdwo) {
   int n = 0;
