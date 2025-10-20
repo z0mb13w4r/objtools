@@ -199,13 +199,13 @@ unknown_t ocget(handle_t p, const imode_t mode) {
   } else if (isopcode(p) && OPCODE_DWARF_STATISTICS == mode) {
     pocdwarf_t p0 = ocget(p, OPCODE_DWARF);
     return p0 ? p0->st : NULL;
-  } else if ((ismode(p, mode) && ismodeopwrap(mode)) || (isopwrap(p) && mode == OPCODE_PARAM1)) {
+  } else if ((ismode(p, mode) && ismodeopwrap(mode)) || (isopwrap(p) && OPCODE_PARAM1 == mode)) {
     return CAST(popwrap_t, p)->param1;
-  } else if (isopwrap(p) && mode == OPCODE_PARAM2) {
+  } else if ((isopwrap(p) && OPCODE_PARAM2 == mode) || (isopshdrNN(p) && OPCODE_RAWDATA == mode)) {
     return CAST(popwrap_t, p)->param2;
-  } else if (isopwrap(p) && mode == OPCODE_PARAM3) {
+  } else if (isopwrap(p) && OPCODE_PARAM3 == mode) {
     return CAST(popwrap_t, p)->param3;
-  } else if (isopwrap(p) && mode == OPCODE_PARAM4) {
+  } else if (isopwrap(p) && OPCODE_PARAM4 == mode) {
     return CAST(popwrap_t, p)->param4;
   }
 
@@ -273,8 +273,8 @@ size_t ocget_maxsectionnamesize(handle_t p) {
   bfd* p0 = ocget(p, OPCODE_BFD);
   if (p0) {
     bfd_map_over_sections(p0, callback_find_max_sectionhdr_name, &maxsize);
-  } else if (ismode(p, MODE_OCSHDR32) ||ismode(p, MODE_OCSHDR64)) {
-    return ecget_secnamemaxsize(ocget(p, OPCODE_PARAM2));
+  } else if (ismode(p, MODE_OCSHDR32) || ismode(p, MODE_OCSHDR64)) {
+    return ecget_secnamemaxsize(ocget(p, OPCODE_RAWDATA));
   }
 
   return maxsize;
@@ -687,10 +687,10 @@ unknown_t ocget_rawdata(handle_t p) {
     }
   } else if (ismode(p, MODE_OCSHDR32)) {
     Elf32_Shdr* p0 = ocget(p, MODE_OCSHDR32);
-    return p0 ? getp(ocget(p, OPCODE_PARAM2), p0->sh_offset, p0->sh_size) : NULL;
+    return p0 ? getp(ocget(p, OPCODE_RAWDATA), p0->sh_offset, p0->sh_size) : NULL;
   } else if (ismode(p, MODE_OCSHDR64)) {
     Elf64_Shdr* p0 = ocget(p, MODE_OCSHDR64);
-    return p0 ? getp(ocget(p, OPCODE_PARAM2), p0->sh_offset, p0->sh_size) : NULL;
+    return p0 ? getp(ocget(p, OPCODE_RAWDATA), p0->sh_offset, p0->sh_size) : NULL;
   }
 
   return NULL;
@@ -698,6 +698,12 @@ unknown_t ocget_rawdata(handle_t p) {
 
 unknown_t ocget_rawdatabyname(handle_t p, const char* name) {
   if (isopcode(p) && name) {
+    handle_t p0 = ocget(p, OPCODE_RAWDATA);
+    return p0 ? ecget_rawdatabyname(p0, name) : NULL;
+  } else if (ismode(p, MODE_OCSHDR32) && name) {
+    handle_t p0 = ocget(p, OPCODE_RAWDATA);
+    return p0 ? ecget_rawdatabyname(p0, name) : NULL;
+  } else if (ismode(p, MODE_OCSHDR64) && name) {
     handle_t p0 = ocget(p, OPCODE_RAWDATA);
     return p0 ? ecget_rawdatabyname(p0, name) : NULL;
   }
@@ -737,9 +743,9 @@ const char* ocget_name(handle_t p) {
     Elf64_Shdr *p1 = ocget(p, OPCODE_PARAM2);
     return p0 && p1 ? ecget_namebyoffset(ocget(p, OPCODE_PARAM3), p1->sh_link, p0->d_un.d_val) : NULL;
   } else if (ismode(p, MODE_OCSHDR32)) {
-    return ecget_secname32byshdr(ocget(p, OPCODE_PARAM2), ocget(p, MODE_OCSHDR32));
+    return ecget_secname32byshdr(ocget(p, OPCODE_RAWDATA), ocget(p, MODE_OCSHDR32));
   } else if (ismode(p, MODE_OCSHDR64)) {
-    return ecget_secname64byshdr(ocget(p, OPCODE_PARAM2), ocget(p, MODE_OCSHDR64));
+    return ecget_secname64byshdr(ocget(p, OPCODE_RAWDATA), ocget(p, MODE_OCSHDR64));
   }
 
   return NULL;
@@ -766,17 +772,17 @@ const char* ocget_namebyoffset(handle_t p, const imode_t mode, const uint64_t of
   } else if (ismode(p, MODE_OCSHDR32)) {
     if (OPCODE_BYLINK == mode) {
       Elf32_Shdr* p0 = ocget(p, MODE_OCSHDR32);
-      return p0 ? ecget_namebyoffset(ocget(p, OPCODE_PARAM2), p0->sh_link, offset) : NULL;
+      return p0 ? ecget_namebyoffset(ocget(p, OPCODE_RAWDATA), p0->sh_link, offset) : NULL;
     } else if (OPCODE_BYDEBUGSTR == mode) {
-      handle_t p0 = ocget(p, OPCODE_PARAM2);
+      handle_t p0 = ocget(p, OPCODE_RAWDATA);
       return ecget_namebyoffset(p0, ecget_indexbyname(p0, ".debug_str"), offset);
     }
   } else if (ismode(p, MODE_OCSHDR64)) {
     if (OPCODE_BYLINK == mode) {
       Elf64_Shdr* p0 = ocget(p, MODE_OCSHDR64);
-      return p0 ? ecget_namebyoffset(ocget(p, OPCODE_PARAM2), p0->sh_link, offset) : NULL;
+      return p0 ? ecget_namebyoffset(ocget(p, OPCODE_RAWDATA), p0->sh_link, offset) : NULL;
     } else if (OPCODE_BYDEBUGSTR == mode) {
-      handle_t p0 = ocget(p, OPCODE_PARAM2);
+      handle_t p0 = ocget(p, OPCODE_RAWDATA);
       return ecget_namebyoffset(p0, ecget_indexbyname(p0, ".debug_str"), offset);
     }
   }
