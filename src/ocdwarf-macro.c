@@ -8,20 +8,74 @@
 static const int MAXSIZE = 24;
 #ifdef OPCODE_DWARF_DEBUGX
 
-static const char* getname(handle_t p, const uint64_t offset, const uint64_t index) {
-  return NULL;
+static handle_t ocfget_xxxdata(handle_t p) {
+  handle_t p0 = fcalloc(ocget_rawdata(p), ocget_size(p), MEMFIND_NOCHUNKSIZE);
+  return ecapply_relocs(p0, ocget(p, OPCODE_RAWDATA), ocgetv(p, OPCODE_PARAM3));
 }
 
-static handle_t ocfget_xxxdata(handle_t p) {
-  handle_t p0 = fcalloc(ocget_rawdata(p), ocget_size(p), 12345);
-  if (p0) {
-    handle_t p1 = ocget(p, OPCODE_PARAM2);
-    uint64_t ii = ocgetv(p, OPCODE_PARAM3);
-//printf("index = %ld %s\n", ii, p1 ? "y" : "n");
-    return ecapply_relocs(p0, p1, ii);
+static unknown_t ocfget_xxxrawdatabyname(handle_t p, const char* name) {
+  handle_t p0 = fcalloc(ocget_rawdatabyname(p, name), ocget_sizebyname(p, name), MEMFIND_NOCHUNKSIZE);
+  return ecapply_relocs(p0, ocget(p, OPCODE_RAWDATA), ocget_indexbyname(p, name));
+}
+
+static const char* getname(handle_t p, const uint64_t offset, const uint64_t index, const char **fname, const char **dname) {
+  handle_t f = ocfget_xxxrawdatabyname(p, ".debug_line");
+  if (f && fname && dname) {
+    *dname = NULL;
+    *fname = NULL;
+
+//printf("\n");
+//printf_sore(f, 32, USE_HEX | USE_EOL);
+//printf("offset = %ld\n", offset);
+    fmove(f, offset);
+
+    uint64_t offset_size = 4;
+    uint64_t length = fgetu32(f);
+    if (0xffffffff == length) {
+      offset_size = 8;
+      length = fgetu64(f);
+    }
+//printf("length = %ld[0x%lx]\n", length, length);
+//printf("offset_size = %ld\n", offset_size);
+
+    uint64_t dindex = 0;
+    uint64_t version = fgetu16(f);
+//printf("version = %ld\n", version);
+    if (2 == version || 3 == version || 4 == version) {
+      fstep(f, offset_size + (4 == version ? 2 : 1) + 3);
+      uint64_t opcode_base = fgetu8(f);
+//printf("opcode_base = %ld\n", opcode_base);
+      if (opcode_base) {
+        fstep(f, opcode_base - 1);
+
+        size_t cpos = fgetcpos(f);
+        const char* tname = fgetstring(f);
+        while (tname && tname[0]) {
+//printf("tname = %s\n", tname);
+          tname = fgetstring(f);
+        }
+
+        for (int i = 0; i < index; ++i) {
+          *fname = fgetstring(f);
+          dindex = fgetuleb128(f);
+//printf("fname = %s[%ld]\n", *fname, dindex);
+          fgetuleb128(f);
+          fgetuleb128(f);
+        }
+
+//printf("fname = %s[%ld]\n", *fname, dindex);
+        fmove(f, cpos);
+        for (uint64_t i = 0; i < dindex; ++i) {
+         *dname = fgetstring(f);
+//printf("dname = %s\n", *dname);
+        }
+      }
+    }
+
+    return *fname;
   }
 
-  return p0;
+  return NULL;
 }
 
 static int ocdwarf_debug_macro_crude(handle_t p, handle_t s, handle_t d, bool_t isdwo) {
@@ -29,7 +83,6 @@ static int ocdwarf_debug_macro_crude(handle_t p, handle_t s, handle_t d, bool_t 
 
   if (isopcode(p) && (isopshdr(s) || isopshdrNN(s))) {
     popcode_t oc = ocget(p, OPCODE_THIS);
-
     handle_t f = ocfget_xxxdata(s);
     if (f) {
      uint64_t version = fgetu16(f);
@@ -67,15 +120,25 @@ static int ocdwarf_debug_macro_crude(handle_t p, handle_t s, handle_t d, bool_t 
         } else if (DW_MACRO_start_file == op) {
           uint64_t nline = fgetuleb128(f);
           uint64_t nfile = fgetuleb128(f);
-          const char* sfile = 2 & flags ? getname(s, offset_line, nfile) : NULL;
+          const char *dname = NULL;
+          const char *fname = NULL;
+          if (0x02 & flags) {
+            getname(s, offset_line, nfile, &fname, &dname);
+          }
 
           n += printf_text("- lineno", USE_LT | USE_SPACE | USE_COLON);
           n += printf_nice(nline, USE_DEC);
           n += printf_text("filenum", USE_LT | USE_SPACE | USE_COLON);
           n += printf_nice(nfile, USE_DEC);
-          if (sfile) {
+          if (fname) {
             n += printf_text("filename", USE_LT | USE_SPACE | USE_COLON);
-            n += printf_text(sfile, USE_LT | USE_SPACE);
+            if (dname) {
+              n += printf_text(dname, USE_LT | USE_SPACE);
+              n += printf_text("/", USE_LT);
+              n += printf_text(fname, USE_LT);
+            } else {
+              n += printf_text(fname, USE_LT | USE_SPACE);
+            }
           } else if (0 == (flags & 2)) {
             n += printf_text("filename", USE_LT | USE_SPACE | USE_COLON);
             n += printf_text("unknown", USE_LT | USE_SPACE | USE_TB);
