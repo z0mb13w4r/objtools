@@ -734,6 +734,25 @@ size_t ocget_sizebyname(handle_t p, const char* name) {
   return 0;
 }
 
+int ocget_indexbyname(handle_t p, const char* name) {
+  if (ismode(p, MODE_OCSHDR)) {
+    asection* s0 = ocget(p, MODE_OCSHDR);
+    handle_t  p0 = ocget(p, OPCODE_PARAM2);
+    if (s0 && isopcode(p0)) {
+      handle_t p1 = ocget(p0, OPCODE_RAWDATA);
+      return p1 ? ecget_indexbyname(p0, name) : -1;
+    }
+  } else if (ismode(p, MODE_OCSHDR32) && name) {
+    handle_t p0 = ocget(p, OPCODE_RAWDATA);
+    return p0 ? ecget_indexbyname(p0, name) : -1;
+  } else if (ismode(p, MODE_OCSHDR64) && name) {
+    handle_t p0 = ocget(p, OPCODE_RAWDATA);
+    return p0 ? ecget_indexbyname(p0, name) : -1;
+  }
+
+  return -1;
+}
+
 unknown_t ocget_rawshdr(handle_t p) {
   if (ismode(p, MODE_OCSHDR)) {
     asection* s0 = ocget(p, MODE_OCSHDR);

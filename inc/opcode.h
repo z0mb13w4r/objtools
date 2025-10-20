@@ -218,6 +218,7 @@ unknown_t ocget_rawshdr(handle_t p);
 handle_t  ocfget_rawdata(handle_t p);
 
 unknown_t ocget_rawdatabyname(handle_t p, const char* name);
+int       ocget_indexbyname(handle_t p, const char* name);
 size_t    ocget_sizebyname(handle_t p, const char* name);
 
 bool_t ocget_symbol(handle_t p, uint64_t vaddr, char **name,

@@ -8,7 +8,7 @@ handle_t ecapply_relocs(handle_t p, handle_t q, const int index) {
       for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
         Elf64_Shdr *shdr = ecget_shdr64byindex(q, i);
         if (shdr && SHT_RELA == shdr->sh_type && index == shdr->sh_info) {
-//printf("matched = %ld with %d\n", index, i);
+//printf("matched = %d with %d\n", index, i);
           size_t cnt = shdr->sh_size / shdr->sh_entsize;
           Elf64_Rela *r = _get64byshdr(q, shdr);
           if (r) {
