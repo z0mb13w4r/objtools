@@ -36,6 +36,6 @@ handle_t ecapply_relocs(handle_t p, handle_t q, const int index) {
     return freset(p);
   }
 
-  return NULL;
+  return isfind(p) ? p : NULL;
 }
 
