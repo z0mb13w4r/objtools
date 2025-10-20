@@ -6,6 +6,8 @@
 #define MODE_FIND               (MODE_PUT0('F') | MODE_PUT1('N') | MODE_PUT2('D'))
 #define MODE_FINDC              (MODE_PUT0('F') | MODE_PUT1('N') | MODE_PUT2('D') | MODE_PUT3('C'))
 
+#define MEMFIND_NOCHUNKSIZE     (9999)
+
 typedef struct find_s {
   smode_t   mode;
   size_t    cpos, epos, chunksize;

@@ -253,7 +253,7 @@ bool_t isvchunkkey(handle_t p, const char* name) {
 }
 
 handle_t fget_chunkbyRVA(const pbuffer_t p, const int index, const uint64_t vaddr, const size_t size) {
-  return fmalloc(peget_chunkbyRVA(p, index, vaddr, size), size, 12345);
+  return fmalloc(peget_chunkbyRVA(p, index, vaddr, size), size, MEMFIND_NOCHUNKSIZE);
 }
 
 size_t fget_vchunkkeysize(handle_t p) {
