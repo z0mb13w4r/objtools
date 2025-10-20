@@ -5,8 +5,9 @@
 #include <inttypes.h>
 
 #include "decode.h"
-#include "memuse.h"
 #include "printf.h"
+#include "memuse.h"
+#include "memfind.h"
 
 #include "static/color.ci"
 
@@ -589,6 +590,12 @@ int printf_hurt(const unknown_t p, const size_t size, const imode_t mode) {
 }
 
 int printf_sore(const unknown_t p, const size_t size, const imode_t mode) {
+  if (isfind(p)) {
+    return printf_sore(fget(p), MIN(size, fgetsize(p)), mode);
+  } else if (isbuffer(p)) {
+    return printf_sore(bget(p), MIN(size, bgetsize(p)), mode);
+  }
+
   const int MAXSIZE = 10;
   const imode_t mode0 = GET_POS0(mode);
   const imode_t modex = GET_STYLE(mode);
