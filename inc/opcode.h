@@ -214,9 +214,11 @@ uint64_t ocget_soffset(handle_t p, handle_t s);
 uint64_t ocget_eoffset(handle_t p, handle_t s);
 
 unknown_t ocget_rawdata(handle_t p);
-unknown_t ocget_rawdatabyname(handle_t p, const char* name);
 unknown_t ocget_rawshdr(handle_t p);
 handle_t  ocfget_rawdata(handle_t p);
+
+unknown_t ocget_rawdatabyname(handle_t p, const char* name);
+size_t    ocget_sizebyname(handle_t p, const char* name);
 
 bool_t ocget_symbol(handle_t p, uint64_t vaddr, char **name,
                      uint64_t *nline, uint64_t *ncolumn, uint64_t *discriminator, char **source, char **sourcecode,

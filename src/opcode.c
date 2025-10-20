@@ -711,6 +711,29 @@ unknown_t ocget_rawdatabyname(handle_t p, const char* name) {
   return NULL;
 }
 
+size_t ocget_sizebyname(handle_t p, const char* name) {
+  if (isopcode(p) && name) {
+    handle_t p0 = ocget(p, OPCODE_RAWDATA);
+    if (isELF32(p0)) {
+      Elf32_Shdr* shdr = ecget_shdr32byname(p0, name);
+      return shdr ? shdr->sh_size : 0;
+    } else if (isELF64(p0)) {
+      Elf64_Shdr* shdr = ecget_shdr64byname(p0, name);
+      return shdr ? shdr->sh_size : 0;
+    }
+  } else if (ismode(p, MODE_OCSHDR32) && name) {
+    handle_t p0 = ocget(p, OPCODE_RAWDATA);
+    Elf32_Shdr* shdr = ecget_shdr32byname(p0, name);
+    return shdr ? shdr->sh_size : 0;
+  } else if (ismode(p, MODE_OCSHDR64) && name) {
+    handle_t p0 = ocget(p, OPCODE_RAWDATA);
+    Elf64_Shdr* shdr = ecget_shdr64byname(p0, name);
+    return shdr ? shdr->sh_size : 0;
+  }
+
+  return 0;
+}
+
 unknown_t ocget_rawshdr(handle_t p) {
   if (ismode(p, MODE_OCSHDR)) {
     asection* s0 = ocget(p, MODE_OCSHDR);
