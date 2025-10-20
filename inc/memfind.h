@@ -17,6 +17,7 @@ typedef struct find_s {
 
 int isfind(handle_t p);
 
+size_t fgetcpos(handle_t p);
 size_t fgetsize(handle_t p);
 
 unknown_t fget(handle_t p);

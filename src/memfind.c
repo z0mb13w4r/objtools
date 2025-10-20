@@ -15,6 +15,15 @@ unknown_t fget(handle_t p) {
   return NULL;
 }
 
+size_t fgetcpos(handle_t p) {
+  if (isfind(p)) {
+    pfind_t p0 = CAST(pfind_t, p);
+    return p0 ? p0->cpos : 0;
+  }
+
+  return 0;
+}
+
 size_t fgetsize(handle_t p) {
   if (isfind(p)) {
     pfind_t p0 = CAST(pfind_t, p);
