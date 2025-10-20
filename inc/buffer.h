@@ -33,6 +33,10 @@ unknown_t nfree(unknown_t p);
 size_t xget(unknown_t p, size_t size, size_t count, unknown_t f);
 size_t xput(unknown_t p, size_t size, size_t count, unknown_t f);
 
+size_t bgetsize(handle_t p);
+
+unknown_t bget(handle_t p);
+
 handle_t bmalloc();
 handle_t bmallocsize(const size_t size);
 handle_t bfree(handle_t p);

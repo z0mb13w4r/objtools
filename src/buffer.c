@@ -119,6 +119,24 @@ size_t xput(unknown_t p, size_t size, size_t count, unknown_t f) {
   return 0;
 }
 
+size_t bgetsize(handle_t p) {
+  if (ismode(p, MODE_BUFFER)) {
+    pbuffer_t p0 = CAST(pbuffer_t, p);
+    return p0 ? p0->size : 0;
+  }
+
+  return 0;
+}
+
+unknown_t bget(handle_t p) {
+  if (ismode(p, MODE_BUFFER)) {
+    pbuffer_t p0 = CAST(pbuffer_t, p);
+    return p0 ? p0->data : NULL;
+  }
+
+  return NULL;
+}
+
 handle_t bmalloc() {
   handle_t p = xmalloc(sizeof(buffer_t));
   return setmode(p, MODE_BUFFER);
