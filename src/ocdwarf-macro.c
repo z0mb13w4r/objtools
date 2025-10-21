@@ -206,14 +206,14 @@ static int ocdwarf_debug_macro_crude(handle_t p, handle_t s, handle_t d, bool_t 
     if (isfind(f)) {
       n += printf_text(ocget_name(s), USE_LT | USE_COLON);
       n += printf_text("Macro info for a single cu at macro offset", USE_LT | USE_SPACE);
-      n += printf_nice(0, USE_FHEX32 | USE_EOL);
+      n += printf_nice(fgetcpos(f), USE_FHEX32 | USE_EOL);
 
       n += ocdwarf_debug_macro_crude0(p, s, d, f, isdwo);
 
       while (!fiseof(f)) {
         n += printf_text(ocget_name(s), USE_LT | USE_COLON);
         n += printf_text("Macro info for imported macro unit at macro offset", USE_LT | USE_SPACE);
-        n += printf_nice(0x374, USE_FHEX | USE_COLON | USE_EOL);
+        n += printf_nice(fgetcpos(f), USE_FHEX | USE_COLON | USE_EOL);
 
         n += ocdwarf_debug_macro_crude0(p, s, d, f, isdwo);
       }
