@@ -4,6 +4,15 @@ int isfind(handle_t p) {
   return ismodeNNN(p, MODE_FIND);
 }
 
+bool_t fiseof(handle_t p) {
+  if (isfind(p)) {
+    pfind_t p0 = CAST(pfind_t, p);
+    return p0 && p0->item ? p0->cpos >= p0->epos : TRUE;
+  }
+
+  return TRUE;
+}
+
 unknown_t fget(handle_t p) {
   if (isfind(p)) {
     pfind_t p0 = CAST(pfind_t, p);
