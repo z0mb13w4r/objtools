@@ -304,6 +304,43 @@ unknown_t ecget_phdrbyindex(const pbuffer_t p, const int index) {
   return NULL;
 }
 
+Elf32_Shdr* ecget_shdr32byoffset(const pbuffer_t p, const int offset) {
+  Elf32_Ehdr *e = ecget_ehdr32(p);
+  if (e) {
+    for (Elf32_Half i = 0; i < e->e_shnum; ++i) {
+      Elf32_Shdr *s = ecget_shdr32byindex(p, i);
+      if (s && s->sh_offset == offset){
+        return s;
+      }
+    }
+  }
+
+  return NULL;
+}
+
+Elf64_Shdr* ecget_shdr64byoffset(const pbuffer_t p, const int offset) {
+  Elf64_Ehdr *e = ecget_ehdr64(p);
+  if (e) {
+    for (Elf64_Half i = 0; i < e->e_shnum; ++i) {
+      Elf64_Shdr *s = ecget_shdr64byindex(p, i);
+      if (s && s->sh_offset == offset){
+        return s;
+      }
+    }
+  }
+
+  return NULL;
+}
+
+unknown_t   ecget_shdrbyoffset(const pbuffer_t p, const int offset) {
+  if (isELF(p)) {
+    if (isELF32(p))        return ecget_shdr32byoffset(p, offset);
+    else if (isELF64(p))   return ecget_shdr64byoffset(p, offset);
+  }
+
+  return NULL;
+}
+
 Elf32_Shdr* ecget_shdr32bytype(const pbuffer_t p, const int type) {
   Elf32_Ehdr *e = ecget_ehdr32(p);
   if (e) {
