@@ -500,15 +500,6 @@ uint64_t ocget_archsize(handle_t p) {
   return 0;
 }
 
-uint64_t ocget_position(handle_t p) {
-  if (ismode(p, MODE_OCSHDR)) {
-    asection* p0 = ocget(p, MODE_OCSHDR);
-    return p0 ? p0->filepos : 0;
-  }
-
-  return 0;
-}
-
 uint64_t ocget_alignment(handle_t p) {
   if (ismode(p, MODE_OCSHDR)) {
     asection* p0 = ocget(p, MODE_OCSHDR);
@@ -534,7 +525,10 @@ uint64_t ocget_alignment(handle_t p) {
 }
 
 uint64_t ocget_offset(handle_t p) {
- if (ismode(p, MODE_OCPHDR)) {
+  if (ismode(p, MODE_OCSHDR)) {
+    asection* p0 = ocget(p, MODE_OCSHDR);
+    return p0 ? p0->filepos : 0;
+  } else if (ismode(p, MODE_OCPHDR)) {
     pbfd_phdr_t p0 = ocget(p, MODE_OCPHDR);
     return p0 ? p0->p_offset : 0;
   } else if (ismode(p, MODE_OCSHDR32)) {

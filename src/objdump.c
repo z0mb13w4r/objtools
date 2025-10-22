@@ -23,7 +23,7 @@ static void callback_disassemble(handle_t p, handle_t section, unknown_t param) 
   printf_text("Disassembly of section", USE_LT);
   printf_text(ocget_name(section), USE_LT | USE_SPACE | USE_SQ);
   printf_text("at offset", USE_LT | USE_SPACE);
-  printf_nice(ocget_position(section) + soffset, USE_FHEX16 | USE_COLON | USE_EOL);
+  printf_nice(ocget_offset(section) + soffset, USE_FHEX16 | USE_COLON | USE_EOL);
 
   ocdisassemble_run(p, section);
 
@@ -38,7 +38,7 @@ static void callback_dwarf(handle_t p, handle_t section, unknown_t param) {
   printf_text("Contents of section", USE_LT);
   printf_text(ocget_name(section), USE_LT | USE_SPACE | USE_SQ);
   printf_text("at offset", USE_LT | USE_SPACE);
-  printf_nice(ocget_position(section) + soffset, USE_FHEX16 | USE_COLON | USE_EOL);
+  printf_nice(ocget_offset(section) + soffset, USE_FHEX16 | USE_COLON | USE_EOL);
 
   ocdwarf_run(p, section);
 
@@ -157,7 +157,7 @@ static void callback_sections(handle_t p, handle_t section, unknown_t param) {
   printf_text("Contexts of section", USE_LT | USE_SPACE);
   printf_text(ocget_name(section), USE_LT | USE_SPACE | USE_SQ);
   printf_text("at offset", USE_LT | USE_SPACE);
-  printf_nice(ocget_position(section) + soffset, USE_FHEX16 | USE_COLON | USE_EOL);
+  printf_nice(ocget_offset(section) + soffset, USE_FHEX16 | USE_COLON | USE_EOL);
 
   bfd_byte *data = NULL;
   if (bfd_get_full_section_contents(ocgetbfd(p), ocgetshdr(section), &data)) {
@@ -317,7 +317,7 @@ static void callback_sectionhdr(handle_t p, handle_t shdr, unknown_t param) {
   printf_nice(ocget_size(shdr) / ocget_opb(p, shdr), USE_LHEX32);
   printf_nice(ocget_vmaddress(shdr), USE_LHEXNN);
   printf_nice(ocget_lmaddress(shdr), USE_LHEXNN);
-  printf_nice(ocget_position(shdr), USE_LHEX32);
+  printf_nice(ocget_offset(shdr), USE_LHEX32);
   printf_nice(ocget_alignment(shdr), USE_POWER2);
 
   printf_maskmute(zSECTIONHDR1_FLAGS, flags, USE_LT);

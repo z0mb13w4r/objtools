@@ -199,7 +199,6 @@ uint64_t ocget_machine(handle_t p);
 uint64_t ocget_size(handle_t p);
 uint64_t ocget_memsize(handle_t p);
 uint64_t ocget_archsize(handle_t p);
-uint64_t ocget_position(handle_t p);
 uint64_t ocget_alignment(handle_t p);
 
 uint64_t ocget_offset(handle_t p);
