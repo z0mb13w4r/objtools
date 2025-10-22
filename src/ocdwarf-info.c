@@ -73,6 +73,9 @@ int ocdwarf_debug_info(handle_t p, handle_t s, handle_t d) {
       if (ECODE_ISNOENTRY(n1)) return n0;
       else if (ECODE_ISFAILED(n1)) {
         ocdwarf_dealloc_error(p, NULL);
+#ifdef OPCODE_DWARF_DEBUGX
+        printf_e("ocdwarf_next_cu_header failed, no CU die");
+#endif
         return n1;
       }
 
