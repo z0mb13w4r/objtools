@@ -343,13 +343,13 @@ static int ocdwarf_eh_frame_fdes(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed f
 
     fde_item = fde_items;
     for (Dwarf_Signed i = 0; i < fde_count; ++i, ++fde_item) {
-      char* name = NULL;
-      pocdebug_t d0 = oeseebyaddr(p, fde_item->lo_pc, OPENGINE_DEBUG);
-      if (isodebug(d0) && MODE_ISANY(d0->role, OPDEBUG_NAME)) {
-        name = d0->name;
-      }
-
       if (MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED)) {
+        char* name = NULL;
+        pocdebug_t d0 = oeseebyaddr(p, fde_item->lo_pc, OPENGINE_DEBUG);
+        if (isodebug(d0) && MODE_ISANY(d0->role, OPDEBUG_NAME)) {
+          name = d0->name;
+        }
+
         // < 0>
         n0 += ocdwarf_printf_DEC(p, i, USE_NOSPACE);
 
