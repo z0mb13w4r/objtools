@@ -5,6 +5,7 @@ handle_t ecapply_relocs(handle_t p, handle_t q, const int index) {
   if (isfind(p) && isELF64(q)) {
     Elf64_Ehdr *ehdr = ecget_ehdr64(q);
     if (ehdr) {
+//printf("hunting = %d\n", index);
       for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
         Elf64_Shdr *shdr = ecget_shdr64byindex(q, i);
         if (shdr && SHT_RELA == shdr->sh_type && index == shdr->sh_info) {
@@ -34,6 +35,23 @@ handle_t ecapply_relocs(handle_t p, handle_t q, const int index) {
     }
 
     return freset(p);
+  }
+
+  return isfind(p) ? p : NULL;
+}
+
+handle_t ecapply_relocsbyoffset(handle_t p, handle_t q, const int offset) {
+  if (isfind(p) && isELF64(q)) {
+    Elf64_Ehdr *ehdr = ecget_ehdr64(q);
+    if (ehdr) {
+//printf("hunting = %x\n", offset);
+      for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
+        Elf64_Shdr *shdr = ecget_shdr64byindex(q, i);
+        if (shdr && offset == shdr->sh_offset) {
+          return ecapply_relocs(p, q, i);
+        }
+      }
+    }
   }
 
   return isfind(p) ? p : NULL;
