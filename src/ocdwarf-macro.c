@@ -5,12 +5,11 @@
 #include "ocdwarf-macro.h"
 #include "elfcode-memfind.h"
 
-static const int MAXSIZE = 24;
 #ifdef OPCODE_DWARF_DEBUGX
 
 static handle_t ocfget_xxxdata(handle_t p) {
   handle_t p0 = fcalloc(ocget_rawdata(p), ocget_size(p), MEMFIND_NOCHUNKSIZE);
-  return ecapply_relocs(p0, ocget(p, OPCODE_RAWDATA), ocgetv(p, OPCODE_PARAM3));
+  return ecapply_relocsbyoffset(p0, ocget(p, OPCODE_RAWDATA), ocget_offset(p));
 }
 
 static unknown_t ocfget_xxxrawdatabyname(handle_t p, const char* name) {
@@ -27,6 +26,7 @@ static const char* getname(handle_t p, const uint64_t offset, const uint64_t ind
 //printf("\n");
 //printf_sore(f, 32, USE_HEX | USE_EOL);
 //printf("offset = %ld\n", offset);
+//printf("index = %ld\n", index);
     fmove(f, offset);
 
     uint64_t offset_size = 4;
@@ -83,6 +83,9 @@ static int ocdwarf_debug_macro_crude0(handle_t p, handle_t s, handle_t d, handle
 
   if (isopcode(p) && (isopshdr(s) || isopshdrNN(s)) && isfind(f)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
+
+//printf("\n");
+//printf_sore(fget(f), 64, USE_HEX | USE_EOL);
 
     uint64_t version = fgetu16(f);
 //printf("version = %ld\n", version);
@@ -225,6 +228,8 @@ static int ocdwarf_debug_macro_crude(handle_t p, handle_t s, handle_t d, bool_t 
   return n;
 }
 #else
+static const int MAXSIZE = 24;
+
 static int ocdwarf_debug_macro_offset(handle_t p, Dwarf_Die die, int level,
                      Dwarf_Unsigned macro_offset, Dwarf_Error *e);
 
