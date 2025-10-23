@@ -6,6 +6,8 @@
 #include "opcode-lib.h"
 #include "opcode-printf.h"
 
+#define MAXSIZE                        (1024)
+
 #define DEFAULT_SKIP_ZEROES            (8)
 #define DEFAULT_SKIP_ZEROES_AT_END     (3)
 
@@ -41,6 +43,10 @@ static void custom_fprintf_address(bfd_vma vma, struct disassemble_info *di) {
 }
 
 char* opcodelib_strncat(char* dst, char* src, char* sep, size_t size) {
+  if (NULL == dst) {
+    dst = xmalloc(MAXSIZE);
+  }
+
   if (dst && src && sep && 0 != size) {
     if (dst[0]) {
       dst = xstrncat(dst, sep, size);
@@ -68,8 +74,6 @@ int opcodelib_open(handle_t p, handle_t o) {
       }
 
       if (di) {
-        MALLOCA(char, args, 1024);
-
         /* Construct and configure the disassembler_info class using stdout */
         init_disassemble_info(di, oc, CAST(fprintf_ftype, custom_fprintf));
 
@@ -83,44 +87,46 @@ int opcodelib_open(handle_t p, handle_t o) {
         di->disassembler_options = NULL;
         di->print_address_func = custom_fprintf_address;
 
+        char* args = NULL;
+
         if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_ATT_MNEMONIC)) {
-          di->disassembler_options = opcodelib_strncat(args, "att-mnemonic", ",", NELEMENTS(args));
+          di->disassembler_options = args = opcodelib_strncat(args, "att-mnemonic",   ",", MAXSIZE);
         } else if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_INTEL_MNEMONIC)) {
-          di->disassembler_options = opcodelib_strncat(args, "intel-mnemonic", ",", NELEMENTS(args));
+          di->disassembler_options = args = opcodelib_strncat(args, "intel-mnemonic", ",", MAXSIZE);
         } else if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_ATT)) {
-          di->disassembler_options = opcodelib_strncat(args, "att", ",", NELEMENTS(args));
+          di->disassembler_options = args = opcodelib_strncat(args, "att",     ",", MAXSIZE);
         } else if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_INTEL)) {
-          di->disassembler_options = opcodelib_strncat(args, "intel", ",", NELEMENTS(args));
+          di->disassembler_options = args = opcodelib_strncat(args, "intel",   ",", MAXSIZE);
         }
 
         if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_X86_64)) {
-          di->disassembler_options = opcodelib_strncat(args, "x86-64", ",", NELEMENTS(args));
+          di->disassembler_options = args = opcodelib_strncat(args, "x86-64",  ",", MAXSIZE);
         } else if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_I386)) {
-          di->disassembler_options = opcodelib_strncat(args, "i386", ",", NELEMENTS(args));
+          di->disassembler_options = args = opcodelib_strncat(args, "i386",    ",", MAXSIZE);
         } else if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_I8086)) {
-          di->disassembler_options = opcodelib_strncat(args, "i8086", ",", NELEMENTS(args));
+          di->disassembler_options = args = opcodelib_strncat(args, "i8086",   ",", MAXSIZE);
         }
 
         if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_AMD64)) {
-          di->disassembler_options = opcodelib_strncat(args, "amd64", ",", NELEMENTS(args));
+          di->disassembler_options = args = opcodelib_strncat(args, "amd64",   ",", MAXSIZE);
         } else if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_INTEL64)) {
-          di->disassembler_options = opcodelib_strncat(args, "intel64", ",", NELEMENTS(args));
+          di->disassembler_options = args = opcodelib_strncat(args, "intel64", ",", MAXSIZE);
         }
 
         if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_ADDR16)) {
-          di->disassembler_options = opcodelib_strncat(args, "addr16", ",", NELEMENTS(args));
+          di->disassembler_options = opcodelib_strncat(args, "addr16", ",", MAXSIZE);
         } else if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_ADDR32)) {
-          di->disassembler_options = opcodelib_strncat(args, "addr32", ",", NELEMENTS(args));
+          di->disassembler_options = opcodelib_strncat(args, "addr32", ",", MAXSIZE);
         } else if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_ADDR64)) {
-          di->disassembler_options = opcodelib_strncat(args, "addr64", ",", NELEMENTS(args));
+          di->disassembler_options = opcodelib_strncat(args, "addr64", ",", MAXSIZE);
         }
 
         if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_DATA16)) {
-          di->disassembler_options = opcodelib_strncat(args, "data16", ",", NELEMENTS(args));
+          di->disassembler_options = opcodelib_strncat(args, "data16", ",", MAXSIZE);
         } else if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_DATA32)) {
-          di->disassembler_options = opcodelib_strncat(args, "data32", ",", NELEMENTS(args));
+          di->disassembler_options = opcodelib_strncat(args, "data32", ",", MAXSIZE);
         }
-//printf("*** %s ***\n", di->disassembler_options);
+
         if (bfd_big_endian(bf))          di->endian_code = di->display_endian = di->endian = BFD_ENDIAN_BIG;
         else if (bfd_little_endian(bf))  di->endian_code = di->display_endian = di->endian = BFD_ENDIAN_LITTLE;
         else                             di->endian_code = di->endian = BFD_ENDIAN_UNKNOWN;
@@ -140,6 +146,14 @@ int opcodelib_open(handle_t p, handle_t o) {
 int opcodelib_close(handle_t p) {
   if (isopcode(p)) {
     popcode_t oc = CAST(popcode_t, p);
+    struct disassemble_info* di = oc->items[OPCODE_DISASSEMBLER];
+    if (di) {
+      xfree(CAST(unknown_t, di->disassembler_options));
+    }
+
+    xfree(oc->items[OPCODE_DISASSEMBLER]);
+    oc->items[OPCODE_DISASSEMBLER] = NULL;
+
     nfree(oc->items[OPCODE_OUTDATA]);
     oc->items[OPCODE_OUTDATA] = NULL;
   }
