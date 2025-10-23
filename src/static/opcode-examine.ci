@@ -381,6 +381,7 @@ static oestruct_t oeINSTRUCTIONS[] = {
   OCSTRUCT("sha1msg1",  OCINSTRUCTION_SHA1MSG1),
   OCSTRUCT("sha1msg2",  OCINSTRUCTION_SHA1MSG2),
   OCSTRUCT("sha1nexte", OCINSTRUCTION_SHA1NEXTE),
+  OCSTRUCT("sha1rnds4", OCINSTRUCTION_SHA1RNDS4),
 
   OCSTRUCT("ud0",       OCINSTRUCTION_UNDEF),
   OCSTRUCT("ud1",       OCINSTRUCTION_UNDEF1),
@@ -564,6 +565,7 @@ convert_t oeINSTRUCTIONFLAGS[] = {
   {"ONE",               OCINSTRUCTION_ONE},
   {"TEN",               OCINSTRUCTION_TEN},
   {"TWO",               OCINSTRUCTION_TWO},
+  {"FOUR",              OCINSTRUCTION_FOUR},
   {"ZERO",              OCINSTRUCTION_ZERO},
   {"LOG2",              OCINSTRUCTION_LOG2},
   {"LOGE",              OCINSTRUCTION_LOGE},
