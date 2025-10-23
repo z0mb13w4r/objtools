@@ -46,6 +46,7 @@ static oestruct_t oeINSTRUCTIONS[] = {
   OCSTRUCT("jne",       OCINSTRUCTION_JNE),
   OCSTRUCT("jng",       OCINSTRUCTION_JLE),
   OCSTRUCT("jnl",       OCINSTRUCTION_JGE),
+  OCSTRUCT("jno",       OCINSTRUCTION_JNO),
   OCSTRUCT("jns",       OCINSTRUCTION_JNS),
   OCSTRUCT("jnz",       OCINSTRUCTION_JNE),
   OCSTRUCT("ja",        OCINSTRUCTION_JA),
