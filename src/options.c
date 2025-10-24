@@ -378,8 +378,8 @@ imode_t get_options1(poptions_t o, const args_t args[], const char *argv) {
     }
 
     if (0 == action0) {
-printf_w("TBD - %c", argv[k]);
-// return 0;
+//printf_w("TBD - %c", argv[k]);
+      return 0;
     }
 
     action |= action0;
