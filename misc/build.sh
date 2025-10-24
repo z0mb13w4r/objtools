@@ -1,10 +1,13 @@
 #!/bin/bash
 
 CUTBIN=/usr/bin/cut
+SEDBIN=/usr/bin/sed
 COPYBIN=/usr/bin/cp
+FINDBIN=/usr/bin/find
 GREPBIN=/usr/bin/grep
 MAKEBIN=/usr/bin/make
 MKDIRBIN=/usr/bin/mkdir
+MD5SUMBIN=/usr/bin/md5sum
 DPKGDEBBIN=/usr/bin/dpkg-deb
 
 EXTERNBIN=../bin
@@ -36,6 +39,8 @@ $COPYBIN -v $EXTERNBIN/objhash-ng $LOCALBIN/
 $COPYBIN -v $EXTERNBIN/readelf-ng $LOCALBIN/
 $COPYBIN -v $EXTERNBIN/objdwarf-ng $LOCALBIN/
 $COPYBIN -v $EXTERNBIN/control $DEBIANBIN/
+
+$FINDBIN $NAME/usr/ -type f -exec $MD5SUMBIN '{}' \; | $SEDBIN "s/$NAME\///" > $DEBIANBIN/md5sums
 
 $DPKGDEBBIN --build $NAME
 
