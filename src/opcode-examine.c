@@ -42,6 +42,8 @@ unknown_t oeget(handle_t p, const imode_t mode) {
     return CAST(pocexamine_t, p)->op2;
   } else if (isocexamine(p) && OECODE_OPERAND3 == mode) {
     return CAST(pocexamine_t, p)->op3;
+  } else if (isocexamine(p) && OECODE_OPERAND4 == mode) {
+    return CAST(pocexamine_t, p)->op4;
   }
 
   return NULL;

@@ -13,6 +13,7 @@
 #define OECODE_OPERAND1                (2)
 #define OECODE_OPERAND2                (3)
 #define OECODE_OPERAND3                (4)
+#define OECODE_OPERAND4                (5)
 
 #define OCINSTRUCTION_ALIGNED          U64MASK(22)
 #define OCINSTRUCTION_UNALIGNED        U64MASK(23)
@@ -653,6 +654,7 @@ typedef struct ocexamine_s {
   pocoperand_t  op1;
   pocoperand_t  op2;
   pocoperand_t  op3;
+  pocoperand_t  op4;
 } ocexamine_t, *pocexamine_t;
 
 bool_t isocexamine(handle_t p);
