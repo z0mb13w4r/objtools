@@ -172,10 +172,10 @@ size_t oeskiphex(unknown_t p, const size_t size) {
   return 0;
 }
 
-unknown_t oesplit(handle_t p, unknown_t m, const size_t size, punknown_t o1, punknown_t o2, punknown_t o3) {
+unknown_t oesplit(handle_t p, unknown_t m, const size_t size, punknown_t o1, punknown_t o2, punknown_t o3, punknown_t o4) {
   if (m && USE_STRLEN == size) {
-    return oesplit(p, m, xstrlen(m), o1, o2, o3);
-  } else if (isocexamine(p) && m && o1 && o2 && o3) {
+    return oesplit(p, m, xstrlen(m), o1, o2, o3, o4);
+  } else if (isocexamine(p) && m && o1 && o2 && o3 && o4) {
     char *m0 = CAST(char*, m);
 
     size_t i = 0;
@@ -214,7 +214,24 @@ unknown_t oesplit(handle_t p, unknown_t m, const size_t size, punknown_t o1, pun
     }
 
     if (i < size) {
+      int rbcnt = 0;
+      int sbcnt = 0;
+
       *o3 = m0 + i;
+      for ( ; i < size; ++i) {
+        char c = m0[i];
+        if ('(' == c) ++rbcnt;
+        else if (')' == c) --rbcnt;
+        else if ('[' == c) ++sbcnt;
+        else if (']' == c) --sbcnt;
+        else if (',' == c && 0 == rbcnt && 0 == sbcnt) break;
+      }
+
+      m0[i++] = 0;
+    }
+
+    if (i < size) {
+      *o4 = m0 + i;
     }
 
     if (*o1) {
@@ -228,6 +245,10 @@ unknown_t oesplit(handle_t p, unknown_t m, const size_t size, punknown_t o1, pun
     if (*o3) {
 //      printf("%s++", CAST(char*, *o3));
       *o3 = oeskip(*o3, USE_STRLEN);
+    }
+    if (*o4) {
+//      printf("%s++", CAST(char*, *o4));
+      *o4 = oeskip(*o4, USE_STRLEN);
     }
 
     return *o1;
@@ -412,8 +433,8 @@ static unknown_t oedo_value(handle_t p, unknown_t o, unknown_t m) {
 //printf("++%s++\n", m0);
       m0size = xstrlen(m0);
 
-      unknown_t m1 = NULL, m2 = NULL, m3 = NULL;
-      oesplit(p, m0, USE_STRLEN, &m1, &m2, &m3);
+      unknown_t m1 = NULL, m2 = NULL, m3 = NULL, m4 = NULL;
+      oesplit(p, m0, USE_STRLEN, &m1, &m2, &m3, &m4);
 //printf("++%s+%s+%s++", CAST(char*, m1), CAST(char*, m2), CAST(char*, m3));
 
       poestruct_t r1 = oepick_REG(m1, USE_STRLEN);
@@ -541,9 +562,49 @@ static unknown_t oeinsert_operands(handle_t p, unknown_t q, unknown_t m) {
     pocexamine_t p0 = oeget(p, OECODE_THIS);
     poestruct_t q0 = CAST(poestruct_t, q);
 
-    if (MODE_ISANY(q0->action, OCINSTRUCTION_OPERAND3)) {
-      unknown_t m1 = NULL, m2 = NULL, m3 = NULL;
-      oesplit(p, m, USE_STRLEN, &m1, &m2, &m3);
+    if (MODE_ISANY(q0->action, OCINSTRUCTION_OPERAND4)) {
+      unknown_t m1 = NULL, m2 = NULL, m3 = NULL, m4 = NULL;
+      oesplit(p, m, USE_STRLEN, &m1, &m2, &m3, &m4);
+      if (m1) {
+        p0->op1 = oeinsert_operand(p, q, m1);
+      } else if (MODE_ISNOT(q0->action, OCINSTRUCTION_OPERAND0)) {
+#ifdef OPCODE_EXAMINE_DEBUGX
+        printf_e("Missing operand #1");
+#endif
+      } else {
+        p0->mc->cvalue &= ~OCINSTRUCTION_OPERAND1;
+      }
+      if (m2) {
+        p0->op2 = oeinsert_operand(p, q, m2);
+      } else if (MODE_ISNOT(q0->action, OCINSTRUCTION_OPERAND1)) {
+#ifdef OPCODE_EXAMINE_DEBUGX
+        printf_e("Missing operand #2");
+#endif
+      } else {
+        p0->mc->cvalue &= ~OCINSTRUCTION_OPERAND2;
+      }
+      if (m3) {
+        p0->op3 = oeinsert_operand(p, q, m3);
+      } else if (MODE_ISNOT(q0->action, OCINSTRUCTION_OPERAND2)) {
+#ifdef OPCODE_EXAMINE_DEBUGX
+        printf_e("Missing operand #3");
+#endif
+      } else {
+        p0->mc->cvalue &= ~OCINSTRUCTION_OPERAND3;
+      }
+
+      if (m4) {
+        p0->op4 = oeinsert_operand(p, q, m4);
+      } else if (MODE_ISNOT(q0->action, OCINSTRUCTION_OPERAND3)) {
+#ifdef OPCODE_EXAMINE_DEBUGX
+        printf_e("Missing operand #4");
+#endif
+      } else {
+        p0->mc->cvalue &= ~OCINSTRUCTION_OPERAND4;
+      }
+    } else if (MODE_ISANY(q0->action, OCINSTRUCTION_OPERAND3)) {
+      unknown_t m1 = NULL, m2 = NULL, m3 = NULL, m4 = NULL;
+      oesplit(p, m, USE_STRLEN, &m1, &m2, &m3, &m4);
       if (m1) {
         p0->op1 = oeinsert_operand(p, q, m1);
       } else if (MODE_ISNOT(q0->action, OCINSTRUCTION_OPERAND0)) {
@@ -572,8 +633,8 @@ static unknown_t oeinsert_operands(handle_t p, unknown_t q, unknown_t m) {
         p0->mc->cvalue &= ~OCINSTRUCTION_OPERAND3;
       }
     } else if (MODE_ISANY(q0->action, OCINSTRUCTION_OPERAND2)) {
-      unknown_t m1 = NULL, m2 = NULL, m3 = NULL;
-      oesplit(p, m, USE_STRLEN, &m1, &m2, &m3);
+      unknown_t m1 = NULL, m2 = NULL, m3 = NULL, m4 = NULL;
+      oesplit(p, m, USE_STRLEN, &m1, &m2, &m3, &m4);
       if (m1) {
         p0->op1 = oeinsert_operand(p, q, m1);
       }
@@ -588,8 +649,8 @@ static unknown_t oeinsert_operands(handle_t p, unknown_t q, unknown_t m) {
       }
 //printf("+++++++");
     } else if (MODE_ISANY(q0->action, OCINSTRUCTION_OPERAND1)) {
-      unknown_t m1 = NULL, m2 = NULL, m3 = NULL;
-      oesplit(p, m, USE_STRLEN, &m1, &m2, &m3);
+      unknown_t m1 = NULL, m2 = NULL, m3 = NULL, m4 = NULL;
+      oesplit(p, m, USE_STRLEN, &m1, &m2, &m3, &m4);
       if (m1) {
         p0->op1 = oeinsert_operand(p, q, m1);
       } else if (MODE_ISNOT(q0->action, OCINSTRUCTION_OPERAND0)) {
