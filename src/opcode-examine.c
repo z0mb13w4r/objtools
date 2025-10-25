@@ -562,9 +562,10 @@ static unknown_t oeinsert_operands(handle_t p, unknown_t q, unknown_t m) {
     pocexamine_t p0 = oeget(p, OECODE_THIS);
     poestruct_t q0 = CAST(poestruct_t, q);
 
-    if (MODE_ISANY(q0->action, OCINSTRUCTION_OPERAND4)) {
-      unknown_t m1 = NULL, m2 = NULL, m3 = NULL, m4 = NULL;
+    unknown_t m1 = NULL, m2 = NULL, m3 = NULL, m4 = NULL;
+    if (MODE_ISANY(q0->action, OCINSTRUCTION_OPERAND1 | OCINSTRUCTION_OPERAND2 | OCINSTRUCTION_OPERAND3 | OCINSTRUCTION_OPERAND4)) {
       oesplit(p, m, USE_STRLEN, &m1, &m2, &m3, &m4);
+
       if (m1) {
         p0->op1 = oeinsert_operand(p, q, m1);
       } else if (MODE_ISNOT(q0->action, OCINSTRUCTION_OPERAND0)) {
@@ -574,6 +575,9 @@ static unknown_t oeinsert_operands(handle_t p, unknown_t q, unknown_t m) {
       } else {
         p0->mc->cvalue &= ~OCINSTRUCTION_OPERAND1;
       }
+    }
+
+    if (MODE_ISANY(q0->action, OCINSTRUCTION_OPERAND2 | OCINSTRUCTION_OPERAND3 | OCINSTRUCTION_OPERAND4)) {
       if (m2) {
         p0->op2 = oeinsert_operand(p, q, m2);
       } else if (MODE_ISNOT(q0->action, OCINSTRUCTION_OPERAND1)) {
@@ -583,6 +587,9 @@ static unknown_t oeinsert_operands(handle_t p, unknown_t q, unknown_t m) {
       } else {
         p0->mc->cvalue &= ~OCINSTRUCTION_OPERAND2;
       }
+    }
+
+    if (MODE_ISANY(q0->action, OCINSTRUCTION_OPERAND3 | OCINSTRUCTION_OPERAND4)) {
       if (m3) {
         p0->op3 = oeinsert_operand(p, q, m3);
       } else if (MODE_ISNOT(q0->action, OCINSTRUCTION_OPERAND2)) {
@@ -592,7 +599,9 @@ static unknown_t oeinsert_operands(handle_t p, unknown_t q, unknown_t m) {
       } else {
         p0->mc->cvalue &= ~OCINSTRUCTION_OPERAND3;
       }
+    }
 
+    if (MODE_ISANY(q0->action, OCINSTRUCTION_OPERAND4)) {
       if (m4) {
         p0->op4 = oeinsert_operand(p, q, m4);
       } else if (MODE_ISNOT(q0->action, OCINSTRUCTION_OPERAND3)) {
@@ -601,64 +610,6 @@ static unknown_t oeinsert_operands(handle_t p, unknown_t q, unknown_t m) {
 #endif
       } else {
         p0->mc->cvalue &= ~OCINSTRUCTION_OPERAND4;
-      }
-    } else if (MODE_ISANY(q0->action, OCINSTRUCTION_OPERAND3)) {
-      unknown_t m1 = NULL, m2 = NULL, m3 = NULL, m4 = NULL;
-      oesplit(p, m, USE_STRLEN, &m1, &m2, &m3, &m4);
-      if (m1) {
-        p0->op1 = oeinsert_operand(p, q, m1);
-      } else if (MODE_ISNOT(q0->action, OCINSTRUCTION_OPERAND0)) {
-#ifdef OPCODE_EXAMINE_DEBUGX
-        printf_e("Missing operand #1");
-#endif
-      } else {
-        p0->mc->cvalue &= ~OCINSTRUCTION_OPERAND1;
-      }
-      if (m2) {
-        p0->op2 = oeinsert_operand(p, q, m2);
-      } else if (MODE_ISNOT(q0->action, OCINSTRUCTION_OPERAND1)) {
-#ifdef OPCODE_EXAMINE_DEBUGX
-        printf_e("Missing operand #2");
-#endif
-      } else {
-        p0->mc->cvalue &= ~OCINSTRUCTION_OPERAND2;
-      }
-      if (m3) {
-        p0->op3 = oeinsert_operand(p, q, m3);
-      } else if (MODE_ISNOT(q0->action, OCINSTRUCTION_OPERAND2)) {
-#ifdef OPCODE_EXAMINE_DEBUGX
-        printf_e("Missing operand #3");
-#endif
-      } else {
-        p0->mc->cvalue &= ~OCINSTRUCTION_OPERAND3;
-      }
-    } else if (MODE_ISANY(q0->action, OCINSTRUCTION_OPERAND2)) {
-      unknown_t m1 = NULL, m2 = NULL, m3 = NULL, m4 = NULL;
-      oesplit(p, m, USE_STRLEN, &m1, &m2, &m3, &m4);
-      if (m1) {
-        p0->op1 = oeinsert_operand(p, q, m1);
-      }
-      if (m2) {
-        p0->op2 = oeinsert_operand(p, q, m2);
-      } else if (MODE_ISNOT(q0->action, OCINSTRUCTION_OPERAND1)) {
-#ifdef OPCODE_EXAMINE_DEBUGX
-        printf_e("Missing operand #2");
-#endif
-      } else {
-        p0->mc->cvalue &= ~OCINSTRUCTION_OPERAND2;
-      }
-//printf("+++++++");
-    } else if (MODE_ISANY(q0->action, OCINSTRUCTION_OPERAND1)) {
-      unknown_t m1 = NULL, m2 = NULL, m3 = NULL, m4 = NULL;
-      oesplit(p, m, USE_STRLEN, &m1, &m2, &m3, &m4);
-      if (m1) {
-        p0->op1 = oeinsert_operand(p, q, m1);
-      } else if (MODE_ISNOT(q0->action, OCINSTRUCTION_OPERAND0)) {
-#ifdef OPCODE_EXAMINE_DEBUGX
-        printf_e("Missing operand #1");
-#endif
-      } else {
-        p0->mc->cvalue &= ~OCINSTRUCTION_OPERAND1;
       }
     }
   }
