@@ -6,7 +6,7 @@ static const char zREADELFARGS3[] = "--disassembler-options";
 
 static char zELFARCHSPECIFIC[]   = "Displays architecture-specific information in the file.";
 static char zELFHISTOGRAM[]      = "Display a histogram of bucket list lengths when displaying the contents of the symbol tables.";
-static char zELFSECTIONHEADERS[] = "Displays the information contained in the file's section headers";
+static char zELFSECTIONHEADERS[] = "Displays the information contained in the file's section headers.";
 static char zELFVERSIONINFO[]    = "Displays the contents of the version sections in the file.";
 static char zELFDYNAMIC[]        = "Displays the contents of the file's dynamic section.";
 static char zELFHEADERS[]        = "Display all the headers in the file.";
