@@ -8,12 +8,12 @@ static char zPEHDRS[]            = "Displays the information contained in the fi
 static char zPEDOSHDR[]          = "Displays the contents of the DOS header.";
 static char zPENTHDR[]           = "Displays the contents of the NT header.";
 static char zPERELOCS[]          = "Displays the contents of the file's relocation section.";
-static char zPEEAT[]             = ".";
-static char zPEIAT[]             = ".";
-static char zPERUNTIME[]         = ".";
+static char zPEEAT[]             = "Displays the contents of the Export Address Table section.";
+static char zPEIAT[]             = "Displays the contents of the Import Address Table section.";
+static char zPERUNTIME[]         = "Displays the contents of the runtine section.";
 static char zPEDEBUG[]           = ".";
-static char zPECONFIG[]          = ".";
-static char zPERESOURCE[]        = ".";
+static char zPECONFIG[]          = "Displays the contents of the configuration section.";
+static char zPERESOURCE[]        = "Displays the contents of the resource information section.";
 
 static const args_t zREADPEARGS[] = {
   {'h', "--help",            OPTPROGRAM_HELP,              NULL},
