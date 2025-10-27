@@ -9,6 +9,7 @@
 
 #include "static/usage.ci"
 #include "static/objdebug-ng.ci"
+#include "static/objscripts-ng.ci"
 #include "static/objdisassemble-ng.ci"
 
 #define VERSION_VALUE "0.0"
