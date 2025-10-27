@@ -264,7 +264,7 @@ int usage_options2(poptions_t o, const char* name, const args_t args[], const ch
       }
     }
 
-    n += printf_eol();
+//    n += printf_eol();
   }
 
   return n;

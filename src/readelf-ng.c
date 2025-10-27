@@ -9,9 +9,27 @@
 
 #define THIS_NAME "readelf-ng"
 
+static int usage(poptions_t o, const char* name, const args_t args0[], const int ecode) {
+  int n = 0;
+  n += usage_name(o, name, args0, zDESCRIPTION);
+  n += usage_synopsis0(o, name, args0);
+  n += usage_synopsis1(o, name, zDEBUGELFARGS, zREADELFARGS0, zREADELFARGS1);
+  n += usage_synopsis2(o, name, zDISASSEMBLEARGS, zREADELFARGS2, zREADELFARGS3);
+  n += usage_synopsis2(o, name, zSCRIPTCOMMANDS, "-T", "--script");
+  n += usage_description(o, name, args0);
+  n += usage_options0(o, name, args0);
+  n += usage_options1(o, name, zDEBUGELFARGS, zREADELFARGS0, zREADELFARGS1);
+  n += usage_options2(o, name, zDISASSEMBLEARGS, zREADELFARGS2, zREADELFARGS3);
+  n += usage_options2(o, name, zSCRIPTCOMMANDS, "-T", "--script");
+  n += usage_seealso(o, name, args0);
+  n += usage_copyright(o, name, args0);
+
+  return ecode;
+}
+
 static int get_options_readelf(poptions_t o, int argc, char** argv, char* name) {
   if (0 == argc) {
-    return usage2(o, THIS_NAME, zREADELFARGS, zREADELFARGS0, zREADELFARGS1, zREADELFARGS2, zREADELFARGS3, ECODE_ARGUMENTS);
+    return usage(o, THIS_NAME, zREADELFARGS, ECODE_ARGUMENTS);
   }
 
   strname(o->prgname, name);
@@ -123,7 +141,7 @@ static int get_options_readelf(poptions_t o, int argc, char** argv, char* name) 
   }
 
   if (o->action & OPTPROGRAM_HELP) {
-    return usage2(o, THIS_NAME, zREADELFARGS, zREADELFARGS0, zREADELFARGS1, zREADELFARGS2, zREADELFARGS3, ECODE_OK);
+    return usage(o, THIS_NAME, zREADELFARGS, ECODE_OK);
   }
 
   return ECODE_OK;
@@ -134,26 +152,23 @@ int main(int argc, char* argv[]) {
   poptions_t o = omalloc();
   if (o) {
     x = get_options_readelf(o, argc - 1, argv + 1, argv[0]);
-    if (ECODE_ISOK(x)) {
-      if (o->inpname[0]) {
-        pbuffer_t p = bopen(o->inpname);
-        if (p) {
-          if (isAR(p)) {
-            x = readar(p, o);
-          } else if (isELF(p)) {
-            x = readelf(p, o);
-          } else {
-            printf_e("'%s': invalid file format.", o->inpname);
-          }
+    if (ECODE_ISOK(x) && o->inpname[0]) {
+      pbuffer_t p = bopen(o->inpname);
+      if (p) {
+        if (isAR(p)) {
+          x = readar(p, o);
+        } else if (isELF(p)) {
+          x = readelf(p, o);
         } else {
-          printf_e("'%s': no such file.", o->inpname);
+          printf_e("'%s': invalid file format.", o->inpname);
         }
-
-        bfree(p);
       } else {
-        printf_e("no file specified.");
+        printf_e("'%s': no such file.", o->inpname);
       }
+
+     bfree(p);
     }
+
     ofree(o);
   }
 
