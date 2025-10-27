@@ -277,6 +277,22 @@ handle_t ofree(handle_t p);
 
 int odeath(poptions_t o, const char* name, const char* argument);
 
+int usage_synopsis0(poptions_t o, const char* name, const args_t args[]);
+int usage_synopsis1(poptions_t o, const char* name, const args_t args[], const char* more0, const char* more1);
+int usage_synopsis2(poptions_t o, const char* name, const args_t args[], const char* more0, const char* more1);
+
+int usage_description(poptions_t o, const char* name, const args_t args[]);
+
+int usage_options0(poptions_t o, const char* name, const args_t args[]);
+int usage_options1(poptions_t o, const char* name, const args_t args[], const char* more0, const char* more1);
+int usage_options2(poptions_t o, const char* name, const args_t args[], const char* more0, const char* more1);
+
+int usage_seealso(poptions_t o, const char* name, const args_t args[]);
+
+int usage_copyright(poptions_t o, const char* name, const args_t args[]);
+
+int usage_name(poptions_t o, const char* name, const args_t args[], const char* desc);
+
 int usage0(poptions_t o, const char* name, const args_t args[], const int ecode);
 int usage1(poptions_t o, const char* name, const args_t args0[], const char* more0, const char* more1, const int ecode);
 int usage2(poptions_t o, const char* name, const args_t args0[], const char* more0, const char* more1, const char* more2, const char* more3, const int ecode);

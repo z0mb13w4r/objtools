@@ -14,7 +14,7 @@
 
 #define VERSION_VALUE "0.0"
 
-static int usage_name(poptions_t o, const char* name, const args_t args[], const char* desc) {
+int usage_name(poptions_t o, const char* name, const args_t args[], const char* desc) {
   int n = 0;
   n += printf_text("NAME", USE_LT | USE_EOL);
   n += printf_text(name, USE_LT | USE_TAB | USE_COLON);
@@ -24,7 +24,7 @@ static int usage_name(poptions_t o, const char* name, const args_t args[], const
   return n;
 }
 
-static int usage_synopsis0(poptions_t o, const char* name, const args_t args[]) {
+int usage_synopsis0(poptions_t o, const char* name, const args_t args[]) {
   MALLOCA(char, m, 1024);
 
   int n0 = 0;
@@ -57,7 +57,7 @@ static int usage_synopsis0(poptions_t o, const char* name, const args_t args[]) 
   return n0 + n1;
 }
 
-static int usage_synopsis1(poptions_t o, const char* name, const args_t args[], const char* more0, const char* more1) {
+int usage_synopsis1(poptions_t o, const char* name, const args_t args[], const char* more0, const char* more1) {
   MALLOCA(char, m, 1024);
 
   int n = 0;
@@ -89,7 +89,7 @@ static int usage_synopsis1(poptions_t o, const char* name, const args_t args[], 
   return n;
 }
 
-static int usage_synopsis2(poptions_t o, const char* name, const args_t args[], const char* more0, const char* more1) {
+int usage_synopsis2(poptions_t o, const char* name, const args_t args[], const char* more0, const char* more1) {
   MALLOCA(char, m, 1024);
 
   int n = 0;
@@ -103,7 +103,7 @@ static int usage_synopsis2(poptions_t o, const char* name, const args_t args[], 
   return n;
 }
 
-static int usage_description(poptions_t o, const char* name, const args_t args[]) {
+int usage_description(poptions_t o, const char* name, const args_t args[]) {
   int n = 0;
   n += printf_text("DESCRIPTION", USE_LT | USE_EOL);
   n += printf_eol();
@@ -111,7 +111,7 @@ static int usage_description(poptions_t o, const char* name, const args_t args[]
   return n;
 }
 
-static int usage_options0(poptions_t o, const char* name, const args_t args[]) {
+int usage_options0(poptions_t o, const char* name, const args_t args[]) {
   MALLOCA(char, m, 1024);
 
   int n = 0;
@@ -187,7 +187,7 @@ static int usage_options0(poptions_t o, const char* name, const args_t args[]) {
   return n;
 }
 
-static int usage_options1(poptions_t o, const char* name, const args_t args[], const char* more0, const char* more1) {
+int usage_options1(poptions_t o, const char* name, const args_t args[], const char* more0, const char* more1) {
   MALLOCA(char, m, 1024);
 
   int n = 0;
@@ -231,7 +231,7 @@ static int usage_options1(poptions_t o, const char* name, const args_t args[], c
   return n;
 }
 
-static int usage_options2(poptions_t o, const char* name, const args_t args[], const char* more0, const char* more1) {
+int usage_options2(poptions_t o, const char* name, const args_t args[], const char* more0, const char* more1) {
   MALLOCA(char, m, 1024);
 
   int n = 0;
@@ -262,7 +262,7 @@ static int usage_options2(poptions_t o, const char* name, const args_t args[], c
   return n;
 }
 
-static int usage_seealso(poptions_t o, const char* name, const args_t args[]) {
+int usage_seealso(poptions_t o, const char* name, const args_t args[]) {
   int n = 0;
   n += printf_text("SEE ALSO", USE_LT | USE_EOL);
   n += printf_book(zALLSEE, USE_LT | USE_TAB | USE_EOL);
@@ -279,7 +279,7 @@ static int usage_version(poptions_t o, const char* name, const args_t args[]) {
   return n;
 }
 
-static int usage_copyright(poptions_t o, const char* name, const args_t args[]) {
+int usage_copyright(poptions_t o, const char* name, const args_t args[]) {
   int n = 0;
   n += printf_text("COPYRIGHT", USE_LT | USE_EOL);
   n += printf_book(zLICENSE, USE_LT | USE_TAB | USE_EOL);
