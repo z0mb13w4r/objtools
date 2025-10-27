@@ -1,7 +1,7 @@
 #include "scripts.h"
 #include "objutils.h"
 
-static int breakup_script(const pconvert_t p, const char *name, uint64_t *value) {
+static imode_t breakup_script(const pargs_t p, const char *name, uint64_t *value) {
   MALLOCA(char, tmp, 1024);
 
   int x = -1;
@@ -11,9 +11,9 @@ static int breakup_script(const pconvert_t p, const char *name, uint64_t *value)
     const char DELIMITS[] = "(){},";
     char* tok = strtok(tmp, DELIMITS);
     if (tok) {
-      for (pconvert_t pp = p; 0 != pp->text; ++pp) {
-        if (0 == xstrcmp(pp->text, tok)) {
-          x = pp->type;
+      for (pargs_t pp = p; 0 != pp->option2; ++pp) {
+        if (0 == xstrcmp(pp->option2, tok)) {
+          x = pp->action;
           break;
         }
       }

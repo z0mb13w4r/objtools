@@ -262,14 +262,6 @@ typedef struct options_s {
   paction_t actions;
 } options_t, *poptions_t;
 
-typedef struct args_s {
-  char    option1;
-  char   *option2;
-  imode_t action;
-  char   *content;
-  imode_t groups;
-} args_t, *pargs_t;
-
 typedef struct imodeswap_s {
   imode_t mode1;
   imode_t mode2;

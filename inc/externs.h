@@ -78,7 +78,7 @@ extern convert_t zSECTIONHDRARCHMEP_FLAGS[];
 extern convert_t ecREGISTERS_i386[];
 extern convert_t ecREGISTERS_x86_64[];
 
-extern convert_t zSCRIPTCOMMANDS[];
+extern args_t zSCRIPTCOMMANDS[];
 
 extern char zHEXDUMP[];
 extern char zSTRDUMP[];

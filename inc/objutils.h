@@ -7,6 +7,14 @@
 
 #define PICK_END               (~0)
 
+typedef struct args_s {
+  char    option1;
+  char   *option2;
+  imode_t action;
+  char   *content;
+  imode_t groups;
+} args_t, *pargs_t;
+
 typedef struct convert_s {
   const char*  text;
   const pick_t type;
