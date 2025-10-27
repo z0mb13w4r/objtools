@@ -11,16 +11,17 @@
 
 static int usage(poptions_t o, const char* name, const args_t args0[], const int ecode) {
   int n = 0;
-  n += usage_name(o, name, args0, zDESCRIPTION);
+  n += usage_name(o, name, args0, zDESCRIPTIONELF);
   n += usage_synopsis0(o, name, args0);
   n += usage_synopsis1(o, name, zDEBUGELFARGS, zREADELFARGS0, zREADELFARGS1);
   n += usage_synopsis2(o, name, zDISASSEMBLEARGS, zREADELFARGS2, zREADELFARGS3);
-  n += usage_synopsis2(o, name, zSCRIPTCOMMANDS, "-T", "--script");
+  n += usage_synopsis2(o, name, zSCRIPTCOMMANDS, zREADELFARGS4, zREADELFARGS5);
+  n += printf_eol();
   n += usage_description(o, name, args0);
   n += usage_options0(o, name, args0);
   n += usage_options1(o, name, zDEBUGELFARGS, zREADELFARGS0, zREADELFARGS1);
   n += usage_options2(o, name, zDISASSEMBLEARGS, zREADELFARGS2, zREADELFARGS3);
-  n += usage_options2(o, name, zSCRIPTCOMMANDS, "-T", "--script");
+  n += usage_options2(o, name, zSCRIPTCOMMANDS, zREADELFARGS4, zREADELFARGS5);
   n += usage_seealso(o, name, args0);
   n += usage_copyright(o, name, args0);
 

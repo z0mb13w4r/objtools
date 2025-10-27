@@ -4,6 +4,9 @@ static const char zREADELFARGS1[] = "--debug-dump";
 static const char zREADELFARGS2[] = "-M";
 static const char zREADELFARGS3[] = "--disassembler-options";
 
+static const char zREADELFARGS4[] = "-T";
+static const char zREADELFARGS5[] = "--script";
+
 static char zELFARCHSPECIFIC[]   = "Displays architecture-specific information in the file.";
 static char zELFHISTOGRAM[]      = "Display a histogram of bucket list lengths when displaying the contents of the symbol tables.";
 static char zELFSECTIONHEADERS[] = "Displays the information contained in the file's section headers.";

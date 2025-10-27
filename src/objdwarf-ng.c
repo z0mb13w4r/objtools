@@ -8,9 +8,24 @@
 
 #define THIS_NAME "objdwarf-ng"
 
+static int usage(poptions_t o, const char* name, const args_t args0[], const int ecode) {
+  int n = 0;
+  n += usage_name(o, name, args0, zDESCRIPTIONELF);
+  n += usage_synopsis0(o, name, args0);
+  n += usage_synopsis1(o, name, zDEBUGELFARGS, zOBJDWARFARGS0, zOBJDWARFARGS1);
+  n += printf_eol();
+  n += usage_description(o, name, args0);
+  n += usage_options0(o, name, args0);
+  n += usage_options1(o, name, zDEBUGELFARGS, zOBJDWARFARGS0, zOBJDWARFARGS1);
+  n += usage_seealso(o, name, args0);
+  n += usage_copyright(o, name, args0);
+
+  return ecode;
+}
+
 static int get_options_objdwarf(poptions_t o, int argc, char** argv, char* name) {
   if (0 == argc) {
-    return usage1(o, THIS_NAME, zOBJDWARFARGS, zOBJDWARFARGS0, zOBJDWARFARGS1, ECODE_ARGUMENTS);
+    return usage(o, THIS_NAME, zOBJDWARFARGS, ECODE_ARGUMENTS);
   }
 
   strname(o->prgname, name);
@@ -85,7 +100,7 @@ static int get_options_objdwarf(poptions_t o, int argc, char** argv, char* name)
   }
 
   if (o->action & OPTPROGRAM_HELP) {
-    return usage1(o, THIS_NAME, zOBJDWARFARGS, zOBJDWARFARGS0, zOBJDWARFARGS1, ECODE_OK);
+    return usage(o, THIS_NAME, zOBJDWARFARGS, ECODE_OK);
   }
 
   return ECODE_OK;

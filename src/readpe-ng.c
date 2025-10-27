@@ -9,9 +9,24 @@
 
 #define THIS_NAME "readpe-ng"
 
+static int usage(poptions_t o, const char* name, const args_t args0[], const int ecode) {
+  int n = 0;
+  n += usage_name(o, name, args0, zDESCRIPTION);
+  n += usage_synopsis0(o, name, args0);
+  n += usage_synopsis2(o, name, zDISASSEMBLEARGS, zREADPEARGS2, zREADPEARGS3);
+  n += printf_eol();
+  n += usage_description(o, name, args0);
+  n += usage_options0(o, name, args0);
+  n += usage_options2(o, name, zDISASSEMBLEARGS, zREADPEARGS2, zREADPEARGS3);
+  n += usage_seealso(o, name, args0);
+  n += usage_copyright(o, name, args0);
+
+  return ecode;
+}
+
 static int get_options_readpe(poptions_t o, int argc, char** argv, char* name) {
   if (0 == argc) {
-    return usage3(o, THIS_NAME, zREADPEARGS, zREADPEARGS2, zREADPEARGS3, ECODE_ARGUMENTS);
+    return usage(o, THIS_NAME, zREADPEARGS, ECODE_ARGUMENTS);
   }
 
   strname(o->prgname, name);
@@ -107,7 +122,7 @@ static int get_options_readpe(poptions_t o, int argc, char** argv, char* name) {
   }
 
   if (o->action & OPTPROGRAM_HELP) {
-    return usage3(o, THIS_NAME, zREADPEARGS, zREADPEARGS2, zREADPEARGS3, ECODE_OK);
+    return usage(o, THIS_NAME, zREADPEARGS, ECODE_OK);
   }
 
   return ECODE_OK;

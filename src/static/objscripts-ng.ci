@@ -1,60 +1,77 @@
+char zSCRIPTADD[] = ".";
+char zSCRIPTNOT[] = ".";
+char zSCRIPTROL[] = ".";
+char zSCRIPTROR[] = ".";
+char zSCRIPTROT[] = ".";
+char zSCRIPTSHL[] = ".";
+char zSCRIPTSHR[] = ".";
+char zSCRIPTSUB[] = ".";
+char zSCRIPTXOR[] = ".";
+char zSCRIPTDECD[] = ".";
+char zSCRIPTDECE[] = ".";
+char zSCRIPTHEXD[] = ".";
+char zSCRIPTHEXE[] = ".";
+char zSCRIPTBASE[] = ".";
+
 args_t zSCRIPTCOMMANDS[] = {
   {0, "add8",     ACT_ADD8,             NULL,                  1},
   {0, "add16",    ACT_ADD16,            NULL,                  1},
-  {0, "add32",    ACT_ADD32,            NULL,                  1},
+  {0, "add32",    ACT_ADD32,            zSCRIPTADD,            1},
 
   {0, "not8",     ACT_NOT8,             NULL,                  2},
   {0, "not16",    ACT_NOT16,            NULL,                  2},
-  {0, "not32",    ACT_NOT32,            NULL,                  2},
+  {0, "not32",    ACT_NOT32,            zSCRIPTNOT,            2},
 
   {0, "rol8",     ACT_ROL8,             NULL,                  3},
   {0, "rol16",    ACT_ROL16,            NULL,                  3},
-  {0, "rol32",    ACT_ROL32,            NULL,                  3},
+  {0, "rol32",    ACT_ROL32,            zSCRIPTROL,            3},
 
   {0, "ror8",     ACT_ROR8,             NULL,                  4},
   {0, "ror16",    ACT_ROR16,            NULL,                  4},
-  {0, "ror32",    ACT_ROR32,            NULL,                  4},
+  {0, "ror32",    ACT_ROR32,            zSCRIPTROR,            4},
 
   {0, "rot5",     ACT_ROT5,             NULL,                  5},
   {0, "rot13",    ACT_ROT13,            NULL,                  5},
   {0, "rot18",    ACT_ROT18,            NULL,                  5},
-  {0, "rot47",    ACT_ROT47,            NULL,                  5},
+  {0, "rot47",    ACT_ROT47,            zSCRIPTROT,            5},
 
   {0, "shl8",     ACT_SHL8,             NULL,                  6},
   {0, "shl16",    ACT_SHL16,            NULL,                  6},
-  {0, "shl32",    ACT_SHL32,            NULL,                  6},
+  {0, "shl32",    ACT_SHL32,            zSCRIPTSHL,            6},
 
   {0, "shr8",     ACT_SHR8,             NULL,                  7},
   {0, "shr16",    ACT_SHR16,            NULL,                  7},
-  {0, "shr32",    ACT_SHR32,            NULL,                  7},
+  {0, "shr32",    ACT_SHR32,            zSCRIPTSHR,            7},
 
   {0, "sub8",     ACT_SUB8,             NULL,                  8},
   {0, "sub16",    ACT_SUB16,            NULL,                  8},
-  {0, "sub32",    ACT_SUB32,            NULL,                  8},
+  {0, "sub32",    ACT_SUB32,            zSCRIPTSUB,            8},
 
   {0, "xor8",     ACT_XOR8,             NULL,                  9},
   {0, "xor16",    ACT_XOR16,            NULL,                  9},
-  {0, "xor32",    ACT_XOR32,            NULL,                  9},
+  {0, "xor32",    ACT_XOR32,            zSCRIPTXOR,            9},
 
   {0, "dec",      ACT_DEC,              NULL,                  10},
   {0, "inc",      ACT_INC,              NULL,                  10},
 
   {0, "dec8d",    ACT_DEC8D,            NULL,                  11},
-  {0, "dec8e",    ACT_DEC8E,            NULL,                  11},
   {0, "dec16d",   ACT_DEC16D,           NULL,                  11},
-  {0, "dec16e",   ACT_DEC16E,           NULL,                  11},
-  {0, "dec32d",   ACT_DEC32D,           NULL,                  11},
-  {0, "dec32e",   ACT_DEC32E,           NULL,                  11},
+  {0, "dec32d",   ACT_DEC32D,           zSCRIPTDECD,           11},
 
-  {0, "hex8d",    ACT_HEX8D,            NULL,                  12},
-  {0, "hex8e",    ACT_HEX8E,            NULL,                  12},
-  {0, "hex16d",   ACT_HEX16D,           NULL,                  12},
-  {0, "hex16e",   ACT_HEX16E,           NULL,                  12},
-  {0, "hex32d",   ACT_HEX32D,           NULL,                  12},
-  {0, "hex32e",   ACT_HEX32E,           NULL,                  12},
+  {0, "dec8e",    ACT_DEC8E,            NULL,                  12},
+  {0, "dec16e",   ACT_DEC16E,           NULL,                  12},
+  {0, "dec32e",   ACT_DEC32E,           zSCRIPTDECE,           12},
 
-  {0, "base64d",  ACT_BASE64D,          NULL,                  13},
-  {0, "base74e",  ACT_BASE64E,          NULL,                  13},
+  {0, "hex8d",    ACT_HEX8D,            NULL,                  13},
+  {0, "hex16d",   ACT_HEX16D,           NULL,                  13},
+  {0, "hex32d",   ACT_HEX32D,           zSCRIPTHEXD,           13},
+
+  {0, "hex8e",    ACT_HEX8E,            NULL,                  14},
+  {0, "hex16e",   ACT_HEX16E,           NULL,                  14},
+  {0, "hex32e",   ACT_HEX32E,           zSCRIPTHEXE,           14},
+
+  {0, "base64d",  ACT_BASE64D,          NULL,                  15},
+  {0, "base74e",  ACT_BASE64E,          zSCRIPTBASE,           15},
 
   {0, NULL}
 };

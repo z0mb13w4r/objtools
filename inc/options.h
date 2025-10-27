@@ -293,11 +293,6 @@ int usage_copyright(poptions_t o, const char* name, const args_t args[]);
 
 int usage_name(poptions_t o, const char* name, const args_t args[], const char* desc);
 
-int usage0(poptions_t o, const char* name, const args_t args[], const int ecode);
-int usage1(poptions_t o, const char* name, const args_t args0[], const char* more0, const char* more1, const int ecode);
-int usage2(poptions_t o, const char* name, const args_t args0[], const char* more0, const char* more1, const char* more2, const char* more3, const int ecode);
-int usage3(poptions_t o, const char* name, const args_t args0[], const char* more2, const char* more3, const int ecode);
-
 int version0(poptions_t o, const char* name, const args_t args[]);
 
 int breakup_args(char* args, char* dst0, const size_t dst0size, char* dst1, const size_t dst1size);

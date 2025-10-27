@@ -1,4 +1,6 @@
 const char zDESCRIPTION[] = "display information about ELF and PE files.";
+const char zDESCRIPTIONPE[] = "display information about PE files.";
+const char zDESCRIPTIONELF[] = "display information about ELF files.";
 
 const char *zALLSEE[] = {
   "convert-ng",

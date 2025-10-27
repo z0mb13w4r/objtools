@@ -84,7 +84,7 @@ int usage_synopsis1(poptions_t o, const char* name, const args_t args[], const c
     n += printf_text(m, USE_LT | USE_SPACE | USE_SBRT | USE_EOL);
   }
 
-  printf_eol();
+//  n += printf_eol();
 
   return n;
 }
@@ -93,12 +93,14 @@ int usage_synopsis2(poptions_t o, const char* name, const args_t args[], const c
   MALLOCA(char, m, 1024);
 
   int n = 0;
+  int z = xstrlen(name) + 2;
   if (more0 && more1 && args) {
     snprintf(m, sizeof(m), "%s options|%s=options", more0, more1);
+    n += printf_pack(z);
     n += printf_text(m, USE_LT | USE_SPACE | USE_SB | USE_EOL);
   }
 
-  n += printf_eol();
+//  n += printf_eol();
 
   return n;
 }
@@ -304,67 +306,6 @@ int odeath(poptions_t o, const char* name, const char* argument) {
   n += printf_eol();
 
   return ECODE_ARGUMENTS;
-}
-
-int usage0(poptions_t o, const char* name, const args_t args[], const int ecode) {
-  int n = 0;
-  n += usage_name(o, name, args, zDESCRIPTION);
-  n += usage_synopsis0(o, name, args);
-  n += usage_description(o, name, args);
-  n += usage_options0(o, name, args);
-  n += usage_seealso(o, name, args);
-  n += usage_copyright(o, name, args);
-
-  return ecode;
-}
-
-int usage1(poptions_t o, const char* name, const args_t args0[],
-                     const char* more0, const char* more1, const int ecode) {
-  int n = 0;
-  n += usage_name(o, name, args0, zDESCRIPTION);
-  n += usage_synopsis0(o, name, args0);
-  n += usage_synopsis1(o, name, zDEBUGELFARGS, more0, more1);
-  n += usage_description(o, name, args0);
-  n += usage_options0(o, name, args0);
-  n += usage_options1(o, name, zDEBUGELFARGS, more0, more1);
-  n += usage_seealso(o, name, args0);
-  n += usage_copyright(o, name, args0);
-
-  return ecode;
-}
-
-int usage2(poptions_t o, const char* name, const args_t args0[],
-                     const char* more0, const char* more1, const char* more2, const char* more3,
-                     const int ecode) {
-  int n = 0;
-  n += usage_name(o, name, args0, zDESCRIPTION);
-  n += usage_synopsis0(o, name, args0);
-  n += usage_synopsis1(o, name, zDEBUGELFARGS, more0, more1);
-  n += usage_synopsis2(o, name, zDISASSEMBLEARGS, more2, more3);
-  n += usage_description(o, name, args0);
-  n += usage_options0(o, name, args0);
-  n += usage_options1(o, name, zDEBUGELFARGS, more0, more1);
-  n += usage_options2(o, name, zDISASSEMBLEARGS, more2, more3);
-  n += usage_seealso(o, name, args0);
-  n += usage_copyright(o, name, args0);
-
-  return ecode;
-}
-
-int usage3(poptions_t o, const char* name, const args_t args0[],
-                     const char* more2, const char* more3,
-                     const int ecode) {
-  int n = 0;
-  n += usage_name(o, name, args0, zDESCRIPTION);
-  n += usage_synopsis0(o, name, args0);
-  n += usage_synopsis2(o, name, zDISASSEMBLEARGS, more2, more3);
-  n += usage_description(o, name, args0);
-  n += usage_options0(o, name, args0);
-  n += usage_options2(o, name, zDISASSEMBLEARGS, more2, more3);
-  n += usage_seealso(o, name, args0);
-  n += usage_copyright(o, name, args0);
-
-  return ecode;
 }
 
 int version0(poptions_t o, const char* name, const args_t args[]) {
