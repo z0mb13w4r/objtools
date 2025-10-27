@@ -17,6 +17,7 @@ static int usage(poptions_t o, const char* name, const args_t args[], const int 
   n += usage_synopsis0(o, name, args);
   n += usage_description(o, name, args);
   n += usage_options0(o, name, args);
+  n += usage_options2(o, name, zSCRIPTCOMMANDS, NULL, NULL);
   n += usage_seealso(o, name, args);
   n += usage_copyright(o, name, args);
 

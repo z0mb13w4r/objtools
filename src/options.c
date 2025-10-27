@@ -235,10 +235,18 @@ int usage_options2(poptions_t o, const char* name, const args_t args[], const ch
   MALLOCA(char, m, 1024);
 
   int n = 0;
-  if (more0 && args) {
-    n += printf_yoke(more0, " options", USE_LT | USE_TAB | USE_EOL);
-    n += printf_yoke(more1, "=options", USE_LT | USE_TAB | USE_EOL);
-    n += printf_eol();
+  if (args) {
+    if (more0 || more1) {
+      if (more0) {
+        n += printf_yoke(more0, " options", USE_LT | USE_TAB | USE_EOL);
+      }
+
+      if (more1) {
+        n += printf_yoke(more1, "=options", USE_LT | USE_TAB | USE_EOL);
+      }
+
+      n += printf_eol();
+    }
 
     for (int j = 0; (0 != args[j].option1) || (0 != args[j].option2); ++j) {
       if (args[j].option1) {
