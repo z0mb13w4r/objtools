@@ -1,54 +1,6 @@
 #include "scripts.h"
 #include "objutils.h"
 
-static convert_t SCRIPTCOMMANDS[] = {
-  {"add8",     ACT_ADD8},
-  {"add16",    ACT_ADD16},
-  {"add32",    ACT_ADD32},
-  {"not8",     ACT_NOT8},
-  {"not16",    ACT_NOT16},
-  {"not32",    ACT_NOT32},
-  {"rol8",     ACT_ROL8},
-  {"rol16",    ACT_ROL16},
-  {"rol32",    ACT_ROL32},
-  {"ror8",     ACT_ROR8},
-  {"ror16",    ACT_ROR16},
-  {"ror32",    ACT_ROR32},
-  {"rot5",     ACT_ROT5},
-  {"rot13",    ACT_ROT13},
-  {"rot18",    ACT_ROT18},
-  {"rot47",    ACT_ROT47},
-  {"shl8",     ACT_SHL8},
-  {"shl16",    ACT_SHL16},
-  {"shl32",    ACT_SHL32},
-  {"shr8",     ACT_SHR8},
-  {"shr16",    ACT_SHR16},
-  {"shr32",    ACT_SHR32},
-  {"sub8",     ACT_SUB8},
-  {"sub16",    ACT_SUB16},
-  {"sub32",    ACT_SUB32},
-  {"xor8",     ACT_XOR8},
-  {"xor16",    ACT_XOR16},
-  {"xor32",    ACT_XOR32},
-  {"dec",      ACT_DEC},
-  {"inc",      ACT_INC},
-  {"dec8d",    ACT_DEC8D},
-  {"dec8e",    ACT_DEC8E},
-  {"dec16d",   ACT_DEC16D},
-  {"dec16e",   ACT_DEC16E},
-  {"dec32d",   ACT_DEC32D},
-  {"dec32e",   ACT_DEC32E},
-  {"hex8d",    ACT_HEX8D},
-  {"hex8e",    ACT_HEX8E},
-  {"hex16d",   ACT_HEX16D},
-  {"hex16e",   ACT_HEX16E},
-  {"hex32d",   ACT_HEX32D},
-  {"hex32e",   ACT_HEX32E},
-  {"base64d",  ACT_BASE64D},
-  {"base74e",  ACT_BASE64E},
-  {0, 0}
-};
-
 static int breakup_script(const pconvert_t p, const char *name, uint64_t *value) {
   MALLOCA(char, tmp, 1024);
 
@@ -90,7 +42,7 @@ int sprocess(poptions_t o, const char *script) {
       while (p1) {
         *p1 = 0;
         uint64_t v = 0;
-        const int x = breakup_script(SCRIPTCOMMANDS, p0, &v);
+        const int x = breakup_script(zSCRIPTCOMMANDS, p0, &v);
         if (-1 != x) {
           oinsertvalue(o, x, v);
         }
@@ -102,7 +54,7 @@ int sprocess(poptions_t o, const char *script) {
       return 0;
     } else {
       uint64_t v = 0;
-      const int x = breakup_script(SCRIPTCOMMANDS, script, &v);
+      const int x = breakup_script(zSCRIPTCOMMANDS, script, &v);
       if (-1 != x) {
         return oinsertvalue(o, x, v);
       }
