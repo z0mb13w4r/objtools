@@ -24,7 +24,7 @@ DEBIANBIN=$NAME/DEBIAN
 
 $MAKEBIN -f readpe-ng.mk all
 $MAKEBIN -f convert-ng.mk all
-$MAKEBIN -f objcopy-ng.mk all
+#$MAKEBIN -f objcopy-ng.mk all
 $MAKEBIN -f objdump-ng.mk all
 $MAKEBIN -f objhash-ng.mk all
 $MAKEBIN -f readelf-ng.mk all
@@ -36,7 +36,7 @@ $MKDIRBIN -v -p $DEBIANBIN
 
 $COPYBIN -v $EXTERNBIN/readpe-ng $USRBIN/
 $COPYBIN -v $EXTERNBIN/convert-ng $USRBIN/
-$COPYBIN -v $EXTERNBIN/objcopy-ng $USRBIN/
+#$COPYBIN -v $EXTERNBIN/objcopy-ng $USRBIN/
 $COPYBIN -v $EXTERNBIN/objdump-ng $USRBIN/
 $COPYBIN -v $EXTERNBIN/objhash-ng $USRBIN/
 $COPYBIN -v $EXTERNBIN/readelf-ng $USRBIN/
