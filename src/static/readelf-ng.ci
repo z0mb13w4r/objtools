@@ -24,6 +24,15 @@ static char zELFUNWIND[]         = "Displays the contents of the file's unwind s
 static char zELFDECOMPRESS[]     = "Requests that the section(s) being dumped by x, R or p options are decompressed before being displayed.";
 //static char zELFDISASSEMBLE[]    = "Display the assembler mnemonics for the machine instructions from the input file.";
 
+static const char *zELFDESCRIPTION[] = {
+  "displays information about one or more ELF format object files. The options",
+  "control what particular information to display.",
+  "",
+  "elffile... are the object files to be examined. 32-bit and 64-bit ELF files",
+  "are supported, as are archives containing ELF files.",
+  0
+};
+
 static const args_t zREADELFARGS[] = {
   {'H', "--help",            OPTPROGRAM_HELP,              NULL},
   {'v', "--version",         OPTPROGRAM_VERSION,           NULL},
