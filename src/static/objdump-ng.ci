@@ -16,7 +16,7 @@ static char zDUMPDISASSEMBLE[]     = "Display the assembler mnemonics for the ma
 static char zDUMPDISASSEMBLEALL[]  = "Like -d, but disassemble the contents of all sections, not just those expected to contain instructions.";
 static char zDUMPDEBUGGING[]       = "Display debugging information.";
 static char zDUMPDEBUGGINGTAGS[]   = "Like -g, but the information is generated in a format compatible with ctags tool.";
-static char zDUMPSOURCE[]          = "Display source code intermixed with disassembly, if possible.  Implies -d.";
+static char zDUMPSOURCE[]          = "Display source code intermixed with disassembly, if possible. Implies -d.";
 static char zDUMPCAPSTONEALL[]     = "When disassembling, use the Capstone Disassembler Framework.";
 
 static const char zOBJDUMPARGS0[] = "-W";
@@ -24,6 +24,17 @@ static const char zOBJDUMPARGS1[] = "--dwarf";
 
 static const char zOBJDUMPARGS2[] = "-M";
 static const char zOBJDUMPARGS3[] = "--disassembler-options";
+
+static const char *zOBJDESCRIPTION[] = {
+  "displays information about one or more object files. The options control what",
+  "particular information to display. This information is mostly useful to programmers who",
+  "are working on the compilation tools, as opposed to programmers who just want their",
+  "program to compile and work.",
+  "",
+  "objfile... are the object files to be examined. When you specify archives, it shows",
+  "information on each of the member object files.",
+  0
+};
 
 static const args_t zOBJDUMPARGS[] = {
   {'H', "--help",              OPTPROGRAM_HELP,                                          NULL},

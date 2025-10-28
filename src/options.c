@@ -109,7 +109,12 @@ int usage_description(poptions_t o, const char* name, const args_t args[], const
   int n = 0;
   n += printf_text("DESCRIPTION", USE_LT | USE_EOL);
   n += printf_eol();
-//  n += printf_book(desc, USE_LT | USE_TAB | USE_EOL);
+
+  if (desc) {
+    n += printf_text(name, USE_LT | USE_TAB);
+    n += printf_book(desc, USE_LT | USE_TAB | USE_EOL);
+    n += printf_eol();
+  }
 
   return n;
 }

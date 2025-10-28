@@ -14,7 +14,7 @@ static int usage(poptions_t o, const char* name, const args_t args[], const int 
   n += usage_synopsis1(o, name, zDEBUGELFARGS, zOBJDUMPARGS0, zOBJDUMPARGS1);
   n += usage_synopsis2(o, name, zDISASSEMBLEARGS, zOBJDUMPARGS2, zOBJDUMPARGS3);
   n += printf_eol();
-  n += usage_description(o, name, args, NULL);
+  n += usage_description(o, name, args, zOBJDESCRIPTION);
   n += usage_options0(o, name, args);
   n += usage_options1(o, name, zDEBUGELFARGS, zOBJDUMPARGS0, zOBJDUMPARGS1);
   n += usage_options2(o, name, zDISASSEMBLEARGS, zOBJDUMPARGS2, zOBJDUMPARGS3);
