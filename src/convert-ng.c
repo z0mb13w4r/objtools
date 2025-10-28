@@ -15,7 +15,7 @@ static int usage(poptions_t o, const char* name, const args_t args[], const int 
   int n = 0;
   n += usage_name(o, name, args, zDESCRIPTION);
   n += usage_synopsis0(o, name, args);
-  n += usage_description(o, name, args);
+  n += usage_description(o, name, args, NULL);
   n += usage_options0(o, name, args);
   n += usage_options2(o, name, zSCRIPTCOMMANDS, NULL, NULL);
   n += usage_seealso(o, name, args);

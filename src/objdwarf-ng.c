@@ -8,17 +8,17 @@
 
 #define THIS_NAME "objdwarf-ng"
 
-static int usage(poptions_t o, const char* name, const args_t args0[], const int ecode) {
+static int usage(poptions_t o, const char* name, const args_t args[], const int ecode) {
   int n = 0;
-  n += usage_name(o, name, args0, zDESCRIPTIONELF);
-  n += usage_synopsis0(o, name, args0);
+  n += usage_name(o, name, args, zDESCRIPTIONELF);
+  n += usage_synopsis0(o, name, args);
   n += usage_synopsis1(o, name, zDEBUGELFARGS, zOBJDWARFARGS0, zOBJDWARFARGS1);
   n += printf_eol();
-  n += usage_description(o, name, args0);
-  n += usage_options0(o, name, args0);
+  n += usage_description(o, name, args, NULL);
+  n += usage_options0(o, name, args);
   n += usage_options1(o, name, zDEBUGELFARGS, zOBJDWARFARGS0, zOBJDWARFARGS1);
-  n += usage_seealso(o, name, args0);
-  n += usage_copyright(o, name, args0);
+  n += usage_seealso(o, name, args);
+  n += usage_copyright(o, name, args);
 
   return ecode;
 }

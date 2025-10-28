@@ -281,7 +281,7 @@ int usage_synopsis0(poptions_t o, const char* name, const args_t args[]);
 int usage_synopsis1(poptions_t o, const char* name, const args_t args[], const char* more0, const char* more1);
 int usage_synopsis2(poptions_t o, const char* name, const args_t args[], const char* more0, const char* more1);
 
-int usage_description(poptions_t o, const char* name, const args_t args[]);
+int usage_description(poptions_t o, const char* name, const args_t args[], const char* desc[]);
 
 int usage_options0(poptions_t o, const char* name, const args_t args[]);
 int usage_options1(poptions_t o, const char* name, const args_t args[], const char* more0, const char* more1);

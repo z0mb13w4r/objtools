@@ -7,19 +7,19 @@
 
 #define THIS_NAME "objdump-ng"
 
-static int usage(poptions_t o, const char* name, const args_t args0[], const int ecode) {
+static int usage(poptions_t o, const char* name, const args_t args[], const int ecode) {
   int n = 0;
-  n += usage_name(o, name, args0, zDESCRIPTION);
-  n += usage_synopsis0(o, name, args0);
+  n += usage_name(o, name, args, zDESCRIPTION);
+  n += usage_synopsis0(o, name, args);
   n += usage_synopsis1(o, name, zDEBUGELFARGS, zOBJDUMPARGS0, zOBJDUMPARGS1);
   n += usage_synopsis2(o, name, zDISASSEMBLEARGS, zOBJDUMPARGS2, zOBJDUMPARGS3);
   n += printf_eol();
-  n += usage_description(o, name, args0);
-  n += usage_options0(o, name, args0);
+  n += usage_description(o, name, args, NULL);
+  n += usage_options0(o, name, args);
   n += usage_options1(o, name, zDEBUGELFARGS, zOBJDUMPARGS0, zOBJDUMPARGS1);
   n += usage_options2(o, name, zDISASSEMBLEARGS, zOBJDUMPARGS2, zOBJDUMPARGS3);
-  n += usage_seealso(o, name, args0);
-  n += usage_copyright(o, name, args0);
+  n += usage_seealso(o, name, args);
+  n += usage_copyright(o, name, args);
 
   return ecode;
 }

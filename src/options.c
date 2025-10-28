@@ -105,10 +105,11 @@ int usage_synopsis2(poptions_t o, const char* name, const args_t args[], const c
   return n;
 }
 
-int usage_description(poptions_t o, const char* name, const args_t args[]) {
+int usage_description(poptions_t o, const char* name, const args_t args[], const char* desc[]) {
   int n = 0;
   n += printf_text("DESCRIPTION", USE_LT | USE_EOL);
   n += printf_eol();
+//  n += printf_book(desc, USE_LT | USE_TAB | USE_EOL);
 
   return n;
 }
