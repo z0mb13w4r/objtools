@@ -1,17 +1,18 @@
-char zSCRIPTADD[] = ".";
-char zSCRIPTNOT[] = ".";
-char zSCRIPTROL[] = ".";
-char zSCRIPTROR[] = ".";
-char zSCRIPTROT[] = ".";
-char zSCRIPTSHL[] = ".";
-char zSCRIPTSHR[] = ".";
-char zSCRIPTSUB[] = ".";
-char zSCRIPTXOR[] = ".";
-char zSCRIPTDECD[] = ".";
-char zSCRIPTDECE[] = ".";
-char zSCRIPTHEXD[] = ".";
-char zSCRIPTHEXE[] = ".";
-char zSCRIPTBASE[] = ".";
+char zSCRIPTADD[] = "ADD (addition) the input with the given key.";
+char zSCRIPTNOT[] = "NOT (negation) the input.";
+char zSCRIPTROL[] = "ROL (rotate-left) the input with the given key.";
+char zSCRIPTROR[] = "ROR (rotate-right) the input with the given key.";
+char zSCRIPTROT[] = "Caesar substitution cipher which rotates alphabet characters by the specified amount.";
+char zSCRIPTSHL[] = "SHL (left-shift) the input with the given key.";
+char zSCRIPTSHR[] = "SHR (right-shift) the input with the given key.";
+char zSCRIPTSUB[] = "SUB (subtract) the input with the given key.";
+char zSCRIPTXOR[] = "XOR (eXclusive OR) the input with the given key.";
+char zSCRIPTINC[] = "Amount to increment or decrement the given key.";
+char zSCRIPTDECD[] = "Converts the data from an ordinal integer array back into its raw form.";
+char zSCRIPTDECE[] = "Converts the input data to an ordinal integer array.";
+char zSCRIPTHEXD[] = "Converts a hexadecimal byte string back into its raw value.";
+char zSCRIPTHEXE[] = "Converts the input string to hexadecimal bytes separated by a delimiter.";
+char zSCRIPTBASE[] = "Encoding and decoding data using a restricted set of symbols.";
 
 args_t zSCRIPTCOMMANDS[] = {
   {0, "add8",     ACT_ADD8,             NULL,                  1},
@@ -52,7 +53,7 @@ args_t zSCRIPTCOMMANDS[] = {
   {0, "xor32",    ACT_XOR32,            zSCRIPTXOR,            9},
 
   {0, "dec",      ACT_DEC,              NULL,                  10},
-  {0, "inc",      ACT_INC,              NULL,                  10},
+  {0, "inc",      ACT_INC,              zSCRIPTINC,            10},
 
   {0, "dec8d",    ACT_DEC8D,            NULL,                  11},
   {0, "dec16d",   ACT_DEC16D,           NULL,                  11},
@@ -71,7 +72,7 @@ args_t zSCRIPTCOMMANDS[] = {
   {0, "hex32e",   ACT_HEX32E,           zSCRIPTHEXE,           14},
 
   {0, "base64d",  ACT_BASE64D,          NULL,                  15},
-  {0, "base74e",  ACT_BASE64E,          zSCRIPTBASE,           15},
+  {0, "base64e",  ACT_BASE64E,          zSCRIPTBASE,           15},
 
   {0, NULL}
 };

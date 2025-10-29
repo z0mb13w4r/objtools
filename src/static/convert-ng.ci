@@ -7,9 +7,8 @@ static const args_t zCONVERTARGS[] = {
 };
 
 static const char *zCONVERTDESCRIPTION[] = {
-  "generates hashes of ELF format object files for malware detection and",
-  "digitial forensics. The utility is capable of fuzz-hashing and context-triggered",
-  "piecewise hashing. The options control what particular information to display.",
+  "is a Swiss Army Knife for manipulating data in complex ways using operations",
+  "xor, addition, substruction, logical shifts and rotations, base32 and base64.",
   0
 };
 
