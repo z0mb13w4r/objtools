@@ -27,6 +27,17 @@ static char zCOPYADDSECTION[]              = "Add a new section named sectionnam
 static char zCOPYDUMPSECTION[]             = "Place the contents of section named sectionname into the file filename, overwriting any contents that may have been there previously.";
 static char zCOPYUPDATESECTION[]           = "Replace the existing contents of a section named sectionname with the contents of file filename.";
 
+static const char *zCOPYDESCRIPTION[] = {
+  "copies the contents of an object file to another using the GNU BFD Library",
+  "to readand write the object files. It can write the destination object file in a format",
+  "different from that of the source object file. The options control the behaviour",
+  "of the utility.",
+  "",
+  "objfile... are the object files to be examined. 32-bit and 64-bit ELF and PE files",
+  "are supported, as are archives containing ELF files.",
+  0
+};
+
 static const args_t zOBJCOPYARGS[] = {
   {'H', "--help",                           OPTPROGRAM_HELP,                             NULL},
   {'V', "--version",                        OPTPROGRAM_VERSION,                          NULL},
