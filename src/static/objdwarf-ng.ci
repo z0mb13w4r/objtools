@@ -10,3 +10,12 @@ static const args_t zOBJDWARFARGS[] = {
   {0, NULL}
 };
 
+static const char *zOBJDWARFDESCRIPTION[] = {
+  "displays the dwarf information about one or more ELF format object files.",
+  "The options control what particular information to display.",
+  "",
+  "elffile... are the object files to be examined. 32-bit and 64-bit ELF files",
+  "are supported, as are archives containing ELF files.",
+  0
+};
+
