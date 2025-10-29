@@ -3,14 +3,7 @@
 #include "objhash.h"
 #include "options.h"
 
-static const args_t OBJHASHARGS[] = {
-  {'H', "--help",              OPTPROGRAM_HELP},
-  {'V', "--version",           OPTPROGRAM_VERSION},
-  {'s', "--sections",          OPTOBJHASH_SECTIONS},
-  {'h', "--headers",           OPTOBJHASH_HEADERS},
-  {'a', "--all",               OPTOBJHASH_ALL},
-  {0, NULL}
-};
+#include "static/objhash-ng.ci"
 
 #define THIS_NAME "objhash-ng"
 
@@ -18,7 +11,7 @@ static int usage(poptions_t o, const char* name, const args_t args[], const int 
   int n = 0;
   n += usage_name(o, name, args, zDESCRIPTION);
   n += usage_synopsis0(o, name, args);
-  n += usage_description(o, name, args, NULL);
+  n += usage_description(o, name, args, zOBJHASHDESCRIPTION);
   n += usage_options0(o, name, args);
   n += usage_seealso(o, name, args);
   n += usage_copyright(o, name, args);
