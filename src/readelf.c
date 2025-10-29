@@ -1566,14 +1566,42 @@ static int dump_notes64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr)
   return n;
 }
 
+static int dump_archspecific0(const pbuffer_t p, const poptions_t o, const char* name, const uint64_t sh_offset, const uint64_t sh_size) {
+  int n = 0;
+  n += printf_text("Attribute Section", USE_LT | USE_COLON);
+  n += printf_text(name, USE_LT | USE_SPACE | USE_EOL);
+
+  return n;
+}
+
 static int dump_archspecific32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
   int n = 0;
+  for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
+    Elf32_Shdr *shdr = ecget_shdr32byindex(p, i);
+    if (shdr) {
+      if (SHT_ARM_ATTRIBUTES == shdr->sh_type) {
+        n += dump_archspecific0(p, o, "aeabi", shdr->sh_offset, shdr->sh_size);
+      } else if (SHT_GNU_ATTRIBUTES == shdr->sh_type) {
+        n += dump_archspecific0(p, o, NULL, shdr->sh_offset, shdr->sh_size);
+      }
+    }
+  }
 
   return n;
 }
 
 static int dump_archspecific64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
   int n = 0;
+  for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
+    Elf64_Shdr *shdr = ecget_shdr64byindex(p, i);
+    if (shdr) {
+      if (SHT_ARM_ATTRIBUTES == shdr->sh_type) {
+        n += dump_archspecific0(p, o, "aeabi", shdr->sh_offset, shdr->sh_size);
+      } else if (SHT_GNU_ATTRIBUTES == shdr->sh_type) {
+        n += dump_archspecific0(p, o, NULL, shdr->sh_offset, shdr->sh_size);
+      }
+    }
+  }
 
   return n;
 }
