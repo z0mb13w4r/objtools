@@ -61,7 +61,7 @@ Mkfile.old
 dkms.conf
 
 # Temporary Files
-bin/
+bin/*-ng
 samples/
 *.swp
 
