@@ -15,7 +15,7 @@ typedef struct find_s {
 
 } find_t, *pfind_t;
 
-int isfind(handle_t p);
+bool_t isfind(handle_t p);
 
 bool_t fiseof(handle_t p);
 
@@ -30,8 +30,8 @@ unknown_t fupdate(handle_t p, const size_t cpos, const size_t chunksize);
 
 handle_t fnext(handle_t p);
 handle_t freset(handle_t p);
-handle_t fmalloc(unknown_t data, const size_t size, const size_t chunksize);
-handle_t fcalloc(unknown_t data, const size_t size, const size_t chunksize);
+handle_t fmalloc(unknown_t p, const size_t size, const size_t chunksize);
+handle_t fcalloc(unknown_t p, const size_t size, const size_t chunksize);
 handle_t ffree(handle_t p);
 
 int64_t  fgets8(handle_t p);

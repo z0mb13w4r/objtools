@@ -1,6 +1,6 @@
 #include "memfind.h"
 
-int isfind(handle_t p) {
+bool_t isfind(handle_t p) {
   return ismodeNNN(p, MODE_FIND);
 }
 
@@ -272,31 +272,35 @@ unknown_t fupdate(handle_t p, const size_t cpos, const size_t chunksize) {
   return NULL;
 }
 
-handle_t fmalloc(unknown_t data, const size_t size, const size_t chunksize) {
-  if (data) {
-    pfind_t p = xmalloc(sizeof(find_t));
-    if (p) {
-      p->cpos = 0;
-      p->epos = size;
-      p->item = data;
-      p->chunksize = chunksize;
+handle_t fmalloc(unknown_t p, const size_t size, const size_t chunksize) {
+  if (isfind(p)) {
+    return fmalloc(fget(p), size, chunksize);
+  } else if (p) {
+    pfind_t p0 = xmalloc(sizeof(find_t));
+    if (p0) {
+      p0->cpos = 0;
+      p0->item = p;
+      p0->epos = size;
+      p0->chunksize = chunksize;
     }
-    return setmode(p, MODE_FIND);
+    return setmode(p0, MODE_FIND);
   }
 
   return NULL;
 }
 
-handle_t fcalloc(unknown_t data, const size_t size, const size_t chunksize) {
-  if (data) {
-    pfind_t p = xmalloc(sizeof(find_t));
-    if (p) {
-      p->cpos = 0;
-      p->epos = size;
-      p->item = cmalloc(data, size);
-      p->chunksize = chunksize;
+handle_t fcalloc(unknown_t p, const size_t size, const size_t chunksize) {
+  if (isfind(p)) {
+    return fcalloc(fget(p), size, chunksize);
+  } else if (p) {
+    pfind_t p0 = xmalloc(sizeof(find_t));
+    if (p0) {
+      p0->cpos = 0;
+      p0->epos = size;
+      p0->item = cmalloc(p, size);
+      p0->chunksize = chunksize;
     }
-    return setmode(p, MODE_FINDC);
+    return setmode(p0, MODE_FINDC);
   }
 
   return NULL;
