@@ -1,51 +1,147 @@
+#define TAG_CPU_raw_name               (4)
+#define TAG_CPU_name                   (5)
+#define TAG_CPU_arch                   (6)
+#define TAG_CPU_arch_profile           (7)
+#define TAG_ARM_ISA_use                (8)
+#define TAG_THUMB_ISA_use              (9)
+#define TAG_FP_arch                    (10)
+#define TAG_WMMX_arch                  (11)
+#define TAG_Advanced_SIMD_arch         (12)
+#define TAG_PCS_config                 (13)
+#define TAG_ABI_PCS_R9_use             (14)
+#define TAG_ABI_PCS_RW_data            (15)
+#define TAG_ABI_PCS_RO_data            (16)
+#define TAG_ABI_PCS_GOT_use            (17)
+#define TAG_ABI_PCS_wchar_t            (18)
+#define TAG_ABI_FP_rounding            (19)
+#define TAG_ABI_FP_denormal            (20)
+#define TAG_ABI_FP_exceptions          (21)
+#define TAG_ABI_FP_user_exceptions     (22)
+#define TAG_ABI_FP_number_model        (23)
+#define TAG_ABI_align_needed           (24)
+#define TAG_ABI_align_preserved        (25)
+#define TAG_ABI_enum_size              (26)
+#define TAG_ABI_HardFP_use             (27)
+#define TAG_ABI_VFP_args               (28)
+#define TAG_ABI_WMMX_args              (29)
+#define TAG_ABI_optimization_goals     (30)
+#define TAG_ABI_FP_optimization_goals  (31)
+#define TAG_compatibility              (32)
+#define TAG_CPU_unaligned_access       (34)
+#define TAG_FP_HP_extension            (36)
+#define TAG_ABI_FP_16bit_format        (37)
+#define TAG_MPextension_use            (42)
+#define TAG_DIV_use                    (44)
+#define TAG_DSP_extension              (46)
+#define TAG_MVE_arch                   (48)
+#define TAG_PAC_extension              (50)
+#define TAG_BTI_extension              (52)
+#define TAG_BTI_use                    (74)
+#define TAG_PACRET_use                 (76)
+#define TAG_nodefaults                 (64)
+#define TAG_also_compatible_with       (65)
+#define TAG_T2EE_use                   (66)
+#define TAG_conformance                (67)
+#define TAG_Virtualization_use         (68)
+#define TAG_MPextension_use_legacy     (70)
+
 convert_t ecPUBLICTAGARM[] = {
-  {"TAG_CPU_raw_name",               4},
-  {"TAG_CPU_name",                   5},
-  {"TAG_CPU_arch",                   6},
-  {"TAG_CPU_arch_profile",           7},
-  {"TAG_ARM_ISA_use",                8},
-  {"TAG_THUMB_ISA_use",              9},
-  {"TAG_FP_arch",                    10},
-  {"TAG_WMMX_arch",                  11},
-  {"TAG_Advanced_SIMD_arch",         12},
-  {"TAG_PCS_config",                 13},
-  {"TAG_ABI_PCS_R9_use",             14},
-  {"TAG_ABI_PCS_RW_data",            15},
-  {"TAG_ABI_PCS_RO_data",            16},
-  {"TAG_ABI_PCS_GOT_use",            17},
-  {"TAG_ABI_PCS_wchar_t",            18},
-  {"TAG_ABI_FP_rounding",            19},
-  {"TAG_ABI_FP_denormal",            20},
-  {"TAG_ABI_FP_exceptions",          21},
-  {"TAG_ABI_FP_user_exceptions",     22},
-  {"TAG_ABI_FP_number_model",        23},
-  {"TAG_ABI_align_needed",           24},
-  {"TAG_ABI_align_preserved",        25},
-  {"TAG_ABI_enum_size",              26},
-  {"TAG_ABI_HardFP_use",             27},
-  {"TAG_ABI_VFP_args",               28},
-  {"TAG_ABI_WMMX_args",              29},
-  {"TAG_ABI_optimization_goals",     30},
-  {"TAG_ABI_FP_optimization_goals",  31},
-  {"TAG_compatibility",              32},
-  {"TAG_CPU_unaligned_access",       34},
-  {"TAG_FP_HP_extension",            36},
-  {"TAG_ABI_FP_16bit_format",        37},
-  {"TAG_MPextension_use",            42},
-  {"TAG_DIV_use",                    44},
-  {"TAG_DSP_extension",              46},
-  {"TAG_MVE_arch",                   48},
-  {"TAG_PAC_extension",              50},
-  {"TAG_BTI_extension",              52},
-  {"TAG_BTI_use",                    74},
-  {"TAG_PACRET_use",                 76},
-  {"TAG_nodefaults",                 64},
-  {"TAG_also_compatible_with",       65},
-  {"TAG_T2EE_use",                   66},
-  {"TAG_conformance",                67},
-  {"TAG_Virtualization_use",         68},
-  {"TAG_MPextension_use_legacy",     70},
+  {"TAG_CPU_raw_name",                     4},
+  {"TAG_CPU_name",                         5},
+  {"TAG_CPU_arch",                         6},
+  {"TAG_CPU_arch_profile",                 7},
+  {"TAG_ARM_ISA_use",                      8},
+  {"TAG_THUMB_ISA_use",                    9},
+  {"TAG_FP_arch",                          10},
+  {"TAG_WMMX_arch",                        11},
+  {"TAG_Advanced_SIMD_arch",               12},
+  {"TAG_PCS_config",                       13},
+  {"TAG_ABI_PCS_R9_use",                   14},
+  {"TAG_ABI_PCS_RW_data",                  15},
+  {"TAG_ABI_PCS_RO_data",                  16},
+  {"TAG_ABI_PCS_GOT_use",                  17},
+  {"TAG_ABI_PCS_wchar_t",                  18},
+  {"TAG_ABI_FP_rounding",                  19},
+  {"TAG_ABI_FP_denormal",                  20},
+  {"TAG_ABI_FP_exceptions",                21},
+  {"TAG_ABI_FP_user_exceptions",           22},
+  {"TAG_ABI_FP_number_model",              23},
+  {"TAG_ABI_align_needed",                 24},
+  {"TAG_ABI_align_preserved",              25},
+  {"TAG_ABI_enum_size",                    26},
+  {"TAG_ABI_HardFP_use",                   27},
+  {"TAG_ABI_VFP_args",                     28},
+  {"TAG_ABI_WMMX_args",                    29},
+  {"TAG_ABI_optimization_goals",           30},
+  {"TAG_ABI_FP_optimization_goals",        31},
+  {"TAG_compatibility",                    32},
+  {"TAG_CPU_unaligned_access",             34},
+  {"TAG_FP_HP_extension",                  36},
+  {"TAG_ABI_FP_16bit_format",              37},
+  {"TAG_MPextension_use",                  42},
+  {"TAG_DIV_use",                          44},
+  {"TAG_DSP_extension",                    46},
+  {"TAG_MVE_arch",                         48},
+  {"TAG_PAC_extension",                    50},
+  {"TAG_BTI_extension",                    52},
+  {"TAG_BTI_use",                          74},
+  {"TAG_PACRET_use",                       76},
+  {"TAG_nodefaults",                       64},
+  {"TAG_also_compatible_with",             65},
+  {"TAG_T2EE_use",                         66},
+  {"TAG_conformance",                      67},
+  {"TAG_Virtualization_use",               68},
+  {"TAG_MPextension_use_legacy",           70},
 
   {0, 0}
+};
+
+convert_t ecPUBLICTAGARMARCHPROFILE[] = {
+  {"None",                                 0},
+  {"Application",                          'A'},
+  {"Realtime",                             'R'},
+  {"Microcontroller",                      'M'},
+  {"Application or Realtime",              'S'},
+
+  {0, 0}
+};
+
+convert_t ecPUBLICTAGARMALIGNNEEDED[] = {
+  {"None",                                 0},
+  {"8-byte",                               1},
+  {"4-byte",                               2},
+  {"8-byte and up to 16-byte extended",    4},
+  {"8-byte and up to 32-byte extended",    5},
+  {"8-byte and up to 64-byte extended",    6},
+  {"8-byte and up to 128-byte extended",   7},
+  {"8-byte and up to 256-byte extended",   8},
+  {"8-byte and up to 512-byte extended",   9},
+  {"8-byte and up to 1024-byte extended",  10},
+  {"8-byte and up to 2048-byte extended",  11},
+  {"8-byte and up to 4096-byte extended",  12},
+
+  {0, 0}
+};
+
+convert_t ecPUBLICTAGARMALIGNPRESERVED[] = {
+  {"None",                                 0},
+  {"8-byte, except leaf SP",               1},
+  {"8-byte",                               2},
+  {"8-byte and up to 16-byte extended",    4},
+  {"8-byte and up to 32-byte extended",    5},
+  {"8-byte and up to 64-byte extended",    6},
+  {"8-byte and up to 128-byte extended",   7},
+  {"8-byte and up to 256-byte extended",   8},
+  {"8-byte and up to 512-byte extended",   9},
+  {"8-byte and up to 1024-byte extended",  10},
+  {"8-byte and up to 2048-byte extended",  11},
+  {"8-byte and up to 4096-byte extended",  12},
+
+  {0, 0}
+};
+
+static pick_t ecPUBLICTAGARMSTRING[] = {
+  TAG_CPU_name,
+  PICK_END
 };
 
