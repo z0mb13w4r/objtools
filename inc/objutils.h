@@ -18,6 +18,10 @@ typedef struct args_s {
 typedef struct convert_s {
   const char*  text;
   const pick_t type;
+  union {
+    unknown_t param;
+    uint64_t  value;
+  };
 } convert_t, *pconvert_t;
 
 int countbits(const imode_t x);
@@ -37,6 +41,8 @@ uint64_t atoimode(const char* src);
 uint64_t atovalue(const char* src);
 
 char* strname(char* dst, const char* src);
+
+pconvert_t convertpicknull(const pconvert_t p, const pick_t x);
 
 const char* strpick(const pconvert_t p, const pick_t x);
 const char* strpicknull(const pconvert_t p, const pick_t x);

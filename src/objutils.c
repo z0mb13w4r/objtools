@@ -72,6 +72,18 @@ uint64_t atovalue(const char* src) {
   return atol(src);
 }
 
+pconvert_t convertpicknull(const pconvert_t p, const pick_t x) {
+  if (p) {
+    for (pconvert_t pp = p; 0 != pp->text; ++pp) {
+      if (pp->type == x) {
+        return pp;
+      }
+    }
+  }
+
+  return NULL;
+}
+
 char* strname(char* dst, const char* src) {
   const char *p = strshorten(src);
   if (p) {
@@ -91,15 +103,8 @@ const char* strpick(const pconvert_t p, const pick_t x) {
 }
 
 const char* strpicknull(const pconvert_t p, const pick_t x) {
-  if (p) {
-    for (pconvert_t pp = p; 0 != pp->text; ++pp) {
-      if (pp->type == x) {
-        return pp->text;
-      }
-    }
-  }
-
-  return NULL;
+  pconvert_t p0 = convertpicknull(p, x);
+  return p0 ? p0->text : NULL;
 }
 
 const char* strpickunknown(const pick_t x) {
