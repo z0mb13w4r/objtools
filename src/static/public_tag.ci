@@ -111,6 +111,15 @@ static convert_t ecPUBLICTAGARMWMMXARCH[] = {
   {0, 0}
 };
 
+static convert_t ecPUBLICTAGARMADVSIMDARCH[] = {
+  {"No",                                   0},
+  {"NEONv1",                               1},
+  {"NEONv1 with Fused-MAC",                2},
+  {"NEON for ARMv8",                       3},
+  {"NEON for ARMv8.1",                     4},
+  {0, 0}
+};
+
 static convert_t ecPUBLICTAGARMARCHPROFILE[] = {
   {"None",                                 0},
   {"Application",                          'A'},
@@ -164,7 +173,7 @@ convert_t ecPUBLICTAGARM[] = {
   {"TAG_THUMB_ISA_use",                    9,    {ecPUBLICTAGARMTHUMBISAUSE}},
   {"TAG_FP_arch",                          10,   {ecPUBLICTAGARMFPARCH}},
   {"TAG_WMMX_arch",                        11,   {ecPUBLICTAGARMWMMXARCH}},
-  {"TAG_Advanced_SIMD_arch",               12},
+  {"TAG_Advanced_SIMD_arch",               12,   {ecPUBLICTAGARMADVSIMDARCH}},
   {"TAG_PCS_config",                       13},
   {"TAG_ABI_PCS_R9_use",                   14},
   {"TAG_ABI_PCS_RW_data",                  15},
