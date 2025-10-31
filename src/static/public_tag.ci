@@ -152,6 +152,14 @@ static convert_t ecPUBLICTAGARMPCSRWDATA[] = {
   {0, 0}
 };
 
+static convert_t ecPUBLICTAGARMPCSRODATA[] = {
+  {"Absolute",                             0},
+  {"PC-relative",                          1},
+  {"None",                                 2},
+
+  {0, 0}
+};
+
 static convert_t ecPUBLICTAGARMARCHPROFILE[] = {
   {"None",                                 0},
   {"Application",                          'A'},
@@ -209,7 +217,7 @@ convert_t ecPUBLICTAGARM[] = {
   {"TAG_PCS_config",                       13,   {ecPUBLICTAGARMPCSCONFIG}},
   {"TAG_ABI_PCS_R9_use",                   14,   {ecPUBLICTAGARMPCSR9USE}},
   {"TAG_ABI_PCS_RW_data",                  15,   {ecPUBLICTAGARMPCSRWDATA}},
-  {"TAG_ABI_PCS_RO_data",                  16},
+  {"TAG_ABI_PCS_RO_data",                  16,   {ecPUBLICTAGARMPCSRODATA}},
   {"TAG_ABI_PCS_GOT_use",                  17},
   {"TAG_ABI_PCS_wchar_t",                  18},
   {"TAG_ABI_FP_rounding",                  19},
