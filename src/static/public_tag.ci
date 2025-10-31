@@ -168,6 +168,14 @@ static convert_t ecPUBLICTAGARMPCSGOTUSE[] = {
   {0, 0}
 };
 
+static convert_t ecPUBLICTAGARMPCSWCHAR[] = {
+  {"None",                                 0},
+  {"2",                                    2},
+  {"4",                                    4},
+
+  {0, 0}
+};
+
 static convert_t ecPUBLICTAGARMARCHPROFILE[] = {
   {"None",                                 0},
   {"Application",                          'A'},
@@ -227,7 +235,7 @@ convert_t ecPUBLICTAGARM[] = {
   {"TAG_ABI_PCS_RW_data",                  15,   {ecPUBLICTAGARMPCSRWDATA}},
   {"TAG_ABI_PCS_RO_data",                  16,   {ecPUBLICTAGARMPCSRODATA}},
   {"TAG_ABI_PCS_GOT_use",                  17,   {ecPUBLICTAGARMPCSGOTUSE}},
-  {"TAG_ABI_PCS_wchar_t",                  18},
+  {"TAG_ABI_PCS_wchar_t",                  18,   {ecPUBLICTAGARMPCSWCHAR}},
   {"TAG_ABI_FP_rounding",                  19},
   {"TAG_ABI_FP_denormal",                  20},
   {"TAG_ABI_FP_exceptions",                21},
