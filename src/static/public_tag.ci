@@ -191,6 +191,25 @@ static convert_t ecPUBLICTAGARMFPDENORMAL[] = {
   {0, 0}
 };
 
+
+static convert_t ecPUBLICTAGARMFPNUMBERMODEL[] = {
+  {"Unused",                               0},
+  {"Finite",                               1},
+  {"RTABI",                                2},
+  {"IEEE 754",                             3},
+
+  {0, 0}
+};
+
+static convert_t ecPUBLICTAGARMENUMSIZE[] = {
+  {"Unused",                               0},
+  {"small",                                1},
+  {"int",                                  2},
+  {"forced to int",                        3},
+
+  {0, 0}
+};
+
 static convert_t ecPUBLICTAGARMARCHPROFILE[] = {
   {"None",                                 0},
   {"Application",                          'A'},
@@ -255,10 +274,10 @@ convert_t ecPUBLICTAGARM[] = {
   {"TAG_ABI_FP_denormal",                  20,   {ecPUBLICTAGARMFPDENORMAL}},
   {"TAG_ABI_FP_exceptions",                21,   {ecPUBLICTAGARMFPROUNDING}},
   {"TAG_ABI_FP_user_exceptions",           22,   {ecPUBLICTAGARMFPROUNDING}},
-  {"TAG_ABI_FP_number_model",              23},
+  {"TAG_ABI_FP_number_model",              23,   {ecPUBLICTAGARMFPNUMBERMODEL}},
   {"TAG_ABI_align_needed",                 24,   {ecPUBLICTAGARMALIGNNEEDED}},
   {"TAG_ABI_align_preserved",              25,   {ecPUBLICTAGARMALIGNPRESERVED}},
-  {"TAG_ABI_enum_size",                    26},
+  {"TAG_ABI_enum_size",                    26,   {ecPUBLICTAGARMENUMSIZE}},
   {"TAG_ABI_HardFP_use",                   27},
   {"TAG_ABI_VFP_args",                     28},
   {"TAG_ABI_WMMX_args",                    29},
