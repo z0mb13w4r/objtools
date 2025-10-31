@@ -80,6 +80,15 @@ convert_t ecPUBLICTAGARMISAUSE[] = {
   {0, 0}
 };
 
+convert_t ecPUBLICTAGARMTHUMBISAUSE[] = {
+  {"No",                                   0},
+  {"Thumb-1",                              1},
+  {"Thumb-2",                              2},
+  {"Yes",                                  3},
+
+  {0, 0}
+};
+
 convert_t ecPUBLICTAGARMARCHPROFILE[] = {
   {"None",                                 0},
   {"Application",                          'A'},
@@ -130,7 +139,7 @@ convert_t ecPUBLICTAGARM[] = {
   {"TAG_CPU_arch",                         6,    {ecPUBLICTAGARMARCH}},
   {"TAG_CPU_arch_profile",                 7,    {ecPUBLICTAGARMARCHPROFILE}},
   {"TAG_ARM_ISA_use",                      8,    {ecPUBLICTAGARMISAUSE}},
-  {"TAG_THUMB_ISA_use",                    9},
+  {"TAG_THUMB_ISA_use",                    9,    {ecPUBLICTAGARMTHUMBISAUSE}},
   {"TAG_FP_arch",                          10},
   {"TAG_WMMX_arch",                        11},
   {"TAG_Advanced_SIMD_arch",               12},
