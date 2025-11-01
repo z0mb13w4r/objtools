@@ -301,6 +301,18 @@ static convert_t ecPUBLICTAGARMCPUUNALIGNEDACCESS[] = {
   {0, 0}
 };
 
+static convert_t ecPUBLICTAGARMFPOPTIMIZATIONGOALS[] = {
+  {"None",                                     0},
+  {"Prefer Speed",                             1},
+  {"Aggressive Speed",                         2},
+  {"Prefer Size",                              3},
+  {"Aggressive Size",                          4},
+  {"Prefer Accuracy",                          5},
+  {"Aggressive Accuracy",                      6},
+
+  {0, 0}
+};
+
 static convert_t ecPUBLICTAGARMBTIUSE[] = {
   {"Compiled without branch target enforcement", 0},
   {"Compiled with branch target enforcement",    1},
@@ -367,7 +379,7 @@ convert_t ecPUBLICTAGARM[] = {
   {"TAG_ABI_VFP_args",                     28},
   {"TAG_ABI_WMMX_args",                    29},
   {"TAG_ABI_optimization_goals",           30},
-  {"TAG_ABI_FP_optimization_goals",        31},
+  {"TAG_ABI_FP_optimization_goals",        31,   {ecPUBLICTAGARMFPOPTIMIZATIONGOALS}},
   {"TAG_compatibility",                    32},
   {"TAG_CPU_unaligned_access",             34,   {ecPUBLICTAGARMCPUUNALIGNEDACCESS}},
   {"TAG_FP_HP_extension",                  36,   {ecPUBLICTAGARMFPHPEXTENSION}},
