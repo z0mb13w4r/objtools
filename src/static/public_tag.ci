@@ -270,22 +270,6 @@ static convert_t ecPUBLICTAGARMMVEARCH[] = {
   {0, 0}
 };
 
-static convert_t ecPUBLICTAGARMPACEXTENSION[] = {
-  {"No PAC/AUT instructions",                                            0},
-  {"PAC/AUT instructions permitted in the NOP space",                    1},
-  {"PAC/AUT instructions permitted in the NOP and in the non-NOP space", 2},
-
-  {0, 0}
-};
-
-static convert_t ecPUBLICTAGARMBTIEXTENSION[] = {
-  {"BTI instructions not permitted",                                 0},
-  {"BTI instructions permitted in the NOP space",                    1},
-  {"BTI instructions permitted in the NOP and in the non-NOP space", 2},
-
-  {0, 0}
-};
-
 static convert_t ecPUBLICTAGARMVIRTUALIZATIONUSE[] = {
   {"Not Allowed",                              0},
   {"TrustZone",                                1},
@@ -305,6 +289,22 @@ static convert_t ecPUBLICTAGARMBTIUSE[] = {
 static convert_t ecPUBLICTAGARMPACRETUSE[] = {
   {"Compiled without return address signing and authentication", 0},
   {"Compiled with return address signing and authentication",    1},
+
+  {0, 0}
+};
+
+static convert_t ecPUBLICTAGARMBTIEXTENSION[] = {
+  {"BTI instructions not permitted",                                 0},
+  {"BTI instructions permitted in the NOP space",                    1},
+  {"BTI instructions permitted in the NOP and in the non-NOP space", 2},
+
+  {0, 0}
+};
+
+static convert_t ecPUBLICTAGARMPACEXTENSION[] = {
+  {"No PAC/AUT instructions",                                            0},
+  {"PAC/AUT instructions permitted in the NOP space",                    1},
+  {"PAC/AUT instructions permitted in the NOP and in the non-NOP space", 2},
 
   {0, 0}
 };
