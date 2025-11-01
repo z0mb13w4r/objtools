@@ -270,6 +270,13 @@ static convert_t ecPUBLICTAGARMMVEARCH[] = {
   {0, 0}
 };
 
+static convert_t ecPUBLICTAGARMDSPEXTENSION[] = {
+  {"Follow architecture",                  0},
+  {"Allowed",                              1},
+
+  {0, 0}
+};
+
 static convert_t ecPUBLICTAGARMVIRTUALIZATIONUSE[] = {
   {"Not Allowed",                              0},
   {"TrustZone",                                1},
@@ -352,7 +359,7 @@ convert_t ecPUBLICTAGARM[] = {
   {"TAG_ABI_FP_16bit_format",              37},
   {"TAG_MP_extension_use",                 42,   {ecPUBLICTAGARMFPHPEXTENSION}},
   {"TAG_DIV_use",                          44,   {ecPUBLICTAGARMDIVUSE}},
-  {"TAG_DSP_extension",                    46},
+  {"TAG_DSP_extension",                    46,   {ecPUBLICTAGARMDSPEXTENSION}},
   {"TAG_MVE_arch",                         48,   {ecPUBLICTAGARMMVEARCH}},
   {"TAG_PAC_extension",                    50,   {ecPUBLICTAGARMPACEXTENSION}},
   {"TAG_BTI_extension",                    52,   {ecPUBLICTAGARMBTIEXTENSION}},
