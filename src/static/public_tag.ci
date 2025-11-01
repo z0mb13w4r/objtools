@@ -30,7 +30,7 @@
 #define TAG_CPU_unaligned_access       (34)
 #define TAG_FP_HP_extension            (36)
 #define TAG_ABI_FP_16bit_format        (37)
-#define TAG_MPextension_use            (42)
+#define TAG_MP_extension_use           (42)
 #define TAG_DIV_use                    (44)
 #define TAG_DSP_extension              (46)
 #define TAG_MVE_arch                   (48)
@@ -43,7 +43,7 @@
 #define TAG_T2EE_use                   (66)
 #define TAG_conformance                (67)
 #define TAG_Virtualization_use         (68)
-#define TAG_MPextension_use_legacy     (70)
+#define TAG_MP_extension_use_legacy    (70)
 
 static convert_t ecPUBLICTAGARMARCH[] = {
   {"Pre-v4",                               0},
@@ -286,9 +286,18 @@ static convert_t ecPUBLICTAGARMBTIEXTENSION[] = {
   {0, 0}
 };
 
+static convert_t ecPUBLICTAGARMVIRTUALIZATIONUSE[] = {
+  {"Not Allowed",                              0},
+  {"TrustZone",                                1},
+  {"Virtualization Extensions",                2},
+  {"TrustZone and Virtualization Extensions",  3},
+
+  {0, 0}
+};
+
 static convert_t ecPUBLICTAGARMBTIUSE[] = {
-  {"Compiled without branch target enforcement",                 0},
-  {"Compiled with branch target enforcement",                    1},
+  {"Compiled without branch target enforcement", 0},
+  {"Compiled with branch target enforcement",    1},
 
   {0, 0}
 };
@@ -333,7 +342,7 @@ convert_t ecPUBLICTAGARM[] = {
   {"TAG_CPU_unaligned_access",             34},
   {"TAG_FP_HP_extension",                  36,   {ecPUBLICTAGARMFPHPEXTENSION}},
   {"TAG_ABI_FP_16bit_format",              37},
-  {"TAG_MPextension_use",                  42,   {ecPUBLICTAGARMFPHPEXTENSION}},
+  {"TAG_MP_extension_use",                 42,   {ecPUBLICTAGARMFPHPEXTENSION}},
   {"TAG_DIV_use",                          44},
   {"TAG_DSP_extension",                    46},
   {"TAG_MVE_arch",                         48,   {ecPUBLICTAGARMMVEARCH}},
@@ -345,8 +354,8 @@ convert_t ecPUBLICTAGARM[] = {
   {"TAG_also_compatible_with",             65},
   {"TAG_T2EE_use",                         66,   {ecPUBLICTAGARMFPHPEXTENSION}},
   {"TAG_conformance",                      67},
-  {"TAG_Virtualization_use",               68},
-  {"TAG_MPextension_use_legacy",           70,   {ecPUBLICTAGARMFPHPEXTENSION}},
+  {"TAG_Virtualization_use",               68,   {ecPUBLICTAGARMVIRTUALIZATIONUSE}},
+  {"TAG_MP_extension_use_legacy",          70,   {ecPUBLICTAGARMFPHPEXTENSION}},
 
   {0, 0}
 };
