@@ -261,7 +261,6 @@ static convert_t ecPUBLICTAGARMFPHPEXTENSION[] = {
   {0, 0}
 };
 
-//--
 static convert_t ecPUBLICTAGARMMVEARCH[] = {
   {"No MVE",                               0},
   {"MVE Integer only",                     1},
@@ -285,59 +284,59 @@ static convert_t ecPUBLICTAGARMFP16BITFORMAT[] = {
   {0, 0}
 };
 
-static convert_t ecPUBLICTAGARMVIRTUALIZATIONUSE[] = {
-  {"Not Allowed",                              0},
-  {"TrustZone",                                1},
-  {"Virtualization Extensions",                2},
-  {"TrustZone and Virtualization Extensions",  3},
-
-  {0, 0}
-};
-
 static convert_t ecPUBLICTAGARMCPUUNALIGNEDACCESS[] = {
-  {"None",                                     0},
-  {"v6",                                       1},
+  {"None",                                 0},
+  {"v6",                                   1},
 
   {0, 0}
 };
 
 static convert_t ecPUBLICTAGARMFPOPTIMIZATIONGOALS[] = {
-  {"None",                                     0},
-  {"Prefer Speed",                             1},
-  {"Aggressive Speed",                         2},
-  {"Prefer Size",                              3},
-  {"Aggressive Size",                          4},
-  {"Prefer Accuracy",                          5},
-  {"Aggressive Accuracy",                      6},
+  {"None",                                 0},
+  {"Prefer Speed",                         1},
+  {"Aggressive Speed",                     2},
+  {"Prefer Size",                          3},
+  {"Aggressive Size",                      4},
+  {"Prefer Accuracy",                      5},
+  {"Aggressive Accuracy",                  6},
 
   {0, 0}
 };
 
 static convert_t ecPUBLICTAGARMOPTIMIZATIONGOALS[] = {
-  {"None",                                     0},
-  {"Prefer Speed",                             1},
-  {"Aggressive Speed",                         2},
-  {"Prefer Size",                              3},
-  {"Aggressive Size",                          4},
-  {"Prefer Debug",                             5},
-  {"Aggressive Debug",                         6},
+  {"None",                                 0},
+  {"Prefer Speed",                         1},
+  {"Aggressive Speed",                     2},
+  {"Prefer Size",                          3},
+  {"Aggressive Size",                      4},
+  {"Prefer Debug",                         5},
+  {"Aggressive Debug",                     6},
 
   {0, 0}
 };
 
 static convert_t ecPUBLICTAGARMWMMXARGS[] = {
-  {"AAPCS",                                    0},
-  {"WMMX registers",                           1},
-  {"custom",                                   2},
+  {"AAPCS",                                0},
+  {"WMMX registers",                       1},
+  {"custom",                               2},
 
   {0, 0}
 };
 
 static convert_t ecPUBLICTAGARMVFPARGS[] = {
-  {"AAPCS",                                    0},
-  {"VFP registers",                            1},
-  {"custom",                                   2},
-  {"compatible",                               3},
+  {"AAPCS",                                0},
+  {"VFP registers",                        1},
+  {"custom",                               2},
+  {"compatible",                           3},
+
+  {0, 0}
+};
+
+static convert_t ecPUBLICTAGARMVIRTUALIZATIONUSE[] = {
+  {"Not Allowed",                              0},
+  {"TrustZone",                                1},
+  {"Virtualization Extensions",                2},
+  {"TrustZone and Virtualization Extensions",  3},
 
   {0, 0}
 };
