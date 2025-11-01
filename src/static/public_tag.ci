@@ -294,6 +294,13 @@ static convert_t ecPUBLICTAGARMVIRTUALIZATIONUSE[] = {
   {0, 0}
 };
 
+static convert_t ecPUBLICTAGARMCPUUNALIGNEDACCESS[] = {
+  {"None",                                     0},
+  {"v6",                                       1},
+
+  {0, 0}
+};
+
 static convert_t ecPUBLICTAGARMBTIUSE[] = {
   {"Compiled without branch target enforcement", 0},
   {"Compiled with branch target enforcement",    1},
@@ -362,7 +369,7 @@ convert_t ecPUBLICTAGARM[] = {
   {"TAG_ABI_optimization_goals",           30},
   {"TAG_ABI_FP_optimization_goals",        31},
   {"TAG_compatibility",                    32},
-  {"TAG_CPU_unaligned_access",             34},
+  {"TAG_CPU_unaligned_access",             34,   {ecPUBLICTAGARMCPUUNALIGNEDACCESS}},
   {"TAG_FP_HP_extension",                  36,   {ecPUBLICTAGARMFPHPEXTENSION}},
   {"TAG_ABI_FP_16bit_format",              37,   {ecPUBLICTAGARMFP16BITFORMAT}},
   {"TAG_MP_extension_use",                 42,   {ecPUBLICTAGARMFPHPEXTENSION}},
