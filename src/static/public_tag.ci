@@ -262,6 +262,14 @@ static convert_t ecPUBLICTAGARMFPHPEXTENSION[] = {
 };
 
 //--
+static convert_t ecPUBLICTAGARMPACEXTENSION[] = {
+  {"No PAC/AUT instructions",                                            0},
+  {"PAC/AUT instructions permitted in the NOP space",                    1},
+  {"PAC/AUT instructions permitted in the NOP and in the non-NOP space", 2},
+
+  {0, 0}
+};
+
 static convert_t ecPUBLICTAGARMBTIEXTENSION[] = {
   {"BTI instructions not permitted",                                 0},
   {"BTI instructions permitted in the NOP space",                    1},
@@ -321,7 +329,7 @@ convert_t ecPUBLICTAGARM[] = {
   {"TAG_DIV_use",                          44},
   {"TAG_DSP_extension",                    46},
   {"TAG_MVE_arch",                         48},
-  {"TAG_PAC_extension",                    50},
+  {"TAG_PAC_extension",                    50,   {ecPUBLICTAGARMPACEXTENSION}},
   {"TAG_BTI_extension",                    52,   {ecPUBLICTAGARMBTIEXTENSION}},
   {"TAG_BTI_use",                          74,   {ecPUBLICTAGARMBTIUSE}},
   {"TAG_PACRET_use",                       76,   {ecPUBLICTAGARMPACRETUSE}},
