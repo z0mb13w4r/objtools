@@ -274,7 +274,12 @@ unknown_t fupdate(handle_t p, const size_t cpos, const size_t chunksize) {
 
 handle_t fmalloc(unknown_t p, const size_t size, const size_t chunksize) {
   if (isfind(p)) {
-    return fmalloc(fget(p), size, chunksize);
+    pfind_t p0 = CAST(pfind_t, p);
+    if (p0 && p0->item) {
+      handle_t p1 = fmalloc(CAST(puchar_t, p0->item) + p0->cpos, size, chunksize);
+      p0->cpos += size;
+      return p1;
+    }
   } else if (p) {
     pfind_t p0 = xmalloc(sizeof(find_t));
     if (p0) {
@@ -291,7 +296,12 @@ handle_t fmalloc(unknown_t p, const size_t size, const size_t chunksize) {
 
 handle_t fcalloc(unknown_t p, const size_t size, const size_t chunksize) {
   if (isfind(p)) {
-    return fcalloc(fget(p), size, chunksize);
+    pfind_t p0 = CAST(pfind_t, p);
+    if (p0 && p0->item) {
+      handle_t p1 = fcalloc(CAST(puchar_t, p0->item) + p0->cpos, size, chunksize);
+      p0->cpos += size;
+      return p1;
+    }
   } else if (p) {
     pfind_t p0 = xmalloc(sizeof(find_t));
     if (p0) {
