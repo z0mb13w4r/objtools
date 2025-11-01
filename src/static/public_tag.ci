@@ -325,6 +325,14 @@ static convert_t ecPUBLICTAGARMOPTIMIZATIONGOALS[] = {
   {0, 0}
 };
 
+static convert_t ecPUBLICTAGARMWMMXARGS[] = {
+  {"AAPCS",                                    0},
+  {"WMMX registers",                           1},
+  {"custom",                                   2},
+
+  {0, 0}
+};
+
 static convert_t ecPUBLICTAGARMBTIUSE[] = {
   {"Compiled without branch target enforcement", 0},
   {"Compiled with branch target enforcement",    1},
@@ -389,7 +397,7 @@ convert_t ecPUBLICTAGARM[] = {
   {"TAG_ABI_enum_size",                    26,   {ecPUBLICTAGARMENUMSIZE}},
   {"TAG_ABI_HardFP_use",                   27},
   {"TAG_ABI_VFP_args",                     28},
-  {"TAG_ABI_WMMX_args",                    29},
+  {"TAG_ABI_WMMX_args",                    29,   {ecPUBLICTAGARMWMMXARGS}},
   {"TAG_ABI_optimization_goals",           30,   {ecPUBLICTAGARMOPTIMIZATIONGOALS}},
   {"TAG_ABI_FP_optimization_goals",        31,   {ecPUBLICTAGARMFPOPTIMIZATIONGOALS}},
   {"TAG_compatibility",                    32},
