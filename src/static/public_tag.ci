@@ -262,9 +262,15 @@ static convert_t ecPUBLICTAGARMFPHPEXTENSION[] = {
 };
 
 //--
+static convert_t ecPUBLICTAGARMBTIUSE[] = {
+  {"Compiled without branch target enforcement",                 0},
+  {"Compiled with branch target enforcement",                    1},
+  {0, 0}
+};
+
 static convert_t ecPUBLICTAGARMPACRETUSE[] = {
-  {"Compiled without return address signing and authentication",  0},
-  {"Compiled with return address signing and authentication",     1},
+  {"Compiled without return address signing and authentication", 0},
+  {"Compiled with return address signing and authentication",    1},
 
   {0, 0}
 };
@@ -308,7 +314,7 @@ convert_t ecPUBLICTAGARM[] = {
   {"TAG_MVE_arch",                         48},
   {"TAG_PAC_extension",                    50},
   {"TAG_BTI_extension",                    52},
-  {"TAG_BTI_use",                          74},
+  {"TAG_BTI_use",                          74,   {ecPUBLICTAGARMBTIUSE}},
   {"TAG_PACRET_use",                       76,   {ecPUBLICTAGARMPACRETUSE}},
   {"TAG_nodefaults",                       64},
   {"TAG_also_compatible_with",             65},
