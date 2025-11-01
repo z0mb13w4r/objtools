@@ -313,6 +313,18 @@ static convert_t ecPUBLICTAGARMFPOPTIMIZATIONGOALS[] = {
   {0, 0}
 };
 
+static convert_t ecPUBLICTAGARMOPTIMIZATIONGOALS[] = {
+  {"None",                                     0},
+  {"Prefer Speed",                             1},
+  {"Aggressive Speed",                         2},
+  {"Prefer Size",                              3},
+  {"Aggressive Size",                          4},
+  {"Prefer Debug",                             5},
+  {"Aggressive Debug",                         6},
+
+  {0, 0}
+};
+
 static convert_t ecPUBLICTAGARMBTIUSE[] = {
   {"Compiled without branch target enforcement", 0},
   {"Compiled with branch target enforcement",    1},
@@ -378,7 +390,7 @@ convert_t ecPUBLICTAGARM[] = {
   {"TAG_ABI_HardFP_use",                   27},
   {"TAG_ABI_VFP_args",                     28},
   {"TAG_ABI_WMMX_args",                    29},
-  {"TAG_ABI_optimization_goals",           30},
+  {"TAG_ABI_optimization_goals",           30,   {ecPUBLICTAGARMOPTIMIZATIONGOALS}},
   {"TAG_ABI_FP_optimization_goals",        31,   {ecPUBLICTAGARMFPOPTIMIZATIONGOALS}},
   {"TAG_compatibility",                    32},
   {"TAG_CPU_unaligned_access",             34,   {ecPUBLICTAGARMCPUUNALIGNEDACCESS}},
