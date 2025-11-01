@@ -286,6 +286,14 @@ static convert_t ecPUBLICTAGARMBTIUSE[] = {
   {0, 0}
 };
 
+static convert_t ecPUBLICTAGARMDIVUSE[] = {
+  {"Allowed in Thumb-ISA, v7-R or v7-M",               0},
+  {"Not allowed",                                      1},
+  {"Allowed in v7-A with integer division extension",  2},
+
+  {0, 0}
+};
+
 static convert_t ecPUBLICTAGARMPACRETUSE[] = {
   {"Compiled without return address signing and authentication", 0},
   {"Compiled with return address signing and authentication",    1},
@@ -343,7 +351,7 @@ convert_t ecPUBLICTAGARM[] = {
   {"TAG_FP_HP_extension",                  36,   {ecPUBLICTAGARMFPHPEXTENSION}},
   {"TAG_ABI_FP_16bit_format",              37},
   {"TAG_MP_extension_use",                 42,   {ecPUBLICTAGARMFPHPEXTENSION}},
-  {"TAG_DIV_use",                          44},
+  {"TAG_DIV_use",                          44,   {ecPUBLICTAGARMDIVUSE}},
   {"TAG_DSP_extension",                    46},
   {"TAG_MVE_arch",                         48,   {ecPUBLICTAGARMMVEARCH}},
   {"TAG_PAC_extension",                    50,   {ecPUBLICTAGARMPACEXTENSION}},
