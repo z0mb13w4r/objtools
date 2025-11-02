@@ -22,6 +22,7 @@ static char zELFRELOCS[]         = "Displays the contents of the file's relocati
 static char zELFSYMBOLS[]        = "Displays the entries in symbol table section of the file.";
 static char zELFUNWIND[]         = "Displays the contents of the file's unwind section.";
 static char zELFDECOMPRESS[]     = "Requests that the section(s) being dumped by x, R or p options are decompressed before being displayed.";
+static char zELFUSEDYNAMIC[]     = "Use the dynamic section info when displaying symbols.";
 //static char zELFDISASSEMBLE[]    = "Display the assembler mnemonics for the machine instructions from the input file.";
 
 static const char *zELFDESCRIPTION[] = {
@@ -51,6 +52,7 @@ static const args_t zREADELFARGS[] = {
   {'r', "--relocs",          OPTREADELF_RELOCS,            zELFRELOCS},
   {'s', "--symbols",         OPTREADELF_SYMBOLS,           zELFSYMBOLS},
   {'u', "--unwind",          OPTREADELF_UNWIND,            zELFUNWIND},
+  {'D', "--use-dynamic",     OPTREADELF_USEDYNAMIC,        zELFUSEDYNAMIC},
   {'x', "--hex-dump",        0,                            zHEXDUMP},
   {'Z', "--code-dump",       0,                            zCODEDUMP},
   {'p', "--string-dump",     0,                            zSTRDUMP},
