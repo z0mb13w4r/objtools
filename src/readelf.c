@@ -879,23 +879,44 @@ static int dump_relocsrelr64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *
   return 0;
 }
 
-static int dump_relocs0(const pbuffer_t p, const int index, const uint64_t sh_offset, const uint64_t count) {
+static int dump_relocs0(const pbuffer_t p, const poptions_t o, const int index,
+                     const uint64_t sh_type, const uint64_t sh_offset, const uint64_t sh_size, const uint64_t count) {
   int n = 0;
-  n += printf_text("Relocation section", USE_LT);
-  n += printf_text(ecget_secnamebyindex(p, index), USE_LT | USE_SPACE | USE_SQ);
-  n += printf_text("at offset", USE_LT | USE_SPACE);
-  n += printf_nice(sh_offset, isELF64(p) ? USE_LHEX64 : USE_LHEX32);
-  n += printf_text("contains", USE_LT | USE_SPACE);
-  n += printf_nice(count, USE_DEC);
-  n += printf_text(1 == count ? "entry" : "entries", USE_LT | USE_SPACE | USE_COLON | USE_EOL);
+  const char* name = ecget_secnamebyindex(p, index);
+  if (MODE_ISANY(o->action, OPTREADELF_USEDYNAMIC)) {
+    if (strstr(name, ".plt")) {
+      n += printf_text("PLT", USE_SPACE | USE_SQ);
+    } else {
+      n += printf_pick(ecSHDRDYN, sh_type, USE_SPACE | USE_SQ);
+    }
+    n += printf_text("relocation section at offset", USE_LT | USE_SPACE);
+    n += printf_nice(sh_offset, USE_FHEX);
+    n += printf_text("contains", USE_LT | USE_SPACE);
+    n += printf_nice(sh_size, USE_DEC);
+    n += printf_text("bytes", USE_LT | USE_SPACE | USE_COLON | USE_EOL);
+  } else {
+    n += printf_text("Relocation section", USE_LT);
+    n += printf_text(name, USE_LT | USE_SPACE | USE_SQ);
+    n += printf_text("at offset", USE_LT | USE_SPACE);
+    n += printf_nice(sh_offset, isELF64(p) ? USE_LHEX64 : USE_LHEX32);
+    n += printf_text("contains", USE_LT | USE_SPACE);
+    n += printf_nice(count, USE_DEC);
+    n += printf_text(1 == count ? "entry" : "entries", USE_LT | USE_SPACE | USE_COLON | USE_EOL);
+  }
 
   return n;
 }
 
 static int dump_relocs32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
+  /* Scan the sections for the relocs section. */
   int n = 0;
+  Elf32_Half cnt = 0;
+  for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
+    Elf32_Shdr *shdr = ecget_shdr32byindex(p, i);
+    if (shdr && (SHT_RELA == shdr->sh_type || SHT_REL == shdr->sh_type || SHT_RELR == shdr->sh_type)) ++cnt;
+  }
 
-  if (MODE_ISANY(o->action, OPTREADELF_USEDYNAMIC)) {
+  if (0 == cnt) {
     printf_w("There are no dynamic relocations in this file.");
   } else {
     for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
@@ -903,7 +924,7 @@ static int dump_relocs32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr
       if (shdr) {
         if (SHT_RELA == shdr->sh_type || SHT_REL == shdr->sh_type || SHT_RELR == shdr->sh_type) {
           size_t cnt = shdr->sh_size / shdr->sh_entsize;
-          n += dump_relocs0(p, i, shdr->sh_offset, cnt);
+          n += dump_relocs0(p, o, i, shdr->sh_type, shdr->sh_offset, shdr->sh_size, cnt);
 
           if (SHT_REL == shdr->sh_type) {
             n += dump_relocsrel32(p, o, shdr);
@@ -923,9 +944,15 @@ static int dump_relocs32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr
 }
 
 static int dump_relocs64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
+  /* Scan the sections for the relocs section. */
   int n = 0;
+  Elf64_Half cnt = 0;
+  for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
+    Elf64_Shdr *shdr = ecget_shdr64byindex(p, i);
+    if (shdr && (SHT_RELA == shdr->sh_type || SHT_REL == shdr->sh_type || SHT_RELR == shdr->sh_type)) ++cnt;
+  }
 
-  if (MODE_ISANY(o->action, OPTREADELF_USEDYNAMIC)) {
+  if (0 == cnt) {
     printf_w("There are no dynamic relocations in this file.");
   } else {
     for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
@@ -933,7 +960,7 @@ static int dump_relocs64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr
       if (shdr) {
         if (SHT_RELA == shdr->sh_type || SHT_REL == shdr->sh_type || SHT_RELR == shdr->sh_type) {
           size_t cnt = shdr->sh_size / shdr->sh_entsize;
-          n += dump_relocs0(p, i, shdr->sh_offset, cnt);
+          n += dump_relocs0(p, o, i, shdr->sh_type, shdr->sh_offset, shdr->sh_size, cnt);
 
           if (SHT_REL == shdr->sh_type) {
             n += dump_relocsrel64(p, o, shdr);
