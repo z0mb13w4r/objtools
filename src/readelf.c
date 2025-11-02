@@ -661,41 +661,65 @@ static int dump_dynamic1(const pbuffer_t p, const poptions_t o, const uint64_t d
 }
 
 static int dump_dynamic32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
+  /* Scan the sections for the dynamic section. */
+  int n = 0;
+  Elf32_Half cnt = 0;
   for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
     Elf32_Shdr *shdr = ecget_shdr32byindex(p, i);
-    if (shdr && SHT_DYNAMIC == shdr->sh_type) {
-      size_t cnt = shdr->sh_size / shdr->sh_entsize;
-      dump_dynamic0(p, shdr->sh_offset, cnt);
+    if (shdr && SHT_DYNAMIC == shdr->sh_type) ++cnt;
+  }
 
-      Elf32_Dyn *dyn = _get32byshdr(p, shdr);
-      for (size_t j = 0; j < cnt; ++j, ++dyn) {
-        dump_dynamic1(p, o, dyn->d_tag, dyn->d_un.d_val, shdr->sh_link);
+  if (0 == cnt) {
+    printf_w("There is no dynamic section in this file.");
+  } else {
+    for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
+      Elf32_Shdr *shdr = ecget_shdr32byindex(p, i);
+      if (shdr && SHT_DYNAMIC == shdr->sh_type) {
+        size_t cnt = shdr->sh_size / shdr->sh_entsize;
+        n += dump_dynamic0(p, shdr->sh_offset, cnt);
+
+        Elf32_Dyn *dyn = _get32byshdr(p, shdr);
+        for (size_t j = 0; j < cnt; ++j, ++dyn) {
+          n += dump_dynamic1(p, o, dyn->d_tag, dyn->d_un.d_val, shdr->sh_link);
+        }
+
+        n += printf_eol();
       }
-
-      printf_eol();
     }
   }
 
-  return 0;
+  return n;
 }
 
 static int dump_dynamic64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
+  /* Scan the sections for the dynamic section. */
+  int n = 0;
+  Elf64_Half cnt = 0;
   for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
     Elf64_Shdr *shdr = ecget_shdr64byindex(p, i);
-    if (shdr && SHT_DYNAMIC == shdr->sh_type) {
-      size_t cnt = shdr->sh_size / shdr->sh_entsize;
-      dump_dynamic0(p, shdr->sh_offset, cnt);
+    if (shdr && SHT_DYNAMIC == shdr->sh_type) ++cnt;
+  }
 
-      Elf64_Dyn *dyn = _get64byshdr(p, shdr);
-      for (size_t j = 0; j < cnt; ++j, ++dyn) {
-        dump_dynamic1(p, o, dyn->d_tag, dyn->d_un.d_val, shdr->sh_link);
+  if (0 == cnt) {
+    printf_w("There is no dynamic section in this file.");
+  } else {
+    for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
+      Elf64_Shdr *shdr = ecget_shdr64byindex(p, i);
+      if (shdr && SHT_DYNAMIC == shdr->sh_type) {
+        size_t cnt = shdr->sh_size / shdr->sh_entsize;
+        n += dump_dynamic0(p, shdr->sh_offset, cnt);
+
+        Elf64_Dyn *dyn = _get64byshdr(p, shdr);
+        for (size_t j = 0; j < cnt; ++j, ++dyn) {
+          n += dump_dynamic1(p, o, dyn->d_tag, dyn->d_un.d_val, shdr->sh_link);
+        }
+
+        n += printf_eol();
       }
-
-      printf_eol();
     }
   }
 
-  return 0;
+  return n;
 }
 
 static int dump_relocsrel32(const pbuffer_t p, const poptions_t o, Elf32_Shdr *shdr) {
@@ -872,6 +896,7 @@ static int dump_relocs32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr
   int n = 0;
 
   if (MODE_ISANY(o->action, OPTREADELF_USEDYNAMIC)) {
+    printf_w("There are no dynamic relocations in this file.");
   } else {
     for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
       Elf32_Shdr *shdr = ecget_shdr32byindex(p, i);
@@ -901,6 +926,7 @@ static int dump_relocs64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr
   int n = 0;
 
   if (MODE_ISANY(o->action, OPTREADELF_USEDYNAMIC)) {
+    printf_w("There are no dynamic relocations in this file.");
   } else {
     for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
       Elf64_Shdr *shdr = ecget_shdr64byindex(p, i);
@@ -998,6 +1024,7 @@ static int dump_symbols32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehd
   ecmake_versionnames32(p, vnames, NELEMENTS(vnames));
 
   if (MODE_ISANY(o->action, OPTREADELF_USEDYNAMIC)) {
+    printf_w("Dynamic symbol information is not available for displaying symbols.");
   } else {
     for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
       Elf32_Shdr *shdr = ecget_shdr32byindex(p, i);
@@ -1048,6 +1075,7 @@ static int dump_symbols64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
   ecmake_versionnames64(p, vnames, NELEMENTS(vnames));
 
   if (MODE_ISANY(o->action, OPTREADELF_USEDYNAMIC)) {
+    printf_w("Dynamic symbol information is not available for displaying symbols.");
   } else {
     for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
       Elf64_Shdr *shdr = ecget_shdr64byindex(p, i);
@@ -1404,14 +1432,25 @@ static int dump_versionneed64(const pbuffer_t p, const poptions_t o, Elf64_Shdr 
 }
 
 static int dump_version32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
+  /* Scan the sections for the version section. */
   int n = 0;
+  Elf32_Half cnt = 0;
   for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
     Elf32_Shdr *shdr = ecget_shdr32byindex(p, i);
-    if (shdr) {
-      if (SHT_GNU_versym == shdr->sh_type) {
-        n += dump_versionsym32(p, o, ehdr, shdr);
-      } else if (SHT_GNU_verneed == shdr->sh_type) {
-        n += dump_versionneed32(p, o, shdr);
+    if (shdr && (SHT_GNU_versym == shdr->sh_type || SHT_GNU_verneed == shdr->sh_type)) ++cnt;
+  }
+
+  if (0 == cnt) {
+    printf_w("No version information found in this file.");
+  } else {
+    for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
+      Elf32_Shdr *shdr = ecget_shdr32byindex(p, i);
+      if (shdr) {
+        if (SHT_GNU_versym == shdr->sh_type) {
+          n += dump_versionsym32(p, o, ehdr, shdr);
+        } else if (SHT_GNU_verneed == shdr->sh_type) {
+          n += dump_versionneed32(p, o, shdr);
+        }
       }
     }
   }
@@ -1420,14 +1459,25 @@ static int dump_version32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehd
 }
 
 static int dump_version64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
+  /* Scan the sections for the version section. */
   int n = 0;
+  Elf64_Half cnt = 0;
   for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
     Elf64_Shdr *shdr = ecget_shdr64byindex(p, i);
-    if (shdr) {
-      if (SHT_GNU_versym == shdr->sh_type) {
-        n += dump_versionsym64(p, o, ehdr, shdr);
-      } else if (SHT_GNU_verneed == shdr->sh_type) {
-        n += dump_versionneed64(p, o, shdr);
+    if (shdr && (SHT_GNU_versym == shdr->sh_type || SHT_GNU_verneed == shdr->sh_type)) ++cnt;
+  }
+
+  if (0 == cnt) {
+    printf_w("No version information found in this file.");
+  } else {
+    for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
+      Elf64_Shdr *shdr = ecget_shdr64byindex(p, i);
+      if (shdr) {
+        if (SHT_GNU_versym == shdr->sh_type) {
+          n += dump_versionsym64(p, o, ehdr, shdr);
+        } else if (SHT_GNU_verneed == shdr->sh_type) {
+          n += dump_versionneed64(p, o, shdr);
+        }
       }
     }
   }
