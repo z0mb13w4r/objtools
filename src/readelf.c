@@ -871,22 +871,25 @@ static int dump_relocs0(const pbuffer_t p, const int index, const uint64_t sh_of
 static int dump_relocs32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
   int n = 0;
 
-  for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
-    Elf32_Shdr *shdr = ecget_shdr32byindex(p, i);
-    if (shdr) {
-      if (SHT_RELA == shdr->sh_type || SHT_REL == shdr->sh_type || SHT_RELR == shdr->sh_type) {
-        size_t cnt = shdr->sh_size / shdr->sh_entsize;
-        n += dump_relocs0(p, i, shdr->sh_offset, cnt);
+  if (MODE_ISANY(o->action, OPTREADELF_USEDYNAMIC)) {
+  } else {
+    for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
+      Elf32_Shdr *shdr = ecget_shdr32byindex(p, i);
+      if (shdr) {
+        if (SHT_RELA == shdr->sh_type || SHT_REL == shdr->sh_type || SHT_RELR == shdr->sh_type) {
+          size_t cnt = shdr->sh_size / shdr->sh_entsize;
+          n += dump_relocs0(p, i, shdr->sh_offset, cnt);
 
-        if (SHT_REL == shdr->sh_type) {
-          n += dump_relocsrel32(p, o, shdr);
-        } else if (SHT_RELA == shdr->sh_type) {
-          n += dump_relocsrela32(p, o, shdr);
-        } else if (SHT_RELR == shdr->sh_type) {
-          n += dump_relocsrelr32(p, o, shdr);
+          if (SHT_REL == shdr->sh_type) {
+            n += dump_relocsrel32(p, o, shdr);
+          } else if (SHT_RELA == shdr->sh_type) {
+            n += dump_relocsrela32(p, o, shdr);
+          } else if (SHT_RELR == shdr->sh_type) {
+            n += dump_relocsrelr32(p, o, shdr);
+          }
+
+          n += printf_eol();
         }
-
-        n += printf_eol();
       }
     }
   }
@@ -994,46 +997,49 @@ static int dump_symbols32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehd
   MALLOCA(version_t, vnames, 1024);
   ecmake_versionnames32(p, vnames, NELEMENTS(vnames));
 
-  for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
-    Elf32_Shdr *shdr = ecget_shdr32byindex(p, i);
-    if (shdr) {
-      if (SHT_SYMTAB == shdr->sh_type || SHT_DYNSYM == shdr->sh_type) {
-        size_t cnt = shdr->sh_size / shdr->sh_entsize;
-        n += dump_symbols0(p, o, i, cnt, shdr->sh_offset);
+  if (MODE_ISANY(o->action, OPTREADELF_USEDYNAMIC)) {
+  } else {
+    for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
+      Elf32_Shdr *shdr = ecget_shdr32byindex(p, i);
+      if (shdr) {
+        if (SHT_SYMTAB == shdr->sh_type || SHT_DYNSYM == shdr->sh_type) {
+          size_t cnt = shdr->sh_size / shdr->sh_entsize;
+          n += dump_symbols0(p, o, i, cnt, shdr->sh_offset);
 
-        handle_t f = fget32byshdr(p, shdr);
-        if (f) {
-          for (size_t j = 0; j < cnt; ++j) {
-            Elf32_Sym *s = fget(f);
-            if (s) {
-              n += dump_symbols1(p, o, j, s->st_value, s->st_size, s->st_info, s->st_other, s->st_shndx);
+          handle_t f = fget32byshdr(p, shdr);
+          if (f) {
+            for (size_t j = 0; j < cnt; ++j) {
+              Elf32_Sym *s = fget(f);
+              if (s) {
+                n += dump_symbols1(p, o, j, s->st_value, s->st_size, s->st_info, s->st_other, s->st_shndx);
 
-              const char* name = ecget_namebyoffset(p, shdr->sh_link, s->st_name);
-              if (name && 0 != name[0]) {
-                n += printf_text(name, USE_LT | USE_SPACE);
+                const char* name = ecget_namebyoffset(p, shdr->sh_link, s->st_name);
+                if (name && 0 != name[0]) {
+                  n += printf_text(name, USE_LT | USE_SPACE);
 
-                if (SHT_DYNSYM == shdr->sh_type) {
-                  Elf32_Shdr *vshdr = ecget_shdr32bytype(p, SHT_GNU_versym);
-                  if (vshdr) {
-                    Elf32_Versym *vs = getp(p, vshdr->sh_offset + (j * vshdr->sh_entsize), vshdr->sh_entsize);
-                    if (vs && *vs && *vs < NELEMENTS(vnames)) {
+                  if (SHT_DYNSYM == shdr->sh_type) {
+                    Elf32_Shdr *vshdr = ecget_shdr32bytype(p, SHT_GNU_versym);
+                    if (vshdr) {
+                      Elf32_Versym *vs = getp(p, vshdr->sh_offset + (j * vshdr->sh_entsize), vshdr->sh_entsize);
+                      if (vs && *vs && *vs < NELEMENTS(vnames)) {
                         n += dump_symbols2(p, o, vnames[0], vnames[*vs & VERSYM_VERSION], *vs & VERSYM_VERSION, s->st_shndx, s->st_other);
+                      }
                     }
                   }
                 }
+                f = fnext(f);
+                n += printf_eol();
               }
-              f = fnext(f);
-              n += printf_eol();
             }
           }
-        }
 
-        n += printf_eol();
+          n += printf_eol();
+        }
       }
     }
   }
 
-  return 0;
+  return n;
 }
 
 static int dump_symbols64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
@@ -1067,7 +1073,7 @@ static int dump_symbols64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
                     if (vshdr) {
                       Elf64_Versym *vs = getp(p, vshdr->sh_offset + (j * vshdr->sh_entsize), vshdr->sh_entsize);
                       if (vs && *vs && *vs < NELEMENTS(vnames)) {
-                          n += dump_symbols2(p, o, vnames[0], vnames[*vs & VERSYM_VERSION], *vs & VERSYM_VERSION, s->st_shndx, s->st_other);
+                        n += dump_symbols2(p, o, vnames[0], vnames[*vs & VERSYM_VERSION], *vs & VERSYM_VERSION, s->st_shndx, s->st_other);
                       }
                     }
                   }
