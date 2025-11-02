@@ -105,15 +105,15 @@ static int dump_relocsver32(const pbuffer_t p, const poptions_t o, Elf32_Shdr *s
 }
 
 static int dump_relocsver64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *shdr, const uint64_t r_info, pversion_t vnames, const size_t maxvnames) {
+  int n = 0;
   if (shdr) {
     Elf64_Shdr *dshdr = ecget_shdr64byindex(p, shdr->sh_link);
     if (dshdr) {
       Elf64_Off k = ELF64_R_SYM(r_info);
       Elf64_Sym *sym = getp(p, dshdr->sh_offset + (k * dshdr->sh_entsize), dshdr->sh_entsize);
       if (sym) {
-        printf_nice(sym->st_value, USE_LHEX64);
-
-        printf_text(ecget_namebyoffset(p, dshdr->sh_link, sym->st_name), USE_LT | USE_SPACE);
+        n += printf_nice(sym->st_value, USE_LHEX64);
+        n += printf_text(ecget_namebyoffset(p, dshdr->sh_link, sym->st_name), USE_LT | USE_SPACE);
 
         Elf64_Shdr *vshdr = ecget_shdr64bytype(p, SHT_GNU_versym);
         if (vshdr) {
@@ -123,7 +123,7 @@ static int dump_relocsver64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *s
             if (*vs && *vs < maxvnames) {
               const char* namevs = ecget_namebyoffset(p, vnames[0], vnames[*vs]);
               if (namevs) {
-                printf_text(namevs, USE_LT | USE_AT);
+                n += printf_text(namevs, USE_LT | USE_AT);
               }
             }
           }
@@ -132,7 +132,7 @@ static int dump_relocsver64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *s
     }
   }
 
-  return 0;
+  return n;
 }
 
 static int dump_elfheader(const pbuffer_t p, const poptions_t o) {
@@ -699,138 +699,142 @@ static int dump_dynamic64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
 }
 
 static int dump_relocsrel32(const pbuffer_t p, const poptions_t o, Elf32_Shdr *shdr) {
+  int n = 0;
   MALLOCA(version_t, vnames, 1024);
   ecmake_versionnames32(p, vnames, NELEMENTS(vnames));
 
   const int MAXSIZE = strlenpick(get_RELTYPE(p)) + 2;
 
-  printf_text("Offset", USE_LT | USE_SPACE | SET_PAD(10));
-  printf_text("Info", USE_LT | SET_PAD(9));
-  printf_text("Type", USE_LT | SET_PAD(MAXSIZE));
-  printf_text("Sym Val", USE_LT | SET_PAD(9));
-  printf_text("Sym Name", USE_LT | USE_EOL);
+  n += printf_text("Offset", USE_LT | USE_SPACE | SET_PAD(10));
+  n += printf_text("Info", USE_LT | SET_PAD(9));
+  n += printf_text("Type", USE_LT | SET_PAD(MAXSIZE));
+  n += printf_text("Sym Val", USE_LT | SET_PAD(9));
+  n += printf_text("Sym Name", USE_LT | USE_EOL);
 
   size_t cnt = shdr->sh_size / shdr->sh_entsize;
 
   Elf32_Rel *r = _get32byshdr(p, shdr);
   if (r) {
     for (size_t j = 0; j < cnt; ++j, ++r) {
-      printf_nice(r->r_offset, USE_LHEX32);
-      printf_nice(r->r_info, USE_LHEX32);
-      printf_pick(get_RELTYPE(p), ELF32_R_TYPE(r->r_info), USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+      n += printf_nice(r->r_offset, USE_LHEX32);
+      n += printf_nice(r->r_info, USE_LHEX32);
+      n += printf_pick(get_RELTYPE(p), ELF32_R_TYPE(r->r_info), USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
 
       if (isused(get_RELTYPEDEF(p), ELF32_R_TYPE(r->r_info))) {
-        dump_relocsdef32(p, o, shdr, r->r_info);
+        n += dump_relocsdef32(p, o, shdr, r->r_info);
       } else if (isused(get_RELTYPEVER(p), ELF32_R_TYPE(r->r_info))) {
-        dump_relocsver32(p, o, shdr, r->r_info, vnames, NELEMENTS(vnames));
+        n += dump_relocsver32(p, o, shdr, r->r_info, vnames, NELEMENTS(vnames));
       } else if (!isused(get_RELTYPESAFE(p), ELF32_R_TYPE(r->r_info))) {
-        printf_nice(ELF32_R_TYPE(r->r_info), USE_UNKNOWN);
+        n += printf_nice(ELF32_R_TYPE(r->r_info), USE_UNKNOWN);
       }
 
-      printf_eol();
+      n += printf_eol();
     }
   }
 
-  return 0;
+  return n;
 }
 
 static int dump_relocsrel64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *shdr) {
+  int n = 0;
   const int MAXSIZE = strlenpick(zRELTYPE64) + 2;
 
-  printf_text("Offset", USE_LT | USE_SPACE | SET_PAD(14));
-  printf_text("Info", USE_LT | SET_PAD(13));
-  printf_text("Type", USE_LT | SET_PAD(MAXSIZE));
-  printf_text("Symbol's Value", USE_LT | SET_PAD(17));
-  printf_text("Symbol's Name", USE_LT | USE_EOL);
+  n += printf_text("Offset", USE_LT | USE_SPACE | SET_PAD(14));
+  n += printf_text("Info", USE_LT | SET_PAD(13));
+  n += printf_text("Type", USE_LT | SET_PAD(MAXSIZE));
+  n += printf_text("Symbol's Value", USE_LT | SET_PAD(17));
+  n += printf_text("Symbol's Name", USE_LT | USE_EOL);
 
   size_t cnt = shdr->sh_size / shdr->sh_entsize;
 
   Elf64_Rel *r = _get64byshdr(p, shdr);
   if (r) {
     for (size_t j = 0; j < cnt; ++j, ++r) {
-      printf_nice(r->r_offset, USE_LHEX48);
-      printf_nice(r->r_info, USE_LHEX48);
-      printf_pick(zRELTYPE64, ELF64_R_TYPE(r->r_info), USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+      n += printf_nice(r->r_offset, USE_LHEX48);
+      n += printf_nice(r->r_info, USE_LHEX48);
+      n += printf_pick(zRELTYPE64, ELF64_R_TYPE(r->r_info), USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
 // TBD
-      printf_eol();
+      n += printf_eol();
     }
   }
 
-  return 0;
+  return n;
 }
 
 static int dump_relocsrela32(const pbuffer_t p, const poptions_t o, Elf32_Shdr *shdr) {
+  int n = 0;
   const int MAXSIZE = strlenpick(get_RELTYPE(p)) + 2;
 
-  printf_text("Offset", USE_LT | USE_SPACE | SET_PAD(10));
-  printf_text("Info", USE_LT | SET_PAD(9));
-  printf_text("Type", USE_LT | SET_PAD(MAXSIZE));
-  printf_text("Sym Val", USE_LT | SET_PAD(9));
-  printf_text("Sym Name + Addend", USE_LT | USE_EOL);
+  n += printf_text("Offset", USE_LT | USE_SPACE | SET_PAD(10));
+  n += printf_text("Info", USE_LT | SET_PAD(9));
+  n += printf_text("Type", USE_LT | SET_PAD(MAXSIZE));
+  n += printf_text("Sym Val", USE_LT | SET_PAD(9));
+  n += printf_text("Sym Name + Addend", USE_LT | USE_EOL);
 
   size_t cnt = shdr->sh_size / shdr->sh_entsize;
 
   Elf32_Rela *r = _get32byshdr(p, shdr);
   if (r) {
     for (size_t j = 0; j < cnt; ++j, ++r) {
-      printf_nice(r->r_offset, USE_LHEX48);
-      printf_nice(r->r_info, USE_LHEX48);
-      printf_pick(get_RELTYPE(p), ELF32_R_TYPE(r->r_info), USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+      n += printf_nice(r->r_offset, USE_LHEX48);
+      n += printf_nice(r->r_info, USE_LHEX48);
+      n += printf_pick(get_RELTYPE(p), ELF32_R_TYPE(r->r_info), USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
 
-      printf_eol();
+      n += printf_eol();
     }
   }
 
-  return 0;
+  return n;
 }
 
 static int dump_relocsrela64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *shdr) {
+  int n = 0;
   MALLOCA(version_t, vnames, 1024);
   ecmake_versionnames64(p, vnames, NELEMENTS(vnames));
 
   const int MAXSIZE = strlenpick(get_RELTYPE(p)) + 2;
 
-  printf_text("Offset", USE_LT | USE_SPACE | SET_PAD(14));
-  printf_text("Info", USE_LT | SET_PAD(13));
-  printf_text("Type", USE_LT | SET_PAD(MAXSIZE));
-  printf_text("Symbol's Value", USE_LT | SET_PAD(17));
-  printf_text("Symbol's Name + Addend", USE_LT | USE_EOL);
+  n += printf_text("Offset", USE_LT | USE_SPACE | SET_PAD(14));
+  n += printf_text("Info", USE_LT | SET_PAD(13));
+  n += printf_text("Type", USE_LT | SET_PAD(MAXSIZE));
+  n += printf_text("Symbol's Value", USE_LT | SET_PAD(17));
+  n += printf_text("Symbol's Name + Addend", USE_LT | USE_EOL);
 
   size_t cnt = shdr->sh_size / shdr->sh_entsize;
 
   Elf64_Rela *r = _get64byshdr(p, shdr);
   if (r) {
     for (size_t j = 0; j < cnt; ++j, ++r) {
-      printf_nice(r->r_offset, USE_LHEX48);
-      printf_nice(r->r_info, USE_LHEX48);
-      printf_pick(get_RELTYPE(p), ELF64_R_TYPE(r->r_info), USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+      n += printf_nice(r->r_offset, USE_LHEX48);
+      n += printf_nice(r->r_info, USE_LHEX48);
+      n += printf_pick(get_RELTYPE(p), ELF64_R_TYPE(r->r_info), USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
 
       if (isused(get_RELTYPEDEF(p), ELF64_R_TYPE(r->r_info))) {
-        dump_relocsdef64(p, o, shdr, r->r_info);
+        n += dump_relocsdef64(p, o, shdr, r->r_info);
       } else if (isused(get_RELTYPEVER(p), ELF64_R_TYPE(r->r_info))) {
-        dump_relocsver64(p, o, shdr, r->r_info, vnames, NELEMENTS(vnames));
+        n += dump_relocsver64(p, o, shdr, r->r_info, vnames, NELEMENTS(vnames));
       }
 
       if (isused(get_RELTYPESHEX8(p), ELF64_R_TYPE(r->r_info))) {
-        printf_nice(r->r_addend, USE_SHEX8);
+        n += printf_nice(r->r_addend, USE_SHEX8);
       } else if (isused(get_RELTYPESHEX16(p), ELF64_R_TYPE(r->r_info))) {
-        printf_nice(r->r_addend, USE_SHEX16);
+        n += printf_nice(r->r_addend, USE_SHEX16);
       } else if (isused(get_RELTYPESHEX32(p), ELF64_R_TYPE(r->r_info))) {
-        printf_nice(r->r_addend, USE_SHEX32);
+        n += printf_nice(r->r_addend, USE_SHEX32);
       } else if (isused(get_RELTYPESHEX64(p), ELF64_R_TYPE(r->r_info))) {
-        printf_nice(r->r_addend, USE_SHEX64);
+        n += printf_nice(r->r_addend, USE_SHEX64);
       } else if (isused(get_RELTYPEPACK(p), ELF64_R_TYPE(r->r_info))) {
-        printf_pack(17);
-        printf_nice(r->r_addend, USE_LHEX);
+        n += printf_pack(17);
+        n += printf_nice(r->r_addend, USE_LHEX);
       } else if (!isused(get_RELTYPESAFE(p), ELF64_R_TYPE(r->r_info))) {
-        printf_nice(r->r_info & 0xffff, USE_UNKNOWN);
+        n += printf_nice(r->r_info & 0xffff, USE_UNKNOWN);
       }
 
-      printf_eol();
+      n += printf_eol();
     }
   }
 
-  return 0;
+  return n;
 }
 
 static int dump_relocsrelr32(const pbuffer_t p, const poptions_t o, Elf32_Shdr *shdr) {
@@ -865,49 +869,58 @@ static int dump_relocs0(const pbuffer_t p, const int index, const uint64_t sh_of
 }
 
 static int dump_relocs32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
+  int n = 0;
+
   for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
     Elf32_Shdr *shdr = ecget_shdr32byindex(p, i);
     if (shdr) {
       if (SHT_RELA == shdr->sh_type || SHT_REL == shdr->sh_type || SHT_RELR == shdr->sh_type) {
         size_t cnt = shdr->sh_size / shdr->sh_entsize;
-        dump_relocs0(p, i, shdr->sh_offset, cnt);
+        n += dump_relocs0(p, i, shdr->sh_offset, cnt);
 
         if (SHT_REL == shdr->sh_type) {
-          dump_relocsrel32(p, o, shdr);
+          n += dump_relocsrel32(p, o, shdr);
         } else if (SHT_RELA == shdr->sh_type) {
-          dump_relocsrela32(p, o, shdr);
+          n += dump_relocsrela32(p, o, shdr);
         } else if (SHT_RELR == shdr->sh_type) {
-          dump_relocsrelr32(p, o, shdr);
+          n += dump_relocsrelr32(p, o, shdr);
         }
-        printf_eol();
+
+        n += printf_eol();
       }
     }
   }
 
-  return 0;
+  return n;
 }
 
 static int dump_relocs64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
-  for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
-    Elf64_Shdr *shdr = ecget_shdr64byindex(p, i);
-    if (shdr) {
-      if (SHT_RELA == shdr->sh_type || SHT_REL == shdr->sh_type || SHT_RELR == shdr->sh_type) {
-        size_t cnt = shdr->sh_size / shdr->sh_entsize;
-        dump_relocs0(p, i, shdr->sh_offset, cnt);
+  int n = 0;
 
-        if (SHT_REL == shdr->sh_type) {
-          dump_relocsrel64(p, o, shdr);
-        } else if (SHT_RELA == shdr->sh_type) {
-          dump_relocsrela64(p, o, shdr);
-        } else if (SHT_RELR == shdr->sh_type) {
-          dump_relocsrelr64(p, o, shdr);
+  if (MODE_ISANY(o->action, OPTREADELF_USEDYNAMIC)) {
+  } else {
+    for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
+      Elf64_Shdr *shdr = ecget_shdr64byindex(p, i);
+      if (shdr) {
+        if (SHT_RELA == shdr->sh_type || SHT_REL == shdr->sh_type || SHT_RELR == shdr->sh_type) {
+          size_t cnt = shdr->sh_size / shdr->sh_entsize;
+          n += dump_relocs0(p, i, shdr->sh_offset, cnt);
+
+          if (SHT_REL == shdr->sh_type) {
+            n += dump_relocsrel64(p, o, shdr);
+          } else if (SHT_RELA == shdr->sh_type) {
+            n += dump_relocsrela64(p, o, shdr);
+          } else if (SHT_RELR == shdr->sh_type) {
+            n += dump_relocsrelr64(p, o, shdr);
+          }
+
+          n += printf_eol();
         }
-        printf_eol();
       }
     }
   }
 
-  return 0;
+  return n;
 }
 
 static int dump_unwind32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
@@ -977,6 +990,7 @@ static int dump_symbols2(const pbuffer_t p, const poptions_t o,
 }
 
 static int dump_symbols32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
+  int n = 0;
   MALLOCA(version_t, vnames, 1024);
   ecmake_versionnames32(p, vnames, NELEMENTS(vnames));
 
@@ -985,35 +999,36 @@ static int dump_symbols32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehd
     if (shdr) {
       if (SHT_SYMTAB == shdr->sh_type || SHT_DYNSYM == shdr->sh_type) {
         size_t cnt = shdr->sh_size / shdr->sh_entsize;
-        dump_symbols0(p, o, i, cnt, shdr->sh_offset);
+        n += dump_symbols0(p, o, i, cnt, shdr->sh_offset);
 
         handle_t f = fget32byshdr(p, shdr);
         if (f) {
           for (size_t j = 0; j < cnt; ++j) {
             Elf32_Sym *s = fget(f);
             if (s) {
-              dump_symbols1(p, o, j, s->st_value, s->st_size, s->st_info, s->st_other, s->st_shndx);
+              n += dump_symbols1(p, o, j, s->st_value, s->st_size, s->st_info, s->st_other, s->st_shndx);
 
               const char* name = ecget_namebyoffset(p, shdr->sh_link, s->st_name);
               if (name && 0 != name[0]) {
-                printf_text(name, USE_LT | USE_SPACE);
+                n += printf_text(name, USE_LT | USE_SPACE);
 
                 if (SHT_DYNSYM == shdr->sh_type) {
                   Elf32_Shdr *vshdr = ecget_shdr32bytype(p, SHT_GNU_versym);
                   if (vshdr) {
                     Elf32_Versym *vs = getp(p, vshdr->sh_offset + (j * vshdr->sh_entsize), vshdr->sh_entsize);
                     if (vs && *vs && *vs < NELEMENTS(vnames)) {
-                        dump_symbols2(p, o, vnames[0], vnames[*vs & VERSYM_VERSION], *vs & VERSYM_VERSION, s->st_shndx, s->st_other);
+                        n += dump_symbols2(p, o, vnames[0], vnames[*vs & VERSYM_VERSION], *vs & VERSYM_VERSION, s->st_shndx, s->st_other);
                     }
                   }
                 }
               }
               f = fnext(f);
-              printf_eol();
+              n += printf_eol();
             }
           }
         }
-        printf_eol();
+
+        n += printf_eol();
       }
     }
   }
@@ -1022,49 +1037,54 @@ static int dump_symbols32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehd
 }
 
 static int dump_symbols64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
+  int n = 0;
   MALLOCA(version_t, vnames, 1024);
   ecmake_versionnames64(p, vnames, NELEMENTS(vnames));
 
-  for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
-    Elf64_Shdr *shdr = ecget_shdr64byindex(p, i);
-    if (shdr) {
-      if (SHT_SYMTAB == shdr->sh_type || SHT_DYNSYM == shdr->sh_type) {
-        size_t cnt = shdr->sh_size / shdr->sh_entsize;
+  if (MODE_ISANY(o->action, OPTREADELF_USEDYNAMIC)) {
+  } else {
+    for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
+      Elf64_Shdr *shdr = ecget_shdr64byindex(p, i);
+      if (shdr) {
+        if (SHT_SYMTAB == shdr->sh_type || SHT_DYNSYM == shdr->sh_type) {
+          size_t cnt = shdr->sh_size / shdr->sh_entsize;
 
-        dump_symbols0(p, o, i, cnt, shdr->sh_offset);
+          n += dump_symbols0(p, o, i, cnt, shdr->sh_offset);
 
-        handle_t f = fget64byshdr(p, shdr);
-        if (f) {
-          for (size_t j = 0; j < cnt; ++j) {
-            Elf64_Sym *s = fget(f);
-            if (s) {
-              dump_symbols1(p, o, j, s->st_value, s->st_size, s->st_info, s->st_other, s->st_shndx);
+          handle_t f = fget64byshdr(p, shdr);
+          if (f) {
+            for (size_t j = 0; j < cnt; ++j) {
+              Elf64_Sym *s = fget(f);
+              if (s) {
+                n += dump_symbols1(p, o, j, s->st_value, s->st_size, s->st_info, s->st_other, s->st_shndx);
 
-              const char* name = ecget_namebyoffset(p, shdr->sh_link, s->st_name);
-              if (name && 0 != name[0]) {
-                printf_text(name, USE_LT | USE_SPACE);
+                const char* name = ecget_namebyoffset(p, shdr->sh_link, s->st_name);
+                if (name && 0 != name[0]) {
+                  n += printf_text(name, USE_LT | USE_SPACE);
 
-                if (SHT_DYNSYM == shdr->sh_type) {
-                  Elf64_Shdr *vshdr = ecget_shdr64bytype(p, SHT_GNU_versym);
-                  if (vshdr) {
-                    Elf64_Versym *vs = getp(p, vshdr->sh_offset + (j * vshdr->sh_entsize), vshdr->sh_entsize);
-                    if (vs && *vs && *vs < NELEMENTS(vnames)) {
-                        dump_symbols2(p, o, vnames[0], vnames[*vs & VERSYM_VERSION], *vs & VERSYM_VERSION, s->st_shndx, s->st_other);
+                  if (SHT_DYNSYM == shdr->sh_type) {
+                    Elf64_Shdr *vshdr = ecget_shdr64bytype(p, SHT_GNU_versym);
+                    if (vshdr) {
+                      Elf64_Versym *vs = getp(p, vshdr->sh_offset + (j * vshdr->sh_entsize), vshdr->sh_entsize);
+                      if (vs && *vs && *vs < NELEMENTS(vnames)) {
+                          n += dump_symbols2(p, o, vnames[0], vnames[*vs & VERSYM_VERSION], *vs & VERSYM_VERSION, s->st_shndx, s->st_other);
+                      }
                     }
                   }
                 }
+                f = fnext(f);
+                n += printf_eol();
               }
-              f = fnext(f);
-              printf_eol();
             }
           }
+
+          n += printf_eol();
         }
-        printf_eol();
       }
     }
   }
 
-  return 0;
+  return n;
 }
 
 static int dump_gnuhash0(const pbuffer_t p, uint32_t *pb, const uint64_t sh_name) {
