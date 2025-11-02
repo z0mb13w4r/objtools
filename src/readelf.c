@@ -1570,6 +1570,8 @@ static int dump_notes64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr)
 static int dump_archspecific0(const pbuffer_t p, const poptions_t o, const char* name, const uint64_t sh_offset, const uint64_t sh_size) {
   int n = 0;
 
+  const int MAXSIZE = strlenpick(ecPUBLICTAGARM) + 2;
+
   handle_t p0 = fmalloc(getp(p, sh_offset, sh_size), sh_size, MEMFIND_NOCHUNKSIZE);
   if (p0) {
     char version = fgetu8(p0);
@@ -1602,7 +1604,7 @@ static int dump_archspecific0(const pbuffer_t p, const poptions_t o, const char*
                 uint64_t tag = fgetuleb128(p1);
                 if (0 == tag) continue;
 
-                n += printf_pick(ecPUBLICTAGARM, tag, USE_COLON);
+                n += printf_pick(ecPUBLICTAGARM, tag, USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
                 if (isused(ecPUBLICTAGARMSTRING, tag)) {
                   n += printf_text(fgetstring(p1), USE_LT | USE_SPACE | USE_DQ);
                 } else if (TAG_compatibility == tag) {
