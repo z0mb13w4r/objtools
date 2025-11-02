@@ -1570,6 +1570,12 @@ static int dump_notes64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr)
 static int dump_archspecific0(const pbuffer_t p, const poptions_t o, const char* name, const uint64_t sh_offset, const uint64_t sh_size) {
   int n = 0;
 
+  return n;
+}
+
+static int dump_archspecific1(const pbuffer_t p, const poptions_t o, const char* name, const uint64_t sh_offset, const uint64_t sh_size) {
+  int n = 0;
+
   const int MAXSIZE = strlenpick(ecPUBLICTAGARM) + 2;
 
   handle_t p0 = fmalloc(getp(p, sh_offset, sh_size), sh_size, MEMFIND_NOCHUNKSIZE);
@@ -1641,7 +1647,7 @@ static int dump_archspecific32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr
     Elf32_Shdr *shdr = ecget_shdr32byindex(p, i);
     if (shdr) {
       if (SHT_ARM_ATTRIBUTES == shdr->sh_type) {
-        n += dump_archspecific0(p, o, "aeabi", shdr->sh_offset, shdr->sh_size);
+        n += dump_archspecific1(p, o, "aeabi", shdr->sh_offset, shdr->sh_size);
       } else if (SHT_GNU_ATTRIBUTES == shdr->sh_type) {
         n += dump_archspecific0(p, o, NULL, shdr->sh_offset, shdr->sh_size);
       }
@@ -1657,7 +1663,7 @@ static int dump_archspecific64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr
     Elf64_Shdr *shdr = ecget_shdr64byindex(p, i);
     if (shdr) {
       if (SHT_ARM_ATTRIBUTES == shdr->sh_type) {
-        n += dump_archspecific0(p, o, "aeabi", shdr->sh_offset, shdr->sh_size);
+        n += dump_archspecific1(p, o, "aeabi", shdr->sh_offset, shdr->sh_size);
       } else if (SHT_GNU_ATTRIBUTES == shdr->sh_type) {
         n += dump_archspecific0(p, o, NULL, shdr->sh_offset, shdr->sh_size);
       }
