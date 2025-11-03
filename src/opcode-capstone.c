@@ -86,9 +86,17 @@ int capstone_raw(handle_t p, handle_t s, unknown_t data, const size_t size, cons
           if (!bskip) {
             n2 += opcode_printf_source(p, insn[i].address);
 
-            n2 += opcode_printf_LHEX(p, insn[i].address, USE_COLON);
-            n2 += printf_sore(insn[i].bytes, insn[i].size, USE_HEX | USE_SPACE);
-            n2 += printf_pack(42 - n2);
+            if (MODE_ISANY(oc->action, OPTPROGRAM_PREFIX_ADDR)) {
+              n2 += opcode_printf_LHEX(p, insn[i].address, USE_NONE);
+              // TBD
+            } else if (MODE_ISANY(oc->action, OPTPROGRAM_NO_SHOW_RAW_INSN)) {
+              n2 += opcode_printf_LHEX(p, insn[i].address, USE_COLON);
+            } else {
+              n2 += opcode_printf_LHEX(p, insn[i].address, USE_COLON);
+              n2 += printf_sore(insn[i].bytes, insn[i].size, USE_HEX | USE_SPACE);
+              n2 += printf_pack(42 - n2);
+            }
+
             n2 += printf_text(insn[i].mnemonic, USE_LT | USE_SPACE);
             n2 += printf_text(insn[i].op_str, USE_LT | USE_SPACE);
 

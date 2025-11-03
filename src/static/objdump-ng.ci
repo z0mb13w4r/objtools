@@ -18,6 +18,7 @@ static char zDUMPDEBUGGING[]       = "Display debugging information.";
 static char zDUMPDEBUGGINGTAGS[]   = "Like -g, but the information is generated in a format compatible with ctags tool.";
 static char zDUMPSOURCE[]          = "Display source code intermixed with disassembly, if possible. Implies -d.";
 static char zDUMPCAPSTONEALL[]     = "When disassembling, use the Capstone Disassembler Framework.";
+static char zDUMPNOSHOWRAWINSN[]   = "When disassembling instructions, do not print the instruction bytes. This is the default when --prefix-addresses is used.";
 
 static const char zOBJDUMPARGS0[] = "-W";
 static const char zOBJDUMPARGS1[] = "--dwarf";
@@ -57,6 +58,7 @@ static const args_t zOBJDUMPARGS[] = {
   {'h', "--section-headers",   OPTOBJDUMP_SECTION_HEADER,                                zDUMPSECTIONHDR},
   {'x', "--all-headers",       OPTOBJDUMP_HEADERS,                                       zDUMPALLHDRS},
   {'l', "--line-numbers",      OPTPROGRAM_LINE_NUMBERS,                                  zDUMPLINENUMBERS},
+  {  0, "--no-show-raw-insn",  OPTPROGRAM_NO_SHOW_RAW_INSN,                              zDUMPNOSHOWRAWINSN},
   {  0, "--prefix-addresses",  OPTPROGRAM_PREFIX_ADDR,                                   zDUMPPREFIXADDR},
   {  0, "--start-address",     0,                                                        zDUMPSTARTADDR},
   {  0, "--stop-address",      0,                                                        zDUMPSTOPADDR},

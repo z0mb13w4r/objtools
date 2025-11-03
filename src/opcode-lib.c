@@ -183,6 +183,9 @@ int opcodelib_raw(handle_t p, handle_t s, unknown_t data, const size_t size, con
         n0 += opcode_printf_source(p, soffset);
 
         if (MODE_ISANY(oc->action, OPTPROGRAM_PREFIX_ADDR)) {
+          n1 += printf_nice(soffset, USE_LHEX32);
+          // TBD
+        } else if (MODE_ISANY(oc->action, OPTPROGRAM_NO_SHOW_RAW_INSN)) {
           n1 += printf_nice(soffset, USE_LHEX32 | USE_COLON);
         } else {
           n1 += opcode_printf_LHEX(p, soffset, USE_COLON);

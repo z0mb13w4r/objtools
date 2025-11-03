@@ -54,7 +54,7 @@ static const args_t zREADELFARGS[] = {
   {'s', "--symbols",         OPTREADELF_SYMBOLS,           zELFSYMBOLS},
   {'u', "--unwind",          OPTREADELF_UNWIND,            zELFUNWIND},
   {'D', "--use-dynamic",     OPTREADELF_USEDYNAMIC,        zELFUSEDYNAMIC},
-  {'C', "--demangle",        OPTREADELF_DEMANGLE,          zELFDEMANGLE},
+  {'C', "--demangle",        OPTPROGRAM_DEMANGLE,          zELFDEMANGLE},
   {'x', "--hex-dump",        0,                            zHEXDUMP},
   {'Z', "--code-dump",       0,                            zCODEDUMP},
   {'p', "--string-dump",     0,                            zSTRDUMP},
