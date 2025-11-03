@@ -887,7 +887,7 @@ static int dump_relocs0(const pbuffer_t p, const poptions_t o, const int index,
     if (strstr(name, ".plt")) {
       n += printf_text("PLT", USE_SPACE | USE_SQ);
     } else {
-      n += printf_pick(ecSHDRDYN, sh_type, USE_SPACE | USE_SQ);
+      n += printf_pick(ecSHDRTYPE, sh_type, USE_SPACE | USE_SQ);
     }
     n += printf_text("relocation section at offset", USE_LT | USE_SPACE);
     n += printf_nice(sh_offset, USE_FHEX);
@@ -1101,8 +1101,53 @@ static int dump_symbols64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
   MALLOCA(version_t, vnames, 1024);
   ecmake_versionnames64(p, vnames, NELEMENTS(vnames));
 
-  if (MODE_ISANY(o->action, OPTREADELF_USEDYNAMIC)) {
+  /* Scan the sections for the symbols section. */
+  Elf64_Half cnt = 0;
+  for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
+    Elf64_Shdr *shdr = ecget_shdr64byindex(p, i);
+    if (shdr) {
+      if ((SHT_DYNSYM == shdr->sh_type) ||
+          (MODE_ISNOT(o->action, OPTREADELF_USEDYNAMIC) && (SHT_SYMTAB == shdr->sh_type)))
+        ++cnt;
+    }
+  }
+
+  if (0 == cnt) {
     printf_w("Dynamic symbol information is not available for displaying symbols.");
+  } else if (MODE_ISANY(o->action, OPTREADELF_USEDYNAMIC)) {
+    for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
+      Elf64_Shdr *shdr = ecget_shdr64byindex(p, i);
+      if (shdr && SHT_DYNSYM == shdr->sh_type) {
+        size_t cnt = shdr->sh_size / shdr->sh_entsize;
+
+        n += dump_symbols0(p, o, i, cnt, shdr->sh_offset);
+
+        handle_t f = fget64byshdr(p, shdr);
+        if (f) {
+          bool_t isok = FALSE;
+          for (size_t j = 0; j < cnt; ++j) {
+            Elf64_Sym *s = fget(f);
+            if (s) {
+              if (SHN_UNDEF != s->st_shndx) isok = TRUE;
+              if (isok) {
+                n += dump_symbols1(p, o, j, s->st_value, s->st_size, s->st_info, s->st_other, s->st_shndx);
+
+                const char* name = ecget_namebyoffset(p, shdr->sh_link, s->st_name);
+                if (name && 0 != name[0]) {
+                  n += printf_text(name, USE_LT | USE_SPACE);
+                }
+
+                n += printf_eol();
+              }
+
+              f = fnext(f);
+            }
+          }
+        }
+
+        n += printf_eol();
+      }
+    }
   } else {
     for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
       Elf64_Shdr *shdr = ecget_shdr64byindex(p, i);
@@ -1133,6 +1178,7 @@ static int dump_symbols64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
                     }
                   }
                 }
+
                 f = fnext(f);
                 n += printf_eol();
               }
