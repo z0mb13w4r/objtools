@@ -1050,8 +1050,53 @@ static int dump_symbols32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehd
   MALLOCA(version_t, vnames, 1024);
   ecmake_versionnames32(p, vnames, NELEMENTS(vnames));
 
-  if (MODE_ISANY(o->action, OPTREADELF_USEDYNAMIC)) {
+  /* Scan the sections for the symbols section. */
+  Elf32_Half cnt = 0;
+  for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
+    Elf32_Shdr *shdr = ecget_shdr32byindex(p, i);
+    if (shdr) {
+      if ((SHT_DYNSYM == shdr->sh_type) ||
+          (MODE_ISNOT(o->action, OPTREADELF_USEDYNAMIC) && (SHT_SYMTAB == shdr->sh_type)))
+        ++cnt;
+    }
+  }
+
+  if (0 == cnt) {
     printf_w("Dynamic symbol information is not available for displaying symbols.");
+  } else if (MODE_ISANY(o->action, OPTREADELF_USEDYNAMIC)) {
+    for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
+      Elf32_Shdr *shdr = ecget_shdr32byindex(p, i);
+      if (shdr && SHT_DYNSYM == shdr->sh_type) {
+        size_t cnt = shdr->sh_size / shdr->sh_entsize;
+
+        n += dump_symbols0(p, o, i, cnt, shdr->sh_offset);
+
+        handle_t f = fget32byshdr(p, shdr);
+        if (f) {
+          bool_t isok = FALSE; // TBD
+          for (size_t j = 0; j < cnt; ++j) {
+            Elf32_Sym *s = fget(f);
+            if (s) {
+              if (SHN_UNDEF != s->st_shndx) isok = TRUE;
+              if (isok) {
+                n += dump_symbols1(p, o, j, s->st_value, s->st_size, s->st_info, s->st_other, s->st_shndx);
+
+                const char* name = ecget_namebyoffset(p, shdr->sh_link, s->st_name);
+                if (name && 0 != name[0]) {
+                  n += printf_text(name, USE_LT | USE_SPACE);
+                }
+
+                n += printf_eol();
+              }
+
+              f = fnext(f);
+            }
+          }
+        }
+
+        n += printf_eol();
+      }
+    }
   } else {
     for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
       Elf32_Shdr *shdr = ecget_shdr32byindex(p, i);
