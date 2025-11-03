@@ -321,6 +321,29 @@ int opcode_printf_pick(handle_t p, const pconvert_t z, const pick_t x, const imo
   return n;
 }
 
+int opcode_printf_prefix(handle_t p, const uint64_t vaddr) {
+  if (isopcode(p)) {
+    int n = 0;
+    char *name = NULL;
+    uint64_t offset = 0;
+
+    bool_t issp = ocget_func(p, vaddr, &name, &offset);
+    if (name && name[0]) {
+      if (0 != offset) {
+        n += printf_text(name, USE_LT | USE_SPACE | USE_TBLT);
+        n += printf_text("+", USE_LT);
+        n += printf_nice(offset, USE_FHEX | USE_TBRT | USE_NOSPACE);
+      } else {
+        n += printf_text(name, USE_LT | USE_SPACE | USE_TB);
+      }
+    }
+
+    return n;
+  }
+
+  return ECODE_HANDLE;
+}
+
 int opcode_printf_source(handle_t p, const uint64_t vaddr) {
   if (isopcode(p)) {
     popcode_t oc = ocget(p, OPCODE_THIS);

@@ -868,7 +868,6 @@ bool_t ocget_func(handle_t p, uint64_t vaddr, char **name, uint64_t *offset) {
 
     if (name && NULL == *name) {
       *name = CAST(char*, ocget_namebyvaddr(p, vaddr, offset));
-printf("[C]");
       issp = (name) && (*name) && (*name)[0] ? '.' != (*name)[0] : issp;
     }
   }
