@@ -98,6 +98,7 @@
 #define OPTREADELF_NOTES                           U64MASK(11)
 #define OPTREADELF_VERSION                         U64MASK(12)
 #define OPTREADELF_USEDYNAMIC                      U64MASK(13)
+#define OPTREADELF_DEMANGLE                        U64MASK(14)
 
 #define OPTREADELF_HEADERS             (OPTREADELF_FILEHEADER | OPTREADELF_SECTIONHEADERS | OPTREADELF_PROGRAMHEADERS)
 

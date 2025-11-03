@@ -23,6 +23,7 @@ static char zELFSYMBOLS[]        = "Displays the entries in symbol table section
 static char zELFUNWIND[]         = "Displays the contents of the file's unwind section.";
 static char zELFDECOMPRESS[]     = "Requests that the section(s) being dumped by x, R or p options are decompressed before being displayed.";
 static char zELFUSEDYNAMIC[]     = "Use the dynamic section info when displaying symbols.";
+static char zELFDEMANGLE[]       = "Decode (demangle) low-level symbol names into user-level names. This makes C++ function names readable. Different compilers have different mangling styles.";
 //static char zELFDISASSEMBLE[]    = "Display the assembler mnemonics for the machine instructions from the input file.";
 
 static const char *zELFDESCRIPTION[] = {
@@ -53,6 +54,7 @@ static const args_t zREADELFARGS[] = {
   {'s', "--symbols",         OPTREADELF_SYMBOLS,           zELFSYMBOLS},
   {'u', "--unwind",          OPTREADELF_UNWIND,            zELFUNWIND},
   {'D', "--use-dynamic",     OPTREADELF_USEDYNAMIC,        zELFUSEDYNAMIC},
+  {'C', "--demangle",        OPTREADELF_DEMANGLE,          zELFDEMANGLE},
   {'x', "--hex-dump",        0,                            zHEXDUMP},
   {'Z', "--code-dump",       0,                            zCODEDUMP},
   {'p', "--string-dump",     0,                            zSTRDUMP},
