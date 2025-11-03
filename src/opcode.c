@@ -849,6 +849,33 @@ const char* ocget_fileformat(handle_t p) {
   return NULL;
 }
 
+bool_t ocget_func(handle_t p, uint64_t vaddr, char **name, uint64_t *offset) {
+  bool_t issp = FALSE;
+  if (isopcode(p) && name && 0 != vaddr) {
+    pocgroups_t g0 = oeaskbyaddr(p, vaddr, OPENGINE_GROUP);
+    pocsymbol_t s0 = g0 ? g0->symbol : NULL;
+    pocdebug_t d0 = oeaskbyaddr(p, vaddr, OPENGINE_DEBUG);//g0 ? g0->debug : NULL;
+
+    if (name && (NULL == *name) && isodebug(d0)) {
+      if (MODE_ISANY(d0->role, OPSYMBOL_NAME)) *name = d0->name;
+      if (offset && MODE_ISANY(d0->role, OPDEBUG_LADDR))   *offset = vaddr - d0->laddr;
+    }
+
+    if (name && (NULL == *name) && isosymbol(s0)) {
+      if (MODE_ISANY(s0->role, OPSYMBOL_NAME)) *name = s0->name;
+      if (offset && MODE_ISANY(s0->role, OPSYMBOL_LADDR))   *offset = vaddr - s0->laddr;
+    }
+
+    if (name && NULL == *name) {
+      *name = CAST(char*, ocget_namebyvaddr(p, vaddr, offset));
+printf("[C]");
+      issp = (name) && (*name) && (*name)[0] ? '.' != (*name)[0] : issp;
+    }
+  }
+
+  return issp;
+}
+
 bool_t ocget_symbol(handle_t p, uint64_t vaddr, char **name,
                      uint64_t *nline, uint64_t *ncolumn, uint64_t *discriminator, char **source, char **sourcecode,
                      uint64_t *laddr, uint64_t *haddr, uint64_t *offset) {
@@ -888,7 +915,6 @@ bool_t ocget_symbol(handle_t p, uint64_t vaddr, char **name,
 
     if (name && NULL == *name) {
       *name = CAST(char*, ocget_namebyvaddr(p, vaddr, offset));
-
       issp = (name) && (*name) && (*name)[0] ? '.' != (*name)[0] : issp;
     }
   }
