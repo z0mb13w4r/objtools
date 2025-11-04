@@ -74,15 +74,19 @@ static int dump_relocsdef64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *s
 }
 
 static int dump_relocsver32(const pbuffer_t p, const poptions_t o, Elf32_Shdr *shdr, const uint64_t r_info, pversion_t vnames, const size_t maxvnames) {
+  int n = 0;
   if (shdr) {
     Elf32_Shdr *dshdr = ecget_shdr32byindex(p, shdr->sh_link);
     if (dshdr) {
       Elf32_Off k = ELF32_R_SYM(r_info);
       Elf32_Sym *sym = getp(p, dshdr->sh_offset + (k * dshdr->sh_entsize), dshdr->sh_entsize);
       if (sym) {
-        printf_nice(sym->st_value, USE_LHEX32);
-
-        printf_text(ecget_namebyoffset(p, dshdr->sh_link, sym->st_name), USE_LT | USE_SPACE);
+        n += printf_nice(sym->st_value, USE_LHEX32);
+        if (MODE_ISANY(o->action, OPTPROGRAM_DEMANGLE)) {
+          n += printf_text(ecget_namebyoffset(p, dshdr->sh_link, sym->st_name), USE_LT | USE_SPACE);
+        } else {
+          n += printf_text(ecget_namebyoffset(p, dshdr->sh_link, sym->st_name), USE_LT | USE_SPACE);
+        }
 
         Elf32_Shdr *vshdr = ecget_shdr32bytype(p, SHT_GNU_versym);
         if (vshdr) {
@@ -92,7 +96,7 @@ static int dump_relocsver32(const pbuffer_t p, const poptions_t o, Elf32_Shdr *s
             if (*vs && *vs < maxvnames) {
               const char* namevs = ecget_namebyoffset(p, vnames[0], vnames[*vs]);
               if (namevs) {
-                printf_text(namevs, USE_LT | USE_AT);
+                n += printf_text(namevs, USE_LT | USE_AT);
               }
             }
           }
@@ -101,7 +105,7 @@ static int dump_relocsver32(const pbuffer_t p, const poptions_t o, Elf32_Shdr *s
     }
   }
 
-  return 0;
+  return n;
 }
 
 static int dump_relocsver64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *shdr, const uint64_t r_info, pversion_t vnames, const size_t maxvnames) {
@@ -113,7 +117,11 @@ static int dump_relocsver64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *s
       Elf64_Sym *sym = getp(p, dshdr->sh_offset + (k * dshdr->sh_entsize), dshdr->sh_entsize);
       if (sym) {
         n += printf_nice(sym->st_value, USE_LHEX64);
-        n += printf_text(ecget_namebyoffset(p, dshdr->sh_link, sym->st_name), USE_LT | USE_SPACE);
+        if (MODE_ISANY(o->action, OPTPROGRAM_DEMANGLE)) {
+          n += printf_text(ecget_namebyoffset(p, dshdr->sh_link, sym->st_name), USE_LT | USE_SPACE);
+        } else {
+          n += printf_text(ecget_namebyoffset(p, dshdr->sh_link, sym->st_name), USE_LT | USE_SPACE);
+        }
 
         Elf64_Shdr *vshdr = ecget_shdr64bytype(p, SHT_GNU_versym);
         if (vshdr) {
@@ -825,7 +833,6 @@ static int dump_relocsrela64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *
   n += printf_text("Symbol's Name + Addend", USE_LT | USE_EOL);
 
   size_t cnt = shdr->sh_size / shdr->sh_entsize;
-
   Elf64_Rela *r = _get64byshdr(p, shdr);
   if (r) {
     for (size_t j = 0; j < cnt; ++j, ++r) {
@@ -1114,7 +1121,11 @@ static int dump_symbols32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehd
 
                 const char* name = ecget_namebyoffset(p, shdr->sh_link, s->st_name);
                 if (name && 0 != name[0]) {
-                  n += printf_text(name, USE_LT | USE_SPACE);
+                  if (MODE_ISANY(o->action, OPTPROGRAM_DEMANGLE)) {
+                    n += printf_text(name, USE_LT | USE_SPACE);
+                  } else {
+                    n += printf_text(name, USE_LT | USE_SPACE);
+                  }
 
                   if (SHT_DYNSYM == shdr->sh_type) {
                     Elf32_Shdr *vshdr = ecget_shdr32bytype(p, SHT_GNU_versym);
@@ -1211,7 +1222,11 @@ static int dump_symbols64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
 
                 const char* name = ecget_namebyoffset(p, shdr->sh_link, s->st_name);
                 if (name && 0 != name[0]) {
-                  n += printf_text(name, USE_LT | USE_SPACE);
+                  if (MODE_ISANY(o->action, OPTPROGRAM_DEMANGLE)) {
+                    n += printf_text(name, USE_LT | USE_SPACE);
+                  } else {
+                    n += printf_text(name, USE_LT | USE_SPACE);
+                  }
 
                   if (SHT_DYNSYM == shdr->sh_type) {
                     Elf64_Shdr *vshdr = ecget_shdr64bytype(p, SHT_GNU_versym);
