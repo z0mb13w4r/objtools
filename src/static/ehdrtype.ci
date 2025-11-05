@@ -6,3 +6,7 @@ static convert_t ecEHDRTYPE[] = {
   {0, 0}
 };
 
+pconvert_t get_EHDRTYPE(const pbuffer_t p) {
+  return ecEHDRTYPE;
+}
+

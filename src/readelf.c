@@ -187,7 +187,7 @@ static int dump_fileheader0(const pbuffer_t p, const poptions_t o, const uint64_
 
   int n = 0;
   n += printf_text("Type", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  n += printf_pick(ecEHDRTYPE, e_type, USE_LT | USE_SPACE | USE_EOL);
+  n += printf_pick(get_EHDRTYPE(p), e_type, USE_LT | USE_SPACE | USE_EOL);
   n += printf_text("Machine", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_pick(ecEHDRMACHINE, e_machine, USE_LT | USE_SPACE | USE_EOL);
   n += printf_text("Version", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
