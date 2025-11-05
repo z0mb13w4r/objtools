@@ -227,6 +227,57 @@ bool_t isELFle(const pbuffer_t p) {
   return isELF(p) && ELFDATA2LSB == getb(p, EI_DATA) ? TRUE : FALSE;
 }
 
+bool_t isELFpie32(const pbuffer_t p) {
+  Elf32_Ehdr *e = ecget_ehdr32(p);
+  if (e) {
+    for (Elf32_Half i = 0; i < e->e_shnum; ++i) {
+      Elf32_Shdr *s = ecget_shdr32byindex(p, i);
+      if (s && SHT_DYNAMIC == s->sh_type) {
+        size_t cnt = s->sh_size / s->sh_entsize;
+
+        Elf32_Dyn *d = _get32byshdr(p, s);
+        for (size_t j = 0; j < cnt; ++j, ++d) {
+          if (DT_FLAGS_1 == d->d_tag && (DF_1_PIE & d->d_un.d_val)) {
+            return TRUE;
+          }
+        }
+      }
+    }
+  }
+
+  return FALSE;
+}
+
+bool_t isELFpie64(const pbuffer_t p) {
+  Elf64_Ehdr *e = ecget_ehdr64(p);
+  if (e) {
+    for (Elf64_Half i = 0; i < e->e_shnum; ++i) {
+      Elf64_Shdr *s = ecget_shdr64byindex(p, i);
+      if (s && SHT_DYNAMIC == s->sh_type) {
+        size_t cnt = s->sh_size / s->sh_entsize;
+
+        Elf64_Dyn *d = _get64byshdr(p, s);
+        for (size_t j = 0; j < cnt; ++j, ++d) {
+          if (DT_FLAGS_1 == d->d_tag && (DF_1_PIE & d->d_un.d_val)) {
+            return TRUE;
+          }
+        }
+      }
+    }
+  }
+
+  return FALSE;
+}
+
+bool_t isELFpie(const pbuffer_t p) {
+  if (isELF(p)) {
+    if (isELF32(p))        return isELFpie32(p);
+    else if (isELF64(p))   return isELFpie64(p);
+  }
+
+  return FALSE;
+}
+
 Elf32_Ehdr* ecget_ehdr32(const pbuffer_t p) {
   return CAST(Elf32_Ehdr*, getp(p, 0, sizeof(Elf32_Ehdr)));
 }
