@@ -86,15 +86,15 @@ int capstone_raw(handle_t p, handle_t s, unknown_t data, const size_t size, cons
           if (!bskip) {
             n2 += opcode_printf_source(p, insn[i].address);
 
+            if (MODE_ISNOT(oc->action, OPTPROGRAM_NO_ADDRESSES)) {
+              n2 += opcode_printf_LHEX(p, insn[i].address, USE_COLON);
+            }
+
             if (MODE_ISANY(oc->action, OPTPROGRAM_PREFIX_ADDR)) {
-              n2 += opcode_printf_LHEX(p, insn[i].address, USE_NONE);
 #ifdef OPCODE_DISASSEMBLER_DEBUGX
               n2 += opcode_printf_prefix(p, insn[i].address);
 #endif
-            } else if (MODE_ISANY(oc->action, OPTPROGRAM_NO_SHOW_RAW_INSN)) {
-              n2 += opcode_printf_LHEX(p, insn[i].address, USE_COLON);
-            } else {
-              n2 += opcode_printf_LHEX(p, insn[i].address, USE_COLON);
+            } else if (MODE_ISNOT(oc->action, OPTPROGRAM_NO_SHOW_RAW_INSN)) {
               n2 += printf_sore(insn[i].bytes, insn[i].size, USE_HEX | USE_SPACE);
               n2 += printf_pack(42 - n2);
             }

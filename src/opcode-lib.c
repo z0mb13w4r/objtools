@@ -182,15 +182,15 @@ int opcodelib_raw(handle_t p, handle_t s, unknown_t data, const size_t size, con
       if (ocuse_vaddr(oc, soffset)) {
         n0 += opcode_printf_source(p, soffset);
 
+        if (MODE_ISNOT(oc->action, OPTPROGRAM_NO_ADDRESSES)) {
+          n1 += printf_nice(soffset, USE_LHEX32 | USE_COLON);
+        }
+
         if (MODE_ISANY(oc->action, OPTPROGRAM_PREFIX_ADDR)) {
-          n1 += printf_nice(soffset, USE_LHEX32);
 #ifdef OPCODE_DISASSEMBLER_DEBUGX
           n1 += opcode_printf_prefix(p, soffset);
 #endif
-        } else if (MODE_ISANY(oc->action, OPTPROGRAM_NO_SHOW_RAW_INSN)) {
-          n1 += printf_nice(soffset, USE_LHEX32 | USE_COLON);
-        } else {
-          n1 += opcode_printf_LHEX(p, soffset, USE_COLON);
+        } else if (MODE_ISNOT(oc->action, OPTPROGRAM_NO_SHOW_RAW_INSN)) {
           n1 += printf_sore(p0, siz, USE_HEX | USE_SPACE);
           n1 += printf_pack(31 - n1);
         }
