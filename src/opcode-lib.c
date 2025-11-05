@@ -184,7 +184,9 @@ int opcodelib_raw(handle_t p, handle_t s, unknown_t data, const size_t size, con
 
         if (MODE_ISANY(oc->action, OPTPROGRAM_PREFIX_ADDR)) {
           n1 += printf_nice(soffset, USE_LHEX32);
-          // TBD
+#ifdef OPCODE_DISASSEMBLER_DEBUGX
+          n1 += opcode_printf_prefix(p, soffset);
+#endif
         } else if (MODE_ISANY(oc->action, OPTPROGRAM_NO_SHOW_RAW_INSN)) {
           n1 += printf_nice(soffset, USE_LHEX32 | USE_COLON);
         } else {

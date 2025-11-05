@@ -88,7 +88,9 @@ int capstone_raw(handle_t p, handle_t s, unknown_t data, const size_t size, cons
 
             if (MODE_ISANY(oc->action, OPTPROGRAM_PREFIX_ADDR)) {
               n2 += opcode_printf_LHEX(p, insn[i].address, USE_NONE);
-              // TBD
+#ifdef OPCODE_DISASSEMBLER_DEBUGX
+              n2 += opcode_printf_prefix(p, insn[i].address);
+#endif
             } else if (MODE_ISANY(oc->action, OPTPROGRAM_NO_SHOW_RAW_INSN)) {
               n2 += opcode_printf_LHEX(p, insn[i].address, USE_COLON);
             } else {
