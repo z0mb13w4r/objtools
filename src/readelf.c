@@ -1000,6 +1000,10 @@ static int dump_symbols0(const pbuffer_t p, const poptions_t o,
   const imode_t USE_LHEXNN = isELF64(p) ? USE_LHEX64 : USE_LHEX32;
 
   n += printf_text("Symbol table", USE_LT);
+  if (MODE_ISANY(o->action, OPTREADELF_USEDYNAMIC)) {
+    n += printf_text("for image", USE_LT | USE_SPACE);
+  }
+
   n += printf_text(ecget_secnamebyindex(p, secindex), USE_LT | USE_SQ | USE_SPACE);
   n += printf_text("at offset", USE_SPACE);
   n += printf_nice(sh_offset, USE_LHEXNN);
