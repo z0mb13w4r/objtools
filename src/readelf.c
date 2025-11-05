@@ -1064,6 +1064,7 @@ static int dump_symbols32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehd
   if (0 == cnt) {
     printf_w("Dynamic symbol information is not available for displaying symbols.");
   } else if (MODE_ISANY(o->action, OPTREADELF_USEDYNAMIC)) {
+    // binutils-2.45
     for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
       Elf32_Shdr *shdr = ecget_shdr32byindex(p, i);
       if (shdr && SHT_DYNSYM == shdr->sh_type) {
@@ -1078,17 +1079,25 @@ static int dump_symbols32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehd
             Elf32_Sym *s = fget(f);
             if (s) {
               if (SHN_UNDEF != s->st_shndx) isok = TRUE;
-              if (isok) {
-                n += dump_symbols1(p, o, j, s->st_value, s->st_size, s->st_info, s->st_other, s->st_shndx);
 
-                const char* name = ecget_namebyoffset(p, shdr->sh_link, s->st_name);
-                if (name && 0 != name[0]) {
-                  n += printf_text(name, USE_LT | USE_SPACE);
-                }
+              n += dump_symbols1(p, o, j, s->st_value, s->st_size, s->st_info, s->st_other, s->st_shndx);
 
-                n += printf_eol();
+              const char* name = ecget_namebyoffset(p, shdr->sh_link, s->st_name);
+              if (name && 0 != name[0]) {
+                n += printf_text(name, USE_LT | USE_SPACE);
               }
 
+              if (!isok) {
+                Elf32_Shdr *vshdr = ecget_shdr32bytype(p, SHT_GNU_versym);
+                if (vshdr) {
+                  Elf32_Versym *vs = getp(p, vshdr->sh_offset + (j * vshdr->sh_entsize), vshdr->sh_entsize);
+                  if (vs && *vs && *vs < NELEMENTS(vnames)) {
+                    n += dump_symbols2(p, o, vnames[0], vnames[*vs & VERSYM_VERSION], *vs & VERSYM_VERSION, s->st_shndx, s->st_other);
+                  }
+                }
+              }
+
+              n += printf_eol();
               f = fnext(f);
             }
           }
@@ -1160,6 +1169,7 @@ static int dump_symbols64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
   if (0 == cnt) {
     printf_w("Dynamic symbol information is not available for displaying symbols.");
   } else if (MODE_ISANY(o->action, OPTREADELF_USEDYNAMIC)) {
+    // binutils-2.45
     for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
       Elf64_Shdr *shdr = ecget_shdr64byindex(p, i);
       if (shdr && SHT_DYNSYM == shdr->sh_type) {
@@ -1174,17 +1184,25 @@ static int dump_symbols64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
             Elf64_Sym *s = fget(f);
             if (s) {
               if (SHN_UNDEF != s->st_shndx) isok = TRUE;
-              if (isok) {
-                n += dump_symbols1(p, o, j, s->st_value, s->st_size, s->st_info, s->st_other, s->st_shndx);
 
-                const char* name = ecget_namebyoffset(p, shdr->sh_link, s->st_name);
-                if (name && 0 != name[0]) {
-                  n += printf_text(name, USE_LT | USE_SPACE);
-                }
+              n += dump_symbols1(p, o, j, s->st_value, s->st_size, s->st_info, s->st_other, s->st_shndx);
 
-                n += printf_eol();
+              const char* name = ecget_namebyoffset(p, shdr->sh_link, s->st_name);
+              if (name && 0 != name[0]) {
+                n += printf_text(name, USE_LT | USE_SPACE);
               }
 
+              if (!isok) {
+                Elf64_Shdr *vshdr = ecget_shdr64bytype(p, SHT_GNU_versym);
+                if (vshdr) {
+                  Elf64_Versym *vs = getp(p, vshdr->sh_offset + (j * vshdr->sh_entsize), vshdr->sh_entsize);
+                  if (vs && *vs && *vs < NELEMENTS(vnames)) {
+                    n += dump_symbols2(p, o, vnames[0], vnames[*vs & VERSYM_VERSION], *vs & VERSYM_VERSION, s->st_shndx, s->st_other);
+                  }
+                }
+              }
+
+              n += printf_eol();
               f = fnext(f);
             }
           }
