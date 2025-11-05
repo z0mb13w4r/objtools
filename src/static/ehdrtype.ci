@@ -6,7 +6,19 @@ static convert_t ecEHDRTYPE[] = {
   {0, 0}
 };
 
+static convert_t ecEHDRTYPEPIE[] = {
+  {"NONE (No file type)",          ET_NONE},
+  {"REL (Relocatable file)",       ET_REL},
+  {"EXEC (Executable file)",       ET_EXEC},
+  {"DYN (Position-Independent Executable file)",     ET_DYN},
+  {0, 0}
+};
+
 pconvert_t get_EHDRTYPE(const pbuffer_t p) {
+  if (isELFpie(p)) {
+    return ecEHDRTYPEPIE;
+  }
+
   return ecEHDRTYPE;
 }
 
