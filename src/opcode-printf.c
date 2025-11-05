@@ -327,7 +327,7 @@ int opcode_printf_prefix(handle_t p, const uint64_t vaddr) {
     char *name = NULL;
     uint64_t offset = 0;
 
-    bool_t issp = ocget_func(p, vaddr, &name, &offset);
+    ocget_func(p, vaddr, &name, &offset);
     if (name && name[0]) {
       if (0 != offset) {
         n += printf_text(name, USE_LT | USE_SPACE | USE_TBLT);
