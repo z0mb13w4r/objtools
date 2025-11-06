@@ -349,6 +349,26 @@ handle_t fcalloc(unknown_t p, const size_t size, const size_t chunksize) {
   return NULL;
 }
 
+handle_t fswap(handle_t p, handle_t q) {
+  if (isfind(p) && isfind(q)) {
+    pfind_t p0 = CAST(pfind_t, p);
+    pfind_t q0 = CAST(pfind_t, q);
+
+    xfree(p0->item);
+
+    p0->item = q0->item;
+    p0->epos = q0->epos;
+    p0->cpos = q0->cpos;
+    p0->chunksize = q0->chunksize;
+
+    xfree(q0);
+
+    return p0;
+  }
+
+  return NULL;
+}
+
 handle_t ffree(handle_t p) {
   if (ismodeNNN(p, MODE_FIND)) {
     pfind_t p0 = CAST(pfind_t, p);
