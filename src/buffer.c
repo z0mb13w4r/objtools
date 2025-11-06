@@ -119,6 +119,19 @@ size_t xput(unknown_t p, size_t size, size_t count, unknown_t f) {
   return 0;
 }
 
+size_t xset(unknown_t p, size_t size, const char* name) {
+  if (p && name) {
+    FILE* fp = fopen(name, "wb");
+    if (fp) {
+      size_t sz = xput(p, 1, size, fp);
+      fclose(fp);
+      return sz;
+    }
+  }
+
+  return 0;
+}
+
 size_t bgetsize(handle_t p) {
   if (ismode(p, MODE_BUFFER)) {
     pbuffer_t p0 = CAST(pbuffer_t, p);

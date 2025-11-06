@@ -32,6 +32,7 @@ unknown_t nfree(unknown_t p);
 
 size_t xget(unknown_t p, size_t size, size_t count, unknown_t f);
 size_t xput(unknown_t p, size_t size, size_t count, unknown_t f);
+size_t xset(unknown_t p, size_t size, const char* name);
 
 size_t bgetsize(handle_t p);
 
