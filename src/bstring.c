@@ -305,18 +305,13 @@ handle_t bstrtrimr(handle_t p, int c) {
 }
 
 bool_t bstrsave(handle_t p, const char* name) {
-  bool_t isok = FALSE;
   if (isbstring(p) && name && name[0]) {
     pbstring_t p0 = CAST(pbstring_t, p);
-    if (p0->data) {
-      FILE* f = fopen(name, "wb");
-      if (f) {
-        isok = p0->size == xput(p0->data, 1, p0->size, f);
-        fclose(f);
-      }
+    if (p0 && p0->data && p0->size) {
+      return xset(p0->data, p0->size, name) == p0->size;
     }
   }
 
-  return isok;
+  return FALSE;
 }
 
