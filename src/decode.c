@@ -670,6 +670,26 @@ handle_t base32_decode(unknown_t src, size_t srcsize) {
   return NULL;
 }
 
+handle_t base58_decode(unknown_t src, size_t srcsize) {
+  if (src && srcsize) {
+    size_t maxsize = srcsize * 3 / 4;
+    puchar_t psrc = CAST(puchar_t, src);
+
+    pfind_t dst = fxalloc(maxsize, MEMFIND_NOCHUNKSIZE);
+    if (dst) {
+      puchar_t pdst = CAST(puchar_t, dst->item);
+      int c = 0;
+
+      pdst[c] = '\0';   /* string padding character */
+      dst->epos = c - 1;
+      dst->size = c;
+      return dst;
+    }
+  }
+
+  return NULL;
+}
+
 handle_t base64_decode(unknown_t src, size_t srcsize) {
   if (src && srcsize) {
     size_t maxsize = srcsize * 3 / 4;

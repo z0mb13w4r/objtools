@@ -73,6 +73,8 @@ args_t zSCRIPTCOMMANDS[] = {
 
   {0, "base32d",  ACT_BASE32D,          NULL,                  15},
   {0, "base32e",  ACT_BASE32E,          NULL,                  15},
+  {0, "base58d",  ACT_BASE58D,          NULL,                  15},
+  {0, "base58e",  ACT_BASE58E,          NULL,                  15},
   {0, "base64d",  ACT_BASE64D,          NULL,                  15},
   {0, "base64e",  ACT_BASE64E,          zSCRIPTBASE,           15},
 

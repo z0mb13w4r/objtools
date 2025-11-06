@@ -115,6 +115,13 @@ handle_t base32_encode(unknown_t src, size_t srcsize) {
   return NULL;
 }
 
+handle_t base58_encode(unknown_t src, size_t srcsize) {
+  if (src && srcsize) {
+  }
+
+  return NULL;
+}
+
 handle_t base64_encode(unknown_t src, size_t srcsize) {
   if (src && srcsize) {
     size_t maxsize = srcsize * 4 / 3 + 4;
