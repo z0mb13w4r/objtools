@@ -103,12 +103,18 @@ unknown_t nfree(unknown_t p) {
 }
 
 size_t xget(unknown_t p, size_t size, size_t count, unknown_t f) {
+  size_t siz = 0;
   if (p && f) {
     xmemclr(p, size * count);
-    return fread(p, size, count, f);
+    siz = fread(p, size, count, f);
+
+    puchar_t p0 = CAST(puchar_t, p);
+    if (stdin == f && '\n' == p0[siz - 1]) {
+      p0[--siz] = 0;
+    }
   }
 
-  return 0;
+  return siz;
 }
 
 size_t xput(unknown_t p, size_t size, size_t count, unknown_t f) {
