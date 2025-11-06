@@ -9,6 +9,11 @@
 #include "memfind.h"
 #include "objutils.h"
 
+uchar_t base32_map[] = {
+  'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
+  'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '2', '3', '4', '5', '6', '7'
+};
+
 uchar_t base64_map[] = {
   'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
   'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f',
@@ -645,6 +650,26 @@ handle_t hex32_decode(unknown_t src, size_t srcsize) {
   return NULL;
 }
 
+handle_t base32_decode(unknown_t src, size_t srcsize) {
+  if (src && srcsize) {
+    size_t maxsize = srcsize * 3 / 4;
+    puchar_t psrc = CAST(puchar_t, src);
+
+    pfind_t dst = fxalloc(maxsize, MEMFIND_NOCHUNKSIZE);
+    if (dst) {
+      puchar_t pdst = CAST(puchar_t, dst->item);
+      int c = 0;
+
+      pdst[c] = '\0';   /* string padding character */
+      dst->epos = c - 1;
+      dst->size = c;
+      return dst;
+    }
+  }
+
+  return NULL;
+}
+
 handle_t base64_decode(unknown_t src, size_t srcsize) {
   if (src && srcsize) {
     size_t maxsize = srcsize * 3 / 4;
@@ -654,21 +679,23 @@ handle_t base64_decode(unknown_t src, size_t srcsize) {
     if (dst) {
       puchar_t pdst = CAST(puchar_t, dst->item);
       uchar_t tmp[4];
-      int p = 0, j = 0;
+      int c = 0, j = 0;
       for (int i = 0; i < srcsize; ++i) {
         uchar_t k;
         for (k = 0 ; k < 64 && base64_map[k] != psrc[i]; k++);
 
         tmp[j++] = k;
         if (j == 4) {
-          pdst[p++] = (tmp[0] << 2) + (tmp[1] >> 4);
-          if (tmp[2] != 64)    pdst[p++] = (tmp[1] << 4) + (tmp[2] >> 2);
-          if (tmp[3] != 64)    pdst[p++] = (tmp[2] << 6) + tmp[3];
+          pdst[c++] = (tmp[0] << 2) + (tmp[1] >> 4);
+          if (tmp[2] != 64)    pdst[c++] = (tmp[1] << 4) + (tmp[2] >> 2);
+          if (tmp[3] != 64)    pdst[c++] = (tmp[2] << 6) + tmp[3];
           j = 0;
         }
       }
 
-      pdst[p] = '\0';   /* string padding character */
+      pdst[c] = '\0';   /* string padding character */
+      dst->epos = c - 1;
+      dst->size = c;
       return dst;
     }
   }

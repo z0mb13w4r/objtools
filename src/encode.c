@@ -2,6 +2,7 @@
 #include "encode.h"
 #include "memfind.h"
 
+extern uchar_t base32_map[];
 extern uchar_t base64_map[];
 
 static int hexN(int x) {
@@ -102,6 +103,13 @@ handle_t hex32_encode(unknown_t src, size_t srcsize) {
       pdst[c] = '\0';   /* string padding character */
       return dst;
     }
+  }
+
+  return NULL;
+}
+
+handle_t base32_encode(unknown_t src, size_t srcsize) {
+  if (src && srcsize) {
   }
 
   return NULL;
