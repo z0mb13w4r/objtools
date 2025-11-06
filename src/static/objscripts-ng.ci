@@ -71,6 +71,8 @@ args_t zSCRIPTCOMMANDS[] = {
   {0, "hex16e",   ACT_HEX16E,           NULL,                  14},
   {0, "hex32e",   ACT_HEX32E,           zSCRIPTHEXE,           14},
 
+  {0, "base32d",  ACT_BASE32D,          NULL,                  15},
+  {0, "base32e",  ACT_BASE32E,          NULL,                  15},
   {0, "base64d",  ACT_BASE64D,          NULL,                  15},
   {0, "base64e",  ACT_BASE64E,          zSCRIPTBASE,           15},
 
