@@ -30,8 +30,9 @@ unknown_t fupdate(handle_t p, const size_t cpos, const size_t chunksize);
 
 handle_t fnext(handle_t p);
 handle_t freset(handle_t p);
-handle_t fmalloc(unknown_t p, const size_t size, const size_t chunksize);
 handle_t fcalloc(unknown_t p, const size_t size, const size_t chunksize);
+handle_t fmalloc(unknown_t p, const size_t size, const size_t chunksize);
+handle_t fxalloc(const size_t size, const size_t chunksize);
 handle_t fswap(handle_t p, handle_t q);
 handle_t ffree(handle_t p);
 
