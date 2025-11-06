@@ -1,6 +1,6 @@
 #include "buffer.h"
 #include "encode.h"
-#include "bstring.h"
+#include "memfind.h"
 
 extern uchar_t base64_map[];
 
@@ -15,10 +15,10 @@ handle_t hex8_encode(unknown_t src, size_t srcsize) {
     size_t maxsize = srcsize * 6 + 1;
     puchar_t psrc = CAST(puchar_t, src);
 
-    pbstring_t dst = bstrmallocsize(maxsize);
+    pfind_t dst = fxalloc(maxsize, MEMFIND_NOCHUNKSIZE);
     if (dst) {
       int c = 0;
-      puchar_t pdst = CAST(puchar_t, dst->data);
+      puchar_t pdst = CAST(puchar_t, dst->item);
       pdst[c++] = '0';
       pdst[c++] = 'x';
       pdst[c++] = hexN((psrc[0] >> 0) & 0x0f);
@@ -46,10 +46,10 @@ handle_t hex16_encode(unknown_t src, size_t srcsize) {
     size_t maxsize = srcsize * 4 + 1;
     puchar_t psrc = CAST(puchar_t, src);
 
-    pbstring_t dst = bstrmallocsize(maxsize);
+    pfind_t dst = fxalloc(maxsize, MEMFIND_NOCHUNKSIZE);
     if (dst) {
       int c = 0;
-      puchar_t pdst = CAST(puchar_t, dst->data);
+      puchar_t pdst = CAST(puchar_t, dst->item);
       pdst[c++] = '0';
       pdst[c++] = 'x';
       pdst[c++] = hexN((psrc[0] >> 0) & 0x0f);
@@ -79,10 +79,10 @@ handle_t hex32_encode(unknown_t src, size_t srcsize) {
     size_t maxsize = srcsize * 3 + 1;
     puchar_t psrc = CAST(puchar_t, src);
 
-    pbstring_t dst = bstrmallocsize(maxsize);
+    pfind_t dst = fxalloc(maxsize, MEMFIND_NOCHUNKSIZE);
     if (dst) {
       int c = 0;
-      puchar_t pdst = CAST(puchar_t, dst->data);
+      puchar_t pdst = CAST(puchar_t, dst->item);
       pdst[c++] = '0';
       pdst[c++] = 'x';
       pdst[c++] = hexN((psrc[0] >> 0) & 0x0f);
@@ -112,9 +112,9 @@ handle_t base64_encode(unknown_t src, size_t srcsize) {
     size_t maxsize = srcsize * 4 / 3 + 4;
     puchar_t psrc = CAST(puchar_t, src);
 
-    pbstring_t dst = bstrmallocsize(maxsize);
+    pfind_t dst = fxalloc(maxsize, MEMFIND_NOCHUNKSIZE);
     if (dst) {
-      puchar_t pdst = CAST(puchar_t, dst->data);
+      puchar_t pdst = CAST(puchar_t, dst->item);
 
       uchar_t tmp[3];
       int c = 0, j = 0;

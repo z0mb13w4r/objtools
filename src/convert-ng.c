@@ -3,7 +3,7 @@
 #include "decode.h"
 #include "encode.h"
 #include "printf.h"
-#include "bstring.h"
+#include "memfind.h"
 #include "options.h"
 #include "scripts.h"
 
@@ -88,49 +88,49 @@ int main(int argc, char* argv[]) {
     if (ECODE_ISOK(x) && o->inpname[0]) {
       pbuffer_t p = bopen(o->inpname);
       if (issafe(p)) {
-        pbstring_t b0 = bstring1(p);
+        pfind_t b0 = fcalloc(p->data, p->size, MEMFIND_NOCHUNKSIZE);
         if (b0) {
           int32_t step = 0;
           paction_t x0 = o->actions;
           while (x0) {
             if (ACT_BASE64D == x0->action) {
-              b0 = bstring4(b0, base64_decode(b0->data, b0->size));
+              b0 = fswap(b0, base64_decode(b0->item, b0->size));
             } else if (ACT_BASE64E == x0->action) {
-              b0 = bstring4(b0, base64_encode(b0->data, b0->size));
+              b0 = fswap(b0, base64_encode(b0->item, b0->size));
             } else if (ACT_DEC8D == x0->action) {
-              b0 = bstring4(b0, dec8_decode(b0->data, b0->size));
+              b0 = fswap(b0, dec8_decode(b0->item, b0->size));
             } else if (ACT_DEC16D == x0->action) {
-              b0 = bstring4(b0, dec16_decode(b0->data, b0->size));
+              b0 = fswap(b0, dec16_decode(b0->item, b0->size));
             } else if (ACT_DEC32D == x0->action) {
-              b0 = bstring4(b0, dec32_decode(b0->data, b0->size));
+              b0 = fswap(b0, dec32_decode(b0->item, b0->size));
             } else if (ACT_HEX8D == x0->action) {
-              b0 = bstring4(b0, hex8_decode(b0->data, b0->size));
+              b0 = fswap(b0, hex8_decode(b0->item, b0->size));
             } else if (ACT_HEX8E == x0->action) {
-              b0 = bstring4(b0, hex8_encode(b0->data, b0->size));
+              b0 = fswap(b0, hex8_encode(b0->item, b0->size));
             } else if (ACT_HEX16D == x0->action) {
-              b0 = bstring4(b0, hex16_decode(b0->data, b0->size));
+              b0 = fswap(b0, hex16_decode(b0->item, b0->size));
             } else if (ACT_HEX16E == x0->action) {
-              b0 = bstring4(b0, hex16_encode(b0->data, b0->size));
+              b0 = fswap(b0, hex16_encode(b0->item, b0->size));
             } else if (ACT_HEX32D == x0->action) {
-              b0 = bstring4(b0, hex32_decode(b0->data, b0->size));
+              b0 = fswap(b0, hex32_decode(b0->item, b0->size));
             } else if (ACT_HEX32E == x0->action) {
-              b0 = bstring4(b0, hex32_encode(b0->data, b0->size));
+              b0 = fswap(b0, hex32_encode(b0->item, b0->size));
             } else if (ACT_INC == x0->action) {
               step =  x0->value;
             } else if (ACT_DEC == x0->action) {
               step = -x0->value;
             } else {
-              dump_actions0(p, x0, b0->data, b0->size, step);
+              dump_actions0(p, x0, b0->item, b0->size, step);
             }
 
             x0 = x0->actions;
           }
           if (o->outname[0]) {
-            bstrsave(b0, o->outname);
+            xset(b0->item, b0->size, o->outname);
           } else {
-            printf_text(b0->data, USE_LT | USE_EOL);
+            printf_text(b0->item, USE_LT | USE_EOL);
           }
-          bstrfree(b0);
+          ffree(b0);
         }
       } else {
         printf_e("'%s': no such file.", o->inpname);

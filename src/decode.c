@@ -6,7 +6,7 @@
 
 #include "buffer.h"
 #include "decode.h"
-#include "bstring.h"
+#include "memfind.h"
 #include "objutils.h"
 
 uchar_t base64_map[] = {
@@ -463,10 +463,10 @@ handle_t dec8_decode(unknown_t src, size_t srcsize) {
   if (src && srcsize) {
     puchar_t psrc = CAST(puchar_t, src);
 
-    pbstring_t dst = bstrmallocsize(srcsize);
+    pfind_t dst = fxalloc(srcsize, MEMFIND_NOCHUNKSIZE);
     if (dst) {
       int c = -1;
-      puchar_t pdst = CAST(puchar_t, dst->data);
+      puchar_t pdst = CAST(puchar_t, dst->item);
 
       bool_t isok = FALSE;
       for (size_t i = 0; i < srcsize; ++i) {
@@ -480,6 +480,7 @@ handle_t dec8_decode(unknown_t src, size_t srcsize) {
       }
 
       pdst[++c] = 0;   /* string padding character */
+      dst->epos = c - 1;
       dst->size = c;
       return dst;
     }
@@ -492,10 +493,10 @@ handle_t dec16_decode(unknown_t src, size_t srcsize) {
   if (src && srcsize) {
     puchar_t psrc = CAST(puchar_t, src);
 
-    pbstring_t dst = bstrmallocsize(srcsize);
+    pfind_t dst = fxalloc(srcsize, MEMFIND_NOCHUNKSIZE);
     if (dst) {
       int c = -1;
-      pushort_t pdst = CAST(pushort_t, dst->data);
+      pushort_t pdst = CAST(pushort_t, dst->item);
 
       bool_t isok = FALSE;
       for (size_t i = 0; i < srcsize; ++i) {
@@ -509,6 +510,7 @@ handle_t dec16_decode(unknown_t src, size_t srcsize) {
       }
 
       pdst[++c] = 0;   /* string padding character */
+      dst->epos = c - 1;
       dst->size = c;
       return dst;
     }
@@ -521,10 +523,10 @@ handle_t dec32_decode(unknown_t src, size_t srcsize) {
   if (src && srcsize) {
     puchar_t psrc = CAST(puchar_t, src);
 
-    pbstring_t dst = bstrmallocsize(srcsize);
+    pfind_t dst = fxalloc(srcsize, MEMFIND_NOCHUNKSIZE);
     if (dst) {
       int c = -1;
-      pulong_t pdst = CAST(pulong_t, dst->data);
+      pulong_t pdst = CAST(pulong_t, dst->item);
 
       bool_t isok = FALSE;
       for (size_t i = 0; i < srcsize; ++i) {
@@ -538,6 +540,7 @@ handle_t dec32_decode(unknown_t src, size_t srcsize) {
       }
 
       pdst[++c] = 0;   /* string padding character */
+      dst->epos = c - 1;
       dst->size = c;
       return dst;
     }
@@ -550,10 +553,10 @@ handle_t hex8_decode(unknown_t src, size_t srcsize) {
   if (src && srcsize) {
     puchar_t psrc = CAST(puchar_t, src);
 
-    pbstring_t dst = bstrmallocsize(srcsize);
+    pfind_t dst = fxalloc(srcsize, MEMFIND_NOCHUNKSIZE);
     if (dst) {
       int c = -1;
-      puchar_t pdst = CAST(puchar_t, dst->data);
+      puchar_t pdst = CAST(puchar_t, dst->item);
 
       bool_t isok = FALSE;
       for (size_t i = 0; i < srcsize; ++i) {
@@ -569,6 +572,7 @@ handle_t hex8_decode(unknown_t src, size_t srcsize) {
       }
 
       pdst[++c] = 0;   /* string padding character */
+      dst->epos = c - 1;
       dst->size = c;
       return dst;
     }
@@ -581,10 +585,10 @@ handle_t hex16_decode(unknown_t src, size_t srcsize) {
   if (src && srcsize) {
     puchar_t psrc = CAST(puchar_t, src);
 
-    pbstring_t dst = bstrmallocsize(srcsize);
+    pfind_t dst = fxalloc(srcsize, MEMFIND_NOCHUNKSIZE);
     if (dst) {
       int c = -1;
-      pushort_t pdst = CAST(pushort_t, dst->data);
+      pushort_t pdst = CAST(pushort_t, dst->item);
 
       bool_t isok = FALSE;
       for (size_t i = 0; i < srcsize; ++i) {
@@ -600,6 +604,7 @@ handle_t hex16_decode(unknown_t src, size_t srcsize) {
       }
 
       pdst[++c] = 0;   /* string padding character */
+      dst->epos = c - 1;
       dst->size = c;
       return dst;
     }
@@ -612,10 +617,10 @@ handle_t hex32_decode(unknown_t src, size_t srcsize) {
   if (src && srcsize) {
     puchar_t psrc = CAST(puchar_t, src);
 
-    pbstring_t dst = bstrmallocsize(srcsize);
+    pfind_t dst = fxalloc(srcsize, MEMFIND_NOCHUNKSIZE);
     if (dst) {
       int c = -1;
-      pulong_t pdst = CAST(pulong_t, dst->data);
+      pulong_t pdst = CAST(pulong_t, dst->item);
 
       bool_t isok = FALSE;
       for (size_t i = 0; i < srcsize; ++i) {
@@ -631,6 +636,7 @@ handle_t hex32_decode(unknown_t src, size_t srcsize) {
       }
 
       pdst[++c] = 0;   /* string padding character */
+      dst->epos = c - 1;
       dst->size = c;
       return dst;
     }
@@ -644,9 +650,9 @@ handle_t base64_decode(unknown_t src, size_t srcsize) {
     size_t maxsize = srcsize * 3 / 4;
     puchar_t psrc = CAST(puchar_t, src);
 
-    pbstring_t dst = bstrmallocsize(maxsize);
+    pfind_t dst = fxalloc(maxsize, MEMFIND_NOCHUNKSIZE);
     if (dst) {
-      puchar_t pdst = CAST(puchar_t, dst->data);
+      puchar_t pdst = CAST(puchar_t, dst->item);
       uchar_t tmp[4];
       int p = 0, j = 0;
       for (int i = 0; i < srcsize; ++i) {
