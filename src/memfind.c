@@ -318,6 +318,7 @@ handle_t fcalloc(unknown_t p, const size_t size, const size_t chunksize) {
     if (p0) {
       p0->cpos = 0;
       p0->epos = size - 1;
+      p0->size = size;
       p0->item = cmalloc(p, size);
       p0->chunksize = chunksize;
     }
@@ -339,8 +340,9 @@ handle_t fmalloc(unknown_t p, const size_t size, const size_t chunksize) {
     pfind_t p0 = xmalloc(sizeof(find_t));
     if (p0) {
       p0->cpos = 0;
-      p0->item = p;
       p0->epos = size - 1;
+      p0->size = size;
+      p0->item = p;
       p0->chunksize = chunksize;
     }
     return setmode(p0, MODE_FIND);
@@ -354,6 +356,7 @@ handle_t fxalloc(const size_t size, const size_t chunksize) {
   if (p0) {
     p0->cpos = 0;
     p0->epos = size - 1;
+    p0->size = size;
     p0->item = xmalloc(size);
     p0->chunksize = chunksize;
   }
@@ -367,9 +370,10 @@ handle_t fswap(handle_t p, handle_t q) {
 
     xfree(p0->item);
 
-    p0->item = q0->item;
-    p0->epos = q0->epos;
     p0->cpos = q0->cpos;
+    p0->epos = q0->epos;
+    p0->size = q0->size;
+    p0->item = q0->item;
     p0->chunksize = q0->chunksize;
 
     xfree(q0);

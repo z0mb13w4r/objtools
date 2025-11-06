@@ -10,7 +10,7 @@
 
 typedef struct find_s {
   smode_t   mode;
-  size_t    cpos, epos, chunksize;
+  size_t    cpos, epos, size, chunksize;
   unknown_t item;
 
 } find_t, *pfind_t;
