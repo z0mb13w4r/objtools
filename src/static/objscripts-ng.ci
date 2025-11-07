@@ -48,6 +48,10 @@ args_t zSCRIPTCOMMANDS[] = {
   {0, "sub16",    ACT_SUB16,            NULL,                  8},
   {0, "sub32",    ACT_SUB32,            zSCRIPTSUB,            8},
 
+  {0, NULL}
+};
+
+args_t zSCRIPTCOMMANDSEX[] = {
   {0, "xor8",     ACT_XOR8,             NULL,                  9},
   {0, "xor16",    ACT_XOR16,            NULL,                  9},
   {0, "xor32",    ACT_XOR32,            zSCRIPTXOR,            9},

@@ -15,9 +15,11 @@ static int usage(poptions_t o, const char* name, const args_t args[], const int 
   int n = 0;
   n += usage_name(o, name, args, zDESCRIPTION);
   n += usage_synopsis0(o, name, args);
+  n += printf_eol();
   n += usage_description(o, name, args, zCONVERTDESCRIPTION);
   n += usage_options0(o, name, args);
   n += usage_options2(o, name, zSCRIPTCOMMANDS, NULL, NULL);
+  n += usage_options2(o, name, zSCRIPTCOMMANDSEX, NULL, NULL);
   n += usage_seealso(o, name, args);
   n += usage_copyright(o, name, args);
 
@@ -60,7 +62,7 @@ static int get_options_convert(poptions_t o, int argc, char** argv, char* name) 
         }
         o->action |= action;
       }
-    } else if (ECODE_ISEVIL(sinsert(o, argv[i]))) {
+    } else if (ECODE_ISEVIL(sinsert(o, argv[i], zSCRIPTCOMMANDS, zSCRIPTCOMMANDSEX))) {
       if (0 == o->inpname[0]) {
         xstrncpy(o->inpname, argv[i], NELEMENTS(o->inpname));
       } else {
@@ -97,6 +99,10 @@ int main(int argc, char* argv[]) {
 //              b0 = fswap(b0, base32_decode(b0->item, b0->size));
             } else if (ACT_BASE32E == x0->action) {
 //              b0 = fswap(b0, base32_encode(b0->item, b0->size));
+            } else if (ACT_BASE58D == x0->action) {
+//              b0 = fswap(b0, base58_decode(b0->item, b0->size));
+            } else if (ACT_BASE58E == x0->action) {
+//              b0 = fswap(b0, base58_encode(b0->item, b0->size));
             } else if (ACT_BASE64D == x0->action) {
               b0 = fswap(b0, base64_decode(b0->item, b0->size));
             } else if (ACT_BASE64E == x0->action) {

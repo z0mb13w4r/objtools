@@ -79,6 +79,7 @@ extern convert_t ecREGISTERS_i386[];
 extern convert_t ecREGISTERS_x86_64[];
 
 extern args_t zSCRIPTCOMMANDS[];
+extern args_t zSCRIPTCOMMANDSEX[];
 
 extern char zHEXDUMP[];
 extern char zSTRDUMP[];

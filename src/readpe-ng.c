@@ -53,7 +53,7 @@ static int get_options_readpe(poptions_t o, int argc, char** argv, char* name) {
         } else if (0 == xstrcmp(arg0, "--decompress")) {
           oinsertsecname(o, ACT_ZLIB, arg1);
         } else if (0 == xstrcmp(arg0, "--script")) {
-          sinsert(o, arg1);
+          sinsert(o, arg1, zSCRIPTCOMMANDS, NULL);
         }
       } else {
         imode_t action = get_options2(o, zREADPEARGS, argv[i]);
@@ -102,7 +102,7 @@ static int get_options_readpe(poptions_t o, int argc, char** argv, char* name) {
         if (argc <= (i + 1)) {
           return odeath(o, THIS_NAME, argv[i] + 1);
         }
-        sinsert(o, argv[++i]);
+        sinsert(o, argv[++i], zSCRIPTCOMMANDS, NULL);
       } else {
         imode_t action = get_options1(o, zREADPEARGS, argv[i]);
         if (0 == action) {
