@@ -125,6 +125,18 @@ int main(int argc, char* argv[]) {
               b0 = fswap(b0, hex32_decode(b0->item, b0->size));
             } else if (ACT_HEX32E == x0->action) {
               b0 = fswap(b0, hex32_encode(b0->item, b0->size));
+            } else if (ACT_SHL8BRUTE == x0->action) {
+              break;
+            } else if (ACT_SHL16BRUTE == x0->action) {
+              break;
+            } else if (ACT_SHR8BRUTE == x0->action) {
+              break;
+            } else if (ACT_SHR16BRUTE == x0->action) {
+              break;
+            } else if (ACT_XOR8BRUTE == x0->action) {
+              break;
+            } else if (ACT_XOR16BRUTE == x0->action) {
+              break;
             } else if (ACT_INC == x0->action) {
               step =  x0->value;
             } else if (ACT_DEC == x0->action) {
