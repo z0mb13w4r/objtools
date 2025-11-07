@@ -181,14 +181,17 @@
 #define ACT_STRDUMP16                              (2)
 #define ACT_RELDUMP                                (3)
 #define ACT_CODEDUMP                               (4)
+#define ACT_DISASSEMBLE                            (5)
+
 #define ACT_ADDSECTION                             (100)
 #define ACT_DUMPSECTION                            (101)
 #define ACT_UPDATESECTION                          (102)
-#define ACT_DISASSEMBLE                            (200)
+
 #define ACT_ROT5                                   (200)
 #define ACT_ROT13                                  (201)
 #define ACT_ROT18                                  (202)
 #define ACT_ROT47                                  (203)
+
 #define ACT_ADD8                                   (501)
 #define ACT_ADD16                                  (502)
 #define ACT_ADD32                                  (503)
@@ -215,6 +218,7 @@
 #define ACT_XOR32                                  (524)
 #define ACT_DEC                                    (525)
 #define ACT_INC                                    (526)
+
 #define ACT_BASE32D                                (600)
 #define ACT_BASE32E                                (601)
 #define ACT_BASE58D                                (602)
@@ -233,8 +237,14 @@
 #define ACT_HEX16E                                 (615)
 #define ACT_HEX32D                                 (616)
 #define ACT_HEX32E                                 (617)
-#define ACT_XOR8BRUTE                              (700)
-#define ACT_XOR16BRUTE                             (701)
+
+#define ACT_SHL8BRUTE                              (700)
+#define ACT_SHL16BRUTE                             (701)
+#define ACT_SHR8BRUTE                              (702)
+#define ACT_SHR16BRUTE                             (703)
+#define ACT_XOR8BRUTE                              (704)
+#define ACT_XOR16BRUTE                             (705)
+
 #define ACT_ZLIB                                   (800)
 
 #define PICK_VERBOSE(x,y,z)            (MODE_ISANY((x)->ocdump, OPTDWARF_VERBOSE) ? (y) : (z))

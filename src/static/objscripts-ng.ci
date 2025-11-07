@@ -83,7 +83,11 @@ args_t zSCRIPTCOMMANDSEX[] = {
   {0, "base64d",      ACT_BASE64D,          NULL,                  15},
   {0, "base64e",      ACT_BASE64E,          zSCRIPTBASE,           15},
 
+  {0, "shl8brute",    ACT_SHL8BRUTE,        NULL,                  16},
+  {0, "shr8brute",    ACT_SHR8BRUTE,        NULL,                  16},
   {0, "xor8brute",    ACT_XOR8BRUTE,        NULL,                  16},
+  {0, "shl16brute",   ACT_SHL16BRUTE,       NULL,                  16},
+  {0, "shr16brute",   ACT_SHR16BRUTE,       NULL,                  16},
   {0, "xor16brute",   ACT_XOR16BRUTE,       zSCRIPTBRUTE,          16},
 
   {0, NULL}
