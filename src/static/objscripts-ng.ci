@@ -13,6 +13,7 @@ char zSCRIPTDECE[] = "Converts the input data to an ordinal integer array.";
 char zSCRIPTHEXD[] = "Converts a hexadecimal byte string back into its raw value.";
 char zSCRIPTHEXE[] = "Converts the input string to hexadecimal bytes separated by a delimiter.";
 char zSCRIPTBASE[] = "Encoding and decoding data using a restricted set of symbols.";
+char zSCRIPTBRUTE[] = "Enumerate all possible XOR solutions. The current maximum key length is 2 due to performance.";
 
 args_t zSCRIPTCOMMANDS[] = {
   {0, "add8",     ACT_ADD8,             NULL,                  1},
@@ -52,35 +53,38 @@ args_t zSCRIPTCOMMANDS[] = {
 };
 
 args_t zSCRIPTCOMMANDSEX[] = {
-  {0, "xor8",     ACT_XOR8,             NULL,                  9},
-  {0, "xor16",    ACT_XOR16,            NULL,                  9},
-  {0, "xor32",    ACT_XOR32,            zSCRIPTXOR,            9},
+  {0, "xor8",         ACT_XOR8,             NULL,                  9},
+  {0, "xor16",        ACT_XOR16,            NULL,                  9},
+  {0, "xor32",        ACT_XOR32,            zSCRIPTXOR,            9},
 
-  {0, "dec",      ACT_DEC,              NULL,                  10},
-  {0, "inc",      ACT_INC,              zSCRIPTINC,            10},
+  {0, "dec",          ACT_DEC,              NULL,                  10},
+  {0, "inc",          ACT_INC,              zSCRIPTINC,            10},
 
-  {0, "dec8d",    ACT_DEC8D,            NULL,                  11},
-  {0, "dec16d",   ACT_DEC16D,           NULL,                  11},
-  {0, "dec32d",   ACT_DEC32D,           zSCRIPTDECD,           11},
+  {0, "dec8d",        ACT_DEC8D,            NULL,                  11},
+  {0, "dec16d",       ACT_DEC16D,           NULL,                  11},
+  {0, "dec32d",       ACT_DEC32D,           zSCRIPTDECD,           11},
 
-  {0, "dec8e",    ACT_DEC8E,            NULL,                  12},
-  {0, "dec16e",   ACT_DEC16E,           NULL,                  12},
-  {0, "dec32e",   ACT_DEC32E,           zSCRIPTDECE,           12},
+  {0, "dec8e",        ACT_DEC8E,            NULL,                  12},
+  {0, "dec16e",       ACT_DEC16E,           NULL,                  12},
+  {0, "dec32e",       ACT_DEC32E,           zSCRIPTDECE,           12},
 
-  {0, "hex8d",    ACT_HEX8D,            NULL,                  13},
-  {0, "hex16d",   ACT_HEX16D,           NULL,                  13},
-  {0, "hex32d",   ACT_HEX32D,           zSCRIPTHEXD,           13},
+  {0, "hex8d",        ACT_HEX8D,            NULL,                  13},
+  {0, "hex16d",       ACT_HEX16D,           NULL,                  13},
+  {0, "hex32d",       ACT_HEX32D,           zSCRIPTHEXD,           13},
 
-  {0, "hex8e",    ACT_HEX8E,            NULL,                  14},
-  {0, "hex16e",   ACT_HEX16E,           NULL,                  14},
-  {0, "hex32e",   ACT_HEX32E,           zSCRIPTHEXE,           14},
+  {0, "hex8e",        ACT_HEX8E,            NULL,                  14},
+  {0, "hex16e",       ACT_HEX16E,           NULL,                  14},
+  {0, "hex32e",       ACT_HEX32E,           zSCRIPTHEXE,           14},
 
-  {0, "base32d",  ACT_BASE32D,          NULL,                  15},
-  {0, "base32e",  ACT_BASE32E,          NULL,                  15},
-  {0, "base58d",  ACT_BASE58D,          NULL,                  15},
-  {0, "base58e",  ACT_BASE58E,          NULL,                  15},
-  {0, "base64d",  ACT_BASE64D,          NULL,                  15},
-  {0, "base64e",  ACT_BASE64E,          zSCRIPTBASE,           15},
+  {0, "base32d",      ACT_BASE32D,          NULL,                  15},
+  {0, "base32e",      ACT_BASE32E,          NULL,                  15},
+  {0, "base58d",      ACT_BASE58D,          NULL,                  15},
+  {0, "base58e",      ACT_BASE58E,          NULL,                  15},
+  {0, "base64d",      ACT_BASE64D,          NULL,                  15},
+  {0, "base64e",      ACT_BASE64E,          zSCRIPTBASE,           15},
+
+  {0, "xor8brute",    ACT_XOR8BRUTE,        NULL,                  16},
+  {0, "xor16brute",   ACT_XOR16BRUTE,       zSCRIPTBRUTE,          16},
 
   {0, NULL}
 };

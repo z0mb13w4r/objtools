@@ -233,7 +233,9 @@
 #define ACT_HEX16E                                 (615)
 #define ACT_HEX32D                                 (616)
 #define ACT_HEX32E                                 (617)
-#define ACT_ZLIB                                   (700)
+#define ACT_XOR8BRUTE                              (700)
+#define ACT_XOR16BRUTE                             (701)
+#define ACT_ZLIB                                   (800)
 
 #define PICK_VERBOSE(x,y,z)            (MODE_ISANY((x)->ocdump, OPTDWARF_VERBOSE) ? (y) : (z))
 #define PICK_ENHANCED(x,y,z)           (MODE_ISANY((x)->ocdump, OPTDWARF_ENHANCED) ? (y) : (z))
