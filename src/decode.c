@@ -767,23 +767,24 @@ handle_t base64_decode(unknown_t src, size_t srcsize) {
     if (dst) {
       puchar_t pdst = CAST(puchar_t, dst->item);
       uchar_t tmp[4];
-      int c = 0, j = 0;
-      for (int i = 0; i < srcsize; ++i) {
+      size_t j = 0;
+      for (size_t i = 0; i < srcsize; ++i) {
         uchar_t k;
         for (k = 0 ; k < 64 && base64_map[k] != psrc[i]; k++);
 
         tmp[j++] = k;
         if (j == 4) {
-          pdst[c++] = (tmp[0] << 2) + (tmp[1] >> 4);
-          if (tmp[2] != 64)    pdst[c++] = (tmp[1] << 4) + (tmp[2] >> 2);
-          if (tmp[3] != 64)    pdst[c++] = (tmp[2] << 6) + tmp[3];
+          pdst[dst->cpos++] = (tmp[0] << 2) + (tmp[1] >> 4);
+          if (tmp[2] != 64)    pdst[dst->cpos++] = (tmp[1] << 4) + (tmp[2] >> 2);
+          if (tmp[3] != 64)    pdst[dst->cpos++] = (tmp[2] << 6) + tmp[3];
           j = 0;
         }
       }
 
-      pdst[c] = '\0';   /* string padding character */
-      dst->epos = c - 1;
-      dst->size = c;
+      pdst[dst->cpos] = '\0';   /* string padding character */
+      dst->size = dst->cpos + 1;
+      dst->epos = dst->cpos;
+      dst->cpos = 0;
       return dst;
     }
   }
