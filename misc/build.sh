@@ -5,6 +5,7 @@ SEDBIN=/usr/bin/sed
 COPYBIN=/usr/bin/cp
 FINDBIN=/usr/bin/find
 GREPBIN=/usr/bin/grep
+GZIPBIN=/usr/bin/gzip
 MAKEBIN=/usr/bin/make
 SUDOBIN=/usr/bin/sudo
 CHOWNBIN=/usr/bin/chown
@@ -19,6 +20,7 @@ ARCH=$($GREPBIN Architecture $EXTERNBIN/control | $CUTBIN -d ' ' -f 2)
 
 NAME=objtools-$VER-$ARCH
 USRBIN=$NAME/usr/bin
+USRMAN=$NAME/usr/share/man/man1
 LOCALBIN=$NAME/usr/local/bin
 DEBIANBIN=$NAME/DEBIAN
 
@@ -32,6 +34,7 @@ $MAKEBIN -f objdwarf-ng.mk all
 
 $MKDIRBIN -v -p $NAME
 $MKDIRBIN -v -p $USRBIN
+$MKDIRBIN -v -p $USRMAN
 $MKDIRBIN -v -p $DEBIANBIN
 
 $COPYBIN -v $EXTERNBIN/readpe-ng $USRBIN/
@@ -41,9 +44,15 @@ $COPYBIN -v $EXTERNBIN/objdump-ng $USRBIN/
 $COPYBIN -v $EXTERNBIN/objhash-ng $USRBIN/
 $COPYBIN -v $EXTERNBIN/readelf-ng $USRBIN/
 $COPYBIN -v $EXTERNBIN/objdwarf-ng $USRBIN/
+
+$COPYBIN -v $EXTERNBIN/readelf-ng.1 $USRMAN/
+
 $COPYBIN -v $EXTERNBIN/control $DEBIANBIN/
 
+$GZIPBIN $USRMAN/readelf-ng.1
+
 $SUDOBIN $CHOWNBIN root:root $USRBIN/*
+$SUDOBIN $CHOWNBIN root:root $USRMAN/*
 
 $FINDBIN $NAME/usr/ -type f -exec $MD5SUMBIN '{}' \; | $SEDBIN "s/$NAME\///" > $DEBIANBIN/md5sums
 
