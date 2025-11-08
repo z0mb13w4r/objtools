@@ -670,19 +670,21 @@ handle_t base32_decode(unknown_t src, size_t srcsize) {
       puchar_t pdst = CAST(puchar_t, dst->item);
 
       bool_t isok = FALSE;
-      for (size_t i = 0; i < srcsize && !isok; ) {
+      bool_t isdie = FALSE;
+      for (size_t i = 0; i < srcsize && !isok && !isdie; ) {
         uint8_t tmp[8];
         size_t idst = 8;
 
         for (size_t j = 0; j < 8; ) {
           char ch = psrc[i++];
 
-      // Handle and validate padding
-//      if (ch == '\0') {
-//        return ECODE_CORRUPT;
-//      }
-
+          // Handle and validate padding.
           if (isspace(ch)) continue;
+          else if ('\0' == ch) {
+            idst = 0;
+            isdie = TRUE;
+            break;
+          }
 
           size_t endsize = srcsize - i - 1;
           if (ch == '=' && j >= 2 && endsize < 8) {
@@ -713,15 +715,17 @@ handle_t base32_decode(unknown_t src, size_t srcsize) {
 //      }
         }
 
-        switch (idst) {
-        case 8:  pdst[dst->cpos + 4] = (tmp[6] << 5) |  tmp[7];
-        case 7:  pdst[dst->cpos + 3] = (tmp[4] << 7) | (tmp[5] << 2) | (tmp[6] >> 3);
-        case 5:  pdst[dst->cpos + 2] = (tmp[3] << 4) | (tmp[4] >> 1);
-        case 4:  pdst[dst->cpos + 1] = (tmp[1] << 6) | (tmp[2] << 1) | (tmp[3] >> 4);
-        case 2:  pdst[dst->cpos + 0] = (tmp[0] << 3) | (tmp[1] >> 2);
-        }
+        if (!isdie) {
+          switch (idst) {
+          case 8:  pdst[dst->cpos + 4] = (tmp[6] << 5) |  tmp[7];
+          case 7:  pdst[dst->cpos + 3] = (tmp[4] << 7) | (tmp[5] << 2) | (tmp[6] >> 3);
+          case 5:  pdst[dst->cpos + 2] = (tmp[3] << 4) | (tmp[4] >> 1);
+          case 4:  pdst[dst->cpos + 1] = (tmp[1] << 6) | (tmp[2] << 1) | (tmp[3] >> 4);
+          case 2:  pdst[dst->cpos + 0] = (tmp[0] << 3) | (tmp[1] >> 2);
+          }
 
-        dst->cpos += 5;
+          dst->cpos += 5;
+        }
       }
 
       pdst[dst->cpos] = '\0';   /* string padding character */
