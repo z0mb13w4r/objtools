@@ -37,9 +37,9 @@ readelf-ng [\fB\-H\fR|\fB\-\-help\fR]
            [-T options|--script=options]
 
 .SH DESCRIPTION
-readelf-ng  displays information about one or more ELF format object files. The options control what particular information to display.
+\fBreadelf-ng\fR displays information about one or more ELF format object files. The options control what particular information to display.
 
-elffile... are the object files to be examined. 32-bit and 64-bit ELF files are supported, as are archives containing ELF files.
+\fIelffile...\fR are the object files to be examined. 32-bit and 64-bit ELF files are supported, as are archives containing ELF files.
 
 .SH OPTIONS
   -H
@@ -50,9 +50,21 @@ elffile... are the object files to be examined. 32-bit and 64-bit ELF files are 
   --version
     Print the version number of readelf-ng and exit.
 
-  -A
-  --arch-specific
-    Displays architecture-specific information in the file.
+.IP "\fB\-a\fR" 4
+.IX Item "-a"
+.PD 0
+.IP "\fB\-\-all\fR" 4
+.IX Item "--all"
+.PD
+Equivalent to specifying: \fB\-\-arch-specific\fR, \fB\-\-histogram\fR, \fB\-\-section-headers\fR, \fB\-\-version-info\fR, \fB\-\-dynamic\fR, \fB\-\-section-groups\fR, \fB\-\-file-header\fR, \fB\-\-program-headers\fR, \fB\-\-notes\fR, \fB\-\-relocs\fR, \fB\-\-symbols\fR and \fB\-\-unwind\fR.
+
+.IP "\fB\-A\fR" 4
+.IX Item "-A"
+.PD 0
+.IP "\fB\-\-arch-specific\fR" 4
+.IX Item "--arch-specific"
+.PD
+Displays architecture-specific information in the file.
 
   -I
   --histogram
@@ -65,10 +77,6 @@ elffile... are the object files to be examined. 32-bit and 64-bit ELF files are 
   -V
   --version-info
     Displays the contents of the version sections in the file.
-
-  -a
-  --all
-    Equivalent to specifying: --arch-specific --histogram --section-headers --version-info --dynamic --section-groups --file-header --program-headers --notes --relocs --symbols --unwind
 
   -d
   --dynamic
