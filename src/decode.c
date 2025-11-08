@@ -708,9 +708,10 @@ handle_t base32_decode(unknown_t src, size_t srcsize) {
           }
 
           tmp[j++] = ch = base32_decode_char(ch);
-//      if (ch == 0xFF) {
-//        return ECODE_CORRUPT;
-//      }
+          if (ch == 0xFF) {
+            isdie = TRUE;
+            break;
+          }
         }
 
         if (!isdie) {
