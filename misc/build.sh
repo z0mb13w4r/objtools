@@ -22,6 +22,7 @@ NAME=objtools-$VER-$ARCH
 USRBIN=$NAME/usr/bin
 USRMAN=$NAME/usr/share/man/man1
 LOCALBIN=$NAME/usr/local/bin
+LOCALMAN=$NAME/usr/local/share/man/
 DEBIANBIN=$NAME/DEBIAN
 
 $MAKEBIN -f readpe-ng.mk all
