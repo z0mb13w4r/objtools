@@ -108,6 +108,20 @@ handle_t hex32_encode(unknown_t src, size_t srcsize) {
   return NULL;
 }
 
+static void base32_encode0(const puchar_t src, puchar_t dst, size_t size) {
+  uint32_t hi = (src[0] << 24) | (src[1] << 16) | (src[2] << 8) | src[3];
+  uint32_t lo = (hi << 8) | src[4];
+
+  dst[0] = base64_map[hi >> 27 & 0x1f];
+  dst[1] = base64_map[hi >> 22 & 0x1f];
+  dst[2] = base64_map[hi >> 17 & 0x1f];
+  dst[3] = base64_map[hi >> 12 & 0x1f];
+  dst[4] = base64_map[hi >> 7 & 0x1f];
+  dst[5] = base64_map[hi >> 2 & 0x1f];
+  dst[6] = base64_map[lo >> 5 & 0x1f];
+  dst[7] = base64_map[lo & 0x1f];
+}
+
 handle_t base32_encode(unknown_t src, size_t srcsize) {
   if (src && srcsize) {
     size_t maxsize = srcsize * 3 + 1;
@@ -116,6 +130,51 @@ handle_t base32_encode(unknown_t src, size_t srcsize) {
     pfind_t dst = fxalloc(maxsize, MEMFIND_NOCHUNKSIZE);
     if (dst) {
       puchar_t pdst = CAST(puchar_t, dst->item);
+
+      size_t si = 0;
+      size_t sz = (srcsize / 5) * 5;
+
+      while (si < sz) {
+        base32_encode0(psrc + si, pdst + dst->cpos, sz - si);
+        si += 5;
+        dst->cpos += 8;
+      }
+
+      uint32_t val = 0;
+      size_t   sr = srcsize - sz;
+      size_t   sc = 0;
+
+      switch (sr) {
+      case 4:
+        sc = MAX(sc, 7);
+        val |= psrc[si + 3];
+        pdst[dst->cpos + 6] = base64_map[val << 3 & 0x1f];
+        pdst[dst->cpos + 5] = base64_map[val >> 2 & 0x1f];
+
+      case 3:
+        sc = MAX(sc, 5);
+        val |= psrc[si + 2] << 8;
+        pdst[dst->cpos + 4] = base64_map[val >> 7 & 0x1f];
+
+      case 2:
+        sc = MAX(sc, 4);
+        val |= psrc[si + 1] << 16;
+        pdst[dst->cpos + 3] = base64_map[val >> 12 & 0x1f];
+        pdst[dst->cpos + 2] = base64_map[val >> 17 & 0x1f];
+
+      case 1:
+        sc = MAX(sc, 2);
+        val |= psrc[si + 0] << 24;
+        pdst[dst->cpos + 1] = base64_map[val >> 22 & 0x1f];
+        pdst[dst->cpos + 0] = base64_map[val >> 27 & 0x1f];
+      }
+
+      dst->cpos += sc;
+
+      size_t npad = (sr * 8 / 5) + 1;
+      for (size_t i = npad; i < 8; ++i) {
+        pdst[dst->cpos++] = '=';
+      }
 
       pdst[dst->cpos] = '\0';   /* string padding character */
       dst->size = dst->cpos + 1;
