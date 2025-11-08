@@ -1,0 +1,334 @@
+.TH READELF-NG "1" "November 2025" "objtools 0.0" "User Commands"
+.SH NAME
+readelf-ng: display information about ELF files.
+
+.SH SYNOPSIS
+.B readelf-ng
+             [-H|--help]
+             [-v|--version]
+             [-A|--arch-specific]
+             [-I|--histogram]
+             [-S|--section-headers]
+             [-V|--version-info]
+             [-a|--all]
+             [-d|--dynamic]
+             [-e|--headers]
+             [-g|--section-groups]
+             [-t|--section-details]
+             [-h|--file-header]
+             [-l|--program-headers]
+             [-n|--notes]
+             [-r|--relocs]
+             [-s|--symbols]
+             [-u|--unwind]
+             [-D|--use-dynamic]
+             [-C|--demangle]
+             [-x|--hex-dump]
+             [-Z|--code-dump]
+             [-p|--string-dump]
+             [-U|--unicode-dump]
+             [-R|--relocated-dump]
+             [-z|--decompress]
+             [-I|--info]
+             [-X|--hash]
+             [-E|--entropy]
+             [-w|[aAcFikKLmrRsptTuUgX]|
+             --debug-dump|[abbrev,addr,cu_index,frames-interp,info,links,follow-links,decodedline,macro,aranges,ranges,str,pubnames,pubtypes,trace_aranges,trace_abbrev,trace_info,gdb_index,enhanced]]
+             [-M options|--disassembler-options=options]
+             [-T options|--script=options]
+
+.SH DESCRIPTION
+readelf-ng  displays information about one or more ELF format object files. The options control what particular information to display.
+
+elffile... are the object files to be examined. 32-bit and 64-bit ELF files are supported, as are archives containing ELF files.
+
+.SH OPTIONS
+  -H
+  --help
+    Print a summary of the options to readelf-ng and exit.
+
+  -v
+  --version
+    Print the version number of readelf-ng and exit.
+
+  -A
+  --arch-specific
+    Displays architecture-specific information in the file.
+
+  -I
+  --histogram
+    Display a histogram of bucket list lengths when displaying the contents of the symbol tables.
+
+  -S
+  --section-headers
+    Displays the information contained in the file's section headers.
+
+  -V
+  --version-info
+    Displays the contents of the version sections in the file.
+
+  -a
+  --all
+    Equivalent to specifying: --arch-specific --histogram --section-headers --version-info --dynamic --section-groups --file-header --program-headers --notes --relocs --symbols --unwind
+
+  -d
+  --dynamic
+    Displays the contents of the file's dynamic section.
+
+  -e
+  --headers
+    Display all the headers in the file.
+    Equivalent to specifying: --section-headers --file-header --program-headers
+
+  -g
+  --section-groups
+    Displays the information contained in the file's section groups.
+
+  -t
+  --section-details
+    Displays the detailed section information. Implies -S.
+
+  -h
+  --file-header
+    Displays the information contained in the ELF header at the start of the file.
+
+  -l
+  --program-headers
+    Displays the information contained in the file's segment headers.
+
+  -n
+  --notes
+    Displays the contents of the NOTE segments.
+
+  -r
+  --relocs
+    Displays the contents of the file's relocation section.
+
+  -s
+  --symbols
+    Displays the entries in symbol table section of the file.
+
+  -u
+  --unwind
+    Displays the contents of the file's unwind section.
+
+  -D
+  --use-dynamic
+    Use the dynamic section info when displaying symbols.
+
+  -C
+  --demangle
+    Decode (demangle) low-level symbol names into user-level names. This makes C++ function names readable. Different compilers have different mangling styles.
+
+  -x
+  --hex-dump
+    Displays the contents of the indicated section as a hexadecimal bytes.
+
+  -Z
+  --code-dump
+    Displays the contents of the indicated section as C Language Shell Code.
+
+  -p
+  --string-dump
+    Displays the contents of the indicated section as printable strings.
+
+  -U
+  --unicode-dump
+    Displays the contents of the indicated section as printable strings.
+
+  -R
+  --relocated-dump
+    Displays the contents of the indicated section as a hexadecimal bytes.
+
+  -z
+  --decompress
+    Requests that the section(s) being dumped by x, R or p options are decompressed before being displayed.
+
+  -I
+  --info
+    Equivalent to specifying: --hash --entropy
+
+  -X
+  --hash
+    Calculates and displays the SHA-256 hash.
+
+  -E
+  --entropy
+    Displays the entropy of the object.
+
+  -w|[aAcFikKLmrRsptTuUgX]
+  --debug-dump|[=abbrev,=addr,=cu_index,=frames-interp,=info,=links,=follow-links,=decodedline,=macro,=aranges,=ranges,=str,=pubnames,=pubtypes,=trace_aranges,=trace_abbrev,=trace_info,=gdb_index,=enhanced]
+
+  "a"
+  "=abbrev"
+    Displays the contents of the .debug_abbrev section.
+
+  "A"
+  "=addr"
+    Displays the contents of the .debug_addr section.
+
+  "c"
+  "=cu_index"
+    Displays the contents of the .debug_cu_index|.debug_tu_index sections.
+
+  "F"
+  "=frames-interp"
+    Display the interpreted contents of a .debug_frame section.
+
+  "i"
+  "=info"
+    Displays the contents of the .debug_info section.
+
+  "k"
+  "=links"
+    Displays the contents of the .gnu_debuglink|.gnu_debugaltlink sections.
+
+  "K"
+  "=follow-links"
+    Display the contents of any selected debug sections that are found in linked, separate debug info file(s).
+
+  "L"
+  "=decodedline"
+    Displays the interpreted contents of the .debug_line section.
+
+  "m"
+  "=macro"
+    Displays the contents of the .debug_macro|.debug_macinfo sections.
+
+  "r"
+  "=aranges"
+    Displays the contents of the .debug_aranges section.
+
+  "R"
+  "=ranges"
+    Displays the contents of the .debug_ranges|.debug_rnglists sections.
+
+  "s"
+  "=str"
+    Displays the contents of the .debug_str|.debug_line_str|.debug_str_offsets sections.
+
+  "p"
+  "=pubnames"
+    Displays the contents of the .debug_pubnames|.debug_gnu_pubnames sections.
+
+  "t"
+  "=pubtypes"
+    Displays the contents of the .debug_pubtypes|.debug_gnu_pubtypes sections.
+
+  "T"
+  "=trace_aranges"
+    Displays the contents of the .trace_aranges section.
+
+  "u"
+  "=trace_abbrev"
+    Displays the contents of the .trace_abbrev section.
+
+  "U"
+  "=trace_info"
+    Displays the contents of the .trace_info section.
+
+  "g"
+  "=gdb_index"
+    Displays the contents of the .gdb_index|.debug_names sections.
+
+  "X"
+  "=enhanced"
+    Displays the contents in the enhanced mode format.
+
+  -M options
+  --disassembler-options=options
+
+  "att"
+  "att-mnemonic"
+    Select the AT&T syntax mode.
+
+  "intel"
+  "intel-mnemonic"
+    Select the Intel syntax mode.
+
+  "x86-64"
+  "i386"
+  "i8086"
+    Select disassembly for the given architecture.
+
+  "amd64"
+  "intel64"
+    Select between AMD64 ISA and Intel64 ISA.
+
+  "addr16"
+  "addr32"
+  "addr64"
+  "data16"
+  "data32"
+    Specify the default address size and operand size.
+
+  -T options
+  --script=options
+
+  "add8"
+  "add16"
+  "add32"
+    ADD (addition) the input with the given key.
+
+  "not8"
+  "not16"
+  "not32"
+    NOT (negation) the input.
+
+  "rol8"
+  "rol16"
+  "rol32"
+    ROL (rotate-left) the input with the given key.
+
+  "ror8"
+  "ror16"
+  "ror32"
+    ROR (rotate-right) the input with the given key.
+
+  "rot5"
+  "rot13"
+  "rot18"
+  "rot47"
+    Caesar substitution cipher which rotates alphabet characters by the specified amount.
+
+  "shl8"
+  "shl16"
+  "shl32"
+    SHL (left-shift) the input with the given key.
+
+  "shr8"
+  "shr16"
+  "shr32"
+    SHR (right-shift) the input with the given key.
+
+  "sub8"
+  "sub16"
+  "sub32"
+    SUB (subtract) the input with the given key.
+
+.SH SEE ALSO
+convert-ng(1), objcopy-ng(1), objdump-ng(1), objdwarf-ng(1), objhash-ng(1), readelf-ng(1), readpe-ng(1)
+
+.SH COPYRIGHT
+MIT License
+
+Copyright (c) 2025 Kyle Wickens
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
