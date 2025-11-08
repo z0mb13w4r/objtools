@@ -16,6 +16,7 @@
 #define ECODE_BFD            (-6)
 #define ECODE_PARAM          (-7)
 #define ECODE_ARGUMENTS      (-8)
+#define ECODE_CORRUPT        (-9)
 #define ECODE_HANDLE         (-298)
 #define ECODE_NULL           (-299)
 #define ECODE_NOENTRY        (-300)
@@ -35,16 +36,16 @@
 #endif
 
 #ifndef MALLOCA
-#define MALLOCA(x,y,z) x y[z]; memset(y, 0, sizeof(y))
+#define MALLOCA(x,y,z) x y[z]; xmemset(y, 0, sizeof(y))
 #define STATICA(x,y,z) static MALLOCA(x,y,z)
 #endif
 
 #ifndef MALLOCACOPY
-#define MALLOCACOPY(x,y,z,s) MALLOCA(x,y,z); strncpy(y, s, sizeof(y))
+#define MALLOCACOPY(x,y,z,s) MALLOCA(x,y,z); xstrncpy(y, s, sizeof(y))
 #endif
 
 #ifndef MALLOCS
-#define MALLOCS(x,y) x y; x* p##y = &y; memset(p##y, 0, sizeof(y))
+#define MALLOCS(x,y) x y; x* p##y = &y; xmemset(p##y, 0, sizeof(y))
 #endif
 
 #ifndef MALLOCSMODE
@@ -56,7 +57,7 @@
 #endif
 
 #ifndef MEMCPYA
-#define MEMCPYA(x,y) memcpy(x, y, MIN(NELEMENTS(x), NELEMENTS(y)))
+#define MEMCPYA(x,y) xmemcpy(x, y, MIN(NELEMENTS(x), NELEMENTS(y)))
 #endif
 
 #ifndef ABS
