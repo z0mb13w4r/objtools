@@ -110,6 +110,19 @@ handle_t hex32_encode(unknown_t src, size_t srcsize) {
 
 handle_t base32_encode(unknown_t src, size_t srcsize) {
   if (src && srcsize) {
+    size_t maxsize = srcsize * 3 + 1;
+    puchar_t psrc = CAST(puchar_t, src);
+
+    pfind_t dst = fxalloc(maxsize, MEMFIND_NOCHUNKSIZE);
+    if (dst) {
+      puchar_t pdst = CAST(puchar_t, dst->item);
+
+      pdst[dst->cpos] = '\0';   /* string padding character */
+      dst->size = dst->cpos + 1;
+      dst->epos = dst->cpos;
+      dst->cpos = 0;
+      return dst;
+    }
   }
 
   return NULL;
