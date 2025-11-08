@@ -98,9 +98,9 @@ int main(int argc, char* argv[]) {
           paction_t x0 = o->actions;
           while (x0) {
             if (ACT_BASE32D == x0->action) {
-//              b0 = fswap(b0, base32_decode(b0->item, b0->size));
+              b0 = fswap(b0, base32_decode(b0->item, b0->size));
             } else if (ACT_BASE32E == x0->action) {
-//              b0 = fswap(b0, base32_encode(b0->item, b0->size));
+              b0 = fswap(b0, base32_encode(b0->item, b0->size));
             } else if (ACT_BASE58D == x0->action) {
 //              b0 = fswap(b0, base58_decode(b0->item, b0->size));
             } else if (ACT_BASE58E == x0->action) {
