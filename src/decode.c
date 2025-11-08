@@ -702,9 +702,7 @@ handle_t base32_decode(unknown_t src, size_t srcsize) {
             idst = j;
             isok = TRUE;
 
-//        if (idst == 1 || idst == 3 || idst == 6) {
-//          return ECODE_CORRUPT;
-//        }
+            if (idst == 1 || idst == 3 || idst == 6) isdie = TRUE;
 
             break;
           }
