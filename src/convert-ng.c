@@ -93,6 +93,7 @@ int main(int argc, char* argv[]) {
       if (issafe(p)) {
         pfind_t b0 = fcalloc(p->data, p->size, MEMFIND_NOCHUNKSIZE);
         if (b0) {
+          bool_t isok = TRUE;
           int32_t step = 0;
           paction_t x0 = o->actions;
           while (x0) {
@@ -128,21 +129,27 @@ int main(int argc, char* argv[]) {
               b0 = fswap(b0, hex32_encode(b0->item, b0->size));
             } else if (ACT_SHL8BRUTE == x0->action) {
               dump_shlbrute8(o, b0->item, b0->size);
+              isok = FALSE;
               break;
             } else if (ACT_SHL16BRUTE == x0->action) {
               dump_shlbrute16(o, b0->item, b0->size);
+              isok = FALSE;
               break;
             } else if (ACT_SHR8BRUTE == x0->action) {
               dump_shrbrute8(o, b0->item, b0->size);
+              isok = FALSE;
               break;
             } else if (ACT_SHR16BRUTE == x0->action) {
               dump_shrbrute16(o, b0->item, b0->size);
+              isok = FALSE;
               break;
             } else if (ACT_XOR8BRUTE == x0->action) {
               dump_xorbrute8(o, b0->item, b0->size);
+              isok = FALSE;
               break;
             } else if (ACT_XOR16BRUTE == x0->action) {
               dump_xorbrute16(o, b0->item, b0->size);
+              isok = FALSE;
               break;
             } else if (ACT_INC == x0->action) {
               step =  x0->value;
@@ -156,7 +163,7 @@ int main(int argc, char* argv[]) {
           }
           if (o->outname[0]) {
             xset(b0->item, b0->size, o->outname);
-          } else {
+          } else if (isok) {
             printf_text(b0->item, USE_LT | USE_EOL);
           }
           ffree(b0);
