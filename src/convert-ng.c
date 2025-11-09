@@ -102,9 +102,9 @@ int main(int argc, char* argv[]) {
             } else if (ACT_BASE32E == x0->action) {
               b0 = fswap(b0, base32_encode(b0->item, b0->size));
             } else if (ACT_BASE58D == x0->action) {
-//              b0 = fswap(b0, base58_decode(b0->item, b0->size));
+              b0 = fswap(b0, base58_decode(b0->item, b0->size));
             } else if (ACT_BASE58E == x0->action) {
-//              b0 = fswap(b0, base58_encode(b0->item, b0->size));
+              b0 = fswap(b0, base58_encode(b0->item, b0->size));
             } else if (ACT_BASE64D == x0->action) {
               b0 = fswap(b0, base64_decode(b0->item, b0->size));
             } else if (ACT_BASE64E == x0->action) {
