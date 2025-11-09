@@ -21,6 +21,7 @@ echo 0x66, 0x6d, 0x63, 0x64, 0x7f, 0x64, 0x35, 0x35, 0x69, 0x39, 0x3d, 0x6a, 0x3
 # MJQXGZJTGIQGS4ZAON2XAZLSEBRW63LNN5XCA2LOEBBVIRRHOM======
 # -> BASE32
 # base32 is super common in CTF's
+echo "base32 is super common in CTF's" | ${PRGNAMENG} base32e -
 echo MJQXGZJTGIQGS4ZAON2XAZLSEBRW63LNN5XCA2LOEBBVIRRHOM====== | ${PRGNAMENG} base32d -
 
 # RWFjaCBCYXNlNjQgZGlnaXQgcmVwcmVzZW50cyBleGFjdGx5IDYgYml0cyBvZiBkYXRhLg==
@@ -51,6 +52,7 @@ echo 85 110 112 97 99 107 32 116 104 105 115 32 66 67 68 | ${PRGNAMENG} dec8d -
 # MVQXG6K7MJQXGZJTGI======
 # -> BASE32
 # easy_base32
+echo "easy_base32" | ${PRGNAMENG} base32e -
 echo MVQXG6K7MJQXGZJTGI====== | ${PRGNAMENG} base32d -
 
 # NjZMKVhATl1EcEI2Jio4Q0xuVy1EZSo5ZkFLV0M6QVUtPFpGQ0InIkReYg==
@@ -68,3 +70,11 @@ echo MVQXG6K7MJQXGZJTGI====== | ${PRGNAMENG} base32d -
 # PJXHQ4S7GEZV6ZTDOZQQ====
 # -> BASE32 -> ROT13
 # make_13_spin
+
+# 2W1V8GQ5TELfYurYCZvEQV1q6RhagcEwZgi7n25vVvS
+# -> BASE58
+# base58 is super common in CTF's
+echo "2W1V8GQ5TELfYurYCZvEQV1q6RhagcEwZgi7n25vVvS" | ${PRGNAMENG} base58d -
+
+#echo 'egmpeg"md"vjg"hwleng' | ${PRGNAMENG} xor8brute -
+
