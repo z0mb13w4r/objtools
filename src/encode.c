@@ -111,17 +111,19 @@ handle_t hex32_encode(unknown_t src, size_t srcsize) {
 }
 
 static void base32_encode0(const puchar_t src, puchar_t dst, size_t size) {
-  uint32_t hi = (src[0] << 24) | (src[1] << 16) | (src[2] << 8) | src[3];
-  uint32_t lo = (hi << 8) | src[4];
+  if (5 <= size) {
+    uint32_t hi = (src[0] << 24) | (src[1] << 16) | (src[2] << 8) | src[3];
+    uint32_t lo = (hi << 8) | src[4];
 
-  dst[0] = base64_map[hi >> 27 & 0x1f];
-  dst[1] = base64_map[hi >> 22 & 0x1f];
-  dst[2] = base64_map[hi >> 17 & 0x1f];
-  dst[3] = base64_map[hi >> 12 & 0x1f];
-  dst[4] = base64_map[hi >> 7 & 0x1f];
-  dst[5] = base64_map[hi >> 2 & 0x1f];
-  dst[6] = base64_map[lo >> 5 & 0x1f];
-  dst[7] = base64_map[lo & 0x1f];
+    dst[0] = base64_map[hi >> 27 & 0x1f];
+    dst[1] = base64_map[hi >> 22 & 0x1f];
+    dst[2] = base64_map[hi >> 17 & 0x1f];
+    dst[3] = base64_map[hi >> 12 & 0x1f];
+    dst[4] = base64_map[hi >> 7 & 0x1f];
+    dst[5] = base64_map[hi >> 2 & 0x1f];
+    dst[6] = base64_map[lo >> 5 & 0x1f];
+    dst[7] = base64_map[lo & 0x1f];
+  }
 }
 
 handle_t base32_encode(unknown_t src, size_t srcsize) {
