@@ -31,10 +31,12 @@ readelf-ng [\fB\-H\fR|\fB\-\-help\fR]
            [\fB\-I\fR|\fB\-\-info\fR]
            [\fB\-X\fR|\fB\-\-hash\fR]
            [\fB\-E\fR|\fB\-\-entropy\fR]
-           [-w|[aAcFikKLmrRsptTuUgX]|
-           --debug-dump|[abbrev,addr,cu_index,frames-interp,info,links,follow-links,decodedline,macro,aranges,ranges,str,pubnames,pubtypes,trace_aranges,trace_abbrev,trace_info,gdb_index,enhanced]]
-           [-M options|--disassembler-options=options]
-           [-T options|--script=options]
+           [\fB\-w[aAcFikKLmrRsptTuUgX]\fR|
+            \fB\-\-debug-dump\fR[=abbrev,addr,=cu_index,=frames\-interp,=info,=links,=follow\-links,
+                         =decodedline,=macro,=aranges,=ranges,=str,=pubnames,=pubtypes,=trace_aranges,
+                         =trace_abbrev,=trace_info,=gdb_index,=enhanced]]
+           [\fB\-M\fR <options>|\fB\-\-disassembler\-options=\fR<options>]
+           [\fB\-T\fR <options>|\fB\-\-script=\fR<options>]
 
 .SH DESCRIPTION
 \fBreadelf-ng\fR displays information about one or more ELF format object files. The options control what particular information to display.
