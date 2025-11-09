@@ -5,6 +5,8 @@
 extern uchar_t base32_map[];
 extern uchar_t base64_map[];
 
+static uchar_t base32_ext[] = { 0, 2, 4, 5, 7 };
+
 static int hexN(int x) {
   x &= 0x0f;
   if (0 <= x && x <= 9)  return x + '0';
@@ -142,34 +144,31 @@ handle_t base32_encode(unknown_t src, size_t srcsize) {
 
       uint32_t val = 0;
       size_t   sr = srcsize - sz;
-      size_t   sc = 0;
 
       switch (sr) {
       case 4:
-        sc = MAX(sc, 7);
         val |= psrc[si + 3];
         pdst[dst->cpos + 6] = base64_map[val << 3 & 0x1f];
         pdst[dst->cpos + 5] = base64_map[val >> 2 & 0x1f];
 
       case 3:
-        sc = MAX(sc, 5);
         val |= psrc[si + 2] << 8;
         pdst[dst->cpos + 4] = base64_map[val >> 7 & 0x1f];
 
       case 2:
-        sc = MAX(sc, 4);
         val |= psrc[si + 1] << 16;
         pdst[dst->cpos + 3] = base64_map[val >> 12 & 0x1f];
         pdst[dst->cpos + 2] = base64_map[val >> 17 & 0x1f];
 
       case 1:
-        sc = MAX(sc, 2);
         val |= psrc[si + 0] << 24;
         pdst[dst->cpos + 1] = base64_map[val >> 22 & 0x1f];
         pdst[dst->cpos + 0] = base64_map[val >> 27 & 0x1f];
       }
 
-      dst->cpos += sc;
+      if (sr < NELEMENTS(base32_ext)) {
+        dst->cpos += base32_ext[sr];
+      }
 
       size_t npad = (sr * 8 / 5) + 1;
       for (size_t i = npad; i < 8; ++i) {
