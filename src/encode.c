@@ -135,6 +135,7 @@ handle_t base32_encode(unknown_t src, size_t srcsize) {
 
       size_t si = 0;
       size_t sz = (srcsize / 5) * 5;
+      size_t sx = srcsize - sz;
 
       while (si < sz) {
         base32_encode0(psrc + si, pdst + dst->cpos, sz - si);
@@ -142,35 +143,34 @@ handle_t base32_encode(unknown_t src, size_t srcsize) {
         dst->cpos += 8;
       }
 
-      uint32_t val = 0;
-      size_t   sr = srcsize - sz;
+      uint32_t vx = 0;
 
-      switch (sr) {
+      switch (sx) {
       case 4:
-        val |= psrc[si + 3];
-        pdst[dst->cpos + 6] = base64_map[val << 3 & 0x1f];
-        pdst[dst->cpos + 5] = base64_map[val >> 2 & 0x1f];
+        vx |= psrc[si + 3];
+        pdst[dst->cpos + 6] = base64_map[vx << 3 & 0x1f];
+        pdst[dst->cpos + 5] = base64_map[vx >> 2 & 0x1f];
 
       case 3:
-        val |= psrc[si + 2] << 8;
-        pdst[dst->cpos + 4] = base64_map[val >> 7 & 0x1f];
+        vx |= psrc[si + 2] << 8;
+        pdst[dst->cpos + 4] = base64_map[vx >> 7 & 0x1f];
 
       case 2:
-        val |= psrc[si + 1] << 16;
-        pdst[dst->cpos + 3] = base64_map[val >> 12 & 0x1f];
-        pdst[dst->cpos + 2] = base64_map[val >> 17 & 0x1f];
+        vx |= psrc[si + 1] << 16;
+        pdst[dst->cpos + 3] = base64_map[vx >> 12 & 0x1f];
+        pdst[dst->cpos + 2] = base64_map[vx >> 17 & 0x1f];
 
       case 1:
-        val |= psrc[si + 0] << 24;
-        pdst[dst->cpos + 1] = base64_map[val >> 22 & 0x1f];
-        pdst[dst->cpos + 0] = base64_map[val >> 27 & 0x1f];
+        vx |= psrc[si + 0] << 24;
+        pdst[dst->cpos + 1] = base64_map[vx >> 22 & 0x1f];
+        pdst[dst->cpos + 0] = base64_map[vx >> 27 & 0x1f];
       }
 
-      if (sr < NELEMENTS(base32_ext)) {
-        dst->cpos += base32_ext[sr];
+      if (sx < NELEMENTS(base32_ext)) {
+        dst->cpos += base32_ext[sx];
       }
 
-      size_t npad = (sr * 8 / 5) + 1;
+      size_t npad = (sx * 8 / 5) + 1;
       for (size_t i = npad; i < 8; ++i) {
         pdst[dst->cpos++] = '=';
       }
