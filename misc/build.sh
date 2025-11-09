@@ -14,6 +14,7 @@ MD5SUMBIN=/usr/bin/md5sum
 DPKGDEBBIN=/usr/bin/dpkg-deb
 
 EXTERNBIN=../bin
+EXTERNMAN=../man
 
 VER=$($GREPBIN Version $EXTERNBIN/control | $CUTBIN -d ' ' -f 2)
 ARCH=$($GREPBIN Architecture $EXTERNBIN/control | $CUTBIN -d ' ' -f 2)
@@ -46,11 +47,11 @@ $COPYBIN -v $EXTERNBIN/objhash-ng $USRBIN/
 $COPYBIN -v $EXTERNBIN/readelf-ng $USRBIN/
 $COPYBIN -v $EXTERNBIN/objdwarf-ng $USRBIN/
 
-$COPYBIN -v $EXTERNBIN/readelf-ng.1 $USRMAN/
+$COPYBIN -v $EXTERNMAN/readelf-ng.1 $USRMAN/
 
 $COPYBIN -v $EXTERNBIN/control $DEBIANBIN/
 
-$GZIPBIN $USRMAN/readelf-ng.1
+$GZIPBIN -v $USRMAN/readelf-ng.1
 
 $SUDOBIN $CHOWNBIN root:root $USRBIN/*
 $SUDOBIN $CHOWNBIN root:root $USRMAN/*
