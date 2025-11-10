@@ -39,6 +39,7 @@ int dump_xorbrute8(const handle_t o, const unknown_t p, const size_t size, const
           n += printf_sore(p0, size, USE_STR | USE_SPACE);
           n += printf_eol();
         }
+        xfree(p0);
       }
     }
   }
