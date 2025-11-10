@@ -214,11 +214,13 @@ int shr32(const unknown_t p, const uint32_t v, const size_t size, const int32_t 
   return ECODE_HANDLE;
 }
 
-int rol8(const unknown_t p, const uint8_t v, const size_t size) {
+int rol8(const unknown_t p, const uint8_t v, const size_t size, const int32_t step) {
   if (p) {
     uint8_t *p0 = CAST(uint8_t*, p);
+    uint8_t  v0 = v;
     for (size_t i = 0; i < size; ++i) {
-      p0[i] = (p0[i] << v) | (p0[i] >> (8 - v));
+      p0[i] = (p0[i] << v0) | (p0[i] >> (8 - v0));
+      v0 += step;
     }
 
     return ECODE_OK;
@@ -227,11 +229,13 @@ int rol8(const unknown_t p, const uint8_t v, const size_t size) {
   return ECODE_HANDLE;
 }
 
-int rol16(const unknown_t p, const uint16_t v, const size_t size) {
+int rol16(const unknown_t p, const uint16_t v, const size_t size, const int32_t step) {
   if (p) {
     uint16_t *p0 = CAST(uint16_t*, p);
+    uint16_t  v0 = v;
     for (size_t i = 0; i < (size / sizeof(uint16_t)); ++i) {
-      p0[i] = (p0[i] << v) | (p0[i] >> (16 - v));
+      p0[i] = (p0[i] << v0) | (p0[i] >> (16 - v0));
+      v0 += step;
     }
 
     return ECODE_OK;
@@ -240,11 +244,13 @@ int rol16(const unknown_t p, const uint16_t v, const size_t size) {
   return ECODE_HANDLE;
 }
 
-int rol32(const unknown_t p, const uint32_t v, const size_t size) {
+int rol32(const unknown_t p, const uint32_t v, const size_t size, const int32_t step) {
   if (p) {
     uint32_t *p0 = CAST(uint32_t*, p);
+    uint32_t  v0 = v;
     for (size_t i = 0; i < (size / sizeof(uint32_t)); ++i) {
-      p0[i] = (p0[i] << v) | (p0[i] >> (32 - v));
+      p0[i] = (p0[i] << v0) | (p0[i] >> (32 - v0));
+      v0 += step;
     }
 
     return ECODE_OK;
