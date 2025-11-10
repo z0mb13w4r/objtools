@@ -28,7 +28,7 @@ int dump_shrbrute8(const handle_t o, const unknown_t p, const size_t size, const
   int n = 0;
 
   if (p && size) {
-    for (int i = 1; i <= UCHAR_MAX; ++i) {
+    for (int i = 1; i <= 8; ++i) {
       unknown_t p0 = cmalloc(p, size);
       if (p0) {
         if (ECODE_ISOK(shr8(p0, i, size))) {
@@ -46,7 +46,7 @@ int dump_shrbrute16(const handle_t o, const unknown_t p, const size_t size, cons
   int n = 0;
 
   if (p && size) {
-    for (int i = 1; i <= USHRT_MAX; ++i) {
+    for (int i = 1; i <= 16; ++i) {
       unknown_t p0 = cmalloc(p, size);
       if (p0) {
         if (ECODE_ISOK(shr16(p0, i, size))) {
