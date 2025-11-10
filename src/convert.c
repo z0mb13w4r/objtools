@@ -15,6 +15,18 @@ static int dump_brute0(const handle_t o, const unknown_t p, const size_t size, c
 int dump_shlbrute8(const handle_t o, const unknown_t p, const size_t size, const int32_t step) {
   int n = 0;
 
+  if (p && size) {
+    for (int i = 1; i <= 8; ++i) {
+      unknown_t p0 = cmalloc(p, size);
+      if (p0) {
+        if (ECODE_ISOK(shl8(p0, i, size))) {
+          n += dump_brute0(o, p0, size, i, "shl8", USE_LHEX8);
+        }
+        xfree(p0);
+      }
+    }
+  }
+
   return n;
 }
 
