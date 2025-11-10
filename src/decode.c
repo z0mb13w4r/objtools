@@ -142,7 +142,7 @@ int shl8(const unknown_t p, const uint8_t v, const size_t size, const int32_t st
 int shl16(const unknown_t p, const uint16_t v, const size_t size, const int32_t step) {
   if (p) {
     uint16_t *p0 = CAST(uint16_t*, p);
-    uint8_t  v0 = v;
+    uint16_t  v0 = v;
     for (size_t i = 0; i < (size / sizeof(uint16_t)); ++i) {
       p0[i] <<= v0;
       v0 += step;
@@ -157,7 +157,7 @@ int shl16(const unknown_t p, const uint16_t v, const size_t size, const int32_t 
 int shl32(const unknown_t p, const uint32_t v, const size_t size, const int32_t step) {
   if (p) {
     uint32_t *p0 = CAST(uint32_t*, p);
-    uint8_t  v0 = v;
+    uint32_t  v0 = v;
     for (size_t i = 0; i < (size / sizeof(uint32_t)); ++i) {
       p0[i] <<= v0;
       v0 += step;
@@ -187,7 +187,7 @@ int shr8(const unknown_t p, const uint8_t v, const size_t size, const int32_t st
 int shr16(const unknown_t p, const uint16_t v, const size_t size, const int32_t step) {
   if (p) {
     uint16_t *p0 = CAST(uint16_t*, p);
-    uint8_t  v0 = v;
+    uint16_t  v0 = v;
     for (size_t i = 0; i < (size / sizeof(uint16_t)); ++i) {
       p0[i] >>= v0;
       v0 += step;
@@ -202,7 +202,7 @@ int shr16(const unknown_t p, const uint16_t v, const size_t size, const int32_t 
 int shr32(const unknown_t p, const uint32_t v, const size_t size, const int32_t step) {
   if (p) {
     uint32_t *p0 = CAST(uint32_t*, p);
-    uint8_t  v0 = v;
+    uint32_t  v0 = v;
     for (size_t i = 0; i < (size / sizeof(uint32_t)); ++i) {
       p0[i] >>= v0;
       v0 += step;
