@@ -38,24 +38,24 @@ int rot47(const unknown_t p, const size_t size);
 int add8(const unknown_t p, const uint8_t v, const size_t size);
 int rol8(const unknown_t p, const uint8_t v, const size_t size);
 int ror8(const unknown_t p, const uint8_t v, const size_t size);
-int shl8(const unknown_t p, const uint8_t v, const size_t size);
-int shr8(const unknown_t p, const uint8_t v, const size_t size);
+int shl8(const unknown_t p, const uint8_t v, const size_t size, const int32_t step);
+int shr8(const unknown_t p, const uint8_t v, const size_t size, const int32_t step);
 int sub8(const unknown_t p, const uint8_t v, const size_t size);
 int xor8(const unknown_t p, const uint8_t v, const size_t size, const int32_t step);
 
 int add16(const unknown_t p, const uint16_t v, const size_t size);
 int rol16(const unknown_t p, const uint16_t v, const size_t size);
 int ror16(const unknown_t p, const uint16_t v, const size_t size);
-int shl16(const unknown_t p, const uint16_t v, const size_t size);
-int shr16(const unknown_t p, const uint16_t v, const size_t size);
+int shl16(const unknown_t p, const uint16_t v, const size_t size, const int32_t step);
+int shr16(const unknown_t p, const uint16_t v, const size_t size, const int32_t step);
 int sub16(const unknown_t p, const uint16_t v, const size_t size);
 int xor16(const unknown_t p, const uint16_t v, const size_t size, const int32_t step);
 
 int add32(const unknown_t p, const uint32_t v, const size_t size);
 int rol32(const unknown_t p, const uint32_t v, const size_t size);
 int ror32(const unknown_t p, const uint32_t v, const size_t size);
-int shl32(const unknown_t p, const uint32_t v, const size_t size);
-int shr32(const unknown_t p, const uint32_t v, const size_t size);
+int shl32(const unknown_t p, const uint32_t v, const size_t size, const int32_t step);
+int shr32(const unknown_t p, const uint32_t v, const size_t size, const int32_t step);
 int sub32(const unknown_t p, const uint32_t v, const size_t size);
 int xor32(const unknown_t p, const uint32_t v, const size_t size, const int32_t step);
 

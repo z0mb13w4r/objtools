@@ -19,7 +19,7 @@ int dump_shlbrute8(const handle_t o, const unknown_t p, const size_t size, const
     for (int i = 1; i <= 8; ++i) {
       unknown_t p0 = cmalloc(p, size);
       if (p0) {
-        if (ECODE_ISOK(shl8(p0, i, size))) {
+        if (ECODE_ISOK(shl8(p0, i, size, step))) {
           n += dump_brute0(o, p0, size, i, "shl8", USE_LHEX8);
         }
         xfree(p0);
@@ -37,7 +37,7 @@ int dump_shlbrute16(const handle_t o, const unknown_t p, const size_t size, cons
     for (int i = 1; i <= 16; ++i) {
       unknown_t p0 = cmalloc(p, size);
       if (p0) {
-        if (ECODE_ISOK(shl16(p0, i, size))) {
+        if (ECODE_ISOK(shl16(p0, i, size, step))) {
           n += dump_brute0(o, p0, size, i, "shl16", USE_LHEX16);
         }
         xfree(p0);
@@ -55,7 +55,7 @@ int dump_shrbrute8(const handle_t o, const unknown_t p, const size_t size, const
     for (int i = 1; i <= 8; ++i) {
       unknown_t p0 = cmalloc(p, size);
       if (p0) {
-        if (ECODE_ISOK(shr8(p0, i, size))) {
+        if (ECODE_ISOK(shr8(p0, i, size, step))) {
           n += dump_brute0(o, p0, size, i, "shr8", USE_LHEX8);
         }
         xfree(p0);
@@ -73,7 +73,7 @@ int dump_shrbrute16(const handle_t o, const unknown_t p, const size_t size, cons
     for (int i = 1; i <= 16; ++i) {
       unknown_t p0 = cmalloc(p, size);
       if (p0) {
-        if (ECODE_ISOK(shr16(p0, i, size))) {
+        if (ECODE_ISOK(shr16(p0, i, size, step))) {
           n += dump_brute0(o, p0, size, i, "shr16", USE_LHEX16);
         }
         xfree(p0);
