@@ -128,27 +128,27 @@ int main(int argc, char* argv[]) {
             } else if (ACT_HEX32E == x0->action) {
               b0 = fswap(b0, hex32_encode(b0->item, b0->size));
             } else if (ACT_SHL8BRUTE == x0->action) {
-              dump_shlbrute8(o, b0->item, b0->size);
+              dump_shlbrute8(o, b0->item, b0->size, step);
               isok = FALSE;
               break;
             } else if (ACT_SHL16BRUTE == x0->action) {
-              dump_shlbrute16(o, b0->item, b0->size);
+              dump_shlbrute16(o, b0->item, b0->size, step);
               isok = FALSE;
               break;
             } else if (ACT_SHR8BRUTE == x0->action) {
-              dump_shrbrute8(o, b0->item, b0->size);
+              dump_shrbrute8(o, b0->item, b0->size, step);
               isok = FALSE;
               break;
             } else if (ACT_SHR16BRUTE == x0->action) {
-              dump_shrbrute16(o, b0->item, b0->size);
+              dump_shrbrute16(o, b0->item, b0->size, step);
               isok = FALSE;
               break;
             } else if (ACT_XOR8BRUTE == x0->action) {
-              dump_xorbrute8(o, b0->item, b0->size);
+              dump_xorbrute8(o, b0->item, b0->size, step);
               isok = FALSE;
               break;
             } else if (ACT_XOR16BRUTE == x0->action) {
-              dump_xorbrute16(o, b0->item, b0->size);
+              dump_xorbrute16(o, b0->item, b0->size, step);
               isok = FALSE;
               break;
             } else if (ACT_INC == x0->action) {
