@@ -57,6 +57,18 @@ int dump_xorbrute8(const handle_t o, const unknown_t p, const size_t size, const
 int dump_xorbrute16(const handle_t o, const unknown_t p, const size_t size, const int32_t step) {
   int n = 0;
 
+  if (p && size) {
+    for (int i = 1; i <= USHRT_MAX; ++i) {
+      unknown_t p0 = cmalloc(p, size);
+      if (p0) {
+        if (ECODE_ISOK(xor16(p0, i, size, step))) {
+          n += dump_brute0(o, p0, size, i, "xor16", USE_LHEX16);
+        }
+        xfree(p0);
+      }
+    }
+  }
+
   return n;
 }
 
