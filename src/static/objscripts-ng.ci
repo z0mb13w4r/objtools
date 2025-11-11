@@ -13,7 +13,7 @@ char zSCRIPTDECE[] = "Converts the input data to an ordinal integer array.";
 char zSCRIPTHEXD[] = "Converts a hexadecimal byte string back into its raw value.";
 char zSCRIPTHEXE[] = "Converts the input string to hexadecimal bytes separated by a delimiter.";
 char zSCRIPTBASE[] = "Encoding and decoding data using a restricted set of symbols.";
-char zSCRIPTBRUTE[] = "Enumerate all possible XOR solutions. The current maximum key length is 2 due to performance.";
+char zSCRIPTBRUTE[] = "Enumerate all possible solutions. The current maximum key length is 2 due to performance.";
 
 args_t zSCRIPTCOMMANDS[] = {
   {0, "add8",     ACT_ADD8,             NULL,                  1},
@@ -83,9 +83,14 @@ args_t zSCRIPTCOMMANDSEX[] = {
   {0, "base64d",      ACT_BASE64D,          NULL,                  15},
   {0, "base64e",      ACT_BASE64E,          zSCRIPTBASE,           15},
 
+  {0, "rol8brute",    ACT_ROL8BRUTE,        NULL,                  16},
+  {0, "ror8brute",    ACT_ROR8BRUTE,        NULL,                  16},
   {0, "shl8brute",    ACT_SHL8BRUTE,        NULL,                  16},
   {0, "shr8brute",    ACT_SHR8BRUTE,        NULL,                  16},
   {0, "xor8brute",    ACT_XOR8BRUTE,        NULL,                  16},
+
+  {0, "rol16brute",   ACT_ROL16BRUTE,       NULL,                  16},
+  {0, "ror16brute",   ACT_ROR16BRUTE,       NULL,                  16},
   {0, "shl16brute",   ACT_SHL16BRUTE,       NULL,                  16},
   {0, "shr16brute",   ACT_SHR16BRUTE,       NULL,                  16},
   {0, "xor16brute",   ACT_XOR16BRUTE,       zSCRIPTBRUTE,          16},

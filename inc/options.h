@@ -238,12 +238,16 @@
 #define ACT_HEX32D                                 (616)
 #define ACT_HEX32E                                 (617)
 
-#define ACT_SHL8BRUTE                              (700)
-#define ACT_SHL16BRUTE                             (701)
-#define ACT_SHR8BRUTE                              (702)
-#define ACT_SHR16BRUTE                             (703)
-#define ACT_XOR8BRUTE                              (704)
-#define ACT_XOR16BRUTE                             (705)
+#define ACT_ROL8BRUTE                              (700)
+#define ACT_ROL16BRUTE                             (701)
+#define ACT_ROR8BRUTE                              (702)
+#define ACT_ROR16BRUTE                             (703)
+#define ACT_SHL8BRUTE                              (704)
+#define ACT_SHL16BRUTE                             (705)
+#define ACT_SHR8BRUTE                              (706)
+#define ACT_SHR16BRUTE                             (707)
+#define ACT_XOR8BRUTE                              (708)
+#define ACT_XOR16BRUTE                             (709)
 
 #define ACT_ZLIB                                   (800)
 
