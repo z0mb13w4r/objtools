@@ -66,7 +66,6 @@ Print the version number of readelf-ng and exit.
 .IX Item "--all"
 .PD
 Equivalent to specifying: \fB\-\-arch-specific\fR, \fB\-\-histogram\fR, \fB\-\-section-headers\fR, \fB\-\-version-info\fR, \fB\-\-dynamic\fR, \fB\-\-section-groups\fR, \fB\-\-file-header\fR, \fB\-\-program-headers\fR, \fB\-\-notes\fR, \fB\-\-relocs\fR, \fB\-\-symbols\fR and \fB\-\-unwind\fR.
-
 .IP "\fB\-A\fR" 4
 .IX Item "-A"
 .PD 0
@@ -74,31 +73,49 @@ Equivalent to specifying: \fB\-\-arch-specific\fR, \fB\-\-histogram\fR, \fB\-\-s
 .IX Item "--arch-specific"
 .PD
 Displays architecture-specific information in the file.
-
-  -I
-  --histogram
-    Display a histogram of bucket list lengths when displaying the contents of the symbol tables.
-
-  -S
-  --section-headers
-    Displays the information contained in the file's section headers.
-
-  -V
-  --version-info
-    Displays the contents of the version sections in the file.
-
-  -d
-  --dynamic
-    Displays the contents of the file's dynamic section.
-
-  -e
-  --headers
-    Display all the headers in the file.
-    Equivalent to specifying: --section-headers --file-header --program-headers
-
-  -g
-  --section-groups
-    Displays the information contained in the file's section groups.
+.IP "\fB\-I\fR" 4
+.IX Item "-I"
+.PD 0
+.IP "\fB\-\-histogram\fR" 4
+.IX Item "--histogram"
+.PD
+Display a histogram of bucket list lengths when displaying the contents of the symbol tables.
+.IP "\fB\-S\fR" 4
+.IX Item "-S"
+.PD 0
+.IP "\fB\-\-section\-headers\fR" 4
+.IX Item "--section-headers"
+.PD
+Displays the information contained in the file's section headers.
+.IP "\fB\-V\fR" 4
+.IX Item "-V"
+.PD 0
+.IP "\fB\-\-version\-info\fR" 4
+.IX Item "--version-info"
+.PD
+Displays the contents of the version sections in the file.
+.IP "\fB\-d\fR" 4
+.IX Item "-d"
+.PD 0
+.IP "\fB\-\-dynamic\fR" 4
+.IX Item "--dynamic"
+.PD
+Displays the contents of the file's dynamic section.
+.IP "\fB\-e\fR" 4
+.IX Item "-e"
+.PD 0
+.IP "\fB\-\-headers\fR" 4
+.IX Item "--headers"
+.PD
+Display all the headers in the file.
+Equivalent to specifying: \fB\-\-section-headers\fR, \fB\-\-file-header\fR and \fB\-\-program-headers\fR.
+.IP "\fB\-g\fR" 4
+.IX Item "-g"
+.PD 0
+.IP "\fB\-\-section\-groups\fR" 4
+.IX Item "--section-groups"
+.PD
+Displays the information contained in the file's section groups.
 
   -t
   --section-details
@@ -326,8 +343,9 @@ Displays architecture-specific information in the file.
 convert-ng(1), objcopy-ng(1), objdump-ng(1), objdwarf-ng(1), objhash-ng(1), readelf-ng(1), readpe-ng(1)
 
 .SH COPYRIGHT
+.IX Header "COPYRIGHT"
 MIT License
-
+.PP
 Copyright (c) 2025 Kyle Wickens
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
