@@ -12,6 +12,78 @@ static int dump_brute0(const handle_t o, const unknown_t p, const size_t size, c
   return n;
 }
 
+int dump_rolbrute8(const handle_t o, const unknown_t p, const size_t size, const int32_t step) {
+  int n = 0;
+
+  if (p && size) {
+    for (int i = 1; i <= 8; ++i) {
+      unknown_t p0 = cmalloc(p, size);
+      if (p0) {
+        if (ECODE_ISOK(rol8(p0, i, size, step))) {
+          n += dump_brute0(o, p0, size, i, "rol8", USE_LHEX8);
+        }
+        xfree(p0);
+      }
+    }
+  }
+
+  return n;
+}
+
+int dump_rolbrute16(const handle_t o, const unknown_t p, const size_t size, const int32_t step) {
+  int n = 0;
+
+  if (p && size) {
+    for (int i = 1; i <= 16; ++i) {
+      unknown_t p0 = cmalloc(p, size);
+      if (p0) {
+        if (ECODE_ISOK(rol16(p0, i, size, step))) {
+          n += dump_brute0(o, p0, size, i, "rol16", USE_LHEX16);
+        }
+        xfree(p0);
+      }
+    }
+  }
+
+  return n;
+}
+
+int dump_rorbrute8(const handle_t o, const unknown_t p, const size_t size, const int32_t step) {
+  int n = 0;
+
+  if (p && size) {
+    for (int i = 1; i <= 8; ++i) {
+      unknown_t p0 = cmalloc(p, size);
+      if (p0) {
+        if (ECODE_ISOK(ror8(p0, i, size, step))) {
+          n += dump_brute0(o, p0, size, i, "ror8", USE_LHEX8);
+        }
+        xfree(p0);
+      }
+    }
+  }
+
+  return n;
+}
+
+int dump_rorbrute16(const handle_t o, const unknown_t p, const size_t size, const int32_t step) {
+  int n = 0;
+
+  if (p && size) {
+    for (int i = 1; i <= 16; ++i) {
+      unknown_t p0 = cmalloc(p, size);
+      if (p0) {
+        if (ECODE_ISOK(ror16(p0, i, size, step))) {
+          n += dump_brute0(o, p0, size, i, "ror16", USE_LHEX16);
+        }
+        xfree(p0);
+      }
+    }
+  }
+
+  return n;
+}
+
 int dump_shlbrute8(const handle_t o, const unknown_t p, const size_t size, const int32_t step) {
   int n = 0;
 

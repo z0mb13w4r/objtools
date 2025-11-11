@@ -127,6 +127,22 @@ int main(int argc, char* argv[]) {
               b0 = fswap(b0, hex32_decode(b0->item, b0->size));
             } else if (ACT_HEX32E == x0->action) {
               b0 = fswap(b0, hex32_encode(b0->item, b0->size));
+            } else if (ACT_ROL8BRUTE == x0->action) {
+              dump_rolbrute8(o, b0->item, b0->size, step);
+              isok = FALSE;
+              break;
+            } else if (ACT_ROL16BRUTE == x0->action) {
+              dump_rolbrute16(o, b0->item, b0->size, step);
+              isok = FALSE;
+              break;
+            } else if (ACT_ROR8BRUTE == x0->action) {
+              dump_rorbrute8(o, b0->item, b0->size, step);
+              isok = FALSE;
+              break;
+            } else if (ACT_ROR16BRUTE == x0->action) {
+              dump_rorbrute16(o, b0->item, b0->size, step);
+              isok = FALSE;
+              break;
             } else if (ACT_SHL8BRUTE == x0->action) {
               dump_shlbrute8(o, b0->item, b0->size, step);
               isok = FALSE;
