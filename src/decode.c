@@ -14,6 +14,24 @@ uchar_t base32_map[] = {
   'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '2', '3', '4', '5', '6', '7'
 };
 
+int32_t base58_idx[128] = {
+  -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+  -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+  -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+  -1,  0,  1,  2,  3,  4,  5,  6,  7,  8, -1, -1, -1, -1, -1, -1,
+  -1,  9, 10, 11, 12, 13, 14, 15, 16, -1, 17, 18, 19, 20, 21, -1,
+  22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, -1, -1, -1, -1, -1,
+  -1, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, -1, 44, 45, 46,
+  47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, -1, -1, -1, -1, -1
+};
+
+uchar_t base58_map[] = {
+  '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G',
+  'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y',
+  'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'm', 'n', 'o', 'p',
+  'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'
+};
+
 uchar_t base64_map[] = {
   'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
   'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f',
@@ -770,6 +788,30 @@ handle_t base58_decode(unknown_t src, size_t srcsize) {
     pfind_t dst = fxalloc(maxsize, MEMFIND_NOCHUNKSIZE);
     if (dst) {
       puchar_t pdst = CAST(puchar_t, dst->item);
+
+      dst->cpos = 1;
+      for (size_t i = 0; i < srcsize; i++) {
+        int32_t carry = base58_idx[psrc[i]];
+        for (size_t j = 0; j < dst->cpos; j++) {
+          carry += CAST(int32_t, pdst[j]) * 58;
+          pdst[j] = CAST(uchar_t, carry & 0xff);
+          carry >>= 8;
+        }
+        while (carry > 0) {
+          pdst[dst->cpos++] = (unsigned int)(carry & 0xff);
+          carry >>= 8;
+        }
+      }
+
+      for (size_t i = 0; i < srcsize && psrc[i] == '1'; ++i) {
+        pdst[dst->cpos++] = 0;
+      }
+
+      for (size_t i = dst->cpos - 1, z = (dst->cpos >> 1) + (dst->cpos & 1); i >= z; i--) {
+        uchar_t ch = pdst[i];
+        pdst[i] = pdst[dst->cpos - i - 1];
+        pdst[dst->cpos - i - 1] = ch;
+      }
 
       pdst[dst->cpos] = '\0';   /* string padding character */
       dst->size = dst->cpos + 1;
