@@ -700,7 +700,7 @@ handle_t base32_decode(unknown_t src, size_t srcsize) {
         size_t idst = 8;
 
         for (size_t j = 0; j < 8; ) {
-          char ch = psrc[i++];
+          uchar_t ch = psrc[i++];
 
           // Handle and validate padding.
           if (isspace(ch)) continue;
