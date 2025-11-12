@@ -3,6 +3,8 @@
 #include "memfind.h"
 
 extern uchar_t base32_map[];
+extern int32_t base58_idx[128];
+extern uchar_t base58_map[];
 extern uchar_t base64_map[];
 
 static uchar_t base32_ext[] = { 0, 2, 4, 5, 7 };
@@ -190,6 +192,45 @@ handle_t base32_encode(unknown_t src, size_t srcsize) {
 
 handle_t base58_encode(unknown_t src, size_t srcsize) {
   if (src && srcsize) {
+    size_t maxsize = srcsize * 4 / 3 + 4;
+    puchar_t psrc = CAST(puchar_t, src);
+
+    pfind_t dst = fxalloc(maxsize, MEMFIND_NOCHUNKSIZE);
+    if (dst) {
+      puchar_t pdst = CAST(puchar_t, dst->item);
+      puchar_t ptmp = xmalloc(srcsize * 137 / 100);
+
+      size_t tmpsize = 1;
+      for (size_t i = 0; i < srcsize; ++i) {
+        int32_t carry = CAST(int32_t, psrc[i]);
+        for (size_t j = 0; j < tmpsize; j++) {
+          carry += CAST(int32_t, ptmp[j]) << 8;
+          ptmp[j] = CAST(uchar_t, carry % 58);
+          carry /= 58;
+        }
+
+        while (carry > 0) {
+          ptmp[tmpsize++] = CAST(uchar_t, carry % 58);
+          carry /= 58;
+        }
+      }
+
+      // leading zero bytes
+      for (dst->cpos = 0; dst->cpos < srcsize && psrc[dst->cpos] == 0; ) {
+        pdst[dst->cpos++] = '1';
+      }
+
+      // reverse
+      for (size_t i = 0; i < tmpsize; ++i) {
+        pdst[dst->cpos++] = base58_map[ptmp[tmpsize - 1 - i]];
+      }
+
+      pdst[dst->cpos] = '\0';   /* string padding character */
+      dst->size = dst->cpos + 1;
+      dst->epos = dst->cpos;
+      dst->cpos = 0;
+      return dst;
+    }
   }
 
   return NULL;
@@ -205,31 +246,34 @@ handle_t base64_encode(unknown_t src, size_t srcsize) {
       puchar_t pdst = CAST(puchar_t, dst->item);
 
       uchar_t tmp[3];
-      int c = 0, j = 0;
+      int j = 0;
       for (int i = 0; i < srcsize; ++i) {
         tmp[j++] = psrc[i];
         if (j == 3) {
-          pdst[c++] = base64_map[tmp[0] >> 2];
-          pdst[c++] = base64_map[((tmp[0] & 0x03) << 4) + (tmp[1] >> 4)];
-          pdst[c++] = base64_map[((tmp[1] & 0x0f) << 2) + (tmp[2] >> 6)];
-          pdst[c++] = base64_map[tmp[2] & 0x3f];
+          pdst[dst->cpos++] = base64_map[tmp[0] >> 2];
+          pdst[dst->cpos++] = base64_map[((tmp[0] & 0x03) << 4) + (tmp[1] >> 4)];
+          pdst[dst->cpos++] = base64_map[((tmp[1] & 0x0f) << 2) + (tmp[2] >> 6)];
+          pdst[dst->cpos++] = base64_map[tmp[2] & 0x3f];
           j = 0;
         }
       }
 
       if (j > 0) {
-        pdst[c++] = base64_map[tmp[0] >> 2];
+        pdst[dst->cpos++] = base64_map[tmp[0] >> 2];
         if (j == 1) {
-          pdst[c++] = base64_map[(tmp[0] & 0x03) << 4];
-          pdst[c++] = '=';
+          pdst[dst->cpos++] = base64_map[(tmp[0] & 0x03) << 4];
+          pdst[dst->cpos++] = '=';
         } else {
-          pdst[c++] = base64_map[((tmp[0] & 0x03) << 4) + (tmp[1] >> 4)];
-          pdst[c++] = base64_map[(tmp[1] & 0x0f) << 2];
+          pdst[dst->cpos++] = base64_map[((tmp[0] & 0x03) << 4) + (tmp[1] >> 4)];
+          pdst[dst->cpos++] = base64_map[(tmp[1] & 0x0f) << 2];
         }
-        pdst[c++] = '=';
+        pdst[dst->cpos++] = '=';
       }
 
-      pdst[c] = '\0';   /* string padding character */
+      pdst[dst->cpos] = '\0';   /* string padding character */
+      dst->size = dst->cpos + 1;
+      dst->epos = dst->cpos;
+      dst->cpos = 0;
       return dst;
     }
   }

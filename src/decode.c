@@ -790,9 +790,9 @@ handle_t base58_decode(unknown_t src, size_t srcsize) {
       puchar_t pdst = CAST(puchar_t, dst->item);
 
       dst->cpos = 1;
-      for (size_t i = 0; i < srcsize; i++) {
+      for (size_t i = 0; i < srcsize; ++i) {
         int32_t carry = base58_idx[psrc[i]];
-        for (size_t j = 0; j < dst->cpos; j++) {
+        for (size_t j = 0; j < dst->cpos; ++j) {
           carry += CAST(int32_t, pdst[j]) * 58;
           pdst[j] = CAST(uchar_t, carry & 0xff);
           carry >>= 8;
