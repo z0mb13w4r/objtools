@@ -199,30 +199,33 @@ handle_t base58_encode(unknown_t src, size_t srcsize) {
     if (dst) {
       puchar_t pdst = CAST(puchar_t, dst->item);
       puchar_t ptmp = xmalloc(srcsize * 137 / 100);
+      if (ptmp) {
+        size_t tmpsize = 1;
+        for (size_t i = 0; i < srcsize; ++i) {
+          int32_t carry = CAST(int32_t, psrc[i]);
+          for (size_t j = 0; j < tmpsize; j++) {
+            carry += CAST(int32_t, ptmp[j]) << 8;
+            ptmp[j] = CAST(uchar_t, carry % 58);
+            carry /= 58;
+          }
 
-      size_t tmpsize = 1;
-      for (size_t i = 0; i < srcsize; ++i) {
-        int32_t carry = CAST(int32_t, psrc[i]);
-        for (size_t j = 0; j < tmpsize; j++) {
-          carry += CAST(int32_t, ptmp[j]) << 8;
-          ptmp[j] = CAST(uchar_t, carry % 58);
-          carry /= 58;
+          while (carry > 0) {
+            ptmp[tmpsize++] = CAST(uchar_t, carry % 58);
+            carry /= 58;
+          }
         }
 
-        while (carry > 0) {
-          ptmp[tmpsize++] = CAST(uchar_t, carry % 58);
-          carry /= 58;
+        // leading zero bytes
+        for (dst->cpos = 0; dst->cpos < srcsize && psrc[dst->cpos] == 0; ) {
+          pdst[dst->cpos++] = '1';
         }
-      }
 
-      // leading zero bytes
-      for (dst->cpos = 0; dst->cpos < srcsize && psrc[dst->cpos] == 0; ) {
-        pdst[dst->cpos++] = '1';
-      }
+        // reverse
+        for (size_t i = 0; i < tmpsize; ++i) {
+          pdst[dst->cpos++] = base58_map[ptmp[tmpsize - 1 - i]];
+        }
 
-      // reverse
-      for (size_t i = 0; i < tmpsize; ++i) {
-        pdst[dst->cpos++] = base58_map[ptmp[tmpsize - 1 - i]];
+        xfree(ptmp);
       }
 
       pdst[dst->cpos] = '\0';   /* string padding character */
