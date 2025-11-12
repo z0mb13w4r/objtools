@@ -179,26 +179,41 @@ Use the dynamic section info when displaying symbols.
 .IX Item "--demangle"
 .PD
 Decode (demangle) low-level symbol names into user-level names. This makes C++ function names readable. Different compilers have different mangling styles.
-
-  -x
-  --hex-dump
-    Displays the contents of the indicated section as a hexadecimal bytes.
-
-  -Z
-  --code-dump
-    Displays the contents of the indicated section as C Language Shell Code.
-
-  -p
-  --string-dump
-    Displays the contents of the indicated section as printable strings.
-
-  -U
-  --unicode-dump
-    Displays the contents of the indicated section as printable strings.
-
-  -R
-  --relocated-dump
-    Displays the contents of the indicated section as a hexadecimal bytes.
+.IP "\fB\-x <number or name>\fR" 4
+.IX Item "-x <number or name>"
+.PD 0
+.IP "\fB\-\-hex\-dump=<number or name>\fR" 4
+.IX Item "--hex-dump=<number or name>"
+.PD
+Displays the contents of the indicated section as a hexadecimal bytes.
+.IP "\fB\-Z <number or name>\fR" 4
+.IX Item "-Z <number or name>"
+.PD 0
+.IP "\fB\-\-code\-dump=<number or name>\fR" 4
+.IX Item "--code-dump=<number or name>"
+.PD
+Displays the contents of the indicated section as C Language Shell Code.
+.IP "\fB\-p <number or name>\fR" 4
+.IX Item "-p <number or name>"
+.PD 0
+.IP "\fB\-\-string\-dump=<number or name>\fR" 4
+.IX Item "--string-dump=<number or name>"
+.PD
+Displays the contents of the indicated section as printable strings.
+.IP "\fB\-u <number or name>\fR" 4
+.IX Item "-u <number or name>"
+.PD 0
+.IP "\fB\-\-unicode\-dump=<number or name>\fR" 4
+.IX Item "--unicode-dump=<number or name>"
+.PD
+Displays the contents of the indicated section as printable strings.
+.IP "\fB\-R <number or name>\fR" 4
+.IX Item "-R <number or name>"
+.PD 0
+.IP "\fB\-\-relocated\-dump=<number or name>\fR" 4
+.IX Item "--relocated-dump=<number or name>"
+.PD
+Displays the contents of the indicated section as a hexadecimal bytes.
 
   -z
   --decompress
