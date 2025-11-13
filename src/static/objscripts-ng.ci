@@ -8,6 +8,8 @@ char zSCRIPTSHR[] = "SHR (right-shift) the input with the given key.";
 char zSCRIPTSUB[] = "SUB (subtract) the input with the given key.";
 char zSCRIPTXOR[] = "XOR (eXclusive OR) the input with the given key.";
 char zSCRIPTINC[] = "Amount to increment or decrement the given key.";
+char zSCRIPTBIND[] = "Converts a binary byte string back into its raw value.";
+char zSCRIPTBINE[] = "Converts the input string to binary bytes separated by a delimiter.";
 char zSCRIPTDECD[] = "Converts the data from an ordinal integer array back into its raw form.";
 char zSCRIPTDECE[] = "Converts the input data to an ordinal integer array.";
 char zSCRIPTHEXD[] = "Converts a hexadecimal byte string back into its raw value.";
@@ -49,51 +51,59 @@ args_t zSCRIPTCOMMANDS[] = {
   {0, "sub16",    ACT_SUB16,            NULL,                  8},
   {0, "sub32",    ACT_SUB32,            zSCRIPTSUB,            8},
 
+  {0, "xor8",     ACT_XOR8,             NULL,                  9},
+  {0, "xor16",    ACT_XOR16,            NULL,                  9},
+  {0, "xor32",    ACT_XOR32,            zSCRIPTXOR,            9},
+
+  {0, "dec",      ACT_DEC,              NULL,                  10},
+  {0, "inc",      ACT_INC,              zSCRIPTINC,            10},
+
   {0, NULL}
 };
 
 args_t zSCRIPTCOMMANDSEX[] = {
-  {0, "xor8",         ACT_XOR8,             NULL,                  9},
-  {0, "xor16",        ACT_XOR16,            NULL,                  9},
-  {0, "xor32",        ACT_XOR32,            zSCRIPTXOR,            9},
+  {0, "bin8d",        ACT_BIN8D,            NULL,                  11},
+  {0, "bin16d",       ACT_BIN16D,           NULL,                  11},
+  {0, "bin32d",       ACT_BIN32D,           zSCRIPTBIND,           11},
 
-  {0, "dec",          ACT_DEC,              NULL,                  10},
-  {0, "inc",          ACT_INC,              zSCRIPTINC,            10},
+  {0, "bin8e",        ACT_BIN8E,            NULL,                  12},
+  {0, "bin16e",       ACT_BIN16E,           NULL,                  12},
+  {0, "bin32e",       ACT_BIN32E,           zSCRIPTBINE,           12},
 
-  {0, "dec8d",        ACT_DEC8D,            NULL,                  11},
-  {0, "dec16d",       ACT_DEC16D,           NULL,                  11},
-  {0, "dec32d",       ACT_DEC32D,           zSCRIPTDECD,           11},
+  {0, "dec8d",        ACT_DEC8D,            NULL,                  13},
+  {0, "dec16d",       ACT_DEC16D,           NULL,                  13},
+  {0, "dec32d",       ACT_DEC32D,           zSCRIPTDECD,           13},
 
-  {0, "dec8e",        ACT_DEC8E,            NULL,                  12},
-  {0, "dec16e",       ACT_DEC16E,           NULL,                  12},
-  {0, "dec32e",       ACT_DEC32E,           zSCRIPTDECE,           12},
+  {0, "dec8e",        ACT_DEC8E,            NULL,                  14},
+  {0, "dec16e",       ACT_DEC16E,           NULL,                  14},
+  {0, "dec32e",       ACT_DEC32E,           zSCRIPTDECE,           14},
 
-  {0, "hex8d",        ACT_HEX8D,            NULL,                  13},
-  {0, "hex16d",       ACT_HEX16D,           NULL,                  13},
-  {0, "hex32d",       ACT_HEX32D,           zSCRIPTHEXD,           13},
+  {0, "hex8d",        ACT_HEX8D,            NULL,                  15},
+  {0, "hex16d",       ACT_HEX16D,           NULL,                  15},
+  {0, "hex32d",       ACT_HEX32D,           zSCRIPTHEXD,           15},
 
-  {0, "hex8e",        ACT_HEX8E,            NULL,                  14},
-  {0, "hex16e",       ACT_HEX16E,           NULL,                  14},
-  {0, "hex32e",       ACT_HEX32E,           zSCRIPTHEXE,           14},
+  {0, "hex8e",        ACT_HEX8E,            NULL,                  16},
+  {0, "hex16e",       ACT_HEX16E,           NULL,                  16},
+  {0, "hex32e",       ACT_HEX32E,           zSCRIPTHEXE,           16},
 
-  {0, "base32d",      ACT_BASE32D,          NULL,                  15},
-  {0, "base32e",      ACT_BASE32E,          NULL,                  15},
-  {0, "base58d",      ACT_BASE58D,          NULL,                  15},
-  {0, "base58e",      ACT_BASE58E,          NULL,                  15},
-  {0, "base64d",      ACT_BASE64D,          NULL,                  15},
-  {0, "base64e",      ACT_BASE64E,          zSCRIPTBASE,           15},
+  {0, "base32d",      ACT_BASE32D,          NULL,                  17},
+  {0, "base32e",      ACT_BASE32E,          NULL,                  17},
+  {0, "base58d",      ACT_BASE58D,          NULL,                  17},
+  {0, "base58e",      ACT_BASE58E,          NULL,                  17},
+  {0, "base64d",      ACT_BASE64D,          NULL,                  17},
+  {0, "base64e",      ACT_BASE64E,          zSCRIPTBASE,           17},
 
-  {0, "rol8brute",    ACT_ROL8BRUTE,        NULL,                  16},
-  {0, "ror8brute",    ACT_ROR8BRUTE,        NULL,                  16},
-  {0, "shl8brute",    ACT_SHL8BRUTE,        NULL,                  16},
-  {0, "shr8brute",    ACT_SHR8BRUTE,        NULL,                  16},
-  {0, "xor8brute",    ACT_XOR8BRUTE,        NULL,                  16},
+  {0, "rol8brute",    ACT_ROL8BRUTE,        NULL,                  18},
+  {0, "ror8brute",    ACT_ROR8BRUTE,        NULL,                  18},
+  {0, "shl8brute",    ACT_SHL8BRUTE,        NULL,                  18},
+  {0, "shr8brute",    ACT_SHR8BRUTE,        NULL,                  18},
+  {0, "xor8brute",    ACT_XOR8BRUTE,        NULL,                  18},
 
-  {0, "rol16brute",   ACT_ROL16BRUTE,       NULL,                  16},
-  {0, "ror16brute",   ACT_ROR16BRUTE,       NULL,                  16},
-  {0, "shl16brute",   ACT_SHL16BRUTE,       NULL,                  16},
-  {0, "shr16brute",   ACT_SHR16BRUTE,       NULL,                  16},
-  {0, "xor16brute",   ACT_XOR16BRUTE,       zSCRIPTBRUTE,          16},
+  {0, "rol16brute",   ACT_ROL16BRUTE,       NULL,                  19},
+  {0, "ror16brute",   ACT_ROR16BRUTE,       NULL,                  19},
+  {0, "shl16brute",   ACT_SHL16BRUTE,       NULL,                  19},
+  {0, "shr16brute",   ACT_SHR16BRUTE,       NULL,                  19},
+  {0, "xor16brute",   ACT_XOR16BRUTE,       zSCRIPTBRUTE,          19},
 
   {0, NULL}
 };
