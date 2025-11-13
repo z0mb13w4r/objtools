@@ -506,6 +506,33 @@ int aes_encrypt(const int mode, puchar_t src, const size_t srcsize,
   return dstsize;
 }
 
+handle_t bin8_decode(unknown_t src, size_t srcsize) {
+  if (src && srcsize) {
+    puchar_t psrc = CAST(puchar_t, src);
+
+  }
+
+  return NULL;
+}
+
+handle_t bin16_decode(unknown_t src, size_t srcsize) {
+  if (src && srcsize) {
+    puchar_t psrc = CAST(puchar_t, src);
+
+  }
+
+  return NULL;
+}
+
+handle_t bin32_decode(unknown_t src, size_t srcsize) {
+  if (src && srcsize) {
+    puchar_t psrc = CAST(puchar_t, src);
+
+  }
+
+  return NULL;
+}
+
 handle_t dec8_decode(unknown_t src, size_t srcsize) {
   if (src && srcsize) {
     puchar_t psrc = CAST(puchar_t, src);

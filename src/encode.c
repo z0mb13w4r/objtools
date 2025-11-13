@@ -15,6 +15,54 @@ static int hexN(int x) {
   return x - 10 + 'a';
 }
 
+handle_t bin8_encode(unknown_t src, size_t srcsize) {
+  if (src && srcsize) {
+
+  }
+
+  return NULL;
+}
+
+handle_t bin16_encode(unknown_t src, size_t srcsize) {
+  if (src && srcsize) {
+
+  }
+
+  return NULL;
+}
+
+handle_t bin32_encode(unknown_t src, size_t srcsize) {
+  if (src && srcsize) {
+
+  }
+
+  return NULL;
+}
+
+handle_t dec8_encode(unknown_t src, size_t srcsize) {
+  if (src && srcsize) {
+
+  }
+
+  return NULL;
+}
+
+handle_t dec16_encode(unknown_t src, size_t srcsize) {
+  if (src && srcsize) {
+
+  }
+
+  return NULL;
+}
+
+handle_t dec32_encode(unknown_t src, size_t srcsize) {
+  if (src && srcsize) {
+
+  }
+
+  return NULL;
+}
+
 handle_t hex8_encode(unknown_t src, size_t srcsize) {
   if (src && srcsize) {
     size_t maxsize = srcsize * 6 + 1;

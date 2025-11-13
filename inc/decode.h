@@ -62,6 +62,10 @@ int xor32(const unknown_t p, const uint32_t v, const size_t size, const int32_t 
 int aes_encrypt(const int mode, puchar_t src, const size_t srcsize,
                 puchar_t key, const size_t keysize, puchar_t ivec, puchar_t dst);
 
+handle_t bin8_decode(unknown_t src, size_t srcsize);
+handle_t bin16_decode(unknown_t src, size_t srcsize);
+handle_t bin32_decode(unknown_t src, size_t srcsize);
+
 handle_t dec8_decode(unknown_t src, size_t srcsize);
 handle_t dec16_decode(unknown_t src, size_t srcsize);
 handle_t dec32_decode(unknown_t src, size_t srcsize);
