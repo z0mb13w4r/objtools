@@ -265,30 +265,48 @@ Displays the contents of the \fB.debug_abbrev\fR section.
 .IX Item "=addr"
 .PD
 Displays the contents of the \fB.debug_addr\fR section.
-
-  "c"
-  "=cu_index"
-    Displays the contents of the .debug_cu_index|.debug_tu_index sections.
-
-  "F"
-  "=frames-interp"
-    Display the interpreted contents of a .debug_frame section.
-
-  "i"
-  "=info"
-    Displays the contents of the .debug_info section.
-
-  "k"
-  "=links"
-    Displays the contents of the .gnu_debuglink|.gnu_debugaltlink sections.
-
-  "K"
-  "=follow-links"
-    Display the contents of any selected debug sections that are found in linked, separate debug info file(s).
-
-  "L"
-  "=decodedline"
-    Displays the interpreted contents of the .debug_line section.
+.ie n .IP """c""" 4
+.IX Item "c"
+.PD 0
+.ie n .IP """=cu_index""" 4
+.IX Item "=cu_index"
+.PD
+Displays the contents of the \fB.debug_cu_index\fR|\fB.debug_tu_index\fR sections.
+.ie n .IP """F""" 4
+.IX Item "F"
+.PD 0
+.ie n .IP """=frames\-interp""" 4
+.IX Item "=frames-interp"
+.PD
+Display the interpreted contents of a \fB.debug_frame\fR section.
+.ie n .IP """i""" 4
+.IX Item "i"
+.PD 0
+.ie n .IP """=info""" 4
+.IX Item "=info"
+.PD
+Displays the contents of the \fB.debug_info\fR section.
+.ie n .IP """k""" 4
+.IX Item "k"
+.PD 0
+.ie n .IP """=links""" 4
+.IX Item "=links"
+.PD
+Displays the contents of the \fB.gnu_debuglink\fR|\fB.gnu_debugaltlink\fR sections.
+.ie n .IP """K""" 4
+.IX Item "K"
+.PD 0
+.ie n .IP """=follow\-links""" 4
+.IX Item "=follow-links"
+.PD
+Display the contents of any selected debug sections that are found in linked, separate debug info file(s).
+.ie n .IP """L""" 4
+.IX Item "L"
+.PD 0
+.ie n .IP """=decodedline""" 4
+.IX Item "=decodedline"
+.PD
+Displays the interpreted contents of the \fB.debug_line\fR section.
 
   "m"
   "=macro"
