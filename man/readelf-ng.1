@@ -214,22 +214,34 @@ Displays the contents of the indicated section as printable strings.
 .IX Item "--relocated-dump=<number or name>"
 .PD
 Displays the contents of the indicated section as a hexadecimal bytes.
-
-  -z
-  --decompress
-    Requests that the section(s) being dumped by x, R or p options are decompressed before being displayed.
-
-  -I
-  --info
-    Equivalent to specifying: --hash --entropy
-
-  -X
-  --hash
-    Calculates and displays the SHA-256 hash.
-
-  -E
-  --entropy
-    Displays the entropy of the object.
+.IP "\fB\-z\fR" 4
+.IX Item "-z"
+.PD 0
+.IP "\fB\-\-decompress\fR" 4
+.IX Item "--decompress"
+.PD
+Requests that the section(s) being dumped by \fBx\fR, \fBR\fR or \fBp\fR options are decompressed before being displayed.
+.IP "\fB\-I\fR" 4
+.IX Item "-I"
+.PD 0
+.IP "\fB\-\-info\fR" 4
+.IX Item "--info"
+.PD
+Equivalent to specifying: --hash --entropy
+.IP "\fB\-X\fR" 4
+.IX Item "-X"
+.PD 0
+.IP "\fB\-\-hash\fR" 4
+.IX Item "--hash"
+.PD
+Calculates and displays the SHA-256 hash.
+.IP "\fB\-E\fR" 4
+.IX Item "-E"
+.PD 0
+.IP "\fB\-\-entropy\fR" 4
+.IX Item "--entropy"
+.PD
+Displays the entropy of the object.
 
   -w|[aAcFikKLmrRsptTuUgX]
   --debug-dump|[=abbrev,=addr,=cu_index,=frames-interp,=info,=links,=follow-links,=decodedline,=macro,=aranges,=ranges,=str,=pubnames,=pubtypes,=trace_aranges,=trace_abbrev,=trace_info,=gdb_index,=enhanced]
