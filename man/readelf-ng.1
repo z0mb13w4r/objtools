@@ -242,17 +242,29 @@ Calculates and displays the SHA-256 hash.
 .IX Item "--entropy"
 .PD
 Displays the entropy of the object.
-
-  -w|[aAcFikKLmrRsptTuUgX]
-  --debug-dump|[=abbrev,=addr,=cu_index,=frames-interp,=info,=links,=follow-links,=decodedline,=macro,=aranges,=ranges,=str,=pubnames,=pubtypes,=trace_aranges,=trace_abbrev,=trace_info,=gdb_index,=enhanced]
-
-  "a"
-  "=abbrev"
-    Displays the contents of the .debug_abbrev section.
-
-  "A"
-  "=addr"
-    Displays the contents of the .debug_addr section.
+.IP "\fB\-w[aAcFikKLmrRsptTuUgX]\fR" 4
+.IX Item "-w[aAcFikKLmrRsptTuUgX]"
+.PD 0
+.IP "\fB\-\-debug-dump[=abbrev,=addr,=cu_index,=frames-interp,=info,=links,=follow-links,=decodedline,=macro,=aranges,=ranges,=str,=pubnames,=pubtypes,=trace_aranges,=trace_abbrev,=trace_info,=gdb_index,=enhanced]\fR" 4
+.IX Item "--debug-dump[=abbrev,=addr,=cu_index,=frames-interp,=info,=links,=follow-links,=decodedline,=macro,=aranges,=ranges,=str,=pubnames,=pubtypes,=trace_aranges,=trace_abbrev,=trace_info,=gdb_index,=enhanced]"
+.PD
+Displays the contents of the \s-1DWARF\s0 debug sections in the file, if any
+are present.
+.RS 4
+.ie n .IP """a""" 4
+.IX Item "a"
+.PD 0
+.ie n .IP """=abbrev""" 4
+.IX Item "=abbrev"
+.PD
+Displays the contents of the \fB.debug_abbrev\fR section.
+.ie n .IP """A""" 4
+.IX Item "A"
+.PD 0
+.ie n .IP """=addr""" 4
+.IX Item "=addr"
+.PD
+Displays the contents of the \fB.debug_addr\fR section.
 
   "c"
   "=cu_index"
