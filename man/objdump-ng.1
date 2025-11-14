@@ -3,48 +3,43 @@
 objdump-ng: display information about ELF and PE files.
 
 .SH SYNOPSIS
-objdump-ng [-H|--help]
-             [-V|--version]
-             [-v|--verbose]
-             [-D|--disassemble-all]
-             [-c|--capstone-all]
-             [-S|--source]
-             [-T|--dynamic-symbols]
-             [-R|--dynamic-reloc]
-             [-d|--disassemble]
-             [-g|--debugging]
-             [-e|--debugging-tags]
-             [-C|--demangle]
-             [-s|--full-contents]
-             [-t|--symbols]
-             [-r|--reloc]
-             [-f|--file-headers]
-             [-p|--private-headers]
-             [-h|--section-headers]
-             [-x|--all-headers]
-             [-l|--line-numbers]
-             [--no-addresses]
-             [--no-show-raw-insn]
-             [--prefix-addresses]
-             [--start-address]
-             [--stop-address]
-             [--capstone]
-             [-X|--hash]
-             [-1]
-             [-2]
-             [-3]
-             [-W|[aAcFikKLmrRsptTuUgX]|
-             --dwarf|[abbrev,addr,cu_index,frames-interp,info,links,follow-links,decodedline,macro,aranges,ranges,str,pubnames,pubtypes,trace_aranges,trace_abbrev,trace_info,gdb_index,enhanced]]
-             [-M options|--disassembler-options=options]
+objdump-ng [\fB\-H\fR|\fB\-\-help\fR]
+           [\fB\-V\fR|\fB\-\-version\fR]
+           [\fB\-v\fR|\fB\-\-verbose\fR]
+           [\fB\-D\fR|\fB\-\-disassemble\-all\fR]
+           [\fB\-c\fR|\fB\-\-capstone\-all\fR]
+           [\fB\-S\fR|\fB\-\-source\fR]
+           [\fB\-T\fR|\fB\-\-dynamic\-symbols\fR]
+           [\fB\-R\fR|\fB\-\-dynamic\-reloc\fR]
+           [\fB\-d\fR|\fB\-\-disassemble\fR]
+           [\fB\-g\fR|\fB\-\-debugging\fR]
+           [\fB\-e\fR|\fB\-\-debugging\-tags\fR]
+           [\fB\-C\fR|\fB\-\-demangle\fR]
+           [\fB\-s\fR|\fB\-\-full\-contents\fR]
+           [\fB\-t\fR|\fB\-\-symbols\fR]
+           [\fB\-r\fR|\fB\-\-reloc\fR]
+           [\fB\-f\fR|\fB\-\-file\-headers\fR]
+           [\fB\-p\fR|\fB\-\-private\-headers\fR]
+           [\fB\-h\fR|\fB\-\-section\-headers\fR]
+           [\fB\-x\fR|\fB\-\-all\-headers\fR]
+           [\fB\-l\fR|\fB\-\-line\-numbers\fR]
+           [--no-addresses]
+           [--no-show-raw-insn]
+           [--prefix-addresses]
+           [--start-address]
+           [--stop-address]
+           [--capstone]
+           [\fB\-X\fR|--hash]
+           [\fB\-W[aAcFikKLmrRsptTuUgX]\fR|
+            \fB\-\-dwarf\fR[=abbrev,=addr,=cu_index,=frames\-interp,=info,=links,=follow\-links,
+                    =decodedline,=macro,=aranges,=ranges,=str,=pubnames,=pubtypes,=trace_aranges,
+                    =trace_abbrev,=trace_info,=gdb_index,=enhanced]]
+           [\fB\-M\fR <options>|\fB\-\-disassembler\-options=\fR<options>]
 
 .SH DESCRIPTION
-  objdump-ng  displays information about one or more object files. The options control what
-  particular information to display. This information is mostly useful to programmers who
-  are working on the compilation tools, as opposed to programmers who just want their
-  program to compile and work.
+\fBobjdump-ng\fR displays information about one or more object files. The options control what particular information to display. This information is mostly useful to programmers who are working on the compilation tools, as opposed to programmers who just want their program to compile and work.
 
-  objfile... are the object files to be examined. When you specify archives, it shows
-  information on each of the member object files.
+\fIobjfile...\fR are the object files to be examined. When you specify archives, it shows information on each of the member object files.
 
 .SH OPTIONS
 .IP "\fB\-H\fR" 4
@@ -54,27 +49,36 @@ objdump-ng [-H|--help]
 .IX Item "--help"
 .PD
 Print a summary of the options to objdump-ng and exit.
-.IP "\fB\-v\fR" 4
-.IX Item "-v"
+.IP "\fB\-V\fR" 4
+.IX Item "-V"
 .PD 0
 .IP "\fB\-\-version\fR" 4
 .IX Item "--version"
 .PD
 Print the version number of objdump-ng and exit.
-
-  -v
-  --verbose
-    Print additional information.
-
-  -D
-  --disassemble-all
-    Like -d, but disassemble the contents of all sections, not just those expected to contain instructions.
-    Equivalent to specifying: --disassemble
-
-  -c
-  --capstone-all
-    When disassembling, use the Capstone Disassembler Framework.
-    Equivalent to specifying: --disassemble --demangle --capstone
+.IP "\fB\-v\fR" 4
+.IX Item "-v"
+.PD 0
+.IP "\fB\-\-verbose\fR" 4
+.IX Item "--verbose"
+.PD
+Print additional information.
+.IP "\fB\-D\fR" 4
+.IX Item "-D"
+.PD 0
+.IP "\fB\-\-disassemble\-all\fR" 4
+.IX Item "--disassemble-all"
+.PD
+Like \fB-d\fR, but disassemble the contents of all sections, not just those expected to contain instructions.
+Equivalent to specifying: \fB-\-disassemble\fR.
+.IP "\fB\-c\fR" 4
+.IX Item "-c"
+.PD 0
+.IP "\fB\-\-capstone\-all\fR" 4
+.IX Item "--capstone-all"
+.PD
+When disassembling, use the Capstone Disassembler Framework.
+Equivalent to specifying: \fB-\-disassemble\fR, \fB-\-demangle\fR, and \fB-\-capstone\fR.
 
   -S
   --source
@@ -161,23 +165,13 @@ Print the version number of objdump-ng and exit.
   --hash
     Calculates and displays the SHA-256 hash.
 
-  -1
-    Print the level 1 code development debugging information.
-
-  -2
-    Print the level 2 code development debugging information.
-
-  -3
-    Print the level 3 code development debugging information.
-
 .IP "\fB\-w[aAcFikKLmrRsptTuUgX]\fR" 4
 .IX Item "-w[aAcFikKLmrRsptTuUgX]"
 .PD 0
 .IP "\fB\-\-debug-dump[=abbrev,=addr,=cu_index,=frames-interp,=info,=links,=follow-links,=decodedline,=macro,=aranges,=ranges,=str,=pubnames,=pubtypes,=trace_aranges,=trace_abbrev,=trace_info,=gdb_index,=enhanced]\fR" 4
 .IX Item "--debug-dump[=abbrev,=addr,=cu_index,=frames-interp,=info,=links,=follow-links,=decodedline,=macro,=aranges,=ranges,=str,=pubnames,=pubtypes,=trace_aranges,=trace_abbrev,=trace_info,=gdb_index,=enhanced]"
 .PD
-Displays the contents of the \s-1DWARF\s0 debug sections in the file, if any
-are present.
+Displays the contents of the \s-1DWARF\s0 debug sections in the file, if any are present.
 .RS 4
 .ie n .IP """a""" 4
 .IX Item "a"
