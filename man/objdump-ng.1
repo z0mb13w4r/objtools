@@ -1,0 +1,303 @@
+NAME
+  objdump-ng: display information about ELF and PE files.
+
+SYNOPSIS
+  objdump-ng [-H|--help]
+             [-V|--version]
+             [-v|--verbose]
+             [-D|--disassemble-all]
+             [-c|--capstone-all]
+             [-S|--source]
+             [-T|--dynamic-symbols]
+             [-R|--dynamic-reloc]
+             [-d|--disassemble]
+             [-g|--debugging]
+             [-e|--debugging-tags]
+             [-C|--demangle]
+             [-s|--full-contents]
+             [-t|--symbols]
+             [-r|--reloc]
+             [-f|--file-headers]
+             [-p|--private-headers]
+             [-h|--section-headers]
+             [-x|--all-headers]
+             [-l|--line-numbers]
+             [--no-addresses]
+             [--no-show-raw-insn]
+             [--prefix-addresses]
+             [--start-address]
+             [--stop-address]
+             [--capstone]
+             [-X|--hash]
+             [-1]
+             [-2]
+             [-3]
+             [-W|[aAcFikKLmrRsptTuUgX]|
+             --dwarf|[abbrev,addr,cu_index,frames-interp,info,links,follow-links,decodedline,macro,aranges,ranges,str,pubnames,pubtypes,trace_aranges,trace_abbrev,trace_info,gdb_index,enhanced]]
+             [-M options|--disassembler-options=options]
+
+DESCRIPTION
+
+  objdump-ng  displays information about one or more object files. The options control what
+  particular information to display. This information is mostly useful to programmers who
+  are working on the compilation tools, as opposed to programmers who just want their
+  program to compile and work.
+  
+  objfile... are the object files to be examined. When you specify archives, it shows
+  information on each of the member object files.
+
+OPTIONS
+  -H
+  --help
+    Print a summary of the options to objdump-ng and exit.
+
+  -V
+  --version
+    Print the version number of objdump-ng and exit.
+
+  -v
+  --verbose
+    Print additional information.
+
+  -D
+  --disassemble-all
+    Like -d, but disassemble the contents of all sections, not just those expected to contain instructions.
+    Equivalent to specifying: --disassemble
+
+  -c
+  --capstone-all
+    When disassembling, use the Capstone Disassembler Framework.
+    Equivalent to specifying: --disassemble --demangle --capstone
+
+  -S
+  --source
+    Display source code intermixed with disassembly, if possible. Implies -d.
+    Equivalent to specifying: --disassemble
+
+  -T
+  --dynamic-symbols
+    Print the dynamic symbol table entries of the file.
+
+  -R
+  --dynamic-reloc
+    Print the dynamic relocation entries of the file. This is only meaningful for dynamic objects, such as certain types of shared libraries.
+
+  -d
+  --disassemble
+    Display the assembler mnemonics for the machine instructions from the input file.
+
+  -g
+  --debugging
+    Display debugging information.
+
+  -e
+  --debugging-tags
+    Like -g, but the information is generated in a format compatible with ctags tool.
+    Equivalent to specifying: --demangle
+
+  -C
+  --demangle
+    Decode (demangle) low-level symbol names into user-level names.
+
+  -s
+  --full-contents
+    Display the full contents of any sections requested.
+
+  -t
+  --symbols
+    Print the symbol table entries of the file.
+
+  -r
+  --reloc
+    Print the relocation entries of the file.
+
+  -f
+  --file-headers
+    Display summary information from the overall header of each of the objfile files.
+
+  -p
+  --private-headers
+    Print information that is specific to the object file format.
+
+  -h
+  --section-headers
+    Display summary information from the section headers of the object file.
+
+  -x
+  --all-headers
+    Display all available header information, including the symbol table and relocation entries.
+    Equivalent to specifying: --symbols --reloc --file-headers --private-headers --section-headers
+
+  -l
+  --line-numbers
+    Label the display (using debugging information) with the filename and source line numbers corresponding to the object code or relocs shown. Only useful with -d, -D, or -r.
+
+  --no-addresses
+    When disassembling, don't print addresses on each line or for symbols and relocation offsets. In combination with --no-show-raw-insn this may be useful for comparing compiler output.
+
+  --no-show-raw-insn
+    When disassembling instructions, do not print the instruction bytes. This is the default when --prefix-addresses is used.
+
+  --prefix-addresses
+    When disassembling, print the complete address on each line.
+
+  --start-address
+    Start displaying data at the specified address. This affects the output of the -d, -r and -s options.
+
+  --stop-address
+    Stop displaying data at the specified address. This affects the output of the -d, -r and -s options.
+
+  --capstone
+    When disassembling, use the Capstone Disassembler Framework.
+
+  -X
+  --hash
+    Calculates and displays the SHA-256 hash.
+
+  -1
+    Print the level 1 code development debugging information.
+
+  -2
+    Print the level 2 code development debugging information.
+
+  -3
+    Print the level 3 code development debugging information.
+
+  -W|[aAcFikKLmrRsptTuUgX]
+  --dwarf|[=abbrev,=addr,=cu_index,=frames-interp,=info,=links,=follow-links,=decodedline,=macro,=aranges,=ranges,=str,=pubnames,=pubtypes,=trace_aranges,=trace_abbrev,=trace_info,=gdb_index,=enhanced]
+
+  "a"
+  "=abbrev"
+    Displays the contents of the .debug_abbrev section.
+
+  "A"
+  "=addr"
+    Displays the contents of the .debug_addr section.
+
+  "c"
+  "=cu_index"
+    Displays the contents of the .debug_cu_index|.debug_tu_index sections.
+
+  "F"
+  "=frames-interp"
+    Display the interpreted contents of a .debug_frame section.
+
+  "i"
+  "=info"
+    Displays the contents of the .debug_info section.
+
+  "k"
+  "=links"
+    Displays the contents of the .gnu_debuglink|.gnu_debugaltlink sections.
+
+  "K"
+  "=follow-links"
+    Display the contents of any selected debug sections that are found in linked, separate debug info file(s).
+
+  "L"
+  "=decodedline"
+    Displays the interpreted contents of the .debug_line section.
+
+  "m"
+  "=macro"
+    Displays the contents of the .debug_macro|.debug_macinfo sections.
+
+  "r"
+  "=aranges"
+    Displays the contents of the .debug_aranges section.
+
+  "R"
+  "=ranges"
+    Displays the contents of the .debug_ranges|.debug_rnglists sections.
+
+  "s"
+  "=str"
+    Displays the contents of the .debug_str|.debug_line_str|.debug_str_offsets sections.
+
+  "p"
+  "=pubnames"
+    Displays the contents of the .debug_pubnames|.debug_gnu_pubnames sections.
+
+  "t"
+  "=pubtypes"
+    Displays the contents of the .debug_pubtypes|.debug_gnu_pubtypes sections.
+
+  "T"
+  "=trace_aranges"
+    Displays the contents of the .trace_aranges section.
+
+  "u"
+  "=trace_abbrev"
+    Displays the contents of the .trace_abbrev section.
+
+  "U"
+  "=trace_info"
+    Displays the contents of the .trace_info section.
+
+  "g"
+  "=gdb_index"
+    Displays the contents of the .gdb_index|.debug_names sections.
+
+  "X"
+  "=enhanced"
+    Displays the contents in the enhanced mode format.
+
+  -M options
+  --disassembler-options=options
+
+  "att"
+  "att-mnemonic"
+    Select the AT&T syntax mode.
+
+  "intel"
+  "intel-mnemonic"
+    Select the Intel syntax mode.
+
+  "x86-64"
+  "i386"
+  "i8086"
+    Select disassembly for the given architecture.
+
+  "amd64"
+  "intel64"
+    Select between AMD64 ISA and Intel64 ISA.
+
+  "addr16"
+  "addr32"
+  "addr64"
+  "data16"
+  "data32"
+    Specify the default address size and operand size.
+
+SEE ALSO
+  convert-ng
+  objcopy-ng
+  objdump-ng
+  objdwarf-ng
+  objhash-ng
+  readelf-ng
+  readpe-ng
+
+COPYRIGHT
+  MIT License
+  
+  Copyright (c) 2025 Kyle Wickens
+  
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+  
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
+  
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.
+
