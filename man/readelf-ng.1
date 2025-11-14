@@ -342,30 +342,48 @@ Displays the contents of the \fB.debug_str\fR|\fB.debug_line_str\fR|\fB.debug_st
 .IX Item "=pubnames"
 .PD
 Displays the contents of the \fB.debug_pubnames\fR|\fB.debug_gnu_pubnames\fR sections.
-
-  "t"
-  "=pubtypes"
-    Displays the contents of the .debug_pubtypes|.debug_gnu_pubtypes sections.
-
-  "T"
-  "=trace_aranges"
-    Displays the contents of the .trace_aranges section.
-
-  "u"
-  "=trace_abbrev"
-    Displays the contents of the .trace_abbrev section.
-
-  "U"
-  "=trace_info"
-    Displays the contents of the .trace_info section.
-
-  "g"
-  "=gdb_index"
-    Displays the contents of the .gdb_index|.debug_names sections.
-
-  "X"
-  "=enhanced"
-    Displays the contents in the enhanced mode format.
+.ie n .IP """t""" 4
+.IX Item "t"
+.PD 0
+.ie n .IP """=pubtypes""" 4
+.IX Item "=pubtypes"
+.PD
+Displays the contents of the \fB.debug_pubtypes\fR|\fB.debug_gnu_pubtypes\fR sections.
+.ie n .IP """T""" 4
+.IX Item "T"
+.PD 0
+.ie n .IP """=trace_aranges""" 4
+.IX Item "=trace_aranges"
+.PD
+Displays the contents of the \fB.trace_aranges\fR section.
+.ie n .IP """u""" 4
+.IX Item "u"
+.PD 0
+.ie n .IP """=trace_abbrev""" 4
+.IX Item "=trace_abbrev"
+.PD
+Displays the contents of the \fB.trace_abbrev\fR section.
+.ie n .IP """U""" 4
+.IX Item "U"
+.PD 0
+.ie n .IP """=trace_info""" 4
+.IX Item "=trace_info"
+.PD
+Displays the contents of the \fB.trace_info\fR section.
+.ie n .IP """g""" 4
+.IX Item "g"
+.PD 0
+.ie n .IP """=gdb_index""" 4
+.IX Item "=gdb_index"
+.PD
+Displays the contents of the \fB.gdb_index\fR|\fB.debug_names\fR sections.
+.ie n .IP """X""" 4
+.IX Item "X"
+.PD 0
+.ie n .IP """=enhanced""" 4
+.IX Item "=enhanced"
+.PD
+Displays the contents in the enhanced mode format.
 
   -M options
   --disassembler-options=options
