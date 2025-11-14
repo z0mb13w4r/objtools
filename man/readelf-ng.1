@@ -307,26 +307,41 @@ Display the contents of any selected debug sections that are found in linked, se
 .IX Item "=decodedline"
 .PD
 Displays the interpreted contents of the \fB.debug_line\fR section.
-
-  "m"
-  "=macro"
-    Displays the contents of the .debug_macro|.debug_macinfo sections.
-
-  "r"
-  "=aranges"
-    Displays the contents of the .debug_aranges section.
-
-  "R"
-  "=ranges"
-    Displays the contents of the .debug_ranges|.debug_rnglists sections.
-
-  "s"
-  "=str"
-    Displays the contents of the .debug_str|.debug_line_str|.debug_str_offsets sections.
-
-  "p"
-  "=pubnames"
-    Displays the contents of the .debug_pubnames|.debug_gnu_pubnames sections.
+.ie n .IP """m""" 4
+.IX Item "m"
+.PD 0
+.ie n .IP """=macro""" 4
+.IX Item "=macro"
+.PD
+Displays the contents of the \fB.debug_macro\fR|\fB.debug_macinfo\fR sections.
+.ie n .IP """r""" 4
+.IX Item "r"
+.PD 0
+.ie n .IP """=aranges""" 4
+.IX Item "=aranges"
+.PD
+Displays the contents of the \fB.debug_aranges\fR section.
+.ie n .IP """R""" 4
+.IX Item "R"
+.PD 0
+.ie n .IP """=ranges""" 4
+.IX Item "=ranges"
+.PD
+Displays the contents of the \fB.debug_ranges\fR|\fB.debug_rnglists\fR sections.
+.ie n .IP """s""" 4
+.IX Item "s"
+.PD 0
+.ie n .IP """=str""" 4
+.IX Item "=str"
+.PD
+Displays the contents of the \fB.debug_str\fR|\fB.debug_line_str\fR|\fB.debug_str_offsets\fR sections.
+.ie n .IP """p""" 4
+.IX Item "p"
+.PD 0
+.ie n .IP """=pubnames""" 4
+.IX Item "=pubnames"
+.PD
+Displays the contents of the \fB.debug_pubnames\fR|\fB.debug_gnu_pubnames\fR sections.
 
   "t"
   "=pubtypes"
