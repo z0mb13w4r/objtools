@@ -621,6 +621,7 @@ handle_t oecreate(handle_t p, const uint64_t vaddr, unknown_t mnemonic, unknown_
   pocexamine_t p0 = oemalloc();
   if (p0) {
     MALLOCACOPY(char, m0, 160, mnemonic);
+    MALLOCACOPY(char, o0, 160, operands);
 
     p0->vaddr = vaddr;
     p0->mc = xmalloc(sizeof(ocmnemonic_t));
@@ -633,7 +634,7 @@ handle_t oecreate(handle_t p, const uint64_t vaddr, unknown_t mnemonic, unknown_
     if (pi) {
 //printf("++");
       m1 = oeinsert_mnemonic(p0, pi, m1);
-      m1 = oeinsert_operands(p0, pi, operands ? operands : m1);
+      m1 = oeinsert_operands(p0, pi, operands ? o0 : m1);
     } else {
 #ifdef OPCODE_EXAMINE_DEBUGX
       printf_e("The mnemonic is missing from the table oeINSTRUCTIONS");

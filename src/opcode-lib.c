@@ -195,7 +195,6 @@ int opcodelib_raw(handle_t p, handle_t s, unknown_t data, const size_t size, con
           n1 += printf_pack(31 - n1);
         }
 
-        n1 += printf_sore(ps->data, ps->size, USE_STR | USE_SPACE);
         n1 += opcode_printf_detail(p, soffset, ps->data, NULL);
         n1 += printf_eol();
       }
