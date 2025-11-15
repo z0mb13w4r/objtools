@@ -133,7 +133,7 @@ handle_t oeaskbyaddr(handle_t p, const uint64_t vaddr, const imode_t mode) {
           return q1;
         } else if ((OPENGINE_DEBUG == mode) && q0->debug) {
           pocdebug_t d0 = CAST(pocdebug_t, q0->debug);
-          if (d0->laddr <= vaddr && vaddr <= d0->haddr) {
+          if (d0->laddr <= vaddr && vaddr < d0->haddr) {
             return d0;
           }
         } else if ((OPENGINE_SYMBOL == mode) && q0->symbol) {

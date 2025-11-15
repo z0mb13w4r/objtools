@@ -157,8 +157,8 @@ char* opcodebfd_getsymbol(handle_t p, const uint64_t vaddr, uint64_t *offset) {
       char* name0 = opcodebfd_getsymbol0(p, vaddr, &offset0);
       char* name2 = opcodebfd_getsymbol2(p, vaddr, &offset2);
 
-      *offset = offset0 < offset2 ? offset0 : offset2;
-      name    = offset0 < offset2 ? name0   : name2;
+      *offset = offset0 <= offset2 ? offset0 : offset2;
+      name    = offset0 <= offset2 ? name0   : name2;
     }
 
     return name;
