@@ -108,31 +108,49 @@ Print the dynamic relocation entries of the file. This is only meaningful for dy
 .IX Item "--disassemble"
 .PD
 Display the assembler mnemonics for the machine instructions from the input file.
-
-  -g
-  --debugging
-    Display debugging information.
-
-  -e
-  --debugging-tags
-    Like -g, but the information is generated in a format compatible with ctags tool.
-    Equivalent to specifying: --demangle
-
-  -C
-  --demangle
-    Decode (demangle) low-level symbol names into user-level names.
-
-  -s
-  --full-contents
-    Display the full contents of any sections requested.
-
-  -t
-  --symbols
-    Print the symbol table entries of the file.
-
-  -r
-  --reloc
-    Print the relocation entries of the file.
+.IP "\fB\-g\fR" 4
+.IX Item "-g"
+.PD 0
+.IP "\fB\-\-debugging\fR" 4
+.IX Item "--debugging"
+.PD
+Display debugging information.
+.IP "\fB\-e\fR" 4
+.IX Item "-e"
+.PD 0
+.IP "\fB\-\-debugging\-tags\fR" 4
+.IX Item "--debugging-tags"
+.PD
+Like \fB\-g\fR, but the information is generated in a format compatible with ctags tool.
+Equivalent to specifying: \fB\-\-demangle\fR.
+.IP "\fB\-C\fR" 4
+.IX Item "-C"
+.PD 0
+.IP "\fB\-\-demangle\fR" 4
+.IX Item "--demangle"
+.PD
+Decode (demangle) low-level symbol names into user-level names.
+.IP "\fB\-s\fR" 4
+.IX Item "-s"
+.PD 0
+.IP "\fB\-\-full\-contents\fR" 4
+.IX Item "--full-contents"
+.PD
+Display the full contents of any sections requested.
+.IP "\fB\-t\fR" 4
+.IX Item "-t"
+.PD 0
+.IP "\fB\-\-symbols\fR" 4
+.IX Item "--symbols"
+.PD
+Print the symbol table entries of the file.
+.IP "\fB\-r\fR" 4
+.IX Item "-r"
+.PD 0
+.IP "\fB\-\-reloc\fR" 4
+.IX Item "--reloc"
+.PD
+Print the relocation entries of the file.
 
   -f
   --file-headers
