@@ -70,7 +70,7 @@ Print additional information.
 .IX Item "--disassemble-all"
 .PD
 Like \fB-d\fR, but disassemble the contents of all sections, not just those expected to contain instructions.
-Equivalent to specifying: \fB-\-disassemble\fR.
+Equivalent to specifying: \fB\-\-disassemble\fR.
 .IP "\fB\-c\fR" 4
 .IX Item "-c"
 .PD 0
@@ -78,24 +78,36 @@ Equivalent to specifying: \fB-\-disassemble\fR.
 .IX Item "--capstone-all"
 .PD
 When disassembling, use the Capstone Disassembler Framework.
-Equivalent to specifying: \fB-\-disassemble\fR, \fB-\-demangle\fR, and \fB-\-capstone\fR.
-
-  -S
-  --source
-    Display source code intermixed with disassembly, if possible. Implies -d.
-    Equivalent to specifying: --disassemble
-
-  -T
-  --dynamic-symbols
-    Print the dynamic symbol table entries of the file.
-
-  -R
-  --dynamic-reloc
-    Print the dynamic relocation entries of the file. This is only meaningful for dynamic objects, such as certain types of shared libraries.
-
-  -d
-  --disassemble
-    Display the assembler mnemonics for the machine instructions from the input file.
+Equivalent to specifying: \fB\-\-disassemble\fR, \fB\-\-demangle\fR, and \fB\-\-capstone\fR.
+.IP "\fB\-S\fR" 4
+.IX Item "-S"
+.PD 0
+.IP "\fB\-\-source\fR" 4
+.IX Item "--source"
+.PD
+Display source code intermixed with disassembly, if possible. Implies \fB\-d\fR.
+Equivalent to specifying: \fB\-\-disassemble\fR.
+.IP "\fB\-T\fR" 4
+.IX Item "-T"
+.PD 0
+.IP "\fB\-\-dynamic\-symbols\fR" 4
+.IX Item "--dynamic-symbols"
+.PD
+Print the dynamic symbol table entries of the file.
+.IP "\fB\-R\fR" 4
+.IX Item "-R"
+.PD 0
+.IP "\fB\-\-dynamic\-reloc\fR" 4
+.IX Item "--dynamic-reloc"
+.PD
+Print the dynamic relocation entries of the file. This is only meaningful for dynamic objects, such as certain types of shared libraries.
+.IP "\fB\-d\fR" 4
+.IX Item "-d"
+.PD 0
+.IP "\fB\-\-disassemble\fR" 4
+.IX Item "--disassemble"
+.PD
+Display the assembler mnemonics for the machine instructions from the input file.
 
   -g
   --debugging
