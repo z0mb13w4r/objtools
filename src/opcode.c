@@ -854,21 +854,36 @@ bool_t ocget_func(handle_t p, uint64_t vaddr, char **name, uint64_t *offset) {
   if (isopcode(p) && name && 0 != vaddr) {
     pocgroups_t g0 = oeaskbyaddr(p, vaddr, OPENGINE_GROUP);
     pocsymbol_t s0 = g0 ? g0->symbol : NULL;
-    pocdebug_t d0 = oeaskbyaddr(p, vaddr, OPENGINE_DEBUG);//g0 ? g0->debug : NULL;
+    pocdebug_t d0 = oeaskbyaddr(p, vaddr, OPENGINE_DEBUG);
 
-    if (name && (NULL == *name) && isodebug(d0)) {
-      if (MODE_ISANY(d0->role, OPSYMBOL_NAME)) *name = d0->name;
-      if (offset && MODE_ISANY(d0->role, OPDEBUG_LADDR))   *offset = vaddr - d0->laddr;
+    char *name0 = NULL, *name1 = NULL, *name2 = NULL;
+    uint64_t offset0 = UINT_MAX, offset1 = UINT_MAX, offset2 = UINT_MAX, offsetZ = UINT_MAX;
+
+    if (isodebug(d0)) {
+      if (MODE_ISANY(d0->role, OPSYMBOL_NAME))             name0 = d0->name;
+      if (offset && MODE_ISANY(d0->role, OPDEBUG_LADDR))   offset0 = vaddr - d0->laddr;
+
+      if (name && (NULL == *name)) { // A
+        *name = name0;
+        offsetZ = *offset = offset0;
+      }
     }
 
-    if (name && (NULL == *name) && isosymbol(s0)) {
-      if (MODE_ISANY(s0->role, OPSYMBOL_NAME)) *name = s0->name;
-      if (offset && MODE_ISANY(s0->role, OPSYMBOL_LADDR))   *offset = vaddr - s0->laddr;
+    if (isosymbol(s0)) {
+      if (MODE_ISANY(s0->role, OPSYMBOL_NAME))              name1 = s0->name;
+      if (offset && MODE_ISANY(s0->role, OPSYMBOL_LADDR))   offset1 = vaddr - s0->laddr;
+
+      if (name && ((NULL == *name) || (offset1 < offsetZ))) { // B
+        *name = name1;
+        offsetZ = *offset = offset1;
+      }
     }
 
-    if (name && NULL == *name) {
-      *name = CAST(char*, ocget_namebyvaddr(p, vaddr, offset));
-      issp = (name) && (*name) && (*name)[0] ? '.' != (*name)[0] : issp;
+    name2 = CAST(char*, ocget_namebyvaddr(p, vaddr, &offset2));
+    issp = name2 && name2[0] ? '.' != name2[0] : FALSE;
+    if (name && ((NULL == *name) || (offset2 < offsetZ))) { // C
+      *name = name2;
+      offsetZ = *offset = offset2;
     }
   }
 
