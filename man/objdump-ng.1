@@ -187,29 +187,37 @@ Equivalent to specifying: \fB\-\-symbols\fR, \fB\-\-reloc\fR, \fB\-\-file\-heade
 .IX Item "--line-numbers"
 .PD
 Label the display (using debugging information) with the filename and source line numbers corresponding to the object code or relocs shown. Only useful with \fB\-d\fR, \fB\-D\fR, or \fB\-r\fR.
-
-  --no-addresses
-    When disassembling, don't print addresses on each line or for symbols and relocation offsets. In combination with --no-show-raw-insn this may be useful for comparing compiler output.
-
-  --no-show-raw-insn
-    When disassembling instructions, do not print the instruction bytes. This is the default when --prefix-addresses is used.
-
-  --prefix-addresses
-    When disassembling, print the complete address on each line.
-
-  --start-address
-    Start displaying data at the specified address. This affects the output of the -d, -r and -s options.
-
-  --stop-address
-    Stop displaying data at the specified address. This affects the output of the -d, -r and -s options.
-
-  --capstone
-    When disassembling, use the Capstone Disassembler Framework.
-
-  -X
-  --hash
-    Calculates and displays the SHA-256 hash.
-
+.IP "\fB\-\-no\-addresses\fR" 4
+.IX Item "--no-addresses"
+.PD
+When disassembling, don't print addresses on each line or for symbols and relocation offsets. In combination with \fB\-\-no\-show\-raw\-insn\fR this may be useful for comparing compiler output.
+.IP "\fB\-\-no\-show\-raw\-insn\fR" 4
+.IX Item "--no-show-raw-insn"
+.PD
+When disassembling instructions, do not print the instruction bytes. This is the default when \fB\-\-prefix\-addresses\fR is used.
+.IP "\fB\-\-prefix\-addresses\fR" 4
+.IX Item "--prefix-addresses"
+.PD
+When disassembling, print the complete address on each line.
+.IP "\fB\-\-start\-address\fR" 4
+.IX Item "--start-address"
+.PD
+Start displaying data at the specified address. This affects the output of the \fB\-d\fR, \fB\-r\fR and \fB\-s\fR options.
+.IP "\fB\-\-stop\-address\fR" 4
+.IX Item "--stop-address"
+.PD
+Stop displaying data at the specified address. This affects the output of the \fB\-d\fR, \fB\-r\fR and \fB\-s\fR options.
+.IP "\fB\-\-capstone\fR" 4
+.IX Item "--capstone"
+.PD
+When disassembling, use the Capstone Disassembler Framework.
+.IP "\fB\-X\fR" 4
+.IX Item "-X"
+.PD 0
+.IP "\fB\-\-hash\fR" 4
+.IX Item "--hash"
+.PD
+Calculates and displays the SHA-256 hash.
 .IP "\fB\-w[aAcFikKLmrRsptTuUgX]\fR" 4
 .IX Item "-w[aAcFikKLmrRsptTuUgX]"
 .PD 0
