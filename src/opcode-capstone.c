@@ -91,9 +91,7 @@ int capstone_raw(handle_t p, handle_t s, unknown_t data, const size_t size, cons
             }
 
             if (MODE_ISANY(oc->action, OPTPROGRAM_PREFIX_ADDR)) {
-#ifdef OPCODE_DISASSEMBLER_DEBUGX
               n2 += opcode_printf_prefix(p, insn[i].address);
-#endif
             } else if (MODE_ISNOT(oc->action, OPTPROGRAM_NO_SHOW_RAW_INSN)) {
               n2 += printf_sore(insn[i].bytes, insn[i].size, USE_HEX | USE_SPACE);
               n2 += printf_pack(42 - n2);
