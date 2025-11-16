@@ -151,27 +151,42 @@ Print the symbol table entries of the file.
 .IX Item "--reloc"
 .PD
 Print the relocation entries of the file.
-
-  -f
-  --file-headers
-    Display summary information from the overall header of each of the objfile files.
-
-  -p
-  --private-headers
-    Print information that is specific to the object file format.
-
-  -h
-  --section-headers
-    Display summary information from the section headers of the object file.
-
-  -x
-  --all-headers
-    Display all available header information, including the symbol table and relocation entries.
-    Equivalent to specifying: --symbols --reloc --file-headers --private-headers --section-headers
-
-  -l
-  --line-numbers
-    Label the display (using debugging information) with the filename and source line numbers corresponding to the object code or relocs shown. Only useful with -d, -D, or -r.
+.IP "\fB\-f\fR" 4
+.IX Item "-f"
+.PD 0
+.IP "\fB\-\-file\-headers\fR" 4
+.IX Item "--file-headers"
+.PD
+Display summary information from the overall header of each of the objfile files.
+.IP "\fB\-P\fR" 4
+.IX Item "-P"
+.PD 0
+.IP "\fB\-\-private\-headers\fR" 4
+.IX Item "--private-headers"
+.PD
+Print information that is specific to the object file format.
+.IP "\fB\-h\fR" 4
+.IX Item "-h"
+.PD 0
+.IP "\fB\-\-section\-headers\fR" 4
+.IX Item "--section-headers"
+.PD
+Display summary information from the section headers of the object file.
+.IP "\fB\-x\fR" 4
+.IX Item "-x"
+.PD 0
+.IP "\fB\-\-all\-headers\fR" 4
+.IX Item "--all-headers"
+.PD
+Display all available header information, including the symbol table and relocation entries.
+Equivalent to specifying: \fB\-\-symbols\fR, \fB\-\-reloc\fR, \fB\-\-file\-headers\fR, \fB\-\-private\-headers\fR and \fB\-\-section\-headers\fR.
+.IP "\fB\-l\fR" 4
+.IX Item "-l"
+.PD 0
+.IP "\fB\-\-line\-numbers\fR" 4
+.IX Item "--line-numbers"
+.PD
+Label the display (using debugging information) with the filename and source line numbers corresponding to the object code or relocs shown. Only useful with \fB\-d\fR, \fB\-D\fR, or \fB\-r\fR.
 
   --no-addresses
     When disassembling, don't print addresses on each line or for symbols and relocation offsets. In combination with --no-show-raw-insn this may be useful for comparing compiler output.
