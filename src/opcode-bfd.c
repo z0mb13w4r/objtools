@@ -159,6 +159,8 @@ char* opcodebfd_getsymbol(handle_t p, const uint64_t vaddr, uint64_t *offset) {
 
       *offset = offset0 <= offset2 ? offset0 : offset2;
       name    = offset0 <= offset2 ? name0   : name2;
+    } else if (name && offset) {
+      *offset = 0;
     }
 
     return name;
