@@ -544,7 +544,7 @@ handle_t dec8_decode(unknown_t src, size_t srcsize) {
 
     pfind_t dst = fxalloc(srcsize, MEMFIND_NOCHUNKSIZE);
     if (dst) {
-      int c = -1;
+      dst->cpos = -1;
       puchar_t pdst = CAST(puchar_t, dst->item);
 
       bool_t isok = FALSE;
@@ -552,15 +552,16 @@ handle_t dec8_decode(unknown_t src, size_t srcsize) {
         uchar_t ch = psrc[i];
         bool_t isnum = isdec8(ch);
         if (isnum) {
-          if (!isok) ++c;
-          pdst[c] = (pdst[c] * 10) + dec8(ch);
+          if (!isok) ++dst->cpos;
+          pdst[dst->cpos] = (pdst[dst->cpos] * 10) + dec8(ch);
         }
         isok = isnum;
       }
 
-      pdst[++c] = 0;   /* string padding character */
-      dst->epos = c - 1;
-      dst->size = c;
+      pdst[++dst->cpos] = '\0';   /* string padding character */
+      dst->size = dst->cpos;
+      dst->epos = dst->cpos - 1;
+      dst->cpos = 0;
       return dst;
     }
   }
