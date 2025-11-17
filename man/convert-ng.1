@@ -1,82 +1,132 @@
-NAME
-  convert-ng: display information about ELF and PE files.
+.TH CONVERT-NG "1" "November 2025" "objtools 0.1" "User Commands"
+.SH NAME
+convert-ng: display information about ELF and PE files.
 
-SYNOPSIS
-  convert-ng [-H|--help]
-             [-V|--version]
-             [-v|--verbose]
-             [-O|--output]
+.SH SYNOPSIS
+convert-ng [\fB\-H\fR|\fB\-\-help\fR]
+           [\fB\-V\fR|\fB\-\-version\fR]
+           [\fB\-v\fR|\fB\-\-verbose\fR]
+           [\fB\-O\fR|\fB\-\-output\fR]
 
-DESCRIPTION
+.SH DESCRIPTION
+\fBconvert-ng\fR is a Swiss Army Knife for manipulating data in complex ways using operations xor, addition, substruction, logical shifts and rotations, base32 and base64.
 
-  convert-ng  is a Swiss Army Knife for manipulating data in complex ways using operations
-  xor, addition, substruction, logical shifts and rotations, base32 and base64.
-
-OPTIONS
-  -H
-  --help
-    Print a summary of the options to convert-ng and exit.
-
-  -V
-  --version
-    Print the version number of convert-ng and exit.
-
-  -v
-  --verbose
-    Print additional information.
+.SH OPTIONS
+.IP "\fB\-H\fR" 4
+.IX Item "-H"
+.PD 0
+.IP "\fB\-\-help\fR" 4
+.IX Item "--help"
+.PD
+Print a summary of the options to convert-ng and exit.
+.IP "\fB\-V\fR" 4
+.IX Item "-V"
+.PD 0
+.IP "\fB\-\-version\fR" 4
+.IX Item "--version"
+.PD
+Print the version number of convert-ng and exit.
+.IP "\fB\-v\fR" 4
+.IX Item "-v"
+.PD 0
+.IP "\fB\-\-verbose\fR" 4
+.IX Item "--verbose"
+.PD
+Print additional information.
 
   -O
   --output
 
-  "add8"
-  "add16"
-  "add32"
-    ADD (addition) the input with the given key.
-
-  "not8"
-  "not16"
-  "not32"
-    NOT (negation) the input.
-
-  "rol8"
-  "rol16"
-  "rol32"
-    ROL (rotate-left) the input with the given key.
-
-  "ror8"
-  "ror16"
-  "ror32"
-    ROR (rotate-right) the input with the given key.
-
-  "rot5"
-  "rot13"
-  "rot18"
-  "rot47"
-    Caesar substitution cipher which rotates alphabet characters by the specified amount.
-
-  "shl8"
-  "shl16"
-  "shl32"
-    SHL (left-shift) the input with the given key.
-
-  "shr8"
-  "shr16"
-  "shr32"
-    SHR (right-shift) the input with the given key.
-
-  "sub8"
-  "sub16"
-  "sub32"
-    SUB (subtract) the input with the given key.
-
-  "xor8"
-  "xor16"
-  "xor32"
-    XOR (eXclusive OR) the input with the given key.
-
-  "dec"
-  "inc"
-    Amount to increment or decrement the given key.
+.ie n .IP """add8""" 4
+.IX Item "add8"
+.PD 0
+.ie n .IP """add16""" 4
+.IX Item "add16"
+.ie n .IP """add32""" 4
+.IX Item "add32"
+.PD
+ADD (addition) the input with the given key.
+.ie n .IP """not8""" 4
+.IX Item "not8"
+.PD 0
+.ie n .IP """not16""" 4
+.IX Item "not16"
+.ie n .IP """not32""" 4
+.IX Item "not32"
+.PD
+NOT (negation) the input.
+.ie n .IP """rol8""" 4
+.IX Item "rol8"
+.PD 0
+.ie n .IP """rol16""" 4
+.IX Item "rol16"
+.ie n .IP """rol32""" 4
+.IX Item "rol32"
+.PD
+ROL (rotate-left) the input with the given key.
+.ie n .IP """ror8""" 4
+.IX Item "ror8"
+.PD 0
+.ie n .IP """ror16""" 4
+.IX Item "ror16"
+.ie n .IP """ror32""" 4
+.IX Item "ror32"
+.PD
+ROR (rotate-right) the input with the given key.
+.ie n .IP """rot5""" 4
+.IX Item "rot5"
+.PD 0
+.ie n .IP """rot13""" 4
+.IX Item "rot13"
+.ie n .IP """rot18""" 4
+.IX Item "rot18"
+.ie n .IP """rot47""" 4
+.IX Item "rot47"
+.PD
+Caesar substitution cipher which rotates alphabet characters by the specified amount.
+.ie n .IP """shl8""" 4
+.IX Item "shl8"
+.PD 0
+.ie n .IP """shl16""" 4
+.IX Item "shl16"
+.ie n .IP """shl32""" 4
+.IX Item "shl32"
+.PD
+SHL (left-shift) the input with the given key.
+.ie n .IP """shr8""" 4
+.IX Item "shr8"
+.PD 0
+.ie n .IP """shr16""" 4
+.IX Item "shr16"
+.ie n .IP """shr32""" 4
+.IX Item "shr32"
+.PD
+SHR (right-shift) the input with the given key.
+.ie n .IP """sub8""" 4
+.IX Item "sub8"
+.PD 0
+.ie n .IP """sub16""" 4
+.IX Item "sub16"
+.ie n .IP """sub32""" 4
+.IX Item "sub32"
+.PD
+SUB (subtract) the input with the given key.
+.ie n .IP """xor8""" 4
+.IX Item "xor8"
+.PD 0
+.ie n .IP """xor16""" 4
+.IX Item "xor16"
+.ie n .IP """xor32""" 4
+.IX Item "xor32"
+.PD
+XOR (eXclusive OR) the input with the given key.
+.ie n .IP """dec""" 4
+.IX Item "dec"
+.PD 0
+.ie n .IP """inc""" 4
+.IX Item "inc"
+.PD
+Amount to increment or decrement the given key.
 
   "bin8d"
   "bin16d"
@@ -129,35 +179,30 @@ OPTIONS
   "xor16brute"
     Enumerate all possible solutions. The current maximum key length is 2 due to performance.
 
-SEE ALSO
-  convert-ng
-  objcopy-ng
-  objdump-ng
-  objdwarf-ng
-  objhash-ng
-  readelf-ng
-  readpe-ng
+.SH SEE ALSO
+convert-ng(1), objcopy-ng(1), objdump-ng(1), objdwarf-ng(1), objhash-ng(1), readelf-ng(1), readpe-ng(1)
 
-COPYRIGHT
-  MIT License
-  
-  Copyright (c) 2025 Kyle Wickens
-  
-  Permission is hereby granted, free of charge, to any person obtaining a copy
-  of this software and associated documentation files (the "Software"), to deal
-  in the Software without restriction, including without limitation the rights
-  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-  copies of the Software, and to permit persons to whom the Software is
-  furnished to do so, subject to the following conditions:
-  
-  The above copyright notice and this permission notice shall be included in all
-  copies or substantial portions of the Software.
-  
-  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-  SOFTWARE.
+.SH COPYRIGHT
+.IX Header "COPYRIGHT"
+MIT License
+.PP
+Copyright (c) 2025 Kyle Wickens
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 
