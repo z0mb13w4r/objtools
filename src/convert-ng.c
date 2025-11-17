@@ -110,15 +110,15 @@ int main(int argc, char* argv[]) {
             } else if (ACT_BASE64E == x0->action) {
               b0 = fswap(b0, base64_encode(b0->item, b0->size));
             } else if (ACT_BIN8D == x0->action) {
-              b0 = fswap(b0, bin8_decode(b0->item, b0->size));
+              b0 = fswap(b0, bin_decode(b0->item, b0->size));
             } else if (ACT_BIN8E == x0->action) {
               b0 = fswap(b0, bin8_encode(b0->item, b0->size));
             } else if (ACT_BIN16D == x0->action) {
-              b0 = fswap(b0, bin16_decode(b0->item, b0->size));
+              b0 = fswap(b0, bin_decode(b0->item, b0->size));
             } else if (ACT_BIN16E == x0->action) {
               b0 = fswap(b0, bin16_encode(b0->item, b0->size));
             } else if (ACT_BIN32D == x0->action) {
-              b0 = fswap(b0, bin32_decode(b0->item, b0->size));
+              b0 = fswap(b0, bin_decode(b0->item, b0->size));
             } else if (ACT_BIN32E == x0->action) {
               b0 = fswap(b0, bin32_encode(b0->item, b0->size));
             } else if (ACT_DEC8D == x0->action) {

@@ -506,7 +506,7 @@ int aes_encrypt(const int mode, puchar_t src, const size_t srcsize,
   return dstsize;
 }
 
-handle_t bin8_decode(unknown_t src, size_t srcsize) {
+handle_t bin_decode(unknown_t src, size_t srcsize) {
   if (src && srcsize) {
     puchar_t psrc = CAST(puchar_t, src);
 
@@ -515,15 +515,16 @@ handle_t bin8_decode(unknown_t src, size_t srcsize) {
       dst->cpos = -1;
       puchar_t pdst = CAST(puchar_t, dst->item);
 
-      bool_t isok = FALSE;
+      size_t isok = 0;
       for (size_t i = 0; i < srcsize; ++i) {
         uchar_t ch = psrc[i];
         bool_t isbin = isbin8(ch);
         if (isbin) {
-          if (!isok) ++dst->cpos;
+          if (0 == (isok++ & 0x07)) ++dst->cpos;
           pdst[dst->cpos] = (pdst[dst->cpos] << 1) | bin8(ch);
+        } else {
+          isok = 0;
         }
-        isok = isbin;
       }
 
       pdst[++dst->cpos] = '\0';   /* string padding character */
@@ -532,24 +533,6 @@ handle_t bin8_decode(unknown_t src, size_t srcsize) {
       dst->cpos = 0;
       return dst;
     }
-  }
-
-  return NULL;
-}
-
-handle_t bin16_decode(unknown_t src, size_t srcsize) {
-  if (src && srcsize) {
-    puchar_t psrc = CAST(puchar_t, src);
-
-  }
-
-  return NULL;
-}
-
-handle_t bin32_decode(unknown_t src, size_t srcsize) {
-  if (src && srcsize) {
-    puchar_t psrc = CAST(puchar_t, src);
-
   }
 
   return NULL;
