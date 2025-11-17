@@ -6,7 +6,7 @@ convert-ng: display information about ELF and PE files.
 convert-ng [\fB\-H\fR|\fB\-\-help\fR]
            [\fB\-V\fR|\fB\-\-version\fR]
            [\fB\-v\fR|\fB\-\-verbose\fR]
-           [\fB\-O\fR|\fB\-\-output\fR]
+           [\fB\-O\fR <filespec>|\fB\-\-output=\fR<filespec>]
 
 .SH DESCRIPTION
 \fBconvert-ng\fR is a Swiss Army Knife for manipulating data in complex ways using operations xor, addition, substruction, logical shifts and rotations, base32 and base64.
@@ -33,10 +33,13 @@ Print the version number of convert-ng and exit.
 .IX Item "--verbose"
 .PD
 Print additional information.
-
-  -O
-  --output
-
+.IP "\fB\-O <filespec>\fR" 4
+.IX Item "-O <filespec>"
+.PD 0
+.IP "\fB\-\-output=<filespec>\fR" 4
+.IX Item "--output=<filespec>"
+.PD
+Requests that normal output be directed to the given filename.
 .ie n .IP """add8""" 4
 .IX Item "add8"
 .PD 0
