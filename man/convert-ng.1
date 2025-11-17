@@ -127,57 +127,98 @@ XOR (eXclusive OR) the input with the given key.
 .IX Item "inc"
 .PD
 Amount to increment or decrement the given key.
-
-  "bin8d"
-  "bin16d"
-  "bin32d"
-    Converts a binary byte string back into its raw value.
-
-  "bin8e"
-  "bin16e"
-  "bin32e"
-    Converts the input string to binary bytes separated by a delimiter.
-
-  "dec8d"
-  "dec16d"
-  "dec32d"
-    Converts the data from an ordinal integer array back into its raw form.
-
-  "dec8e"
-  "dec16e"
-  "dec32e"
-    Converts the input data to an ordinal integer array.
-
-  "hex8d"
-  "hex16d"
-  "hex32d"
-    Converts a hexadecimal byte string back into its raw value.
-
-  "hex8e"
-  "hex16e"
-  "hex32e"
-    Converts the input string to hexadecimal bytes separated by a delimiter.
-
-  "base32d"
-  "base32e"
-  "base58d"
-  "base58e"
-  "base64d"
-  "base64e"
-    Encoding and decoding data using a restricted set of symbols.
-
-  "rol8brute"
-  "ror8brute"
-  "shl8brute"
-  "shr8brute"
-  "xor8brute"
-
-  "rol16brute"
-  "ror16brute"
-  "shl16brute"
-  "shr16brute"
-  "xor16brute"
-    Enumerate all possible solutions. The current maximum key length is 2 due to performance.
+.ie n .IP """bin8d""" 4
+.IX Item "bin8d"
+.PD 0
+.ie n .IP """bin16d""" 4
+.IX Item "bin16d"
+.ie n .IP """bin32d""" 4
+.IX Item "bin32d"
+.PD
+Converts a binary byte string back into its raw value.
+.ie n .IP """bin8e""" 4
+.IX Item "bin8e"
+.PD 0
+.ie n .IP """bin16e""" 4
+.IX Item "bin16e"
+.ie n .IP """bin32e""" 4
+.IX Item "bin32e"
+.PD
+Converts the input string to binary bytes separated by a delimiter.
+.ie n .IP """dec8d""" 4
+.IX Item "dec8d"
+.PD 0
+.ie n .IP """dec16d""" 4
+.IX Item "dec16d"
+.ie n .IP """dec32d""" 4
+.IX Item "dec32d"
+.PD
+Converts the data from an ordinal integer array back into its raw form.
+.ie n .IP """dec8e""" 4
+.IX Item "dec8e"
+.PD 0
+.ie n .IP """dec16e""" 4
+.IX Item "dec16e"
+.ie n .IP """dec32e""" 4
+.IX Item "dec32e"
+.PD
+Converts the input data to an ordinal integer array.
+.ie n .IP """hex8d""" 4
+.IX Item "hex8d"
+.PD 0
+.ie n .IP """hex16d""" 4
+.IX Item "hex16d"
+.ie n .IP """hex32d""" 4
+.IX Item "hex32d"
+.PD
+Converts a hexadecimal byte string back into its raw value.
+.ie n .IP """hex8e""" 4
+.IX Item "hex8e"
+.PD 0
+.ie n .IP """hex16e""" 4
+.IX Item "hex16e"
+.ie n .IP """hex32e""" 4
+.IX Item "hex32e"
+.PD
+Converts the input string to hexadecimal bytes separated by a delimiter.
+.ie n .IP """base32d""" 4
+.IX Item "base32d"
+.PD 0
+.ie n .IP """base32e""" 4
+.IX Item "base32e"
+.ie n .IP """base58d""" 4
+.IX Item "base58d"
+.ie n .IP """base58e""" 4
+.IX Item "base58e"
+.ie n .IP """base64d""" 4
+.IX Item "base64d"
+.ie n .IP """base64e""" 4
+.IX Item "base64e"
+.PD
+Encoding and decoding data using a restricted set of symbols.
+.ie n .IP """rol8brute""" 4
+.IX Item "rol8brute"
+.PD 0
+.ie n .IP """ror8brute""" 4
+.IX Item "ror8brute"
+.ie n .IP """shl8brute""" 4
+.IX Item "shl8brute"
+.ie n .IP """shr8brute""" 4
+.IX Item "shr8brute"
+.ie n .IP """xor8brute""" 4
+.IX Item "xor8brute"
+.ie n .IP """rol16brute""" 4
+.IX Item "rol16brute"
+.ie n .IP """ror16brute""" 4
+.IX Item "ror16brute"
+.ie n .IP """shl16brute""" 4
+.IX Item "shl16brute"
+.ie n .IP """shr16brute""" 4
+.IX Item "shr16brute"
+.ie n .IP """xor16brute""" 4
+.IX Item "xor16brute"
+.PD
+Enumerate all possible solutions. The current maximum key length is 2 due to performance.
 
 .SH SEE ALSO
 convert-ng(1), objcopy-ng(1), objdump-ng(1), objdwarf-ng(1), objhash-ng(1), readelf-ng(1), readpe-ng(1)
