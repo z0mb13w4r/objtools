@@ -30,6 +30,9 @@ bool_t isbits(const imode_t x);
 bool_t isused(ppick_t p, const pick_t x);
 bool_t isnamedone(const char* names[], const size_t maxnames, const char* check);
 
+bool_t isbin8(int x);
+bool_t isbinb(unknown_t p, const size_t size);
+
 bool_t isdec8(int x);
 bool_t isdecb(unknown_t p, const size_t size);
 
