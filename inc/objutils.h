@@ -55,6 +55,9 @@ size_t strlenpick(const pconvert_t p);
 
 size_t fsize(FILE *f);
 
+int64_t bin8(int x);
+int64_t binb(unknown_t p, const size_t size);
+
 int64_t dec8(int x);
 int64_t decb(unknown_t p, const size_t size);
 
