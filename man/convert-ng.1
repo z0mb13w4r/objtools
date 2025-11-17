@@ -1,0 +1,163 @@
+NAME
+  convert-ng: display information about ELF and PE files.
+
+SYNOPSIS
+  convert-ng [-H|--help]
+             [-V|--version]
+             [-v|--verbose]
+             [-O|--output]
+
+DESCRIPTION
+
+  convert-ng  is a Swiss Army Knife for manipulating data in complex ways using operations
+  xor, addition, substruction, logical shifts and rotations, base32 and base64.
+
+OPTIONS
+  -H
+  --help
+    Print a summary of the options to convert-ng and exit.
+
+  -V
+  --version
+    Print the version number of convert-ng and exit.
+
+  -v
+  --verbose
+    Print additional information.
+
+  -O
+  --output
+
+  "add8"
+  "add16"
+  "add32"
+    ADD (addition) the input with the given key.
+
+  "not8"
+  "not16"
+  "not32"
+    NOT (negation) the input.
+
+  "rol8"
+  "rol16"
+  "rol32"
+    ROL (rotate-left) the input with the given key.
+
+  "ror8"
+  "ror16"
+  "ror32"
+    ROR (rotate-right) the input with the given key.
+
+  "rot5"
+  "rot13"
+  "rot18"
+  "rot47"
+    Caesar substitution cipher which rotates alphabet characters by the specified amount.
+
+  "shl8"
+  "shl16"
+  "shl32"
+    SHL (left-shift) the input with the given key.
+
+  "shr8"
+  "shr16"
+  "shr32"
+    SHR (right-shift) the input with the given key.
+
+  "sub8"
+  "sub16"
+  "sub32"
+    SUB (subtract) the input with the given key.
+
+  "xor8"
+  "xor16"
+  "xor32"
+    XOR (eXclusive OR) the input with the given key.
+
+  "dec"
+  "inc"
+    Amount to increment or decrement the given key.
+
+  "bin8d"
+  "bin16d"
+  "bin32d"
+    Converts a binary byte string back into its raw value.
+
+  "bin8e"
+  "bin16e"
+  "bin32e"
+    Converts the input string to binary bytes separated by a delimiter.
+
+  "dec8d"
+  "dec16d"
+  "dec32d"
+    Converts the data from an ordinal integer array back into its raw form.
+
+  "dec8e"
+  "dec16e"
+  "dec32e"
+    Converts the input data to an ordinal integer array.
+
+  "hex8d"
+  "hex16d"
+  "hex32d"
+    Converts a hexadecimal byte string back into its raw value.
+
+  "hex8e"
+  "hex16e"
+  "hex32e"
+    Converts the input string to hexadecimal bytes separated by a delimiter.
+
+  "base32d"
+  "base32e"
+  "base58d"
+  "base58e"
+  "base64d"
+  "base64e"
+    Encoding and decoding data using a restricted set of symbols.
+
+  "rol8brute"
+  "ror8brute"
+  "shl8brute"
+  "shr8brute"
+  "xor8brute"
+
+  "rol16brute"
+  "ror16brute"
+  "shl16brute"
+  "shr16brute"
+  "xor16brute"
+    Enumerate all possible solutions. The current maximum key length is 2 due to performance.
+
+SEE ALSO
+  convert-ng
+  objcopy-ng
+  objdump-ng
+  objdwarf-ng
+  objhash-ng
+  readelf-ng
+  readpe-ng
+
+COPYRIGHT
+  MIT License
+  
+  Copyright (c) 2025 Kyle Wickens
+  
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+  
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
+  
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.
+
