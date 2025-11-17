@@ -629,95 +629,33 @@ handle_t dec32_decode(unknown_t src, size_t srcsize) {
   return NULL;
 }
 
-handle_t hex8_decode(unknown_t src, size_t srcsize) {
+handle_t hex_decode(unknown_t src, size_t srcsize) {
   if (src && srcsize) {
     puchar_t psrc = CAST(puchar_t, src);
 
     pfind_t dst = fxalloc(srcsize, MEMFIND_NOCHUNKSIZE);
     if (dst) {
-      int c = -1;
+      dst->cpos = -1;
       puchar_t pdst = CAST(puchar_t, dst->item);
 
-      bool_t isok = FALSE;
+      size_t isok = 0;
       for (size_t i = 0; i < srcsize; ++i) {
         uchar_t ch0 = psrc[i];
         uchar_t ch1 = psrc[i + 1];
         if ('0' == ch0 && ('x' == ch1 || 'X' == ch1)) continue;
         bool_t ishex = ishex8(ch0);
         if (ishex) {
-          if (!isok) ++c;
-          pdst[c] = (pdst[c] << 4) + hex8(ch0);
+          if (0 == (isok++ & 0x01)) ++dst->cpos;
+          pdst[dst->cpos] = (pdst[dst->cpos] << 4) + hex8(ch0);
+        } else {
+          isok = 0;
         }
-        isok = ishex;
       }
 
-      pdst[++c] = 0;   /* string padding character */
-      dst->epos = c - 1;
-      dst->size = c;
-      return dst;
-    }
-  }
-
-  return NULL;
-}
-
-handle_t hex16_decode(unknown_t src, size_t srcsize) {
-  if (src && srcsize) {
-    puchar_t psrc = CAST(puchar_t, src);
-
-    pfind_t dst = fxalloc(srcsize, MEMFIND_NOCHUNKSIZE);
-    if (dst) {
-      int c = -1;
-      pushort_t pdst = CAST(pushort_t, dst->item);
-
-      bool_t isok = FALSE;
-      for (size_t i = 0; i < srcsize; ++i) {
-        uchar_t ch0 = psrc[i];
-        uchar_t ch1 = psrc[i + 1];
-        if ('0' == ch0 && ('x' == ch1 || 'X' == ch1)) continue;
-        bool_t ishex = ishex8(ch0);
-        if (ishex) {
-          if (!isok) ++c;
-          pdst[c] = (pdst[c] << 4) + hex8(ch0);
-        }
-        isok = ishex;
-      }
-
-      pdst[++c] = 0;   /* string padding character */
-      dst->epos = c - 1;
-      dst->size = c;
-      return dst;
-    }
-  }
-
-  return NULL;
-}
-
-handle_t hex32_decode(unknown_t src, size_t srcsize) {
-  if (src && srcsize) {
-    puchar_t psrc = CAST(puchar_t, src);
-
-    pfind_t dst = fxalloc(srcsize, MEMFIND_NOCHUNKSIZE);
-    if (dst) {
-      int c = -1;
-      pulong_t pdst = CAST(pulong_t, dst->item);
-
-      bool_t isok = FALSE;
-      for (size_t i = 0; i < srcsize; ++i) {
-        uchar_t ch0 = psrc[i];
-        uchar_t ch1 = psrc[i + 1];
-        if ('0' == ch0 && ('x' == ch1 || 'X' == ch1)) continue;
-        bool_t ishex = ishex8(ch0);
-        if (ishex) {
-          if (!isok) ++c;
-          pdst[c] = (pdst[c] << 4) + hex8(ch0);
-        }
-        isok = ishex;
-      }
-
-      pdst[++c] = 0;   /* string padding character */
-      dst->epos = c - 1;
-      dst->size = c;
+      pdst[++dst->cpos] = '\0';   /* string padding character */
+      dst->size = dst->cpos;
+      dst->epos = dst->cpos - 1;
+      dst->cpos = 0;
       return dst;
     }
   }
