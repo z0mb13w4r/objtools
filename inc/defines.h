@@ -96,6 +96,11 @@
 #define BOUND32(x)   (CAST(size_t, ((x) + 3) / 4) * 4)
 #endif
 
+#ifndef U32MASK
+#define U32MASK_NONE (0)
+#define U32MASK(x)   (1 << (x))
+#endif
+
 #ifndef U64MASK
 #define U64MASK_NONE (0)
 #define U64MASK(x)   (1ULL << (x))

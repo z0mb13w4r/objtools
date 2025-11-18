@@ -9,6 +9,10 @@ extern uchar_t base64_map[];
 
 static uchar_t base32_ext[] = { 0, 2, 4, 5, 7 };
 
+static int binN(int x) {
+  return x ? '1' : '0';
+}
+
 static int hexN(int x) {
   x &= 0x0f;
   if (0 <= x && x <= 9)  return x + '0';
@@ -17,7 +21,40 @@ static int hexN(int x) {
 
 handle_t bin8_encode(unknown_t src, size_t srcsize) {
   if (src && srcsize) {
+    size_t maxsize = srcsize * 10 + 1;
+    puchar_t psrc = CAST(puchar_t, src);
 
+    pfind_t dst = fxalloc(maxsize, MEMFIND_NOCHUNKSIZE);
+    if (dst) {
+      puchar_t pdst = CAST(puchar_t, dst->item);
+      pdst[dst->cpos++] = binN(psrc[0] & U32MASK(7));
+      pdst[dst->cpos++] = binN(psrc[0] & U32MASK(6));
+      pdst[dst->cpos++] = binN(psrc[0] & U32MASK(5));
+      pdst[dst->cpos++] = binN(psrc[0] & U32MASK(4));
+      pdst[dst->cpos++] = binN(psrc[0] & U32MASK(3));
+      pdst[dst->cpos++] = binN(psrc[0] & U32MASK(2));
+      pdst[dst->cpos++] = binN(psrc[0] & U32MASK(1));
+      pdst[dst->cpos++] = binN(psrc[0] & U32MASK(0));
+
+      for (size_t i = 1; i < srcsize; ++i) {
+        pdst[dst->cpos++] = ',';
+        pdst[dst->cpos++] = ' ';
+        pdst[dst->cpos++] = binN(psrc[i] & U32MASK(7));
+        pdst[dst->cpos++] = binN(psrc[i] & U32MASK(6));
+        pdst[dst->cpos++] = binN(psrc[i] & U32MASK(5));
+        pdst[dst->cpos++] = binN(psrc[i] & U32MASK(4));
+        pdst[dst->cpos++] = binN(psrc[i] & U32MASK(3));
+        pdst[dst->cpos++] = binN(psrc[i] & U32MASK(2));
+        pdst[dst->cpos++] = binN(psrc[i] & U32MASK(1));
+        pdst[dst->cpos++] = binN(psrc[i] & U32MASK(0));
+      }
+
+      pdst[dst->cpos] = '\0';   /* string padding character */
+      dst->size = dst->cpos + 1;
+      dst->epos = dst->cpos;
+      dst->cpos = 0;
+      return dst;
+    }
   }
 
   return NULL;
@@ -25,7 +62,42 @@ handle_t bin8_encode(unknown_t src, size_t srcsize) {
 
 handle_t bin16_encode(unknown_t src, size_t srcsize) {
   if (src && srcsize) {
+    size_t maxsize = srcsize * 10 + 1;
+    puchar_t psrc = CAST(puchar_t, src);
 
+    pfind_t dst = fxalloc(maxsize, MEMFIND_NOCHUNKSIZE);
+    if (dst) {
+      puchar_t pdst = CAST(puchar_t, dst->item);
+      pdst[dst->cpos++] = binN(psrc[0] & U32MASK(7));
+      pdst[dst->cpos++] = binN(psrc[0] & U32MASK(6));
+      pdst[dst->cpos++] = binN(psrc[0] & U32MASK(5));
+      pdst[dst->cpos++] = binN(psrc[0] & U32MASK(4));
+      pdst[dst->cpos++] = binN(psrc[0] & U32MASK(3));
+      pdst[dst->cpos++] = binN(psrc[0] & U32MASK(2));
+      pdst[dst->cpos++] = binN(psrc[0] & U32MASK(1));
+      pdst[dst->cpos++] = binN(psrc[0] & U32MASK(0));
+
+      for (size_t i = 1; i < srcsize; ++i) {
+        if (0 == (i % 2)) {
+          pdst[dst->cpos++] = ',';
+          pdst[dst->cpos++] = ' ';
+        }
+        pdst[dst->cpos++] = binN(psrc[i] & U32MASK(7));
+        pdst[dst->cpos++] = binN(psrc[i] & U32MASK(6));
+        pdst[dst->cpos++] = binN(psrc[i] & U32MASK(5));
+        pdst[dst->cpos++] = binN(psrc[i] & U32MASK(4));
+        pdst[dst->cpos++] = binN(psrc[i] & U32MASK(3));
+        pdst[dst->cpos++] = binN(psrc[i] & U32MASK(2));
+        pdst[dst->cpos++] = binN(psrc[i] & U32MASK(1));
+        pdst[dst->cpos++] = binN(psrc[i] & U32MASK(0));
+      }
+
+      pdst[dst->cpos] = '\0';   /* string padding character */
+      dst->size = dst->cpos + 1;
+      dst->epos = dst->cpos;
+      dst->cpos = 0;
+      return dst;
+    }
   }
 
   return NULL;
@@ -33,7 +105,42 @@ handle_t bin16_encode(unknown_t src, size_t srcsize) {
 
 handle_t bin32_encode(unknown_t src, size_t srcsize) {
   if (src && srcsize) {
+    size_t maxsize = srcsize * 10 + 1;
+    puchar_t psrc = CAST(puchar_t, src);
 
+    pfind_t dst = fxalloc(maxsize, MEMFIND_NOCHUNKSIZE);
+    if (dst) {
+      puchar_t pdst = CAST(puchar_t, dst->item);
+      pdst[dst->cpos++] = binN(psrc[0] & U32MASK(7));
+      pdst[dst->cpos++] = binN(psrc[0] & U32MASK(6));
+      pdst[dst->cpos++] = binN(psrc[0] & U32MASK(5));
+      pdst[dst->cpos++] = binN(psrc[0] & U32MASK(4));
+      pdst[dst->cpos++] = binN(psrc[0] & U32MASK(3));
+      pdst[dst->cpos++] = binN(psrc[0] & U32MASK(2));
+      pdst[dst->cpos++] = binN(psrc[0] & U32MASK(1));
+      pdst[dst->cpos++] = binN(psrc[0] & U32MASK(0));
+
+      for (size_t i = 1; i < srcsize; ++i) {
+        if (0 == (i % 4)) {
+          pdst[dst->cpos++] = ',';
+          pdst[dst->cpos++] = ' ';
+        }
+        pdst[dst->cpos++] = binN(psrc[i] & U32MASK(7));
+        pdst[dst->cpos++] = binN(psrc[i] & U32MASK(6));
+        pdst[dst->cpos++] = binN(psrc[i] & U32MASK(5));
+        pdst[dst->cpos++] = binN(psrc[i] & U32MASK(4));
+        pdst[dst->cpos++] = binN(psrc[i] & U32MASK(3));
+        pdst[dst->cpos++] = binN(psrc[i] & U32MASK(2));
+        pdst[dst->cpos++] = binN(psrc[i] & U32MASK(1));
+        pdst[dst->cpos++] = binN(psrc[i] & U32MASK(0));
+      }
+
+      pdst[dst->cpos] = '\0';   /* string padding character */
+      dst->size = dst->cpos + 1;
+      dst->epos = dst->cpos;
+      dst->cpos = 0;
+      return dst;
+    }
   }
 
   return NULL;
