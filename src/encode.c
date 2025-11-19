@@ -31,18 +31,13 @@ handle_t bin8_encode(unknown_t src, size_t srcsize) {
     pfind_t dst = fxalloc(maxsize, MEMFIND_NOCHUNKSIZE);
     if (dst) {
       puchar_t pdst = CAST(puchar_t, dst->item);
-      pdst[dst->cpos++] = binN(psrc[0] & U32MASK(7));
-      pdst[dst->cpos++] = binN(psrc[0] & U32MASK(6));
-      pdst[dst->cpos++] = binN(psrc[0] & U32MASK(5));
-      pdst[dst->cpos++] = binN(psrc[0] & U32MASK(4));
-      pdst[dst->cpos++] = binN(psrc[0] & U32MASK(3));
-      pdst[dst->cpos++] = binN(psrc[0] & U32MASK(2));
-      pdst[dst->cpos++] = binN(psrc[0] & U32MASK(1));
-      pdst[dst->cpos++] = binN(psrc[0] & U32MASK(0));
 
-      for (size_t i = 1; i < srcsize; ++i) {
-        pdst[dst->cpos++] = ',';
-        pdst[dst->cpos++] = ' ';
+      for (size_t i = 0; i < srcsize; ++i) {
+        if (0 != i) {
+          pdst[dst->cpos++] = ',';
+          pdst[dst->cpos++] = ' ';
+        }
+
         pdst[dst->cpos++] = binN(psrc[i] & U32MASK(7));
         pdst[dst->cpos++] = binN(psrc[i] & U32MASK(6));
         pdst[dst->cpos++] = binN(psrc[i] & U32MASK(5));
