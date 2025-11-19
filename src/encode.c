@@ -147,7 +147,7 @@ handle_t bin32_encode(unknown_t src, size_t srcsize) {
 
 handle_t dec8_encode(unknown_t src, size_t srcsize) {
   if (src && srcsize) {
-    size_t maxsize = srcsize * 10 + 1;
+    size_t maxsize = srcsize * 5 + 1;
     puchar_t psrc = CAST(puchar_t, src);
 
     pfind_t dst = fxalloc(maxsize, MEMFIND_NOCHUNKSIZE);
@@ -189,7 +189,75 @@ handle_t dec8_encode(unknown_t src, size_t srcsize) {
 
 handle_t dec16_encode(unknown_t src, size_t srcsize) {
   if (src && srcsize) {
+    size_t minsize = srcsize / 2;
+    size_t maxsize = (srcsize + 1) / 2;
+    size_t dstsize = srcsize * 8 + 1;
+    pushort_t psrc = CAST(pushort_t, src);
 
+    pfind_t dst = fxalloc(dstsize, MEMFIND_NOCHUNKSIZE);
+    if (dst) {
+      puchar_t pdst = CAST(puchar_t, dst->item);
+
+      for (size_t i = 0; i < minsize; ++i) {
+        ushort_t v5 = psrc[i];
+        ushort_t v0 = v5 % 10; v5 /= 10;
+        ushort_t v1 = v5 % 10; v5 /= 10;
+        ushort_t v2 = v5 % 10; v5 /= 10;
+        ushort_t v3 = v5 % 10; v5 /= 10;
+        ushort_t v4 = v5 % 10; v5 /= 10;
+
+        if (0 != i) {
+          pdst[dst->cpos++] = ',';
+          pdst[dst->cpos++] = ' ';
+        }
+
+        size_t cpos = dst->cpos;
+        if (v5) {
+          pdst[dst->cpos++] = decN(v5);
+        }
+        if (v4) {
+          pdst[dst->cpos++] = decN(v4);
+        }
+        if (v3) {
+          pdst[dst->cpos++] = decN(v3);
+        }
+        if (v2) {
+          pdst[dst->cpos++] = decN(v2);
+        }
+        if (v1 || cpos != dst->cpos) {
+          pdst[dst->cpos++] = decN(v1);
+        }
+        if (v0 || cpos != dst->cpos) {
+          pdst[dst->cpos++] = decN(v0);
+        }
+      }
+
+      if (minsize != maxsize) {
+        pdst[dst->cpos++] = ',';
+        pdst[dst->cpos++] = ' ';
+
+        ushort_t v2 = CAST(puchar_t, src)[srcsize - 1];
+        ushort_t v0 = v2 % 10; v2 /= 10;
+        ushort_t v1 = v2 % 10; v2 /= 10;
+
+        size_t cpos = dst->cpos;
+        if (v2) {
+          pdst[dst->cpos++] = decN(v2);
+        }
+        if (v1 || cpos != dst->cpos) {
+          pdst[dst->cpos++] = decN(v1);
+        }
+        if (v0 || cpos != dst->cpos) {
+          pdst[dst->cpos++] = decN(v0);
+        }
+      }
+
+      pdst[dst->cpos] = '\0';   /* string padding character */
+      dst->size = dst->cpos + 1;
+      dst->epos = dst->cpos;
+      dst->cpos = 0;
+      return dst;
+    }
   }
 
   return NULL;
