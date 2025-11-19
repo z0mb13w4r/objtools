@@ -148,7 +148,7 @@ handle_t bin32_encode(unknown_t src, size_t srcsize) {
 handle_t dec8_encode(unknown_t src, size_t srcsize) {
   if (src && srcsize) {
     size_t dstsize = srcsize * 5 + 1;
-    puchar_t psrc = CAST(puchar_t, src);
+    uint8_t *psrc = CAST(uint8_t*, src);
 
     pfind_t dst = fxalloc(dstsize, MEMFIND_NOCHUNKSIZE);
     if (dst) {
@@ -192,19 +192,19 @@ handle_t dec16_encode(unknown_t src, size_t srcsize) {
     size_t minsize = srcsize / 2;
     size_t maxsize = (srcsize + 1) / 2;
     size_t dstsize = srcsize * 8 + 1;
-    pushort_t psrc = CAST(pushort_t, src);
+    uint16_t *psrc = CAST(uint16_t*, src);
 
     pfind_t dst = fxalloc(dstsize, MEMFIND_NOCHUNKSIZE);
     if (dst) {
       puchar_t pdst = CAST(puchar_t, dst->item);
 
       for (size_t i = 0; i < minsize; ++i) {
-        ushort_t v5 = psrc[i];
-        ushort_t v0 = v5 % 10; v5 /= 10;
-        ushort_t v1 = v5 % 10; v5 /= 10;
-        ushort_t v2 = v5 % 10; v5 /= 10;
-        ushort_t v3 = v5 % 10; v5 /= 10;
-        ushort_t v4 = v5 % 10; v5 /= 10;
+        uint16_t v5 = psrc[i];
+        uint16_t v0 = v5 % 10; v5 /= 10;
+        uint16_t v1 = v5 % 10; v5 /= 10;
+        uint16_t v2 = v5 % 10; v5 /= 10;
+        uint16_t v3 = v5 % 10; v5 /= 10;
+        uint16_t v4 = v5 % 10; v5 /= 10;
 
         if (0 != i) {
           pdst[dst->cpos++] = ',';
@@ -215,13 +215,13 @@ handle_t dec16_encode(unknown_t src, size_t srcsize) {
         if (v5) {
           pdst[dst->cpos++] = decN(v5);
         }
-        if (v4) {
+        if (v4 || cpos != dst->cpos) {
           pdst[dst->cpos++] = decN(v4);
         }
-        if (v3) {
+        if (v3 || cpos != dst->cpos) {
           pdst[dst->cpos++] = decN(v3);
         }
-        if (v2) {
+        if (v2 || cpos != dst->cpos) {
           pdst[dst->cpos++] = decN(v2);
         }
         if (v1 || cpos != dst->cpos) {
@@ -236,9 +236,9 @@ handle_t dec16_encode(unknown_t src, size_t srcsize) {
         pdst[dst->cpos++] = ',';
         pdst[dst->cpos++] = ' ';
 
-        ushort_t v2 = CAST(puchar_t, src)[srcsize - 1];
-        ushort_t v0 = v2 % 10; v2 /= 10;
-        ushort_t v1 = v2 % 10; v2 /= 10;
+        uint8_t v2 = CAST(uint8_t*, src)[srcsize - 1];
+        uint8_t v0 = v2 % 10; v2 /= 10;
+        uint8_t v1 = v2 % 10; v2 /= 10;
 
         size_t cpos = dst->cpos;
         if (v2) {
@@ -265,7 +265,136 @@ handle_t dec16_encode(unknown_t src, size_t srcsize) {
 
 handle_t dec32_encode(unknown_t src, size_t srcsize) {
   if (src && srcsize) {
+    size_t minsize = srcsize / 4;
+    size_t maxsize = (srcsize + 3) / 4;
+    size_t dstsize = srcsize * 8 + 1;
+    uint32_t *psrc = CAST(uint32_t*, src);
 
+    pfind_t dst = fxalloc(dstsize, MEMFIND_NOCHUNKSIZE);
+    if (dst) {
+      puchar_t pdst = CAST(puchar_t, dst->item);
+
+      for (size_t i = 0; i < minsize; ++i) {
+        uint32_t v9 = psrc[i];
+        uint32_t v0 = v9 % 10; v9 /= 10;
+        uint32_t v1 = v9 % 10; v9 /= 10;
+        uint32_t v2 = v9 % 10; v9 /= 10;
+        uint32_t v3 = v9 % 10; v9 /= 10;
+        uint32_t v4 = v9 % 10; v9 /= 10;
+        uint32_t v5 = v9 % 10; v9 /= 10;
+        uint32_t v6 = v9 % 10; v9 /= 10;
+        uint32_t v7 = v9 % 10; v9 /= 10;
+        uint32_t v8 = v9 % 10; v9 /= 10;
+
+        if (0 != i) {
+          pdst[dst->cpos++] = ',';
+          pdst[dst->cpos++] = ' ';
+        }
+
+        size_t cpos = dst->cpos;
+        if (v9) {
+          pdst[dst->cpos++] = decN(v9);
+        }
+        if (v8 || cpos != dst->cpos) {
+          pdst[dst->cpos++] = decN(v8);
+        }
+        if (v7 || cpos != dst->cpos) {
+          pdst[dst->cpos++] = decN(v7);
+        }
+        if (v6 || cpos != dst->cpos) {
+          pdst[dst->cpos++] = decN(v6);
+        }
+        if (v5 || cpos != dst->cpos) {
+          pdst[dst->cpos++] = decN(v5);
+        }
+        if (v4 || cpos != dst->cpos) {
+          pdst[dst->cpos++] = decN(v4);
+        }
+        if (v3 || cpos != dst->cpos) {
+          pdst[dst->cpos++] = decN(v3);
+        }
+        if (v2 || cpos != dst->cpos) {
+          pdst[dst->cpos++] = decN(v2);
+        }
+        if (v1 || cpos != dst->cpos) {
+          pdst[dst->cpos++] = decN(v1);
+        }
+        if (v0 || cpos != dst->cpos) {
+          pdst[dst->cpos++] = decN(v0);
+        }
+      }
+
+      if (minsize != maxsize) {
+        size_t npos = 4 * minsize;
+        size_t epos = srcsize - npos;
+        if (epos >= 2) {
+          uint16_t v5 = CAST(uint16_t*, src)[npos / 2];
+          uint16_t v0 = v5 % 10; v5 /= 10;
+          uint16_t v1 = v5 % 10; v5 /= 10;
+          uint16_t v2 = v5 % 10; v5 /= 10;
+          uint16_t v3 = v5 % 10; v5 /= 10;
+          uint16_t v4 = v5 % 10; v5 /= 10;
+
+          pdst[dst->cpos++] = ',';
+          pdst[dst->cpos++] = ' ';
+
+          size_t cpos = dst->cpos;
+          if (v5) {
+            pdst[dst->cpos++] = decN(v5);
+          }
+          if (v4 || cpos != dst->cpos) {
+            pdst[dst->cpos++] = decN(v4);
+          }
+          if (v3 || cpos != dst->cpos) {
+            pdst[dst->cpos++] = decN(v3);
+          }
+          if (v2 || cpos != dst->cpos) {
+            pdst[dst->cpos++] = decN(v2);
+          }
+          if (v1 || cpos != dst->cpos) {
+            pdst[dst->cpos++] = decN(v1);
+          }
+          if (v0 || cpos != dst->cpos) {
+            pdst[dst->cpos++] = decN(v0);
+          }
+
+          npos += 2;
+          epos -= 2;
+        }
+
+        if (epos >= 1) {
+          pdst[dst->cpos++] = ',';
+          pdst[dst->cpos++] = ' ';
+
+          uint8_t v2 = CAST(uint8_t*, src)[npos];
+          uint8_t v0 = v2 % 10; v2 /= 10;
+          uint8_t v1 = v2 % 10; v2 /= 10;
+
+          pdst[dst->cpos++] = ',';
+          pdst[dst->cpos++] = ' ';
+
+          size_t cpos = dst->cpos;
+          if (v2) {
+            pdst[dst->cpos++] = decN(v2);
+          }
+          if (v1 || cpos != dst->cpos) {
+            pdst[dst->cpos++] = decN(v1);
+          }
+          if (v0 || cpos != dst->cpos) {
+            pdst[dst->cpos++] = decN(v0);
+          }
+
+          npos++;
+          epos--;
+        }
+      }
+
+      pdst[dst->cpos] = '\0';   /* string padding character */
+      dst->size = dst->cpos + 1;
+      dst->epos = dst->cpos;
+      dst->cpos = 0;
+      return dst;
+    }
   }
 
   return NULL;
