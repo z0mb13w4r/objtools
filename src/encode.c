@@ -13,6 +13,10 @@ static int binN(int x) {
   return x ? '1' : '0';
 }
 
+static int decN(int x) {
+  return (0 <= x && x <= 9) ? x + '0' : '?';
+}
+
 static int hexN(int x) {
   x &= 0x0f;
   if (0 <= x && x <= 9)  return x + '0';
@@ -148,7 +152,41 @@ handle_t bin32_encode(unknown_t src, size_t srcsize) {
 
 handle_t dec8_encode(unknown_t src, size_t srcsize) {
   if (src && srcsize) {
+    size_t maxsize = srcsize * 10 + 1;
+    puchar_t psrc = CAST(puchar_t, src);
 
+    pfind_t dst = fxalloc(maxsize, MEMFIND_NOCHUNKSIZE);
+    if (dst) {
+      puchar_t pdst = CAST(puchar_t, dst->item);
+
+      for (size_t i = 0; i < srcsize; ++i) {
+        uchar_t v2 = psrc[i];
+        uchar_t v0 = v2 % 10; v2 /= 10;
+        uchar_t v1 = v2 % 10; v2 /= 10;
+
+        if (0 != i) {
+          pdst[dst->cpos++] = ',';
+          pdst[dst->cpos++] = ' ';
+        }
+
+        size_t cpos = dst->cpos;
+        if (v2) {
+          pdst[dst->cpos++] = decN(v2);
+        }
+        if (v1 || cpos != dst->cpos) {
+          pdst[dst->cpos++] = decN(v1);
+        }
+        if (v0 || cpos != dst->cpos) {
+          pdst[dst->cpos++] = decN(v0);
+        }
+      }
+
+      pdst[dst->cpos] = '\0';   /* string padding character */
+      dst->size = dst->cpos + 1;
+      dst->epos = dst->cpos;
+      dst->cpos = 0;
+      return dst;
+    }
   }
 
   return NULL;
