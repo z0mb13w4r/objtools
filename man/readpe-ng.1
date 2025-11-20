@@ -36,30 +36,47 @@ readpe-ng [\fB\-h\fR|\fB\-\-help\fR]
 \fIpefile...\fR are the object files to be examined. 32-bit and 64-bit PE files are supported.
 
 .SH OPTIONS
-  -h
-  --help
-    Print a summary of the options to readpe-ng and exit.
-
-  -v
-  --version
-    Print the version number of readpe-ng and exit.
-
-  -S
-  --section-headers
-    Displays the information contained in the file's section headers.
-
-  -V
-  --version-info
-    Displays the information contained in the file's version section.
-
-  -a
-  --all
-    Equivalent to specifying: --section-headers --section-groups --dos-header --nt-header --relocs --eat --iat --runtime
-
-  -H
-  --headers
-    Displays the information contained in the file's headers.
-    Equivalent to specifying: --section-headers --dos-header --nt-header
+.IP "\fB\-h\fR" 4
+.IX Item "-h"
+.PD 0
+.IP "\fB\-\-help\fR" 4
+.IX Item "--help"
+.PD
+Print a summary of the options to readpe-ng and exit.
+.IP "\fB\-v\fR" 4
+.IX Item "-v"
+.PD 0
+.IP "\fB\-\-version\fR" 4
+.IX Item "--version"
+.PD
+Print the version number of readpe-ng and exit.
+.IP "\fB\-S\fR" 4
+.IX Item "-S"
+.PD 0
+.IP "\fB\-\-section\-headers\fR" 4
+.IX Item "--section\-headers"
+.PD
+Displays the information contained in the file's section headers.
+.IP "\fB\-V\fR" 4
+.IX Item "-V"
+.PD 0
+.IP "\fB\-\-version\-info\fR" 4
+.IX Item "--version\-info"
+.PD
+Displays the information contained in the file's version section.
+.IP "\fB\-a\fR" 4
+.IX Item "-a"
+.PD 0
+.IP "\fB\-\-all\fR" 4
+.IX Item "--all"
+Equivalent to specifying: \fB\-\-section\-headers\fR, \fB\-\-section\-groups\fR, \fB\-\-dos\-header\fR, \fB\-\-nt\-header\fR, \fB\-\-relocs\fR, \fB\-\-eat\fR, \fB\-\-iat\fR and \fB\-\-runtime\fR.
+.IP "\fB\-H\fR" 4
+.IX Item "-H"
+.PD 0
+.IP "\fB\-\-headers\fR" 4
+.IX Item "--headers"
+Displays the information contained in the file's headers.
+Equivalent to specifying: \fB\-\-section\-headers\fR, \fB\-\-dos\-header\fR, and \fB\-\-nt\-header\fR.
 
   -G
   --section-groups
