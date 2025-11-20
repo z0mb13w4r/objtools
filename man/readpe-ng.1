@@ -1,0 +1,200 @@
+NAME
+  readpe-ng: display information about ELF and PE files.
+
+SYNOPSIS
+  readpe-ng [-h|--help]
+            [-v|--version]
+            [-S|--section-headers]
+            [-V|--version-info]
+            [-a|--all]
+            [-H|--headers]
+            [-G|--section-groups]
+            [-D|--dos-header]
+            [-N|--nt-header]
+            [-R|--relocs]
+            [-E|--eat]
+            [-I|--iat]
+            [-m|--runtime]
+            [-g|--debug]
+            [-f|--config]
+            [-o|--resource]
+            [-x|--hex-dump]
+            [-c|--code-dump]
+            [-s|--string-dump]
+            [-u|--unicode-dump]
+            [-r|--relocated-dump]
+            [-t|--script]
+            [-i|--info]
+            [-X|--hash]
+            [-e|--entropy]
+            [-M options|--disassembler-options=options]
+
+DESCRIPTION
+
+  readpe-ng  displays information about one or more PE format object files. The options
+  control what particular information to display.
+  
+  pefile... are the object files to be examined. 32-bit and 64-bit PE files
+  are supported.
+
+OPTIONS
+  -h
+  --help
+    Print a summary of the options to readpe-ng and exit.
+
+  -v
+  --version
+    Print the version number of readpe-ng and exit.
+
+  -S
+  --section-headers
+    Displays the information contained in the file's section headers.
+
+  -V
+  --version-info
+    Displays the information contained in the file's version section.
+
+  -a
+  --all
+    Equivalent to specifying: --section-headers --section-groups --dos-header --nt-header --relocs --eat --iat --runtime
+
+  -H
+  --headers
+    Displays the information contained in the file's headers.
+    Equivalent to specifying: --section-headers --dos-header --nt-header
+
+  -G
+  --section-groups
+    Displays the information contained in the file's version section.
+
+  -D
+  --dos-header
+    Displays the contents of the DOS header.
+
+  -N
+  --nt-header
+    Displays the contents of the NT header.
+
+  -R
+  --relocs
+    Displays the contents of the file's relocation section.
+
+  -E
+  --eat
+    Displays the contents of the Export Address Table section.
+
+  -I
+  --iat
+    Displays the contents of the Import Address Table section.
+
+  -m
+  --runtime
+    Displays the contents of the runtine section.
+
+  -g
+  --debug
+    Displays the contents of the debug information section.
+
+  -f
+  --config
+    Displays the contents of the configuration section.
+
+  -o
+  --resource
+    Displays the contents of the resource information section.
+
+  -x
+  --hex-dump
+    Displays the contents of the indicated section as a hexadecimal bytes.
+
+  -c
+  --code-dump
+    Displays the contents of the indicated section as C Language Shell Code.
+
+  -s
+  --string-dump
+    Displays the contents of the indicated section as printable strings.
+
+  -u
+  --unicode-dump
+    Displays the contents of the indicated section as printable strings.
+
+  -r
+  --relocated-dump
+    Displays the contents of the indicated section as a hexadecimal bytes.
+
+  -t
+  --script
+    Generate simple scripts to modify any section to reverse obfuscation.
+
+  -i
+  --info
+    Equivalent to specifying: --hash --entropy
+
+  -X
+  --hash
+    Calculates and displays the SHA-256 hash.
+
+  -e
+  --entropy
+    Displays the entropy of the object.
+
+  -M options
+  --disassembler-options=options
+
+  "att"
+  "att-mnemonic"
+    Select the AT&T syntax mode.
+
+  "intel"
+  "intel-mnemonic"
+    Select the Intel syntax mode.
+
+  "x86-64"
+  "i386"
+  "i8086"
+    Select disassembly for the given architecture.
+
+  "amd64"
+  "intel64"
+    Select between AMD64 ISA and Intel64 ISA.
+
+  "addr16"
+  "addr32"
+  "addr64"
+  "data16"
+  "data32"
+    Specify the default address size and operand size.
+
+SEE ALSO
+  convert-ng
+  objcopy-ng
+  objdump-ng
+  objdwarf-ng
+  objhash-ng
+  readelf-ng
+  readpe-ng
+
+COPYRIGHT
+  MIT License
+  
+  Copyright (c) 2025 Kyle Wickens
+  
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+  
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
+  
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.
+
