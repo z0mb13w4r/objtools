@@ -1,0 +1,152 @@
+NAME
+  objdwarf-ng: display information about ELF files.
+
+SYNOPSIS
+  objdwarf-ng [-H|--help]
+              [-v|--version]
+              [-V|--verbose]
+              [-x|--hex-dump]
+              [-p|--string-dump]
+              [-w|[aAcFikKLmrRsptTuUgX]|
+              --dwarf-dump|[abbrev,addr,cu_index,frames-interp,info,links,follow-links,decodedline,macro,aranges,ranges,str,pubnames,pubtypes,trace_aranges,trace_abbrev,trace_info,gdb_index,enhanced]]
+
+DESCRIPTION
+
+  objdwarf-ng  displays the dwarf information about one or more ELF format object files.
+  The options control what particular information to display.
+  
+  elffile... are the object files to be examined. 32-bit and 64-bit ELF files
+  are supported, as are archives containing ELF files.
+
+OPTIONS
+  -H
+  --help
+    Print a summary of the options to objdwarf-ng and exit.
+
+  -v
+  --version
+    Print the version number of objdwarf-ng and exit.
+
+  -V
+  --verbose
+    Print additional information.
+
+  -x
+  --hex-dump
+    Displays the contents of the indicated section as a hexadecimal bytes.
+
+  -p
+  --string-dump
+    Displays the contents of the indicated section as printable strings.
+
+  -w|[aAcFikKLmrRsptTuUgX]
+  --dwarf-dump|[=abbrev,=addr,=cu_index,=frames-interp,=info,=links,=follow-links,=decodedline,=macro,=aranges,=ranges,=str,=pubnames,=pubtypes,=trace_aranges,=trace_abbrev,=trace_info,=gdb_index,=enhanced]
+
+  "a"
+  "=abbrev"
+    Displays the contents of the .debug_abbrev section.
+
+  "A"
+  "=addr"
+    Displays the contents of the .debug_addr section.
+
+  "c"
+  "=cu_index"
+    Displays the contents of the .debug_cu_index|.debug_tu_index sections.
+
+  "F"
+  "=frames-interp"
+    Display the interpreted contents of a .debug_frame section.
+
+  "i"
+  "=info"
+    Displays the contents of the .debug_info section.
+
+  "k"
+  "=links"
+    Displays the contents of the .gnu_debuglink|.gnu_debugaltlink sections.
+
+  "K"
+  "=follow-links"
+    Display the contents of any selected debug sections that are found in linked, separate debug info file(s).
+
+  "L"
+  "=decodedline"
+    Displays the interpreted contents of the .debug_line section.
+
+  "m"
+  "=macro"
+    Displays the contents of the .debug_macro|.debug_macinfo sections.
+
+  "r"
+  "=aranges"
+    Displays the contents of the .debug_aranges section.
+
+  "R"
+  "=ranges"
+    Displays the contents of the .debug_ranges|.debug_rnglists sections.
+
+  "s"
+  "=str"
+    Displays the contents of the .debug_str|.debug_line_str|.debug_str_offsets sections.
+
+  "p"
+  "=pubnames"
+    Displays the contents of the .debug_pubnames|.debug_gnu_pubnames sections.
+
+  "t"
+  "=pubtypes"
+    Displays the contents of the .debug_pubtypes|.debug_gnu_pubtypes sections.
+
+  "T"
+  "=trace_aranges"
+    Displays the contents of the .trace_aranges section.
+
+  "u"
+  "=trace_abbrev"
+    Displays the contents of the .trace_abbrev section.
+
+  "U"
+  "=trace_info"
+    Displays the contents of the .trace_info section.
+
+  "g"
+  "=gdb_index"
+    Displays the contents of the .gdb_index|.debug_names sections.
+
+  "X"
+  "=enhanced"
+    Displays the contents in the enhanced mode format.
+
+SEE ALSO
+  convert-ng
+  objcopy-ng
+  objdump-ng
+  objdwarf-ng
+  objhash-ng
+  readelf-ng
+  readpe-ng
+
+COPYRIGHT
+  MIT License
+  
+  Copyright (c) 2025 Kyle Wickens
+  
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+  
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
+  
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.
+
