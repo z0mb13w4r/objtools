@@ -154,32 +154,51 @@ Equivalent to specifying: \fB\-\-section\-headers\fR, \fB\-\-dos\-header\fR, and
   --entropy
     Displays the entropy of the object.
 
-  -M options
-  --disassembler-options=options
-
-  "att"
-  "att-mnemonic"
-    Select the AT&T syntax mode.
-
-  "intel"
-  "intel-mnemonic"
-    Select the Intel syntax mode.
-
-  "x86-64"
-  "i386"
-  "i8086"
-    Select disassembly for the given architecture.
-
-  "amd64"
-  "intel64"
-    Select between AMD64 ISA and Intel64 ISA.
-
-  "addr16"
-  "addr32"
-  "addr64"
-  "data16"
-  "data32"
-    Specify the default address size and operand size.
+.IP "\fB\-M <options>\fR" 4
+.IX Item "-M <options>"
+.PD 0
+.IP "\fB\-\-disassembler\-options=<options>\fR" 4
+.IX Item "--disassembler-options=<options>"
+.PD
+Pass target specific information to the disassembler.
+.RS 4
+.ie n .IP """att""" 4
+.IX Item "att"
+.PD
+Select the AT&T syntax mode.
+.ie n .IP """intel""" 4
+.IX Item "intel"
+.PD
+Select the Intel syntax mode.
+.ie n .IP """x86-64""" 4
+.IX Item "x86-64"
+.PD 0
+.ie n .IP """i386""" 4
+.IX Item "i386"
+.ie n .IP """i8086""" 4
+.IX Item "i8086"
+.PD
+Select disassembly for the given architecture.
+.ie n .IP """amd64""" 4
+.IX Item "amd64"
+.PD 0
+.ie n .IP """intel64""" 4
+.IX Item "intel64"
+.PD
+Select between AMD64 ISA and Intel64 ISA.
+.ie n .IP """addr16""" 4
+.IX Item "addr16"
+.PD 0
+.ie n .IP """addr32""" 4
+.IX Item "addr32"
+.ie n .IP """addr64""" 4
+.IX Item "addr64"
+.ie n .IP """data16""" 4
+.IX Item "data16"
+.ie n .IP """data32""" 4
+.IX Item "data32"
+.PD
+Specify the default address size and operand size.
 
 .SH SEE ALSO
 convert-ng(1), objcopy-ng(1), objdump-ng(1), objdwarf-ng(1), objhash-ng(1), readelf-ng(1), readpe-ng(1)
