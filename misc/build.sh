@@ -47,6 +47,7 @@ $COPYBIN -v $EXTERNBIN/objhash-ng $USRBIN/
 $COPYBIN -v $EXTERNBIN/readelf-ng $USRBIN/
 $COPYBIN -v $EXTERNBIN/objdwarf-ng $USRBIN/
 
+$COPYBIN -v $EXTERNMAN/readpe-ng.1 $USRMAN/
 $COPYBIN -v $EXTERNMAN/convert-ng.1 $USRMAN/
 $COPYBIN -v $EXTERNMAN/objdump-ng.1 $USRMAN/
 $COPYBIN -v $EXTERNMAN/readelf-ng.1 $USRMAN/
@@ -54,6 +55,7 @@ $COPYBIN -v $EXTERNMAN/objdwarf-ng.1 $USRMAN/
 
 $COPYBIN -v $EXTERNBIN/control $DEBIANBIN/
 
+$GZIPBIN -v $USRMAN/readpe-ng.1
 $GZIPBIN -v $USRMAN/convert-ng.1
 $GZIPBIN -v $USRMAN/objdump-ng.1
 $GZIPBIN -v $USRMAN/readelf-ng.1
