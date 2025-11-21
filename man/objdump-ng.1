@@ -26,8 +26,8 @@ objdump-ng [\fB\-H\fR|\fB\-\-help\fR]
            [\fB\-\-\-no\-addresses\fR]
            [\fB\-\-\-no\-show\-raw\-insn\fR]
            [\fB\-\-\-prefix\-addresses\fR]
-           [\fB\-\-\-start\-address\fR]
-           [\fB\-\-\-stop\-address\fR]
+           [\fB\-\-\-start\-address=\fR<address>]
+           [\fB\-\-\-stop\-address=\fR<address>]
            [\fB\-\-\-capstone\fR]
            [\fB\-X\fR|\fB\-\-hash\fR]
            [\fB\-W[aAcFikKLmrRsptTuUgX]\fR|
@@ -199,12 +199,12 @@ When disassembling instructions, do not print the instruction bytes. This is the
 .IX Item "--prefix-addresses"
 .PD
 When disassembling, print the complete address on each line.
-.IP "\fB\-\-start\-address\fR" 4
-.IX Item "--start-address"
+.IP "\fB\-\-start\-address=<address>\fR" 4
+.IX Item "--start-address=<address>"
 .PD
 Start displaying data at the specified address. This affects the output of the \fB\-d\fR, \fB\-r\fR and \fB\-s\fR options.
-.IP "\fB\-\-stop\-address\fR" 4
-.IX Item "--stop-address"
+.IP "\fB\-\-stop\-address=<address>\fR" 4
+.IX Item "--stop-address=<address>"
 .PD
 Stop displaying data at the specified address. This affects the output of the \fB\-d\fR, \fB\-r\fR and \fB\-s\fR options.
 .IP "\fB\-\-capstone\fR" 4
