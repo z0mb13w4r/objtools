@@ -1,6 +1,9 @@
 static const char zREADPEARGS2[] = "-M";
 static const char zREADPEARGS3[] = "--disassembler-options";
 
+static const char zREADPEARGS4[] = "-t";
+static const char zREADPEARGS5[] = "--script";
+
 static char zPESECTIONHDRS[]     = "Displays the information contained in the file's section headers.";
 static char zPESECTIONGROUPS[]   = "Displays the information contained in the file's version section.";
 static char zPEVERSIONINFO[]     = "Displays the information contained in the file's version section.";
@@ -46,7 +49,6 @@ static const args_t zREADPEARGS[] = {
   {'s', "--string-dump",     0,                            zSTRDUMP},
   {'u', "--unicode-dump",    0,                            zSTRDUMP},
   {'r', "--relocated-dump",  0,                            zHEXDUMP},
-  {'t', "--script",          0,                            zSCRIPTING},
   {'i', "--info",            OPTPROGRAM_INFO,              NULL},
   {'X', "--hash",            OPTPROGRAM_HASH,              NULL},
   {'e', "--entropy",         OPTPROGRAM_ENTROPY,           NULL},
