@@ -106,11 +106,11 @@ static int get_options_readelf(poptions_t o, int argc, char** argv, char* name) 
           return odeath(o, THIS_NAME, argv[i] + 1);
         }
         oinsertsecname(o, ACT_CODEDUMP, argv[++i]);
-//      } else if (0 == xstrcmp(argv[i], "-C")) {
-//        if (argc <= (i + 1)) {
-//          return odeath(o, THIS_NAME, argv[i] + 1);
-//        }
-//        oinsertsecname(o, ACT_DISASSEMBLE, argv[++i]);
+      } else if (0 == xstrcmp(argv[i], "-m")) {
+        if (argc <= (i + 1)) {
+          return odeath(o, THIS_NAME, argv[i] + 1);
+        }
+        oinsertsecname(o, ACT_DISASSEMBLE, argv[++i]);
       } else if (0 == xstrcmp(argv[i], "-z")) {
         if (argc <= (i + 1)) {
           return odeath(o, THIS_NAME, argv[i] + 1);
