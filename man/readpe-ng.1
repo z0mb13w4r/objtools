@@ -24,6 +24,7 @@ readpe-ng [\fB\-h\fR|\fB\-\-help\fR]
           [\fB\-s\fR <number or name>|\fB\-\-string\-dump=\fR<number or name>]
           [\fB\-u\fR <number or name>|\fB\-\-unicode\-dump=\fR<number or name>]
           [\fB\-r\fR <number or name>|\fB\-\-relocated\-dump=\fR<number or name>]
+          [\fB\-C\fR <number or name>|\fB\-\-disassemble=\fR<number or name>]
           [\fB\-t\fR <options>|\fB\-\-script=\fR<options>]
           [\fB\-i\fR|\fB\-\-info\fR]
           [\fB\-X\fR|\fB\-\-hash\fR]
@@ -205,6 +206,14 @@ Calculates and displays the SHA-256 hash.
 .IX Item "--entropy"
 .PD
 Displays the entropy of the object.
+.RE
+.IP "\fB\-C <number or name>\fR" 4
+.IX Item "-C <number or name>"
+.PD 0
+.IP "\fB\-\-disassemble=<number or name>\fR" 4
+.IX Item "--disassemble=<number or name>"
+.PD
+Display the assembler mnemonics for the machine instructions from the input file.
 .IP "\fB\-M <options>\fR" 4
 .IX Item "-M <options>"
 .PD 0
