@@ -274,6 +274,23 @@ bool_t   ocisELF64(handle_t p) {
   return ocisELF(p) && ocis64(p) ? TRUE : FALSE;
 }
 
+bool_t   ocisPE(handle_t p) {
+  if (ismode(p, MODE_OCSHDR)) {
+    handle_t p0 = ocget(p, OPCODE_PARAM2);
+    return isopcode(p0) && isPE(ocget(p0, OPCODE_RAWDATA)) ? TRUE : FALSE;
+  }
+
+  return isopcode(p) && isPE(ocget(p, OPCODE_RAWDATA)) ? TRUE : FALSE;
+}
+
+bool_t   ocisPE32(handle_t p) {
+  return ocisPE(p) && ocis32(p) ? TRUE : FALSE;
+}
+
+bool_t   ocisPE64(handle_t p) {
+  return ocisPE(p) && ocis64(p) ? TRUE : FALSE;
+}
+
 bool_t ocuse_vaddr(handle_t p, const uint64_t vaddr) {
   if (isopcode(p)) {
     popcode_t p0 = ocget(p, OPCODE_THIS);
@@ -1067,7 +1084,7 @@ int ocdo_sections(handle_t p, opcbfunc_t cbfunc, unknown_t param) {
 }
 
 int ocdisassemble_open(handle_t p, handle_t o) {
-  if (ECODE_OK == ocdwarf_open(p, o)) {
+  if (ocisPE(p) || ECODE_OK == ocdwarf_open(p, o)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
     if (oc->action & OPTPROGRAM_CAPSTONE || isattached(p)) {
       return capstone_open(p, o);
@@ -1080,7 +1097,7 @@ int ocdisassemble_open(handle_t p, handle_t o) {
 }
 
 int ocdisassemble_close(handle_t p) {
-  if (ECODE_OK == ocdwarf_close(p)) {
+  if (ocisPE(p) || ECODE_OK == ocdwarf_close(p)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
     if (oc->action & OPTPROGRAM_CAPSTONE || isattached(p)) {
       return capstone_close(p);
