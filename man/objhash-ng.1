@@ -3,16 +3,16 @@
 objhash-ng: display information about ELF and PE files.
 
 .SH SYNOPSIS
-  objhash-ng [-H|--help]
-             [-V|--version]
-             [-s|--sections]
-             [-h|--headers]
-             [-a|--all]
+objhash-ng [\fB\-H\fR|\fB\-\-help\fR]
+           [\fB\-V\fR|\fB\-\-version\fR]
+           [\fB\-s\fR|\fB\-\-sections\fR]
+           [\fB\-h\fR|\fB\-\-headers\fR]
+           [\fB\-a\fR|\fB\-\-all\fR]
 
 .SH DESCRIPTION
-  objhash-ng  generates hashes of ELF format object files for malware detection and digitial forensics. The utility is capable of fuzz-hashing and context-triggered piecewise hashing. The options control what particular information to display.
+\fBobjhash-ng\fR  generates hashes of ELF or PE format object files for malware detection and digitial forensics. The utility is capable of fuzz-hashing and context-triggered piecewise hashing. The options control what particular information to display.
 
-  elffile... are the object files to be examined. 32-bit and 64-bit ELF files are supported, as are archives containing ELF files.
+\fIobjfile...\fR are the object files to be examined. 32-bit and 64-bit ELF or PE files are supported.
 
 .SH OPTIONS
   -H
