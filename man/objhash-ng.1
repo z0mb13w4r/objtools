@@ -15,13 +15,20 @@ objhash-ng [\fB\-H\fR|\fB\-\-help\fR]
 \fIobjfile...\fR are the object files to be examined. 32-bit and 64-bit ELF or PE files are supported.
 
 .SH OPTIONS
-  -H
-  --help
-    Print a summary of the options to objhash-ng and exit.
-
-  -V
-  --version
-    Print the version number of objhash-ng and exit.
+.IP "\fB\-H\fR" 4
+.IX Item "-H"
+.PD 0
+.IP "\fB\-\-help\fR" 4
+.IX Item "--help"
+.PD
+Print a summary of the options to objhash-ng and exit.
+.IP "\fB\-V\fR" 4
+.IX Item "-V"
+.PD 0
+.IP "\fB\-\-version\fR" 4
+.IX Item "--version"
+.PD
+Print the version number of objhash-ng and exit.
 
   -s
   --sections
@@ -29,9 +36,13 @@ objhash-ng [\fB\-H\fR|\fB\-\-help\fR]
   -h
   --headers
 
-  -a
-  --all
-    Equivalent to specifying: --sections --headers
+.IP "\fB\-a\fR" 4
+.IX Item "-a"
+.PD 0
+.IP "\fB\-\-all\fR" 4
+.IX Item "--all"
+.PD
+Equivalent to specifying: \fB\-\-sections\fR and \fB\-\-headers\fR.
 
 .SH SEE ALSO
 convert-ng(1), objcopy-ng(1), objdump-ng(1), objdwarf-ng(1), objhash-ng(1), readelf-ng(1), readpe-ng(1)
