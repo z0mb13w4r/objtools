@@ -8,12 +8,12 @@ static const args_t OBJHASHARGS[] = {
 };
 
 static const char *zOBJHASHDESCRIPTION[] = {
-  "generates hashes of ELF format object files for malware detection and",
+  "generates hashes of ELF or PE format object files for malware detection and",
   "digitial forensics. The utility is capable of fuzz-hashing and context-triggered",
   "piecewise hashing. The options control what particular information to display.",
   "",
-  "elffile... are the object files to be examined. 32-bit and 64-bit ELF files",
-  "are supported, as are archives containing ELF files.",
+  "objfile... are the object files to be examined. 32-bit and 64-bit ELF or PE files",
+  "are supported.",
   0
 };
 
