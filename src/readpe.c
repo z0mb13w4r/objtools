@@ -1343,10 +1343,7 @@ int readpe(const pbuffer_t p, const poptions_t o) {
     if (MODE_ISANY(o->action, OPTREADPE_DEBUG))               dump_debugNN(p, o);
     if (MODE_ISANY(o->action, OPTREADPE_RELOCS))              dump_relocNN(p, o);
     if (MODE_ISANY(o->action, OPTREADPE_RUNTIME))             dump_runtimeNN(p, o);
-
-    if (isPE32(p) || isPE64(p)) {
-      if (o->actions)                                         dump_actionsNN(p, o);
-    }
+    if (o->actions)                                           dump_actionsNN(p, o);
   } else {
     printf_e("not an PE file - it has the wrong magic bytes at the start.");
   }

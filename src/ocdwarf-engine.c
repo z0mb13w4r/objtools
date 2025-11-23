@@ -182,9 +182,11 @@ static int execute_next_cu_header(handle_t p, Dwarf_Die *cu_die, Dwarf_Error *e)
     Dwarf_Sig8     type_signature = ZEROSIGNATURE;
     Dwarf_Off      abbrev_offset = 0;
 
-    return dwarf_next_cu_header_e(ocget(p, OPCODE_DWARF_DEBUG), isinfo, cu_die, &cu_header_length, &ws->cu_version_stamp,
+    if (ws) {
+      return dwarf_next_cu_header_e(ocget(p, OPCODE_DWARF_DEBUG), isinfo, cu_die, &cu_header_length, &ws->cu_version_stamp,
                      &abbrev_offset, &address_size, &ws->cu_offset_size, &extension_size, &type_signature, &type_offset,
                      &next_cu_header_offset, &header_cu_type, e);
+    }
   }
 
   return DW_DLV_ERROR;
