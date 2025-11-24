@@ -38,8 +38,6 @@ static int get_options_objhash(poptions_t o, int argc, char** argv, char* name) 
           oinsertsecname(o, ACT_HEXDUMP, arg1);
         } else if (0 == xstrcmp(arg0, "--string-dump")) {
           oinsertsecname(o, ACT_STRDUMP8, arg1);
-        } else if (0 == xstrcmp(arg0, "--convert")) {
-          o->convert = atol(arg1);
         } else {
           return odeath(o, THIS_NAME, arg0 + 2);
         }
@@ -61,11 +59,6 @@ static int get_options_objhash(poptions_t o, int argc, char** argv, char* name) 
           return odeath(o, THIS_NAME, argv[i] + 1);
         }
         oinsertsecname(o, ACT_STRDUMP8, argv[++i]);
-      } else if (0 == xstrcmp(argv[i], "-C")) {
-        if (argc <= (i + 1)) {
-          return odeath(o, THIS_NAME, argv[i] + 1);
-        }
-        o->convert = atoimode(argv[++i]);
       } else {
         imode_t action = get_options1(o, OBJHASHARGS, argv[i]);
         if (0 == action) {

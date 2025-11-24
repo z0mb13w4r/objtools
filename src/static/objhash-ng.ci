@@ -8,6 +8,7 @@ static const args_t OBJHASHARGS[] = {
   {'h', "--headers",         OPTOBJHASH_HEADERS,           zHASHHEADERS},
   {'a', "--all",             OPTOBJHASH_ALL},
   {'x', "--hex-dump",        0,                            zHEXDUMP},
+  {'p', "--string-dump",     0,                            zSTRDUMP},
   {0, NULL}
 };
 
