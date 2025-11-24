@@ -84,8 +84,6 @@ int usage_synopsis1(poptions_t o, const char* name, const args_t args[], const c
     n += printf_text(m, USE_LT | USE_SPACE | USE_SBRT | USE_EOL);
   }
 
-//  n += printf_eol();
-
   return n;
 }
 
@@ -100,9 +98,40 @@ int usage_synopsis2(poptions_t o, const char* name, const args_t args[], const c
     n += printf_text(m, USE_LT | USE_SPACE | USE_SB | USE_EOL);
   }
 
-//  n += printf_eol();
-
   return n;
+}
+
+int usage_synopsis3(poptions_t o, const char* name, const args_t args[]) {
+  MALLOCA(char, m, 1024);
+
+  int n0 = 0;
+  if (args) {
+    int z = xstrlen(name) + 2;
+
+    n0 += printf_pack(z);
+    if (args[0].option1 && args[0].option2) {
+      snprintf(m, sizeof(m), "-%c|%s", args[0].option1, args[0].option2);
+    } else if (args[0].option1) {
+      snprintf(m, sizeof(m), "-%c", args[0].option1);
+    } else if (args[0].option2) {
+      snprintf(m, sizeof(m), "%s", args[0].option2);
+    }
+    n0 += printf_text(m, USE_LT | USE_SPACE | USE_SB | USE_EOL);
+
+    for (int j = 1; (0 != args[j].option1) || (0 != args[j].option2); ++j) {
+      if (args[j].option1 && args[j].option2) {
+         snprintf(m, sizeof(m), "-%c|%s", args[j].option1, args[j].option2);
+      } else if (args[j].option1) {
+        snprintf(m, sizeof(m), "-%c", args[j].option1);
+      } else if (args[j].option2) {
+        snprintf(m, sizeof(m), "%s", args[j].option2);
+      }
+      n0 += printf_pack(z);
+      n0 += printf_text(m, USE_LT | USE_SPACE | USE_SB | USE_EOL);
+    }
+  }
+
+  return n0;
 }
 
 int usage_description(poptions_t o, const char* name, const args_t args[], const char* desc[]) {
