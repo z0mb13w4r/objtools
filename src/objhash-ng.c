@@ -47,7 +47,10 @@ static int get_options_objhash(poptions_t o, int argc, char** argv, char* name) 
       } else {
         imode_t action = get_options2(o, zOBJHASHARGS, argv[i]);
         if (0 == action) {
-          return odeath(o, THIS_NAME, argv[i] + 2);
+          action = get_options2(o, zOBJHASHARGS1, argv[i]);
+          if (0 == action) {
+            return odeath(o, THIS_NAME, argv[i] + 2);
+          }
         }
         o->action |= action;
       }
