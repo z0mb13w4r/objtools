@@ -2,11 +2,12 @@ static char zHASHHEADERS[]      = "Displays the information contained in the fil
 static char zHASHSECTIONS[]     = "Displays the information contained in the file's section headers and report the SHA-256 for the section data.";
 
 static const args_t OBJHASHARGS[] = {
-  {'H', "--help",              OPTPROGRAM_HELP},
-  {'V', "--version",           OPTPROGRAM_VERSION},
-  {'s', "--sections",          OPTOBJHASH_SECTIONS,         zHASHSECTIONS},
-  {'h', "--headers",           OPTOBJHASH_HEADERS,          zHASHHEADERS},
-  {'a', "--all",               OPTOBJHASH_ALL},
+  {'H', "--help",            OPTPROGRAM_HELP},
+  {'V', "--version",         OPTPROGRAM_VERSION},
+  {'s', "--sections",        OPTOBJHASH_SECTIONS,          zHASHSECTIONS},
+  {'h', "--headers",         OPTOBJHASH_HEADERS,           zHASHHEADERS},
+  {'a', "--all",             OPTOBJHASH_ALL},
+  {'x', "--hex-dump",        0,                            zHEXDUMP},
   {0, NULL}
 };
 
