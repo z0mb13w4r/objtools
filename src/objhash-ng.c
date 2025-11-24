@@ -11,9 +11,12 @@ static int usage(poptions_t o, const char* name, const args_t args[], const int 
   int n = 0;
   n += usage_name(o, name, args, zDESCRIPTION);
   n += usage_synopsis0(o, name, args);
+  n += usage_synopsis3(o, name, zOBJHASHARGS1);
   n += printf_eol();
   n += usage_description(o, name, args, zOBJHASHDESCRIPTION);
   n += usage_options0(o, name, args);
+  n += usage_options2(o, name, zOBJHASHARGS1, NULL, NULL);
+
   n += usage_seealso(o, name, args);
   n += usage_copyright(o, name, args);
 
@@ -22,7 +25,7 @@ static int usage(poptions_t o, const char* name, const args_t args[], const int 
 
 static int get_options_objhash(poptions_t o, int argc, char** argv, char* name) {
   if (argc < 1) {
-    return usage(o, THIS_NAME, OBJHASHARGS, ECODE_ARGUMENTS);
+    return usage(o, THIS_NAME, zOBJHASHARGS, ECODE_ARGUMENTS);
   }
 
   strname(o->prgname, name);
@@ -42,7 +45,7 @@ static int get_options_objhash(poptions_t o, int argc, char** argv, char* name) 
           return odeath(o, THIS_NAME, arg0 + 2);
         }
       } else {
-        imode_t action = get_options2(o, OBJHASHARGS, argv[i]);
+        imode_t action = get_options2(o, zOBJHASHARGS, argv[i]);
         if (0 == action) {
           return odeath(o, THIS_NAME, argv[i] + 2);
         }
@@ -60,7 +63,7 @@ static int get_options_objhash(poptions_t o, int argc, char** argv, char* name) 
         }
         oinsertsecname(o, ACT_STRDUMP8, argv[++i]);
       } else {
-        imode_t action = get_options1(o, OBJHASHARGS, argv[i]);
+        imode_t action = get_options1(o, zOBJHASHARGS, argv[i]);
         if (0 == action) {
           return odeath(o, THIS_NAME, argv[i] + 1);
         }
@@ -76,11 +79,11 @@ static int get_options_objhash(poptions_t o, int argc, char** argv, char* name) 
   }
 
   if (o->action & OPTPROGRAM_VERSION) {
-    return version0(o, THIS_NAME, OBJHASHARGS);
+    return version0(o, THIS_NAME, zOBJHASHARGS);
   }
 
   if (o->action & OPTPROGRAM_HELP) {
-    return usage(o, THIS_NAME, OBJHASHARGS, ECODE_OK);
+    return usage(o, THIS_NAME, zOBJHASHARGS, ECODE_OK);
   }
 
   return ECODE_OK;
