@@ -285,12 +285,14 @@ int usage_options2(poptions_t o, const char* name, const args_t args[], const ch
       n += printf_eol();
     }
 
+    const imode_t mode = (more0 || more1 ? USE_DQ : USE_NONE) | USE_TAB | USE_EOL;
+
     for (int j = 0; (0 != args[j].option1) || (0 != args[j].option2); ++j) {
       if (args[j].option1) {
-        n += printf_nice(args[j].option1, USE_CHAR | USE_TAB | USE_DQ | USE_EOL);
+        n += printf_nice(args[j].option1, USE_CHAR | mode);
       }
       if (args[j].option2) {
-        n += printf_text(args[j].option2, USE_LT | USE_TAB | USE_DQ | USE_EOL);
+        n += printf_text(args[j].option2, USE_LT | mode);
       }
       if (0 != args[j].content) {
         n += printf_pack(4);
@@ -300,8 +302,6 @@ int usage_options2(poptions_t o, const char* name, const args_t args[], const ch
         n += printf_eol();
       }
     }
-
-//    n += printf_eol();
   }
 
   return n;
