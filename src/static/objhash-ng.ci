@@ -1,18 +1,21 @@
+static char zHASHHEADERS[]      = "Displays the information contained in the file's section headers and report the SHA-256 for the section header.";
+static char zHASHSECTIONS[]     = "Displays the information contained in the file's section headers and report the SHA-256 for the section data.";
+
 static const args_t OBJHASHARGS[] = {
   {'H', "--help",              OPTPROGRAM_HELP},
   {'V', "--version",           OPTPROGRAM_VERSION},
-  {'s', "--sections",          OPTOBJHASH_SECTIONS},
-  {'h', "--headers",           OPTOBJHASH_HEADERS},
+  {'s', "--sections",          OPTOBJHASH_SECTIONS,         zHASHSECTIONS},
+  {'h', "--headers",           OPTOBJHASH_HEADERS,          zHASHHEADERS},
   {'a', "--all",               OPTOBJHASH_ALL},
   {0, NULL}
 };
 
 static const char *zOBJHASHDESCRIPTION[] = {
-  "generates hashes of ELF or PE format object files for malware detection and",
+  "generates hashes of ELF format object files for malware detection and",
   "digitial forensics. The utility is capable of fuzz-hashing and context-triggered",
   "piecewise hashing. The options control what particular information to display.",
   "",
-  "objfile... are the object files to be examined. 32-bit and 64-bit ELF or PE files",
+  "objfile... are the object files to be examined. 32-bit and 64-bit ELF files",
   "are supported.",
   0
 };
