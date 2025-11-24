@@ -1,6 +1,6 @@
 static char zHASHHEADERS[]      = "Displays the information contained in the file's section headers and report the SHA-256 for the section header.";
 static char zHASHSECTIONS[]     = "Displays the information contained in the file's section headers and report the SHA-256 for the section data.";
-static char zHASHING[]          = "Hashes the input file using the specified option.";
+static char zHASHING[]          = "Encodes the input file using the specified cryptographic hash.";
 
 static const args_t zOBJHASHARGS[] = {
   {'H', "--help",            OPTPROGRAM_HELP},
