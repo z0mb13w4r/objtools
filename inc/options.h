@@ -173,6 +173,10 @@
 
 #define OPTOBJHASH_HEADERS                         U64MASK(0)
 #define OPTOBJHASH_SECTIONS                        U64MASK(1)
+#define OPTOBJHASH_MD5                             U64MASK(2)
+#define OPTOBJHASH_SHA1                            U64MASK(3)
+#define OPTOBJHASH_SHA256                          U64MASK(4)
+#define OPTOBJHASH_SHA512                          U64MASK(5)
 
 #define OPTOBJHASH_ALL                 (OPTOBJHASH_SECTIONS | OPTOBJHASH_HEADERS)
 

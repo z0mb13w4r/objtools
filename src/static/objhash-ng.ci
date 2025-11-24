@@ -1,5 +1,9 @@
 static char zHASHHEADERS[]      = "Displays the information contained in the file's section headers and report the SHA-256 for the section header.";
 static char zHASHSECTIONS[]     = "Displays the information contained in the file's section headers and report the SHA-256 for the section data.";
+static char zHASHMD5[]          = ".";
+static char zHASHSHA1[]         = ".";
+static char zHASHSHA256[]       = ".";
+static char zHASHSHA512[]       = ".";
 
 static const args_t OBJHASHARGS[] = {
   {'H', "--help",            OPTPROGRAM_HELP},
@@ -9,6 +13,11 @@ static const args_t OBJHASHARGS[] = {
   {'a', "--all",             OPTOBJHASH_ALL},
   {'x', "--hex-dump",        0,                            zHEXDUMP},
   {'p', "--string-dump",     0,                            zSTRDUMP},
+  {0,   "--md5",             OPTOBJHASH_MD5,               zHASHMD5},
+  {0,   "--sha1",            OPTOBJHASH_SHA1,              zHASHSHA1},
+  {0,   "--sha256",          OPTOBJHASH_SHA256,            zHASHSHA256},
+  {0,   "--sha512",          OPTOBJHASH_SHA512,            zHASHSHA512},
+
   {0, NULL}
 };
 
