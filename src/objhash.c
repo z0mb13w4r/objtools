@@ -137,6 +137,23 @@ static int dump_actionsELF0(const pbuffer_t p, const poptions_t o, const char* n
   return n;
 }
 
+static int dump_hash(const pbuffer_t p, const poptions_t o) {
+  int n = 0;
+
+  if (MODE_ISANY(o->action, OPTOBJHASH_MD5)) {
+  }
+
+  if (MODE_ISANY(o->action, OPTOBJHASH_SHA1)) {
+  }
+
+  if (MODE_ISANY(o->action, OPTOBJHASH_SHA256)) {
+  }
+
+  if (MODE_ISANY(o->action, OPTOBJHASH_SHA512)) {
+  }
+
+  return n;
+}
 
 static int dump_actionsELF32(const pbuffer_t p, const poptions_t o) {
   int n = 0;
@@ -188,19 +205,25 @@ int objhash(const pbuffer_t p0, const poptions_t o) {
   }
 
   if (isELF32(p0)) {
-    if (o->action & OPTOBJHASH_HEADERS)          dump_createELF32(p0, o, OPTOBJHASH_HEADERS);
-    if (o->action & OPTOBJHASH_HEADERS)          dump_createELF32(p1, o, OPTOBJHASH_HEADERS);
-    if (o->action & OPTOBJHASH_SECTIONS)         dump_createELF32(p0, o, OPTOBJHASH_SECTIONS);
-    if (o->action & OPTOBJHASH_SECTIONS)         dump_createELF32(p1, o, OPTOBJHASH_SECTIONS);
-    if (o->actions)                              dump_actionsELF32(p0, o);
-    if (o->actions)                              dump_actionsELF32(p1, o);
+    if (MODE_ISANY(o->action, OPTOBJHASH_HEADERS))     dump_createELF32(p0, o, OPTOBJHASH_HEADERS);
+    if (MODE_ISANY(o->action, OPTOBJHASH_HEADERS))     dump_createELF32(p1, o, OPTOBJHASH_HEADERS);
+    if (MODE_ISANY(o->action, OPTOBJHASH_SECTIONS))    dump_createELF32(p0, o, OPTOBJHASH_SECTIONS);
+    if (MODE_ISANY(o->action, OPTOBJHASH_SECTIONS))    dump_createELF32(p1, o, OPTOBJHASH_SECTIONS);
   } else if (isELF64(p0)) {
-    if (o->action & OPTOBJHASH_HEADERS)          dump_createELF64(p0, o, OPTOBJHASH_HEADERS);
-    if (o->action & OPTOBJHASH_HEADERS)          dump_createELF64(p1, o, OPTOBJHASH_HEADERS);
-    if (o->action & OPTOBJHASH_SECTIONS)         dump_createELF64(p0, o, OPTOBJHASH_SECTIONS);
-    if (o->action & OPTOBJHASH_SECTIONS)         dump_createELF64(p1, o, OPTOBJHASH_SECTIONS);
-    if (o->actions)                              dump_actionsELF64(p0, o);
-    if (o->actions)                              dump_actionsELF64(p1, o);
+    if (MODE_ISANY(o->action, OPTOBJHASH_HEADERS))     dump_createELF64(p0, o, OPTOBJHASH_HEADERS);
+    if (MODE_ISANY(o->action, OPTOBJHASH_HEADERS))     dump_createELF64(p1, o, OPTOBJHASH_HEADERS);
+    if (MODE_ISANY(o->action, OPTOBJHASH_SECTIONS))    dump_createELF64(p0, o, OPTOBJHASH_SECTIONS);
+    if (MODE_ISANY(o->action, OPTOBJHASH_SECTIONS))    dump_createELF64(p1, o, OPTOBJHASH_SECTIONS);
+  }
+
+  if (MODE_ISANY(o->action, OPTOBJHASH_HASHES))        dump_hash(p0, o);
+
+  if (isELF32(p0)) {
+    if (o->actions)                                    dump_actionsELF32(p0, o);
+    if (o->actions)                                    dump_actionsELF32(p1, o);
+  } else if (isELF64(p0)) {
+    if (o->actions)                                    dump_actionsELF64(p0, o);
+    if (o->actions)                                    dump_actionsELF64(p1, o);
   }
 
   bfree(p1);
