@@ -41,6 +41,10 @@ static int get_options_objhash(poptions_t o, int argc, char** argv, char* name) 
           oinsertsecname(o, ACT_HEXDUMP, arg1);
         } else if (0 == xstrcmp(arg0, "--string-dump")) {
           oinsertsecname(o, ACT_STRDUMP8, arg1);
+        } else if (0 == xstrcmp(arg0, "--piecewise")) {
+          oinsertvalue(o, ACT_PIECEWISE, atovalue(arg1));
+        } else if (0 == xstrcmp(arg0, "--threshold")) {
+          oinsertvalue(o, ACT_THRESHOLD, atovalue(arg1));
         } else {
           return odeath(o, THIS_NAME, arg0 + 2);
         }
@@ -65,6 +69,16 @@ static int get_options_objhash(poptions_t o, int argc, char** argv, char* name) 
           return odeath(o, THIS_NAME, argv[i] + 1);
         }
         oinsertsecname(o, ACT_STRDUMP8, argv[++i]);
+      } else if (0 == xstrcmp(argv[i], "-P")) {
+        if (argc <= (i + 1)) {
+          return odeath(o, THIS_NAME, argv[i] + 1);
+        }
+        oinsertvalue(o, ACT_PIECEWISE, atovalue(argv[++i]));
+      } else if (0 == xstrcmp(argv[i], "-T")) {
+        if (argc <= (i + 1)) {
+          return odeath(o, THIS_NAME, argv[i] + 1);
+        }
+        oinsertvalue(o, ACT_THRESHOLD, atovalue(argv[++i]));
       } else {
         imode_t action = get_options1(o, zOBJHASHARGS, argv[i]);
         if (0 == action) {

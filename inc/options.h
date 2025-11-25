@@ -187,6 +187,8 @@
 #define ACT_RELDUMP                                (3)
 #define ACT_CODEDUMP                               (4)
 #define ACT_DISASSEMBLE                            (5)
+#define ACT_PIECEWISE                              (6)
+#define ACT_THRESHOLD                              (7)
 
 #define ACT_ADDSECTION                             (100)
 #define ACT_DUMPSECTION                            (101)
