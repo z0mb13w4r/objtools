@@ -70,6 +70,20 @@ Displays the contents of the indicated section as a hexadecimal bytes and report
 .IX Item "--string-dump=<number or name>"
 .PD
 Displays the contents of the indicated section as printable strings and report the SHA-256.
+.IP "\fB\-P <size>\fR" 4
+.IX Item "-P <size>"
+.PD 0
+.IP "\fB\-\-piecewise=<size>\fR" 4
+.IX Item "--piecewise=<size>"
+.PD
+Piecewise mode. Breaks files into chunks before hashing.
+.IP "\fB\-T <size>\fR" 4
+.IX Item "-T <size>"
+.PD 0
+.IP "\fB\-\-threshold=<size>\fR" 4
+.IX Item "--threshold=<size>"
+.PD
+Threshold mode. Only hash files smaller than the given the threshold.
 .IP "\fB\-\-md5\fR" 4
 .IX Item "--md5"
 .PD 0
