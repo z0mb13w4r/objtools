@@ -1,6 +1,8 @@
 static char zHASHHEADERS[]      = "Displays the information contained in the file's section headers and report the SHA-256 for the section header.";
 static char zHASHSECTIONS[]     = "Displays the information contained in the file's section headers and report the SHA-256 for the section data.";
 static char zHASHING[]          = "Encodes the input file using the specified cryptographic hash.";
+static char zHASHPIECEWISE[]    = "Piecewise mode. Breaks files into chunks before hashing.";
+static char zHASHTHRESHOLD[]    = "Threshold mode. Only hash files smaller than the given the threshold.";
 
 static const args_t zOBJHASHARGS[] = {
   {'H', "--help",            OPTPROGRAM_HELP},
@@ -10,7 +12,8 @@ static const args_t zOBJHASHARGS[] = {
   {'a', "--all",             OPTOBJHASH_ALL},
   {'x', "--hex-dump",        0,                            zHEXDUMP},
   {'p', "--string-dump",     0,                            zSTRDUMP},
-
+  {'P', "--piecewise",       0,                            zHASHPIECEWISE},
+  {'T', "--threshold",       0,                            zHASHTHRESHOLD},
   {0, NULL}
 };
 
