@@ -7,11 +7,11 @@ static char zHASHTHRESHOLD[]    = "Threshold mode. Only hash files smaller than 
 static const args_t zOBJHASHARGS[] = {
   {'H', "--help",            OPTPROGRAM_HELP},
   {'V', "--version",         OPTPROGRAM_VERSION},
-  {'s', "--sections",        OPTOBJHASH_SECTIONS,          zHASHSECTIONS,      OPTUSE_SECTION},
-  {'h', "--headers",         OPTOBJHASH_HEADERS,           zHASHHEADERS,       OPTUSE_SECTION},
+  {'s', "--sections",        OPTOBJHASH_SECTIONS,          zHASHSECTIONS},
+  {'h', "--headers",         OPTOBJHASH_HEADERS,           zHASHHEADERS},
   {'a', "--all",             OPTOBJHASH_ALL},
-  {'x', "--hex-dump",        0,                            zHEXDUMP},
-  {'p', "--string-dump",     0,                            zSTRDUMP},
+  {'x', "--hex-dump",        0,                            zHEXDUMP,           OPTUSE_SECTION},
+  {'p', "--string-dump",     0,                            zSTRDUMP,           OPTUSE_SECTION},
   {'P', "--piecewise",       0,                            zHASHPIECEWISE,     OPTUSE_SIZE},
   {'T', "--threshold",       0,                            zHASHTHRESHOLD,     OPTUSE_SIZE},
   {0, NULL}
