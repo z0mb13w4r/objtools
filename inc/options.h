@@ -181,8 +181,9 @@
 #define OPTOBJHASH_ALL                 (OPTOBJHASH_SECTIONS | OPTOBJHASH_HEADERS)
 #define OPTOBJHASH_HASHES              (OPTOBJHASH_MD5 | OPTOBJHASH_SHA1 | OPTOBJHASH_SHA256 | OPTOBJHASH_SHA512)
 
-#define OPTUSE_SIZE                                U64MASK(62)
-#define OPTUSE_SECTION                             U64MASK(63)
+#define OPTUSE_SIZE                                U64MASK(61)
+#define OPTUSE_SECTION                             U64MASK(62)
+#define OPTUSE_FILESPEC                            U64MASK(63)
 
 #define ACT_HEXDUMP                                (0)
 #define ACT_STRDUMP8                               (1)

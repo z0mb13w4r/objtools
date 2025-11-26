@@ -4,7 +4,7 @@ static const args_t zCONVERTARGS[] = {
   {'H', "--help",              OPTPROGRAM_HELP,            NULL},
   {'V', "--version",           OPTPROGRAM_VERSION,         NULL},
   {'v', "--verbose",           OPTPROGRAM_VERBOSE,         NULL},
-  {'O', "--output",            0,                          zCONVERTOUTPUT},
+  {'O', "--output",            0,                          zCONVERTOUTPUT,     OPTUSE_FILESPEC},
 
   {0, NULL}
 };
