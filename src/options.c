@@ -172,10 +172,34 @@ int usage_options0(poptions_t o, const char* name, const args_t args[]) {
     n += printf_text("OPTIONS", USE_LT | USE_EOL);
     for (int j = 0; (0 != args[j].option1) || (0 != args[j].option2); ++j) {
       if (args[j].option1) {
-        n += printf_nice(args[j].option1, USE_CHAR | USE_TAB | USE_DASH | USE_EOL);
+        n += printf_nice(args[j].option1, USE_CHAR | USE_TAB | USE_DASH);
+
+        if (MODE_ISANY(args[j].groups, OPTUSE_SIZE)) {
+          n += printf_text("<size>", USE_LT | USE_SPACE);
+        } else if (MODE_ISANY(args[j].groups, OPTUSE_ADDRESS)) {
+          n += printf_text("<address>", USE_LT | USE_SPACE);
+        } else if (MODE_ISANY(args[j].groups, OPTUSE_SECTION)) {
+          n += printf_text("<section>", USE_LT | USE_SPACE);
+        } else if (MODE_ISANY(args[j].groups, OPTUSE_FILESPEC)) {
+          n += printf_text("<filespec>", USE_LT | USE_SPACE);
+        }
+
+        n += printf_eol();
       }
       if (args[j].option2) {
-        n += printf_text(args[j].option2, USE_LT | USE_TAB | USE_EOL);
+        n += printf_text(args[j].option2, USE_LT | USE_TAB);
+
+        if (MODE_ISANY(args[j].groups, OPTUSE_SIZE)) {
+          n += printf_text("=<size>", USE_LT);
+        } else if (MODE_ISANY(args[j].groups, OPTUSE_ADDRESS)) {
+          n += printf_text("=<address>", USE_LT);
+        } else if (MODE_ISANY(args[j].groups, OPTUSE_SECTION)) {
+          n += printf_text("=<section>", USE_LT);
+        } else if (MODE_ISANY(args[j].groups, OPTUSE_FILESPEC)) {
+          n += printf_text("=<filespec>", USE_LT);
+        }
+
+        n += printf_eol();
       }
       if (0 != args[j].content) {
         n += printf_pack(4);
