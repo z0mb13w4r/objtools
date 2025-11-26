@@ -5,8 +5,8 @@ static const args_t zOBJDWARFARGS[] = {
   {'H', "--help",            OPTPROGRAM_HELP,              NULL},
   {'v', "--version",         OPTPROGRAM_VERSION,           NULL},
   {'V', "--verbose",         OPTPROGRAM_VERBOSE,           NULL},
-  {'x', "--hex-dump",        0,                            zHEXDUMP},
-  {'p', "--string-dump",     0,                            zSTRDUMP},
+  {'x', "--hex-dump",        0,                            zHEXDUMP,     OPTUSE_SECTION},
+  {'p', "--string-dump",     0,                            zSTRDUMP,     OPTUSE_SECTION},
   {0, NULL}
 };
 
