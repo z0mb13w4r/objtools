@@ -24,6 +24,50 @@ int usage_name(poptions_t o, const char* name, const args_t args[], const char* 
   return n;
 }
 
+static int usage_synopsisX(poptions_t o, const args_t* p, char* m, const size_t size) {
+  if (o && p && m) {
+    if (p->option1 && p->option2) {
+      if (MODE_ISANY(p->groups, OPTUSE_SIZE)) {
+        return snprintf(m, size, "-%c <size>|%s=<size>", p->option1, p->option2);
+      } else if (MODE_ISANY(p->groups, OPTUSE_ADDRESS)) {
+        return snprintf(m, size, "-%c <address>|%s=<address>", p->option1, p->option2);
+      } else if (MODE_ISANY(p->groups, OPTUSE_SECTION)) {
+        return snprintf(m, size, "-%c <section>|%s=<section>", p->option1, p->option2);
+      } else if (MODE_ISANY(p->groups, OPTUSE_FILESPEC)) {
+        return snprintf(m, size, "-%c <filespec>|%s=<filespec>", p->option1, p->option2);
+      }
+
+      return snprintf(m, size, "-%c|%s", p->option1, p->option2);
+    } else if (p->option1) {
+      if (MODE_ISANY(p->groups, OPTUSE_SIZE)) {
+        return snprintf(m, size, "-%c <size>", p->option1);
+      } else if (MODE_ISANY(p->groups, OPTUSE_ADDRESS)) {
+        return snprintf(m, size, "-%c <address>", p->option1);
+      } else if (MODE_ISANY(p->groups, OPTUSE_SECTION)) {
+        return snprintf(m, size, "-%c <section>", p->option1);
+      } else if (MODE_ISANY(p->groups, OPTUSE_FILESPEC)) {
+        return snprintf(m, size, "-%c <filespec>", p->option1);
+      }
+
+      return snprintf(m, size, "-%c", p->option1);
+    } else if (p->option2) {
+      if (MODE_ISANY(p->groups, OPTUSE_SIZE)) {
+        return snprintf(m, size, "%s=<size>", p->option2);
+      } else if (MODE_ISANY(p->groups, OPTUSE_ADDRESS)) {
+        return snprintf(m, size, "%s=<address>", p->option2);
+      } else if (MODE_ISANY(p->groups, OPTUSE_SECTION)) {
+        return snprintf(m, size, "%s=<section>", p->option2);
+      } else if (MODE_ISANY(p->groups, OPTUSE_FILESPEC)) {
+        return snprintf(m, size, "%s=<filespec>", p->option2);
+      }
+
+      return snprintf(m, size, "%s", p->option2);
+    }
+  }
+
+  return 0;
+}
+
 int usage_synopsis0(poptions_t o, const char* name, const args_t args[]) {
   MALLOCA(char, m, 1024);
 
@@ -31,25 +75,13 @@ int usage_synopsis0(poptions_t o, const char* name, const args_t args[]) {
   int n1 = 0;
   if (args) {
     n0 += printf_text("SYNOPSIS", USE_LT | USE_EOL);
+    usage_synopsisX(o, &args[0], m, sizeof(m));
     n1  = printf_text(name, USE_LT | USE_TAB);
-    if (args[0].option1 && args[0].option2) {
-      snprintf(m, sizeof(m), "-%c|%s", args[0].option1, args[0].option2);
-    } else if (args[0].option1) {
-      snprintf(m, sizeof(m), "-%c", args[0].option1);
-    } else if (args[0].option2) {
-      snprintf(m, sizeof(m), "%s", args[0].option2);
-    }
     n0 += printf_text(m, USE_LT | USE_SPACE | USE_SB | USE_EOL);
 
     for (int j = 1; (0 != args[j].option1) || (0 != args[j].option2); ++j) {
-      if (args[j].option1 && args[j].option2) {
-         snprintf(m, sizeof(m), "-%c|%s", args[j].option1, args[j].option2);
-      } else if (args[j].option1) {
-        snprintf(m, sizeof(m), "-%c", args[j].option1);
-      } else if (args[j].option2) {
-        snprintf(m, sizeof(m), "%s", args[j].option2);
-      }
-      printf_pack(n1);
+      usage_synopsisX(o, &args[j], m, sizeof(m));
+      n0 += printf_pack(n1);
       n0 += printf_text(m, USE_LT | USE_SPACE | USE_SB | USE_EOL);
     }
   }
@@ -108,24 +140,8 @@ int usage_synopsis3(poptions_t o, const char* name, const args_t args[]) {
   if (args) {
     int z = xstrlen(name) + 2;
 
-    n += printf_pack(z);
-    if (args[0].option1 && args[0].option2) {
-      snprintf(m, sizeof(m), "-%c|%s", args[0].option1, args[0].option2);
-    } else if (args[0].option1) {
-      snprintf(m, sizeof(m), "-%c", args[0].option1);
-    } else if (args[0].option2) {
-      snprintf(m, sizeof(m), "%s", args[0].option2);
-    }
-    n += printf_text(m, USE_LT | USE_SPACE | USE_SB | USE_EOL);
-
-    for (int j = 1; (0 != args[j].option1) || (0 != args[j].option2); ++j) {
-      if (args[j].option1 && args[j].option2) {
-         snprintf(m, sizeof(m), "-%c|%s", args[j].option1, args[j].option2);
-      } else if (args[j].option1) {
-        snprintf(m, sizeof(m), "-%c", args[j].option1);
-      } else if (args[j].option2) {
-        snprintf(m, sizeof(m), "%s", args[j].option2);
-      }
+    for (int j = 0; (0 != args[j].option1) || (0 != args[j].option2); ++j) {
+      usage_synopsisX(o, &args[j], m, sizeof(m));
       n += printf_pack(z);
       n += printf_text(m, USE_LT | USE_SPACE | USE_SB | USE_EOL);
     }
@@ -298,7 +314,9 @@ int usage_options2(poptions_t o, const char* name, const args_t args[], const ch
         n += printf_pack(4);
         n += printf_text(args[j].content, USE_LT | USE_EOL);
       }
-      if (args[j].groups != args[j + 1].groups) {
+      imode_t groups0 = args[j].groups & ~OPTUSE_MASK;
+      imode_t groups1 = args[j + 1].groups & ~OPTUSE_MASK;
+      if (groups0 != groups1) {
         n += printf_eol();
       }
     }

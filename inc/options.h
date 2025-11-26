@@ -185,6 +185,7 @@
 #define OPTUSE_ADDRESS                             U64MASK(61)
 #define OPTUSE_SECTION                             U64MASK(62)
 #define OPTUSE_FILESPEC                            U64MASK(63)
+#define OPTUSE_MASK                    (OPTUSE_SIZE | OPTUSE_ADDRESS | OPTUSE_SECTION | OPTUSE_FILESPEC)
 
 #define ACT_HEXDUMP                                (0)
 #define ACT_STRDUMP8                               (1)
