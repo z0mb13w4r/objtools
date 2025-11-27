@@ -130,6 +130,14 @@ static int dump_actionsELF0(const pbuffer_t p, const poptions_t o, const char* n
   return n;
 }
 
+static int dump_actionsELF1(const pbuffer_t p, const poptions_t o, const uint64_t vp, const uint64_t vt) {
+  int n = 0;
+  if (p && o && vp) {
+  }
+
+  return n;
+}
+
 static int dump_hash(const pbuffer_t p, const poptions_t o) {
   int n = 0;
 
@@ -163,6 +171,8 @@ static int dump_hash(const pbuffer_t p, const poptions_t o) {
 static int dump_actionsELF32(const pbuffer_t p, const poptions_t o) {
   int n = 0;
   if (issafe(p)) {
+    uint64_t vp = 0;
+    uint64_t vt = 0;
     paction_t x = o->actions;
     while (x) {
       if (x->secname[0]) {
@@ -172,10 +182,16 @@ static int dump_actionsELF32(const pbuffer_t p, const poptions_t o) {
         } else {
           printf_w("section '%s' was not dumped because it does not exist!", x->secname);
         }
+      } else if (ACT_PIECEWISE == x->action) {
+        vp = x->value;
+      } else if (ACT_THRESHOLD == x->action) {
+        vt = x->value;
       }
 
       x = x->actions;
     }
+
+    n += dump_actionsELF1(p, o, vp, vt);
   }
 
   return n;
@@ -184,6 +200,8 @@ static int dump_actionsELF32(const pbuffer_t p, const poptions_t o) {
 static int dump_actionsELF64(const pbuffer_t p, const poptions_t o) {
   int n = 0;
   if (issafe(p)) {
+    uint64_t vp = 0;
+    uint64_t vt = 0;
     paction_t x = o->actions;
     while (x) {
       if (x->secname[0]) {
@@ -193,10 +211,16 @@ static int dump_actionsELF64(const pbuffer_t p, const poptions_t o) {
         } else {
           printf_w("section '%s' was not dumped because it does not exist!", x->secname);
         }
+      } else if (ACT_PIECEWISE == x->action) {
+        vp = x->value;
+      } else if (ACT_THRESHOLD == x->action) {
+        vt = x->value;
       }
 
       x = x->actions;
     }
+
+    n += dump_actionsELF1(p, o, vp, vt);
   }
 
   return n;
