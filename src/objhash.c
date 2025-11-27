@@ -232,8 +232,6 @@ int objhash(const pbuffer_t p0, const poptions_t o) {
     if (MODE_ISANY(o->action, OPTOBJHASH_SECTIONS))    dump_createELF64(p1, o, OPTOBJHASH_SECTIONS);
   }
 
-  if (MODE_ISANY(o->action, OPTOBJHASH_HASHES))        dump_hash(p0, o);
-
   if (isELF32(p0)) {
     if (o->actions)                                    dump_actionsELF32(p0, o);
     if (o->actions)                                    dump_actionsELF32(p1, o);
@@ -241,6 +239,8 @@ int objhash(const pbuffer_t p0, const poptions_t o) {
     if (o->actions)                                    dump_actionsELF64(p0, o);
     if (o->actions)                                    dump_actionsELF64(p1, o);
   }
+
+  if (MODE_ISANY(o->action, OPTOBJHASH_HASHES))        dump_hash(p0, o);
 
   bfree(p1);
   return 0;
