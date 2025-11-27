@@ -99,13 +99,6 @@ static int dump_actionsELF0(const pbuffer_t p, const poptions_t o, const char* n
 
   unknown_t p0 = getp(p, sh_offset, sh_size);
 
-  if (OPTFUNCTION_ROT5 == o->convert)            rot5(p0, sh_size);
-  else if (OPTFUNCTION_ROT13 == o->convert)      rot13(p0, sh_size);
-  else if (OPTFUNCTION_ROT18 == o->convert)      rot18(p0, sh_size);
-  else if (OPTFUNCTION_XOR1 <= o->convert && o->convert <= OPTFUNCTION_XOR255) {
-    xor8(p0, o->convert & 0xff, sh_size, 0);
-  }
-
   if (ACT_HEXDUMP == action) {
     n += printf_text("Hex dump of section", USE_LT);
     n += printf_text(name, USE_LT | USE_SQ | USE_COLON | USE_EOL);

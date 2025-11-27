@@ -58,12 +58,6 @@
 #define OPTDWARF_DEBUG_LINE_MASK       (OPTDWARF_DEBUG_LINE | OPTDWARF_DEBUG_LINE_DECODED)
 #define OPTDWARF_DEBUG_FRAME_MASK      (OPTDWARF_DEBUG_FRAME | OPTDWARF_DEBUG_FRAME_DECODED)
 
-#define OPTFUNCTION_XOR1                           (1)
-#define OPTFUNCTION_XOR255                         (255)
-#define OPTFUNCTION_ROT5                           (256)
-#define OPTFUNCTION_ROT13                          (257)
-#define OPTFUNCTION_ROT18                          (258)
-
 #define OPTPROGRAM_DEBUGLEVEL1                     U64MASK(47)
 #define OPTPROGRAM_DEBUGLEVEL2                     U64MASK(48)
 #define OPTPROGRAM_DEBUGLEVEL3                     U64MASK(49)
@@ -287,7 +281,6 @@ typedef struct options_s {
   smode_t mode;
   imode_t action;
   imode_t ocdump;
-  imode_t convert;
 
   union {
     char inpname[PATH_MAX];

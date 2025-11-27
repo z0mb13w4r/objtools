@@ -55,10 +55,6 @@ uint64_t ulog2(uint64_t  x) {
   return y;
 }
 
-uint64_t atoimode(const char* src) {
-  return atovalue(src);
-}
-
 uint64_t atovalue(const char* src) {
   const size_t siz = xstrlen(src);
   if (3 <= siz && '0' == src[0] && (('x' | 0x20) == src[1])) {

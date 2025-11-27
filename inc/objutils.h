@@ -40,7 +40,6 @@ bool_t ishex8(int x);
 bool_t ishexb(unknown_t p, const size_t size);
 
 uint64_t ulog2(uint64_t  x);
-uint64_t atoimode(const char* src);
 uint64_t atovalue(const char* src);
 
 char* strname(char* dst, const char* src);
