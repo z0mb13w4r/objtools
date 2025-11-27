@@ -141,19 +141,27 @@ static int dump_hash(const pbuffer_t p, const poptions_t o) {
   int n = 0;
 
   if (MODE_ISANY(o->action, OPTOBJHASH_MD5)) {
-    n += printf_sore(p->data, p->size, USE_MD5 | USE_EOL);
+    n += printf_sore(p->data, p->size, USE_MD5 | USE_NOTEXT);
+    n += printf_text(o->inpname, USE_LT | USE_SPACE);
+    n += printf_eol();
   }
 
   if (MODE_ISANY(o->action, OPTOBJHASH_SHA1)) {
-    n += printf_sore(p->data, p->size, USE_SHA1 | USE_EOL);
+    n += printf_sore(p->data, p->size, USE_SHA1 | USE_NOTEXT);
+    n += printf_text(o->inpname, USE_LT | USE_SPACE);
+    n += printf_eol();
   }
 
   if (MODE_ISANY(o->action, OPTOBJHASH_SHA256)) {
-    n += printf_sore(p->data, p->size, USE_SHA256 | USE_EOL);
+    n += printf_sore(p->data, p->size, USE_SHA256 | USE_NOTEXT);
+    n += printf_text(o->inpname, USE_LT | USE_SPACE);
+    n += printf_eol();
   }
 
   if (MODE_ISANY(o->action, OPTOBJHASH_SHA512)) {
-    n += printf_sore(p->data, p->size, USE_SHA512 | USE_EOL);
+    n += printf_sore(p->data, p->size, USE_SHA512 | USE_NOTEXT);
+    n += printf_text(o->inpname, USE_LT | USE_SPACE);
+    n += printf_eol();
   }
 
   return n;
