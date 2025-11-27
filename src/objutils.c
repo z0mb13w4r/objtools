@@ -61,11 +61,11 @@ uint64_t atoimode(const char* src) {
 
 uint64_t atovalue(const char* src) {
   const size_t siz = xstrlen(src);
-  if (3 <= siz && '0' == src[0] && ('x' == src[1] || 'X' == src[1])) {
+  if (3 <= siz && '0' == src[0] && (('x' | 0x20) == src[1])) {
     return strtol(src + 2, NULL, 16);
-  } else if (2 <= siz && ('h' == src[siz - 1] || 'H' == src[siz - 1])) {
+  } else if (2 <= siz && (('h' | 0x20) == src[siz - 1])) {
     return strtol(src, NULL, 16);
-  } else if (2 <= siz && ('b' == src[siz - 1] || 'B' == src[siz - 1])) {
+  } else if (2 <= siz && (('b' | 0x20) == src[siz - 1])) {
     return strtol(src, NULL, 2);
   }
 
