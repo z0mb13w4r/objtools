@@ -3,6 +3,7 @@
 #include "decode.h"
 #include "printf.h"
 #include "elfcode.h"
+#include "memfind.h"
 #include "objhash.h"
 
 static int dump_create0(const pbuffer_t p, const imode_t mode, const int maxsize) {
@@ -130,9 +131,14 @@ static int dump_actionsELF0(const pbuffer_t p, const poptions_t o, const char* n
   return n;
 }
 
-static int dump_actionsELF1(const pbuffer_t p, const poptions_t o, const uint64_t vp, const uint64_t vt) {
+static int dump_actionsELF1(const poptions_t o, const unknown_t p, const size_t size, const uint64_t chunksize, const uint64_t vt) {
   int n = 0;
-  if (p && o && vp) {
+  if (p && o && chunksize && vt <= size) {
+    handle_t p0 = fmalloc(p, size, chunksize);
+    if (p0) {
+
+      ffree(p0);
+    }
   }
 
   return n;
@@ -171,7 +177,7 @@ static int dump_hash(const pbuffer_t p, const poptions_t o) {
 static int dump_actionsELF32(const pbuffer_t p, const poptions_t o) {
   int n = 0;
   if (issafe(p)) {
-    uint64_t vp = 0;
+    uint64_t chunksize = 0;
     uint64_t vt = 0;
     paction_t x = o->actions;
     while (x) {
@@ -183,7 +189,7 @@ static int dump_actionsELF32(const pbuffer_t p, const poptions_t o) {
           printf_w("section '%s' was not dumped because it does not exist!", x->secname);
         }
       } else if (ACT_PIECEWISE == x->action) {
-        vp = x->value;
+        chunksize = x->value;
       } else if (ACT_THRESHOLD == x->action) {
         vt = x->value;
       }
@@ -191,7 +197,7 @@ static int dump_actionsELF32(const pbuffer_t p, const poptions_t o) {
       x = x->actions;
     }
 
-    n += dump_actionsELF1(p, o, vp, vt);
+    n += dump_actionsELF1(o, p->data, p->size, chunksize, vt);
   }
 
   return n;
@@ -200,7 +206,7 @@ static int dump_actionsELF32(const pbuffer_t p, const poptions_t o) {
 static int dump_actionsELF64(const pbuffer_t p, const poptions_t o) {
   int n = 0;
   if (issafe(p)) {
-    uint64_t vp = 0;
+    uint64_t chunksize = 0;
     uint64_t vt = 0;
     paction_t x = o->actions;
     while (x) {
@@ -212,7 +218,7 @@ static int dump_actionsELF64(const pbuffer_t p, const poptions_t o) {
           printf_w("section '%s' was not dumped because it does not exist!", x->secname);
         }
       } else if (ACT_PIECEWISE == x->action) {
-        vp = x->value;
+        chunksize = x->value;
       } else if (ACT_THRESHOLD == x->action) {
         vt = x->value;
       }
@@ -220,7 +226,7 @@ static int dump_actionsELF64(const pbuffer_t p, const poptions_t o) {
       x = x->actions;
     }
 
-    n += dump_actionsELF1(p, o, vp, vt);
+    n += dump_actionsELF1(o, p->data, p->size, chunksize, vt);
   }
 
   return n;
