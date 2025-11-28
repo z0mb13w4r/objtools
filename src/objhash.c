@@ -131,14 +131,32 @@ static int dump_actionsELF0(const pbuffer_t p, const poptions_t o, const char* n
   return n;
 }
 
-static int dump_actionsELF1(const poptions_t o, const unknown_t p, const size_t size, const uint64_t chunksize, const uint64_t vt) {
+static int dump_actionsELF1(const poptions_t o, const unknown_t p, const size_t size, const size_t chunksize, const size_t limitsize) {
   int n = 0;
-  if (p && o && chunksize && vt <= size) {
-    handle_t p0 = fmalloc(p, size, chunksize);
-    if (p0) {
+  if (p && o && chunksize && limitsize <= size) {
+    pfind_t p0 = fmalloc(p, size, chunksize);
+    while (!fiseof(p0)) {
+      size_t epos = MIN(p0->epos, p0->cpos + chunksize - 1);
+      if (MODE_ISANY(o->action, OPTOBJHASH_SHA1)) {
+        n += printf_sore(fget(p0), epos - p0->cpos + 1, USE_SHA1 | USE_NOTEXT);
+      } else if (MODE_ISANY(o->action, OPTOBJHASH_SHA256)) {
+        n += printf_sore(fget(p0), epos - p0->cpos + 1, USE_SHA256 | USE_NOTEXT);
+      } else if (MODE_ISANY(o->action, OPTOBJHASH_SHA512)) {
+        n += printf_sore(fget(p0), epos - p0->cpos + 1, USE_SHA512 | USE_NOTEXT);
+      } else {
+        n += printf_sore(fget(p0), epos - p0->cpos + 1, USE_MD5 | USE_NOTEXT);
+      }
 
-      ffree(p0);
+      n += printf_text(o->inpname, USE_LT | USE_SPACE);
+      n += printf_text("offset", USE_LT | USE_SPACE);
+      n += printf_nice(p0->cpos, USE_DEC);
+      n += printf_nice(epos, USE_DEC | USE_DASH | USE_NOSPACE);
+      n += printf_eol();
+
+      p0 = fnext(p0);
     }
+
+    ffree(p0);
   }
 
   return n;
@@ -177,8 +195,8 @@ static int dump_hash(const pbuffer_t p, const poptions_t o) {
 static int dump_actionsELF32(const pbuffer_t p, const poptions_t o) {
   int n = 0;
   if (issafe(p)) {
-    uint64_t chunksize = 0;
-    uint64_t limitsize = 0;
+    size_t chunksize = 0;
+    size_t limitsize = 0;
     paction_t x = o->actions;
     while (x) {
       if (x->secname[0]) {
@@ -206,8 +224,8 @@ static int dump_actionsELF32(const pbuffer_t p, const poptions_t o) {
 static int dump_actionsELF64(const pbuffer_t p, const poptions_t o) {
   int n = 0;
   if (issafe(p)) {
-    uint64_t chunksize = 0;
-    uint64_t limitsize = 0;
+    size_t chunksize = 0;
+    size_t limitsize = 0;
     paction_t x = o->actions;
     while (x) {
       if (x->secname[0]) {
