@@ -6,6 +6,9 @@
 #include "memfind.h"
 #include "objhash.h"
 
+static size_t chunksize = 0;
+static size_t limitsize = 0;
+
 static int dump_create0(const pbuffer_t p, const imode_t mode, const int maxsize) {
   int n = 0;
   if (OPTOBJHASH_HEADERS == mode)       n += printf_text("SECTION HEADERS", USE_LT | USE_COLON | USE_EOL);
@@ -184,8 +187,6 @@ static int dump_hash(const pbuffer_t p, const poptions_t o) {
 static int dump_actionsELF32(const pbuffer_t p, const poptions_t o) {
   int n = 0;
   if (issafe(p)) {
-    size_t chunksize = 0;
-    size_t limitsize = 0;
     paction_t x = o->actions;
     while (x) {
       if (x->secname[0]) {
@@ -213,8 +214,6 @@ static int dump_actionsELF32(const pbuffer_t p, const poptions_t o) {
 static int dump_actionsELF64(const pbuffer_t p, const poptions_t o) {
   int n = 0;
   if (issafe(p)) {
-    size_t chunksize = 0;
-    size_t limitsize = 0;
     paction_t x = o->actions;
     while (x) {
       if (x->secname[0]) {
@@ -224,7 +223,23 @@ static int dump_actionsELF64(const pbuffer_t p, const poptions_t o) {
         } else {
           printf_w("section '%s' was not dumped because it does not exist!", x->secname);
         }
-      } else if (ACT_PIECEWISE == x->action) {
+      }
+
+      x = x->actions;
+    }
+
+    n += dump_actionsELF1(o, p->data, p->size, chunksize, limitsize);
+  }
+
+  return n;
+}
+
+static int dump_actionsPRE(const pbuffer_t p, const poptions_t o) {
+  int n = 0;
+  if (issafe(p)) {
+    paction_t x = o->actions;
+    while (x) {
+      if (ACT_PIECEWISE == x->action) {
         chunksize = x->value;
       } else if (ACT_THRESHOLD == x->action) {
         limitsize = x->value;
@@ -232,8 +247,6 @@ static int dump_actionsELF64(const pbuffer_t p, const poptions_t o) {
 
       x = x->actions;
     }
-
-    n += dump_actionsELF1(o, p->data, p->size, chunksize, limitsize);
   }
 
   return n;
@@ -249,6 +262,8 @@ int objhash(const pbuffer_t p0, const poptions_t o) {
       goto objhash_die;
     }
   }
+
+  dump_actionsPRE(p0, o);
 
   if (isELF32(p0)) {
     if (MODE_ISANY(o->action, OPTOBJHASH_HEADERS))     dump_createELF32(p0, o, OPTOBJHASH_HEADERS);
