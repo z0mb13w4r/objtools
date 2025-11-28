@@ -178,7 +178,7 @@ static int dump_actionsELF32(const pbuffer_t p, const poptions_t o) {
   int n = 0;
   if (issafe(p)) {
     uint64_t chunksize = 0;
-    uint64_t vt = 0;
+    uint64_t limitsize = 0;
     paction_t x = o->actions;
     while (x) {
       if (x->secname[0]) {
@@ -191,13 +191,13 @@ static int dump_actionsELF32(const pbuffer_t p, const poptions_t o) {
       } else if (ACT_PIECEWISE == x->action) {
         chunksize = x->value;
       } else if (ACT_THRESHOLD == x->action) {
-        vt = x->value;
+        limitsize = x->value;
       }
 
       x = x->actions;
     }
 
-    n += dump_actionsELF1(o, p->data, p->size, chunksize, vt);
+    n += dump_actionsELF1(o, p->data, p->size, chunksize, limitsize);
   }
 
   return n;
@@ -207,7 +207,7 @@ static int dump_actionsELF64(const pbuffer_t p, const poptions_t o) {
   int n = 0;
   if (issafe(p)) {
     uint64_t chunksize = 0;
-    uint64_t vt = 0;
+    uint64_t limitsize = 0;
     paction_t x = o->actions;
     while (x) {
       if (x->secname[0]) {
@@ -220,13 +220,13 @@ static int dump_actionsELF64(const pbuffer_t p, const poptions_t o) {
       } else if (ACT_PIECEWISE == x->action) {
         chunksize = x->value;
       } else if (ACT_THRESHOLD == x->action) {
-        vt = x->value;
+        limitsize = x->value;
       }
 
       x = x->actions;
     }
 
-    n += dump_actionsELF1(o, p->data, p->size, chunksize, vt);
+    n += dump_actionsELF1(o, p->data, p->size, chunksize, limitsize);
   }
 
   return n;
