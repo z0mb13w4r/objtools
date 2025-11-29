@@ -44,11 +44,11 @@ static int get_options_objdwarf(poptions_t o, int argc, char** argv, char* name)
           }
           o->ocdump |= ocdump;
         } else if (0 == xstrcmp(arg0, "--hex-dump")) {
-          oinsertsecname(o, ACT_HEXDUMP, arg1);
+          oinsertsname(o, ACT_HEXDUMP, arg1);
         } else if (0 == xstrcmp(arg0, "--string-dump")) {
-          oinsertsecname(o, ACT_STRDUMP8, arg1);
+          oinsertsname(o, ACT_STRDUMP8, arg1);
         } else if (0 == xstrcmp(arg0, "--decompress")) {
-          oinsertsecname(o, ACT_ZLIB, arg1);
+          oinsertsname(o, ACT_ZLIB, arg1);
         } else {
           return odeath(o, THIS_NAME, arg0 + 2);
         }
@@ -70,17 +70,17 @@ static int get_options_objdwarf(poptions_t o, int argc, char** argv, char* name)
         if (argc <= (i + 1)) {
           return odeath(o, THIS_NAME, argv[i] + 1);
         }
-        oinsertsecname(o, ACT_HEXDUMP, argv[++i]);
+        oinsertsname(o, ACT_HEXDUMP, argv[++i]);
       } else if (0 == xstrcmp(argv[i], "-p")) {
         if (argc <= (i + 1)) {
           return odeath(o, THIS_NAME, argv[i] + 1);
         }
-        oinsertsecname(o, ACT_STRDUMP8, argv[++i]);
+        oinsertsname(o, ACT_STRDUMP8, argv[++i]);
       } else if (0 == xstrcmp(argv[i], "-z")) {
         if (argc <= (i + 1)) {
           return odeath(o, THIS_NAME, argv[i] + 1);
         }
-        oinsertsecname(o, ACT_ZLIB, argv[++i]);
+        oinsertsname(o, ACT_ZLIB, argv[++i]);
       } else {
         imode_t action = get_options1(o, zOBJDWARFARGS, argv[i]);
         if (0 == action) {

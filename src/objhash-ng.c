@@ -38,9 +38,9 @@ static int get_options_objhash(poptions_t o, int argc, char** argv, char* name) 
 
       if (ECODE_ISOK(breakup_args(argv[i], arg0, NELEMENTS(arg0), arg1, NELEMENTS(arg1)))) {
         if (0 == xstrcmp(arg0, "--hex-dump")) {
-          oinsertsecname(o, ACT_HEXDUMP, arg1);
+          oinsertsname(o, ACT_HEXDUMP, arg1);
         } else if (0 == xstrcmp(arg0, "--string-dump")) {
-          oinsertsecname(o, ACT_STRDUMP8, arg1);
+          oinsertsname(o, ACT_STRDUMP8, arg1);
         } else if (0 == xstrcmp(arg0, "--piecewise")) {
           oinsertvalue(o, ACT_PIECEWISE, atovalue(arg1));
         } else if (0 == xstrcmp(arg0, "--threshold")) {
@@ -63,12 +63,12 @@ static int get_options_objhash(poptions_t o, int argc, char** argv, char* name) 
         if (argc <= (i + 1)) {
           return odeath(o, THIS_NAME, argv[i] + 1);
         }
-        oinsertsecname(o, ACT_HEXDUMP, argv[++i]);
+        oinsertsname(o, ACT_HEXDUMP, argv[++i]);
       } else if (0 == xstrcmp(argv[i], "-p")) {
         if (argc <= (i + 1)) {
           return odeath(o, THIS_NAME, argv[i] + 1);
         }
-        oinsertsecname(o, ACT_STRDUMP8, argv[++i]);
+        oinsertsname(o, ACT_STRDUMP8, argv[++i]);
       } else if (0 == xstrcmp(argv[i], "-P")) {
         if (argc <= (i + 1)) {
           return odeath(o, THIS_NAME, argv[i] + 1);

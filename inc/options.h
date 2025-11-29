@@ -274,7 +274,7 @@ typedef struct action_s {
   smode_t  mode;
   int      action;
   union {
-    char     name[256];
+    char     sname[256];
     char     secname[256];
   };
   union {
@@ -346,8 +346,8 @@ int version0(poptions_t o, const char* name, const args_t args[]);
 int breakup_args(char* args, char* dst0, const size_t dst0size, char* dst1, const size_t dst1size);
 
 int oinsert(handle_t o, handle_t p, const int action);
+int oinsertsname(handle_t o, const int action, const char *sname);
 int oinsertvalue(handle_t o, const int action, const uint64_t value);
-int oinsertsecname(handle_t o, const int action, const char *secname);
 
 imode_t get_options1(poptions_t o, const args_t args[], const char *argv);
 imode_t set_options1(poptions_t o, const args_t args[]);

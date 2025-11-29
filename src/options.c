@@ -543,11 +543,11 @@ int oinsertvalue(handle_t o, const int action, const uint64_t value) {
   return ECODE_HANDLE;
 }
 
-int oinsertsecname(handle_t o, const int action, const char *secname) {
-  if (isoptions(o) && secname) {
+int oinsertsname(handle_t o, const int action, const char *sname) {
+  if (isoptions(o) && sname) {
     paction_t p = amalloc();
     if (isactions(p)) {
-      xstrncpy(p->secname, secname, NELEMENTS(p->secname));
+      xstrncpy(p->sname, sname, NELEMENTS(p->sname));
       oinsert(o, p, action);
       return ECODE_OK;
     }
