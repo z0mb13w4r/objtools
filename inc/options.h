@@ -273,9 +273,18 @@
 typedef struct action_s {
   smode_t  mode;
   int      action;
-  char     secname[256];
-  char     outname[PATH_MAX];
-  uint64_t value;
+  union {
+    char     name[256];
+    char     secname[256];
+  };
+  union {
+    char     inpname[PATH_MAX];
+    char     outname[PATH_MAX];
+  };
+  union {
+    int64_t  ivalue;
+    uint64_t uvalue;
+  };
   struct action_s *actions;
 } action_t, *paction_t;
 

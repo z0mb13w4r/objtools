@@ -534,7 +534,7 @@ int oinsertvalue(handle_t o, const int action, const uint64_t value) {
   if (isoptions(o)) {
     paction_t p = amalloc();
     if (isactions(p)) {
-      p->value = value;
+      p->uvalue = value;
       oinsert(o, p, action);
       return ECODE_OK;
     }

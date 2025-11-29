@@ -196,10 +196,6 @@ static int dump_actionsELF32(const pbuffer_t p, const poptions_t o) {
         } else {
           printf_w("section '%s' was not dumped because it does not exist!", x->secname);
         }
-      } else if (ACT_PIECEWISE == x->action) {
-        chunksize = x->value;
-      } else if (ACT_THRESHOLD == x->action) {
-        limitsize = x->value;
       }
 
       x = x->actions;
@@ -240,9 +236,9 @@ static int dump_actionsPRE(const pbuffer_t p, const poptions_t o) {
     paction_t x = o->actions;
     while (x) {
       if (ACT_PIECEWISE == x->action) {
-        chunksize = x->value;
+        chunksize = x->uvalue;
       } else if (ACT_THRESHOLD == x->action) {
-        limitsize = x->value;
+        limitsize = x->uvalue;
       }
 
       x = x->actions;

@@ -186,9 +186,9 @@ int main(int argc, char* argv[]) {
               isok = FALSE;
               break;
             } else if (ACT_INC == x0->action) {
-              step =  x0->value;
+              step =  x0->uvalue;
             } else if (ACT_DEC == x0->action) {
-              step = -x0->value;
+              step = -x0->uvalue;
             } else {
               dump_actions0(p, x0, b0->item, b0->size, step);
             }
