@@ -232,6 +232,8 @@
 #define ACT_BASE58E                                (403)
 #define ACT_BASE64D                                (404)
 #define ACT_BASE64E                                (405)
+#define ACT_VIGENERED                              (406)
+#define ACT_VIGENEREE                              (407)
 
 #define ACT_BIN8D                                  (500)
 #define ACT_BIN8E                                  (501)

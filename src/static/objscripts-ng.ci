@@ -1,21 +1,22 @@
-char zSCRIPTADD[] = "ADD (addition) the input with the given key.";
-char zSCRIPTNOT[] = "NOT (negation) the input.";
-char zSCRIPTROL[] = "ROL (rotate-left) the input with the given key.";
-char zSCRIPTROR[] = "ROR (rotate-right) the input with the given key.";
-char zSCRIPTROT[] = "Caesar substitution cipher which rotates alphabet characters by the specified amount.";
-char zSCRIPTSHL[] = "SHL (left-shift) the input with the given key.";
-char zSCRIPTSHR[] = "SHR (right-shift) the input with the given key.";
-char zSCRIPTSUB[] = "SUB (subtract) the input with the given key.";
-char zSCRIPTXOR[] = "XOR (eXclusive OR) the input with the given key.";
-char zSCRIPTINC[] = "Amount to increment or decrement the given key.";
-char zSCRIPTBIND[] = "Converts a binary byte string back into its raw value.";
-char zSCRIPTBINE[] = "Converts the input string to binary bytes separated by a delimiter.";
-char zSCRIPTDECD[] = "Converts the data from an ordinal integer array back into its raw form.";
-char zSCRIPTDECE[] = "Converts the input data to an ordinal integer array.";
-char zSCRIPTHEXD[] = "Converts a hexadecimal byte string back into its raw value.";
-char zSCRIPTHEXE[] = "Converts the input string to hexadecimal bytes separated by a delimiter.";
-char zSCRIPTBASE[] = "Encoding and decoding data using a restricted set of symbols.";
-char zSCRIPTBRUTE[] = "Enumerate all possible solutions. The current maximum key length is 2 due to performance.";
+static char zSCRIPTADD[] = "ADD (addition) the input with the given key.";
+static char zSCRIPTNOT[] = "NOT (negation) the input.";
+static char zSCRIPTROL[] = "ROL (rotate-left) the input with the given key.";
+static char zSCRIPTROR[] = "ROR (rotate-right) the input with the given key.";
+static char zSCRIPTROT[] = "Caesar substitution cipher which rotates alphabet characters by the specified amount.";
+static char zSCRIPTSHL[] = "SHL (left-shift) the input with the given key.";
+static char zSCRIPTSHR[] = "SHR (right-shift) the input with the given key.";
+static char zSCRIPTSUB[] = "SUB (subtract) the input with the given key.";
+static char zSCRIPTXOR[] = "XOR (eXclusive OR) the input with the given key.";
+static char zSCRIPTINC[] = "Amount to increment or decrement the given key.";
+static char zSCRIPTBIND[] = "Converts a binary byte string back into its raw value.";
+static char zSCRIPTBINE[] = "Converts the input string to binary bytes separated by a delimiter.";
+static char zSCRIPTDECD[] = "Converts the data from an ordinal integer array back into its raw form.";
+static char zSCRIPTDECE[] = "Converts the input data to an ordinal integer array.";
+static char zSCRIPTHEXD[] = "Converts a hexadecimal byte string back into its raw value.";
+static char zSCRIPTHEXE[] = "Converts the input string to hexadecimal bytes separated by a delimiter.";
+static char zSCRIPTBASE[] = "Encoding and decoding data using a restricted set of symbols.";
+static char zSCRIPTBRUTE[] = "Enumerate all possible solutions. The current maximum key length is 2 due to performance.";
+static char zSCRIPTVIGENERE[] = "Encoding and decoding data using Vigenere Cipher.";
 
 args_t zSCRIPTCOMMANDS[] = {
   {0, "add8",     ACT_ADD8,             NULL,                  1},
@@ -93,17 +94,20 @@ args_t zSCRIPTCOMMANDSEX[] = {
   {0, "base64d",      ACT_BASE64D,          NULL,                  17},
   {0, "base64e",      ACT_BASE64E,          zSCRIPTBASE,           17},
 
-  {0, "rol8brute",    ACT_ROL8BRUTE,        NULL,                  18},
-  {0, "ror8brute",    ACT_ROR8BRUTE,        NULL,                  18},
-  {0, "shl8brute",    ACT_SHL8BRUTE,        NULL,                  18},
-  {0, "shr8brute",    ACT_SHR8BRUTE,        NULL,                  18},
-  {0, "xor8brute",    ACT_XOR8BRUTE,        NULL,                  18},
+  {0, "vigenered",    ACT_VIGENERED,        NULL,                  18},
+  {0, "vigeneree",    ACT_VIGENEREE,        zSCRIPTVIGENERE,       18},
 
-  {0, "rol16brute",   ACT_ROL16BRUTE,       NULL,                  19},
-  {0, "ror16brute",   ACT_ROR16BRUTE,       NULL,                  19},
-  {0, "shl16brute",   ACT_SHL16BRUTE,       NULL,                  19},
-  {0, "shr16brute",   ACT_SHR16BRUTE,       NULL,                  19},
-  {0, "xor16brute",   ACT_XOR16BRUTE,       zSCRIPTBRUTE,          19},
+  {0, "rol8brute",    ACT_ROL8BRUTE,        NULL,                  19},
+  {0, "ror8brute",    ACT_ROR8BRUTE,        NULL,                  19},
+  {0, "shl8brute",    ACT_SHL8BRUTE,        NULL,                  19},
+  {0, "shr8brute",    ACT_SHR8BRUTE,        NULL,                  19},
+  {0, "xor8brute",    ACT_XOR8BRUTE,        NULL,                  19},
+
+  {0, "rol16brute",   ACT_ROL16BRUTE,       NULL,                  20},
+  {0, "ror16brute",   ACT_ROR16BRUTE,       NULL,                  20},
+  {0, "shl16brute",   ACT_SHL16BRUTE,       NULL,                  20},
+  {0, "shr16brute",   ACT_SHR16BRUTE,       NULL,                  20},
+  {0, "xor16brute",   ACT_XOR16BRUTE,       zSCRIPTBRUTE,          20},
 
   {0, NULL}
 };
