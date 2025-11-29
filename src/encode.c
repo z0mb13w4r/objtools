@@ -595,3 +595,10 @@ handle_t base64_encode(unknown_t src, size_t srcsize) {
   return NULL;
 }
 
+handle_t vigenere_encode(unknown_t src, size_t srcsize, unknown_t key, size_t keysize) {
+  if (src && srcsize && key && keysize) {
+  }
+
+  return NULL;
+}
+

@@ -282,6 +282,7 @@ typedef struct action_s {
     char     outname[PATH_MAX];
   };
   union {
+    size_t   size;
     int64_t  ivalue;
     uint64_t uvalue;
   };

@@ -829,6 +829,13 @@ handle_t base64_decode(unknown_t src, size_t srcsize) {
   return NULL;
 }
 
+handle_t vigenere_decode(unknown_t src, size_t srcsize, unknown_t key, size_t keysize) {
+  if (src && srcsize && key && keysize) {
+  }
+
+  return NULL;
+}
+
 uint64_t sleb128_decode(unknown_t src, size_t srcsize) {
   uint64_t n = 0;
 
