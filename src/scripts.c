@@ -31,12 +31,6 @@ static imode_t breakup_script(const pargs_t p, const char *name, uint64_t *uvalu
   return x;
 }
 
-static pick_t zSTRINGPARAM[] = {
-  ACT_VIGENERED,
-  ACT_VIGENEREE,
-  PICK_END
-};
-
 static int sprocess(poptions_t o, const char *script, const pargs_t args0, const pargs_t args1) {
   MALLOCA(char, tmp, 1024);
   if (isoptions(o) && script && script[0]) {
@@ -52,7 +46,7 @@ static int sprocess(poptions_t o, const char *script, const pargs_t args0, const
         uint64_t v = 0;
         const int x0 = breakup_script(args0, p0, &v, n, NELEMENTS(n));
         if (ECODE_ARGUMENTS != x0) {
-          if (isused(zSTRINGPARAM, x0)) {
+          if (MODE_ISANY(x0, ACT_USESTRING)) {
             oinsertsname(o, x0, n);
           } else {
             oinsertvalue(o, x0, v);
@@ -60,7 +54,7 @@ static int sprocess(poptions_t o, const char *script, const pargs_t args0, const
         } else if (args1) {
           const int x1 = breakup_script(args1, p0, &v, n, NELEMENTS(n));
           if (ECODE_ARGUMENTS != x1) {
-            if (isused(zSTRINGPARAM, x0)) {
+            if (MODE_ISANY(x0, ACT_USESTRING)) {
               oinsertsname(o, x0, n);
             } else {
               oinsertvalue(o, x1, v);
@@ -78,7 +72,7 @@ static int sprocess(poptions_t o, const char *script, const pargs_t args0, const
       uint64_t v = 0;
       const int x0 = breakup_script(args0, script, &v, n, NELEMENTS(n));
       if (ECODE_ARGUMENTS != x0) {
-        if (isused(zSTRINGPARAM, x0)) {
+        if (MODE_ISANY(x0, ACT_USESTRING)) {
           return oinsertsname(o, x0, n);
         } else {
           return oinsertvalue(o, x0, v);
@@ -86,7 +80,7 @@ static int sprocess(poptions_t o, const char *script, const pargs_t args0, const
       } else if (args1) {
         const int x1 = breakup_script(args1, script, &v, n, NELEMENTS(n));
         if (ECODE_ARGUMENTS != x1) {
-          if (isused(zSTRINGPARAM, x1)) {
+          if (MODE_ISANY(x0, ACT_USESTRING)) {
             return oinsertsname(o, x1, n);
           } else {
             return oinsertvalue(o, x1, v);
