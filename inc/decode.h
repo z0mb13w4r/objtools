@@ -26,6 +26,8 @@
 #define AES_MODE_CTR192      (15)
 #define AES_MODE_CTR256      (16)
 
+int vigenere_code(int c);
+
 int not8(const unknown_t p, const size_t size);
 int not16(const unknown_t p, const size_t size);
 int not32(const unknown_t p, const size_t size);

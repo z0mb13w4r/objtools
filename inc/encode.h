@@ -3,6 +3,8 @@
 
 #include "defines.h"
 
+int vigenere_code(int c);
+
 handle_t bin8_encode(unknown_t src, size_t srcsize);
 handle_t bin16_encode(unknown_t src, size_t srcsize);
 handle_t bin32_encode(unknown_t src, size_t srcsize);
