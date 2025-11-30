@@ -607,11 +607,11 @@ handle_t vigenere_encode(unknown_t src, size_t srcsize, unknown_t key, size_t ke
       size_t j = 0;
       for (size_t i = 0; i < srcsize; ++i) {
         if ('a' <= psrc[i] && psrc[i] <= 'z') {
-          int x = vigenere_code(psrc[i]) + vigenere_code(pkey[j++]);
-          pdst[dst->cpos++] = x >= 26 ? 'a' + x - 26 : 'a' + x;
+          int x = (vigenere_code(psrc[i]) + vigenere_code(pkey[j++])) % 26;
+          pdst[dst->cpos++] = 'a' + x;
         } else if ('A' <= psrc[i] && psrc[i] <= 'Z') {
-          int x = vigenere_code(psrc[i]) + vigenere_code(pkey[j++]);
-          pdst[dst->cpos++] = x >= 26 ? 'A' + x - 26 : 'A' + x;
+          int x = (vigenere_code(psrc[i]) + vigenere_code(pkey[j++])) % 26;
+          pdst[dst->cpos++] = 'A' + x;
         } else {
           pdst[dst->cpos++] = psrc[i];
         }
