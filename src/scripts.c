@@ -1,7 +1,7 @@
 #include "scripts.h"
 #include "objutils.h"
 
-static imode_t breakup_script(const pargs_t p, const char *name, uint64_t *uvalue, char *svalue) {
+static imode_t breakup_script(const pargs_t p, const char *name, uint64_t *uvalue, char *svalue, const size_t svaluesize) {
   MALLOCA(char, tmp, 1024);
 
   int x = ECODE_ARGUMENTS;
@@ -22,7 +22,7 @@ static imode_t breakup_script(const pargs_t p, const char *name, uint64_t *uvalu
         tok = strtok(NULL, DELIMITS);
         if (tok) {
           *uvalue = atovalue(tok);
-          xstrcpy(svalue, tok);
+          xstrncpy(svalue, tok, svaluesize);
         }
       }
     }
@@ -50,7 +50,7 @@ static int sprocess(poptions_t o, const char *script, const pargs_t args0, const
         *p1 = 0;
         char n[1024];
         uint64_t v = 0;
-        const int x0 = breakup_script(args0, p0, &v, n);
+        const int x0 = breakup_script(args0, p0, &v, n, NELEMENTS(n));
         if (ECODE_ARGUMENTS != x0) {
           if (isused(zSTRINGPARAM, x0)) {
             oinsertsname(o, x0, n);
@@ -58,7 +58,7 @@ static int sprocess(poptions_t o, const char *script, const pargs_t args0, const
             oinsertvalue(o, x0, v);
           }
         } else if (args1) {
-          const int x1 = breakup_script(args1, p0, &v, n);
+          const int x1 = breakup_script(args1, p0, &v, n, NELEMENTS(n));
           if (ECODE_ARGUMENTS != x1) {
             if (isused(zSTRINGPARAM, x0)) {
               oinsertsname(o, x0, n);
@@ -76,7 +76,7 @@ static int sprocess(poptions_t o, const char *script, const pargs_t args0, const
     } else {
       char n[1024];
       uint64_t v = 0;
-      const int x0 = breakup_script(args0, script, &v, n);
+      const int x0 = breakup_script(args0, script, &v, n, NELEMENTS(n));
       if (ECODE_ARGUMENTS != x0) {
         if (isused(zSTRINGPARAM, x0)) {
           return oinsertsname(o, x0, n);
@@ -84,7 +84,7 @@ static int sprocess(poptions_t o, const char *script, const pargs_t args0, const
           return oinsertvalue(o, x0, v);
         }
       } else if (args1) {
-        const int x1 = breakup_script(args1, script, &v, n);
+        const int x1 = breakup_script(args1, script, &v, n, NELEMENTS(n));
         if (ECODE_ARGUMENTS != x1) {
           if (isused(zSTRINGPARAM, x1)) {
             return oinsertsname(o, x1, n);
