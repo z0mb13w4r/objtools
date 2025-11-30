@@ -829,11 +829,41 @@ handle_t base64_decode(unknown_t src, size_t srcsize) {
   return NULL;
 }
 
+static int vigenere_code(int c) {
+  if ('A' <= c && c <= 'Z') {
+    return c - 'A';
+  } else if ('a' <= c && c <= 'z') {
+    return c - 'a';
+  }
+
+  return 0;
+}
+
 handle_t vigenere_decode(unknown_t src, size_t srcsize, unknown_t key, size_t keysize) {
   if (src && srcsize && key && keysize) {
     pfind_t dst = fxalloc(srcsize, MEMFIND_NOCHUNKSIZE);
     if (dst) {
       puchar_t pdst = CAST(puchar_t, dst->item);
+
+      puchar_t pkey = CAST(puchar_t, key);
+      puchar_t psrc = CAST(puchar_t, src);
+
+      size_t j = 0;
+      for (size_t i = 0; i < srcsize; ++i) {
+        if ('a' <= psrc[i] && psrc[i] <= 'z') {
+          int x = vigenere_code(psrc[i]) - vigenere_code(pkey[j++]);
+
+          pdst[dst->cpos++] = x < 0 ? 'z' + x + 1: 'a' + x;
+        } else if ('A' <= psrc[i] && psrc[i] <= 'Z') {
+          int x = vigenere_code(psrc[i]) - vigenere_code(pkey[j++]);
+
+          pdst[dst->cpos++] = x < 0 ? 'Z' + x + 1: 'A' + x;
+        } else {
+          pdst[dst->cpos++] = psrc[i];
+        }
+
+        if (j >= keysize) j = 0;
+      }
 
       pdst[dst->cpos] = '\0';   /* string padding character */
       dst->size = dst->cpos + 1;
