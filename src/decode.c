@@ -831,6 +831,16 @@ handle_t base64_decode(unknown_t src, size_t srcsize) {
 
 handle_t vigenere_decode(unknown_t src, size_t srcsize, unknown_t key, size_t keysize) {
   if (src && srcsize && key && keysize) {
+    pfind_t dst = fxalloc(srcsize, MEMFIND_NOCHUNKSIZE);
+    if (dst) {
+      puchar_t pdst = CAST(puchar_t, dst->item);
+
+      pdst[dst->cpos] = '\0';   /* string padding character */
+      dst->size = dst->cpos + 1;
+      dst->epos = dst->cpos;
+      dst->cpos = 0;
+      return dst;
+    }
   }
 
   return NULL;

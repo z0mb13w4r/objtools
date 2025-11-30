@@ -548,6 +548,7 @@ int oinsertsname(handle_t o, const int action, const char *sname) {
     paction_t p = amalloc();
     if (isactions(p)) {
       xstrncpy(p->sname, sname, NELEMENTS(p->sname));
+      p->size = xstrlen(p->sname);
       oinsert(o, p, action);
       return ECODE_OK;
     }

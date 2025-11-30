@@ -1,11 +1,11 @@
 #include "scripts.h"
 #include "objutils.h"
 
-static imode_t breakup_script(const pargs_t p, const char *name, uint64_t *value) {
+static imode_t breakup_script(const pargs_t p, const char *name, uint64_t *uvalue, char *svalue) {
   MALLOCA(char, tmp, 1024);
 
   int x = ECODE_ARGUMENTS;
-  if (p && name && value) {
+  if (p && name && uvalue && svalue) {
     xstrncpy(tmp, name, NELEMENTS(tmp));
 
     const char DELIMITS[] = "(){},";
@@ -21,7 +21,8 @@ static imode_t breakup_script(const pargs_t p, const char *name, uint64_t *value
       if (ECODE_ARGUMENTS != x) {
         tok = strtok(NULL, DELIMITS);
         if (tok) {
-          *value = atovalue(tok);
+          *uvalue = atovalue(tok);
+          xstrcpy(svalue, tok);
         }
       }
     }
@@ -29,6 +30,12 @@ static imode_t breakup_script(const pargs_t p, const char *name, uint64_t *value
 
   return x;
 }
+
+static pick_t zSTRINGPARAM[] = {
+  ACT_VIGENERED,
+  ACT_VIGENEREE,
+  PICK_END
+};
 
 static int sprocess(poptions_t o, const char *script, const pargs_t args0, const pargs_t args1) {
   MALLOCA(char, tmp, 1024);
@@ -41,14 +48,23 @@ static int sprocess(poptions_t o, const char *script, const pargs_t args0, const
     if (p1) {
       while (p1) {
         *p1 = 0;
+        char n[1024];
         uint64_t v = 0;
-        const int x0 = breakup_script(args0, p0, &v);
+        const int x0 = breakup_script(args0, p0, &v, n);
         if (ECODE_ARGUMENTS != x0) {
-          oinsertvalue(o, x0, v);
+          if (isused(zSTRINGPARAM, x0)) {
+            oinsertsname(o, x0, n);
+          } else {
+            oinsertvalue(o, x0, v);
+          }
         } else if (args1) {
-          const int x1 = breakup_script(args1, p0, &v);
+          const int x1 = breakup_script(args1, p0, &v, n);
           if (ECODE_ARGUMENTS != x1) {
-            oinsertvalue(o, x1, v);
+            if (isused(zSTRINGPARAM, x0)) {
+              oinsertsname(o, x0, n);
+            } else {
+              oinsertvalue(o, x1, v);
+            }
           }
         }
 
@@ -58,14 +74,23 @@ static int sprocess(poptions_t o, const char *script, const pargs_t args0, const
 
       return ECODE_OK;
     } else {
+      char n[1024];
       uint64_t v = 0;
-      const int x0 = breakup_script(args0, script, &v);
+      const int x0 = breakup_script(args0, script, &v, n);
       if (ECODE_ARGUMENTS != x0) {
-        return oinsertvalue(o, x0, v);
+        if (isused(zSTRINGPARAM, x0)) {
+          return oinsertsname(o, x0, n);
+        } else {
+          return oinsertvalue(o, x0, v);
+        }
       } else if (args1) {
-        const int x1 = breakup_script(args1, script, &v);
+        const int x1 = breakup_script(args1, script, &v, n);
         if (ECODE_ARGUMENTS != x1) {
-          return oinsertvalue(o, x1, v);
+          if (isused(zSTRINGPARAM, x1)) {
+            return oinsertsname(o, x1, n);
+          } else {
+            return oinsertvalue(o, x1, v);
+          }
         }
       }
     }
