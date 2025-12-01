@@ -20,6 +20,7 @@ handle_t hex32_encode(unknown_t src, size_t srcsize);
 handle_t base32_encode(unknown_t src, size_t srcsize);
 handle_t base58_encode(unknown_t src, size_t srcsize);
 handle_t base64_encode(unknown_t src, size_t srcsize);
+handle_t base85_encode(unknown_t src, size_t srcsize);
 
 handle_t vigenere_encode(unknown_t src, size_t srcsize, unknown_t key, size_t keysize);
 
