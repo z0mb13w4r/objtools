@@ -829,6 +829,14 @@ handle_t base64_decode(unknown_t src, size_t srcsize) {
   return NULL;
 }
 
+handle_t base85_decode(unknown_t src, size_t srcsize) {
+  if (src && srcsize) {
+
+  }
+
+  return NULL;
+}
+
 int vigenere_code(int c) {
   if ('A' <= c && c <= 'Z') {
     return c - 'A';

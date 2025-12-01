@@ -75,6 +75,7 @@ handle_t hex_decode(unknown_t src, size_t srcsize);
 handle_t base32_decode(unknown_t src, size_t srcsize);
 handle_t base58_decode(unknown_t src, size_t srcsize);
 handle_t base64_decode(unknown_t src, size_t srcsize);
+handle_t base85_decode(unknown_t src, size_t srcsize);
 
 handle_t vigenere_decode(unknown_t src, size_t srcsize, unknown_t key, size_t keysize);
 
