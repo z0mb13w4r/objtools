@@ -92,7 +92,9 @@ args_t zSCRIPTCOMMANDSEX[] = {
   {0, "base58d",      ACT_BASE58D,          NULL,                  17},
   {0, "base58e",      ACT_BASE58E,          NULL,                  17},
   {0, "base64d",      ACT_BASE64D,          NULL,                  17},
-  {0, "base64e",      ACT_BASE64E,          zSCRIPTBASE,           17},
+  {0, "base64e",      ACT_BASE64E,          NULL,                  17},
+  {0, "base85d",      ACT_BASE85D,          NULL,                  17},
+  {0, "base85e",      ACT_BASE85E,          zSCRIPTBASE,           17},
 
   {0, "vigenered",    ACT_VIGENERED,        NULL,                  18},
   {0, "vigeneree",    ACT_VIGENEREE,        zSCRIPTVIGENERE,       18},
