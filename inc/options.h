@@ -269,6 +269,7 @@
 
 #define ACT_ZLIB                                   (800)
 
+#define ACT_USEIVALUE                              U32MASK(29)
 #define ACT_USESTRING                              U32MASK(30)
 
 #define PICK_VERBOSE(x,y,z)            (MODE_ISANY((x)->ocdump, OPTDWARF_VERBOSE) ? (y) : (z))
