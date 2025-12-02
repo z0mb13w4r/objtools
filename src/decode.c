@@ -14,6 +14,8 @@ uchar_t base32_map[] = {
   'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '2', '3', '4', '5', '6', '7'
 };
 
+static uchar_t base32_ext[] = { 0, 0, 1, 0, 2, 3, 0, 4, 5 };
+
 int32_t base58_idx[128] = {
   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
@@ -694,8 +696,8 @@ handle_t base32_decode(unknown_t src, size_t srcsize) {
           // Handle and validate padding.
           if (isspace(ch)) continue;
           else if ('\0' == ch) {
-            idst = 0;
-            isdie = TRUE;
+            idst = j;
+//            isdie = TRUE;
             break;
           }
 
@@ -736,13 +738,15 @@ handle_t base32_decode(unknown_t src, size_t srcsize) {
           case 2:  pdst[dst->cpos + 0] = (tmp[0] << 3) | (tmp[1] >> 2);
           }
 
-          dst->cpos += 5;
+          if (idst < NELEMENTS(base32_ext)) {
+            dst->cpos += base32_ext[idst];
+          }
         }
       }
 
       pdst[dst->cpos] = '\0';   /* string padding character */
-      dst->size = dst->cpos + 1;
-      dst->epos = dst->cpos;
+      dst->size = dst->cpos;
+      dst->epos = dst->cpos - 1;
       dst->cpos = 0;
       return dst;
     }
@@ -831,7 +835,24 @@ handle_t base64_decode(unknown_t src, size_t srcsize) {
 
 handle_t base85_decode(unknown_t src, size_t srcsize) {
   if (src && srcsize) {
+    puchar_t psrc = CAST(puchar_t, src);
 
+    pfind_t dst = fxalloc(srcsize, MEMFIND_NOCHUNKSIZE);
+    if (dst) {
+      puchar_t pdst = CAST(puchar_t, dst->item);
+
+      size_t i = 0;
+      for (i = 0; i < srcsize; ++i) {
+
+      }
+
+
+      pdst[dst->cpos] = '\0';   /* string padding character */
+      dst->size = dst->cpos + 1;
+      dst->epos = dst->cpos;
+      dst->cpos = 0;
+      return dst;
+    }
   }
 
   return NULL;
