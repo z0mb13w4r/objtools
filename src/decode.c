@@ -701,9 +701,9 @@ handle_t base32_decode(unknown_t src, size_t srcsize) {
             break;
           }
 
-          size_t endsize = srcsize - i - 1;
-          if (ch == '=' && j >= 2 && endsize < 8) {
-//        if (endsize + j < 8 - 1) {
+          size_t sz = srcsize - i - 1;
+          if (ch == '=' && j >= 2 && sz < 8) {
+//        if (sz + j < 8 - 1) {
 //          // not enough padding
 //          return ECODE_CORRUPT;
 //        }
