@@ -109,6 +109,10 @@ int main(int argc, char* argv[]) {
               b0 = fswap(b0, base64_decode(b0->item, b0->size));
             } else if (ACT_BASE64E == x0->action) {
               b0 = fswap(b0, base64_encode(b0->item, b0->size));
+            } else if (ACT_BASE85D == x0->action) {
+              b0 = fswap(b0, base85_decode(b0->item, b0->size));
+            } else if (ACT_BASE85E == x0->action) {
+              b0 = fswap(b0, base85_encode(b0->item, b0->size));
             } else if (ACT_VIGENERED == x0->action) {
               b0 = fswap(b0, vigenere_decode(b0->item, b0->size, x0->sname, x0->size));
             } else if (ACT_VIGENEREE == x0->action) {
