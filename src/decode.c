@@ -665,7 +665,7 @@ handle_t hex_decode(unknown_t src, size_t srcsize) {
   return NULL;
 }
 
-static uint8_t base32_decode_char(char c) {
+static uint8_t base32_decode0(char c) {
   if (c >= 'A' && c <= 'Z') {
     return c - 'A';
   } else if (c >= '2' && c <= '7') {
@@ -688,15 +688,15 @@ handle_t base32_decode(unknown_t src, size_t srcsize) {
       bool_t isdie = FALSE;
       for (size_t i = 0; i < srcsize && !isok && !isdie; ) {
         uint8_t tmp[8];
-        size_t idst = 8;
 
+        size_t di = 8;
         for (size_t j = 0; j < 8; ) {
           uchar_t ch = psrc[i++];
 
           // Handle and validate padding.
           if (isspace(ch)) continue;
           else if ('\0' == ch) {
-            idst = j;
+            di = j;
 //            isdie = TRUE;
             break;
           }
@@ -714,15 +714,15 @@ handle_t base32_decode(unknown_t src, size_t srcsize) {
 //          }
 //        }
 
-            idst = j;
+            di = j;
             isok = TRUE;
 
-            if (idst == 1 || idst == 3 || idst == 6) isdie = TRUE;
+            if (1 == di || 3 == di || 6 == di) isdie = TRUE;
 
             break;
           }
 
-          tmp[j++] = ch = base32_decode_char(ch);
+          tmp[j++] = ch = base32_decode0(ch);
           if (ch == 0xFF) {
             isdie = TRUE;
             break;
@@ -730,7 +730,7 @@ handle_t base32_decode(unknown_t src, size_t srcsize) {
         }
 
         if (!isdie) {
-          switch (idst) {
+          switch (di) {
           case 8:  pdst[dst->cpos + 4] = (tmp[6] << 5) |  tmp[7];
           case 7:  pdst[dst->cpos + 3] = (tmp[4] << 7) | (tmp[5] << 2) | (tmp[6] >> 3);
           case 5:  pdst[dst->cpos + 2] = (tmp[3] << 4) | (tmp[4] >> 1);
@@ -738,8 +738,8 @@ handle_t base32_decode(unknown_t src, size_t srcsize) {
           case 2:  pdst[dst->cpos + 0] = (tmp[0] << 3) | (tmp[1] >> 2);
           }
 
-          if (idst < NELEMENTS(base32_ext)) {
-            dst->cpos += base32_ext[idst];
+          if (di < NELEMENTS(base32_ext)) {
+            dst->cpos += base32_ext[di];
           }
         }
       }
