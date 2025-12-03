@@ -41,6 +41,12 @@ uchar_t base64_map[] = {
   'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/'
 };
 
+static const bool_t   base85_decode_zero = TRUE;
+static const bool_t   base85_check_chars = TRUE;
+static const uchar_t  base85_def = 33u;
+static const uchar_t  base85_max = 85u;
+static const uint32_t base85_maxchunk = 256u;
+
 static int zap(int c0, int c1, int c2, int inc) {
   if (c0 >= c1 && c0 <= c2) {
     c0 += inc;
@@ -833,6 +839,10 @@ handle_t base64_decode(unknown_t src, size_t srcsize) {
   return NULL;
 }
 
+static bool_t base85_decode0(int c) {
+    return (c < 33u) || (c > 117u);
+}
+
 handle_t base85_decode(unknown_t src, size_t srcsize) {
   if (src && srcsize) {
     puchar_t psrc = CAST(puchar_t, src);
@@ -841,11 +851,84 @@ handle_t base85_decode(unknown_t src, size_t srcsize) {
     if (dst) {
       puchar_t pdst = CAST(puchar_t, dst->item);
 
-      size_t i = 0;
-      for (i = 0; i < srcsize; ++i) {
+      size_t si = 0;
+      bool_t isdie = FALSE;
 
+      while (si < srcsize) {
+        uint32_t chunk = 0u;
+        uint32_t chunksize = srcsize - si;
+
+        if (base85_decode_zero && ((uint8_t )'z' == psrc[si])) {
+          si += 1;
+          chunk = 0u;
+          chunksize = 5;
+        } else if (base85_check_chars
+               && (                      base85_decode0(psrc[si + 0])
+                  || ((chunksize > 1) && base85_decode0(psrc[si + 1]))
+                  || ((chunksize > 2) && base85_decode0(psrc[si + 2]))
+                  || ((chunksize > 3) && base85_decode0(psrc[si + 3]))
+                  || ((chunksize > 4) && base85_decode0(psrc[si + 4])))) {
+            isdie = TRUE;
+            break;
+        }
+        else if (chunksize >= 5) {
+          chunk  = psrc[si++] - base85_def;
+          chunk *= base85_max;
+          chunk += psrc[si++] - base85_def;
+          chunk *= base85_max;
+          chunk += psrc[si++] - base85_def;
+          chunk *= base85_max;
+          chunk += psrc[si++] - base85_def;
+
+          if (chunk > (UINT32_MAX / base85_max)) {
+            isdie = TRUE;
+            break;
+          } else {
+            uint8_t addend = psrc[si++] - base85_def;
+            chunk *= base85_max;
+
+            if (chunk > (UINT32_MAX - addend)) {
+              isdie = TRUE;
+              break;
+            } else {
+              chunk += addend;
+            }
+          }
+        } else {
+          chunk  = psrc[si++] - base85_def;
+          chunk *= base85_max;
+          chunk += ((si < srcsize) ? (psrc[si++] - base85_def) : base85_max - 1);
+          chunk *= base85_max;
+          chunk += ((si < srcsize) ? (psrc[si++] - base85_def) : base85_max - 1);
+          chunk *= base85_max;
+          chunk += ((si < srcsize) ? (psrc[si++] - base85_def) : base85_max - 1);
+
+          if (chunk > (UINT32_MAX / base85_max)) {
+            isdie = TRUE;
+            break;
+          } else  {
+            uint8_t addend = (uint8_t )((si < srcsize) ? (psrc[si++] - base85_def) : base85_max - 1);
+            chunk *= base85_max;
+
+            if (chunk > (UINT32_MAX - addend)) {
+              isdie = TRUE;
+              break;
+            } else {
+              chunk += addend;
+            }
+          }
+        }
+
+        pdst[dst->cpos + 3] = (chunk % base85_maxchunk);
+        chunk /= base85_maxchunk;
+        pdst[dst->cpos + 2] = (chunk % base85_maxchunk);
+        chunk /= base85_maxchunk;
+        pdst[dst->cpos + 1] = (chunk % base85_maxchunk);
+        chunk /= base85_maxchunk;
+        pdst[dst->cpos + 0] = chunk;
+
+        dst->cpos += chunksize >= 5 ? 4 : chunksize - 1;
       }
-
 
       pdst[dst->cpos] = '\0';   /* string padding character */
       dst->size = dst->cpos + 1;
@@ -856,6 +939,7 @@ handle_t base85_decode(unknown_t src, size_t srcsize) {
   }
 
   return NULL;
+
 }
 
 int vigenere_code(int c) {
