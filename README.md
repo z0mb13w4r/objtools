@@ -1,4 +1,4 @@
-# objtools
+# objtools-ng
 
 These tools were originally designed to be a research project and drop-in replacement for readelf, objcopy and objdump utilising Capstone disassembly framework. The project then started to grow to become a collection of tools for malware and binary analysis.
 
@@ -30,5 +30,5 @@ https://github.com/davea42/libdwarf-code - LGPL license
 
 ### License ###
 
-objtools is published under the MIT license.
+objtools-ng is published under the MIT license.
 
