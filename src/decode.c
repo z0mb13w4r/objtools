@@ -851,9 +851,9 @@ handle_t base85_decode(unknown_t src, size_t srcsize) {
     if (dst) {
       puchar_t pdst = CAST(puchar_t, dst->item);
 
-      size_t si = 0;
       bool_t isdie = FALSE;
 
+      size_t si = 0;
       while (si < srcsize) {
         size_t chunk = 0u;
         size_t chunksize = srcsize - si;

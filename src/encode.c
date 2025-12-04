@@ -609,7 +609,6 @@ handle_t base85_encode(unknown_t src, size_t srcsize) {
       puchar_t pdst = CAST(puchar_t, dst->item);
 
       size_t si = 0;
-
       while (si < srcsize) {
         size_t chunk;
         size_t chunksize = srcsize - si;
