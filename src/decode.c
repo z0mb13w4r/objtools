@@ -855,10 +855,10 @@ handle_t base85_decode(unknown_t src, size_t srcsize) {
       bool_t isdie = FALSE;
 
       while (si < srcsize) {
-        uint32_t chunk = 0u;
-        uint32_t chunksize = srcsize - si;
+        size_t chunk = 0u;
+        size_t chunksize = srcsize - si;
 
-        if (base85_decode_zero && ((uint8_t )'z' == psrc[si])) {
+        if (base85_decode_zero && ('z' == psrc[si])) {
           si += 1;
           chunk = 0u;
           chunksize = 5;
