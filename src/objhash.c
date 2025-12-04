@@ -168,6 +168,10 @@ static int dump_actionsELF1(const poptions_t o, const unknown_t p, const size_t 
 static int dump_hash(const pbuffer_t p, const poptions_t o) {
   int n = 0;
 
+  if (MODE_ISANY(o->action, OPTOBJHASH_FILESIZE)) {
+    n += printf_nice(p->size, USE_DEC | USE_COLON);
+  }
+
   if (MODE_ISANY(o->action, OPTOBJHASH_SHA1)) {
     n += printf_sore(p->data, p->size, USE_SHA1 | USE_NOTEXT);
   } else if (MODE_ISANY(o->action, OPTOBJHASH_SHA256)) {
