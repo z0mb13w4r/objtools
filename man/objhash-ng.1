@@ -8,6 +8,7 @@ objhash-ng [\fB\-H\fR|\fB\-\-help\fR]
            [\fB\-s\fR|\fB\-\-sections\fR]
            [\fB\-h\fR|\fB\-\-headers\fR]
            [\fB\-a\fR|\fB\-\-all\fR]
+           [\fB\-z\fR|\fB\-\-show\-size\fR]
            [\fB\-x\fR <number or name>|\fB\-\-hex\-dump=\fR<number or name>]
            [\fB\-p\fR <number or name>|\fB\-\-string\-dump=\fR<number or name>]
            [\fB\-P\fR <size>|\fB\-\-piecewise=\fR<size>]
@@ -58,6 +59,13 @@ Displays the information contained in the file's section headers and report the 
 .IX Item "--all"
 .PD
 Equivalent to specifying: \fB\-\-sections\fR and \fB\-\-headers\fR.
+.IP "\fB\-z\fR" 4
+.IX Item "-z"
+.PD 0
+.IP "\fB\-\-show\-size\fR" 4
+.IX Item "--show-size"
+.PD
+Display the file size before hash.
 .IP "\fB\-x <number or name>\fR" 4
 .IX Item "-x <number or name>"
 .PD 0
