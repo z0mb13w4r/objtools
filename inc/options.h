@@ -171,7 +171,8 @@
 #define OPTOBJHASH_SHA1                            U64MASK(3)
 #define OPTOBJHASH_SHA256                          U64MASK(4)
 #define OPTOBJHASH_SHA512                          U64MASK(5)
-#define OPTOBJHASH_FILESIZE                        U64MASK(6)
+#define OPTOBJHASH_SSDEEP                          U64MASK(6)
+#define OPTOBJHASH_FILESIZE                        U64MASK(7)
 
 #define OPTOBJHASH_ALL                 (OPTOBJHASH_SECTIONS | OPTOBJHASH_HEADERS)
 #define OPTOBJHASH_HASHES              (OPTOBJHASH_MD5 | OPTOBJHASH_SHA1 | OPTOBJHASH_SHA256 | OPTOBJHASH_SHA512)

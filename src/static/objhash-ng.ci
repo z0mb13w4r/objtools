@@ -23,8 +23,8 @@ static const args_t zOBJHASHARGS1[] = {
   {0,   "--md5",             OPTOBJHASH_MD5,               NULL,           1},
   {0,   "--sha1",            OPTOBJHASH_SHA1,              NULL,           1},
   {0,   "--sha256",          OPTOBJHASH_SHA256,            NULL,           1},
-  {0,   "--sha512",          OPTOBJHASH_SHA512,            zHASHING,       1},
-
+  {0,   "--sha512",          OPTOBJHASH_SHA512,            NULL,           1},
+  {0,   "--ssdeep",          OPTOBJHASH_SSDEEP,            zHASHING,       1},
   {0, NULL}
 };
 static const char *zOBJHASHDESCRIPTION[] = {
