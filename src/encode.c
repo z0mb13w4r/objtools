@@ -9,6 +9,10 @@ extern uchar_t base64_map[];
 
 static uchar_t base32_ext[] = { 0, 2, 4, 5, 7 };
 
+static const uchar_t base85_def = 33u;
+static const uchar_t base85_max = 85u;
+static const bool_t  base85_encode_zero = TRUE;
+
 static int binN(int x) {
   return x ? '1' : '0';
 }
@@ -281,7 +285,7 @@ handle_t dec32_encode(unknown_t src, size_t srcsize) {
           pdst[dst->cpos++] = ' ';
         }
 
-	dec_put(dst, psrc[i]);
+        dec_put(dst, psrc[i]);
       }
 
       if (minsize != maxsize) {
@@ -597,7 +601,54 @@ handle_t base64_encode(unknown_t src, size_t srcsize) {
 
 handle_t base85_encode(unknown_t src, size_t srcsize) {
   if (src && srcsize) {
+    puchar_t psrc = CAST(puchar_t, src);
 
+    size_t maxsize = ((srcsize + 3) / 4) * 5;
+    pfind_t dst = fxalloc(maxsize, MEMFIND_NOCHUNKSIZE);
+    if (dst) {
+      puchar_t pdst = CAST(puchar_t, dst->item);
+
+      size_t si = 0;
+
+      while (si < srcsize) {
+        size_t chunk;
+        size_t chunksize = srcsize - si;
+
+        if (chunksize >= 4) {
+          chunk  = (CAST(size_t, psrc[si++]) << 24u);
+          chunk |= (CAST(size_t, psrc[si++]) << 16u);
+          chunk |= (CAST(size_t, psrc[si++]) <<  8u);
+          chunk |= (CAST(size_t, psrc[si++]) <<  0u);
+        } else {
+          chunk  =                   (CAST(size_t, psrc[si++]) << 24u);
+          chunk |= ((si < srcsize) ? (CAST(size_t, psrc[si++]) << 16u) : 0u);
+          chunk |= ((si < srcsize) ? (CAST(size_t, psrc[si++]) <<  8u) : 0u);
+          chunk |= ((si < srcsize) ? (CAST(size_t, psrc[si++]) <<  0u) : 0u);
+        }
+
+        if (base85_encode_zero && (0u == chunk) && (chunksize >= 4)) {
+          pdst[dst->cpos++] = 'z';
+        } else {
+          pdst[dst->cpos + 4] = (chunk % base85_max) + base85_def;
+          chunk /= base85_max;
+          pdst[dst->cpos + 3] = (chunk % base85_max) + base85_def;
+          chunk /= base85_max;
+          pdst[dst->cpos + 2] = (chunk % base85_max) + base85_def;
+          chunk /= base85_max;
+          pdst[dst->cpos + 1] = (chunk % base85_max) + base85_def;
+          chunk /= base85_max;
+          pdst[dst->cpos + 0] = CAST(uchar_t, chunk) + base85_def;
+
+          dst->cpos += chunksize >= 4 ? 5 : chunksize + 1;
+        }
+      }
+
+      pdst[dst->cpos] = '\0';   /* string padding character */
+      dst->size = dst->cpos + 1;
+      dst->epos = dst->cpos;
+      dst->cpos = 0;
+      return dst;
+    }
   }
 
   return NULL;
