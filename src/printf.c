@@ -600,7 +600,7 @@ int printf_sore(const unknown_t p, const size_t size, const imode_t mode) {
   const int MAXSIZE = 10;
   const imode_t mode0 = GET_POS0(mode);
   const imode_t modex = GET_STYLE(mode);
-  const imode_t ymode = mode &  (USE_POS0MASK | USE_POS1MASK | USE_FLAGMASK | USE_COLORMASK);
+  const imode_t ymode = mode & (USE_POS0MASK | USE_POS1MASK | USE_FLAGMASK | USE_COLORMASK);
   int n = 0;
 
   if (USE_HASHALL == modex) {
@@ -629,7 +629,7 @@ int printf_sore(const unknown_t p, const size_t size, const imode_t mode) {
       n += printf_neat(o + n, sizeof(o) - n, *p0, USE_CHARCTRL);
     }
 
-    n += printf_epos(o, sizeof(o), mode);
+    n += printf_epos(o + n, sizeof(o) - n, mode);
     n += printf_post(o, mode);
   } else if (USE_STR16 == modex || USE_STR16SIZE == modex) {
     n += printf_spos(o, sizeof(o), mode, MODE_USESPACES(mode));
@@ -640,7 +640,7 @@ int printf_sore(const unknown_t p, const size_t size, const imode_t mode) {
       n += printf_neat(o + n, sizeof(o) - n, *p1, USE_CHARCTRL);
     }
 
-    n += printf_epos(o, sizeof(o), mode);
+    n += printf_epos(o + n, sizeof(o) - n, mode);
     n += printf_post(o, mode);
   } else if (USE_HEX == modex) {
     if (0 != size) {
@@ -785,17 +785,17 @@ int printf_sore(const unknown_t p, const size_t size, const imode_t mode) {
     n += printf_neat(o + n, sizeof(o) - n, '-', USE_CHAR);
     for (size_t i = 0; i < 8; ++i, ++p0) n += printf_neat(o + n, sizeof(o) - n, *p0, USE_LHEX8 | USE_NOSPACE);
 
-    n += printf_epos(o, sizeof(o), mode);
+    n += printf_epos(o + n, sizeof(o) - n, mode);
     n += printf_post(o, mode);
   } else if (USE_SLEB128 == modex) {
     n += printf_spos(o, sizeof(o), mode, MODE_USESPACES(mode));
     n += printf_neat(o + n, sizeof(o) - n, sleb128_decode(p, size), USE_DEC);
-    n += printf_epos(o, sizeof(o), mode);
+    n += printf_epos(o + n, sizeof(o) - n, mode);
     n += printf_post(o, mode);
   } else if (USE_ULEB128 == modex) {
     n += printf_spos(o, sizeof(o), mode, MODE_USESPACES(mode));
     n += printf_neat(o + n, sizeof(o) - n, uleb128_decode(p, size), USE_DEC);
-    n += printf_epos(o, sizeof(o), mode);
+    n += printf_epos(o + n, sizeof(o) - n, mode);
     n += printf_post(o, mode);
   }
 
