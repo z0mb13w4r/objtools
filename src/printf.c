@@ -713,6 +713,18 @@ int printf_sore(const unknown_t p, const size_t size, const imode_t mode) {
 
       ffree(p0);
     }
+  } else if (USE_BASE58 == modex) {
+    pfind_t p0 = base58_encode(p, size);
+    if (p0) {
+      if (MODE_ISNOT(mode, USE_NOTEXT)) {
+        n += printf_text("BASE58", USE_LT | USE_COLON | mode0 | SET_PAD(MAXSIZE));
+        n += printf_sore(p0->item, p0->size, USE_STR | USE_EOL);
+      } else {
+        n += printf_sore(p0->item, p0->size, USE_STR | ymode);
+      }
+
+      ffree(p0);
+    }
   } else if (USE_BASE64 == modex) {
     pfind_t p0 = base64_encode(p, size);
     if (p0) {
