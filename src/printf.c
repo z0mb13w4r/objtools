@@ -5,6 +5,7 @@
 #include <inttypes.h>
 
 #include "decode.h"
+#include "encode.h"
 #include "printf.h"
 #include "memuse.h"
 #include "memfind.h"
@@ -700,6 +701,18 @@ int printf_sore(const unknown_t p, const size_t size, const imode_t mode) {
     } else if (MODE_ISANY(mode, USE_NOTEXT)) {
       n += printf_hurt(md, SHA512_DIGEST_LENGTH, USE_HEX | ymode);
     }
+  } else if (USE_BASE64 == modex) {
+    pfind_t p0 = base64_encode(p, size);
+    if (p0) {
+      if (MODE_ISNOT(mode, USE_NOTEXT)) {
+        n += printf_text("BASE64", USE_LT | USE_COLON | mode0 | SET_PAD(MAXSIZE));
+        n += printf_sore(p0->item, p0->size, USE_STR | USE_EOL);
+      } else {
+        n += printf_sore(p0->item, p0->size, USE_STR | ymode);
+      }
+
+      ffree(p0);
+    }
   } else if (USE_CRC8 == modex) {
     if (MODE_ISNOT(mode, USE_NOTEXT)) {
       n += printf_text("CRC8", USE_LT | USE_COLON | mode0 | SET_PAD(MAXSIZE));
@@ -784,8 +797,6 @@ int printf_sore(const unknown_t p, const size_t size, const imode_t mode) {
     n += printf_neat(o + n, sizeof(o) - n, uleb128_decode(p, size), USE_DEC);
     n += printf_epos(o, sizeof(o), mode);
     n += printf_post(o, mode);
-  } else if (USE_BASE64 == modex) {
-
   }
 
   return n;
