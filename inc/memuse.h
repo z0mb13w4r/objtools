@@ -14,7 +14,8 @@ int xstrncmp(const char *x, const char *y, size_t count);
 
 int xstrichr(const char *str, int ch);
 
-size_t xstrlen(const char *str);
+size_t xstrlen(const char *s);
+size_t xstrnlen(const char *s, size_t count);
 
 char *xstrcat(char *dst, const char *src);
 char *xstrncat(char *dst, const char *src, size_t count);

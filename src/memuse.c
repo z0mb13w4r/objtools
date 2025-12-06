@@ -50,8 +50,12 @@ int xstrichr(const char *str, int ch) {
   return xstrlen(str);
 }
 
-size_t xstrlen(const char *str) {
-  return str ? strlen(str) : 0;
+size_t xstrlen(const char *s) {
+  return s ? strlen(s) : 0;
+}
+
+size_t xstrnlen(const char *s, size_t count) {
+  return s ? strnlen(s, count) : 0;
 }
 
 char *xstrchr(const char* str, int ch) {
