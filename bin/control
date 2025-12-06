@@ -1,5 +1,5 @@
 Package: objtools
-Version: 0.1
+Version: 1.0
 Architecture: amd64
 Maintainer: Kyle Wickens
 Depends: libssl-dev, binutils

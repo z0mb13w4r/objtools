@@ -12,7 +12,7 @@
 #include "static/objscripts-ng.ci"
 #include "static/objdisassemble-ng.ci"
 
-#define VERSION_VALUE "0.1"
+#define VERSION_VALUE "1.0"
 
 int usage_name(poptions_t o, const char* name, const args_t args[], const char* desc) {
   int n = 0;
