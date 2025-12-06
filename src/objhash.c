@@ -178,6 +178,8 @@ static int dump_hash(const pbuffer_t p, const poptions_t o) {
     n += printf_sore(p->data, p->size, USE_SHA256 | USE_NOTEXT);
   } else if (MODE_ISANY(o->action, OPTOBJHASH_SHA512)) {
     n += printf_sore(p->data, p->size, USE_SHA512 | USE_NOTEXT);
+  } else if (MODE_ISANY(o->action, OPTOBJHASH_SSDEEP)) {
+    n += printf_sore(p->data, p->size, USE_SSDEEP | USE_NOTEXT);
   } else {
     n += printf_sore(p->data, p->size, USE_MD5 | USE_NOTEXT);
   }
