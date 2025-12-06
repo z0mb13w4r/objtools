@@ -1,4 +1,5 @@
 #include <math.h>
+#include <fuzzy.h>
 #include "hash.h"
 #include "memuse.h"
 #include "memfind.h"
@@ -91,15 +92,18 @@ handle_t ssdeep_encode(unknown_t src, size_t srcsize) {
   if (src && srcsize) {
     puchar_t psrc = CAST(puchar_t, src);
 
-    size_t maxsize = ((srcsize + 3) / 4) * 5;
-    pfind_t dst = fxalloc(maxsize, MEMFIND_NOCHUNKSIZE);
+    pfind_t dst = fxalloc(FUZZY_MAX_RESULT, MEMFIND_NOCHUNKSIZE);
     if (dst) {
-      puchar_t pdst = CAST(puchar_t, dst->item);
+      char *pdst = CAST(char *, dst->item);
+      if (!fuzzy_hash_buf(psrc, srcsize, pdst)) {
+        dst->cpos = xstrnlen(pdst, FUZZY_MAX_RESULT);
+      }
 
       pdst[dst->cpos] = '\0';   /* string padding character */
       dst->size = dst->cpos + 1;
       dst->epos = dst->cpos;
       dst->cpos = 0;
+
       return dst;
     }
   }
