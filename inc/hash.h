@@ -18,5 +18,7 @@ int ripemd160(const unknown_t p, const size_t size, puchar_t md);
 
 int entropy_calculate(const unknown_t p, const size_t size, double *entropy, double *min, double *max);
 
+handle_t ssdeep_encode(unknown_t src, size_t srcsize);
+
 #endif
 

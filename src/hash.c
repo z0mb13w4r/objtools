@@ -1,6 +1,7 @@
 #include <math.h>
 #include "hash.h"
 #include "memuse.h"
+#include "memfind.h"
 
 int md5(const unknown_t p, const size_t size, puchar_t md) {
   MD5_CTX context;
@@ -84,5 +85,25 @@ int entropy_calculate(const unknown_t p, const size_t size, double *entropy, dou
   }
 
   return -1;
+}
+
+handle_t ssdeep_encode(unknown_t src, size_t srcsize) {
+  if (src && srcsize) {
+    puchar_t psrc = CAST(puchar_t, src);
+
+    size_t maxsize = ((srcsize + 3) / 4) * 5;
+    pfind_t dst = fxalloc(maxsize, MEMFIND_NOCHUNKSIZE);
+    if (dst) {
+      puchar_t pdst = CAST(puchar_t, dst->item);
+
+      pdst[dst->cpos] = '\0';   /* string padding character */
+      dst->size = dst->cpos + 1;
+      dst->epos = dst->cpos;
+      dst->cpos = 0;
+      return dst;
+    }
+  }
+
+  return NULL;
 }
 
