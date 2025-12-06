@@ -92,9 +92,10 @@
 #define USE_BASE58        (23)
 #define USE_BASE64        (24)
 #define USE_BASE85        (25)
-#define USE_GUID          (26)
-#define USE_SLEB128       (27)
-#define USE_ULEB128       (28)
+#define USE_SSDEEP        (26)
+#define USE_GUID          (27)
+#define USE_SLEB128       (28)
+#define USE_ULEB128       (29)
 
 #define GET_XX2(x,y)      ((x) & (0x03 << (y)))
 #define SET_XX2(x,y)      (((x) & 0x03) << (y))
