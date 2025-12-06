@@ -26,6 +26,8 @@ If you find this project useful and would like to keep it maintained, have new f
 
 https://github.com/capstone-engine/capstone - BSD license
 
+https://github.com/ssdeep-project/ssdeep - GPL-2.0 license
+
 https://github.com/davea42/libdwarf-code - LGPL license
 
 ### License ###
