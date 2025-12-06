@@ -95,6 +95,7 @@ TARGET = $(BIN_ROOT)$(DIR_OBJ)lib$(TARGETBASE).a
 #---------------------------------------------------------------------
 LIB_INCS = \
 	-I../inc/ \
+	-I../inc/ssdeep/ \
 	-I../inc/capstone/ \
 	-I../inc/libdwarf/
 
