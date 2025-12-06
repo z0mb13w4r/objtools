@@ -52,7 +52,7 @@ unknown_t fgetp(handle_t p, const size_t chunksize) {
       p1->cpos += chunksize;
 
       if (p1->cpos <= p1->epos) return p0;
-      p1->item = NULL;
+      if (ismode(p1, MODE_FIND)) p1->item = NULL;
     }
   }
 
@@ -242,7 +242,7 @@ handle_t fnext(handle_t p) {
     if (p0) {
       p0->cpos += p0->chunksize;
       if (p0->cpos <= p0->epos) return p0;
-      p0->item = NULL;
+      if (ismode(p0, MODE_FIND)) p0->item = NULL;
     }
 
     return p0;
@@ -271,7 +271,7 @@ unknown_t fmove(handle_t p, const size_t cpos) {
       p0->cpos = cpos;
 
       if (p0->cpos <= p0->epos) return fget(p);
-      p0->item = NULL;
+      if (ismode(p0, MODE_FIND)) p0->item = NULL;
     }
   }
 
@@ -284,7 +284,7 @@ unknown_t fstep(handle_t p, const size_t chunksize) {
     if (p0) {
       p0->cpos += chunksize;
       if (p0->cpos <= p0->epos) return fget(p);
-      p0->item = NULL;
+      if (ismode(p0, MODE_FIND)) p0->item = NULL;
     }
   }
 
@@ -298,7 +298,7 @@ unknown_t fupdate(handle_t p, const size_t cpos, const size_t chunksize) {
       p0->cpos = cpos;
       p0->chunksize = chunksize;
       if (p0->cpos <= p0->epos) return fget(p);
-      p0->item = NULL;
+      if (ismode(p0, MODE_FIND)) p0->item = NULL;
     }
   }
 
