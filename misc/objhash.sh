@@ -1,7 +1,7 @@
 #!/bin/bash
 
 NAME=samples/exampled-32
-NAME=samples/exampled-64
+#NAME=samples/exampled-64
 #NAME=samples/exampled-32.o
 #NAME=samples/exampled-64.o
 #NAME=samples/example-043-arm32
@@ -15,14 +15,21 @@ NAME=samples/exampled-64
 #NAME=samples/binutils-2.45/strings
 
 PRGNAME=/usr/bin/md5deep
+#PRGNAME=/usr/bin/ssdeep
 PRGNAMENG=./objhash-ng
 OUT1=test-1.out
 OUT2=test-2.out
 
-PICK1='--md5'
-PICK2=''
-#PICK1='-P --md5'
+PICK1='--ssdeep'
+PICK1='--sha512'
+#PICK1='--sha256'
+#PICK1='--sha1'
+#PICK1='--md5'
 #PICK2=''
+#PICK1='--md5 -z'
+#PICK2='-z'
+#PICK1='-P 1024 --md5'
+#PICK2='-p 1024'
 
 function go_rm() {
   if [ -e "$1" ]; then
@@ -48,10 +55,18 @@ function go_2() {
 go_rm $OUT1
 go_rm $OUT2
 
-go_1
-go_2
+if [ "$1" == "-s" ]; then
+  ${PRGNAMENG} -s ${PICK1} ${NAME} > $OUT1
+elif [ "$1" == "-h" ]; then
+  ${PRGNAMENG} -h ${PICK1} ${NAME} > $OUT1
+else
+  go_1
+  go_2
+fi
 
 if [ -e "$OUT1" ] && [ -e "$OUT2" ]; then
   meld $OUT1 $OUT2
+elif [ -e "$OUT1" ]; then
+  cat $OUT1
 fi
 
