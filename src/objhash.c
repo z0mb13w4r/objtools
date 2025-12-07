@@ -23,14 +23,7 @@ static int dump_create0(const pbuffer_t p, const imode_t mode, const int maxsize
   return n;
 }
 
-static int dump_create1(const pbuffer_t p, const poptions_t o, const uint64_t sh_offset, const uint64_t sh_size) {
-  int n = 0;
-  n += printf_sore(getp(p, sh_offset, sh_size), sh_size, USE_SHA256 | USE_NOTEXT);
-
-  return n;
-}
-
-static int dump_create2(const pbuffer_t p, const poptions_t o, const char* name,
+static int dump_create1(const pbuffer_t p, const poptions_t o, const char* name,
                         const uint64_t sh_type, const uint64_t sh_offset, const uint64_t sh_size, const uint64_t sh_addr,
                         const int maxsize) {
   int n = 0;
@@ -40,6 +33,13 @@ static int dump_create2(const pbuffer_t p, const poptions_t o, const char* name,
   n += printf_nice(sh_offset, USE_LHEX32);
   n += printf_nice(sh_size, USE_LHEX32);
   n += printf_eol();
+
+  return n;
+}
+
+static int dump_hash0(const pbuffer_t p, const poptions_t o, const uint64_t sh_offset, const uint64_t sh_size) {
+  int n = 0;
+  n += printf_sore(getp(p, sh_offset, sh_size), sh_size, USE_SHA256 | USE_NOTEXT);
 
   return n;
 }
@@ -56,12 +56,12 @@ static int dump_createELF32(const pbuffer_t p, const poptions_t o, const imode_t
       Elf32_Shdr *shdr = ecget_shdr32byindex(p, i);
       if (shdr) {
         if (OPTOBJHASH_HEADERS == mode) {
-          n += dump_create1(p, o, ehdr->e_shoff + (ehdr->e_shentsize * i), ehdr->e_shentsize);
+          n += dump_hash0(p, o, ehdr->e_shoff + (ehdr->e_shentsize * i), ehdr->e_shentsize);
         } else if (OPTOBJHASH_SECTIONS == mode) {
-          n += dump_create1(p, o, shdr->sh_offset, shdr->sh_size);
+          n += dump_hash0(p, o, shdr->sh_offset, shdr->sh_size);
         }
 
-        n += dump_create2(p, o, ecget_secnamebyindex(p, i), shdr->sh_type, shdr->sh_offset, shdr->sh_size, shdr->sh_addr, MAXSIZE);
+        n += dump_create1(p, o, ecget_secnamebyindex(p, i), shdr->sh_type, shdr->sh_offset, shdr->sh_size, shdr->sh_addr, MAXSIZE);
       }
     }
 
@@ -83,11 +83,11 @@ static int dump_createELF64(const pbuffer_t p, const poptions_t o, const imode_t
       Elf64_Shdr *shdr = ecget_shdr64byindex(p, i);
       if (shdr) {
         if (OPTOBJHASH_HEADERS == mode) {
-          n += dump_create1(p, o, ehdr->e_shoff + (ehdr->e_shentsize * i), ehdr->e_shentsize);
+          n += dump_hash0(p, o, ehdr->e_shoff + (ehdr->e_shentsize * i), ehdr->e_shentsize);
         } else if (OPTOBJHASH_SECTIONS == mode) {
-          n += dump_create1(p, o, shdr->sh_offset, shdr->sh_size);
+          n += dump_hash0(p, o, shdr->sh_offset, shdr->sh_size);
         }
-        n += dump_create2(p, o, ecget_secnamebyindex(p, i), shdr->sh_type, shdr->sh_offset, shdr->sh_size, shdr->sh_addr, MAXSIZE);
+        n += dump_create1(p, o, ecget_secnamebyindex(p, i), shdr->sh_type, shdr->sh_offset, shdr->sh_size, shdr->sh_addr, MAXSIZE);
       }
     }
 
