@@ -18,6 +18,9 @@ NAME=samples/exampled-arm32
 #NAME=samples/binutils-2.45/objcopy
 #NAME=samples/binutils-2.45/readelf
 #NAME=samples/binutils-2.45/strings
+#NAME=samples/binutils-2.45/bfdtest1
+#NAME=samples/binutils-2.45/bfdtest2
+#NAME=samples/binutils-2.45/addr2line
 
 PICK1='-a'
 #PICK1='-a -D'
@@ -74,61 +77,61 @@ function go_rm() {
 }
 
 function go_1() {
-  $PRGNAMENG ${PICK1} $NAME \
+  ${PRGNAMENG} ${PICK1} ${NAME} \
     | sed 's/^[ \t]*//;s/[ \t]*$//' \
     | sed 's/\t/ /g' \
-    | tr -s '[:space:]' | tr -d '\r' > $OUT1
+    | tr -s '[:space:]' | tr -d '\r' > ${OUT1}
 }
 
 function go_2() {
-  $PRGNAME ${PICK1} $NAME \
+  ${PRGNAME} ${PICK1} ${NAME} \
     | sed 's/R_X86_64_JUMP_SLO/R_X86_64_JUMP_SLOT/g' \
     | sed 's/R_386_JUMP_SLOT/R_386_JMP_SLOT/g' \
     | sed 's/none/NONE/g' \
     | sed 's/^[ \t]*//;s/[ \t]*$//' \
     | sed 's/\t/ /g' \
-    | tr -s '[:space:]' | tr -d '\r' > $OUT2
+    | tr -s '[:space:]' | tr -d '\r' > ${OUT2}
 }
 
 function go_3() {
   if [ "$1" == "-r" ] || [ "$1" == "--raw" ]; then
-    $PRGNAMENG ${PICK1} --debug-dump=enhanced $NAME > $OUT1
+    ${PRGNAMENG} ${PICK1} --debug-dump=enhanced ${NAME} > ${OUT1}
   else
-    $PRGNAMENG ${PICK1} --debug-dump=enhanced $NAME \
+    ${PRGNAMENG} ${PICK1} --debug-dump=enhanced ${NAME} \
       | sed 's/^[ \t]*//;s/[ \t]*$//' \
       | sed 's/\t/ /g' \
-      | tr -s '[:space:]' | tr -d '\r' > $OUT1
+      | tr -s '[:space:]' | tr -d '\r' > ${OUT1}
   fi
 }
 
 function go_4() {
   if [ "$1" == "-r" ] || [ "$1" == "--raw" ]; then
-    $DWARFDUMP ${PICK2} $NAME \
-      | sed 's/[ \t]*$//' > $OUT2
+    $DWARFDUMP ${PICK2} ${NAME} \
+      | sed 's/[ \t]*$//' > ${OUT2}
   else
-    $DWARFDUMP ${PICK2} $NAME \
+    $DWARFDUMP ${PICK2} ${NAME} \
       | sed 's/^[ \t]*//;s/[ \t]*$//' \
       | sed 's/\t/ /g' \
-      | tr -s '[:space:]' | tr -d '\r' > $OUT2
+      | tr -s '[:space:]' | tr -d '\r' > ${OUT2}
   fi
 }
 
-go_rm $OUT1
-go_rm $OUT2
+go_rm ${OUT1}
+go_rm ${OUT2}
 
 if [ "$1" == "-p" ] || [ "$1" == "--print" ]; then
-  echo $PRGNAME ${PICK1} $NAME
-  echo $PRGNAMENG ${PICK1} $NAME
+  echo ${PRGNAME} ${PICK1} ${NAME}
+  echo ${PRGNAMENG} ${PICK1} ${NAME}
 elif [ "$1" == "-g" ] || [ "$1" == "--go" ]; then
-  $PRGNAMENG ${PICK1} $NAME
+  ${PRGNAMENG} ${PICK1} ${NAME}
 elif [ "$1" == "-r" ] || [ "$1" == "--raw" ]; then
-  $PRGNAMENG ${PICK1} $NAME > $OUT1
-  $PRGNAME ${PICK1} $NAME | sed 's/[ \t]*$//' > $OUT2
+  ${PRGNAMENG} ${PICK1} ${NAME} > ${OUT1}
+  ${PRGNAME} ${PICK1} ${NAME} | sed 's/[ \t]*$//' > ${OUT2}
 elif [ "$1" == "-v" ] || [ "$1" == "--verbose" ]; then
-  $PRGNAMENG ${PICK1} -V $NAME > $OUT1
-  $PRGNAME ${PICK1} $NAME > $OUT2
+  ${PRGNAMENG} ${PICK1} -V ${NAME} > ${OUT1}
+  ${PRGNAME} ${PICK1} ${NAME} > ${OUT2}
 elif [ "$1" == "-d" ] || [ "$1" == "--debug" ]; then
-  gdb --args $PRGNAMENGd ${PICK1} $NAME
+  gdb --args ${PRGNAMENG}d ${PICK1} ${NAME}
 elif [ "$1" == "-e" ]; then
   go_3 "$2"
   go_4 "$2"
@@ -137,7 +140,7 @@ else
   go_2
 fi
 
-if [ -e "$OUT1" ] && [ -e "$OUT2" ]; then
-  meld $OUT1 $OUT2
+if [ -e "${OUT1}" ] && [ -e "${OUT2}" ]; then
+  meld ${OUT1} ${OUT2}
 fi
 
