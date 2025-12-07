@@ -1,14 +1,31 @@
 #!/bin/bash
 
-NAME=samples/exampled-32
-NAME=samples/exampled-64
+#NAME=samples/exampled-32
+#NAME=samples/exampled-64
 #NAME=samples/exampled-32.o
 #NAME=samples/exampled-64.o
+NAME=samples/exampled-arm32
+#NAME=samples/exampled-arm64
+#NAME=samples/exampled-arm32.o
+#NAME=samples/exampled-arm64.o
+
 #NAME=samples/example-043-arm32
 #NAME=samples/example-043-arm32.o
 #NAME=samples/example-043-arm64
 #NAME=samples/example-043-arm64.o
 #NAME=samples/bstrings.dll
+#NAME=samples/example-043-win32.exe
+#NAME=samples/example-043-win64.exe
+#NAME=samples/exampled-win32.exe
+#NAME=samples/exampled-win64.exe
+
+#NAME=samples/binutils-2.45/strip
+#NAME=samples/binutils-2.45/objcopy
+#NAME=samples/binutils-2.45/readelf
+#NAME=samples/binutils-2.45/strings
+#NAME=samples/binutils-2.45/bfdtest1
+#NAME=samples/binutils-2.45/bfdtest2
+#NAME=samples/binutils-2.45/addr2line
 
 #PICK='-p'
 #PICK='-h'
@@ -19,13 +36,22 @@ NAME=samples/exampled-64
 #PICK='-f'
 #PICK='-s'
 #PICK='-x'
+
+#PICK='-g'
+#PICK='-e'
+#PICK='-d'
+PICK='-dSl'
+
 #PICK='-dSl --prefix-addresses'
+#PICK='-dSl --no-addresses'
+#PICK='-dSl --no-show-raw-insn'
 #PICK='-dSl --start-address=0x001000 --stop-address=0x001300'
 
-PICK='-g'
-PICK='-e'
-#PICK='-d'
-#PICK='-dSl'
+#PICK='-dSl -M att'
+#PICK='-dSl -M att-mnemonic'
+#PICK='-dSl -M intel'
+#PICK='-dSl -M intel-mnemonic'
+#PICK="-dSl -M 'intel-mnemonic,x86-64'"
 #PICK='-W'
 
 #PICK='--dwarf=info'
@@ -35,10 +61,9 @@ PICK='-e'
 #PICK='--dwarf=frames-interp'
 #PICK='--dwarf=rawline --dwarf=enhanced'
 #PICK='--dwarf=decodedline'
-PICK='--dwarf=macro'
+#PICK='--dwarf=macro'
 #PICK='--dwarf=str'
 #PICK='--dwarf=loc'
-
 
 # not supported by:
 #   exampled-64
@@ -54,8 +79,11 @@ PICK='--dwarf=macro'
 #PICK='--dwarf=links'
 #PICK='--dwarf=follow-links'
 
-PRGNAME=objdump
-PRGNAMENG=./$PRGNAME-ng
+#PRGNAME=/usr/bin/objdump
+#PRGNAME=samples/binutils-2.45/objdump
+PRGNAME=/usr/bin/arm-linux-gnueabihf-objdump
+#PRGNAME=/usr/bin/aarch64-linux-gnu-objdump
+PRGNAMENG=./objdump-ng
 OUT1=test-1.out
 OUT2=test-2.out
 
@@ -81,8 +109,8 @@ function go_2() {
     | tr -s '[:space:]' | tr -d '\r' > ${OUT2}
 }
 
-go_rm $OUT1
-go_rm $OUT2
+go_rm ${OUT1}
+go_rm ${OUT2}
 
 if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
   ${PRGNAMENG} -H
@@ -94,11 +122,11 @@ elif [ "$1" == "-g" ] || [ "$1" == "--go" ]; then
 elif [ "$1" == "-s" ] || [ "$1" == "--show" ]; then
   ${PRGNAME} ${PICK} ${NAME}
 elif [ "$1" == "-r" ] || [ "$1" == "--raw" ]; then
-  ${PRGNAMENG} ${PICK} ${NAME} > $OUT1
-  ${PRGNAME} ${PICK} ${NAME} > $OUT2
+  ${PRGNAMENG} ${PICK} ${NAME} > ${OUT1}
+  ${PRGNAME} ${PICK} ${NAME} > ${OUT2}
 elif [ "$1" == "-v" ] || [ "$1" == "--verbose" ]; then
-  ${PRGNAMENG} ${PICK} -v ${NAME} > $OUT1
-  ${PRGNAME} ${PICK} ${NAME} > $OUT2
+  ${PRGNAMENG} ${PICK} -v ${NAME} > ${OUT1}
+  ${PRGNAME} ${PICK} ${NAME} > ${OUT2}
 elif [ "$1" == "-d" ] || [ "$1" == "--debug" ]; then
   gdb --args ${PRGNAMENG}d ${PICK} $NAME
 elif [ "$1" == "-1" ] || [ "$1" == "--level1" ]; then
@@ -112,7 +140,12 @@ else
   go_2
 fi
 
-if [ -e "$OUT1" ] && [ -e "$OUT2" ]; then
-  meld $OUT1 $OUT2
+if [ -e "${OUT1}" ] && [ -e "${OUT2}" ]; then
+  meld ${OUT1} ${OUT2}
+#  diff ${OUT1} ${OUT2}
+#  grep -nw 'ERROR' ${OUT1}
+#  grep -nw 'ERROR' ${OUT1} | wc -l
+#  grep -nw '<unknown:' ${OUT1}
+#  grep -nw '<unknown:' ${OUT1} | wc -l
 fi
 
