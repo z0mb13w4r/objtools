@@ -980,9 +980,24 @@ static int dump_relocs64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr
 }
 
 static int dump_unwind32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
-  printf_w("The decoding of unwind sections for machine type %s is not currently supported.", strpick(ecEHDRMACHINE, ehdr->e_machine));
+  int n = 0;
+  if (EM_ARM == ehdr->e_machine) {
+    Elf32_Half cnt = 0;
+    for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
+      Elf32_Shdr *shdr = ecget_shdr32byindex(p, i);
+      if (shdr && SHT_ARM_EXIDX == shdr->sh_type) ++cnt;
+    }
 
-  return 0;
+    if (0 == cnt) {
+      printf_w("There are no unwind sections in this file.");
+    } else {
+    }
+
+  } else {
+    printf_w("The decoding of unwind sections for machine type %s is not currently supported.", strpick(ecEHDRMACHINE, ehdr->e_machine));
+  }
+
+  return n;
 }
 
 static int dump_unwind64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
