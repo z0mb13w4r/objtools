@@ -251,6 +251,21 @@ handle_t fnext(handle_t p) {
   return NULL;
 }
 
+handle_t fstep(handle_t p, const size_t chunksize) {
+  if (isfind(p)) {
+    pfind_t p0 = CAST(pfind_t, p);
+    if (p0) {
+      p0->cpos += chunksize;
+      if (p0->cpos <= p0->epos) return p0;
+      if (ismode(p0, MODE_FIND)) p0->item = NULL;
+    }
+
+    return p0;
+  }
+
+  return NULL;
+}
+
 handle_t freset(handle_t p) {
   if (isfind(p)) {
     pfind_t p0 = CAST(pfind_t, p);
@@ -273,21 +288,6 @@ unknown_t fmove(handle_t p, const size_t cpos) {
       if (p0->cpos <= p0->epos) return fget(p);
       if (ismode(p0, MODE_FIND)) p0->item = NULL;
     }
-  }
-
-  return NULL;
-}
-
-handle_t fstep(handle_t p, const size_t chunksize) {
-  if (isfind(p)) {
-    pfind_t p0 = CAST(pfind_t, p);
-    if (p0) {
-      p0->cpos += chunksize;
-      if (p0->cpos <= p0->epos) return p0;
-      if (ismode(p0, MODE_FIND)) p0->item = NULL;
-    }
-
-    return p0;
   }
 
   return NULL;
