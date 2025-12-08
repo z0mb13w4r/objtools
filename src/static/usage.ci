@@ -50,5 +50,4 @@ const char zOPTDEBUGLEVEL3[]      = "Print the level 3 code development debuggin
 const char zOPTHASH[]             = "Calculates and displays the SHA-256 hash.";
 const char zOPTINFO[]             = "Displays the general information about the object.";
 const char zOPTENTROPY[]          = "Displays the entropy of the object.";
-const char zOPTCAPSTONE[]         = "When disassembling, use the Capstone Disassembler Framework.";
 

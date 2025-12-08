@@ -13,7 +13,7 @@ static void callback_disassemble(handle_t p, handle_t section, unknown_t param) 
 
   /* Sections that do not contain machine code are not normally disassembled. */
   if ((ocget_flags(section) & SEC_HAS_CONTENTS) == 0) return;
-  if (o && 0 == (o->action & OPTOBJDUMP_DISASSEMBLE_ALL) && 0 == (ocget_flags(section) & SEC_CODE)) return;
+  if (o && !MODE_ISSET(o->action, OPTOBJDUMP_DISASSEMBLE_ALL) && MODE_ISNOT(ocget_flags(section), SEC_CODE)) return;
   if (0 == ocget_size(section)) return;
 
   uint64_t soffset = ocget_soffset(p, section);

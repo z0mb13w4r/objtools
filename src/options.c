@@ -239,10 +239,6 @@ int usage_options0(poptions_t o, const char* name, const args_t args[]) {
         snprintf(m, sizeof(m), zOPTDEBUGLEVEL3);
         n += printf_pack(2);
         n += printf_text(m, USE_LT | USE_TAB | USE_EOL);
-      } else if (name && MODE_ISLOCKED(args[j].action, OPTPROGRAM_CAPSTONE)) {
-        snprintf(m, sizeof(m), zOPTCAPSTONE);
-        n += printf_pack(2);
-        n += printf_text(m, USE_LT | USE_TAB | USE_EOL);
       } else if (name && MODE_ISLOCKED(args[j].action, OPTPROGRAM_HASH)) {
         snprintf(m, sizeof(m), zOPTHASH);
         n += printf_pack(2);

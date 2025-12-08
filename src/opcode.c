@@ -1086,7 +1086,7 @@ int ocdo_sections(handle_t p, opcbfunc_t cbfunc, unknown_t param) {
 int ocdisassemble_open(handle_t p, handle_t o) {
   if (ocisPE(p) || ECODE_OK == ocdwarf_open(p, o)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
-    if (oc->action & OPTPROGRAM_CAPSTONE || isattached(p)) {
+    if (MODE_ISSET(oc->action, OPTPROGRAM_CAPSTONE) || isattached(p)) {
       return capstone_open(p, o);
     } else {
       return opcodelib_open(p, o);
@@ -1099,7 +1099,7 @@ int ocdisassemble_open(handle_t p, handle_t o) {
 int ocdisassemble_close(handle_t p) {
   if (ocisPE(p) || ECODE_OK == ocdwarf_close(p)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
-    if (oc->action & OPTPROGRAM_CAPSTONE || isattached(p)) {
+    if (MODE_ISSET(oc->action, OPTPROGRAM_CAPSTONE) || isattached(p)) {
       return capstone_close(p);
     } else {
       return opcodelib_close(p);
@@ -1112,7 +1112,7 @@ int ocdisassemble_close(handle_t p) {
 int ocdisassemble_run(handle_t p, handle_t s) {
   if (isopcode(p) && ismodeNXXN(s, MODE_OCSHDRWRAP)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
-    if (oc->action & OPTPROGRAM_CAPSTONE || isattached(p)) {
+    if (MODE_ISSET(oc->action, OPTPROGRAM_CAPSTONE) || isattached(p)) {
       return capstone_run(p, s);
     } else {
       return opcodelib_run(p, s);
@@ -1125,7 +1125,7 @@ int ocdisassemble_run(handle_t p, handle_t s) {
 int ocdisassemble_raw(handle_t p, handle_t s, unknown_t data, const size_t size, const uint64_t vaddr) {
   if (isopcode(p) && ismodeNXXN(s, MODE_OCSHDRWRAP)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
-    if (oc->action & OPTPROGRAM_CAPSTONE || isattached(p)) {
+    if (MODE_ISSET(oc->action, OPTPROGRAM_CAPSTONE) || isattached(p)) {
       return capstone_raw(p, s, data, size, vaddr);
     } else {
       return opcodelib_raw(p, s, data, size, vaddr);

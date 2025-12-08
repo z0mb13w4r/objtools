@@ -9,15 +9,16 @@ static char zDUMPSTARTADDR[]       = "Start displaying data at the specified add
 static char zDUMPSTOPADDR[]        = "Stop displaying data at the specified address. This affects the output of the -d, -r and -s options.";
 static char zDUMPSECTIONHDR[]      = "Display summary information from the section headers of the object file.";
 static char zDUMPPRIVATEHDR[]      = "Print information that is specific to the object file format.";
-static char zDUMPDEMANGLE[]        = "Decode (demangle) low-level symbol names into user-level names.";
 static char zDUMPSECTIONS[]        = "Display the full contents of any sections requested.";
 static char zDUMPFILEHDR[]         = "Display summary information from the overall header of each of the objfile files.";
+
 static char zDUMPDISASSEMBLE[]     = "Display the assembler mnemonics for the machine instructions from the input file.";
 static char zDUMPDISASSEMBLEALL[]  = "Like -d, but disassemble the contents of all sections, not just those expected to contain instructions.";
+static char zDUMPCAPSTONE[]        = "Display the assembler mnemonics for the machine instructions from the input file, use the Capstone Disassembler Framework.";
+static char zDUMPCAPSTONEALL[]     = "Like -c, but disassemble the contents of all sections, not just those expected to contain instructions.";
 static char zDUMPDEBUGGING[]       = "Display debugging information.";
 static char zDUMPDEBUGGINGTAGS[]   = "Like -g, but the information is generated in a format compatible with ctags tool.";
 static char zDUMPSOURCE[]          = "Display source code intermixed with disassembly, if possible. Implies -d.";
-static char zDUMPCAPSTONEALL[]     = "When disassembling, use the Capstone Disassembler Framework.";
 static char zDUMPNOSHOWRAWINSN[]   = "When disassembling instructions, do not print the instruction bytes. This is the default when --prefix-addresses is used.";
 static char zDUMPNOADDRESSES[]     = "When disassembling, don't print addresses on each line or for symbols and relocation offsets. In combination with --no-show-raw-insn this may be useful for comparing compiler output.";
 
@@ -42,15 +43,15 @@ static const args_t zOBJDUMPARGS[] = {
   {'H', "--help",              OPTPROGRAM_HELP,                                          NULL},
   {'V', "--version",           OPTPROGRAM_VERSION,                                       NULL},
   {'v', "--verbose",           OPTPROGRAM_VERBOSE,                                       NULL},
-  {'D', "--disassemble-all",   OPTOBJDUMP_DISASSEMBLE_ALL | OPTPROGRAM_DISASSEMBLE,      zDUMPDISASSEMBLEALL},
-  {'c', "--capstone-all",      OPTPROGRAM_CAPSTONE_ALL,                                  zDUMPCAPSTONEALL},
+  {'D', "--disassemble-all",   OPTOBJDUMP_DISASSEMBLE_ALL,                               zDUMPDISASSEMBLEALL},
+  {'C', "--capstone-all",      OPTOBJDUMP_CAPSTONE_ALL,                                  zDUMPCAPSTONEALL},
   {'S', "--source",            OPTPROGRAM_SOURCE_CODE | OPTPROGRAM_DISASSEMBLE,          zDUMPSOURCE},
   {'T', "--dynamic-symbols",   OPTOBJDUMP_DYNAMIC_SYMBOLS,                               zDUMPDYNAMIC},
   {'R', "--dynamic-reloc",     OPTOBJDUMP_DYNAMIC_RELOC,                                 zDUMPDYNAMICRELOC},
   {'d', "--disassemble",       OPTPROGRAM_DISASSEMBLE,                                   zDUMPDISASSEMBLE},
+  {'c', "--capstone",          OPTPROGRAM_CAPSTONE,                                      zDUMPCAPSTONE},
   {'g', "--debugging",         OPTOBJDUMP_DEBUGGING_DBGS,                                zDUMPDEBUGGING},
   {'e', "--debugging-tags",    OPTOBJDUMP_DEBUGGING_TAGS | OPTPROGRAM_DEMANGLE,          zDUMPDEBUGGINGTAGS},
-  {'C', "--demangle",          OPTPROGRAM_DEMANGLE,                                      zDUMPDEMANGLE},
   {'s', "--full-contents",     OPTOBJDUMP_SECTIONS,                                      zDUMPSECTIONS},
   {'t', "--symbols",           OPTOBJDUMP_SYMBOLS,                                       zDUMPSYMBOLS},
   {'r', "--reloc",             OPTOBJDUMP_RELOC,                                         zDUMPRELOC},
@@ -64,7 +65,6 @@ static const args_t zOBJDUMPARGS[] = {
   {  0, "--prefix-addresses",  OPTPROGRAM_PREFIX_ADDR,                                   zDUMPPREFIXADDR},
   {  0, "--start-address",     0,                                                        zDUMPSTARTADDR,           OPTUSE_ADDRESS},
   {  0, "--stop-address",      0,                                                        zDUMPSTOPADDR,            OPTUSE_ADDRESS},
-  {  0, "--capstone",          OPTPROGRAM_CAPSTONE,                                      NULL},
   {'X', "--hash",              OPTPROGRAM_HASH,                                          NULL},
   {'1', NULL,                  OPTPROGRAM_DEBUGLEVEL1,                                   NULL},
   {'2', NULL,                  OPTPROGRAM_DEBUGLEVEL2,                                   NULL},

@@ -72,13 +72,11 @@
 #define OPTPROGRAM_LINE_NUMBERS                    U64MASK(58)
 #define OPTPROGRAM_SOURCE_CODE                     U64MASK(59)
 #define OPTPROGRAM_DISASSEMBLE                     U64MASK(60)
-#define OPTPROGRAM_CAPSTONE                        U64MASK(61)
+#define OPTPROGRAM_CAPSTONE                       (U64MASK(61) | OPTPROGRAM_DISASSEMBLE)
 #define OPTPROGRAM_VERSION                         U64MASK(62)
 #define OPTPROGRAM_HELP                            U64MASK(63)
 
 #define OPTPROGRAM_INFO                (OPTPROGRAM_HASH | OPTPROGRAM_ENTROPY)
-#define OPTPROGRAM_CAPSTONE_ALL        (OPTPROGRAM_CAPSTONE | OPTPROGRAM_DISASSEMBLE | OPTPROGRAM_SOURCE_CODE \
-                                           | OPTPROGRAM_DEMANGLE)
 
 #define OPTREADELF_FILEHEADER                      U64MASK(0)
 #define OPTREADELF_SECTIONGROUPS                   U64MASK(1)
@@ -150,7 +148,7 @@
 #define OPTOBJCOPY_WRITABLE_TEXT                   U64MASK(24)
 #define OPTOBJCOPY_DUMP_SECTIONS_ALL               U64MASK(25)
 
-#define OPTOBJDUMP_DISASSEMBLE_ALL                 U64MASK(0)
+#define OPTOBJDUMP_DISASSEMBLE_ALL                (U64MASK(0) | OPTPROGRAM_DISASSEMBLE)
 #define OPTOBJDUMP_DYNAMIC_SYMBOLS                 U64MASK(1)
 #define OPTOBJDUMP_DYNAMIC_RELOC                   U64MASK(2)
 #define OPTOBJDUMP_SECTIONS                        U64MASK(3)
@@ -164,6 +162,8 @@
 
 #define OPTOBJDUMP_HEADERS             (OPTOBJDUMP_FILE_HEADER | OPTOBJDUMP_PRIVATE_HEADER | OPTOBJDUMP_SECTION_HEADER \
                                            | OPTOBJDUMP_SYMBOLS | OPTOBJDUMP_RELOC)
+
+#define OPTOBJDUMP_CAPSTONE_ALL        (OPTOBJDUMP_DISASSEMBLE_ALL | OPTPROGRAM_CAPSTONE)
 
 #define OPTOBJHASH_HEADERS                         U64MASK(0)
 #define OPTOBJHASH_SECTIONS                        U64MASK(1)
