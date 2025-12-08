@@ -7,11 +7,12 @@ objdump-ng [\fB\-H\fR|\fB\-\-help\fR]
            [\fB\-V\fR|\fB\-\-version\fR]
            [\fB\-v\fR|\fB\-\-verbose\fR]
            [\fB\-D\fR|\fB\-\-disassemble\-all\fR]
-           [\fB\-c\fR|\fB\-\-capstone\-all\fR]
+           [\fB\-C\fR|\fB\-\-capstone\-all\fR]
            [\fB\-S\fR|\fB\-\-source\fR]
            [\fB\-T\fR|\fB\-\-dynamic\-symbols\fR]
            [\fB\-R\fR|\fB\-\-dynamic\-reloc\fR]
            [\fB\-d\fR|\fB\-\-disassemble\fR]
+           [\fB\-c\fR|\fB\-\-capstone\fR]
            [\fB\-g\fR|\fB\-\-debugging\fR]
            [\fB\-e\fR|\fB\-\-debugging\-tags\fR]
            [\fB\-C\fR|\fB\-\-demangle\fR]
@@ -71,14 +72,14 @@ Print additional information.
 .PD
 Like \fB-d\fR, but disassemble the contents of all sections, not just those expected to contain instructions.
 Equivalent to specifying: \fB\-\-disassemble\fR.
-.IP "\fB\-c\fR" 4
-.IX Item "-c"
+.IP "\fB\-C\fR" 4
+.IX Item "-C"
 .PD 0
 .IP "\fB\-\-capstone\-all\fR" 4
 .IX Item "--capstone-all"
 .PD
-When disassembling, use the Capstone Disassembler Framework.
-Equivalent to specifying: \fB\-\-disassemble\fR, \fB\-\-demangle\fR, and \fB\-\-capstone\fR.
+Like \fB-c\fR, but disassemble the contents of all sections, not just those expected to contain instructions.
+Equivalent to specifying: \fB\-\-disassemble\fR.
 .IP "\fB\-S\fR" 4
 .IX Item "-S"
 .PD 0
@@ -108,6 +109,14 @@ Print the dynamic relocation entries of the file. This is only meaningful for dy
 .IX Item "--disassemble"
 .PD
 Display the assembler mnemonics for the machine instructions from the input file.
+.IP "\fB\-c\fR" 4
+.IX Item "-c"
+.PD 0
+.IP "\fB\-\-capstone\fR" 4
+.IX Item "--capstone"
+.PD
+Display the assembler mnemonics for the machine instructions from the input file, use the Capstone Disassembler Framework.
+Equivalent to specifying: \fB\-\-disassemble\fR.
 .IP "\fB\-g\fR" 4
 .IX Item "-g"
 .PD 0
@@ -123,13 +132,6 @@ Display debugging information.
 .PD
 Like \fB\-g\fR, but the information is generated in a format compatible with ctags tool.
 Equivalent to specifying: \fB\-\-demangle\fR.
-.IP "\fB\-C\fR" 4
-.IX Item "-C"
-.PD 0
-.IP "\fB\-\-demangle\fR" 4
-.IX Item "--demangle"
-.PD
-Decode (demangle) low-level symbol names into user-level names.
 .IP "\fB\-s\fR" 4
 .IX Item "-s"
 .PD 0
