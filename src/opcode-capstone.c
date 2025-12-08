@@ -13,7 +13,11 @@ static int get_csarch(handle_t p, handle_t o) {
     }
   }
 
-  return CS_ARCH_X86; // TBD
+  if (EM_ARM == ocget_machine(p)) {
+    return CS_ARCH_ARM;
+  }
+
+  return CS_ARCH_X86;
 }
 
 static int get_csmode(handle_t p, handle_t o) {
@@ -24,9 +28,13 @@ static int get_csmode(handle_t p, handle_t o) {
     else if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_I8086))  return CS_MODE_16;
   }
 
-  const uint64_t size = ocget_archsize(p);
-  if (16 == size) return CS_MODE_16;
-  else if (32 == size) return CS_MODE_32;
+  if (EM_ARM == ocget_machine(p)) {
+    return CS_MODE_ARM;
+  } else {
+    const uint64_t size = ocget_archsize(p);
+    if (16 == size) return CS_MODE_16;
+    else if (32 == size) return CS_MODE_32;
+  }
 
   return CS_MODE_64;
 }
