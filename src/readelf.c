@@ -979,6 +979,20 @@ static int dump_relocs64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr
   return n;
 }
 
+static int dump_unwind0(const pbuffer_t p, const poptions_t o, const int index,
+                     const uint64_t sh_type, const uint64_t sh_offset, const uint64_t sh_size, const uint64_t count) {
+  int n = 0;
+  n += printf_text("Unwind section", USE_LT);
+  n += printf_text(ecget_secnamebyindex(p, index), USE_LT | USE_SPACE | USE_SQ);
+  n += printf_text("at offset", USE_LT | USE_SPACE);
+  n += printf_nice(sh_offset, isELF64(p) ? USE_LHEX64 : USE_LHEX32);
+  n += printf_text("contains", USE_LT | USE_SPACE);
+  n += printf_nice(count, USE_DEC);
+  n += printf_text(1 == count ? "entry" : "entries", USE_LT | USE_SPACE | USE_COLON | USE_EOL);
+
+  return n;
+}
+
 static int dump_unwind32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
   int n = 0;
   if (EM_ARM == ehdr->e_machine) {
@@ -991,6 +1005,14 @@ static int dump_unwind32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr
     if (0 == cnt) {
       printf_w("There are no unwind sections in this file.");
     } else {
+      for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
+        Elf32_Shdr *shdr = ecget_shdr32byindex(p, i);
+        if (shdr && SHT_ARM_EXIDX == shdr->sh_type) {
+          size_t cnt = shdr->sh_size / (sizeof(Elf32_Addr) + sizeof(Elf32_Addr));
+          n += dump_unwind0(p, o, i, shdr->sh_type, shdr->sh_offset, shdr->sh_size, cnt);
+
+        }
+      }
     }
 
   } else {
