@@ -133,6 +133,10 @@ int opcodelib_open(handle_t p, handle_t o) {
 
         /* Construct disassembler_ftype class */
         oc->ocfunc = disassembler(di->arch, bfd_big_endian(bf), di->mach, bf);
+        if (NULL == oc->ocfunc) {
+          printf_e("can't disassemble for architecture '%s'", bfd_printable_arch_mach(bfd_get_arch(bf), 0));
+          return ECODE_OPCODE;
+        }
 
         disassemble_init_for_target(di);
         return ECODE_OK;
