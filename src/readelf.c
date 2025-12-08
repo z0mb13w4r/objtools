@@ -1010,7 +1010,6 @@ static int dump_unwind32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr
         if (shdr && SHT_ARM_EXIDX == shdr->sh_type) {
           size_t cnt = shdr->sh_size / (sizeof(Elf32_Addr) + sizeof(Elf32_Addr));
           n += dump_unwind0(p, o, i, shdr->sh_type, shdr->sh_offset, shdr->sh_size, cnt);
-
         }
       }
     }
@@ -1023,9 +1022,32 @@ static int dump_unwind32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr
 }
 
 static int dump_unwind64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
-  printf_w("The decoding of unwind sections for machine type %s is not currently supported.", strpick(ecEHDRMACHINE, ehdr->e_machine));
+  int n = 0;
+  if (EM_ARM == ehdr->e_machine) {
+    Elf64_Half cnt = 0;
+    for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
+      Elf64_Shdr *shdr = ecget_shdr64byindex(p, i);
+      if (shdr && SHT_ARM_EXIDX == shdr->sh_type) ++cnt;
+    }
 
-  return 0;
+    if (0 == cnt) {
+      printf_w("There are no unwind sections in this file.");
+    } else {
+      for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
+        Elf64_Shdr *shdr = ecget_shdr64byindex(p, i);
+        if (shdr && SHT_ARM_EXIDX == shdr->sh_type) {
+          size_t cnt = shdr->sh_size / (sizeof(Elf64_Addr) + sizeof(Elf64_Addr));
+          n += dump_unwind0(p, o, i, shdr->sh_type, shdr->sh_offset, shdr->sh_size, cnt);
+
+        }
+      }
+    }
+
+  } else {
+    printf_w("The decoding of unwind sections for machine type %s is not currently supported.", strpick(ecEHDRMACHINE, ehdr->e_machine));
+  }
+
+  return n;
 }
 
 static int dump_symbols0(const pbuffer_t p, const poptions_t o,
