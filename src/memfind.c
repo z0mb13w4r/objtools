@@ -278,14 +278,16 @@ unknown_t fmove(handle_t p, const size_t cpos) {
   return NULL;
 }
 
-unknown_t fstep(handle_t p, const size_t chunksize) {
+handle_t fstep(handle_t p, const size_t chunksize) {
   if (isfind(p)) {
     pfind_t p0 = CAST(pfind_t, p);
     if (p0) {
       p0->cpos += chunksize;
-      if (p0->cpos <= p0->epos) return fget(p);
+      if (p0->cpos <= p0->epos) return p0;
       if (ismode(p0, MODE_FIND)) p0->item = NULL;
     }
+
+    return p0;
   }
 
   return NULL;
