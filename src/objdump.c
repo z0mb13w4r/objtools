@@ -497,8 +497,9 @@ static int dump_sections(const handle_t p, const poptions_t o) {
 }
 
 static int dump_disassemble(const handle_t p, const poptions_t o) {
-  ocdisassemble_open(p, o);
-  ocdo_sections(p, callback_disassemble, o);
+  if (ECODE_ISOK(ocdisassemble_open(p, o))) {
+    ocdo_sections(p, callback_disassemble, o);
+  }
   ocdisassemble_close(p);
   return 0;
 }

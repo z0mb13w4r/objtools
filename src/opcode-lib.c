@@ -171,39 +171,41 @@ int opcodelib_raw(handle_t p, handle_t s, unknown_t data, const size_t size, con
     popcode_t oc = ocget(p, OPCODE_THIS);
     puchar_t p0 = CAST(puchar_t, data);
 
-    uint64_t soffset = vaddr;
-    uint64_t eoffset = vaddr + size;
+    if (oc && oc->ocfunc) {
+      uint64_t soffset = vaddr;
+      uint64_t eoffset = vaddr + size;
 
-    while (soffset < eoffset) {
-      int n1 = 0;
-      pbstring_t ps = CAST(pbstring_t, ocget(p, OPCODE_OUTDATA));
-      bstrclr(ps);
+      while (soffset < eoffset) {
+        int n1 = 0;
+        pbstring_t ps = CAST(pbstring_t, ocget(p, OPCODE_OUTDATA));
+        bstrclr(ps);
 
-      struct disassemble_info* di = ocget(p, OPCODE_DISASSEMBLER);
-      int siz = oc->ocfunc(soffset, di);
-      if (siz <= 0) return n0;
+        struct disassemble_info* di = ocget(p, OPCODE_DISASSEMBLER);
+        int siz = oc->ocfunc(soffset, di);
+        if (siz <= 0) return n0;
 
-      if (ocuse_vaddr(oc, soffset)) {
-        n0 += opcode_printf_source(p, soffset);
+        if (ocuse_vaddr(oc, soffset)) {
+          n0 += opcode_printf_source(p, soffset);
 
-        if (MODE_ISNOT(oc->action, OPTPROGRAM_NO_ADDRESSES)) {
-          n1 += printf_nice(soffset, USE_LHEX32 | USE_COLON);
+          if (MODE_ISNOT(oc->action, OPTPROGRAM_NO_ADDRESSES)) {
+            n1 += printf_nice(soffset, USE_LHEX32 | USE_COLON);
+          }
+
+          if (MODE_ISANY(oc->action, OPTPROGRAM_PREFIX_ADDR)) {
+            n1 += opcode_printf_prefix(p, soffset);
+          } else if (MODE_ISNOT(oc->action, OPTPROGRAM_NO_SHOW_RAW_INSN)) {
+            n1 += printf_sore(p0, siz, USE_HEX | USE_SPACE);
+            n1 += printf_pack(31 - n1);
+          }
+
+          n1 += opcode_printf_detail(p, soffset, ps->data, NULL);
+          n1 += printf_eol();
         }
 
-        if (MODE_ISANY(oc->action, OPTPROGRAM_PREFIX_ADDR)) {
-          n1 += opcode_printf_prefix(p, soffset);
-        } else if (MODE_ISNOT(oc->action, OPTPROGRAM_NO_SHOW_RAW_INSN)) {
-          n1 += printf_sore(p0, siz, USE_HEX | USE_SPACE);
-          n1 += printf_pack(31 - n1);
-        }
-
-        n1 += opcode_printf_detail(p, soffset, ps->data, NULL);
-        n1 += printf_eol();
+        soffset += siz;
+        p0 += siz;
+        n0 += n1;
       }
-
-      soffset += siz;
-      p0 += siz;
-      n0 += n1;
     }
   }
 
