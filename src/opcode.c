@@ -252,6 +252,24 @@ bool_t ocis64(handle_t p) {
   return 64 == ocget_archsize(p) ? TRUE : FALSE;
 }
 
+bool_t ocisLE(handle_t p) {
+  if (ismode(p, MODE_OCSHDR)) {
+    handle_t p0 = ocget(p, OPCODE_PARAM2);
+    return isopcode(p0) && isELFle(ocget(p0, OPCODE_RAWDATA)) ? TRUE : FALSE;
+  }
+
+  return isopcode(p) && isELFle(ocget(p, OPCODE_RAWDATA)) ? TRUE : FALSE;
+}
+
+bool_t ocisBE(handle_t p) {
+  if (ismode(p, MODE_OCSHDR)) {
+    handle_t p0 = ocget(p, OPCODE_PARAM2);
+    return isopcode(p0) && isELFbe(ocget(p0, OPCODE_RAWDATA)) ? TRUE : FALSE;
+  }
+
+  return isopcode(p) && isELFbe(ocget(p, OPCODE_RAWDATA)) ? TRUE : FALSE;
+}
+
 bool_t ochas(handle_t p, const imode_t mode) {
   return ocget(p, mode) ? TRUE : FALSE;
 }

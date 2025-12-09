@@ -187,6 +187,8 @@ bool_t   ocuse_vaddr(handle_t p, const uint64_t vaddr);
 
 bool_t   ocis32(handle_t p);
 bool_t   ocis64(handle_t p);
+bool_t   ocisLE(handle_t p);
+bool_t   ocisBE(handle_t p);
 
 bool_t   ocisELF(handle_t p);
 bool_t   ocisELF32(handle_t p);
