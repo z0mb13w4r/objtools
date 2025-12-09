@@ -11,6 +11,7 @@ const args_t zDISASSEMBLEARGS[] = {
   {0, "intel",               OPTDISASSEMBLE_INTEL,                   NULL, 2},
   {0, "intel-mnemonic",      OPTDISASSEMBLE_INTEL_MNEMONIC,          zDISASSEMBLEINTELSYNTAX, 2},
 
+  {0, "arm32",               OPTDISASSEMBLE_ARM32,                   NULL, 3},
   {0, "x86-64",              OPTDISASSEMBLE_X86_64,                  NULL, 3},
   {0, "i386",                OPTDISASSEMBLE_I386,                    NULL, 3},
   {0, "i8086",               OPTDISASSEMBLE_I8086,                   zDISASSEMBLEARCH, 3},

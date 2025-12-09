@@ -10,6 +10,8 @@ static int get_csarch(handle_t p, handle_t o) {
     poptions_t op = CAST(poptions_t, o);
     if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_X86_64 | OPTDISASSEMBLE_I386 | OPTDISASSEMBLE_I8086)) {
       return CS_ARCH_X86;
+    } else if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_ARM32)) {
+      return CS_ARCH_ARM;
     }
   }
 
@@ -26,6 +28,7 @@ static int get_csmode(handle_t p, handle_t o) {
     if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_X86_64))      return CS_MODE_64;
     else if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_I386))   return CS_MODE_32;
     else if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_I8086))  return CS_MODE_16;
+    else if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_ARM32))  return CS_ARCH_ARM;
   }
 
   if (EM_ARM == ocget_machine(p)) {
