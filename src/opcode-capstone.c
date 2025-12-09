@@ -12,6 +12,8 @@ static int get_csarch(handle_t p, handle_t o) {
       return CS_ARCH_X86;
     } else if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_ARM32)) {
       return CS_ARCH_ARM;
+    } else if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_ARM64)) {
+      return CS_ARCH_AARCH64;
     }
   }
 
@@ -28,11 +30,14 @@ static int get_csmode(handle_t p, handle_t o) {
     if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_X86_64))      return CS_MODE_64;
     else if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_I386))   return CS_MODE_32;
     else if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_I8086))  return CS_MODE_16;
-    else if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_ARM32))  return CS_ARCH_ARM;
+    else if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_ARM32))  return CS_MODE_ARM;
+    else if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_ARM64))  return ocisLE(p) ? CS_MODE_LITTLE_ENDIAN : CS_MODE_BIG_ENDIAN;
   }
 
   if (EM_ARM == ocget_machine(p)) {
     return CS_MODE_ARM;
+  } else if (EM_AARCH64 == ocget_machine(p)) {
+    return ocisLE(p) ? CS_MODE_LITTLE_ENDIAN : CS_MODE_BIG_ENDIAN;
   } else {
     const uint64_t size = ocget_archsize(p);
     if (16 == size) return CS_MODE_16;
