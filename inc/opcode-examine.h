@@ -126,6 +126,7 @@
 
 #define MODE_OCEXAMINE                 (MODE_PUT0('O') | MODE_PUT1('C') | MODE_PUT2('E'))
 
+#include "opcode-examine-arm.h"
 #include "opcode-examine-x86.h"
 
 typedef struct ocmnemonic_s {

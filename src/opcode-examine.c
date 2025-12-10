@@ -2,6 +2,7 @@
 #include "opcode-printf.h"
 #include "opcode-examine.h"
 
+#include "static/opcode-examine-arm.ci"
 #include "static/opcode-examine-x86.ci"
 
 #define USE_STRLEN             (-1)
