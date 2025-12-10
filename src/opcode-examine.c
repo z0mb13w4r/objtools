@@ -75,7 +75,7 @@ static poestruct_t oepick_REG(unknown_t m, const size_t size) {
   if (m && USE_STRLEN == size) {
     return oepick_REG(m, xstrlen(m));
   } else if (m && size) {
-    return oepick(oeREGISTERS, m, size);
+    return oepick(oeREGISTERS_x86_64, m, size);
   }
 
   return NULL;
@@ -85,8 +85,8 @@ static poestruct_t oepick_SEG(unknown_t m, const size_t size) {
   if (m && USE_STRLEN == size) {
     return oepick_SEG(m, xstrlen(m));
   } else if (m && size) {
-    poestruct_t p0 = oepick(oeSEGMENTS, m, size);
-    return p0 ? p0 : oepick(oeSIZEPTRS, m, size);
+    poestruct_t p0 = oepick(oeSEGMENTS_x86_64, m, size);
+    return p0 ? p0 : oepick(oeSIZEPTRS_x86_64, m, size);
   }
 
   return NULL;
@@ -504,7 +504,7 @@ static unknown_t oeinsert_prefix(handle_t p, unknown_t m) {
     pocmnemonic_t p1 = oeget(p, OECODE_MNEMONIC);
 
     size_t m0size = xstrlen(m0);
-    poestruct_t d0 = oepick(oePREFIXTYPES, m0, m0size);
+    poestruct_t d0 = oepick(oePREFIXTYPES_x86_64, m0, m0size);
     if (p1 && d0) {
       p1->cvalue |= d0->action;
 //printf("++%s++", d0->mc);
@@ -629,7 +629,7 @@ handle_t oecreate(handle_t p, const uint64_t vaddr, unknown_t mnemonic, unknown_
     char* m1 = NULL;
     m1 = oeinsert_comment(p0, m0);
     m1 = oeinsert_prefix(p0, m0);
-    poestruct_t pi = oepick(oeINSTRUCTIONS, m1, USE_STRLEN);
+    poestruct_t pi = oepick(oeINSTRUCTIONS_x86_64, m1, USE_STRLEN);
 
     if (pi) {
 //printf("++");

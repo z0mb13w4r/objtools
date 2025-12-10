@@ -6,7 +6,7 @@ typedef struct oestruct_s {
   const imode_t action;
 } oestruct_t, *poestruct_t;
 
-static oestruct_t oePREFIXTYPES[] = {
+static oestruct_t oePREFIXTYPES_x86_64[] = {
   OCSTRUCT("bnd",       OCINSTRUCTION_BND),
   OCSTRUCT("lock",      OCINSTRUCTION_LOCK),
   OCSTRUCT("notrack",   OCINSTRUCTION_NOTRACK),
@@ -23,7 +23,7 @@ static oestruct_t oePREFIXTYPES[] = {
   {NULL}
 };
 
-static oestruct_t oeINSTRUCTIONS[] = {
+static oestruct_t oeINSTRUCTIONS_x86_64[] = {
   OCSTRUCT("callb",     OCINSTRUCTION_CALLB),
   OCSTRUCT("calll",     OCINSTRUCTION_CALLL),
   OCSTRUCT("callq",     OCINSTRUCTION_CALLQ),
@@ -428,7 +428,7 @@ static oestruct_t oeINSTRUCTIONS[] = {
   {NULL}
 };
 
-static oestruct_t oeREGISTERS[] = {
+static oestruct_t oeREGISTERS_x86_64[] = {
   OCSTRUCT("rax",       OCREGISTER_RAX),
   OCSTRUCT("eax",       OCREGISTER_EAX),
   OCSTRUCT("ax",        OCREGISTER_AX),
@@ -573,7 +573,7 @@ static oestruct_t oeREGISTERS[] = {
   {NULL}
 };
 
-static oestruct_t oeSEGMENTS[] = {
+static oestruct_t oeSEGMENTS_x86_64[] = {
   OCSTRUCT("cs:",       OPSEGMENT_CS),
   OCSTRUCT("ds:",       OPSEGMENT_DS),
   OCSTRUCT("ss:",       OPSEGMENT_SS),
@@ -584,7 +584,7 @@ static oestruct_t oeSEGMENTS[] = {
   {NULL}
 };
 
-static oestruct_t oeSIZEPTRS[] = {
+static oestruct_t oeSIZEPTRS_x86_64[] = {
   OCSTRUCT("byte ptr",  OPSIZE_BYTEPTR),
   OCSTRUCT("word ptr",  OPSIZE_WORDPTR),
   OCSTRUCT("dword ptr", OPSIZE_DWORDPTR),
@@ -592,7 +592,7 @@ static oestruct_t oeSIZEPTRS[] = {
   {NULL}
 };
 
-convert_t oeINSTRUCTIONFLAGS[] = {
+convert_t oeINSTRUCTIONFLAGS_x86_64[] = {
   {"ALIGNED",           OCINSTRUCTION_ALIGNED},
   {"UNALIGNED",         OCINSTRUCTION_UNALIGNED},
 
@@ -641,7 +641,7 @@ convert_t oeINSTRUCTIONFLAGS[] = {
   {0, 0}
 };
 
-convert_t oeINSTRUCTIONNAMES[] = {
+convert_t oeINSTRUCTIONNAMES_x86_64[] = {
   {"BT",                OCINSN_MASK(OCINSTRUCTION_BT)},
   {"CALL",              OCINSN_MASK(OCINSTRUCTION_CALL)},
   {"ENDBR",             OCINSN_MASK(OCINSTRUCTION_ENDBR)},
@@ -719,7 +719,7 @@ convert_t oeINSTRUCTIONNAMES[] = {
   {0, 0}
 };
 
-convert_t oeSEGMENTFLAGS[] = {
+convert_t oeSEGMENTFLAGS_x86_64[] = {
   {"SIZE",              OPOPERAND_SIZE},
   {"SEGMENT",           OPOPERAND_SEGMENT},
   {"ABSOLUTE",          OCOPERAND_ABSOLUTE},
@@ -738,7 +738,7 @@ convert_t oeSEGMENTFLAGS[] = {
   {0, 0}
 };
 
-convert_t oeREGISTERFLAGS[] = {
+convert_t oeREGISTERFLAGS_x86_64[] = {
   {"XMM",               OCREGISTER_XMM},
   {"YMM",               OCREGISTER_YMM},
   {"ZMM",               OCREGISTER_ZMM},
@@ -764,7 +764,7 @@ convert_t oeREGISTERFLAGS[] = {
   {0, 0}
 };
 
-convert_t oeREGISTERNAMES[] = {
+convert_t oeREGISTERNAMES_x86_64[] = {
   {"RAX",               OCREGISTER_RAX},
   {"EAX",               OCREGISTER_EAX},
   {"AX",                OCREGISTER_AX},
@@ -909,7 +909,7 @@ convert_t oeREGISTERNAMES[] = {
   {0, 0}
 };
 
-pick_t oeADDRLOOKUP[] = {
+pick_t oeADDRLOOKUP_x86_64[] = {
   OCINSN_MASK(OCINSTRUCTION_CALL),
   OCINSN_MASK(OCINSTRUCTION_JMP),
   PICK_END

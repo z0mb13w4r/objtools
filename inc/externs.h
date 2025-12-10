@@ -23,7 +23,7 @@ extern pick_t ecMACRODEFSTR[];
 
 extern pick_t ecDYNTAGNAME[];
 
-extern pick_t oeADDRLOOKUP[];
+extern pick_t oeADDRLOOKUP_x86_64[];
 
 extern convert_t ecDWAT[];
 extern convert_t ecDWOP[];
@@ -54,11 +54,11 @@ extern convert_t ecDWCHILDRENLITE[];
 extern convert_t ecPHDRTYPE[];
 extern convert_t ecSHDRTYPE[];
 
-extern convert_t oeSEGMENTFLAGS[];
-extern convert_t oeREGISTERFLAGS[];
-extern convert_t oeREGISTERNAMES[];
-extern convert_t oeINSTRUCTIONFLAGS[];
-extern convert_t oeINSTRUCTIONNAMES[];
+extern convert_t oeSEGMENTFLAGS_x86_64[];
+extern convert_t oeREGISTERFLAGS_x86_64[];
+extern convert_t oeREGISTERNAMES_x86_64[];
+extern convert_t oeINSTRUCTIONFLAGS_x86_64[];
+extern convert_t oeINSTRUCTIONNAMES_x86_64[];
 
 extern convert_t ecDYNTAG[];
 

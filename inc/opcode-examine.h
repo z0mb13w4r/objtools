@@ -38,7 +38,7 @@
 #define OCINSTRUCTION_G                U64MASK(42)
 #define OCINSTRUCTION_L                U64MASK(43)
 #define OCINSTRUCTION_N                U64MASK(44)
-#define OCINSTRUCTION_O                U64MASK(45)../inc/opcode-examine.h../inc/opcode-examine.h
+#define OCINSTRUCTION_O                U64MASK(45)
 #define OCINSTRUCTION_S                U64MASK(46)
 #define OCINSTRUCTION_BND              U64MASK(47)
 #define OCINSTRUCTION_REP              U64MASK(48)
