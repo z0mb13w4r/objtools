@@ -2,10 +2,40 @@
 #include "opcode-printf.h"
 #include "opcode-examine.h"
 
+#define USE_STRLEN    (-1)
+
+#define OCSTRUCT(x,y) {x, sizeof(x) - 1, y}
+
+typedef struct oestruct_s {
+  const char*   mc;
+  const size_t  mcsize;
+  const imode_t action;
+} oestruct_t, *poestruct_t;
+
 #include "static/opcode-examine-arm.ci"
 #include "static/opcode-examine-x86.ci"
 
-#define USE_STRLEN             (-1)
+static poestruct_t oegetINSTRUCTIONS(handle_t p) {
+
+  switch (ocget_machine(p)) {
+  case EM_ARM:     return oeINSTRUCTIONS_ARM;
+  default:
+    break;
+  }
+
+  return oeINSTRUCTIONS_x86_64;
+}
+
+pconvert_t oegetINSTRUCTIONNAMES(handle_t p) {
+
+  switch (ocget_machine(p)) {
+  case EM_ARM:     return oeINSTRUCTIONNAMES_ARM;
+  default:
+    break;
+  }
+
+  return oeINSTRUCTIONNAMES_x86_64;
+}
 
 bool_t isocexamine(handle_t p) {
   return ismode(p, MODE_OCEXAMINE);
@@ -630,7 +660,7 @@ handle_t oecreate(handle_t p, const uint64_t vaddr, unknown_t mnemonic, unknown_
     char* m1 = NULL;
     m1 = oeinsert_comment(p0, m0);
     m1 = oeinsert_prefix(p0, m0);
-    poestruct_t pi = oepick(oeINSTRUCTIONS_x86_64, m1, USE_STRLEN);
+    poestruct_t pi = oepick(oegetINSTRUCTIONS(p), m1, USE_STRLEN);
 
     if (pi) {
 //printf("++");

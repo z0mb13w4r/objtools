@@ -1,0 +1,14 @@
+static oestruct_t oeINSTRUCTIONS_ARM[] = {
+  OCSTRUCT("push",      OCINSTRUCTION_PUSH),
+  OCSTRUCT("pop",       OCINSTRUCTION_POP),
+
+  {NULL}
+};
+
+
+convert_t oeINSTRUCTIONNAMES_ARM[] = {
+  {"PUSH",              OCINSN_MASK(OCINSTRUCTION_PUSH)},
+  {"POP",               OCINSN_MASK(OCINSTRUCTION_POP)},
+  {0, 0}
+};
+

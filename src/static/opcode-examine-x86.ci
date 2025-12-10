@@ -1,11 +1,3 @@
-#define OCSTRUCT(x,y) {x, sizeof(x) - 1, y}
-
-typedef struct oestruct_s {
-  const char*   mc;
-  const size_t  mcsize;
-  const imode_t action;
-} oestruct_t, *poestruct_t;
-
 static oestruct_t oePREFIXTYPES_x86_64[] = {
   OCSTRUCT("bnd",       OCINSTRUCTION_BND),
   OCSTRUCT("lock",      OCINSTRUCTION_LOCK),

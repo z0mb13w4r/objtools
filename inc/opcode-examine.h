@@ -4,6 +4,7 @@
 //#define OPCODE_EXAMINE_DEBUGX
 
 #include "opcode.h"
+#include "objutils.h"
 
 #define OCINSN_MASK(x)                 MODE_MASK16(x)
 #define OCFLAG_MASK(x)                 MODE_HIDE16(x)
@@ -187,6 +188,8 @@ uint64_t  oedecb(unknown_t p, const size_t size);
 uint64_t  oehexb(unknown_t p, const size_t size);
 bool_t    oeisdecb(unknown_t p, const size_t size);
 bool_t    oeishexb(unknown_t p, const size_t size);
+
+pconvert_t oegetINSTRUCTIONNAMES(handle_t p);
 
 #endif
 

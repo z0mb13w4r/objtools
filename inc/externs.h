@@ -58,7 +58,6 @@ extern convert_t oeSEGMENTFLAGS_x86_64[];
 extern convert_t oeREGISTERFLAGS_x86_64[];
 extern convert_t oeREGISTERNAMES_x86_64[];
 extern convert_t oeINSTRUCTIONFLAGS_x86_64[];
-extern convert_t oeINSTRUCTIONNAMES_x86_64[];
 
 extern convert_t ecDYNTAG[];
 
