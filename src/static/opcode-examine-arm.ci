@@ -3,6 +3,7 @@ static oestruct_t oeINSTRUCTIONS_ARM[] = {
   OCSTRUCT("pop",       OCINSNARM_POP),
   OCSTRUCT("add",       OCINSNARM_ADD),
   OCSTRUCT("sub",       OCINSNARM_SUB),
+  OCSTRUCT("ldr",       OCINSNARM_LDR),
 
   {NULL}
 };
@@ -13,6 +14,7 @@ convert_t oeINSTRUCTIONNAMES_ARM[] = {
   {"POP",               OCINSN_MASK(OCINSNARM_POP)},
   {"ADD",               OCINSN_MASK(OCINSNARM_ADD)},
   {"SUB",               OCINSN_MASK(OCINSNARM_SUB)},
+  {"LDR",               OCINSN_MASK(OCINSNARM_LDR)},
   {0, 0}
 };
 

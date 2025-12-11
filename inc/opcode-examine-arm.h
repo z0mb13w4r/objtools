@@ -5,6 +5,7 @@
 #define OCINSNARM_POP              ((0x0c) | OCINSTRUCTION_OPERAND1)
 #define OCINSNARM_ADD              ((0x0d) | OCINSTRUCTION_OPERAND2)
 #define OCINSNARM_SUB              ((0x18) | OCINSTRUCTION_OPERAND2)
+#define OCINSNARM_LDR              ((0x20) | OCINSTRUCTION_OPERAND2)
 
 #endif
 
