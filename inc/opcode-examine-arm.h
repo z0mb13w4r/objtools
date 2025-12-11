@@ -1,5 +1,10 @@
 #ifndef __OPCODE_EXAMINE_ARM_H_
 #define __OPCODE_EXAMINE_ARM_H_
 
+#define OCINSNARM_PUSH             ((0x0b) | OCINSTRUCTION_OPERAND1)
+#define OCINSNARM_POP              ((0x0c) | OCINSTRUCTION_OPERAND1)
+#define OCINSNARM_ADD              ((0x0d) | OCINSTRUCTION_OPERAND2)
+#define OCINSNARM_SUB              ((0x18) | OCINSTRUCTION_OPERAND2)
+
 #endif
 
