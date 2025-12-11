@@ -189,6 +189,7 @@ uint64_t  oehexb(unknown_t p, const size_t size);
 bool_t    oeisdecb(unknown_t p, const size_t size);
 bool_t    oeishexb(unknown_t p, const size_t size);
 
+pconvert_t oegetINSTRUCTIONFLAGS(handle_t p);
 pconvert_t oegetINSTRUCTIONNAMES(handle_t p);
 
 #endif

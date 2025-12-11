@@ -12,7 +12,7 @@ static int ocdebugf_cvalue0(handle_t p, uint64_t cv) {
     n += printf_text("CVALUE", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
     n += printf_nice(cv, USE_FHEX64);
     n += printf_pick(oegetINSTRUCTIONNAMES(p), OCINSN_MASK(cv), USE_SPACE);
-    n += printf_mask(oeINSTRUCTIONFLAGS_x86_64, MODE_HIDE16(cv), USE_NONE);
+    n += printf_mask(oegetINSTRUCTIONFLAGS(p), MODE_HIDE16(cv), USE_NONE);
     n += printf_eol();
 
     return n;

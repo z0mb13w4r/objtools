@@ -16,7 +16,6 @@ typedef struct oestruct_s {
 #include "static/opcode-examine-x86.ci"
 
 static poestruct_t oegetINSTRUCTIONS(handle_t p) {
-
   switch (ocget_machine(p)) {
   case EM_ARM:     return oeINSTRUCTIONS_ARM;
   default:
@@ -27,7 +26,6 @@ static poestruct_t oegetINSTRUCTIONS(handle_t p) {
 }
 
 pconvert_t oegetINSTRUCTIONNAMES(handle_t p) {
-
   switch (ocget_machine(p)) {
   case EM_ARM:     return oeINSTRUCTIONNAMES_ARM;
   default:
@@ -35,6 +33,16 @@ pconvert_t oegetINSTRUCTIONNAMES(handle_t p) {
   }
 
   return oeINSTRUCTIONNAMES_x86_64;
+}
+
+pconvert_t oegetINSTRUCTIONFLAGS(handle_t p) {
+  switch (ocget_machine(p)) {
+  case EM_ARM:     return oeINSTRUCTIONFLAGS_ARM;
+  default:
+    break;
+  }
+
+  return oeINSTRUCTIONFLAGS_x86_64;
 }
 
 bool_t isocexamine(handle_t p) {
