@@ -12,10 +12,12 @@
 #define OCINSNARM_LINK             U64MASK(16)
 
 #define OCINSNARM_BEQ              (OCINSNARM_BR | OCINSN_E)
+#define OCINSNARM_BGE              (OCINSNARM_BR | OCINSN_GE)
 #define OCINSNARM_BNE              (OCINSNARM_BR | OCINSN_NE)
 
 #define OCINSNARM_BL               (OCINSNARM_BR | OCINSNARM_LINK)
 #define OCINSNARM_BLEQ             (OCINSNARM_BL | OCINSN_E)
+#define OCINSNARM_BLGE             (OCINSNARM_BL | OCINSN_GE)
 #define OCINSNARM_BLNE             (OCINSNARM_BL | OCINSN_NE)
 
 #endif
