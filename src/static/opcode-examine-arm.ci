@@ -1,6 +1,8 @@
 static oestruct_t oeINSTRUCTIONS_ARM[] = {
   OCSTRUCT("beq",       OCINSNARM_BEQ),
+  OCSTRUCT("bne",       OCINSNARM_BNE),
   OCSTRUCT("bleq",      OCINSNARM_BLEQ),
+  OCSTRUCT("blne",      OCINSNARM_BLNE),
   OCSTRUCT("bl",        OCINSNARM_BL),
   OCSTRUCT("push",      OCINSNARM_PUSH),
   OCSTRUCT("pop",       OCINSNARM_POP),
