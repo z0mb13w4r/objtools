@@ -10,6 +10,15 @@ static oestruct_t oeINSTRUCTIONS_ARM[] = {
 };
 
 convert_t oeINSTRUCTIONFLAGS_ARM[] = {
+  {"A",                 OCINSN_A},
+  {"B",                 OCINSN_B},
+  {"C",                 OCINSN_C},
+  {"E",                 OCINSN_E},
+  {"G",                 OCINSN_G},
+  {"L",                 OCINSN_L},
+  {"N",                 OCINSN_N},
+  {"O",                 OCINSN_O},
+  {"S",                 OCINSN_S},
   {"1BIT",              OCINSN_1BIT},
   {"8BIT",              OCINSN_8BIT},
   {"16BIT",             OCINSN_16BIT},
