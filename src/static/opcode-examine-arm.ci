@@ -9,6 +9,7 @@ static oestruct_t oeINSTRUCTIONS_ARM[] = {
 };
 
 convert_t oeINSTRUCTIONFLAGS_ARM[] = {
+  {"1BIT",              OCINSN_1BIT},
   {"8BIT",              OCINSN_8BIT},
   {"16BIT",             OCINSN_16BIT},
   {"32BIT",             OCINSN_32BIT},

@@ -617,6 +617,7 @@ convert_t oeINSTRUCTIONFLAGS_x86_64[] = {
   {"REP",               OCINSTRUCTION_REP},
   {"DATA",              OCINSTRUCTION_DATA},
   {"LOCK",              OCINSTRUCTION_LOCK},
+  {"1BIT",              OCINSN_1BIT},
   {"8BIT",              OCINSN_8BIT},
   {"16BIT",             OCINSN_16BIT},
   {"32BIT",             OCINSN_32BIT},
