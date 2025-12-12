@@ -1,4 +1,5 @@
 static oestruct_t oeINSTRUCTIONS_ARM[] = {
+  OCSTRUCT("bl",        OCINSNARM_BL),
   OCSTRUCT("push",      OCINSNARM_PUSH),
   OCSTRUCT("pop",       OCINSNARM_POP),
   OCSTRUCT("add",       OCINSNARM_ADD),
@@ -23,10 +24,13 @@ convert_t oeINSTRUCTIONFLAGS_ARM[] = {
   {"OPERAND2",          OCINSN_OPERAND2},
   {"OPERAND3",          OCINSN_OPERAND3},
   {"OPERAND4",          OCINSN_OPERAND4},
+
+  {"LINK",              OCINSNARM_LINK},
   {0, 0}
 };
 
 convert_t oeINSTRUCTIONNAMES_ARM[] = {
+  {"BR",                OCINSN_MASK(OCINSNARM_BR)},
   {"PUSH",              OCINSN_MASK(OCINSNARM_PUSH)},
   {"POP",               OCINSN_MASK(OCINSNARM_POP)},
   {"ADD",               OCINSN_MASK(OCINSNARM_ADD)},
