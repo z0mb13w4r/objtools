@@ -27,6 +27,7 @@
 #define OCINSNARM_BLLE             (OCINSNARM_BL | OCINSN_LE)
 #define OCINSNARM_BLLT             (OCINSNARM_BL | OCINSN_L)
 #define OCINSNARM_BLNE             (OCINSNARM_BL | OCINSN_NE)
+#define OCINSNARM_BLVC             (OCINSNARM_BL | OCINSN_O | OCINSNARM_CLR)
 
 #endif
 
