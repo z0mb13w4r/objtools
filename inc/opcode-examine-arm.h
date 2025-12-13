@@ -13,6 +13,7 @@
 #define OCINSNARM_SET              U64MASK(17)
 #define OCINSNARM_LINK             U64MASK(18)
 
+#define OCINSNARM_BCS              (OCINSNARM_BR | OCINSN_C | OCINSNARM_SET)
 #define OCINSNARM_BEQ              (OCINSNARM_BR | OCINSN_E)
 #define OCINSNARM_BGE              (OCINSNARM_BR | OCINSN_GE)
 #define OCINSNARM_BGT              (OCINSNARM_BR | OCINSN_G)
