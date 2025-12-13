@@ -5,6 +5,7 @@ static oestruct_t oeINSTRUCTIONS_ARM[] = {
   OCSTRUCT("ble",       OCINSNARM_BLE),
   OCSTRUCT("blt",       OCINSNARM_BLT),
   OCSTRUCT("bne",       OCINSNARM_BNE),
+  OCSTRUCT("bvc",       OCINSNARM_BVC),
   OCSTRUCT("bleq",      OCINSNARM_BLEQ),
   OCSTRUCT("blge",      OCINSNARM_BLGE),
   OCSTRUCT("blgt",      OCINSNARM_BLGT),
@@ -46,6 +47,7 @@ convert_t oeINSTRUCTIONFLAGS_ARM[] = {
   {"OPERAND3",          OCINSN_OPERAND3},
   {"OPERAND4",          OCINSN_OPERAND4},
 
+  {"CLR",               OCINSNARM_CLR},
   {"LINK",              OCINSNARM_LINK},
   {0, 0}
 };

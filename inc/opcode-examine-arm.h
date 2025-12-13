@@ -9,7 +9,8 @@
 #define OCINSNARM_SUB              ((0x18) | OCINSN_OPERAND2)
 #define OCINSNARM_LDR              ((0x20) | OCINSN_OPERAND2)
 
-#define OCINSNARM_LINK             U64MASK(16)
+#define OCINSNARM_CLR              U64MASK(16)
+#define OCINSNARM_LINK             U64MASK(17)
 
 #define OCINSNARM_BEQ              (OCINSNARM_BR | OCINSN_E)
 #define OCINSNARM_BGE              (OCINSNARM_BR | OCINSN_GE)
@@ -17,6 +18,7 @@
 #define OCINSNARM_BLE              (OCINSNARM_BR | OCINSN_LE)
 #define OCINSNARM_BLT              (OCINSNARM_BR | OCINSN_L)
 #define OCINSNARM_BNE              (OCINSNARM_BR | OCINSN_NE)
+#define OCINSNARM_BVC              (OCINSNARM_BR | OCINSN_O | OCINSNARM_CLR)
 
 #define OCINSNARM_BL               (OCINSNARM_BR | OCINSNARM_LINK)
 #define OCINSNARM_BLEQ             (OCINSNARM_BL | OCINSN_E)
