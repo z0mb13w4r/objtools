@@ -49,6 +49,7 @@ convert_t oeINSTRUCTIONFLAGS_ARM[] = {
   {"OPERAND4",          OCINSN_OPERAND4},
 
   {"CLR",               OCINSNARM_CLR},
+  {"SET",               OCINSNARM_SET},
   {"LINK",              OCINSNARM_LINK},
   {0, 0}
 };

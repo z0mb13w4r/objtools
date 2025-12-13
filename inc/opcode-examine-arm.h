@@ -10,7 +10,8 @@
 #define OCINSNARM_LDR              ((0x20) | OCINSN_OPERAND2)
 
 #define OCINSNARM_CLR              U64MASK(16)
-#define OCINSNARM_LINK             U64MASK(17)
+#define OCINSNARM_SET              U64MASK(17)
+#define OCINSNARM_LINK             U64MASK(18)
 
 #define OCINSNARM_BEQ              (OCINSNARM_BR | OCINSN_E)
 #define OCINSNARM_BGE              (OCINSNARM_BR | OCINSN_GE)
