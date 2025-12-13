@@ -2,7 +2,7 @@
 
 These tools were originally designed to be a research project and drop-in replacement for readelf, objcopy and objdump utilising Capstone disassembly framework. The project then started to grow to become a collection of tools for malware and binary analysis.
 
-**convert-ng** is a Swiss Army Knife for manipulating data in complex ways using operations, xor, addition, substruction, logical shifts and rotations, base32 and base64.
+**convert-ng** is a Swiss Army Knife for manipulating data in complex ways using operations, xor, addition, subtraction, logical shifts and rotations, base32, base58, base64, base85 and vigeneree cipher.
 
 **objcopy-ng** copies the contents of an object file to another using the GNU BFD Library to readand write the object files. It can write the destination object file in a format different from that of the source object file.
 
