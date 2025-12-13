@@ -18,6 +18,7 @@
 #define OCINSNARM_BEQ              (OCINSNARM_BR | OCINSN_E)
 #define OCINSNARM_BGE              (OCINSNARM_BR | OCINSN_GE)
 #define OCINSNARM_BGT              (OCINSNARM_BR | OCINSN_G)
+#define OCINSNARM_BHI              (OCINSNARM_BR | OCINSN_Z | OCINSNARM_CLR)
 #define OCINSNARM_BLE              (OCINSNARM_BR | OCINSN_LE)
 #define OCINSNARM_BLT              (OCINSNARM_BR | OCINSN_L)
 #define OCINSNARM_BNE              (OCINSNARM_BR | OCINSN_NE)
