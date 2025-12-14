@@ -8,6 +8,7 @@
 #define OCINSNARM_ADD              ((0x0d) | OCINSN_OPERAND2)
 #define OCINSNARM_SUB              ((0x18) | OCINSN_OPERAND2)
 #define OCINSNARM_LDR              ((0x20) | OCINSN_OPERAND2)
+#define OCINSNARM_STR              ((0x21) | OCINSN_OPERAND2)
 
 #define OCINSNARM_CLR              U64MASK(16)
 #define OCINSNARM_SET              U64MASK(17)
