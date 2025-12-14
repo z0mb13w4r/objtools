@@ -40,6 +40,7 @@ static oestruct_t oeINSTRUCTIONS_ARM[] = {
   OCSTRUCT("ldrmi",     OCINSNARM_LDRMI),
   OCSTRUCT("ldrne",     OCINSNARM_LDRNE),
   OCSTRUCT("ldrpl",     OCINSNARM_LDRPL),
+  OCSTRUCT("ldrvc",     OCINSNARM_LDRVC),
   OCSTRUCT("ldrvs",     OCINSNARM_LDRVS),
   OCSTRUCT("ldr",       OCINSNARM_LDR),
   OCSTRUCT("strcc",     OCINSNARM_STRCC),
@@ -48,6 +49,7 @@ static oestruct_t oeINSTRUCTIONS_ARM[] = {
   OCSTRUCT("strmi",     OCINSNARM_STRMI),
   OCSTRUCT("strne",     OCINSNARM_STRNE),
   OCSTRUCT("strpl",     OCINSNARM_STRPL),
+  OCSTRUCT("strvc",     OCINSNARM_STRVC),
   OCSTRUCT("strvs",     OCINSNARM_STRVS),
   OCSTRUCT("str",       OCINSNARM_STR),
 
