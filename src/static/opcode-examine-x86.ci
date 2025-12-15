@@ -602,8 +602,8 @@ convert_t oeINSTRUCTIONFLAGS_x86_64[] = {
   {"LOG10",             OCINSTRUCTION_LOG10},
   {"EULER",             OCINSTRUCTION_EULER},
 
-  {"LT",                OCINSTRUCTION_LT},
-  {"RT",                OCINSTRUCTION_RT},
+  {"LT",                OCINSN_LT},
+  {"RT",                OCINSN_RT},
   {"BND",               OCINSTRUCTION_BND},
   {"REP",               OCINSTRUCTION_REP},
   {"DATA",              OCINSTRUCTION_DATA},
