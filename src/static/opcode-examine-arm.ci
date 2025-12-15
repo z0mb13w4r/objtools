@@ -218,6 +218,22 @@ static oestruct_t oeINSTRUCTIONS_ARM[] = {
   OCSTRUCT("movvs",     OCINSNARM_MOVVS),
   OCSTRUCT("mov",       OCINSNARM_MOV),
 
+  OCSTRUCT("ldmcc",     OCINSNARM_LDMCC),
+  OCSTRUCT("ldmcs",     OCINSNARM_LDMCS),
+  OCSTRUCT("ldmeq",     OCINSNARM_LDMEQ),
+  OCSTRUCT("ldmge",     OCINSNARM_LDMGE),
+  OCSTRUCT("ldmgt",     OCINSNARM_LDMGT),
+  OCSTRUCT("ldmhi",     OCINSNARM_LDMHI),
+  OCSTRUCT("ldmle",     OCINSNARM_LDMLE),
+  OCSTRUCT("ldmls",     OCINSNARM_LDMLS),
+  OCSTRUCT("ldmlt",     OCINSNARM_LDMLT),
+  OCSTRUCT("ldmmi",     OCINSNARM_LDMMI),
+  OCSTRUCT("ldmne",     OCINSNARM_LDMNE),
+  OCSTRUCT("ldmpl",     OCINSNARM_LDMPL),
+  OCSTRUCT("ldmvc",     OCINSNARM_LDMVC),
+  OCSTRUCT("ldmvs",     OCINSNARM_LDMVS),
+  OCSTRUCT("ldm",       OCINSNARM_LDM),
+
   {NULL}
 };
 
@@ -274,7 +290,7 @@ convert_t oeINSTRUCTIONNAMES_ARM[] = {
   {"LDR",               OCINSN_MASK(OCINSNARM_LDR)},
   {"STR",               OCINSN_MASK(OCINSNARM_STR)},
   {"MOV",               OCINSN_MASK(OCINSNARM_MOV)},
-
+  {"LDM",               OCINSN_MASK(OCINSNARM_LDM)},
   {0, 0}
 };
 
