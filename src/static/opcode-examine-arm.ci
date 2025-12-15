@@ -31,7 +31,23 @@ static oestruct_t oeINSTRUCTIONS_ARM[] = {
 
   OCSTRUCT("push",      OCINSNARM_PUSH),
   OCSTRUCT("pop",       OCINSNARM_POP),
+
+  OCSTRUCT("addcc",     OCINSNARM_ADDCC),
+  OCSTRUCT("addcs",     OCINSNARM_ADDCS),
+  OCSTRUCT("addeq",     OCINSNARM_ADDEQ),
+  OCSTRUCT("addge",     OCINSNARM_ADDGE),
+  OCSTRUCT("addgt",     OCINSNARM_ADDGT),
+  OCSTRUCT("addhi",     OCINSNARM_ADDHI),
+  OCSTRUCT("addle",     OCINSNARM_ADDLE),
+  OCSTRUCT("addls",     OCINSNARM_ADDLS),
+  OCSTRUCT("addlt",     OCINSNARM_ADDLT),
+  OCSTRUCT("addmi",     OCINSNARM_ADDMI),
+  OCSTRUCT("addne",     OCINSNARM_ADDNE),
+  OCSTRUCT("addpl",     OCINSNARM_ADDPL),
+  OCSTRUCT("addvc",     OCINSNARM_ADDVC),
+  OCSTRUCT("addvs",     OCINSNARM_ADDVS),
   OCSTRUCT("add",       OCINSNARM_ADD),
+
   OCSTRUCT("sub",       OCINSNARM_SUB),
 
   OCSTRUCT("andcc",     OCINSNARM_ANDCC),
