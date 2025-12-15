@@ -16,9 +16,10 @@
 #define OCINSNARM_ORN              ((0x1d) | OCINSN_OPERAND2)
 #define OCINSNARM_ASx              ((0x1e) | OCINSN_OPERAND1 | OCINSN_OPERAND2)
 #define OCINSNARM_LSx              ((0x1f) | OCINSN_OPERAND1 | OCINSN_OPERAND2)
-#define OCINSNARM_LDR              ((0x20) | OCINSN_OPERAND2)
-#define OCINSNARM_STR              ((0x21) | OCINSN_OPERAND2)
-#define OCINSNARM_MOV              ((0x22) | OCINSN_OPERAND2)
+#define OCINSNARM_ROx              ((0x20) | OCINSN_OPERAND1 | OCINSN_OPERAND2)
+#define OCINSNARM_LDR              ((0x21) | OCINSN_OPERAND2)
+#define OCINSNARM_STR              ((0x22) | OCINSN_OPERAND2)
+#define OCINSNARM_MOV              ((0x23) | OCINSN_OPERAND2)
 
 #define OCINSNARM_CLR              U64MASK(16)
 #define OCINSNARM_SET              U64MASK(17)
@@ -194,6 +195,8 @@
 #define OCINSNARM_ASR              (OCINSNARM_ASx | OCINSN_RT)
 #define OCINSNARM_LSL              (OCINSNARM_LSx | OCINSN_LT)
 #define OCINSNARM_LSR              (OCINSNARM_LSx | OCINSN_RT)
+#define OCINSNARM_ROL              (OCINSNARM_ROx | OCINSN_LT)
+#define OCINSNARM_ROR              (OCINSNARM_ROx | OCINSN_RT)
 
 #define OCINSNARM_LDRCC            (OCINSNARM_LDR | OCINSNARM_CC)
 #define OCINSNARM_LDRCS            (OCINSNARM_LDR | OCINSNARM_CS)
