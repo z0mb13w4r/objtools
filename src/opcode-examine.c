@@ -56,6 +56,11 @@ pconvert_t oegetINSTRUCTIONFLAGS(handle_t p) {
 }
 
 pconvert_t oegetREGISTERFLAGS(handle_t p) {
+  switch (ocget_machine(p)) {
+  case EM_ARM:     return oeREGISTERFLAGS_ARM;
+  default:
+    break;
+  }
 
   return oeREGISTERFLAGS_x86_64;
 }

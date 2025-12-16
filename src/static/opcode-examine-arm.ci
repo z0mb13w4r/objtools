@@ -455,6 +455,11 @@ convert_t oeINSTRUCTIONNAMES_ARM[] = {
   {0, 0}
 };
 
+convert_t oeREGISTERFLAGS_ARM[] = {
+
+  {0, 0}
+};
+
 convert_t oeREGISTERNAMES_ARM[] = {
 
   {0, 0}
