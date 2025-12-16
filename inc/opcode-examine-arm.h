@@ -4,6 +4,7 @@
 #define OCINSNARM_BR               ((0x04) | OCINSN_OPERAND1)
 #define OCINSNARM_BX               ((0x05) | OCINSN_OPERAND1)
 #define OCINSNARM_CMP              ((0x06) | OCINSN_OPERAND2)
+#define OCINSNARM_TST              ((0x07) | OCINSN_OPERAND2)
 #define OCINSNARM_PUSH             ((0x0b) | OCINSN_OPERAND1)
 #define OCINSNARM_POP              ((0x0c) | OCINSN_OPERAND1)
 #define OCINSNARM_ADD              ((0x0d) | OCINSN_OPERAND2)
