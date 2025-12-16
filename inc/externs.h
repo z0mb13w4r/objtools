@@ -53,7 +53,6 @@ extern convert_t ecPHDRTYPE[];
 extern convert_t ecSHDRTYPE[];
 
 extern convert_t oeSEGMENTFLAGS_x86_64[];
-extern convert_t oeREGISTERFLAGS_x86_64[];
 
 extern convert_t ecDYNTAG[];
 
