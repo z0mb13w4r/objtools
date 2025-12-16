@@ -62,6 +62,8 @@ static oestruct_t oeINSTRUCTIONS_ARM[] = {
   OCSTRUCT("bx",        OCINSNARM_BX),
   OCSTRUCT("b",         OCINSNARM_BR),
 
+  OCSTRUCT("cmp",       OCINSNARM_CMP),
+
   OCSTRUCT("push",      OCINSNARM_PUSH),
   OCSTRUCT("pop",       OCINSNARM_POP),
 
@@ -322,6 +324,7 @@ convert_t oeINSTRUCTIONFLAGS_ARM[] = {
 convert_t oeINSTRUCTIONNAMES_ARM[] = {
   {"BR",                OCINSN_MASK(OCINSNARM_BR)},
   {"BX",                OCINSN_MASK(OCINSNARM_BX)},
+  {"CMP",               OCINSN_MASK(OCINSNARM_CMP)},
   {"PUSH",              OCINSN_MASK(OCINSNARM_PUSH)},
   {"POP",               OCINSN_MASK(OCINSNARM_POP)},
   {"ADD",               OCINSN_MASK(OCINSNARM_ADD)},
