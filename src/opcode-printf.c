@@ -415,7 +415,7 @@ int opcode_printf_detail(handle_t p, const uint64_t vaddr, unknown_t mnemonic, u
     pocoperand_t o1 = oeget(oe, OECODE_OPERAND1);
     popcode_t    oc = ocget(p, OPCODE_THIS);
 
-    const bool_t isok = m && o1 && isused(oeADDRLOOKUP_x86_64, OCINSN_MASK(m->cvalue)) &&
+    const bool_t isok = m && o1 && isused(oegetADDRLOOKUP(p), OCINSN_MASK(m->cvalue)) &&
       (MODE_ISLOCKED8(OCOPERAND_IVALUE0, o1->cvalue) || MODE_ISLOCKED8(OCOPERAND_UVALUE0, o1->cvalue));
 
     if (MODE_ISNOT(oc->action, OPTPROGRAM_NO_ADDRESSES) || !isok) {

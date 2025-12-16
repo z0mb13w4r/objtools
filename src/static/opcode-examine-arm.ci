@@ -455,3 +455,9 @@ convert_t oeINSTRUCTIONNAMES_ARM[] = {
   {0, 0}
 };
 
+pick_t oeADDRLOOKUP_ARM[] = {
+  OCINSN_MASK(OCINSNARM_BR),
+  OCINSN_MASK(OCINSNARM_BX),
+  PICK_END
+};
+

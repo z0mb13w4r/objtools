@@ -23,8 +23,6 @@ extern pick_t ecMACRODEFSTR[];
 
 extern pick_t ecDYNTAGNAME[];
 
-extern pick_t oeADDRLOOKUP_x86_64[];
-
 extern convert_t ecDWAT[];
 extern convert_t ecDWOP[];
 extern convert_t ecDWUT[];

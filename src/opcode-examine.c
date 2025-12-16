@@ -15,6 +15,16 @@ typedef struct oestruct_s {
 #include "static/opcode-examine-arm.ci"
 #include "static/opcode-examine-x86.ci"
 
+ppick_t oegetADDRLOOKUP(handle_t p) {
+  switch (ocget_machine(p)) {
+  case EM_ARM:     return oeADDRLOOKUP_ARM;
+  default:
+    break;
+  }
+
+  return oeADDRLOOKUP_x86_64;
+}
+
 static poestruct_t oegetINSTRUCTIONS(handle_t p) {
   switch (ocget_machine(p)) {
   case EM_ARM:     return oeINSTRUCTIONS_ARM;
