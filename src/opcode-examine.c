@@ -55,6 +55,11 @@ pconvert_t oegetINSTRUCTIONFLAGS(handle_t p) {
   return oeINSTRUCTIONFLAGS_x86_64;
 }
 
+pconvert_t oegetREGISTERNAMES(handle_t p) {
+
+  return oeREGISTERNAMES_x86_64;
+}
+
 bool_t isocexamine(handle_t p) {
   return ismode(p, MODE_OCEXAMINE);
 }

@@ -195,6 +195,7 @@ bool_t    oeishexb(unknown_t p, const size_t size);
 ppick_t oegetADDRLOOKUP(handle_t p);
 pconvert_t oegetINSTRUCTIONFLAGS(handle_t p);
 pconvert_t oegetINSTRUCTIONNAMES(handle_t p);
+pconvert_t oegetREGISTERNAMES(handle_t p);
 
 #endif
 

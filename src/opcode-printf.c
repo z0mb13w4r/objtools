@@ -79,7 +79,7 @@ static int ocdebugf_nvalue0(handle_t p, const uint64_t cv, const uint64_t nv) {
 
     if (MODE_ISSET(cv, OPOPERAND_REGISTER0)) {
       n += printf_text("REGISTER0", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
-      n += printf_pick(oeREGISTERNAMES_x86_64, nv, USE_SPACE);
+      n += printf_pick(oegetREGISTERNAMES(p), nv, USE_SPACE);
       n += printf_mask(oeREGISTERFLAGS_x86_64, MODE_HIDE8(nv), USE_NONE);
     } else if (MODE_ISSET(cv, OCOPERAND_IVALUE0)) {
       n += printf_text("IVALUE0", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
@@ -106,7 +106,7 @@ static int ocdebugf_nvalue1(handle_t p, const uint64_t cv, const uint64_t nv) {
 
     if (MODE_ISSET(cv, OPOPERAND_REGISTER1)) {
       n += printf_text("REGISTER1", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
-      n += printf_pick(oeREGISTERNAMES_x86_64, nv, USE_SPACE);
+      n += printf_pick(oegetREGISTERNAMES(p), nv, USE_SPACE);
       n += printf_mask(oeREGISTERFLAGS_x86_64, MODE_HIDE8(nv), USE_NONE);
       n += printf_eol();
     } else if (MODE_ISSET(cv, OCOPERAND_IVALUE1)) {
@@ -131,7 +131,7 @@ static int ocdebugf_nvalue2(handle_t p, const uint64_t cv, const uint64_t nv) {
 
     if (MODE_ISSET(cv, OPOPERAND_REGISTER2)) {
       n += printf_text("REGISTER2", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
-      n += printf_pick(oeREGISTERNAMES_x86_64, nv, USE_SPACE);
+      n += printf_pick(oegetREGISTERNAMES(p), nv, USE_SPACE);
       n += printf_mask(oeREGISTERFLAGS_x86_64, MODE_HIDE8(nv), USE_NONE);
       n += printf_eol();
     } else if (MODE_ISSET(cv, OCOPERAND_IVALUE2)) {
@@ -156,7 +156,7 @@ static int ocdebugf_nvalue3(handle_t p, const uint64_t cv, const uint64_t nv) {
 
     if (MODE_ISSET(cv, OPOPERAND_REGISTER3)) {
       n += printf_text("REGISTER3", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
-      n += printf_pick(oeREGISTERNAMES_x86_64, nv, USE_SPACE);
+      n += printf_pick(oegetREGISTERNAMES(p), nv, USE_SPACE);
       n += printf_mask(oeREGISTERFLAGS_x86_64, MODE_HIDE8(nv), USE_NONE);
       n += printf_eol();
     } else if (MODE_ISSET(cv, OCOPERAND_IVALUE3)) {
