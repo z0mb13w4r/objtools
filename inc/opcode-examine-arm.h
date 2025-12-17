@@ -533,5 +533,31 @@
 #define OCINSNARM_MRRCVC           (OCINSNARM_MRRC | OCINSNARM_VC)
 #define OCINSNARM_MRRCVS           (OCINSNARM_MRRC | OCINSNARM_VS)
 
+#define OCREGARM_GENERAL           OCREGISTER_CUSTOM0
+#define OCREGARM_SYSCALL           OCREGISTER_CUSTOM1
+#define OCREGARM_FRAMEPTR          OCREGISTER_CUSTOM2
+#define OCREGARM_CALL              OCREGISTER_CUSTOM3
+#define OCREGARM_STACKPTR          OCREGISTER_CUSTOM4
+#define OCREGARM_LINK              OCREGISTER_CUSTOM5
+#define OCREGARM_PROGRAM           OCREGISTER_CUSTOM6
+
+#define OCREGARM_R0                ((0x01) | OCREGARM_GENERAL)
+#define OCREGARM_R1                ((0x02) | OCREGARM_GENERAL)
+#define OCREGARM_R2                ((0x03) | OCREGARM_GENERAL)
+#define OCREGARM_R3                ((0x04) | OCREGARM_GENERAL)
+#define OCREGARM_R4                ((0x05) | OCREGARM_GENERAL)
+#define OCREGARM_R5                ((0x06) | OCREGARM_GENERAL)
+#define OCREGARM_R6                ((0x07) | OCREGARM_GENERAL)
+#define OCREGARM_R7                ((0x08) | OCREGARM_SYSCALL)
+#define OCREGARM_R8                ((0x09) | OCREGARM_GENERAL)
+#define OCREGARM_R9                ((0x0a) | OCREGARM_GENERAL)
+#define OCREGARM_R10               ((0x0b) | OCREGARM_GENERAL)
+#define OCREGARM_R11               ((0x0c) | OCREGARM_FRAMEPTR)
+#define OCREGARM_R12               ((0x0d) | OCREGARM_CALL)
+#define OCREGARM_R13               ((0x0e) | OCREGARM_STACKPTR)
+#define OCREGARM_R14               ((0x0f) | OCREGARM_LINK)
+#define OCREGARM_R15               ((0x10) | OCREGARM_PROGRAM)
+#define OCREGARM_CPSR              ((0x11))
+
 #endif
 

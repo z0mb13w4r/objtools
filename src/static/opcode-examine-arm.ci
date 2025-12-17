@@ -585,11 +585,44 @@ convert_t oeINSTRUCTIONNAMES_ARM[] = {
 };
 
 convert_t oeREGISTERFLAGS_ARM[] = {
+  {"GENERAL",           OCREGARM_GENERAL},
+  {"SYSCALL",           OCREGARM_SYSCALL},
+  {"FRAMEPTR",          OCREGARM_FRAMEPTR},
+  {"PROCCALL",          OCREGARM_CALL},
+  {"STACKPTR",          OCREGARM_STACKPTR},
+  {"LINK",              OCREGARM_LINK},
+  {"PROGRAM",           OCREGARM_PROGRAM},
+
+  {"8BITLO",            OCREGISTER_8BITLO},
+  {"8BITHI",            OCREGISTER_8BITHI},
+  {"16BIT",             OCREGISTER_16BIT},
+  {"32BIT",             OCREGISTER_32BIT},
+  {"64BIT",             OCREGISTER_64BIT},
+  {"128BIT",            OCREGISTER_128BIT},
+  {"256BIT",            OCREGISTER_256BIT},
+  {"512BIT",            OCREGISTER_512BIT},
 
   {0, 0}
 };
 
 convert_t oeREGISTERNAMES_ARM[] = {
+  {"R0",                OCREGARM_R0},
+  {"R1",                OCREGARM_R1},
+  {"R2",                OCREGARM_R2},
+  {"R3",                OCREGARM_R3},
+  {"R4",                OCREGARM_R4},
+  {"R5",                OCREGARM_R5},
+  {"R6",                OCREGARM_R6},
+  {"R7",                OCREGARM_R7},
+  {"R8",                OCREGARM_R8},
+  {"R9",                OCREGARM_R9},
+  {"R10",               OCREGARM_R10},
+  {"R11",               OCREGARM_R11},
+  {"R12",               OCREGARM_R12},
+  {"R13",               OCREGARM_R13},
+  {"R14",               OCREGARM_R14},
+  {"R15",               OCREGARM_R15},
+  {"CPSR",              OCREGARM_CPSR},
 
   {0, 0}
 };
