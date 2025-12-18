@@ -979,6 +979,19 @@ static int dump_relocs64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr
   return n;
 }
 
+static uint64_t prel31_decode(const bool_t yes, const uint64_t value, const uint64_t vaddr) {
+  uint64_t offset = value & 0x7fffffff;
+  if (offset & 0x40000000) {
+    offset |= ~CAST(uint64_t, 0x7fffffff);
+  }
+
+  if (yes) {
+    offset <<= 1;
+  }
+
+  return vaddr + offset;
+}
+
 static int dump_unwind0(const pbuffer_t p, const poptions_t o, const int index,
                      const uint64_t sh_type, const uint64_t sh_offset, const uint64_t sh_size, const uint64_t count) {
   int n = 0;
@@ -1016,7 +1029,10 @@ static int dump_unwind32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr
             for (size_t j = 0; j < cnt; ++j) {
               Elf32_Addr *p0 = fget(f);
               if (p0) {
-printf("%ld|%x|%x\n", j, p0[0], p0[1]);
+                uint64_t fn = prel31_decode(EM_TI_C6000 == ehdr->e_machine, p0[0], shdr->sh_addr + 8 * j);
+//printf("%ld|%x|%x|%lx\n", j, p0[0], p0[1], fn);
+                n += printf_nice(fn, USE_FHEX | USE_COLON);
+
                 if (0x80000000 & p0[0]) {
                   n += printf_nice(p0[0], USE_CORRUPT);
                 } else {
