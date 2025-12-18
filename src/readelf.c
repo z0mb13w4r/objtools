@@ -1010,6 +1010,29 @@ static int dump_unwind32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr
         if (shdr && SHT_ARM_EXIDX == shdr->sh_type) {
           size_t cnt = shdr->sh_size / (sizeof(Elf32_Addr) + sizeof(Elf32_Addr));
           n += dump_unwind0(p, o, i, shdr->sh_type, shdr->sh_offset, shdr->sh_size, cnt);
+
+          handle_t f = fget32byshdr(p, shdr);
+          if (f) {
+            for (size_t j = 0; j < cnt; ++j) {
+              Elf32_Addr *p0 = fget(f);
+              if (p0) {
+printf("%ld|%x|%x\n", j, p0[0], p0[1]);
+                if (0x80000000 & p0[0]) {
+                  n += printf_nice(p0[0], USE_CORRUPT);
+                } else {
+                  if (1 == p0[1]) {
+                    n += printf_nice(p0[1], USE_FHEX);
+                    n += printf_text("cantunwind", USE_LT | USE_SPACE | USE_SB);
+                  } else if (0x80000000 & p0[1]) {
+                    printf_nice(p0[1], USE_FHEX);
+                  } else {
+                  }
+                }
+                n += printf_eol();
+                f = fstep(f, sizeof(Elf32_Addr) + sizeof(Elf32_Addr));
+              }
+            }
+          }
         }
       }
     }
