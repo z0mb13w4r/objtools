@@ -1,7 +1,12 @@
 #!/bin/bash
 
-#NAME=samples/exampled-32
-#NAME=samples/exampled-64
+PRGNAME=/usr/bin/objdump
+#PRGNAME=samples/binutils-2.45/objdump
+PRGNAME=/usr/bin/arm-linux-gnueabihf-objdump
+#PRGNAME=/usr/bin/aarch64-linux-gnu-objdump
+
+NAME=samples/exampled-32
+NAME=samples/exampled-64
 #NAME=samples/exampled-32.o
 #NAME=samples/exampled-64.o
 NAME=samples/exampled-arm32
@@ -26,6 +31,13 @@ NAME=samples/exampled-arm32
 #NAME=samples/binutils-2.45/bfdtest1
 #NAME=samples/binutils-2.45/bfdtest2
 #NAME=samples/binutils-2.45/addr2line
+#NAME=samples/binutils-2.44-arm64/arm-linux-gnueabi-strip
+#NAME=samples/binutils-2.44-arm64/arm-linux-gnueabi-objcopy
+#NAME=samples/binutils-2.44-arm64/arm-linux-gnueabi-objdump
+#NAME=samples/binutils-2.44-arm64/arm-linux-gnueabi-readelf
+#NAME=samples/binutils-2.44-arm64/arm-linux-gnueabi-strings
+#NAME=samples/binutils-2.44-arm64/arm-linux-gnueabi-addr2line
+#NAME=samples/binutils-2.44-arm64/libopcodes-2.44-armel.so
 
 #PICK='-p'
 #PICK='-h'
@@ -79,10 +91,6 @@ PICK='-dSl'
 #PICK='--dwarf=links'
 #PICK='--dwarf=follow-links'
 
-#PRGNAME=/usr/bin/objdump
-#PRGNAME=samples/binutils-2.45/objdump
-PRGNAME=/usr/bin/arm-linux-gnueabihf-objdump
-#PRGNAME=/usr/bin/aarch64-linux-gnu-objdump
 PRGNAMENG=./objdump-ng
 OUT1=test-1.out
 OUT2=test-2.out
@@ -142,8 +150,8 @@ fi
 
 if [ -e "${OUT1}" ] && [ -e "${OUT2}" ]; then
   meld ${OUT1} ${OUT2}
-#  diff ${OUT1} ${OUT2}
-#  grep -nw 'ERROR' ${OUT1}
+  diff ${OUT1} ${OUT2}
+#  grep -nw -A 1 'ERROR' ${OUT1}
 #  grep -nw 'ERROR' ${OUT1} | wc -l
 #  grep -nw '<unknown:' ${OUT1}
 #  grep -nw '<unknown:' ${OUT1} | wc -l
