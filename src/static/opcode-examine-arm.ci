@@ -75,7 +75,7 @@ static oestruct_t oeINSTRUCTIONS_ARM[] = {
   OCSTRUCT("blx",       OCINSNARM_BLX),
   OCSTRUCT("bl",        OCINSNARM_BL),
   OCSTRUCT("bx",        OCINSNARM_BX),
-  OCSTRUCT("b",         OCINSNARM_BR),
+  OCSTRUCT("b",         OCINSNARM_BH),
 
   OCSTRUCT("cbnz",      OCINSNARM_CBNZ),
   OCSTRUCT("cbz",       OCINSNARM_CBZ),
@@ -535,6 +535,7 @@ static oestruct_t oeINSTRUCTIONS_ARM[] = {
   OCSTRUCT("mrc",       OCINSNARM_MRC),
 
   OCSTRUCT("ldp",       OCINSNARM_LDP),
+  OCSTRUCT("stp",       OCINSNARM_STP),
 
   {NULL}
 };
@@ -573,7 +574,7 @@ convert_t oeINSTRUCTIONFLAGS_ARM[] = {
 };
 
 convert_t oeINSTRUCTIONNAMES_ARM[] = {
-  {"BR",                OCINSN_MASK(OCINSNARM_BR)},
+  {"BH",                OCINSN_MASK(OCINSNARM_BH)},
   {"BX",                OCINSN_MASK(OCINSNARM_BX)},
   {"CB",                OCINSN_MASK(OCINSNARM_CB)},
   {"TB",                OCINSN_MASK(OCINSNARM_TB)},
@@ -601,6 +602,7 @@ convert_t oeINSTRUCTIONNAMES_ARM[] = {
   {"LDM",               OCINSN_MASK(OCINSNARM_LDM)},
   {"LDP",               OCINSN_MASK(OCINSNARM_LDP)},
   {"LDR",               OCINSN_MASK(OCINSNARM_LDR)},
+  {"STP",               OCINSN_MASK(OCINSNARM_STP)},
   {"STR",               OCINSN_MASK(OCINSNARM_STR)},
   {"MOV",               OCINSN_MASK(OCINSNARM_MOV)},
   {"MVN",               OCINSN_MASK(OCINSNARM_MVN)},
@@ -658,7 +660,8 @@ convert_t oeREGISTERNAMES_ARM[] = {
 };
 
 pick_t oeADDRLOOKUP_ARM[] = {
-  OCINSN_MASK(OCINSNARM_BR),
+  OCINSN_MASK(OCINSNARM_BH),
+  OCINSN_MASK(OCINSNARM_BL),
   OCINSN_MASK(OCINSNARM_BX),
   PICK_END
 };
