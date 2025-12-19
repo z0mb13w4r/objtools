@@ -1,8 +1,9 @@
 #ifndef __OPCODE_EXAMINE_ARM_H_
 #define __OPCODE_EXAMINE_ARM_H_
 
-#define OCINSNARM_BR               ((0x04) | OCINSN_OPERAND1)
-#define OCINSNARM_BX               ((0x05) | OCINSN_OPERAND1)
+#define OCINSNARM_BR               ((0x03) | OCINSN_OPERAND1)
+#define OCINSNARM_BX               ((0x04) | OCINSN_OPERAND1)
+#define OCINSNARM_CB               ((0x05) | OCINSN_OPERAND2)
 #define OCINSNARM_CMP              ((0x06) | OCINSN_OPERAND2)
 #define OCINSNARM_CMN              ((0x07) | OCINSN_OPERAND2)
 #define OCINSNARM_TST              ((0x08) | OCINSN_OPERAND2)
@@ -116,6 +117,9 @@
 #define OCINSNARM_BLXPL            (OCINSNARM_BXPL | OCINSNARM_LINK)
 #define OCINSNARM_BLXVC            (OCINSNARM_BXVC | OCINSNARM_LINK)
 #define OCINSNARM_BLXVS            (OCINSNARM_BXVS | OCINSNARM_LINK)
+
+#define OCINSNARM_CBZ              (OCINSNARM_CB | OCINSNARM_EQ)
+#define OCINSNARM_CBNZ             (OCINSNARM_CB | OCINSNARM_NE)
 
 #define OCINSNARM_ADDCC            (OCINSNARM_ADD | OCINSNARM_CC)
 #define OCINSNARM_ADDCS            (OCINSNARM_ADD | OCINSNARM_CS)
