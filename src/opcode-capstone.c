@@ -19,6 +19,8 @@ static int get_csarch(handle_t p, handle_t o) {
 
   if (EM_ARM == ocget_machine(p)) {
     return CS_ARCH_ARM;
+  } else if (EM_AARCH64 == ocget_machine(p)) {
+    return CS_ARCH_AARCH64;
   }
 
   return CS_ARCH_X86;

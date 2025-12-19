@@ -17,7 +17,9 @@ typedef struct oestruct_s {
 
 ppick_t oegetADDRLOOKUP(handle_t p) {
   switch (ocget_machine(p)) {
-  case EM_ARM:     return oeADDRLOOKUP_ARM;
+  case EM_ARM:
+  case EM_AARCH64:
+    return oeADDRLOOKUP_ARM;
   default:
     break;
   }
@@ -27,7 +29,9 @@ ppick_t oegetADDRLOOKUP(handle_t p) {
 
 static poestruct_t oegetINSTRUCTIONS(handle_t p) {
   switch (ocget_machine(p)) {
-  case EM_ARM:     return oeINSTRUCTIONS_ARM;
+  case EM_ARM:
+  case EM_AARCH64:
+    return oeINSTRUCTIONS_ARM;
   default:
     break;
   }
@@ -37,7 +41,9 @@ static poestruct_t oegetINSTRUCTIONS(handle_t p) {
 
 pconvert_t oegetINSTRUCTIONNAMES(handle_t p) {
   switch (ocget_machine(p)) {
-  case EM_ARM:     return oeINSTRUCTIONNAMES_ARM;
+  case EM_ARM:
+  case EM_AARCH64:
+    return oeINSTRUCTIONNAMES_ARM;
   default:
     break;
   }
@@ -47,7 +53,9 @@ pconvert_t oegetINSTRUCTIONNAMES(handle_t p) {
 
 pconvert_t oegetINSTRUCTIONFLAGS(handle_t p) {
   switch (ocget_machine(p)) {
-  case EM_ARM:     return oeINSTRUCTIONFLAGS_ARM;
+  case EM_ARM:
+  case EM_AARCH64:
+    return oeINSTRUCTIONFLAGS_ARM;
   default:
     break;
   }
@@ -57,7 +65,9 @@ pconvert_t oegetINSTRUCTIONFLAGS(handle_t p) {
 
 pconvert_t oegetREGISTERFLAGS(handle_t p) {
   switch (ocget_machine(p)) {
-  case EM_ARM:     return oeREGISTERFLAGS_ARM;
+  case EM_ARM:
+  case EM_AARCH64:
+    return oeREGISTERFLAGS_ARM;
   default:
     break;
   }
@@ -67,7 +77,9 @@ pconvert_t oegetREGISTERFLAGS(handle_t p) {
 
 pconvert_t oegetREGISTERNAMES(handle_t p) {
   switch (ocget_machine(p)) {
-  case EM_ARM:     return oeREGISTERNAMES_ARM;
+  case EM_ARM:
+  case EM_AARCH64:
+    return oeREGISTERNAMES_ARM;
   default:
     break;
   }
