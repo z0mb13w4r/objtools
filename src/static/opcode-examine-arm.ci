@@ -43,6 +43,21 @@ static oestruct_t oeINSTRUCTIONS_ARM[] = {
   OCSTRUCT("b.vc",      OCINSNARM_BVC),
   OCSTRUCT("b.vs",      OCINSNARM_BVS),
 
+  OCSTRUCT("brcc",      OCINSNARM_BRCC),
+  OCSTRUCT("brcs",      OCINSNARM_BRCS),
+  OCSTRUCT("breq",      OCINSNARM_BREQ),
+  OCSTRUCT("brge",      OCINSNARM_BRGE),
+  OCSTRUCT("brgt",      OCINSNARM_BRGT),
+  OCSTRUCT("brhi",      OCINSNARM_BRHI),
+  OCSTRUCT("brle",      OCINSNARM_BRLE),
+  OCSTRUCT("brls",      OCINSNARM_BRLS),
+  OCSTRUCT("brlt",      OCINSNARM_BRLT),
+  OCSTRUCT("brmi",      OCINSNARM_BRMI),
+  OCSTRUCT("brne",      OCINSNARM_BRNE),
+  OCSTRUCT("brpl",      OCINSNARM_BRPL),
+  OCSTRUCT("brvc",      OCINSNARM_BRVC),
+  OCSTRUCT("brvs",      OCINSNARM_BRVS),
+
   OCSTRUCT("blcc",      OCINSNARM_BLCS),
   OCSTRUCT("blcs",      OCINSNARM_BLCS),
   OCSTRUCT("bleq",      OCINSNARM_BLEQ),
@@ -74,6 +89,7 @@ static oestruct_t oeINSTRUCTIONS_ARM[] = {
 
   OCSTRUCT("blx",       OCINSNARM_BLX),
   OCSTRUCT("bl",        OCINSNARM_BL),
+  OCSTRUCT("br",        OCINSNARM_BR),
   OCSTRUCT("bx",        OCINSNARM_BX),
   OCSTRUCT("b",         OCINSNARM_BH),
 
@@ -570,6 +586,8 @@ convert_t oeINSTRUCTIONFLAGS_ARM[] = {
   {"CLR",               OCINSNARM_CLR},
   {"SET",               OCINSNARM_SET},
   {"LINK",              OCINSNARM_LINK},
+  {"REGISTER",          OCINSNARM_REGISTER},
+
   {0, 0}
 };
 
