@@ -21,6 +21,13 @@ NAME=samples/exampled-arm32
 #NAME=samples/binutils-2.45/bfdtest1
 #NAME=samples/binutils-2.45/bfdtest2
 #NAME=samples/binutils-2.45/addr2line
+#NAME=samples/binutils-2.44-arm64/arm-linux-gnueabi-strip
+#NAME=samples/binutils-2.44-arm64/arm-linux-gnueabi-objcopy
+#NAME=samples/binutils-2.44-arm64/arm-linux-gnueabi-objdump
+#NAME=samples/binutils-2.44-arm64/arm-linux-gnueabi-readelf
+#NAME=samples/binutils-2.44-arm64/arm-linux-gnueabi-strings
+#NAME=samples/binutils-2.44-arm64/arm-linux-gnueabi-addr2line
+#NAME=samples/binutils-2.44-arm64/libopcodes-2.44-armel.so
 
 PICK1='-a'
 #PICK1='-a -D'
@@ -33,7 +40,7 @@ PICK1='-a'
 #PICK1='-V'
 #PICK1='-g'
 #PICK1='-A'
-PICK1='-u'
+PICK1='-h -u'
 
 #PICK1='-l'
 #PICK1='-r -V'
