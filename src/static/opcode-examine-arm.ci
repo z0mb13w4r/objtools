@@ -308,6 +308,9 @@ static oestruct_t oeINSTRUCTIONS_ARM[] = {
   OCSTRUCT("ror",       OCINSNARM_ROR),
   OCSTRUCT("clz",       OCINSNARM_CLZ),
 
+  OCSTRUCT("adrp",      OCINSNARM_ADR),
+  OCSTRUCT("adr",       OCINSNARM_ADR),
+
   OCSTRUCT("ldrbcc",    OCINSNARM_LDRBCC),
   OCSTRUCT("ldrbcs",    OCINSNARM_LDRBCS),
   OCSTRUCT("ldrbeq",    OCINSNARM_LDRBEQ),
@@ -617,6 +620,7 @@ convert_t oeINSTRUCTIONNAMES_ARM[] = {
   {"LSx",               OCINSN_MASK(OCINSNARM_LSx)},
   {"ROx",               OCINSN_MASK(OCINSNARM_ROx)},
   {"CLZ",               OCINSN_MASK(OCINSNARM_CLZ)},
+  {"ADR",               OCINSN_MASK(OCINSNARM_ADR)},
   {"LDM",               OCINSN_MASK(OCINSNARM_LDM)},
   {"LDP",               OCINSN_MASK(OCINSNARM_LDP)},
   {"LDR",               OCINSN_MASK(OCINSNARM_LDR)},
