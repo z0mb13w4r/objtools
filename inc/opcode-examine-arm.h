@@ -46,6 +46,8 @@
 #define OCINSNARM_LINK             U64MASK(19)
 #define OCINSNARM_REGISTER         U64MASK(20)
 
+#define OCINSNARM_NEG              OCINSN_N
+
 #define OCINSNARM_CC               (OCINSN_C | OCINSNARM_CLR)
 #define OCINSNARM_CS               (OCINSN_C | OCINSNARM_SET)
 #define OCINSNARM_EQ               (OCINSN_E)
@@ -55,9 +57,9 @@
 #define OCINSNARM_LE               (OCINSN_LE)
 #define OCINSNARM_LS               (OCINSN_Z | OCINSNARM_SET)
 #define OCINSNARM_LT               (OCINSN_L)
-#define OCINSNARM_MI               (OCINSN_N | OCINSNARM_SET)
+#define OCINSNARM_MI               (OCINSNARM_NEG | OCINSNARM_SET)
 #define OCINSNARM_NE               (OCINSN_NE)
-#define OCINSNARM_PL               (OCINSN_N | OCINSNARM_CLR)
+#define OCINSNARM_PL               (OCINSNARM_NEG | OCINSNARM_CLR)
 #define OCINSNARM_VC               (OCINSN_O | OCINSNARM_CLR)
 #define OCINSNARM_VS               (OCINSN_O | OCINSNARM_SET)
 
@@ -145,7 +147,7 @@
 #define OCINSNARM_TBZ              (OCINSNARM_TB | OCINSNARM_EQ)
 #define OCINSNARM_TBNZ             (OCINSNARM_TB | OCINSNARM_NE)
 
-#define OCINSNARM_CMN              (OCINSNARM_CMP | OCINSN_N)
+#define OCINSNARM_CMN              (OCINSNARM_CMP | OCINSNARM_NEG)
 #define OCINSNARM_CSEL             (OCINSNARM_CMP | OCINSNARM_SEL)
 #define OCINSNARM_CSET             (OCINSNARM_CMP | OCINSNARM_SET)
 
