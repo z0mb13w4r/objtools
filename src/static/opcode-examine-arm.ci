@@ -93,6 +93,8 @@ static oestruct_t oeINSTRUCTIONS_ARM[] = {
   OCSTRUCT("bx",        OCINSNARM_BX),
   OCSTRUCT("b",         OCINSNARM_BH),
 
+  OCSTRUCT("csel",      OCINSNARM_CSEL),
+
   OCSTRUCT("cbnz",      OCINSNARM_CBNZ),
   OCSTRUCT("cbz",       OCINSNARM_CBZ),
 
@@ -588,6 +590,7 @@ convert_t oeINSTRUCTIONFLAGS_ARM[] = {
 
   {"CLR",               OCINSNARM_CLR},
   {"SET",               OCINSNARM_SET},
+  {"SEL",               OCINSNARM_SEL},
   {"LINK",              OCINSNARM_LINK},
   {"REGISTER",          OCINSNARM_REGISTER},
 
@@ -601,6 +604,7 @@ convert_t oeINSTRUCTIONNAMES_ARM[] = {
   {"TB",                OCINSN_MASK(OCINSNARM_TB)},
   {"CMP",               OCINSN_MASK(OCINSNARM_CMP)},
   {"CMN",               OCINSN_MASK(OCINSNARM_CMN)},
+  {"CSEL",              OCINSN_MASK(OCINSNARM_CSEL)},
   {"TST",               OCINSN_MASK(OCINSNARM_TST)},
   {"RET",               OCINSN_MASK(OCINSNARM_RET)},
   {"NOP",               OCINSN_MASK(OCINSNARM_NOP)},

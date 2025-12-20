@@ -6,13 +6,12 @@
 #define OCINSNARM_CB               ((0x04) | OCINSN_OPERAND2)
 #define OCINSNARM_TB               ((0x05) | OCINSN_OPERAND2)
 #define OCINSNARM_CMP              ((0x06) | OCINSN_OPERAND2)
-#define OCINSNARM_CMN              ((0x07) | OCINSN_OPERAND2)
-#define OCINSNARM_TST              ((0x08) | OCINSN_OPERAND2)
-#define OCINSNARM_RET              ((0x09) | OCINSN_OPERAND0)
-#define OCINSNARM_NOP              ((0x0a) | OCINSN_OPERAND0)
-#define OCINSNARM_PUSH             ((0x0b) | OCINSN_OPERAND1)
-#define OCINSNARM_POP              ((0x0c) | OCINSN_OPERAND1)
-#define OCINSNARM_ADD              ((0x0d) | OCINSN_OPERAND2)
+#define OCINSNARM_TST              ((0x09) | OCINSN_OPERAND2)
+#define OCINSNARM_RET              ((0x0a) | OCINSN_OPERAND0)
+#define OCINSNARM_NOP              ((0x0b) | OCINSN_OPERAND0)
+#define OCINSNARM_PUSH             ((0x0c) | OCINSN_OPERAND1)
+#define OCINSNARM_POP              ((0x0d) | OCINSN_OPERAND1)
+#define OCINSNARM_ADD              ((0x0e) | OCINSN_OPERAND2)
 #define OCINSNARM_MUL              ((0x14) | OCINSN_OPERAND3 | OCINSN_OPERAND4)
 #define OCINSNARM_MLA              ((0x15) | OCINSN_OPERAND3 | OCINSN_OPERAND4)
 #define OCINSNARM_SUB              ((0x17) | OCINSN_OPERAND2)
@@ -43,8 +42,9 @@
 
 #define OCINSNARM_CLR              U64MASK(16)
 #define OCINSNARM_SET              U64MASK(17)
-#define OCINSNARM_LINK             U64MASK(18)
-#define OCINSNARM_REGISTER         U64MASK(19)
+#define OCINSNARM_SEL              U64MASK(18)
+#define OCINSNARM_LINK             U64MASK(19)
+#define OCINSNARM_REGISTER         U64MASK(20)
 
 #define OCINSNARM_CC               (OCINSN_C | OCINSNARM_CLR)
 #define OCINSNARM_CS               (OCINSN_C | OCINSNARM_SET)
@@ -144,6 +144,9 @@
 
 #define OCINSNARM_TBZ              (OCINSNARM_TB | OCINSNARM_EQ)
 #define OCINSNARM_TBNZ             (OCINSNARM_TB | OCINSNARM_NE)
+
+#define OCINSNARM_CMN              (OCINSNARM_CMP | OCINSN_N)
+#define OCINSNARM_CSEL             (OCINSNARM_CMP | OCINSNARM_SEL)
 
 #define OCINSNARM_ADDCC            (OCINSNARM_ADD | OCINSNARM_CC)
 #define OCINSNARM_ADDCS            (OCINSNARM_ADD | OCINSNARM_CS)
