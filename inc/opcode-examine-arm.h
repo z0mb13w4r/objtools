@@ -39,6 +39,7 @@
 #define OCINSNARM_MCRR             ((0x2d) | OCINSN_OPERAND2)
 #define OCINSNARM_MRC              ((0x2e) | OCINSN_OPERAND2)
 #define OCINSNARM_MRRC             ((0x2f) | OCINSN_OPERAND2)
+#define OCINSNARM_BFI              ((0x30) | OCINSN_OPERAND2)
 
 #define OCINSNARM_CLR              U64MASK(16)
 #define OCINSNARM_SET              U64MASK(17)
@@ -51,6 +52,7 @@
 #define OCINSNARM_SIGNED           (OCINSN_S)
 #define OCINSNARM_STATUS           (OCINSN_S)
 #define OCINSNARM_UNSIGNED         (OCINSN_N)
+#define OCINSNARM_ZERO             (OCINSN_Z)
 
 #define OCINSNARM_CC               (OCINSNARM_CARRY | OCINSNARM_CLR)
 #define OCINSNARM_CS               (OCINSNARM_CARRY | OCINSNARM_SET)
@@ -626,6 +628,8 @@
 #define OCINSNARM_MRRCPL           (OCINSNARM_MRRC | OCINSNARM_PL)
 #define OCINSNARM_MRRCVC           (OCINSNARM_MRRC | OCINSNARM_VC)
 #define OCINSNARM_MRRCVS           (OCINSNARM_MRRC | OCINSNARM_VS)
+
+#define OCINSNARM_UBFIZ            (OCINSNARM_BFI | OCINSNARM_UNSIGNED | OCINSNARM_ZERO)
 
 #define OCREGARM_GENERAL           (OCREGISTER_00)
 #define OCREGARM_SYSCALL           (OCREGISTER_01)
