@@ -192,6 +192,11 @@ static oestruct_t oeINSTRUCTIONS_ARM[] = {
   OCSTRUCT("mulvs",     OCINSNARM_MULVS),
   OCSTRUCT("mul",       OCINSNARM_MUL),
 
+  OCSTRUCT("smull",     OCINSNARM_SMULL),
+  OCSTRUCT("umull",     OCINSNARM_UMULL),
+  OCSTRUCT("smlal",     OCINSNARM_SMLAL),
+  OCSTRUCT("umlal",     OCINSNARM_UMLAL),
+
   OCSTRUCT("subscc",    OCINSNARM_SUBSCC),
   OCSTRUCT("subscs",    OCINSNARM_SUBSCS),
   OCSTRUCT("subseq",    OCINSNARM_SUBSEQ),
