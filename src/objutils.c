@@ -119,9 +119,10 @@ const char* strpickunknown(const pick_t x) {
 
 size_t strlenpick(const pconvert_t p) {
   size_t siz = 0;
-
-  for (pconvert_t pp = p; 0 != pp->text; ++pp) {
-    siz = MAX(siz, xstrlen(pp->text));
+  if (p) {
+    for (pconvert_t pp = p; 0 != pp->text; ++pp) {
+      siz = MAX(siz, xstrlen(pp->text));
+    }
   }
 
   return siz;
