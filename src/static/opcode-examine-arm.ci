@@ -639,6 +639,9 @@ static oestruct_t oeINSTRUCTIONS_ARM[] = {
   OCSTRUCT("paciaz",    OCINSNARM_PACIAZ),
   OCSTRUCT("paciza",    OCINSNARM_PACIZA),
 
+  OCSTRUCT("rev16",     OCINSNARM_REV16),
+  OCSTRUCT("rev",       OCINSNARM_REV),
+
   {NULL}
 };
 
