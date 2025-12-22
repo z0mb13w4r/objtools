@@ -41,6 +41,7 @@
 #define OCINSNARM_MRRC             ((0x2f) | OCINSN_OPERAND2)
 #define OCINSNARM_BFI              ((0x30) | OCINSN_OPERAND2)
 #define OCINSNARM_BFX              ((0x31) | OCINSN_OPERAND2)
+#define OCINSNARM_SMADDL           ((0x32) | OCINSN_OPERAND4)
 
 #define OCINSNARM_CLR              U64MASK(16)
 #define OCINSNARM_SET              U64MASK(17)
