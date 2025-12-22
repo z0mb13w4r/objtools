@@ -623,6 +623,13 @@ static oestruct_t oeINSTRUCTIONS_ARM[] = {
   OCSTRUCT("sbfx",      OCINSNARM_SBFX),
   OCSTRUCT("ubfx",      OCINSNARM_UBFX),
 
+  OCSTRUCT("sxtb",      OCINSNARM_SXTB),
+  OCSTRUCT("sxth",      OCINSNARM_SXTH),
+  OCSTRUCT("sxtw",      OCINSNARM_SXTW),
+  OCSTRUCT("uxtb",      OCINSNARM_UXTB),
+  OCSTRUCT("uxth",      OCINSNARM_UXTH),
+  OCSTRUCT("uxtw",      OCINSNARM_UXTW),
+
   OCSTRUCT("smaddl",    OCINSNARM_SMADDL),
 
   {NULL}
@@ -705,6 +712,7 @@ convert_t oeINSTRUCTIONNAMES_ARM[] = {
   {"MRRC",              OCINSN_MASK(OCINSNARM_MRRC)},
   {"BFI",               OCINSN_MASK(OCINSNARM_BFI)},
   {"BFX",               OCINSN_MASK(OCINSNARM_BFX)},
+  {"XT",                OCINSN_MASK(OCINSNARM_XT)},
 
   {"SMADDL",            OCINSN_MASK(OCINSNARM_SMADDL)},
 
