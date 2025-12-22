@@ -52,6 +52,11 @@
 #define OCINSNARM_PACIASP          ((0x62) | OCINSN_OPERAND4)
 #define OCINSNARM_PACIAZ           ((0x63) | OCINSN_OPERAND4)
 #define OCINSNARM_PACIZA           ((0x64) | OCINSN_OPERAND4)
+#define OCINSNARM_AUTIA            ((0x65) | OCINSN_OPERAND0)
+#define OCINSNARM_AUTIA1716        ((0x66) | OCINSN_OPERAND0)
+#define OCINSNARM_AUTIASP          ((0x67) | OCINSN_OPERAND0)
+#define OCINSNARM_AUTIAZ           ((0x68) | OCINSN_OPERAND0)
+#define OCINSNARM_AUTIZA           ((0x69) | OCINSN_OPERAND0)
 
 #define OCINSNARM_CLR              U64MASK(16)
 #define OCINSNARM_SET              U64MASK(17)
