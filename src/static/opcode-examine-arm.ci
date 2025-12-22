@@ -104,6 +104,8 @@ static oestruct_t oeINSTRUCTIONS_ARM[] = {
   OCSTRUCT("blrvc",     OCINSNARM_BLRVC),
   OCSTRUCT("blrvs",     OCINSNARM_BLRVS),
 
+  OCSTRUCT("bti",       OCINSNARM_BTI),
+
   OCSTRUCT("blx",       OCINSNARM_BLX),
   OCSTRUCT("blr",       OCINSNARM_BLR),
   OCSTRUCT("bl",        OCINSNARM_BL),
@@ -686,6 +688,7 @@ convert_t oeINSTRUCTIONNAMES_ARM[] = {
   {"BX",                OCINSN_MASK(OCINSNARM_BX)},
   {"CB",                OCINSN_MASK(OCINSNARM_CB)},
   {"TB",                OCINSN_MASK(OCINSNARM_TB)},
+  {"BTI",               OCINSN_MASK(OCINSNARM_BTI)},
   {"CMP",               OCINSN_MASK(OCINSNARM_CMP)},
   {"TST",               OCINSN_MASK(OCINSNARM_TST)},
   {"RET",               OCINSN_MASK(OCINSNARM_RET)},
