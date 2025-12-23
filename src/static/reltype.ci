@@ -38,6 +38,8 @@ static convert_t zRELTYPE32ARM[] = {
 };
 
 static convert_t zRELTYPE32RISCV[] = {
+  {"R_RISCV_NONE",                  R_RISCV_NONE},
+  {"R_RISCV_32",                    R_RISCV_32},
   {0, 0}
 };
 
@@ -94,6 +96,11 @@ static convert_t zRELTYPE64ARM[] = {
 };
 
 static convert_t zRELTYPE64RISCV[] = {
+  {"R_RISCV_NONE",                  R_RISCV_NONE},
+  {"R_RISCV_64",                    R_RISCV_64},
+  {"R_RISCV_COPY",                  R_RISCV_COPY},
+  {"R_RISCV_RELATIVE",              R_RISCV_RELATIVE},
+  {"R_RISCV_JUMP_SLOT",             R_RISCV_JUMP_SLOT},
   {0, 0}
 };
 
