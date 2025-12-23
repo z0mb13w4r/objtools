@@ -98,7 +98,6 @@ static convert_t zRELTYPERISCV[] = {
   {"R_RISCV_COPY",                  R_RISCV_COPY},
   {"R_RISCV_RELATIVE",              R_RISCV_RELATIVE},
   {"R_RISCV_JUMP_SLOT",             R_RISCV_JUMP_SLOT},
-
   {"R_RISCV_TLSDESC",               R_RISCV_TLSDESC},
   {"R_RISCV_TLS_TPREL32",           R_RISCV_TLS_TPREL32},
   {"R_RISCV_TLS_TPREL64",           R_RISCV_TLS_TPREL64},
@@ -123,6 +122,23 @@ static convert_t zRELTYPERISCV[] = {
   {"R_RISCV_TPREL_LO12_I",          R_RISCV_TPREL_LO12_I},
   {"R_RISCV_TPREL_LO12_S",          R_RISCV_TPREL_LO12_S},
   {"R_RISCV_TPREL_ADD",             R_RISCV_TPREL_ADD},
+
+  {"R_RISCV_ADD8",                  R_RISCV_ADD8},
+  {"R_RISCV_ADD16",                 R_RISCV_ADD16},
+  {"R_RISCV_ADD32",                 R_RISCV_ADD32},
+  {"R_RISCV_ADD64",                 R_RISCV_ADD64},
+  {"R_RISCV_SUB8",                  R_RISCV_SUB8},
+  {"R_RISCV_SUB16",                 R_RISCV_SUB16},
+  {"R_RISCV_SUB32",                 R_RISCV_SUB32},
+  {"R_RISCV_SUB64",                 R_RISCV_SUB64},
+  {"R_RISCV_ALIGN",                 R_RISCV_ALIGN},
+  {"R_RISCV_RVC_BRANCH",            R_RISCV_RVC_BRANCH},
+  {"R_RISCV_RVC_JUMP",              R_RISCV_RVC_JUMP},
+  {"R_RISCV_RVC_LUI",               R_RISCV_RVC_LUI},
+  {"R_RISCV_GPREL_I",               R_RISCV_GPREL_I},
+  {"R_RISCV_GPREL_S",               R_RISCV_GPREL_S},
+  {"R_RISCV_TPREL_I",               R_RISCV_TPREL_I},
+  {"R_RISCV_TPREL_S",               R_RISCV_TPREL_S},
 
   {0, 0}
 };
