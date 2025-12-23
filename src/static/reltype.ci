@@ -426,7 +426,6 @@ ppick_t get_RELTYPESHEX64(const pbuffer_t p) {
   return NULL;
 }
 
-
 static ppick_t get_RELTYPEPACK(const pbuffer_t p) {
   switch (ecget_emachine(p)) {
   case EM_X86_64:            return zRELTYPE64PACK;
