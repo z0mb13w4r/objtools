@@ -37,12 +37,6 @@ static convert_t zRELTYPE32ARM[] = {
   {0, 0}
 };
 
-static convert_t zRELTYPE32RISCV[] = {
-  {"R_RISCV_NONE",                  R_RISCV_NONE},
-  {"R_RISCV_32",                    R_RISCV_32},
-  {0, 0}
-};
-
 static convert_t zRELTYPE64[] = {
   {"R_X86_64_NONE",                R_X86_64_NONE},
   {"R_X86_64_64",                  R_X86_64_64},
@@ -95,8 +89,9 @@ static convert_t zRELTYPE64ARM[] = {
   {0, 0}
 };
 
-static convert_t zRELTYPE64RISCV[] = {
+static convert_t zRELTYPERISCV[] = {
   {"R_RISCV_NONE",                  R_RISCV_NONE},
+  {"R_RISCV_32",                    R_RISCV_32},
   {"R_RISCV_64",                    R_RISCV_64},
   {"R_RISCV_COPY",                  R_RISCV_COPY},
   {"R_RISCV_RELATIVE",              R_RISCV_RELATIVE},
@@ -275,7 +270,7 @@ static pconvert_t get_RELTYPE(const pbuffer_t p) {
   case EM_ARM:               return zRELTYPE32ARM;
   case EM_X86_64:            return zRELTYPE64;
   case EM_AARCH64:           return zRELTYPE64ARM;
-  case EM_RISCV:             return isELF32(p) ? zRELTYPE32RISCV : zRELTYPE64RISCV;
+  case EM_RISCV:             return zRELTYPERISCV;
   default:
     break;
   }
