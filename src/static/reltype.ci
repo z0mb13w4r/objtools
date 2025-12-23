@@ -89,6 +89,8 @@ static convert_t zRELTYPE64ARM[] = {
   {0, 0}
 };
 
+#define R_RISCV_TLSDESC            (12)
+
 static convert_t zRELTYPERISCV[] = {
   {"R_RISCV_NONE",                  R_RISCV_NONE},
   {"R_RISCV_32",                    R_RISCV_32},
@@ -96,6 +98,15 @@ static convert_t zRELTYPERISCV[] = {
   {"R_RISCV_COPY",                  R_RISCV_COPY},
   {"R_RISCV_RELATIVE",              R_RISCV_RELATIVE},
   {"R_RISCV_JUMP_SLOT",             R_RISCV_JUMP_SLOT},
+
+  {"R_RISCV_TLSDESC",               R_RISCV_TLSDESC},
+  {"R_RISCV_TLS_TPREL32",           R_RISCV_TLS_TPREL32},
+  {"R_RISCV_TLS_TPREL64",           R_RISCV_TLS_TPREL64},
+  {"R_RISCV_TLS_DTPMOD32",          R_RISCV_TLS_DTPMOD32},
+  {"R_RISCV_TLS_DTPMOD64",          R_RISCV_TLS_DTPMOD64},
+  {"R_RISCV_TLS_DTPREL32",          R_RISCV_TLS_DTPREL32},
+  {"R_RISCV_TLS_DTPREL64",          R_RISCV_TLS_DTPREL64},
+
   {0, 0}
 };
 
