@@ -90,6 +90,13 @@ static convert_t zRELTYPE64ARM[] = {
 };
 
 #define R_RISCV_TLSDESC            (12)
+#define R_RISCV_IRELATIVE          (58)
+#define R_RISCV_SET_ULEB128        (60)
+#define R_RISCV_SUB_ULEB128        (61)
+#define R_RISCV_TLSDESC_HI20       (62)
+#define R_RISCV_TLSDESC_LOAD_LO12  (63)
+#define R_RISCV_TLSDESC_ADD_LO12   (64)
+#define R_RISCV_TLSDESC_CALL       (65)
 
 static convert_t zRELTYPERISCV[] = {
   {"R_RISCV_NONE",                  R_RISCV_NONE},
@@ -122,7 +129,6 @@ static convert_t zRELTYPERISCV[] = {
   {"R_RISCV_TPREL_LO12_I",          R_RISCV_TPREL_LO12_I},
   {"R_RISCV_TPREL_LO12_S",          R_RISCV_TPREL_LO12_S},
   {"R_RISCV_TPREL_ADD",             R_RISCV_TPREL_ADD},
-
   {"R_RISCV_ADD8",                  R_RISCV_ADD8},
   {"R_RISCV_ADD16",                 R_RISCV_ADD16},
   {"R_RISCV_ADD32",                 R_RISCV_ADD32},
@@ -139,6 +145,20 @@ static convert_t zRELTYPERISCV[] = {
   {"R_RISCV_GPREL_S",               R_RISCV_GPREL_S},
   {"R_RISCV_TPREL_I",               R_RISCV_TPREL_I},
   {"R_RISCV_TPREL_S",               R_RISCV_TPREL_S},
+  {"R_RISCV_RELAX",                 R_RISCV_RELAX},
+  {"R_RISCV_SUB6",                  R_RISCV_SUB6},
+  {"R_RISCV_SET6",                  R_RISCV_SET6},
+  {"R_RISCV_SET8",                  R_RISCV_SET8},
+  {"R_RISCV_SET16",                 R_RISCV_SET16},
+  {"R_RISCV_SET32",                 R_RISCV_SET32},
+  {"R_RISCV_32_PCREL",              R_RISCV_32_PCREL},
+  {"R_RISCV_IRELATIVE",             R_RISCV_IRELATIVE},
+  {"R_RISCV_SET_ULEB128",           R_RISCV_SET_ULEB128},
+  {"R_RISCV_SUB_ULEB128",           R_RISCV_SUB_ULEB128},
+  {"R_RISCV_TLSDESC_HI20",          R_RISCV_TLSDESC_HI20},
+  {"R_RISCV_TLSDESC_LOAD_LO12",     R_RISCV_TLSDESC_LOAD_LO12},
+  {"R_RISCV_TLSDESC_ADD_LO12",      R_RISCV_TLSDESC_ADD_LO12},
+  {"R_RISCV_TLSDESC_CALL2",         R_RISCV_TLSDESC_CALL},
 
   {0, 0}
 };
