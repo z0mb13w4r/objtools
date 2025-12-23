@@ -227,10 +227,6 @@ static pick_t zRELTYPE32ARMVER[] = {
   PICK_END
 };
 
-static pick_t zRELTYPE32RISCVVER[] = {
-  PICK_END
-};
-
 static pick_t zRELTYPE64VER[] = {
   R_X86_64_GLOB_DAT,
   R_X86_64_JUMP_SLOT,
@@ -244,7 +240,9 @@ static pick_t zRELTYPE64ARMVER[] = {
   PICK_END
 };
 
-static pick_t zRELTYPE64RISCVVER[] = {
+static pick_t zRELTYPERISCVVER[] = {
+  R_RISCV_32,
+  R_RISCV_64,
   R_RISCV_JUMP_SLOT,
   PICK_END
 };
@@ -323,6 +321,8 @@ static pick_t zRELTYPE64SHEX32ARM[] = {
 };
 
 static pick_t zRELTYPESHEX32RISCV[] = {
+  R_RISCV_32,
+  R_RISCV_64,
   R_RISCV_JUMP_SLOT,
   PICK_END
 };
@@ -377,7 +377,7 @@ ppick_t get_RELTYPEVER(const pbuffer_t p) {
   case EM_ARM:               return zRELTYPE32ARMVER;
   case EM_X86_64:            return zRELTYPE64VER;
   case EM_AARCH64:           return zRELTYPE64ARMVER;
-  case EM_RISCV:             return isELF32(p) ? zRELTYPE32RISCVVER : zRELTYPE64RISCVVER;
+  case EM_RISCV:             return zRELTYPERISCVVER;
   default:
     break;
   }
