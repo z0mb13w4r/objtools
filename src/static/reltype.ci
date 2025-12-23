@@ -279,6 +279,11 @@ static pick_t zRELTYPE64ARMPACK[] = {
   PICK_END
 };
 
+static pick_t zRELTYPERISCVPACK[] = {
+  R_RISCV_RELATIVE,
+  PICK_END
+};
+
 static pick_t zRELTYPE64SHEX8[] = {
   R_X86_64_8,
   R_X86_64_PC8,
@@ -316,6 +321,10 @@ static pick_t zRELTYPE64SHEX32ARM[] = {
   PICK_END
 };
 
+static pick_t zRELTYPESHEX32RISCV[] = {
+  PICK_END
+};
+
 static pick_t zRELTYPE64SHEX64[] = {
   R_X86_64_64,
   R_X86_64_PC64,
@@ -325,6 +334,10 @@ static pick_t zRELTYPE64SHEX64[] = {
 static pick_t zRELTYPE64SHEX64ARM[] = {
   R_AARCH64_ABS32,
   R_AARCH64_ABS64,
+  PICK_END
+};
+
+static pick_t zRELTYPESHEX64RISCV[] = {
   PICK_END
 };
 
@@ -408,6 +421,7 @@ ppick_t get_RELTYPESHEX32(const pbuffer_t p) {
   switch (ecget_emachine(p)) {
   case EM_X86_64:            return zRELTYPE64SHEX32;
   case EM_AARCH64:           return zRELTYPE64SHEX32ARM;
+  case EM_RISCV:             return zRELTYPESHEX32RISCV;
   default:
     break;
   }
@@ -419,6 +433,7 @@ ppick_t get_RELTYPESHEX64(const pbuffer_t p) {
   switch (ecget_emachine(p)) {
   case EM_X86_64:            return zRELTYPE64SHEX64;
   case EM_AARCH64:           return zRELTYPE64SHEX64ARM;
+  case EM_RISCV:             return zRELTYPESHEX64RISCV;
   default:
     break;
   }
@@ -430,6 +445,7 @@ static ppick_t get_RELTYPEPACK(const pbuffer_t p) {
   switch (ecget_emachine(p)) {
   case EM_X86_64:            return zRELTYPE64PACK;
   case EM_AARCH64:           return zRELTYPE64ARMPACK;
+  case EM_RISCV:             return zRELTYPERISCVPACK;
   default:
     break;
   }
