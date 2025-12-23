@@ -37,6 +37,10 @@ static convert_t zRELTYPE32ARM[] = {
   {0, 0}
 };
 
+static convert_t zRELTYPE32RISCV[] = {
+  {0, 0}
+};
+
 static convert_t zRELTYPE64[] = {
   {"R_X86_64_NONE",                R_X86_64_NONE},
   {"R_X86_64_64",                  R_X86_64_64},
@@ -89,6 +93,10 @@ static convert_t zRELTYPE64ARM[] = {
   {0, 0}
 };
 
+static convert_t zRELTYPE64RISCV[] = {
+  {0, 0}
+};
+
 static pick_t zRELTYPE32DEF[] = {
   R_386_32,
   R_386_PC32,
@@ -105,6 +113,10 @@ static pick_t zRELTYPE32ARMDEF[] = {
   R_ARM_GOT_BREL,
   R_ARM_THM_CALL,
   R_ARM_BASE_PREL,
+  PICK_END
+};
+
+static pick_t zRELTYPE32RISCVDEF[] = {
   PICK_END
 };
 
@@ -133,6 +145,10 @@ static pick_t zRELTYPE64ARMDEF[] = {
   PICK_END
 };
 
+static pick_t zRELTYPE64RISCVDEF[] = {
+  PICK_END
+};
+
 static pick_t zRELTYPE32VER[] = {
   R_386_GLOB_DAT,
   R_386_JMP_SLOT,
@@ -145,15 +161,7 @@ static pick_t zRELTYPE32ARMVER[] = {
   PICK_END
 };
 
-static pick_t zRELTYPE32SAFE[] = {
-  R_386_NONE,
-  R_386_RELATIVE,
-  PICK_END
-};
-
-static pick_t zRELTYPE32ARMSAFE[] = {
-  R_ARM_NONE,
-  R_ARM_RELATIVE,
+static pick_t zRELTYPE32RISCVVER[] = {
   PICK_END
 };
 
@@ -167,6 +175,22 @@ static pick_t zRELTYPE64VER[] = {
 static pick_t zRELTYPE64ARMVER[] = {
   R_AARCH64_GLOB_DAT,
   R_AARCH64_JUMP_SLOT,
+  PICK_END
+};
+
+static pick_t zRELTYPE64RISCVVER[] = {
+  PICK_END
+};
+
+static pick_t zRELTYPE32SAFE[] = {
+  R_386_NONE,
+  R_386_RELATIVE,
+  PICK_END
+};
+
+static pick_t zRELTYPE32ARMSAFE[] = {
+  R_ARM_NONE,
+  R_ARM_RELATIVE,
   PICK_END
 };
 
@@ -244,6 +268,7 @@ static pconvert_t get_RELTYPE(const pbuffer_t p) {
   case EM_ARM:               return zRELTYPE32ARM;
   case EM_X86_64:            return zRELTYPE64;
   case EM_AARCH64:           return zRELTYPE64ARM;
+  case EM_RISCV:             return isELF32(p) ? zRELTYPE32RISCV : zRELTYPE64RISCV;
   default:
     break;
   }
@@ -257,6 +282,7 @@ ppick_t get_RELTYPEDEF(const pbuffer_t p) {
   case EM_ARM:               return zRELTYPE32ARMDEF;
   case EM_X86_64:            return zRELTYPE64DEF;
   case EM_AARCH64:           return zRELTYPE64ARMDEF;
+  case EM_RISCV:             return isELF32(p) ? zRELTYPE32RISCVDEF : zRELTYPE64RISCVDEF;
   default:
     break;
   }
@@ -270,6 +296,7 @@ ppick_t get_RELTYPEVER(const pbuffer_t p) {
   case EM_ARM:               return zRELTYPE32ARMVER;
   case EM_X86_64:            return zRELTYPE64VER;
   case EM_AARCH64:           return zRELTYPE64ARMVER;
+  case EM_RISCV:             return isELF32(p) ? zRELTYPE32RISCVVER : zRELTYPE64RISCVVER;
   default:
     break;
   }
@@ -283,6 +310,7 @@ static ppick_t get_RELTYPESAFE(const pbuffer_t p) {
   case EM_ARM:               return zRELTYPE32ARMSAFE;
   case EM_X86_64:            return zRELTYPE64SAFE;
   case EM_AARCH64:           return zRELTYPE64ARMSAFE;
+  case EM_RISCV:             return isELF32(p) ? zRELTYPE32ARMSAFE : zRELTYPE64ARMSAFE;
   default:
     break;
   }
