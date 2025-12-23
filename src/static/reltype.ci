@@ -245,6 +245,7 @@ static pick_t zRELTYPE64ARMVER[] = {
 };
 
 static pick_t zRELTYPE64RISCVVER[] = {
+  R_RISCV_JUMP_SLOT,
   PICK_END
 };
 
@@ -322,6 +323,7 @@ static pick_t zRELTYPE64SHEX32ARM[] = {
 };
 
 static pick_t zRELTYPESHEX32RISCV[] = {
+  R_RISCV_JUMP_SLOT,
   PICK_END
 };
 
