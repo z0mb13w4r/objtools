@@ -1401,69 +1401,71 @@ static int dump_gnuhash0(const pbuffer_t p, uint32_t *pb, const uint64_t sh_name
   uint32_t *bucket  = &pb[4 + sbitmask];
   uint32_t *chain   = &pb[4 + sbitmask + nbucket];
 
-  MALLOCA(uint32_t, size, nbucket);
-
-  /* compute distribution of chain lengths. */
-  uint_fast32_t msize = 0;
-  uint_fast32_t nsyms = 0;
-  for (uint32_t k = 0; k < nbucket; ++k) {
-    if (bucket[k] != 0) {
-      uint32_t x = bucket[k] - symbias;
-      do {
-        ++nsyms;
-        if (msize < ++size[k]) ++msize;
-      } while ((chain[x++] & 1) == 0);
-    }
-  }
-
-  /* count bits in bitmask. */
-  uint_fast32_t nbits = 0;
-  for (uint32_t k = 0; k < sbitmask; ++k) {
-    uint_fast32_t x = bitmask[k];
-
-    x = (x & 0x55555555) + ((x >> 1) & 0x55555555);
-    x = (x & 0x33333333) + ((x >> 2) & 0x33333333);
-    x = (x & 0x0f0f0f0f) + ((x >> 4) & 0x0f0f0f0f);
-    x = (x & 0x00ff00ff) + ((x >> 8) & 0x00ff00ff);
-    nbits += (x & 0x0000ffff) + ((x >> 16) & 0x0000ffff);
-  }
-
-  MALLOCA(uint32_t, counts, msize + 1);
-
-  for (uint32_t k = 0; k < nbucket; ++k) {
-    ++counts[size[k]];
-  }
-
   int n = 0;
-  n += printf_text("Histogram for", USE_LT);
-  n += printf_text(ecget_secnamebyoffset(p, sh_name), USE_LT | USE_DRTB | USE_SPACE);
-  n += printf_text("bucket list length (total of", USE_LT | USE_SPACE);
-  n += printf_nice(nbucket, USE_DEC);
-  n += printf_text(nbucket == 1 ? "bucket)" : "buckets)", USE_LT | USE_SPACE | USE_COLON | USE_EOL);
+  if (nbucket && symbias) {
+    MALLOCA(uint32_t, size, nbucket);
 
-  n += printf_text(" Length Number       % of total  Coverage", USE_LT | USE_EOL);
+    /* compute distribution of chain lengths. */
+    uint_fast32_t msize = 0;
+    uint_fast32_t nsyms = 0;
+    for (uint32_t k = 0; k < nbucket; ++k) {
+      if (bucket[k] != 0) {
+        uint32_t x = bucket[k] - symbias;
+        do {
+          ++nsyms;
+          if (msize < ++size[k]) ++msize;
+        } while ((chain[x++] & 1) == 0);
+      }
+    }
 
-  n += printf("     0 ");
-  n += printf_nice(counts[0], USE_DEC5);
-  n += printf("         ");
-  n += printf_nice((counts[0] * 1000.0) / nbucket, USE_PERCENT);
-  n += printf_eol();
+    /* count bits in bitmask. */
+    uint_fast32_t nbits = 0;
+    for (uint32_t k = 0; k < sbitmask; ++k) {
+      uint_fast32_t x = bitmask[k];
 
-  uint64_t nzeros = 0;
-  for (uint32_t i = 1; i <= msize; ++i) {
-    nzeros += counts[i] * i;
+      x = (x & 0x55555555) + ((x >> 1) & 0x55555555);
+      x = (x & 0x33333333) + ((x >> 2) & 0x33333333);
+      x = (x & 0x0f0f0f0f) + ((x >> 4) & 0x0f0f0f0f);
+      x = (x & 0x00ff00ff) + ((x >> 8) & 0x00ff00ff);
+      nbits += (x & 0x0000ffff) + ((x >> 16) & 0x0000ffff);
+    }
 
-    n += printf_nice(i, USE_DEC5);
-    n += printf_pack(1);
-    n += printf_nice(counts[i], USE_DEC5);
-    n += printf_pack(9);
-    n += printf_nice((counts[i] * 1000.0) / nbucket, USE_PERCENT);
-    n += printf_pack(4);
-    n += printf_nice((nzeros * 1000.0) / nsyms, USE_PERCENT);
+    MALLOCA(uint32_t, counts, msize + 1);
+
+    for (uint32_t k = 0; k < nbucket; ++k) {
+      ++counts[size[k]];
+    }
+
+    n += printf_text("Histogram for", USE_LT);
+    n += printf_text(ecget_secnamebyoffset(p, sh_name), USE_LT | USE_DRTB | USE_SPACE);
+    n += printf_text("bucket list length (total of", USE_LT | USE_SPACE);
+    n += printf_nice(nbucket, USE_DEC);
+    n += printf_text(nbucket == 1 ? "bucket)" : "buckets)", USE_LT | USE_SPACE | USE_COLON | USE_EOL);
+
+    n += printf_text(" Length Number       % of total  Coverage", USE_LT | USE_EOL);
+
+    n += printf("     0 ");
+    n += printf_nice(counts[0], USE_DEC5);
+    n += printf("         ");
+    n += printf_nice((counts[0] * 1000.0) / nbucket, USE_PERCENT);
+    n += printf_eol();
+
+    uint64_t nzeros = 0;
+    for (uint32_t i = 1; i <= msize; ++i) {
+      nzeros += counts[i] * i;
+
+      n += printf_nice(i, USE_DEC5);
+      n += printf_pack(1);
+      n += printf_nice(counts[i], USE_DEC5);
+      n += printf_pack(9);
+      n += printf_nice((counts[i] * 1000.0) / nbucket, USE_PERCENT);
+      n += printf_pack(4);
+      n += printf_nice((nzeros * 1000.0) / nsyms, USE_PERCENT);
+      n += printf_eol();
+    }
+
     n += printf_eol();
   }
-
-  n += printf_eol();
 
   return n;
 }
