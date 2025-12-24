@@ -1479,7 +1479,7 @@ static int dump_histogram32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *e
       if (pb) {
         n += dump_gnuhash0(p, pb, shdr->sh_name);
       }
-    } if (shdr && SHT_HASH == shdr->sh_type) {
+    } else if (shdr && SHT_HASH == shdr->sh_type) {
       // TBD
     }
   }
@@ -1496,7 +1496,7 @@ static int dump_histogram64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *e
       if (pb) {
         n += dump_gnuhash0(p, pb, shdr->sh_name);
       }
-    } if (shdr && SHT_HASH == shdr->sh_type) {
+    } else if (shdr && SHT_HASH == shdr->sh_type) {
       // TBD
     }
   }
