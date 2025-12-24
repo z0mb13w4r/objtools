@@ -1029,9 +1029,21 @@ static int dump_unwind32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr
             for (size_t j = 0; j < cnt; ++j) {
               Elf32_Addr *p0 = fget(f);
               if (p0) {
-                uint64_t fn = prel31_decode(EM_TI_C6000 == ehdr->e_machine, p0[0], shdr->sh_addr + 8 * j);
-//printf("%ld|%x|%x|%lx\n", j, p0[0], p0[1], fn);
-                n += printf_nice(fn, USE_FHEX | USE_COLON);
+                uint64_t offset = 0;
+                uint64_t vaddr = prel31_decode(EM_TI_C6000 == ehdr->e_machine, p0[0], shdr->sh_addr + 8 * j);
+//printf("%ld|%x|%x|%lx\n", j, p0[0], p0[1], vaddr);
+                n += printf_nice(vaddr, USE_FHEX);
+
+                const char * name = ecget_funcbyaddr(p, vaddr, &offset);
+                if (name && name[0]) {
+                  if (0 != offset) {
+                   n += printf_text(name, USE_LT | USE_SPACE | USE_TBLT);
+                    n += printf_text("+", USE_LT);
+                    n += printf_nice(offset, USE_FHEX | USE_TBRT | USE_NOSPACE | USE_COLON);
+                  } else {
+                    n += printf_text(name, USE_LT | USE_SPACE | USE_TB | USE_COLON);
+                  }
+                }
 
                 if (0x80000000 & p0[0]) {
                   n += printf_nice(p0[0], USE_CORRUPT);
