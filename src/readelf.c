@@ -1402,7 +1402,7 @@ static int dump_gnuhash0(const pbuffer_t p, uint32_t *pb, const uint64_t sh_name
   uint32_t *chain   = &pb[4 + sbitmask + nbucket];
 
   int n = 0;
-  if (nbucket && symbias) {
+  if (pb[0] > 1 && pb[1]) {
     MALLOCA(uint32_t, size, nbucket);
 
     /* compute distribution of chain lengths. */
