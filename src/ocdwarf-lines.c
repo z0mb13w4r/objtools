@@ -122,6 +122,7 @@ int ocdwarf_debug_line(handle_t p, handle_t s, handle_t d) {
     }
 
     uint32_t prev_uri = 0;
+    uint32_t prev_name = 0;
 
     for (Dwarf_Signed i = 0; i < line_count; ++i) {
       if (MODE_ISANY(oc->ocdump, OPTDWARF_VERBOSE)) {
@@ -161,6 +162,12 @@ int ocdwarf_debug_line(handle_t p, handle_t s, handle_t d) {
         char* lf = NULL;
         x = dwarf_linesrc(k, &lf, ocget(p, OPCODE_DWARF_ERROR));
         if (IS_DLV_OK(x) && 0 != lf && 0 != *lf) {
+          uint32_t curr_name = xstrcrc32(lf);
+          if (prev_name && prev_name != curr_name) {
+            n += printf_text(lf, USE_LT | USE_COLON | USE_EOL);
+          }
+          prev_name = curr_name;
+
           n += printf_text(lf, USE_LT | USE_SHORTEN | SET_PAD(MAXSIZE1));
         }
         ocdwarf_dealloc(p, lf, DW_DLA_STRING);
