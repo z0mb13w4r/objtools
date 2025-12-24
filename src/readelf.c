@@ -1006,6 +1006,42 @@ static int dump_unwind0(const pbuffer_t p, const poptions_t o, const int index,
   return n;
 }
 
+static int dump_unwind1(const pbuffer_t p, const poptions_t o, const int index,
+                     const uint64_t e_machine, const uint64_t sh_addr, const uint64_t addr0, const uint64_t addr1) {
+  int n = 0;
+  uint64_t offset = 0;
+  uint64_t vaddr = prel31_decode(EM_TI_C6000 == e_machine, addr0, sh_addr + 8 * index);
+//printf("%ld|%x|%x|%lx\n", j, p0[0], p0[1], vaddr);
+  n += printf_nice(vaddr, USE_FHEX);
+
+  const char * name = ecget_funcbyaddr(p, vaddr, &offset);
+  if (name && name[0]) {
+    if (0 != offset) {
+      n += printf_text(name, USE_LT | USE_SPACE | USE_TBLT);
+      n += printf_text("+", USE_LT);
+      n += printf_nice(offset, USE_FHEX | USE_TBRT | USE_NOSPACE | USE_COLON);
+    } else {
+      n += printf_text(name, USE_LT | USE_SPACE | USE_TB | USE_COLON);
+    }
+  }
+
+  if (0x80000000 & addr0) {
+    n += printf_nice(addr0, USE_CORRUPT);
+  } else {
+    if (1 == addr1) {
+      n += printf_nice(addr1, USE_FHEX);
+      n += printf_text("cantunwind", USE_LT | USE_SPACE | USE_SB);
+    } else if (0x80000000 & addr1) {
+      printf_nice(addr1, USE_FHEX);
+    } else {
+    }
+  }
+
+  n += printf_eol();
+
+  return n;
+}
+
 static int dump_unwind32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
   int n = 0;
   if (EM_ARM == ehdr->e_machine) {
@@ -1029,34 +1065,8 @@ static int dump_unwind32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr
             for (size_t j = 0; j < cnt; ++j) {
               Elf32_Addr *p0 = fget(f);
               if (p0) {
-                uint64_t offset = 0;
-                uint64_t vaddr = prel31_decode(EM_TI_C6000 == ehdr->e_machine, p0[0], shdr->sh_addr + 8 * j);
-//printf("%ld|%x|%x|%lx\n", j, p0[0], p0[1], vaddr);
-                n += printf_nice(vaddr, USE_FHEX);
+                n += dump_unwind1(p, o, j, ehdr->e_machine, shdr->sh_addr, p0[0], p0[1]);
 
-                const char * name = ecget_funcbyaddr(p, vaddr, &offset);
-                if (name && name[0]) {
-                  if (0 != offset) {
-                   n += printf_text(name, USE_LT | USE_SPACE | USE_TBLT);
-                    n += printf_text("+", USE_LT);
-                    n += printf_nice(offset, USE_FHEX | USE_TBRT | USE_NOSPACE | USE_COLON);
-                  } else {
-                    n += printf_text(name, USE_LT | USE_SPACE | USE_TB | USE_COLON);
-                  }
-                }
-
-                if (0x80000000 & p0[0]) {
-                  n += printf_nice(p0[0], USE_CORRUPT);
-                } else {
-                  if (1 == p0[1]) {
-                    n += printf_nice(p0[1], USE_FHEX);
-                    n += printf_text("cantunwind", USE_LT | USE_SPACE | USE_SB);
-                  } else if (0x80000000 & p0[1]) {
-                    printf_nice(p0[1], USE_FHEX);
-                  } else {
-                  }
-                }
-                n += printf_eol();
                 f = fstep(f, sizeof(Elf32_Addr) + sizeof(Elf32_Addr));
               }
             }
@@ -1090,6 +1100,17 @@ static int dump_unwind64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr
           size_t cnt = shdr->sh_size / (sizeof(Elf64_Addr) + sizeof(Elf64_Addr));
           n += dump_unwind0(p, o, i, shdr->sh_type, shdr->sh_offset, shdr->sh_size, cnt);
 
+          handle_t f = fget64byshdr(p, shdr);
+          if (f) {
+            for (size_t j = 0; j < cnt; ++j) {
+              Elf64_Addr *p0 = fget(f);
+              if (p0) {
+                n += dump_unwind1(p, o, j, ehdr->e_machine, shdr->sh_addr, p0[0], p0[1]);
+
+                f = fstep(f, sizeof(Elf64_Addr) + sizeof(Elf64_Addr));
+              }
+            }
+          }
         }
       }
     }
