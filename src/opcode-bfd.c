@@ -41,7 +41,7 @@ int opcodebfd_sections(handle_t p, opcbfunc_t cbfunc, unknown_t param) {
   return ECODE_HANDLE;
 }
 
-char* opcodebfd_getsymbol0(handle_t p, const uint64_t vaddr, uint64_t *offset) {
+static char* opcodebfd_getsymbol0(handle_t p, const uint64_t vaddr, uint64_t *offset) {
   if (isopcode(p)) {
     pbuffer_t ps = ocget(p, OPCODE_SYMBOLS);
     if (ps && ps->size) {
@@ -72,7 +72,7 @@ char* opcodebfd_getsymbol0(handle_t p, const uint64_t vaddr, uint64_t *offset) {
   return NULL;
 }
 
-char* opcodebfd_getsymbol1(handle_t p, const uint64_t vaddr, uint64_t *offset) {
+static char* opcodebfd_getsymbol1(handle_t p, const uint64_t vaddr, uint64_t *offset) {
   STATICA(char, name, 1024);
 
   if (isopcode(p)) {
@@ -110,7 +110,7 @@ char* opcodebfd_getsymbol1(handle_t p, const uint64_t vaddr, uint64_t *offset) {
   return NULL;
 }
 
-char* opcodebfd_getsymbol2(handle_t p, const uint64_t vaddr, uint64_t *offset) {
+static char* opcodebfd_getsymbol2(handle_t p, const uint64_t vaddr, uint64_t *offset) {
   if (isopcode(p)) {
     pbuffer_t ps = ocget(p, OPCODE_SYMBOLS);
     if (ps && ps->size) {
@@ -143,27 +143,29 @@ char* opcodebfd_getsymbol2(handle_t p, const uint64_t vaddr, uint64_t *offset) {
 
 char* opcodebfd_getsymbol(handle_t p, const uint64_t vaddr, uint64_t *offset) {
   if (isopcode(p)) {
-    char* name = opcodebfd_getsymbol0(p, vaddr, NULL);
-    if (NULL == name) {
-      name = opcodebfd_getsymbol1(p, vaddr, NULL);
-    }
-    if (NULL == name) {
-      name = opcodebfd_getsymbol2(p, vaddr, NULL);
-    }
-    if (NULL == name && offset) {
-      uint64_t offset0 = UINT_MAX;
-      uint64_t offset2 = UINT_MAX;
+    if (EM_386 == ocget_machine(p) || EM_X86_64 == ocget_machine(p)) {
+      char* name = opcodebfd_getsymbol0(p, vaddr, NULL);
+      if (NULL == name) {
+        name = opcodebfd_getsymbol1(p, vaddr, NULL);
+      }
+      if (NULL == name) {
+        name = opcodebfd_getsymbol2(p, vaddr, NULL);
+      }
+      if (NULL == name && offset) {
+        uint64_t offset0 = UINT_MAX;
+        uint64_t offset2 = UINT_MAX;
 
-      char* name0 = opcodebfd_getsymbol0(p, vaddr, &offset0);
-      char* name2 = opcodebfd_getsymbol2(p, vaddr, &offset2);
+        char* name0 = opcodebfd_getsymbol0(p, vaddr, &offset0);
+        char* name2 = opcodebfd_getsymbol2(p, vaddr, &offset2);
 
-      *offset = offset0 <= offset2 ? offset0 : offset2;
-      name    = offset0 <= offset2 ? name0   : name2;
-    } else if (name && offset) {
-      *offset = 0;
+        *offset = offset0 <= offset2 ? offset0 : offset2;
+        name    = offset0 <= offset2 ? name0   : name2;
+      } else if (name && offset) {
+        *offset = 0;
+      }
+
+      return name;
     }
-
-    return name;
   }
 
   return NULL;
