@@ -863,16 +863,19 @@ const char* ocget_namebyoffset(handle_t p, const imode_t mode, const uint64_t of
 }
 
 const char* ocget_namebyvaddr(handle_t p, const uint64_t vaddr, uint64_t *offset) {
+  const char* name = NULL;
   if (ochas(p, OPCODE_BFD)) {
-    return opcodebfd_getsymbol(p, vaddr, offset);
-  } else {
+    name = opcodebfd_getsymbol(p, vaddr, offset);
+  }
+
+  if (NULL == name) {
     handle_t p0 = ocget(p, OPCODE_RAWDATA);
     if (isELF(p0)) {
-      return opcodeelf_getsymbol(p, vaddr, offset);
+      name = opcodeelf_getsymbol(p, vaddr, offset);
     }
   }
 
-  return NULL;
+  return name;
 }
 
 const char* ocget_fileformat(handle_t p) {
