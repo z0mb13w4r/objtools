@@ -128,7 +128,7 @@ int capstone_raw(handle_t p, handle_t s, unknown_t data, const size_t size, cons
             n2 += opcode_printf_detail(p, insn[i].address, insn[i].mnemonic, insn[i].op_str);
             n2 += printf_eol();
           }
-          if (0xcc == insn[i].bytes[0] || 0x90 == insn[i].bytes[0] || 0x00 == insn[i].bytes[0]) {
+          if (!ocuse_insn(p, insn[i].bytes[0])) {
             iskip = insn[i].bytes[0];
             bskip = TRUE;
           }
