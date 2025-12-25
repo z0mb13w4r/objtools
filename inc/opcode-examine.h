@@ -2,6 +2,7 @@
 #define __OPCODE_EXAMINE_H_
 
 //#define OPCODE_EXAMINE_DEBUGX
+//#define OPCODE_EXAMINE_DEBUGY
 
 #include "opcode.h"
 #include "objutils.h"
