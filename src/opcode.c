@@ -309,6 +309,21 @@ bool_t   ocisPE64(handle_t p) {
   return ocisPE(p) && ocis64(p) ? TRUE : FALSE;
 }
 
+bool_t ocuse_insn(handle_t p, const uint64_t insn) {
+  if (isopcode(p)) {
+    switch (ocget_machine(p)) {
+    case EM_386:
+    case EM_X86_64:
+      return 0xcc != insn && 0x90 != insn && 0x00 != insn;
+
+    default:
+      return TRUE;
+    }
+  }
+
+  return FALSE;
+}
+
 bool_t ocuse_vaddr(handle_t p, const uint64_t vaddr) {
   if (isopcode(p)) {
     popcode_t p0 = ocget(p, OPCODE_THIS);
