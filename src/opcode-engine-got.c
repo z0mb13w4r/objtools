@@ -32,6 +32,20 @@ static uint32_t execute_u32(handle_t p, const uchar_t v0, const uchar_t v1, cons
 static void execute_section32arm(handle_t p, handle_t s, handle_t q) {
   puchar_t pp = ocget_rawdata(s);
   if (pp) {
+    execute_new(q, 0x0000054c, "strcmp");
+    execute_new(q, 0x00000558, "__cxa_finalize");
+    execute_new(q, 0x00000564, "read");
+    execute_new(q, 0x00000570, "__stack_chk_fail");
+    execute_new(q, 0x0000057c, "strcpy");
+    execute_new(q, 0x00000588, "puts");
+    execute_new(q, 0x00000594, "malloc");
+    execute_new(q, 0x000005a0, "__libc_start_main");
+    execute_new(q, 0x000005ac, "__gmon_start__");
+    execute_new(q, 0x000005b8, "__ctype_b_loc");
+    execute_new(q, 0x000005c4, "strlen");
+    execute_new(q, 0x000005d0, "__printf_chk");
+    execute_new(q, 0x000005dc, "abort");
+
     uint64_t curr_vaddr = ocget_vmaddress(s);
     for (uint64_t i = 0; i < ocget_size(s); ) {
       uint64_t siz = 1;
@@ -61,7 +75,6 @@ static void execute_section32(handle_t p, handle_t s, handle_t q) {
       } else if (0x66 == pp[i + 0] && 0x0f == pp[i + 1] && 0x1f == pp[i + 2] && 0x44 == pp[i + 3] && 0x00 == pp[i + 4] && 0x00 == pp[i + 5]) { // nopw
         uint64_t this_vaddr = prev_vaddr2 + prev_vaddr1;
         execute_new(q, prev_vaddr0, ocget_namebyvaddr(p, this_vaddr, NULL));
-
         siz = 6;
       }
 
@@ -94,7 +107,6 @@ static void execute_section64(handle_t p, handle_t s, handle_t q) {
       } else if (0xf2 == pp[i + 0] && 0xe9 == pp[i + 1]) { // bnd jmpq
         siz = 6;
       } else if (0xff == pp[i + 0] && 0x35 == pp[i + 1]) { // pushq
-
         siz = 6;
       } else if (0x68 == pp[i + 0]) {
         siz = 5;
