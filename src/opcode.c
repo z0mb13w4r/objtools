@@ -482,9 +482,16 @@ uint64_t ocget_value(handle_t p) {
 uint64_t ocget_machine(handle_t p) {
   if (isopcode(p)) {
     handle_t p0 = ocget(p, OPCODE_RAWDATA);
-    if (isELF(p0)) {
-      return ecget_emachine(p0);
-    }
+    return isELF(p0) ? ecget_emachine(p0) : 0;
+  } else if (ismode(p, MODE_OCSHDR)) {
+    handle_t p0 = ocget(p, OPCODE_RAWDATA);
+    return isELF(p0) ? ecget_emachine(p0) : 0;
+  } else if (ismode(p, MODE_OCSHDR32)) {
+    handle_t p0 = ocget(p, OPCODE_RAWDATA);
+    return isELF(p0) ? ecget_emachine(p0) : 0;
+  } else if (ismode(p, MODE_OCSHDR64)) {
+    handle_t p0 = ocget(p, OPCODE_RAWDATA);
+    return isELF(p0) ? ecget_emachine(p0) : 0;
   }
 
   return 0;
