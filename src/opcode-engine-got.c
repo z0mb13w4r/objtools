@@ -95,19 +95,29 @@ static void execute_section64(handle_t p, handle_t s, handle_t q) {
 
 static void callback_sections32(handle_t p, handle_t shdr, unknown_t param) {
   const char* name = ocget_name(shdr);
-  if (0 == xstrcmp(name, ".plt.got")) {
-    execute_section32(p, shdr, param);
-  } else if (0 == xstrcmp(name, ".plt.sec")) {
-    execute_section32(p, shdr, param);
+  const uint64_t e = ocget_machine(p);
+  if (EM_ARM == e) {
+  } else if (EM_RISCV == e) {
+  } else {
+    if (0 == xstrcmp(name, ".plt.got")) {
+      execute_section32(p, shdr, param);
+    } else if (0 == xstrcmp(name, ".plt.sec")) {
+      execute_section32(p, shdr, param);
+    }
   }
 }
 
 static void callback_sections64(handle_t p, handle_t shdr, unknown_t param) {
   const char* name = ocget_name(shdr);
-  if (0 == xstrcmp(name, ".plt.got")) {
-    execute_section64(p, shdr, param);
-  } else if (0 == xstrcmp(name, ".plt.sec")) {
-    execute_section64(p, shdr, param);
+  const uint64_t e = ocget_machine(p);
+  if (EM_AARCH64 == e) {
+  } else if (EM_RISCV == e) {
+  } else {
+    if (0 == xstrcmp(name, ".plt.got")) {
+      execute_section64(p, shdr, param);
+    } else if (0 == xstrcmp(name, ".plt.sec")) {
+      execute_section64(p, shdr, param);
+    }
   }
 }
 
