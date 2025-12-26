@@ -1014,7 +1014,7 @@ static int dump_unwind1(const pbuffer_t p, const poptions_t o, const int index,
 //printf("%ld|%x|%x|%lx\n", j, p0[0], p0[1], vaddr);
   n += printf_nice(vaddr, USE_FHEX);
 
-  const char * name = ecget_funcbyaddr(p, vaddr, &offset);
+  const char * name = ecget_namebyaddr(p, vaddr, &offset);
   if (name && name[0]) {
     if (0 != offset) {
       n += printf_text(name, USE_LT | USE_SPACE | USE_TBLT);

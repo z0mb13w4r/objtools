@@ -876,6 +876,9 @@ static const char* _ecget_name32byaddr2(const pbuffer_t p, const int vaddr, uint
 const char* _ecget_name32byaddr(const pbuffer_t p, const int vaddr, uint64_t *offset) {
   const char* name = _ecget_name32byaddr0(p, vaddr, NULL);
   if (NULL == name) {
+    name = _ecget_name32byaddr0(p, vaddr + 1, NULL);
+  }
+  if (NULL == name) {
     name = _ecget_name32byaddr1(p, vaddr, NULL);
   }
   if (NULL == name) {
@@ -1002,52 +1005,6 @@ static const char* _ecget_name64byaddr2(const pbuffer_t p, const int vaddr, uint
 }
 
 const char* _ecget_name64byaddr(const pbuffer_t p, const int vaddr, uint64_t *offset) {
-  const char* name = _ecget_name64byaddr0(p, vaddr, NULL);
-  if (NULL == name) {
-    name = _ecget_name64byaddr1(p, vaddr, NULL);
-  }
-  if (NULL == name) {
-    name = _ecget_name64byaddr2(p, vaddr, NULL);
-  }
-  if (NULL == name && offset) {
-    uint64_t offset0 = UINT_MAX;
-    name = _ecget_name64byaddr0(p, vaddr, &offset0);
-    *offset = offset0;
-  }
-
-  return name;
-}
-
-const char* ecget_funcbyaddr(const pbuffer_t p, const int vaddr, uint64_t *offset) {
-  if (isELF(p)) {
-    if (isELF32(p))        return _ecget_func32byaddr(p, vaddr, offset);
-    else if (isELF64(p))   return _ecget_func64byaddr(p, vaddr, offset);
-  }
-
-  return NULL;
-}
-
-const char* _ecget_func32byaddr(const pbuffer_t p, const int vaddr, uint64_t *offset) {
-  const char* name = _ecget_name32byaddr0(p, vaddr, NULL);
-  if (NULL == name) {
-    name = _ecget_name32byaddr0(p, vaddr + 1, NULL);
-  }
-  if (NULL == name) {
-    name = _ecget_name32byaddr1(p, vaddr, NULL);
-  }
-  if (NULL == name) {
-    name = _ecget_name32byaddr2(p, vaddr, NULL);
-  }
-  if (NULL == name && offset) {
-    uint64_t offset0 = UINT_MAX;
-    name = _ecget_name32byaddr0(p, vaddr, &offset0);
-    *offset = offset0;
-  }
-
-  return name;
-}
-
-const char* _ecget_func64byaddr(const pbuffer_t p, const int vaddr, uint64_t *offset) {
   const char* name = _ecget_name64byaddr0(p, vaddr, NULL);
   if (NULL == name) {
     name = _ecget_name64byaddr0(p, vaddr + 1, NULL);
