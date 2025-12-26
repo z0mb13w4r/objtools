@@ -29,6 +29,19 @@ static uint32_t execute_u32(handle_t p, const uchar_t v0, const uchar_t v1, cons
   return v0 | (v1 << 8) | (v2 << 16) | (v3 << 24);
 }
 
+static void execute_section32arm(handle_t p, handle_t s, handle_t q) {
+  puchar_t pp = ocget_rawdata(s);
+  if (pp) {
+    uint64_t curr_vaddr = ocget_vmaddress(s);
+    for (uint64_t i = 0; i < ocget_size(s); ) {
+      uint64_t siz = 1;
+
+      i += siz;
+      curr_vaddr += siz;
+    }
+  }
+}
+
 static void execute_section32(handle_t p, handle_t s, handle_t q) {
   puchar_t pp = ocget_rawdata(s);
   if (pp) {
@@ -97,6 +110,9 @@ static void callback_sections32(handle_t p, handle_t shdr, unknown_t param) {
   const char* name = ocget_name(shdr);
   const uint64_t e = ocget_machine(p);
   if (EM_ARM == e) {
+    if (0 == xstrcmp(name, ".plt")) {
+      execute_section32arm(p, shdr, param);
+    }
   } else if (EM_RISCV == e) {
   } else {
     if (0 == xstrcmp(name, ".plt.got")) {
