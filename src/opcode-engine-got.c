@@ -87,19 +87,19 @@ static void execute_section32x86(handle_t p, handle_t s, handle_t q) {
 static void execute_section64arm(handle_t p, handle_t s, handle_t q) {
   puchar_t pp = ocget_rawdata(s);
   if (pp) {
-    execute_new(q, 0x000008a0, "__cxa_finalize");
-    execute_new(q, 0x000008e0, "__stack_chk_fail");
-    execute_new(q, 0x000008c0, "__libc_start_main");
-    execute_new(q, 0x000008f0, "__gmon_start__");
-    execute_new(q, 0x00000930, "__ctype_b_loc");
-    execute_new(q, 0x000008d0, "__printf_chk");
-    execute_new(q, 0x000008b0, "malloc");
-    execute_new(q, 0x00000890, "strlen");
-    execute_new(q, 0x00000920, "strcmp");
-    execute_new(q, 0x00000940, "strcpy");
-    execute_new(q, 0x00000910, "puts");
-    execute_new(q, 0x00000900, "abort");
-    execute_new(q, 0x00000950, "read");
+    execute_new(q, 0x000008a0, ocget_namebyvaddr(p, 0x00011f50, NULL)); // "__cxa_finalize");
+    execute_new(q, 0x000008e0, ocget_namebyvaddr(p, 0x00011f70, NULL)); // "__stack_chk_fail");
+    execute_new(q, 0x000008c0, ocget_namebyvaddr(p, 0x00011f60, NULL)); // "__libc_start_main");
+    execute_new(q, 0x000008f0, ocget_namebyvaddr(p, 0x00011f78, NULL)); // "__gmon_start__");
+    execute_new(q, 0x00000930, ocget_namebyvaddr(p, 0x00011f98, NULL)); // "__ctype_b_loc");
+    execute_new(q, 0x000008d0, ocget_namebyvaddr(p, 0x00011f68, NULL)); // "__printf_chk");
+    execute_new(q, 0x000008b0, ocget_namebyvaddr(p, 0x00011f58, NULL)); // "malloc");
+    execute_new(q, 0x00000890, ocget_namebyvaddr(p, 0x00011f48, NULL)); // "strlen");
+    execute_new(q, 0x00000920, ocget_namebyvaddr(p, 0x00011f90, NULL)); // "strcmp");
+    execute_new(q, 0x00000940, ocget_namebyvaddr(p, 0x00011fa0, NULL)); // "strcpy");
+    execute_new(q, 0x00000910, ocget_namebyvaddr(p, 0x00011f88, NULL)); // "puts");
+    execute_new(q, 0x00000900, ocget_namebyvaddr(p, 0x00011f80, NULL)); // "abort");
+    execute_new(q, 0x00000950, ocget_namebyvaddr(p, 0x00011fa8, NULL)); // "read");
 
     uint64_t curr_vaddr = ocget_vmaddress(s);
     for (uint64_t i = 0; i < ocget_size(s); ) {
