@@ -56,7 +56,7 @@ static void execute_section32arm(handle_t p, handle_t s, handle_t q) {
   }
 }
 
-static void execute_section32(handle_t p, handle_t s, handle_t q) {
+static void execute_section32x86(handle_t p, handle_t s, handle_t q) {
   puchar_t pp = ocget_rawdata(s);
   if (pp) {
     uint64_t curr_vaddr = ocget_vmaddress(s);
@@ -84,7 +84,34 @@ static void execute_section32(handle_t p, handle_t s, handle_t q) {
   }
 }
 
-static void execute_section64(handle_t p, handle_t s, handle_t q) {
+static void execute_section64arm(handle_t p, handle_t s, handle_t q) {
+  puchar_t pp = ocget_rawdata(s);
+  if (pp) {
+    execute_new(q, 0x000008a0, "__cxa_finalize");
+    execute_new(q, 0x000008e0, "__stack_chk_fail");
+    execute_new(q, 0x000008c0, "__libc_start_main");
+    execute_new(q, 0x000008f0, "__gmon_start__");
+    execute_new(q, 0x00000930, "__ctype_b_loc");
+    execute_new(q, 0x000008d0, "__printf_chk");
+    execute_new(q, 0x000008b0, "malloc");
+    execute_new(q, 0x00000890, "strlen");
+    execute_new(q, 0x00000920, "strcmp");
+    execute_new(q, 0x00000940, "strcpy");
+    execute_new(q, 0x00000910, "puts");
+    execute_new(q, 0x00000900, "abort");
+    execute_new(q, 0x00000950, "read");
+
+    uint64_t curr_vaddr = ocget_vmaddress(s);
+    for (uint64_t i = 0; i < ocget_size(s); ) {
+      uint64_t siz = 1;
+
+      i += siz;
+      curr_vaddr += siz;
+    }
+  }
+}
+
+static void execute_section64x86(handle_t p, handle_t s, handle_t q) {
   puchar_t pp = ocget_rawdata(s);
   if (pp) {
     uint64_t curr_vaddr = ocget_vmaddress(s);
@@ -128,9 +155,9 @@ static void callback_sections32(handle_t p, handle_t shdr, unknown_t param) {
   } else if (EM_RISCV == e) {
   } else {
     if (0 == xstrcmp(name, ".plt.got")) {
-      execute_section32(p, shdr, param);
+      execute_section32x86(p, shdr, param);
     } else if (0 == xstrcmp(name, ".plt.sec")) {
-      execute_section32(p, shdr, param);
+      execute_section32x86(p, shdr, param);
     }
   }
 }
@@ -139,12 +166,15 @@ static void callback_sections64(handle_t p, handle_t shdr, unknown_t param) {
   const char* name = ocget_name(shdr);
   const uint64_t e = ocget_machine(p);
   if (EM_AARCH64 == e) {
+    if (0 == xstrcmp(name, ".plt")) {
+      execute_section64arm(p, shdr, param);
+    }
   } else if (EM_RISCV == e) {
   } else {
     if (0 == xstrcmp(name, ".plt.got")) {
-      execute_section64(p, shdr, param);
+      execute_section64x86(p, shdr, param);
     } else if (0 == xstrcmp(name, ".plt.sec")) {
-      execute_section64(p, shdr, param);
+      execute_section64x86(p, shdr, param);
     }
   }
 }
