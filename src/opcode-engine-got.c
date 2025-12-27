@@ -87,19 +87,19 @@ static void execute_section32x86(handle_t p, handle_t s, handle_t q) {
 static void execute_section64arm(handle_t p, handle_t s, handle_t q) {
   puchar_t pp = ocget_rawdata(s);
   if (pp) {
-    execute_new(q, 0x00000890, ocget_namebyvaddr(p, 0x00011f48, NULL)); // "strlen");
-    execute_new(q, 0x000008a0, ocget_namebyvaddr(p, 0x00011f50, NULL)); // "__cxa_finalize");
-    execute_new(q, 0x000008b0, ocget_namebyvaddr(p, 0x00011f58, NULL)); // "malloc");
-    execute_new(q, 0x000008c0, ocget_namebyvaddr(p, 0x00011f60, NULL)); // "__libc_start_main");
-    execute_new(q, 0x000008d0, ocget_namebyvaddr(p, 0x00011f68, NULL)); // "__printf_chk");
-    execute_new(q, 0x000008e0, ocget_namebyvaddr(p, 0x00011f70, NULL)); // "__stack_chk_fail");
-    execute_new(q, 0x000008f0, ocget_namebyvaddr(p, 0x00011f78, NULL)); // "__gmon_start__");
-    execute_new(q, 0x00000900, ocget_namebyvaddr(p, 0x00011f80, NULL)); // "abort");
-    execute_new(q, 0x00000910, ocget_namebyvaddr(p, 0x00011f88, NULL)); // "puts");
-    execute_new(q, 0x00000920, ocget_namebyvaddr(p, 0x00011f90, NULL)); // "strcmp");
-    execute_new(q, 0x00000930, ocget_namebyvaddr(p, 0x00011f98, NULL)); // "__ctype_b_loc");
-    execute_new(q, 0x00000940, ocget_namebyvaddr(p, 0x00011fa0, NULL)); // "strcpy");
-    execute_new(q, 0x00000950, ocget_namebyvaddr(p, 0x00011fa8, NULL)); // "read");
+//    execute_new(q, 0x00000890, ocget_namebyvaddr(p, 0x00011f48, NULL)); // "strlen");
+//    execute_new(q, 0x000008a0, ocget_namebyvaddr(p, 0x00011f50, NULL)); // "__cxa_finalize");
+//    execute_new(q, 0x000008b0, ocget_namebyvaddr(p, 0x00011f58, NULL)); // "malloc");
+//    execute_new(q, 0x000008c0, ocget_namebyvaddr(p, 0x00011f60, NULL)); // "__libc_start_main");
+//    execute_new(q, 0x000008d0, ocget_namebyvaddr(p, 0x00011f68, NULL)); // "__printf_chk");
+//    execute_new(q, 0x000008e0, ocget_namebyvaddr(p, 0x00011f70, NULL)); // "__stack_chk_fail");
+//    execute_new(q, 0x000008f0, ocget_namebyvaddr(p, 0x00011f78, NULL)); // "__gmon_start__");
+//    execute_new(q, 0x00000900, ocget_namebyvaddr(p, 0x00011f80, NULL)); // "abort");
+//    execute_new(q, 0x00000910, ocget_namebyvaddr(p, 0x00011f88, NULL)); // "puts");
+//    execute_new(q, 0x00000920, ocget_namebyvaddr(p, 0x00011f90, NULL)); // "strcmp");
+//    execute_new(q, 0x00000930, ocget_namebyvaddr(p, 0x00011f98, NULL)); // "__ctype_b_loc");
+//    execute_new(q, 0x00000940, ocget_namebyvaddr(p, 0x00011fa0, NULL)); // "strcpy");
+//    execute_new(q, 0x00000950, ocget_namebyvaddr(p, 0x00011fa8, NULL)); // "read");
 
     uint64_t curr_vaddr = ocget_vmaddress(s);
     uint64_t prev_vaddr0 = 0;
@@ -109,24 +109,25 @@ static void execute_section64arm(handle_t p, handle_t s, handle_t q) {
 
     for (uint64_t i = 0; i < ocget_size(s); i += 4, curr_vaddr += 4) {
       uint32_t xx = execute_u32(p, pp[i + 0], pp[i + 1], pp[i + 2], pp[i + 3]);
-printf("%03lx:%08x ", curr_vaddr, xx);
+//printf("%03lx:%08x ", curr_vaddr, xx);
       if (0xb0000090 == xx) { // adrp x16, 0x11000
-printf("*");
+//printf("*");
         prev_vaddr0 = curr_vaddr;
       } else if (0xd61f0220 == xx) { // br x17
-printf("!|%lx|%x", prev_vaddr0, prev_vaddr1);
+//printf("!|%lx|%x", prev_vaddr0, prev_vaddr1);
+        execute_new(q, prev_vaddr0, ocget_namebyvaddr(p, prev_vaddr1, NULL));
       } else if (ISSAME(xx, 0xf9470011)) { // ldr x17, [x16, #0x???]
-printf("A");
+//printf("A");
       } else if (ISSAME(xx, 0x91300210)) { // add x16, x16, #0xf40
-printf("B");
+//printf("B");
       }
 
       if (0xd503201f == xx) { // nop
-printf("#");
+//printf("#");
       } else {
         prev_vaddr1 += 2;
       }
-printf("\n");
+//printf("\n");
     }
   }
 }
