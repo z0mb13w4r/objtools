@@ -103,14 +103,21 @@ static void execute_section64arm(handle_t p, handle_t s, handle_t q) {
 
     uint64_t curr_vaddr = ocget_vmaddress(s);
     uint64_t prev_vaddr0 = 0;
+    uint32_t prev_vaddr1 = 0x11000;
 
     for (uint64_t i = 0; i < ocget_size(s); i += 4, curr_vaddr += 4) {
       uint32_t xx = execute_u32(p, pp[i + 0], pp[i + 1], pp[i + 2], pp[i + 3]);
 
 printf("%03lx:%08x ", curr_vaddr, xx);
-      if (0xb0000090 == xx) {
+      if (0xb0000090 == xx) { // adrp x16, 0x11000
 printf("*");
         prev_vaddr0 = curr_vaddr;
+      } else if (0xd61f0220 == xx) { // br x17
+printf("!");
+      }
+
+      if (0xd503201f == xx) { // nop
+printf("#");
       }
 printf("\n");
     }
