@@ -102,11 +102,10 @@ static void execute_section64arm(handle_t p, handle_t s, handle_t q) {
     execute_new(q, 0x00000950, ocget_namebyvaddr(p, 0x00011fa8, NULL)); // "read");
 
     uint64_t curr_vaddr = ocget_vmaddress(s);
-    for (uint64_t i = 0; i < ocget_size(s); ) {
-      uint64_t siz = 1;
+    for (uint64_t i = 0; i < ocget_size(s); i += 4, curr_vaddr += 4) {
+      uint32_t xx = execute_u32(p, pp[i + 0], pp[i + 1], pp[i + 2], pp[i + 3]);
 
-      i += siz;
-      curr_vaddr += siz;
+printf("%03lx:%06x\n", curr_vaddr, xx);
     }
   }
 }
