@@ -106,7 +106,7 @@ static char zSTP0[] = "xx10110I00iiiiiiitttttxxxxxttttt"; // stp Ft Ft2 ADDR_SIM
 static char zSTP1[] = "xx10110I10iiiiiiitttttxxxxxttttt"; // stp Ft Ft2 ADDR_SIMM7
 static char zSTP2[] = "xx10100I10iiiiiiitttttxxxxxttttt"; // stp Rt Rt2 ADDR_SIMM7
 
-static uint32_t is01(handle_t p, const char* x, const size_t size, const int c, const uint32_t v) {
+static uint32_t is00(handle_t p, const char* x, const size_t size, const int c, const uint32_t v) {
   if (x && 32 == size) {
     uint32_t xx = 0;
     for (size_t i = 0; i < size; ++i) {
@@ -130,8 +130,8 @@ static uint32_t is01(handle_t p, const char* x, const size_t size, const int c, 
   return 0;
 }
 
-static uint32_t is00(handle_t p, const char* x, const size_t size, const uint32_t v) {
-  return is01(p, x, size, '1', v) && is01(p, x, size, '0', v);
+static uint32_t is01(handle_t p, const char* x, const size_t size, const uint32_t v) {
+  return is00(p, x, size, '1', v) && is00(p, x, size, '0', v);
 }
 
 static void execute_section64arm(handle_t p, handle_t s, handle_t q) {
@@ -158,38 +158,51 @@ static void execute_section64arm(handle_t p, handle_t s, handle_t q) {
     for (uint64_t i = 0; i < ocget_size(s); i += 4, curr_vaddr += 4) {
       uint32_t xx = execute_u32(p, pp[i + 0], pp[i + 1], pp[i + 2], pp[i + 3]);
 //printf("%03lx:%08x ", curr_vaddr, xx);
-//printf("%s", is00(s, zADRP, sizeof(zADRP) - 1, xx) ? "adrp" : "");
-//printf("%s", is00(s, zBR, sizeof(zBR) - 1, xx) ? "br" : "");
+//printf("%s", is01(s, zADRP, sizeof(zADRP) - 1, xx) ? "adrp" : "");
+//printf("%s", is01(s, zBR, sizeof(zBR) - 1, xx) ? "br" : "");
 
-//printf("%s", is00(s, zADD0, sizeof(zADD0) - 1, xx) ? "add0" : "");
-//printf("%s", is00(s, zADD1, sizeof(zADD1) - 1, xx) ? "add1" : "");
-//printf("%s", is00(s, zADD2, sizeof(zADD2) - 1, xx) ? "add2" : "");
-//printf("%s", is00(s, zADD3, sizeof(zADD3) - 1, xx) ? "add3" : "");
-//printf("%s", is00(s, zADD4, sizeof(zADD4) - 1, xx) ? "add4" : "");
+//printf("%s", is01(s, zADD0, sizeof(zADD0) - 1, xx) ? "add0" : "");
+//printf("%s", is01(s, zADD1, sizeof(zADD1) - 1, xx) ? "add1" : "");
+//printf("%s", is01(s, zADD2, sizeof(zADD2) - 1, xx) ? "add2" : "");
+//printf("%s", is01(s, zADD3, sizeof(zADD3) - 1, xx) ? "add3" : "");
+//printf("%s", is01(s, zADD4, sizeof(zADD4) - 1, xx) ? "add4" : "");
 
-//printf("%s", is00(s, zLDR0, sizeof(zLDR0) - 1, xx) ? "ldr0" : "");
-//printf("%s", is00(s, zLDR1, sizeof(zLDR1) - 1, xx) ? "ldr1" : "");
-//printf("%s", is00(s, zLDR2, sizeof(zLDR2) - 1, xx) ? "ldr2" : "");
-//printf("%s", is00(s, zLDR3, sizeof(zLDR3) - 1, xx) ? "ldr3" : "");
-//printf("%s", is00(s, zLDR4, sizeof(zLDR4) - 1, xx) ? "ldr4" : "");
-//printf("%s", is00(s, zLDR5, sizeof(zLDR5) - 1, xx) ? "ldr5" : "");
-//printf("%s", is00(s, zLDR6, sizeof(zLDR6) - 1, xx) ? "ldr6" : "");
-//printf("%s", is00(s, zLDR7, sizeof(zLDR7) - 1, xx) ? "ldr7" : "");
+//printf("%s", is01(s, zLDR0, sizeof(zLDR0) - 1, xx) ? "ldr0" : "");
+//printf("%s", is01(s, zLDR1, sizeof(zLDR1) - 1, xx) ? "ldr1" : "");
+//printf("%s", is01(s, zLDR2, sizeof(zLDR2) - 1, xx) ? "ldr2" : "");
+//printf("%s", is01(s, zLDR3, sizeof(zLDR3) - 1, xx) ? "ldr3" : "");
+//printf("%s", is01(s, zLDR4, sizeof(zLDR4) - 1, xx) ? "ldr4" : "");
+//printf("%s", is01(s, zLDR5, sizeof(zLDR5) - 1, xx) ? "ldr5" : "");
+//printf("%s", is01(s, zLDR6, sizeof(zLDR6) - 1, xx) ? "ldr6" : "");
+//printf("%s", is01(s, zLDR7, sizeof(zLDR7) - 1, xx) ? "ldr7" : "");
 
-//printf("%s", is00(s, zSTP0, sizeof(zSTP0) - 1, xx) ? "stp0" : "");
-//printf("%s", is00(s, zSTP1, sizeof(zSTP1) - 1, xx) ? "stp1" : "");
-//printf("%s", is00(s, zSTP2, sizeof(zSTP2) - 1, xx) ? "stp2" : "");
+//printf("%s", is01(s, zSTP0, sizeof(zSTP0) - 1, xx) ? "stp0" : "");
+//printf("%s", is01(s, zSTP1, sizeof(zSTP1) - 1, xx) ? "stp1" : "");
+//printf("%s", is01(s, zSTP2, sizeof(zSTP2) - 1, xx) ? "stp2" : "");
 
-      if (is00(s, zADRP, sizeof(zADRP) - 1, xx)) { // adrp x16, 0x11000
+      if (is01(s, zSTP2, sizeof(zSTP2) - 1, xx)) { //stp x16, x30, [sp, #-0x??]!
+//printf("|%x", is00(s, zSTP2, sizeof(zSTP2) - 1, 'i', xx));
+//printf("|%x", is00(s, zSTP2, sizeof(zSTP2) - 1, 't', xx));
+      } else if (is01(s, zADRP, sizeof(zADRP) - 1, xx)) { // adrp x16, 0x?????
 //printf("*");
+//printf("|%x", is00(s, zADRP, sizeof(zADRP) - 1, 'i', xx));
+//printf("|%x", is00(s, zADRP, sizeof(zADRP) - 1, 'd', xx));
         prev_vaddr0 = curr_vaddr;
-      } else if (is00(s, zBR, sizeof(zBR) - 1, xx)) { // br x17
+      } else if (is01(s, zBR, sizeof(zBR) - 1, xx)) { // br x17
 //printf("!|%lx|%x", prev_vaddr0, prev_vaddr1);
+//printf("|%x", is00(s, zBR, sizeof(zBR) - 1, 'n', xx));
         execute_new(q, prev_vaddr0, ocget_namebyvaddr(p, prev_vaddr1, NULL));
-      } else if (is00(s, zLDR7, sizeof(zLDR7) - 1, xx)) { // ldr x17, [x16, #0x???]
+      } else if (is01(s, zLDR7, sizeof(zLDR7) - 1, xx)) { // ldr x17, [x16, #0x???]
 //printf("A");
-      } else if (is00(s, zADD1, sizeof(zADD1) - 1, xx)) { // add x16, x16, #0xf40
+//printf("|%x", is00(s, zLDR7, sizeof(zLDR7) - 1, 'i', xx));
+//printf("|%x", is00(s, zLDR7, sizeof(zLDR7) - 1, 'n', xx));
+//printf("|%x", is00(s, zLDR7, sizeof(zLDR7) - 1, 't', xx));
+      } else if (is01(s, zADD1, sizeof(zADD1) - 1, xx)) { // add x16, x16, #0x???
 //printf("B");
+//printf("|%x", is00(s, zADD1, sizeof(zADD1) - 1, 'S', xx));
+//printf("|%x", is00(s, zADD1, sizeof(zADD1) - 1, 'i', xx));
+//printf("|%x", is00(s, zADD1, sizeof(zADD1) - 1, 'n', xx));
+//printf("|%x", is00(s, zADD1, sizeof(zADD1) - 1, 'd', xx));
       }
 
       if (0xd503201f == xx) { // nop
