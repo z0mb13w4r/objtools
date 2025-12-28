@@ -84,6 +84,18 @@ static void execute_section32x86(handle_t p, handle_t s, handle_t q) {
   }
 }
 
+static char zADRP[] = "1iix0000iiiiiiiiiiiiiiiiiiiddddd"; // adrp Rd ADDR_ADRP
+static char zBR[]   = "x10x0110000xxxxxxxxxxxnnnnnxxxxx"; // br Rn
+static char zLDR0[] = "xx011100iiiiiiiiiiiiiiiiiiittttt"; // ldr Ft ADDR_PCREL19
+static char zLDR1[] = "xx111100x1xxxxxxxxxx10xxxxxttttt"; // ldr Ft ADDR_REGOFF
+static char zLDR2[] = "xx111100x1xiiiiiiiiiI1xxxxxttttt"; // ldr Ft ADDR_SIMM9
+static char zLDR3[] = "xxx11101x1iiiiiiiiiiiinnnnnttttt"; // ldr Ft ADDR_UIMM12
+static char zADD0[] = "x0001011xx0xxxxxxxxxxxnnnnnddddd"; // add Rd Rn Rm_SFT
+static char zADD1[] = "x00x0001SSiiiiiiiiiiiinnnnnddddd"; // add Rd_SP Rn_SP AIMM
+static char zADD2[] = "x00010110x1xxxxxxxxxxxnnnnnddddd"; // add Rd_SP Rn_SP Rm_EXT
+static char zADD3[] = "x1011110xx1mmmmmx00001nnnnnddddd"; // add Sd Sn Sm
+static char zADD4[] = "xx001110xx1mmmmm100001nnnnnddddd"; // add Vd Vn Vm
+
 static void execute_section64arm(handle_t p, handle_t s, handle_t q) {
   puchar_t pp = ocget_rawdata(s);
   if (pp) {
