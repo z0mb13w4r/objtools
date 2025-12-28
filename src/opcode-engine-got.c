@@ -96,6 +96,18 @@ static char zADD2[] = "x00010110x1xxxxxxxxxxxnnnnnddddd"; // add Rd_SP Rn_SP Rm_
 static char zADD3[] = "x1011110xx1mmmmmx00001nnnnnddddd"; // add Sd Sn Sm
 static char zADD4[] = "xx001110xx1mmmmm100001nnnnnddddd"; // add Vd Vn Vm
 
+static uint32_t is01(handle_t p, const char* x, const size_t size, const int c) {
+  if (x && 32 == size) {
+//printf("M");
+  }
+
+  return 0;
+}
+
+static uint32_t is00(handle_t p, const char* x, const size_t size) {
+  return is01(p, x, size, '1') && is01(p, x, size, '0');
+}
+
 static void execute_section64arm(handle_t p, handle_t s, handle_t q) {
   puchar_t pp = ocget_rawdata(s);
   if (pp) {
@@ -121,7 +133,9 @@ static void execute_section64arm(handle_t p, handle_t s, handle_t q) {
 
     for (uint64_t i = 0; i < ocget_size(s); i += 4, curr_vaddr += 4) {
       uint32_t xx = execute_u32(p, pp[i + 0], pp[i + 1], pp[i + 2], pp[i + 3]);
-//printf("%03lx:%08x ", curr_vaddr, xx);
+//printf("%03lx:%08x:%s:%s ", curr_vaddr, xx,
+//  is00(s, zADRP, sizeof(zADRP) - 1) ? "adrp" : "no",
+//  is00(s, zBR, sizeof(zBR) - 1) ? "br" : "no");
       if (0xb0000090 == xx) { // adrp x16, 0x11000
 //printf("*");
         prev_vaddr0 = curr_vaddr;
