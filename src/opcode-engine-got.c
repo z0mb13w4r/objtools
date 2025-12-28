@@ -96,16 +96,33 @@ static char zADD2[] = "x00010110x1xxxxxxxxxxxnnnnnddddd"; // add Rd_SP Rn_SP Rm_
 static char zADD3[] = "x1011110xx1mmmmmx00001nnnnnddddd"; // add Sd Sn Sm
 static char zADD4[] = "xx001110xx1mmmmm100001nnnnnddddd"; // add Vd Vn Vm
 
-static uint32_t is01(handle_t p, const char* x, const size_t size, const int c) {
+static uint32_t is01(handle_t p, const char* x, const size_t size, const int c, const uint32_t v) {
   if (x && 32 == size) {
 //printf("M");
+    uint32_t xx = 0;
+    for (size_t i = 0; i < size; ++i) {
+      if (c == x[i]) {
+        uint32_t mask = (1 << (31 - i));
+        if ('1' == c) {
+          if (0 == (v & mask)) return 0;
+          xx |= mask;
+        } else if ('0' == c) {
+          if (0 != (v & mask)) return 0;
+          xx |= mask;
+        } else {
+          xx |= mask;
+        }
+      }
+    }
+
+    return xx;
   }
 
   return 0;
 }
 
-static uint32_t is00(handle_t p, const char* x, const size_t size) {
-  return is01(p, x, size, '1') && is01(p, x, size, '0');
+static uint32_t is00(handle_t p, const char* x, const size_t size, const uint32_t v) {
+  return is01(p, x, size, '1', v) && is01(p, x, size, '0', v);
 }
 
 static void execute_section64arm(handle_t p, handle_t s, handle_t q) {
@@ -134,8 +151,8 @@ static void execute_section64arm(handle_t p, handle_t s, handle_t q) {
     for (uint64_t i = 0; i < ocget_size(s); i += 4, curr_vaddr += 4) {
       uint32_t xx = execute_u32(p, pp[i + 0], pp[i + 1], pp[i + 2], pp[i + 3]);
 //printf("%03lx:%08x:%s:%s ", curr_vaddr, xx,
-//  is00(s, zADRP, sizeof(zADRP) - 1) ? "adrp" : "no",
-//  is00(s, zBR, sizeof(zBR) - 1) ? "br" : "no");
+//  is00(s, zADRP, sizeof(zADRP) - 1, xx) ? "adrp" : "no",
+//  is00(s, zBR, sizeof(zBR) - 1, xx) ? "br" : "no");
       if (0xb0000090 == xx) { // adrp x16, 0x11000
 //printf("*");
         prev_vaddr0 = curr_vaddr;
