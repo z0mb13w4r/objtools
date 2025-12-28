@@ -153,10 +153,10 @@ static void execute_section64arm(handle_t p, handle_t s, handle_t q) {
 //printf("%03lx:%08x:%s:%s ", curr_vaddr, xx,
 //  is00(s, zADRP, sizeof(zADRP) - 1, xx) ? "adrp" : "no",
 //  is00(s, zBR, sizeof(zBR) - 1, xx) ? "br" : "no");
-      if (0xb0000090 == xx) { // adrp x16, 0x11000
+      if (is00(s, zADRP, sizeof(zADRP) - 1, xx)) { // adrp x16, 0x11000
 //printf("*");
         prev_vaddr0 = curr_vaddr;
-      } else if (0xd61f0220 == xx) { // br x17
+      } else if (is00(s, zBR, sizeof(zBR) - 1, xx)) { // br x17
 //printf("!|%lx|%x", prev_vaddr0, prev_vaddr1);
         execute_new(q, prev_vaddr0, ocget_namebyvaddr(p, prev_vaddr1, NULL));
       } else if (ISSAME(xx, 0xf9470011)) { // ldr x17, [x16, #0x???]
