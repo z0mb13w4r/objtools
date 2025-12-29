@@ -84,6 +84,7 @@ static void execute_section32x86(handle_t p, handle_t s, handle_t q) {
   }
 }
 
+//                     10987654321098765432109876543210
 static char zADRP[] = "1iix0000iiiiiiiiiiiiiiiiiiiddddd"; // adrp Rd ADDR_ADRP
 static char zBR[]   = "x10x0110000xxxxxxxxxxxnnnnnxxxxx"; // br Rn
 
@@ -102,6 +103,8 @@ static char zLDR5[] = "1x111000011xxxxxxxxx10xxxxxttttt"; // ldr Rt ADDR_REGOFF
 static char zLDR6[] = "1x11100001xiiiiiiiiiI1xxxxxttttt"; // ldr Rt ADDR_SIMM9
 static char zLDR7[] = "1xx1100101iiiiiiiiiiiinnnnnttttt"; // ldr Rt ADDR_UIMM12
 
+static char zLDRA[] = "1s111000011mmmmmoooS10nnnnnttttt"; // ldr (register)
+
 static char zSTP0[] = "xx10110I00iiiiiiitttttxxxxxttttt"; // stp Ft Ft2 ADDR_SIMM7
 static char zSTP1[] = "xx10110I10iiiiiiitttttxxxxxttttt"; // stp Ft Ft2 ADDR_SIMM7
 static char zSTP2[] = "xx10100I10iiiiiiitttttxxxxxttttt"; // stp Rt Rt2 ADDR_SIMM7
@@ -118,7 +121,7 @@ static uint32_t is00(handle_t p, const char* x, const size_t size, const int c, 
         } else if ('0' == c) {
           if (0 != (v & mask)) return 0;
           xx |= mask;
-        } else {
+        } else if (v & mask) {
           xx |= mask;
         }
       }
@@ -176,11 +179,14 @@ static void execute_section64arm(handle_t p, handle_t s, handle_t q) {
 //printf("%s", is01(s, zLDR6, sizeof(zLDR6) - 1, xx) ? "ldr6" : "");
 //printf("%s", is01(s, zLDR7, sizeof(zLDR7) - 1, xx) ? "ldr7" : "");
 
+//printf("%s", is01(s, zLDRA, sizeof(zLDRA) - 1, xx) ? "ldr (register)" : "");
+
 //printf("%s", is01(s, zSTP0, sizeof(zSTP0) - 1, xx) ? "stp0" : "");
 //printf("%s", is01(s, zSTP1, sizeof(zSTP1) - 1, xx) ? "stp1" : "");
 //printf("%s", is01(s, zSTP2, sizeof(zSTP2) - 1, xx) ? "stp2" : "");
 
       if (is01(s, zSTP2, sizeof(zSTP2) - 1, xx)) { //stp x16, x30, [sp, #-0x??]!
+//printf("|%x", is00(s, zSTP2, sizeof(zSTP2) - 1, 'I', xx));
 //printf("|%x", is00(s, zSTP2, sizeof(zSTP2) - 1, 'i', xx));
 //printf("|%x", is00(s, zSTP2, sizeof(zSTP2) - 1, 't', xx));
       } else if (is01(s, zADRP, sizeof(zADRP) - 1, xx)) { // adrp x16, 0x?????
