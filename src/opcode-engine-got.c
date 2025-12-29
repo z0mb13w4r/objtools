@@ -216,11 +216,12 @@ static void execute_section64arm(handle_t p, handle_t s, handle_t q) {
         execute_new(q, prev_vaddr0, ocget_namebyvaddr(p, prev_vaddr1, NULL));
       } else if (is01(s, zLDR7, sizeof(zLDR7) - 1, xx)) { // ldr x17, [x16, #0x???]
 //printf("A");
-//printf("|%x", is00(s, zLDR7, sizeof(zLDR7) - 1, 'i', xx));
-//printf("|%x", is00(s, zLDR7, sizeof(zLDR7) - 1, 'n', xx));
+//printf("|%x", is00(s, zLDR7, sizeof(zLDR7) - 1, 'i', xx) >> 7);
+//printf("|%x", is00(s, zLDR7, sizeof(zLDR7) - 1, 'n', xx) >> 5);
 //printf("|%x", is00(s, zLDR7, sizeof(zLDR7) - 1, 't', xx));
 //printf("|%x", is00(s, zLDRD, sizeof(zLDRD) - 1, 's', xx));
-//printf("|%x", is00(s, zLDRD, sizeof(zLDRD) - 1, 'i', xx));
+const uint32_t im = is00(s, zLDRD, sizeof(zLDRD) - 1, 'i', xx) >> 7; //10;
+//printf("|%x", im);
 const uint32_t Rn = is00(s, zLDRD, sizeof(zLDRD) - 1, 'n', xx) >> 5;
 //printf("|%x:x%d", Rn, Rn);
 const uint32_t Rt = is00(s, zLDRD, sizeof(zLDRD) - 1, 't', xx);
