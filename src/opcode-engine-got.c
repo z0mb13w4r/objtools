@@ -104,14 +104,14 @@ static char zLDR6[] = "1x11100001xiiiiiiiiiI1xxxxxttttt"; // ldr Rt ADDR_SIMM9
 static char zLDR7[] = "1xx1100101iiiiiiiiiiiinnnnnttttt"; // ldr Rt ADDR_UIMM12
 
 static char zLDRA[] = "1s111000011mmmmmoooS10nnnnnttttt"; // ldr (register)
-static char zLDRB[] = "1s111000010mmmmmmmmm01nnnnnttttt"; // ldr (immediate) - post index
-static char zLDRC[] = "1s111000010mmmmmmmmm11nnnnnttttt"; // ldr (immediate) - pre index
-static char zLDRD[] = "1s11100101mmmmmmmmmmmmnnnnnttttt"; // ldr (immediate) - unsigned offset
+static char zLDRB[] = "1s111000010iiiiiiiii01nnnnnttttt"; // ldr (immediate) - post index
+static char zLDRC[] = "1s111000010iiiiiiiii11nnnnnttttt"; // ldr (immediate) - pre index
+static char zLDRD[] = "1s11100101iiiiiiiiiiiinnnnnttttt"; // ldr (immediate) - unsigned offset
 static char zLDRE[] = "0s011000iiiiiiiiiiiiiiiiiiittttt"; // ldr (literal)
 static char zLDRF[] = "00111000011mmmmmoooS10nnnnnttttt"; // ldrb (register)
-static char zLDRG[] = "00111000010mmmmmmmmm01nnnnnttttt"; // ldrb (immediate) - post index
-static char zLDRH[] = "00111000010mmmmmmmmm11nnnnnttttt"; // ldrb (immediate) - pre index
-static char zLDRI[] = "0011100101mmmmmmmmmm11nnnnnttttt"; // ldrb (immediate) - unsigned offset
+static char zLDRG[] = "00111000010iiiiiiiii01nnnnnttttt"; // ldrb (immediate) - post index
+static char zLDRH[] = "00111000010iiiiiiiii11nnnnnttttt"; // ldrb (immediate) - pre index
+static char zLDRI[] = "0011100101iiiiiiiiii11nnnnnttttt"; // ldrb (immediate) - unsigned offset
 
 static char zSTP0[] = "xx10110I00iiiiiiitttttxxxxxttttt"; // stp Ft Ft2 ADDR_SIMM7
 static char zSTP1[] = "xx10110I10iiiiiiitttttxxxxxttttt"; // stp Ft Ft2 ADDR_SIMM7
@@ -219,6 +219,12 @@ static void execute_section64arm(handle_t p, handle_t s, handle_t q) {
 //printf("|%x", is00(s, zLDR7, sizeof(zLDR7) - 1, 'i', xx));
 //printf("|%x", is00(s, zLDR7, sizeof(zLDR7) - 1, 'n', xx));
 //printf("|%x", is00(s, zLDR7, sizeof(zLDR7) - 1, 't', xx));
+//printf("|%x", is00(s, zLDRD, sizeof(zLDRD) - 1, 's', xx));
+//printf("|%x", is00(s, zLDRD, sizeof(zLDRD) - 1, 'i', xx));
+const uint32_t Rn = is00(s, zLDRD, sizeof(zLDRD) - 1, 'n', xx) >> 5;
+//printf("|%x:x%d", Rn, Rn);
+const uint32_t Rt = is00(s, zLDRD, sizeof(zLDRD) - 1, 't', xx);
+//printf("|%x:x%d", Rt, Rt);
       } else if (is01(s, zADD1, sizeof(zADD1) - 1, xx)) { // add x16, x16, #0x???
 //printf("B");
 //printf("|%x", is00(s, zADD1, sizeof(zADD1) - 1, 'S', xx));
