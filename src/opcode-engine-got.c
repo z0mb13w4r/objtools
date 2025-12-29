@@ -110,6 +110,8 @@ static char zLDRD[] = "1s11100101mmmmmmmmmmmmnnnnnttttt"; // ldr (immediate) - u
 static char zLDRE[] = "0s011000iiiiiiiiiiiiiiiiiiittttt"; // ldr (literal)
 static char zLDRF[] = "00111000011mmmmmoooS10nnnnnttttt"; // ldrb (register)
 static char zLDRG[] = "00111000010mmmmmmmmm01nnnnnttttt"; // ldrb (immediate) - post index
+static char zLDRH[] = "00111000010mmmmmmmmm11nnnnnttttt"; // ldrb (immediate) - pre index
+static char zLDRI[] = "0011100101mmmmmmmmmm11nnnnnttttt"; // ldrb (immediate) - unsigned offset
 
 static char zSTP0[] = "xx10110I00iiiiiiitttttxxxxxttttt"; // stp Ft Ft2 ADDR_SIMM7
 static char zSTP1[] = "xx10110I10iiiiiiitttttxxxxxttttt"; // stp Ft Ft2 ADDR_SIMM7
@@ -190,6 +192,10 @@ static void execute_section64arm(handle_t p, handle_t s, handle_t q) {
 //printf("%s", is01(s, zLDRC, sizeof(zLDRC) - 1, xx) ? "ldrC" : "");
 //printf("%s", is01(s, zLDRD, sizeof(zLDRD) - 1, xx) ? "ldrD" : "");
 //printf("%s", is01(s, zLDRE, sizeof(zLDRE) - 1, xx) ? "ldrE" : "");
+//printf("%s", is01(s, zLDRF, sizeof(zLDRF) - 1, xx) ? "ldrF" : "");
+//printf("%s", is01(s, zLDRG, sizeof(zLDRG) - 1, xx) ? "ldrG" : "");
+//printf("%s", is01(s, zLDRH, sizeof(zLDRH) - 1, xx) ? "ldrH" : "");
+//printf("%s", is01(s, zLDRI, sizeof(zLDRI) - 1, xx) ? "ldrI" : "");
 
 //printf("%s", is01(s, zSTP0, sizeof(zSTP0) - 1, xx) ? "stp0" : "");
 //printf("%s", is01(s, zSTP1, sizeof(zSTP1) - 1, xx) ? "stp1" : "");
