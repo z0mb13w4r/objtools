@@ -165,22 +165,21 @@ printf("|Rt=%x:x%d", Rt, Rt);
         const uint32_t lo = is00(s, zADRP, sizeof(zADRP) - 1, 'I', xx);
         const uint32_t hi = is00(s, zADRP, sizeof(zADRP) - 1, 'i', xx);
         const uint32_t Rd = is00(s, zADRP, sizeof(zADRP) - 1, 'd', xx);
-        const uint32_t im = ((lo >> 29) | (hi >> 3)) << 12;
-printf("|lo=%x|hi=%x|imm=%x|Rd=%x:x%d", lo, hi, im, Rd, Rd);
+
         prev_vaddr0 = curr_vaddr;
-        prev_vaddr1 = im;
+        prev_vaddr1 = ((lo >> 29) | (hi >> 3)) << 12;
+printf("|lo=%x|hi=%x|imm=%x|Rd=%x:x%d", lo, hi, prev_vaddr1, Rd, Rd);
       } else if (is01(s, zBR, sizeof(zBR) - 1, xx)) { // br x17
 //printf("!|%lx|%x", prev_vaddr0, prev_vaddr1);
         const uint32_t Rn = is00(s, zBR, sizeof(zBR) - 1, 'n', xx) >> 5;
 printf("|Rn=%x:x%d", Rn, Rn);
         execute_new(q, prev_vaddr0, ocget_namebyvaddr(p, prev_vaddr1 + prev_vaddr2, NULL));
       } else if (is01(s, zLDR, sizeof(zLDR) - 1, xx)) { // ldr x17, [x16, #0x???]
-        const uint32_t im = is00(s, zLDR, sizeof(zLDR) - 1, 'i', xx) >> 7;
+        prev_vaddr2       = is00(s, zLDR, sizeof(zLDR) - 1, 'i', xx) >> 7;
         const uint32_t Rn = is00(s, zLDR, sizeof(zLDR) - 1, 'n', xx) >> 5;
         const uint32_t Rt = is00(s, zLDR, sizeof(zLDR) - 1, 't', xx);
-        prev_vaddr2 = im;
 printf("|%x", is00(s, zLDR, sizeof(zLDR) - 1, 's', xx));
-printf("|imm=%x", im);
+printf("|imm=%x", prev_vaddr2);
 printf("|Rn=%x:x%d", Rn, Rn);
 printf("|Rt=%x:x%d", Rt, Rt);
       } else if (is01(s, zADD, sizeof(zADD) - 1, xx)) { // add x16, x16, #0x???
