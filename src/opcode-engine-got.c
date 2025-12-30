@@ -84,8 +84,12 @@ static void execute_section32x86(handle_t p, handle_t s, handle_t q) {
   }
 }
 
+// DDI0487_M_a_a_a-profile_architecture_reference_manual.pdf
+//                      10987654321098765432109876543210
+static char zADRPa[] = "1II10000iiiiiiiiiiiiiiiiiiiddddd"; // C6.2.13 ADRP
+//                      10987654321098765432109876543210
+static char zADRP[]  = "1iix0000iiiiiiiiiiiiiiiiiiiddddd"; // adrp Rd ADDR_ADRP
 //                     10987654321098765432109876543210
-static char zADRP[] = "1iix0000iiiiiiiiiiiiiiiiiiiddddd"; // adrp Rd ADDR_ADRP
 static char zBR[]   = "x10x0110000xxxxxxxxxxxnnnnnxxxxx"; // br Rn
 
 static char zADD0[] = "x0001011xx0xxxxxxxxxxxnnnnnddddd"; // add Rd Rn Rm_SFT
@@ -103,15 +107,13 @@ static char zLDR5[] = "1x111000011xxxxxxxxx10xxxxxttttt"; // ldr Rt ADDR_REGOFF
 static char zLDR6[] = "1x11100001xiiiiiiiiiI1xxxxxttttt"; // ldr Rt ADDR_SIMM9
 static char zLDR7[] = "1xx1100101iiiiiiiiiiiinnnnnttttt"; // ldr Rt ADDR_UIMM12
 
-static char zLDRA[] = "1s111000011mmmmmoooS10nnnnnttttt"; // ldr (register)
-static char zLDRB[] = "1s111000010iiiiiiiii01nnnnnttttt"; // ldr (immediate) - post index
-static char zLDRC[] = "1s111000010iiiiiiiii11nnnnnttttt"; // ldr (immediate) - pre index
-static char zLDRD[] = "1s11100101iiiiiiiiiiiinnnnnttttt"; // ldr (immediate) - unsigned offset
-static char zLDRE[] = "0s011000iiiiiiiiiiiiiiiiiiittttt"; // ldr (literal)
-static char zLDRF[] = "00111000011mmmmmoooS10nnnnnttttt"; // ldrb (register)
-static char zLDRG[] = "00111000010iiiiiiiii01nnnnnttttt"; // ldrb (immediate) - post index
-static char zLDRH[] = "00111000010iiiiiiiii11nnnnnttttt"; // ldrb (immediate) - pre index
-static char zLDRI[] = "0011100101iiiiiiiiii11nnnnnttttt"; // ldrb (immediate) - unsigned offset
+// DDI0487_M_a_a_a-profile_architecture_reference_manual.pdf
+//                     10987654321098765432109876543210
+static char zLDRa[] = "1s111000011mmmmmoooS10nnnnnttttt"; // C6.2.217 LDR (register)
+static char zLDRb[] = "1s111000010iiiiiiiii01nnnnnttttt"; // C6.2.215 LDR (immediate) post-index
+static char zLDRc[] = "1s111000010iiiiiiiii11nnnnnttttt"; // C6.2.215 LDR (immediate) pre-index
+static char zLDRd[] = "1s11100101iiiiiiiiiiiinnnnnttttt"; // C6.2.215 LDR (immediate) unsigned offset
+static char zLDRe[] = "0s011000iiiiiiiiiiiiiiiiiiittttt"; // C6.2.216 LDR (literal)
 
 static char zSTP0[] = "xx10110I00iiiiiiitttttxxxxxttttt"; // stp Ft Ft2 ADDR_SIMM7
 static char zSTP1[] = "xx10110I10iiiiiiitttttxxxxxttttt"; // stp Ft Ft2 ADDR_SIMM7
@@ -170,6 +172,7 @@ static void execute_section64arm(handle_t p, handle_t s, handle_t q) {
       uint32_t xx = execute_u32(p, pp[i + 0], pp[i + 1], pp[i + 2], pp[i + 3]);
 //printf("%03lx:%08x ", curr_vaddr, xx);
 //printf("%s", is01(s, zADRP, sizeof(zADRP) - 1, xx) ? "adrp" : "");
+//printf("%s", is01(s, zADRPa, sizeof(zADRPa) - 1, xx) ? "adrpA" : "");
 //printf("%s", is01(s, zBR, sizeof(zBR) - 1, xx) ? "br" : "");
 
 //printf("%s", is01(s, zADD0, sizeof(zADD0) - 1, xx) ? "add0" : "");
@@ -187,15 +190,11 @@ static void execute_section64arm(handle_t p, handle_t s, handle_t q) {
 //printf("%s", is01(s, zLDR6, sizeof(zLDR6) - 1, xx) ? "ldr6" : "");
 //printf("%s", is01(s, zLDR7, sizeof(zLDR7) - 1, xx) ? "ldr7" : "");
 
-//printf("%s", is01(s, zLDRA, sizeof(zLDRA) - 1, xx) ? "ldrA" : "");
-//printf("%s", is01(s, zLDRB, sizeof(zLDRB) - 1, xx) ? "ldrB" : "");
-//printf("%s", is01(s, zLDRC, sizeof(zLDRC) - 1, xx) ? "ldrC" : "");
-//printf("%s", is01(s, zLDRD, sizeof(zLDRD) - 1, xx) ? "ldrD" : "");
-//printf("%s", is01(s, zLDRE, sizeof(zLDRE) - 1, xx) ? "ldrE" : "");
-//printf("%s", is01(s, zLDRF, sizeof(zLDRF) - 1, xx) ? "ldrF" : "");
-//printf("%s", is01(s, zLDRG, sizeof(zLDRG) - 1, xx) ? "ldrG" : "");
-//printf("%s", is01(s, zLDRH, sizeof(zLDRH) - 1, xx) ? "ldrH" : "");
-//printf("%s", is01(s, zLDRI, sizeof(zLDRI) - 1, xx) ? "ldrI" : "");
+//printf("%s", is01(s, zLDRa, sizeof(zLDRa) - 1, xx) ? "ldrA" : "");
+//printf("%s", is01(s, zLDRb, sizeof(zLDRb) - 1, xx) ? "ldrB" : "");
+//printf("%s", is01(s, zLDRc, sizeof(zLDRc) - 1, xx) ? "ldrC" : "");
+//printf("%s", is01(s, zLDRd, sizeof(zLDRd) - 1, xx) ? "ldrD" : "");
+//printf("%s", is01(s, zLDRe, sizeof(zLDRe) - 1, xx) ? "ldrE" : "");
 
 //printf("%s", is01(s, zSTP0, sizeof(zSTP0) - 1, xx) ? "stp0" : "");
 //printf("%s", is01(s, zSTP1, sizeof(zSTP1) - 1, xx) ? "stp1" : "");
@@ -209,6 +208,11 @@ static void execute_section64arm(handle_t p, handle_t s, handle_t q) {
 //printf("*");
 //printf("|%x", is00(s, zADRP, sizeof(zADRP) - 1, 'i', xx));
 //printf("|%x", is00(s, zADRP, sizeof(zADRP) - 1, 'd', xx));
+//const uint32_t lo = is00(s, zADRPa, sizeof(zADRPa) - 1, 'I', xx);
+//const uint32_t hi = is00(s, zADRPa, sizeof(zADRPa) - 1, 'i', xx);
+//printf("|lo=%x|hi=%x|%x", lo, hi, ((lo >> 29) | (hi >> 3)) << 12);
+//const uint32_t Rd = is00(s, zADRPa, sizeof(zADRPa) - 1, 'd', xx);
+//printf("|%x:x%d", Rd, Rd);
         prev_vaddr0 = curr_vaddr;
       } else if (is01(s, zBR, sizeof(zBR) - 1, xx)) { // br x17
 //printf("!|%lx|%x", prev_vaddr0, prev_vaddr1);
@@ -219,12 +223,12 @@ static void execute_section64arm(handle_t p, handle_t s, handle_t q) {
 //printf("|%x", is00(s, zLDR7, sizeof(zLDR7) - 1, 'i', xx) >> 7);
 //printf("|%x", is00(s, zLDR7, sizeof(zLDR7) - 1, 'n', xx) >> 5);
 //printf("|%x", is00(s, zLDR7, sizeof(zLDR7) - 1, 't', xx));
-//printf("|%x", is00(s, zLDRD, sizeof(zLDRD) - 1, 's', xx));
-const uint32_t im = is00(s, zLDRD, sizeof(zLDRD) - 1, 'i', xx) >> 7; //10;
+//printf("|%x", is00(s, zLDRd, sizeof(zLDRd) - 1, 's', xx));
+//const uint32_t im = is00(s, zLDRd, sizeof(zLDRd) - 1, 'i', xx) >> 7; //10;
 //printf("|%x", im);
-const uint32_t Rn = is00(s, zLDRD, sizeof(zLDRD) - 1, 'n', xx) >> 5;
+//const uint32_t Rn = is00(s, zLDRd, sizeof(zLDRd) - 1, 'n', xx) >> 5;
 //printf("|%x:x%d", Rn, Rn);
-const uint32_t Rt = is00(s, zLDRD, sizeof(zLDRD) - 1, 't', xx);
+//const uint32_t Rt = is00(s, zLDRd, sizeof(zLDRd) - 1, 't', xx);
 //printf("|%x:x%d", Rt, Rt);
       } else if (is01(s, zADD1, sizeof(zADD1) - 1, xx)) { // add x16, x16, #0x???
 //printf("B");
