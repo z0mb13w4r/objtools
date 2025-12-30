@@ -139,7 +139,8 @@ static void execute_section64arm(handle_t p, handle_t s, handle_t q) {
 
     uint64_t curr_vaddr = ocget_vmaddress(s);
     uint64_t prev_vaddr0 = 0;
-    uint32_t prev_vaddr1 = 0x11000 + 0xf40 - 0x08;
+    uint32_t prev_vaddr1 = 0;
+    uint32_t prev_vaddr2 = 0;
 
     for (uint64_t i = 0; i < ocget_size(s); i += 4, curr_vaddr += 4) {
       uint32_t xx = execute_u32(p, pp[i + 0], pp[i + 1], pp[i + 2], pp[i + 3]);
@@ -151,49 +152,47 @@ printf("%s", is01(s, zSTP,  sizeof(zSTP)  - 1, xx) ? "stp"  : "");
 printf("%s", is01(s, zADRP, sizeof(zADRP) - 1, xx) ? "adrp" : "");
 
       if (is01(s, zSTP, sizeof(zSTP) - 1, xx)) { //stp x16, x30, [sp, #-0x??]!
+        const uint32_t im = is00(s, zSTP, sizeof(zSTP) - 1, 'i', xx) >> 15;
+        const uint32_t RT = is00(s, zSTP, sizeof(zSTP) - 1, 'T', xx) >> 10;
+        const uint32_t Rn = is00(s, zSTP, sizeof(zSTP) - 1, 'n', xx) >> 5;
+        const uint32_t Rt = is00(s, zSTP, sizeof(zSTP) - 1, 't', xx);
 printf("|%x", is00(s, zSTP, sizeof(zSTP) - 1, 'I', xx));
-const uint32_t im = is00(s, zSTP, sizeof(zSTP) - 1, 'i', xx) >> 15;
-const uint32_t RT = is00(s, zSTP, sizeof(zSTP) - 1, 'T', xx) >> 10;
-const uint32_t Rn = is00(s, zSTP, sizeof(zSTP) - 1, 'n', xx) >> 5;
-const uint32_t Rt = is00(s, zSTP, sizeof(zSTP) - 1, 't', xx);
 printf("|imm=%x", im);
 printf("|RT=%x:x%d", RT, RT);
 printf("|Rn=%x:x%d", Rn, Rn);
 printf("|Rt=%x:x%d", Rt, Rt);
       } else if (is01(s, zADRP, sizeof(zADRP) - 1, xx)) { // adrp x16, 0x?????
-const uint32_t lo = is00(s, zADRP, sizeof(zADRP) - 1, 'I', xx);
-const uint32_t hi = is00(s, zADRP, sizeof(zADRP) - 1, 'i', xx);
-const uint32_t Rd = is00(s, zADRP, sizeof(zADRP) - 1, 'd', xx);
-printf("|lo=%x|hi=%x|imm=%x|Rd=%x:x%d", lo, hi, ((lo >> 29) | (hi >> 3)) << 12, Rd, Rd);
+        const uint32_t lo = is00(s, zADRP, sizeof(zADRP) - 1, 'I', xx);
+        const uint32_t hi = is00(s, zADRP, sizeof(zADRP) - 1, 'i', xx);
+        const uint32_t Rd = is00(s, zADRP, sizeof(zADRP) - 1, 'd', xx);
+        const uint32_t im = ((lo >> 29) | (hi >> 3)) << 12;
+printf("|lo=%x|hi=%x|imm=%x|Rd=%x:x%d", lo, hi, im, Rd, Rd);
         prev_vaddr0 = curr_vaddr;
+        prev_vaddr1 = im;
       } else if (is01(s, zBR, sizeof(zBR) - 1, xx)) { // br x17
 //printf("!|%lx|%x", prev_vaddr0, prev_vaddr1);
-const uint32_t Rn = is00(s, zBR, sizeof(zBR) - 1, 'n', xx) >> 5;
+        const uint32_t Rn = is00(s, zBR, sizeof(zBR) - 1, 'n', xx) >> 5;
 printf("|Rn=%x:x%d", Rn, Rn);
-        execute_new(q, prev_vaddr0, ocget_namebyvaddr(p, prev_vaddr1, NULL));
+        execute_new(q, prev_vaddr0, ocget_namebyvaddr(p, prev_vaddr1 + prev_vaddr2, NULL));
       } else if (is01(s, zLDR, sizeof(zLDR) - 1, xx)) { // ldr x17, [x16, #0x???]
+        const uint32_t im = is00(s, zLDR, sizeof(zLDR) - 1, 'i', xx) >> 7;
+        const uint32_t Rn = is00(s, zLDR, sizeof(zLDR) - 1, 'n', xx) >> 5;
+        const uint32_t Rt = is00(s, zLDR, sizeof(zLDR) - 1, 't', xx);
+        prev_vaddr2 = im;
 printf("|%x", is00(s, zLDR, sizeof(zLDR) - 1, 's', xx));
-const uint32_t im = is00(s, zLDR, sizeof(zLDR) - 1, 'i', xx) >> 7; //10;
 printf("|imm=%x", im);
-const uint32_t Rn = is00(s, zLDR, sizeof(zLDR) - 1, 'n', xx) >> 5;
 printf("|Rn=%x:x%d", Rn, Rn);
-const uint32_t Rt = is00(s, zLDR, sizeof(zLDR) - 1, 't', xx);
 printf("|Rt=%x:x%d", Rt, Rt);
       } else if (is01(s, zADD, sizeof(zADD) - 1, xx)) { // add x16, x16, #0x???
-const uint32_t im = is00(s, zADD, sizeof(zADD) - 1, 'i', xx) >> 10;
-const uint32_t Rn = is00(s, zADD, sizeof(zADD) - 1, 'n', xx) >> 5;
-const uint32_t Rd = is00(s, zADD, sizeof(zADD) - 1, 'd', xx);
+        const uint32_t im = is00(s, zADD, sizeof(zADD) - 1, 'i', xx) >> 10;
+        const uint32_t Rn = is00(s, zADD, sizeof(zADD) - 1, 'n', xx) >> 5;
+        const uint32_t Rd = is00(s, zADD, sizeof(zADD) - 1, 'd', xx);
 printf("|%x", is00(s, zADD, sizeof(zADD) - 1, 'S', xx));
 printf("|imm=%x", im);
 printf("|Rn=%x:x%d", Rn, Rn);
 printf("|Rd=%x:x%d", Rd, Rd);
       }
 
-      if (0xd503201f == xx) { // nop
-//printf("#");
-      } else {
-        prev_vaddr1 += 2;
-      }
 printf("\n");
     }
   }
