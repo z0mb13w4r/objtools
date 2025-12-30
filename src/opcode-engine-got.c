@@ -88,8 +88,8 @@ static void execute_section32x86(handle_t p, handle_t s, handle_t q) {
 //                     10987654321098765432109876543210
 static char zADRP[] = "1II10000iiiiiiiiiiiiiiiiiiiddddd"; // C6.2.13 ADRP
 //                     10987654321098765432109876543210
-static char zBR[]   = "x10x0110000xxxxxxxxxxxnnnnnxxxxx"; // br Rn
-//                     10987654321098765432109876543210
+//static char zBR[]   = "x10x0110000xxxxxxxxxxxnnnnnxxxxx"; // br Rn
+static char zBR[]   = "1101011000011111000000nnnnnmmmmm"; // C6.2.46 BR
 static char zADD[]  = "x00100010Siiiiiiiiiiiinnnnnddddd"; // C6.2.5 ADD (immediate)
 static char zLDR[]  = "1s11100101iiiiiiiiiiiinnnnnttttt"; // C6.2.215 LDR (immediate) unsigned offset
 
@@ -171,7 +171,8 @@ printf("|lo=%x|hi=%x|%x|%x:x%d", lo, hi, ((lo >> 29) | (hi >> 3)) << 12, Rd, Rd)
         prev_vaddr0 = curr_vaddr;
       } else if (is01(s, zBR, sizeof(zBR) - 1, xx)) { // br x17
 //printf("!|%lx|%x", prev_vaddr0, prev_vaddr1);
-printf("|%x", is00(s, zBR, sizeof(zBR) - 1, 'n', xx));
+const uint32_t Rn = is00(s, zBR, sizeof(zBR) - 1, 'n', xx) >> 5;
+printf("|%x:x%d", Rn, Rn);
         execute_new(q, prev_vaddr0, ocget_namebyvaddr(p, prev_vaddr1, NULL));
       } else if (is01(s, zLDR, sizeof(zLDR) - 1, xx)) { // ldr x17, [x16, #0x???]
 printf("|%x", is00(s, zLDR, sizeof(zLDR) - 1, 's', xx));
