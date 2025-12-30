@@ -129,7 +129,7 @@ static void execute_section64arm(handle_t p, handle_t s, handle_t q) {
     uint32_t prev_vaddr2 = 0;
 
     for (uint64_t i = 0; i < ocget_size(s); i += 4, curr_vaddr += 4) {
-      uint32_t xx = execute_u32(p, pp[i + 0], pp[i + 1], pp[i + 2], pp[i + 3]);
+      const uint32_t xx = execute_u32(p, pp[i + 0], pp[i + 1], pp[i + 2], pp[i + 3]);
 //printf("%03lx:%08x ", curr_vaddr, xx);
 //printf("%s", is01(s, zBR,   sizeof(zBR)   - 1, xx) ? "br"   : "");
 //printf("%s", is01(s, zADD,  sizeof(zADD)  - 1, xx) ? "add"  : "");
@@ -176,7 +176,6 @@ static void execute_section64arm(handle_t p, handle_t s, handle_t q) {
 //printf("|Rn=%x:x%d", Rn, Rn);
 //printf("|Rd=%x:x%d", Rd, Rd);
       }
-
 //printf("\n");
     }
   }
