@@ -155,50 +155,49 @@ static void execute_section64arm(handle_t p, handle_t s, handle_t q) {
 
     for (uint64_t i = 0; i < ocget_size(s); i += 4, curr_vaddr += 4) {
       uint32_t xx = execute_u32(p, pp[i + 0], pp[i + 1], pp[i + 2], pp[i + 3]);
-//printf("%03lx:%08x ", curr_vaddr, xx);
-//printf("%s", is01(s, zADRP, sizeof(zADRP) - 1, xx) ? "adrp" : "");
-//printf("%s", is01(s, zBR, sizeof(zBR) - 1, xx) ? "br" : "");
+printf("%03lx:%08x ", curr_vaddr, xx);
+printf("%s", is01(s, zADRP, sizeof(zADRP) - 1, xx) ? "adrp" : "");
+printf("%s", is01(s, zBR, sizeof(zBR) - 1, xx) ? "br" : "");
 
-//printf("%s", is01(s, zADD0, sizeof(zADD0) - 1, xx) ? "add0" : "");
-//printf("%s", is01(s, zADD1, sizeof(zADD1) - 1, xx) ? "add1" : "");
-//printf("%s", is01(s, zADD2, sizeof(zADD2) - 1, xx) ? "add2" : "");
-//printf("%s", is01(s, zADD3, sizeof(zADD3) - 1, xx) ? "add3" : "");
-//printf("%s", is01(s, zADD4, sizeof(zADD4) - 1, xx) ? "add4" : "");
+printf("%s", is01(s, zADD0, sizeof(zADD0) - 1, xx) ? "add0" : "");
+printf("%s", is01(s, zADD1, sizeof(zADD1) - 1, xx) ? "add1" : "");
+printf("%s", is01(s, zADD2, sizeof(zADD2) - 1, xx) ? "add2" : "");
+printf("%s", is01(s, zADD3, sizeof(zADD3) - 1, xx) ? "add3" : "");
+printf("%s", is01(s, zADD4, sizeof(zADD4) - 1, xx) ? "add4" : "");
 
-//printf("%s", is01(s, zLDR, sizeof(zLDR) - 1, xx) ? "ldr" : "");
+printf("%s", is01(s, zLDR, sizeof(zLDR) - 1, xx) ? "ldr" : "");
 
-//printf("%s", is01(s, zSTP0, sizeof(zSTP0) - 1, xx) ? "stp0" : "");
-//printf("%s", is01(s, zSTP1, sizeof(zSTP1) - 1, xx) ? "stp1" : "");
-//printf("%s", is01(s, zSTP2, sizeof(zSTP2) - 1, xx) ? "stp2" : "");
+printf("%s", is01(s, zSTP0, sizeof(zSTP0) - 1, xx) ? "stp0" : "");
+printf("%s", is01(s, zSTP1, sizeof(zSTP1) - 1, xx) ? "stp1" : "");
+printf("%s", is01(s, zSTP2, sizeof(zSTP2) - 1, xx) ? "stp2" : "");
 
       if (is01(s, zSTP2, sizeof(zSTP2) - 1, xx)) { //stp x16, x30, [sp, #-0x??]!
-//printf("|%x", is00(s, zSTP2, sizeof(zSTP2) - 1, 'I', xx));
-//printf("|%x", is00(s, zSTP2, sizeof(zSTP2) - 1, 'i', xx));
-//printf("|%x", is00(s, zSTP2, sizeof(zSTP2) - 1, 't', xx));
+printf("|%x", is00(s, zSTP2, sizeof(zSTP2) - 1, 'I', xx));
+printf("|%x", is00(s, zSTP2, sizeof(zSTP2) - 1, 'i', xx));
+printf("|%x", is00(s, zSTP2, sizeof(zSTP2) - 1, 't', xx));
       } else if (is01(s, zADRP, sizeof(zADRP) - 1, xx)) { // adrp x16, 0x?????
 const uint32_t lo = is00(s, zADRP, sizeof(zADRP) - 1, 'I', xx);
 const uint32_t hi = is00(s, zADRP, sizeof(zADRP) - 1, 'i', xx);
-//printf("|lo=%x|hi=%x|%x", lo, hi, ((lo >> 29) | (hi >> 3)) << 12);
 const uint32_t Rd = is00(s, zADRP, sizeof(zADRP) - 1, 'd', xx);
-printf("|%x:x%d", Rd, Rd);
+printf("|lo=%x|hi=%x|%x|%x:x%d", lo, hi, ((lo >> 29) | (hi >> 3)) << 12, Rd, Rd);
         prev_vaddr0 = curr_vaddr;
       } else if (is01(s, zBR, sizeof(zBR) - 1, xx)) { // br x17
 //printf("!|%lx|%x", prev_vaddr0, prev_vaddr1);
-//printf("|%x", is00(s, zBR, sizeof(zBR) - 1, 'n', xx));
+printf("|%x", is00(s, zBR, sizeof(zBR) - 1, 'n', xx));
         execute_new(q, prev_vaddr0, ocget_namebyvaddr(p, prev_vaddr1, NULL));
       } else if (is01(s, zLDR, sizeof(zLDR) - 1, xx)) { // ldr x17, [x16, #0x???]
-//printf("|%x", is00(s, zLDR, sizeof(zLDR) - 1, 's', xx));
+printf("|%x", is00(s, zLDR, sizeof(zLDR) - 1, 's', xx));
 const uint32_t im = is00(s, zLDR, sizeof(zLDR) - 1, 'i', xx) >> 7; //10;
-//printf("|%x", im);
+printf("|%x", im);
 const uint32_t Rn = is00(s, zLDR, sizeof(zLDR) - 1, 'n', xx) >> 5;
-//printf("|%x:x%d", Rn, Rn);
+printf("|%x:x%d", Rn, Rn);
 const uint32_t Rt = is00(s, zLDR, sizeof(zLDR) - 1, 't', xx);
-//printf("|%x:x%d", Rt, Rt);
+printf("|%x:x%d", Rt, Rt);
       } else if (is01(s, zADD1, sizeof(zADD1) - 1, xx)) { // add x16, x16, #0x???
-//printf("|%x", is00(s, zADD1, sizeof(zADD1) - 1, 'S', xx));
-//printf("|%x", is00(s, zADD1, sizeof(zADD1) - 1, 'i', xx));
-//printf("|%x", is00(s, zADD1, sizeof(zADD1) - 1, 'n', xx));
-//printf("|%x", is00(s, zADD1, sizeof(zADD1) - 1, 'd', xx));
+printf("|%x", is00(s, zADD1, sizeof(zADD1) - 1, 'S', xx));
+printf("|%x", is00(s, zADD1, sizeof(zADD1) - 1, 'i', xx));
+printf("|%x", is00(s, zADD1, sizeof(zADD1) - 1, 'n', xx));
+printf("|%x", is00(s, zADD1, sizeof(zADD1) - 1, 'd', xx));
       }
 
       if (0xd503201f == xx) { // nop
@@ -206,7 +205,7 @@ const uint32_t Rt = is00(s, zLDR, sizeof(zLDR) - 1, 't', xx);
       } else {
         prev_vaddr1 += 2;
       }
-//printf("\n");
+printf("\n");
     }
   }
 }
