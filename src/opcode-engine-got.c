@@ -150,10 +150,9 @@ static void execute_section64arm(handle_t p, handle_t s, handle_t q) {
       uint32_t xx = execute_u32(p, pp[i + 0], pp[i + 1], pp[i + 2], pp[i + 3]);
 printf("%03lx:%08x ", curr_vaddr, xx);
 printf("%s", is01(s, zADRP, sizeof(zADRP) - 1, xx) ? "adrp" : "");
-printf("%s", is01(s, zBR, sizeof(zBR) - 1, xx) ? "br" : "");
-
-printf("%s", is01(s, zADD, sizeof(zADD) - 1, xx) ? "add" : "");
-printf("%s", is01(s, zLDR, sizeof(zLDR) - 1, xx) ? "ldr" : "");
+printf("%s", is01(s, zBR,   sizeof(zBR)   - 1, xx) ? "br"   : "");
+printf("%s", is01(s, zADD,  sizeof(zADD)  - 1, xx) ? "add"  : "");
+printf("%s", is01(s, zLDR,  sizeof(zLDR)  - 1, xx) ? "ldr"  : "");
 
 printf("%s", is01(s, zSTP0, sizeof(zSTP0) - 1, xx) ? "stp0" : "");
 printf("%s", is01(s, zSTP1, sizeof(zSTP1) - 1, xx) ? "stp1" : "");
