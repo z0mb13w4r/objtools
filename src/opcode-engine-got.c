@@ -89,16 +89,9 @@ static void execute_section32x86(handle_t p, handle_t s, handle_t q) {
 static char zADRP[] = "1II10000iiiiiiiiiiiiiiiiiiiddddd"; // C6.2.13 ADRP
 //                     10987654321098765432109876543210
 static char zBR[]   = "x10x0110000xxxxxxxxxxxnnnnnxxxxx"; // br Rn
-
-static char zADD0[] = "x0001011xx0xxxxxxxxxxxnnnnnddddd"; // add Rd Rn Rm_SFT
-static char zADD1[] = "x00x0001SSiiiiiiiiiiiinnnnnddddd"; // add Rd_SP Rn_SP AIMM
-static char zADD2[] = "x00010110x1xxxxxxxxxxxnnnnnddddd"; // add Rd_SP Rn_SP Rm_EXT
-static char zADD3[] = "x1011110xx1mmmmmx00001nnnnnddddd"; // add Sd Sn Sm
-static char zADD4[] = "xx001110xx1mmmmm100001nnnnnddddd"; // add Vd Vn Vm
-
-// DDI0487_M_a_a_a-profile_architecture_reference_manual.pdf
-//                    10987654321098765432109876543210
-static char zLDR[] = "1s11100101iiiiiiiiiiiinnnnnttttt"; // C6.2.215 LDR (immediate) unsigned offset
+//                     10987654321098765432109876543210
+static char zADD[]  = "x00100010Siiiiiiiiiiiinnnnnddddd"; // C6.2.5 ADD (immediate)
+static char zLDR[]  = "1s11100101iiiiiiiiiiiinnnnnttttt"; // C6.2.215 LDR (immediate) unsigned offset
 
 static char zSTP0[] = "xx10110I00iiiiiiitttttxxxxxttttt"; // stp Ft Ft2 ADDR_SIMM7
 static char zSTP1[] = "xx10110I10iiiiiiitttttxxxxxttttt"; // stp Ft Ft2 ADDR_SIMM7
@@ -159,12 +152,7 @@ printf("%03lx:%08x ", curr_vaddr, xx);
 printf("%s", is01(s, zADRP, sizeof(zADRP) - 1, xx) ? "adrp" : "");
 printf("%s", is01(s, zBR, sizeof(zBR) - 1, xx) ? "br" : "");
 
-printf("%s", is01(s, zADD0, sizeof(zADD0) - 1, xx) ? "add0" : "");
-printf("%s", is01(s, zADD1, sizeof(zADD1) - 1, xx) ? "add1" : "");
-printf("%s", is01(s, zADD2, sizeof(zADD2) - 1, xx) ? "add2" : "");
-printf("%s", is01(s, zADD3, sizeof(zADD3) - 1, xx) ? "add3" : "");
-printf("%s", is01(s, zADD4, sizeof(zADD4) - 1, xx) ? "add4" : "");
-
+printf("%s", is01(s, zADD, sizeof(zADD) - 1, xx) ? "add" : "");
 printf("%s", is01(s, zLDR, sizeof(zLDR) - 1, xx) ? "ldr" : "");
 
 printf("%s", is01(s, zSTP0, sizeof(zSTP0) - 1, xx) ? "stp0" : "");
@@ -193,11 +181,14 @@ const uint32_t Rn = is00(s, zLDR, sizeof(zLDR) - 1, 'n', xx) >> 5;
 printf("|%x:x%d", Rn, Rn);
 const uint32_t Rt = is00(s, zLDR, sizeof(zLDR) - 1, 't', xx);
 printf("|%x:x%d", Rt, Rt);
-      } else if (is01(s, zADD1, sizeof(zADD1) - 1, xx)) { // add x16, x16, #0x???
-printf("|%x", is00(s, zADD1, sizeof(zADD1) - 1, 'S', xx));
-printf("|%x", is00(s, zADD1, sizeof(zADD1) - 1, 'i', xx));
-printf("|%x", is00(s, zADD1, sizeof(zADD1) - 1, 'n', xx));
-printf("|%x", is00(s, zADD1, sizeof(zADD1) - 1, 'd', xx));
+      } else if (is01(s, zADD, sizeof(zADD) - 1, xx)) { // add x16, x16, #0x???
+const uint32_t im = is00(s, zADD, sizeof(zADD) - 1, 'i', xx) >> 10;
+const uint32_t Rn = is00(s, zADD, sizeof(zADD) - 1, 'n', xx) >> 5;
+const uint32_t Rd = is00(s, zADD, sizeof(zADD) - 1, 'd', xx);
+printf("|%x", is00(s, zADD, sizeof(zADD) - 1, 'S', xx));
+printf("|%x", im);
+printf("|%x:x%d", Rn, Rn);
+printf("|%x:x%d", Rd, Rd);
       }
 
       if (0xd503201f == xx) { // nop
