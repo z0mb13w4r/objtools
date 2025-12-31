@@ -6,7 +6,7 @@
 #define OCINSNARM_CB               ((0x03) | OCINSN_OPERAND2)
 #define OCINSNARM_TB               ((0x04) | OCINSN_OPERAND3)
 #define OCINSNARM_BTI              ((0x05) | OCINSN_OPERAND1)
-#define OCINSNARM_CMP              ((0x06) | OCINSN_OPERAND2)
+#define OCINSNARM_CMP              ((0x06) | OCINSN_OPERAND2 | OCINSN_OPERAND3)
 #define OCINSNARM_TST              ((0x09) | OCINSN_OPERAND2)
 #define OCINSNARM_RET              ((0x0a) | OCINSN_OPERAND0)
 #define OCINSNARM_NOP              ((0x0b) | OCINSN_OPERAND0)

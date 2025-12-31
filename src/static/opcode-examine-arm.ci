@@ -757,6 +757,7 @@ convert_t oeINSTRUCTIONFLAGS_ARM[] = {
   {"N",                 OCINSN_N},
   {"O",                 OCINSN_O},
   {"S",                 OCINSN_S},
+  {"Z",                 OCINSN_Z},
   {"1BIT",              OCINSN_1BIT},
   {"8BIT",              OCINSN_8BIT},
   {"16BIT",             OCINSN_16BIT},
