@@ -638,59 +638,59 @@ static unknown_t oeinsert_operand(handle_t p, unknown_t q, unknown_t m) {
   return NULL;
 }
 
-static unknown_t oeinsert_operands(handle_t p, unknown_t q, unknown_t m) {
-  if (isocexamine(p) && q && m) {
-    pocexamine_t p0 = oeget(p, OECODE_THIS);
+static unknown_t oeinsert_operands(handle_t e, unknown_t q, unknown_t m) {
+  if (isocexamine(e) && q && m) {
+    pocexamine_t e0 = oeget(e, OECODE_THIS);
     poestruct_t q0 = CAST(poestruct_t, q);
 
     unknown_t m1 = NULL, m2 = NULL, m3 = NULL, m4 = NULL;
     if (MODE_ISANY(q0->action, OCINSN_OPERAND1 | OCINSN_OPERAND2 | OCINSN_OPERAND3 | OCINSN_OPERAND4)) {
-      oesplit(p, m, USE_STRLEN, &m1, &m2, &m3, &m4);
+      oesplit(e, m, USE_STRLEN, &m1, &m2, &m3, &m4);
 
       if (m1) {
-        p0->op1 = oeinsert_operand(p, q, m1);
+        e0->op1 = oeinsert_operand(e, q, m1);
       } else if (MODE_ISNOT(q0->action, OCINSN_OPERAND0)) {
 #ifdef OPCODE_EXAMINE_DEBUGY
         printf_e("Missing operand #1");
 #endif
       } else {
-        p0->mc->cvalue &= ~OCINSN_OPERAND1;
+        e0->mc->cvalue &= ~OCINSN_OPERAND1;
       }
     }
 
     if (MODE_ISANY(q0->action, OCINSN_OPERAND2 | OCINSN_OPERAND3 | OCINSN_OPERAND4)) {
       if (m2) {
-        p0->op2 = oeinsert_operand(p, q, m2);
+        e0->op2 = oeinsert_operand(e, q, m2);
       } else if (MODE_ISNOT(q0->action, OCINSN_OPERAND1)) {
 #ifdef OPCODE_EXAMINE_DEBUGY
         printf_e("Missing operand #2");
 #endif
       } else {
-        p0->mc->cvalue &= ~OCINSN_OPERAND2;
+        e0->mc->cvalue &= ~OCINSN_OPERAND2;
       }
     }
 
     if (MODE_ISANY(q0->action, OCINSN_OPERAND3 | OCINSN_OPERAND4)) {
       if (m3) {
-        p0->op3 = oeinsert_operand(p, q, m3);
+        e0->op3 = oeinsert_operand(e, q, m3);
       } else if (MODE_ISNOT(q0->action, OCINSN_OPERAND2)) {
 #ifdef OPCODE_EXAMINE_DEBUGY
         printf_e("Missing operand #3");
 #endif
       } else {
-        p0->mc->cvalue &= ~OCINSN_OPERAND3;
+        e0->mc->cvalue &= ~OCINSN_OPERAND3;
       }
     }
 
     if (MODE_ISANY(q0->action, OCINSN_OPERAND4)) {
       if (m4) {
-        p0->op4 = oeinsert_operand(p, q, m4);
+        e0->op4 = oeinsert_operand(e, q, m4);
       } else if (MODE_ISNOT(q0->action, OCINSN_OPERAND3)) {
 #ifdef OPCODE_EXAMINE_DEBUGY
         printf_e("Missing operand #4");
 #endif
       } else {
-        p0->mc->cvalue &= ~OCINSN_OPERAND4;
+        e0->mc->cvalue &= ~OCINSN_OPERAND4;
       }
     }
   }
@@ -699,23 +699,23 @@ static unknown_t oeinsert_operands(handle_t p, unknown_t q, unknown_t m) {
 }
 
 handle_t oecreate(handle_t p, const uint64_t vaddr, unknown_t mnemonic, unknown_t operands) {
-  pocexamine_t p0 = oemalloc();
-  if (p0) {
+  pocexamine_t e0 = oemalloc();
+  if (e0) {
     MALLOCACOPY(char, m0, 160, mnemonic);
     MALLOCACOPY(char, o0, 160, operands);
 
-    p0->vaddr = vaddr;
-    p0->mc = xmalloc(sizeof(ocmnemonic_t));
+    e0->vaddr = vaddr;
+    e0->mc = xmalloc(sizeof(ocmnemonic_t));
 
     char* m1 = NULL;
-    m1 = oeinsert_comment(p0, m0);
-    m1 = oeinsert_prefix(p0, m0);
+    m1 = oeinsert_comment(e0, m0);
+    m1 = oeinsert_prefix(e0, m0);
     poestruct_t pi = oepick(oegetINSTRUCTIONS(p), m1, USE_STRLEN);
 
     if (pi) {
 //printf("++");
-      m1 = oeinsert_mnemonic(p0, pi, m1);
-      m1 = oeinsert_operands(p0, pi, operands ? o0 : m1);
+      m1 = oeinsert_mnemonic(e0, pi, m1);
+      m1 = oeinsert_operands(e0, pi, operands ? o0 : m1);
     } else {
 #ifdef OPCODE_EXAMINE_DEBUGX
       printf_e("The mnemonic is missing from the table oeINSTRUCTIONS");
@@ -723,6 +723,6 @@ handle_t oecreate(handle_t p, const uint64_t vaddr, unknown_t mnemonic, unknown_
     }
   }
 
-  return p0;
+  return e0;
 }
 
