@@ -732,7 +732,7 @@
 #define OCREGARM_X26               ((0x2c))
 #define OCREGARM_X27               ((0x2d))
 #define OCREGARM_X28               ((0x2e))
-#define OCREGARM_X29               (OCREGARM_SP)
+#define OCREGARM_X29               (OCREGARM_FP)
 #define OCREGARM_X30               (OCREGARM_LR)
 #define OCREGARM_X31               ((0x31))
 
