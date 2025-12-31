@@ -253,10 +253,10 @@ size_t oeskiphex(unknown_t p, const size_t size) {
   return 0;
 }
 
-unknown_t oesplit(handle_t p, unknown_t m, const size_t size, punknown_t o1, punknown_t o2, punknown_t o3, punknown_t o4) {
+unknown_t oesplit(handle_t e, unknown_t m, const size_t size, punknown_t o1, punknown_t o2, punknown_t o3, punknown_t o4) {
   if (m && USE_STRLEN == size) {
-    return oesplit(p, m, xstrlen(m), o1, o2, o3, o4);
-  } else if (isocexamine(p) && m && o1 && o2 && o3 && o4) {
+    return oesplit(e, m, xstrlen(m), o1, o2, o3, o4);
+  } else if (isocexamine(e) && m && o1 && o2 && o3 && o4) {
     char *m0 = CAST(char*, m);
 
     size_t i = 0;
