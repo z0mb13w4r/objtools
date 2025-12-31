@@ -384,7 +384,7 @@ uint64_t oehexb(unknown_t p, const size_t size) {
   return hexb(p, size);
 }
 
-static unknown_t oedo_absolute(handle_t e, unknown_t o, unknown_t m) {
+static unknown_t oedo_absolute(handle_t p, handle_t e, unknown_t o, unknown_t m) {
   if (isocexamine(e) && o && m) {
     char *m0 = CAST(char*, m);
     pocoperand_t o0 = CAST(pocoperand_t, o);
@@ -400,7 +400,7 @@ static unknown_t oedo_absolute(handle_t e, unknown_t o, unknown_t m) {
   return NULL;
 }
 
-static unknown_t oedo_register(handle_t e, unknown_t o, unknown_t m) {
+static unknown_t oedo_register(handle_t p, handle_t e, unknown_t o, unknown_t m) {
   if (isocexamine(e) && o && m) {
     char *m0 = CAST(char*, m);
     pocoperand_t o0 = CAST(pocoperand_t, o);
@@ -462,7 +462,7 @@ static unknown_t oedo_register(handle_t e, unknown_t o, unknown_t m) {
   return NULL;
 }
 
-static unknown_t oedo_segment(handle_t e, unknown_t o, unknown_t m) {
+static unknown_t oedo_segment(handle_t p, handle_t e, unknown_t o, unknown_t m) {
   if (isocexamine(e) && o && m) {
     char *m0 = CAST(char*, m);
     pocoperand_t o0 = CAST(pocoperand_t, o);
@@ -489,7 +489,7 @@ static unknown_t oedo_segment(handle_t e, unknown_t o, unknown_t m) {
   return NULL;
 }
 
-static unknown_t oedo_value(handle_t e, unknown_t o, unknown_t m) {
+static unknown_t oedo_value(handle_t p, handle_t e, unknown_t o, unknown_t m) {
   if (isocexamine(e) && o && m) {
     char *m0 = CAST(char*, m);
     pocoperand_t o0 = CAST(pocoperand_t, o);
@@ -619,17 +619,17 @@ static unknown_t oeinsert_mnemonic(handle_t p, handle_t e, unknown_t q, unknown_
   return NULL;
 }
 
-static unknown_t oeinsert_operand(handle_t e, unknown_t q, unknown_t m) {
+static unknown_t oeinsert_operand(handle_t p, handle_t e, unknown_t q, unknown_t m) {
   if (isocexamine(e) && q && m) {
     pocoperand_t o0 = xmalloc(sizeof(ocoperand_t));
     if (o0) {
       char *m0 = CAST(char *, m);
       xstrncpy(o0->data, m0, sizeof(o0->data));
 
-      m0 = oedo_absolute(e, o0, m0);
-      m0 = oedo_segment(e, o0, m0);
-      m0 = oedo_register(e, o0, m0);
-      m0 = oedo_value(e, o0, m0);
+      m0 = oedo_absolute(p, e, o0, m0);
+      m0 = oedo_segment(p, e, o0, m0);
+      m0 = oedo_register(p, e, o0, m0);
+      m0 = oedo_value(p, e, o0, m0);
     }
 
     return o0;
@@ -648,7 +648,7 @@ static unknown_t oeinsert_operands(handle_t p, handle_t e, unknown_t q, unknown_
       oesplit(e, m, USE_STRLEN, &m1, &m2, &m3, &m4);
 
       if (m1) {
-        e0->op1 = oeinsert_operand(e, q, m1);
+        e0->op1 = oeinsert_operand(p, e, q, m1);
       } else if (MODE_ISNOT(q0->action, OCINSN_OPERAND0)) {
 #ifdef OPCODE_EXAMINE_DEBUGY
         printf_e("Missing operand #1");
@@ -660,7 +660,7 @@ static unknown_t oeinsert_operands(handle_t p, handle_t e, unknown_t q, unknown_
 
     if (MODE_ISANY(q0->action, OCINSN_OPERAND2 | OCINSN_OPERAND3 | OCINSN_OPERAND4)) {
       if (m2) {
-        e0->op2 = oeinsert_operand(e, q, m2);
+        e0->op2 = oeinsert_operand(p, e, q, m2);
       } else if (MODE_ISNOT(q0->action, OCINSN_OPERAND1)) {
 #ifdef OPCODE_EXAMINE_DEBUGY
         printf_e("Missing operand #2");
@@ -672,7 +672,7 @@ static unknown_t oeinsert_operands(handle_t p, handle_t e, unknown_t q, unknown_
 
     if (MODE_ISANY(q0->action, OCINSN_OPERAND3 | OCINSN_OPERAND4)) {
       if (m3) {
-        e0->op3 = oeinsert_operand(e, q, m3);
+        e0->op3 = oeinsert_operand(p, e, q, m3);
       } else if (MODE_ISNOT(q0->action, OCINSN_OPERAND2)) {
 #ifdef OPCODE_EXAMINE_DEBUGY
         printf_e("Missing operand #3");
@@ -684,7 +684,7 @@ static unknown_t oeinsert_operands(handle_t p, handle_t e, unknown_t q, unknown_
 
     if (MODE_ISANY(q0->action, OCINSN_OPERAND4)) {
       if (m4) {
-        e0->op4 = oeinsert_operand(e, q, m4);
+        e0->op4 = oeinsert_operand(p, e, q, m4);
       } else if (MODE_ISNOT(q0->action, OCINSN_OPERAND3)) {
 #ifdef OPCODE_EXAMINE_DEBUGY
         printf_e("Missing operand #4");
