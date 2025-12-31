@@ -152,10 +152,18 @@ static poestruct_t oepick(poestruct_t p, unknown_t m, const size_t size) {
   return NULL;
 }
 
-static poestruct_t oepick_REG(unknown_t m, const size_t size) {
+static poestruct_t oepick_REG(handle_t p, unknown_t m, const size_t size) {
   if (m && USE_STRLEN == size) {
-    return oepick_REG(m, xstrlen(m));
+    return oepick_REG(p, m, xstrlen(m));
   } else if (m && size) {
+    switch (ocget_machine(p)) {
+    case EM_ARM:
+    case EM_AARCH64:
+      return oepick(oeREGISTERS_ARM, m, size);
+    default:
+      break;
+    }
+
     return oepick(oeREGISTERS_x86_64, m, size);
   }
 
@@ -406,7 +414,7 @@ static unknown_t oedo_register(handle_t p, handle_t e, unknown_t o, unknown_t m)
     pocoperand_t o0 = CAST(pocoperand_t, o);
 
     size_t m0size = xstrlen(m0);
-    poestruct_t r0 = oepick_REG(m0, m0size);
+    poestruct_t r0 = oepick_REG(p, m0, m0size);
     if (r0) {
       o0->uvalue0 = r0->action;
       o0->cvalue |= OPOPERAND_REGISTER0;
@@ -425,7 +433,7 @@ static unknown_t oedo_register(handle_t p, handle_t e, unknown_t o, unknown_t m)
         o0->cvalue |= OCOPERAND_IVALUE1;
         m0 = NULL;
       } else {
-        poestruct_t r1 = oepick_REG(m0, USE_STRLEN);
+        poestruct_t r1 = oepick_REG(p, m0, USE_STRLEN);
         if (r1) {
           o0->uvalue1 = r1->action;
           o0->cvalue |= OPOPERAND_REGISTER1;
@@ -518,7 +526,7 @@ static unknown_t oedo_value(handle_t p, handle_t e, unknown_t o, unknown_t m) {
       oesplit(e, m0, USE_STRLEN, &m1, &m2, &m3, &m4);
 //printf("++%s+%s+%s++", CAST(char*, m1), CAST(char*, m2), CAST(char*, m3));
 
-      poestruct_t r1 = oepick_REG(m1, USE_STRLEN);
+      poestruct_t r1 = oepick_REG(p, m1, USE_STRLEN);
       if (r1) {
         o0->uvalue1 = r1->action;
         o0->cvalue |= OPOPERAND_REGISTER1;
@@ -530,7 +538,7 @@ static unknown_t oedo_value(handle_t p, handle_t e, unknown_t o, unknown_t m) {
         m1 = NULL;
       }
 
-      poestruct_t r2 = oepick_REG(m2, USE_STRLEN);
+      poestruct_t r2 = oepick_REG(p, m2, USE_STRLEN);
       if (r2) {
         o0->uvalue2 = r2->action;
         o0->cvalue |= OPOPERAND_REGISTER2;
@@ -542,7 +550,7 @@ static unknown_t oedo_value(handle_t p, handle_t e, unknown_t o, unknown_t m) {
         m2 = NULL;
       }
 
-      poestruct_t r3 = oepick_REG(m3, USE_STRLEN);
+      poestruct_t r3 = oepick_REG(p, m3, USE_STRLEN);
       if (r3) {
         o0->uvalue3 = r3->action;
         o0->cvalue |= OPOPERAND_REGISTER3;
