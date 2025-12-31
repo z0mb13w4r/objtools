@@ -384,8 +384,8 @@ uint64_t oehexb(unknown_t p, const size_t size) {
   return hexb(p, size);
 }
 
-static unknown_t oedo_absolute(handle_t p, unknown_t o, unknown_t m) {
-  if (isocexamine(p) && o && m) {
+static unknown_t oedo_absolute(handle_t e, unknown_t o, unknown_t m) {
+  if (isocexamine(e) && o && m) {
     char *m0 = CAST(char*, m);
     pocoperand_t o0 = CAST(pocoperand_t, o);
 
@@ -400,8 +400,8 @@ static unknown_t oedo_absolute(handle_t p, unknown_t o, unknown_t m) {
   return NULL;
 }
 
-static unknown_t oedo_register(handle_t p, unknown_t o, unknown_t m) {
-  if (isocexamine(p) && o && m) {
+static unknown_t oedo_register(handle_t e, unknown_t o, unknown_t m) {
+  if (isocexamine(e) && o && m) {
     char *m0 = CAST(char*, m);
     pocoperand_t o0 = CAST(pocoperand_t, o);
 
@@ -462,8 +462,8 @@ static unknown_t oedo_register(handle_t p, unknown_t o, unknown_t m) {
   return NULL;
 }
 
-static unknown_t oedo_segment(handle_t p, unknown_t o, unknown_t m) {
-  if (isocexamine(p) && o && m) {
+static unknown_t oedo_segment(handle_t e, unknown_t o, unknown_t m) {
+  if (isocexamine(e) && o && m) {
     char *m0 = CAST(char*, m);
     pocoperand_t o0 = CAST(pocoperand_t, o);
     size_t m0size = xstrlen(m0);
@@ -489,8 +489,8 @@ static unknown_t oedo_segment(handle_t p, unknown_t o, unknown_t m) {
   return NULL;
 }
 
-static unknown_t oedo_value(handle_t p, unknown_t o, unknown_t m) {
-  if (isocexamine(p) && o && m) {
+static unknown_t oedo_value(handle_t e, unknown_t o, unknown_t m) {
+  if (isocexamine(e) && o && m) {
     char *m0 = CAST(char*, m);
     pocoperand_t o0 = CAST(pocoperand_t, o);
 
@@ -515,7 +515,7 @@ static unknown_t oedo_value(handle_t p, unknown_t o, unknown_t m) {
       m0size = xstrlen(m0);
 
       unknown_t m1 = NULL, m2 = NULL, m3 = NULL, m4 = NULL;
-      oesplit(p, m0, USE_STRLEN, &m1, &m2, &m3, &m4);
+      oesplit(e, m0, USE_STRLEN, &m1, &m2, &m3, &m4);
 //printf("++%s+%s+%s++", CAST(char*, m1), CAST(char*, m2), CAST(char*, m3));
 
       poestruct_t r1 = oepick_REG(m1, USE_STRLEN);
