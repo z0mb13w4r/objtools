@@ -659,6 +659,8 @@ static oestruct_t oeINSTRUCTIONS_ARM[] = {
 };
 
 static oestruct_t oeREGISTERS_ARM[] = {
+  OCSTRUCT("sp",        OCREGARM_SP),
+
   OCSTRUCT("r0",        OCREGARM_R0),
   OCSTRUCT("r1",        OCREGARM_R1),
   OCSTRUCT("r2",        OCREGARM_R2),
@@ -883,6 +885,8 @@ convert_t oeREGISTERNAMES_ARM[] = {
   {"X26",               OCREGARM_X26},
   {"X27",               OCREGARM_X27},
   {"X28",               OCREGARM_X28},
+  {"X29",               OCREGARM_X29},
+  {"X30",               OCREGARM_X30},
   {"X31",               OCREGARM_X31},
 
   {0, 0}
