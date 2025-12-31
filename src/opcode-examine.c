@@ -619,17 +619,17 @@ static unknown_t oeinsert_mnemonic(handle_t p, unknown_t q, unknown_t m) {
   return NULL;
 }
 
-static unknown_t oeinsert_operand(handle_t p, unknown_t q, unknown_t m) {
-  if (isocexamine(p) && q && m) {
+static unknown_t oeinsert_operand(handle_t e, unknown_t q, unknown_t m) {
+  if (isocexamine(e) && q && m) {
     pocoperand_t o0 = xmalloc(sizeof(ocoperand_t));
     if (o0) {
       char *m0 = CAST(char *, m);
       xstrncpy(o0->data, m0, sizeof(o0->data));
 
-      m0 = oedo_absolute(p, o0, m0);
-      m0 = oedo_segment(p, o0, m0);
-      m0 = oedo_register(p, o0, m0);
-      m0 = oedo_value(p, o0, m0);
+      m0 = oedo_absolute(e, o0, m0);
+      m0 = oedo_segment(e, o0, m0);
+      m0 = oedo_register(e, o0, m0);
+      m0 = oedo_value(e, o0, m0);
     }
 
     return o0;
