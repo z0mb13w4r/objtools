@@ -786,7 +786,14 @@ static const char* _ecget_name32byaddr0(const pbuffer_t p, const int vaddr, uint
               name = ecget_namebyoffset(p, sh->sh_link, st->st_name);
               break;
             }
+          } else if (STT_NOTYPE == ELF_ST_TYPE(st->st_info) && STB_GLOBAL == ELF_ST_BIND(st->st_info)) {
+            if (st->st_value == vaddr) {
+//printf("+++%x+++", vaddr);
+              name = ecget_namebyoffset(p, sh->sh_link, st->st_name);
+              break;
+            }
           }
+
           f = fnext(f);
         }
       }
@@ -903,7 +910,7 @@ static const char* _ecget_name64byaddr0(const pbuffer_t p, const int vaddr, uint
       for (size_t j = 0; j < cnt; ++j) {
         Elf64_Sym *st = fget(f);
         if (st) {
-          if (ELF_ST_TYPE(st->st_info) != STT_SECTION && ELF_ST_TYPE(st->st_info) != STT_NOTYPE) {
+          if (STT_SECTION != ELF_ST_TYPE(st->st_info) && STT_NOTYPE != ELF_ST_TYPE(st->st_info)) {
             if (offset) {
               if (st->st_value <= vaddr) {
                 uint64_t offset0 = vaddr - st->st_value;
@@ -917,7 +924,14 @@ static const char* _ecget_name64byaddr0(const pbuffer_t p, const int vaddr, uint
               name = ecget_namebyoffset(p, sh->sh_link, st->st_name);
               break;
             }
+          } else if (STT_NOTYPE == ELF_ST_TYPE(st->st_info) && STB_GLOBAL == ELF_ST_BIND(st->st_info)) {
+            if (st->st_value == vaddr) {
+//printf("+++%x+++", vaddr);
+              name = ecget_namebyoffset(p, sh->sh_link, st->st_name);
+              break;
+            }
           }
+
           f = fnext(f);
         }
       }
