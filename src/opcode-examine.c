@@ -227,7 +227,9 @@ size_t oeskipdec(unknown_t p, const size_t size) {
   if (p && 0 != size) {
     puchar_t p0 = CAST(puchar_t, p);
 
-    if (size >= 3 && '$' == p0[0] && '0' == p0[1] && 'x' == p0[2]) {
+    if (size >= 3 && '#' == p0[0] && '0' == p0[1] && 'x' == p0[2]) {
+      return 0;
+    } else if (size >= 3 && '$' == p0[0] && '0' == p0[1] && 'x' == p0[2]) {
       return 0;
     } else if (size >= 2 && '-' == p0[0] && ' ' == p0[1]) {
       return 2;
@@ -239,6 +241,8 @@ size_t oeskipdec(unknown_t p, const size_t size) {
       return 1;
     } else if (size >= 1 && '$' == p0[0]) {
       return 1;
+    } else if (size >= 1 && '#' == p0[0]) {
+      return 1;
     }
   }
 
@@ -249,7 +253,9 @@ size_t oeskiphex(unknown_t p, const size_t size) {
   if (p && 0 != size) {
     puchar_t p0 = CAST(puchar_t, p);
 
-    if (size >= 3 && '$' == p0[0] && '0' == p0[1] && 'x' == p0[2]) {
+    if (size >= 3 && '#' == p0[0] && '0' == p0[1] && 'x' == p0[2]) {
+      return 3;
+    } else if (size >= 3 && '$' == p0[0] && '0' == p0[1] && 'x' == p0[2]) {
       return 3;
     } else if (size >= 4 && '-' == p0[0] && ' ' == p0[1] && '0' == p0[2] && 'x' == p0[3]) {
       return 4;
