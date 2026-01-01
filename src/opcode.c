@@ -954,7 +954,7 @@ bool_t ocget_symbol(handle_t p, uint64_t vaddr, char **name,
                      uint64_t *nline, uint64_t *ncolumn, uint64_t *discriminator, char **source, char **sourcecode,
                      uint64_t *laddr, uint64_t *haddr, uint64_t *offset) {
   bool_t issp = FALSE;
-  if (isopcode(p) && name && 0 != vaddr) {
+  if (isopcode(p) && name) {
     pocdebug_t d0 = oeseebyaddr(p, vaddr, OPENGINE_DEBUG);
     if (isodebug(d0)) {
       if (name && MODE_ISANY(d0->role, OPDEBUG_NAME))      *name = d0->name;
