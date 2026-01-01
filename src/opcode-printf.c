@@ -413,10 +413,16 @@ int opcode_printf_detail(handle_t p, const uint64_t vaddr, unknown_t mnemonic, u
     pocexamine_t oe = oecreate(p, vaddr, mnemonic, operands);
     pocmnemonic_t m = oeget(oe, OECODE_MNEMONIC);
     pocoperand_t o1 = oeget(oe, OECODE_OPERAND1);
+    pocoperand_t o2 = oeget(oe, OECODE_OPERAND2);
+    pocoperand_t o3 = oeget(oe, OECODE_OPERAND3);
     popcode_t    oc = ocget(p, OPCODE_THIS);
 
-    const bool_t isok = m && o1 && isused(oegetADDRLOOKUP(p), OCINSN_MASK(m->cvalue)) &&
-      (MODE_ISLOCKED8(OCOPERAND_IVALUE0, o1->cvalue) || MODE_ISLOCKED8(OCOPERAND_UVALUE0, o1->cvalue));
+    const bool_t isok = m && isused(oegetADDRLOOKUP(p), OCINSN_MASK(m->cvalue)) &&
+      (
+        (o1 && (MODE_ISLOCKED8(OCOPERAND_IVALUE0, o1->cvalue) || MODE_ISLOCKED8(OCOPERAND_UVALUE0, o1->cvalue))) ||
+        (o2 && (MODE_ISLOCKED8(OCOPERAND_IVALUE0, o2->cvalue) || MODE_ISLOCKED8(OCOPERAND_UVALUE0, o2->cvalue))) ||
+        (o3 && (MODE_ISLOCKED8(OCOPERAND_IVALUE0, o3->cvalue) || MODE_ISLOCKED8(OCOPERAND_UVALUE0, o3->cvalue)))
+      );
 
     if (MODE_ISNOT(oc->action, OPTPROGRAM_NO_ADDRESSES) || !isok) {
       n += printf_text(mnemonic, USE_LT | USE_SPACE);
@@ -428,7 +434,14 @@ int opcode_printf_detail(handle_t p, const uint64_t vaddr, unknown_t mnemonic, u
     }
 
     if (m && o1 && (m->uvalue || isok)) {
-      uint64_t uvalue = m->uvalue ? m->uvalue : o1->uvalue0;
+      uint64_t uvalue = m->uvalue;
+      if (o3 && (OCOPERAND_UVALUE0 == o3->cvalue)) {
+        uvalue = o3->uvalue0;
+      } else if (o2 && (OCOPERAND_UVALUE0 == o2->cvalue)) {
+        uvalue = o2->uvalue0;
+      } else if (o1 && (OCOPERAND_UVALUE0 == o1->cvalue)) {
+        uvalue = o1->uvalue0;
+      }
       ocget_symbol(p, uvalue, &name, NULL, NULL, NULL, NULL, NULL, NULL, NULL, &offset);
 
       if (name && name[0]) {
