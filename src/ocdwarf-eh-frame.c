@@ -38,29 +38,23 @@ static pick_t REGUSE32[] = {
   PICK_END
 };
 
-//  {"rax",                                0},
-//  {"rdx",                                1},
-//  {"rcx",                                2},
-//  {"rbx",                                3},
+#define REG_RAX                        (0)
+#define REG_RDX                        (1)
+#define REG_RCX                        (2)
 #define REG_RBX                        (3)
-//  {"rsi",                                4},
-//  {"rdi",                                5},
-//  {"rbp",                                6},
+#define REG_RSI                        (4)
+#define	REG_RDI                        (5)
 #define REG_RBP                        (6)
-//  {"rsp",                                7},
-//  {"r8",                                 8},
-//  {"r9",                                 9},
-//  {"r10",                                10},
-//  {"r11",                                11},
-//  {"r12",                                12},
+#define REG_RSP                        (7)
+#define REG_R8                         (8)
+#define REG_R9                         (9)
+#define REG_R10                        (10)
+#define REG_R11                        (11)
 #define REG_R12                        (12)
-//  {"r13",                                13},
 #define REG_R13                        (13)
-//  {"r14",                                14},
 #define REG_R14                        (14)
-//  {"r15",                                15},
 #define REG_R15                        (15)
-//  {"rip",                                16},
+#define REG_RIP                        (16)
 
 static pick_t REGUSE64[] = {
   REG_RBX,
@@ -71,6 +65,37 @@ static pick_t REGUSE64[] = {
   REG_R15,
   PICK_END
 };
+
+#define REG_X19                        (19)
+#define REG_X20                        (20)
+#define REG_X21                        (21)
+#define REG_X22                        (22)
+#define REG_X23                        (23)
+#define REG_X24                        (24)
+#define REG_X29                        (29)
+
+static pick_t REGUSEARM64[] = {
+  REG_X19,
+  REG_X20,
+  REG_X21,
+  REG_X22,
+  REG_X23,
+  REG_X24,
+  REG_X29,
+  PICK_END
+};
+
+static ppick_t get_REGUSE(handle_t p) {
+  if (EM_AARCH64 == ocget_machine(p)) {
+    return REGUSEARM64;
+  } else if (ocisELF32(p)) {
+    return REGUSE32;
+  } else if (ocisELF64(p)) {
+    return REGUSE64;
+  }
+
+  return NULL;
+}
 
 static int ocdwarf_eh_frame_cies(handle_t p, Dwarf_Cie *cie_data, Dwarf_Signed cie_element_count, Dwarf_Error *e) {
   int x = DW_DLV_ERROR;
@@ -428,7 +453,7 @@ static int ocdwarf_eh_frame_fdes(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed f
         }
 
         if (DW_EXPR_EXPRESSION != value_type && DW_EXPR_VAL_EXPRESSION != value_type) {
-          if ((ocisELF32(p) && isused(REGUSE32, reg)) || (ocisELF64(p) && isused(REGUSE64, reg))) {
+          if (isused(get_REGUSE(p), reg)) {
             isneeded[reg] = TRUE;
           }
         }
@@ -458,7 +483,7 @@ static int ocdwarf_eh_frame_fdes(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed f
             return OCDWARF_ERRCODE(x, n0);
           } else if (IS_DLV_NO_ENTRY(x) || row_pc != curr_pc || (0 == value_type && 0 == offset)) continue;
 
-          if ((ocisELF32(p) && isused(REGUSE32, curr_reg)) || (ocisELF64(p) && isused(REGUSE64, curr_reg))) {
+          if (isused(get_REGUSE(p), curr_reg)) {
             isneeded[curr_reg] = TRUE;
           }
         }
@@ -468,7 +493,15 @@ static int ocdwarf_eh_frame_fdes(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed f
         n0 += printf_text("LOC", USE_LT | USE_TAB | SET_PAD(MAXSIZENN));
         n0 += printf_text("CFA", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
 
-        if (ocisELF32(p)) {
+        if (EM_AARCH64 == ocget_machine(p)) {
+          if (isneeded[REG_X19])   n0 += printf_text("x19", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+          if (isneeded[REG_X20])   n0 += printf_text("x20", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+          if (isneeded[REG_X21])   n0 += printf_text("x21", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+          if (isneeded[REG_X22])   n0 += printf_text("x22", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+          if (isneeded[REG_X23])   n0 += printf_text("x23", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+          if (isneeded[REG_X24])   n0 += printf_text("x24", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+          if (isneeded[REG_X29])   n0 += printf_text("x29", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+        } else if (ocisELF32(p)) {
           if (isneeded[REG_EAX])   n0 += printf_text("eax", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
           if (isneeded[REG_ECX])   n0 += printf_text("ecx", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
           if (isneeded[REG_EDX])   n0 += printf_text("edx", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
