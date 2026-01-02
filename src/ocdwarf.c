@@ -88,7 +88,10 @@ int ocdwarf_open(handle_t p, handle_t o) {
 
       int x = dwarf_init_b(my_init_fd, DW_GROUPNUMBER_ANY, 0, 0, &ws->dbg, &ws->err);
       if (IS_DLV_ANY_ERROR(x)) {
+#ifdef OPCODE_DWARF_DEBUGX
         printf_x("Giving up, cannot do DWARF processing '%s'", oc->inpname0);
+#endif
+        return ECODE_DWARF;
       }
     }
 
