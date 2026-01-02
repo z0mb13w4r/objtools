@@ -218,6 +218,8 @@ int ocdwarf_printf_REG(handle_t p, const uint32_t v, const imode_t mode) {
       n += ocdwarf_printf_pick(p, ecREGISTERS_i386, v, mode);
     } else if (EM_X86_64 == e) {
       n += ocdwarf_printf_pick(p, ecREGISTERS_x86_64, v, mode);
+    } else if (EM_AARCH64 == e) {
+      n += ocdwarf_printf_pick(p, ecREGISTERS_ARM64, v, mode);
     }
   }
 
