@@ -636,8 +636,15 @@ int ocdwarf_eh_frame(handle_t p, handle_t s, handle_t d) {
     Dwarf_Signed fde_element_count = 0;
     x = dwarf_get_fde_list_eh(ocget(p, OPCODE_DWARF_DEBUG), &cie_data, &cie_element_count,
                      &fde_data, &fde_element_count, ocget(p, OPCODE_DWARF_ERROR));
-    if (IS_DLV_NO_ENTRY(x)) return n;
-    else if (IS_DLV_ERROR(x)) {
+    if (IS_DLV_NO_ENTRY(x)) {
+      if (MODE_ISNOT(oc->ocdump, OPTDWARF_ENHANCED)) {
+        n += printf_nice(0x0, USE_LHEX32);
+        n += printf_text("ZERO terminator", USE_LT | USE_SPACE);
+        n += printf_eol();
+      }
+
+      return n;
+    } else if (IS_DLV_ERROR(x)) {
 #ifdef OPCODE_DWARF_DEBUGX
       printf_e("dwarf_get_fde_list_eh failed! - %d", x);
 #endif
