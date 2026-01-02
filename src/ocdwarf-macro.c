@@ -90,23 +90,29 @@ static int ocdwarf_debug_macro_crude0(handle_t p, handle_t s, handle_t d, handle
 //printf("version = %ld\n", version);
     if (4 != version && 5 != version) {
       printf_e("incorrect dwarf version expecting 4 or 5 but found %d", version);
+      return 0;
     }
 
     uint64_t flags = fgetu8(f);
-//printf("flags = %ld\n", flags);
+//printf("flags = %lx\n", flags);
 
-    uint64_t offset_size = (1 & flags) ? 8 : 4;
+    uint64_t offset_size = (0x1 & flags) ? 8 : 4;
 //printf("offset_size = %ld\n", offset_size);
 
     uint64_t offset_line = 0;
-    if (2 & flags) {
-      offset_line = 4 == offset_size ? fgetu32(f) : fgetu64(f);
+    if (0x2 & flags) {
+      offset_line = 0 == (0x1 & flags) ? fgetu32(f) : fgetu64(f);
 //printf("offset into .debug_line: 0x%lx\n", offset_line);
     }
 
-    for ( ; ; ) {
+    if (0x4 & flags) {
+      printf_e("not supported flags %lx", flags);
+    }
+
+    while (!fiseof(f)) {
       uint64_t op = fgetu8(f);
-      if (0 == op) break;
+//printf("opcode = %lx\n", op);
+      if (0x0 == op) break;
 
       n += ocdwarf_printf_MACRO(p, op, USE_NONE);
 
