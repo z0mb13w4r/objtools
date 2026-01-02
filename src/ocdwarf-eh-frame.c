@@ -73,6 +73,7 @@ static pick_t REGUSE64[] = {
 #define REG_X23                        (23)
 #define REG_X24                        (24)
 #define REG_X29                        (29)
+#define REG_X30                        (30)
 
 static pick_t REGUSEARM64[] = {
   REG_X19,
@@ -82,6 +83,7 @@ static pick_t REGUSEARM64[] = {
   REG_X23,
   REG_X24,
   REG_X29,
+  REG_X30,
   PICK_END
 };
 
@@ -629,10 +631,11 @@ static int ocdwarf_eh_frame_fdes(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed f
             if (DW_EXPR_EXPRESSION == value_type || DW_EXPR_VAL_EXPRESSION == value_type) {
               n0 += printf_text("exp", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
             } else if (DW_EXPR_OFFSET == value_type || DW_EXPR_VAL_OFFSET == value_type) {
+//printf(" r(%d)", curr_reg);
               int n1 = 0;
               n1 += printf_text("c", USE_LT | USE_SPACE);
               n1 += printf_nice(offset, USE_DEC | USE_NOSPACE);
-              n0  += printf_pack(MAXSIZE - n1) + n0;
+              n0 += printf_pack(MAXSIZE - n1) + n0;
             }
           }
         }
