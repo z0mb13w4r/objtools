@@ -2,14 +2,14 @@
 
 PRGNAME=/usr/bin/objdump
 #PRGNAME=samples/binutils-2.45/objdump
-PRGNAME=/usr/bin/arm-linux-gnueabihf-objdump
+#PRGNAME=/usr/bin/arm-linux-gnueabihf-objdump
 #PRGNAME=/usr/bin/aarch64-linux-gnu-objdump
 
 NAME=samples/exampled-32
 NAME=samples/exampled-64
 #NAME=samples/exampled-32.o
-#NAME=samples/exampled-64.o
-NAME=samples/exampled-arm32
+NAME=samples/exampled-64.o
+#NAME=samples/exampled-arm32
 #NAME=samples/exampled-arm64
 #NAME=samples/exampled-arm32.o
 #NAME=samples/exampled-arm64.o
@@ -150,7 +150,7 @@ fi
 
 if [ -e "${OUT1}" ] && [ -e "${OUT2}" ]; then
   meld ${OUT1} ${OUT2}
-  diff ${OUT1} ${OUT2}
+#  diff ${OUT1} ${OUT2}
 #  grep -nw -A 1 'ERROR' ${OUT1}
 #  grep -nw 'ERROR' ${OUT1} | wc -l
 #  grep -nw '<unknown:' ${OUT1}
