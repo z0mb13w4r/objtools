@@ -1,10 +1,10 @@
 #!/bin/bash
 
 NAME=samples/exampled-32
-NAME=samples/exampled-64
+#NAME=samples/exampled-64
 #NAME=samples/exampled-32.o
 #NAME=samples/exampled-64.o
-NAME=samples/exampled-arm32
+#NAME=samples/exampled-arm32
 #NAME=samples/exampled-arm64
 #NAME=samples/exampled-arm32.o
 #NAME=samples/exampled-arm64.o
@@ -28,6 +28,12 @@ NAME=samples/exampled-arm32
 #NAME=samples/binutils-2.44-arm64/arm-linux-gnueabi-strings
 #NAME=samples/binutils-2.44-arm64/arm-linux-gnueabi-addr2line
 #NAME=samples/binutils-2.44-arm64/libopcodes-2.44-armel.so
+#NAME=samples/binutils-2.45-risc-v64/riscv64-unknown-elf-strip
+#NAME=samples/binutils-2.45-risc-v64/riscv64-unknown-elf-objcopy
+#NAME=samples/binutils-2.45-risc-v64/riscv64-unknown-elf-objdump
+#NAME=samples/binutils-2.45-risc-v64/riscv64-unknown-elf-readelf
+#NAME=samples/binutils-2.45-risc-v64/riscv64-unknown-elf-strings
+#NAME=samples/binutils-2.45-risc-v64/riscv64-unknown-elf-addr2line
 
 PICK1='-a'
 #PICK1='-a -D'
@@ -40,15 +46,15 @@ PICK1='-a'
 #PICK1='-V'
 #PICK1='-g'
 #PICK1='-A'
-PICK1='-h -u'
+#PICK1='-h -u'
 
 #PICK1='-l'
 #PICK1='-r -V'
 #PICK1='-I'
 #PICK1='-m .text'
 
-#PICK1='--debug-dump=macro'
-#PICK2='--print-macinfo'
+PICK1='--debug-dump=macro'
+PICK2='--print-macinfo'
 #PICK1='--debug-dump=info'
 #PICK2='--print-info'
 #PICK1='--debug-dump=aranges'
@@ -70,7 +76,7 @@ PICK1='-h -u'
 #PICK2='--print-loc'
 
 PRGNAME=/usr/bin/readelf
-#PRGNAME=samples/binutils-2.45/readelf
+PRGNAME=samples/binutils-2.45/readelf
 PRGNAMENG=./readelf-ng
 DWARFDUMP=./dwarfdump
 OUT1=test-1.out
