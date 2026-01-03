@@ -16,17 +16,25 @@ handle_t ecapply_relocs(handle_t p, handle_t q, const int index) {
             for (size_t j = 0; j < cnt; ++j, ++r) {
 //printf("offset = 0x%lx\n", r->r_offset);
               if (isused(get_RELTYPESHEX8(q), ELF64_R_TYPE(r->r_info))) {
+                if (r->r_addend) {
 //printf("shex8 0x%lx\n", r->r_addend);
-                fsetu8byoffset(p, r->r_offset, r->r_addend);
+                  fsetu8byoffset(p, r->r_offset, r->r_addend);
+                }
               } else if (isused(get_RELTYPESHEX16(q), ELF64_R_TYPE(r->r_info))) {
+                if (r->r_addend) {
 //printf("shex16 0x%lx\n", r->r_addend);
-                fsetu16byoffset(p, r->r_offset, r->r_addend);
+                  fsetu16byoffset(p, r->r_offset, r->r_addend);
+                }
               } else if (isused(get_RELTYPESHEX32(q), ELF64_R_TYPE(r->r_info))) {
+                if (r->r_addend) {
 //printf("shex32 0x%lx\n", r->r_addend);
-                fsetu32byoffset(p, r->r_offset, r->r_addend);
+                  fsetu32byoffset(p, r->r_offset, r->r_addend);
+                }
               } else if (isused(get_RELTYPESHEX64(q), ELF64_R_TYPE(r->r_info))) {
+                if (r->r_addend) {
 //printf("shex64 0x%lx\n", r->r_addend);
-                fsetu64byoffset(p, r->r_offset, r->r_addend);
+                  fsetu64byoffset(p, r->r_offset, r->r_addend);
+                }
               }
             }
           }

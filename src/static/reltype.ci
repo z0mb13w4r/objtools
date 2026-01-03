@@ -306,6 +306,7 @@ static pick_t zRELTYPE64SHEX32[] = {
 };
 
 static pick_t zRELTYPE64SHEX32ARM[] = {
+  R_AARCH64_ABS32,
   R_AARCH64_GLOB_DAT,
   R_AARCH64_JUMP_SLOT,
   R_AARCH64_LD64_GOT_LO12_NC,
@@ -334,7 +335,6 @@ static pick_t zRELTYPE64SHEX64[] = {
 };
 
 static pick_t zRELTYPE64SHEX64ARM[] = {
-  R_AARCH64_ABS32,
   R_AARCH64_ABS64,
   PICK_END
 };
