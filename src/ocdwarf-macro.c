@@ -22,7 +22,7 @@ static const char* getname(handle_t p, const uint64_t offset, const uint64_t ind
     *dname = NULL;
     *fname = NULL;
 
-//printf("\n");
+//printf("[0]");
 //printf_sore(f, 32, USE_HEX | USE_EOL);
 //printf("offset = %ld\n", offset);
 //printf("index = %ld\n", index);
@@ -83,7 +83,7 @@ static int ocdwarf_debug_macro_crude0(handle_t p, handle_t s, handle_t d, handle
   if (isopcode(p) && (isopshdr(s) || isopshdrNN(s)) && isfind(f)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
 
-//printf("\n");
+//printf("[1]");
 //printf_sore(fget(f), 64, USE_HEX | USE_EOL);
 
     uint64_t version = fgetu16(f);
