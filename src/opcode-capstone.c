@@ -151,29 +151,48 @@ int capstone_raw1(handle_t p, handle_t s, unknown_t data, const size_t size, con
     popcode_t oc = ocget(p, OPCODE_THIS);
     puchar_t p0 = CAST(puchar_t, data);
     uint64_t caddr = vaddr;
-    size_t   caddrsize = 2;
-    for (size_t i = 0; i < size; i += caddrsize, p0 += caddrsize, caddr += caddrsize) {
-      if (ocuse_vaddr(p, caddr)) {
-        int n1 = 0;
-        int n2 = 0;
+    size_t   caddrsize = 4;
 
-        n2 += opcode_printf_source(p, caddr);
+    cs_option(oc->cs, CS_OPT_MODE, CS_MODE_THUMB);
 
-        if (MODE_ISNOT(oc->action, OPTPROGRAM_NO_ADDRESSES)) {
-          n2 += opcode_printf_LHEX(p, caddr, USE_COLON);
+    for (size_t k = 0; k < size; ) {
+      cs_insn *insn = NULL;
+      size_t count = cs_disasm(oc->cs, p0, caddrsize, caddr, 0, &insn);
+      if (count > 0) {
+        for (size_t i = 0; i < count; ++i) {
+          if (ocuse_vaddr(p, insn[i].address)) {
+            int n1 = 0;
+
+            n1 += opcode_printf_source(p, insn[i].address);
+
+            if (MODE_ISNOT(oc->action, OPTPROGRAM_NO_ADDRESSES)) {
+              n1 += opcode_printf_LHEX(p, insn[i].address, USE_COLON);
+            }
+
+            if (MODE_ISANY(oc->action, OPTPROGRAM_PREFIX_ADDR)) {
+              n1 += opcode_printf_prefix(p, insn[i].address);
+            } else if (MODE_ISNOT(oc->action, OPTPROGRAM_NO_SHOW_RAW_INSN)) {
+              n1 += printf_sore(insn[i].bytes, insn[i].size, USE_HEX | USE_SPACE);
+              n1 += printf_pack(42 - n1);
+            }
+
+            n += n1;
+            n += opcode_printf_detail(p, insn[i].address, insn[i].mnemonic, insn[i].op_str);
+            n += printf_eol();
+          }
+
+          k += insn[i].size;
+          p0 += insn[i].size,
+          caddr += insn[i].size;
         }
-
-        if (MODE_ISANY(oc->action, OPTPROGRAM_PREFIX_ADDR)) {
-          n2 += opcode_printf_prefix(p, caddr);
-        } else if (MODE_ISNOT(oc->action, OPTPROGRAM_NO_SHOW_RAW_INSN)) {
-          n2 += printf_sore(p0, caddrsize, USE_HEX | USE_SPACE);
-          n2 += printf_pack(42 - n2);
-        }
-
-        n2 += printf_eol();
-        n += n1 + n2;
+      } else {
+        k += caddrsize;
+        p0 += caddrsize,
+        caddr += caddrsize;
       }
     }
+
+    cs_option(oc->cs, CS_OPT_MODE, CS_MODE_ARM);
   }
 
   return n;
