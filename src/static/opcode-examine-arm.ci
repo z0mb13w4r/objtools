@@ -659,6 +659,8 @@ static oestruct_t oeINSTRUCTIONS_ARM[] = {
 };
 
 static oestruct_t oeREGISTERS_ARM[] = {
+  OCSTRUCT("lr",        OCREGARM_LR),
+  OCSTRUCT("pc",        OCREGARM_PC),
   OCSTRUCT("sp",        OCREGARM_SP),
 
   OCSTRUCT("r0",        OCREGARM_R0),
