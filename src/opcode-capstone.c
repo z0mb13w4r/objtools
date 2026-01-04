@@ -145,6 +145,16 @@ int capstone_raw0(handle_t p, handle_t s, unknown_t data, const size_t size, con
   return n;
 }
 
+int capstone_raw1(handle_t p, handle_t s, unknown_t data, const size_t size, const uint64_t vaddr) {
+  int n = 0;
+  if (data && isopcode(p) && ismodeNXXN(s, MODE_OCSHDRWRAP)) {
+    popcode_t oc = ocget(p, OPCODE_THIS);
+
+  }
+
+  return n;
+}
+
 int capstone_run(handle_t p, handle_t s) {
   int n = 0;
   if (isopcode(p) && isopshdr(s)) {
