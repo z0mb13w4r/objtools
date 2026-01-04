@@ -149,7 +149,31 @@ int capstone_raw1(handle_t p, handle_t s, unknown_t data, const size_t size, con
   int n = 0;
   if (data && isopcode(p) && ismodeNXXN(s, MODE_OCSHDRWRAP)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
+    puchar_t p0 = CAST(puchar_t, data);
+    uint64_t caddr = vaddr;
+    size_t   caddrsize = 2;
+    for (size_t i = 0; i < size; i += caddrsize, p0 += caddrsize, caddr += caddrsize) {
+      if (ocuse_vaddr(p, caddr)) {
+        int n1 = 0;
+        int n2 = 0;
 
+        n2 += opcode_printf_source(p, caddr);
+
+        if (MODE_ISNOT(oc->action, OPTPROGRAM_NO_ADDRESSES)) {
+          n2 += opcode_printf_LHEX(p, caddr, USE_COLON);
+        }
+
+        if (MODE_ISANY(oc->action, OPTPROGRAM_PREFIX_ADDR)) {
+          n2 += opcode_printf_prefix(p, caddr);
+        } else if (MODE_ISNOT(oc->action, OPTPROGRAM_NO_SHOW_RAW_INSN)) {
+          n2 += printf_sore(p0, caddrsize, USE_HEX | USE_SPACE);
+          n2 += printf_pack(42 - n2);
+        }
+
+        n2 += printf_eol();
+        n += n1 + n2;
+      }
+    }
   }
 
   return n;
