@@ -1169,7 +1169,7 @@ int ocdisassemble_raw(handle_t p, handle_t s, unknown_t data, const size_t size,
   if (isopcode(p) && ismodeNXXN(s, MODE_OCSHDRWRAP)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
     if (MODE_ISSET(oc->action, OPTPROGRAM_CAPSTONE) || isattached(p)) {
-      return capstone_raw(p, s, data, size, vaddr);
+      return capstone_raw0(p, s, data, size, vaddr);
     } else {
       return opcodelib_raw(p, s, data, size, vaddr);
     }

@@ -92,7 +92,7 @@ int capstone_close(handle_t p) {
   return ECODE_HANDLE;
 }
 
-int capstone_raw(handle_t p, handle_t s, unknown_t data, const size_t size, const uint64_t vaddr) {
+int capstone_raw0(handle_t p, handle_t s, unknown_t data, const size_t size, const uint64_t vaddr) {
   int n = 0;
   if (data && isopcode(p) && ismodeNXXN(s, MODE_OCSHDRWRAP)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
@@ -153,7 +153,7 @@ int capstone_run(handle_t p, handle_t s) {
 
     if (p0) {
       if (bfd_get_section_contents(ocget(p, OPCODE_BFD), ocget(s, MODE_OCSHDR), p0, 0, sz)) {
-        n += capstone_raw(p, s, p0, sz, ocget_vmaddress(s));
+        n += capstone_raw0(p, s, p0, sz, ocget_vmaddress(s));
       }
 
       xfree(p0);
@@ -161,7 +161,7 @@ int capstone_run(handle_t p, handle_t s) {
   } else if (isopcode(p) && ismodeNXXN(s, MODE_OCSHDRWRAP)) {
     const size_t sz = ocget_size(s);
     if (0 != sz) {
-      n += capstone_raw(p, s, getp(ocget(p, OPCODE_RAWDATA), ocget_offset(s), sz), sz, ocget_vmaddress(s));
+      n += capstone_raw0(p, s, getp(ocget(p, OPCODE_RAWDATA), ocget_offset(s), sz), sz, ocget_vmaddress(s));
     }
   }
 
