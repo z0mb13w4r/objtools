@@ -78,8 +78,9 @@ pconvert_t oegetREGISTERFLAGS(handle_t p) {
 pconvert_t oegetREGISTERNAMES(handle_t p) {
   switch (ocget_machine(p)) {
   case EM_ARM:
+    return oeREGISTERNAMES_ARM32;
   case EM_AARCH64:
-    return oeREGISTERNAMES_ARM;
+    return oeREGISTERNAMES_ARM64;
   default:
     break;
   }
@@ -158,8 +159,9 @@ static poestruct_t oepick_REG(handle_t p, unknown_t m, const size_t size) {
   } else if (m && size) {
     switch (ocget_machine(p)) {
     case EM_ARM:
+      return oepick(oeREGISTERS_ARM32, m, size);
     case EM_AARCH64:
-      return oepick(oeREGISTERS_ARM, m, size);
+      return oepick(oeREGISTERS_ARM64, m, size);
     default:
       break;
     }

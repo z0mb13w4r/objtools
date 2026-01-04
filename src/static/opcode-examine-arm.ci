@@ -658,10 +658,10 @@ static oestruct_t oeINSTRUCTIONS_ARM[] = {
   {NULL}
 };
 
-static oestruct_t oeREGISTERS_ARM[] = {
-  OCSTRUCT("lr",        OCREGARM_LR),
-  OCSTRUCT("pc",        OCREGARM_PC),
-  OCSTRUCT("sp",        OCREGARM_SP),
+static oestruct_t oeREGISTERS_ARM32[] = {
+  OCSTRUCT("lr",        OCREGARM_LR | OCREGISTER_32BIT),
+  OCSTRUCT("pc",        OCREGARM_PC | OCREGISTER_32BIT),
+  OCSTRUCT("sp",        OCREGARM_SP | OCREGISTER_32BIT),
 
   OCSTRUCT("r0",        OCREGARM_R0),
   OCSTRUCT("r1",        OCREGARM_R1),
@@ -679,6 +679,14 @@ static oestruct_t oeREGISTERS_ARM[] = {
   OCSTRUCT("r13",       OCREGARM_R13),
   OCSTRUCT("r14",       OCREGARM_R14),
   OCSTRUCT("r15",       OCREGARM_R15),
+
+  {NULL}
+};
+
+static oestruct_t oeREGISTERS_ARM64[] = {
+  OCSTRUCT("lr",        OCREGARM_LR | OCREGISTER_64BIT),
+  OCSTRUCT("pc",        OCREGARM_PC | OCREGISTER_64BIT),
+  OCSTRUCT("sp",        OCREGARM_SP | OCREGISTER_64BIT),
 
   OCSTRUCT("w0",        OCREGARM_W0),
   OCSTRUCT("w1",        OCREGARM_W1),
@@ -869,11 +877,11 @@ convert_t oeREGISTERFLAGS_ARM[] = {
   {0, 0}
 };
 
-convert_t oeREGISTERNAMES_ARM[] = {
-  {"FP",                OCREGARM_FP},
-  {"LR",                OCREGARM_LR},
-  {"PC",                OCREGARM_PC},
-  {"SP",                OCREGARM_SP},
+convert_t oeREGISTERNAMES_ARM32[] = {
+  {"FP",                OCREGARM_FP | OCREGISTER_32BIT},
+  {"LR",                OCREGARM_LR | OCREGISTER_32BIT},
+  {"PC",                OCREGARM_PC | OCREGISTER_32BIT},
+  {"SP",                OCREGARM_SP | OCREGISTER_32BIT},
   {"CPSR",              OCREGARM_CPSR},
 
   {"R0",                OCREGARM_R0},
@@ -889,6 +897,16 @@ convert_t oeREGISTERNAMES_ARM[] = {
   {"R10",               OCREGARM_R10},
   {"R11",               OCREGARM_R11},
   {"R12",               OCREGARM_R12},
+
+  {0, 0}
+};
+
+convert_t oeREGISTERNAMES_ARM64[] = {
+  {"FP",                OCREGARM_FP | OCREGISTER_64BIT},
+  {"LR",                OCREGARM_LR | OCREGISTER_64BIT},
+  {"PC",                OCREGARM_PC | OCREGISTER_64BIT},
+  {"SP",                OCREGARM_SP | OCREGISTER_64BIT},
+  {"CPSR",              OCREGARM_CPSR},
 
   {"W0",                OCREGARM_W0},
   {"W1",                OCREGARM_W1},
