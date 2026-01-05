@@ -1246,6 +1246,7 @@ int ecmake_sectionthumbs(const pbuffer_t p, pthumb_t thumbs, const size_t maxthu
             if (thumbs && k < maxthumbs) {
               thumbs[k].vaddr = s->st_value;
               thumbs[k].value = name[1];
+              ++k;
             }
           }
 
