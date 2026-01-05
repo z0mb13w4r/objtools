@@ -29,6 +29,11 @@
 
 typedef unsigned short version_t, *pversion_t;
 
+typedef struct pthumb_s {
+  uint64_t vaddr;
+  uchar_t  value;
+} thumb_t, *pthumb_t;
+
 bool_t isTBSS32(Elf32_Shdr *s, Elf32_Phdr *p);
 bool_t isTBSS64(Elf64_Shdr *s, Elf64_Phdr *p);
 
@@ -126,6 +131,8 @@ unknown_t _get64byshdr(const pbuffer_t p, Elf64_Shdr *shdr); // replace by fgetX
 handle_t fgetbyshdr(const pbuffer_t p, unknown_t shdr);
 handle_t fget32byshdr(const pbuffer_t p, Elf32_Shdr *shdr);
 handle_t fget64byshdr(const pbuffer_t p, Elf64_Shdr *shdr);
+
+int ecmake_sectionthumbs(const pbuffer_t p, pthumb_t thumbs, const size_t maxthumbs);
 
 int ecmake_versionnames32(const pbuffer_t p, pversion_t vnames, const size_t maxvnames);
 int ecmake_versionnames64(const pbuffer_t p, pversion_t vnames, const size_t maxvnames);

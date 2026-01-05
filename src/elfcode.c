@@ -1230,6 +1230,36 @@ handle_t fget64byshdr(const pbuffer_t p, Elf64_Shdr *shdr) {
   return NULL;
 }
 
+int ecmake_sectionthumbs(const pbuffer_t p, pthumb_t thumbs, const size_t maxthumbs) {
+  Elf32_Shdr* shdr = ecget_shdr32byname(p, ".symtab");
+  if (shdr && SHT_SYMTAB == shdr->sh_type) {
+    size_t cnt = shdr->sh_size / shdr->sh_entsize;
+
+    handle_t f = fget32byshdr(p, shdr);
+    if (f) {
+      int k = 0;
+      for (size_t j = 0; j < cnt; ++j) {
+        Elf32_Sym *s = fget(f);
+        if (s) {
+          const char* name = ecget_namebyoffset(p, shdr->sh_link, s->st_name);
+          if (name && '$' == name[0] && 0 == name[2]) {
+            if (thumbs && k < maxthumbs) {
+              thumbs[k].vaddr = s->st_value;
+              thumbs[k].value = name[1];
+            }
+          }
+
+          f = fnext(f);
+        }
+      }
+
+      return k;
+    }
+  }
+
+  return 0;
+}
+
 int ecmake_versionnames32(const pbuffer_t p, pversion_t vnames, const size_t maxvnames) {
   Elf32_Shdr *vh = ecget_shdr32bytype(p, SHT_GNU_verneed);
   if (vh) {
