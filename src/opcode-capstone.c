@@ -149,6 +149,7 @@ int capstone_raw0(handle_t p, handle_t s, unknown_t data, const size_t size, con
 static uchar_t capstone_check(pthumb_t thumbs, const size_t maxthumbs, const uint64_t vaddr) {
   if (thumbs && maxthumbs) {
     pthumb_t p0 = thumbs;
+
     for (size_t i = 0; i < maxthumbs; ++i, ++p0) {
       if (vaddr == p0->vaddr) {
 //printf("%lx:%c\n", p0->vaddr, p0->value);
@@ -164,7 +165,7 @@ int capstone_raw1(handle_t p, handle_t s, unknown_t data, const size_t size, con
   int n = 0;
   if (data && isopcode(p) && ismodeNXXN(s, MODE_OCSHDRWRAP)) {
     MALLOCA(thumb_t, thumbs, 1024);
-    ecmake_sectionthumbs(ocget(p, OPCODE_RAWDATA), thumbs, NELEMENTS(thumbs));
+    size_t siz = ecmake_sectionthumbs(ocget(p, OPCODE_RAWDATA), thumbs, NELEMENTS(thumbs));
 
     popcode_t oc = ocget(p, OPCODE_THIS);
     puchar_t p0 = CAST(puchar_t, data);
@@ -173,26 +174,30 @@ int capstone_raw1(handle_t p, handle_t s, unknown_t data, const size_t size, con
 
     char prev_state = 'a';
     for (size_t k = 0; k < size; ) {
-      char curr_state = capstone_check(thumbs, NELEMENTS(thumbs), caddr);
+//printf("<--- %lx\n", caddr);
+      char curr_state = capstone_check(thumbs, siz, caddr);
       curr_state = curr_state ? curr_state : prev_state;
       prev_state = curr_state;
 
       if ('d' == curr_state) {
-        int n1 = 0;
-        if (MODE_ISNOT(oc->action, OPTPROGRAM_NO_ADDRESSES)) {
-          n1 += opcode_printf_LHEX(p, caddr, USE_COLON);
-        }
+        if (ocuse_vaddr(p, caddr)) {
+          int n1 = 0;
+          if (MODE_ISNOT(oc->action, OPTPROGRAM_NO_ADDRESSES)) {
+            n1 += opcode_printf_LHEX(p, caddr, USE_COLON);
+          }
 
-        if (MODE_ISANY(oc->action, OPTPROGRAM_PREFIX_ADDR)) {
-          n1 += opcode_printf_prefix(p, caddr);
-        } else if (MODE_ISNOT(oc->action, OPTPROGRAM_NO_SHOW_RAW_INSN)) {
-          n1 += printf_sore(p0, caddrsize, USE_HEX | USE_SPACE);
-          n1 += printf_pack(42 - n1);
-        }
+          if (MODE_ISANY(oc->action, OPTPROGRAM_PREFIX_ADDR)) {
+            n1 += opcode_printf_prefix(p, caddr);
+          } else if (MODE_ISNOT(oc->action, OPTPROGRAM_NO_SHOW_RAW_INSN)) {
+            n1 += printf_sore(p0, caddrsize, USE_HEX | USE_SPACE);
+            n1 += printf_pack(42 - n1);
+          }
 
-        n += n1;
-        n += printf_text(".word", USE_LT | USE_SPACE);
-        n += printf_eol();
+          n += n1;
+          n += printf_text(".word", USE_LT | USE_SPACE);
+          n += printf_nice(ocmake_u32(p, p0[0], p0[1], p0[2], p0[3]), USE_FHEX32);
+          n += printf_eol();
+        }
 
         k += caddrsize;
         p0 += caddrsize,
