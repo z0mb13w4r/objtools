@@ -1,5 +1,6 @@
 #include "opcode.h"
 #include "printf.h"
+#include "elfcode.h"
 #include "ocdwarf.h"
 #include "options.h"
 #include "opcode-printf.h"
@@ -145,50 +146,94 @@ int capstone_raw0(handle_t p, handle_t s, unknown_t data, const size_t size, con
   return n;
 }
 
+static uchar_t capstone_check(pthumb_t thumbs, const size_t maxthumbs, const uint64_t vaddr) {
+  if (thumbs && maxthumbs) {
+    pthumb_t p0 = thumbs;
+    for (size_t i = 0; i < maxthumbs; ++i, ++p0) {
+      if (vaddr == p0->vaddr) {
+//printf("%lx:%c\n", p0->vaddr, p0->value);
+        return p0->value;
+      }
+    }
+  }
+
+  return 0;
+}
+
 int capstone_raw1(handle_t p, handle_t s, unknown_t data, const size_t size, const uint64_t vaddr) {
   int n = 0;
   if (data && isopcode(p) && ismodeNXXN(s, MODE_OCSHDRWRAP)) {
+    MALLOCA(thumb_t, thumbs, 1024);
+    ecmake_sectionthumbs(ocget(p, OPCODE_RAWDATA), thumbs, NELEMENTS(thumbs));
+
     popcode_t oc = ocget(p, OPCODE_THIS);
     puchar_t p0 = CAST(puchar_t, data);
     uint64_t caddr = vaddr;
     size_t   caddrsize = 4;
 
-    cs_option(oc->cs, CS_OPT_MODE, CS_MODE_THUMB);
-
+    char prev_state = 'a';
     for (size_t k = 0; k < size; ) {
-      cs_insn *insn = NULL;
-      size_t count = cs_disasm(oc->cs, p0, caddrsize, caddr, 0, &insn);
-      if (count > 0) {
-        for (size_t i = 0; i < count; ++i) {
-          if (ocuse_vaddr(p, insn[i].address)) {
-            int n1 = 0;
+      char curr_state = capstone_check(thumbs, NELEMENTS(thumbs), caddr);
+      curr_state = curr_state ? curr_state : prev_state;
+      prev_state = curr_state;
 
-            n1 += opcode_printf_source(p, insn[i].address);
-
-            if (MODE_ISNOT(oc->action, OPTPROGRAM_NO_ADDRESSES)) {
-              n1 += opcode_printf_LHEX(p, insn[i].address, USE_COLON);
-            }
-
-            if (MODE_ISANY(oc->action, OPTPROGRAM_PREFIX_ADDR)) {
-              n1 += opcode_printf_prefix(p, insn[i].address);
-            } else if (MODE_ISNOT(oc->action, OPTPROGRAM_NO_SHOW_RAW_INSN)) {
-              n1 += printf_sore(insn[i].bytes, insn[i].size, USE_HEX | USE_SPACE);
-              n1 += printf_pack(42 - n1);
-            }
-
-            n += n1;
-            n += opcode_printf_detail(p, insn[i].address, insn[i].mnemonic, insn[i].op_str);
-            n += printf_eol();
-          }
-
-          k += insn[i].size;
-          p0 += insn[i].size,
-          caddr += insn[i].size;
+      if ('d' == curr_state) {
+        int n1 = 0;
+        if (MODE_ISNOT(oc->action, OPTPROGRAM_NO_ADDRESSES)) {
+          n1 += opcode_printf_LHEX(p, caddr, USE_COLON);
         }
-      } else {
+
+        if (MODE_ISANY(oc->action, OPTPROGRAM_PREFIX_ADDR)) {
+          n1 += opcode_printf_prefix(p, caddr);
+        } else if (MODE_ISNOT(oc->action, OPTPROGRAM_NO_SHOW_RAW_INSN)) {
+          n1 += printf_sore(p0, caddrsize, USE_HEX | USE_SPACE);
+          n1 += printf_pack(42 - n1);
+        }
+
+        n += n1;
+        n += printf_text(".word", USE_LT | USE_SPACE);
+        n += printf_eol();
+
         k += caddrsize;
         p0 += caddrsize,
         caddr += caddrsize;
+      } else {
+        cs_option(oc->cs, CS_OPT_MODE, 't' == curr_state ? CS_MODE_THUMB : CS_MODE_ARM);
+
+        cs_insn *insn = NULL;
+        size_t count = cs_disasm(oc->cs, p0, caddrsize, caddr, 0, &insn);
+        if (count > 0) {
+          for (size_t i = 0; i < count; ++i) {
+            if (ocuse_vaddr(p, insn[i].address)) {
+              int n1 = 0;
+
+              n1 += opcode_printf_source(p, insn[i].address);
+
+              if (MODE_ISNOT(oc->action, OPTPROGRAM_NO_ADDRESSES)) {
+                n1 += opcode_printf_LHEX(p, insn[i].address, USE_COLON);
+              }
+
+              if (MODE_ISANY(oc->action, OPTPROGRAM_PREFIX_ADDR)) {
+                n1 += opcode_printf_prefix(p, insn[i].address);
+              } else if (MODE_ISNOT(oc->action, OPTPROGRAM_NO_SHOW_RAW_INSN)) {
+                n1 += printf_sore(insn[i].bytes, insn[i].size, USE_HEX | USE_SPACE);
+                n1 += printf_pack(42 - n1);
+              }
+
+              n += n1;
+              n += opcode_printf_detail(p, insn[i].address, insn[i].mnemonic, insn[i].op_str);
+              n += printf_eol();
+            }
+
+            k += insn[i].size;
+            p0 += insn[i].size,
+            caddr += insn[i].size;
+          }
+        } else {
+          k += caddrsize;
+          p0 += caddrsize,
+          caddr += caddrsize;
+        }
       }
     }
 
