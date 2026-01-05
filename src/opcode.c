@@ -101,11 +101,6 @@ static unknown_t ocget_rawshdr(handle_t p) {
   if (ismode(p, MODE_OCSHDR)) {
     asection* s0 = ocget(p, MODE_OCSHDR);
     handle_t p0 = ocget(p, OPCODE_RAWDATA);
-//    if (s0 && isELF32(p0)) {
-//printf("[X:%d:%s]", s0->id, ecget_secnamebyindex(p0, s0->id));
-//printf("[Y:%d:%s]", s0->index, ecget_secnamebyindex(p0, s0->index));
-//printf("[Z:%lx:%lx]", s0->filepos, s0->rawsize);
-//    }
     return s0 && p0 ? ecget_shdrbyoffset(p0, s0->filepos) : NULL;
   }
 
@@ -994,6 +989,20 @@ bool_t ocget_symbol(handle_t p, uint64_t vaddr, char **name,
   }
 
   return issp;
+}
+
+uint16_t ocmake_u16(handle_t p, const uchar_t v0, const uchar_t v1) {
+  return CAST(uint16_t, v0) | (CAST(uint16_t, v1) << 8);
+}
+
+uint32_t ocmake_u32(handle_t p, const uchar_t v0, const uchar_t v1, const uchar_t v2, const uchar_t v3) {
+  return CAST(uint32_t, v0) | (CAST(uint32_t, v1) << 8) | (CAST(uint32_t, v2) << 16) | (CAST(uint32_t, v3) << 24);
+}
+
+uint64_t ocmake_u64(handle_t p, const uchar_t v0, const uchar_t v1, const uchar_t v2, const uchar_t v3,
+                                const uchar_t v4, const uchar_t v5, const uchar_t v6, const uchar_t v7) {
+  return CAST(uint64_t, v0) | (CAST(uint64_t, v1) << 8) | (CAST(uint64_t, v2) << 16) | (CAST(uint64_t, v3) << 24) |
+        (CAST(uint64_t, v4) << 32)  | (CAST(uint64_t, v5) << 40)  | (CAST(uint64_t, v6) << 48)  | (CAST(uint64_t, v7) << 56);
 }
 
 handle_t ocmalloc() {

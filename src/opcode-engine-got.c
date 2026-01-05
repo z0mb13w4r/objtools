@@ -25,10 +25,6 @@ static handle_t execute_new(handle_t p, const uint64_t vaddr, const char* name) 
   return p;
 }
 
-static uint32_t execute_u32(handle_t p, const uchar_t v0, const uchar_t v1, const uchar_t v2, const uchar_t v3) {
-  return v0 | (v1 << 8) | (v2 << 16) | (v3 << 24);
-}
-
 static void execute_section32arm(handle_t p, handle_t s, handle_t q) {
   puchar_t pp = ocget_rawdata(s);
   if (pp) {
@@ -70,7 +66,7 @@ static void execute_section32x86(handle_t p, handle_t s, handle_t q) {
         prev_vaddr0 = curr_vaddr;
         siz = 4;
       } else if (0xff == pp[i + 0] && 0xa3 == pp[i + 1]) { // jmp
-        prev_vaddr1 = execute_u32(p, pp[i + 2], pp[i + 3], pp[i + 4], pp[i + 5]);
+        prev_vaddr1 = ocmake_u32(p, pp[i + 2], pp[i + 3], pp[i + 4], pp[i + 5]);
         siz = 6;
       } else if (0x66 == pp[i + 0] && 0x0f == pp[i + 1] && 0x1f == pp[i + 2] && 0x44 == pp[i + 3] && 0x00 == pp[i + 4] && 0x00 == pp[i + 5]) { // nopw
         uint64_t this_vaddr = prev_vaddr2 + prev_vaddr1;
@@ -129,7 +125,7 @@ static void execute_section64arm(handle_t p, handle_t s, handle_t q) {
     uint32_t prev_vaddr2 = 0;
 
     for (uint64_t i = 0; i < ocget_size(s); i += 4, curr_vaddr += 4) {
-      const uint32_t xx = execute_u32(p, pp[i + 0], pp[i + 1], pp[i + 2], pp[i + 3]);
+      const uint32_t xx = ocmake_u32(p, pp[i + 0], pp[i + 1], pp[i + 2], pp[i + 3]);
 //printf("%03lx:%08x ", curr_vaddr, xx);
 //printf("%s", is01(s, zBR,   sizeof(zBR)   - 1, xx) ? "br"   : "");
 //printf("%s", is01(s, zADD,  sizeof(zADD)  - 1, xx) ? "add"  : "");
@@ -199,7 +195,7 @@ static void execute_section64x86(handle_t p, handle_t s, handle_t q) {
       } else if (0x0f == pp[i + 0] && 0x1f == pp[i + 1] && 0x00 == pp[i + 2]) { // nopl
         siz = 3;
       } else if (0xf2 == pp[i + 0] && 0xff == pp[i + 1] && 0x25 == pp[i + 2]) { // bnd jmpq
-        prev_vaddr1 = execute_u32(p, pp[i + 3], pp[i + 4], pp[i + 5], pp[i + 6]);
+        prev_vaddr1 = ocmake_u32(p, pp[i + 3], pp[i + 4], pp[i + 5], pp[i + 6]);
         siz = 7;
       } else if (0xf2 == pp[i + 0] && 0xe9 == pp[i + 1]) { // bnd jmpq
         siz = 6;

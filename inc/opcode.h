@@ -237,6 +237,11 @@ const char* ocget_namebyvaddr(handle_t p, const uint64_t vaddr, uint64_t *offset
 const char* ocget_namebyoffset(handle_t p, const imode_t mode, const uint64_t offset);
 const char* ocget_fileformat(handle_t p);
 
+uint16_t ocmake_u16(handle_t p, const uchar_t v0, const uchar_t v1);
+uint32_t ocmake_u32(handle_t p, const uchar_t v0, const uchar_t v1, const uchar_t v2, const uchar_t v3);
+uint64_t ocmake_u64(handle_t p, const uchar_t v0, const uchar_t v1, const uchar_t v2, const uchar_t v3,
+                     const uchar_t v4, const uchar_t v5, const uchar_t v6, const uchar_t v7);
+
 void occonfig(const char* name, const char* target);
 
 int ocdo_dynamics(handle_t p, opcbfunc_t cbfunc, unknown_t param);
