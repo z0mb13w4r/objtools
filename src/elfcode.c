@@ -1231,30 +1231,35 @@ handle_t fget64byshdr(const pbuffer_t p, Elf64_Shdr *shdr) {
 }
 
 int ecmake_sectionthumbs(const pbuffer_t p, pthumb_t thumbs, const size_t maxthumbs) {
-  Elf32_Shdr* shdr = ecget_shdr32byname(p, ".symtab");
-  if (shdr && SHT_SYMTAB == shdr->sh_type) {
-    size_t cnt = shdr->sh_size / shdr->sh_entsize;
+  if (EM_ARM == ecget_emachine(p)) {
+    Elf32_Shdr* shdr = ecget_shdr32byname(p, ".symtab");
+    if (shdr && SHT_SYMTAB == shdr->sh_type) {
+      size_t cnt = shdr->sh_size / shdr->sh_entsize;
 
-    handle_t f = fget32byshdr(p, shdr);
-    if (f) {
-      int k = 0;
-      for (size_t j = 0; j < cnt; ++j) {
-        Elf32_Sym *s = fget(f);
-        if (s) {
-          const char* name = ecget_namebyoffset(p, shdr->sh_link, s->st_name);
-          if (name && '$' == name[0] && 0 == name[2]) {
-            if (thumbs && k < maxthumbs) {
-              thumbs[k].vaddr = s->st_value;
-              thumbs[k].value = name[1];
-              ++k;
+      handle_t f = fget32byshdr(p, shdr);
+      if (f) {
+        int n = 0;
+        for (size_t j = 0; j < cnt; ++j) {
+          Elf32_Sym *s = fget(f);
+          if (s) {
+            const char* name = ecget_namebyoffset(p, shdr->sh_link, s->st_name);
+            if (name && '$' == name[0] && 0 == name[2]) {
+//printf("%lx|%s\n", s->st_value, name);
+              if (n < maxthumbs) {
+                if (thumbs) {
+                  thumbs[n].vaddr = s->st_value;
+                  thumbs[n].value = name[1];
+                }
+                ++n;
+              }
             }
+
+            f = fnext(f);
           }
-
-          f = fnext(f);
         }
-      }
 
-      return k;
+        return n;
+      }
     }
   }
 
