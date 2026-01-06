@@ -174,10 +174,9 @@ int capstone_raw1(handle_t p, handle_t s, unknown_t data, const size_t size, con
 
     char prev_state = 'a';
     for (size_t k = 0; k < size; ) {
-//printf("<--- %lx\n", caddr);
       char curr_state = capstone_check(thumbs, siz, caddr);
       curr_state = curr_state ? curr_state : prev_state;
-      prev_state = curr_state;
+//printf("<--- %lx|%c\n", caddr, curr_state);
 
       if ('d' == curr_state) {
         if (ocuse_vaddr(p, caddr)) {
@@ -244,6 +243,8 @@ int capstone_raw1(handle_t p, handle_t s, unknown_t data, const size_t size, con
           caddr += caddrsize;
         }
       }
+
+      prev_state = curr_state;
     }
 
     cs_option(oc->cs, CS_OPT_MODE, CS_MODE_ARM);
