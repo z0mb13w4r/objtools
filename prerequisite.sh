@@ -37,6 +37,8 @@ aptcheck g++
 #aptcheck g++-arm-linux-gnueabihf
 #aptcheck gcc-aarch64-linux-gnu
 #aptcheck g++-aarch64-linux-gnu
+#aptcheck gcc-riscv64-linux-gnu
+#aptcheck g++-riscv64-linux-gnu
 aptcheck libssl-dev
 aptcheck binutils-dev
 
