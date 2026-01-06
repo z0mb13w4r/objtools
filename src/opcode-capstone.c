@@ -212,6 +212,10 @@ int capstone_raw1(handle_t p, handle_t s, unknown_t data, const size_t size, con
             if (ocuse_vaddr(p, insn[i].address)) {
               int n1 = 0;
 
+              char next_state = capstone_check(thumbs, siz, caddr);
+              next_state = next_state ? next_state : prev_state;
+              if (next_state != curr_state) break;
+
               n1 += opcode_printf_source(p, insn[i].address);
 
               if (MODE_ISNOT(oc->action, OPTPROGRAM_NO_ADDRESSES)) {
