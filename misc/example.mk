@@ -26,6 +26,7 @@ else ifeq ($(CROSS),ARM64)
 else ifeq ($(CROSS),WIN32)
 else ifeq ($(CROSS),WIN64)
 else ifeq ($(CROSS),LINUX32)
+else ifeq ($(CROSS),RISCV64)
 else
 	CROSS = LINUX64
 endif
@@ -103,6 +104,11 @@ else ifeq ($(CROSS),ARM64)
 	CROSS_COMPILE = aarch64-linux-gnu-
 	DFLAGS += -DENV_LINUX -DLINUX -DTARGET_ARM64
 	EFLAGS  = -Wl,--no-enum-size-warning
+	LFLAGS +=
+else ifeq ($(CROSS),RISCV64)
+	CROSS_COMPILE = riscv64-linux-gnu-
+	DFLAGS += -DENV_LINUX -DLINUX -DTARGET_RISCV64
+	EFLAGS  =
 	LFLAGS +=
 else ifeq ($(CROSS),WIN32)
 	CROSS_COMPILE = i686-w64-mingw32-
@@ -188,8 +194,10 @@ help:
 	@echo ' set DEBUG=y to build debug information.'
 	@echo ' set DEBUG=n to build release version.'
 	@echo ' '
-	@echo ' set CROSS=ARM to build ARM version.'
-	@echo ' set CROSS=WIN32 to build Windows version.'
+	@echo ' set CROSS=ARM32 to build ARM 32-bit version.'
+	@echo ' set CROSS=ARM64 to build ARM 64-bit version.'
+	@echo ' set CROSS=WIN32 to build Windows 32-bit version.'
+	@echo ' set CROSS=WIN64 to build Windows 64-bit version.'
 	@echo ' set CROSS=LINUX32 to build 32-bit version.'
 	@echo ' set CROSS=LINUX64 to build native version.'
 	@echo ' '
@@ -278,6 +286,8 @@ else ifeq ($(CROSS),ARM32)
 	-$(CP) $(TARGET) ../bin/$(TARGET)-32-arm
 else ifeq ($(CROSS),ARM64)
 	-$(CP) $(TARGET) ../bin/$(TARGET)-64-arm
+else ifeq ($(CROSS),RISCV64)
+	-$(CP) $(TARGET) ../bin/$(TARGET)-64-riscv
 else ifeq ($(CROSS),LINUX32)
 	-$(CP) $(TARGET) ../bin/$(TARGET)-32
 else
