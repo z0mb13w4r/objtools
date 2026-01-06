@@ -202,7 +202,11 @@ int capstone_raw1(handle_t p, handle_t s, unknown_t data, const size_t size, con
         p0 += caddrsize,
         caddr += caddrsize;
       } else {
-        cs_option(oc->cs, CS_OPT_MODE, 't' == curr_state ? CS_MODE_THUMB : CS_MODE_ARM);
+        if (curr_state != prev_state) {
+          if (CS_ERR_OK == cs_close(&oc->cs)) {
+            cs_open(CS_ARCH_ARM, 't' == curr_state ? CS_MODE_THUMB : CS_MODE_ARM, &oc->cs);
+          }
+        }
 
         cs_insn *insn = NULL;
         size_t count = cs_disasm(oc->cs, p0, caddrsize, caddr, 0, &insn);
@@ -247,7 +251,9 @@ int capstone_raw1(handle_t p, handle_t s, unknown_t data, const size_t size, con
       prev_state = curr_state;
     }
 
-    cs_option(oc->cs, CS_OPT_MODE, CS_MODE_ARM);
+    if (CS_ERR_OK == cs_close(&oc->cs)) {
+      cs_open(CS_ARCH_ARM, CS_MODE_ARM, &oc->cs);
+    }
   }
 
   return n;
