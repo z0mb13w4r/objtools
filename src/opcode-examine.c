@@ -21,6 +21,8 @@ ppick_t oegetADDRLOOKUP(handle_t p) {
   case EM_ARM:
   case EM_AARCH64:
     return oeADDRLOOKUP_ARM;
+  case EM_RISCV:
+    return oeADDRLOOKUP_RISCV;
   default:
     break;
   }
@@ -33,6 +35,8 @@ static poestruct_t oegetINSTRUCTIONS(handle_t p) {
   case EM_ARM:
   case EM_AARCH64:
     return oeINSTRUCTIONS_ARM;
+  case EM_RISCV:
+    return oeINSTRUCTIONS_RISCV;
   default:
     break;
   }
@@ -45,6 +49,8 @@ pconvert_t oegetINSTRUCTIONNAMES(handle_t p) {
   case EM_ARM:
   case EM_AARCH64:
     return oeINSTRUCTIONNAMES_ARM;
+  case EM_RISCV:
+    return oeINSTRUCTIONNAMES_RISCV;
   default:
     break;
   }
@@ -57,6 +63,8 @@ pconvert_t oegetINSTRUCTIONFLAGS(handle_t p) {
   case EM_ARM:
   case EM_AARCH64:
     return oeINSTRUCTIONFLAGS_ARM;
+  case EM_RISCV:
+    return oeINSTRUCTIONFLAGS_RISCV;
   default:
     break;
   }
@@ -69,6 +77,8 @@ pconvert_t oegetREGISTERFLAGS(handle_t p) {
   case EM_ARM:
   case EM_AARCH64:
     return oeREGISTERFLAGS_ARM;
+  case EM_RISCV:
+    return oeREGISTERFLAGS_RISCV;
   default:
     break;
   }
@@ -82,6 +92,11 @@ pconvert_t oegetREGISTERNAMES(handle_t p) {
     return oeREGISTERNAMES_ARM32;
   case EM_AARCH64:
     return oeREGISTERNAMES_ARM64;
+  case EM_RISCV: {
+    const uint64_t size = ocget_archsize(p);
+    if (32 == size) return oeREGISTERNAMES_RISCV32;
+    else if (64 == size) return oeREGISTERNAMES_RISCV64;
+  }
   default:
     break;
   }
