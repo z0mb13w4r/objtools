@@ -1245,11 +1245,11 @@ int ecmake_sectionthumbs(const pbuffer_t p, pthumb_t thumbs, const size_t maxthu
             const char* name = ecget_namebyoffset(p, shdr->sh_link, s->st_name);
             if (name && '$' == name[0] && 0 == name[2]) {
 //printf("%lx|%s\n", s->st_value, name);
-              if (n < maxthumbs) {
-                if (thumbs) {
-                  thumbs[n].vaddr = s->st_value;
-                  thumbs[n].value = name[1];
-                }
+              if (thumbs && n < maxthumbs) {
+                thumbs[n].vaddr = s->st_value;
+                thumbs[n].value = name[1];
+                ++n;
+              } else if (0 == maxthumbs) {
                 ++n;
               }
             }
