@@ -755,7 +755,7 @@ static oestruct_t oeREGISTERS_ARM64[] = {
   {NULL}
 };
 
-convert_t oeINSTRUCTIONFLAGS_ARM[] = {
+static convert_t oeINSTRUCTIONFLAGS_ARM[] = {
   {"LT",                OCINSN_LT},
   {"RT",                OCINSN_RT},
   {"A",                 OCINSN_A},
@@ -792,7 +792,7 @@ convert_t oeINSTRUCTIONFLAGS_ARM[] = {
   {0, 0}
 };
 
-convert_t oeINSTRUCTIONNAMES_ARM[] = {
+static convert_t oeINSTRUCTIONNAMES_ARM[] = {
   {"BH",                OCINSN_MASK(OCINSNARM_BH)},
   {"BX",                OCINSN_MASK(OCINSNARM_BX)},
   {"CB",                OCINSN_MASK(OCINSNARM_CB)},
@@ -856,7 +856,7 @@ convert_t oeINSTRUCTIONNAMES_ARM[] = {
   {0, 0}
 };
 
-convert_t oeREGISTERFLAGS_ARM[] = {
+static convert_t oeREGISTERFLAGS_ARM[] = {
   {"GENERAL",           OCREGARM_GENERAL},
   {"SYSCALL",           OCREGARM_SYSCALL},
   {"FRAMEPTR",          OCREGARM_FRAMEPTR},
@@ -877,7 +877,7 @@ convert_t oeREGISTERFLAGS_ARM[] = {
   {0, 0}
 };
 
-convert_t oeREGISTERNAMES_ARM32[] = {
+static convert_t oeREGISTERNAMES_ARM32[] = {
   {"FP",                OCREGARM_FP | OCREGISTER_32BIT},
   {"LR",                OCREGARM_LR | OCREGISTER_32BIT},
   {"PC",                OCREGARM_PC | OCREGISTER_32BIT},
@@ -901,7 +901,7 @@ convert_t oeREGISTERNAMES_ARM32[] = {
   {0, 0}
 };
 
-convert_t oeREGISTERNAMES_ARM64[] = {
+static convert_t oeREGISTERNAMES_ARM64[] = {
   {"FP",                OCREGARM_FP | OCREGISTER_64BIT},
   {"LR",                OCREGARM_LR | OCREGISTER_64BIT},
   {"PC",                OCREGARM_PC | OCREGISTER_64BIT},
@@ -975,7 +975,7 @@ convert_t oeREGISTERNAMES_ARM64[] = {
   {0, 0}
 };
 
-pick_t oeADDRLOOKUP_ARM[] = {
+static pick_t oeADDRLOOKUP_ARM[] = {
   OCINSN_MASK(OCINSNARM_ADR),
   OCINSN_MASK(OCINSNARM_BH),
   OCINSN_MASK(OCINSNARM_BX),

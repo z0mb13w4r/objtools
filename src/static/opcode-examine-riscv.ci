@@ -1,0 +1,28 @@
+static oestruct_t oeINSTRUCTIONS_RISCV[] = {
+  {NULL}
+};
+
+static convert_t oeINSTRUCTIONFLAGS_RISCV[] = {
+  {0, 0}
+};
+
+static convert_t oeINSTRUCTIONNAMES_RISCV[] = {
+  {0, 0}
+};
+
+static convert_t oeREGISTERFLAGS_RISCV[] = {
+  {0, 0}
+};
+
+static convert_t oeREGISTERNAMES_RISCV32[] = {
+  {0, 0}
+};
+
+static convert_t oeREGISTERNAMES_RISCV64[] = {
+  {0, 0}
+};
+
+static pick_t oeADDRLOOKUP_RISCV[] = {
+  PICK_END
+};
+

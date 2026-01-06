@@ -584,7 +584,7 @@ static oestruct_t oeSIZEPTRS_x86_64[] = {
   {NULL}
 };
 
-convert_t oeINSTRUCTIONFLAGS_x86_64[] = {
+static convert_t oeINSTRUCTIONFLAGS_x86_64[] = {
   {"ALIGNED",           OCINSNX86_ALIGNED},
   {"UNALIGNED",         OCINSNX86_UNALIGNED},
 
@@ -634,7 +634,7 @@ convert_t oeINSTRUCTIONFLAGS_x86_64[] = {
   {0, 0}
 };
 
-convert_t oeINSTRUCTIONNAMES_x86_64[] = {
+static convert_t oeINSTRUCTIONNAMES_x86_64[] = {
   {"BT",                OCINSN_MASK(OCINSTRUCTION_BT)},
   {"CALL",              OCINSN_MASK(OCINSTRUCTION_CALL)},
   {"ENDBR",             OCINSN_MASK(OCINSTRUCTION_ENDBR)},
@@ -731,7 +731,7 @@ convert_t oeSEGMENTFLAGS_x86_64[] = {
   {0, 0}
 };
 
-convert_t oeREGISTERFLAGS_x86_64[] = {
+static convert_t oeREGISTERFLAGS_x86_64[] = {
   {"XMM",               OCREGISTER_XMM},
   {"YMM",               OCREGISTER_YMM},
   {"ZMM",               OCREGISTER_ZMM},
@@ -757,7 +757,7 @@ convert_t oeREGISTERFLAGS_x86_64[] = {
   {0, 0}
 };
 
-convert_t oeREGISTERNAMES_x86_64[] = {
+static convert_t oeREGISTERNAMES_x86_64[] = {
   {"RAX",               OCREGISTER_RAX},
   {"EAX",               OCREGISTER_EAX},
   {"AX",                OCREGISTER_AX},
@@ -902,7 +902,7 @@ convert_t oeREGISTERNAMES_x86_64[] = {
   {0, 0}
 };
 
-pick_t oeADDRLOOKUP_x86_64[] = {
+static pick_t oeADDRLOOKUP_x86_64[] = {
   OCINSN_MASK(OCINSTRUCTION_CALL),
   OCINSN_MASK(OCINSTRUCTION_JMP),
   PICK_END
