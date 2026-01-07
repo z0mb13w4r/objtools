@@ -212,6 +212,7 @@ static pick_t zRELTYPE64ARMDEF[] = {
 };
 
 static pick_t zRELTYPE64RISCVDEF[] = {
+  R_RISCV_CALL_PLT,
   PICK_END
 };
 
@@ -243,7 +244,23 @@ static pick_t zRELTYPE64ARMVER[] = {
 static pick_t zRELTYPERISCVVER[] = {
   R_RISCV_32,
   R_RISCV_64,
+  R_RISCV_ADD16,
+  R_RISCV_SUB16,
+  R_RISCV_ADD64,
+  R_RISCV_SUB64,
+  R_RISCV_CALL,
+  R_RISCV_SET6,
+  R_RISCV_SET8,
+  R_RISCV_SUB6,
+  R_RISCV_SUB8,
+  R_RISCV_BRANCH,
+  R_RISCV_GOT_HI20,
   R_RISCV_JUMP_SLOT,
+  R_RISCV_RVC_JUMP,
+  R_RISCV_RVC_BRANCH,
+  R_RISCV_PCREL_HI20,
+  R_RISCV_PCREL_LO12_I,
+  R_RISCV_PCREL_LO12_S,
   PICK_END
 };
 
@@ -280,6 +297,7 @@ static pick_t zRELTYPE64ARMPACK[] = {
 
 static pick_t zRELTYPERISCVPACK[] = {
   R_RISCV_RELATIVE,
+  R_RISCV_RELAX,
   PICK_END
 };
 
@@ -289,9 +307,23 @@ static pick_t zRELTYPE64SHEX8[] = {
   PICK_END
 };
 
+static pick_t zRELTYPESHEX8RISCV[] = {
+  R_RISCV_SET6,
+  R_RISCV_SET8,
+  R_RISCV_SUB6,
+  R_RISCV_SUB8,
+  PICK_END
+};
+
 static pick_t zRELTYPE64SHEX16[] = {
   R_X86_64_16,
   R_X86_64_PC16,
+  PICK_END
+};
+
+static pick_t zRELTYPESHEX16RISCV[] = {
+  R_RISCV_ADD16,
+  R_RISCV_SUB16,
   PICK_END
 };
 
@@ -340,6 +372,17 @@ static pick_t zRELTYPE64SHEX64ARM[] = {
 };
 
 static pick_t zRELTYPESHEX64RISCV[] = {
+  R_RISCV_CALL,
+  R_RISCV_ADD64,
+  R_RISCV_SUB64,
+  R_RISCV_BRANCH,
+  R_RISCV_GOT_HI20,
+  R_RISCV_RVC_JUMP,
+  R_RISCV_RVC_BRANCH,
+  R_RISCV_PCREL_HI20,
+  R_RISCV_PCREL_LO12_I,
+  R_RISCV_PCREL_LO12_S,
+  R_RISCV_CALL_PLT,
   PICK_END
 };
 
@@ -402,6 +445,7 @@ static ppick_t get_RELTYPESAFE(const pbuffer_t p) {
 ppick_t get_RELTYPESHEX8(const pbuffer_t p) {
   switch (ecget_emachine(p)) {
   case EM_X86_64:            return zRELTYPE64SHEX8;
+  case EM_RISCV:             return zRELTYPESHEX8RISCV;
   default:
     break;
   }
@@ -412,6 +456,7 @@ ppick_t get_RELTYPESHEX8(const pbuffer_t p) {
 ppick_t get_RELTYPESHEX16(const pbuffer_t p) {
   switch (ecget_emachine(p)) {
   case EM_X86_64:            return zRELTYPE64SHEX16;
+  case EM_RISCV:             return zRELTYPESHEX16RISCV;
   default:
     break;
   }
