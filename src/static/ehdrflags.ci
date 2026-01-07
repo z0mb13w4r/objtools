@@ -47,6 +47,7 @@ static convert_t ecEHDRFLAGSRISCV[] = {
   {"RVC",                    EF_RISCV_RVC},
   {"RVE",                    EF_RISCV_RVE},
   {"TSO",                    EF_RISCV_TSO},
+//  {"soft-float ABI",         EF_RISCV_FLOAT_ABI_SOFT},
   {"single-float ABI",       EF_RISCV_FLOAT_ABI_SINGLE},
   {"double-float ABI",       EF_RISCV_FLOAT_ABI_DOUBLE},
   {"quad-float ABI",         EF_RISCV_FLOAT_ABI_QUAD},
