@@ -102,6 +102,7 @@ static pick_t ecDYNTAGFHEX[] = {
   DT_INIT_ARRAY,
   DT_FINI_ARRAY,
   DT_GNU_HASH,
+  DT_PREINIT_ARRAY,
   PICK_END
 };
 
