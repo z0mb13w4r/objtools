@@ -40,6 +40,19 @@ static convert_t ecEHDRFLAGS32ARMv5[] = {
   {0, 0}
 };
 
+#define EF_RISCV_RVE                   (0x0008)
+#define EF_RISCV_TSO                   (0x0010)
+
+static convert_t ecEHDRFLAGSRISCV[] = {
+  {"RVC",                    EF_RISCV_RVC},
+  {"RVE",                    EF_RISCV_RVE},
+  {"TSO",                    EF_RISCV_TSO},
+  {"single-float ABI",       EF_RISCV_FLOAT_ABI_SINGLE},
+  {"double-float ABI",       EF_RISCV_FLOAT_ABI_DOUBLE},
+  {"quad-float ABI",         EF_RISCV_FLOAT_ABI_QUAD},
+  {0, 0}
+};
+
 pconvert_t get_EHDRFLAGS(const pbuffer_t p) {
   switch (ecget_emachine(p)) {
   case EM_ARM:
@@ -53,6 +66,8 @@ pconvert_t get_EHDRFLAGS(const pbuffer_t p) {
       break;
      }
      break;
+  case EM_RISCV:
+    return ecEHDRFLAGSRISCV;
   default:
     break;
   }
