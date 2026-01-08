@@ -74,6 +74,7 @@ extern convert_t ecREGISTERS_x86_64[];
 extern convert_t ecREGISTERS_ARM32[];
 extern convert_t ecREGISTERS_ARM64[];
 extern convert_t ecREGISTERS_RISCV32[];
+extern convert_t ecREGISTERS_RISCV64[];
 
 extern args_t zSCRIPTCOMMANDS[];
 extern args_t zSCRIPTCOMMANDSEX[];

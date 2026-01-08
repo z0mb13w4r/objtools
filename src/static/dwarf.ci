@@ -1166,6 +1166,10 @@ convert_t ecREGISTERS_RISCV32[] = {
   {0, 0}
 };
 
+convert_t ecREGISTERS_RISCV64[] = {
+  {0, 0}
+};
+
 pick_t ecATDEC[] = {
   DW_AT_byte_size,
   DW_AT_const_value,
