@@ -1122,6 +1122,10 @@ convert_t ecREGISTERS_x86_64[] = {
   {0, 0}
 };
 
+convert_t ecREGISTERS_ARM32[] = {
+  {0, 0}
+};
+
 convert_t ecREGISTERS_ARM64[] = {
   {"r0",                                 0},
   {"r1",                                 1},
