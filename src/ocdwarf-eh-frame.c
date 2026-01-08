@@ -95,7 +95,18 @@ static pick_t REGUSERISCV32[] = {
   PICK_END
 };
 
+#define REG_S0                         (8)
+#define REG_S1                         (9)
+#define REG_S2                         (18)
+#define REG_S3                         (19)
+#define REG_S4                         (20)
+
 static pick_t REGUSERISCV64[] = {
+  REG_S0,
+  REG_S1,
+  REG_S2,
+  REG_S3,
+  REG_S4,
   PICK_END
 };
 
@@ -541,7 +552,11 @@ static int ocdwarf_eh_frame_fdes(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed f
           }
         } else if (ocisELF64(p)) {
           if (EM_RISCV == ocget_machine(p)) {
-            printf_w("TBD - missing RISCV64 functionality.");
+            if (isneeded[REG_S0])    n0 += printf_text("s0", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+            if (isneeded[REG_S1])    n0 += printf_text("s1", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+            if (isneeded[REG_S2])    n0 += printf_text("s2", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+            if (isneeded[REG_S3])    n0 += printf_text("s3", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+            if (isneeded[REG_S4])    n0 += printf_text("s4", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
           } else {
             if (isneeded[REG_RBX])   n0 += printf_text("rbx", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
             if (isneeded[REG_RBP])   n0 += printf_text("rbp", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
