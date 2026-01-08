@@ -43,7 +43,7 @@ static pick_t REGUSE32[] = {
 #define REG_RCX                        (2)
 #define REG_RBX                        (3)
 #define REG_RSI                        (4)
-#define	REG_RDI                        (5)
+#define REG_RDI                        (5)
 #define REG_RBP                        (6)
 #define REG_RSP                        (7)
 #define REG_R8                         (8)
@@ -532,12 +532,16 @@ static int ocdwarf_eh_frame_fdes(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed f
             if (isneeded[REG_EDI])   n0 += printf_text("edi", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
           }
         } else if (ocisELF64(p)) {
-          if (isneeded[REG_RBX])   n0 += printf_text("rbx", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
-          if (isneeded[REG_RBP])   n0 += printf_text("rbp", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
-          if (isneeded[REG_R12])   n0 += printf_text("r12", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
-          if (isneeded[REG_R13])   n0 += printf_text("r13", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
-          if (isneeded[REG_R14])   n0 += printf_text("r14", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
-          if (isneeded[REG_R15])   n0 += printf_text("r15", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+          if (EM_RISCV == ocget_machine(p)) {
+            printf_w("TBD - missing RISC64 functionality.");
+          } else {
+            if (isneeded[REG_RBX])   n0 += printf_text("rbx", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+            if (isneeded[REG_RBP])   n0 += printf_text("rbp", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+            if (isneeded[REG_R12])   n0 += printf_text("r12", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+            if (isneeded[REG_R13])   n0 += printf_text("r13", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+            if (isneeded[REG_R14])   n0 += printf_text("r14", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+            if (isneeded[REG_R15])   n0 += printf_text("r15", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+          }
         }
 
         n0 += printf_text("ra", USE_LT | USE_SPACE);
