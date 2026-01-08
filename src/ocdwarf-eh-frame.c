@@ -66,6 +66,10 @@ static pick_t REGUSE64[] = {
   PICK_END
 };
 
+static pick_t REGUSEARM32[] = {
+  PICK_END
+};
+
 #define REG_X19                        (19)
 #define REG_X20                        (20)
 #define REG_X21                        (21)
@@ -88,7 +92,9 @@ static pick_t REGUSEARM64[] = {
 };
 
 static ppick_t get_REGUSE(handle_t p) {
-  if (EM_AARCH64 == ocget_machine(p)) {
+  if (EM_ARM == ocget_machine(p)) {
+    return REGUSEARM32;
+  } else if (EM_AARCH64 == ocget_machine(p)) {
     return REGUSEARM64;
   } else if (ocisELF32(p)) {
     return REGUSE32;
