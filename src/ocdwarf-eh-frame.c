@@ -501,7 +501,9 @@ static int ocdwarf_eh_frame_fdes(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed f
         n0 += printf_text("LOC", USE_LT | USE_TAB | SET_PAD(MAXSIZENN));
         n0 += printf_text("CFA", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
 
-        if (EM_AARCH64 == ocget_machine(p)) {
+        if (EM_ARM == ocget_machine(p)) {
+          printf_w("TBD - missing ARM32 functionality.");
+        } if (EM_AARCH64 == ocget_machine(p)) {
           if (isneeded[REG_X19])   n0 += printf_text("x19", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
           if (isneeded[REG_X20])   n0 += printf_text("x20", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
           if (isneeded[REG_X21])   n0 += printf_text("x21", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
