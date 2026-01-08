@@ -91,12 +91,20 @@ static pick_t REGUSEARM64[] = {
   PICK_END
 };
 
+static pick_t REGUSERISCV32[] = {
+  PICK_END
+};
+
 static ppick_t get_REGUSE(handle_t p) {
   if (EM_ARM == ocget_machine(p)) {
     return REGUSEARM32;
   } else if (EM_AARCH64 == ocget_machine(p)) {
     return REGUSEARM64;
   } else if (ocisELF32(p)) {
+    if (EM_RISCV == ocget_machine(p)) {
+      return REGUSERISCV32;
+    }
+
     return REGUSE32;
   } else if (ocisELF64(p)) {
     return REGUSE64;
@@ -512,13 +520,17 @@ static int ocdwarf_eh_frame_fdes(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed f
           if (isneeded[REG_X24])   n0 += printf_text("x24", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
           if (isneeded[REG_X29])   n0 += printf_text("x29", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
         } else if (ocisELF32(p)) {
-          if (isneeded[REG_EAX])   n0 += printf_text("eax", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
-          if (isneeded[REG_ECX])   n0 += printf_text("ecx", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
-          if (isneeded[REG_EDX])   n0 += printf_text("edx", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
-          if (isneeded[REG_EBX])   n0 += printf_text("ebx", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
-          if (isneeded[REG_EBP])   n0 += printf_text("ebp", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
-          if (isneeded[REG_ESI])   n0 += printf_text("esi", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
-          if (isneeded[REG_EDI])   n0 += printf_text("edi", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+          if (EM_RISCV == ocget_machine(p)) {
+            printf_w("TBD - missing RISC32 functionality.");
+          } else {
+            if (isneeded[REG_EAX])   n0 += printf_text("eax", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+            if (isneeded[REG_ECX])   n0 += printf_text("ecx", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+            if (isneeded[REG_EDX])   n0 += printf_text("edx", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+            if (isneeded[REG_EBX])   n0 += printf_text("ebx", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+            if (isneeded[REG_EBP])   n0 += printf_text("ebp", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+            if (isneeded[REG_ESI])   n0 += printf_text("esi", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+            if (isneeded[REG_EDI])   n0 += printf_text("edi", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+          }
         } else if (ocisELF64(p)) {
           if (isneeded[REG_RBX])   n0 += printf_text("rbx", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
           if (isneeded[REG_RBP])   n0 += printf_text("rbp", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
