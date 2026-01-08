@@ -222,6 +222,10 @@ int ocdwarf_printf_REG(handle_t p, const uint32_t v, const imode_t mode) {
       n += ocdwarf_printf_pick(p, ecREGISTERS_ARM32, v, mode);
     } else if (EM_AARCH64 == e) {
       n += ocdwarf_printf_pick(p, ecREGISTERS_ARM64, v, mode);
+    } else if (EM_RISCV == e) {
+      if (ocisELF32(p)) {
+        n += ocdwarf_printf_pick(p, ecREGISTERS_RISCV32, v, mode);
+      }
     }
   }
 
