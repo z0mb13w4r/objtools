@@ -28,10 +28,16 @@ static convert_t oeREGISTERFLAGS_RISCV[] = {
 };
 
 static convert_t oeREGISTERNAMES_RISCV32[] = {
+  {"LOAD",              OCINSN_MASK(OCINSNRISCV_LOAD)},
+  {"STORE",             OCINSN_MASK(OCINSNRISCV_STORE)},
+
   {0, 0}
 };
 
 static convert_t oeREGISTERNAMES_RISCV64[] = {
+  {"LOAD",              OCINSN_MASK(OCINSNRISCV_LOAD)},
+  {"STORE",             OCINSN_MASK(OCINSNRISCV_STORE)},
+
   {0, 0}
 };
 
