@@ -53,6 +53,83 @@ static convert_t oeINSTRUCTIONNAMES_RISCV[] = {
   {0, 0}
 };
 
+static oestruct_t oeREGISTERS_RISCV32[] = {
+  {NULL}
+};
+
+static oestruct_t oeREGISTERS_RISCV64[] = {
+  OCSTRUCT("fp",        OCREGRISCV_FP),
+  OCSTRUCT("gp",        OCREGRISCV_GP),
+
+  OCSTRUCT("ra",        OCREGRISCV_RA),
+  OCSTRUCT("sp",        OCREGRISCV_SP),
+  OCSTRUCT("tp",        OCREGRISCV_TP),
+
+  OCSTRUCT("a0",        OCREGRISCV_A0),
+  OCSTRUCT("a1",        OCREGRISCV_A1),
+  OCSTRUCT("a2",        OCREGRISCV_A2),
+  OCSTRUCT("a3",        OCREGRISCV_A3),
+  OCSTRUCT("a4",        OCREGRISCV_A4),
+  OCSTRUCT("a5",        OCREGRISCV_A5),
+  OCSTRUCT("a6",        OCREGRISCV_A6),
+  OCSTRUCT("a7",        OCREGRISCV_A7),
+
+  OCSTRUCT("s0",        OCREGRISCV_S0),
+  OCSTRUCT("s1",        OCREGRISCV_S1),
+  OCSTRUCT("s2",        OCREGRISCV_S2),
+  OCSTRUCT("s3",        OCREGRISCV_S3),
+  OCSTRUCT("s4",        OCREGRISCV_S4),
+  OCSTRUCT("s5",        OCREGRISCV_S5),
+  OCSTRUCT("s6",        OCREGRISCV_S6),
+  OCSTRUCT("s7",        OCREGRISCV_S7),
+  OCSTRUCT("s8",        OCREGRISCV_S8),
+  OCSTRUCT("s9",        OCREGRISCV_S9),
+  OCSTRUCT("s10",       OCREGRISCV_S10),
+  OCSTRUCT("s11",       OCREGRISCV_S11),
+
+  OCSTRUCT("t0",        OCREGRISCV_T0),
+  OCSTRUCT("t1",        OCREGRISCV_T1),
+  OCSTRUCT("t2",        OCREGRISCV_T2),
+  OCSTRUCT("t3",        OCREGRISCV_T3),
+  OCSTRUCT("t4",        OCREGRISCV_T4),
+  OCSTRUCT("t5",        OCREGRISCV_T5),
+  OCSTRUCT("t6",        OCREGRISCV_T6),
+
+  OCSTRUCT("x1",        OCREGRISCV_X1),
+  OCSTRUCT("x2",        OCREGRISCV_X2),
+  OCSTRUCT("x3",        OCREGRISCV_X3),
+  OCSTRUCT("x4",        OCREGRISCV_X4),
+  OCSTRUCT("x5",        OCREGRISCV_X5),
+  OCSTRUCT("x6",        OCREGRISCV_X6),
+  OCSTRUCT("x7",        OCREGRISCV_X7),
+  OCSTRUCT("x8",        OCREGRISCV_X8),
+  OCSTRUCT("x9",        OCREGRISCV_X9),
+  OCSTRUCT("x10",       OCREGRISCV_X10),
+  OCSTRUCT("x11",       OCREGRISCV_X11),
+  OCSTRUCT("x12",       OCREGRISCV_X12),
+  OCSTRUCT("x13",       OCREGRISCV_X13),
+  OCSTRUCT("x14",       OCREGRISCV_X14),
+  OCSTRUCT("x15",       OCREGRISCV_X15),
+  OCSTRUCT("x16",       OCREGRISCV_X16),
+  OCSTRUCT("x17",       OCREGRISCV_X17),
+  OCSTRUCT("x18",       OCREGRISCV_X18),
+  OCSTRUCT("x19",       OCREGRISCV_X19),
+  OCSTRUCT("x20",       OCREGRISCV_X20),
+  OCSTRUCT("x21",       OCREGRISCV_X21),
+  OCSTRUCT("x22",       OCREGRISCV_X22),
+  OCSTRUCT("x23",       OCREGRISCV_X23),
+  OCSTRUCT("x24",       OCREGRISCV_X24),
+  OCSTRUCT("x25",       OCREGRISCV_X25),
+  OCSTRUCT("x26",       OCREGRISCV_X26),
+  OCSTRUCT("x27",       OCREGRISCV_X27),
+  OCSTRUCT("x28",       OCREGRISCV_X28),
+  OCSTRUCT("x29",       OCREGRISCV_X29),
+  OCSTRUCT("x30",       OCREGRISCV_X30),
+  OCSTRUCT("x31",       OCREGRISCV_X31),
+
+  {NULL}
+};
+
 static convert_t oeREGISTERFLAGS_RISCV[] = {
   {0, 0}
 };
@@ -77,7 +154,6 @@ static convert_t oeREGISTERNAMES_RISCV64[] = {
   {"a6",                OCREGRISCV_A6},
   {"a7",                OCREGRISCV_A7},
 
-  {"s0",                OCREGRISCV_S0},
   {"s1",                OCREGRISCV_S1},
   {"s2",                OCREGRISCV_S2},
   {"s3",                OCREGRISCV_S3},
@@ -97,38 +173,6 @@ static convert_t oeREGISTERNAMES_RISCV64[] = {
   {"t4",                OCREGRISCV_T4},
   {"t5",                OCREGRISCV_T5},
   {"t6",                OCREGRISCV_T6},
-
-  {"x1",                OCREGRISCV_X1},
-  {"x2",                OCREGRISCV_X2},
-  {"x3",                OCREGRISCV_X3},
-  {"x4",                OCREGRISCV_X4},
-  {"x5",                OCREGRISCV_X5},
-  {"x6",                OCREGRISCV_X6},
-  {"x7",                OCREGRISCV_X7},
-  {"x8",                OCREGRISCV_X8},
-  {"x9",                OCREGRISCV_X9},
-  {"x10",               OCREGRISCV_X10},
-  {"x11",               OCREGRISCV_X11},
-  {"x12",               OCREGRISCV_X12},
-  {"x13",               OCREGRISCV_X13},
-  {"x14",               OCREGRISCV_X14},
-  {"x15",               OCREGRISCV_X15},
-  {"x16",               OCREGRISCV_X16},
-  {"x17",               OCREGRISCV_X17},
-  {"x18",               OCREGRISCV_X18},
-  {"x19",               OCREGRISCV_X19},
-  {"x20",               OCREGRISCV_X20},
-  {"x21",               OCREGRISCV_X21},
-  {"x22",               OCREGRISCV_X22},
-  {"x23",               OCREGRISCV_X23},
-  {"x24",               OCREGRISCV_X24},
-  {"x25",               OCREGRISCV_X25},
-  {"x26",               OCREGRISCV_X26},
-  {"x27",               OCREGRISCV_X27},
-  {"x28",               OCREGRISCV_X28},
-  {"x29",               OCREGRISCV_X29},
-  {"x30",               OCREGRISCV_X30},
-  {"x31",               OCREGRISCV_X31},
 
   {0, 0}
 };

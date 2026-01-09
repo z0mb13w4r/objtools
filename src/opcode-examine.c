@@ -178,6 +178,8 @@ static poestruct_t oepick_REG(handle_t p, unknown_t m, const size_t size) {
       return oepick(oeREGISTERS_ARM32, m, size);
     case EM_AARCH64:
       return oepick(oeREGISTERS_ARM64, m, size);
+    case EM_RISCV:
+      return ocisELF32(p) ? oeREGISTERS_RISCV32 : oeREGISTERS_RISCV64;
     default:
       break;
     }
@@ -195,6 +197,7 @@ static poestruct_t oepick_SEG(handle_t p, unknown_t m, const size_t size) {
     switch (ocget_machine(p)) {
     case EM_ARM:
     case EM_AARCH64:
+    case EM_RISCV:
       return NULL;
     default:
       break;
