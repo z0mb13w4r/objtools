@@ -16,6 +16,33 @@ static oestruct_t oeINSTRUCTIONS_RISCV[] = {
 };
 
 static convert_t oeINSTRUCTIONFLAGS_RISCV[] = {
+  {"LT",                OCINSN_LT},
+  {"RT",                OCINSN_RT},
+  {"A",                 OCINSN_A},
+  {"B",                 OCINSN_B},
+  {"C",                 OCINSN_C},
+  {"E",                 OCINSN_E},
+  {"G",                 OCINSN_G},
+  {"L",                 OCINSN_L},
+  {"N",                 OCINSN_N},
+  {"O",                 OCINSN_O},
+  {"S",                 OCINSN_S},
+  {"Z",                 OCINSN_Z},
+  {"1BIT",              OCINSN_1BIT},
+  {"8BIT",              OCINSN_8BIT},
+  {"16BIT",             OCINSN_16BIT},
+  {"32BIT",             OCINSN_32BIT},
+  {"64BIT",             OCINSN_64BIT},
+  {"80BIT",             OCINSN_80BIT},
+  {"128BIT",            OCINSN_128BIT},
+  {"256BIT",            OCINSN_256BIT},
+  {"512BIT",            OCINSN_512BIT},
+  {"OPERAND0",          OCINSN_OPERAND0},
+  {"OPERAND1",          OCINSN_OPERAND1},
+  {"OPERAND2",          OCINSN_OPERAND2},
+  {"OPERAND3",          OCINSN_OPERAND3},
+  {"OPERAND4",          OCINSN_OPERAND4},
+
   {0, 0}
 };
 
