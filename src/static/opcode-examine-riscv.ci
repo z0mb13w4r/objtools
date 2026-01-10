@@ -16,6 +16,10 @@ static oestruct_t oeINSTRUCTIONS_RISCV[] = {
   OCSTRUCT("sext.h",    OCINSNRISCV_SEXTH),
   OCSTRUCT("sext.w",    OCINSNRISCV_SEXTW),
 
+  OCSTRUCT("zext.b",    OCINSNRISCV_ZEXTB),
+  OCSTRUCT("zext.h",    OCINSNRISCV_ZEXTH),
+  OCSTRUCT("zext.w",    OCINSNRISCV_ZEXTW),
+
   {NULL}
 };
 
@@ -53,6 +57,8 @@ static convert_t oeINSTRUCTIONFLAGS_RISCV[] = {
 static convert_t oeINSTRUCTIONNAMES_RISCV[] = {
   {"LOAD",              OCINSN_MASK(OCINSNRISCV_LOAD)},
   {"STORE",             OCINSN_MASK(OCINSNRISCV_STORE)},
+  {"SEXT",              OCINSN_MASK(OCINSNRISCV_SEXT)},
+  {"ZEXT",              OCINSN_MASK(OCINSNRISCV_ZEXT)},
 
   {0, 0}
 };
