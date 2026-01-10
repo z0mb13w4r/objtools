@@ -9,8 +9,11 @@
 #define OCINSNRISCV_MUL                ((0x06) | OCINSN_OPERAND3)
 #define OCINSNRISCV_MULH               ((0x07) | OCINSN_OPERAND3)
 #define OCINSNRISCV_SUB                ((0x08) | OCINSN_OPERAND3)
-#define OCINSNRISCV_SEXT               ((0x09) | OCINSN_OPERAND2)
-#define OCINSNRISCV_ZEXT               ((0x0a) | OCINSN_OPERAND2)
+#define OCINSNRISCV_AND                ((0x20) | OCINSN_OPERAND3)
+#define OCINSNRISCV_ANDI               ((0x21) | OCINSN_OPERAND3)
+#define OCINSNRISCV_ANDN               ((0x22) | OCINSN_OPERAND3)
+#define OCINSNRISCV_SEXT               ((0x50) | OCINSN_OPERAND2)
+#define OCINSNRISCV_ZEXT               ((0x51) | OCINSN_OPERAND2)
 
 #define OCINSNRISCV_SIGNED             (OCINSN_S)
 #define OCINSNRISCV_UNSIGNED           (OCINSN_N)
