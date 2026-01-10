@@ -5,9 +5,10 @@
 #define OCINSNRISCV_STORE              ((0x02) | OCINSN_OPERAND2)
 #define OCINSNRISCV_ADD                ((0x03) | OCINSN_OPERAND3)
 #define OCINSNRISCV_ADDI               ((0x04) | OCINSN_OPERAND3)
-#define OCINSNRISCV_SUB                ((0x05) | OCINSN_OPERAND3)
-#define OCINSNRISCV_SEXT               ((0x06) | OCINSN_OPERAND2)
-#define OCINSNRISCV_ZEXT               ((0x07) | OCINSN_OPERAND2)
+#define OCINSNRISCV_DIV                ((0x05) | OCINSN_OPERAND3)
+#define OCINSNRISCV_SUB                ((0x06) | OCINSN_OPERAND3)
+#define OCINSNRISCV_SEXT               ((0x07) | OCINSN_OPERAND2)
+#define OCINSNRISCV_ZEXT               ((0x08) | OCINSN_OPERAND2)
 
 #define OCINSNRISCV_SIGNED             (OCINSN_S)
 #define OCINSNRISCV_UNSIGNED           (OCINSN_N)
@@ -33,6 +34,8 @@
 #define OCINSNRISCV_ADDIB              (OCINSNRISCV_ADDI | OCINSN_8BIT)
 #define OCINSNRISCV_ADDIH              (OCINSNRISCV_ADDI | OCINSN_16BIT)
 #define OCINSNRISCV_ADDIW              (OCINSNRISCV_ADDI | OCINSN_32BIT)
+
+#define OCINSNRISCV_DIVU               (OCINSNRISCV_DIV | OCINSNRISCV_UNSIGNED)
 
 #define OCINSNRISCV_SUBB               (OCINSNRISCV_SUB | OCINSN_8BIT)
 #define OCINSNRISCV_SUBH               (OCINSNRISCV_SUB | OCINSN_16BIT)
