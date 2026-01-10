@@ -3,6 +3,7 @@
 
 #define OCINSNRISCV_LOAD               ((0x01) | OCINSN_OPERAND2)
 #define OCINSNRISCV_STORE              ((0x02) | OCINSN_OPERAND2)
+#define OCINSNRISCV_SEXT               ((0x03) | OCINSN_OPERAND2)
 
 #define OCINSNRISCV_SIGNED             (OCINSN_S)
 #define OCINSNRISCV_UNSIGNED           (OCINSN_N)
@@ -20,6 +21,10 @@
 #define OCINSNRISCV_SD                 (OCINSNRISCV_STORE | OCINSN_64BIT)
 #define OCINSNRISCV_SH                 (OCINSNRISCV_STORE | OCINSN_16BIT)
 #define OCINSNRISCV_SW                 (OCINSNRISCV_STORE | OCINSN_32BIT)
+
+#define OCINSNRISCV_SEXTB              (OCINSNRISCV_SEXT | OCINSN_8BIT)
+#define OCINSNRISCV_SEXTH              (OCINSNRISCV_SEXT | OCINSN_16BIT)
+#define OCINSNRISCV_SEXTW              (OCINSNRISCV_SEXT | OCINSN_32BIT)
 
 #define OCREGRISCV_FP                  ((0x01))
 #define OCREGRISCV_GP                  ((0x02))
