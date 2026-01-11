@@ -401,6 +401,7 @@ static int ocdwarf_eh_frame_fdes(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed f
       qsort (fde_items, fde_count, sizeof(fdes_item_t), fdes_comp);
     }
 
+//printf("fde_count = %lld\n", fde_count);
     fde_item = fde_items;
     for (Dwarf_Signed i = 0; i < fde_count; ++i, ++fde_item) {
       if (MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED)) {
