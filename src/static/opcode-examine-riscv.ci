@@ -40,6 +40,10 @@ static oestruct_t oeINSTRUCTIONS_RISCV[] = {
   OCSTRUCT("andn",      OCINSNRISCV_ANDN),
   OCSTRUCT("and",       OCINSNRISCV_AND),
 
+  OCSTRUCT("ori",       OCINSNRISCV_ORI),
+  OCSTRUCT("orn",       OCINSNRISCV_ORN),
+  OCSTRUCT("or",        OCINSNRISCV_OR),
+
   OCSTRUCT("sext.b",    OCINSNRISCV_SEXTB),
   OCSTRUCT("sext.h",    OCINSNRISCV_SEXTH),
   OCSTRUCT("sext.w",    OCINSNRISCV_SEXTW),
@@ -91,9 +95,14 @@ static convert_t oeINSTRUCTIONNAMES_RISCV[] = {
   {"MULH",              OCINSN_MASK(OCINSNRISCV_MULH)},
   {"SUB",               OCINSN_MASK(OCINSNRISCV_SUB)},
   {"DIV",               OCINSN_MASK(OCINSNRISCV_DIV)},
+
   {"AND",               OCINSN_MASK(OCINSNRISCV_AND)},
   {"ANDI",              OCINSN_MASK(OCINSNRISCV_ANDI)},
   {"ANDN",              OCINSN_MASK(OCINSNRISCV_ANDN)},
+  {"OR",                OCINSN_MASK(OCINSNRISCV_OR)},
+  {"ORI",               OCINSN_MASK(OCINSNRISCV_ORI)},
+  {"ORN",               OCINSN_MASK(OCINSNRISCV_ORN)},
+
   {"SEXT",              OCINSN_MASK(OCINSNRISCV_SEXT)},
   {"ZEXT",              OCINSN_MASK(OCINSNRISCV_ZEXT)},
 

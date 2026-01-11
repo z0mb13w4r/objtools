@@ -12,6 +12,9 @@
 #define OCINSNRISCV_AND                ((0x20) | OCINSN_OPERAND3)
 #define OCINSNRISCV_ANDI               ((0x21) | OCINSN_OPERAND3)
 #define OCINSNRISCV_ANDN               ((0x22) | OCINSN_OPERAND3)
+#define OCINSNRISCV_OR                 ((0x23) | OCINSN_OPERAND3)
+#define OCINSNRISCV_ORI                ((0x24) | OCINSN_OPERAND3)
+#define OCINSNRISCV_ORN                ((0x25) | OCINSN_OPERAND3)
 #define OCINSNRISCV_SEXT               ((0x50) | OCINSN_OPERAND2)
 #define OCINSNRISCV_ZEXT               ((0x51) | OCINSN_OPERAND2)
 
