@@ -5,7 +5,7 @@
 #include "ocdwarf-macro.h"
 #include "elfcode-memfind.h"
 
-#ifdef OPCODE_DWARF_DEBUGY
+#ifdef OPCODE_DWARF_MACROCRUDE
 static handle_t ocfget_xxxdata(handle_t p) {
   handle_t p0 = fcalloc(ocget_rawdata(p), ocget_size(p), MEMFIND_NOCHUNKSIZE);
   return ecapply_relocsbyoffset(p0, ocget(p, OPCODE_RAWDATA), ocget_offset(p));
@@ -597,7 +597,7 @@ static int ocdwarf_debug_macro_next(handle_t p, Dwarf_Die die, int level, Dwarf_
 }
 #endif
 int ocdwarf_debug_macro(handle_t p, handle_t s, handle_t d) {
-#ifdef OPCODE_DWARF_DEBUGY
+#ifdef OPCODE_DWARF_MACROCRUDE
   return ocdwarf_debug_macro_crude(p, s, d, FALSE);
 #else
   int x = DW_DLV_ERROR;
@@ -632,7 +632,7 @@ int ocdwarf_debug_macro(handle_t p, handle_t s, handle_t d) {
 }
 
 int ocdwarf_debug_macro_dwo(handle_t p, handle_t s, handle_t d) {
-#ifdef OPCODE_DWARF_DEBUGY
+#ifdef OPCODE_DWARF_MACROCRUDE
   return ocdwarf_debug_macro_crude(p, s, d, TRUE);
 #else
   return ocdwarf_debug_macro(p, s, d);

@@ -2,7 +2,7 @@
 #define __OCDWARF_H_
 
 //#define OPCODE_DWARF_DEBUGX
-#define OPCODE_DWARF_DEBUGY
+#define OPCODE_DWARF_MACROCRUDE
 
 #include <dwarf.h>
 #include <libdwarf.h>
