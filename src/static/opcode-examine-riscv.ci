@@ -44,6 +44,10 @@ static oestruct_t oeINSTRUCTIONS_RISCV[] = {
   OCSTRUCT("orn",       OCINSNRISCV_ORN),
   OCSTRUCT("or",        OCINSNRISCV_OR),
 
+  OCSTRUCT("xori",      OCINSNRISCV_XORI),
+  OCSTRUCT("xorn",      OCINSNRISCV_XORN),
+  OCSTRUCT("xor",       OCINSNRISCV_XOR),
+
   OCSTRUCT("sext.b",    OCINSNRISCV_SEXTB),
   OCSTRUCT("sext.h",    OCINSNRISCV_SEXTH),
   OCSTRUCT("sext.w",    OCINSNRISCV_SEXTW),
