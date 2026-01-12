@@ -72,10 +72,21 @@ static oestruct_t oeINSTRUCTIONS_RISCV[] = {
   OCSTRUCT("zext.h",    OCINSNRISCV_ZEXTH),
   OCSTRUCT("zext.w",    OCINSNRISCV_ZEXTW),
 
-  OCSTRUCT("j",         OCINSNRISCV_JMP),
+  OCSTRUCT("j",         OCINSNRISCV_Jxx),
   OCSTRUCT("jr",        OCINSNRISCV_JR),
   OCSTRUCT("jal",       OCINSNRISCV_JAL),
   OCSTRUCT("jalr",      OCINSNRISCV_JALR),
+
+  OCSTRUCT("bgeu",      OCINSNRISCV_BGEU),
+  OCSTRUCT("bgtu",      OCINSNRISCV_BGTU),
+  OCSTRUCT("bleu",      OCINSNRISCV_BLEU),
+  OCSTRUCT("bltu",      OCINSNRISCV_BLTU),
+  OCSTRUCT("beq",       OCINSNRISCV_BEQ),
+  OCSTRUCT("bge",       OCINSNRISCV_BGE),
+  OCSTRUCT("bgt",       OCINSNRISCV_BGT),
+  OCSTRUCT("ble",       OCINSNRISCV_BLE),
+  OCSTRUCT("blt",       OCINSNRISCV_BLT),
+  OCSTRUCT("bne",       OCINSNRISCV_BNE),
 
   {NULL}
 };
@@ -146,8 +157,8 @@ static convert_t oeINSTRUCTIONNAMES_RISCV[] = {
   {"SEXT",              OCINSN_MASK(OCINSNRISCV_SEXT)},
   {"ZEXT",              OCINSN_MASK(OCINSNRISCV_ZEXT)},
 
-  {"JMP",               OCINSN_MASK(OCINSNRISCV_JMP)},
-  {"BRANCH",            OCINSN_MASK(OCINSNRISCV_BRANCH)},
+  {"Jxx",               OCINSN_MASK(OCINSNRISCV_Jxx)},
+  {"Bxx",               OCINSN_MASK(OCINSNRISCV_Bxx)},
 
   {0, 0}
 };
@@ -277,8 +288,8 @@ static convert_t oeREGISTERNAMES_RISCV64[] = {
 };
 
 static pick_t oeADDRLOOKUP_RISCV[] = {
-  OCINSN_MASK(OCINSNRISCV_JMP),
-  OCINSN_MASK(OCINSNRISCV_BRANCH),
+  OCINSN_MASK(OCINSNRISCV_Jxx),
+  OCINSN_MASK(OCINSNRISCV_Bxx),
 
   PICK_END
 };
