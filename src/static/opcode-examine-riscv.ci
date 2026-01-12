@@ -146,7 +146,6 @@ static convert_t oeINSTRUCTIONNAMES_RISCV[] = {
   {"ORI",               OCINSN_MASK(OCINSNRISCV_ORI)},
   {"ORN",               OCINSN_MASK(OCINSNRISCV_ORN)},
   {"ROx",               OCINSN_MASK(OCINSNRISCV_ROx)},
-  {"ROxI",              OCINSN_MASK(OCINSNRISCV_ROxI)},
   {"XNOR",              OCINSN_MASK(OCINSNRISCV_XNOR)},
   {"XNORI",             OCINSN_MASK(OCINSNRISCV_XNORI)},
   {"XNORN",             OCINSN_MASK(OCINSNRISCV_XNORN)},
