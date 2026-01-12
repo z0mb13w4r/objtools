@@ -72,8 +72,8 @@ static oestruct_t oeINSTRUCTIONS_RISCV[] = {
   OCSTRUCT("zext.h",    OCINSNRISCV_ZEXTH),
   OCSTRUCT("zext.w",    OCINSNRISCV_ZEXTW),
 
-  OCSTRUCT("jr",        OCINSNRISCV_JR),
   OCSTRUCT("j",         OCINSNRISCV_JMP),
+  OCSTRUCT("jr",        OCINSNRISCV_JR),
   OCSTRUCT("jal",       OCINSNRISCV_JAL),
   OCSTRUCT("jalr",      OCINSNRISCV_JALR),
 
@@ -147,6 +147,7 @@ static convert_t oeINSTRUCTIONNAMES_RISCV[] = {
   {"ZEXT",              OCINSN_MASK(OCINSNRISCV_ZEXT)},
 
   {"JMP",               OCINSN_MASK(OCINSNRISCV_JMP)},
+  {"BRANCH",            OCINSN_MASK(OCINSNRISCV_BRANCH)},
 
   {0, 0}
 };
@@ -276,6 +277,9 @@ static convert_t oeREGISTERNAMES_RISCV64[] = {
 };
 
 static pick_t oeADDRLOOKUP_RISCV[] = {
+  OCINSN_MASK(OCINSNRISCV_JMP),
+  OCINSN_MASK(OCINSNRISCV_BRANCH),
+
   PICK_END
 };
 

@@ -30,6 +30,7 @@
 #define OCINSNRISCV_ZEXT               ((0x51) | OCINSN_OPERAND2)
 
 #define OCINSNRISCV_JMP                ((0x60) | OCINSN_OPERAND1)
+#define OCINSNRISCV_BRANCH             ((0x61) | OCINSN_OPERAND3)
 
 #define OCINSNRISCV_LINK               U64MASK(19)
 #define OCINSNRISCV_REGISTER           U64MASK(20)
@@ -37,6 +38,13 @@
 
 #define OCINSNRISCV_SIGNED             (OCINSN_S)
 #define OCINSNRISCV_UNSIGNED           (OCINSN_N)
+
+#define OCINSNRISCV_EQ                 (OCINSN_E)
+#define OCINSNRISCV_GE                 (OCINSN_GE)
+#define OCINSNRISCV_GT                 (OCINSN_G)
+#define OCINSNRISCV_LE                 (OCINSN_LE)
+#define OCINSNRISCV_LT                 (OCINSN_L)
+#define OCINSNRISCV_NE                 (OCINSN_NE)
 
 #define OCINSNRISCV_LB                 (OCINSNRISCV_LOAD | OCINSN_8BIT)
 #define OCINSNRISCV_LD                 (OCINSNRISCV_LOAD | OCINSN_64BIT)
