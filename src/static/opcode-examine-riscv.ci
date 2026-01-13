@@ -12,6 +12,8 @@ static oestruct_t oeINSTRUCTIONS_RISCV[] = {
   OCSTRUCT("sh",        OCINSNRISCV_SH),
   OCSTRUCT("sw",        OCINSNRISCV_SW),
 
+  OCSTRUCT("nop",       OCINSNRISCV_NOP),
+
   OCSTRUCT("addb",      OCINSNRISCV_ADDB),
   OCSTRUCT("addh",      OCINSNRISCV_ADDH),
   OCSTRUCT("addw",      OCINSNRISCV_ADDW),
@@ -42,6 +44,8 @@ static oestruct_t oeINSTRUCTIONS_RISCV[] = {
 
   OCSTRUCT("binv",      OCINSNRISCV_BINV),
   OCSTRUCT("binvi",     OCINSNRISCV_BINVI),
+
+  OCSTRUCT("not",       OCINSNRISCV_NOT),
 
   OCSTRUCT("ori",       OCINSNRISCV_ORI),
   OCSTRUCT("orn",       OCINSNRISCV_ORN),
@@ -129,6 +133,7 @@ static convert_t oeINSTRUCTIONFLAGS_RISCV[] = {
 static convert_t oeINSTRUCTIONNAMES_RISCV[] = {
   {"LOAD",              OCINSN_MASK(OCINSNRISCV_LOAD)},
   {"STORE",             OCINSN_MASK(OCINSNRISCV_STORE)},
+  {"NOP",               OCINSN_MASK(OCINSNRISCV_NOP)},
 
   {"ADD",               OCINSN_MASK(OCINSNRISCV_ADD)},
   {"MUL",               OCINSN_MASK(OCINSNRISCV_MUL)},
@@ -139,6 +144,7 @@ static convert_t oeINSTRUCTIONNAMES_RISCV[] = {
   {"AND",               OCINSN_MASK(OCINSNRISCV_AND)},
   {"ANDN",              OCINSN_MASK(OCINSNRISCV_ANDN)},
   {"BINV",              OCINSN_MASK(OCINSNRISCV_BINV)},
+  {"NOT",               OCINSN_MASK(OCINSNRISCV_NOT)},
   {"OR",                OCINSN_MASK(OCINSNRISCV_OR)},
   {"ORN",               OCINSN_MASK(OCINSNRISCV_ORN)},
   {"ROx",               OCINSN_MASK(OCINSNRISCV_ROx)},
