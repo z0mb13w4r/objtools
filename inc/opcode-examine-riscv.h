@@ -31,6 +31,7 @@
 #define OCINSNRISCV_LINK               U64MASK(19)
 #define OCINSNRISCV_REGISTER           U64MASK(20)
 #define OCINSNRISCV_IMMEDIATE          U64MASK(21)
+#define OCINSNRISCV_UPPER              U64MASK(22)
 
 #define OCINSNRISCV_SIGNED             (OCINSN_S)
 #define OCINSNRISCV_UNSIGNED           (OCINSN_N)

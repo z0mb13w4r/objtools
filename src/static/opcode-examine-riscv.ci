@@ -129,6 +129,7 @@ static convert_t oeINSTRUCTIONFLAGS_RISCV[] = {
   {"LINK",              OCINSNRISCV_LINK},
   {"REGISTER",          OCINSNRISCV_REGISTER},
   {"IMMEDIATE",         OCINSNRISCV_IMMEDIATE},
+  {"UPPER",             OCINSNRISCV_UPPER},
 
   {0, 0}
 };
