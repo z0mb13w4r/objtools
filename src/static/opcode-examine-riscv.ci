@@ -52,6 +52,11 @@ static oestruct_t oeINSTRUCTIONS_RISCV[] = {
   OCSTRUCT("binv",      OCINSNRISCV_BINV),
   OCSTRUCT("binvi",     OCINSNRISCV_BINVI),
 
+  OCSTRUCT("minu",      OCINSNRISCV_MINU),
+  OCSTRUCT("min",       OCINSNRISCV_MIN),
+  OCSTRUCT("maxu",      OCINSNRISCV_MAXU),
+  OCSTRUCT("max",       OCINSNRISCV_MAX),
+
   OCSTRUCT("not",       OCINSNRISCV_NOT),
 
   OCSTRUCT("ori",       OCINSNRISCV_ORI),
@@ -175,6 +180,8 @@ static convert_t oeINSTRUCTIONNAMES_RISCV[] = {
   {"AND",               OCINSN_MASK(OCINSNRISCV_AND)},
   {"ANDN",              OCINSN_MASK(OCINSNRISCV_ANDN)},
   {"BINV",              OCINSN_MASK(OCINSNRISCV_BINV)},
+  {"MIN",               OCINSN_MASK(OCINSNRISCV_MIN)},
+  {"MAX",               OCINSN_MASK(OCINSNRISCV_MAX)},
   {"NOT",               OCINSN_MASK(OCINSNRISCV_NOT)},
   {"OR",                OCINSN_MASK(OCINSNRISCV_OR)},
   {"ORN",               OCINSN_MASK(OCINSNRISCV_ORN)},
