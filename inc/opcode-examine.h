@@ -1,8 +1,8 @@
 #ifndef __OPCODE_EXAMINE_H_
 #define __OPCODE_EXAMINE_H_
 
-//#define OPCODE_EXAMINE_DEBUGX
-//#define OPCODE_EXAMINE_DEBUGY
+//#define OPCODE_EXAMINE_MNEMONIC
+//#define OPCODE_EXAMINE_OPERAND
 
 #include "opcode.h"
 #include "objutils.h"

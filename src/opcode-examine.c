@@ -491,7 +491,7 @@ static unknown_t oedo_register(handle_t p, handle_t e, unknown_t o, unknown_t m)
         m0 = NULL;
       }
 
-#ifdef OPCODE_EXAMINE_DEBUGY
+#ifdef OPCODE_EXAMINE_OPERAND
       if (m0) {
         printf_e("The operand has not been processed '%s'", m0);
       }
@@ -596,7 +596,7 @@ static unknown_t oedo_value(handle_t p, handle_t e, unknown_t o, unknown_t m) {
         o0->cvalue |= OCOPERAND_UVALUE3;
         m3 = NULL;
       }
-#ifdef OPCODE_EXAMINE_DEBUGY
+#ifdef OPCODE_EXAMINE_OPERAND
       if (m1 || m2 || m3) {
         printf_e("The operand has not been processed '%s:%s:%s'", m1, m2, m3);
       }
@@ -693,7 +693,7 @@ static unknown_t oeinsert_operands(handle_t p, handle_t e, unknown_t q, unknown_
       if (m1) {
         e0->op1 = oeinsert_operand(p, e, q, m1);
       } else if (MODE_ISNOT(q0->action, OCINSN_OPERAND0)) {
-#ifdef OPCODE_EXAMINE_DEBUGY
+#ifdef OPCODE_EXAMINE_OPERAND
         printf_e("Missing operand #1");
 #endif
       } else {
@@ -705,7 +705,7 @@ static unknown_t oeinsert_operands(handle_t p, handle_t e, unknown_t q, unknown_
       if (m2) {
         e0->op2 = oeinsert_operand(p, e, q, m2);
       } else if (MODE_ISNOT(q0->action, OCINSN_OPERAND1)) {
-#ifdef OPCODE_EXAMINE_DEBUGY
+#ifdef OPCODE_EXAMINE_OPERAND
         printf_e("Missing operand #2");
 #endif
       } else {
@@ -717,7 +717,7 @@ static unknown_t oeinsert_operands(handle_t p, handle_t e, unknown_t q, unknown_
       if (m3) {
         e0->op3 = oeinsert_operand(p, e, q, m3);
       } else if (MODE_ISNOT(q0->action, OCINSN_OPERAND2)) {
-#ifdef OPCODE_EXAMINE_DEBUGY
+#ifdef OPCODE_EXAMINE_OPERAND
         printf_e("Missing operand #3");
 #endif
       } else {
@@ -729,7 +729,7 @@ static unknown_t oeinsert_operands(handle_t p, handle_t e, unknown_t q, unknown_
       if (m4) {
         e0->op4 = oeinsert_operand(p, e, q, m4);
       } else if (MODE_ISNOT(q0->action, OCINSN_OPERAND3)) {
-#ifdef OPCODE_EXAMINE_DEBUGY
+#ifdef OPCODE_EXAMINE_OPERAND
         printf_e("Missing operand #4");
 #endif
       } else {
@@ -760,7 +760,7 @@ handle_t oecreate(handle_t p, const uint64_t vaddr, unknown_t mnemonic, unknown_
       m1 = oeinsert_mnemonic(p, e0, pi, m1);
       m1 = oeinsert_operands(p, e0, pi, operands ? o0 : m1);
     } else {
-#ifdef OPCODE_EXAMINE_DEBUGX
+#ifdef OPCODE_EXAMINE_MNEMONIC
       printf_e("The mnemonic is missing from the table oeINSTRUCTIONS");
 #endif
     }

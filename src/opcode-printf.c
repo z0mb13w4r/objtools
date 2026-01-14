@@ -454,11 +454,11 @@ int opcode_printf_detail(handle_t p, const uint64_t vaddr, unknown_t mnemonic, u
         }
       }
     }
-#ifndef OPCODE_EXAMINE_DEBUGX
+#ifndef OPCODE_EXAMINE_MNEMONIC
     if (MODE_ISANY(oc->ocdump, OPTDISASSEMBLE_VERBOSE)) {
 #endif
       n += ocdebugf(p, oe);
-#ifndef OPCODE_EXAMINE_DEBUGX
+#ifndef OPCODE_EXAMINE_MNEMONIC
     }
 #endif
     oefree(oe);
