@@ -3,7 +3,8 @@
 
 #define OCINSNRISCV_LOAD               ((0x01) | OCINSN_OPERAND2)
 #define OCINSNRISCV_STORE              ((0x02) | OCINSN_OPERAND2)
-#define OCINSNRISCV_NOP                ((0x03) | OCINSN_OPERAND0)
+#define OCINSNRISCV_MOVE               ((0x03) | OCINSN_OPERAND2)
+#define OCINSNRISCV_NOP                ((0x04) | OCINSN_OPERAND0)
 #define OCINSNRISCV_ADD                ((0x10) | OCINSN_OPERAND3)
 #define OCINSNRISCV_AxxPC              ((0x11) | OCINSN_OPERAND2)
 #define OCINSNRISCV_DIV                ((0x12) | OCINSN_OPERAND3)
