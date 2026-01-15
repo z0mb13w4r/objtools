@@ -29,9 +29,11 @@ static oestruct_t oeINSTRUCTIONS_RISCV[] = {
   OCSTRUCT("sh",        OCINSNRISCV_SH),
   OCSTRUCT("sw",        OCINSNRISCV_SW),
 
+  OCSTRUCT("c.flwsp",   OCINSNRISCV_FLWSP),
   OCSTRUCT("c.flw",     OCINSNRISCV_FLW),
   OCSTRUCT("c.fsw",     OCINSNRISCV_FSW),
 
+  OCSTRUCT("flwsp",     OCINSNRISCV_FLWSP),
   OCSTRUCT("flw",       OCINSNRISCV_FLW),
   OCSTRUCT("fsw",       OCINSNRISCV_FSW),
 
@@ -233,6 +235,7 @@ static convert_t oeINSTRUCTIONFLAGS_RISCV[] = {
   {"REGISTER",          OCINSNRISCV_REGISTER},
   {"IMMEDIATE",         OCINSNRISCV_IMMEDIATE},
   {"UPPER",             OCINSNRISCV_UPPER},
+  {"STACK",             OCINSNRISCV_STACK},
 
   {0, 0}
 };
