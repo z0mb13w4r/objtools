@@ -1,4 +1,14 @@
 static oestruct_t oeINSTRUCTIONS_RISCV[] = {
+  OCSTRUCT("c.lbu",     OCINSNRISCV_LBU),
+  OCSTRUCT("c.lhu",     OCINSNRISCV_LHU),
+  OCSTRUCT("c.lui",     OCINSNRISCV_LUI),
+  OCSTRUCT("c.lwu",     OCINSNRISCV_LWU),
+  OCSTRUCT("c.lb",      OCINSNRISCV_LB),
+  OCSTRUCT("c.ld",      OCINSNRISCV_LD),
+  OCSTRUCT("c.lh",      OCINSNRISCV_LH),
+  OCSTRUCT("c.li",      OCINSNRISCV_LI),
+  OCSTRUCT("c.lw",      OCINSNRISCV_LW),
+
   OCSTRUCT("lbu",       OCINSNRISCV_LBU),
   OCSTRUCT("lhu",       OCINSNRISCV_LHU),
   OCSTRUCT("lui",       OCINSNRISCV_LUI),
