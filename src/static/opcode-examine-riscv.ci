@@ -158,6 +158,17 @@ static oestruct_t oeINSTRUCTIONS_RISCV[] = {
   OCSTRUCT("jr",        OCINSNRISCV_JR),
   OCSTRUCT("j",         OCINSNRISCV_Jxx),
 
+  OCSTRUCT("c.bgeu",    OCINSNRISCV_BGEU),
+  OCSTRUCT("c.bgtu",    OCINSNRISCV_BGTU),
+  OCSTRUCT("c.bleu",    OCINSNRISCV_BLEU),
+  OCSTRUCT("c.bltu",    OCINSNRISCV_BLTU),
+  OCSTRUCT("c.beq",     OCINSNRISCV_BEQ),
+  OCSTRUCT("c.bge",     OCINSNRISCV_BGE),
+  OCSTRUCT("c.bgt",     OCINSNRISCV_BGT),
+  OCSTRUCT("c.ble",     OCINSNRISCV_BLE),
+  OCSTRUCT("c.blt",     OCINSNRISCV_BLT),
+  OCSTRUCT("c.bne",     OCINSNRISCV_BNE),
+
   OCSTRUCT("bgeu",      OCINSNRISCV_BGEU),
   OCSTRUCT("bgtu",      OCINSNRISCV_BGTU),
   OCSTRUCT("bleu",      OCINSNRISCV_BLEU),
