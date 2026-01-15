@@ -31,10 +31,12 @@ static oestruct_t oeINSTRUCTIONS_RISCV[] = {
 
   OCSTRUCT("c.flwsp",   OCINSNRISCV_FLWSP),
   OCSTRUCT("c.flw",     OCINSNRISCV_FLW),
+  OCSTRUCT("c.fswsp",   OCINSNRISCV_FSWSP),
   OCSTRUCT("c.fsw",     OCINSNRISCV_FSW),
 
   OCSTRUCT("flwsp",     OCINSNRISCV_FLWSP),
   OCSTRUCT("flw",       OCINSNRISCV_FLW),
+  OCSTRUCT("fswsp",     OCINSNRISCV_FSWSP),
   OCSTRUCT("fsw",       OCINSNRISCV_FSW),
 
   OCSTRUCT("c.mv",      OCINSNRISCV_MOVE),
