@@ -132,6 +132,11 @@ static oestruct_t oeINSTRUCTIONS_RISCV[] = {
   OCSTRUCT("rorw",         OCINSNRISCV_RORW),
   OCSTRUCT("ror",          OCINSNRISCV_ROR),
 
+  OCSTRUCT("c.slaiw",      OCINSNRISCV_SLAIW),
+  OCSTRUCT("c.slai",       OCINSNRISCV_SLAI),
+  OCSTRUCT("c.slaw",       OCINSNRISCV_SLAW),
+  OCSTRUCT("c.sla",        OCINSNRISCV_SLA),
+
   OCSTRUCT("slaiw",        OCINSNRISCV_SLAIW),
   OCSTRUCT("slai",         OCINSNRISCV_SLAI),
   OCSTRUCT("slaw",         OCINSNRISCV_SLAW),
