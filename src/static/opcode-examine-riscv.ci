@@ -111,6 +111,10 @@ static oestruct_t oeINSTRUCTIONS_RISCV[] = {
   OCSTRUCT("c.not",     OCINSNRISCV_NOT),
   OCSTRUCT("not",       OCINSNRISCV_NOT),
 
+  OCSTRUCT("c.ori",     OCINSNRISCV_ORI),
+  OCSTRUCT("c.orn",     OCINSNRISCV_ORN),
+  OCSTRUCT("c.or",      OCINSNRISCV_OR),
+
   OCSTRUCT("ori",       OCINSNRISCV_ORI),
   OCSTRUCT("orn",       OCINSNRISCV_ORN),
   OCSTRUCT("or",        OCINSNRISCV_OR),
