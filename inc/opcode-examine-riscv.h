@@ -7,6 +7,7 @@
 #define OCINSNRISCV_FLW                ((0x04) | OCINSN_OPERAND2)
 #define OCINSNRISCV_FSW                ((0x05) | OCINSN_OPERAND2)
 #define OCINSNRISCV_NOP                ((0x06) | OCINSN_OPERAND0)
+
 #define OCINSNRISCV_ADD                ((0x10) | OCINSN_OPERAND3)
 #define OCINSNRISCV_AxxPC              ((0x11) | OCINSN_OPERAND2)
 #define OCINSNRISCV_DIV                ((0x12) | OCINSN_OPERAND3)
@@ -35,6 +36,7 @@
 
 #define OCINSNRISCV_Jxx                ((0x60) | OCINSN_OPERAND1)
 #define OCINSNRISCV_Bxx                ((0x61) | OCINSN_OPERAND3)
+#define OCINSNRISCV_EBREAK             ((0x62) | OCINSN_OPERAND0)
 
 #define OCINSNRISCV_LINK               U64MASK(19)
 #define OCINSNRISCV_REGISTER           U64MASK(20)
