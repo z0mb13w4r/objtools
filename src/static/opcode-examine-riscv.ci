@@ -42,6 +42,7 @@ static oestruct_t oeINSTRUCTIONS_RISCV[] = {
   OCSTRUCT("c.mv",      OCINSNRISCV_MOVE),
   OCSTRUCT("mv",        OCINSNRISCV_MOVE),
 
+  OCSTRUCT("c.nop",     OCINSNRISCV_NOP),
   OCSTRUCT("nop",       OCINSNRISCV_NOP),
 
   OCSTRUCT("c.addb",    OCINSNRISCV_ADDB),
