@@ -108,6 +108,7 @@ static oestruct_t oeINSTRUCTIONS_RISCV[] = {
   OCSTRUCT("maxu",      OCINSNRISCV_MAXU),
   OCSTRUCT("max",       OCINSNRISCV_MAX),
 
+  OCSTRUCT("c.not",     OCINSNRISCV_NOT),
   OCSTRUCT("not",       OCINSNRISCV_NOT),
 
   OCSTRUCT("ori",       OCINSNRISCV_ORI),
