@@ -276,6 +276,26 @@ int capstone_raw2(handle_t p, handle_t s, unknown_t data, const size_t size, con
       size_t count = cs_disasm(oc->cs, p0, 4, caddr, 0, &insn);
       if (count > 0) {
         for (size_t i = 0; i < count; ++i) {
+            if (ocuse_vaddr(p, insn[i].address)) {
+              int n1 = 0;
+
+              n1 += opcode_printf_source(p, insn[i].address);
+
+              if (MODE_ISNOT(oc->action, OPTPROGRAM_NO_ADDRESSES)) {
+                n1 += opcode_printf_LHEX(p, insn[i].address, USE_COLON);
+              }
+
+              if (MODE_ISANY(oc->action, OPTPROGRAM_PREFIX_ADDR)) {
+                n1 += opcode_printf_prefix(p, insn[i].address);
+              } else if (MODE_ISNOT(oc->action, OPTPROGRAM_NO_SHOW_RAW_INSN)) {
+                n1 += printf_sore(insn[i].bytes, insn[i].size, USE_HEX | USE_SPACE);
+                n1 += printf_pack(42 - n1);
+              }
+
+              n += n1;
+              n += opcode_printf_detail(p, insn[i].address, insn[i].mnemonic, insn[i].op_str);
+              n += printf_eol();
+            }
 
           k += insn[i].size;
           p0 += insn[i].size,
