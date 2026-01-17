@@ -43,16 +43,17 @@ static int get_csmode(handle_t p, handle_t o) {
     else if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_RISCV32))  return CS_MODE_RISCV32;
   }
 
-  if (EM_ARM == ocget_machine(p)) {
+  const uint64_t mach = ocget_machine(p);
+  const uint64_t size = ocget_archsize(p);
+
+  if (EM_ARM == mach) {
     return CS_MODE_ARM;
-  } else if (EM_AARCH64 == ocget_machine(p)) {
+  } else if (EM_AARCH64 == mach) {
     return ocisLE(p) ? CS_MODE_LITTLE_ENDIAN : CS_MODE_BIG_ENDIAN;
-  } else if (EM_RISCV == ocget_machine(p)) {
-    const uint64_t size = ocget_archsize(p);
+  } else if (EM_RISCV == mach) {
     if (32 == size) return CS_MODE_RISCV32;
     else if (64 == size) return CS_MODE_RISCV64;
   } else {
-    const uint64_t size = ocget_archsize(p);
     if (16 == size) return CS_MODE_16;
     else if (32 == size) return CS_MODE_32;
   }
@@ -74,6 +75,7 @@ int capstone_open(handle_t p, handle_t o) {
       }
 
 //      cs_option(oc->cs, CS_OPT_DETAIL, CS_OPT_ON);
+//      cs_option(oc->cs, CS_OPT_SKIPDATA, CS_OPT_ON);
       return ECODE_OK;
     }
 
@@ -259,6 +261,15 @@ int capstone_raw1(handle_t p, handle_t s, unknown_t data, const size_t size, con
   return n;
 }
 
+int capstone_raw2(handle_t p, handle_t s, unknown_t data, const size_t size, const uint64_t vaddr) {
+  int n = 0;
+  if (data && isopcode(p) && ismodeNXXN(s, MODE_OCSHDRWRAP)) {
+
+  }
+
+  return n;
+}
+
 int capstone_run(handle_t p, handle_t s) {
   int n = 0;
   if (isopcode(p) && isopshdr(s)) {
@@ -267,6 +278,7 @@ int capstone_run(handle_t p, handle_t s) {
 
     if (p0) {
       if (bfd_get_section_contents(ocget(p, OPCODE_BFD), ocget(s, MODE_OCSHDR), p0, 0, sz)) {
+//        n += capstone_raw2(p, s, p0, sz, ocget_vmaddress(s));
         if (ecmake_sectionthumbs(ocget(p, OPCODE_RAWDATA), NULL, 0)) {
           n += capstone_raw1(p, s, p0, sz, ocget_vmaddress(s));
         } else {
