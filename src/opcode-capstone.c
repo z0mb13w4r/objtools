@@ -264,7 +264,18 @@ int capstone_raw1(handle_t p, handle_t s, unknown_t data, const size_t size, con
 int capstone_raw2(handle_t p, handle_t s, unknown_t data, const size_t size, const uint64_t vaddr) {
   int n = 0;
   if (data && isopcode(p) && ismodeNXXN(s, MODE_OCSHDRWRAP)) {
+    popcode_t oc = ocget(p, OPCODE_THIS);
+    puchar_t p0 = CAST(puchar_t, data);
+    int core_state = get_csmode(p, NULL);
 
+    int prev_state = core_state;
+    for (size_t k = 0; k < size; ) {
+
+    }
+
+    if (core_state != prev_state && CS_ERR_OK == cs_close(&oc->cs)) {
+      cs_open(CS_ARCH_RISCV, core_state, &oc->cs);
+    }
   }
 
   return n;
