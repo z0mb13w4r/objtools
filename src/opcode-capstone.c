@@ -266,11 +266,22 @@ int capstone_raw2(handle_t p, handle_t s, unknown_t data, const size_t size, con
   if (data && isopcode(p) && ismodeNXXN(s, MODE_OCSHDRWRAP)) {
     popcode_t oc = ocget(p, OPCODE_THIS);
     puchar_t p0 = CAST(puchar_t, data);
+
+    uint64_t caddr = vaddr;
     int core_state = get_csmode(p, NULL);
-
     int prev_state = core_state;
-    for (size_t k = 0; k < size; ) {
 
+    for (size_t k = 0; k < size; ) {
+      cs_insn *insn = NULL;
+      size_t count = cs_disasm(oc->cs, p0, 4, caddr, 0, &insn);
+      if (count > 0) {
+        for (size_t i = 0; i < count; ++i) {
+
+          k += insn[i].size;
+          p0 += insn[i].size,
+          caddr += insn[i].size;
+        }
+      }
     }
 
     if (core_state != prev_state && CS_ERR_OK == cs_close(&oc->cs)) {
