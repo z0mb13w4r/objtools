@@ -272,6 +272,7 @@ int capstone_raw2(handle_t p, handle_t s, unknown_t data, const size_t size, con
     int curr_state = core_state;
     int prev_state = core_state;
 
+    int evilcount = 0;
     for (size_t k = 0; k < size; ) {
       cs_insn *insn = NULL;
       size_t count = cs_disasm(oc->cs, p0, 4, caddr, 0, &insn);
@@ -301,11 +302,22 @@ int capstone_raw2(handle_t p, handle_t s, unknown_t data, const size_t size, con
           k += insn[i].size;
           p0 += insn[i].size,
           caddr += insn[i].size;
+          evilcount = 0;
         }
       } else {
-        curr_state = curr_state != core_state ? core_state : CS_MODE_RISCVC;
-        if (CS_ERR_OK == cs_close(&oc->cs)) {
-          cs_open(CS_ARCH_RISCV, curr_state, &oc->cs);
+//printf("offset = %lx\n", k);
+        if (evilcount < 3) {
+          curr_state = curr_state != core_state ? core_state : CS_MODE_RISCVC;
+          if (CS_ERR_OK == cs_close(&oc->cs)) {
+            cs_open(CS_ARCH_RISCV, curr_state, &oc->cs);
+            ++evilcount;
+          }
+        } else {
+//printf("skipping = %lx\n", k);
+          k += 4;
+          p0 += 4,
+          caddr += 4;
+          evilcount = 0;
         }
       }
     }
