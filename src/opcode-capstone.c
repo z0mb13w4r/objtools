@@ -95,6 +95,56 @@ int capstone_close(handle_t p) {
   return ECODE_HANDLE;
 }
 
+static int capstone_printf0(handle_t p, unknown_t data, unknown_t mnemonic, unknown_t operands, const size_t size, const uint64_t vaddr) {
+  int n = 0;
+  if (isopcode(p)) {
+    popcode_t oc = ocget(p, OPCODE_THIS);
+
+    n += opcode_printf_source(p, vaddr);
+
+    if (MODE_ISNOT(oc->action, OPTPROGRAM_NO_ADDRESSES)) {
+      n += opcode_printf_LHEX(p, vaddr, USE_COLON);
+    }
+
+    if (MODE_ISANY(oc->action, OPTPROGRAM_PREFIX_ADDR)) {
+      n += opcode_printf_prefix(p, vaddr);
+    } else if (MODE_ISNOT(oc->action, OPTPROGRAM_NO_SHOW_RAW_INSN)) {
+      n += printf_sore(data, size, USE_HEX | USE_SPACE);
+      n += printf_pack(42 - n);
+    }
+
+    n += opcode_printf_detail(p, vaddr, mnemonic, operands);
+    n += printf_eol();
+  }
+
+  return n;
+}
+
+static int capstone_printf1(handle_t p, unknown_t data, const size_t size, const uint64_t vaddr) {
+  int n = 0;
+  if (isopcode(p)) {
+    popcode_t oc = ocget(p, OPCODE_THIS);
+    puchar_t p0 = CAST(puchar_t, data);
+
+    if (MODE_ISNOT(oc->action, OPTPROGRAM_NO_ADDRESSES)) {
+      n += opcode_printf_LHEX(p, vaddr, USE_COLON);
+    }
+
+    if (MODE_ISANY(oc->action, OPTPROGRAM_PREFIX_ADDR)) {
+      n += opcode_printf_prefix(p, vaddr);
+    } else if (MODE_ISNOT(oc->action, OPTPROGRAM_NO_SHOW_RAW_INSN)) {
+      n += printf_sore(p0, size, USE_HEX | USE_SPACE);
+      n += printf_pack(42 - n);
+    }
+
+    n += printf_text(".word", USE_LT | USE_SPACE);
+    n += printf_nice(ocmake_u32(p, p0[0], p0[1], p0[2], p0[3]), USE_FHEX32);
+    n += printf_eol();
+  }
+
+  return n;
+}
+
 int capstone_raw0(handle_t p, handle_t s, unknown_t data, const size_t size, const uint64_t vaddr) {
   int n = 0;
   if (data && isopcode(p) && ismodeNXXN(s, MODE_OCSHDRWRAP)) {
@@ -115,21 +165,7 @@ int capstone_raw0(handle_t p, handle_t s, unknown_t data, const size_t size, con
             bskip = FALSE;
           }
           if (!bskip) {
-            n2 += opcode_printf_source(p, insn[i].address);
-
-            if (MODE_ISNOT(oc->action, OPTPROGRAM_NO_ADDRESSES)) {
-              n2 += opcode_printf_LHEX(p, insn[i].address, USE_COLON);
-            }
-
-            if (MODE_ISANY(oc->action, OPTPROGRAM_PREFIX_ADDR)) {
-              n2 += opcode_printf_prefix(p, insn[i].address);
-            } else if (MODE_ISNOT(oc->action, OPTPROGRAM_NO_SHOW_RAW_INSN)) {
-              n2 += printf_sore(insn[i].bytes, insn[i].size, USE_HEX | USE_SPACE);
-              n2 += printf_pack(42 - n2);
-            }
-
-            n2 += opcode_printf_detail(p, insn[i].address, insn[i].mnemonic, insn[i].op_str);
-            n2 += printf_eol();
+            n2 += capstone_printf0(p, insn[i].bytes, insn[i].mnemonic, insn[i].op_str, insn[i].size, insn[i].address);
           }
           if (!ocuse_insn(p, insn[i].bytes[0])) {
             iskip = insn[i].bytes[0];
@@ -182,22 +218,7 @@ int capstone_raw1(handle_t p, handle_t s, unknown_t data, const size_t size, con
 
       if ('d' == curr_state) {
         if (ocuse_vaddr(p, caddr)) {
-          int n1 = 0;
-          if (MODE_ISNOT(oc->action, OPTPROGRAM_NO_ADDRESSES)) {
-            n1 += opcode_printf_LHEX(p, caddr, USE_COLON);
-          }
-
-          if (MODE_ISANY(oc->action, OPTPROGRAM_PREFIX_ADDR)) {
-            n1 += opcode_printf_prefix(p, caddr);
-          } else if (MODE_ISNOT(oc->action, OPTPROGRAM_NO_SHOW_RAW_INSN)) {
-            n1 += printf_sore(p0, caddrsize, USE_HEX | USE_SPACE);
-            n1 += printf_pack(42 - n1);
-          }
-
-          n += n1;
-          n += printf_text(".word", USE_LT | USE_SPACE);
-          n += printf_nice(ocmake_u32(p, p0[0], p0[1], p0[2], p0[3]), USE_FHEX32);
-          n += printf_eol();
+          n += capstone_printf1(p, p0, caddrsize, caddr);
         }
 
         k += caddrsize;
@@ -215,28 +236,11 @@ int capstone_raw1(handle_t p, handle_t s, unknown_t data, const size_t size, con
         if (count > 0) {
           for (size_t i = 0; i < count; ++i) {
             if (ocuse_vaddr(p, insn[i].address)) {
-              int n1 = 0;
-
               char next_state = capstone_check(thumbs, siz, caddr);
               next_state = next_state ? next_state : prev_state;
               if (next_state != curr_state) break;
 
-              n1 += opcode_printf_source(p, insn[i].address);
-
-              if (MODE_ISNOT(oc->action, OPTPROGRAM_NO_ADDRESSES)) {
-                n1 += opcode_printf_LHEX(p, insn[i].address, USE_COLON);
-              }
-
-              if (MODE_ISANY(oc->action, OPTPROGRAM_PREFIX_ADDR)) {
-                n1 += opcode_printf_prefix(p, insn[i].address);
-              } else if (MODE_ISNOT(oc->action, OPTPROGRAM_NO_SHOW_RAW_INSN)) {
-                n1 += printf_sore(insn[i].bytes, insn[i].size, USE_HEX | USE_SPACE);
-                n1 += printf_pack(42 - n1);
-              }
-
-              n += n1;
-              n += opcode_printf_detail(p, insn[i].address, insn[i].mnemonic, insn[i].op_str);
-              n += printf_eol();
+              n += capstone_printf0(p, insn[i].bytes, insn[i].mnemonic, insn[i].op_str, insn[i].size, insn[i].address);
             }
 
             k += insn[i].size;
@@ -280,24 +284,7 @@ int capstone_raw2(handle_t p, handle_t s, unknown_t data, const size_t size, con
       if (count > 0) {
         for (size_t i = 0; i < count; ++i) {
           if (ocuse_vaddr(p, insn[i].address)) {
-            int n1 = 0;
-
-            n1 += opcode_printf_source(p, insn[i].address);
-
-            if (MODE_ISNOT(oc->action, OPTPROGRAM_NO_ADDRESSES)) {
-              n1 += opcode_printf_LHEX(p, insn[i].address, USE_COLON);
-            }
-
-            if (MODE_ISANY(oc->action, OPTPROGRAM_PREFIX_ADDR)) {
-              n1 += opcode_printf_prefix(p, insn[i].address);
-            } else if (MODE_ISNOT(oc->action, OPTPROGRAM_NO_SHOW_RAW_INSN)) {
-              n1 += printf_sore(insn[i].bytes, insn[i].size, USE_HEX | USE_SPACE);
-              n1 += printf_pack(42 - n1);
-            }
-
-            n += n1;
-            n += opcode_printf_detail(p, insn[i].address, insn[i].mnemonic, insn[i].op_str);
-            n += printf_eol();
+            n += capstone_printf0(p, insn[i].bytes, insn[i].mnemonic, insn[i].op_str, insn[i].size, insn[i].address);
           }
 
           k += insn[i].size;
@@ -316,22 +303,7 @@ int capstone_raw2(handle_t p, handle_t s, unknown_t data, const size_t size, con
         } else {
 //printf("skipping = %lx\n", k);
           if (ocuse_vaddr(p, caddr)) {
-            int n1 = 0;
-            if (MODE_ISNOT(oc->action, OPTPROGRAM_NO_ADDRESSES)) {
-              n1 += opcode_printf_LHEX(p, caddr, USE_COLON);
-            }
-
-            if (MODE_ISANY(oc->action, OPTPROGRAM_PREFIX_ADDR)) {
-              n1 += opcode_printf_prefix(p, caddr);
-            } else if (MODE_ISNOT(oc->action, OPTPROGRAM_NO_SHOW_RAW_INSN)) {
-              n1 += printf_sore(p0, caddrsize, USE_HEX | USE_SPACE);
-              n1 += printf_pack(42 - n1);
-            }
-
-            n += n1;
-            n += printf_text(".word", USE_LT | USE_SPACE);
-            n += printf_nice(ocmake_u32(p, p0[0], p0[1], p0[2], p0[3]), USE_FHEX32);
-            n += printf_eol();
+            n += capstone_printf1(p, p0, caddrsize, caddr);
           }
 
           k += caddrsize;
