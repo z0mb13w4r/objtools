@@ -267,6 +267,7 @@ int capstone_raw2(handle_t p, handle_t s, unknown_t data, const size_t size, con
     popcode_t oc = ocget(p, OPCODE_THIS);
     puchar_t p0 = CAST(puchar_t, data);
 
+    size_t   caddrsize = 4;
     uint64_t caddr = vaddr;
     int core_state = get_csmode(p, NULL);
     int curr_state = core_state;
@@ -314,9 +315,28 @@ int capstone_raw2(handle_t p, handle_t s, unknown_t data, const size_t size, con
           }
         } else {
 //printf("skipping = %lx\n", k);
-          k += 4;
-          p0 += 4,
-          caddr += 4;
+          if (ocuse_vaddr(p, caddr)) {
+            int n1 = 0;
+            if (MODE_ISNOT(oc->action, OPTPROGRAM_NO_ADDRESSES)) {
+              n1 += opcode_printf_LHEX(p, caddr, USE_COLON);
+            }
+
+            if (MODE_ISANY(oc->action, OPTPROGRAM_PREFIX_ADDR)) {
+              n1 += opcode_printf_prefix(p, caddr);
+            } else if (MODE_ISNOT(oc->action, OPTPROGRAM_NO_SHOW_RAW_INSN)) {
+              n1 += printf_sore(p0, caddrsize, USE_HEX | USE_SPACE);
+              n1 += printf_pack(42 - n1);
+            }
+
+            n += n1;
+            n += printf_text(".word", USE_LT | USE_SPACE);
+            n += printf_nice(ocmake_u32(p, p0[0], p0[1], p0[2], p0[3]), USE_FHEX32);
+            n += printf_eol();
+          }
+
+          k += caddrsize;
+          p0 += caddrsize,
+          caddr += caddrsize;
           evilcount = 0;
         }
       }
