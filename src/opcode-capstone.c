@@ -137,9 +137,17 @@ static int capstone_printf1(handle_t p, unknown_t data, const size_t size, const
       n += printf_pack(42 - n);
     }
 
-    n += printf_text(".word", USE_LT | USE_SPACE);
-    n += printf_nice(ocmake_u32(p, p0[0], p0[1], p0[2], p0[3]), USE_FHEX32);
-    n += printf_eol();
+    if (4 == size) {
+      n += printf_text(".word", USE_LT | USE_SPACE);
+      n += printf_nice(ocmake_u32(p, p0[0], p0[1], p0[2], p0[3]), USE_FHEX32);
+      n += printf_eol();
+    } else {
+      for (size_t i = 0; i < size; ++i) {
+        n += printf_text(".byte", USE_LT | USE_SPACE);
+        n += printf_nice(p0[i], USE_FHEX8);
+        n += printf_eol();
+      }
+    }
   }
 
   return n;
