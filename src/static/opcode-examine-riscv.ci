@@ -300,7 +300,6 @@ static convert_t oeINSTRUCTIONNAMES_RISCV[] = {
   {"LOAD",              OCINSN_MASK(OCINSNRISCV_LOAD)},
   {"STORE",             OCINSN_MASK(OCINSNRISCV_STORE)},
   {"MOVE",              OCINSN_MASK(OCINSNRISCV_MOVE)},
-  {"FSW",               OCINSN_MASK(OCINSNRISCV_FSW)},
   {"NOP",               OCINSN_MASK(OCINSNRISCV_NOP)},
 
   {"ADD",               OCINSN_MASK(OCINSNRISCV_ADD)},

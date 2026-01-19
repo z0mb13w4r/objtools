@@ -4,7 +4,6 @@
 #define OCINSNRISCV_LOAD               ((0x01) | OCINSN_OPERAND2)
 #define OCINSNRISCV_STORE              ((0x02) | OCINSN_OPERAND2)
 #define OCINSNRISCV_MOVE               ((0x03) | OCINSN_OPERAND2)
-#define OCINSNRISCV_FSW                ((0x05) | OCINSN_OPERAND2)
 #define OCINSNRISCV_NOP                ((0x06) | OCINSN_OPERAND0)
 
 #define OCINSNRISCV_ADD                ((0x10) | OCINSN_OPERAND3)
@@ -84,6 +83,8 @@
 
 #define OCINSNRISCV_FLW                (OCINSNRISCV_LW | OCINSN_FLOAT)
 #define OCINSNRISCV_FLWSP              (OCINSNRISCV_FLW | OCINSNRISCV_STACK)
+
+#define OCINSNRISCV_FSW                (OCINSNRISCV_SW | OCINSN_FLOAT)
 #define OCINSNRISCV_FSWSP              (OCINSNRISCV_FSW | OCINSNRISCV_STACK)
 
 #define OCINSNRISCV_ADDB               (OCINSNRISCV_ADD | OCINSN_8BIT)
