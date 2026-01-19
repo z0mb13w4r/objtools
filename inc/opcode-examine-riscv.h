@@ -36,7 +36,7 @@
 
 #define OCINSNRISCV_SEXT               ((0x50) | OCINSN_OPERAND2)
 #define OCINSNRISCV_ZEXT               ((0x51) | OCINSN_OPERAND2)
-#define OCINSNRISCV_Sxxx               ((0X62) | OCINSN_OPERAND2)
+#define OCINSNRISCV_Sxxx               ((0X52) | OCINSN_OPERAND2)
 
 #define OCINSNRISCV_Jxx                ((0x60) | OCINSN_OPERAND1)
 #define OCINSNRISCV_Bxx                ((0x61) | OCINSN_OPERAND3)
@@ -159,6 +159,9 @@
 #define OCINSNRISCV_ZEXTB              (OCINSNRISCV_ZEXT | OCINSN_8BIT)
 #define OCINSNRISCV_ZEXTH              (OCINSNRISCV_ZEXT | OCINSN_16BIT)
 #define OCINSNRISCV_ZEXTW              (OCINSNRISCV_ZEXT | OCINSN_32BIT)
+
+#define OCINSNRISCV_SEQZ               (OCINSNRISCV_Sxxx | OCINSNRISCV_EQZ)
+#define OCINSNRISCV_SNEZ               (OCINSNRISCV_Sxxx | OCINSNRISCV_NEZ)
 
 #define OCINSNRISCV_JAL                (OCINSNRISCV_Jxx | OCINSNRISCV_LINK)
 #define OCINSNRISCV_JR                 (OCINSNRISCV_Jxx | OCINSNRISCV_REGISTER)
