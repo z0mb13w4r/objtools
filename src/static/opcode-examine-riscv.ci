@@ -280,6 +280,7 @@ static convert_t oeINSTRUCTIONFLAGS_RISCV[] = {
   {"128BIT",            OCINSN_128BIT},
   {"256BIT",            OCINSN_256BIT},
   {"512BIT",            OCINSN_512BIT},
+  {"FLOAT",             OCINSN_FLOAT},
   {"OPERAND0",          OCINSN_OPERAND0},
   {"OPERAND1",          OCINSN_OPERAND1},
   {"OPERAND2",          OCINSN_OPERAND2},
@@ -299,7 +300,6 @@ static convert_t oeINSTRUCTIONNAMES_RISCV[] = {
   {"LOAD",              OCINSN_MASK(OCINSNRISCV_LOAD)},
   {"STORE",             OCINSN_MASK(OCINSNRISCV_STORE)},
   {"MOVE",              OCINSN_MASK(OCINSNRISCV_MOVE)},
-  {"FLW",               OCINSN_MASK(OCINSNRISCV_FLW)},
   {"FSW",               OCINSN_MASK(OCINSNRISCV_FSW)},
   {"NOP",               OCINSN_MASK(OCINSNRISCV_NOP)},
 
