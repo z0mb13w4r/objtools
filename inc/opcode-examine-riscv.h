@@ -21,16 +21,17 @@
 #define OCINSNRISCV_BINV               ((0x32) | OCINSN_OPERAND3)
 #define OCINSNRISCV_MIN                ((0x33) | OCINSN_OPERAND3)
 #define OCINSNRISCV_MAX                ((0x34) | OCINSN_OPERAND3)
-#define OCINSNRISCV_NOT                ((0x35) | OCINSN_OPERAND2)
-#define OCINSNRISCV_OR                 ((0x36) | OCINSN_OPERAND3)
-#define OCINSNRISCV_ORN                ((0x37) | OCINSN_OPERAND3)
-#define OCINSNRISCV_ROx                ((0x38) | OCINSN_OPERAND3)
-#define OCINSNRISCV_SxA                ((0x39) | OCINSN_OPERAND3)
-#define OCINSNRISCV_SxL                ((0x3a) | OCINSN_OPERAND3)
-#define OCINSNRISCV_XNOR               ((0x3b) | OCINSN_OPERAND3)
-#define OCINSNRISCV_XNORN              ((0x3c) | OCINSN_OPERAND3)
-#define OCINSNRISCV_XOR                ((0x3d) | OCINSN_OPERAND3)
-#define OCINSNRISCV_XORN               ((0x3e) | OCINSN_OPERAND3)
+#define OCINSNRISCV_NEG                ((0x35) | OCINSN_OPERAND2)
+#define OCINSNRISCV_NOT                ((0x36) | OCINSN_OPERAND2)
+#define OCINSNRISCV_OR                 ((0x37) | OCINSN_OPERAND3)
+#define OCINSNRISCV_ORN                ((0x38) | OCINSN_OPERAND3)
+#define OCINSNRISCV_ROx                ((0x39) | OCINSN_OPERAND3)
+#define OCINSNRISCV_SxA                ((0x3a) | OCINSN_OPERAND3)
+#define OCINSNRISCV_SxL                ((0x3b) | OCINSN_OPERAND3)
+#define OCINSNRISCV_XNOR               ((0x3c) | OCINSN_OPERAND3)
+#define OCINSNRISCV_XNORN              ((0x3d) | OCINSN_OPERAND3)
+#define OCINSNRISCV_XOR                ((0x3e) | OCINSN_OPERAND3)
+#define OCINSNRISCV_XORN               ((0x3f) | OCINSN_OPERAND3)
 
 #define OCINSNRISCV_SEXT               ((0x50) | OCINSN_OPERAND2)
 #define OCINSNRISCV_ZEXT               ((0x51) | OCINSN_OPERAND2)
@@ -122,6 +123,10 @@
 
 #define OCINSNRISCV_MINU               (OCINSNRISCV_MIN | OCINSNRISCV_UNSIGNED)
 #define OCINSNRISCV_MAXU               (OCINSNRISCV_MAX | OCINSNRISCV_UNSIGNED)
+
+#define OCINSNRISCV_NEGB               (OCINSNRISCV_NEG | OCINSN_8BIT)
+#define OCINSNRISCV_NEGH               (OCINSNRISCV_NEG | OCINSN_16BIT)
+#define OCINSNRISCV_NEGW               (OCINSNRISCV_NEG | OCINSN_32BIT)
 
 #define OCINSNRISCV_ORI                (OCINSNRISCV_OR | OCINSNRISCV_IMMEDIATE)
 
