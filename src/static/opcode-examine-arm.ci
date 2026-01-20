@@ -782,6 +782,7 @@ static convert_t oeINSTRUCTIONFLAGS_ARM[] = {
   {"OPERAND2",          OCINSN_OPERAND2},
   {"OPERAND3",          OCINSN_OPERAND3},
   {"OPERAND4",          OCINSN_OPERAND4},
+  {"OPERAND5",          OCINSN_OPERAND5},
 
   {"CLR",               OCINSNARM_CLR},
   {"SET",               OCINSNARM_SET},

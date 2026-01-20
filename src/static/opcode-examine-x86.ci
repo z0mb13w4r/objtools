@@ -631,6 +631,8 @@ static convert_t oeINSTRUCTIONFLAGS_x86_64[] = {
   {"OPERAND2",          OCINSN_OPERAND2},
   {"OPERAND3",          OCINSN_OPERAND3},
   {"OPERAND4",          OCINSN_OPERAND4},
+  {"OPERAND5",          OCINSN_OPERAND5},
+
   {0, 0}
 };
 
