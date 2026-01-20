@@ -89,6 +89,7 @@ static oestruct_t oeINSTRUCTIONS_RISCV[] = {
   OCSTRUCT("mulh",         OCINSNRISCV_MULH),
   OCSTRUCT("mul",          OCINSNRISCV_MUL),
 
+  OCSTRUCT("remuw",        OCINSNRISCV_REMUW),
   OCSTRUCT("remu",         OCINSNRISCV_REMU),
   OCSTRUCT("remw",         OCINSNRISCV_REMW),
   OCSTRUCT("rem",          OCINSNRISCV_REM),
