@@ -118,7 +118,12 @@ static oestruct_t oeINSTRUCTIONS_RISCV[] = {
   OCSTRUCT("subw",         OCINSNRISCV_SUBW),
   OCSTRUCT("sub",          OCINSNRISCV_SUB),
 
+  OCSTRUCT("fmadd.d",      OCINSNRISCV_FMADDD),
+  OCSTRUCT("fmadd.h",      OCINSNRISCV_FMADDH),
+  OCSTRUCT("fmadd.w",      OCINSNRISCV_FMADDW),
+
   OCSTRUCT("fmsub.d",      OCINSNRISCV_FMSUBD),
+  OCSTRUCT("fmsub.h",      OCINSNRISCV_FMSUBH),
   OCSTRUCT("fmsub.w",      OCINSNRISCV_FMSUBW),
 
   OCSTRUCT("c.andi",       OCINSNRISCV_ANDI),
@@ -345,6 +350,7 @@ static convert_t oeINSTRUCTIONNAMES_RISCV[] = {
   {"REM",               OCINSN_MASK(OCINSNRISCV_REM)},
   {"SUB",               OCINSN_MASK(OCINSNRISCV_SUB)},
 
+  {"MADD",              OCINSN_MASK(OCINSNRISCV_MADD)},
   {"MSUB",              OCINSN_MASK(OCINSNRISCV_MSUB)},
 
   {"AND",               OCINSN_MASK(OCINSNRISCV_AND)},
