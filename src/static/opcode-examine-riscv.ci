@@ -60,6 +60,18 @@ static oestruct_t oeINSTRUCTIONS_RISCV[] = {
   OCSTRUCT("c.mv",         OCINSNRISCV_MOVE),
   OCSTRUCT("mv",           OCINSNRISCV_MOVE),
 
+  OCSTRUCT("feq.d",        OCINSNRISCV_FEQD),
+  OCSTRUCT("feq.h",        OCINSNRISCV_FEQH),
+  OCSTRUCT("feq.s",        OCINSNRISCV_FEQS),
+
+  OCSTRUCT("fle.d",        OCINSNRISCV_FLED),
+  OCSTRUCT("fle.h",        OCINSNRISCV_FLEH),
+  OCSTRUCT("fle.s",        OCINSNRISCV_FLES),
+
+  OCSTRUCT("flt.d",        OCINSNRISCV_FLTD),
+  OCSTRUCT("flt.h",        OCINSNRISCV_FLTH),
+  OCSTRUCT("flt.s",        OCINSNRISCV_FLTS),
+
   OCSTRUCT("c.nop",        OCINSNRISCV_NOP),
   OCSTRUCT("nop",          OCINSNRISCV_NOP),
 
@@ -352,6 +364,7 @@ static convert_t oeINSTRUCTIONNAMES_RISCV[] = {
   {"LOAD",              OCINSN_MASK(OCINSNRISCV_LOAD)},
   {"STORE",             OCINSN_MASK(OCINSNRISCV_STORE)},
   {"MOVE",              OCINSN_MASK(OCINSNRISCV_MOVE)},
+  {"COMPARE",           OCINSN_MASK(OCINSNRISCV_COMPARE)},
   {"NOP",               OCINSN_MASK(OCINSNRISCV_NOP)},
 
   {"ADD",               OCINSN_MASK(OCINSNRISCV_ADD)},
