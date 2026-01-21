@@ -98,7 +98,7 @@ static oestruct_t oeINSTRUCTIONS_RISCV[] = {
   OCSTRUCT("div",          OCINSNRISCV_DIV),
 
   OCSTRUCT("fdiv.d",       OCINSNRISCV_FDIVD),
-  OCSTRUCT("fdiv,h",       OCINSNRISCV_FDIVH),
+  OCSTRUCT("fdiv.h",       OCINSNRISCV_FDIVH),
   OCSTRUCT("fdiv.w",       OCINSNRISCV_FDIVW),
 
   OCSTRUCT("mulhsu",       OCINSNRISCV_MULHSU),
@@ -106,6 +106,10 @@ static oestruct_t oeINSTRUCTIONS_RISCV[] = {
   OCSTRUCT("mulw",         OCINSNRISCV_MULW),
   OCSTRUCT("mulh",         OCINSNRISCV_MULH),
   OCSTRUCT("mul",          OCINSNRISCV_MUL),
+
+  OCSTRUCT("fmul.d",       OCINSNRISCV_FMULD),
+  OCSTRUCT("fmul.h",       OCINSNRISCV_FMULH),
+  OCSTRUCT("fmul.w",       OCINSNRISCV_FMULW),
 
   OCSTRUCT("remuw",        OCINSNRISCV_REMUW),
   OCSTRUCT("remu",         OCINSNRISCV_REMU),
@@ -121,6 +125,10 @@ static oestruct_t oeINSTRUCTIONS_RISCV[] = {
   OCSTRUCT("subh",         OCINSNRISCV_SUBH),
   OCSTRUCT("subw",         OCINSNRISCV_SUBW),
   OCSTRUCT("sub",          OCINSNRISCV_SUB),
+
+  OCSTRUCT("fsub.d",       OCINSNRISCV_FSUBD),
+  OCSTRUCT("fsub.h",       OCINSNRISCV_FSUBH),
+  OCSTRUCT("fsub.w",       OCINSNRISCV_FSUBW),
 
   OCSTRUCT("fmadd.d",      OCINSNRISCV_FMADDD),
   OCSTRUCT("fmadd.h",      OCINSNRISCV_FMADDH),
