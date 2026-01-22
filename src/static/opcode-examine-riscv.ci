@@ -84,7 +84,9 @@ static oestruct_t oeINSTRUCTIONS_RISCV[] = {
   OCSTRUCT("fcvt.h.lu",    OCINSNRISCV_FCVTHLU),
 
   OCSTRUCT("fcvt.l.h",     OCINSNRISCV_FCVTLH),
+  OCSTRUCT("fcvt.w.s",     OCINSNRISCV_FCVTWS),
   OCSTRUCT("fcvt.lu.h",    OCINSNRISCV_FCVTLUH),
+  OCSTRUCT("fcvt.wu.s",    OCINSNRISCV_FCVTWUS),
 
   OCSTRUCT("addb",         OCINSNRISCV_ADDB),
   OCSTRUCT("addh",         OCINSNRISCV_ADDH),
