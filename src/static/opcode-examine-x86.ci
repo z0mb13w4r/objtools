@@ -711,6 +711,7 @@ static convert_t oeINSTRUCTIONNAMES_x86_64[] = {
   {"PCMPEQx",           OCINSN_MASK(OCINSTRUCTION_PCMPEQx)},
   {"CPUID",             OCINSN_MASK(OCINSTRUCTION_CPUID)},
   {"UNDEF",             OCINSN_MASK(OCINSTRUCTION_UNDEF)},
+
   {0, 0}
 };
 
