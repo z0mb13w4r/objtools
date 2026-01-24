@@ -132,7 +132,7 @@ static ppick_t get_REGUSE(handle_t p) {
   return NULL;
 }
 
-static int ocdwarf_eh_frame_cies(handle_t p, Dwarf_Cie *cie_data, Dwarf_Signed cie_element_count, Dwarf_Error *e) {
+static int ocdwarf_eh_frame_cies(handle_t p, Dwarf_Cie *cie_data, Dwarf_Signed cie_count, Dwarf_Error *e) {
   int x = DW_DLV_ERROR;
   int n0 = 0;
 
@@ -149,7 +149,8 @@ static int ocdwarf_eh_frame_cies(handle_t p, Dwarf_Cie *cie_data, Dwarf_Signed c
       n0 += printf_text("CIE", USE_LT | USE_SB | USE_EOL);
     }
 
-    for (Dwarf_Signed i = 0; i < cie_element_count; ++i) {
+//printf("cie_count = %lld\n", cie_count);
+    for (Dwarf_Signed i = 0; i < cie_count; ++i) {
       char*          augmenter = "";
       Dwarf_Small    version = 0;
       Dwarf_Unsigned code_alignment_factor = 0;
