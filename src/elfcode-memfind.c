@@ -16,10 +16,22 @@ handle_t ecapply_relocs(handle_t p, handle_t q, const int index) {
 //printf("missing[REL]\n");
           } else if (SHT_RELA == shdr->sh_type) {
             Elf64_Rela *r = _get64byshdr(q, shdr);
-            if (r) {
+            Elf64_Shdr *d = ecget_shdr64byindex(q, shdr->sh_link);
+            if (r && d) {
               for (size_t j = 0; j < cnt; ++j, ++r) {
-//printf("offset[RELA] = 0x%lx|0x%lx:0x%lx|0x%lx\n", r->r_offset, r->r_info, ELF64_R_TYPE(r->r_info), r->r_addend);
-                if (isused(get_RELTYPESHEX8(q), ELF64_R_TYPE(r->r_info))) {
+                Elf64_Sym *m = getp(q, d->sh_offset + (ELF64_R_SYM(r->r_info) * d->sh_entsize), d->sh_entsize);
+//printf("offset[RELA] = 0x%lx|0x%lx:0x%lx:0x%lx|0x%lx|0x%lx\n", r->r_offset, r->r_info, ELF64_R_TYPE(r->r_info), ELF64_R_SYM(r->r_info), m->st_value, r->r_addend);
+                if (isused(get_RELTYPESYM32(q), ELF64_R_TYPE(r->r_info))) {
+                  if (m && m->st_value) {
+//printf("sym32 0x%lx\n", m->st_value);
+                    fsetu32byoffset(p, r->r_offset, m->st_value);
+                  }
+                } else if (isused(get_RELTYPESYM64(q), ELF64_R_TYPE(r->r_info))) {
+                  if (m && m->st_value) {
+//printf("sym64 0x%lx\n", m->st_value);
+                    fsetu64byoffset(p, r->r_offset, m->st_value);
+                  }
+                } else if (isused(get_RELTYPESHEX8(q), ELF64_R_TYPE(r->r_info))) {
                   if (r->r_addend) {
 //printf("shex8 0x%lx\n", r->r_addend);
                     fsetu8byoffset(p, r->r_offset, r->r_addend);

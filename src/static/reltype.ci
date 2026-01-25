@@ -386,6 +386,16 @@ static pick_t zRELTYPESHEX64RISCV[] = {
   PICK_END
 };
 
+static pick_t zRELTYPESYM32RISCV[] = {
+  R_RISCV_32,
+  PICK_END
+};
+
+static pick_t zRELTYPESYM64RISCV[] = {
+  R_RISCV_64,
+  PICK_END
+};
+
 static pconvert_t get_RELTYPE(const pbuffer_t p) {
   switch (ecget_emachine(p)) {
   case EM_386:               return zRELTYPE32;
@@ -493,6 +503,26 @@ static ppick_t get_RELTYPEPACK(const pbuffer_t p) {
   case EM_X86_64:            return zRELTYPE64PACK;
   case EM_AARCH64:           return zRELTYPE64ARMPACK;
   case EM_RISCV:             return zRELTYPERISCVPACK;
+  default:
+    break;
+  }
+
+  return NULL;
+}
+
+ppick_t get_RELTYPESYM32(const pbuffer_t p) {
+  switch (ecget_emachine(p)) {
+  case EM_RISCV:             return zRELTYPESYM32RISCV;
+  default:
+    break;
+  }
+
+  return NULL;
+}
+
+ppick_t get_RELTYPESYM64(const pbuffer_t p) {
+  switch (ecget_emachine(p)) {
+  case EM_RISCV:             return zRELTYPESYM64RISCV;
   default:
     break;
   }
