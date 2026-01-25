@@ -1,4 +1,3 @@
-//#include "printf.h"
 #include "objutils.h"
 #include "elfcode-memfind.h"
 
