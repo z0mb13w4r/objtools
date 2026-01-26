@@ -35,7 +35,7 @@
 #define OCINSTRUCTION_LEAVE            ((0x08) | OCINSN_OPERAND0)
 #define OCINSTRUCTION_RET              ((0x09) | OCINSN_OPERAND0)
 #define OCINSTRUCTION_HLT              ((0x0a) | OCINSN_OPERAND0)
-#define OCINSTRUCTION_PUSH             ((0x0b) | OCINSN_OPERAND1)
+#define OCINSTRUCTION_PUSH             (OCINSN_PUSH | OCINSN_OPERAND1)
 #define OCINSTRUCTION_POP              ((0x0c) | OCINSN_OPERAND1)
 #define OCINSTRUCTION_ADD              ((0x0d) | OCINSN_OPERAND2)
 #define OCINSTRUCTION_DEC              ((0x0e) | OCINSN_OPERAND1)
