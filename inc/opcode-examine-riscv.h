@@ -46,7 +46,7 @@
 #define OCINSNRISCV_Bxx                ((0x61) | OCINSN_OPERAND3)
 #define OCINSNRISCV_EBREAK             ((0x62) | OCINSN_OPERAND0)
 
-#define OCINSNRISCV_UNDEF              ((0xff) | OCINSN_OPERAND0)
+#define OCINSNRISCV_UNDEF              (OCINSN_UNDEF | OCINSN_OPERAND0)
 
 #define OCINSNRISCV_LINK               (OCINSN_00)
 #define OCINSNRISCV_REGISTER           (OCINSN_01)
