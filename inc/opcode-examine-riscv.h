@@ -43,7 +43,7 @@
 #define OCINSNRISCV_ZEXT               ((0x51) | OCINSN_OPERAND2)
 
 #define OCINSNRISCV_Jxx                (OCINSN_Jxx | OCINSN_OPERAND1)
-#define OCINSNRISCV_Bxx                ((0x61) | OCINSN_OPERAND3)
+#define OCINSNRISCV_Bxx                (OCINSN_Bxx | OCINSN_OPERAND3)
 #define OCINSNRISCV_EBREAK             ((0x62) | OCINSN_OPERAND0)
 
 #define OCINSNRISCV_UNDEF              (OCINSN_UNDEF | OCINSN_OPERAND0)
