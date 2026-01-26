@@ -17,9 +17,10 @@
 #define OECODE_OPERAND3                (4)
 #define OECODE_OPERAND4                (5)
 
-#define OCINSN_ADD                     (0xf8)
-#define OCINSN_DEC                     (0xf9)
-#define OCINSN_DIV                     (0xfa)
+#define OCINSN_ADD                     (0xf7)
+#define OCINSN_DEC                     (0xf8)
+#define OCINSN_DIV                     (0xf9)
+#define OCINSN_INC                     (0xfa)
 #define OCINSN_MUL                     (0xfb)
 #define OCINSN_PUSH                    (0xfc)
 #define OCINSN_POP                     (0xfd)
