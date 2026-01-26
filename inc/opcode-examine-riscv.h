@@ -14,7 +14,7 @@
 #define OCINSNRISCV_ADDI4xx            ((0X12) | OCINSN_OPERAND3)
 #define OCINSNRISCV_AxxPC              ((0x13) | OCINSN_OPERAND2)
 #define OCINSNRISCV_DIV                ((0x14) | OCINSN_OPERAND3)
-#define OCINSNRISCV_MUL                ((0x15) | OCINSN_OPERAND3)
+#define OCINSNRISCV_MUL                (OCINSN_MUL | OCINSN_OPERAND3)
 #define OCINSNRISCV_MULH               ((0x16) | OCINSN_OPERAND3)
 #define OCINSNRISCV_REM                ((0x17) | OCINSN_OPERAND3)
 #define OCINSNRISCV_SUB                ((0x18) | OCINSN_OPERAND3)
