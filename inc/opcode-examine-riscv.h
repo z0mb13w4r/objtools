@@ -9,7 +9,7 @@
 #define OCINSNRISCV_TOFLOAT            ((0x06) | OCINSN_OPERAND2)
 #define OCINSNRISCV_NOP                (OCINSN_NOP | OCINSN_OPERAND0)
 
-#define OCINSNRISCV_ADD                ((0x10) | OCINSN_OPERAND3)
+#define OCINSNRISCV_ADD                (OCINSN_ADD | OCINSN_OPERAND3)
 #define OCINSNRISCV_ADDI16xx           ((0X11) | OCINSN_OPERAND1)
 #define OCINSNRISCV_ADDI4xx            ((0X12) | OCINSN_OPERAND3)
 #define OCINSNRISCV_AxxPC              ((0x13) | OCINSN_OPERAND2)
