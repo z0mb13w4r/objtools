@@ -42,7 +42,7 @@
 #define OCINSNRISCV_SEXT               ((0x50) | OCINSN_OPERAND2)
 #define OCINSNRISCV_ZEXT               ((0x51) | OCINSN_OPERAND2)
 
-#define OCINSNRISCV_Jxx                ((0x60) | OCINSN_OPERAND1)
+#define OCINSNRISCV_Jxx                (OCINSN_Jxx | OCINSN_OPERAND1)
 #define OCINSNRISCV_Bxx                ((0x61) | OCINSN_OPERAND3)
 #define OCINSNRISCV_EBREAK             ((0x62) | OCINSN_OPERAND0)
 

@@ -27,7 +27,7 @@
 
 #define OCINSTRUCTION_CALL             ((0x01) | OCINSN_OPERAND1)
 #define OCINSTRUCTION_ENDBR            ((0x02) | OCINSN_OPERAND0)
-#define OCINSTRUCTION_JMP              ((0x03) | OCINSN_OPERAND1)
+#define OCINSTRUCTION_JMP              (OCINSN_Jxx | OCINSN_OPERAND1)
 #define OCINSTRUCTION_BT               ((0x04) | OCINSN_OPERAND2)
 #define OCINSTRUCTION_TEST             ((0x05) | OCINSN_OPERAND2)
 #define OCINSTRUCTION_CMP              ((0x06) | OCINSN_OPERAND2)
