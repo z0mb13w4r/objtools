@@ -23,7 +23,7 @@
 #define OCINSNARM_ORR              (OCINSN_ORR | OCINSN_OPERAND2)
 #define OCINSNARM_ORN              ((0x1d) | OCINSN_OPERAND2)
 #define OCINSNARM_ASx              ((0x1e) | OCINSN_OPERAND1 | OCINSN_OPERAND2)
-#define OCINSNARM_LSx              ((0x1f) | OCINSN_OPERAND1 | OCINSN_OPERAND2)
+#define OCINSNARM_LSx              (OCINSN_SxL | OCINSN_OPERAND1 | OCINSN_OPERAND2)
 #define OCINSNARM_ROx              (OCINSN_ROx | OCINSN_OPERAND1 | OCINSN_OPERAND2)
 #define OCINSNARM_CLZ              ((0x21) | OCINSN_OPERAND2)
 #define OCINSNARM_ADR              ((0x22) | OCINSN_OPERAND2)
