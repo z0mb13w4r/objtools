@@ -27,7 +27,7 @@
 #define OCINSNRISCV_BINV               ((0x32) | OCINSN_OPERAND3)
 #define OCINSNRISCV_MIN                ((0x33) | OCINSN_OPERAND3)
 #define OCINSNRISCV_MAX                ((0x34) | OCINSN_OPERAND3)
-#define OCINSNRISCV_NEG                ((0x35) | OCINSN_OPERAND2)
+#define OCINSNRISCV_NEG                (OCINSN_NEG | OCINSN_OPERAND2)
 #define OCINSNRISCV_NOT                ((0x36) | OCINSN_OPERAND2)
 #define OCINSNRISCV_OR                 ((0x37) | OCINSN_OPERAND3)
 #define OCINSNRISCV_ORN                ((0x38) | OCINSN_OPERAND3)
