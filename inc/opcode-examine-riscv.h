@@ -22,7 +22,7 @@
 #define OCINSNRISCV_MADD               ((0x20) | OCINSN_OPERAND4 | OCINSN_OPERAND5)
 #define OCINSNRISCV_MSUB               ((0x21) | OCINSN_OPERAND4 | OCINSN_OPERAND5)
 
-#define OCINSNRISCV_AND                ((0x30) | OCINSN_OPERAND3)
+#define OCINSNRISCV_AND                (OCINSN_AND | OCINSN_OPERAND3)
 #define OCINSNRISCV_ANDN               ((0x31) | OCINSN_OPERAND3)
 #define OCINSNRISCV_BINV               ((0x32) | OCINSN_OPERAND3)
 #define OCINSNRISCV_MIN                ((0x33) | OCINSN_OPERAND3)
