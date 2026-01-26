@@ -31,7 +31,7 @@
 #define OCINSN_ROx                     (248)
 #define OCINSN_SUB                     (249)
 #define OCINSN_XOR                     (250)
-#define OCINSN_PUSH                    (251)
+#define OCINSN_PSH                     (251)
 #define OCINSN_POP                     (252)
 #define OCINSN_RET                     (253)
 #define OCINSN_NOP                     (254)
