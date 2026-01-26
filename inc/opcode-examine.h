@@ -17,6 +17,7 @@
 #define OECODE_OPERAND3                (4)
 #define OECODE_OPERAND4                (5)
 
+#define OCINSN_NOP                     (0xfe)
 #define OCINSN_UNDEF                   (0xff)
 
 #define OCINSN_00               U64MASK(16)
