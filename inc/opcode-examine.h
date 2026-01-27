@@ -41,6 +41,7 @@
 
 #define OCINSN_JOIN(x,y)               (MODE_PUT0(x) | MODE_PUT1(y))
 
+#define OCINSN_ANDN                    OCINSN_JOIN(OCINSN_AND, OCINSN_NOT)
 #define OCINSN_ORN                     OCINSN_JOIN(OCINSN_ORR, OCINSN_NOT)
 
 #define OCINSN_00               U64MASK(16)
