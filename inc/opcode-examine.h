@@ -7,8 +7,8 @@
 #include "opcode.h"
 #include "objutils.h"
 
-#define OCINSN_MASK(x)                 MODE_MASK16(x)
 #define OCFLAG_MASK(x)                 MODE_HIDE16(x)
+#define OCINSN_MASK(x)                 MODE_MASK16(x)
 
 #define OECODE_THIS                    (0)
 #define OECODE_MNEMONIC                (1)
@@ -38,6 +38,10 @@
 #define OCINSN_RET                     (253)
 #define OCINSN_NOP                     (254)
 #define OCINSN_UNDEF                   (255)
+
+#define OCINSN_JOIN(x,y)               (MODE_PUT0(x) | MODE_PUT1(y))
+
+#define OCINSN_ORN                     OCINSN_JOIN(OCINSN_ORR, OCINSN_NOT)
 
 #define OCINSN_00               U64MASK(16)
 #define OCINSN_01               U64MASK(17)
