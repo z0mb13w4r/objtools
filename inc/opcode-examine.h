@@ -44,6 +44,7 @@
 
 #define OCINSN_ANDN                    OCINSN_JOIN(OCINSN_AND, OCINSN_NOT)
 #define OCINSN_ORN                     OCINSN_JOIN(OCINSN_ORR, OCINSN_NOT)
+#define OCINSN_MADD                    OCINSN_JOIN(OCINSN_MUL, OCINSN_ADD)
 
 #define OCINSN_00               U64MASK(16)
 #define OCINSN_01               U64MASK(17)
