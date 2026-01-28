@@ -32,7 +32,7 @@
 #define OCINSNARM_LDR              ((0x25) | OCINSN_OPERAND2)
 #define OCINSNARM_STP              ((0x26) | OCINSN_OPERAND3)
 #define OCINSNARM_STR              ((0x27) | OCINSN_OPERAND2)
-#define OCINSNARM_MOV              ((0x28) | OCINSN_OPERAND2)
+#define OCINSNARM_MOV              (OCINSN_MOV | OCINSN_OPERAND2)
 #define OCINSNARM_MVN              ((0x29) | OCINSN_OPERAND2)
 #define OCINSNARM_STM              ((0x2a) | OCINSN_OPERAND2)
 #define OCINSNARM_STUR             ((0x2b) | OCINSN_OPERAND2)
