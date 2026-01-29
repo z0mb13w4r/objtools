@@ -60,11 +60,11 @@
 #define OCINSNARM_AUTIAZ           ((0x68) | OCINSN_OPERAND0)
 #define OCINSNARM_AUTIZA           ((0x69) | OCINSN_OPERAND0)
 
-#define OCINSNARM_CLR              U64MASK(16)
-#define OCINSNARM_SET              U64MASK(17)
-#define OCINSNARM_SEL              U64MASK(18)
-#define OCINSNARM_LINK             U64MASK(19)
-#define OCINSNARM_REGISTER         U64MASK(20)
+#define OCINSNARM_CLR              (OCINSN_00)
+#define OCINSNARM_SET              (OCINSN_01)
+#define OCINSNARM_SEL              (OCINSN_02)
+#define OCINSNARM_LINK             (OCINSN_03)
+#define OCINSNARM_REGISTER         (OCINSN_04)
 
 #define OCINSNARM_CARRY            (OCINSN_C)
 #define OCINSNARM_KEEP             (OCINSN_S)
