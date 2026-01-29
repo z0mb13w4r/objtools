@@ -8,6 +8,11 @@ NAME=samples/exampled-32
 #NAME=samples/exampled-arm64
 #NAME=samples/exampled-arm32.o
 #NAME=samples/exampled-arm64.o
+#NAME=samples/exampled-riscv64
+#NAME=samples/exampled-riscv64.o
+NAME=samples/exampled-mips32
+NAME=samples/exampled-mips32.o
+
 
 #NAME=samples/example-043-arm32
 #NAME=samples/example-043-arm32.o
@@ -53,8 +58,8 @@ PICK1='-a'
 #PICK1='-I'
 #PICK1='-m .text'
 
-PICK1='--debug-dump=macro'
-PICK2='--print-macinfo'
+#PICK1='--debug-dump=macro'
+#PICK2='--print-macinfo'
 #PICK1='--debug-dump=info'
 #PICK2='--print-info'
 #PICK1='--debug-dump=aranges'
@@ -76,7 +81,7 @@ PICK2='--print-macinfo'
 #PICK2='--print-loc'
 
 PRGNAME=/usr/bin/readelf
-PRGNAME=samples/binutils-2.45/readelf
+#PRGNAME=samples/binutils-2.45/readelf
 PRGNAMENG=./readelf-ng
 DWARFDUMP=./dwarfdump
 OUT1=test-1.out
