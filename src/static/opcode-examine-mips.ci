@@ -2,3 +2,27 @@ static oestruct_t oeINSTRUCTIONS_MIPS[] = {
   {NULL}
 };
 
+static oestruct_t oeREGISTERS_MIPS[] = {
+  {NULL}
+};
+
+static convert_t oeINSTRUCTIONFLAGS_MIPS[] = {
+  {0, 0}
+};
+
+static convert_t oeINSTRUCTIONNAMES_MIPS[] = {
+  {0, 0}
+};
+
+static convert_t oeREGISTERFLAGS_MIPS[] = {
+  {0, 0}
+};
+
+static convert_t oeREGISTERNAMES_MIPS[] = {
+  {0, 0}
+};
+
+static pick_t oeADDRLOOKUP_MIPS[] = {
+  PICK_END
+};
+

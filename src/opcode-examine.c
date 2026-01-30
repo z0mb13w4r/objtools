@@ -24,6 +24,8 @@ ppick_t oegetADDRLOOKUP(handle_t p) {
     return oeADDRLOOKUP_ARM;
   case EM_RISCV:
     return oeADDRLOOKUP_RISCV;
+  case EM_MIPS:
+    return oeADDRLOOKUP_MIPS;
   default:
     break;
   }
@@ -54,6 +56,8 @@ pconvert_t oegetINSTRUCTIONNAMES(handle_t p) {
     return oeINSTRUCTIONNAMES_ARM;
   case EM_RISCV:
     return oeINSTRUCTIONNAMES_RISCV;
+  case EM_MIPS:
+    return oeINSTRUCTIONNAMES_MIPS;
   default:
     break;
   }
@@ -68,6 +72,8 @@ pconvert_t oegetINSTRUCTIONFLAGS(handle_t p) {
     return oeINSTRUCTIONFLAGS_ARM;
   case EM_RISCV:
     return oeINSTRUCTIONFLAGS_RISCV;
+  case EM_MIPS:
+    return oeINSTRUCTIONFLAGS_MIPS;
   default:
     break;
   }
@@ -82,6 +88,8 @@ pconvert_t oegetREGISTERFLAGS(handle_t p) {
     return oeREGISTERFLAGS_ARM;
   case EM_RISCV:
     return oeREGISTERFLAGS_RISCV;
+  case EM_MIPS:
+    return oeREGISTERFLAGS_MIPS;
   default:
     break;
   }
@@ -100,6 +108,8 @@ pconvert_t oegetREGISTERNAMES(handle_t p) {
     if (32 == size) return oeREGISTERNAMES_RISCV32;
     else if (64 == size) return oeREGISTERNAMES_RISCV64;
   }
+  case EM_MIPS:
+    return oeREGISTERNAMES_MIPS;
   default:
     break;
   }
@@ -182,7 +192,9 @@ static poestruct_t oepick_REG(handle_t p, unknown_t m, const size_t size) {
     case EM_AARCH64:
       return oepick(oeREGISTERS_ARM64, m, size);
     case EM_RISCV:
-      return ocisELF32(p) ? oeREGISTERS_RISCV32 : oeREGISTERS_RISCV64;
+      return oepick(ocisELF32(p) ? oeREGISTERS_RISCV32 : oeREGISTERS_RISCV64, m, size);
+    case EM_MIPS:
+      return oepick(oeREGISTERS_MIPS, m, size);
     default:
       break;
     }
