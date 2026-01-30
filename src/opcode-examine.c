@@ -38,6 +38,8 @@ static poestruct_t oegetINSTRUCTIONS(handle_t p) {
     return oeINSTRUCTIONS_ARM;
   case EM_RISCV:
     return oeINSTRUCTIONS_RISCV;
+  case EM_MIPS:
+    return oeINSTRUCTIONS_MIPS;
   default:
     break;
   }
