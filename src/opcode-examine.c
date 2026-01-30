@@ -26,11 +26,14 @@ ppick_t oegetADDRLOOKUP(handle_t p) {
     return oeADDRLOOKUP_RISCV;
   case EM_MIPS:
     return oeADDRLOOKUP_MIPS;
+  case EM_386:
+  case EM_X86_64:
+    return oeADDRLOOKUP_x86_64;
   default:
     break;
   }
 
-  return oeADDRLOOKUP_x86_64;
+  return NULL;
 }
 
 static poestruct_t oegetINSTRUCTIONS(handle_t p) {
@@ -42,11 +45,14 @@ static poestruct_t oegetINSTRUCTIONS(handle_t p) {
     return oeINSTRUCTIONS_RISCV;
   case EM_MIPS:
     return oeINSTRUCTIONS_MIPS;
+  case EM_386:
+  case EM_X86_64:
+    return oeINSTRUCTIONS_x86_64;
   default:
     break;
   }
 
-  return oeINSTRUCTIONS_x86_64;
+  return NULL;
 }
 
 pconvert_t oegetINSTRUCTIONNAMES(handle_t p) {
@@ -58,11 +64,14 @@ pconvert_t oegetINSTRUCTIONNAMES(handle_t p) {
     return oeINSTRUCTIONNAMES_RISCV;
   case EM_MIPS:
     return oeINSTRUCTIONNAMES_MIPS;
+  case EM_386:
+  case EM_X86_64:
+    return oeINSTRUCTIONNAMES_x86_64;
   default:
     break;
   }
 
-  return oeINSTRUCTIONNAMES_x86_64;
+  return NULL;
 }
 
 pconvert_t oegetINSTRUCTIONFLAGS(handle_t p) {
@@ -74,11 +83,14 @@ pconvert_t oegetINSTRUCTIONFLAGS(handle_t p) {
     return oeINSTRUCTIONFLAGS_RISCV;
   case EM_MIPS:
     return oeINSTRUCTIONFLAGS_MIPS;
+  case EM_386:
+  case EM_X86_64:
+    return oeINSTRUCTIONFLAGS_x86_64;
   default:
     break;
   }
 
-  return oeINSTRUCTIONFLAGS_x86_64;
+  return NULL;
 }
 
 pconvert_t oegetREGISTERFLAGS(handle_t p) {
@@ -90,11 +102,14 @@ pconvert_t oegetREGISTERFLAGS(handle_t p) {
     return oeREGISTERFLAGS_RISCV;
   case EM_MIPS:
     return oeREGISTERFLAGS_MIPS;
+  case EM_386:
+  case EM_X86_64:
+    return oeREGISTERFLAGS_x86_64;
   default:
     break;
   }
 
-  return oeREGISTERFLAGS_x86_64;
+  return NULL;
 }
 
 pconvert_t oegetREGISTERNAMES(handle_t p) {
@@ -110,11 +125,14 @@ pconvert_t oegetREGISTERNAMES(handle_t p) {
   }
   case EM_MIPS:
     return oeREGISTERNAMES_MIPS;
+  case EM_386:
+  case EM_X86_64:
+    return oeREGISTERNAMES_x86_64;
   default:
     break;
   }
 
-  return oeREGISTERNAMES_x86_64;
+  return NULL;
 }
 
 bool_t isocexamine(handle_t p) {
@@ -195,11 +213,12 @@ static poestruct_t oepick_REG(handle_t p, unknown_t m, const size_t size) {
       return oepick(ocisELF32(p) ? oeREGISTERS_RISCV32 : oeREGISTERS_RISCV64, m, size);
     case EM_MIPS:
       return oepick(oeREGISTERS_MIPS, m, size);
+    case EM_386:
+    case EM_X86_64:
+      return oepick(oeREGISTERS_x86_64, m, size);
     default:
       break;
     }
-
-    return oepick(oeREGISTERS_x86_64, m, size);
   }
 
   return NULL;
@@ -211,6 +230,7 @@ static poestruct_t oepick_SEG(handle_t p, unknown_t m, const size_t size) {
   } else if (m && size) {
     switch (ocget_machine(p)) {
     case EM_ARM:
+    case EM_MIPS:
     case EM_AARCH64:
     case EM_RISCV:
       return NULL;
