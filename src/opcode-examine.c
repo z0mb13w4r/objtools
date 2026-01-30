@@ -14,6 +14,7 @@ typedef struct oestruct_s {
 
 #include "static/opcode-examine-arm.ci"
 #include "static/opcode-examine-x86.ci"
+#include "static/opcode-examine-mips.ci"
 #include "static/opcode-examine-riscv.ci"
 
 ppick_t oegetADDRLOOKUP(handle_t p) {

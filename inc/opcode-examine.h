@@ -168,6 +168,7 @@
 
 #include "opcode-examine-arm.h"
 #include "opcode-examine-x86.h"
+#include "opcode-examine-mips.h"
 #include "opcode-examine-riscv.h"
 
 typedef struct ocmnemonic_s {
