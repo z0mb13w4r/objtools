@@ -4,15 +4,21 @@ PRGNAME=/usr/bin/objdump
 #PRGNAME=samples/binutils-2.45/objdump
 #PRGNAME=/usr/bin/arm-linux-gnueabihf-objdump
 #PRGNAME=/usr/bin/aarch64-linux-gnu-objdump
+#PRGNAME=/usr/bin/riscv64-linux-gnu-objdump
+#PRGNAME=/usr/bin/mips-linux-gnu-objdump
 
 NAME=samples/exampled-32
-NAME=samples/exampled-64
+#NAME=samples/exampled-64
 #NAME=samples/exampled-32.o
-NAME=samples/exampled-64.o
+#NAME=samples/exampled-64.o
 #NAME=samples/exampled-arm32
 #NAME=samples/exampled-arm64
 #NAME=samples/exampled-arm32.o
 #NAME=samples/exampled-arm64.o
+#NAME=samples/exampled-riscv64
+#NAME=samples/exampled-riscv64.o
+NAME=samples/exampled-mips32
+NAME=samples/exampled-mips32.o
 
 #NAME=samples/example-043-arm32
 #NAME=samples/example-043-arm32.o
@@ -38,6 +44,12 @@ NAME=samples/exampled-64.o
 #NAME=samples/binutils-2.44-arm64/arm-linux-gnueabi-strings
 #NAME=samples/binutils-2.44-arm64/arm-linux-gnueabi-addr2line
 #NAME=samples/binutils-2.44-arm64/libopcodes-2.44-armel.so
+#NAME=samples/binutils-2.45-risc-v64/riscv64-unknown-elf-strip
+#NAME=samples/binutils-2.45-risc-v64/riscv64-unknown-elf-objcopy
+#NAME=samples/binutils-2.45-risc-v64/riscv64-unknown-elf-objdump
+#NAME=samples/binutils-2.45-risc-v64/riscv64-unknown-elf-readelf
+#NAME=samples/binutils-2.45-risc-v64/riscv64-unknown-elf-strings
+#NAME=samples/binutils-2.45-risc-v64/riscv64-unknown-elf-addr2line
 
 #PICK='-p'
 #PICK='-h'
