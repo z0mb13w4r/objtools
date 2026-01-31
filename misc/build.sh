@@ -1,11 +1,13 @@
 #!/bin/bash
 
+TRBIN=/usr/bin/tr
 CUTBIN=/usr/bin/cut
 SEDBIN=/usr/bin/sed
 COPYBIN=/usr/bin/cp
 FINDBIN=/usr/bin/find
 GREPBIN=/usr/bin/grep
 GZIPBIN=/usr/bin/gzip
+HEADBIN=/usr/bin/head
 MAKEBIN=/usr/bin/make
 SUDOBIN=/usr/bin/sudo
 CHOWNBIN=/usr/bin/chown
@@ -69,4 +71,6 @@ $SUDOBIN $CHOWNBIN root:root $USRMAN/*
 $FINDBIN $NAME/usr/ -type f -exec $MD5SUMBIN '{}' \; | $SEDBIN "s/$NAME\///" > $DEBIANBIN/md5sums
 
 $DPKGDEBBIN --build $NAME
+
+echo $($GREPBIN Version $EXTERNBIN/control | $CUTBIN -d ' ' -f 2) $($HEADBIN -1 $EXTERNMAN/* | $GREPBIN '.TH' | $CUTBIN -d ' ' -f 7 | $TRBIN -d '"')
 
