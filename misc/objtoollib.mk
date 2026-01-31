@@ -29,6 +29,7 @@ SRCS_C = \
 	bstring.c \
 	convert.c \
 	elfcode.c \
+	elfcode-endian.c \
 	elfcode-memfind.c \
 	memfind.c \
 	memlink.c \
