@@ -84,8 +84,6 @@ unknown_t xmalloc(const size_t size, const nmode_t mode) {
 
     if (MODE_HEAP == mode) {
       p = malloc(maxsize);
-    } else if (MODE_STACK == mode) {
-      p = alloca(maxsize);
     }
 
     if (p) {
