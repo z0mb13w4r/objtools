@@ -72,11 +72,11 @@ int ocdwarf_open(handle_t p, handle_t o) {
     MEMCPYA(oc->inpname0, op->inpname0);
     MEMCPYA(oc->inpname1, op->inpname1);
 
-    oc->items[OPCODE_DWARF] = xmalloc(sizeof(ocdwarf_t));
+    oc->items[OPCODE_DWARF] = xmalloc(sizeof(ocdwarf_t), MODE_HEAP);
     if (oc->items[OPCODE_DWARF]) {
       pocdwarf_t ws = CAST(pocdwarf_t, oc->items[OPCODE_DWARF]);
-      ws->sf = xmalloc(sizeof(dwarf_srcfiles_t));
-      ws->st = xmalloc(sizeof(dwarf_statistics_t));
+      ws->sf = xmalloc(sizeof(dwarf_srcfiles_t), MODE_HEAP);
+      ws->st = xmalloc(sizeof(dwarf_statistics_t), MODE_HEAP);
       if (ws) {
         ws->sf->status = DW_DLV_ERROR;
       }

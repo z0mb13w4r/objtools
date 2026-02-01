@@ -154,7 +154,7 @@ handle_t ldestroye(handle_t p) {
 }
 
 handle_t lmalloc() {
-  pnode_t p = xmalloc(sizeof(node_t));
+  pnode_t p = xmalloc(sizeof(node_t), MODE_HEAP);
   return setmode(p, MODE_LINK);
 }
 

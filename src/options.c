@@ -469,12 +469,12 @@ int isoptions(handle_t p) {
 }
 
 handle_t amalloc() {
-  paction_t p = xmalloc(sizeof(action_t));
+  paction_t p = xmalloc(sizeof(action_t), MODE_HEAP);
   return setmode(p, MODE_ACTIONS);
 }
 
 handle_t omalloc() {
-  poptions_t p = xmalloc(sizeof(options_t));
+  poptions_t p = xmalloc(sizeof(options_t), MODE_HEAP);
   if (p) {
     p->saddress = OPCODE_NULLADDR; /* --start-address */
     p->eaddress = OPCODE_NULLADDR; /* --stop-address */

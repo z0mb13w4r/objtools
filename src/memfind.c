@@ -316,12 +316,12 @@ handle_t fcalloc(unknown_t p, const size_t size, const size_t chunksize) {
       return p1;
     }
   } else if (p) {
-    pfind_t p0 = xmalloc(sizeof(find_t));
+    pfind_t p0 = xmalloc(sizeof(find_t), MODE_HEAP);
     if (p0) {
       p0->cpos = 0;
       p0->epos = size - 1;
       p0->size = size;
-      p0->item = cmalloc(p, size);
+      p0->item = cmalloc(p, size, MODE_HEAP);
       p0->chunksize = chunksize;
     }
     return setmode(p0, MODE_FINDC);
@@ -339,7 +339,7 @@ handle_t fmalloc(unknown_t p, const size_t size, const size_t chunksize) {
       return p1;
     }
   } else if (p) {
-    pfind_t p0 = xmalloc(sizeof(find_t));
+    pfind_t p0 = xmalloc(sizeof(find_t), MODE_HEAP);
     if (p0) {
       p0->cpos = 0;
       p0->epos = size - 1;
@@ -354,12 +354,12 @@ handle_t fmalloc(unknown_t p, const size_t size, const size_t chunksize) {
 }
 
 handle_t fxalloc(const size_t size, const size_t chunksize) {
-  pfind_t p0 = xmalloc(sizeof(find_t));
+  pfind_t p0 = xmalloc(sizeof(find_t), MODE_HEAP);
   if (p0) {
     p0->cpos = 0;
     p0->epos = size - 1;
     p0->size = size;
-    p0->item = xmalloc(size);
+    p0->item = xmalloc(size, MODE_HEAP);
     p0->chunksize = chunksize;
   }
   return setmode(p0, MODE_FINDC);

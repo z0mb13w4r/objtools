@@ -44,7 +44,7 @@ static void custom_fprintf_address(bfd_vma vma, struct disassemble_info *di) {
 
 char* opcodelib_strncat(char* dst, char* src, char* sep, size_t size) {
   if (NULL == dst) {
-    dst = xmalloc(MAXSIZE);
+    dst = xmalloc(MAXSIZE, MODE_HEAP);
   }
 
   if (dst && src && sep && 0 != size) {
@@ -65,7 +65,7 @@ int opcodelib_open(handle_t p, handle_t o) {
     if (bf) {
       struct disassemble_info* di = oc->items[OPCODE_DISASSEMBLER];
       if (NULL == di) {
-        di = xmalloc(sizeof(struct disassemble_info));
+        di = xmalloc(sizeof(struct disassemble_info), MODE_HEAP);
         oc->items[OPCODE_DISASSEMBLER] = di;
       }
 
@@ -220,7 +220,7 @@ int opcodelib_run(handle_t p, handle_t s) {
       di->buffer_vma    = ocget_vmaddress(s);
       di->buffer_length = ocget_size(s);
       di->section       = ocget(s, MODE_OCSHDR);
-      di->buffer        = xmalloc(di->buffer_length);
+      di->buffer        = xmalloc(di->buffer_length, MODE_HEAP);
 
       if (bfd_get_section_contents(ocget(p, OPCODE_BFD), di->section, di->buffer, 0, di->buffer_length)) {
         n += opcodelib_raw(p, s, di->buffer, ocget_size(s), ocget_vmaddress(s));

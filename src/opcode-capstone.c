@@ -334,7 +334,7 @@ int capstone_run(handle_t p, handle_t s) {
   int n = 0;
   if (isopcode(p) && isopshdr(s)) {
     const size_t sz = ocget_size(s);
-    unknown_t    p0 = xmalloc(sz);
+    unknown_t    p0 = xmalloc(sz, MODE_HEAP);
 
     if (p0) {
       if (bfd_get_section_contents(ocget(p, OPCODE_BFD), ocget(s, MODE_OCSHDR), p0, 0, sz)) {

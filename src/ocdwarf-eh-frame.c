@@ -374,7 +374,7 @@ static int ocdwarf_eh_frame_fdes(handle_t p, Dwarf_Fde *fde_data, Dwarf_Signed f
 
     const imode_t USE_LHEXNN = ocis64(p) ? USE_LHEX64 : USE_LHEX32;
 
-    pfdes_item_t fde_items = xmalloc(sizeof(fdes_item_t) * fde_count);
+    pfdes_item_t fde_items = xmalloc(sizeof(fdes_item_t) * fde_count, MODE_HEAP);
     pfdes_item_t fde_item = fde_items;
 
     if (MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED)) {

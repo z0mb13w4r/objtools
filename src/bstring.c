@@ -10,7 +10,7 @@ bool_t isbstring(handle_t p) {
 
 
 handle_t bstrmalloc() {
-  handle_t p = xmalloc(sizeof(bstring_t));
+  handle_t p = xmalloc(sizeof(bstring_t), MODE_HEAP);
   return setmode(p, MODE_BSTRING);
 }
 
@@ -18,7 +18,7 @@ handle_t bstrmallocsize(const size_t size) {
   handle_t p = bstrmalloc();
   if (ismode(p, MODE_BSTRING)) {
     pbstring_t p0 = CAST(pbstring_t, p);
-    p0->data = xmalloc(size);
+    p0->data = xmalloc(size, MODE_HEAP);
     p0->size = size;
     p0->epos = size ? size - 1 : BSTREPOS;
     p0->cpos = 0;
@@ -238,7 +238,7 @@ handle_t bstrcut(handle_t p) {
   if (isbstring(p)) {
     pbstring_t p0 = CAST(pbstring_t, p);
     if (p0->spos < p0->epos && 0 != p0->spos && p0->spos < (p0->size -1)) {
-      unknown_t p1 = xmalloc(p0->epos - p0->spos + 1);
+      unknown_t p1 = xmalloc(p0->epos - p0->spos + 1, MODE_HEAP);
       if (p1) {
         p0->size = p0->epos - p0->spos + 1;
         xmemcpy(p1, CAST(puchar_t, p0->data) + p0->spos, p0->size);

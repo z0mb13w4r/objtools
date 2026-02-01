@@ -32,7 +32,7 @@ static handle_t create_symbols(handle_t p, bfd *f) {
     if (size > 0) {
       pbuffer_t bsy = bmalloc();
       if (bsy) {
-        asymbol **asy = CAST(asymbol **, xmalloc(size));
+        asymbol **asy = CAST(asymbol **, xmalloc(size, MODE_HEAP));
         if (asy) {
           long count = bfd_canonicalize_symtab(f, asy);
           bsy->data = asy;
@@ -54,7 +54,7 @@ static handle_t create_symbols_dynamic(handle_t p, bfd *f) {
     if (size > 0) {
       pbuffer_t bsy = bmalloc();
       if (bsy) {
-        asymbol **asy = CAST(asymbol **, xmalloc(size));
+        asymbol **asy = CAST(asymbol **, xmalloc(size, MODE_HEAP));
         if (asy) {
           long count = bfd_canonicalize_dynamic_symtab(f, asy);
           bsy->data = asy;
@@ -77,7 +77,7 @@ static handle_t create_symbols_dynamic_reloc(handle_t p, bfd *f) {
     if (size > 0) {
       pbuffer_t bsy = bmalloc();
       if (bsy) {
-        arelent **asy = CAST(arelent **, xmalloc(size));
+        arelent **asy = CAST(arelent **, xmalloc(size, MODE_HEAP));
         if (asy) {
           long count = bfd_canonicalize_dynamic_reloc(f, asy, CAST(asymbol **, ps->data));
           bsy->data = asy;
@@ -1006,7 +1006,7 @@ uint64_t ocmake_u64(handle_t p, const uchar_t v0, const uchar_t v1, const uchar_
 }
 
 handle_t ocmalloc() {
-  popcode_t p = xmalloc(sizeof(opcode_t));
+  popcode_t p = xmalloc(sizeof(opcode_t), MODE_HEAP);
   if (p) {
     p->saddress = OPCODE_NULLADDR; /* --start-address */
     p->eaddress = OPCODE_NULLADDR; /* --stop-address */

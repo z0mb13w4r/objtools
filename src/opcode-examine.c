@@ -140,7 +140,7 @@ bool_t isocexamine(handle_t p) {
 }
 
 handle_t oemalloc() {
-  pocexamine_t p = xmalloc(sizeof(ocexamine_t));
+  pocexamine_t p = xmalloc(sizeof(ocexamine_t), MODE_HEAP);
   if (p) {
   }
 
@@ -699,7 +699,7 @@ static unknown_t oeinsert_mnemonic(handle_t p, handle_t e, unknown_t q, unknown_
 
 static unknown_t oeinsert_operand(handle_t p, handle_t e, unknown_t q, unknown_t m) {
   if (isocexamine(e) && q && m) {
-    pocoperand_t o0 = xmalloc(sizeof(ocoperand_t));
+    pocoperand_t o0 = xmalloc(sizeof(ocoperand_t), MODE_HEAP);
     if (o0) {
       char *m0 = CAST(char *, m);
       xstrncpy(o0->data, m0, sizeof(o0->data));
@@ -783,7 +783,7 @@ handle_t oecreate(handle_t p, const uint64_t vaddr, unknown_t mnemonic, unknown_
     MALLOCACOPY(char, o0, 160, operands);
 
     e0->vaddr = vaddr;
-    e0->mc = xmalloc(sizeof(ocmnemonic_t));
+    e0->mc = xmalloc(sizeof(ocmnemonic_t), MODE_HEAP);
 
     char* m1 = NULL;
     m1 = oeinsert_comment(e0, m0);

@@ -157,7 +157,7 @@ unknown_t bget(handle_t p) {
 }
 
 handle_t bmalloc() {
-  handle_t p = xmalloc(sizeof(buffer_t));
+  handle_t p = xmalloc(sizeof(buffer_t), MODE_HEAP);
   return setmode(p, MODE_BUFFER);
 }
 
@@ -165,7 +165,7 @@ handle_t bmallocsize(const size_t size) {
   handle_t p = bmalloc();
   if (ismode(p, MODE_BUFFER)) {
     pbuffer_t p0 = CAST(pbuffer_t, p);
-    p0->data = xmalloc(size);
+    p0->data = xmalloc(size, MODE_HEAP);
     p0->size = size;
   }
 
@@ -213,7 +213,7 @@ handle_t bappend(handle_t p, unknown_t px, const size_t size) {
 handle_t bresize(handle_t p, const size_t size) {
   if (ismode(p, MODE_BUFFER)) {
     pbuffer_t p0 = CAST(pbuffer_t, p);
-    unknown_t p1 = xmalloc(size);
+    unknown_t p1 = xmalloc(size, MODE_HEAP);
     if (p0 && p1) {
       xmemcpy(p1, p0->data, MIN(p0->size, size));
       xfree(p0->data);
@@ -245,7 +245,7 @@ handle_t bopen(const char* name) {
       if (p) {
         strname(p->note, name);
         p->size = fsize(f);
-        p->data = xmalloc(p->size);
+        p->data = xmalloc(p->size, MODE_HEAP);
         if (p->size != xget(p->data, 1, p->size, f)) {
           p = bfree(p);
         }

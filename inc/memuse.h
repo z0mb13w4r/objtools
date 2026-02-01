@@ -3,8 +3,11 @@
 
 #include "defines.h"
 
-unknown_t xmalloc(const size_t size);
-unknown_t cmalloc(const unknown_t p, const size_t size);
+#define MODE_HEAP             (MODE_PUT0('H') | MODE_PUT1('E') | MODE_PUT2('A') | MODE_PUT3('P'))
+#define MODE_STACK            (MODE_PUT0('S') | MODE_PUT1('T') | MODE_PUT2('C') | MODE_PUT3('K'))
+
+unknown_t xmalloc(const size_t size, const nmode_t mode);
+unknown_t cmalloc(const unknown_t p, const size_t size, const nmode_t mode);
 unknown_t xfree(unknown_t p);
 
 unknown_t zfree(punknown_t p);

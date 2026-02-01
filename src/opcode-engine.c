@@ -17,10 +17,10 @@ bool_t isosymbol(handle_t p) {
 }
 
 handle_t emalloc() {
-  pocengine_t p = xmalloc(sizeof(ocengine_t));
+  pocengine_t p = xmalloc(sizeof(ocengine_t), MODE_HEAP);
   if (p) {
     p->sizemax = OPENGINE_MAXSIZE;
-    p->groups = xmalloc(sizeof(ocgroups_t) * p->sizemax);
+    p->groups = xmalloc(sizeof(ocgroups_t) * p->sizemax, MODE_HEAP);
   }
 
   return setmode(p, MODE_OCENGINE);
@@ -32,7 +32,7 @@ handle_t eresize(handle_t p, const size_t sizemax) {
     size_t s1 = sizeof(ocgroups_t) * p0->sizemax;
     size_t s2 = sizeof(ocgroups_t) * sizemax;
 
-    pocgroups_t g0 = xmalloc(s2);
+    pocgroups_t g0 = xmalloc(s2, MODE_HEAP);
     if (g0) {
       xmemcpy(g0, p0->groups, s1);
       xfree(p0->groups);
@@ -64,7 +64,7 @@ handle_t efree(handle_t p) {
 }
 
 handle_t odmalloc(const uint64_t vaddr) {
-  pocdebug_t p = xmalloc(sizeof(ocdebug_t));
+  pocdebug_t p = xmalloc(sizeof(ocdebug_t), MODE_HEAP);
   if (p) {
     p->role = OPDEBUG_LADDR;
     p->laddr = vaddr;
@@ -88,7 +88,7 @@ handle_t odfree(handle_t p) {
 }
 
 handle_t osmalloc(const uint64_t vaddr) {
-  pocsymbol_t p = xmalloc(sizeof(ocsymbol_t));
+  pocsymbol_t p = xmalloc(sizeof(ocsymbol_t), MODE_HEAP);
   if (p) {
     p->role = OPSYMBOL_LADDR;
     p->laddr = vaddr;

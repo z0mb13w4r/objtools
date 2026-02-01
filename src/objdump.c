@@ -124,7 +124,7 @@ static void callback_reloc(handle_t p, handle_t section, unknown_t param) {
     } else {
       pbuffer_t ps = ocget(p, OPCODE_SYMBOLS);
       if (ps && ps->size) {
-        arelent **rsyms = CAST(arelent **, xmalloc(size));
+        arelent **rsyms = CAST(arelent **, xmalloc(size, MODE_HEAP));
         size_t count = bfd_canonicalize_reloc(ocget(p, OPCODE_BFD), s0, rsyms, ps->data);
         if (0 >= count) {
           printf_text("no symbols", USE_LT);

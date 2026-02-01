@@ -3,9 +3,9 @@
 #include "crc.h"
 #include "memuse.h"
 
-unknown_t cmalloc(const unknown_t p, const size_t size) {
+unknown_t cmalloc(const unknown_t p, const size_t size, const nmode_t mode) {
   if (p) {
-    unknown_t p0 = xmalloc(size);
+    unknown_t p0 = xmalloc(size, mode);
     xmemcpy(p0, p, size);
     return p0;
   }
@@ -13,7 +13,7 @@ unknown_t cmalloc(const unknown_t p, const size_t size) {
   return NULL;
 }
 
-unknown_t xmalloc(const size_t size) {
+unknown_t xmalloc(const size_t size, const nmode_t mode) {
   unknown_t p = NULL;
   if (0 != size) {
     p = malloc(size);
@@ -28,6 +28,15 @@ unknown_t xmalloc(const size_t size) {
 unknown_t xfree(unknown_t p) {
   if (p) {
     free(p);
+  }
+
+  return NULL;
+}
+
+unknown_t zfree(punknown_t p) {
+  if (p && *p) {
+    xfree(*p);
+    *p = NULL;
   }
 
   return NULL;
@@ -84,7 +93,7 @@ char* xstrdup(const char *str) {
 
 char* xstrndup(const char *str, size_t size) {
   if (str && size) {
-    char*  p = xmalloc(size);
+    char*  p = xmalloc(size, MODE_HEAP);
     return xstrncpy(p, str, size);
   }
 
@@ -150,15 +159,6 @@ unknown_t xmemset(unknown_t ptr, int value, size_t count) {
 
 unknown_t xmemclr(unknown_t ptr, size_t count) {
   return xmemset(ptr, 0, count);
-}
-
-unknown_t zfree(punknown_t p) {
-  if (p && *p) {
-    xfree(*p);
-    *p = NULL;
-  }
-
-  return NULL;
 }
 
 const char* strshorten(const char* p) {

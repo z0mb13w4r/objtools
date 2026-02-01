@@ -17,7 +17,7 @@ int dump_rolbrute8(const handle_t o, const unknown_t p, const size_t size, const
 
   if (p && size) {
     for (int i = 1; i <= 8; ++i) {
-      unknown_t p0 = cmalloc(p, size);
+      unknown_t p0 = cmalloc(p, size, MODE_HEAP);
       if (p0) {
         if (ECODE_ISOK(rol8(p0, i, size, step))) {
           n += dump_brute0(o, p0, size, i, "rol8", USE_LHEX8);
@@ -35,7 +35,7 @@ int dump_rolbrute16(const handle_t o, const unknown_t p, const size_t size, cons
 
   if (p && size) {
     for (int i = 1; i <= 16; ++i) {
-      unknown_t p0 = cmalloc(p, size);
+      unknown_t p0 = cmalloc(p, size, MODE_HEAP);
       if (p0) {
         if (ECODE_ISOK(rol16(p0, i, size, step))) {
           n += dump_brute0(o, p0, size, i, "rol16", USE_LHEX16);
@@ -53,7 +53,7 @@ int dump_rorbrute8(const handle_t o, const unknown_t p, const size_t size, const
 
   if (p && size) {
     for (int i = 1; i <= 8; ++i) {
-      unknown_t p0 = cmalloc(p, size);
+      unknown_t p0 = cmalloc(p, size, MODE_HEAP);
       if (p0) {
         if (ECODE_ISOK(ror8(p0, i, size, step))) {
           n += dump_brute0(o, p0, size, i, "ror8", USE_LHEX8);
@@ -71,7 +71,7 @@ int dump_rorbrute16(const handle_t o, const unknown_t p, const size_t size, cons
 
   if (p && size) {
     for (int i = 1; i <= 16; ++i) {
-      unknown_t p0 = cmalloc(p, size);
+      unknown_t p0 = cmalloc(p, size, MODE_HEAP);
       if (p0) {
         if (ECODE_ISOK(ror16(p0, i, size, step))) {
           n += dump_brute0(o, p0, size, i, "ror16", USE_LHEX16);
@@ -89,7 +89,7 @@ int dump_shlbrute8(const handle_t o, const unknown_t p, const size_t size, const
 
   if (p && size) {
     for (int i = 1; i <= 8; ++i) {
-      unknown_t p0 = cmalloc(p, size);
+      unknown_t p0 = cmalloc(p, size, MODE_HEAP);
       if (p0) {
         if (ECODE_ISOK(shl8(p0, i, size, step))) {
           n += dump_brute0(o, p0, size, i, "shl8", USE_LHEX8);
@@ -107,7 +107,7 @@ int dump_shlbrute16(const handle_t o, const unknown_t p, const size_t size, cons
 
   if (p && size) {
     for (int i = 1; i <= 16; ++i) {
-      unknown_t p0 = cmalloc(p, size);
+      unknown_t p0 = cmalloc(p, size, MODE_HEAP);
       if (p0) {
         if (ECODE_ISOK(shl16(p0, i, size, step))) {
           n += dump_brute0(o, p0, size, i, "shl16", USE_LHEX16);
@@ -125,7 +125,7 @@ int dump_shrbrute8(const handle_t o, const unknown_t p, const size_t size, const
 
   if (p && size) {
     for (int i = 1; i <= 8; ++i) {
-      unknown_t p0 = cmalloc(p, size);
+      unknown_t p0 = cmalloc(p, size, MODE_HEAP);
       if (p0) {
         if (ECODE_ISOK(shr8(p0, i, size, step))) {
           n += dump_brute0(o, p0, size, i, "shr8", USE_LHEX8);
@@ -143,7 +143,7 @@ int dump_shrbrute16(const handle_t o, const unknown_t p, const size_t size, cons
 
   if (p && size) {
     for (int i = 1; i <= 16; ++i) {
-      unknown_t p0 = cmalloc(p, size);
+      unknown_t p0 = cmalloc(p, size, MODE_HEAP);
       if (p0) {
         if (ECODE_ISOK(shr16(p0, i, size, step))) {
           n += dump_brute0(o, p0, size, i, "shr16", USE_LHEX16);
@@ -161,7 +161,7 @@ int dump_xorbrute8(const handle_t o, const unknown_t p, const size_t size, const
 
   if (p && size) {
     for (int i = 1; i <= UCHAR_MAX; ++i) {
-      unknown_t p0 = cmalloc(p, size);
+      unknown_t p0 = cmalloc(p, size, MODE_HEAP);
       if (p0) {
         if (ECODE_ISOK(xor8(p0, i, size, step))) {
           n += dump_brute0(o, p0, size, i, "xor8", USE_LHEX8);
@@ -179,7 +179,7 @@ int dump_xorbrute16(const handle_t o, const unknown_t p, const size_t size, cons
 
   if (p && size) {
     for (int i = 1; i <= USHRT_MAX; ++i) {
-      unknown_t p0 = cmalloc(p, size);
+      unknown_t p0 = cmalloc(p, size, MODE_HEAP);
       if (p0) {
         if (ECODE_ISOK(xor16(p0, i, size, step))) {
           n += dump_brute0(o, p0, size, i, "xor16", USE_LHEX16);

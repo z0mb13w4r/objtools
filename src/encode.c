@@ -513,7 +513,7 @@ handle_t base58_encode(unknown_t src, size_t srcsize) {
     pfind_t dst = fxalloc(maxsize, MEMFIND_NOCHUNKSIZE);
     if (dst) {
       puchar_t pdst = CAST(puchar_t, dst->item);
-      puchar_t ptmp = xmalloc(srcsize * 137 / 100);
+      puchar_t ptmp = xmalloc(srcsize * 137 / 100, MODE_HEAP);
       if (ptmp) {
         size_t tmpsize = 1;
         for (size_t i = 0; i < srcsize; ++i) {
