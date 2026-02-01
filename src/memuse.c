@@ -3,6 +3,70 @@
 #include "crc.h"
 #include "memuse.h"
 
+bool_t ismode0(handle_t p, const nmode_t mode) {
+  if (p) {
+    const puchar_t p0 = CAST(puchar_t, p);
+    if (MODE_GET0(mode) != p0[0])      return FALSE;
+    return TRUE;
+  }
+
+  return FALSE;
+}
+
+bool_t ismode1(handle_t p, const nmode_t mode) {
+  if (p) {
+    const puchar_t p0 = CAST(puchar_t, p);
+    if (MODE_GET1(mode) != p0[1])      return FALSE;
+    return TRUE;
+  }
+
+  return FALSE;
+}
+
+bool_t ismode2(handle_t p, const nmode_t mode) {
+  if (p) {
+    const puchar_t p0 = CAST(puchar_t, p);
+    if (MODE_GET2(mode) != p0[2])      return FALSE;
+    return TRUE;
+  }
+
+  return FALSE;
+}
+
+bool_t ismode3(handle_t p, const nmode_t mode) {
+  if (p) {
+    const puchar_t p0 = CAST(puchar_t, p);
+    if (MODE_GET3(mode) != p0[3])      return FALSE;
+    return TRUE;
+  }
+
+  return FALSE;
+}
+
+bool_t ismodeNNN(handle_t p, const nmode_t mode) {
+  return ismode0(p, mode) && ismode1(p, mode) && ismode2(p, mode);
+}
+
+bool_t ismodeNXXN(handle_t p, const nmode_t mode) {
+  return ismode0(p, mode) && ismode3(p, mode);
+}
+
+bool_t ismode(handle_t p, const nmode_t mode) {
+  return ismodeNNN(p, mode) && ismode3(p, mode);
+}
+
+handle_t setmode(handle_t p, const nmode_t mode) {
+  if (p) {
+    const puchar_t p0 = CAST(puchar_t, p);
+    p0[0] = MODE_GET0(mode);
+    p0[1] = MODE_GET1(mode);
+    p0[2] = MODE_GET2(mode);
+    p0[3] = MODE_GET3(mode);
+  }
+
+  return p;
+}
+
 unknown_t cmalloc(const unknown_t p, const size_t size, const nmode_t mode) {
   if (p) {
     unknown_t p0 = xmalloc(size, mode);
@@ -14,33 +78,36 @@ unknown_t cmalloc(const unknown_t p, const size_t size, const nmode_t mode) {
 }
 
 unknown_t xmalloc(const size_t size, const nmode_t mode) {
-  unknown_t p = NULL;
   if (0 != size) {
+    const size_t maxsize = size + sizeof(memuse_t);
+    pmemuse_t p = NULL;
+
     if (MODE_HEAP == mode) {
-      p = malloc(size);
+      p = malloc(maxsize);
     } else if (MODE_STACK == mode) {
-      p = alloca(size);
+      p = alloca(maxsize);
     }
+
     if (p) {
-      xmemclr(p, size);
+      xmemclr(p, maxsize);
+      setmode(p, mode);
+      p->size = size;
+      p->sizemax = size;
+      return p + 1;
     }
-  }
-
-  return p;
-}
-
-unknown_t xfree(unknown_t p) {
-  if (p) {
-    free(p);
   }
 
   return NULL;
 }
 
-unknown_t zfree(punknown_t p) {
-  if (p && *p) {
-    xfree(*p);
-    *p = NULL;
+unknown_t xfree(unknown_t p) {
+  if (p) {
+    pmemuse_t p0 = CAST(pmemuse_t, p) - 1;
+    if (ismode(p0, MODE_HEAP)) {
+      free(p0);
+    } else if (!ismode(p0, MODE_STACK)) {
+      free(p);
+    }
   }
 
   return NULL;

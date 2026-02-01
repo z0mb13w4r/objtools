@@ -115,7 +115,8 @@ int ocdwarf_close(handle_t p) {
         xfree(ws->st);
       }
 
-      zfree(&oc->items[OPCODE_DWARF]);
+      xfree(oc->items[OPCODE_DWARF]);
+      oc->items[OPCODE_DWARF] = NULL;
     }
 
     return ECODE_OK;
