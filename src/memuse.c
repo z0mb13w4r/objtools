@@ -16,7 +16,11 @@ unknown_t cmalloc(const unknown_t p, const size_t size, const nmode_t mode) {
 unknown_t xmalloc(const size_t size, const nmode_t mode) {
   unknown_t p = NULL;
   if (0 != size) {
-    p = malloc(size);
+    if (MODE_HEAP == mode) {
+      p = malloc(size);
+    } else if (MODE_STACK == mode) {
+      p = alloca(size);
+    }
     if (p) {
       xmemclr(p, size);
     }
