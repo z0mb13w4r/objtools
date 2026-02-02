@@ -6,6 +6,8 @@
 #define MODE_HEAP             (MODE_PUT0('H') | MODE_PUT1('E') | MODE_PUT2('A') | MODE_PUT3('P'))
 #define MODE_STACK            (MODE_PUT0('S') | MODE_PUT1('T') | MODE_PUT2('C') | MODE_PUT3('K'))
 
+#define MEMSTACK(x,y)          MALLOCA(uchar_t,p##y,sizeof(memuse_t) + sizeof(x)); setmode(p##y, MODE_STACK); x* y = CAST(x*, p##y + sizeof(memuse_t))
+
 typedef struct memuse_s {
   smode_t  mode;
   size_t   size;
