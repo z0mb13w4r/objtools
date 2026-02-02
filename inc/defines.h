@@ -119,11 +119,19 @@
 #define MODE_GET1(x)            MODE_MASK8((x) >>  8)
 #define MODE_GET2(x)            MODE_MASK8((x) >> 16)
 #define MODE_GET3(x)            MODE_MASK8((x) >> 24)
+#define MODE_GET4(x)            MODE_MASK8((x) >> 32)
+#define MODE_GET5(x)            MODE_MASK8((x) >> 40)
+#define MODE_GET6(x)            MODE_MASK8((x) >> 48)
+#define MODE_GET7(x)            MODE_MASK8((x) >> 56)
 
 #define MODE_PUT0(x)            (MODE_MASK8(x) <<  0)
 #define MODE_PUT1(x)            (MODE_MASK8(x) <<  8)
 #define MODE_PUT2(x)            (MODE_MASK8(x) << 16)
 #define MODE_PUT3(x)            (MODE_MASK8(x) << 24)
+#define MODE_PUT4(x)            (MODE_MASK8(x) << 32)
+#define MODE_PUT5(x)            (MODE_MASK8(x) << 40)
+#define MODE_PUT6(x)            (MODE_MASK8(x) << 48)
+#define MODE_PUT7(x)            (MODE_MASK8(x) << 56)
 
 #define MODE_MAKE(x,y,z)        (MODE_PUT0(x) | MODE_PUT1(y) | MODE_PUT2(z))
 
