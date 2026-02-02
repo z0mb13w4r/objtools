@@ -2086,7 +2086,7 @@ int readelf(const pbuffer_t p, const poptions_t o) {
     if (MODE_ISANY(o->action, OPTREADELF_FILEHEADER))           dump_elfheader(p, o);
 
     if (isELF32(p)) {
-      Elf32_Ehdr *ehdr = ecget_ehdr32(p);
+      Elf32_Ehdr *ehdr = ecget_ehdr32(p, xmalloc(sizeof(Elf32_Ehdr), MODE_HEAP));
       if (ehdr) {
         if (MODE_ISANY(o->action, OPTPROGRAM_INFO))             dump_summary(p, o);
         if (MODE_ISANY(o->action, OPTREADELF_FILEHEADER))       dump_fileheader32(p, o, ehdr);
@@ -2104,8 +2104,10 @@ int readelf(const pbuffer_t p, const poptions_t o) {
         if (MODE_ISANY(o->action, OPTREADELF_ARCHSPECIFIC))     dump_archspecific32(p, o, ehdr);
         if (MODE_ISANY(o->ocdump, OPTDWARF_DEBUGGING))          dump_dwarf32(p, o, ehdr);
       }
+
+      xfree(ehdr);
     } else if (isELF64(p)) {
-      Elf64_Ehdr *ehdr = ecget_ehdr64(p);
+      Elf64_Ehdr *ehdr = ecget_ehdr64(p, xmalloc(sizeof(Elf64_Ehdr), MODE_HEAP));
       if (ehdr) {
         if (MODE_ISANY(o->action, OPTPROGRAM_INFO))             dump_summary(p, o);
         if (MODE_ISANY(o->action, OPTREADELF_FILEHEADER))       dump_fileheader64(p, o, ehdr);
@@ -2123,6 +2125,8 @@ int readelf(const pbuffer_t p, const poptions_t o) {
         if (MODE_ISANY(o->action, OPTREADELF_ARCHSPECIFIC))     dump_archspecific64(p, o, ehdr);
         if (MODE_ISANY(o->ocdump, OPTDWARF_DEBUGGING))          dump_dwarf64(p, o, ehdr);
       }
+
+      xfree(ehdr);
     }
   } else {
     printf_e("not an ELF file - it has the wrong magic bytes at the start.");

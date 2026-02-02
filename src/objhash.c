@@ -74,7 +74,8 @@ static int dump_createELF32(const pbuffer_t p, const poptions_t o, const imode_t
   const int MAXSIZE = MAX(ecget_secnamemaxsize(p) + 1, 21);
 
   int n = 0;
-  Elf32_Ehdr *ehdr = ecget_ehdr32(p);
+  MEMSTACK(Elf32_Ehdr, ex);
+  Elf32_Ehdr *ehdr = ecget_ehdr32(p, ex);
   if (ehdr) {
     n += dump_create0(p, o, mode, MAXSIZE);
 
@@ -101,7 +102,8 @@ static int dump_createELF64(const pbuffer_t p, const poptions_t o, const imode_t
   const int MAXSIZE = MAX(ecget_secnamemaxsize(p) + 1, 21);
 
   int n = 0;
-  Elf64_Ehdr *ehdr = ecget_ehdr64(p);
+  MEMSTACK(Elf64_Ehdr, ex);
+  Elf64_Ehdr *ehdr = ecget_ehdr64(p, ex);
   if (ehdr) {
     n += dump_create0(p, o, mode, MAXSIZE);
 

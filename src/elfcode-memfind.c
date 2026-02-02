@@ -3,7 +3,8 @@
 
 handle_t ecapply_relocs(handle_t p, handle_t q, const int index) {
   if (isfind(p) && isELF64(q)) {
-    Elf64_Ehdr *ehdr = ecget_ehdr64(q);
+    MEMSTACK(Elf64_Ehdr, ex);
+    Elf64_Ehdr *ehdr = ecget_ehdr64(q, ex);
     if (ehdr) {
 //printf("hunting[index] = %d\n", index);
       for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
@@ -68,7 +69,8 @@ handle_t ecapply_relocs(handle_t p, handle_t q, const int index) {
 
 handle_t ecapply_relocsbyoffset(handle_t p, handle_t q, const int offset) {
   if (isfind(p) && isELF64(q)) {
-    Elf64_Ehdr *ehdr = ecget_ehdr64(q);
+    MEMSTACK(Elf64_Ehdr, ex);
+    Elf64_Ehdr *ehdr = ecget_ehdr64(q, ex);
     if (ehdr) {
 //printf("hunting[offset] = %x\n", offset);
       for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
