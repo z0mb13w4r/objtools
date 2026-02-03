@@ -75,20 +75,21 @@ static int dump_createELF32(const pbuffer_t p, const poptions_t o, const imode_t
 
   int n = 0;
   MEMSTACK(Elf32_Ehdr, ex);
-  Elf32_Ehdr *ehdr = ecget_ehdr32(p, ex);
-  if (ehdr) {
+  Elf32_Ehdr *e0 = ecget_ehdr32(p, ex);
+  if (e0) {
     n += dump_create0(p, o, mode, MAXSIZE);
 
-    for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
-      Elf32_Shdr *shdr = ecget_shdr32byindex(p, i);
-      if (shdr) {
+    for (Elf32_Half i = 0; i < e0->e_shnum; ++i) {
+      MEMSTACK(Elf32_Shdr, sx);
+      Elf32_Shdr *s0 = ecget_shdr32byindex(p, sx, i);
+      if (s0) {
         if (OPTOBJHASH_HEADERS == mode) {
-          n += dump_hash0(o, getp(p, ehdr->e_shoff + (ehdr->e_shentsize * i), ehdr->e_shentsize), ehdr->e_shentsize, SET_PAD(MAXSIZE0));
+          n += dump_hash0(o, getp(p, e0->e_shoff + (e0->e_shentsize * i), e0->e_shentsize), e0->e_shentsize, SET_PAD(MAXSIZE0));
         } else if (OPTOBJHASH_SECTIONS == mode) {
-          n += dump_hash0(o, getp(p, shdr->sh_offset, shdr->sh_size), shdr->sh_size, SET_PAD(MAXSIZE0));
+          n += dump_hash0(o, getp(p, s0->sh_offset, s0->sh_size), s0->sh_size, SET_PAD(MAXSIZE0));
         }
 
-        n += dump_create1(p, o, ecget_secnamebyindex(p, i), shdr->sh_type, shdr->sh_offset, shdr->sh_size, shdr->sh_addr, MAXSIZE);
+        n += dump_create1(p, o, ecget_secnamebyindex(p, i), s0->sh_type, s0->sh_offset, s0->sh_size, s0->sh_addr, MAXSIZE);
       }
     }
 
@@ -103,19 +104,20 @@ static int dump_createELF64(const pbuffer_t p, const poptions_t o, const imode_t
 
   int n = 0;
   MEMSTACK(Elf64_Ehdr, ex);
-  Elf64_Ehdr *ehdr = ecget_ehdr64(p, ex);
-  if (ehdr) {
+  Elf64_Ehdr *e0 = ecget_ehdr64(p, ex);
+  if (e0) {
     n += dump_create0(p, o, mode, MAXSIZE);
 
-    for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
-      Elf64_Shdr *shdr = ecget_shdr64byindex(p, i);
-      if (shdr) {
+    for (Elf64_Half i = 0; i < e0->e_shnum; ++i) {
+      MEMSTACK(Elf64_Shdr, sx);
+      Elf64_Shdr *s0 = ecget_shdr64byindex(p, sx, i);
+      if (s0) {
         if (OPTOBJHASH_HEADERS == mode) {
-          n += dump_hash0(o, getp(p, ehdr->e_shoff + (ehdr->e_shentsize * i), ehdr->e_shentsize), ehdr->e_shentsize, SET_PAD(MAXSIZE0));
+          n += dump_hash0(o, getp(p, e0->e_shoff + (e0->e_shentsize * i), e0->e_shentsize), e0->e_shentsize, SET_PAD(MAXSIZE0));
         } else if (OPTOBJHASH_SECTIONS == mode) {
-          n += dump_hash0(o, getp(p, shdr->sh_offset, shdr->sh_size), shdr->sh_size, SET_PAD(MAXSIZE0));
+          n += dump_hash0(o, getp(p, s0->sh_offset, s0->sh_size), s0->sh_size, SET_PAD(MAXSIZE0));
         }
-        n += dump_create1(p, o, ecget_secnamebyindex(p, i), shdr->sh_type, shdr->sh_offset, shdr->sh_size, shdr->sh_addr, MAXSIZE);
+        n += dump_create1(p, o, ecget_secnamebyindex(p, i), s0->sh_type, s0->sh_offset, s0->sh_size, s0->sh_addr, MAXSIZE);
       }
     }
 
@@ -214,9 +216,10 @@ static int dump_actionsELF32(const pbuffer_t p, const poptions_t o) {
     paction_t x = o->actions;
     while (x) {
       if (x->secname[0]) {
-        Elf32_Shdr* shdr = ecget_shdr32byname(p, x->secname);
-        if (shdr) {
-          n += dump_actionsELF0(p, o, x->secname, x->action, shdr->sh_type, shdr->sh_offset, shdr->sh_size, shdr->sh_addr);
+        MEMSTACK(Elf32_Shdr, sx);
+        Elf32_Shdr* s0 = ecget_shdr32byname(p, sx, x->secname);
+        if (s0) {
+          n += dump_actionsELF0(p, o, x->secname, x->action, s0->sh_type, s0->sh_offset, s0->sh_size, s0->sh_addr);
         } else {
           printf_w("section '%s' was not dumped because it does not exist!", x->secname);
         }
@@ -237,9 +240,10 @@ static int dump_actionsELF64(const pbuffer_t p, const poptions_t o) {
     paction_t x = o->actions;
     while (x) {
       if (x->secname[0]) {
-        Elf64_Shdr* shdr = ecget_shdr64byname(p, x->secname);
-        if (shdr) {
-          n += dump_actionsELF0(p, o, x->secname, x->action, shdr->sh_type, shdr->sh_offset, shdr->sh_size, shdr->sh_addr);
+        MEMSTACK(Elf64_Shdr, sx);
+        Elf64_Shdr* s0 = ecget_shdr64byname(p, sx, x->secname);
+        if (s0) {
+          n += dump_actionsELF0(p, o, x->secname, x->action, s0->sh_type, s0->sh_offset, s0->sh_size, s0->sh_addr);
         } else {
           printf_w("section '%s' was not dumped because it does not exist!", x->secname);
         }

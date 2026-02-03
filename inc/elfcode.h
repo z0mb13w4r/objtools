@@ -63,20 +63,20 @@ Elf32_Phdr* ecget_phdr32byindex(const pbuffer_t p, const int index);
 Elf64_Phdr* ecget_phdr64byindex(const pbuffer_t p, const int index);
 unknown_t   ecget_phdrbyindex(const pbuffer_t p, const int index);
 
-Elf32_Shdr* ecget_shdr32byoffset(const pbuffer_t p, const int offset);
-Elf64_Shdr* ecget_shdr64byoffset(const pbuffer_t p, const int offset);
+Elf32_Shdr* ecget_shdr32byoffset(const pbuffer_t p, const unknown_t q, const int offset);
+Elf64_Shdr* ecget_shdr64byoffset(const pbuffer_t p, const unknown_t q, const int offset);
 unknown_t   ecget_shdrbyoffset(const pbuffer_t p, const int offset);
 
-Elf32_Shdr* ecget_shdr32byindex(const pbuffer_t p, const int index);
-Elf64_Shdr* ecget_shdr64byindex(const pbuffer_t p, const int index);
+Elf32_Shdr* ecget_shdr32byindex(const pbuffer_t p, const unknown_t q, const int index);
+Elf64_Shdr* ecget_shdr64byindex(const pbuffer_t p, const unknown_t q, const int index);
 unknown_t   ecget_shdrbyindex(const pbuffer_t p, const int index);
 
-Elf32_Shdr* ecget_shdr32byname(const pbuffer_t p, const char* name);
-Elf64_Shdr* ecget_shdr64byname(const pbuffer_t p, const char* name);
+Elf32_Shdr* ecget_shdr32byname(const pbuffer_t p, const unknown_t q, const char* name);
+Elf64_Shdr* ecget_shdr64byname(const pbuffer_t p, const unknown_t q, const char* name);
 unknown_t   ecget_shdrbyname(const pbuffer_t p, const char* name);
 
-Elf32_Shdr* ecget_shdr32bytype(const pbuffer_t p, const int type);
-Elf64_Shdr* ecget_shdr64bytype(const pbuffer_t p, const int type);
+Elf32_Shdr* ecget_shdr32bytype(const pbuffer_t p, const unknown_t q, const int type);
+Elf64_Shdr* ecget_shdr64bytype(const pbuffer_t p, const unknown_t q, const int type);
 unknown_t   ecget_shdrbytype(const pbuffer_t p, const int type);
 
 int ecget_indexbyname(const pbuffer_t p, const char* name);

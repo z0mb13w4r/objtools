@@ -239,7 +239,8 @@ bool_t isELFpie32(const pbuffer_t p) {
   Elf32_Ehdr *e = ecget_ehdr32(p, ex);
   if (e) {
     for (Elf32_Half i = 0; i < e->e_shnum; ++i) {
-      Elf32_Shdr *s = ecget_shdr32byindex(p, i);
+      MEMSTACK(Elf32_Shdr, sx);
+      Elf32_Shdr *s = ecget_shdr32byindex(p, sx, i);
       if (s && SHT_DYNAMIC == s->sh_type) {
         size_t cnt = s->sh_size / s->sh_entsize;
 
@@ -261,7 +262,8 @@ bool_t isELFpie64(const pbuffer_t p) {
   Elf64_Ehdr *e = ecget_ehdr64(p, ex);
   if (e) {
     for (Elf64_Half i = 0; i < e->e_shnum; ++i) {
-      Elf64_Shdr *s = ecget_shdr64byindex(p, i);
+      MEMSTACK(Elf64_Shdr, sx);
+      Elf64_Shdr *s = ecget_shdr64byindex(p, sx, i);
       if (s && SHT_DYNAMIC == s->sh_type) {
         size_t cnt = s->sh_size / s->sh_entsize;
 
@@ -308,7 +310,8 @@ Elf32_Nhdr* ecget_nhdr32byindex(const pbuffer_t p, const int index) {
   MEMSTACK(Elf32_Ehdr, ex);
   Elf32_Ehdr *e = ecget_ehdr32(p, ex);
   if (e) {
-    Elf32_Shdr *s = ecget_shdr32byindex(p, index);
+    MEMSTACK(Elf32_Shdr, sx);
+    Elf32_Shdr *s = ecget_shdr32byindex(p, sx, index);
     if (s && SHT_NOTE == s->sh_type) {
       return CAST(Elf32_Nhdr*, getp(p, s->sh_offset, s->sh_size));
     }
@@ -321,7 +324,8 @@ Elf64_Nhdr* ecget_nhdr64byindex(const pbuffer_t p, const int index) {
   MEMSTACK(Elf64_Ehdr, ex);
   Elf64_Ehdr *e = ecget_ehdr64(p, ex);
   if (e) {
-    Elf64_Shdr *s = ecget_shdr64byindex(p, index);
+    MEMSTACK(Elf64_Shdr, sx);
+    Elf64_Shdr *s = ecget_shdr64byindex(p, sx, index);
     if (s && SHT_NOTE == s->sh_type) {
       return CAST(Elf64_Nhdr*, getp(p, s->sh_offset, s->sh_size));
     }
@@ -368,12 +372,12 @@ unknown_t ecget_phdrbyindex(const pbuffer_t p, const int index) {
   return NULL;
 }
 
-Elf32_Shdr* ecget_shdr32byoffset(const pbuffer_t p, const int offset) {
+Elf32_Shdr* ecget_shdr32byoffset(const pbuffer_t p, const unknown_t q, const int offset) {
   MEMSTACK(Elf32_Ehdr, ex);
   Elf32_Ehdr *e = ecget_ehdr32(p, ex);
   if (e) {
     for (Elf32_Half i = 0; i < e->e_shnum; ++i) {
-      Elf32_Shdr *s = ecget_shdr32byindex(p, i);
+      Elf32_Shdr *s = ecget_shdr32byindex(p, q, i);
       if (s && s->sh_offset == offset){
         return s;
       }
@@ -383,12 +387,12 @@ Elf32_Shdr* ecget_shdr32byoffset(const pbuffer_t p, const int offset) {
   return NULL;
 }
 
-Elf64_Shdr* ecget_shdr64byoffset(const pbuffer_t p, const int offset) {
+Elf64_Shdr* ecget_shdr64byoffset(const pbuffer_t p, const unknown_t q, const int offset) {
   MEMSTACK(Elf64_Ehdr, ex);
   Elf64_Ehdr *e = ecget_ehdr64(p, ex);
   if (e) {
     for (Elf64_Half i = 0; i < e->e_shnum; ++i) {
-      Elf64_Shdr *s = ecget_shdr64byindex(p, i);
+      Elf64_Shdr *s = ecget_shdr64byindex(p, q, i);
       if (s && s->sh_offset == offset){
         return s;
       }
@@ -400,19 +404,19 @@ Elf64_Shdr* ecget_shdr64byoffset(const pbuffer_t p, const int offset) {
 
 unknown_t   ecget_shdrbyoffset(const pbuffer_t p, const int offset) {
   if (isELF(p)) {
-    if (isELF32(p))        return ecget_shdr32byoffset(p, offset);
-    else if (isELF64(p))   return ecget_shdr64byoffset(p, offset);
+    if (isELF32(p))        return ecget_shdr32byoffset(p, xmalloc(sizeof(Elf32_Shdr), MODE_HEAP), offset);
+    else if (isELF64(p))   return ecget_shdr64byoffset(p, xmalloc(sizeof(Elf64_Shdr), MODE_HEAP), offset);
   }
 
   return NULL;
 }
 
-Elf32_Shdr* ecget_shdr32bytype(const pbuffer_t p, const int type) {
+Elf32_Shdr* ecget_shdr32bytype(const pbuffer_t p, const unknown_t q, const int type) {
   MEMSTACK(Elf32_Ehdr, ex);
   Elf32_Ehdr *e = ecget_ehdr32(p, ex);
   if (e) {
     for (Elf32_Half i = 0; i < e->e_shnum; ++i) {
-      Elf32_Shdr *s = ecget_shdr32byindex(p, i);
+      Elf32_Shdr *s = ecget_shdr32byindex(p, q, i);
       if (s && s->sh_type == type){
         return s;
       }
@@ -422,12 +426,12 @@ Elf32_Shdr* ecget_shdr32bytype(const pbuffer_t p, const int type) {
   return NULL;
 }
 
-Elf64_Shdr* ecget_shdr64bytype(const pbuffer_t p, const int type) {
+Elf64_Shdr* ecget_shdr64bytype(const pbuffer_t p, const unknown_t q, const int type) {
   MEMSTACK(Elf64_Ehdr, ex);
   Elf64_Ehdr *e = ecget_ehdr64(p, ex);
   if (e) {
     for (Elf64_Half i = 0; i < e->e_shnum; ++i) {
-      Elf64_Shdr *s = ecget_shdr64byindex(p, i);
+      Elf64_Shdr *s = ecget_shdr64byindex(p, q, i);
       if (s && s->sh_type == type){
         return s;
       }
@@ -439,8 +443,8 @@ Elf64_Shdr* ecget_shdr64bytype(const pbuffer_t p, const int type) {
 
 unknown_t ecget_shdrbytype(const pbuffer_t p, const int type) {
   if (isELF(p)) {
-    if (isELF32(p))        return ecget_shdr32bytype(p, type);
-    else if (isELF64(p))   return ecget_shdr64bytype(p, type);
+    if (isELF32(p))        return ecget_shdr32bytype(p, xmalloc(sizeof(Elf32_Shdr), MODE_HEAP), type);
+    else if (isELF64(p))   return ecget_shdr64bytype(p, xmalloc(sizeof(Elf64_Shdr), MODE_HEAP), type);
   }
 
   return NULL;
@@ -485,14 +489,14 @@ int ecget_indexbyname(const pbuffer_t p, const char* name) {
   return -1;
 }
 
-Elf32_Shdr* ecget_shdr32byname(const pbuffer_t p, const char* name) {
+Elf32_Shdr* ecget_shdr32byname(const pbuffer_t p, const unknown_t q, const char* name) {
   MEMSTACK(Elf32_Ehdr, ex);
   Elf32_Ehdr *e = ecget_ehdr32(p, ex);
   if (e && name && name[0]) {
     for (Elf32_Half i = 0; i < e->e_shnum; ++i) {
       const char* name0 = _ecget_secname32byindex(p, i);
       if (name0 && 0 == xstrcmp(name, name0)) {
-        return ecget_shdr32byindex(p, i);
+        return ecget_shdr32byindex(p, q, i);
       }
     }
   }
@@ -500,14 +504,14 @@ Elf32_Shdr* ecget_shdr32byname(const pbuffer_t p, const char* name) {
   return NULL;
 }
 
-Elf64_Shdr* ecget_shdr64byname(const pbuffer_t p, const char* name) {
+Elf64_Shdr* ecget_shdr64byname(const pbuffer_t p, const unknown_t q, const char* name) {
   MEMSTACK(Elf64_Ehdr, ex);
   Elf64_Ehdr *e = ecget_ehdr64(p, ex);
   if (e && name && name[0]) {
     for (Elf64_Half i = 0; i < e->e_shnum; ++i) {
       const char* name0 = _ecget_secname64byindex(p, i);
       if (name0 && 0 == xstrcmp(name, name0)) {
-        return ecget_shdr64byindex(p, i);
+        return ecget_shdr64byindex(p, q, i);
       }
     }
   }
@@ -517,28 +521,28 @@ Elf64_Shdr* ecget_shdr64byname(const pbuffer_t p, const char* name) {
 
 unknown_t   ecget_shdrbyname(const pbuffer_t p, const char* name) {
   if (isELF(p)) {
-    if (isELF32(p))        return ecget_shdr32byname(p, name);
-    else if (isELF64(p))   return ecget_shdr64byname(p, name);
+    if (isELF32(p))        return ecget_shdr32byname(p, xmalloc(sizeof(Elf32_Shdr), MODE_HEAP), name);
+    else if (isELF64(p))   return ecget_shdr64byname(p, xmalloc(sizeof(Elf64_Shdr), MODE_HEAP), name);
   }
 
   return NULL;
 }
 
-Elf32_Shdr* ecget_shdr32byindex(const pbuffer_t p, const int index) {
+Elf32_Shdr* ecget_shdr32byindex(const pbuffer_t p, const unknown_t q, const int index) {
   MEMSTACK(Elf32_Ehdr, ex);
   Elf32_Ehdr *e = ecget_ehdr32(p, ex);
   if (e && -1 != index) {
-    return CAST(Elf32_Shdr*, getp(p, e->e_shoff + (e->e_shentsize * index), e->e_shentsize));
+    return ecconvert_shdr32(p, q, getp(p, e->e_shoff + (e->e_shentsize * index), e->e_shentsize));
   }
 
   return NULL;
 }
 
-Elf64_Shdr* ecget_shdr64byindex(const pbuffer_t p, const int index) {
+Elf64_Shdr* ecget_shdr64byindex(const pbuffer_t p, const unknown_t q, const int index) {
   MEMSTACK(Elf64_Ehdr, ex);
   Elf64_Ehdr *e = ecget_ehdr64(p, ex);
   if (e && -1 != index) {
-    return CAST(Elf64_Shdr*, getp(p, e->e_shoff + (e->e_shentsize * index), e->e_shentsize));
+    return ecconvert_shdr64(p, q, getp(p, e->e_shoff + (e->e_shentsize * index), e->e_shentsize));
   }
 
   return NULL;
@@ -546,8 +550,8 @@ Elf64_Shdr* ecget_shdr64byindex(const pbuffer_t p, const int index) {
 
 unknown_t ecget_shdrbyindex(const pbuffer_t p, const int index) {
   if (isELF(p)) {
-    if (isELF32(p))        return ecget_shdr32byindex(p, index);
-    else if (isELF64(p))   return ecget_shdr64byindex(p, index);
+    if (isELF32(p))        return ecget_shdr32byindex(p, xmalloc(sizeof(Elf32_Shdr), MODE_HEAP), index);
+    else if (isELF64(p))   return ecget_shdr64byindex(p, xmalloc(sizeof(Elf64_Shdr), MODE_HEAP), index);
   }
 
   return NULL;
@@ -569,14 +573,15 @@ size_t _ecget_secname32maxsize(const pbuffer_t p) {
   MEMSTACK(Elf32_Ehdr, ex);
   Elf32_Ehdr *e = ecget_ehdr32(p, ex);
   if (e) {
-    Elf32_Shdr *s1 = ecget_shdr32byindex(p, e->e_shstrndx);
+    MEMSTACK(Elf32_Shdr, sx);
+    Elf32_Shdr *s1 = ecget_shdr32byindex(p, sx, e->e_shstrndx);
     if (s1) {
       s0 = getp(p, s1->sh_offset, s1->sh_size);
     }
 
     if (s0) {
       for (Elf32_Half i = 0; i < e->e_shnum; ++i) {
-        Elf32_Shdr *s2 = ecget_shdr32byindex(p, i);
+        Elf32_Shdr *s2 = ecget_shdr32byindex(p, sx, i);
         if (s2) {
           siz = MAX(siz, xstrlen(s0 + s2->sh_name));
         }
@@ -594,14 +599,15 @@ size_t _ecget_secname64maxsize(const pbuffer_t p) {
   MEMSTACK(Elf64_Ehdr, ex);
   Elf64_Ehdr *e = ecget_ehdr64(p, ex);
   if (e) {
-    Elf64_Shdr *s1 = ecget_shdr64byindex(p, e->e_shstrndx);
+    MEMSTACK(Elf64_Shdr, sx);
+    Elf64_Shdr *s1 = ecget_shdr64byindex(p, sx, e->e_shstrndx);
     if (s1) {
       s0 = getp(p, s1->sh_offset, s1->sh_size);
     }
 
     if (s0) {
       for (Elf64_Half i = 0; i < e->e_shnum; ++i) {
-        Elf64_Shdr *s2 = ecget_shdr64byindex(p, i);
+        Elf64_Shdr *s2 = ecget_shdr64byindex(p, sx, i);
         if (s2) {
           siz = MAX(siz, xstrlen(s0 + s2->sh_name));
         }
@@ -627,13 +633,14 @@ const char* _ecget_secname32byindex(const pbuffer_t p, const int index) {
   MEMSTACK(Elf32_Ehdr, ex);
   Elf32_Ehdr *e = ecget_ehdr32(p, ex);
   if (e) {
-    Elf32_Shdr *s1 = ecget_shdr32byindex(p, e->e_shstrndx);
+    MEMSTACK(Elf32_Shdr, sx);
+    Elf32_Shdr *s1 = ecget_shdr32byindex(p, sx, e->e_shstrndx);
     if (s1) {
       s0 = getp(p, s1->sh_offset, s1->sh_size);
     }
 
     if (s0) {
-      Elf32_Shdr *s2 = ecget_shdr32byindex(p, index);
+      Elf32_Shdr *s2 = ecget_shdr32byindex(p, sx, index);
       if (s2) {
         return s0 + s2->sh_name;
       }
@@ -649,13 +656,14 @@ const char* _ecget_secname64byindex(const pbuffer_t p, const int index) {
   MEMSTACK(Elf64_Ehdr, ex);
   Elf64_Ehdr *e = ecget_ehdr64(p, ex);
   if (e) {
-    Elf64_Shdr *s1 = ecget_shdr64byindex(p, e->e_shstrndx);
+    MEMSTACK(Elf64_Shdr, sx);
+    Elf64_Shdr *s1 = ecget_shdr64byindex(p, sx, e->e_shstrndx);
     if (s1) {
       s0 = getp(p, s1->sh_offset, s1->sh_size);
     }
 
     if (s0) {
-      Elf64_Shdr *s2 = ecget_shdr64byindex(p, index);
+      Elf64_Shdr *s2 = ecget_shdr64byindex(p, sx, index);
       if (s2) {
         return s0 + s2->sh_name;
       }
@@ -680,7 +688,8 @@ const char* _ecget_secname32byoffset(const pbuffer_t p, const int offset) {
   MEMSTACK(Elf32_Ehdr, ex);
   Elf32_Ehdr *e = ecget_ehdr32(p, ex);
   if (e) {
-    Elf32_Shdr *s1 = ecget_shdr32byindex(p, e->e_shstrndx);
+    MEMSTACK(Elf32_Shdr, sx);
+    Elf32_Shdr *s1 = ecget_shdr32byindex(p, sx, e->e_shstrndx);
     if (s1) {
       s0 = getp(p, s1->sh_offset, s1->sh_size);
     }
@@ -699,7 +708,8 @@ const char* _ecget_secname64byoffset(const pbuffer_t p, const int offset) {
   MEMSTACK(Elf64_Ehdr, ex);
   Elf64_Ehdr *e = ecget_ehdr64(p, ex);
   if (e) {
-    Elf64_Shdr *s1 = ecget_shdr64byindex(p, e->e_shstrndx);
+    MEMSTACK(Elf64_Shdr, sx);
+    Elf64_Shdr *s1 = ecget_shdr64byindex(p, sx, e->e_shstrndx);
     if (s1) {
       s0 = getp(p, s1->sh_offset, s1->sh_size);
     }
@@ -726,7 +736,8 @@ const char* _ecget_secname32byaddr(const pbuffer_t p, const int vaddr) {
   Elf32_Ehdr *e = ecget_ehdr32(p, ex);
   if (e) {
     for (Elf32_Half i = 0; i < e->e_shnum; ++i) {
-      Elf32_Shdr *s = ecget_shdr32byindex(p, i);
+      MEMSTACK(Elf32_Shdr, sx);
+      Elf32_Shdr *s = ecget_shdr32byindex(p, sx, i);
       if (s && vaddr == s->sh_addr) {
         return ecget_secname32byshdr(p, s);
       }
@@ -741,7 +752,8 @@ const char* _ecget_secname64byaddr(const pbuffer_t p, const int vaddr) {
   Elf64_Ehdr *e = ecget_ehdr64(p, ex);
   if (e) {
     for (Elf64_Half i = 0; i < e->e_shnum; ++i) {
-      Elf64_Shdr *s = ecget_shdr64byindex(p, i);
+      MEMSTACK(Elf64_Shdr, sx);
+      Elf64_Shdr *s = ecget_shdr64byindex(p, sx, i);
       if (s && vaddr == s->sh_addr) {
         return ecget_secname64byshdr(p, s);
       }
@@ -764,7 +776,8 @@ const char* _ecget_name32byoffset(const pbuffer_t p, const int index, const int 
   MEMSTACK(Elf32_Ehdr, ex);
   Elf32_Ehdr *e = ecget_ehdr32(p, ex);
   if (e) {
-    Elf32_Shdr *s = ecget_shdr32byindex(p, index);
+    MEMSTACK(Elf32_Shdr, sx);
+    Elf32_Shdr *s = ecget_shdr32byindex(p, sx, index);
     if (s) {
       return getp(p, s->sh_offset + offset, s->sh_size - offset);
     }
@@ -777,7 +790,8 @@ const char* _ecget_name64byoffset(const pbuffer_t p, const int index, const int 
   MEMSTACK(Elf64_Ehdr, ex);
   Elf64_Ehdr *e = ecget_ehdr64(p, ex);
   if (e) {
-    Elf64_Shdr *s = ecget_shdr64byindex(p, index);
+    MEMSTACK(Elf64_Shdr, sx);
+    Elf64_Shdr *s = ecget_shdr64byindex(p, sx, index);
     if (s) {
       return getp(p, s->sh_offset + offset, s->sh_size - offset);
     }
@@ -796,7 +810,8 @@ const char* ecget_namebyaddr(const pbuffer_t p, const int vaddr, uint64_t *offse
 }
 
 static const char* _ecget_name32byaddr0(const pbuffer_t p, const int vaddr, uint64_t *offset) {
-  Elf32_Shdr *sh = ecget_shdr32bytype(p, SHT_SYMTAB);
+  MEMSTACK(Elf32_Shdr, sx);
+  Elf32_Shdr *sh = ecget_shdr32bytype(p, sx, SHT_SYMTAB);
   if (sh) {
     size_t cnt = sh->sh_size / sh->sh_entsize;
     handle_t f = fgetbyshdr(p, sh);
@@ -847,7 +862,8 @@ static const char* _ecget_name32byaddr1(const pbuffer_t p, const int vaddr, uint
   Elf32_Ehdr *e = ecget_ehdr32(p, ex);
   if (e) {
     for (Elf32_Half i = 0; i < e->e_shnum; ++i) {
-      Elf32_Shdr *sh = ecget_shdr32byindex(p, i);
+      MEMSTACK(Elf32_Shdr, sx);
+      Elf32_Shdr *sh = ecget_shdr32byindex(p, sx, i);
       if (sh) {
         if (SHT_RELA == sh->sh_type || SHT_REL == sh->sh_type || SHT_RELR == sh->sh_type) {
           size_t cnt = sh->sh_size / sh->sh_entsize;
@@ -859,7 +875,8 @@ static const char* _ecget_name32byaddr1(const pbuffer_t p, const int vaddr, uint
             if (r) {
               for (size_t j = 0; j < cnt; ++j, ++r) {
                 if (r->r_offset == vaddr) {
-                  Elf32_Shdr *dh = ecget_shdr32byindex(p, sh->sh_link);
+                  MEMSTACK(Elf32_Shdr, dx);
+                  Elf32_Shdr *dh = ecget_shdr32byindex(p, dx, sh->sh_link);
                   if (dh) {
                     Elf32_Off  off = ELF32_R_SYM(r->r_info);
                     Elf32_Sym *sym = getp(p, dh->sh_offset + (off * dh->sh_entsize), dh->sh_entsize);
@@ -875,7 +892,8 @@ static const char* _ecget_name32byaddr1(const pbuffer_t p, const int vaddr, uint
 //printf("++RTV++");
                         if (symname && symname[0]) {
                           const char *vername = NULL;
-                          Elf32_Shdr *vh = ecget_shdr32bytype(p, SHT_GNU_versym);
+                          MEMSTACK(Elf32_Shdr, vx);
+                          Elf32_Shdr *vh = ecget_shdr32bytype(p, vx, SHT_GNU_versym);
                           if (vh) {
                             Elf32_Versym *vs = getp(p, vh->sh_offset + (off * vh->sh_entsize), vh->sh_entsize);
                             if (vs) {
@@ -935,7 +953,8 @@ const char* _ecget_name32byaddr(const pbuffer_t p, const int vaddr, uint64_t *of
 }
 
 static const char* _ecget_name64byaddr0(const pbuffer_t p, const int vaddr, uint64_t *offset) {
-  Elf64_Shdr *sh = ecget_shdr64bytype(p, SHT_SYMTAB);
+  MEMSTACK(Elf64_Shdr, sx);
+  Elf64_Shdr *sh = ecget_shdr64bytype(p, sx, SHT_SYMTAB);
   if (sh) {
     size_t cnt = sh->sh_size / sh->sh_entsize;
     handle_t f = fgetbyshdr(p, sh);
@@ -986,7 +1005,8 @@ static const char* _ecget_name64byaddr1(const pbuffer_t p, const int vaddr, uint
   Elf64_Ehdr *e = ecget_ehdr64(p, ex);
   if (e) {
     for (Elf64_Half i = 0; i < e->e_shnum; ++i) {
-      Elf64_Shdr *sh = ecget_shdr64byindex(p, i);
+      MEMSTACK(Elf64_Shdr, sx);
+      Elf64_Shdr *sh = ecget_shdr64byindex(p, sx, i);
       if (sh) {
         if (SHT_RELA == sh->sh_type || SHT_REL == sh->sh_type || SHT_RELR == sh->sh_type) {
           size_t cnt = sh->sh_size / sh->sh_entsize;
@@ -998,7 +1018,8 @@ static const char* _ecget_name64byaddr1(const pbuffer_t p, const int vaddr, uint
             if (r) {
               for (size_t j = 0; j < cnt; ++j, ++r) {
                 if (r->r_offset == vaddr) {
-                  Elf64_Shdr *dh = ecget_shdr64byindex(p, sh->sh_link);
+                  MEMSTACK(Elf64_Shdr, dx);
+                  Elf64_Shdr *dh = ecget_shdr64byindex(p, dx, sh->sh_link);
                   if (dh) {
                     Elf64_Off  off = ELF64_R_SYM(r->r_info);
                     Elf64_Sym *sym = getp(p, dh->sh_offset + (off * dh->sh_entsize), dh->sh_entsize);
@@ -1014,7 +1035,8 @@ static const char* _ecget_name64byaddr1(const pbuffer_t p, const int vaddr, uint
 //printf("++RTV++");
                         if (symname && symname[0]) {
                           const char *vername = NULL;
-                          Elf64_Shdr *vh = ecget_shdr64bytype(p, SHT_GNU_versym);
+                          MEMSTACK(Elf64_Shdr, vx);
+                          Elf64_Shdr *vh = ecget_shdr64bytype(p, vx, SHT_GNU_versym);
                           if (vh) {
                             Elf64_Versym *vs = getp(p, vh->sh_offset + (off * vh->sh_entsize), vh->sh_entsize);
                             if (vs) {
@@ -1085,7 +1107,8 @@ const char* ecget_nhdrnamebyindex(const pbuffer_t p, const int index) {
 const char* _ecget_nhdrname32byindex(const pbuffer_t p, const int index) {
   Elf32_Nhdr *n = ecget_nhdr32byindex(p, index);
   if (n && n->n_namesz) {
-    Elf32_Shdr *s = ecget_shdr32byindex(p, index);
+    MEMSTACK(Elf32_Shdr, sx);
+    Elf32_Shdr *s = ecget_shdr32byindex(p, sx, index);
     if (s) {
       return getp(p, s->sh_offset + sizeof(Elf32_Nhdr), n->n_namesz);
     }
@@ -1097,7 +1120,8 @@ const char* _ecget_nhdrname32byindex(const pbuffer_t p, const int index) {
 const char* _ecget_nhdrname64byindex(const pbuffer_t p, const int index) {
   Elf64_Nhdr *n = ecget_nhdr64byindex(p, index);
   if (n && n->n_namesz) {
-    Elf64_Shdr *s = ecget_shdr64byindex(p, index);
+    MEMSTACK(Elf64_Shdr, sx);
+    Elf64_Shdr *s = ecget_shdr64byindex(p, sx, index);
     if (s) {
       return getp(p, s->sh_offset + sizeof(Elf64_Nhdr), n->n_namesz);
     }
@@ -1116,7 +1140,8 @@ const char* ecget_symnamebyindex(const pbuffer_t p, const int index) {
 }
 
 const char* _ecget_symname32byindex(const pbuffer_t p, const int index) {
-  Elf32_Shdr *sh = ecget_shdr32bytype(p, SHT_SYMTAB);
+  MEMSTACK(Elf32_Shdr, sx);
+  Elf32_Shdr *sh = ecget_shdr32bytype(p, sx, SHT_SYMTAB);
   if (sh) {
     handle_t f = fgetbyshdr(p, sh);
     if (f) {
@@ -1131,7 +1156,8 @@ const char* _ecget_symname32byindex(const pbuffer_t p, const int index) {
 }
 
 const char* _ecget_symname64byindex(const pbuffer_t p, const int index) {
-  Elf64_Shdr *sh = ecget_shdr64bytype(p, SHT_SYMTAB);
+  MEMSTACK(Elf64_Shdr, sx);
+  Elf64_Shdr *sh = ecget_shdr64bytype(p, sx, SHT_SYMTAB);
   if (sh) {
     handle_t f = fgetbyshdr(p, sh);
     if (f) {
@@ -1148,7 +1174,8 @@ const char* _ecget_symname64byindex(const pbuffer_t p, const int index) {
 Elf32_Word* ecget_nhdrdesc32byindex(const pbuffer_t p, const int index) {
   Elf32_Nhdr *n = ecget_nhdr32byindex(p, index);
   if (n && n->n_namesz && n->n_descsz) {
-    Elf32_Shdr *s = ecget_shdr32byindex(p, index);
+    MEMSTACK(Elf32_Shdr, sx);
+    Elf32_Shdr *s = ecget_shdr32byindex(p, sx, index);
     if (s) {
       return getp(p, s->sh_offset + sizeof(Elf32_Nhdr) + n->n_namesz, n->n_descsz);
     }
@@ -1160,7 +1187,8 @@ Elf32_Word* ecget_nhdrdesc32byindex(const pbuffer_t p, const int index) {
 Elf64_Word* ecget_nhdrdesc64byindex(const pbuffer_t p, const int index) {
   Elf64_Nhdr *n = ecget_nhdr64byindex(p, index);
   if (n && n->n_namesz && n->n_descsz) {
-    Elf64_Shdr *s = ecget_shdr64byindex(p, index);
+    MEMSTACK(Elf64_Shdr, sx);
+    Elf64_Shdr *s = ecget_shdr64byindex(p, sx, index);
     if (s) {
       return getp(p, s->sh_offset + sizeof(Elf64_Nhdr) + n->n_namesz, n->n_descsz);
     }
@@ -1175,7 +1203,8 @@ const char* ecget_secname32byshdr(const pbuffer_t p, Elf32_Shdr *s) {
   MEMSTACK(Elf32_Ehdr, ex);
   Elf32_Ehdr *e = ecget_ehdr32(p, ex);
   if (e) {
-    Elf32_Shdr *s1 = ecget_shdr32byindex(p, e->e_shstrndx);
+    MEMSTACK(Elf32_Shdr, sx);
+    Elf32_Shdr *s1 = ecget_shdr32byindex(p, sx, e->e_shstrndx);
     if (s1) {
       s0 = getp(p, s1->sh_offset, s1->sh_size);
     }
@@ -1194,7 +1223,8 @@ const char* ecget_secname64byshdr(const pbuffer_t p, Elf64_Shdr *s) {
   MEMSTACK(Elf64_Ehdr, ex);
   Elf64_Ehdr *e = ecget_ehdr64(p, ex);
   if (e) {
-    Elf64_Shdr *s1 = ecget_shdr64byindex(p, e->e_shstrndx);
+    MEMSTACK(Elf64_Shdr, sx);
+    Elf64_Shdr *s1 = ecget_shdr64byindex(p, sx, e->e_shstrndx);
     if (s1) {
       s0 = getp(p, s1->sh_offset, s1->sh_size);
     }
@@ -1217,13 +1247,15 @@ unknown_t ecget_rawdatabyname(const pbuffer_t p, const char* name) {
 }
 
 unknown_t _ecget_rawdata32byname(const pbuffer_t p, const char* name) {
-  Elf32_Shdr* shdr = ecget_shdr32byname(p, name);
-  return shdr ? getp(p, shdr->sh_offset, shdr->sh_size) : NULL;
+  MEMSTACK(Elf32_Shdr, sx);
+  Elf32_Shdr* s0 = ecget_shdr32byname(p, sx, name);
+  return s0 ? getp(p, s0->sh_offset, s0->sh_size) : NULL;
 }
 
 unknown_t _ecget_rawdata64byname(const pbuffer_t p, const char* name) {
-  Elf64_Shdr* shdr = ecget_shdr64byname(p, name);
-  return shdr ? getp(p, shdr->sh_offset, shdr->sh_size) : NULL;
+  MEMSTACK(Elf64_Shdr, sx);
+  Elf64_Shdr* s0 = ecget_shdr64byname(p, sx, name);
+  return s0 ? getp(p, s0->sh_offset, s0->sh_size) : NULL;
 }
 
 unknown_t _get32byshdr(const pbuffer_t p, Elf32_Shdr *shdr) {
@@ -1269,7 +1301,8 @@ handle_t fget64byshdr(const pbuffer_t p, Elf64_Shdr *shdr) {
 
 int ecmake_sectionthumbs(const pbuffer_t p, pthumb_t thumbs, const size_t maxthumbs) {
   if (EM_ARM == ecget_emachine(p)) {
-    Elf32_Shdr* shdr = ecget_shdr32byname(p, ".symtab");
+    MEMSTACK(Elf32_Shdr, sx);
+    Elf32_Shdr* shdr = ecget_shdr32byname(p, sx, ".symtab");
     if (shdr && SHT_SYMTAB == shdr->sh_type) {
       size_t cnt = shdr->sh_size / shdr->sh_entsize;
 
@@ -1304,7 +1337,8 @@ int ecmake_sectionthumbs(const pbuffer_t p, pthumb_t thumbs, const size_t maxthu
 }
 
 int ecmake_versionnames32(const pbuffer_t p, pversion_t vnames, const size_t maxvnames) {
-  Elf32_Shdr *vh = ecget_shdr32bytype(p, SHT_GNU_verneed);
+  MEMSTACK(Elf32_Shdr, vx);
+  Elf32_Shdr *vh = ecget_shdr32bytype(p, vx, SHT_GNU_verneed);
   if (vh) {
     Elf32_Word offset = 0;
     vnames[0] = vh->sh_link;
@@ -1334,7 +1368,8 @@ int ecmake_versionnames32(const pbuffer_t p, pversion_t vnames, const size_t max
 }
 
 int ecmake_versionnames64(const pbuffer_t p, pversion_t vnames, const size_t maxvnames) {
-  Elf64_Shdr *vh = ecget_shdr64bytype(p, SHT_GNU_verneed);
+  MEMSTACK(Elf64_Shdr, vx);
+  Elf64_Shdr *vh = ecget_shdr64bytype(p, vx, SHT_GNU_verneed);
   if (vh) {
     Elf64_Word offset = 0;
     vnames[0] = vh->sh_link;

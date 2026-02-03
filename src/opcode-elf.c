@@ -6,15 +6,16 @@ int opcodeelf_dynamics(handle_t p, opcbfunc_t cbfunc, unknown_t param) {
     handle_t p0 = ocget(p, OPCODE_RAWDATA);
     if (isELF32(p0)) {
       MEMSTACK(Elf32_Ehdr, ex);
-      Elf32_Ehdr *ehdr = ecget_ehdr32(p0, ex);
-      if (ehdr) {
-        for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
-          Elf32_Shdr *shdr = ecget_shdr32byindex(p0, i);
-          if (shdr && SHT_DYNAMIC == shdr->sh_type) {
-            size_t cnt = shdr->sh_size / shdr->sh_entsize;
-            Elf32_Dyn *dyn = _get32byshdr(p0, shdr);
+      Elf32_Ehdr *e0 = ecget_ehdr32(p0, ex);
+      if (e0) {
+        for (Elf32_Half i = 0; i < e0->e_shnum; ++i) {
+          MEMSTACK(Elf32_Shdr, sx);
+          Elf32_Shdr *s0 = ecget_shdr32byindex(p0, sx, i);
+          if (s0 && SHT_DYNAMIC == s0->sh_type) {
+            size_t cnt = s0->sh_size / s0->sh_entsize;
+            Elf32_Dyn *dyn = _get32byshdr(p0, s0);
             for (size_t j = 0; j < cnt; ++j, ++dyn) {
-              MALLOCSPARAMS(opwrap_t, oc, MODE_OCDHDR32, dyn, shdr, p0);
+              MALLOCSPARAMS(opwrap_t, oc, MODE_OCDHDR32, dyn, s0, p0);
               cbfunc(p, poc, param);
             }
           }
@@ -22,15 +23,16 @@ int opcodeelf_dynamics(handle_t p, opcbfunc_t cbfunc, unknown_t param) {
       }
     } else if (isELF64(p0)) {
       MEMSTACK(Elf64_Ehdr, ex);
-      Elf64_Ehdr *ehdr = ecget_ehdr64(p0, ex);
-      if (ehdr) {
-        for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
-          Elf64_Shdr *shdr = ecget_shdr64byindex(p0, i);
-          if (shdr && SHT_DYNAMIC == shdr->sh_type) {
-            size_t cnt = shdr->sh_size / shdr->sh_entsize;
-            Elf64_Dyn *dyn = _get64byshdr(p0, shdr);
+      Elf64_Ehdr *e0 = ecget_ehdr64(p0, ex);
+      if (e0) {
+        MEMSTACK(Elf64_Shdr, sx);
+        for (Elf64_Half i = 0; i < e0->e_shnum; ++i) {
+          Elf64_Shdr *s0 = ecget_shdr64byindex(p0, sx, i);
+          if (s0 && SHT_DYNAMIC == s0->sh_type) {
+            size_t cnt = s0->sh_size / s0->sh_entsize;
+            Elf64_Dyn *dyn = _get64byshdr(p0, s0);
             for (size_t j = 0; j < cnt; ++j, ++dyn) {
-              MALLOCSPARAMS(opwrap_t, oc, MODE_OCDHDR64, dyn, shdr, p0);
+              MALLOCSPARAMS(opwrap_t, oc, MODE_OCDHDR64, dyn, s0, p0);
               cbfunc(p, poc, param);
             }
           }
@@ -86,12 +88,13 @@ int opcodeelf_sections(handle_t p, opcbfunc_t cbfunc, unknown_t param) {
 
     if (isELF32(p0)) {
       MEMSTACK(Elf32_Ehdr, ex);
-      Elf32_Ehdr *ehdr = ecget_ehdr32(p0, ex);
-      if (ehdr) {
-        for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
-          Elf32_Shdr *shdr = ecget_shdr32byindex(p0, i);
-          if (shdr) {
-            MALLOCSWRAP3(opwrap_t, oc, MODE_OCSHDR32, shdr, p0, i);
+      Elf32_Ehdr *e0 = ecget_ehdr32(p0, ex);
+      if (e0) {
+        for (Elf32_Half i = 0; i < e0->e_shnum; ++i) {
+          MEMSTACK(Elf32_Shdr, sx);
+          Elf32_Shdr *s0 = ecget_shdr32byindex(p0, sx, i);
+          if (s0) {
+            MALLOCSWRAP3(opwrap_t, oc, MODE_OCSHDR32, s0, p0, i);
             cbfunc(p, poc, param);
           }
         }
@@ -100,12 +103,13 @@ int opcodeelf_sections(handle_t p, opcbfunc_t cbfunc, unknown_t param) {
       }
     } else if (isELF64(p0)) {
       MEMSTACK(Elf64_Ehdr, ex);
-      Elf64_Ehdr *ehdr = ecget_ehdr64(p0, ex);
-      if (ehdr) {
-        for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
-          Elf64_Shdr *shdr = ecget_shdr64byindex(p0, i);
-          if (shdr) {
-            MALLOCSWRAP3(opwrap_t, oc, MODE_OCSHDR64, shdr, p0, i);
+      Elf64_Ehdr *e0 = ecget_ehdr64(p0, ex);
+      if (e0) {
+        for (Elf64_Half i = 0; i < e0->e_shnum; ++i) {
+          MEMSTACK(Elf64_Shdr, sx);
+          Elf64_Shdr *s0 = ecget_shdr64byindex(p0, sx, i);
+          if (s0) {
+            MALLOCSWRAP3(opwrap_t, oc, MODE_OCSHDR64, s0, p0, i);
             cbfunc(p, poc, param);
           }
         }

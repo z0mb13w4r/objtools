@@ -97,11 +97,14 @@ static bool_t ismodeopwrap(const imode_t mode) {
   return MODE_GET3(mode) == MODE_OPWRAP;
 }
 
-static unknown_t ocget_rawshdr(handle_t p) {
+static unknown_t ocget_rawshdr(handle_t p, const unknown_t q) {
   if (ismode(p, MODE_OCSHDR)) {
     asection* s0 = ocget(p, MODE_OCSHDR);
     handle_t p0 = ocget(p, OPCODE_RAWDATA);
-    return s0 && p0 ? ecget_shdrbyoffset(p0, s0->filepos) : NULL;
+    if (s0 && p0) {
+      if (isELF32(p0))       return ecget_shdr32byoffset(p0, q, s0->filepos);
+      else if (isELF64(p0))  return ecget_shdr64byoffset(p0, q, s0->filepos);
+    }
   }
 
   return NULL;
@@ -377,8 +380,12 @@ bool_t ochas_shdrbytype(handle_t p, const int type) {
   if (ochas_shdr(p)) {
     if (isopcode(p)) {
       handle_t p0 = ocget(p, OPCODE_RAWDATA);
-      if (isELF(p0)) {
-        return ecget_shdrbytype(p0, type) ? TRUE : FALSE;
+      if (isELF32(p0)) {
+        MEMSTACK(Elf32_Shdr, sx);
+        return ecget_shdr32bytype(p0, sx, type) ? TRUE : FALSE;
+      } else if (isELF64(p0)) {
+        MEMSTACK(Elf64_Shdr, sx);
+        return ecget_shdr64bytype(p0, sx, type) ? TRUE : FALSE;
       }
     }
   }
@@ -389,10 +396,12 @@ bool_t ochas_shdrbytype(handle_t p, const int type) {
 uint64_t ocget_type(handle_t p) {
   if (ismode(p, MODE_OCSHDR)) {
     if (ocisELF32(p)) {
-      Elf32_Shdr* s0 = ocget_rawshdr(p);
+      MEMSTACK(Elf32_Shdr, sx);
+      Elf32_Shdr* s0 = ocget_rawshdr(p, sx);
       return s0 ? s0->sh_type : 0;
     } else if (ocisELF64(p)) {
-      Elf64_Shdr* s0 = ocget_rawshdr(p);
+      MEMSTACK(Elf64_Shdr, sx);
+      Elf64_Shdr* s0 = ocget_rawshdr(p, sx);
       return s0 ? s0->sh_type : 0;
     }
   } else if (ismode(p, MODE_OCPHDR)) {
@@ -451,10 +460,12 @@ uint64_t ocget_flags(handle_t p) {
 uint64_t ocget_value(handle_t p) {
   if (ismode(p, MODE_OCSHDR)) {
     if (ocisELF32(p)) {
-      Elf32_Shdr* s0 = ocget_rawshdr(p);
+      MEMSTACK(Elf32_Shdr, sx);
+      Elf32_Shdr* s0 = ocget_rawshdr(p, sx);
       return s0 ? s0->sh_info : 0;
     } else if (ocisELF64(p)) {
-      Elf64_Shdr* s0 = ocget_rawshdr(p);
+      MEMSTACK(Elf64_Shdr, sx);
+      Elf64_Shdr* s0 = ocget_rawshdr(p, sx);
       return s0 ? s0->sh_info : 0;
     }
   } else if (ismode(p, MODE_OCDHDR32)) {
@@ -665,10 +676,12 @@ uint64_t ocget_vaddressbyname(handle_t p, const char* name) {
   if (isopcode(p) && name) {
     handle_t p0 = ocget(p, OPCODE_RAWDATA);
     if (isELF32(p0)) {
-      Elf32_Shdr* s0 = ecget_shdr32byname(p0, name);
+      MEMSTACK(Elf32_Shdr, sx);
+      Elf32_Shdr* s0 = ecget_shdr32byname(p0, sx, name);
       return s0 ? s0->sh_addr : 0;
     } else if (isELF64(p0)) {
-      Elf64_Shdr* s0 = ecget_shdr64byname(p0, name);
+      MEMSTACK(Elf64_Shdr, sx);
+      Elf64_Shdr* s0 = ecget_shdr64byname(p0, sx, name);
       return s0 ? s0->sh_addr : 0;
     }
   }
@@ -737,10 +750,12 @@ unknown_t ocget_rawdata(handle_t p) {
   if (ismode(p, MODE_OCSHDR)) {
     handle_t p0 = ocget(p, OPCODE_RAWDATA);
     if (isELF32(p0)) {
-      Elf32_Shdr* s0 = ocget_rawshdr(p);
+      MEMSTACK(Elf32_Shdr, sx);
+      Elf32_Shdr* s0 = ocget_rawshdr(p, sx);
       return s0 && p0 ? getp(p0, s0->sh_offset, s0->sh_size) : NULL;
     } else if (isELF64(p0)) {
-      Elf64_Shdr* s0 = ocget_rawshdr(p);
+      MEMSTACK(Elf64_Shdr, sx);
+      Elf64_Shdr* s0 = ocget_rawshdr(p, sx);
       return s0 && p0 ? getp(p0, s0->sh_offset, s0->sh_size) : NULL;
     }
   } else if (ismode(p, MODE_OCSHDR32)) {
@@ -776,29 +791,35 @@ size_t ocget_sizebyname(handle_t p, const char* name) {
   if (isopcode(p) && name) {
     handle_t p0 = ocget(p, OPCODE_RAWDATA);
     if (isELF32(p0)) {
-      Elf32_Shdr* s0 = ecget_shdr32byname(p0, name);
+      MEMSTACK(Elf32_Shdr, sx);
+      Elf32_Shdr* s0 = ecget_shdr32byname(p0, sx, name);
       return s0 ? s0->sh_size : 0;
     } else if (isELF64(p0)) {
-      Elf64_Shdr* s0 = ecget_shdr64byname(p0, name);
+      MEMSTACK(Elf64_Shdr, sx);
+      Elf64_Shdr* s0 = ecget_shdr64byname(p0, sx, name);
       return s0 ? s0->sh_size : 0;
     }
   } else if (ismode(p, MODE_OCSHDR) && name) {
     handle_t p0 = ocget(p, OPCODE_RAWDATA);
     if (isELF32(p0)) {
-      Elf32_Shdr* s0 = ecget_shdr32byname(p0, name);
+      MEMSTACK(Elf32_Shdr, sx);
+      Elf32_Shdr* s0 = ecget_shdr32byname(p0, sx, name);
       return s0 ? s0->sh_size : 0;
     } else if (isELF64(p0)) {
-      Elf64_Shdr* s0 = ecget_shdr64byname(p0, name);
+      MEMSTACK(Elf64_Shdr, sx);
+      Elf64_Shdr* s0 = ecget_shdr64byname(p0, sx, name);
       return s0 ? s0->sh_size : 0;
     }
   } else if (ismode(p, MODE_OCSHDR32) && name) {
+    MEMSTACK(Elf32_Shdr, sx);
     handle_t p0 = ocget(p, OPCODE_RAWDATA);
-    Elf32_Shdr* shdr = ecget_shdr32byname(p0, name);
-    return shdr ? shdr->sh_size : 0;
+    Elf32_Shdr* s0 = ecget_shdr32byname(p0, sx, name);
+    return s0 ? s0->sh_size : 0;
   } else if (ismode(p, MODE_OCSHDR64) && name) {
+    MEMSTACK(Elf64_Shdr, sx);
     handle_t p0 = ocget(p, OPCODE_RAWDATA);
-    Elf64_Shdr* shdr = ecget_shdr64byname(p0, name);
-    return shdr ? shdr->sh_size : 0;
+    Elf64_Shdr* s0 = ecget_shdr64byname(p0, sx, name);
+    return s0 ? s0->sh_size : 0;
   }
 
   return 0;
@@ -849,10 +870,12 @@ const char* ocget_namebyoffset(handle_t p, const imode_t mode, const uint64_t of
     if (OPCODE_BYLINK == mode) {
       asection* s0 = ocget(p, MODE_OCSHDR);
       if (s0 && p0 && isELF32(p0)) {
-        Elf32_Shdr* s1 = ecget_shdr32byindex(p0, s0->index + 1);
+        MEMSTACK(Elf32_Shdr, sx);
+        Elf32_Shdr* s1 = ecget_shdr32byindex(p0, sx, s0->index + 1);
         return s1 ? ecget_namebyoffset(p0, s1->sh_link, offset) : NULL;
       } else if (s0 && p0 && isELF64(p0)) {
-        Elf64_Shdr* s1 = ecget_shdr64byindex(p0, s0->index + 1);
+        MEMSTACK(Elf64_Shdr, sx);
+        Elf64_Shdr* s1 = ecget_shdr64byindex(p0, sx, s0->index + 1);
         return s1 ? ecget_namebyoffset(p0, s1->sh_link, offset) : NULL;
       }
     } else if (OPCODE_BYDEBUGSTR == mode) {

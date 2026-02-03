@@ -8,53 +8,55 @@ handle_t ecapply_relocs(handle_t p, handle_t q, const int index) {
     if (ehdr) {
 //printf("hunting[index] = %d\n", index);
       for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
-        Elf64_Shdr *shdr = ecget_shdr64byindex(q, i);
-        if (shdr && index == shdr->sh_info) {
+        MEMSTACK(Elf64_Shdr, sx);
+        Elf64_Shdr *s0 = ecget_shdr64byindex(q, sx, i);
+        if (s0 && index == s0->sh_info) {
 //printf("matched = %d with %d\n", index, i);
-          size_t cnt = shdr->sh_size / shdr->sh_entsize;
-          if (SHT_REL == shdr->sh_type) {
+          size_t cnt = s0->sh_size / s0->sh_entsize;
+          if (SHT_REL == s0->sh_type) {
 //printf("missing[REL]\n");
-          } else if (SHT_RELA == shdr->sh_type) {
-            Elf64_Rela *r = _get64byshdr(q, shdr);
-            Elf64_Shdr *d = ecget_shdr64byindex(q, shdr->sh_link);
-            if (r && d) {
-              for (size_t j = 0; j < cnt; ++j, ++r) {
-                Elf64_Sym *m = getp(q, d->sh_offset + (ELF64_R_SYM(r->r_info) * d->sh_entsize), d->sh_entsize);
+          } else if (SHT_RELA == s0->sh_type) {
+            MEMSTACK(Elf64_Shdr, dx);
+            Elf64_Rela *r0 = _get64byshdr(q, s0);
+            Elf64_Shdr *d0 = ecget_shdr64byindex(q, dx, s0->sh_link);
+            if (r0 && d0) {
+              for (size_t j = 0; j < cnt; ++j, ++r0) {
+                Elf64_Sym *m = getp(q, d0->sh_offset + (ELF64_R_SYM(r0->r_info) * d0->sh_entsize), d0->sh_entsize);
 //printf("offset[RELA] = 0x%lx|0x%lx:0x%lx:0x%lx|0x%lx|0x%lx\n", r->r_offset, r->r_info, ELF64_R_TYPE(r->r_info), ELF64_R_SYM(r->r_info), m->st_value, r->r_addend);
-                if (isused(get_RELTYPESYM32(q), ELF64_R_TYPE(r->r_info))) {
+                if (isused(get_RELTYPESYM32(q), ELF64_R_TYPE(r0->r_info))) {
                   if (m && m->st_value) {
 //printf("sym32 0x%lx\n", m->st_value);
-                    fsetu32byoffset(p, r->r_offset, m->st_value);
+                    fsetu32byoffset(p, r0->r_offset, m->st_value);
                   }
-                } else if (isused(get_RELTYPESYM64(q), ELF64_R_TYPE(r->r_info))) {
+                } else if (isused(get_RELTYPESYM64(q), ELF64_R_TYPE(r0->r_info))) {
                   if (m && m->st_value) {
 //printf("sym64 0x%lx\n", m->st_value);
-                    fsetu64byoffset(p, r->r_offset, m->st_value);
+                    fsetu64byoffset(p, r0->r_offset, m->st_value);
                   }
-                } else if (isused(get_RELTYPESHEX8(q), ELF64_R_TYPE(r->r_info))) {
-                  if (r->r_addend) {
+                } else if (isused(get_RELTYPESHEX8(q), ELF64_R_TYPE(r0->r_info))) {
+                  if (r0->r_addend) {
 //printf("shex8 0x%lx\n", r->r_addend);
-                    fsetu8byoffset(p, r->r_offset, r->r_addend);
+                    fsetu8byoffset(p, r0->r_offset, r0->r_addend);
                   }
-                } else if (isused(get_RELTYPESHEX16(q), ELF64_R_TYPE(r->r_info))) {
-                  if (r->r_addend) {
+                } else if (isused(get_RELTYPESHEX16(q), ELF64_R_TYPE(r0->r_info))) {
+                  if (r0->r_addend) {
 //printf("shex16 0x%lx\n", r->r_addend);
-                    fsetu16byoffset(p, r->r_offset, r->r_addend);
+                    fsetu16byoffset(p, r0->r_offset, r0->r_addend);
                   }
-                } else if (isused(get_RELTYPESHEX32(q), ELF64_R_TYPE(r->r_info))) {
-                  if (r->r_addend) {
+                } else if (isused(get_RELTYPESHEX32(q), ELF64_R_TYPE(r0->r_info))) {
+                  if (r0->r_addend) {
 //printf("shex32 0x%lx\n", r->r_addend);
-                    fsetu32byoffset(p, r->r_offset, r->r_addend);
+                    fsetu32byoffset(p, r0->r_offset, r0->r_addend);
                   }
-                } else if (isused(get_RELTYPESHEX64(q), ELF64_R_TYPE(r->r_info))) {
-                  if (r->r_addend) {
+                } else if (isused(get_RELTYPESHEX64(q), ELF64_R_TYPE(r0->r_info))) {
+                  if (r0->r_addend) {
 //printf("shex64 0x%lx\n", r->r_addend);
-                    fsetu64byoffset(p, r->r_offset, r->r_addend);
+                    fsetu64byoffset(p, r0->r_offset, r0->r_addend);
                   }
                 }
               }
             }
-          } else if (SHT_RELR == shdr->sh_type) {
+          } else if (SHT_RELR == s0->sh_type) {
 //printf("missing[RELR]\n");
           }
         }
@@ -74,8 +76,9 @@ handle_t ecapply_relocsbyoffset(handle_t p, handle_t q, const int offset) {
     if (ehdr) {
 //printf("hunting[offset] = %x\n", offset);
       for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
-        Elf64_Shdr *shdr = ecget_shdr64byindex(q, i);
-        if (shdr && offset == shdr->sh_offset) {
+        MEMSTACK(Elf64_Shdr, sx);
+        Elf64_Shdr *s0 = ecget_shdr64byindex(q, sx, i);
+        if (s0 && offset == s0->sh_offset) {
           return ecapply_relocs(p, q, i);
         }
       }
