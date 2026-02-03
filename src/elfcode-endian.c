@@ -1,9 +1,5 @@
 #include "elfcode-endian.h"
 
-static uint8_t ecconvert_u8(const pbuffer_t p, const uint8_t v) {
-  return v;
-}
-
 static uint16_t ecconvert_u16(const pbuffer_t p, const uint16_t v) {
   if (isELFbe(p)) {
     return MODE_PUT1(MODE_GET0(v)) | MODE_PUT0(MODE_GET1(v));
@@ -75,6 +71,46 @@ Elf64_Ehdr* ecconvert_ehdr64(const pbuffer_t p, unknown_t dst, unknown_t src) {
     pdst->e_shentsize = ecconvert_u16(p, psrc->e_shentsize);   // Elf64_Half
     pdst->e_shnum     = ecconvert_u16(p, psrc->e_shnum);       // Elf64_Half
     pdst->e_shstrndx  = ecconvert_u16(p, psrc->e_shstrndx);    // Elf64_Half
+
+    return dst;
+  }
+
+  return NULL;
+}
+
+Elf32_Phdr* ecconvert_phdr32(const pbuffer_t p, unknown_t dst, unknown_t src) {
+  if (isELF32(p) && dst && src) {
+    Elf32_Phdr* pdst = CAST(Elf32_Phdr*, dst);
+    Elf32_Phdr* psrc = CAST(Elf32_Phdr*, src);
+
+    pdst->p_type   = ecconvert_u32(p, psrc->p_type);           // Elf32_Word
+    pdst->p_offset = ecconvert_u32(p, psrc->p_offset);         // Elf32_Off
+    pdst->p_vaddr  = ecconvert_u32(p, psrc->p_vaddr);          // Elf32_Addr
+    pdst->p_paddr  = ecconvert_u32(p, psrc->p_paddr);          // Elf32_Addr
+    pdst->p_filesz = ecconvert_u32(p, psrc->p_filesz);         // Elf32_Word
+    pdst->p_memsz  = ecconvert_u32(p, psrc->p_memsz);          // Elf32_Word
+    pdst->p_flags  = ecconvert_u32(p, psrc->p_flags);          // Elf32_Word
+    pdst->p_align  = ecconvert_u32(p, psrc->p_align);          // Elf32_Word
+
+    return dst;
+  }
+
+  return NULL;
+}
+
+Elf64_Phdr* ecconvert_phdr64(const pbuffer_t p, unknown_t dst, unknown_t src) {
+  if (isELF64(p) && dst && src) {
+    Elf64_Phdr* pdst = CAST(Elf64_Phdr*, dst);
+    Elf64_Phdr* psrc = CAST(Elf64_Phdr*, src);
+
+    pdst->p_type   = ecconvert_u32(p, psrc->p_type);           // Elf64_Word
+    pdst->p_offset = ecconvert_u64(p, psrc->p_offset);         // Elf64_Off
+    pdst->p_vaddr  = ecconvert_u64(p, psrc->p_vaddr);          // Elf64_Addr
+    pdst->p_paddr  = ecconvert_u64(p, psrc->p_paddr);          // Elf64_Addr
+    pdst->p_filesz = ecconvert_u64(p, psrc->p_filesz);         // Elf64_Xword
+    pdst->p_memsz  = ecconvert_u64(p, psrc->p_memsz);          // Elf64_Xword
+    pdst->p_flags  = ecconvert_u32(p, psrc->p_flags);          // Elf64_Word
+    pdst->p_align  = ecconvert_u64(p, psrc->p_align);          // Elf64_Xword
 
     return dst;
   }
