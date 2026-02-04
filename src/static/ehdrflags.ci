@@ -54,6 +54,29 @@ static convert_t ecEHDRFLAGSRISCV[] = {
   {0, 0}
 };
 
+#define EF_MIPS_UCODE                  (0x00000010)
+#define EF_MIPS_OPTIONS_FIRST          (0x00000080)
+#define EF_MIPS_32BITMODE              (0x00000100)
+#define EF_MIPS_ARCH_ASE_MDMX          (0x08000000)
+#define EF_MIPS_ARCH_ASE_M16           (0x04000000)
+#define EF_MIPS_ARCH_ASE_MICROMIPS     (0x02000000)
+
+static convert_t ecEHDRFLAGSMIPS[] = {
+  {"noreorder",              EF_MIPS_NOREORDER},
+  {"pic",                    EF_MIPS_PIC},
+  {"cpic",                   EF_MIPS_CPIC},
+  {"ugen_reserved",          EF_MIPS_UCODE},
+  {"abi2",                   EF_MIPS_ABI2},
+  {"odk first",              EF_MIPS_OPTIONS_FIRST},
+  {"32bitmode",              EF_MIPS_32BITMODE},
+  {"nan2008",                EF_MIPS_NAN2008},
+  {"fp64",                   EF_MIPS_FP64},
+  {"mdmx",                   EF_MIPS_ARCH_ASE_MDMX},
+  {"mips16",                 EF_MIPS_ARCH_ASE_M16},
+  {"micromips",              EF_MIPS_ARCH_ASE_MICROMIPS},
+  {0, 0}
+};
+
 pconvert_t get_EHDRFLAGS(const pbuffer_t p) {
   switch (ecget_emachine(p)) {
   case EM_ARM:
@@ -69,6 +92,9 @@ pconvert_t get_EHDRFLAGS(const pbuffer_t p) {
      break;
   case EM_RISCV:
     return ecEHDRFLAGSRISCV;
+  case EM_MIPS:
+  case EM_MIPS_RS3_LE:
+    return ecEHDRFLAGSMIPS;
   default:
     break;
   }
