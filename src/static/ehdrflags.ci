@@ -102,3 +102,87 @@ pconvert_t get_EHDRFLAGS(const pbuffer_t p) {
   return NULL;
 }
 
+#define EF_MIPS_MACH                   (0x00ff0000)
+#define EF_MIPS_MACH_3900              (0x00810000)
+#define EF_MIPS_MACH_4010              (0x00820000)
+#define EF_MIPS_MACH_4100              (0x00830000)
+#define EF_MIPS_MACH_4111              (0x00880000)
+#define EF_MIPS_MACH_4120              (0x00870000)
+#define EF_MIPS_MACH_4650              (0x00850000)
+#define EF_MIPS_MACH_5400              (0x00910000)
+#define EF_MIPS_MACH_5500              (0x00980000)
+#define EF_MIPS_MACH_5900              (0x00920000)
+#define EF_MIPS_MACH_9000              (0x00990000)
+#define EF_MIPS_MACH_ALLEGREX          (0x00840000)
+#define EF_MIPS_MACH_IAMR2             (0x00930000)
+#define EF_MIPS_MACH_GS264E            (0x00a40000)
+#define EF_MIPS_MACH_GS464             (0x00a20000)
+#define EF_MIPS_MACH_GS464E            (0x00a30000)
+#define EF_MIPS_MACH_LS2E              (0x00a00000)
+#define EF_MIPS_MACH_LS2F              (0x00a10000)
+#define EF_MIPS_MACH_OCTEON            (0x008b0000)
+#define EF_MIPS_MACH_OCTEON2           (0x008d0000)
+#define EF_MIPS_MACH_OCTEON3           (0x008e0000)
+#define EF_MIPS_MACH_SB1               (0x008a0000)
+#define EF_MIPS_MACH_XLR               (0x008c0000)
+
+#define EF_MIPS_ABI                    (0x0000f000)
+#define EF_MIPS_ABI_O32                (0x00001000)
+#define EF_MIPS_ABI_O64                (0x00002000)
+#define EF_MIPS_ABI_EABI32             (0x00003000)
+#define EF_MIPS_ABI_EABI64             (0x00004000)
+
+char* get_EHDRFLAGSEX(const pbuffer_t p, const uint64_t e_flags) {
+  STATICA(char, o, 1024);
+
+#define PRINT1(x)              snprintf(o + n, sizeof(o) - n, x)
+  int n = 0;
+  switch (ecget_emachine(p)) {
+  case EM_MIPS:
+  case EM_MIPS_RS3_LE:
+    switch (e_flags & EF_MIPS_MACH) {
+    case 0:                                                          break;
+    case EF_MIPS_MACH_3900:          n += PRINT1(" 3900");           break;
+    case EF_MIPS_MACH_4010:          n += PRINT1(" 4010");           break;
+    case EF_MIPS_MACH_4100:          n += PRINT1(" 4100");           break;
+    case EF_MIPS_MACH_4111:          n += PRINT1(" 4111");           break;
+    case EF_MIPS_MACH_4120:          n += PRINT1(" 4120");           break;
+    case EF_MIPS_MACH_4650:          n += PRINT1(" 4650");           break;
+    case EF_MIPS_MACH_5400:          n += PRINT1(" 5400");           break;
+    case EF_MIPS_MACH_5500:          n += PRINT1(" 5500");           break;
+    case EF_MIPS_MACH_5900:          n += PRINT1(" 5900");           break;
+    case EF_MIPS_MACH_SB1:           n += PRINT1(" sb1");            break;
+    case EF_MIPS_MACH_9000:          n += PRINT1(" 9000");           break;
+    case EF_MIPS_MACH_LS2E:          n += PRINT1(" loongson-2e");    break;
+    case EF_MIPS_MACH_LS2F:          n += PRINT1(" loongson-2f");    break;
+    case EF_MIPS_MACH_GS464:         n += PRINT1(" gs464");          break;
+    case EF_MIPS_MACH_GS464E:        n += PRINT1(" gs464e");         break;
+    case EF_MIPS_MACH_GS264E:        n += PRINT1(" gs264e");         break;
+    case EF_MIPS_MACH_OCTEON:        n += PRINT1(" octeon");         break;
+    case EF_MIPS_MACH_OCTEON2:       n += PRINT1(" octeon2");        break;
+    case EF_MIPS_MACH_OCTEON3:       n += PRINT1(" octeon3");        break;
+    case EF_MIPS_MACH_XLR:           n += PRINT1(" xlr");            break;
+    case EF_MIPS_MACH_IAMR2:         n += PRINT1(" interaptiv-mr2"); break;
+    case EF_MIPS_MACH_ALLEGREX:      n += PRINT1(" allegrex");       break;
+    default:                         n += PRINT1(" <unknown CPU>");  break;
+    }
+
+    switch (e_flags & EF_MIPS_ABI) {
+    case 0:                                                          break;
+    case EF_MIPS_MACH_3900:          n += PRINT1(" 3900");           break;
+    case EF_MIPS_ABI_O32:            n += PRINT1(" o32");            break;
+    case EF_MIPS_ABI_O64:            n += PRINT1(" o64");            break;
+    case EF_MIPS_ABI_EABI32:         n += PRINT1(" eabi32");         break;
+    case EF_MIPS_ABI_EABI64:         n += PRINT1(" eabi64");         break;
+    default:                         n += PRINT1(" <unknown ABI>");  break;
+    }
+
+    return o;
+  default:
+    break;
+  }
+#undef PRINT1
+
+  return NULL;
+}
+
