@@ -5,6 +5,8 @@ static convert_t ecEHDRMACHINE[] = {
   {"AMD x86-64",                   EM_X86_64},
   {"AArch64",                      EM_AARCH64},
   {"RISC-V",                       EM_RISCV},
+  {"MIPS R3000",                   EM_MIPS},
+  {"MIPS R3000 (LE)",              EM_MIPS_RS3_LE},
   {0, 0}
 };
 
