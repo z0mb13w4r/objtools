@@ -343,21 +343,21 @@ unknown_t ecget_nhdrbyindex(const pbuffer_t p, const int index) {
   return NULL;
 }
 
-Elf32_Phdr* ecget_phdr32byindex(const pbuffer_t p, const int index) {
+Elf32_Phdr* ecget_phdr32byindex(const pbuffer_t p, const unknown_t q, const int index) {
   MEMSTACK(Elf32_Ehdr, ex);
   Elf32_Ehdr *e = ecget_ehdr32(p, ex);
   if (e) {
-    return CAST(Elf32_Phdr*, getp(p, e->e_phoff + (e->e_phentsize * index), e->e_phentsize));
+    return ecconvert_phdr32(p, q, getp(p, e->e_phoff + (e->e_phentsize * index), e->e_phentsize));
   }
 
   return NULL;
 }
 
-Elf64_Phdr* ecget_phdr64byindex(const pbuffer_t p, const int index) {
+Elf64_Phdr* ecget_phdr64byindex(const pbuffer_t p, const unknown_t q, const int index) {
   MEMSTACK(Elf64_Ehdr, ex);
   Elf64_Ehdr *e = ecget_ehdr64(p, ex);
   if (e) {
-    return CAST(Elf64_Phdr*, getp(p, e->e_phoff + (e->e_phentsize * index), e->e_phentsize));
+    return ecconvert_phdr64(p, q, getp(p, e->e_phoff + (e->e_phentsize * index), e->e_phentsize));
   }
 
   return NULL;
@@ -365,8 +365,8 @@ Elf64_Phdr* ecget_phdr64byindex(const pbuffer_t p, const int index) {
 
 unknown_t ecget_phdrbyindex(const pbuffer_t p, const int index) {
   if (isELF(p)) {
-    if (isELF32(p))        return ecget_phdr32byindex(p, index);
-    else if (isELF64(p))   return ecget_phdr64byindex(p, index);
+    if (isELF32(p))        return ecget_phdr32byindex(p, xmalloc(sizeof(Elf32_Phdr), MODE_HEAP), index);
+    else if (isELF64(p))   return ecget_phdr64byindex(p, xmalloc(sizeof(Elf64_Phdr), MODE_HEAP), index);
   }
 
   return NULL;

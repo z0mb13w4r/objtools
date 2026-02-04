@@ -552,9 +552,10 @@ static int dump_programheaders32(const pbuffer_t p, const poptions_t o, Elf32_Eh
   dump_programheaders0(ehdr->e_phnum);
 
   for (Elf32_Half i = 0; i < ehdr->e_phnum; ++i) {
-    Elf32_Phdr *phdr = ecget_phdr32byindex(p, i);
-    if (phdr) {
-      dump_programheaders3(p, phdr->p_type, phdr->p_offset, phdr->p_vaddr, phdr->p_paddr, phdr->p_filesz, phdr->p_memsz, phdr->p_flags, phdr->p_align);
+    MEMSTACK(Elf32_Phdr, px);
+    Elf32_Phdr *p0 = ecget_phdr32byindex(p, px, i);
+    if (p0) {
+      dump_programheaders3(p, p0->p_type, p0->p_offset, p0->p_vaddr, p0->p_paddr, p0->p_filesz, p0->p_memsz, p0->p_flags, p0->p_align);
     }
   }
 
@@ -563,18 +564,20 @@ static int dump_programheaders32(const pbuffer_t p, const poptions_t o, Elf32_Eh
   for (Elf32_Half i = 0; i < ehdr->e_phnum; ++i) {
     printf_nice(i, USE_TAB | USE_DEC2Z);
 
-    Elf32_Phdr *phdr = ecget_phdr32byindex(p, i);
-    if (phdr) {
+    MEMSTACK(Elf32_Phdr, px);
+    Elf32_Phdr *p0 = ecget_phdr32byindex(p, px, i);
+    if (p0) {
       for (Elf32_Half j = 1; j < ehdr->e_shnum; ++j) {
         MEMSTACK(Elf32_Shdr, sx);
         Elf32_Shdr *s0 = ecget_shdr32byindex(p, sx, j);
         if (s0) {
-          if (!isTBSS32(s0, phdr) && isshdrinphdr32(s0, phdr)) {
+          if (!isTBSS32(s0, p0) && isshdrinphdr32(s0, p0)) {
             printf_text(ecget_secnamebyindex(p, j), USE_SPACE);
           }
         }
       }
     }
+
     printf_eol();
   }
 
@@ -587,9 +590,10 @@ static int dump_programheaders64(const pbuffer_t p, const poptions_t o, Elf64_Eh
   dump_programheaders0(ehdr->e_phnum);
 
   for (Elf64_Half i = 0; i < ehdr->e_phnum; ++i) {
-    Elf64_Phdr *phdr = ecget_phdr64byindex(p, i);
-    if (phdr) {
-      dump_programheaders3(p, phdr->p_type, phdr->p_offset, phdr->p_vaddr, phdr->p_paddr, phdr->p_filesz, phdr->p_memsz, phdr->p_flags, phdr->p_align);
+    MEMSTACK(Elf64_Phdr, px);
+    Elf64_Phdr *p0 = ecget_phdr64byindex(p, px, i);
+    if (p0) {
+      dump_programheaders3(p, p0->p_type, p0->p_offset, p0->p_vaddr, p0->p_paddr, p0->p_filesz, p0->p_memsz, p0->p_flags, p0->p_align);
     }
   }
 
@@ -598,18 +602,20 @@ static int dump_programheaders64(const pbuffer_t p, const poptions_t o, Elf64_Eh
   for (Elf64_Half i = 0; i < ehdr->e_phnum; ++i) {
     printf_nice(i, USE_TAB | USE_DEC2Z);
 
-    Elf64_Phdr *phdr = ecget_phdr64byindex(p, i);
-    if (phdr) {
+    MEMSTACK(Elf64_Phdr, px);
+    Elf64_Phdr *p0 = ecget_phdr64byindex(p, px, i);
+    if (p0) {
       for (Elf64_Half j = 1; j < ehdr->e_shnum; ++j) {
         MEMSTACK(Elf64_Shdr, sx);
         Elf64_Shdr *s0 = ecget_shdr64byindex(p, sx, j);
         if (s0) {
-          if (!isTBSS64(s0, phdr) && isshdrinphdr64(s0, phdr)) {
+          if (!isTBSS64(s0, p0) && isshdrinphdr64(s0, p0)) {
             printf_text(ecget_secnamebyindex(p, j), USE_SPACE);
           }
         }
       }
     }
+
     printf_eol();
   }
 
