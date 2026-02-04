@@ -132,6 +132,9 @@ pconvert_t get_EHDRFLAGS(const pbuffer_t p) {
 #define EF_MIPS_ABI_EABI32             (0x00003000)
 #define EF_MIPS_ABI_EABI64             (0x00004000)
 
+#define EF_MIPS_ARCH_32R6              (0x90000000)
+#define EF_MIPS_ARCH_64R6              (0xa0000000)
+
 char* get_EHDRFLAGSEX(const pbuffer_t p, const uint64_t e_flags) {
   STATICA(char, o, 1024);
 
@@ -175,6 +178,21 @@ char* get_EHDRFLAGSEX(const pbuffer_t p, const uint64_t e_flags) {
     case EF_MIPS_ABI_EABI32:         n += PRINT1(" eabi32");         break;
     case EF_MIPS_ABI_EABI64:         n += PRINT1(" eabi64");         break;
     default:                         n += PRINT1(" <unknown ABI>");  break;
+    }
+
+    switch (e_flags & EF_MIPS_ARCH) {
+    case EF_MIPS_ARCH_1:             n += PRINT1(" mips1");          break;
+    case EF_MIPS_ARCH_2:             n += PRINT1(" mips2");          break;
+    case EF_MIPS_ARCH_3:             n += PRINT1(" mips3");          break;
+    case EF_MIPS_ARCH_4:             n += PRINT1(" mips4");          break;
+    case EF_MIPS_ARCH_5:             n += PRINT1(" mips5");          break;
+    case EF_MIPS_ARCH_32:            n += PRINT1(" mips32");         break;
+    case EF_MIPS_ARCH_32R2:          n += PRINT1(" mips32r2");       break;
+    case EF_MIPS_ARCH_32R6:          n += PRINT1(" mips32r6");       break;
+    case EF_MIPS_ARCH_64:            n += PRINT1(" mips64");         break;
+    case EF_MIPS_ARCH_64R2:          n += PRINT1(" mips64r2");       break;
+    case EF_MIPS_ARCH_64R6:          n += PRINT1(" mips64r6");       break;
+    default:                         n += PRINT1(" <unknown ISA>");  break;
     }
 
     return o;
