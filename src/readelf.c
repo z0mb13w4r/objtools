@@ -702,9 +702,10 @@ static int dump_dynamic32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehd
         size_t cnt = s0->sh_size / s0->sh_entsize;
         n += dump_dynamic0(p, s0->sh_offset, cnt);
 
-        Elf32_Dyn *dyn = _get32byshdr(p, s0);
-        for (size_t j = 0; j < cnt; ++j, ++dyn) {
-          n += dump_dynamic1(p, o, dyn->d_tag, dyn->d_un.d_val, s0->sh_link);
+        for (size_t j = 0; j < cnt; ++j) {
+          MEMSTACK(Elf32_Dyn, dx);
+          Elf32_Dyn *d0 = ecget_dyn32byindex(p, dx, i, j);
+          n += dump_dynamic1(p, o, d0->d_tag, d0->d_un.d_val, s0->sh_link);
         }
 
         n += printf_eol();
@@ -737,7 +738,9 @@ static int dump_dynamic64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
 
         Elf64_Dyn *dyn = _get64byshdr(p, s0);
         for (size_t j = 0; j < cnt; ++j, ++dyn) {
-          n += dump_dynamic1(p, o, dyn->d_tag, dyn->d_un.d_val, s0->sh_link);
+          MEMSTACK(Elf64_Dyn, dx);
+          Elf64_Dyn *d0 = ecget_dyn64byindex(p, dx, i, j);
+          n += dump_dynamic1(p, o, d0->d_tag, d0->d_un.d_val, s0->sh_link);
         }
 
         n += printf_eol();
