@@ -592,6 +592,41 @@ unknown_t ecget_shdrbyindex(const pbuffer_t p, const int index) {
   return NULL;
 }
 
+Elf32_Sym* ecget_sym32byindex(const pbuffer_t p, const unknown_t q, const int index, const int entry) {
+  MEMSTACK(Elf32_Shdr, sx);
+  Elf32_Shdr *s0 = ecget_shdr32byindex(p, sx, index);
+  if (s0 && (SHT_SYMTAB == s0->sh_type || SHT_DYNSYM == s0->sh_type)) {
+    size_t cnt = s0->sh_size / s0->sh_entsize;
+    if (entry < cnt) {
+      return ecconvert_sym32(p, q, getp(p, s0->sh_offset + (entry * s0->sh_entsize), s0->sh_entsize));
+    }
+  }
+
+  return NULL;
+}
+
+Elf64_Sym* ecget_sym64byindex(const pbuffer_t p, const unknown_t q, const int index, const int entry) {
+  MEMSTACK(Elf64_Shdr, sx);
+  Elf64_Shdr *s0 = ecget_shdr64byindex(p, sx, index);
+  if (s0 && (SHT_SYMTAB == s0->sh_type || SHT_DYNSYM == s0->sh_type)) {
+    size_t cnt = s0->sh_size / s0->sh_entsize;
+    if (entry < cnt) {
+      return ecconvert_sym64(p, q, getp(p, s0->sh_offset + (entry * s0->sh_entsize), s0->sh_entsize));
+    }
+  }
+
+  return NULL;
+}
+
+unknown_t  ecget_symbyindex(const pbuffer_t p, const int index, const int entry) {
+  if (isELF(p)) {
+    if (isELF32(p))        return ecget_sym32byindex(p, xmalloc(sizeof(Elf32_Sym), MODE_HEAP), index, entry);
+    else if (isELF64(p))   return ecget_sym64byindex(p, xmalloc(sizeof(Elf64_Sym), MODE_HEAP), index, entry);
+  }
+
+  return NULL;
+}
+
 size_t ecget_secnamemaxsize(const pbuffer_t p) {
   if (isELF(p)) {
     if (isELF32(p))        return _ecget_secname32maxsize(p);
