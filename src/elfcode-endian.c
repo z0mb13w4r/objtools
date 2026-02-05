@@ -1,5 +1,9 @@
 #include "elfcode-endian.h"
 
+static uint16_t ecconvert_u8(const pbuffer_t p, const uint8_t v) {
+  return v;
+}
+
 static uint16_t ecconvert_u16(const pbuffer_t p, const uint16_t v) {
   if (isELFbe(p)) {
     return MODE_PUT1(MODE_GET0(v)) | MODE_PUT0(MODE_GET1(v));
@@ -183,6 +187,42 @@ Elf64_Shdr* ecconvert_shdr64(const pbuffer_t p, unknown_t dst, unknown_t src) {
     pdst->sh_info      = ecconvert_u32(p, psrc->sh_info);      // Elf64_Word
     pdst->sh_addralign = ecconvert_u64(p, psrc->sh_addralign); // Elf64_Xword
     pdst->sh_entsize   = ecconvert_u64(p, psrc->sh_entsize);   // Elf64_Xword
+
+    return dst;
+  }
+
+  return NULL;
+}
+
+Elf32_Sym* ecconvert_sym32(const pbuffer_t p, unknown_t dst, unknown_t src) {
+  if (isELF32(p) && dst && src) {
+    Elf32_Sym* pdst = CAST(Elf32_Sym*, dst);
+    Elf32_Sym* psrc = CAST(Elf32_Sym*, src);
+
+    pdst->st_name  = ecconvert_u32(p, psrc->st_name);          // Elf32_Word
+    pdst->st_value = ecconvert_u32(p, psrc->st_value);         // Elf32_Addr
+    pdst->st_size  = ecconvert_u32(p, psrc->st_size);          // Elf32_Word
+    pdst->st_info  = ecconvert_u8(p, pdst->st_info);           // unsigned char
+    pdst->st_other = ecconvert_u8(p, pdst->st_info);           // unsigned char
+    pdst->st_shndx = ecconvert_u16(p, pdst->st_shndx);         // Elf32_Section
+
+    return dst;
+  }
+
+  return NULL;
+}
+
+Elf64_Sym* ecconvert_sym64(const pbuffer_t p, unknown_t dst, unknown_t src) {
+  if (isELF64(p) && dst && src) {
+    Elf64_Sym* pdst = CAST(Elf64_Sym*, dst);
+    Elf64_Sym* psrc = CAST(Elf64_Sym*, src);
+
+    pdst->st_name  = ecconvert_u32(p, psrc->st_name);          // Elf64_Word
+    pdst->st_info  = ecconvert_u8(p, psrc->st_info);           // unsigned char
+    pdst->st_other = ecconvert_u8(p, psrc->st_other);          // unsigned char
+    pdst->st_shndx = ecconvert_u16(p, psrc->st_shndx);         // Elf64_Section
+    pdst->st_value = ecconvert_u64(p, pdst->st_value);         // Elf64_Addr
+    pdst->st_size  = ecconvert_u64(p, pdst->st_size);          // Elf64_Xword
 
     return dst;
   }
