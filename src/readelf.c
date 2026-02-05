@@ -1245,35 +1245,32 @@ static int dump_symbols32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehd
 
         n += dump_symbols0(p, o, i, cnt, s0->sh_offset);
 
-        handle_t f = fget32byshdr(p, s0);
-        if (f) {
-          bool_t isok = FALSE; // TBD
-          for (size_t j = 0; j < cnt; ++j) {
-            Elf32_Sym *s = fget(f);
-            if (s) {
-              if (SHN_UNDEF != s->st_shndx) isok = TRUE;
+        bool_t isok = FALSE; // TBD
+        for (size_t j = 0; j < cnt; ++j) {
+          MEMSTACK(Elf32_Sym, syx);
+          Elf32_Sym* sym = ecget_sym32byindex(p, syx, i, j);
+          if (sym) {
+            if (SHN_UNDEF != sym->st_shndx) isok = TRUE;
 
-              n += dump_symbols1(p, o, j, s->st_value, s->st_size, s->st_info, s->st_other, s->st_shndx);
+            n += dump_symbols1(p, o, j, sym->st_value, sym->st_size, sym->st_info, sym->st_other, sym->st_shndx);
 
-              const char* name = ecget_namebyoffset(p, s0->sh_link, s->st_name);
-              if (name && 0 != name[0]) {
-                n += printf_text(name, USE_LT | USE_SPACE);
-              }
+            const char* name = ecget_namebyoffset(p, s0->sh_link, sym->st_name);
+            if (name && 0 != name[0]) {
+              n += printf_text(name, USE_LT | USE_SPACE);
+            }
 
-              if (!isok) {
-                MEMSTACK(Elf32_Shdr, vx);
-                Elf32_Shdr *v0 = ecget_shdr32bytype(p, vx, SHT_GNU_versym);
-                if (v0) {
-                  Elf32_Versym *vs = getp(p, v0->sh_offset + (j * v0->sh_entsize), v0->sh_entsize);
-                  if (vs && *vs && *vs < NELEMENTS(vnames)) {
-                    n += dump_symbols2(p, o, vnames[0], vnames[*vs & VERSYM_VERSION], *vs & VERSYM_VERSION, s->st_shndx, s->st_other);
-                  }
+            if (!isok) {
+              MEMSTACK(Elf32_Shdr, vx);
+              Elf32_Shdr *v0 = ecget_shdr32bytype(p, vx, SHT_GNU_versym);
+              if (v0) {
+                Elf32_Versym *vs = getp(p, v0->sh_offset + (j * v0->sh_entsize), v0->sh_entsize);
+                if (vs && *vs && *vs < NELEMENTS(vnames)) {
+                  n += dump_symbols2(p, o, vnames[0], vnames[*vs & VERSYM_VERSION], *vs & VERSYM_VERSION, sym->st_shndx, sym->st_other);
                 }
               }
-
-              n += printf_eol();
-              f = fnext(f);
             }
+
+            n += printf_eol();
           }
         }
 
@@ -1289,31 +1286,29 @@ static int dump_symbols32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehd
           size_t cnt = s0->sh_size / s0->sh_entsize;
           n += dump_symbols0(p, o, i, cnt, s0->sh_offset);
 
-          handle_t f = fget32byshdr(p, s0);
-          if (f) {
-            for (size_t j = 0; j < cnt; ++j) {
-              Elf32_Sym *s = fget(f);
-              if (s) {
-                n += dump_symbols1(p, o, j, s->st_value, s->st_size, s->st_info, s->st_other, s->st_shndx);
+          for (size_t j = 0; j < cnt; ++j) {
+            MEMSTACK(Elf32_Sym, syx);
+            Elf32_Sym* sym = ecget_sym32byindex(p, syx, i, j);
+            if (sym) {
+              n += dump_symbols1(p, o, j, sym->st_value, sym->st_size, sym->st_info, sym->st_other, sym->st_shndx);
 
-                const char* name = ecget_namebyoffset(p, s0->sh_link, s->st_name);
-                if (name && 0 != name[0]) {
-                  n += printf_text(opcode_demangle(o, name), USE_LT | USE_SPACE);
+              const char* name = ecget_namebyoffset(p, s0->sh_link, sym->st_name);
+              if (name && 0 != name[0]) {
+                n += printf_text(opcode_demangle(o, name), USE_LT | USE_SPACE);
 
-                  if (SHT_DYNSYM == s0->sh_type) {
-                    MEMSTACK(Elf32_Shdr, vx);
-                    Elf32_Shdr *v0 = ecget_shdr32bytype(p, vx, SHT_GNU_versym);
-                    if (v0) {
-                      Elf32_Versym *vs = getp(p, v0->sh_offset + (j * v0->sh_entsize), v0->sh_entsize);
-                      if (vs && *vs && *vs < NELEMENTS(vnames)) {
-                        n += dump_symbols2(p, o, vnames[0], vnames[*vs & VERSYM_VERSION], *vs & VERSYM_VERSION, s->st_shndx, s->st_other);
-                      }
+                if (SHT_DYNSYM == s0->sh_type) {
+                  MEMSTACK(Elf32_Shdr, vx);
+                  Elf32_Shdr *v0 = ecget_shdr32bytype(p, vx, SHT_GNU_versym);
+                  if (v0) {
+                    Elf32_Versym *vs = getp(p, v0->sh_offset + (j * v0->sh_entsize), v0->sh_entsize);
+                    if (vs && *vs && *vs < NELEMENTS(vnames)) {
+                      n += dump_symbols2(p, o, vnames[0], vnames[*vs & VERSYM_VERSION], *vs & VERSYM_VERSION, sym->st_shndx, sym->st_other);
                     }
                   }
                 }
-                f = fnext(f);
-                n += printf_eol();
               }
+
+              n += printf_eol();
             }
           }
 
@@ -1355,35 +1350,32 @@ static int dump_symbols64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
 
         n += dump_symbols0(p, o, i, cnt, s0->sh_offset);
 
-        handle_t f = fget64byshdr(p, s0);
-        if (f) {
-          bool_t isok = FALSE;
-          for (size_t j = 0; j < cnt; ++j) {
-            Elf64_Sym *s = fget(f);
-            if (s) {
-              if (SHN_UNDEF != s->st_shndx) isok = TRUE;
+        bool_t isok = FALSE;
+        for (size_t j = 0; j < cnt; ++j) {
+          MEMSTACK(Elf64_Sym, syx);
+          Elf64_Sym* sym = ecget_sym64byindex(p, syx, i, j);
+          if (sym) {
+            if (SHN_UNDEF != sym->st_shndx) isok = TRUE;
 
-              n += dump_symbols1(p, o, j, s->st_value, s->st_size, s->st_info, s->st_other, s->st_shndx);
+            n += dump_symbols1(p, o, j, sym->st_value, sym->st_size, sym->st_info, sym->st_other, sym->st_shndx);
 
-              const char* name = ecget_namebyoffset(p, s0->sh_link, s->st_name);
-              if (name && 0 != name[0]) {
-                n += printf_text(name, USE_LT | USE_SPACE);
-              }
+            const char* name = ecget_namebyoffset(p, s0->sh_link, sym->st_name);
+            if (name && 0 != name[0]) {
+              n += printf_text(name, USE_LT | USE_SPACE);
+            }
 
-              if (!isok) {
-                MEMSTACK(Elf64_Shdr, vx);
-                Elf64_Shdr *v0 = ecget_shdr64bytype(p, vx, SHT_GNU_versym);
-                if (v0) {
-                  Elf64_Versym *vs = getp(p, v0->sh_offset + (j * v0->sh_entsize), v0->sh_entsize);
-                  if (vs && *vs && *vs < NELEMENTS(vnames)) {
-                    n += dump_symbols2(p, o, vnames[0], vnames[*vs & VERSYM_VERSION], *vs & VERSYM_VERSION, s->st_shndx, s->st_other);
-                  }
+            if (!isok) {
+              MEMSTACK(Elf64_Shdr, vx);
+              Elf64_Shdr *v0 = ecget_shdr64bytype(p, vx, SHT_GNU_versym);
+              if (v0) {
+                Elf64_Versym *vs = getp(p, v0->sh_offset + (j * v0->sh_entsize), v0->sh_entsize);
+                if (vs && *vs && *vs < NELEMENTS(vnames)) {
+                  n += dump_symbols2(p, o, vnames[0], vnames[*vs & VERSYM_VERSION], *vs & VERSYM_VERSION, sym->st_shndx, sym->st_other);
                 }
               }
-
-              n += printf_eol();
-              f = fnext(f);
             }
+
+            n += printf_eol();
           }
         }
 
@@ -1400,32 +1392,29 @@ static int dump_symbols64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
 
           n += dump_symbols0(p, o, i, cnt, s0->sh_offset);
 
-          handle_t f = fget64byshdr(p, s0);
-          if (f) {
-            for (size_t j = 0; j < cnt; ++j) {
-              Elf64_Sym *s = fget(f);
-              if (s) {
-                n += dump_symbols1(p, o, j, s->st_value, s->st_size, s->st_info, s->st_other, s->st_shndx);
+          for (size_t j = 0; j < cnt; ++j) {
+            MEMSTACK(Elf64_Sym, syx);
+            Elf64_Sym* sym = ecget_sym64byindex(p, syx, i, j);
+            if (sym) {
+              n += dump_symbols1(p, o, j, sym->st_value, sym->st_size, sym->st_info, sym->st_other, sym->st_shndx);
 
-                const char* name = ecget_namebyoffset(p, s0->sh_link, s->st_name);
-                if (name && 0 != name[0]) {
-                  n += printf_text(opcode_demangle(o, name), USE_LT | USE_SPACE);
+              const char* name = ecget_namebyoffset(p, s0->sh_link, sym->st_name);
+              if (name && 0 != name[0]) {
+                n += printf_text(opcode_demangle(o, name), USE_LT | USE_SPACE);
 
-                  if (SHT_DYNSYM == s0->sh_type) {
-                    MEMSTACK(Elf64_Shdr, vx);
-                    Elf64_Shdr *v0 = ecget_shdr64bytype(p, vx, SHT_GNU_versym);
-                    if (v0) {
-                      Elf64_Versym *vs = getp(p, v0->sh_offset + (j * v0->sh_entsize), v0->sh_entsize);
-                      if (vs && *vs && *vs < NELEMENTS(vnames)) {
-                        n += dump_symbols2(p, o, vnames[0], vnames[*vs & VERSYM_VERSION], *vs & VERSYM_VERSION, s->st_shndx, s->st_other);
-                      }
+                if (SHT_DYNSYM == s0->sh_type) {
+                  MEMSTACK(Elf64_Shdr, vx);
+                  Elf64_Shdr *v0 = ecget_shdr64bytype(p, vx, SHT_GNU_versym);
+                  if (v0) {
+                    Elf64_Versym *vs = getp(p, v0->sh_offset + (j * v0->sh_entsize), v0->sh_entsize);
+                    if (vs && *vs && *vs < NELEMENTS(vnames)) {
+                      n += dump_symbols2(p, o, vnames[0], vnames[*vs & VERSYM_VERSION], *vs & VERSYM_VERSION, sym->st_shndx, sym->st_other);
                     }
                   }
                 }
-
-                f = fnext(f);
-                n += printf_eol();
               }
+
+              n += printf_eol();
             }
           }
 
