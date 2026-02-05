@@ -1,3 +1,8 @@
+#define DT_AARCH64_BTI_PLT             (DT_LOPROC + 1)
+#define DT_AARCH64_PAC_PLT             (DT_LOPROC + 3)
+#define DT_AARCH64_MEMTAG_MODE         (DT_LOPROC + 9)
+#define DT_AARCH64_MEMTAG_STACK        (DT_LOPROC + 12)
+
 convert_t ecDYNTAG[] = {
   {"NULL",            DT_NULL},
   {"NEEDED",          DT_NEEDED},
@@ -66,6 +71,12 @@ convert_t ecDYNTAG[] = {
   {"GNU_LIBLIST",     DT_GNU_LIBLIST},
   {"GNU_LIBLISTSZ",   DT_GNU_LIBLISTSZ},
   {"GNU_HASH",        DT_GNU_HASH},
+
+  {"AARCH64_BTI_PLT",            DT_AARCH64_BTI_PLT},
+  {"AARCH64_PAC_PLT",            DT_AARCH64_PAC_PLT},
+  {"AARCH64_VARIANT_PCS",        DT_AARCH64_VARIANT_PCS},
+  {"AARCH64_MEMTAG_MODE",        DT_AARCH64_MEMTAG_MODE},
+  {"AARCH64_MEMTAG_STACK",       DT_AARCH64_MEMTAG_STACK},
 
   {"MIPS_RLD_VERSION",           DT_MIPS_RLD_VERSION},
   {"MIPS_TIME_STAMP",            DT_MIPS_TIME_STAMP},
