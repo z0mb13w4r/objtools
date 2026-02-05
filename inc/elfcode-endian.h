@@ -3,6 +3,9 @@
 
 #include "elfcode.h"
 
+Elf32_Dyn* ecconvert_dyn32(const pbuffer_t p, unknown_t dst, unknown_t src);
+Elf64_Dyn* ecconvert_dyn64(const pbuffer_t p, unknown_t dst, unknown_t src);
+
 Elf32_Ehdr* ecconvert_ehdr32(const pbuffer_t p, unknown_t dst, unknown_t src);
 Elf64_Ehdr* ecconvert_ehdr64(const pbuffer_t p, unknown_t dst, unknown_t src);
 

@@ -28,6 +28,34 @@ static uint64_t ecconvert_u64(const pbuffer_t p, const uint64_t v) {
   return v;
 }
 
+Elf32_Dyn* ecconvert_dyn32(const pbuffer_t p, unknown_t dst, unknown_t src) {
+  if (isELF32(p) && dst && src) {
+    Elf32_Dyn* pdst = CAST(Elf32_Dyn*, dst);
+    Elf32_Dyn* psrc = CAST(Elf32_Dyn*, src);
+
+    pdst->d_tag = ecconvert_u32(p, psrc->d_tag);               // Elf32_Sword
+    pdst->d_un.d_val = ecconvert_u32(p, psrc->d_un.d_val);     // Elf32_Word
+
+    return dst;
+  }
+
+  return NULL;
+}
+
+Elf64_Dyn* ecconvert_dyn64(const pbuffer_t p, unknown_t dst, unknown_t src) {
+  if (isELF64(p) && dst && src) {
+    Elf64_Dyn* pdst = CAST(Elf64_Dyn*, dst);
+    Elf64_Dyn* psrc = CAST(Elf64_Dyn*, src);
+
+    pdst->d_tag = ecconvert_u64(p, psrc->d_tag);               // Elf64_Sxword
+    pdst->d_un.d_val = ecconvert_u64(p, psrc->d_un.d_val);     // Elf64_Xword
+
+    return dst;
+  }
+
+  return NULL;
+}
+
 Elf32_Ehdr* ecconvert_ehdr32(const pbuffer_t p, unknown_t dst, unknown_t src) {
   if (isELF32(p) && dst && src) {
     Elf32_Ehdr* pdst = CAST(Elf32_Ehdr*, dst);
