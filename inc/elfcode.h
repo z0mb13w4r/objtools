@@ -51,6 +51,10 @@ uint64_t ecget_etype(const pbuffer_t p);
 uint64_t ecget_eflags(const pbuffer_t p);
 uint64_t ecget_emachine(const pbuffer_t p);
 
+Elf32_Dyn* ecget_dyn32byindex(const pbuffer_t p, const unknown_t q, const int index, const int entry);
+Elf64_Dyn* ecget_dyn64byindex(const pbuffer_t p, const unknown_t q, const int index, const int entry);
+unknown_t  ecget_dynbyindex(const pbuffer_t p, const int index, const int entry);
+
 Elf32_Ehdr* ecget_ehdr32(const pbuffer_t p, const unknown_t q);
 Elf64_Ehdr* ecget_ehdr64(const pbuffer_t p, const unknown_t q);
 unknown_t   ecget_ehdr(const pbuffer_t p);

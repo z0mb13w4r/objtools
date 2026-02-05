@@ -289,6 +289,41 @@ bool_t isELFpie(const pbuffer_t p) {
   return FALSE;
 }
 
+Elf32_Dyn* ecget_dyn32byindex(const pbuffer_t p, const unknown_t q, const int index, const int entry) {
+  MEMSTACK(Elf32_Shdr, sx);
+  Elf32_Shdr *s0 = ecget_shdr32byindex(p, sx, index);
+  if (s0 && SHT_DYNAMIC == s0->sh_type) {
+    size_t cnt = s0->sh_size / s0->sh_entsize;
+    if (entry < cnt) {
+      return ecconvert_dyn32(p, q, getp(p, s0->sh_offset + (entry * s0->sh_entsize), s0->sh_entsize));
+    }
+  }
+
+  return NULL;
+}
+
+Elf64_Dyn* ecget_dyn64byindex(const pbuffer_t p, const unknown_t q, const int index, const int entry) {
+  MEMSTACK(Elf64_Shdr, sx);
+  Elf64_Shdr *s0 = ecget_shdr64byindex(p, sx, index);
+  if (s0 && SHT_DYNAMIC == s0->sh_type) {
+    size_t cnt = s0->sh_size / s0->sh_entsize;
+    if (entry < cnt) {
+      return ecconvert_dyn64(p, q, getp(p, s0->sh_offset + (entry * s0->sh_entsize), s0->sh_entsize));
+    }
+  }
+
+  return NULL;
+}
+
+unknown_t  ecget_dynbyindex(const pbuffer_t p, const int index, const int entry) {
+  if (isELF(p)) {
+    if (isELF32(p))        return ecget_dyn32byindex(p, xmalloc(sizeof(Elf32_Dyn), MODE_HEAP), index, entry);
+    else if (isELF64(p))   return ecget_dyn64byindex(p, xmalloc(sizeof(Elf64_Dyn), MODE_HEAP), index, entry);
+  }
+
+  return NULL;
+}
+
 Elf32_Ehdr* ecget_ehdr32(const pbuffer_t p, const unknown_t q) {
   return ecconvert_ehdr32(p, q, getp(p, 0, sizeof(Elf32_Ehdr)));
 }
