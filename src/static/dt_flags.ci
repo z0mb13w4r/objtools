@@ -1,9 +1,30 @@
 static convert_t ecDT_FLAGS[] = {
-  {"ORIGIN", DF_ORIGIN},
-  {"SYMBOLIC", DF_SYMBOLIC},
-  {"TEXTREL", DF_TEXTREL},
-  {"BIND_NOW", DF_BIND_NOW},
+  {"ORIGIN",     DF_ORIGIN},
+  {"SYMBOLIC",   DF_SYMBOLIC},
+  {"TEXTREL",    DF_TEXTREL},
+  {"BIND_NOW",   DF_BIND_NOW},
   {"STATIC_TLS", DF_STATIC_TLS},
+
+  {0, 0}
+};
+
+static convert_t ecDT_FLAGSMIPS[] = {
+  {"QUICKSTART",             RHF_QUICKSTART},
+  {"NOTPOT",                 RHF_NOTPOT},
+  {"NO_LIBRARY_REPLACEMENT", RHF_NO_LIBRARY_REPLACEMENT},
+  {"NO_MOVE",                RHF_NO_MOVE},
+  {"SGI_ONLY",               RHF_SGI_ONLY},
+  {"GUARANTEE_INIT",         RHF_GUARANTEE_INIT},
+  {"DELTA_C_PLUS_PLUS",      RHF_DELTA_C_PLUS_PLUS},
+  {"GUARANTEE_START_INIT",   RHF_GUARANTEE_START_INIT},
+  {"PIXIE",                  RHF_PIXIE},
+  {"DEFAULT_DELAY_LOAD",     RHF_DEFAULT_DELAY_LOAD},
+  {"REQUICKSTART",           RHF_REQUICKSTART},
+  {"REQUICKSTARTED",         RHF_REQUICKSTARTED},
+  {"CORD",                   RHF_CORD},
+  {"NO_UNRES_UNDEF",         RHF_NO_UNRES_UNDEF},
+  {"RLD_ORDER_SAFE",         RHF_RLD_ORDER_SAFE},
+
   {0, 0}
 };
 
