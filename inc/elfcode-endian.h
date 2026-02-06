@@ -18,5 +18,11 @@ Elf64_Shdr* ecconvert_shdr64(const pbuffer_t p, unknown_t dst, unknown_t src);
 Elf32_Sym* ecconvert_sym32(const pbuffer_t p, unknown_t dst, unknown_t src);
 Elf64_Sym* ecconvert_sym64(const pbuffer_t p, unknown_t dst, unknown_t src);
 
+Elf32_Vernaux* ecconvert_vernaux32(const pbuffer_t p, unknown_t dst, unknown_t src);
+Elf64_Vernaux* ecconvert_vernaux64(const pbuffer_t p, unknown_t dst, unknown_t src);
+
+Elf32_Verneed* ecconvert_verneed32(const pbuffer_t p, unknown_t dst, unknown_t src);
+Elf64_Verneed* ecconvert_verneed64(const pbuffer_t p, unknown_t dst, unknown_t src);
+
 #endif
 

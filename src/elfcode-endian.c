@@ -230,3 +230,71 @@ Elf64_Sym* ecconvert_sym64(const pbuffer_t p, unknown_t dst, unknown_t src) {
   return NULL;
 }
 
+Elf32_Vernaux* ecconvert_vernaux32(const pbuffer_t p, unknown_t dst, unknown_t src) {
+  if (isELF32(p) && dst && src) {
+    Elf32_Vernaux* pdst = CAST(Elf32_Vernaux*, dst);
+    Elf32_Vernaux* psrc = CAST(Elf32_Vernaux*, src);
+
+    pdst->vna_flags = ecconvert_u32(p, psrc->vna_flags);       // Elf32_Half
+    pdst->vna_hash  = ecconvert_u16(p, psrc->vna_hash);        // Elf32_Word
+    pdst->vna_name  = ecconvert_u32(p, psrc->vna_name);        // Elf32_Word
+    pdst->vna_next  = ecconvert_u32(p, psrc->vna_next);        // Elf32_Word
+    pdst->vna_other = ecconvert_u16(p, psrc->vna_other);       // Elf32_Half
+
+    return dst;
+  }
+
+  return NULL;
+}
+
+Elf64_Vernaux* ecconvert_vernaux64(const pbuffer_t p, unknown_t dst, unknown_t src) {
+  if (isELF64(p) && dst && src) {
+    Elf64_Vernaux* pdst = CAST(Elf64_Vernaux*, dst);
+    Elf64_Vernaux* psrc = CAST(Elf64_Vernaux*, src);
+
+    pdst->vna_flags = ecconvert_u16(p, psrc->vna_flags);       // Elf64_Half
+    pdst->vna_hash  = ecconvert_u32(p, psrc->vna_hash);        // Elf64_Word
+    pdst->vna_name  = ecconvert_u32(p, psrc->vna_name);        // Elf64_Word
+    pdst->vna_next  = ecconvert_u32(p, psrc->vna_next);        // Elf64_Word
+    pdst->vna_other = ecconvert_u16(p, psrc->vna_other);       // Elf64_Half
+
+    return dst;
+  }
+
+  return NULL;
+}
+
+Elf32_Verneed* ecconvert_verneed32(const pbuffer_t p, unknown_t dst, unknown_t src) {
+  if (isELF64(p) && dst && src) {
+    Elf32_Verneed* pdst = CAST(Elf32_Verneed*, dst);
+    Elf32_Verneed* psrc = CAST(Elf32_Verneed*, src);
+
+    pdst->vn_aux     = ecconvert_u32(p, psrc->vn_aux);         // Elf32_Word
+    pdst->vn_cnt     = ecconvert_u16(p, psrc->vn_cnt);         // Elf32_Half
+    pdst->vn_file    = ecconvert_u32(p, psrc->vn_file);        // Elf32_Word
+    pdst->vn_next    = ecconvert_u32(p, psrc->vn_next);        // Elf32_Word
+    pdst->vn_version = ecconvert_u16(p, psrc->vn_version);     // Elf32_Half
+
+    return dst;
+  }
+
+  return NULL;
+}
+
+Elf64_Verneed* ecconvert_verneed64(const pbuffer_t p, unknown_t dst, unknown_t src) {
+  if (isELF64(p) && dst && src) {
+    Elf64_Verneed* pdst = CAST(Elf64_Verneed*, dst);
+    Elf64_Verneed* psrc = CAST(Elf64_Verneed*, src);
+
+    pdst->vn_aux     = ecconvert_u32(p, psrc->vn_aux);         // Elf64_Word
+    pdst->vn_cnt     = ecconvert_u16(p, psrc->vn_cnt);         // Elf64_Half
+    pdst->vn_file    = ecconvert_u32(p, psrc->vn_file);        // Elf64_Word
+    pdst->vn_next    = ecconvert_u32(p, psrc->vn_next);        // Elf64_Word
+    pdst->vn_version = ecconvert_u16(p, psrc->vn_version);     // Elf64_Half
+
+    return dst;
+  }
+
+  return NULL;
+}
+
