@@ -78,6 +78,10 @@ convert_t ecDYNTAG[] = {
   {"AARCH64_MEMTAG_MODE",        DT_AARCH64_MEMTAG_MODE},
   {"AARCH64_MEMTAG_STACK",       DT_AARCH64_MEMTAG_STACK},
 
+  {0, 0}
+};
+
+convert_t ecDYNTAGMIPS[] = {
   {"MIPS_RLD_VERSION",           DT_MIPS_RLD_VERSION},
   {"MIPS_TIME_STAMP",            DT_MIPS_TIME_STAMP},
   {"MIPS_ICHECKSUM",             DT_MIPS_ICHECKSUM},
@@ -189,6 +193,16 @@ pick_t ecDYNTAGNAME[] = {
 };
 
 pconvert_t get_DYNTAG(const pbuffer_t p, const uint64_t tag) {
+  if ((tag >= DT_LOPROC) && (tag <= DT_HIPROC)) {
+    switch (ecget_emachine(p)) {
+    case EM_MIPS:
+    case EM_MIPS_RS3_LE:
+      return ecDYNTAGMIPS;
+    default:
+      break;
+    }
+  }
+
   return ecDYNTAG;
 }
 
