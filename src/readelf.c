@@ -669,7 +669,7 @@ static int dump_dynamic1(const pbuffer_t p, const poptions_t o, const uint64_t d
     n += printf_nice(d_un_d_val, USE_DEC | USE_BYTES);
   } else if (isused(ecDYNTAGDEC, d_tag)) {
     n += printf_nice(d_un_d_val, USE_DEC);
-  } else if (isused(ecDYNTAGFHEX, d_tag)) {
+  } else if (isused(get_DYNTAGFHEX(p, d_tag), d_tag)) {
     n += printf_nice(d_un_d_val, USE_FHEX);
   } else if (d_tag == DT_GNU_PRELINKED) {
     n += printf_nice(d_un_d_val, USE_TIMEDATE);

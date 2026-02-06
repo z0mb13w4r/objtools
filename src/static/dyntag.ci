@@ -207,6 +207,14 @@ static pick_t ecDYNTAGFHEX[] = {
   PICK_END
 };
 
+static pick_t ecDYNTAGFHEXMIPS[] = {
+  DT_MIPS_RLD_MAP,
+  DT_MIPS_RLD_MAP_REL,
+  DT_MIPS_BASE_ADDRESS,
+  DT_MIPS_GOTSYM,
+  PICK_END
+};
+
 pick_t ecDYNTAGNAME[] = {
   DT_NULL,
   DT_NEEDED,
@@ -250,5 +258,20 @@ pconvert_t get_DYNTAG(const pbuffer_t p, const uint64_t tag) {
   }
 
   return ecDYNTAG;
+}
+
+ppick_t get_DYNTAGFHEX(const pbuffer_t p, const uint64_t tag) {
+  if ((tag >= DT_LOPROC) && (tag <= DT_HIPROC)) {
+    switch (ecget_emachine(p)) {
+    case EM_MIPS:
+    case EM_MIPS_RS3_LE:
+      return ecDYNTAGFHEXMIPS;
+
+    default:
+      break;
+    }
+  }
+
+  return ecDYNTAGFHEX;
 }
 
