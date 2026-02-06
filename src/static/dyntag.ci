@@ -1,7 +1,8 @@
-#define DT_AARCH64_BTI_PLT             (DT_LOPROC + 1)
-#define DT_AARCH64_PAC_PLT             (DT_LOPROC + 3)
-#define DT_AARCH64_MEMTAG_MODE         (DT_LOPROC + 9)
-#define DT_AARCH64_MEMTAG_STACK        (DT_LOPROC + 12)
+#define DT_RELRSZ                      (35)
+#define DT_RELR                        (36)
+#define DT_RELRENT                     (37)
+
+#define DT_GNU_FLAGS_1                 (0x6ffffdf4)
 
 convert_t ecDYNTAG[] = {
   {"NULL",            DT_NULL},
@@ -24,6 +25,10 @@ convert_t ecDYNTAG[] = {
   {"REL",             DT_REL},
   {"RELSZ",           DT_RELSZ},
   {"RELENT",          DT_RELENT},
+  {"RELR",            DT_RELR},
+  {"RELRSZ",          DT_RELRSZ},
+  {"RELRENT",         DT_RELRENT},
+
   {"PLTREL",          DT_PLTREL},
   {"DEBUG",           DT_DEBUG},
   {"TEXTREL",         DT_TEXTREL},
@@ -42,6 +47,7 @@ convert_t ecDYNTAG[] = {
   {"PLTPADSZ",        DT_PLTPADSZ},
   {"MOVEENT",         DT_MOVEENT},
   {"MOVESZ",          DT_MOVESZ},
+  {"FEATURE_1",       DT_FEATURE_1},
   {"POSFLAG_1",       DT_POSFLAG_1},
   {"SYMINSZ",         DT_SYMINSZ},
   {"SYMINENT",        DT_SYMINENT},
@@ -71,9 +77,15 @@ convert_t ecDYNTAG[] = {
   {"GNU_LIBLIST",     DT_GNU_LIBLIST},
   {"GNU_LIBLISTSZ",   DT_GNU_LIBLISTSZ},
   {"GNU_HASH",        DT_GNU_HASH},
+  {"GNU_FLAGS_1",     DT_GNU_FLAGS_1},
 
   {0, 0}
 };
+
+#define DT_AARCH64_BTI_PLT             (DT_LOPROC + 1)
+#define DT_AARCH64_PAC_PLT             (DT_LOPROC + 3)
+#define DT_AARCH64_MEMTAG_MODE         (DT_LOPROC + 9)
+#define DT_AARCH64_MEMTAG_STACK        (DT_LOPROC + 12)
 
 convert_t ecDYNTAGARM64[] = {
   {"AARCH64_BTI_PLT",            DT_AARCH64_BTI_PLT},
