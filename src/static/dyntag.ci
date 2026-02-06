@@ -72,6 +72,10 @@ convert_t ecDYNTAG[] = {
   {"GNU_LIBLISTSZ",   DT_GNU_LIBLISTSZ},
   {"GNU_HASH",        DT_GNU_HASH},
 
+  {0, 0}
+};
+
+convert_t ecDYNTAGARM64[] = {
   {"AARCH64_BTI_PLT",            DT_AARCH64_BTI_PLT},
   {"AARCH64_PAC_PLT",            DT_AARCH64_PAC_PLT},
   {"AARCH64_VARIANT_PCS",        DT_AARCH64_VARIANT_PCS},
@@ -195,9 +199,13 @@ pick_t ecDYNTAGNAME[] = {
 pconvert_t get_DYNTAG(const pbuffer_t p, const uint64_t tag) {
   if ((tag >= DT_LOPROC) && (tag <= DT_HIPROC)) {
     switch (ecget_emachine(p)) {
+    case EM_AARCH64:
+      return ecDYNTAGARM64;
+
     case EM_MIPS:
     case EM_MIPS_RS3_LE:
       return ecDYNTAGMIPS;
+
     default:
       break;
     }
