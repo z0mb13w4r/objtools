@@ -188,3 +188,7 @@ pick_t ecDYNTAGNAME[] = {
   PICK_END
 };
 
+pconvert_t get_DYNTAG(const pbuffer_t p, const uint64_t tag) {
+  return ecDYNTAG;
+}
+

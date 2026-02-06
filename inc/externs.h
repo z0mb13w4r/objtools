@@ -54,8 +54,6 @@ extern convert_t ecSHDRTYPE[];
 
 extern convert_t oeSEGMENTFLAGS_x86_64[];
 
-extern convert_t ecDYNTAG[];
-
 extern convert_t ecHAS_FLAGS[];
 
 extern convert_t zBFDSYMBOL_FLAGS[];

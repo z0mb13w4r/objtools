@@ -639,7 +639,7 @@ static int dump_dynamic0(const pbuffer_t p, const uint64_t sh_offset, const uint
 static int dump_dynamic1(const pbuffer_t p, const poptions_t o, const uint64_t d_tag, const uint64_t d_un_d_val, const uint64_t sh_link) {
   int n = 0;
   n += printf_nice(d_tag, isELF32(p) ? USE_FHEX32 : USE_FHEX64);
-  n += printf_pick(ecDYNTAG, d_tag, USE_SPACE | USE_RB | SET_PAD(20));
+  n += printf_pick(get_DYNTAG(p, d_tag), d_tag, USE_SPACE | USE_RB | SET_PAD(20));
 
   if (d_tag == DT_FLAGS_1) {
     n += printf_text("Flags", USE_LT | USE_SPACE | USE_COLON);
@@ -651,7 +651,7 @@ static int dump_dynamic1(const pbuffer_t p, const poptions_t o, const uint64_t d
     n += printf_text("Flags", USE_LT | USE_SPACE | USE_COLON);
     n += printf_masknone(ecDT_FLAGS,d_un_d_val, USE_LT);
   } else if (d_tag == DT_PLTREL) {
-    n += printf_pick(ecDYNTAG, d_un_d_val, USE_SPACE);
+    n += printf_pick(get_DYNTAG(p, d_un_d_val), d_un_d_val, USE_SPACE);
   } else if (d_tag == DT_NULL || isused(ecDYNTAGNAME, d_tag)) {
     const char *name = ecget_namebyoffset(p, sh_link, d_un_d_val);
     if (name && name[0]) {

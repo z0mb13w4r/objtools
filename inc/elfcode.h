@@ -3,6 +3,7 @@
 
 #include <elf.h>
 #include "buffer.h"
+#include "objutils.h"
 
 #define SHT_RELR                   (19) /* RELR relative relocations */
 
@@ -153,6 +154,8 @@ ppick_t get_RELTYPESHEX8(const pbuffer_t p);
 ppick_t get_RELTYPESHEX16(const pbuffer_t p);
 ppick_t get_RELTYPESHEX32(const pbuffer_t p);
 ppick_t get_RELTYPESHEX64(const pbuffer_t p);
+
+pconvert_t get_DYNTAG(const pbuffer_t p, const uint64_t tag);
 
 #endif
 

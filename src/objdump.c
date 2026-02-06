@@ -4,6 +4,7 @@
 
 #include "printf.h"
 #include "opcode.h"
+#include "elfcode.h"
 #include "memfind.h"
 #include "ocdwarf.h"
 #include "objdump.h"
@@ -178,7 +179,7 @@ static void callback_dynamichdr(handle_t p, handle_t dyn, unknown_t param) {
   const uint64_t d_tag = ocget_type(dyn);
 
   if (DT_NULL != d_tag) {
-    n += printf_pick(ecDYNTAG, d_tag, USE_SPACE | SET_PAD(name_size));
+    n += printf_pick(get_DYNTAG(ocget(p, OPCODE_RAWDATA), d_tag), d_tag, USE_SPACE | SET_PAD(name_size));
 
     if (isused(ecDYNTAGNAME, d_tag)) {
       const char *name = ocget_name(dyn);
