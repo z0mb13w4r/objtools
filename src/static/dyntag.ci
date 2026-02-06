@@ -196,6 +196,14 @@ static pick_t ecDYNTAGDEC[] = {
   PICK_END
 };
 
+static pick_t ecDYNTAGDECMIPS[] = {
+  DT_MIPS_RLD_VERSION,
+  DT_MIPS_LOCAL_GOTNO,
+  DT_MIPS_UNREFEXTNO,
+  DT_MIPS_SYMTABNO,
+  PICK_END
+};
+
 static pick_t ecDYNTAGFHEX[] = {
   DT_SYMINSZ,
   DT_SYMINENT,
@@ -258,6 +266,21 @@ pconvert_t get_DYNTAG(const pbuffer_t p, const uint64_t tag) {
   }
 
   return ecDYNTAG;
+}
+
+ppick_t get_DYNTAGDEC(const pbuffer_t p, const uint64_t tag) {
+  if ((tag >= DT_LOPROC) && (tag <= DT_HIPROC)) {
+    switch (ecget_emachine(p)) {
+    case EM_MIPS:
+    case EM_MIPS_RS3_LE:
+      return ecDYNTAGDECMIPS;
+
+    default:
+      break;
+    }
+  }
+
+  return ecDYNTAGDEC;
 }
 
 ppick_t get_DYNTAGFHEX(const pbuffer_t p, const uint64_t tag) {

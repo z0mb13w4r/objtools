@@ -649,7 +649,7 @@ static int dump_dynamic1(const pbuffer_t p, const poptions_t o, const uint64_t d
     n += printf_masknone(ecDT_POSFLAG_1, d_un_d_val, USE_LT);
   } else if (d_tag == DT_FLAGS) {
     n += printf_text("Flags", USE_LT | USE_SPACE | USE_COLON);
-    n += printf_masknone(ecDT_FLAGS,d_un_d_val, USE_LT);
+    n += printf_masknone(ecDT_FLAGS, d_un_d_val, USE_LT);
   } else if (d_tag == DT_PLTREL) {
     n += printf_pick(get_DYNTAG(p, d_un_d_val), d_un_d_val, USE_SPACE);
   } else if (d_tag == DT_NULL || isused(ecDYNTAGNAME, d_tag)) {
@@ -667,7 +667,7 @@ static int dump_dynamic1(const pbuffer_t p, const poptions_t o, const uint64_t d
     }
   } else if (isused(ecDYNTAGBYTES, d_tag)) {
     n += printf_nice(d_un_d_val, USE_DEC | USE_BYTES);
-  } else if (isused(ecDYNTAGDEC, d_tag)) {
+  } else if (isused(get_DYNTAGDEC(p, d_tag), d_tag)) {
     n += printf_nice(d_un_d_val, USE_DEC);
   } else if (isused(get_DYNTAGFHEX(p, d_tag), d_tag)) {
     n += printf_nice(d_un_d_val, USE_FHEX);
