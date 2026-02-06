@@ -202,9 +202,9 @@ Elf32_Sym* ecconvert_sym32(const pbuffer_t p, unknown_t dst, unknown_t src) {
     pdst->st_name  = ecconvert_u32(p, psrc->st_name);          // Elf32_Word
     pdst->st_value = ecconvert_u32(p, psrc->st_value);         // Elf32_Addr
     pdst->st_size  = ecconvert_u32(p, psrc->st_size);          // Elf32_Word
-    pdst->st_info  = ecconvert_u8(p, pdst->st_info);           // unsigned char
-    pdst->st_other = ecconvert_u8(p, pdst->st_info);           // unsigned char
-    pdst->st_shndx = ecconvert_u16(p, pdst->st_shndx);         // Elf32_Section
+    pdst->st_info  = ecconvert_u8(p, psrc->st_info);           // unsigned char
+    pdst->st_other = ecconvert_u8(p, psrc->st_other);          // unsigned char
+    pdst->st_shndx = ecconvert_u16(p, psrc->st_shndx);         // Elf32_Section
 
     return dst;
   }
@@ -221,8 +221,8 @@ Elf64_Sym* ecconvert_sym64(const pbuffer_t p, unknown_t dst, unknown_t src) {
     pdst->st_info  = ecconvert_u8(p, psrc->st_info);           // unsigned char
     pdst->st_other = ecconvert_u8(p, psrc->st_other);          // unsigned char
     pdst->st_shndx = ecconvert_u16(p, psrc->st_shndx);         // Elf64_Section
-    pdst->st_value = ecconvert_u64(p, pdst->st_value);         // Elf64_Addr
-    pdst->st_size  = ecconvert_u64(p, pdst->st_size);          // Elf64_Xword
+    pdst->st_value = ecconvert_u64(p, psrc->st_value);         // Elf64_Addr
+    pdst->st_size  = ecconvert_u64(p, psrc->st_size);          // Elf64_Xword
 
     return dst;
   }
