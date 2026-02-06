@@ -149,6 +149,18 @@ convert_t ecDYNTAGMIPS[] = {
   {0, 0}
 };
 
+#define DT_X86_64_PLT                  (DT_LOPROC + 0)
+#define DT_X86_64_PLTSZ                (DT_LOPROC + 1)
+#define DT_X86_64_PLTENT               (DT_LOPROC + 3)
+
+convert_t ecDYNTAGX86[] = {
+  {"DT_X86_64_PLT",              DT_X86_64_PLT},
+  {"DT_X86_64_PLTSZ",            DT_X86_64_PLTSZ},
+  {"DT_X86_64_PLTENT",           DT_X86_64_PLTENT},
+
+  {0, 0}
+};
+
 static pick_t ecDYNTAGBYTES[] = {
   DT_PLTRELSZ,
   DT_RELASZ,
@@ -211,6 +223,9 @@ pick_t ecDYNTAGNAME[] = {
 pconvert_t get_DYNTAG(const pbuffer_t p, const uint64_t tag) {
   if ((tag >= DT_LOPROC) && (tag <= DT_HIPROC)) {
     switch (ecget_emachine(p)) {
+    case EM_X86_64:
+      return ecDYNTAGX86;
+
     case EM_AARCH64:
       return ecDYNTAGARM64;
 
