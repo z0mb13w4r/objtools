@@ -1,10 +1,5 @@
 #define PT_ARM_ARCHEXT                 (PT_LOPROC + 0)
 
-#define PT_OPENBSD_MUTABLE             (PT_LOOS + 0x5a3dbe5) /* Like bss, but not immutable.  */
-#define PT_OPENBSD_RANDOMIZE           (PT_LOOS + 0x5a3dbe6) /* Fill with random data.  */
-#define PT_OPENBSD_WXNEEDED            (PT_LOOS + 0x5a3dbe7) /* Program does W^X violations.  */
-#define PT_OPENBSD_BOOTDATA            (PT_LOOS + 0x5a41be6) /* Section for boot arguments.  */
-
 convert_t ecPHDRTYPE[] = {
   {"NULL",                         PT_NULL},
   {"LOAD",                         PT_LOAD},
@@ -15,17 +10,6 @@ convert_t ecPHDRTYPE[] = {
   {"PHDR",                         PT_PHDR},
   {"TLS",                          PT_TLS},
   {"NUM",                          PT_NUM},
-
-  {"GNU_EH_FRAME",                 PT_GNU_EH_FRAME},
-  {"GNU_STACK",                    PT_GNU_STACK},
-  {"GNU_RELRO",                    PT_GNU_RELRO},
-  {"GNU_PROPERTY",                 PT_GNU_PROPERTY},
-  {"GNU_SFRAME",                   PT_GNU_SFRAME},
-
-  {"OPENBSD_MUTABLE",              PT_OPENBSD_MUTABLE},
-  {"OPENBSD_RANDOMIZE",            PT_OPENBSD_RANDOMIZE},
-  {"OPENBSD_WXNEEDED",             PT_OPENBSD_WXNEEDED},
-  {"OPENBSD_BOOTDATA",             PT_OPENBSD_BOOTDATA},
 
   {"ARM_ARCHEXT",                  PT_ARM_ARCHEXT},
   {"ARM_EXIDX",                    PT_ARM_EXIDX},
@@ -38,7 +22,36 @@ convert_t ecPHDRTYPE[] = {
   {0, 0}
 };
 
+#define PT_OPENBSD_MUTABLE             (PT_LOOS + 0x5a3dbe5) /* Like bss, but not immutable. */
+#define PT_OPENBSD_RANDOMIZE           (PT_LOOS + 0x5a3dbe6) /* Fill with random data. */
+#define PT_OPENBSD_WXNEEDED            (PT_LOOS + 0x5a3dbe7) /* Program does W^X violations. */
+#define PT_OPENBSD_BOOTDATA            (PT_LOOS + 0x5a41be6) /* Section for boot arguments. */
+#define PT_OPENBSD_NOBTCFI             (PT_LOOS + 0x5a3dbe8) /* No branch target CFI. */
+#define PT_OPENBSD_SYSCALLS            (PT_LOOS + 0x5a3dbe9) /* System call sites. */
+
+convert_t ecPHDRTYPEOS[] = {
+  {"GNU_EH_FRAME",                 PT_GNU_EH_FRAME},
+  {"GNU_STACK",                    PT_GNU_STACK},
+  {"GNU_RELRO",                    PT_GNU_RELRO},
+  {"GNU_PROPERTY",                 PT_GNU_PROPERTY},
+  {"GNU_SFRAME",                   PT_GNU_SFRAME},
+
+  {"OPENBSD_MUTABLE",              PT_OPENBSD_MUTABLE},
+  {"OPENBSD_RANDOMIZE",            PT_OPENBSD_RANDOMIZE},
+  {"OPENBSD_WXNEEDED",             PT_OPENBSD_WXNEEDED},
+  {"OPENBSD_NOBTCFI",              PT_OPENBSD_NOBTCFI},
+  {"OPENBSD_SYSCALLS",             PT_OPENBSD_SYSCALLS},
+  {"OPENBSD_BOOTDATA",             PT_OPENBSD_BOOTDATA},
+
+  {0, 0}
+};
+
+
 pconvert_t get_PHDRTYPE(const pbuffer_t p, const uint64_t type) {
+  if ((type >= PT_LOOS) && (type <= PT_HIOS)) {
+    return ecPHDRTYPEOS;
+  }
+
   return ecPHDRTYPE;
 }
 
