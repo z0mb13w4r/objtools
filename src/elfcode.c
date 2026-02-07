@@ -1414,11 +1414,13 @@ int ecmake_versionnames32(const pbuffer_t p, pversion_t vnames, const size_t max
     vnames[0] = vh->sh_link;
 
     for (Elf32_Word j = 0; j < vh->sh_info; ++j) {
-      Elf32_Verneed *vn = getp(p, vh->sh_offset + offset, sizeof(Elf32_Verneed));
+      MEMSTACK(Elf32_Verneed, vy);
+      Elf32_Verneed *vn = ecconvert_verneed32(p, vy, getp(p, vh->sh_offset + offset, sizeof(Elf32_Verneed)));
       if (vn) {
         Elf32_Word offset0 = offset + vn->vn_aux;
         for (Elf64_Half k = 0; k < vn->vn_cnt; ++k) {
-          Elf32_Vernaux *va = getp(p, vh->sh_offset + offset0, sizeof(Elf32_Vernaux));
+          MEMSTACK(Elf32_Vernaux, vz);
+          Elf32_Vernaux *va = ecconvert_vernaux32(p, vz, getp(p, vh->sh_offset + offset0, sizeof(Elf32_Vernaux)));
           if (va) {
             if (va->vna_other < maxvnames) {
               vnames[va->vna_other] = va->vna_name;
@@ -1445,11 +1447,13 @@ int ecmake_versionnames64(const pbuffer_t p, pversion_t vnames, const size_t max
     vnames[0] = vh->sh_link;
 
     for (Elf64_Word j = 0; j < vh->sh_info; ++j) {
-      Elf64_Verneed *vn = getp(p, vh->sh_offset + offset, sizeof(Elf64_Verneed));
+      MEMSTACK(Elf64_Verneed, vy);
+      Elf64_Verneed *vn = ecconvert_verneed64(p, vy, getp(p, vh->sh_offset + offset, sizeof(Elf64_Verneed)));
       if (vn) {
         Elf64_Word offset0 = offset + vn->vn_aux;
         for (Elf64_Half k = 0; k < vn->vn_cnt; ++k) {
-          Elf64_Vernaux *va = getp(p, vh->sh_offset + offset0, sizeof(Elf64_Vernaux));
+          MEMSTACK(Elf64_Vernaux, vz);
+          Elf64_Vernaux *va = ecconvert_vernaux64(p, vz, getp(p, vh->sh_offset + offset0, sizeof(Elf64_Vernaux)));
           if (va) {
             if (va->vna_other < maxvnames) {
               vnames[va->vna_other] = va->vna_name;
