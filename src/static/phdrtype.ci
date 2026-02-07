@@ -14,11 +14,6 @@ convert_t ecPHDRTYPE[] = {
   {"ARM_ARCHEXT",                  PT_ARM_ARCHEXT},
   {"ARM_EXIDX",                    PT_ARM_EXIDX},
 
-  {"MIPS_REGINFO",                 PT_MIPS_REGINFO},
-  {"MIPS_RTPROC",                  PT_MIPS_RTPROC},
-  {"MIPS_OPTIONS",                 PT_MIPS_OPTIONS},
-  {"MIPS_ABIFLAGS",                PT_MIPS_ABIFLAGS},
-
   {0, 0}
 };
 
@@ -46,10 +41,28 @@ convert_t ecPHDRTYPEOS[] = {
   {0, 0}
 };
 
+convert_t ecPHDRTYPEMIPS[] = {
+  {"MIPS_REGINFO",                 PT_MIPS_REGINFO},
+  {"MIPS_RTPROC",                  PT_MIPS_RTPROC},
+  {"MIPS_OPTIONS",                 PT_MIPS_OPTIONS},
+  {"MIPS_ABIFLAGS",                PT_MIPS_ABIFLAGS},
+
+  {0, 0}
+};
 
 pconvert_t get_PHDRTYPE(const pbuffer_t p, const uint64_t type) {
   if ((type >= PT_LOOS) && (type <= PT_HIOS)) {
     return ecPHDRTYPEOS;
+  } else if ((type >= PT_LOPROC) && (type <= PT_HIPROC)) {
+    switch (ecget_emachine(p)) {
+    case EM_MIPS:
+    case EM_MIPS_RS3_LE:
+      return ecPHDRTYPEMIPS;
+
+    default:
+      break;
+    }
+
   }
 
   return ecPHDRTYPE;
