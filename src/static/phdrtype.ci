@@ -55,12 +55,19 @@ convert_t ecPHDRTYPEARM64[] = {
   {0, 0}
 };
 
-
 convert_t ecPHDRTYPEMIPS[] = {
   {"MIPS_REGINFO",                 PT_MIPS_REGINFO},
   {"MIPS_RTPROC",                  PT_MIPS_RTPROC},
   {"MIPS_OPTIONS",                 PT_MIPS_OPTIONS},
   {"MIPS_ABIFLAGS",                PT_MIPS_ABIFLAGS},
+
+  {0, 0}
+};
+
+#define PT_RISCV_ATTRIBUTES            (0x70000003)
+
+convert_t ecPHDRTYPERISCV[] = {
+  { "RISCV_ATTRIBUTES",            PT_RISCV_ATTRIBUTES},
 
   {0, 0}
 };
@@ -79,6 +86,9 @@ pconvert_t get_PHDRTYPE(const pbuffer_t p, const uint64_t type) {
 
     case EM_AARCH64:
       return ecPHDRTYPEARM64;
+
+    case EM_RISCV:
+      return ecPHDRTYPERISCV;
 
     default:
       break;
