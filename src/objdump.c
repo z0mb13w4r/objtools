@@ -284,7 +284,7 @@ static void callback_versionrefs(handle_t p, handle_t section, unknown_t param) 
 static void callback_programhdr(handle_t p, handle_t phdr, unknown_t param) {
   size_t name_size = *CAST(size_t*, param);
   int n = 0;
-  n += printf_pick(ecPHDRTYPE, ocget_type(phdr), USE_LT | USE_TAB | SET_PAD(name_size));
+  n += printf_pick(get_PHDRTYPE(ocget(p, OPCODE_RAWDATA), ocget_type(phdr)), ocget_type(phdr), USE_LT | USE_TAB | SET_PAD(name_size));
 
   const imode_t USE_FHEXNN = ocis64(p) ? USE_FHEX64 : USE_FHEX32;
 

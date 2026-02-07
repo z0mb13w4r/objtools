@@ -49,7 +49,6 @@ extern convert_t ecDWEXPRLITE[];
 extern convert_t ecDWCHILDREN[];
 extern convert_t ecDWCHILDRENLITE[];
 
-extern convert_t ecPHDRTYPE[];
 extern convert_t ecSHDRTYPE[];
 
 extern convert_t oeSEGMENTFLAGS_x86_64[];

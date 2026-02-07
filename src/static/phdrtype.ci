@@ -38,3 +38,7 @@ convert_t ecPHDRTYPE[] = {
   {0, 0}
 };
 
+pconvert_t get_PHDRTYPE(const pbuffer_t p, const uint64_t type) {
+  return ecPHDRTYPE;
+}
+
