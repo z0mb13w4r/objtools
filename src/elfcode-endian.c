@@ -298,3 +298,29 @@ Elf64_Verneed* ecconvert_verneed64(const pbuffer_t p, unknown_t dst, unknown_t s
   return NULL;
 }
 
+Elf32_Versym* ecconvert_versym32(const pbuffer_t p, unknown_t dst, unknown_t src) {
+  if (isELF32(p) && dst && src) {
+    Elf32_Versym* pdst = CAST(Elf32_Versym*, dst);
+    Elf32_Versym* psrc = CAST(Elf32_Versym*, src);
+
+    *pdst = ecconvert_u16(p, *psrc);                           // Elf32_Half
+
+    return dst;
+  }
+
+  return NULL;
+}
+
+Elf64_Versym* ecconvert_versym64(const pbuffer_t p, unknown_t dst, unknown_t src) {
+  if (isELF64(p) && dst && src) {
+    Elf64_Versym* pdst = CAST(Elf64_Versym*, dst);
+    Elf64_Versym* psrc = CAST(Elf64_Versym*, src);
+
+    *pdst = ecconvert_u16(p, *psrc);                           // Elf64_Half
+
+    return dst;
+  }
+
+  return NULL;
+}
+
