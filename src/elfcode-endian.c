@@ -265,7 +265,7 @@ Elf64_Vernaux* ecconvert_vernaux64(const pbuffer_t p, unknown_t dst, unknown_t s
 }
 
 Elf32_Verneed* ecconvert_verneed32(const pbuffer_t p, unknown_t dst, unknown_t src) {
-  if (isELF64(p) && dst && src) {
+  if (isELF32(p) && dst && src) {
     Elf32_Verneed* pdst = CAST(Elf32_Verneed*, dst);
     Elf32_Verneed* psrc = CAST(Elf32_Verneed*, src);
 
