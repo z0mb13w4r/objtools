@@ -324,6 +324,44 @@ unknown_t  ecget_dynbyindex(const pbuffer_t p, const int index, const int entry)
   return NULL;
 }
 
+Elf32_Versym* ecget_vsym32byindex(const pbuffer_t p, const unknown_t q, const int index) {
+  MEMSTACK(Elf32_Shdr, sx);
+  Elf32_Shdr *s0 = ecget_shdr32bytype(p, sx, SHT_GNU_versym);
+  if (s0) {
+    size_t cnt = s0->sh_size / s0->sh_entsize;
+    if (index < cnt) {
+      MEMSTACK(Elf32_Versym, vx);
+      return ecconvert_versym32(p, vx, getp(p, s0->sh_offset + (index * s0->sh_entsize), s0->sh_entsize));
+    }
+  }
+
+  return NULL;
+}
+
+Elf64_Versym* ecget_vsym64byindex(const pbuffer_t p, const unknown_t q, const int index) {
+  MEMSTACK(Elf64_Shdr, sx);
+  Elf64_Shdr *s0 = ecget_shdr64bytype(p, sx, SHT_GNU_versym);
+  if (s0) {
+    size_t cnt = s0->sh_size / s0->sh_entsize;
+    if (index < cnt) {
+      MEMSTACK(Elf64_Versym, vx);
+      return ecconvert_versym64(p, vx, getp(p, s0->sh_offset + (index * s0->sh_entsize), s0->sh_entsize));
+    }
+  }
+
+  return NULL;
+}
+
+unknown_t ecget_vsymbyindex(const pbuffer_t p, const int index) {
+  if (isELF(p)) {
+    if (isELF32(p))        return ecget_vsym32byindex(p, xmalloc(sizeof(Elf32_Versym), MODE_HEAP), index);
+    else if (isELF64(p))   return ecget_vsym64byindex(p, xmalloc(sizeof(Elf64_Versym), MODE_HEAP), index);
+  }
+
+  return NULL;
+
+}
+
 Elf32_Ehdr* ecget_ehdr32(const pbuffer_t p, const unknown_t q) {
   return ecconvert_ehdr32(p, q, getp(p, 0, sizeof(Elf32_Ehdr)));
 }

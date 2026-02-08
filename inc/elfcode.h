@@ -92,6 +92,10 @@ Elf32_Dyn* ecget_dyn32byindex(const pbuffer_t p, const unknown_t q, const int in
 Elf64_Dyn* ecget_dyn64byindex(const pbuffer_t p, const unknown_t q, const int index, const int entry);
 unknown_t  ecget_dynbyindex(const pbuffer_t p, const int index, const int entry);
 
+Elf32_Versym* ecget_vsym32byindex(const pbuffer_t p, const unknown_t q, const int index);
+Elf64_Versym* ecget_vsym64byindex(const pbuffer_t p, const unknown_t q, const int index);
+unknown_t   ecget_vsymbyindex(const pbuffer_t p, const int index);
+
 int ecget_indexbyname(const pbuffer_t p, const char* name);
 int _ecget_index32byname(const pbuffer_t p, const char* name);
 int _ecget_index64byname(const pbuffer_t p, const char* name);
