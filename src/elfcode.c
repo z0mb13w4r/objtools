@@ -565,9 +565,9 @@ unknown_t   ecget_shdrbyname(const pbuffer_t p, const char* name) {
 
 Elf32_Shdr* ecget_shdr32byindex(const pbuffer_t p, const unknown_t q, const int index) {
   MEMSTACK(Elf32_Ehdr, ex);
-  Elf32_Ehdr *e = ecget_ehdr32(p, ex);
-  if (e && -1 != index) {
-    return ecconvert_shdr32(p, q, getp(p, e->e_shoff + (e->e_shentsize * index), e->e_shentsize));
+  Elf32_Ehdr *e0 = ecget_ehdr32(p, ex);
+  if (e0 && -1 != index) {
+    return ecconvert_shdr32(p, q, getp(p, e0->e_shoff + (e0->e_shentsize * index), e0->e_shentsize));
   }
 
   return NULL;
@@ -575,9 +575,9 @@ Elf32_Shdr* ecget_shdr32byindex(const pbuffer_t p, const unknown_t q, const int 
 
 Elf64_Shdr* ecget_shdr64byindex(const pbuffer_t p, const unknown_t q, const int index) {
   MEMSTACK(Elf64_Ehdr, ex);
-  Elf64_Ehdr *e = ecget_ehdr64(p, ex);
-  if (e && -1 != index) {
-    return ecconvert_shdr64(p, q, getp(p, e->e_shoff + (e->e_shentsize * index), e->e_shentsize));
+  Elf64_Ehdr *e0 = ecget_ehdr64(p, ex);
+  if (e0 && -1 != index) {
+    return ecconvert_shdr64(p, q, getp(p, e0->e_shoff + (e0->e_shentsize * index), e0->e_shentsize));
   }
 
   return NULL;
