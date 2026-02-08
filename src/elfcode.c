@@ -843,28 +843,20 @@ const char* ecget_namebyoffset(const pbuffer_t p, const int index, const int off
 }
 
 const char* _ecget_name32byoffset(const pbuffer_t p, const int index, const int offset) {
-  MEMSTACK(Elf32_Ehdr, ex);
-  Elf32_Ehdr *e = ecget_ehdr32(p, ex);
-  if (e) {
-    MEMSTACK(Elf32_Shdr, sx);
-    Elf32_Shdr *s = ecget_shdr32byindex(p, sx, index);
-    if (s) {
-      return getp(p, s->sh_offset + offset, s->sh_size - offset);
-    }
+  MEMSTACK(Elf32_Shdr, sx);
+  Elf32_Shdr *s0 = ecget_shdr32byindex(p, sx, index);
+  if (s0) {
+    return getp(p, s0->sh_offset + offset, s0->sh_size - offset);
   }
 
   return NULL;
 }
 
 const char* _ecget_name64byoffset(const pbuffer_t p, const int index, const int offset) {
-  MEMSTACK(Elf64_Ehdr, ex);
-  Elf64_Ehdr *e = ecget_ehdr64(p, ex);
-  if (e) {
-    MEMSTACK(Elf64_Shdr, sx);
-    Elf64_Shdr *s = ecget_shdr64byindex(p, sx, index);
-    if (s) {
-      return getp(p, s->sh_offset + offset, s->sh_size - offset);
-    }
+  MEMSTACK(Elf64_Shdr, sx);
+  Elf64_Shdr *s0 = ecget_shdr64byindex(p, sx, index);
+  if (s0) {
+    return getp(p, s0->sh_offset + offset, s0->sh_size - offset);
   }
 
   return NULL;
