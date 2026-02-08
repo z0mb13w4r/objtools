@@ -86,6 +86,10 @@ unknown_t   ecget_shdrbytype(const pbuffer_t p, const int type);
 
 Elf32_Sym* ecget_sym32byindex(const pbuffer_t p, const unknown_t q, const int index, const int entry);
 Elf64_Sym* ecget_sym64byindex(const pbuffer_t p, const unknown_t q, const int index, const int entry);
+unknown_t  ecget_symbyindex(const pbuffer_t p, const int index, const int entry);
+
+Elf32_Dyn* ecget_dyn32byindex(const pbuffer_t p, const unknown_t q, const int index, const int entry);
+Elf64_Dyn* ecget_dyn64byindex(const pbuffer_t p, const unknown_t q, const int index, const int entry);
 unknown_t  ecget_dynbyindex(const pbuffer_t p, const int index, const int entry);
 
 int ecget_indexbyname(const pbuffer_t p, const char* name);
