@@ -1183,6 +1183,7 @@ static int dump_symbols0(const pbuffer_t p, const poptions_t o,
   n += printf_text("   Num", USE_LT | USE_COLON);
   n += printf_text("Value", USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
   n += printf_text("Size Type    Bind   Vis      Ndx Name", USE_LT | USE_SPACE | USE_EOL);
+
   return n;
 }
 
@@ -1199,6 +1200,7 @@ static int dump_symbols1(const pbuffer_t p, const poptions_t o, const uint64_t s
   n += printf_pick(ecSTBBIND, ELF_ST_BIND(st_info), USE_LT | USE_SPACE | SET_PAD(7));
   n += printf_pick(ecSTVVISIBILITY, ELF_ST_VISIBILITY(st_other), USE_LT | USE_SPACE | SET_PAD(9));
   n += printf_text(get_SHNINDEX(st_shndx), USE_LT | USE_SPACE);
+
   return n;
 }
 
@@ -1216,6 +1218,7 @@ static int dump_symbols2(const pbuffer_t p, const poptions_t o,
       n += printf_text(namevs, USE_LT | USE_ATAT);
     }
   }
+
   return n;
 }
 
@@ -1263,13 +1266,10 @@ static int dump_symbols32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehd
             }
 
             if (!isok) {
-              MEMSTACK(Elf32_Shdr, vx);
-              Elf32_Shdr *v0 = ecget_shdr32bytype(p, vx, SHT_GNU_versym);
-              if (v0) {
-                Elf32_Versym *vs = getp(p, v0->sh_offset + (j * v0->sh_entsize), v0->sh_entsize);
-                if (vs && *vs && *vs < NELEMENTS(vnames)) {
-                  n += dump_symbols2(p, o, vnames[0], vnames[*vs & VERSYM_VERSION], *vs & VERSYM_VERSION, sym->st_shndx, sym->st_other);
-                }
+              MEMSTACK(Elf32_Versym, vx);
+              Elf32_Versym *v0 = ecget_vsym32byindex(p, vx, j);
+              if (v0 && *v0 && *v0 < NELEMENTS(vnames)) {
+                n += dump_symbols2(p, o, vnames[0], vnames[*v0 & VERSYM_VERSION], *v0 & VERSYM_VERSION, sym->st_shndx, sym->st_other);
               }
             }
 
@@ -1300,13 +1300,10 @@ static int dump_symbols32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehd
                 n += printf_text(opcode_demangle(o, name), USE_LT | USE_SPACE);
 
                 if (SHT_DYNSYM == s0->sh_type) {
-                  MEMSTACK(Elf32_Shdr, vx);
-                  Elf32_Shdr *v0 = ecget_shdr32bytype(p, vx, SHT_GNU_versym);
-                  if (v0) {
-                    Elf32_Versym *vs = getp(p, v0->sh_offset + (j * v0->sh_entsize), v0->sh_entsize);
-                    if (vs && *vs && *vs < NELEMENTS(vnames)) {
-                      n += dump_symbols2(p, o, vnames[0], vnames[*vs & VERSYM_VERSION], *vs & VERSYM_VERSION, sym->st_shndx, sym->st_other);
-                    }
+                  MEMSTACK(Elf32_Versym, vx);
+                  Elf32_Versym *v0 = ecget_vsym32byindex(p, vx, j);
+                  if (v0 && *v0 && *v0 < NELEMENTS(vnames)) {
+                    n += dump_symbols2(p, o, vnames[0], vnames[*v0 & VERSYM_VERSION], *v0 & VERSYM_VERSION, sym->st_shndx, sym->st_other);
                   }
                 }
               }
@@ -1368,13 +1365,10 @@ static int dump_symbols64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
             }
 
             if (!isok) {
-              MEMSTACK(Elf64_Shdr, vx);
-              Elf64_Shdr *v0 = ecget_shdr64bytype(p, vx, SHT_GNU_versym);
-              if (v0) {
-                Elf64_Versym *vs = getp(p, v0->sh_offset + (j * v0->sh_entsize), v0->sh_entsize);
-                if (vs && *vs && *vs < NELEMENTS(vnames)) {
-                  n += dump_symbols2(p, o, vnames[0], vnames[*vs & VERSYM_VERSION], *vs & VERSYM_VERSION, sym->st_shndx, sym->st_other);
-                }
+              MEMSTACK(Elf64_Versym, vx);
+              Elf64_Versym *v0 = ecget_vsym64byindex(p, vx, j);
+              if (v0 && *v0 && *v0 < NELEMENTS(vnames)) {
+                n += dump_symbols2(p, o, vnames[0], vnames[*v0 & VERSYM_VERSION], *v0 & VERSYM_VERSION, sym->st_shndx, sym->st_other);
               }
             }
 
@@ -1406,13 +1400,10 @@ static int dump_symbols64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
                 n += printf_text(opcode_demangle(o, name), USE_LT | USE_SPACE);
 
                 if (SHT_DYNSYM == s0->sh_type) {
-                  MEMSTACK(Elf64_Shdr, vx);
-                  Elf64_Shdr *v0 = ecget_shdr64bytype(p, vx, SHT_GNU_versym);
-                  if (v0) {
-                    Elf64_Versym *vs = getp(p, v0->sh_offset + (j * v0->sh_entsize), v0->sh_entsize);
-                    if (vs && *vs && *vs < NELEMENTS(vnames)) {
-                      n += dump_symbols2(p, o, vnames[0], vnames[*vs & VERSYM_VERSION], *vs & VERSYM_VERSION, sym->st_shndx, sym->st_other);
-                    }
+                  MEMSTACK(Elf64_Versym, vx);
+                  Elf64_Versym *v0 = ecget_vsym64byindex(p, vx, j);
+                  if (v0 && *v0 && *v0 < NELEMENTS(vnames)) {
+                    n += dump_symbols2(p, o, vnames[0], vnames[*v0 & VERSYM_VERSION], *v0 & VERSYM_VERSION, sym->st_shndx, sym->st_other);
                   }
                 }
               }
