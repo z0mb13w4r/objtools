@@ -1465,13 +1465,13 @@ static int dump_gnuhash0(const pbuffer_t p, const size_t msize, const uint32_t s
 }
 
 static int dump_gnuhash1(const pbuffer_t p, uint32_t *pb, const uint64_t sh_name) {
-  uint32_t nbucket  = pb[0];
-  uint32_t symbias  = pb[1];
-  uint32_t sbitmask = isELF32(p) ? pb[2] : 2 * pb[2];
+  uint32_t nbucket  = ecconvert_u32(p, pb[0]);
+  uint32_t symbias  = ecconvert_u32(p, pb[1]);
+  uint32_t sbitmask = isELF32(p) ? ecconvert_u32(p, pb[2]) : 2 * ecconvert_u32(p, pb[2]);
 //uint32_t shift    = pb[3];
-  uint32_t *bitmask = &pb[4];
-  uint32_t *bucket  = &pb[4 + sbitmask];
-  uint32_t *chain   = &pb[4 + sbitmask + nbucket];
+  uint32_t *bitmask = pb + 4;
+  uint32_t *bucket  = pb + 4 + sbitmask;
+  uint32_t *chain   = pb + 4 + sbitmask + nbucket;
 
   if (pb[0] > 1 && pb[1]) {
     MALLOCA(uint32_t, size, nbucket);
@@ -1481,18 +1481,18 @@ static int dump_gnuhash1(const pbuffer_t p, uint32_t *pb, const uint64_t sh_name
     uint_fast32_t nsyms = 0;
     for (uint32_t k = 0; k < nbucket; ++k) {
       if (bucket[k] != 0) {
-        uint32_t x = bucket[k] - symbias;
+        uint32_t x = ecconvert_u32(p, bucket[k]) - symbias;
         do {
           ++nsyms;
           if (msize < ++size[k]) ++msize;
-        } while ((chain[x++] & 1) == 0);
+        } while ((ecconvert_u32(p, chain[x++]) & 1) == 0);
       }
     }
 
     /* count bits in bitmask. */
     uint_fast32_t nbits = 0;
     for (uint32_t k = 0; k < sbitmask; ++k) {
-      uint_fast32_t x = bitmask[k];
+      uint_fast32_t x = ecconvert_u32(p, bitmask[k]);
 
       x = (x & 0x55555555) + ((x >> 1) & 0x55555555);
       x = (x & 0x33333333) + ((x >> 2) & 0x33333333);
