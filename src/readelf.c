@@ -1,13 +1,14 @@
 #include "dump.h"
 #include "decode.h"
 #include "opcode.h"
+#include "opcode-demangle.h"
 #include "printf.h"
 #include "elfcode.h"
+#include "elfcode-endian.h"
 #include "memfind.h"
 #include "ocdwarf.h"
 #include "readelf.h"
 #include "objutils.h"
-#include "opcode-demangle.h"
 
 #include "static/dt_flags.ci"
 #include "static/dt_flags_1.ci"
@@ -1500,7 +1501,23 @@ static int dump_gnuhash0(const pbuffer_t p, uint32_t *pb, const uint64_t sh_name
 }
 
 static int dump_hash32(const pbuffer_t p, uint32_t *pb, const uint64_t sh_name) {
+  uint32_t nbucket  = ecconvert_u32(p, pb[0]);
+  uint32_t nchain   = ecconvert_u32(p, pb[1]);
+  uint32_t *bucket  = pb + 2;
+  uint32_t *chain   = pb + 2 + nbucket;
+
   int n = 0;
+  if (pb[0] > 1) {
+    MALLOCA(uint32_t, size, nbucket);
+
+    n += printf_text("Histogram for", USE_LT);
+    n += printf_text(ecget_secnamebyoffset(p, sh_name), USE_LT | USE_DRTB | USE_SPACE);
+    n += printf_text("bucket list length (total of", USE_LT | USE_SPACE);
+    n += printf_nice(nbucket, USE_DEC);
+    n += printf_text(nbucket == 1 ? "bucket)" : "buckets)", USE_LT | USE_SPACE | USE_COLON | USE_EOL);
+
+    n += printf_eol();
+  }
 
   return n;
 }
