@@ -4,7 +4,7 @@ static uint16_t ecconvert_u8(const pbuffer_t p, const uint8_t v) {
   return v;
 }
 
-static uint16_t ecconvert_u16(const pbuffer_t p, const uint16_t v) {
+uint16_t ecconvert_u16(const pbuffer_t p, const uint16_t v) {
   if (isELFbe(p)) {
     return MODE_PUT1(MODE_GET0(v)) | MODE_PUT0(MODE_GET1(v));
   }
@@ -12,7 +12,7 @@ static uint16_t ecconvert_u16(const pbuffer_t p, const uint16_t v) {
   return v;
 }
 
-static uint32_t ecconvert_u32(const pbuffer_t p, const uint32_t v) {
+uint32_t ecconvert_u32(const pbuffer_t p, const uint32_t v) {
   if (isELFbe(p)) {
     return MODE_PUT3(MODE_GET0(v)) | MODE_PUT2(MODE_GET1(v))
       | MODE_PUT1(MODE_GET2(v)) | MODE_PUT0(MODE_GET3(v));
@@ -21,7 +21,7 @@ static uint32_t ecconvert_u32(const pbuffer_t p, const uint32_t v) {
   return v;
 }
 
-static uint64_t ecconvert_u64(const pbuffer_t p, const uint64_t v) {
+uint64_t ecconvert_u64(const pbuffer_t p, const uint64_t v) {
   if (isELFbe(p)) {
     return MODE_PUT7(MODE_GET0(v)) | MODE_PUT6(MODE_GET1(v))
       | MODE_PUT5(MODE_GET2(v)) | MODE_PUT4(MODE_GET3(v))

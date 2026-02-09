@@ -3,6 +3,10 @@
 
 #include "elfcode.h"
 
+uint16_t ecconvert_u16(const pbuffer_t p, const uint16_t v);
+uint32_t ecconvert_u32(const pbuffer_t p, const uint32_t v);
+uint64_t ecconvert_u64(const pbuffer_t p, const uint64_t v);
+
 Elf32_Dyn* ecconvert_dyn32(const pbuffer_t p, unknown_t dst, unknown_t src);
 Elf64_Dyn* ecconvert_dyn64(const pbuffer_t p, unknown_t dst, unknown_t src);
 
