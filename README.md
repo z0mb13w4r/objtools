@@ -1,6 +1,6 @@
 # objtools-ng
 
-These tools were originally designed as a research project for industrial control systems (ICSs) and a drop-in replacement for readelf, objcopy, and objdump, utilising the Capstone disassembly framework. The project then began to grow into a collection of tools for malware and binary analysis supporting x86, ARM, ARM Thumb, AARCH64, MIPS and RISC-V architectures.
+These tools were originally designed as a research project for industrial control systems (ICSs) and the Internet of Things (IoT). A drop-in replacement for readelf, objcopy, and objdump that utilises the Capstone disassembly framework. The project then began to grow into a collection of tools for malware and binary analysis supporting x86, ARM, ARM Thumb, AARCH64, MIPS and RISC-V architectures.
 
 **convert-ng** is a Swiss Army Knife for manipulating data in complex ways using operations, xor, addition, subtraction, logical shifts and rotations, base32, base58, base64, base85 and vigeneree cipher.
 
