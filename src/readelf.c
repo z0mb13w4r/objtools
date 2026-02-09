@@ -1755,13 +1755,15 @@ static int dump_versionneed32(const pbuffer_t p, const poptions_t o, Elf32_Shdr 
 
   Elf32_Word offset0 = 0;
   for (Elf32_Word j = 0; j < shdr->sh_info; ++j) {
-    Elf32_Verneed *vn = getp(p, shdr->sh_offset + offset0, sizeof(Elf32_Verneed));
+    MEMSTACK(Elf32_Verneed, vy);
+    Elf32_Verneed *vn = ecconvert_verneed32(p, vy, getp(p, shdr->sh_offset + offset0, sizeof(Elf32_Verneed)));
     if (vn) {
       n += dump_versionneed1(p, offset0, shdr->sh_link, vn->vn_version, vn->vn_file, vn->vn_cnt);
 
       Elf32_Word offset1 = offset0 + vn->vn_aux;
       for (Elf32_Half k = 0; k < vn->vn_cnt; ++k) {
-        Elf32_Vernaux *va = getp(p, shdr->sh_offset + offset1, sizeof(Elf32_Vernaux));
+        MEMSTACK(Elf32_Vernaux, vz);
+        Elf32_Vernaux *va = ecconvert_vernaux32(p, vz, getp(p, shdr->sh_offset + offset1, sizeof(Elf32_Vernaux)));
         if (va) {
           n += dump_versionneed2(p, offset1, shdr->sh_link, va->vna_name, va->vna_flags, va->vna_other);
           offset1 += va->vna_next;
@@ -1783,13 +1785,15 @@ static int dump_versionneed64(const pbuffer_t p, const poptions_t o, Elf64_Shdr 
 
   Elf64_Word offset0 = 0;
   for (Elf64_Word j = 0; j < shdr->sh_info; ++j) {
-    Elf64_Verneed *vn = getp(p, shdr->sh_offset + offset0, sizeof(Elf64_Verneed));
+    MEMSTACK(Elf64_Verneed, vy);
+    Elf64_Verneed *vn = ecconvert_verneed64(p, vy, getp(p, shdr->sh_offset + offset0, sizeof(Elf64_Verneed)));
     if (vn) {
       n += dump_versionneed1(p, offset0, shdr->sh_link, vn->vn_version, vn->vn_file, vn->vn_cnt);
 
       Elf64_Word offset1 = offset0 + vn->vn_aux;
       for (Elf64_Half k = 0; k < vn->vn_cnt; ++k) {
-        Elf64_Vernaux *va = getp(p, shdr->sh_offset + offset1, sizeof(Elf64_Vernaux));
+        MEMSTACK(Elf64_Vernaux, vz);
+        Elf64_Vernaux *va = ecconvert_vernaux64(p, vz, getp(p, shdr->sh_offset + offset1, sizeof(Elf64_Vernaux)));
         if (va) {
           n += dump_versionneed2(p, offset1, shdr->sh_link, va->vna_name, va->vna_flags, va->vna_other);
           offset1 += va->vna_next;
