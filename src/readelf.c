@@ -1459,7 +1459,7 @@ static int dump_gnuhash0(const pbuffer_t p, uint32_t *pb, const uint64_t sh_name
       x = (x & 0x00ff00ff) + ((x >> 8) & 0x00ff00ff);
       nbits += (x & 0x0000ffff) + ((x >> 16) & 0x0000ffff);
     }
-
+// ----------
     MALLOCA(uint32_t, counts, msize + 1);
 
     for (uint32_t k = 0; k < nbucket; ++k) {
@@ -1495,6 +1495,7 @@ static int dump_gnuhash0(const pbuffer_t p, uint32_t *pb, const uint64_t sh_name
     }
 
     n += printf_eol();
+// ----------
   }
 
   return n;
@@ -1510,13 +1511,54 @@ static int dump_hash32(const pbuffer_t p, uint32_t *pb, const uint64_t sh_name) 
   if (pb[0] > 1) {
     MALLOCA(uint32_t, size, nbucket);
 
+    /* compute distribution of chain lengths. */
+    uint_fast32_t msize = 0;
+    uint_fast32_t nsyms = 0;
+    for (uint32_t k = 0; k < nbucket; ++k) {
+      uint32_t x = ecconvert_u32(p, bucket[k]);
+      while (x > 0 && x < nchain) {
+        ++nsyms;
+        if (msize < ++size[k]) ++msize;
+        x = ecconvert_u32(p, chain[x]);
+      }
+    }
+// ----------
+    MALLOCA(uint32_t, counts, msize + 1);
+
+    for (uint32_t k = 0; k < nbucket; ++k) {
+      ++counts[size[k]];
+    }
+
     n += printf_text("Histogram for", USE_LT);
     n += printf_text(ecget_secnamebyoffset(p, sh_name), USE_LT | USE_DRTB | USE_SPACE);
     n += printf_text("bucket list length (total of", USE_LT | USE_SPACE);
     n += printf_nice(nbucket, USE_DEC);
     n += printf_text(nbucket == 1 ? "bucket)" : "buckets)", USE_LT | USE_SPACE | USE_COLON | USE_EOL);
 
+    n += printf_text(" Length Number       % of total  Coverage", USE_LT | USE_EOL);
+
+    n += printf("     0 ");
+    n += printf_nice(counts[0], USE_DEC5);
+    n += printf("         ");
+    n += printf_nice((counts[0] * 1000.0) / nbucket, USE_PERCENT);
     n += printf_eol();
+
+    uint64_t nzeros = 0;
+    for (uint32_t i = 1; i <= msize; ++i) {
+      nzeros += counts[i] * i;
+
+      n += printf_nice(i, USE_DEC5);
+      n += printf_pack(1);
+      n += printf_nice(counts[i], USE_DEC5);
+      n += printf_pack(9);
+      n += printf_nice((counts[i] * 1000.0) / nbucket, USE_PERCENT);
+      n += printf_pack(4);
+      n += printf_nice((nzeros * 1000.0) / nsyms, USE_PERCENT);
+      n += printf_eol();
+    }
+
+    n += printf_eol();
+// ----------
   }
 
   return n;
