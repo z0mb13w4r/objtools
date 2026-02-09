@@ -1668,7 +1668,8 @@ static int dump_versionsym32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *
   n += dump_versionsym0(p, cnt, shdr->sh_name, shdr->sh_addr, shdr->sh_offset, shdr->sh_link);
 
   for (size_t j = 0; j < cnt; ++j) {
-    Elf64_Versym *vs = getp(p, shdr->sh_offset + (j * shdr->sh_entsize), shdr->sh_entsize);
+    MEMSTACK(Elf32_Versym, vx);
+    Elf32_Versym *vs = ecconvert_versym32(p, vx, getp(p, shdr->sh_offset + (j * shdr->sh_entsize), shdr->sh_entsize));
     if (vs) {
       n += dump_versionsym1(p, j, *vs, vnames, NELEMENTS(vnames));
     }
@@ -1688,7 +1689,8 @@ static int dump_versionsym64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *
   n += dump_versionsym0(p, cnt, shdr->sh_name, shdr->sh_addr, shdr->sh_offset, shdr->sh_link);
 
   for (size_t j = 0; j < cnt; ++j) {
-    Elf64_Versym *vs = getp(p, shdr->sh_offset + (j * shdr->sh_entsize), shdr->sh_entsize);
+    MEMSTACK(Elf64_Versym, vx);
+    Elf64_Versym *vs = ecconvert_versym32(p, vx, getp(p, shdr->sh_offset + (j * shdr->sh_entsize), shdr->sh_entsize));
     if (vs) {
       n += dump_versionsym1(p, j, *vs, vnames, NELEMENTS(vnames));
     }
