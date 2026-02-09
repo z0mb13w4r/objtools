@@ -1499,6 +1499,18 @@ static int dump_gnuhash0(const pbuffer_t p, uint32_t *pb, const uint64_t sh_name
   return n;
 }
 
+static int dump_hash32(const pbuffer_t p, uint32_t *pb, const uint64_t sh_name) {
+  int n = 0;
+
+  return n;
+}
+
+static int dump_hash64(const pbuffer_t p, uint32_t *pb, const uint64_t sh_name) {
+  int n = 0;
+
+  return n;
+}
+
 static int dump_histogram32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
   int n = 0;
   for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
@@ -1510,7 +1522,10 @@ static int dump_histogram32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *e
         n += dump_gnuhash0(p, pb, s0->sh_name);
       }
     } else if (s0 && SHT_HASH == s0->sh_type) {
-      // TBD
+      uint32_t *pb = _get32byshdr(p, s0);
+      if (pb) {
+        n += dump_hash32(p, pb, s0->sh_name);
+      }
     }
   }
 
@@ -1528,7 +1543,10 @@ static int dump_histogram64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *e
         n += dump_gnuhash0(p, pb, s0->sh_name);
       }
     } else if (s0 && SHT_HASH == s0->sh_type) {
-      // TBD
+      uint32_t *pb = _get64byshdr(p, s0);
+      if (pb) {
+        n += dump_hash64(p, pb, s0->sh_name);
+      }
     }
   }
 
