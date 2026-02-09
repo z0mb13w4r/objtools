@@ -1422,7 +1422,49 @@ static int dump_symbols64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
   return n;
 }
 
-static int dump_gnuhash0(const pbuffer_t p, uint32_t *pb, const uint64_t sh_name) {
+static int dump_gnuhash0(const pbuffer_t p, const size_t msize, const uint32_t size[], const size_t nbucket, const size_t nsyms, const uint64_t sh_name) {
+  int n = 0;
+
+  MALLOCA(uint32_t, counts, msize + 1);
+
+  for (size_t k = 0; k < nbucket; ++k) {
+    ++counts[size[k]];
+  }
+
+  n += printf_text("Histogram for", USE_LT);
+  n += printf_text(ecget_secnamebyoffset(p, sh_name), USE_LT | USE_DRTB | USE_SPACE);
+  n += printf_text("bucket list length (total of", USE_LT | USE_SPACE);
+  n += printf_nice(nbucket, USE_DEC);
+  n += printf_text(nbucket == 1 ? "bucket)" : "buckets)", USE_LT | USE_SPACE | USE_COLON | USE_EOL);
+
+  n += printf_text(" Length Number       % of total  Coverage", USE_LT | USE_EOL);
+
+  n += printf("     0 ");
+  n += printf_nice(counts[0], USE_DEC5);
+  n += printf("         ");
+  n += printf_nice((counts[0] * 1000.0) / nbucket, USE_PERCENT);
+  n += printf_eol();
+
+  uint64_t nzeros = 0;
+  for (size_t i = 1; i <= msize; ++i) {
+    nzeros += counts[i] * i;
+
+    n += printf_nice(i, USE_DEC5);
+    n += printf_pack(1);
+    n += printf_nice(counts[i], USE_DEC5);
+    n += printf_pack(9);
+    n += printf_nice((counts[i] * 1000.0) / nbucket, USE_PERCENT);
+    n += printf_pack(4);
+    n += printf_nice((nzeros * 1000.0) / nsyms, USE_PERCENT);
+    n += printf_eol();
+  }
+
+  n += printf_eol();
+
+  return n;
+}
+
+static int dump_gnuhash1(const pbuffer_t p, uint32_t *pb, const uint64_t sh_name) {
   uint32_t nbucket  = pb[0];
   uint32_t symbias  = pb[1];
   uint32_t sbitmask = isELF32(p) ? pb[2] : 2 * pb[2];
@@ -1431,7 +1473,6 @@ static int dump_gnuhash0(const pbuffer_t p, uint32_t *pb, const uint64_t sh_name
   uint32_t *bucket  = &pb[4 + sbitmask];
   uint32_t *chain   = &pb[4 + sbitmask + nbucket];
 
-  int n = 0;
   if (pb[0] > 1 && pb[1]) {
     MALLOCA(uint32_t, size, nbucket);
 
@@ -1459,46 +1500,11 @@ static int dump_gnuhash0(const pbuffer_t p, uint32_t *pb, const uint64_t sh_name
       x = (x & 0x00ff00ff) + ((x >> 8) & 0x00ff00ff);
       nbits += (x & 0x0000ffff) + ((x >> 16) & 0x0000ffff);
     }
-// ----------
-    MALLOCA(uint32_t, counts, msize + 1);
 
-    for (uint32_t k = 0; k < nbucket; ++k) {
-      ++counts[size[k]];
-    }
-
-    n += printf_text("Histogram for", USE_LT);
-    n += printf_text(ecget_secnamebyoffset(p, sh_name), USE_LT | USE_DRTB | USE_SPACE);
-    n += printf_text("bucket list length (total of", USE_LT | USE_SPACE);
-    n += printf_nice(nbucket, USE_DEC);
-    n += printf_text(nbucket == 1 ? "bucket)" : "buckets)", USE_LT | USE_SPACE | USE_COLON | USE_EOL);
-
-    n += printf_text(" Length Number       % of total  Coverage", USE_LT | USE_EOL);
-
-    n += printf("     0 ");
-    n += printf_nice(counts[0], USE_DEC5);
-    n += printf("         ");
-    n += printf_nice((counts[0] * 1000.0) / nbucket, USE_PERCENT);
-    n += printf_eol();
-
-    uint64_t nzeros = 0;
-    for (uint32_t i = 1; i <= msize; ++i) {
-      nzeros += counts[i] * i;
-
-      n += printf_nice(i, USE_DEC5);
-      n += printf_pack(1);
-      n += printf_nice(counts[i], USE_DEC5);
-      n += printf_pack(9);
-      n += printf_nice((counts[i] * 1000.0) / nbucket, USE_PERCENT);
-      n += printf_pack(4);
-      n += printf_nice((nzeros * 1000.0) / nsyms, USE_PERCENT);
-      n += printf_eol();
-    }
-
-    n += printf_eol();
-// ----------
+    return dump_gnuhash0(p, msize, size, nbucket, nsyms, sh_name);
   }
 
-  return n;
+  return 0;
 }
 
 static int dump_hash32(const pbuffer_t p, uint32_t *pb, const uint64_t sh_name) {
@@ -1507,7 +1513,6 @@ static int dump_hash32(const pbuffer_t p, uint32_t *pb, const uint64_t sh_name) 
   uint32_t *bucket  = pb + 2;
   uint32_t *chain   = pb + 2 + nbucket;
 
-  int n = 0;
   if (pb[0] > 1) {
     MALLOCA(uint32_t, size, nbucket);
 
@@ -1522,46 +1527,11 @@ static int dump_hash32(const pbuffer_t p, uint32_t *pb, const uint64_t sh_name) 
         x = ecconvert_u32(p, chain[x]);
       }
     }
-// ----------
-    MALLOCA(uint32_t, counts, msize + 1);
 
-    for (uint32_t k = 0; k < nbucket; ++k) {
-      ++counts[size[k]];
-    }
-
-    n += printf_text("Histogram for", USE_LT);
-    n += printf_text(ecget_secnamebyoffset(p, sh_name), USE_LT | USE_DRTB | USE_SPACE);
-    n += printf_text("bucket list length (total of", USE_LT | USE_SPACE);
-    n += printf_nice(nbucket, USE_DEC);
-    n += printf_text(nbucket == 1 ? "bucket)" : "buckets)", USE_LT | USE_SPACE | USE_COLON | USE_EOL);
-
-    n += printf_text(" Length Number       % of total  Coverage", USE_LT | USE_EOL);
-
-    n += printf("     0 ");
-    n += printf_nice(counts[0], USE_DEC5);
-    n += printf("         ");
-    n += printf_nice((counts[0] * 1000.0) / nbucket, USE_PERCENT);
-    n += printf_eol();
-
-    uint64_t nzeros = 0;
-    for (uint32_t i = 1; i <= msize; ++i) {
-      nzeros += counts[i] * i;
-
-      n += printf_nice(i, USE_DEC5);
-      n += printf_pack(1);
-      n += printf_nice(counts[i], USE_DEC5);
-      n += printf_pack(9);
-      n += printf_nice((counts[i] * 1000.0) / nbucket, USE_PERCENT);
-      n += printf_pack(4);
-      n += printf_nice((nzeros * 1000.0) / nsyms, USE_PERCENT);
-      n += printf_eol();
-    }
-
-    n += printf_eol();
-// ----------
+    return dump_gnuhash0(p, msize, size, nbucket, nsyms, sh_name);
   }
 
-  return n;
+  return 0;
 }
 
 static int dump_hash64(const pbuffer_t p, uint32_t *pb, const uint64_t sh_name) {
@@ -1578,7 +1548,7 @@ static int dump_histogram32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *e
     if (s0 && SHT_GNU_HASH == s0->sh_type) {
       uint32_t *pb = _get32byshdr(p, s0);
       if (pb) {
-        n += dump_gnuhash0(p, pb, s0->sh_name);
+        n += dump_gnuhash1(p, pb, s0->sh_name);
       }
     } else if (s0 && SHT_HASH == s0->sh_type) {
       uint32_t *pb = _get32byshdr(p, s0);
@@ -1599,7 +1569,7 @@ static int dump_histogram64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *e
     if (s0 && SHT_GNU_HASH == s0->sh_type) {
       uint32_t *pb = _get64byshdr(p, s0);
       if (pb) {
-        n += dump_gnuhash0(p, pb, s0->sh_name);
+        n += dump_gnuhash1(p, pb, s0->sh_name);
       }
     } else if (s0 && SHT_HASH == s0->sh_type) {
       uint32_t *pb = _get64byshdr(p, s0);
