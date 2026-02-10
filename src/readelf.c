@@ -2001,10 +2001,11 @@ static int dump_notes32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr)
   int n = 0;
   if (ET_CORE != ehdr->e_type) {
     for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
-      Elf32_Nhdr *nhdr = ecget_nhdr32byindex(p, i);
-      if (nhdr) {
+      MEMSTACK(Elf32_Nhdr, nx);
+      Elf32_Nhdr *n0 = ecget_nhdr32byindex(p, nx, i);
+      if (n0) {
         Elf32_Word *pc = ecget_nhdrdesc32byindex(p, i);
-        n += dump_notes0(p, i, ehdr->e_machine, nhdr->n_descsz, nhdr->n_type, pc);
+        n += dump_notes0(p, i, ehdr->e_machine, n0->n_descsz, n0->n_type, pc);
       }
     }
   }
@@ -2016,10 +2017,11 @@ static int dump_notes64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr)
   int n = 0;
   if (ET_CORE != ehdr->e_type) {
     for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
-      Elf64_Nhdr *nhdr = ecget_nhdr64byindex(p, i);
-      if (nhdr) {
+      MEMSTACK(Elf64_Nhdr, nx);
+      Elf64_Nhdr *n0 = ecget_nhdr64byindex(p, nx, i);
+      if (n0) {
         Elf64_Word *pc = ecget_nhdrdesc64byindex(p, i);
-        n += dump_notes0(p, i, ehdr->e_machine, nhdr->n_descsz, nhdr->n_type, pc);
+        n += dump_notes0(p, i, ehdr->e_machine, n0->n_descsz, n0->n_type, pc);
       }
     }
   }
