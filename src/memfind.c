@@ -322,8 +322,10 @@ handle_t fcalloc(unknown_t p, const size_t size, const size_t chunksize) {
       p0->epos = size - 1;
       p0->size = size;
       p0->item = cmalloc(p, size, MODE_HEAP);
-      p0->chunksize = chunksize;
+      p0->chunksize = chunksize & ~MEMFIND_BIGENDIAN;
+      p0->bigendian = MODE_ISANY(chunksize, MEMFIND_BIGENDIAN) ? TRUE : FALSE;
     }
+
     return setmode(p0, MODE_FINDC);
   }
 
@@ -345,8 +347,10 @@ handle_t fmalloc(unknown_t p, const size_t size, const size_t chunksize) {
       p0->epos = size - 1;
       p0->size = size;
       p0->item = p;
-      p0->chunksize = chunksize;
+      p0->chunksize = chunksize & ~MEMFIND_BIGENDIAN;
+      p0->bigendian = MODE_ISANY(chunksize, MEMFIND_BIGENDIAN) ? TRUE : FALSE;
     }
+
     return setmode(p0, MODE_FIND);
   }
 
@@ -360,8 +364,10 @@ handle_t fxalloc(const size_t size, const size_t chunksize) {
     p0->epos = size - 1;
     p0->size = size;
     p0->item = xmalloc(size, MODE_HEAP);
-    p0->chunksize = chunksize;
+    p0->chunksize = chunksize & ~MEMFIND_BIGENDIAN;
+    p0->bigendian = MODE_ISANY(chunksize, MEMFIND_BIGENDIAN) ? TRUE : FALSE;
   }
+
   return setmode(p0, MODE_FINDC);
 }
 

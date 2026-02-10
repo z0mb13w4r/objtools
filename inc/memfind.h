@@ -6,11 +6,14 @@
 #define MODE_FIND               (MODE_PUT0('F') | MODE_PUT1('N') | MODE_PUT2('D'))
 #define MODE_FINDC              (MODE_PUT0('F') | MODE_PUT1('N') | MODE_PUT2('D') | MODE_PUT3('C'))
 
-#define MEMFIND_NOCHUNKSIZE     (9999)
+#define MEMFIND_NONE            U32MASK_NONE
+#define MEMFIND_NOCHUNKSIZE     U32MASK(30)
+#define MEMFIND_BIGENDIAN       U32MASK(31)
 
 typedef struct find_s {
   smode_t   mode;
   size_t    cpos, epos, size, chunksize;
+  bool_t    bigendian;
   unknown_t item;
 
 } find_t, *pfind_t;
