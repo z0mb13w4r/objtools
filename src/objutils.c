@@ -332,6 +332,10 @@ int strcmp16(const unknown_t s0, const char* s1, const size_t maxsize) {
   return ECODE_NULL;
 }
 
+int8_t endian_s8(const bool_t yes, const int8_t v) {
+  return v;
+}
+
 int16_t endian_s16(const bool_t yes, const int16_t v) {
   if (yes) {
     return MODE_PUT1(MODE_GET0(v)) | MODE_PUT0(MODE_GET1(v));
@@ -357,6 +361,10 @@ int64_t endian_s64(const bool_t yes, const int64_t v) {
          | MODE_PUT1(MODE_GET6(v)) | MODE_PUT0(MODE_GET7(v));
   }
 
+  return v;
+}
+
+uint8_t endian_u8(const bool_t yes, const uint8_t v) {
   return v;
 }
 
