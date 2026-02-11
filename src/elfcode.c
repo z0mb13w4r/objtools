@@ -1265,28 +1265,30 @@ const char* _ecget_symname64byindex(const pbuffer_t p, const int index) {
   return NULL;
 }
 
-Elf32_Word* ecget_nhdrdesc32byindex(const pbuffer_t p, const int index) {
+handle_t ecget_nhdrdesc32byindex(const pbuffer_t p, const int index) {
   MEMSTACK(Elf32_Nhdr, nx);
   Elf32_Nhdr *n0 = ecget_nhdr32byindex(p, nx, index);
   if (n0 && n0->n_namesz && n0->n_descsz) {
     MEMSTACK(Elf32_Shdr, sx);
     Elf32_Shdr *s0 = ecget_shdr32byindex(p, sx, index);
     if (s0) {
-      return getp(p, s0->sh_offset + sizeof(Elf32_Nhdr) + n0->n_namesz, n0->n_descsz);
+      return fmalloc(getp(p, s0->sh_offset + sizeof(Elf32_Nhdr) + n0->n_namesz, n0->n_descsz),
+               n0->n_descsz, isELFbe(p) ? sizeof(Elf32_Word) | MEMFIND_BIGENDIAN : sizeof(Elf32_Word));
     }
   }
 
   return NULL;
 }
 
-Elf64_Word* ecget_nhdrdesc64byindex(const pbuffer_t p, const int index) {
+handle_t ecget_nhdrdesc64byindex(const pbuffer_t p, const int index) {
   MEMSTACK(Elf64_Nhdr, nx);
   Elf64_Nhdr *n0 = ecget_nhdr64byindex(p, nx, index);
   if (n0 && n0->n_namesz && n0->n_descsz) {
     MEMSTACK(Elf64_Shdr, sx);
     Elf64_Shdr *s0 = ecget_shdr64byindex(p, sx, index);
     if (s0) {
-      return getp(p, s0->sh_offset + sizeof(Elf64_Nhdr) + n0->n_namesz, n0->n_descsz);
+      return fmalloc(getp(p, s0->sh_offset + sizeof(Elf64_Nhdr) + n0->n_namesz, n0->n_descsz),
+               n0->n_descsz, isELFbe(p) ? sizeof(Elf64_Word) | MEMFIND_BIGENDIAN : sizeof(Elf64_Word));
     }
   }
 

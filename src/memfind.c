@@ -1,4 +1,5 @@
 #include "memfind.h"
+#include "objutils.h"
 
 bool_t isfind(handle_t p) {
   return ismodeNNN(p, MODE_FIND);
@@ -70,7 +71,9 @@ unknown_t fgetp(handle_t p, const size_t chunksize) {
       p1->cpos += chunksize;
 
       if (p1->cpos <= p1->epos) return p0;
-      if (ismode(p1, MODE_FIND)) p1->item = NULL;
+      else p1->item = NULL;
+
+      if (p1->cpos == (p1->epos + 1)) return p0;
     }
   }
 
@@ -79,42 +82,42 @@ unknown_t fgetp(handle_t p, const size_t chunksize) {
 
 int64_t fgets8(handle_t p) {
   unknown_t p0 = fgetp(p, sizeof(int8_t));
-  return p0 ? *CAST(int8_t*, p0) : 0;
+  return p0 ? endian_s8(fisbe(p), *CAST(int8_t*, p0)) : 0;
 }
 
 int64_t fgets16(handle_t p) {
   unknown_t p0 = fgetp(p, sizeof(int16_t));
-  return p0 ? *CAST(int16_t*, p0) : 0;
+  return p0 ? endian_s16(fisbe(p), *CAST(int16_t*, p0)) : 0;
 }
 
 int64_t fgets32(handle_t p) {
   unknown_t p0 = fgetp(p, sizeof(int32_t));
-  return p0 ? *CAST(int32_t*, p0) : 0;
+  return p0 ? endian_s32(fisbe(p), *CAST(int32_t*, p0)) : 0;
 }
 
 int64_t fgets64(handle_t p) {
   unknown_t p0 = fgetp(p, sizeof(int64_t));
-  return p0 ? *CAST(int64_t*, p0) : 0;
+  return p0 ? endian_s64(fisbe(p), *CAST(int64_t*, p0)) : 0;
 }
 
 uint64_t fgetu8(handle_t p) {
   unknown_t p0 = fgetp(p, sizeof(uint8_t));
-  return p0 ? *CAST(uint8_t*, p0) : 0;
+  return p0 ? endian_u8(fisbe(p), *CAST(uint8_t*, p0)) : 0;
 }
 
 uint64_t fgetu16(handle_t p) {
   unknown_t p0 = fgetp(p, sizeof(uint16_t));
-  return p0 ? *CAST(uint16_t*, p0) : 0;
+  return p0 ? endian_u16(fisbe(p), *CAST(uint16_t*, p0)) : 0;
 }
 
 uint64_t fgetu32(handle_t p) {
   unknown_t p0 = fgetp(p, sizeof(uint32_t));
-  return p0 ? *CAST(uint32_t*, p0) : 0;
+  return p0 ? endian_u32(fisbe(p), *CAST(uint32_t*, p0)) : 0;
 }
 
 uint64_t fgetu64(handle_t p) {
   unknown_t p0 = fgetp(p, sizeof(uint64_t));
-  return p0 ? *CAST(uint64_t*, p0) : 0;
+  return p0 ? endian_u64(fisbe(p), *CAST(uint64_t*, p0)) : 0;
 }
 
 uint64_t fgetuleb128(handle_t p) {

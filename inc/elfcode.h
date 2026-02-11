@@ -132,8 +132,8 @@ const char* ecget_symnamebyindex(const pbuffer_t p, const int index);
 const char* _ecget_symname32byindex(const pbuffer_t p, const int index);
 const char* _ecget_symname64byindex(const pbuffer_t p, const int index);
 
-Elf32_Word* ecget_nhdrdesc32byindex(const pbuffer_t p, const int index);
-Elf64_Word* ecget_nhdrdesc64byindex(const pbuffer_t p, const int index);
+handle_t ecget_nhdrdesc32byindex(const pbuffer_t p, const int index);
+handle_t ecget_nhdrdesc64byindex(const pbuffer_t p, const int index);
 
 const char* ecget_secname32byshdr(const pbuffer_t p, Elf32_Shdr *s);
 const char* ecget_secname64byshdr(const pbuffer_t p, Elf64_Shdr *s);

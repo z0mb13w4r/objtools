@@ -1919,7 +1919,7 @@ static int dump_actions64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
 }
 
 static int dump_notes0(const pbuffer_t p, const int index, const uint64_t e_machine,
-                       const uint64_t n_descsz, const uint64_t n_type, const unknown_t data) {
+                       const uint64_t n_descsz, const uint64_t n_type) {
   int n = 0;
   n += printf_text("Displaying notes found in", USE_LT);
   n += printf_text(ecget_secnamebyindex(p, index), USE_LT | USE_SPACE | USE_SQ | USE_COLON | USE_EOL);
@@ -1932,37 +1932,41 @@ static int dump_notes0(const pbuffer_t p, const int index, const uint64_t e_mach
   n += printf_nice(n_descsz, USE_FHEX32);
   n += printf_pick(get_NHDRTYPE(p), n_type, USE_LT | USE_SPACE | USE_EOL);
 
-  uint32_t* pc = CAST(uint32_t*, data);
+  return n;
+}
+
+static int dump_notes1(const pbuffer_t p, const int index, const uint64_t e_machine,
+                       const uint64_t n_descsz, const uint64_t n_type, const handle_t notes) {
+  int n = 0;
 
   if (NT_GNU_BUILD_ID == n_type) {
     n += printf_text("Build ID", USE_LT | USE_TAB | USE_COLON);
-    n += printf_sore(data, n_descsz, USE_HEX | USE_TAB);
+    n += printf_sore(fgetp(notes, n_descsz), n_descsz, USE_HEX | USE_TAB);
     n += printf_eol();
   } else if (NT_GNU_GOLD_VERSION == n_type) {
     n += printf_text("Version", USE_LT | USE_TAB | USE_COLON);
-    n += printf_sore(data, n_descsz, USE_STR);
+    n += printf_sore(fgetp(notes, n_descsz), n_descsz, USE_STR);
     n += printf_eol();
   } else if (NT_GNU_ABI_TAG == n_type) {
     n += printf_text("OS", USE_LT | USE_TAB | USE_COLON);
-    n += printf_pick(ecGNUABITAB, pc[0], USE_LT | USE_SPACE);
+    n += printf_pick(ecGNUABITAB, fgetu32(notes), USE_LT | USE_SPACE);
     n += printf_text("ABI", USE_LT | USE_TAB | USE_COLON);
-    n += printf_nice(pc[1], USE_DEC);
-    n += printf_nice(pc[2], USE_DEC | USE_DOT);
-    n += printf_nice(pc[3], USE_DEC | USE_DOT | USE_EOL);
+    n += printf_nice(fgetu32(notes), USE_DEC);
+    n += printf_nice(fgetu32(notes), USE_DEC | USE_DOT);
+    n += printf_nice(fgetu32(notes), USE_DEC | USE_DOT | USE_EOL);
   } else if (NT_GNU_PROPERTY_TYPE_0 == n_type) {
     n += printf_text("Properties", USE_LT | USE_TAB | USE_COLON);
 
     const uint32_t size0 = sizeof(uint32_t);
     const uint32_t size1 = size0 + size0;
 
-    uint32_t i = 0;
     for (uint32_t j = 0; j < n_descsz; j += size1) {
       if ((n_descsz - j) < size1) {
 //        n += printf_nice(n_descsz, USE_CORRUPT);
         break;
       } else {
-        uint32_t x = pc[i++];
-        uint32_t datasz = pc[i++];
+        uint32_t x = fgetu32(notes);
+        uint32_t datasz = fgetu32(notes);
         if ((n_descsz - j) <= datasz) {
 //          n += printf("<corrupt type (%#x) datasz: %#x>\n", x, datasz);
           break;
@@ -1977,7 +1981,7 @@ static int dump_notes0(const pbuffer_t p, const int index, const uint64_t e_mach
               }
 
               if (x == GNU_PROPERTY_X86_FEATURE_1_AND) {
-                n += printf_mask(ecGNUPROPERTY_X86_FEATURE_1_AND, pc[i++], USE_LT);
+                n += printf_mask(ecGNUPROPERTY_X86_FEATURE_1_AND, fgetu32(notes), USE_LT);
               }
             }
           }
@@ -1988,7 +1992,7 @@ static int dump_notes0(const pbuffer_t p, const int index, const uint64_t e_mach
     n += printf_eol();
   } else {
     n += printf_text("Description Data", USE_LT | USE_TAB | USE_COLON);
-    n += printf_sore(pc, n_descsz, USE_HEX | USE_TAB);
+    n += printf_sore(fgetp(notes, n_descsz), n_descsz, USE_HEX | USE_TAB);
     n += printf_eol();
   }
 
@@ -2004,8 +2008,10 @@ static int dump_notes32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr)
       MEMSTACK(Elf32_Nhdr, nx);
       Elf32_Nhdr *n0 = ecget_nhdr32byindex(p, nx, i);
       if (n0) {
-        Elf32_Word *pc = ecget_nhdrdesc32byindex(p, i);
-        n += dump_notes0(p, i, ehdr->e_machine, n0->n_descsz, n0->n_type, pc);
+        handle_t pc = ecget_nhdrdesc32byindex(p, i);
+        n += dump_notes0(p, i, ehdr->e_machine, n0->n_descsz, n0->n_type);
+        n += dump_notes1(p, i, ehdr->e_machine, n0->n_descsz, n0->n_type, pc);
+        ffree(pc);
       }
     }
   }
@@ -2020,8 +2026,10 @@ static int dump_notes64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr)
       MEMSTACK(Elf64_Nhdr, nx);
       Elf64_Nhdr *n0 = ecget_nhdr64byindex(p, nx, i);
       if (n0) {
-        Elf64_Word *pc = ecget_nhdrdesc64byindex(p, i);
-        n += dump_notes0(p, i, ehdr->e_machine, n0->n_descsz, n0->n_type, pc);
+        handle_t pc = ecget_nhdrdesc64byindex(p, i);
+        n += dump_notes0(p, i, ehdr->e_machine, n0->n_descsz, n0->n_type);
+        n += dump_notes1(p, i, ehdr->e_machine, n0->n_descsz, n0->n_type, pc);
+        ffree(pc);
       }
     }
   }
