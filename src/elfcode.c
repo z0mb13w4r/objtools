@@ -1272,8 +1272,7 @@ handle_t ecget_nhdrdesc32byindex(const pbuffer_t p, const int index) {
     MEMSTACK(Elf32_Shdr, sx);
     Elf32_Shdr *s0 = ecget_shdr32byindex(p, sx, index);
     if (s0) {
-      return fmalloc(getp(p, s0->sh_offset + sizeof(Elf32_Nhdr) + n0->n_namesz, n0->n_descsz),
-               n0->n_descsz, isELFbe(p) ? sizeof(Elf32_Word) | MEMFIND_BIGENDIAN : sizeof(Elf32_Word));
+      return fgetbyoffset(p, s0->sh_offset + sizeof(Elf32_Nhdr) + n0->n_namesz, n0->n_descsz, sizeof(Elf32_Word));
     }
   }
 
@@ -1287,8 +1286,7 @@ handle_t ecget_nhdrdesc64byindex(const pbuffer_t p, const int index) {
     MEMSTACK(Elf64_Shdr, sx);
     Elf64_Shdr *s0 = ecget_shdr64byindex(p, sx, index);
     if (s0) {
-      return fmalloc(getp(p, s0->sh_offset + sizeof(Elf64_Nhdr) + n0->n_namesz, n0->n_descsz),
-               n0->n_descsz, isELFbe(p) ? sizeof(Elf64_Word) | MEMFIND_BIGENDIAN : sizeof(Elf64_Word));
+      return fgetbyoffset(p, s0->sh_offset + sizeof(Elf64_Nhdr) + n0->n_namesz, n0->n_descsz, sizeof(Elf64_Word));
     }
   }
 
@@ -1383,7 +1381,7 @@ handle_t fgetbyshdr(const pbuffer_t p, unknown_t shdr) {
 
 handle_t fget32byshdr(const pbuffer_t p, Elf32_Shdr *shdr) {
   if (shdr) {
-    return fmalloc(getp(p, shdr->sh_offset, shdr->sh_size), shdr->sh_size, shdr->sh_entsize);
+    return fgetbyoffset(p, shdr->sh_offset, shdr->sh_size, shdr->sh_entsize);
   }
 
   return NULL;
@@ -1391,10 +1389,14 @@ handle_t fget32byshdr(const pbuffer_t p, Elf32_Shdr *shdr) {
 
 handle_t fget64byshdr(const pbuffer_t p, Elf64_Shdr *shdr) {
   if (shdr) {
-    return fmalloc(getp(p, shdr->sh_offset, shdr->sh_size), shdr->sh_size, shdr->sh_entsize);
+    return fgetbyoffset(p, shdr->sh_offset, shdr->sh_size, shdr->sh_entsize);
   }
 
   return NULL;
+}
+
+handle_t fgetbyoffset(const pbuffer_t p, const int offset, const size_t size, const size_t chunksize) {
+  return fmalloc(getp(p, offset, size), size, isELFbe(p) ? chunksize | MEMFIND_BIGENDIAN : chunksize);
 }
 
 int ecmake_sectionthumbs(const pbuffer_t p, pthumb_t thumbs, const size_t maxthumbs) {

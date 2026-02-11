@@ -2047,8 +2047,9 @@ static int dump_archspecific1(const pbuffer_t p, const poptions_t o, const char*
   int n = 0;
 
   const int MAXSIZE = strlenpick(ecPUBLICTAGARM) + 2;
+  const size_t CHUNKSIZE = isELFbe(p) ? MEMFIND_NOCHUNKSIZE | MEMFIND_BIGENDIAN : MEMFIND_NOCHUNKSIZE;
 
-  handle_t p0 = fmalloc(getp(p, sh_offset, sh_size), sh_size, MEMFIND_NOCHUNKSIZE);
+  handle_t p0 = fmalloc(getp(p, sh_offset, sh_size), sh_size, CHUNKSIZE);
   if (p0) {
     char version = fgetu8(p0);
     if ('A' == version) {
@@ -2075,7 +2076,7 @@ static int dump_archspecific1(const pbuffer_t p, const poptions_t o, const char*
 
           if (isok) {
             if (0 == xstrcmp(attrname, name)) {
-              handle_t p1 = fmalloc(p0, siz - 1, MEMFIND_NOCHUNKSIZE);
+              handle_t p1 = fmalloc(p0, siz - 1, CHUNKSIZE);
               while (!fiseof(p1)) {
                 uint64_t tag = fgetuleb128(p1);
                 if (0 == tag) continue;
