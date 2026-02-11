@@ -1690,7 +1690,7 @@ static int dump_versionsym64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *
 
   for (size_t j = 0; j < cnt; ++j) {
     MEMSTACK(Elf64_Versym, vx);
-    Elf64_Versym *vs = ecconvert_versym32(p, vx, getp(p, shdr->sh_offset + (j * shdr->sh_entsize), shdr->sh_entsize));
+    Elf64_Versym *vs = ecconvert_versym64(p, vx, getp(p, shdr->sh_offset + (j * shdr->sh_entsize), shdr->sh_entsize));
     if (vs) {
       n += dump_versionsym1(p, j, *vs, vnames, NELEMENTS(vnames));
     }
