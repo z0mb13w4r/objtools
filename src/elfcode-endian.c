@@ -5,31 +5,15 @@ static uint16_t ecconvert_u8(const pbuffer_t p, const uint8_t v) {
 }
 
 uint16_t ecconvert_u16(const pbuffer_t p, const uint16_t v) {
-  if (isELFbe(p)) {
-    return MODE_PUT1(MODE_GET0(v)) | MODE_PUT0(MODE_GET1(v));
-  }
-
-  return v;
+  return endian_u16(isELFbe(p), v);
 }
 
 uint32_t ecconvert_u32(const pbuffer_t p, const uint32_t v) {
-  if (isELFbe(p)) {
-    return MODE_PUT3(MODE_GET0(v)) | MODE_PUT2(MODE_GET1(v))
-      | MODE_PUT1(MODE_GET2(v)) | MODE_PUT0(MODE_GET3(v));
-  }
-
-  return v;
+  return endian_u32(isELFbe(p), v);
 }
 
 uint64_t ecconvert_u64(const pbuffer_t p, const uint64_t v) {
-  if (isELFbe(p)) {
-    return MODE_PUT7(MODE_GET0(v)) | MODE_PUT6(MODE_GET1(v))
-      | MODE_PUT5(MODE_GET2(v)) | MODE_PUT4(MODE_GET3(v))
-      | MODE_PUT3(MODE_GET4(v)) | MODE_PUT2(MODE_GET5(v))
-      | MODE_PUT1(MODE_GET6(v)) | MODE_PUT0(MODE_GET7(v));
-  }
-
-  return v;
+  return endian_u64(isELFbe(p), v);
 }
 
 Elf32_Dyn* ecconvert_dyn32(const pbuffer_t p, unknown_t dst, unknown_t src) {
