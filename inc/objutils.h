@@ -71,5 +71,13 @@ int strsize16(unknown_t s, const size_t maxsize);
 int strcmp8(const unknown_t s0, const char* s1, const size_t maxsize);
 int strcmp16(const unknown_t s0, const char* s1, const size_t maxsize);
 
+int16_t endian_s16(const bool_t yes, const int16_t v);
+int32_t endian_s32(const bool_t yes, const int32_t v);
+int64_t endian_s64(const bool_t yes, const int64_t v);
+
+uint16_t endian_u16(const bool_t yes, const uint16_t v);
+uint32_t endian_u32(const bool_t yes, const uint32_t v);
+uint64_t endian_u64(const bool_t yes, const uint64_t v);
+
 #endif
 

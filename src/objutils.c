@@ -332,3 +332,59 @@ int strcmp16(const unknown_t s0, const char* s1, const size_t maxsize) {
   return ECODE_NULL;
 }
 
+int16_t endian_s16(const bool_t yes, const int16_t v) {
+  if (yes) {
+    return MODE_PUT1(MODE_GET0(v)) | MODE_PUT0(MODE_GET1(v));
+  }
+
+  return v;
+}
+
+int32_t endian_s32(const bool_t yes, const int32_t v) {
+  if (yes) {
+    return MODE_PUT3(MODE_GET0(v)) | MODE_PUT2(MODE_GET1(v))
+         | MODE_PUT1(MODE_GET2(v)) | MODE_PUT0(MODE_GET3(v));
+  }
+
+  return v;
+}
+
+int64_t endian_s64(const bool_t yes, const int64_t v) {
+  if (yes) {
+    return MODE_PUT7(MODE_GET0(v)) | MODE_PUT6(MODE_GET1(v))
+         | MODE_PUT5(MODE_GET2(v)) | MODE_PUT4(MODE_GET3(v))
+         | MODE_PUT3(MODE_GET4(v)) | MODE_PUT2(MODE_GET5(v))
+         | MODE_PUT1(MODE_GET6(v)) | MODE_PUT0(MODE_GET7(v));
+  }
+
+  return v;
+}
+
+uint16_t endian_u16(const bool_t yes, const uint16_t v) {
+  if (yes) {
+    return MODE_PUT1(MODE_GET0(v)) | MODE_PUT0(MODE_GET1(v));
+  }
+
+  return v;
+}
+
+uint32_t endian_u32(const bool_t yes, const uint32_t v) {
+  if (yes) {
+    return MODE_PUT3(MODE_GET0(v)) | MODE_PUT2(MODE_GET1(v))
+         | MODE_PUT1(MODE_GET2(v)) | MODE_PUT0(MODE_GET3(v));
+  }
+
+  return v;
+}
+
+uint64_t endian_u64(const bool_t yes, const uint64_t v) {
+  if (yes) {
+    return MODE_PUT7(MODE_GET0(v)) | MODE_PUT6(MODE_GET1(v))
+         | MODE_PUT5(MODE_GET2(v)) | MODE_PUT4(MODE_GET3(v))
+         | MODE_PUT3(MODE_GET4(v)) | MODE_PUT2(MODE_GET5(v))
+         | MODE_PUT1(MODE_GET6(v)) | MODE_PUT0(MODE_GET7(v));
+  }
+
+  return v;
+}
+
