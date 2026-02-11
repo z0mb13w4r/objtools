@@ -13,6 +13,24 @@ bool_t fiseof(handle_t p) {
   return TRUE;
 }
 
+bool_t fisbe(handle_t p) {
+  if (isfind(p)) {
+    pfind_t p0 = CAST(pfind_t, p);
+    return p0 ? p0->bigendian : FALSE;
+  }
+
+  return FALSE;
+}
+
+bool_t fisle(handle_t p) {
+  if (isfind(p)) {
+    pfind_t p0 = CAST(pfind_t, p);
+    return p0 ? !p0->bigendian : TRUE;
+  }
+
+  return TRUE;
+}
+
 unknown_t fget(handle_t p) {
   if (isfind(p)) {
     pfind_t p0 = CAST(pfind_t, p);

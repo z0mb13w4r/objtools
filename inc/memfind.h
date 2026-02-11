@@ -22,6 +22,9 @@ bool_t isfind(handle_t p);
 
 bool_t fiseof(handle_t p);
 
+bool_t fisbe(handle_t p);
+bool_t fisle(handle_t p);
+
 size_t fgetcpos(handle_t p);
 size_t fgetsize(handle_t p);
 
