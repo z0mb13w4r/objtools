@@ -2049,7 +2049,7 @@ static int dump_archspecific1(const pbuffer_t p, const poptions_t o, const char*
   const int MAXSIZE = strlenpick(ecPUBLICTAGARM) + 2;
   const size_t CHUNKSIZE = isELFbe(p) ? MEMFIND_NOCHUNKSIZE | MEMFIND_BIGENDIAN : MEMFIND_NOCHUNKSIZE;
 
-  handle_t p0 = fmalloc(getp(p, sh_offset, sh_size), sh_size, CHUNKSIZE);
+  handle_t p0 = fgetbyoffset(p, sh_offset, sh_size, MEMFIND_NOCHUNKSIZE);
   if (p0) {
     char version = fgetu8(p0);
     if ('A' == version) {
