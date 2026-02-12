@@ -1,0 +1,5 @@
+convert_t ecGNUTAGMIPS[] = {
+
+  {0, 0}
+};
+
