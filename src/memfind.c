@@ -63,6 +63,21 @@ size_t fgetsize(handle_t p) {
   return 0;
 }
 
+size_t fgetstate(handle_t p) {
+  if (isfind(p)) {
+    pfind_t p0 = CAST(pfind_t, p);
+    if (p0) {
+      if (p0->bigendian) {
+        return p0->chunksize | MEMFIND_BIGENDIAN;
+      }
+
+      return p0->chunksize;
+    }
+  }
+
+  return 0;
+}
+
 unknown_t fgetp(handle_t p, const size_t chunksize) {
   unknown_t p0 = fget(p);
   if (p0) {
@@ -172,11 +187,11 @@ handle_t fsetu16byoffset(handle_t p, const uint64_t offset, const int16_t v) {
       p0->cpos = offset;
 
       if (p0->item && p0->cpos <= p0->epos) {
-        CAST(puchar_t, p0->item)[p0->cpos++] = (v >> 0x00) & 0xff;
+        CAST(puchar_t, p0->item)[p0->cpos++] = MODE_GET0(v);
       }
 
       if (p0->item && p0->cpos <= p0->epos) {
-        CAST(puchar_t, p0->item)[p0->cpos++] = (v >> 0x08) & 0xff;
+        CAST(puchar_t, p0->item)[p0->cpos++] = MODE_GET1(v);
         return p;
       }
     }
@@ -192,19 +207,19 @@ handle_t fsetu32byoffset(handle_t p, const uint64_t offset, const int32_t v) {
       p0->cpos = offset;
 
       if (p0->item && p0->cpos <= p0->epos) {
-        CAST(puchar_t, p0->item)[p0->cpos++] = (v >> 0x00) & 0xff;
+        CAST(puchar_t, p0->item)[p0->cpos++] = MODE_GET0(v);
       }
 
       if (p0->item && p0->cpos <= p0->epos) {
-        CAST(puchar_t, p0->item)[p0->cpos++] = (v >> 0x08) & 0xff;
+        CAST(puchar_t, p0->item)[p0->cpos++] = MODE_GET1(v);
       }
 
       if (p0->item && p0->cpos <= p0->epos) {
-        CAST(puchar_t, p0->item)[p0->cpos++] = (v >> 0x10) & 0xff;
+        CAST(puchar_t, p0->item)[p0->cpos++] = MODE_GET2(v);
       }
 
       if (p0->item && p0->cpos <= p0->epos) {
-        CAST(puchar_t, p0->item)[p0->cpos++] = (v >> 0x18) & 0xff;
+        CAST(puchar_t, p0->item)[p0->cpos++] = MODE_GET3(v);
         return p;
       }
     }
@@ -220,35 +235,35 @@ handle_t fsetu64byoffset(handle_t p, const uint64_t offset, const int64_t v) {
       p0->cpos = offset;
 
       if (p0->item && p0->cpos <= p0->epos) {
-        CAST(puchar_t, p0->item)[p0->cpos++] = (v >> 0x00) & 0xff;
+        CAST(puchar_t, p0->item)[p0->cpos++] = MODE_GET0(v);
       }
 
       if (p0->item && p0->cpos <= p0->epos) {
-        CAST(puchar_t, p0->item)[p0->cpos++] = (v >> 0x08) & 0xff;
+        CAST(puchar_t, p0->item)[p0->cpos++] = MODE_GET1(v);
       }
 
       if (p0->item && p0->cpos <= p0->epos) {
-        CAST(puchar_t, p0->item)[p0->cpos++] = (v >> 0x10) & 0xff;
+        CAST(puchar_t, p0->item)[p0->cpos++] = MODE_GET2(v);
       }
 
       if (p0->item && p0->cpos <= p0->epos) {
-        CAST(puchar_t, p0->item)[p0->cpos++] = (v >> 0x18) & 0xff;
+        CAST(puchar_t, p0->item)[p0->cpos++] = MODE_GET3(v);
       }
 
       if (p0->item && p0->cpos <= p0->epos) {
-        CAST(puchar_t, p0->item)[p0->cpos++] = (v >> 0x20) & 0xff;
+        CAST(puchar_t, p0->item)[p0->cpos++] = MODE_GET4(v);
       }
 
       if (p0->item && p0->cpos <= p0->epos) {
-        CAST(puchar_t, p0->item)[p0->cpos++] = (v >> 0x28) & 0xff;
+        CAST(puchar_t, p0->item)[p0->cpos++] = MODE_GET5(v);
       }
 
       if (p0->item && p0->cpos <= p0->epos) {
-        CAST(puchar_t, p0->item)[p0->cpos++] = (v >> 0x30) & 0xff;
+        CAST(puchar_t, p0->item)[p0->cpos++] = MODE_GET6(v);
       }
 
       if (p0->item && p0->cpos <= p0->epos) {
-        CAST(puchar_t, p0->item)[p0->cpos++] = (v >> 0x38) & 0xff;
+        CAST(puchar_t, p0->item)[p0->cpos++] = MODE_GET7(v);
         return p;
       }
     }
@@ -263,7 +278,7 @@ handle_t fnext(handle_t p) {
     if (p0) {
       p0->cpos += p0->chunksize;
       if (p0->cpos <= p0->epos) return p0;
-      if (ismode(p0, MODE_FIND)) p0->item = NULL;
+      else p0->item = NULL;
     }
 
     return p0;
@@ -278,7 +293,7 @@ handle_t fstep(handle_t p, const size_t chunksize) {
     if (p0) {
       p0->cpos += chunksize;
       if (p0->cpos <= p0->epos) return p0;
-      if (ismode(p0, MODE_FIND)) p0->item = NULL;
+      else p0->item = NULL;
     }
 
     return p0;
@@ -307,7 +322,7 @@ unknown_t fmove(handle_t p, const size_t cpos) {
       p0->cpos = cpos;
 
       if (p0->cpos <= p0->epos) return fget(p);
-      if (ismode(p0, MODE_FIND)) p0->item = NULL;
+      else p0->item = NULL;
     }
   }
 
@@ -321,7 +336,7 @@ unknown_t fupdate(handle_t p, const size_t cpos, const size_t chunksize) {
       p0->cpos = cpos;
       p0->chunksize = chunksize;
       if (p0->cpos <= p0->epos) return fget(p);
-      if (ismode(p0, MODE_FIND)) p0->item = NULL;
+      else p0->item = NULL;
     }
   }
 

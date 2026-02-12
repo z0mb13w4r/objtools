@@ -27,6 +27,7 @@ bool_t fisle(handle_t p);
 
 size_t fgetcpos(handle_t p);
 size_t fgetsize(handle_t p);
+size_t fgetstate(handle_t p);
 
 unknown_t fget(handle_t p);
 unknown_t fmove(handle_t p, const size_t cpos);
