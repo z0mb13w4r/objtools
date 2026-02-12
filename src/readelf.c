@@ -2047,7 +2047,6 @@ static int dump_archspecific1(const pbuffer_t p, const poptions_t o, const char*
   int n = 0;
 
   const int MAXSIZE = strlenpick(ecPUBLICTAGARM) + 2;
-  const size_t CHUNKSIZE = isELFbe(p) ? MEMFIND_NOCHUNKSIZE | MEMFIND_BIGENDIAN : MEMFIND_NOCHUNKSIZE;
 
   handle_t p0 = fgetbyoffset(p, sh_offset, sh_size, MEMFIND_NOCHUNKSIZE);
   if (p0) {
@@ -2076,7 +2075,7 @@ static int dump_archspecific1(const pbuffer_t p, const poptions_t o, const char*
 
           if (isok) {
             if (0 == xstrcmp(attrname, name)) {
-              handle_t p1 = fmalloc(p0, siz - 1, CHUNKSIZE);
+              handle_t p1 = fmalloc(p0, siz - 1, fgetstate(p0));
               while (!fiseof(p1)) {
                 uint64_t tag = fgetuleb128(p1);
                 if (0 == tag) continue;
