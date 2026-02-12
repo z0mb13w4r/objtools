@@ -1,4 +1,134 @@
+static convert_t ecGNUTAGMIPSMIPSABIFP[] = {
+  {"Hard or soft float",                               0},
+  {"Hard float (double precision)",                    1},
+  {"Hard float (single precision)",                    2},
+  {"Soft float",                                       3},
+  {"Hard float (MIPS32r2 64-bit FPU 12 callee-saved)", 4},
+  {"Hard float (32-bit CPU, Any FPU)",                 5},
+  {"Hard float (32-bit CPU, 64-bit FPU)",              6},
+  {"Hard float compat (32-bit CPU, 64-bit FPU)",       7},
+  {"NaN 2008 compatibility",                           8},
+
+  {0, 0}
+};
+
+static convert_t ecGNUTAGMIPSMIPSABIMSA[] = {
+  {"Any MSA or not",                                   0},
+  {"128-bit MSA",                                      1},
+
+};
+
 convert_t ecGNUTAGMIPS[] = {
+  {"TAG_GNU_MIPS_ABI_FP",                  4,    {ecGNUTAGMIPSMIPSABIFP}},
+  {"TAG_GNU_MIPS_ABI_MSA",                 8,    {ecGNUTAGMIPSMIPSABIMSA}},
+
+  {0, 0}
+};
+
+#define AFL_REG_NONE                   (0x00)
+#define AFL_REG_32                     (0x01)
+#define AFL_REG_64                     (0x02)
+#define AFL_REG_128                    (0x03)
+
+convert_t ecMIPSREGSIZE[] = {
+  {"0",                                                AFL_REG_NONE},
+  {"32",                                               AFL_REG_32},
+  {"64",                                               AFL_REG_64},
+  {"128",                                              AFL_REG_128},
+
+  {0, 0}
+};
+
+#define AFL_EXT_XLR                    (1)
+#define AFL_EXT_OCTEON2                (2)
+#define AFL_EXT_OCTEONP                (3)
+#define AFL_EXT_OCTEON                 (5)
+#define AFL_EXT_5900                   (6)
+#define AFL_EXT_4650                   (7)
+#define AFL_EXT_4010                   (8)
+#define AFL_EXT_4100                   (9)
+#define AFL_EXT_3900                   (10)
+#define AFL_EXT_10000                  (11)
+#define AFL_EXT_SB1                    (12)
+#define AFL_EXT_4111                   (13)
+#define AFL_EXT_4120                   (14)
+#define AFL_EXT_5400                   (15)
+#define AFL_EXT_5500                   (16)
+#define AFL_EXT_LOONGSON_2E            (17)
+#define AFL_EXT_LOONGSON_2F            (18)
+#define AFL_EXT_OCTEON3                (19)
+#define AFL_EXT_INTERAPTIV_MR2         (20)
+
+convert_t ecMIPSISAEXT[] = {
+  {"NONE",                                             0},
+  {"RMI XLR",                                          AFL_EXT_XLR},
+  {"Cavium Networks Octeon3",                          AFL_EXT_OCTEON3},
+  {"Cavium Networks Octeon2",                          AFL_EXT_OCTEON2},
+  {"Cavium Networks OcteonP",                          AFL_EXT_OCTEONP},
+  {"Cavium Networks Octeon",                           AFL_EXT_OCTEON},
+  {"Toshiba R5900",                                    AFL_EXT_5900},
+  {"MIPS R4650",                                       AFL_EXT_4650},
+  {"LSI R4010",                                        AFL_EXT_4010},
+  {"NEC VR4100",                                       AFL_EXT_4100},
+  {"Toshiba R3900",                                    AFL_EXT_3900},
+  {"MIPS R10000",                                      AFL_EXT_10000},
+  {"Broadcom SB-1",                                    AFL_EXT_SB1},
+  {"NEC VR4111/VR4181",                                AFL_EXT_4111},
+  {"NEC VR4120",                                       AFL_EXT_4120},
+  {"NEC VR5400",                                       AFL_EXT_5400},
+  {"NEC VR5500",                                       AFL_EXT_5500},
+  {"ST Microelectronics Loongson 2E",                  AFL_EXT_LOONGSON_2E},
+  {"ST Microelectronics Loongson 2F",                  AFL_EXT_LOONGSON_2F},
+  {"Imagination interAptiv MR2",                       AFL_EXT_INTERAPTIV_MR2},
+
+  {0, 0}
+};
+
+#define AFL_ASE_DSP                    (0x00000001)
+#define AFL_ASE_DSPR2                  (0x00000002)
+#define AFL_ASE_EVA                    (0x00000004)
+#define AFL_ASE_MCU                    (0x00000008)
+#define AFL_ASE_MDMX                   (0x00000010)
+#define AFL_ASE_MIPS3D                 (0x00000020)
+#define AFL_ASE_MT                     (0x00000040)
+#define AFL_ASE_SMARTMIPS              (0x00000080)
+#define AFL_ASE_VIRT                   (0x00000100)
+#define AFL_ASE_MSA                    (0x00000200)
+#define AFL_ASE_MIPS16                 (0x00000400)
+#define AFL_ASE_MICROMIPS              (0x00000800)
+#define AFL_ASE_XPA                    (0x00001000)
+#define AFL_ASE_DSPR3                  (0x00002000)
+#define AFL_ASE_MIPS16E2               (0x00004000)
+#define AFL_ASE_CRC                    (0x00008000)
+//#define AFL_ASE_RESERVED1    0x00010000 /* Reserved by MIPS Tech for WIP.  */
+#define AFL_ASE_GINV                   (0x00020000)
+#define AFL_ASE_LOONGSON_MMI           (0x00040000)
+#define AFL_ASE_LOONGSON_CAM           (0x00080000)
+#define AFL_ASE_LOONGSON_EXT           (0x00100000)
+#define AFL_ASE_LOONGSON_EXT2          (0x00200000)
+
+convert_t ecMIPSASES[] = {
+  {"DSP ASE",                                          AFL_ASE_DSP},
+  {"DSP R2 ASE",                                       AFL_ASE_DSPR2},
+  {"DSP R3 ASE",                                       AFL_ASE_DSPR3},
+  {"Enhanced VA Scheme",                               AFL_ASE_EVA},
+  {"MCU (MicroController) ASE",                        AFL_ASE_MCU},
+  {"MDMX ASE",                                         AFL_ASE_MDMX},
+  {"MIPS-3D ASE",                                      AFL_ASE_MIPS3D},
+  {"MT ASE",                                           AFL_ASE_MT},
+  {"SmartMIPS ASE",                                    AFL_ASE_SMARTMIPS},
+  {"VZ ASE",                                           AFL_ASE_VIRT},
+  {"MSA ASE",                                          AFL_ASE_MSA},
+  {"MIPS16 ASE",                                       AFL_ASE_MIPS16},
+  {"MICROMIPS ASE",                                    AFL_ASE_MICROMIPS},
+  {"XPA ASE",                                          AFL_ASE_XPA},
+  {"MIPS16e2 ASE",                                     AFL_ASE_MIPS16E2},
+  {"CRC ASE",                                          AFL_ASE_CRC},
+  {"GINV ASE",                                         AFL_ASE_GINV},
+  {"Loongson MMI ASE",                                 AFL_ASE_LOONGSON_MMI},
+  {"Loongson CAM ASE",                                 AFL_ASE_LOONGSON_CAM},
+  {"Loongson EXT ASE",                                 AFL_ASE_LOONGSON_EXT},
+  {"Loongson EXT2 ASE",                                AFL_ASE_LOONGSON_EXT2},
 
   {0, 0}
 };

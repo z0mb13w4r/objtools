@@ -2078,6 +2078,14 @@ static int dump_archspecific0(const pbuffer_t p, const poptions_t o, const char*
               if (0 == tag) continue;
 
               n += printf_pick(ecGNUTAGMIPS, tag, USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+
+              uint64_t val = fgetuleb128(p1);
+              pconvert_t p2 = convertpicknull(ecGNUTAGMIPS, tag);
+              if (p2 && p2->param) {
+                n += printf_pick(p2->param, val, USE_SPACE);
+              }
+
+              n += printf_eol();
             }
 
             ffree(p1);
@@ -2163,6 +2171,50 @@ static int dump_archspecific1(const pbuffer_t p, const poptions_t o, const char*
   return n;
 }
 
+static int dump_archspecific2(const pbuffer_t p, const poptions_t o, const uint64_t sh_offset, const uint64_t sh_size) {
+  int n = 0;
+
+  const int MAXSIZE = strlenpick(ecGNUTAGMIPS) + 2;
+
+  handle_t p0 = fgetbyoffset(p, sh_offset, sh_size, MEMFIND_NOCHUNKSIZE);
+  if (p0) {
+    n += printf_text("MIPS ABI Flags Version", USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(fgetu16(p0), USE_DEC | USE_EOL);
+
+    n += printf_join("ISA: MIPS", fgetu8(p0), USE_DEC);
+    n += printf_join("r", fgetu8(p0), USE_DEC);
+    n += printf_eol();
+
+    n += printf_text("GPR size", USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_pick(ecMIPSREGSIZE, fgetu8(p0), USE_EOL);
+
+    n += printf_text("CPR1 size", USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_pick(ecMIPSREGSIZE, fgetu8(p0), USE_EOL);
+
+    n += printf_text("CPR2 size", USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_pick(ecMIPSREGSIZE, fgetu8(p0), USE_EOL);
+
+    n += printf_text("FP ABI", USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_pick(ecGNUTAGMIPSMIPSABIFP, fgetu8(p0), USE_EOL);
+
+    n += printf_text("ISA Extension", USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_pick(ecMIPSISAEXT, fgetu8(p0), USE_EOL);
+
+    n += printf_text("ASEs", USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_masknone(ecMIPSASES, fgetu8(p0), USE_EOL);
+
+    n += printf_text("FLAGS 1", USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(fgetu32(p0), USE_LHEX32 | USE_EOL);
+
+    n += printf_text("FLAGS 2", USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(fgetu32(p0), USE_LHEX32 | USE_EOL);
+
+    ffree(p0);
+  }
+
+  return n;
+}
+
 static int dump_archspecific32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
   int n = 0;
   for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
@@ -2173,6 +2225,16 @@ static int dump_archspecific32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr
         n += dump_archspecific1(p, o, "aeabi", s0->sh_offset, s0->sh_size);
       } else if (SHT_GNU_ATTRIBUTES == s0->sh_type) {
         n += dump_archspecific0(p, o, NULL, s0->sh_offset, s0->sh_size);
+      }
+    }
+  }
+
+  for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
+    MEMSTACK(Elf32_Shdr, sx);
+    Elf32_Shdr *s0 = ecget_shdr32byindex(p, sx, i);
+    if (s0) {
+      if (SHT_MIPS_ABIFLAGS == s0->sh_type) {
+        n += dump_archspecific2(p, o, s0->sh_offset, s0->sh_size);
       }
     }
   }
@@ -2190,6 +2252,16 @@ static int dump_archspecific64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr
         n += dump_archspecific1(p, o, "aeabi", s0->sh_offset, s0->sh_size);
       } else if (SHT_GNU_ATTRIBUTES == s0->sh_type) {
         n += dump_archspecific0(p, o, NULL, s0->sh_offset, s0->sh_size);
+      }
+    }
+  }
+
+  for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
+    MEMSTACK(Elf64_Shdr, sx);
+    Elf64_Shdr *s0 = ecget_shdr64byindex(p, sx, i);
+    if (s0) {
+      if (SHT_MIPS_ABIFLAGS == s0->sh_type) {
+        n += dump_archspecific2(p, o, s0->sh_offset, s0->sh_size);
       }
     }
   }
