@@ -2051,6 +2051,26 @@ static int dump_archspecific0(const pbuffer_t p, const poptions_t o, const char*
         char* attrname = fgetstring(p0);
         n += printf_text("Attribute Section", USE_LT | USE_COLON);
         n += printf_text(attrname, USE_LT | USE_SPACE | USE_EOL);
+
+        bool_t isok = TRUE;
+        uint64_t tag = fgetu8(p0);
+        uint64_t siz = fgetu32(p0);
+        if (1 == tag) {
+          n += printf_text("File Attributes", USE_LT | USE_EOL);
+        } else if (2 == tag) {
+          n += printf_text("Section Attributes", USE_LT | USE_COLON);
+        } else if (3 == tag) {
+          n += printf_text("Symbol Attributes", USE_LT | USE_COLON);
+        } else {
+          isok = FALSE;
+        }
+
+        if (isok) {
+          if (0 == xstrcmp(attrname, name)) {
+
+          } else if (0 == xstrcmp(attrname, "gnu")) {
+          }
+        }
       }
     }
 
