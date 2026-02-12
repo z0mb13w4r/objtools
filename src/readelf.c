@@ -2040,6 +2040,23 @@ static int dump_notes64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr)
 static int dump_archspecific0(const pbuffer_t p, const poptions_t o, const char* name, const uint64_t sh_offset, const uint64_t sh_size) {
   int n = 0;
 
+  handle_t p0 = fgetbyoffset(p, sh_offset, sh_size, MEMFIND_NOCHUNKSIZE);
+  if (p0) {
+    char version = fgetu8(p0);
+    if ('A' == version) {
+      while (!fiseof(p0)) {
+        uint64_t attrsize = fgetu32(p0);
+        if (attrsize > (fgetsize(p0) + 4) || attrsize < 5) break;
+
+        char* attrname = fgetstring(p0);
+        n += printf_text("Attribute Section", USE_LT | USE_COLON);
+        n += printf_text(attrname, USE_LT | USE_SPACE | USE_EOL);
+      }
+    }
+
+    ffree(p0);
+  }
+
   return n;
 }
 
