@@ -2041,8 +2041,6 @@ static int dump_notes64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr)
 static int dump_archspecific0(const pbuffer_t p, const poptions_t o, const char* name, const uint64_t sh_offset, const uint64_t sh_size) {
   int n = 0;
 
-  const int MAXSIZE = strlenpick(ecGNUTAGMIPS) + 2;
-
   handle_t p0 = fgetbyoffset(p, sh_offset, sh_size, MEMFIND_NOCHUNKSIZE);
   if (p0) {
     char version = fgetu8(p0);
@@ -2070,6 +2068,8 @@ static int dump_archspecific0(const pbuffer_t p, const poptions_t o, const char*
 
         if (isok) {
           if (0 == xstrcmp(attrname, name)) {
+            const int MAXSIZE = strlenpick(get_PUBLICTAG(p)) + 2;
+
             handle_t p1 = fmalloc(p0, siz - 1, fgetstate(p0));
             while (!fiseof(p1)) {
               uint64_t tag = fgetuleb128(p1);
@@ -2098,15 +2098,17 @@ static int dump_archspecific0(const pbuffer_t p, const poptions_t o, const char*
 
             ffree(p1);
           } else if (0 == xstrcmp(attrname, "gnu")) {
+            const int MAXSIZE = strlenpick(get_GNUTAG(p)) + 2;
+
             handle_t p1 = fmalloc(p0, siz - 1, fgetstate(p0));
             while (!fiseof(p1)) {
               uint64_t tag = fgetuleb128(p1);
               if (0 == tag) continue;
 
-              n += printf_pick(ecGNUTAGMIPS, tag, USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+              n += printf_pick(get_GNUTAG(p), tag, USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
 
               uint64_t val = fgetuleb128(p1);
-              pconvert_t p2 = convertpicknull(ecGNUTAGMIPS, tag);
+              pconvert_t p2 = convertpicknull(get_GNUTAG(p), tag);
               if (p2 && p2->param) {
                 n += printf_pick(p2->param, val, USE_SPACE);
               }

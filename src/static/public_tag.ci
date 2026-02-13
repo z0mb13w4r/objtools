@@ -445,19 +445,25 @@ static pick_t ecPUBLICTAGARMSTRING[] = {
 
 pconvert_t get_PUBLICTAG(const pbuffer_t p) {
   switch (ecget_emachine(p)) {
-    case EM_ARM:
-    case EM_AARCH64:
-      return ecPUBLICTAGARM;
+  case EM_ARM:
+  case EM_AARCH64:
+    return ecPUBLICTAGARM;
+
+  default:
+    break;
   }
 
   return NULL;
 }
 
-pconvert_t get_PUBLICTAGSTRING(const pbuffer_t p) {
+ppick_t get_PUBLICTAGSTRING(const pbuffer_t p) {
   switch (ecget_emachine(p)) {
-    case EM_ARM:
-    case EM_AARCH64:
-      return ecPUBLICTAGARMSTRING;
+  case EM_ARM:
+  case EM_AARCH64:
+    return ecPUBLICTAGARMSTRING;
+
+  default:
+    break;
   }
 
   return NULL;

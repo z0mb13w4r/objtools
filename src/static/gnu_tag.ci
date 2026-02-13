@@ -18,12 +18,25 @@ static convert_t ecGNUTAGMIPSMIPSABIMSA[] = {
 
 };
 
-convert_t ecGNUTAGMIPS[] = {
+static convert_t ecGNUTAGMIPS[] = {
   {"TAG_GNU_MIPS_ABI_FP",                  4,    {ecGNUTAGMIPSMIPSABIFP}},
   {"TAG_GNU_MIPS_ABI_MSA",                 8,    {ecGNUTAGMIPSMIPSABIMSA}},
 
   {0, 0}
 };
+
+pconvert_t get_GNUTAG(const pbuffer_t p) {
+  switch (ecget_emachine(p)) {
+  case EM_MIPS:
+  case EM_MIPS_RS3_LE:
+    return ecGNUTAGMIPS;
+
+  default:
+    break;
+  }
+
+  return NULL;
+}
 
 #define AFL_REG_NONE                   (0x00)
 #define AFL_REG_32                     (0x01)
