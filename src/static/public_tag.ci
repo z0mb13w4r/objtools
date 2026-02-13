@@ -387,7 +387,7 @@ static convert_t ecPUBLICTAGARMPACEXTENSION[] = {
   {0, 0}
 };
 
-convert_t ecPUBLICTAGARM[] = {
+static convert_t ecPUBLICTAGARM[] = {
   {"TAG_CPU_raw_name",                     4},
   {"TAG_CPU_name",                         5},
   {"TAG_CPU_arch",                         6,    {ecPUBLICTAGARMARCH}},
@@ -442,4 +442,14 @@ static pick_t ecPUBLICTAGARMSTRING[] = {
   TAG_CPU_name,
   PICK_END
 };
+
+pconvert_t get_PUBLICTAG(const pbuffer_t p) {
+  switch (ecget_emachine(p)) {
+    case EM_ARM:
+    case EM_AARCH64:
+      return ecPUBLICTAGARM;
+  }
+
+  return NULL;
+}
 

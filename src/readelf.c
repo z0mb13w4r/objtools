@@ -2075,7 +2075,7 @@ static int dump_archspecific0(const pbuffer_t p, const poptions_t o, const char*
               uint64_t tag = fgetuleb128(p1);
               if (0 == tag) continue;
 
-              n += printf_pick(ecPUBLICTAGARM, tag, USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+              n += printf_pick(get_PUBLICTAG(p), tag, USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
               if (isused(ecPUBLICTAGARMSTRING, tag)) {
                 n += printf_text(fgetstring(p1), USE_LT | USE_SPACE | USE_DQ);
               } else if (TAG_compatibility == tag) {
@@ -2087,7 +2087,7 @@ static int dump_archspecific0(const pbuffer_t p, const poptions_t o, const char*
                 n += printf_nice(fgetu8(p1), USE_BOOL);
               } else {
                 uint64_t val = fgetuleb128(p1);
-                pconvert_t p2 = convertpicknull(ecPUBLICTAGARM, tag);
+                pconvert_t p2 = convertpicknull(get_PUBLICTAG(p), tag);
                 if (p2 && p2->param) {
                   n += printf_pick(p2->param, val, USE_SPACE);
                 }
