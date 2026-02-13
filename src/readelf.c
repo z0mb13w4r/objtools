@@ -2172,26 +2172,25 @@ static int dump_archspecific1(const pbuffer_t p, const poptions_t o, const uint6
 
 static int dump_archspecific32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
   int n = 0;
-  for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
-    MEMSTACK(Elf32_Shdr, sx);
-    Elf32_Shdr *s0 = ecget_shdr32byindex(p, sx, i);
-    if (s0) {
-      if (SHT_ARM_ATTRIBUTES == s0->sh_type) {
-        n += dump_archspecific0(p, o, "aeabi", s0->sh_offset, s0->sh_size);
-      } else if (SHT_GNU_ATTRIBUTES == s0->sh_type) {
-        n += dump_archspecific0(p, o, NULL, s0->sh_offset, s0->sh_size);
-      }
-    }
-  }
 
-  for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
-    MEMSTACK(Elf32_Shdr, sx);
-    Elf32_Shdr *s0 = ecget_shdr32byindex(p, sx, i);
+  MEMSTACK(Elf32_Shdr, sx);
+  if (EM_ARM == ehdr->e_machine || EM_AARCH64 == ehdr->e_machine) {
+    Elf32_Shdr* s0 = ecget_shdr32bytype(p, sx, SHT_ARM_ATTRIBUTES);
     if (s0) {
-      if (SHT_MIPS_ABIFLAGS == s0->sh_type) {
-        n += dump_archspecific1(p, o, s0->sh_offset, s0->sh_size);
-      }
+      n += dump_archspecific0(p, o, "aeabi", s0->sh_offset, s0->sh_size);
     }
+  } else if (EM_MIPS == ehdr->e_machine || EM_MIPS_RS3_LE == ehdr->e_machine) {
+    Elf32_Shdr* s0 = ecget_shdr32bytype(p, sx, SHT_GNU_ATTRIBUTES);
+    if (s0) {
+      n += dump_archspecific0(p, o, NULL, s0->sh_offset, s0->sh_size);
+    }
+
+    Elf32_Shdr* s1 = ecget_shdr32bytype(p, sx, SHT_MIPS_ABIFLAGS);
+    if (s1) {
+      n += dump_archspecific1(p, o, s1->sh_offset, s1->sh_size);
+    }
+  } else if (EM_RISCV == ehdr->e_machine) {
+
   }
 
   return n;
@@ -2199,26 +2198,25 @@ static int dump_archspecific32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr
 
 static int dump_archspecific64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
   int n = 0;
-  for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
-    MEMSTACK(Elf64_Shdr, sx);
-    Elf64_Shdr *s0 = ecget_shdr64byindex(p, sx, i);
-    if (s0) {
-      if (SHT_ARM_ATTRIBUTES == s0->sh_type) {
-        n += dump_archspecific0(p, o, "aeabi", s0->sh_offset, s0->sh_size);
-      } else if (SHT_GNU_ATTRIBUTES == s0->sh_type) {
-        n += dump_archspecific0(p, o, NULL, s0->sh_offset, s0->sh_size);
-      }
-    }
-  }
 
-  for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
-    MEMSTACK(Elf64_Shdr, sx);
-    Elf64_Shdr *s0 = ecget_shdr64byindex(p, sx, i);
+  MEMSTACK(Elf64_Shdr, sx);
+  if (EM_ARM == ehdr->e_machine || EM_AARCH64 == ehdr->e_machine) {
+    Elf64_Shdr* s0 = ecget_shdr64bytype(p, sx, SHT_ARM_ATTRIBUTES);
     if (s0) {
-      if (SHT_MIPS_ABIFLAGS == s0->sh_type) {
-        n += dump_archspecific1(p, o, s0->sh_offset, s0->sh_size);
-      }
+      n += dump_archspecific0(p, o, "aeabi", s0->sh_offset, s0->sh_size);
     }
+  } else if (EM_MIPS == ehdr->e_machine || EM_MIPS_RS3_LE == ehdr->e_machine) {
+    Elf64_Shdr* s0 = ecget_shdr64bytype(p, sx, SHT_GNU_ATTRIBUTES);
+    if (s0) {
+      n += dump_archspecific0(p, o, NULL, s0->sh_offset, s0->sh_size);
+    }
+
+    Elf64_Shdr* s1 = ecget_shdr64bytype(p, sx, SHT_MIPS_ABIFLAGS);
+    if (s1) {
+      n += dump_archspecific1(p, o, s1->sh_offset, s1->sh_size);
+    }
+  } else if (EM_RISCV == ehdr->e_machine) {
+
   }
 
   return n;
