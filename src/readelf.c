@@ -2070,7 +2070,33 @@ static int dump_archspecific0(const pbuffer_t p, const poptions_t o, const char*
 
         if (isok) {
           if (0 == xstrcmp(attrname, name)) {
+            handle_t p1 = fmalloc(p0, siz - 1, fgetstate(p0));
+            while (!fiseof(p1)) {
+              uint64_t tag = fgetuleb128(p1);
+              if (0 == tag) continue;
 
+              n += printf_pick(ecPUBLICTAGARM, tag, USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+              if (isused(ecPUBLICTAGARMSTRING, tag)) {
+                n += printf_text(fgetstring(p1), USE_LT | USE_SPACE | USE_DQ);
+              } else if (TAG_compatibility == tag) {
+                n += printf_text("flag", USE_LT | USE_SPACE | USE_COLON);
+                n += printf_nice(fgetuleb128(p1), USE_DEC);
+                n += printf_text("value", USE_LT | USE_SPACE | USE_COLON);
+                n += printf_text(fgetstring(p1), USE_LT | USE_SPACE);
+              } else if (TAG_nodefaults == tag) {
+                n += printf_nice(fgetu8(p1), USE_BOOL);
+              } else {
+                uint64_t val = fgetuleb128(p1);
+                pconvert_t p2 = convertpicknull(ecPUBLICTAGARM, tag);
+                if (p2 && p2->param) {
+                  n += printf_pick(p2->param, val, USE_SPACE);
+                }
+              }
+
+              n += printf_eol();
+            }
+
+            ffree(p1);
           } else if (0 == xstrcmp(attrname, "gnu")) {
             handle_t p1 = fmalloc(p0, siz - 1, fgetstate(p0));
             while (!fiseof(p1)) {
@@ -2100,78 +2126,7 @@ static int dump_archspecific0(const pbuffer_t p, const poptions_t o, const char*
   return n;
 }
 
-static int dump_archspecific1(const pbuffer_t p, const poptions_t o, const char* name, const uint64_t sh_offset, const uint64_t sh_size) {
-  int n = 0;
-
-  const int MAXSIZE = strlenpick(ecPUBLICTAGARM) + 2;
-
-  handle_t p0 = fgetbyoffset(p, sh_offset, sh_size, MEMFIND_NOCHUNKSIZE);
-  if (p0) {
-    char version = fgetu8(p0);
-    if ('A' == version) {
-      while (!fiseof(p0)) {
-        uint64_t attrsize = fgetu32(p0);
-        if (attrsize > (fgetsize(p0) + 4) || attrsize < 5) break;
-
-        char* attrname = fgetstring(p0);
-        n += printf_text("Attribute Section", USE_LT | USE_COLON);
-        n += printf_text(attrname, USE_LT | USE_SPACE | USE_EOL);
-
-        bool_t isok = TRUE;
-        uint64_t tag = fgetu8(p0);
-        uint64_t siz = fgetu32(p0);
-        if (1 == tag) {
-          n += printf_text("File Attributes", USE_LT | USE_EOL);
-        } else if (2 == tag) {
-          n += printf_text("Section Attributes", USE_LT | USE_COLON);
-        } else if (3 == tag) {
-          n += printf_text("Symbol Attributes", USE_LT | USE_COLON);
-        } else {
-          isok = FALSE;
-        }
-
-        if (isok) {
-          if (0 == xstrcmp(attrname, name)) {
-            handle_t p1 = fmalloc(p0, siz - 1, fgetstate(p0));
-            while (!fiseof(p1)) {
-              uint64_t tag = fgetuleb128(p1);
-              if (0 == tag) continue;
-
-              n += printf_pick(ecPUBLICTAGARM, tag, USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-              if (isused(ecPUBLICTAGARMSTRING, tag)) {
-                n += printf_text(fgetstring(p1), USE_LT | USE_SPACE | USE_DQ);
-              } else if (TAG_compatibility == tag) {
-                n += printf_text("flag", USE_LT | USE_SPACE | USE_COLON);
-                n += printf_nice(fgetuleb128(p1), USE_DEC);
-                n += printf_text("value", USE_LT | USE_SPACE | USE_COLON);
-                n += printf_text(fgetstring(p1), USE_LT | USE_SPACE);
-              } else if (TAG_nodefaults == tag) {
-                n += printf_nice(fgetu8(p1), USE_BOOL);
-              } else {
-                uint64_t val = fgetuleb128(p1);
-                pconvert_t p2 = convertpicknull(ecPUBLICTAGARM, tag);
-                if (p2 && p2->param) {
-                  n += printf_pick(p2->param, val, USE_SPACE);
-                }
-              }
-
-              n += printf_eol();
-            }
-
-            ffree(p1);
-          } else if (0 == xstrcmp(attrname, "gnu")) {
-          }
-        }
-      }
-    }
-
-    ffree(p0);
-  }
-
-  return n;
-}
-
-static int dump_archspecific2(const pbuffer_t p, const poptions_t o, const uint64_t sh_offset, const uint64_t sh_size) {
+static int dump_archspecific1(const pbuffer_t p, const poptions_t o, const uint64_t sh_offset, const uint64_t sh_size) {
   int n = 0;
 
   const int MAXSIZE = strlenpick(ecGNUTAGMIPS) + 2;
@@ -2222,7 +2177,7 @@ static int dump_archspecific32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr
     Elf32_Shdr *s0 = ecget_shdr32byindex(p, sx, i);
     if (s0) {
       if (SHT_ARM_ATTRIBUTES == s0->sh_type) {
-        n += dump_archspecific1(p, o, "aeabi", s0->sh_offset, s0->sh_size);
+        n += dump_archspecific0(p, o, "aeabi", s0->sh_offset, s0->sh_size);
       } else if (SHT_GNU_ATTRIBUTES == s0->sh_type) {
         n += dump_archspecific0(p, o, NULL, s0->sh_offset, s0->sh_size);
       }
@@ -2234,7 +2189,7 @@ static int dump_archspecific32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr
     Elf32_Shdr *s0 = ecget_shdr32byindex(p, sx, i);
     if (s0) {
       if (SHT_MIPS_ABIFLAGS == s0->sh_type) {
-        n += dump_archspecific2(p, o, s0->sh_offset, s0->sh_size);
+        n += dump_archspecific1(p, o, s0->sh_offset, s0->sh_size);
       }
     }
   }
@@ -2249,7 +2204,7 @@ static int dump_archspecific64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr
     Elf64_Shdr *s0 = ecget_shdr64byindex(p, sx, i);
     if (s0) {
       if (SHT_ARM_ATTRIBUTES == s0->sh_type) {
-        n += dump_archspecific1(p, o, "aeabi", s0->sh_offset, s0->sh_size);
+        n += dump_archspecific0(p, o, "aeabi", s0->sh_offset, s0->sh_size);
       } else if (SHT_GNU_ATTRIBUTES == s0->sh_type) {
         n += dump_archspecific0(p, o, NULL, s0->sh_offset, s0->sh_size);
       }
@@ -2261,7 +2216,7 @@ static int dump_archspecific64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr
     Elf64_Shdr *s0 = ecget_shdr64byindex(p, sx, i);
     if (s0) {
       if (SHT_MIPS_ABIFLAGS == s0->sh_type) {
-        n += dump_archspecific2(p, o, s0->sh_offset, s0->sh_size);
+        n += dump_archspecific1(p, o, s0->sh_offset, s0->sh_size);
       }
     }
   }
