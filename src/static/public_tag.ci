@@ -443,15 +443,41 @@ static pick_t ecPUBLICTAGARMSTRING[] = {
   PICK_END
 };
 
+static convert_t ecPUBLICTAGRISCVUNALIGNED[] = {
+  {"No unaligned access",                  0},
+  {"Unaligned access",                     1},
+
+  {0, 0}
+};
+
 static convert_t ecPUBLICTAGRISCV[] = {
   {"TAG_RISCV_stack_align",                4},
   {"TAG_RISCV_arch",                       5},
-  {"TAG_RISCV_unaligned_access",           6},
+  {"TAG_RISCV_unaligned_access",           6,    {ecPUBLICTAGRISCVUNALIGNED}},
   {"TAG_RISCV_priv_spec",                  8},
   {"TAG_RISCV_priv_spec_minor",            10},
   {"TAG_RISCV_priv_spec_revision",         12},
 
   {0, 0}
+};
+
+#define TAG_RISCV_priv_spec            (8)
+#define TAG_RISCV_priv_spec_minor      (10)
+#define TAG_RISCV_priv_spec_revision   (12)
+
+static pick_t ecPUBLICTAGRISCVDEC[] = {
+  TAG_RISCV_priv_spec,
+  TAG_RISCV_priv_spec_minor,
+  TAG_RISCV_priv_spec_revision,
+  PICK_END
+};
+
+
+#define TAG_RISCV_stack_align          (4)
+
+static pick_t ecPUBLICTAGRISCVBTYES[] = {
+  TAG_RISCV_stack_align,
+  PICK_END
 };
 
 pconvert_t get_PUBLICTAG(const pbuffer_t p) {
@@ -462,6 +488,30 @@ pconvert_t get_PUBLICTAG(const pbuffer_t p) {
 
   case EM_RISCV:
     return ecPUBLICTAGRISCV;
+
+  default:
+    break;
+  }
+
+  return NULL;
+}
+
+ppick_t get_PUBLICTAGBYTES(const pbuffer_t p) {
+  switch (ecget_emachine(p)) {
+  case EM_RISCV:
+    return ecPUBLICTAGRISCVBTYES;
+
+  default:
+    break;
+  }
+
+  return NULL;
+}
+
+ppick_t get_PUBLICTAGDEC(const pbuffer_t p) {
+  switch (ecget_emachine(p)) {
+  case EM_RISCV:
+    return ecPUBLICTAGRISCVDEC;
 
   default:
     break;
