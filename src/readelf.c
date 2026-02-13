@@ -298,7 +298,7 @@ static int dump_sectionheaders1(const pbuffer_t p, const poptions_t o, const int
     n += printf_text(ecget_secnamebyindex(p, index), USE_LT | USE_SPACE | SET_PAD(maxsize));
   }
 
-  n += printf_pick(ecSHDRTYPE, sh_type, USE_LT | USE_SPACE | SET_PAD(17));
+  n += printf_pick(get_SHDRTYPE(p, sh_type), sh_type, USE_LT | USE_SPACE | SET_PAD(17));
   n += printf_nice(sh_addr, USE_LHEXNN);
 
   if (MODE_ISSET(o->action, OPTREADELF_SECTIONDETAILS)) {
@@ -920,7 +920,7 @@ static int dump_relocs0(const pbuffer_t p, const poptions_t o, const int index,
     if (strstr(name, ".plt")) {
       n += printf_text("PLT", USE_SPACE | USE_SQ);
     } else {
-      n += printf_pick(ecSHDRTYPE, sh_type, USE_SPACE | USE_SQ);
+      n += printf_pick(get_SHDRTYPE(p, sh_type), sh_type, USE_SPACE | USE_SQ);
     }
     n += printf_text("relocation section at offset", USE_LT | USE_SPACE);
     n += printf_nice(sh_offset, USE_FHEX);
@@ -2190,7 +2190,10 @@ static int dump_archspecific32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr
       n += dump_archspecific1(p, o, s1->sh_offset, s1->sh_size);
     }
   } else if (EM_RISCV == ehdr->e_machine) {
-
+    Elf32_Shdr* s0 = ecget_shdr32bytype(p, sx, SHT_RISCV_ATTRIBUTES);
+    if (s0) {
+      n += dump_archspecific0(p, o, "riscv", s0->sh_offset, s0->sh_size);
+    }
   }
 
   return n;
@@ -2216,7 +2219,10 @@ static int dump_archspecific64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr
       n += dump_archspecific1(p, o, s1->sh_offset, s1->sh_size);
     }
   } else if (EM_RISCV == ehdr->e_machine) {
-
+    Elf64_Shdr* s0 = ecget_shdr64bytype(p, sx, SHT_RISCV_ATTRIBUTES);
+    if (s0) {
+      n += dump_archspecific0(p, o, "riscv", s0->sh_offset, s0->sh_size);
+    }
   }
 
   return n;

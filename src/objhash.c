@@ -41,7 +41,7 @@ static int dump_create1(const pbuffer_t p, const poptions_t o, const char* name,
                         const int maxsize) {
   int n = 0;
   n += printf_text(name, USE_LT | USE_SPACE | SET_PAD(maxsize));
-  n += printf_pick(ecSHDRTYPE, sh_type, USE_LT | USE_SPACE | SET_PAD(16));
+  n += printf_pick(get_SHDRTYPE(p, sh_type), sh_type, USE_LT | USE_SPACE | SET_PAD(16));
   n += printf_nice(sh_addr, isELF64(p) ? USE_LHEX64 : USE_LHEX32);
   n += printf_nice(sh_offset, USE_LHEX32);
   n += printf_nice(sh_size, USE_LHEX32);

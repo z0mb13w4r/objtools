@@ -1,9 +1,4 @@
-#define SHT_ARM_DEBUGOVERLAY           (SHT_LOPROC + 4)
-#define SHT_ARM_OVERLAYSECTION         (SHT_LOPROC + 5)
-
-#define SHT_MIPS_ABIFLAGS              (SHT_LOPROC + 0x2a)
-
-convert_t ecSHDRTYPE[] = {
+static convert_t ecSHDRTYPE[] = {
   {"NULL",                         SHT_NULL},
   {"PROGBITS",                     SHT_PROGBITS},
   {"SYMTAB",                       SHT_SYMTAB},
@@ -29,12 +24,39 @@ convert_t ecSHDRTYPE[] = {
   {"VERNEED",                      SHT_GNU_verneed},
   {"VERSYM",                       SHT_GNU_versym},
 
+  {0, 0}
+};
+
+#define SHT_ARM_DEBUGOVERLAY           (SHT_LOPROC + 4)
+#define SHT_ARM_OVERLAYSECTION         (SHT_LOPROC + 5)
+
+static convert_t ecSHDRTYPEARM32[] = {
   {"ARM_EXIDX",                    SHT_ARM_EXIDX},
   {"ARM_PREEMPTMAP",               SHT_ARM_PREEMPTMAP},
   {"ARM_ATTRIBUTES",               SHT_ARM_ATTRIBUTES},
   {"ARM_DEBUGOVERLAY",             SHT_ARM_DEBUGOVERLAY},
   {"ARM_OVERLAYSECTION",           SHT_ARM_OVERLAYSECTION},
 
+  {0, 0}
+};
+
+#define SHT_AARCH64_ATTRIBUTES             (SHT_LOPROC + 3)
+#define SHT_AARCH64_AUTH_RELR              (SHT_LOPROC + 4)
+#define SHT_AARCH64_MEMTAG_GLOBALS_STATIC  (SHT_LOPROC + 7)
+#define SHT_AARCH64_MEMTAG_GLOBALS_DYNAMIC (SHT_LOPROC + 8)
+
+static convert_t ecSHDRTYPEARM64[] = {
+  {"AARCH64_ATTRIBUTES",             SHT_AARCH64_ATTRIBUTES},
+  {"AARCH64_AUTH_RELR",              SHT_AARCH64_AUTH_RELR},
+  {"AARCH64_MEMTAG_GLOBALS_STATIC",  SHT_AARCH64_MEMTAG_GLOBALS_STATIC},
+  {"AARCH64_MEMTAG_GLOBALS_DYNAMIC", SHT_AARCH64_MEMTAG_GLOBALS_DYNAMIC},
+
+  {0, 0}
+};
+
+#define SHT_MIPS_ABIFLAGS              (SHT_LOPROC + 0x2a)
+
+static convert_t ecSHDRTYPEMIPS[] = {
   {"MIPS_LIBLIST",                 SHT_MIPS_LIBLIST},
   {"MIPS_MSYM",                    SHT_MIPS_MSYM},
   {"MIPS_CONFLICT",                SHT_MIPS_CONFLICT},
@@ -79,4 +101,36 @@ convert_t ecSHDRTYPE[] = {
 
   {0, 0}
 };
+
+#define SHT_RISCV_ATTRIBUTES           (SHT_LOPROC + 3)
+
+static convert_t ecSHDRTYPERISCV[] = {
+  {"RISCV_ATTRIBUTES",             SHT_RISCV_ATTRIBUTES},
+
+  {0, 0}
+};
+
+pconvert_t get_SHDRTYPE(const pbuffer_t p, const uint64_t type) {
+  if ((type >= SHT_LOPROC) && (type <= SHT_HIPROC)) {
+    switch (ecget_emachine(p)) {
+    case EM_RISCV:
+      return ecSHDRTYPERISCV;
+
+    case EM_ARM:
+      return ecSHDRTYPEARM32;
+
+    case EM_AARCH64:
+      return ecSHDRTYPEARM64;
+
+    case EM_MIPS:
+    case EM_MIPS_RS3_LE:
+      return ecSHDRTYPEMIPS;
+
+    default:
+      break;
+    }
+  }
+
+  return ecSHDRTYPE;
+}
 
