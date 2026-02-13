@@ -453,3 +453,13 @@ pconvert_t get_PUBLICTAG(const pbuffer_t p) {
   return NULL;
 }
 
+pconvert_t get_PUBLICTAGSTRING(const pbuffer_t p) {
+  switch (ecget_emachine(p)) {
+    case EM_ARM:
+    case EM_AARCH64:
+      return ecPUBLICTAGARMSTRING;
+  }
+
+  return NULL;
+}
+

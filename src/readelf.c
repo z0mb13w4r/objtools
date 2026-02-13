@@ -2076,7 +2076,7 @@ static int dump_archspecific0(const pbuffer_t p, const poptions_t o, const char*
               if (0 == tag) continue;
 
               n += printf_pick(get_PUBLICTAG(p), tag, USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-              if (isused(ecPUBLICTAGARMSTRING, tag)) {
+              if (isused(get_PUBLICTAGSTRING(p), tag)) {
                 n += printf_text(fgetstring(p1), USE_LT | USE_SPACE | USE_DQ);
               } else if (TAG_compatibility == tag) {
                 n += printf_text("flag", USE_LT | USE_SPACE | USE_COLON);
