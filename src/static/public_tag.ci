@@ -443,11 +443,25 @@ static pick_t ecPUBLICTAGARMSTRING[] = {
   PICK_END
 };
 
+static convert_t ecPUBLICTAGRISCV[] = {
+  {"TAG_RISCV_stack_align",                4},
+  {"TAG_RISCV_arch",                       5},
+  {"TAG_RISCV_unaligned_access",           6},
+  {"TAG_RISCV_priv_spec",                  8},
+  {"TAG_RISCV_priv_spec_minor",            10},
+  {"TAG_RISCV_priv_spec_revision",         12},
+
+  {0, 0}
+};
+
 pconvert_t get_PUBLICTAG(const pbuffer_t p) {
   switch (ecget_emachine(p)) {
   case EM_ARM:
   case EM_AARCH64:
     return ecPUBLICTAGARM;
+
+  case EM_RISCV:
+    return ecPUBLICTAGRISCV;
 
   default:
     break;
