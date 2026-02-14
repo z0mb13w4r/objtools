@@ -7,13 +7,16 @@
 #define MODE_FINDC              (MODE_PUT0('F') | MODE_PUT1('N') | MODE_PUT2('D') | MODE_PUT3('C'))
 
 #define MEMFIND_NONE            U32MASK_NONE
-#define MEMFIND_NOCHUNKSIZE     U32MASK(30)
+#define MEMFIND_NOCHUNKSIZE     U32MASK(28)
+#define MEMFIND_32BIT           U32MASK(29)
+#define MEMFIND_64BIT           U32MASK(30)
 #define MEMFIND_BIGENDIAN       U32MASK(31)
+#define MEMFIND_MASK            (MEMFIND_32BIT | MEMFIND_64BIT | MEMFIND_BIGENDIAN)
 
 typedef struct find_s {
   smode_t   mode;
   size_t    cpos, epos, size, chunksize;
-  bool_t    bigendian;
+  nmode_t   role;
   unknown_t item;
 
 } find_t, *pfind_t;
@@ -47,11 +50,13 @@ int64_t  fgets8(handle_t p);
 int64_t  fgets16(handle_t p);
 int64_t  fgets32(handle_t p);
 int64_t  fgets64(handle_t p);
+int64_t  fgetsNN(handle_t p);
 
 uint64_t fgetu8(handle_t p);
 uint64_t fgetu16(handle_t p);
 uint64_t fgetu32(handle_t p);
 uint64_t fgetu64(handle_t p);
+uint64_t fgetuNN(handle_t p);
 
 uint64_t fgetuleb128(handle_t p);
 

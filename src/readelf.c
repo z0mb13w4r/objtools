@@ -2183,7 +2183,7 @@ static uint64_t dump_archspecific2(const pbuffer_t p, const poptions_t o, handle
     n += printf_text("gp", USE_RB);
   }
 
-  n += printf_nice(fgetu32(q), USE_LHEX32);
+  n += printf_nice(fgetuNN(q), USE_LHEX32);
 
   return caddr + (isELF32(p) ? 4 : 8);
 }

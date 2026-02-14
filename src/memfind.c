@@ -17,7 +17,7 @@ bool_t fiseof(handle_t p) {
 bool_t fisbe(handle_t p) {
   if (isfind(p)) {
     pfind_t p0 = CAST(pfind_t, p);
-    return p0 ? p0->bigendian : FALSE;
+    return p0 ? MODE_ISANY(p0->role, MEMFIND_BIGENDIAN) : FALSE;
   }
 
   return FALSE;
@@ -26,7 +26,7 @@ bool_t fisbe(handle_t p) {
 bool_t fisle(handle_t p) {
   if (isfind(p)) {
     pfind_t p0 = CAST(pfind_t, p);
-    return p0 ? !p0->bigendian : TRUE;
+    return p0 ? !MODE_ISANY(p0->role, MEMFIND_BIGENDIAN) : TRUE;
   }
 
   return TRUE;
@@ -67,11 +67,7 @@ size_t fgetstate(handle_t p) {
   if (isfind(p)) {
     pfind_t p0 = CAST(pfind_t, p);
     if (p0) {
-      if (p0->bigendian) {
-        return p0->chunksize | MEMFIND_BIGENDIAN;
-      }
-
-      return p0->chunksize;
+      return p0->chunksize | p0->role;
     }
   }
 
@@ -115,6 +111,20 @@ int64_t fgets64(handle_t p) {
   return p0 ? endian_s64(fisbe(p), *CAST(int64_t*, p0)) : 0;
 }
 
+int64_t fgetsNN(handle_t p) {
+  if (isfind(p)) {
+    pfind_t p0 = CAST(pfind_t, p);
+    if (p0) {
+      if (MODE_ISANY(p0->role, MEMFIND_64BIT))       return fgets64(p);
+      else if (MODE_ISANY(p0->role, MEMFIND_32BIT))  return fgets32(p);
+
+      return fgets16(p);
+    }
+  }
+
+  return 0;
+}
+
 uint64_t fgetu8(handle_t p) {
   unknown_t p0 = fgetp(p, sizeof(uint8_t));
   return p0 ? endian_u8(fisbe(p), *CAST(uint8_t*, p0)) : 0;
@@ -133,6 +143,20 @@ uint64_t fgetu32(handle_t p) {
 uint64_t fgetu64(handle_t p) {
   unknown_t p0 = fgetp(p, sizeof(uint64_t));
   return p0 ? endian_u64(fisbe(p), *CAST(uint64_t*, p0)) : 0;
+}
+
+uint64_t fgetuNN(handle_t p) {
+  if (isfind(p)) {
+    pfind_t p0 = CAST(pfind_t, p);
+    if (p0) {
+      if (MODE_ISANY(p0->role, MEMFIND_64BIT))       return fgetu64(p);
+      else if (MODE_ISANY(p0->role, MEMFIND_32BIT))  return fgetu32(p);
+
+      return fgetu16(p);
+    }
+  }
+
+  return 0;
 }
 
 uint64_t fgetuleb128(handle_t p) {
@@ -358,8 +382,8 @@ handle_t fcalloc(unknown_t p, const size_t size, const size_t chunksize) {
       p0->epos = size - 1;
       p0->size = size;
       p0->item = cmalloc(p, size, MODE_HEAP);
-      p0->chunksize = chunksize & ~MEMFIND_BIGENDIAN;
-      p0->bigendian = MODE_ISANY(chunksize, MEMFIND_BIGENDIAN) ? TRUE : FALSE;
+      p0->role = chunksize & MEMFIND_MASK;
+      p0->chunksize = chunksize & ~MEMFIND_MASK;
     }
 
     return setmode(p0, MODE_FINDC);
@@ -383,8 +407,8 @@ handle_t fmalloc(unknown_t p, const size_t size, const size_t chunksize) {
       p0->epos = size - 1;
       p0->size = size;
       p0->item = p;
-      p0->chunksize = chunksize & ~MEMFIND_BIGENDIAN;
-      p0->bigendian = MODE_ISANY(chunksize, MEMFIND_BIGENDIAN) ? TRUE : FALSE;
+      p0->role = chunksize & MEMFIND_MASK;
+      p0->chunksize = chunksize & ~MEMFIND_MASK;
     }
 
     return setmode(p0, MODE_FIND);
@@ -400,8 +424,8 @@ handle_t fxalloc(const size_t size, const size_t chunksize) {
     p0->epos = size - 1;
     p0->size = size;
     p0->item = xmalloc(size, MODE_HEAP);
-    p0->chunksize = chunksize & ~MEMFIND_BIGENDIAN;
-    p0->bigendian = MODE_ISANY(chunksize, MEMFIND_BIGENDIAN) ? TRUE : FALSE;
+    p0->role = chunksize & MEMFIND_MASK;
+    p0->chunksize = chunksize & ~MEMFIND_MASK;
   }
 
   return setmode(p0, MODE_FINDC);

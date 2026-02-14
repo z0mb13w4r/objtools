@@ -1396,7 +1396,12 @@ handle_t fget64byshdr(const pbuffer_t p, Elf64_Shdr *shdr) {
 }
 
 handle_t fgetbyoffset(const pbuffer_t p, const int offset, const size_t size, const size_t chunksize) {
-  return fmalloc(getp(p, offset, size), size, isELFbe(p) ? chunksize | MEMFIND_BIGENDIAN : chunksize);
+  size_t chunksiz = chunksize;
+  if (isELFbe(p))   chunksiz |= MEMFIND_BIGENDIAN;
+  if (isELF32(p))   chunksiz |= MEMFIND_32BIT;
+  else if (isELF64(p)) chunksiz |= MEMFIND_64BIT;
+
+  return fmalloc(getp(p, offset, size), size, chunksiz);
 }
 
 int ecmake_sectionthumbs(const pbuffer_t p, pthumb_t thumbs, const size_t maxthumbs) {
