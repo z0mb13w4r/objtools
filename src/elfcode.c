@@ -289,6 +289,65 @@ bool_t isELFpie(const pbuffer_t p) {
   return FALSE;
 }
 
+uint64_t ecget_value32(const pbuffer_t p, const int type, const int tag) {
+  MEMSTACK(Elf32_Ehdr, ex);
+  Elf32_Ehdr *e0 = ecget_ehdr32(p, ex);
+  if (e0) {
+    for (Elf32_Half i = 0; i < e0->e_shnum; ++i) {
+      MEMSTACK(Elf32_Shdr, sx);
+      Elf32_Shdr *s0 = ecget_shdr32byindex(p, sx, i);
+      if (s0 && type == s0->sh_type) {
+        size_t cnt = s0->sh_size / s0->sh_entsize;
+        if (SHT_DYNAMIC == s0->sh_type) {
+          for (size_t j = 0; j < cnt; ++j) {
+            MEMSTACK(Elf32_Dyn, dx);
+            Elf32_Dyn *d0 = ecget_dyn32byindex(p, dx, i, j);
+            if (tag == d0->d_tag) {
+              return d0->d_un.d_val;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  return 0;
+}
+
+uint64_t ecget_value64(const pbuffer_t p, const int type, const int tag) {
+  MEMSTACK(Elf64_Ehdr, ex);
+  Elf64_Ehdr *e0 = ecget_ehdr64(p, ex);
+  if (e0) {
+    for (Elf64_Half i = 0; i < e0->e_shnum; ++i) {
+      MEMSTACK(Elf64_Shdr, sx);
+      Elf64_Shdr *s0 = ecget_shdr64byindex(p, sx, i);
+      if (s0 && type == s0->sh_type) {
+        size_t cnt = s0->sh_size / s0->sh_entsize;
+        if (SHT_DYNAMIC == s0->sh_type) {
+          for (size_t j = 0; j < cnt; ++j) {
+            MEMSTACK(Elf64_Dyn, dx);
+            Elf64_Dyn *d0 = ecget_dyn64byindex(p, dx, i, j);
+            if (tag == d0->d_tag) {
+              return d0->d_un.d_val;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  return 0;
+}
+
+uint64_t ecget_value(const pbuffer_t p, const int type, const int tag) {
+  if (isELF(p)) {
+    if (isELF32(p))        return ecget_value32(p, type, tag);
+    else if (isELF64(p))   return ecget_value64(p, type, tag);
+  }
+
+  return 0;
+}
+
 Elf32_Dyn* ecget_dyn32byindex(const pbuffer_t p, const unknown_t q, const int index, const int entry) {
   MEMSTACK(Elf32_Shdr, sx);
   Elf32_Shdr *s0 = ecget_shdr32byindex(p, sx, index);
