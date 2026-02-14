@@ -2177,19 +2177,36 @@ static int dump_archspecific2(const pbuffer_t p, const poptions_t o, const uint6
 
   handle_t p0 = fgetbyoffset(p, sh_offset, sh_size, MEMFIND_NOCHUNKSIZE);
   if (p0) {
+    uint64_t addr = sh_addr;
+
     n += printf_text("PRIMARY GOT", USE_TAB | USE_EOL);
     n += printf_text("Canonical gp value", USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-    n += printf_nice(0x7ff0 + sh_addr, USE_LHEX32 | USE_EOL);
+    n += printf_nice(0x7ff0 + addr, USE_LHEX32 | USE_EOL);
 
     n += printf_text("RESERVED ENTRIES", USE_LT | USE_EOL);
     n += printf_text("Address", USE_LT | USE_TAB | SET_PAD(12));
     n += printf_text("Access", USE_LT | SET_PAD(12));
     n += printf_text("Initial Purpose", USE_LT | USE_EOL);
 
+    n += printf_nice(addr, USE_LHEX32); addr += 4;
+    n += printf_nice(fgetu32(p0), USE_LHEX32);
+    n += printf_text("Lazy resolver", USE_LT | USE_SPACE | USE_EOL);
+    n += printf_nice(addr, USE_LHEX32); addr += 4;
+    n += printf_nice(fgetu32(p0), USE_LHEX32);
+    n += printf_text("Module pointer (GNU extension)", USE_LT | USE_SPACE | USE_EOL);
+
     n += printf_text("LOCAL ENTRIES", USE_LT | USE_EOL);
     n += printf_text("Address", USE_LT | USE_TAB | SET_PAD(12));
     n += printf_text("Access", USE_LT | SET_PAD(12));
     n += printf_text("Initial", USE_LT | USE_EOL);
+
+    n += printf_nice(addr, USE_LHEX32); addr += 4;
+    n += printf_nice(fgetu32(p0), USE_LHEX32);
+    n += printf_eol();
+
+    n += printf_nice(addr, USE_LHEX32); addr += 4;
+    n += printf_nice(fgetu32(p0), USE_LHEX32);
+    n += printf_eol();
 
     n += printf_text("GLOBAL ENTRIES", USE_LT | USE_EOL);
     n += printf_text("Address", USE_LT | USE_TAB | SET_PAD(12));
