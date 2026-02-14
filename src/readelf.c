@@ -2178,7 +2178,8 @@ static uint64_t dump_archspecific2(const pbuffer_t p, const poptions_t o, handle
   n += printf_nice(caddr, USE_LHEX32);
 
   if (caddr < saddr + 0xfff0) {
-    n += printf_nice(caddr - saddr - 0xfff0, USE_SDEC16);
+    n += printf_nice((0x7ff0 - (caddr - saddr)), USE_DEC | USE_DASH);
+//    printf ("%6d(gp)", (int) (caddr - saddr - 0x7ff0));
     n += printf_text("gp", USE_RB);
   }
 
