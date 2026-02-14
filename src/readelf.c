@@ -2172,13 +2172,13 @@ static int dump_archspecific1(const pbuffer_t p, const poptions_t o, const uint6
   return n;
 }
 
-static uint64_t dump_archspecific2(const pbuffer_t p, const poptions_t o, handle_t q, const uint64_t addr) {
+static uint64_t dump_archspecific2(const pbuffer_t p, const poptions_t o, handle_t q, const uint64_t caddr, const uint64_t saddr) {
   int n = 0;
 
-  n += printf_nice(addr, USE_LHEX32);
+  n += printf_nice(caddr, USE_LHEX32);
   n += printf_nice(fgetu32(q), USE_LHEX32);
 
-  return addr + (isELF32(p) ? 4 : 8);
+  return caddr + (isELF32(p) ? 4 : 8);
 }
 
 static int dump_archspecific3(const pbuffer_t p, const poptions_t o, const uint64_t sh_addr, const uint64_t sh_offset, const uint64_t sh_size) {
@@ -2195,9 +2195,9 @@ static int dump_archspecific3(const pbuffer_t p, const poptions_t o, const uint6
     n += printf_text("Access", USE_LT | SET_PAD(12));
     n += printf_text("Initial Purpose", USE_LT | USE_EOL);
 
-    uint64_t addr = dump_archspecific2(p, o, p0, sh_addr);
+    uint64_t addr = dump_archspecific2(p, o, p0, sh_addr, sh_addr);
     n += printf_text("Lazy resolver", USE_LT | USE_SPACE | USE_EOL);
-    addr = dump_archspecific2(p, o, p0, addr);
+    addr = dump_archspecific2(p, o, p0, addr, sh_addr);
     n += printf_text("Module pointer (GNU extension)", USE_LT | USE_SPACE | USE_EOL);
 
     n += printf_text("LOCAL ENTRIES", USE_LT | USE_EOL);
@@ -2205,10 +2205,10 @@ static int dump_archspecific3(const pbuffer_t p, const poptions_t o, const uint6
     n += printf_text("Access", USE_LT | SET_PAD(12));
     n += printf_text("Initial", USE_LT | USE_EOL);
 
-    addr = dump_archspecific2(p, o, p0, addr);
+    addr = dump_archspecific2(p, o, p0, addr, sh_addr);
     n += printf_eol();
 
-    addr = dump_archspecific2(p, o, p0, addr);
+    addr = dump_archspecific2(p, o, p0, addr, sh_addr);
     n += printf_eol();
 
     n += printf_text("GLOBAL ENTRIES", USE_LT | USE_EOL);
