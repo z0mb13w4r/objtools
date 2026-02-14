@@ -2038,6 +2038,8 @@ static int dump_notes64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr)
   return n;
 }
 
+const int MAXSIZE = 30;
+
 static int dump_archspecific0(const pbuffer_t p, const poptions_t o, const char* name, const uint64_t sh_offset, const uint64_t sh_size) {
   int n = 0;
 
@@ -2057,19 +2059,17 @@ static int dump_archspecific0(const pbuffer_t p, const poptions_t o, const char*
         uint64_t tag = fgetu8(p0);
         uint64_t siz = fgetu32(p0);
         if (1 == tag) {
-          n += printf_text("File Attributes", USE_LT | USE_EOL);
+          n += printf_text("FILE ATTRIBUTES", USE_LT | USE_EOL);
         } else if (2 == tag) {
-          n += printf_text("Section Attributes", USE_LT | USE_COLON);
+          n += printf_text("SECTION ATTRIBUTES", USE_LT | USE_COLON);
         } else if (3 == tag) {
-          n += printf_text("Symbol Attributes", USE_LT | USE_COLON);
+          n += printf_text("SYMBOL ATTRIBUTES", USE_LT | USE_COLON);
         } else {
           isok = FALSE;
         }
 
         if (isok) {
           if (0 == xstrcmp(attrname, name)) {
-            const int MAXSIZE = strlenpick(get_PUBLICTAG(p)) + 2;
-
             handle_t p1 = fmalloc(p0, siz - 1, fgetstate(p0));
             while (!fiseof(p1)) {
               uint64_t tag = fgetuleb128(p1);
@@ -2102,8 +2102,6 @@ static int dump_archspecific0(const pbuffer_t p, const poptions_t o, const char*
 
             ffree(p1);
           } else if (0 == xstrcmp(attrname, "gnu")) {
-            const int MAXSIZE = strlenpick(get_GNUTAG(p)) + 2;
-
             handle_t p1 = fmalloc(p0, siz - 1, fgetstate(p0));
             while (!fiseof(p1)) {
               uint64_t tag = fgetuleb128(p1);
@@ -2134,8 +2132,6 @@ static int dump_archspecific0(const pbuffer_t p, const poptions_t o, const char*
 
 static int dump_archspecific1(const pbuffer_t p, const poptions_t o, const uint64_t sh_offset, const uint64_t sh_size) {
   int n = 0;
-
-  const int MAXSIZE = strlenpick(ecGNUTAGMIPS) + 2;
 
   handle_t p0 = fgetbyoffset(p, sh_offset, sh_size, MEMFIND_NOCHUNKSIZE);
   if (p0) {
@@ -2181,6 +2177,28 @@ static int dump_archspecific2(const pbuffer_t p, const poptions_t o, const uint6
 
   handle_t p0 = fgetbyoffset(p, sh_offset, sh_size, MEMFIND_NOCHUNKSIZE);
   if (p0) {
+    n += printf_text("PRIMARY GOT", USE_TAB | USE_EOL);
+    n += printf_text("Canonical gp value", USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(0x7ff0 + sh_addr, USE_LHEX32 | USE_EOL);
+
+    n += printf_text("RESERVED ENTRIES", USE_LT | USE_EOL);
+    n += printf_text("Address", USE_LT | USE_TAB | SET_PAD(12));
+    n += printf_text("Access", USE_LT | SET_PAD(12));
+    n += printf_text("Initial Purpose", USE_LT | USE_EOL);
+
+    n += printf_text("LOCAL ENTRIES", USE_LT | USE_EOL);
+    n += printf_text("Address", USE_LT | USE_TAB | SET_PAD(12));
+    n += printf_text("Access", USE_LT | SET_PAD(12));
+    n += printf_text("Initial", USE_LT | USE_EOL);
+
+    n += printf_text("GLOBAL ENTRIES", USE_LT | USE_EOL);
+    n += printf_text("Address", USE_LT | USE_TAB | SET_PAD(12));
+    n += printf_text("Access", USE_LT | SET_PAD(12));
+    n += printf_text("Initial", USE_LT | SET_PAD(12));
+    n += printf_text("Sym.Val.", USE_LT | SET_PAD(12));
+    n += printf_text("Type", USE_LT | SET_PAD(12));
+    n += printf_text("Ndx", USE_LT | SET_PAD(12));
+    n += printf_text("Name", USE_LT | USE_EOL);
 
     ffree(p0);
   }
