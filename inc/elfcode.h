@@ -52,6 +52,8 @@ uint64_t ecget_etype(const pbuffer_t p);
 uint64_t ecget_eflags(const pbuffer_t p);
 uint64_t ecget_emachine(const pbuffer_t p);
 
+uint64_t ecget_value32(const pbuffer_t p, const int type, const int tag);
+uint64_t ecget_value64(const pbuffer_t p, const int type, const int tag);
 uint64_t ecget_value(const pbuffer_t p, const int type, const int tag);
 
 Elf32_Dyn* ecget_dyn32byindex(const pbuffer_t p, const unknown_t q, const int index, const int entry);

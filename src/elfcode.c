@@ -235,49 +235,13 @@ bool_t isELFle(const pbuffer_t p) {
 }
 
 bool_t isELFpie32(const pbuffer_t p) {
-  MEMSTACK(Elf32_Ehdr, ex);
-  Elf32_Ehdr *e = ecget_ehdr32(p, ex);
-  if (e) {
-    for (Elf32_Half i = 0; i < e->e_shnum; ++i) {
-      MEMSTACK(Elf32_Shdr, sx);
-      Elf32_Shdr *s = ecget_shdr32byindex(p, sx, i);
-      if (s && SHT_DYNAMIC == s->sh_type) {
-        size_t cnt = s->sh_size / s->sh_entsize;
-
-        Elf32_Dyn *d = _get32byshdr(p, s);
-        for (size_t j = 0; j < cnt; ++j, ++d) {
-          if (DT_FLAGS_1 == d->d_tag && (DF_1_PIE & d->d_un.d_val)) {
-            return TRUE;
-          }
-        }
-      }
-    }
-  }
-
-  return FALSE;
+  uint64_t x = ecget_value32(p, SHT_DYNAMIC, DT_FLAGS_1);
+  return DF_1_PIE & x ? TRUE : FALSE;
 }
 
 bool_t isELFpie64(const pbuffer_t p) {
-  MEMSTACK(Elf64_Ehdr, ex);
-  Elf64_Ehdr *e = ecget_ehdr64(p, ex);
-  if (e) {
-    for (Elf64_Half i = 0; i < e->e_shnum; ++i) {
-      MEMSTACK(Elf64_Shdr, sx);
-      Elf64_Shdr *s = ecget_shdr64byindex(p, sx, i);
-      if (s && SHT_DYNAMIC == s->sh_type) {
-        size_t cnt = s->sh_size / s->sh_entsize;
-
-        Elf64_Dyn *d = _get64byshdr(p, s);
-        for (size_t j = 0; j < cnt; ++j, ++d) {
-          if (DT_FLAGS_1 == d->d_tag && (DF_1_PIE & d->d_un.d_val)) {
-            return TRUE;
-          }
-        }
-      }
-    }
-  }
-
-  return FALSE;
+  uint64_t x = ecget_value64(p, SHT_DYNAMIC, DT_FLAGS_1);
+  return DF_1_PIE & x ? TRUE : FALSE;
 }
 
 bool_t isELFpie(const pbuffer_t p) {
