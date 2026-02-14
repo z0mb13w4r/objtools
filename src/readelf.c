@@ -2172,27 +2172,32 @@ static int dump_archspecific1(const pbuffer_t p, const poptions_t o, const uint6
   return n;
 }
 
-static int dump_archspecific2(const pbuffer_t p, const poptions_t o, const uint64_t sh_addr, const uint64_t sh_offset, const uint64_t sh_size) {
+static uint64_t dump_archspecific2(const pbuffer_t p, const poptions_t o, handle_t q, const uint64_t addr) {
+  int n = 0;
+
+  n += printf_nice(addr, USE_LHEX32);
+  n += printf_nice(fgetu32(q), USE_LHEX32);
+
+  return addr + (isELF32(p) ? 4 : 8);
+}
+
+static int dump_archspecific3(const pbuffer_t p, const poptions_t o, const uint64_t sh_addr, const uint64_t sh_offset, const uint64_t sh_size) {
   int n = 0;
 
   handle_t p0 = fgetbyoffset(p, sh_offset, sh_size, MEMFIND_NOCHUNKSIZE);
   if (p0) {
-    uint64_t addr = sh_addr;
-
     n += printf_text("PRIMARY GOT", USE_TAB | USE_EOL);
     n += printf_text("Canonical gp value", USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-    n += printf_nice(0x7ff0 + addr, USE_LHEX32 | USE_EOL);
+    n += printf_nice(0x7ff0 + sh_addr, USE_LHEX32 | USE_EOL);
 
     n += printf_text("RESERVED ENTRIES", USE_LT | USE_EOL);
     n += printf_text("Address", USE_LT | USE_TAB | SET_PAD(12));
     n += printf_text("Access", USE_LT | SET_PAD(12));
     n += printf_text("Initial Purpose", USE_LT | USE_EOL);
 
-    n += printf_nice(addr, USE_LHEX32); addr += 4;
-    n += printf_nice(fgetu32(p0), USE_LHEX32);
+    uint64_t addr = dump_archspecific2(p, o, p0, sh_addr);
     n += printf_text("Lazy resolver", USE_LT | USE_SPACE | USE_EOL);
-    n += printf_nice(addr, USE_LHEX32); addr += 4;
-    n += printf_nice(fgetu32(p0), USE_LHEX32);
+    addr = dump_archspecific2(p, o, p0, addr);
     n += printf_text("Module pointer (GNU extension)", USE_LT | USE_SPACE | USE_EOL);
 
     n += printf_text("LOCAL ENTRIES", USE_LT | USE_EOL);
@@ -2200,12 +2205,10 @@ static int dump_archspecific2(const pbuffer_t p, const poptions_t o, const uint6
     n += printf_text("Access", USE_LT | SET_PAD(12));
     n += printf_text("Initial", USE_LT | USE_EOL);
 
-    n += printf_nice(addr, USE_LHEX32); addr += 4;
-    n += printf_nice(fgetu32(p0), USE_LHEX32);
+    addr = dump_archspecific2(p, o, p0, addr);
     n += printf_eol();
 
-    n += printf_nice(addr, USE_LHEX32); addr += 4;
-    n += printf_nice(fgetu32(p0), USE_LHEX32);
+    addr = dump_archspecific2(p, o, p0, addr);
     n += printf_eol();
 
     n += printf_text("GLOBAL ENTRIES", USE_LT | USE_EOL);
@@ -2245,7 +2248,7 @@ static int dump_archspecific32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr
 
     Elf32_Shdr* s2 = ecget_shdr32byname(p, sx, ".got");
     if (s2) {
-      n += dump_archspecific2(p, o, s2->sh_addr, s2->sh_offset, s2->sh_size);
+      n += dump_archspecific3(p, o, s2->sh_addr, s2->sh_offset, s2->sh_size);
     }
   } else if (EM_RISCV == ehdr->e_machine) {
     Elf32_Shdr* s0 = ecget_shdr32bytype(p, sx, SHT_RISCV_ATTRIBUTES);
@@ -2279,7 +2282,7 @@ static int dump_archspecific64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr
 
     Elf64_Shdr* s2 = ecget_shdr64byname(p, sx, ".got");
     if (s2) {
-      n += dump_archspecific2(p, o, s2->sh_addr, s2->sh_offset, s2->sh_size);
+      n += dump_archspecific3(p, o, s2->sh_addr, s2->sh_offset, s2->sh_size);
     }
   } else if (EM_RISCV == ehdr->e_machine) {
     Elf64_Shdr* s0 = ecget_shdr64bytype(p, sx, SHT_RISCV_ATTRIBUTES);
