@@ -36,6 +36,18 @@ def user_info():
   go('It looks like we have password hashes in /etc/passwd!', 'grep -v "^[^:]*:[x]" /etc/passwd')
   go('Contents of /etc/passwd', 'cat /etc/passwd')
   go('We can read the shadow file!', 'cat /etc/shadow')
+  go('We can read the master.passwd file!', 'cat /etc/master.passwd')
+  #go('Super user account(s)', 'grep -v -E "^#" /etc/passwd | awk -F: "$3 == 0 { print $1}"')
+  #go('Sudoers configuration (condensed)', 'grep -v -e "^$" /etc/sudoers | grep -v "#"')
+  #
+  go('Accounts that have recently used sudo', 'find /home -name .sudo_as_admin_successful')
+  go("We can read root's home directory!", 'ls -ahl /root/')
+  go('Are permissions on /home directories lax', 'ls -ahl /home/')
+  #
+  go('World-readable files within /home', 'find /home/ -perm -4 -type f -exec ls -al {} \;')
+  #go('Home directory contents', 'ls -ahl ~')
+  #go('SSH keys/host information found in the following locations', 'find / \( -name "id_dsa*" -o -name "id_rsa*" -o -name "known_hosts" -o -name "authorized_hosts" -o -name "authorized_keys" \) -exec ls -al {}')
+  #
 
 
 if __name__ == '__main__':
