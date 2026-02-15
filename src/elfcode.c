@@ -540,9 +540,9 @@ unknown_t ecget_shdrbytype(const pbuffer_t p, const int type) {
 
 int _ecget_index32byname(const pbuffer_t p, const char* name) {
   MEMSTACK(Elf32_Ehdr, ex);
-  Elf32_Ehdr *e = ecget_ehdr32(p, ex);
-  if (e && name && name[0]) {
-    for (Elf32_Half i = 0; i < e->e_shnum; ++i) {
+  Elf32_Ehdr *e0 = ecget_ehdr32(p, ex);
+  if (e0 && name && name[0]) {
+    for (Elf32_Half i = 0; i < e0->e_shnum; ++i) {
       const char* name0 = _ecget_secname32byindex(p, i);
       if (name0 && 0 == xstrcmp(name, name0)) {
         return i;
@@ -555,9 +555,9 @@ int _ecget_index32byname(const pbuffer_t p, const char* name) {
 
 int _ecget_index64byname(const pbuffer_t p, const char* name) {
   MEMSTACK(Elf64_Ehdr, ex);
-  Elf64_Ehdr *e = ecget_ehdr64(p, ex);
-  if (e && name && name[0]) {
-    for (Elf64_Half i = 0; i < e->e_shnum; ++i) {
+  Elf64_Ehdr *e0 = ecget_ehdr64(p, ex);
+  if (e0 && name && name[0]) {
+    for (Elf64_Half i = 0; i < e0->e_shnum; ++i) {
       const char* name0 = _ecget_secname64byindex(p, i);
       if (name0 && 0 == xstrcmp(name, name0)) {
         return i;
@@ -572,6 +572,47 @@ int ecget_indexbyname(const pbuffer_t p, const char* name) {
   if (isELF(p)) {
     if (isELF32(p))        return _ecget_index32byname(p, name);
     else if (isELF64(p))   return _ecget_index64byname(p, name);
+  }
+
+  return -1;
+}
+
+int _ecget_index32bytype(const pbuffer_t p, const int type) {
+  MEMSTACK(Elf32_Ehdr, ex);
+  Elf32_Ehdr *e0 = ecget_ehdr32(p, ex);
+  if (e0) {
+    for (Elf32_Half i = 0; i < e0->e_shnum; ++i) {
+      MEMSTACK(Elf32_Shdr, sx);
+      Elf32_Shdr *s0 = ecget_shdr32byindex(p, sx, i);
+      if (s0 && s0->sh_type == type){
+        return i;
+      }
+    }
+  }
+
+  return -1;
+}
+
+int _ecget_index64bytype(const pbuffer_t p, const int type) {
+  MEMSTACK(Elf64_Ehdr, ex);
+  Elf64_Ehdr *e0 = ecget_ehdr64(p, ex);
+  if (e0) {
+    for (Elf64_Half i = 0; i < e0->e_shnum; ++i) {
+      MEMSTACK(Elf64_Shdr, sx);
+      Elf64_Shdr *s0 = ecget_shdr64byindex(p, sx, i);
+      if (s0 && s0->sh_type == type){
+        return i;
+      }
+    }
+  }
+
+  return -1;
+}
+
+int ecget_indexbytype(const pbuffer_t p, const int type) {
+  if (isELF(p)) {
+    if (isELF32(p))        return _ecget_index32bytype(p, type);
+    else if (isELF64(p))   return _ecget_index64bytype(p, type);
   }
 
   return -1;
