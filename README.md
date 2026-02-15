@@ -24,6 +24,8 @@ If you can contribute or you want to, feel free to do it at [PayPal](https://www
 
 If you find this project useful and would like to keep it maintained, new features added and a regular release cycle. Then, could you think about sponsorship at [PayPal](https://www.paypal.com/ncp/payment/2DAZRCQM7MDFG).
 
+If you require a service contract that includes: email support, technical help, support tickets, prioritised bug fixes with immediate release. Drop us an email: sales (at) uber-techie.co.uk
+
 ### Dependencies ###
 
 https://github.com/capstone-engine/capstone - BSD license
