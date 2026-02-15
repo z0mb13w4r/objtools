@@ -2195,9 +2195,10 @@ static int dump_archspecific3(const pbuffer_t p, const poptions_t o, const uint6
 
   handle_t p0 = fgetbyoffset(p, sh_offset, sh_size, MEMFIND_NOCHUNKSIZE);
   if (p0) {
-    uint64_t size = ecget_value(p, SHT_DYNAMIC, DT_MIPS_LOCAL_GOTNO);
+    size_t gotno_size = ecget_value(p, SHT_DYNAMIC, DT_MIPS_LOCAL_GOTNO);
 
-    if (size) {
+    uint64_t addr = sh_addr;
+    if (gotno_size) {
       n += printf_text("PRIMARY GOT", USE_TAB | USE_EOL);
       n += printf_text("Canonical gp value", USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
       n += printf_nice(0x7ff0 + sh_addr, USE_LHEX32 | USE_EOL);
@@ -2207,32 +2208,58 @@ static int dump_archspecific3(const pbuffer_t p, const poptions_t o, const uint6
       n += printf_text("Access", USE_LT | SET_PAD(12));
       n += printf_text("Initial Purpose", USE_LT | USE_EOL);
 
-      uint64_t addr = dump_archspecific2(p, o, p0, sh_addr, sh_addr);
+      addr = dump_archspecific2(p, o, p0, addr, sh_addr);
       n += printf_text("Lazy resolver", USE_LT | USE_SPACE | USE_EOL);
       addr = dump_archspecific2(p, o, p0, addr, sh_addr);
       n += printf_text("Module pointer (GNU extension)", USE_LT | USE_SPACE | USE_EOL);
 
-      if (!fiseof(p0) && 2 <= size) {
+      if (!fiseof(p0) && 2 <= gotno_size) {
         n += printf_text("LOCAL ENTRIES", USE_LT | USE_EOL);
         n += printf_text("Address", USE_LT | USE_TAB | SET_PAD(12));
         n += printf_text("Access", USE_LT | SET_PAD(12));
         n += printf_text("Initial", USE_LT | USE_EOL);
 
-        for (uint64_t i = 0; !fiseof(p0) && (i < size - 2); ++i) {
+        for (size_t i = 0; !fiseof(p0) && (i < gotno_size - 2); ++i) {
           addr = dump_archspecific2(p, o, p0, addr, sh_addr);
           n += printf_eol();
         }
       }
     }
 
-    n += printf_text("GLOBAL ENTRIES", USE_LT | USE_EOL);
-    n += printf_text("Address", USE_LT | USE_TAB | SET_PAD(12));
-    n += printf_text("Access", USE_LT | SET_PAD(12));
-    n += printf_text("Initial", USE_LT | SET_PAD(12));
-    n += printf_text("Sym.Val.", USE_LT | SET_PAD(12));
-    n += printf_text("Type", USE_LT | SET_PAD(12));
-    n += printf_text("Ndx", USE_LT | SET_PAD(12));
-    n += printf_text("Name", USE_LT | USE_EOL);
+    size_t gotsym_size = ecget_value(p, SHT_DYNAMIC, DT_MIPS_GOTSYM);
+    size_t symtabno_size = ecget_value(p, SHT_DYNAMIC, DT_MIPS_SYMTABNO);
+
+    if (!fiseof(p0) && gotsym_size < symtabno_size) {
+      n += printf_text("GLOBAL ENTRIES", USE_LT | USE_EOL);
+      n += printf_text("Address", USE_LT | USE_TAB | SET_PAD(12));
+      n += printf_text("Access", USE_LT | SET_PAD(12));
+      n += printf_text("Initial", USE_LT | SET_PAD(12));
+      n += printf_text("Sym.Val.", USE_LT | SET_PAD(12));
+      n += printf_text("Type", USE_LT | SET_PAD(12));
+      n += printf_text("Ndx", USE_LT | SET_PAD(12));
+      n += printf_text("Name", USE_LT | USE_EOL);
+
+      int idx = ecget_indexbytype(p, SHT_DYNSYM);
+      for (size_t i = gotsym_size; !fiseof(p0) && i < symtabno_size; ++i) {
+        addr = dump_archspecific2(p, o, p0, addr, sh_addr);
+
+        if (isELF32(p)) {
+          MEMSTACK(Elf32_Shdr, sx);
+          Elf32_Sym* s0 = ecget_sym32byindex(p, sx, idx, i);
+          if (s0) {
+            n += printf_nice(s0->st_value, USE_LHEX32);
+          }
+        } else if (isELF64(p)) {
+          MEMSTACK(Elf64_Shdr, sx);
+          Elf64_Sym* s0 = ecget_sym64byindex(p, sx, idx, i);
+          if (s0) {
+            n += printf_nice(s0->st_value, USE_LHEX32);
+          }
+        }
+
+        n += printf_eol();
+      }
+    }
 
     ffree(p0);
   }
