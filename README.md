@@ -4,6 +4,8 @@ These tools were originally designed as a research project for industrial contro
 
 **convert-ng** is a Swiss Army Knife for manipulating data in complex ways using operations, xor, addition, subtraction, logical shifts and rotations, base32, base58, base64, base85 and vigeneree cipher.
 
+**enumerate-ng.py** is a script inspired by rebootuser’s LinEnum for enumeration and privilege escalation. This information is useful for hardening a device or for understanding how an adversary obtained persistence, privilege escalation, or lateral movement.
+
 **objcopy-ng** copies the contents of an object file to another using the GNU BFD Library to readand write the object files. It can write the destination object file in a format different from that of the source object file.
 
 **objdump-ng** displays information about one or more object files. This information is useful to malware researchers and binary analysis, as this utility is lightweight compared to many commercial applications (x86, ARM, AARCH64, MIPS and RISC-V).
