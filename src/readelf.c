@@ -2190,7 +2190,7 @@ static uint64_t dump_archspecific2(const pbuffer_t p, const poptions_t o, handle
   return caddr + (isELF32(p) ? 4 : 8);
 }
 
-static int dump_archspecific3(const pbuffer_t p, const poptions_t o, const uint64_t sh_addr, const uint64_t sh_offset, const uint64_t sh_size) {
+static int dump_archspecific4(const pbuffer_t p, const poptions_t o, const uint64_t sh_addr, const uint64_t sh_offset, const uint64_t sh_size) {
   int n = 0;
 
   handle_t p0 = fgetbyoffset(p, sh_offset, sh_size, MEMFIND_NOCHUNKSIZE);
@@ -2311,7 +2311,7 @@ static int dump_archspecific32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr
 
     Elf32_Shdr* s2 = ecget_shdr32byname(p, sx, ".got");
     if (s2) {
-      n += dump_archspecific3(p, o, s2->sh_addr, s2->sh_offset, s2->sh_size);
+      n += dump_archspecific4(p, o, s2->sh_addr, s2->sh_offset, s2->sh_size);
     }
   } else if (EM_RISCV == ehdr->e_machine) {
     Elf32_Shdr* s0 = ecget_shdr32bytype(p, sx, SHT_RISCV_ATTRIBUTES);
@@ -2345,7 +2345,7 @@ static int dump_archspecific64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr
 
     Elf64_Shdr* s2 = ecget_shdr64byname(p, sx, ".got");
     if (s2) {
-      n += dump_archspecific3(p, o, s2->sh_addr, s2->sh_offset, s2->sh_size);
+      n += dump_archspecific4(p, o, s2->sh_addr, s2->sh_offset, s2->sh_size);
     }
   } else if (EM_RISCV == ehdr->e_machine) {
     Elf64_Shdr* s0 = ecget_shdr64bytype(p, sx, SHT_RISCV_ATTRIBUTES);
