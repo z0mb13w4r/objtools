@@ -19,6 +19,12 @@ Elf64_Nhdr* ecconvert_nhdr64(const pbuffer_t p, unknown_t dst, unknown_t src);
 Elf32_Phdr* ecconvert_phdr32(const pbuffer_t p, unknown_t dst, unknown_t src);
 Elf64_Phdr* ecconvert_phdr64(const pbuffer_t p, unknown_t dst, unknown_t src);
 
+Elf32_Rel* ecconvert_rel32(const pbuffer_t p, unknown_t dst, unknown_t src);
+Elf64_Rel* ecconvert_rel64(const pbuffer_t p, unknown_t dst, unknown_t src);
+
+Elf32_Rela* ecconvert_rela32(const pbuffer_t p, unknown_t dst, unknown_t src);
+Elf64_Rela* ecconvert_rela64(const pbuffer_t p, unknown_t dst, unknown_t src);
+
 Elf32_Shdr* ecconvert_shdr32(const pbuffer_t p, unknown_t dst, unknown_t src);
 Elf64_Shdr* ecconvert_shdr64(const pbuffer_t p, unknown_t dst, unknown_t src);
 

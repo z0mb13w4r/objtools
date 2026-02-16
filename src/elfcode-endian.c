@@ -21,7 +21,7 @@ Elf32_Dyn* ecconvert_dyn32(const pbuffer_t p, unknown_t dst, unknown_t src) {
     Elf32_Dyn* pdst = CAST(Elf32_Dyn*, dst);
     Elf32_Dyn* psrc = CAST(Elf32_Dyn*, src);
 
-    pdst->d_tag = ecconvert_u32(p, psrc->d_tag);               // Elf32_Sword
+    pdst->d_tag      = ecconvert_u32(p, psrc->d_tag);          // Elf32_Sword
     pdst->d_un.d_val = ecconvert_u32(p, psrc->d_un.d_val);     // Elf32_Word
 
     return dst;
@@ -35,7 +35,7 @@ Elf64_Dyn* ecconvert_dyn64(const pbuffer_t p, unknown_t dst, unknown_t src) {
     Elf64_Dyn* pdst = CAST(Elf64_Dyn*, dst);
     Elf64_Dyn* psrc = CAST(Elf64_Dyn*, src);
 
-    pdst->d_tag = ecconvert_u64(p, psrc->d_tag);               // Elf64_Sxword
+    pdst->d_tag      = ecconvert_u64(p, psrc->d_tag);          // Elf64_Sxword
     pdst->d_un.d_val = ecconvert_u64(p, psrc->d_un.d_val);     // Elf64_Xword
 
     return dst;
@@ -157,6 +157,64 @@ Elf64_Phdr* ecconvert_phdr64(const pbuffer_t p, unknown_t dst, unknown_t src) {
     pdst->p_memsz  = ecconvert_u64(p, psrc->p_memsz);          // Elf64_Xword
     pdst->p_flags  = ecconvert_u32(p, psrc->p_flags);          // Elf64_Word
     pdst->p_align  = ecconvert_u64(p, psrc->p_align);          // Elf64_Xword
+
+    return dst;
+  }
+
+  return NULL;
+}
+
+Elf32_Rel* ecconvert_rel32(const pbuffer_t p, unknown_t dst, unknown_t src) {
+  if (isELF32(p) && dst && src) {
+    Elf32_Rel* pdst = CAST(Elf32_Rel*, dst);
+    Elf32_Rel* psrc = CAST(Elf32_Rel*, src);
+
+    pdst->r_offset = ecconvert_u32(p, psrc->r_offset);         // Elf32_Addr
+    pdst->r_info   = ecconvert_u32(p, psrc->r_info);           // Elf32_Word
+
+    return dst;
+  }
+
+  return NULL;
+}
+
+Elf64_Rel* ecconvert_rel64(const pbuffer_t p, unknown_t dst, unknown_t src) {
+  if (isELF64(p) && dst && src) {
+    Elf64_Rel* pdst = CAST(Elf64_Rel*, dst);
+    Elf64_Rel* psrc = CAST(Elf64_Rel*, src);
+
+    pdst->r_offset = ecconvert_u64(p, psrc->r_offset);         // Elf64_Addr
+    pdst->r_info   = ecconvert_u64(p, psrc->r_info);           // Elf64_Xword
+
+    return dst;
+  }
+
+  return NULL;
+}
+
+Elf32_Rela* ecconvert_rela32(const pbuffer_t p, unknown_t dst, unknown_t src) {
+  if (isELF32(p) && dst && src) {
+    Elf32_Rela* pdst = CAST(Elf32_Rela*, dst);
+    Elf32_Rela* psrc = CAST(Elf32_Rela*, src);
+
+    pdst->r_offset = ecconvert_u32(p, psrc->r_offset);         // Elf32_Addr
+    pdst->r_info   = ecconvert_u32(p, psrc->r_info);           // Elf32_Word
+    pdst->r_addend = ecconvert_u32(p, psrc->r_addend);         // Elf32_Sword
+
+    return dst;
+  }
+
+  return NULL;
+}
+
+Elf64_Rela* ecconvert_rela64(const pbuffer_t p, unknown_t dst, unknown_t src) {
+  if (isELF64(p) && dst && src) {
+    Elf64_Rela* pdst = CAST(Elf64_Rela*, dst);
+    Elf64_Rela* psrc = CAST(Elf64_Rela*, src);
+
+    pdst->r_offset = ecconvert_u64(p, psrc->r_offset);         // Elf64_Addr
+    pdst->r_info   = ecconvert_u64(p, psrc->r_info);           // Elf64_Xword
+    pdst->r_addend = ecconvert_u64(p, psrc->r_addend);         // Elf64_Sxword
 
     return dst;
   }
