@@ -456,14 +456,16 @@ static int dump_sectiongroups32(const pbuffer_t p, const poptions_t o, Elf32_Ehd
       MEMSTACK(Elf32_Shdr, sx);
       Elf32_Shdr *s0 = ecget_shdr32byindex(p, sx, i);
       if (s0 && SHT_GROUP == s0->sh_type) {
-        uint32_t *pb = _get32byshdr(p, s0);
-        if (pb) {
+        handle_t p0 = fget32byshdr(p, s0);
+        if (p0) {
           size_t size = (s0->sh_size / s0->sh_entsize) - 1;
-          n += dump_sectiongroups0(p, o, i, size, pb[0], s0->sh_info);
+          n += dump_sectiongroups0(p, o, i, size, fgetu32(p0), s0->sh_info);
 
           for (size_t k = 0; k < size; ++k) {
-            n += dump_sectiongroups1(p, o, pb[k + 1]);
+            n += dump_sectiongroups1(p, o, fgetu32(p0));
           }
+
+          ffree(p0);
         }
       }
     }
@@ -489,14 +491,16 @@ static int dump_sectiongroups64(const pbuffer_t p, const poptions_t o, Elf64_Ehd
       MEMSTACK(Elf64_Shdr, sx);
       Elf64_Shdr *s0 = ecget_shdr64byindex(p, sx, i);
       if (s0 && SHT_GROUP == s0->sh_type) {
-        uint32_t *pb = _get64byshdr(p, s0);
-        if (pb) {
+        handle_t p0 = fget64byshdr(p, s0);
+        if (p0) {
           size_t size = (s0->sh_size / s0->sh_entsize) - 1;
-          n += dump_sectiongroups0(p, o, i, size, pb[0], s0->sh_info);
+          n += dump_sectiongroups0(p, o, i, size, fgetu32(p0), s0->sh_info);
 
           for (size_t k = 0; k < size; ++k) {
-            n += dump_sectiongroups1(p, o, pb[k + 1]);
+            n += dump_sectiongroups1(p, o, fgetu32(p0));
           }
+
+          ffree(p0);
         }
       }
     }
@@ -789,24 +793,29 @@ static int dump_relocsrel32(const pbuffer_t p, const poptions_t o, Elf32_Shdr *s
   n += printf_text("Sym Name", USE_LT | USE_EOL);
 
   size_t cnt = shdr->sh_size / shdr->sh_entsize;
+  handle_t p0 = fget32byshdr(p, shdr);
+  if (p0) {
+    for (size_t j = 0; j < cnt; ++j) {
+      MEMSTACK(Elf32_Rel, rx);
+      Elf32_Rel *r0 = ecconvert_rel32(p, rx, fgetp(p0, sizeof(Elf32_Rel)));
+      if (r0) {
+        n += printf_nice(r0->r_offset, USE_LHEX32);
+        n += printf_nice(r0->r_info, USE_LHEX32);
+        n += printf_pick(get_RELTYPE(p), ELF32_R_TYPE(r0->r_info), USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
 
-  Elf32_Rel *r = _get32byshdr(p, shdr);
-  if (r) {
-    for (size_t j = 0; j < cnt; ++j, ++r) {
-      n += printf_nice(r->r_offset, USE_LHEX32);
-      n += printf_nice(r->r_info, USE_LHEX32);
-      n += printf_pick(get_RELTYPE(p), ELF32_R_TYPE(r->r_info), USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+        if (isused(get_RELTYPEDEF(p), ELF32_R_TYPE(r0->r_info))) {
+          n += dump_relocsdef32(p, o, shdr, r0->r_info);
+        } else if (isused(get_RELTYPEVER(p), ELF32_R_TYPE(r0->r_info))) {
+          n += dump_relocsver32(p, o, shdr, r0->r_info, vnames, NELEMENTS(vnames));
+        } else if (!isused(get_RELTYPESAFE(p), ELF32_R_TYPE(r0->r_info))) {
+          n += printf_nice(ELF32_R_TYPE(r0->r_info), USE_UNKNOWN);
+        }
 
-      if (isused(get_RELTYPEDEF(p), ELF32_R_TYPE(r->r_info))) {
-        n += dump_relocsdef32(p, o, shdr, r->r_info);
-      } else if (isused(get_RELTYPEVER(p), ELF32_R_TYPE(r->r_info))) {
-        n += dump_relocsver32(p, o, shdr, r->r_info, vnames, NELEMENTS(vnames));
-      } else if (!isused(get_RELTYPESAFE(p), ELF32_R_TYPE(r->r_info))) {
-        n += printf_nice(ELF32_R_TYPE(r->r_info), USE_UNKNOWN);
+        n += printf_eol();
       }
-
-      n += printf_eol();
     }
+
+    ffree(p0);
   }
 
   return n;
@@ -824,15 +833,21 @@ static int dump_relocsrel64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *s
 
   size_t cnt = shdr->sh_size / shdr->sh_entsize;
 
-  Elf64_Rel *r = _get64byshdr(p, shdr);
-  if (r) {
-    for (size_t j = 0; j < cnt; ++j, ++r) {
-      n += printf_nice(r->r_offset, USE_LHEX48);
-      n += printf_nice(r->r_info, USE_LHEX48);
-      n += printf_pick(zRELTYPE64, ELF64_R_TYPE(r->r_info), USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+  handle_t p0 = fget64byshdr(p, shdr);
+  if (p0) {
+    for (size_t j = 0; j < cnt; ++j) {
+      MEMSTACK(Elf64_Rel, rx);
+      Elf64_Rel *r0 = ecconvert_rel64(p, rx, fgetp(p0, sizeof(Elf64_Rel)));
+      if (r0) {
+        n += printf_nice(r0->r_offset, USE_LHEX48);
+        n += printf_nice(r0->r_info, USE_LHEX48);
+        n += printf_pick(zRELTYPE64, ELF64_R_TYPE(r0->r_info), USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
 // TBD
-      n += printf_eol();
+        n += printf_eol();
+      }
     }
+
+    ffree(p0);
   }
 
   return n;
@@ -849,16 +864,21 @@ static int dump_relocsrela32(const pbuffer_t p, const poptions_t o, Elf32_Shdr *
   n += printf_text("Sym Name + Addend", USE_LT | USE_EOL);
 
   size_t cnt = shdr->sh_size / shdr->sh_entsize;
+  handle_t p0 = fget32byshdr(p, shdr);
+  if (p0) {
+    for (size_t j = 0; j < cnt; ++j) {
+      MEMSTACK(Elf32_Rela, rx);
+      Elf32_Rela *r0 = ecconvert_rela32(p, rx, fgetp(p0, sizeof(Elf32_Rela)));
+      if (r0) {
+        n += printf_nice(r0->r_offset, USE_LHEX48);
+        n += printf_nice(r0->r_info, USE_LHEX48);
+        n += printf_pick(get_RELTYPE(p), ELF32_R_TYPE(r0->r_info), USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
 
-  Elf32_Rela *r = _get32byshdr(p, shdr);
-  if (r) {
-    for (size_t j = 0; j < cnt; ++j, ++r) {
-      n += printf_nice(r->r_offset, USE_LHEX48);
-      n += printf_nice(r->r_info, USE_LHEX48);
-      n += printf_pick(get_RELTYPE(p), ELF32_R_TYPE(r->r_info), USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
-
-      n += printf_eol();
+        n += printf_eol();
+      }
     }
+
+    ffree(p0);
   }
 
   return n;
@@ -878,36 +898,42 @@ static int dump_relocsrela64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *
   n += printf_text("Symbol's Name + Addend", USE_LT | USE_EOL);
 
   size_t cnt = shdr->sh_size / shdr->sh_entsize;
-  Elf64_Rela *r = _get64byshdr(p, shdr);
-  if (r) {
-    for (size_t j = 0; j < cnt; ++j, ++r) {
-      n += printf_nice(r->r_offset, USE_LHEX48);
-      n += printf_nice(r->r_info, USE_LHEX48);
-      n += printf_pick(get_RELTYPE(p), ELF64_R_TYPE(r->r_info), USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+  handle_t p0 = fget64byshdr(p, shdr);
+  if (p0) {
+    for (size_t j = 0; j < cnt; ++j) {
+      MEMSTACK(Elf64_Rela, rx);
+      Elf64_Rela *r0 = ecconvert_rela64(p, rx, fgetp(p0, sizeof(Elf64_Rela)));
+      if (r0) {
+        n += printf_nice(r0->r_offset, USE_LHEX48);
+        n += printf_nice(r0->r_info, USE_LHEX48);
+        n += printf_pick(get_RELTYPE(p), ELF64_R_TYPE(r0->r_info), USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
 
-      if (isused(get_RELTYPEDEF(p), ELF64_R_TYPE(r->r_info))) {
-        n += dump_relocsdef64(p, o, shdr, r->r_info);
-      } else if (isused(get_RELTYPEVER(p), ELF64_R_TYPE(r->r_info))) {
-        n += dump_relocsver64(p, o, shdr, r->r_info, vnames, NELEMENTS(vnames));
+        if (isused(get_RELTYPEDEF(p), ELF64_R_TYPE(r0->r_info))) {
+          n += dump_relocsdef64(p, o, shdr, r0->r_info);
+        } else if (isused(get_RELTYPEVER(p), ELF64_R_TYPE(r0->r_info))) {
+          n += dump_relocsver64(p, o, shdr, r0->r_info, vnames, NELEMENTS(vnames));
+        }
+
+        if (isused(get_RELTYPESHEX8(p), ELF64_R_TYPE(r0->r_info))) {
+          n += printf_nice(r0->r_addend, USE_SHEX8);
+        } else if (isused(get_RELTYPESHEX16(p), ELF64_R_TYPE(r0->r_info))) {
+          n += printf_nice(r0->r_addend, USE_SHEX16);
+        } else if (isused(get_RELTYPESHEX32(p), ELF64_R_TYPE(r0->r_info))) {
+          n += printf_nice(r0->r_addend, USE_SHEX32);
+        } else if (isused(get_RELTYPESHEX64(p), ELF64_R_TYPE(r0->r_info))) {
+          n += printf_nice(r0->r_addend, USE_SHEX64);
+        } else if (isused(get_RELTYPEPACK(p), ELF64_R_TYPE(r0->r_info))) {
+          n += printf_pack(17);
+          n += printf_nice(r0->r_addend, USE_LHEX);
+        } else if (!isused(get_RELTYPESAFE(p), ELF64_R_TYPE(r0->r_info))) {
+          n += printf_nice(r0->r_info & 0xffff, USE_UNKNOWN);
+        }
+
+        n += printf_eol();
       }
-
-      if (isused(get_RELTYPESHEX8(p), ELF64_R_TYPE(r->r_info))) {
-        n += printf_nice(r->r_addend, USE_SHEX8);
-      } else if (isused(get_RELTYPESHEX16(p), ELF64_R_TYPE(r->r_info))) {
-        n += printf_nice(r->r_addend, USE_SHEX16);
-      } else if (isused(get_RELTYPESHEX32(p), ELF64_R_TYPE(r->r_info))) {
-        n += printf_nice(r->r_addend, USE_SHEX32);
-      } else if (isused(get_RELTYPESHEX64(p), ELF64_R_TYPE(r->r_info))) {
-        n += printf_nice(r->r_addend, USE_SHEX64);
-      } else if (isused(get_RELTYPEPACK(p), ELF64_R_TYPE(r->r_info))) {
-        n += printf_pack(17);
-        n += printf_nice(r->r_addend, USE_LHEX);
-      } else if (!isused(get_RELTYPESAFE(p), ELF64_R_TYPE(r->r_info))) {
-        n += printf_nice(r->r_info & 0xffff, USE_UNKNOWN);
-      }
-
-      n += printf_eol();
     }
+
+    ffree(p0);
   }
 
   return n;
@@ -1128,6 +1154,8 @@ static int dump_unwind32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr
                 f = fstep(f, sizeof(Elf32_Addr) + sizeof(Elf32_Addr));
               }
             }
+
+            ffree(f);
           }
         }
       }
@@ -1170,6 +1198,8 @@ static int dump_unwind64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr
                 f = fstep(f, sizeof(Elf64_Addr) + sizeof(Elf64_Addr));
               }
             }
+
+            ffree(f);
           }
         }
       }
