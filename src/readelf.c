@@ -638,7 +638,13 @@ static int dump_dynamic0(const pbuffer_t p, const uint64_t sh_offset, const uint
   n += printf_text("contains", USE_LT | USE_SPACE);
   n += printf_nice(count, USE_DEC);
   n += printf_text(1 == count ? "entry" : "entries", USE_LT | USE_SPACE | USE_COLON | USE_EOL);
-  n += printf_text("Tag                Type                Name/Value", USE_LT | USE_SPACE | USE_EOL);
+
+
+  n += printf_text("Tag", USE_LT | USE_SPACE | SET_PAD(isELF64(p) ? 19 : 12));
+  n += printf_text("Type", USE_LT  | SET_PAD(20));
+  n += printf_text("Name/Value", USE_LT);
+  n += printf_eol();
+
   return n;
 }
 
