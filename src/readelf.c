@@ -2249,6 +2249,7 @@ static int dump_archspecific3(const pbuffer_t p, const poptions_t o, const uint6
           if (s0) {
             n += printf_nice(s0->st_value, USE_LHEX32);
             n += printf_pick(ecSTTTYPE, ELF_ST_TYPE(s0->st_info), USE_LT | USE_SPACE | SET_PAD(8));
+            n += printf_text(get_SHNINDEX(s0->st_shndx), USE_LT | USE_SPACE);
           }
         } else if (isELF64(p)) {
           MEMSTACK(Elf64_Shdr, sx);
@@ -2256,6 +2257,7 @@ static int dump_archspecific3(const pbuffer_t p, const poptions_t o, const uint6
           if (s0) {
             n += printf_nice(s0->st_value, USE_LHEX32);
             n += printf_pick(ecSTTTYPE, ELF_ST_TYPE(s0->st_info), USE_LT | USE_SPACE | SET_PAD(8));
+            n += printf_text(get_SHNINDEX(s0->st_shndx), USE_LT | USE_SPACE);
           }
         }
 
