@@ -135,6 +135,8 @@ pconvert_t get_EHDRFLAGS(const pbuffer_t p) {
 #define EF_MIPS_ARCH_32R6              (0x90000000)
 #define EF_MIPS_ARCH_64R6              (0xa0000000)
 
+#define EF_MIPS_MASK                   (EF_MIPS_MACH | EF_MIPS_ABI | EF_MIPS_ARCH)
+
 char* get_EHDRFLAGSEX(const pbuffer_t p, const uint64_t e_flags) {
   STATICA(char, o, 1024);
 

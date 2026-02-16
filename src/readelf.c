@@ -209,8 +209,12 @@ static int dump_fileheader0(const pbuffer_t p, const poptions_t o, const uint64_
 
   n += printf_text("Flags", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(e_flags, USE_FHEX);
-  n += printf_mask(get_EHDRFLAGS(p), e_flags, USE_NONE);
-  n += printf_text(get_EHDRFLAGSEX(p, e_flags), USE_EOL);
+  if (EM_MIPS == e_machine || EM_MIPS_RS3_LE == e_machine) {
+    n += printf_mask(get_EHDRFLAGS(p), e_flags & ~EF_MIPS_MASK, USE_NONE);
+  } else {
+    n += printf_mask(get_EHDRFLAGS(p), e_flags, USE_NONE);
+  }
+  n += printf_text(get_EHDRFLAGSEX(p, e_flags), USE_LT | USE_EOL);
 
   n += printf_text("Size of this header", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(e_ehsize, USE_DEC | USE_BYTES | USE_EOL);
