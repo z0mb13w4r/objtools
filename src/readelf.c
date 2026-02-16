@@ -2250,6 +2250,15 @@ static int dump_archspecific3(const pbuffer_t p, const poptions_t o, const uint6
             n += printf_nice(s0->st_value, USE_LHEX32);
             n += printf_pick(ecSTTTYPE, ELF_ST_TYPE(s0->st_info), USE_LT | USE_SPACE | SET_PAD(8));
             n += printf_text(get_SHNINDEX(s0->st_shndx), USE_LT | USE_SPACE);
+
+            MEMSTACK(Elf32_Shdr, sy);
+            Elf32_Shdr *s1 = ecget_shdr32byindex(p, sy, idx);
+            if (s1) {
+              const char* name = ecget_namebyoffset(p, s1->sh_link, s0->st_name);
+              if (name && 0 != name[0]) {
+                n += printf_text(name, USE_LT | USE_SPACE);
+              }
+            }
           }
         } else if (isELF64(p)) {
           MEMSTACK(Elf64_Shdr, sx);
@@ -2258,6 +2267,15 @@ static int dump_archspecific3(const pbuffer_t p, const poptions_t o, const uint6
             n += printf_nice(s0->st_value, USE_LHEX32);
             n += printf_pick(ecSTTTYPE, ELF_ST_TYPE(s0->st_info), USE_LT | USE_SPACE | SET_PAD(8));
             n += printf_text(get_SHNINDEX(s0->st_shndx), USE_LT | USE_SPACE);
+
+            MEMSTACK(Elf64_Shdr, sy);
+            Elf64_Shdr *s1 = ecget_shdr64byindex(p, sy, idx);
+            if (s1) {
+              const char* name = ecget_namebyoffset(p, s1->sh_link, s0->st_name);
+              if (name && 0 != name[0]) {
+                n += printf_text(name, USE_LT | USE_SPACE);
+              }
+            }
           }
         }
 
