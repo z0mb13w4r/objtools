@@ -2225,14 +2225,17 @@ static int dump_archspecific4(const pbuffer_t p, const poptions_t o, const uint6
 
     uint64_t addr = sh_addr;
     if (gotno_size) {
-      n += printf_text("PRIMARY GOT", USE_TAB | USE_EOL);
+      n += printf_eol();
+      n += printf_text("PRIMARY GOT", USE_EOL);
       n += printf_text("Canonical gp value", USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
       n += printf_nice(0x7ff0 + sh_addr, USE_LHEX32 | USE_EOL);
 
+      n += printf_eol();
       n += printf_text("RESERVED ENTRIES", USE_LT | USE_EOL);
-      n += printf_text("Address", USE_LT | USE_TAB | SET_PAD(12));
-      n += printf_text("Access", USE_LT | SET_PAD(12));
-      n += printf_text("Initial Purpose", USE_LT | USE_EOL);
+      n += printf_text("Address", USE_LT | USE_SPACE | SET_PAD(11));
+      n += printf_text("Access", USE_LT | SET_PAD(10));
+      n += printf_text("Initial", USE_LT | SET_PAD(9));
+      n += printf_text("Purpose", USE_LT | USE_EOL);
 
       addr = dump_archspecific2(p, o, p0, addr, sh_addr);
       n += printf_text("Lazy resolver", USE_LT | USE_SPACE | USE_EOL);
@@ -2240,9 +2243,10 @@ static int dump_archspecific4(const pbuffer_t p, const poptions_t o, const uint6
       n += printf_text("Module pointer (GNU extension)", USE_LT | USE_SPACE | USE_EOL);
 
       if (!fiseof(p0) && 2 <= gotno_size) {
+        n += printf_eol();
         n += printf_text("LOCAL ENTRIES", USE_LT | USE_EOL);
-        n += printf_text("Address", USE_LT | USE_TAB | SET_PAD(12));
-        n += printf_text("Access", USE_LT | SET_PAD(12));
+        n += printf_text("Address", USE_LT | USE_SPACE | SET_PAD(11));
+        n += printf_text("Access", USE_LT | SET_PAD(10));
         n += printf_text("Initial", USE_LT | USE_EOL);
 
         for (size_t i = 0; !fiseof(p0) && (i < gotno_size - 2); ++i) {
@@ -2256,13 +2260,14 @@ static int dump_archspecific4(const pbuffer_t p, const poptions_t o, const uint6
     size_t symtabno_size = ecget_value(p, SHT_DYNAMIC, DT_MIPS_SYMTABNO);
 
     if (!fiseof(p0) && gotsym_size < symtabno_size) {
+      n += printf_eol();
       n += printf_text("GLOBAL ENTRIES", USE_LT | USE_EOL);
-      n += printf_text("Address", USE_LT | USE_TAB | SET_PAD(12));
-      n += printf_text("Access", USE_LT | SET_PAD(12));
-      n += printf_text("Initial", USE_LT | SET_PAD(12));
-      n += printf_text("Sym.Val.", USE_LT | SET_PAD(12));
-      n += printf_text("Type", USE_LT | SET_PAD(12));
-      n += printf_text("Ndx", USE_LT | SET_PAD(12));
+      n += printf_text("Address", USE_LT | USE_SPACE | SET_PAD(11));
+      n += printf_text("Access", USE_LT | SET_PAD(10));
+      n += printf_text("Initial", USE_LT | SET_PAD(9));
+      n += printf_text("Sym.Val.", USE_LT | SET_PAD(9));
+      n += printf_text("Type", USE_LT | SET_PAD(8));
+      n += printf_text("Ndx", USE_LT | SET_PAD(4));
       n += printf_text("Name", USE_LT | USE_EOL);
 
       int idx = ecget_indexbytype(p, SHT_DYNSYM);
