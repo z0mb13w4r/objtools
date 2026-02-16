@@ -1,4 +1,5 @@
 #include "objutils.h"
+#include "elfcode-endian.h"
 #include "elfcode-memfind.h"
 
 handle_t ecapply_relocs(handle_t p, handle_t q, const int index) {
@@ -21,17 +22,18 @@ handle_t ecapply_relocs(handle_t p, handle_t q, const int index) {
             Elf64_Shdr *d0 = ecget_shdr64byindex(q, dx, s0->sh_link);
             if (r0 && d0) {
               for (size_t j = 0; j < cnt; ++j, ++r0) {
-                Elf64_Sym *m = getp(q, d0->sh_offset + (ELF64_R_SYM(r0->r_info) * d0->sh_entsize), d0->sh_entsize);
+                MEMSTACK(Elf64_Sym, mx);
+                Elf64_Sym *m0 = ecconvert_sym64(q, mx, getp(q, d0->sh_offset + (ELF64_R_SYM(r0->r_info) * d0->sh_entsize), d0->sh_entsize));
 //printf("offset[RELA] = 0x%lx|0x%lx:0x%lx:0x%lx|0x%lx|0x%lx\n", r->r_offset, r->r_info, ELF64_R_TYPE(r->r_info), ELF64_R_SYM(r->r_info), m->st_value, r->r_addend);
                 if (isused(get_RELTYPESYM32(q), ELF64_R_TYPE(r0->r_info))) {
-                  if (m && m->st_value) {
-//printf("sym32 0x%lx\n", m->st_value);
-                    fsetu32byoffset(p, r0->r_offset, m->st_value);
+                  if (m0 && m0->st_value) {
+//printf("sym32 0x%lx\n", m0->st_value);
+                    fsetu32byoffset(p, r0->r_offset, m0->st_value);
                   }
                 } else if (isused(get_RELTYPESYM64(q), ELF64_R_TYPE(r0->r_info))) {
-                  if (m && m->st_value) {
-//printf("sym64 0x%lx\n", m->st_value);
-                    fsetu64byoffset(p, r0->r_offset, m->st_value);
+                  if (m0 && m0->st_value) {
+//printf("sym64 0x%lx\n", m0->st_value);
+                    fsetu64byoffset(p, r0->r_offset, m0->st_value);
                   }
                 } else if (isused(get_RELTYPESHEX8(q), ELF64_R_TYPE(r0->r_info))) {
                   if (r0->r_addend) {
@@ -72,10 +74,10 @@ handle_t ecapply_relocs(handle_t p, handle_t q, const int index) {
 handle_t ecapply_relocsbyoffset(handle_t p, handle_t q, const int offset) {
   if (isfind(p) && isELF64(q)) {
     MEMSTACK(Elf64_Ehdr, ex);
-    Elf64_Ehdr *ehdr = ecget_ehdr64(q, ex);
-    if (ehdr) {
+    Elf64_Ehdr *e0 = ecget_ehdr64(q, ex);
+    if (e0) {
 //printf("hunting[offset] = %x\n", offset);
-      for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
+      for (Elf64_Half i = 0; i < e0->e_shnum; ++i) {
         MEMSTACK(Elf64_Shdr, sx);
         Elf64_Shdr *s0 = ecget_shdr64byindex(q, sx, i);
         if (s0 && offset == s0->sh_offset) {
