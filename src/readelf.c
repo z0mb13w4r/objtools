@@ -2190,6 +2190,22 @@ static uint64_t dump_archspecific2(const pbuffer_t p, const poptions_t o, handle
   return caddr + (isELF32(p) ? 4 : 8);
 }
 
+static int dump_archspecific3(const pbuffer_t p, const poptions_t o,
+                       const uint64_t st_value, const uint64_t st_info, const uint64_t st_shndx, const uint64_t st_name, const uint64_t sh_link) {
+  int n = 0;
+
+  n += printf_nice(st_value, USE_LHEX32);
+  n += printf_pick(ecSTTTYPE, ELF_ST_TYPE(st_info), USE_LT | USE_SPACE | SET_PAD(8));
+  n += printf_text(get_SHNINDEX(st_shndx), USE_LT | USE_SPACE);
+
+  const char* name = ecget_namebyoffset(p, sh_link, st_name);
+  if (name && 0 != name[0]) {
+    n += printf_text(name, USE_LT | USE_SPACE);
+  }
+
+  return n;
+}
+
 static int dump_archspecific4(const pbuffer_t p, const poptions_t o, const uint64_t sh_addr, const uint64_t sh_offset, const uint64_t sh_size) {
   int n = 0;
 
@@ -2251,14 +2267,7 @@ static int dump_archspecific4(const pbuffer_t p, const poptions_t o, const uint6
           Elf32_Shdr *s1 = ecget_shdr32byindex(p, sy, idx);
 
           if (s0 && s1) {
-            n += printf_nice(s0->st_value, USE_LHEX32);
-            n += printf_pick(ecSTTTYPE, ELF_ST_TYPE(s0->st_info), USE_LT | USE_SPACE | SET_PAD(8));
-            n += printf_text(get_SHNINDEX(s0->st_shndx), USE_LT | USE_SPACE);
-
-            const char* name = ecget_namebyoffset(p, s1->sh_link, s0->st_name);
-            if (name && 0 != name[0]) {
-              n += printf_text(name, USE_LT | USE_SPACE);
-            }
+            n += dump_archspecific3(p, o, s0->st_value, s0->st_info, s0->st_shndx, s0->st_name, s1->sh_link);
           }
         } else if (isELF64(p)) {
           MEMSTACK(Elf64_Shdr, sx);
@@ -2268,14 +2277,7 @@ static int dump_archspecific4(const pbuffer_t p, const poptions_t o, const uint6
           Elf64_Shdr *s1 = ecget_shdr64byindex(p, sy, idx);
 
           if (s0 && s1) {
-            n += printf_nice(s0->st_value, USE_LHEX32);
-            n += printf_pick(ecSTTTYPE, ELF_ST_TYPE(s0->st_info), USE_LT | USE_SPACE | SET_PAD(8));
-            n += printf_text(get_SHNINDEX(s0->st_shndx), USE_LT | USE_SPACE);
-
-            const char* name = ecget_namebyoffset(p, s1->sh_link, s0->st_name);
-            if (name && 0 != name[0]) {
-              n += printf_text(name, USE_LT | USE_SPACE);
-            }
+            n += dump_archspecific3(p, o, s0->st_value, s0->st_info, s0->st_shndx, s0->st_name, s1->sh_link);
           }
         }
 
