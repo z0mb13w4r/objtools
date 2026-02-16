@@ -51,10 +51,10 @@ static int dump_relocsdef32(const pbuffer_t p, const poptions_t o, Elf32_Shdr *s
     MEMSTACK(Elf32_Shdr, dx);
     Elf32_Shdr *d0 = ecget_shdr32byindex(p, dx, shdr->sh_link);
     if (d0) {
-      Elf32_Off k = ELF32_R_SYM(r_info);
-      Elf32_Sym *sym = getp(p, d0->sh_offset + (k * d0->sh_entsize), d0->sh_entsize);
-      if (sym) {
-        return dump_relocsdef0(p, d0->sh_link, sym->st_value, sym->st_name, sym->st_shndx);
+      MEMSTACK(Elf32_Sym, sx);
+      Elf32_Sym *s0 = ecconvert_sym32(p, sx, getp(p, d0->sh_offset + (ELF32_R_SYM(r_info) * d0->sh_entsize), d0->sh_entsize));
+      if (s0) {
+        return dump_relocsdef0(p, d0->sh_link, s0->st_value, s0->st_name, s0->st_shndx);
       }
     }
   }
@@ -67,10 +67,10 @@ static int dump_relocsdef64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *s
     MEMSTACK(Elf64_Shdr, dx);
     Elf64_Shdr *d0 = ecget_shdr64byindex(p, dx, shdr->sh_link);
     if (d0) {
-      Elf64_Off k = ELF64_R_SYM(r_info);
-      Elf64_Sym *sym = getp(p, d0->sh_offset + (k * d0->sh_entsize), d0->sh_entsize);
-      if (sym) {
-        return dump_relocsdef0(p, d0->sh_link, sym->st_value, sym->st_name, sym->st_shndx);
+      MEMSTACK(Elf64_Sym, sx);
+      Elf64_Sym *s0 = ecconvert_sym64(p, sx, getp(p, d0->sh_offset + (ELF64_R_SYM(r_info) * d0->sh_entsize), d0->sh_entsize));
+      if (s0) {
+        return dump_relocsdef0(p, d0->sh_link, s0->st_value, s0->st_name, s0->st_shndx);
       }
     }
   }
@@ -85,19 +85,22 @@ static int dump_relocsver32(const pbuffer_t p, const poptions_t o, Elf32_Shdr *s
     Elf32_Shdr *d0 = ecget_shdr32byindex(p, dx, shdr->sh_link);
     if (d0) {
       Elf32_Off k = ELF32_R_SYM(r_info);
-      Elf32_Sym *sym = getp(p, d0->sh_offset + (k * d0->sh_entsize), d0->sh_entsize);
-      if (sym) {
-        n += printf_nice(sym->st_value, USE_LHEX32);
-        n += printf_text(opcode_demangle(o, ecget_namebyoffset(p, d0->sh_link, sym->st_name)), USE_LT | USE_SPACE);
+
+      MEMSTACK(Elf32_Sym, sx);
+      Elf32_Sym *s0 = ecconvert_sym32(p, sx, getp(p, d0->sh_offset + (k * d0->sh_entsize), d0->sh_entsize));
+      if (s0) {
+        n += printf_nice(s0->st_value, USE_LHEX32);
+        n += printf_text(opcode_demangle(o, ecget_namebyoffset(p, d0->sh_link, s0->st_name)), USE_LT | USE_SPACE);
 
         MEMSTACK(Elf32_Shdr, vx);
         Elf32_Shdr *v0 = ecget_shdr32bytype(p, vx, SHT_GNU_versym);
         if (v0) {
-          Elf32_Versym *vs = getp(p, v0->sh_offset + (k * v0->sh_entsize), v0->sh_entsize);
-          if (vs) {
-            *vs = *vs & VERSYM_VERSION;
-            if (*vs && *vs < maxvnames) {
-              const char* namevs = ecget_namebyoffset(p, vnames[0], vnames[*vs]);
+          MEMSTACK(Elf32_Versym, vy);
+          Elf32_Versym *v1 = ecconvert_versym32(p, vy, getp(p, v0->sh_offset + (k * v0->sh_entsize), v0->sh_entsize));
+          if (v1) {
+            *v1 = *v1 & VERSYM_VERSION;
+            if (*v1 && *v1 < maxvnames) {
+              const char* namevs = ecget_namebyoffset(p, vnames[0], vnames[*v1]);
               if (namevs) {
                 n += printf_text(namevs, USE_LT | USE_AT);
               }
@@ -118,19 +121,22 @@ static int dump_relocsver64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *s
     Elf64_Shdr *d0 = ecget_shdr64byindex(p, dx, shdr->sh_link);
     if (d0) {
       Elf64_Off k = ELF64_R_SYM(r_info);
-      Elf64_Sym *sym = getp(p, d0->sh_offset + (k * d0->sh_entsize), d0->sh_entsize);
-      if (sym) {
-        n += printf_nice(sym->st_value, USE_LHEX64);
-        n += printf_text(opcode_demangle(o, ecget_namebyoffset(p, d0->sh_link, sym->st_name)), USE_LT | USE_SPACE);
+
+      MEMSTACK(Elf64_Sym, sx);
+      Elf64_Sym *s0 = ecconvert_sym64(p, sx, getp(p, d0->sh_offset + (k * d0->sh_entsize), d0->sh_entsize));
+      if (s0) {
+        n += printf_nice(s0->st_value, USE_LHEX64);
+        n += printf_text(opcode_demangle(o, ecget_namebyoffset(p, d0->sh_link, s0->st_name)), USE_LT | USE_SPACE);
 
         MEMSTACK(Elf64_Shdr, vx);
         Elf64_Shdr *v0 = ecget_shdr64bytype(p, vx, SHT_GNU_versym);
         if (v0) {
-          Elf64_Versym *vs = getp(p, v0->sh_offset + (k * v0->sh_entsize), v0->sh_entsize);
-          if (vs) {
-            *vs = *vs & VERSYM_VERSION;
-            if (*vs && *vs < maxvnames) {
-              const char* namevs = ecget_namebyoffset(p, vnames[0], vnames[*vs]);
+          MEMSTACK(Elf64_Versym, vy);
+          Elf64_Versym *v1 = ecconvert_versym64(p, vy, getp(p, v0->sh_offset + (k * v0->sh_entsize), v0->sh_entsize));
+          if (v1) {
+            *v1 = *v1 & VERSYM_VERSION;
+            if (*v1 && *v1 < maxvnames) {
+              const char* namevs = ecget_namebyoffset(p, vnames[0], vnames[*v1]);
               if (namevs) {
                 n += printf_text(namevs, USE_LT | USE_AT);
               }
