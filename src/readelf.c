@@ -2248,12 +2248,14 @@ static int dump_archspecific3(const pbuffer_t p, const poptions_t o, const uint6
           Elf32_Sym* s0 = ecget_sym32byindex(p, sx, idx, i);
           if (s0) {
             n += printf_nice(s0->st_value, USE_LHEX32);
+            n += printf_pick(ecSTTTYPE, ELF_ST_TYPE(s0->st_info), USE_LT | USE_SPACE | SET_PAD(8));
           }
         } else if (isELF64(p)) {
           MEMSTACK(Elf64_Shdr, sx);
           Elf64_Sym* s0 = ecget_sym64byindex(p, sx, idx, i);
           if (s0) {
             n += printf_nice(s0->st_value, USE_LHEX32);
+            n += printf_pick(ecSTTTYPE, ELF_ST_TYPE(s0->st_info), USE_LT | USE_SPACE | SET_PAD(8));
           }
         }
 
