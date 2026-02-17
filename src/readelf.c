@@ -1584,13 +1584,13 @@ static int dump_hash32(const pbuffer_t p, pfind_t q, const uint64_t sh_name) {
   return 0;
 }
 
-static int dump_hash64(const pbuffer_t p, uint64_t *pb, const uint64_t sh_name) {
-  uint64_t nbucket  = ecconvert_u64(p, pb[0]);
-  uint64_t nchain   = ecconvert_u64(p, pb[1]);
-  uint64_t *bucket  = pb + 2;
-  uint64_t *chain   = pb + 2 + nbucket;
+static int dump_hash64(const pbuffer_t p, pfind_t q, const uint64_t sh_name) {
+  uint64_t nbucket  = fgetu64(q);
+  uint64_t nchain   = fgetu64(q);
+  uint64_t *bucket  = CAST(uint64_t*, q->item) + 2;
+  uint64_t *chain   = CAST(uint64_t*, q->item) + 2 + nbucket;
 
-  if (pb[0] > 1) {
+  if (nbucket > 1) {
     MALLOCA(uint32_t, size, nbucket);
 
     /* compute distribution of chain lengths. */
@@ -1644,10 +1644,7 @@ static int dump_histogram64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *e
         if (SHT_GNU_HASH == s0->sh_type) {
           n += dump_gnuhash1(p, p0, s0->sh_name);
         } else if (SHT_HASH == s0->sh_type) {
-          uint64_t *pb = _get64byshdr(p, s0);
-          if (pb) {
-            n += dump_hash64(p, pb, s0->sh_name);
-          }
+          n += dump_hash64(p, p0, s0->sh_name);
         }
 
         ffree(p0);
