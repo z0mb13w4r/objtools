@@ -353,8 +353,7 @@ Elf32_Versym* ecget_vsym32byindex(const pbuffer_t p, const unknown_t q, const in
   if (s0) {
     size_t cnt = s0->sh_size / s0->sh_entsize;
     if (index < cnt) {
-      MEMSTACK(Elf32_Versym, vx);
-      return ecconvert_versym32(p, vx, getp(p, s0->sh_offset + (index * s0->sh_entsize), s0->sh_entsize));
+      return ecconvert_versym32(p, q, getp(p, s0->sh_offset + (index * s0->sh_entsize), s0->sh_entsize));
     }
   }
 
@@ -367,8 +366,7 @@ Elf64_Versym* ecget_vsym64byindex(const pbuffer_t p, const unknown_t q, const in
   if (s0) {
     size_t cnt = s0->sh_size / s0->sh_entsize;
     if (index < cnt) {
-      MEMSTACK(Elf64_Versym, vx);
-      return ecconvert_versym64(p, vx, getp(p, s0->sh_offset + (index * s0->sh_entsize), s0->sh_entsize));
+      return ecconvert_versym64(p, q, getp(p, s0->sh_offset + (index * s0->sh_entsize), s0->sh_entsize));
     }
   }
 
@@ -1431,14 +1429,6 @@ unknown_t _ecget_rawdata64byname(const pbuffer_t p, const char* name) {
   MEMSTACK(Elf64_Shdr, sx);
   Elf64_Shdr* s0 = ecget_shdr64byname(p, sx, name);
   return s0 ? getp(p, s0->sh_offset, s0->sh_size) : NULL;
-}
-
-unknown_t _get32byshdr(const pbuffer_t p, Elf32_Shdr *shdr) {
-  if (shdr) {
-    return getp(p, shdr->sh_offset, shdr->sh_size);
-  }
-
-  return NULL;
 }
 
 unknown_t _get64byshdr(const pbuffer_t p, Elf64_Shdr *shdr) {
