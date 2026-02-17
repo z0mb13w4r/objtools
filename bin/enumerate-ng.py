@@ -56,7 +56,7 @@ def user_info():
   go('Are permissions on /home directories lax', 'ls -ahl /home/ 2>/dev/null')
   #go('Files not owned by user but writable by group', 'find / -writable ! -user ' + USERNAME + ' -type f ! -path "/proc/*" ! -path "/sys/*" -exec ls -al {} \; 2>/dev/null')
   #go('Files owned by our user', 'find / -user ' + USERNAME + ' -type f ! -path "/proc/*" ! -path "/sys/*" -exec ls -al {} \; 2>/dev/null')
-  go('Hidden files', 'find / -name ".*" -type f ! -path "/proc/*" ! -path "/sys/*" -exec ls -al {} \; 2>/dev/null')
+  #go('Hidden files', 'find / -name ".*" -type f ! -path "/proc/*" ! -path "/sys/*" -exec ls -al {} \; 2>/dev/null')
   #go('World-readable files within /home', 'find /home/ -perm -4 -type f -exec ls -al {} \; 2>/dev/null')
   #go('Home directory contents', 'ls -ahl ~')
   #go('SSH keys/host information found in the following locations', 'find / \( -name "id_dsa*" -o -name "id_rsa*" -o -name "known_hosts" -o -name "authorized_hosts" -o -name "authorized_keys" \) -exec ls -al {}')
@@ -66,6 +66,10 @@ def user_info():
 def environment_info():
   mk('ENVIRONMENTAL')
   go('Environment information', 'env 2>/dev/null | grep -v "LS_COLORS" 2>/dev/null')
+  go('SELinux seems to be present', 'sestatus 2>/dev/null')
+  go('Path information', 'echo $PATH 2>/dev/null')
+  go('Path information (writeable)', 'ls -ld $(echo $PATH | tr ":" " ")')
+
 
 if __name__ == '__main__':
   system_info()
