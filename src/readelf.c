@@ -1514,16 +1514,16 @@ static int dump_gnuhash0(const pbuffer_t p, const size_t msize, const uint32_t s
   return n;
 }
 
-static int dump_gnuhash1(const pbuffer_t p, uint32_t *pb, const uint64_t sh_name) {
-  uint32_t nbucket  = ecconvert_u32(p, pb[0]);
-  uint32_t symbias  = ecconvert_u32(p, pb[1]);
-  uint32_t sbitmask = isELF32(p) ? ecconvert_u32(p, pb[2]) : 2 * ecconvert_u32(p, pb[2]);
+static int dump_gnuhash1(const pbuffer_t p, pfind_t q, const uint64_t sh_name) {
+  uint32_t nbucket  = fgetu32(q);
+  uint32_t symbias  = fgetu32(q);
+  uint32_t sbitmask = isELF32(p) ? fgetu32(q) : 2 * fgetu32(q);
 //uint32_t shift    = pb[3];
-  uint32_t *bitmask = pb + 4;
-  uint32_t *bucket  = pb + 4 + sbitmask;
-  uint32_t *chain   = pb + 4 + sbitmask + nbucket;
+  uint32_t *bitmask = CAST(uint32_t*, q->item) + 4;
+  uint32_t *bucket  = CAST(uint32_t*, q->item) + 4 + sbitmask;
+  uint32_t *chain   = CAST(uint32_t*, q->item) + 4 + sbitmask + nbucket;
 
-  if (pb[0] > 1 && pb[1]) {
+  if (nbucket > 1 && symbias) {
     MALLOCA(uint32_t, size, nbucket);
 
     /* compute distribution of chain lengths. */
@@ -1616,15 +1616,19 @@ static int dump_histogram32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *e
   for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
     MEMSTACK(Elf32_Shdr, sx);
     Elf32_Shdr *s0 = ecget_shdr32byindex(p, sx, i);
-    if (s0 && SHT_GNU_HASH == s0->sh_type) {
-      uint32_t *pb = _get32byshdr(p, s0);
-      if (pb) {
-        n += dump_gnuhash1(p, pb, s0->sh_name);
-      }
-    } else if (s0 && SHT_HASH == s0->sh_type) {
-      uint32_t *pb = _get32byshdr(p, s0);
-      if (pb) {
-        n += dump_hash32(p, pb, s0->sh_name);
+    if (s0) {
+      handle_t p0 = fget32byshdr(p, s0);
+      if (p0) {
+        if (SHT_GNU_HASH == s0->sh_type) {
+          n += dump_gnuhash1(p, p0, s0->sh_name);
+        } else if (SHT_HASH == s0->sh_type) {
+          uint32_t *pb = _get32byshdr(p, s0);
+          if (pb) {
+            n += dump_hash32(p, pb, s0->sh_name);
+          }
+        }
+
+        ffree(p0);
       }
     }
   }
@@ -1637,15 +1641,19 @@ static int dump_histogram64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *e
   for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
     MEMSTACK(Elf64_Shdr, sx);
     Elf64_Shdr *s0 = ecget_shdr64byindex(p, sx, i);
-    if (s0 && SHT_GNU_HASH == s0->sh_type) {
-      uint32_t *pb = _get64byshdr(p, s0);
-      if (pb) {
-        n += dump_gnuhash1(p, pb, s0->sh_name);
-      }
-    } else if (s0 && SHT_HASH == s0->sh_type) {
-      uint64_t *pb = _get64byshdr(p, s0);
-      if (pb) {
-        n += dump_hash64(p, pb, s0->sh_name);
+    if (s0) {
+      handle_t p0 = fget64byshdr(p, s0);
+      if (p0) {
+        if (SHT_GNU_HASH == s0->sh_type) {
+          n += dump_gnuhash1(p, p0, s0->sh_name);
+        } else if (SHT_HASH == s0->sh_type) {
+          uint64_t *pb = _get64byshdr(p, s0);
+          if (pb) {
+            n += dump_hash64(p, pb, s0->sh_name);
+          }
+        }
+
+        ffree(p0);
       }
     }
   }
