@@ -1,5 +1,7 @@
 #include "elfcode.h"
+#include "memfind.h"
 #include "opcode-elf.h"
+#include "elfcode-endian.h"
 
 int opcodeelf_dynamics(handle_t p, opcbfunc_t cbfunc, unknown_t param) {
   if (isopcode(p) && cbfunc) {
@@ -13,10 +15,18 @@ int opcodeelf_dynamics(handle_t p, opcbfunc_t cbfunc, unknown_t param) {
           Elf32_Shdr *s0 = ecget_shdr32byindex(p0, sx, i);
           if (s0 && SHT_DYNAMIC == s0->sh_type) {
             size_t cnt = s0->sh_size / s0->sh_entsize;
-            Elf32_Dyn *dyn = _get32byshdr(p0, s0);
-            for (size_t j = 0; j < cnt; ++j, ++dyn) {
-              MALLOCSPARAMS(opwrap_t, oc, MODE_OCDHDR32, dyn, s0, p0);
-              cbfunc(p, poc, param);
+            handle_t p1 = fget32byshdr(p0, s0);
+            if (p1) {
+              for (size_t j = 0; j < cnt; ++j) {
+                MEMSTACK(Elf32_Dyn, dx);
+                Elf32_Dyn *d0 = ecconvert_dyn32(p0, dx, fgetp(p1, sizeof(Elf32_Dyn)));
+                if (d0) {
+                  MALLOCSPARAMS(opwrap_t, oc, MODE_OCDHDR32, d0, s0, p0);
+                  cbfunc(p, poc, param);
+                }
+              }
+
+              ffree(p1);
             }
           }
         }
@@ -25,15 +35,23 @@ int opcodeelf_dynamics(handle_t p, opcbfunc_t cbfunc, unknown_t param) {
       MEMSTACK(Elf64_Ehdr, ex);
       Elf64_Ehdr *e0 = ecget_ehdr64(p0, ex);
       if (e0) {
-        MEMSTACK(Elf64_Shdr, sx);
         for (Elf64_Half i = 0; i < e0->e_shnum; ++i) {
+          MEMSTACK(Elf64_Shdr, sx);
           Elf64_Shdr *s0 = ecget_shdr64byindex(p0, sx, i);
           if (s0 && SHT_DYNAMIC == s0->sh_type) {
             size_t cnt = s0->sh_size / s0->sh_entsize;
-            Elf64_Dyn *dyn = _get64byshdr(p0, s0);
-            for (size_t j = 0; j < cnt; ++j, ++dyn) {
-              MALLOCSPARAMS(opwrap_t, oc, MODE_OCDHDR64, dyn, s0, p0);
-              cbfunc(p, poc, param);
+            handle_t p1 = fget64byshdr(p0, s0);
+            if (p1) {
+              for (size_t j = 0; j < cnt; ++j) {
+                MEMSTACK(Elf64_Dyn, dx);
+                Elf64_Dyn *d0 = ecconvert_dyn64(p0, dx, fgetp(p1, sizeof(Elf64_Dyn)));
+                if (d0) {
+                  MALLOCSPARAMS(opwrap_t, oc, MODE_OCDHDR64, d0, s0, p0);
+                  cbfunc(p, poc, param);
+                }
+              }
+
+              ffree(p1);
             }
           }
         }
