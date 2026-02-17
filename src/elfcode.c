@@ -1064,7 +1064,7 @@ static const char* _ecget_name32byaddr1(const pbuffer_t p, const int vaddr, uint
                           if (vername && vername[0]) {
                             snprintf(name + n, NELEMENTS(name) - n, "@%s", vername);
                           }
-//printf("++++");
+//printf("!!!!:%s", name);
                           return name;
                         }
                       }
@@ -1093,6 +1093,7 @@ const char* _ecget_name32byaddr(const pbuffer_t p, const int vaddr, uint64_t *of
   if (NULL == name) {
     name = _ecget_name32byaddr0(p, vaddr + 1, NULL);
   }
+
   if (NULL == name) {
     name = _ecget_name32byaddr1(p, vaddr, NULL);
   }
@@ -1158,47 +1159,52 @@ static const char* _ecget_name64byaddr1(const pbuffer_t p, const int vaddr, uint
   ecmake_versionnames64(p, vnames, NELEMENTS(vnames));
 
   MEMSTACK(Elf64_Ehdr, ex);
-  Elf64_Ehdr *e = ecget_ehdr64(p, ex);
-  if (e) {
-    for (Elf64_Half i = 0; i < e->e_shnum; ++i) {
+  Elf64_Ehdr *e0 = ecget_ehdr64(p, ex);
+  if (e0) {
+    for (Elf64_Half i = 0; i < e0->e_shnum; ++i) {
       MEMSTACK(Elf64_Shdr, sx);
-      Elf64_Shdr *sh = ecget_shdr64byindex(p, sx, i);
-      if (sh) {
-        if (SHT_RELA == sh->sh_type || SHT_REL == sh->sh_type || SHT_RELR == sh->sh_type) {
-          size_t cnt = sh->sh_size / sh->sh_entsize;
+      Elf64_Shdr *s0 = ecget_shdr64byindex(p, sx, i);
+      if (s0) {
+        if (SHT_RELA == s0->sh_type || SHT_REL == s0->sh_type || SHT_RELR == s0->sh_type) {
+          size_t cnt = s0->sh_size / s0->sh_entsize;
 
-          if (SHT_REL == sh->sh_type) {
+          if (SHT_REL == s0->sh_type) {
 //printf("++R++");
-          } else if (SHT_RELA == sh->sh_type) {
-            Elf64_Rela *r = _get64byshdr(p, sh);
-            if (r) {
-              for (size_t j = 0; j < cnt; ++j, ++r) {
-                if (r->r_offset == vaddr) {
+          } else if (SHT_RELA == s0->sh_type) {
+            handle_t p0 = fget64byshdr(p, s0);
+            if (p0) {
+              for (size_t j = 0; j < cnt; ++j) {
+                MEMSTACK(Elf64_Rela, rx);
+                Elf64_Rela *r0 = ecconvert_rela64(p, rx, fgetp(p0, sizeof(Elf64_Rela)));
+                if (r0 && r0->r_offset == vaddr) {
                   MEMSTACK(Elf64_Shdr, dx);
-                  Elf64_Shdr *dh = ecget_shdr64byindex(p, dx, sh->sh_link);
-                  if (dh) {
-                    Elf64_Off  off = ELF64_R_SYM(r->r_info);
-                    Elf64_Sym *sym = getp(p, dh->sh_offset + (off * dh->sh_entsize), dh->sh_entsize);
-                    if (sym) {
-                      const char* symname = ecget_namebyoffset(p, dh->sh_link, sym->st_name);
-                      const char* secname = ecget_secnamebyindex(p, sym->st_shndx);
+                  Elf64_Shdr *d0 = ecget_shdr64byindex(p, dx, s0->sh_link);
+                  if (d0) {
+                    Elf64_Off off = ELF64_R_SYM(r0->r_info);
 
-                      if (isused(get_RELTYPEDEF(p), ELF64_R_TYPE(r->r_info))) {
+                    MEMSTACK(Elf64_Sym, sy);
+                    Elf64_Sym *s1 = ecconvert_sym64(p, sy, getp(p, d0->sh_offset + (off * d0->sh_entsize), d0->sh_entsize));
+                    if (s1) {
+                      const char* symname = ecget_namebyoffset(p, d0->sh_link, s1->st_name);
+                      const char* secname = ecget_secnamebyindex(p, s1->st_shndx);
+
+                      if (isused(get_RELTYPEDEF(p), ELF64_R_TYPE(r0->r_info))) {
 //printf("++RTD++");
                         if (symname && symname[0])         return symname;
                         else if (secname && secname[0])    return secname;
-                      } else if (isused(get_RELTYPEVER(p), ELF64_R_TYPE(r->r_info))) {
+                      } else if (isused(get_RELTYPEVER(p), ELF64_R_TYPE(r0->r_info))) {
 //printf("++RTV++");
                         if (symname && symname[0]) {
                           const char *vername = NULL;
                           MEMSTACK(Elf64_Shdr, vx);
-                          Elf64_Shdr *vh = ecget_shdr64bytype(p, vx, SHT_GNU_versym);
-                          if (vh) {
-                            Elf64_Versym *vs = getp(p, vh->sh_offset + (off * vh->sh_entsize), vh->sh_entsize);
-                            if (vs) {
-                              *vs = *vs & VERSYM_VERSION;
-                              if (*vs && *vs < NELEMENTS(vnames)) {
-                                vername = ecget_namebyoffset(p, vnames[0], vnames[*vs]);
+                          Elf64_Shdr *v0 = ecget_shdr64bytype(p, vx, SHT_GNU_versym);
+                          if (v0) {
+                            MEMSTACK(Elf64_Versym, vy);
+                            Elf64_Versym *v1 = ecconvert_versym64(p, vy, getp(p, v0->sh_offset + (off * v0->sh_entsize), v0->sh_entsize));
+                            if (v1) {
+                              *v1 = *v1 & VERSYM_VERSION;
+                              if (*v1 && *v1 < NELEMENTS(vnames)) {
+                                vername = ecget_namebyoffset(p, vnames[0], vnames[*v1]);
                               }
                             }
                           }
@@ -1207,7 +1213,7 @@ static const char* _ecget_name64byaddr1(const pbuffer_t p, const int vaddr, uint
                           if (vername && vername[0]) {
                             snprintf(name + n, NELEMENTS(name) - n, "@%s", vername);
                           }
-//printf("++++");
+//printf("!!!!:%s\n", name);
                           return name;
                         }
                       }
@@ -1216,7 +1222,7 @@ static const char* _ecget_name64byaddr1(const pbuffer_t p, const int vaddr, uint
                 }
               }
             }
-          } else if (SHT_RELR == sh->sh_type) {
+          } else if (SHT_RELR == s0->sh_type) {
 //printf("++RR++");
           }
         }
