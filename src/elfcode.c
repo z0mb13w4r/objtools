@@ -1015,47 +1015,52 @@ static const char* _ecget_name32byaddr1(const pbuffer_t p, const int vaddr, uint
   ecmake_versionnames32(p, vnames, NELEMENTS(vnames));
 
   MEMSTACK(Elf32_Ehdr, ex);
-  Elf32_Ehdr *e = ecget_ehdr32(p, ex);
-  if (e) {
-    for (Elf32_Half i = 0; i < e->e_shnum; ++i) {
+  Elf32_Ehdr *e0 = ecget_ehdr32(p, ex);
+  if (e0) {
+    for (Elf32_Half i = 0; i < e0->e_shnum; ++i) {
       MEMSTACK(Elf32_Shdr, sx);
-      Elf32_Shdr *sh = ecget_shdr32byindex(p, sx, i);
-      if (sh) {
-        if (SHT_RELA == sh->sh_type || SHT_REL == sh->sh_type || SHT_RELR == sh->sh_type) {
-          size_t cnt = sh->sh_size / sh->sh_entsize;
+      Elf32_Shdr *s0 = ecget_shdr32byindex(p, sx, i);
+      if (s0) {
+        if (SHT_RELA == s0->sh_type || SHT_REL == s0->sh_type || SHT_RELR == s0->sh_type) {
+          size_t cnt = s0->sh_size / s0->sh_entsize;
 
-          if (SHT_REL == sh->sh_type) {
+          if (SHT_REL == s0->sh_type) {
 //printf("++R++");
-          } else if (SHT_RELA == sh->sh_type) {
-            Elf32_Rela *r = _get32byshdr(p, sh);
-            if (r) {
-              for (size_t j = 0; j < cnt; ++j, ++r) {
-                if (r->r_offset == vaddr) {
+          } else if (SHT_RELA == s0->sh_type) {
+            handle_t p0 = fget32byshdr(p, s0);
+            if (p0) {
+              for (size_t j = 0; j < cnt; ++j) {
+                MEMSTACK(Elf32_Rela, rx);
+                Elf32_Rela *r0 = ecconvert_rela32(p, rx, fgetp(p0, sizeof(Elf32_Rela)));
+                if (r0 && r0->r_offset == vaddr) {
                   MEMSTACK(Elf32_Shdr, dx);
-                  Elf32_Shdr *dh = ecget_shdr32byindex(p, dx, sh->sh_link);
-                  if (dh) {
-                    Elf32_Off  off = ELF32_R_SYM(r->r_info);
-                    Elf32_Sym *sym = getp(p, dh->sh_offset + (off * dh->sh_entsize), dh->sh_entsize);
-                    if (sym) {
-                      const char* symname = ecget_namebyoffset(p, dh->sh_link, sym->st_name);
-                      const char* secname = ecget_secnamebyindex(p, sym->st_shndx);
+                  Elf32_Shdr *d0 = ecget_shdr32byindex(p, dx, s0->sh_link);
+                  if (d0) {
+                    Elf32_Off  off = ELF32_R_SYM(r0->r_info);
 
-                      if (isused(get_RELTYPEDEF(p), ELF32_R_TYPE(r->r_info))) {
+                    MEMSTACK(Elf32_Sym, sy);
+                    Elf32_Sym *s1 = ecconvert_sym32(p, sy, getp(p, d0->sh_offset + (off * d0->sh_entsize), d0->sh_entsize));
+                    if (s1) {
+                      const char* symname = ecget_namebyoffset(p, d0->sh_link, s1->st_name);
+                      const char* secname = ecget_secnamebyindex(p, s1->st_shndx);
+
+                      if (isused(get_RELTYPEDEF(p), ELF32_R_TYPE(r0->r_info))) {
 //printf("++RTD++");
                         if (symname && symname[0])         return symname;
                         else if (secname && secname[0])    return secname;
-                      } else if (isused(get_RELTYPEVER(p), ELF32_R_TYPE(r->r_info))) {
+                      } else if (isused(get_RELTYPEVER(p), ELF32_R_TYPE(r0->r_info))) {
 //printf("++RTV++");
                         if (symname && symname[0]) {
                           const char *vername = NULL;
                           MEMSTACK(Elf32_Shdr, vx);
-                          Elf32_Shdr *vh = ecget_shdr32bytype(p, vx, SHT_GNU_versym);
-                          if (vh) {
-                            Elf32_Versym *vs = getp(p, vh->sh_offset + (off * vh->sh_entsize), vh->sh_entsize);
-                            if (vs) {
-                              *vs = *vs & VERSYM_VERSION;
-                              if (*vs && *vs < NELEMENTS(vnames)) {
-                                vername = ecget_namebyoffset(p, vnames[0], vnames[*vs]);
+                          Elf32_Shdr *v0 = ecget_shdr32bytype(p, vx, SHT_GNU_versym);
+                          if (v0) {
+                            MEMSTACK(Elf32_Versym, vy);
+                            Elf32_Versym *v1 = ecconvert_versym32(p, vy, getp(p, v0->sh_offset + (off * v0->sh_entsize), v0->sh_entsize));
+                            if (v1) {
+                              *v1 = *v1 & VERSYM_VERSION;
+                              if (*v1 && *v1 < NELEMENTS(vnames)) {
+                                vername = ecget_namebyoffset(p, vnames[0], vnames[*v1]);
                               }
                             }
                           }
@@ -1072,8 +1077,10 @@ static const char* _ecget_name32byaddr1(const pbuffer_t p, const int vaddr, uint
                   }
                 }
               }
+
+              ffree(p0);
             }
-          } else if (SHT_RELR == sh->sh_type) {
+          } else if (SHT_RELR == s0->sh_type) {
 //printf("++RR++");
           }
         }
@@ -1221,6 +1228,8 @@ static const char* _ecget_name64byaddr1(const pbuffer_t p, const int vaddr, uint
                   }
                 }
               }
+
+              ffree(p0);
             }
           } else if (SHT_RELR == s0->sh_type) {
 //printf("++RR++");
