@@ -24,7 +24,7 @@ handle_t ecapply_relocs(handle_t p, handle_t q, const int index) {
               for (size_t j = 0; j < cnt; ++j, ++r0) {
                 MEMSTACK(Elf64_Sym, mx);
                 Elf64_Sym *m0 = ecconvert_sym64(q, mx, getp(q, d0->sh_offset + (ELF64_R_SYM(r0->r_info) * d0->sh_entsize), d0->sh_entsize));
-//printf("offset[RELA] = 0x%lx|0x%lx:0x%lx:0x%lx|0x%lx|0x%lx\n", r->r_offset, r->r_info, ELF64_R_TYPE(r->r_info), ELF64_R_SYM(r->r_info), m->st_value, r->r_addend);
+//printf("offset[RELA] = 0x%lx|0x%lx:0x%lx:0x%lx|0x%lx|0x%lx\n", r0->r_offset, r0->r_info, ELF64_R_TYPE(r0->r_info), ELF64_R_SYM(r0->r_info), m0->st_value, r0->r_addend);
                 if (isused(get_RELTYPESYM32(q), ELF64_R_TYPE(r0->r_info))) {
                   if (m0 && m0->st_value) {
 //printf("sym32 0x%lx\n", m0->st_value);
@@ -37,22 +37,22 @@ handle_t ecapply_relocs(handle_t p, handle_t q, const int index) {
                   }
                 } else if (isused(get_RELTYPESHEX8(q), ELF64_R_TYPE(r0->r_info))) {
                   if (r0->r_addend) {
-//printf("shex8 0x%lx\n", r->r_addend);
+//printf("shex8 0x%lx\n", r0->r_addend);
                     fsetu8byoffset(p, r0->r_offset, r0->r_addend);
                   }
                 } else if (isused(get_RELTYPESHEX16(q), ELF64_R_TYPE(r0->r_info))) {
                   if (r0->r_addend) {
-//printf("shex16 0x%lx\n", r->r_addend);
+//printf("shex16 0x%lx\n", r0->r_addend);
                     fsetu16byoffset(p, r0->r_offset, r0->r_addend);
                   }
                 } else if (isused(get_RELTYPESHEX32(q), ELF64_R_TYPE(r0->r_info))) {
                   if (r0->r_addend) {
-//printf("shex32 0x%lx\n", r->r_addend);
+//printf("shex32 0x%lx\n", r0->r_addend);
                     fsetu32byoffset(p, r0->r_offset, r0->r_addend);
                   }
                 } else if (isused(get_RELTYPESHEX64(q), ELF64_R_TYPE(r0->r_info))) {
                   if (r0->r_addend) {
-//printf("shex64 0x%lx\n", r->r_addend);
+//printf("shex64 0x%lx\n", r0->r_addend);
                     fsetu64byoffset(p, r0->r_offset, r0->r_addend);
                   }
                 }
