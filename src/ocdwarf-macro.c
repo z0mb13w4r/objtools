@@ -152,8 +152,8 @@ static int ocdwarf_debug_macro_crude0(handle_t p, handle_t s, handle_t d, handle
         }
       } else if (DW_MACRO_define_strp == op || DW_MACRO_undef_strp == op) {
         uint64_t nline = fgetuleb128(f);
-//        uint64_t cpos = fgetcpos(f);
         uint64_t offset = 4 == version && isdwo ? fgetuleb128(f) : 4 == offset_size ? fgetu32(f) : fgetu64(f);
+//uint64_t cpos = fgetcpos(f);
 //printf("[$0x%lx:0x%lx$]", cpos, offset);
         const char* name = ocget_namebyoffset(s, OPCODE_BYDEBUGSTR, offset);
         n += printf_text("- lineno", USE_LT | USE_SPACE | USE_COLON);

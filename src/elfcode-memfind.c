@@ -17,13 +17,14 @@ handle_t ecapply_relocs(handle_t p, handle_t q, const int index) {
           if (SHT_REL == s0->sh_type) {
 //printf("missing[REL]\n");
           } else if (SHT_RELA == s0->sh_type) {
+//printf("processing[RELA:%d:%ld:%ld:%ld]\n", s0->sh_link, s0->sh_offset, s0->sh_size, s0->sh_entsize);
             MEMSTACK(Elf64_Shdr, dx);
             Elf64_Shdr *d0 = ecget_shdr64byindex(q, dx, s0->sh_link);
             if (d0) {
               handle_t q0 = fget64byshdr(q, s0);
               if (q0) {
                 for (size_t j = 0; j < cnt; ++j) {
-                  MEMSTACK(Elf32_Rel, rx);
+                  MEMSTACK(Elf64_Rela, rx);
                   Elf64_Rela *r0 = ecconvert_rela64(q, rx, fgetp(q0, sizeof(Elf64_Rela)));
                   if (r0) {
                     MEMSTACK(Elf64_Sym, mx);
