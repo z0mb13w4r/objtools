@@ -222,6 +222,7 @@ uint64_t ocget_eoffset(handle_t p, handle_t s);
 
 unknown_t ocget_rawdata(handle_t p);
 handle_t  ocfget_rawdata(handle_t p);
+handle_t  ocfget_rawdatabyname(handle_t p, const char* name);
 
 unknown_t ocget_rawdatabyname(handle_t p, const char* name);
 int       ocget_indexbyname(handle_t p, const char* name);

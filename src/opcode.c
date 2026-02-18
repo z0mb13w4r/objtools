@@ -251,21 +251,11 @@ bool_t ocis64(handle_t p) {
 }
 
 bool_t ocisLE(handle_t p) {
-  if (ismode(p, MODE_OCSHDR)) {
-    handle_t p0 = ocget(p, OPCODE_PARAM2);
-    return isopcode(p0) && isELFle(ocget(p0, OPCODE_RAWDATA)) ? TRUE : FALSE;
-  }
-
-  return isopcode(p) && isELFle(ocget(p, OPCODE_RAWDATA)) ? TRUE : FALSE;
+  return isELFle(ocget(p, OPCODE_RAWDATA)) ? TRUE : FALSE;
 }
 
 bool_t ocisBE(handle_t p) {
-  if (ismode(p, MODE_OCSHDR)) {
-    handle_t p0 = ocget(p, OPCODE_PARAM2);
-    return isopcode(p0) && isELFbe(ocget(p0, OPCODE_RAWDATA)) ? TRUE : FALSE;
-  }
-
-  return isopcode(p) && isELFbe(ocget(p, OPCODE_RAWDATA)) ? TRUE : FALSE;
+  return isELFbe(ocget(p, OPCODE_RAWDATA)) ? TRUE : FALSE;
 }
 
 bool_t ochas(handle_t p, const imode_t mode) {
@@ -743,7 +733,21 @@ uint64_t ocget_eoffset(handle_t p, handle_t s) {
 }
 
 handle_t ocfget_rawdata(handle_t p) {
-  return fcalloc(ocget_rawdata(p), ocget_size(p), MEMFIND_NOCHUNKSIZE);
+  size_t chunksiz = MEMFIND_NOCHUNKSIZE;
+  if (ocisBE(p))    chunksiz |= MEMFIND_BIGENDIAN;
+  if (ocis32(p))    chunksiz |= MEMFIND_32BIT;
+  else if (ocis64(p)) chunksiz |= MEMFIND_64BIT;
+
+  return fcalloc(ocget_rawdata(p), ocget_size(p), chunksiz);
+}
+
+handle_t ocfget_rawdatabyname(handle_t p, const char* name) {
+  size_t chunksiz = MEMFIND_NOCHUNKSIZE;
+  if (ocisBE(p))    chunksiz |= MEMFIND_BIGENDIAN;
+  if (ocis32(p))    chunksiz |= MEMFIND_32BIT;
+  else if (ocis64(p)) chunksiz |= MEMFIND_64BIT;
+
+  return fcalloc(ocget_rawdatabyname(p, name), ocget_sizebyname(p, name), chunksiz);
 }
 
 unknown_t ocget_rawdata(handle_t p) {

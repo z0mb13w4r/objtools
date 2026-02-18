@@ -7,13 +7,11 @@
 
 #ifdef OPCODE_DWARF_MACROCRUDE
 static handle_t ocfget_xxxdata(handle_t p) {
-  handle_t p0 = fcalloc(ocget_rawdata(p), ocget_size(p), MEMFIND_NOCHUNKSIZE);
-  return ecapply_relocsbyoffset(p0, ocget(p, OPCODE_RAWDATA), ocget_offset(p));
+  return ecapply_relocsbyoffset(ocfget_rawdata(p), ocget(p, OPCODE_RAWDATA), ocget_offset(p));
 }
 
 static unknown_t ocfget_xxxrawdatabyname(handle_t p, const char* name) {
-  handle_t p0 = fcalloc(ocget_rawdatabyname(p, name), ocget_sizebyname(p, name), MEMFIND_NOCHUNKSIZE);
-  return ecapply_relocs(p0, ocget(p, OPCODE_RAWDATA), ocget_indexbyname(p, name));
+  return ecapply_relocs(ocfget_rawdatabyname(p, name), ocget(p, OPCODE_RAWDATA), ocget_indexbyname(p, name));
 }
 
 static const char* getname(handle_t p, const uint64_t offset, const uint64_t index, const char **fname, const char **dname) {
