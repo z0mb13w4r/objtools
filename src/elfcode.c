@@ -1431,14 +1431,6 @@ unknown_t _ecget_rawdata64byname(const pbuffer_t p, const char* name) {
   return s0 ? getp(p, s0->sh_offset, s0->sh_size) : NULL;
 }
 
-unknown_t _get64byshdr(const pbuffer_t p, Elf64_Shdr *shdr) {
-  if (shdr) {
-    return getp(p, shdr->sh_offset, shdr->sh_size);
-  }
-
-  return NULL;
-}
-
 handle_t fgetbyshdr(const pbuffer_t p, unknown_t shdr) {
   if (isELF(p)) {
     if (isELF32(p))        return fget32byshdr(p, shdr);

@@ -146,8 +146,6 @@ unknown_t ecget_rawdatabyname(const pbuffer_t p, const char* name);
 unknown_t _ecget_rawdata32byname(const pbuffer_t p, const char* name);
 unknown_t _ecget_rawdata64byname(const pbuffer_t p, const char* name);
 
-unknown_t _get64byshdr(const pbuffer_t p, Elf64_Shdr *shdr); // not safe - remove
-
 handle_t fgetbyshdr(const pbuffer_t p, unknown_t shdr);
 handle_t fget32byshdr(const pbuffer_t p, Elf32_Shdr *shdr);
 handle_t fget64byshdr(const pbuffer_t p, Elf64_Shdr *shdr);
