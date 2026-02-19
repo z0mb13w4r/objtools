@@ -8,6 +8,7 @@
 #include "memfind.h"
 #include "ocdwarf.h"
 #include "objdump.h"
+#include "elfcode-endian.h"
 
 static void callback_disassemble(handle_t p, handle_t section, unknown_t param) {
   const poptions_t o = CAST(poptions_t, param);
@@ -234,22 +235,25 @@ static void callback_versionrefs(handle_t p, handle_t section, unknown_t param) 
       handle_t f = ocfget_rawdata(section);
       if (f) {
         for (Elf32_Word j = 0; j < ocget_value(section); ++j) {
-          Elf32_Verneed *vn = fupdate(f, offset, sizeof(Elf32_Verneed));
-          if (vn) {
-            n += callback_versionrefs0(p, section, vn->vn_file);
+          MEMSTACK(Elf32_Verneed, vx);
+          Elf32_Verneed *v0 = ecconvert_verneed32(ocget(p, OPCODE_RAWDATA), vx, fupdate(f, offset, sizeof(Elf32_Verneed)));
+          if (v0) {
+            n += callback_versionrefs0(p, section, v0->vn_file);
 
-            Elf32_Word offset0 = offset + vn->vn_aux;
-            for (Elf32_Half k = 0; k < vn->vn_cnt; ++k) {
-              Elf32_Vernaux *va = fupdate(f, offset0, sizeof(Elf32_Vernaux));
-              if (va) {
-                n += callback_versionrefs1(p, section, va->vna_hash, va->vna_flags, va->vna_other, va->vna_name);
-                offset0 += va->vna_next;
+            Elf32_Word offset0 = offset + v0->vn_aux;
+            for (Elf32_Half k = 0; k < v0->vn_cnt; ++k) {
+              MEMSTACK(Elf32_Vernaux, vy);
+              Elf32_Vernaux *v1 = ecconvert_vernaux32(ocget(p, OPCODE_RAWDATA), vy, fupdate(f, offset0, sizeof(Elf32_Vernaux)));
+              if (v1) {
+                n += callback_versionrefs1(p, section, v1->vna_hash, v1->vna_flags, v1->vna_other, v1->vna_name);
+                offset0 += v1->vna_next;
               }
             }
           }
 
-          offset += vn->vn_next;
+          offset += v0->vn_next;
         }
+
         ffree(f);
       }
     } else if (ocis64(p)) {
@@ -257,22 +261,25 @@ static void callback_versionrefs(handle_t p, handle_t section, unknown_t param) 
       handle_t f = ocfget_rawdata(section);
       if (f) {
         for (Elf64_Word j = 0; j < ocget_value(section); ++j) {
-          Elf64_Verneed *vn = fupdate(f, offset, sizeof(Elf64_Verneed));
-          if (vn) {
-            n += callback_versionrefs0(p, section, vn->vn_file);
+          MEMSTACK(Elf64_Verneed, vx);
+          Elf64_Verneed *v0 = ecconvert_verneed64(ocget(p, OPCODE_RAWDATA), vx, fupdate(f, offset, sizeof(Elf64_Verneed)));
+          if (v0) {
+            n += callback_versionrefs0(p, section, v0->vn_file);
 
-            Elf64_Word offset0 = offset + vn->vn_aux;
-            for (Elf64_Half k = 0; k < vn->vn_cnt; ++k) {
-              Elf64_Vernaux *va = fupdate(f, offset0, sizeof(Elf64_Vernaux));
-              if (va) {
-                n += callback_versionrefs1(p, section, va->vna_hash, va->vna_flags, va->vna_other, va->vna_name);
-                offset0 += va->vna_next;
+            Elf64_Word offset0 = offset + v0->vn_aux;
+            for (Elf64_Half k = 0; k < v0->vn_cnt; ++k) {
+              MEMSTACK(Elf64_Vernaux, vy);
+              Elf64_Vernaux *v1 = ecconvert_vernaux64(ocget(p, OPCODE_RAWDATA), vy, fupdate(f, offset0, sizeof(Elf64_Vernaux)));
+              if (v1) {
+                n += callback_versionrefs1(p, section, v1->vna_hash, v1->vna_flags, v1->vna_other, v1->vna_name);
+                offset0 += v1->vna_next;
               }
             }
           }
 
-          offset += vn->vn_next;
+          offset += v0->vn_next;
         }
+
         ffree(f);
       }
     }
