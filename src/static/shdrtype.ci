@@ -54,8 +54,6 @@ static convert_t ecSHDRTYPEARM64[] = {
   {0, 0}
 };
 
-#define SHT_MIPS_ABIFLAGS              (SHT_LOPROC + 0x2a)
-
 static convert_t ecSHDRTYPEMIPS[] = {
   {"MIPS_LIBLIST",                 SHT_MIPS_LIBLIST},
   {"MIPS_MSYM",                    SHT_MIPS_MSYM},

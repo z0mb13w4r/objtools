@@ -5,7 +5,8 @@
 #include "buffer.h"
 #include "objutils.h"
 
-#define SHT_RELR                   (19) /* RELR relative relocations */
+#define SHT_RELR                   (19)
+#define SHT_MIPS_ABIFLAGS          (SHT_LOPROC + 0x2a)
 
 #define PT_GNU_MBIND_NUM           (4096)
 #define PT_GNU_MBIND_LO            (PT_LOOS + 0x474e555)
