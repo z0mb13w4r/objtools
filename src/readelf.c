@@ -2194,22 +2194,22 @@ static int dump_archspecific1(const pbuffer_t p, const poptions_t o, const uint6
     n += printf_eol();
 
     n += printf_text("GPR size", USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-    n += printf_pick(ecMIPSREGSIZE, fgetu8(p0), USE_EOL);
+    n += printf_pick(ecGNUTAGMIPSREGSIZE, fgetu8(p0), USE_EOL);
 
     n += printf_text("CPR1 size", USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-    n += printf_pick(ecMIPSREGSIZE, fgetu8(p0), USE_EOL);
+    n += printf_pick(ecGNUTAGMIPSREGSIZE, fgetu8(p0), USE_EOL);
 
     n += printf_text("CPR2 size", USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-    n += printf_pick(ecMIPSREGSIZE, fgetu8(p0), USE_EOL);
+    n += printf_pick(ecGNUTAGMIPSREGSIZE, fgetu8(p0), USE_EOL);
 
     n += printf_text("FP ABI", USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-    n += printf_pick(ecGNUTAGMIPSMIPSABIFP, fgetu8(p0), USE_EOL);
+    n += printf_pick(ecGNUTAGMIPSABIFP, fgetu8(p0), USE_EOL);
 
     n += printf_text("ISA Extension", USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-    n += printf_pick(ecMIPSISAEXT, fgetu8(p0), USE_EOL);
+    n += printf_pick(ecGNUTAGMIPSISAEXT, fgetu8(p0), USE_EOL);
 
     n += printf_text("ASEs", USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-    n += printf_masknone(ecMIPSASES, fgetu8(p0), USE_EOL);
+    n += printf_masknone(ecGNUTAGMIPSASES, fgetu8(p0), USE_EOL);
 
     n += printf_text("FLAGS 1", USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     n += printf_nice(fgetu32(p0), USE_LHEX32 | USE_EOL);

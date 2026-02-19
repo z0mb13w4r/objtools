@@ -1,4 +1,4 @@
-static convert_t ecGNUTAGMIPSMIPSABIFP[] = {
+convert_t ecGNUTAGMIPSABIFP[] = {
   {"Hard or soft float",                               0},
   {"Hard float (double precision)",                    1},
   {"Hard float (single precision)",                    2},
@@ -12,15 +12,15 @@ static convert_t ecGNUTAGMIPSMIPSABIFP[] = {
   {0, 0}
 };
 
-static convert_t ecGNUTAGMIPSMIPSABIMSA[] = {
+static convert_t ecGNUTAGMIPSABIMSA[] = {
   {"Any MSA or not",                                   0},
   {"128-bit MSA",                                      1},
 
 };
 
 static convert_t ecGNUTAGMIPS[] = {
-  {"TAG_GNU_MIPS_ABI_FP",                  4,    {ecGNUTAGMIPSMIPSABIFP}},
-  {"TAG_GNU_MIPS_ABI_MSA",                 8,    {ecGNUTAGMIPSMIPSABIMSA}},
+  {"TAG_GNU_MIPS_ABI_FP",                  4,    {ecGNUTAGMIPSABIFP}},
+  {"TAG_GNU_MIPS_ABI_MSA",                 8,    {ecGNUTAGMIPSABIMSA}},
 
   {0, 0}
 };
@@ -43,7 +43,7 @@ pconvert_t get_GNUTAG(const pbuffer_t p) {
 #define AFL_REG_64                     (0x02)
 #define AFL_REG_128                    (0x03)
 
-convert_t ecMIPSREGSIZE[] = {
+convert_t ecGNUTAGMIPSREGSIZE[] = {
   {"0",                                                AFL_REG_NONE},
   {"32",                                               AFL_REG_32},
   {"64",                                               AFL_REG_64},
@@ -72,7 +72,7 @@ convert_t ecMIPSREGSIZE[] = {
 #define AFL_EXT_OCTEON3                (19)
 #define AFL_EXT_INTERAPTIV_MR2         (20)
 
-convert_t ecMIPSISAEXT[] = {
+convert_t ecGNUTAGMIPSISAEXT[] = {
   {"NONE",                                             0},
   {"RMI XLR",                                          AFL_EXT_XLR},
   {"Cavium Networks Octeon3",                          AFL_EXT_OCTEON3},
@@ -120,7 +120,7 @@ convert_t ecMIPSISAEXT[] = {
 #define AFL_ASE_LOONGSON_EXT           (0x00100000)
 #define AFL_ASE_LOONGSON_EXT2          (0x00200000)
 
-convert_t ecMIPSASES[] = {
+convert_t ecGNUTAGMIPSASES[] = {
   {"DSP ASE",                                          AFL_ASE_DSP},
   {"DSP R2 ASE",                                       AFL_ASE_DSPR2},
   {"DSP R3 ASE",                                       AFL_ASE_DSPR3},

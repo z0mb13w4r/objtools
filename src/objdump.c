@@ -288,6 +288,50 @@ static void callback_versionrefs(handle_t p, handle_t section, unknown_t param) 
   n += printf_eol();
 }
 
+static void callback_mipsarchhdr(handle_t p, handle_t section, unknown_t param) {
+  if (SHT_MIPS_ABIFLAGS != ocget_type(section)) return;
+printf("SHT_MIPS_ABIFLAGS\n");
+  int n = 0;
+
+  const int MAXSIZE = 30;
+
+  handle_t p0 = ocfget_rawdata(section);
+  if (p0) {
+    n += printf_text("MIPS ABI Flags Version", USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(fgetu16(p0), USE_DEC | USE_EOL);
+
+    n += printf_join("ISA: MIPS", fgetu8(p0), USE_DEC);
+    n += printf_join("r", fgetu8(p0), USE_DEC);
+    n += printf_eol();
+
+    n += printf_text("GPR size", USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_pick(ecGNUTAGMIPSREGSIZE, fgetu8(p0), USE_EOL);
+
+    n += printf_text("CPR1 size", USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_pick(ecGNUTAGMIPSREGSIZE, fgetu8(p0), USE_EOL);
+
+    n += printf_text("CPR2 size", USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_pick(ecGNUTAGMIPSREGSIZE, fgetu8(p0), USE_EOL);
+
+    n += printf_text("FP ABI", USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_pick(ecGNUTAGMIPSABIFP, fgetu8(p0), USE_EOL);
+
+    n += printf_text("ISA Extension", USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_pick(ecGNUTAGMIPSISAEXT, fgetu8(p0), USE_EOL);
+
+    n += printf_text("ASEs", USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_masknone(ecGNUTAGMIPSASES, fgetu8(p0), USE_EOL);
+
+    n += printf_text("FLAGS 1", USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(fgetu32(p0), USE_LHEX32 | USE_EOL);
+
+    n += printf_text("FLAGS 2", USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(fgetu32(p0), USE_LHEX32 | USE_EOL);
+
+    ffree(p0);
+  }
+}
+
 static void callback_programhdr(handle_t p, handle_t phdr, unknown_t param) {
   size_t name_size = *CAST(size_t*, param);
   int n = 0;
@@ -412,6 +456,11 @@ static int dump_privatehdr(const handle_t p, const poptions_t o) {
 
     ocdo_sections(p, callback_versionrefs, &max_name_size);
     n += printf_eol();
+
+    if (EM_MIPS == ocget_machine(p)) {
+      ocdo_sections(p, callback_mipsarchhdr, &max_name_size);
+      n += printf_eol();
+    }
   }
 
   return n;
