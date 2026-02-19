@@ -307,8 +307,8 @@ Elf32_Vernaux* ecconvert_vernaux32(const pbuffer_t p, unknown_t dst, unknown_t s
     Elf32_Vernaux* pdst = CAST(Elf32_Vernaux*, dst);
     Elf32_Vernaux* psrc = CAST(Elf32_Vernaux*, src);
 
-    pdst->vna_flags = ecconvert_u32(p, psrc->vna_flags);       // Elf32_Half
-    pdst->vna_hash  = ecconvert_u16(p, psrc->vna_hash);        // Elf32_Word
+    pdst->vna_flags = ecconvert_u16(p, psrc->vna_flags);       // Elf32_Half
+    pdst->vna_hash  = ecconvert_u32(p, psrc->vna_hash);        // Elf32_Word
     pdst->vna_name  = ecconvert_u32(p, psrc->vna_name);        // Elf32_Word
     pdst->vna_next  = ecconvert_u32(p, psrc->vna_next);        // Elf32_Word
     pdst->vna_other = ecconvert_u16(p, psrc->vna_other);       // Elf32_Half
