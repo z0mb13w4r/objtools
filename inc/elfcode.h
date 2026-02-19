@@ -166,6 +166,7 @@ ppick_t get_RELTYPESHEX16(const pbuffer_t p);
 ppick_t get_RELTYPESHEX32(const pbuffer_t p);
 ppick_t get_RELTYPESHEX64(const pbuffer_t p);
 
+pconvert_t get_GNUTAG(const pbuffer_t p);
 pconvert_t get_DYNTAG(const pbuffer_t p, const uint64_t tag);
 pconvert_t get_PHDRTYPE(const pbuffer_t p, const uint64_t type);
 pconvert_t get_SHDRTYPE(const pbuffer_t p, const uint64_t type);
