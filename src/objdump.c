@@ -290,9 +290,8 @@ static void callback_versionrefs(handle_t p, handle_t section, unknown_t param) 
 
 static void callback_mipsarchhdr(handle_t p, handle_t section, unknown_t param) {
   if (SHT_MIPS_ABIFLAGS != ocget_type(section)) return;
-printf("SHT_MIPS_ABIFLAGS\n");
-  int n = 0;
 
+  int n = 0;
   const int MAXSIZE = 30;
 
   handle_t p0 = ocfget_rawdata(section);
