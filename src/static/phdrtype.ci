@@ -72,10 +72,10 @@ convert_t ecPHDRTYPERISCV[] = {
   {0, 0}
 };
 
-pconvert_t get_PHDRTYPE(const pbuffer_t p, const uint64_t type) {
-  if ((type >= PT_LOOS) && (type <= PT_HIOS)) {
+pconvert_t get_PHDRTYPE(const pbuffer_t p, const uint64_t p_type) {
+  if ((p_type >= PT_LOOS) && (p_type <= PT_HIOS)) {
     return ecPHDRTYPEOS;
-  } else if ((type >= PT_LOPROC) && (type <= PT_HIPROC)) {
+  } else if ((p_type >= PT_LOPROC) && (p_type <= PT_HIPROC)) {
     switch (ecget_emachine(p)) {
     case EM_MIPS:
     case EM_MIPS_RS3_LE:

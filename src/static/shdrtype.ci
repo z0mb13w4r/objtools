@@ -108,8 +108,8 @@ static convert_t ecSHDRTYPERISCV[] = {
   {0, 0}
 };
 
-pconvert_t get_SHDRTYPE(const pbuffer_t p, const uint64_t type) {
-  if ((type >= SHT_LOPROC) && (type <= SHT_HIPROC)) {
+pconvert_t get_SHDRTYPE(const pbuffer_t p, const uint64_t sh_type) {
+  if ((sh_type >= SHT_LOPROC) && (sh_type <= SHT_HIPROC)) {
     switch (ecget_emachine(p)) {
     case EM_RISCV:
       return ecSHDRTYPERISCV;

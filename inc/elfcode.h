@@ -18,6 +18,10 @@
 #define VERSYM_HIDDEN              (0x8000)
 #define VERSYM_VERSION             (0x7fff)
 
+#define EF_MIPS_ABI                (0x0000f000)
+#define EF_MIPS_MACH               (0x00ff0000)
+#define EF_MIPS_MASK               (EF_MIPS_MACH | EF_MIPS_ABI | EF_MIPS_ARCH)
+
 /* These three macros disassemble and assemble a symbol table st_info field,
    which contains the symbol binding and symbol type.  The STB_ and STT_
    defines identify the binding and type.  */
@@ -157,6 +161,8 @@ int ecmake_sectionthumbs(const pbuffer_t p, pthumb_t thumbs, const size_t maxthu
 int ecmake_versionnames32(const pbuffer_t p, pversion_t vnames, const size_t maxvnames);
 int ecmake_versionnames64(const pbuffer_t p, pversion_t vnames, const size_t maxvnames);
 
+char* get_EHDRFLAGSEX(const pbuffer_t p, const uint64_t e_flags);
+
 ppick_t get_RELTYPEDEF(const pbuffer_t p);
 ppick_t get_RELTYPEVER(const pbuffer_t p);
 ppick_t get_RELTYPESYM32(const pbuffer_t p);
@@ -167,9 +173,10 @@ ppick_t get_RELTYPESHEX32(const pbuffer_t p);
 ppick_t get_RELTYPESHEX64(const pbuffer_t p);
 
 pconvert_t get_GNUTAG(const pbuffer_t p);
-pconvert_t get_DYNTAG(const pbuffer_t p, const uint64_t tag);
-pconvert_t get_PHDRTYPE(const pbuffer_t p, const uint64_t type);
-pconvert_t get_SHDRTYPE(const pbuffer_t p, const uint64_t type);
+pconvert_t get_EHDRFLAGS(const pbuffer_t p);
+pconvert_t get_DYNTAG(const pbuffer_t p, const uint64_t d_tag);
+pconvert_t get_PHDRTYPE(const pbuffer_t p, const uint64_t p_type);
+pconvert_t get_SHDRTYPE(const pbuffer_t p, const uint64_t sh_type);
 
 #endif
 

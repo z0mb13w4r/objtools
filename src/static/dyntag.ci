@@ -253,8 +253,8 @@ pick_t ecDYNTAGNAME[] = {
   PICK_END
 };
 
-pconvert_t get_DYNTAG(const pbuffer_t p, const uint64_t tag) {
-  if ((tag >= DT_LOPROC) && (tag <= DT_HIPROC)) {
+pconvert_t get_DYNTAG(const pbuffer_t p, const uint64_t d_tag) {
+  if ((d_tag >= DT_LOPROC) && (d_tag <= DT_HIPROC)) {
     switch (ecget_emachine(p)) {
     case EM_X86_64:
       return ecDYNTAGX86;

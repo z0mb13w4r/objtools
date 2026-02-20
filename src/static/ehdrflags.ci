@@ -102,7 +102,6 @@ pconvert_t get_EHDRFLAGS(const pbuffer_t p) {
   return NULL;
 }
 
-#define EF_MIPS_MACH                   (0x00ff0000)
 #define EF_MIPS_MACH_3900              (0x00810000)
 #define EF_MIPS_MACH_4010              (0x00820000)
 #define EF_MIPS_MACH_4100              (0x00830000)
@@ -126,7 +125,6 @@ pconvert_t get_EHDRFLAGS(const pbuffer_t p) {
 #define EF_MIPS_MACH_SB1               (0x008a0000)
 #define EF_MIPS_MACH_XLR               (0x008c0000)
 
-#define EF_MIPS_ABI                    (0x0000f000)
 #define EF_MIPS_ABI_O32                (0x00001000)
 #define EF_MIPS_ABI_O64                (0x00002000)
 #define EF_MIPS_ABI_EABI32             (0x00003000)
@@ -134,8 +132,6 @@ pconvert_t get_EHDRFLAGS(const pbuffer_t p) {
 
 #define EF_MIPS_ARCH_32R6              (0x90000000)
 #define EF_MIPS_ARCH_64R6              (0xa0000000)
-
-#define EF_MIPS_MASK                   (EF_MIPS_MACH | EF_MIPS_ABI | EF_MIPS_ARCH)
 
 char* get_EHDRFLAGSEX(const pbuffer_t p, const uint64_t e_flags) {
   STATICA(char, o, 1024);
