@@ -392,7 +392,7 @@ static void callback_sectionhdr(handle_t p, handle_t shdr, unknown_t param) {
     printf_maskmute(zSECTIONHDRARCHMEP_FLAGS, flags, USE_LT);
   }
 
-  if (flags & SEC_LINK_ONCE) {
+  if (flags & SEC_LINK_DUPLICATES) {
     printf_pick(zSECTIONHDRLINKDUP, flags & SEC_LINK_DUPLICATES, USE_LT);
 
     // TBD
