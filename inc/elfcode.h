@@ -18,6 +18,9 @@
 #define VERSYM_HIDDEN              (0x8000)
 #define VERSYM_VERSION             (0x7fff)
 
+#define EF_MIPS_ARCH_32R6          (0x90000000)
+#define EF_MIPS_ARCH_64R6          (0xa0000000)
+
 #define EF_MIPS_ABI                (0x0000f000)
 #define EF_MIPS_MACH               (0x00ff0000)
 #define EF_MIPS_MASK               (EF_MIPS_MACH | EF_MIPS_ABI | EF_MIPS_ARCH)

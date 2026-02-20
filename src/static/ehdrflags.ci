@@ -130,9 +130,6 @@ pconvert_t get_EHDRFLAGS(const pbuffer_t p) {
 #define EF_MIPS_ABI_EABI32             (0x00003000)
 #define EF_MIPS_ABI_EABI64             (0x00004000)
 
-#define EF_MIPS_ARCH_32R6              (0x90000000)
-#define EF_MIPS_ARCH_64R6              (0xa0000000)
-
 char* get_EHDRFLAGSEX(const pbuffer_t p, const uint64_t e_flags) {
   STATICA(char, o, 1024);
 
@@ -170,7 +167,6 @@ char* get_EHDRFLAGSEX(const pbuffer_t p, const uint64_t e_flags) {
 
     switch (e_flags & EF_MIPS_ABI) {
     case 0:                                                          break;
-    case EF_MIPS_MACH_3900:          n += PRINT1(" 3900");           break;
     case EF_MIPS_ABI_O32:            n += PRINT1(" o32");            break;
     case EF_MIPS_ABI_O64:            n += PRINT1(" o64");            break;
     case EF_MIPS_ABI_EABI32:         n += PRINT1(" eabi32");         break;

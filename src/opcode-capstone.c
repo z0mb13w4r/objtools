@@ -20,12 +20,16 @@ static int get_csarch(handle_t p, handle_t o) {
     }
   }
 
-  if (EM_ARM == ocget_machine(p)) {
+  const uint64_t mach = ocget_machine(p);
+
+  if (EM_ARM == mach) {
     return CS_ARCH_ARM;
-  } else if (EM_AARCH64 == ocget_machine(p)) {
+  } else if (EM_AARCH64 == mach) {
     return CS_ARCH_AARCH64;
-  } else if (EM_RISCV == ocget_machine(p)) {
+  } else if (EM_RISCV == mach) {
     return CS_ARCH_RISCV;
+  } else if (EM_MIPS == mach || EM_MIPS_RS3_LE == mach) {
+    return CS_ARCH_MIPS;
   }
 
   return CS_ARCH_X86;
@@ -43,22 +47,43 @@ static int get_csmode(handle_t p, handle_t o) {
     else if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_RISCV32))  return CS_MODE_RISCV32;
   }
 
+  const uint64_t type = ocget_type(p);
   const uint64_t mach = ocget_machine(p);
   const uint64_t size = ocget_archsize(p);
 
+  int csmode = CS_MODE_LITTLE_ENDIAN;
   if (EM_ARM == mach) {
-    return CS_MODE_ARM;
+    csmode = CS_MODE_ARM;
   } else if (EM_AARCH64 == mach) {
-    return ocisLE(p) ? CS_MODE_LITTLE_ENDIAN : CS_MODE_BIG_ENDIAN;
+    csmode = ocisLE(p) ? CS_MODE_LITTLE_ENDIAN : CS_MODE_BIG_ENDIAN;
   } else if (EM_RISCV == mach) {
-    if (32 == size) return CS_MODE_RISCV32;
-    else if (64 == size) return CS_MODE_RISCV64;
+    if (32 == size) csmode = CS_MODE_RISCV32;
+    else if (64 == size) csmode = CS_MODE_RISCV64;
+  } else if (EM_MIPS == mach || EM_MIPS_RS3_LE == mach) {
+    switch (type & EF_MIPS_ARCH) {
+    case EF_MIPS_ARCH_1:             csmode = CS_MODE_MIPS1;         break;
+    case EF_MIPS_ARCH_2:             csmode = CS_MODE_MIPS2;         break;
+    case EF_MIPS_ARCH_3:             csmode = CS_MODE_MIPS3;         break;
+    case EF_MIPS_ARCH_4:             csmode = CS_MODE_MIPS4;;        break;
+    case EF_MIPS_ARCH_5:             csmode = CS_MODE_MIPS5;         break;
+    case EF_MIPS_ARCH_32:            csmode = CS_MODE_MIPS32;        break;
+    case EF_MIPS_ARCH_32R2:          csmode = CS_MODE_MIPS32R2;      break;
+    case EF_MIPS_ARCH_32R6:          csmode = CS_MODE_MIPS32R6;      break;
+    case EF_MIPS_ARCH_64:            csmode = CS_MODE_MIPS64;        break;
+    case EF_MIPS_ARCH_64R2:          csmode = CS_MODE_MIPS64R2;      break;
+    case EF_MIPS_ARCH_64R6:          csmode = CS_MODE_MIPS64R6;      break;
+    default:
+      break;
+    }
   } else {
-    if (16 == size) return CS_MODE_16;
-    else if (32 == size) return CS_MODE_32;
+    if (16 == size) csmode = CS_MODE_16;
+    else if (32 == size) csmode = CS_MODE_32;
+    else if (64 == size) csmode = CS_MODE_64;
   }
 
-  return CS_MODE_64;
+  if (ocisBE(p)) csmode |= CS_MODE_BIG_ENDIAN;
+
+  return csmode;
 }
 
 int capstone_open(handle_t p, handle_t o) {
