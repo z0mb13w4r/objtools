@@ -384,7 +384,18 @@ bool_t ochas_shdrbytype(handle_t p, const int type) {
 }
 
 uint64_t ocget_type(handle_t p) {
-  if (ismode(p, MODE_OCSHDR)) {
+  if (isopcode(p)) {
+    handle_t p0 = ocget(p, OPCODE_RAWDATA);
+    if (isELF32(p0)) {
+      MEMSTACK(Elf32_Ehdr, ex);
+      Elf32_Ehdr* e0 = ecget_ehdr32(p0, ex);
+      return e0 ? e0->e_flags : 0;
+    } else if (isELF64(p0)) {
+      MEMSTACK(Elf64_Ehdr, ex);
+      Elf64_Ehdr* e0 = ecget_ehdr64(p0, ex);
+      return e0 ? e0->e_flags : 0;
+    }
+  } else if (ismode(p, MODE_OCSHDR)) {
     if (ocisELF32(p)) {
       MEMSTACK(Elf32_Shdr, sx);
       Elf32_Shdr* s0 = ocget_rawshdr(p, sx);
