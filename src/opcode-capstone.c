@@ -313,7 +313,7 @@ int capstone_raw2(handle_t p, handle_t s, unknown_t data, const size_t size, con
     int evilcount = 0;
     for (size_t k = 0; k < size; ) {
       cs_insn *insn = NULL;
-      size_t count = cs_disasm(oc->cs, p0, 4, caddr, 0, &insn);
+      size_t count = cs_disasm(oc->cs, p0, caddrsize, caddr, 0, &insn);
       if (count > 0) {
         for (size_t i = 0; i < count; ++i) {
           if (ocuse_vaddr(p, insn[i].address)) {
@@ -355,6 +355,38 @@ int capstone_raw2(handle_t p, handle_t s, unknown_t data, const size_t size, con
   return n;
 }
 
+int capstone_raw3(handle_t p, handle_t s, unknown_t data, const size_t size, const uint64_t vaddr) {
+  int n = 0;
+  if (data && isopcode(p) && ismodeNXXN(s, MODE_OCSHDRWRAP)) {
+    popcode_t oc = ocget(p, OPCODE_THIS);
+    puchar_t p0 = CAST(puchar_t, data);
+
+    size_t   caddrsize = 4;
+    uint64_t caddr = vaddr;
+    for (size_t k = 0; k < size; ) {
+      cs_insn *insn = NULL;
+      size_t count = cs_disasm(oc->cs, p0, caddrsize, caddr, 0, &insn);
+      if (count > 0) {
+        for (size_t i = 0; i < count; ++i) {
+          if (ocuse_vaddr(p, insn[i].address)) {
+            n += capstone_printf0(p, insn[i].bytes, insn[i].mnemonic, insn[i].op_str, insn[i].size, insn[i].address);
+          }
+
+          k += insn[i].size;
+          p0 += insn[i].size,
+          caddr += insn[i].size;
+        }
+      } else {
+        k += caddrsize;
+        p0 += caddrsize,
+        caddr += caddrsize;
+      }
+    }
+  }
+
+  return n;
+}
+
 int capstone_run(handle_t p, handle_t s) {
   int n = 0;
   if (isopcode(p) && isopshdr(s)) {
@@ -363,7 +395,9 @@ int capstone_run(handle_t p, handle_t s) {
 
     if (p0) {
       if (bfd_get_section_contents(ocget(p, OPCODE_BFD), ocget(s, MODE_OCSHDR), p0, 0, sz)) {
-        if (EM_RISCV == ocget_machine(p)) {
+        if (EM_MIPS == ocget_machine(p) || EM_MIPS_RS3_LE == ocget_machine(p)) {
+          n += capstone_raw3(p, s, p0, sz, ocget_vmaddress(s));
+        } else if (EM_RISCV == ocget_machine(p)) {
           n += capstone_raw2(p, s, p0, sz, ocget_vmaddress(s));
         } else if (ecmake_sectionthumbs(ocget(p, OPCODE_RAWDATA), NULL, 0)) {
           n += capstone_raw1(p, s, p0, sz, ocget_vmaddress(s));
