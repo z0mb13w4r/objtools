@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-#import glob
 import pexpect
 #import subprocess
 
@@ -10,7 +9,6 @@ def mk(msg):
 
 
 def go(m,c0,c1=None):
-  #p = pexpect.spawn(c)
   p = pexpect.spawn('bash', ['-c', c0])
   r = p.read()
   if r is None:
@@ -24,9 +22,13 @@ def go(m,c0,c1=None):
   #print(f'\033[31m[-] ' + m + f':\033[00m\n' + p.stdout.read().decode('utf-8'))
 
 
-def gx(m,c):
-  p = pexpect.spawn('bash', ['-c', c])
+def gx(m,c0,c1=None):
+  p = pexpect.spawn('bash', ['-c', c0])
   r = p.read()
+  if r is None:
+    p = pexpect.spawn('bash', ['-c', c1])
+    r = p.read()
+
   if r:
     print(f'\033[33m[-] ' + m + f':\033[00m\n' + r.decode('utf-8'))
 
@@ -123,6 +125,24 @@ def srv_info():
   gx('/lib/systemd/* config files not belonging to root', 'find /lib/systemd/ \! -uid 0 -type f 2>/dev/null | xargs -r ls -la 2>/dev/null')
 
 
+def sft_conf():
+  mk('SOFTWARE')
+  go('Sudo version', 'sudo -V 2>/dev/null | grep "Sudo version" 2>/dev/null')
+  go('MYSQL version', 'mysql --version 2>/dev/null')
+  gx('We can connect to the local MYSQL service with default root/root credentials!', 'mysqladmin -uroot -proot version 2>/dev/null')
+  gx("We can connect to the local MYSQL service as 'root' and without a password!", 'mysqladmin -uroot version 2>/dev/null')
+  go('Postgres version', 'psql -V 2>/dev/null')
+  gx("We can connect to Postgres DB 'template0' as user 'postgres' with no password!", "psql -U postgres -w template0 -c 'select version()' 2>/dev/null | grep version")
+  gx("We can connect to Postgres DB 'template1' as user 'postgres' with no password!", "psql -U postgres -w template1 -c 'select version()' 2>/dev/null | grep version")
+  gx("We can connect to Postgres DB 'template0' as user 'psql' with no password!", "psql -U pgsql -w template0 -c 'select version()' 2>/dev/null | grep version")
+  gx("We can connect to Postgres DB 'template1' as user 'psql' with no password!", "psql -U pgsql -w template1 -c 'select version()' 2>/dev/null | grep version")
+  go('Apache version', 'apache2 -v 2>/dev/null; httpd -v 2>/dev/null')
+  go('Apache user configuration', "grep -i 'user\|group' /etc/apache2/envvars 2>/dev/null | awk '{sub(/.*\export /,"")}1' 2>/dev/null")
+  go('Installed Apache modules', 'apache2ctl -M 2>/dev/null; httpd -M 2>/dev/null')
+  go('htpasswd found - could contain passwords', 'find / -name .htpasswd -print -exec cat {} \; 2>/dev/null')
+  go('www home dir contents', 'ls -alhR /var/www/ 2>/dev/null; ls -alhR /srv/www/htdocs/ 2>/dev/null; ls -alhR /usr/local/www/apache2/data/ 2>/dev/null; ls -alhR /opt/lampp/htdocs/ 2>/dev/null')
+
+
 if __name__ == '__main__':
   sys_info()
   usr_info()
@@ -130,4 +150,5 @@ if __name__ == '__main__':
   job_info()
   net_info()
   srv_info()
+  sft_conf()
 
