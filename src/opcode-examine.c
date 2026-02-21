@@ -25,6 +25,7 @@ ppick_t oegetADDRLOOKUP(handle_t p) {
   case EM_RISCV:
     return oeADDRLOOKUP_RISCV;
   case EM_MIPS:
+  case EM_MIPS_RS3_LE:
     return oeADDRLOOKUP_MIPS;
   case EM_386:
   case EM_X86_64:
@@ -44,6 +45,7 @@ static poestruct_t oegetINSTRUCTIONS(handle_t p) {
   case EM_RISCV:
     return oeINSTRUCTIONS_RISCV;
   case EM_MIPS:
+  case EM_MIPS_RS3_LE:
     return oeINSTRUCTIONS_MIPS;
   case EM_386:
   case EM_X86_64:
@@ -63,6 +65,7 @@ pconvert_t oegetINSTRUCTIONNAMES(handle_t p) {
   case EM_RISCV:
     return oeINSTRUCTIONNAMES_RISCV;
   case EM_MIPS:
+  case EM_MIPS_RS3_LE:
     return oeINSTRUCTIONNAMES_MIPS;
   case EM_386:
   case EM_X86_64:
@@ -82,6 +85,7 @@ pconvert_t oegetINSTRUCTIONFLAGS(handle_t p) {
   case EM_RISCV:
     return oeINSTRUCTIONFLAGS_RISCV;
   case EM_MIPS:
+  case EM_MIPS_RS3_LE:
     return oeINSTRUCTIONFLAGS_MIPS;
   case EM_386:
   case EM_X86_64:
@@ -101,6 +105,7 @@ pconvert_t oegetREGISTERFLAGS(handle_t p) {
   case EM_RISCV:
     return oeREGISTERFLAGS_RISCV;
   case EM_MIPS:
+  case EM_MIPS_RS3_LE:
     return oeREGISTERFLAGS_MIPS;
   case EM_386:
   case EM_X86_64:
@@ -124,6 +129,7 @@ pconvert_t oegetREGISTERNAMES(handle_t p) {
     else if (64 == size) return oeREGISTERNAMES_RISCV64;
   }
   case EM_MIPS:
+  case EM_MIPS_RS3_LE:
     return oeREGISTERNAMES_MIPS;
   case EM_386:
   case EM_X86_64:
