@@ -377,6 +377,11 @@ int capstone_raw3(handle_t p, handle_t s, unknown_t data, const size_t size, con
           caddr += insn[i].size;
         }
       } else {
+//printf("skipping = %lx\n", k);
+       if (ocuse_vaddr(p, caddr)) {
+          n += capstone_printf1(p, p0, caddrsize, caddr);
+        }
+
         k += caddrsize;
         p0 += caddrsize,
         caddr += caddrsize;
