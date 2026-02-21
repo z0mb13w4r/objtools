@@ -365,7 +365,7 @@ int capstone_raw3(handle_t p, handle_t s, unknown_t data, const size_t size, con
     popcode_t oc = ocget(p, OPCODE_THIS);
     puchar_t p0 = CAST(puchar_t, data);
 
-    size_t   caddrsize = 4;
+    size_t   caddrsize = ocget_archsize(p) / 8;
     uint64_t caddr = vaddr;
     for (size_t k = 0; k < size; ) {
       cs_insn *insn = NULL;
