@@ -111,6 +111,16 @@ def srv_info():
   go('Contents of /etc/xinetd.conf', 'cat /etc/xinetd.conf 2>/dev/null')
   go('/etc/xinetd.d is included in /etc/xinetd.conf - associated binary permissions are listed below', 'grep "/etc/xinetd.d" /etc/xinetd.conf 2>/dev/null')
   go('The related xinetd binary permissions', "awk '{print $7}' /etc/xinetd.conf 2>/dev/null | xargs -r ls -la 2>/dev/null")
+  go('/etc/init.d/ binary permissions', 'ls -la /etc/init.d 2>/dev/null')
+  gx('/etc/init.d/ files not belonging to root', 'find /etc/init.d/ \! -uid 0 -type f 2>/dev/null | xargs -r ls -la 2>/dev/null')
+  go('/etc/rc.d/init.d binary permissions', 'ls -la /etc/rc.d/init.d 2>/dev/null')
+  gx('/etc/rc.d/init.d files not belonging to root', 'find /etc/rc.d/init.d \! -uid 0 -type f 2>/dev/null | xargs -r ls -la 2>/dev/null')
+  go('/usr/local/etc/rc.d binary permissions', 'ls -la /usr/local/etc/rc.d 2>/dev/null')
+  gx('/usr/local/etc/rc.d files not belonging to root', 'find /usr/local/etc/rc.d \! -uid 0 -type f 2>/dev/null | xargs -r ls -la 2>/dev/null')
+  go('/etc/init/ config file permissions', 'ls -la /etc/init/ 2>/dev/null')
+  gx('/etc/init/ config files not belonging to root', 'find /etc/init \! -uid 0 -type f 2>/dev/null | xargs -r ls -la 2>/dev/null')
+  go('/lib/systemd/* config file permissions', 'ls -lthR /lib/systemd/ 2>/dev/null')
+  gx('/lib/systemd/* config files not belonging to root', 'find /lib/systemd/ \! -uid 0 -type f 2>/dev/null | xargs -r ls -la 2>/dev/null')
 
 
 if __name__ == '__main__':
