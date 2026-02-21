@@ -1030,15 +1030,28 @@ bool_t ocget_symbol(handle_t p, uint64_t vaddr, char **name,
 }
 
 uint16_t ocmake_u16(handle_t p, const uchar_t v0, const uchar_t v1) {
+  if (ocisBE(p)) {
+    return MODE_PUT1(CAST(uint16_t, v0)) | MODE_PUT0(CAST(uint16_t, v1));
+  }
+
   return MODE_PUT0(CAST(uint16_t, v0)) | MODE_PUT1(CAST(uint16_t, v1));
 }
 
 uint32_t ocmake_u32(handle_t p, const uchar_t v0, const uchar_t v1, const uchar_t v2, const uchar_t v3) {
+  if (ocisBE(p)) {
+    return MODE_PUT3(CAST(uint32_t, v0)) | MODE_PUT2(CAST(uint32_t, v1)) | MODE_PUT1(CAST(uint32_t, v2)) | MODE_PUT0(CAST(uint32_t, v3));
+  }
+
   return MODE_PUT0(CAST(uint32_t, v0)) | MODE_PUT1(CAST(uint32_t, v1)) | MODE_PUT2(CAST(uint32_t, v2)) | MODE_PUT3(CAST(uint32_t, v3));
 }
 
 uint64_t ocmake_u64(handle_t p, const uchar_t v0, const uchar_t v1, const uchar_t v2, const uchar_t v3,
                                 const uchar_t v4, const uchar_t v5, const uchar_t v6, const uchar_t v7) {
+  if (ocisBE(p)) {
+    return MODE_PUT7(CAST(uint64_t, v0)) | MODE_PUT6(CAST(uint64_t, v1)) | MODE_PUT5(CAST(uint64_t, v2)) | MODE_PUT4(CAST(uint64_t, v3)) |
+           MODE_PUT3(CAST(uint64_t, v4)) | MODE_PUT2(CAST(uint64_t, v5)) | MODE_PUT1(CAST(uint64_t, v6)) | MODE_PUT0(CAST(uint64_t, v7));
+  }
+
   return MODE_PUT0(CAST(uint64_t, v0)) | MODE_PUT1(CAST(uint64_t, v1)) | MODE_PUT2(CAST(uint64_t, v2)) | MODE_PUT3(CAST(uint64_t, v3)) |
          MODE_PUT4(CAST(uint64_t, v4)) | MODE_PUT5(CAST(uint64_t, v5)) | MODE_PUT6(CAST(uint64_t, v6)) | MODE_PUT7(CAST(uint64_t, v7));
 }
