@@ -4,6 +4,8 @@ import pexpect
 
 USERNAME=''
 
+BINBIGLIST='aria2c\|arp\|ash\|awk\|base64\|bash\|busybox\|cat\|chmod\|chown\|cp\|csh\|curl\|cut\|dash\|date\|dd\|diff\|dmsetup\|docker\|ed\|emacs\|env\|expand\|expect\|file\|find\|flock\|fmt\|fold\|ftp\|gawk\|gdb\|gimp\|git\|grep\|head\|ht\|iftop\|ionice\|ip$\|irb\|jjs\|jq\|jrunscript\|ksh\|ld.so\|ldconfig\|less\|logsave\|lua\|make\|man\|mawk\|more\|mv\|mysql\|nano\|nawk\|nc\|netcat\|nice\|nl\|nmap\|node\|od\|openssl\|perl\|pg\|php\|pic\|pico\|python\|readelf\|rlwrap\|rpm\|rpmquery\|rsync\|ruby\|run-parts\|rvim\|scp\|script\|sed\|setarch\|sftp\|sh\|shuf\|socat\|sort\|sqlite3\|ssh$\|start-stop-daemon\|stdbuf\|strace\|systemctl\|tail\|tar\|taskset\|tclsh\|tee\|telnet\|tftp\|time\|timeout\|ul\|unexpand\|uniq\|unshare\|vi\|vim\|watch\|wget\|wish\|xargs\|xxd\|zip\|zsh'
+
 def mk(msg):
   print('\033[33m### ' + msg + ' ' + '#'*(52 - len(msg)) + '\033[00m')
 
@@ -55,8 +57,8 @@ def usr_info():
   go('Super user account(s)', "grep -v -E '^#' /etc/passwd | awk -F: '$3 == 0 {print $1}' 2>/dev/null")
   go('Sudoers configuration (condensed)', 'grep -v -e "^$" /etc/sudoers 2>/dev/null | grep -v "#" 2>/dev/null')
   #gx('We can sudo without supplying a password!', 'echo '' | sudo -S -l -k 2>/dev/null')
-
   #
+  #gx('Possible sudo pwnage!', "echo '' | sudo -S -l -k 2>/dev/null | xargs -n 1 2>/dev/null | sed 's/,*$//g' 2>/dev/null | grep -w '" + BINBIGLIST + "' 2>/dev/null")
   go('Accounts that have recently used sudo', 'find /home -name .sudo_as_admin_successful 2>/dev/null')
   go("We can read root's home directory!", 'ls -ahl /root/ 2>/dev/null')
   go('Are permissions on /home directories lax', 'ls -ahl /home/ 2>/dev/null')
@@ -139,8 +141,26 @@ def sft_conf():
   go('Apache version', 'apache2 -v 2>/dev/null; httpd -v 2>/dev/null')
   go('Apache user configuration', "grep -i 'user\|group' /etc/apache2/envvars 2>/dev/null | awk '{sub(/.*\export /,"")}1' 2>/dev/null")
   go('Installed Apache modules', 'apache2ctl -M 2>/dev/null; httpd -M 2>/dev/null')
-  go('htpasswd found - could contain passwords', 'find / -name .htpasswd -print -exec cat {} \; 2>/dev/null')
+  #go('htpasswd found - could contain passwords', 'find / -name .htpasswd -print -exec cat {} \; 2>/dev/null')
   go('www home dir contents', 'ls -alhR /var/www/ 2>/dev/null; ls -alhR /srv/www/htdocs/ 2>/dev/null; ls -alhR /usr/local/www/apache2/data/ 2>/dev/null; ls -alhR /opt/lampp/htdocs/ 2>/dev/null')
+
+
+def ask_info():
+  mk('INTERESTING FILES')
+  go('Useful file locations', 'which nc 2>/dev/null; which netcat 2>/dev/null; which wget 2>/dev/null; which nmap 2>/dev/null; which gcc 2>/dev/null; which curl 2>/dev/null')
+  go('Installed compilers', "dpkg --list 2>/dev/null | grep compiler | grep -v decompiler 2>/dev/null && yum list installed 'gcc*' 2>/dev/null | grep gcc 2>/dev/null")
+  go('Can we read/write sensitive files', 'ls -la /etc/passwd 2>/dev/null; ls -la /etc/group 2>/dev/null; ls -la /etc/profile 2>/dev/null; ls -la /etc/shadow 2>/dev/null; ls -la /etc/master.passwd 2>/dev/null')
+  #go('SUID files', 'find $(find / -perm -4000 -type f 2>/dev/null) -perm -4000 -type f -exec ls -la {} 2>/dev/null \;')
+  gx('Possibly interesting SUID files', 'find $(find / -perm -4000 -type f 2>/dev/null) -perm -4000 -type f -exec ls -la {} \; 2>/dev/null | grep -w "' + BINBIGLIST + '" 2>/dev/null')
+  gx('World-writable SUID files', 'find $(find / -perm -4000 -type f 2>/dev/null) -perm -4002 -type f -exec ls -la {} 2>/dev/null \;')
+  gx('World-writable SUID files owned by root', 'find $(find / -perm -4000 -type f 2>/dev/null) -uid 0 -perm -4002 -type f -exec ls -la {} 2>/dev/null \;')
+  go('SGID files', 'find $(find / -perm -2000 -type f 2>/dev/null) -perm -2000 -type f -exec ls -la {} 2>/dev/null \;')
+  gx('Possibly interesting SGID files', 'find $(find / -perm -2000 -type f 2>/dev/null) -perm -2000 -type f  -exec ls -la {} \; 2>/dev/null | grep -w "' + BINBIGLIST + '" 2>/dev/null')
+  gx('World-writable SGID files', 'find $(find / -perm -2000 -type f 2>/dev/null) -perm -2002 -type f -exec ls -la {} 2>/dev/null \;')
+  gx('World-writable SGID files owned by root', 'find $(find / -perm -2000 -type f 2>/dev/null) -uid 0 -perm -2002 -type f -exec ls -la {} 2>/dev/null \;')
+  gx('Files with POSIX capabilities set', 'getcap -r / 2>/dev/null || /sbin/getcap -r / 2>/dev/null')
+  gx('Users with specific POSIX capabilities', "grep -v '^#\|none\|^$' /etc/security/capability.conf 2>/dev/null")
+  #
 
 
 if __name__ == '__main__':
@@ -151,4 +171,5 @@ if __name__ == '__main__':
   net_info()
   srv_info()
   sft_conf()
+  ask_info()
 
