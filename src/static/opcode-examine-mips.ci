@@ -2,6 +2,11 @@ static oestruct_t oeINSTRUCTIONS_MIPS[] = {
   OCSTRUCT("beq",       OCINSNMIPS_BEQ),
   OCSTRUCT("beqz",      OCINSNMIPS_BEQZ),
 
+  OCSTRUCT("jalr",      OCINSNMIPS_JALR),
+  OCSTRUCT("jal",       OCINSNMIPS_JAL),
+  OCSTRUCT("jr",        OCINSNMIPS_JR),
+  OCSTRUCT("j",         OCINSNMIPS_Jxx),
+
   {NULL}
 };
 
@@ -110,6 +115,10 @@ static convert_t oeINSTRUCTIONFLAGS_MIPS[] = {
   {"OPERAND3",          OCINSN_OPERAND3},
   {"OPERAND4",          OCINSN_OPERAND4},
   {"OPERAND5",          OCINSN_OPERAND5},
+
+  {"LINK",              OCINSNMIPS_LINK},
+  {"REGISTER",          OCINSNMIPS_REGISTER},
+  {"IMMEDIATE",         OCINSNMIPS_IMMEDIATE},
 
   {0, 0}
 };
