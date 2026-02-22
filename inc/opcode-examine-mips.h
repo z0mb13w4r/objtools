@@ -7,9 +7,14 @@
 #define OCINSNMIPS_ZERO            (OCINSN_Z)
 
 #define OCINSNMIPS_EQ              (OCINSN_E)
+#define OCINSNMIPS_EQZ             (OCINSN_E | OCINSN_Z)
+#define OCINSNMIPS_GE              (OCINSN_GE)
+#define OCINSNMIPS_GEZ             (OCINSN_GE | OCINSN_Z)
+
 
 #define OCINSNMIPS_BEQ             (OCINSNMIPS_Bxx | OCINSNMIPS_EQ)
-#define OCINSNMIPS_BEQZ            (OCINSNMIPS_BEQ | OCINSNMIPS_ZERO)
+#define OCINSNMIPS_BEQZ            (OCINSNMIPS_Bxx | OCINSNMIPS_EQZ)
+#define OCINSNMIPS_BGEZ            (OCINSNMIPS_Bxx | OCINSNMIPS_GEZ)
 
 #define OCREGMIPS_R0               (0x00)
 #define OCREGMIPS_R1               (0x01)
