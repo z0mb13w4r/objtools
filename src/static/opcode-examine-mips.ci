@@ -1,6 +1,7 @@
 static oestruct_t oeINSTRUCTIONS_MIPS[] = {
   OCSTRUCT("beq",       OCINSNMIPS_BEQ),
   OCSTRUCT("beqz",      OCINSNMIPS_BEQZ),
+  OCSTRUCT("b",         OCINSNMIPS_Bxx),
 
   OCSTRUCT("jalr",      OCINSNMIPS_JALR),
   OCSTRUCT("jal",       OCINSNMIPS_JAL),
