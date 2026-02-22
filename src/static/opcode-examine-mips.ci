@@ -1,28 +1,180 @@
 static oestruct_t oeINSTRUCTIONS_MIPS[] = {
+  OCSTRUCT("beq",       OCINSNMIPS_BEQ),
+  OCSTRUCT("beqz",      OCINSNMIPS_BEQZ),
+
   {NULL}
 };
 
 static oestruct_t oeREGISTERS_MIPS[] = {
+  OCSTRUCT("$0",        OCREGMIPS_R0),
+  OCSTRUCT("$1",        OCREGMIPS_R1),
+  OCSTRUCT("$2",        OCREGMIPS_R2),
+  OCSTRUCT("$3",        OCREGMIPS_R3),
+  OCSTRUCT("$4",        OCREGMIPS_R4),
+  OCSTRUCT("$5",        OCREGMIPS_R5),
+  OCSTRUCT("$6",        OCREGMIPS_R6),
+  OCSTRUCT("$7",        OCREGMIPS_R7),
+  OCSTRUCT("$8",        OCREGMIPS_R8),
+  OCSTRUCT("$9",        OCREGMIPS_R9),
+  OCSTRUCT("$10",       OCREGMIPS_R10),
+  OCSTRUCT("$11",       OCREGMIPS_R11),
+  OCSTRUCT("$12",       OCREGMIPS_R12),
+  OCSTRUCT("$13",       OCREGMIPS_R13),
+  OCSTRUCT("$14",       OCREGMIPS_R14),
+  OCSTRUCT("$15",       OCREGMIPS_R15),
+  OCSTRUCT("$16",       OCREGMIPS_R16),
+  OCSTRUCT("$17",       OCREGMIPS_R17),
+  OCSTRUCT("$18",       OCREGMIPS_R18),
+  OCSTRUCT("$19",       OCREGMIPS_R19),
+  OCSTRUCT("$20",       OCREGMIPS_R20),
+  OCSTRUCT("$21",       OCREGMIPS_R21),
+  OCSTRUCT("$22",       OCREGMIPS_R22),
+  OCSTRUCT("$23",       OCREGMIPS_R23),
+  OCSTRUCT("$24",       OCREGMIPS_R24),
+  OCSTRUCT("$25",       OCREGMIPS_R25),
+  OCSTRUCT("$26",       OCREGMIPS_R26),
+  OCSTRUCT("$27",       OCREGMIPS_R27),
+  OCSTRUCT("$28",       OCREGMIPS_R28),
+  OCSTRUCT("$29",       OCREGMIPS_R29),
+  OCSTRUCT("$30",       OCREGMIPS_R30),
+  OCSTRUCT("$31",       OCREGMIPS_R31),
+
+  OCSTRUCT("$zero",     OCREGMIPS_R0),
+  OCSTRUCT("$at",       OCREGMIPS_R1),
+
+  OCSTRUCT("$v0",       OCREGMIPS_R2),
+  OCSTRUCT("$v1",       OCREGMIPS_R3),
+
+  OCSTRUCT("$a0",       OCREGMIPS_R4),
+  OCSTRUCT("$a1",       OCREGMIPS_R5),
+  OCSTRUCT("$a2",       OCREGMIPS_R6),
+  OCSTRUCT("$a3",       OCREGMIPS_R7),
+
+  OCSTRUCT("$t0",       OCREGMIPS_R8),
+  OCSTRUCT("$t1",       OCREGMIPS_R9),
+  OCSTRUCT("$t2",       OCREGMIPS_R10),
+  OCSTRUCT("$t3",       OCREGMIPS_R11),
+  OCSTRUCT("$t4",       OCREGMIPS_R12),
+  OCSTRUCT("$t5",       OCREGMIPS_R13),
+  OCSTRUCT("$t6",       OCREGMIPS_R14),
+  OCSTRUCT("$t7",       OCREGMIPS_R15),
+
+  OCSTRUCT("$s0",       OCREGMIPS_R16),
+  OCSTRUCT("$s1",       OCREGMIPS_R17),
+  OCSTRUCT("$s2",       OCREGMIPS_R18),
+  OCSTRUCT("$s3",       OCREGMIPS_R19),
+  OCSTRUCT("$s4",       OCREGMIPS_R20),
+  OCSTRUCT("$s5",       OCREGMIPS_R21),
+  OCSTRUCT("$s6",       OCREGMIPS_R22),
+  OCSTRUCT("$s7",       OCREGMIPS_R23),
+
+  OCSTRUCT("$t8",       OCREGMIPS_R24),
+  OCSTRUCT("$t9",       OCREGMIPS_R25),
+
+  OCSTRUCT("$k0",       OCREGMIPS_R26),
+  OCSTRUCT("$k1",       OCREGMIPS_R27),
+
+  OCSTRUCT("$gp",       OCREGMIPS_R28),
+  OCSTRUCT("$sp",       OCREGMIPS_R29),
+  OCSTRUCT("$fp",       OCREGMIPS_R30),
+  OCSTRUCT("$ra",       OCREGMIPS_R31),
+
   {NULL}
 };
 
 static convert_t oeINSTRUCTIONFLAGS_MIPS[] = {
+  {"LT",                OCINSN_LT},
+  {"RT",                OCINSN_RT},
+  {"A",                 OCINSN_A},
+  {"B",                 OCINSN_B},
+  {"C",                 OCINSN_C},
+  {"E",                 OCINSN_E},
+  {"G",                 OCINSN_G},
+  {"L",                 OCINSN_L},
+  {"N",                 OCINSN_N},
+  {"O",                 OCINSN_O},
+  {"S",                 OCINSN_S},
+  {"Z",                 OCINSN_Z},
+  {"1BIT",              OCINSN_1BIT},
+  {"8BIT",              OCINSN_8BIT},
+  {"16BIT",             OCINSN_16BIT},
+  {"32BIT",             OCINSN_32BIT},
+  {"64BIT",             OCINSN_64BIT},
+  {"80BIT",             OCINSN_80BIT},
+  {"128BIT",            OCINSN_128BIT},
+  {"256BIT",            OCINSN_256BIT},
+  {"512BIT",            OCINSN_512BIT},
+  {"OPERAND0",          OCINSN_OPERAND0},
+  {"OPERAND1",          OCINSN_OPERAND1},
+  {"OPERAND2",          OCINSN_OPERAND2},
+  {"OPERAND3",          OCINSN_OPERAND3},
+  {"OPERAND4",          OCINSN_OPERAND4},
+  {"OPERAND5",          OCINSN_OPERAND5},
+
   {0, 0}
 };
 
 static convert_t oeINSTRUCTIONNAMES_MIPS[] = {
+  {"Bxx",               OCINSN_MASK(OCINSNMIPS_Bxx)},
+  {"Jxx",               OCINSN_MASK(OCINSNMIPS_Jxx)},
+
   {0, 0}
 };
 
 static convert_t oeREGISTERFLAGS_MIPS[] = {
+  {"8BITLO",            OCREGISTER_8BITLO},
+  {"8BITHI",            OCREGISTER_8BITHI},
+  {"16BIT",             OCREGISTER_16BIT},
+  {"32BIT",             OCREGISTER_32BIT},
+  {"64BIT",             OCREGISTER_64BIT},
+  {"128BIT",            OCREGISTER_128BIT},
+  {"256BIT",            OCREGISTER_256BIT},
+  {"512BIT",            OCREGISTER_512BIT},
+
   {0, 0}
 };
 
 static convert_t oeREGISTERNAMES_MIPS[] = {
+  {"ZERO",              OCREGMIPS_R0},
+  {"AT",                OCREGMIPS_R1},
+  {"V0",                OCREGMIPS_R2},
+  {"V1",                OCREGMIPS_R3},
+  {"A0",                OCREGMIPS_R4},
+  {"A1",                OCREGMIPS_R5},
+  {"A2",                OCREGMIPS_R6},
+  {"A3",                OCREGMIPS_R7},
+  {"T0",                OCREGMIPS_R8},
+  {"T1",                OCREGMIPS_R9},
+  {"T2",                OCREGMIPS_R10},
+  {"T3",                OCREGMIPS_R11},
+  {"T4",                OCREGMIPS_R12},
+  {"T5",                OCREGMIPS_R13},
+  {"T6",                OCREGMIPS_R14},
+  {"T7",                OCREGMIPS_R15},
+  {"S0",                OCREGMIPS_R16},
+  {"S1",                OCREGMIPS_R17},
+  {"S2",                OCREGMIPS_R18},
+  {"S3",                OCREGMIPS_R19},
+  {"S4",                OCREGMIPS_R20},
+  {"S5",                OCREGMIPS_R21},
+  {"S6",                OCREGMIPS_R22},
+  {"S7",                OCREGMIPS_R23},
+  {"T8",                OCREGMIPS_R24},
+  {"T9",                OCREGMIPS_R25},
+  {"K0",                OCREGMIPS_R26},
+  {"K1",                OCREGMIPS_R27},
+  {"GP",                OCREGMIPS_R28},
+  {"SP",                OCREGMIPS_R29},
+  {"FP",                OCREGMIPS_R30},
+  {"RA",                OCREGMIPS_R31},
+
   {0, 0}
 };
 
 static pick_t oeADDRLOOKUP_MIPS[] = {
+  OCINSN_MASK(OCINSNMIPS_Bxx),
+  OCINSN_MASK(OCINSNMIPS_Jxx),
+
   PICK_END
 };
 
