@@ -10,6 +10,8 @@ static oestruct_t oeINSTRUCTIONS_MIPS[] = {
   OCSTRUCT("jr",        OCINSNMIPS_JR),
   OCSTRUCT("j",         OCINSNMIPS_Jxx),
 
+  OCSTRUCT("move",      OCINSNMIPS_MOVE),
+
   {NULL}
 };
 
@@ -127,6 +129,7 @@ static convert_t oeINSTRUCTIONFLAGS_MIPS[] = {
 };
 
 static convert_t oeINSTRUCTIONNAMES_MIPS[] = {
+  {"NOVE",              OCINSN_MASK(OCINSNMIPS_MOVE)},
   {"NOP",               OCINSN_MASK(OCINSNMIPS_NOP)},
 
   {"Bxx",               OCINSN_MASK(OCINSNMIPS_Bxx)},
