@@ -20,6 +20,10 @@ static oestruct_t oeINSTRUCTIONS_MIPS[] = {
 
   OCSTRUCT("move",      OCINSNMIPS_MOVE),
 
+  OCSTRUCT("addiu",     OCINSNMIPS_ADDIU),
+  OCSTRUCT("addi",      OCINSNMIPS_ADDI),
+  OCSTRUCT("add",       OCINSNMIPS_ADD),
+
   {NULL}
 };
 
@@ -140,6 +144,8 @@ static convert_t oeINSTRUCTIONNAMES_MIPS[] = {
   {"LOAD",              OCINSN_MASK(OCINSNMIPS_LOAD)},
   {"MOVE",              OCINSN_MASK(OCINSNMIPS_MOVE)},
   {"NOP",               OCINSN_MASK(OCINSNMIPS_NOP)},
+
+  {"ADD",               OCINSN_MASK(OCINSNMIPS_ADD)},
 
   {"Bxx",               OCINSN_MASK(OCINSNMIPS_Bxx)},
   {"Jxx",               OCINSN_MASK(OCINSNMIPS_Jxx)},
