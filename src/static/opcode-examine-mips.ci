@@ -1,8 +1,12 @@
 static oestruct_t oeINSTRUCTIONS_MIPS[] = {
   OCSTRUCT("nop",       OCINSNMIPS_NOP),
 
-  OCSTRUCT("beq",       OCINSNMIPS_BEQ),
   OCSTRUCT("beqz",      OCINSNMIPS_BEQZ),
+  OCSTRUCT("bgez",      OCINSNMIPS_BGEZ),
+  OCSTRUCT("bnez",      OCINSNMIPS_BNEZ),
+  OCSTRUCT("beq",       OCINSNMIPS_BEQ),
+  OCSTRUCT("bge",       OCINSNMIPS_BGE),
+  OCSTRUCT("bne",       OCINSNMIPS_BNE),
   OCSTRUCT("b",         OCINSNMIPS_Bxx),
 
   OCSTRUCT("jalr",      OCINSNMIPS_JALR),
