@@ -3,9 +3,16 @@ static oestruct_t oeINSTRUCTIONS_MIPS[] = {
 
   OCSTRUCT("beqz",      OCINSNMIPS_BEQZ),
   OCSTRUCT("bgez",      OCINSNMIPS_BGEZ),
+  OCSTRUCT("bgtz",      OCINSNMIPS_BGTZ),
   OCSTRUCT("bnez",      OCINSNMIPS_BNEZ),
+  OCSTRUCT("blez",      OCINSNMIPS_BLEZ),
+  OCSTRUCT("bltz",      OCINSNMIPS_BLTZ),
+  OCSTRUCT("bal",       OCINSNMIPS_BAL),
   OCSTRUCT("beq",       OCINSNMIPS_BEQ),
   OCSTRUCT("bge",       OCINSNMIPS_BGE),
+  OCSTRUCT("bgt",       OCINSNMIPS_BGT),
+  OCSTRUCT("ble",       OCINSNMIPS_BLE),
+  OCSTRUCT("blt",       OCINSNMIPS_BLT),
   OCSTRUCT("bne",       OCINSNMIPS_BNE),
   OCSTRUCT("b",         OCINSNMIPS_Bxx),
 
@@ -15,10 +22,18 @@ static oestruct_t oeINSTRUCTIONS_MIPS[] = {
   OCSTRUCT("j",         OCINSNMIPS_Jxx),
 
   OCSTRUCT("lui",       OCINSNMISP_LUI),
+  OCSTRUCT("la",        OCINSNMISP_LA),
 
+  OCSTRUCT("lbu",       OCINSNMISP_LBU),
+  OCSTRUCT("lhu",       OCINSNMISP_LHU),
+  OCSTRUCT("lwu",       OCINSNMISP_LWU),
   OCSTRUCT("lb",        OCINSNMISP_LB),
   OCSTRUCT("lh",        OCINSNMISP_LH),
   OCSTRUCT("lw",        OCINSNMISP_LW),
+
+  OCSTRUCT("slti",      OCINSNMIPS_SLTI),
+  OCSTRUCT("sltu",      OCINSNMIPS_SLTU),
+  OCSTRUCT("slt",       OCINSNMIPS_SLT),
 
   OCSTRUCT("sb",        OCINSNMISP_SB),
   OCSTRUCT("sh",        OCINSNMISP_SH),
@@ -30,6 +45,10 @@ static oestruct_t oeINSTRUCTIONS_MIPS[] = {
   OCSTRUCT("addi",      OCINSNMIPS_ADDI),
   OCSTRUCT("addu",      OCINSNMIPS_ADDU),
   OCSTRUCT("add",       OCINSNMIPS_ADD),
+
+  OCSTRUCT("div",       OCINSNMIPS_DIV),
+  OCSTRUCT("rem",       OCINSNMIPS_REM),
+  OCSTRUCT("mul",       OCINSNMIPS_MUL),
 
   OCSTRUCT("subiu",     OCINSNMIPS_SUBIU),
   OCSTRUCT("subi",      OCINSNMIPS_SUBI),
@@ -44,6 +63,11 @@ static oestruct_t oeINSTRUCTIONS_MIPS[] = {
   OCSTRUCT("or",        OCINSNMIPS_OR),
   OCSTRUCT("xori",      OCINSNMIPS_XORI),
   OCSTRUCT("xor",       OCINSNMIPS_XOR),
+
+  OCSTRUCT("sla",       OCINSNMIPS_SLA),
+  OCSTRUCT("sll",       OCINSNMIPS_SLL),
+  OCSTRUCT("sra",       OCINSNMIPS_SRA),
+  OCSTRUCT("srl",       OCINSNMIPS_SRL),
 
   {NULL}
 };
@@ -157,6 +181,7 @@ static convert_t oeINSTRUCTIONFLAGS_MIPS[] = {
   {"LINK",              OCINSNMIPS_LINK},
   {"REGISTER",          OCINSNMIPS_REGISTER},
   {"IMMEDIATE",         OCINSNMIPS_IMMEDIATE},
+  {"ADDRESS",           OCINSNMIPS_ADDRESS},
   {"UPPER",             OCINSNMIPS_UPPER},
 
   {0, 0}
@@ -168,11 +193,16 @@ static convert_t oeINSTRUCTIONNAMES_MIPS[] = {
   {"NOP",               OCINSN_MASK(OCINSNMIPS_NOP)},
 
   {"ADD",               OCINSN_MASK(OCINSNMIPS_ADD)},
+  {"DIV",               OCINSN_MASK(OCINSNMIPS_DIV)},
+  {"MUL",               OCINSN_MASK(OCINSNMIPS_MUL)},
+  {"REM",               OCINSN_MASK(OCINSNMIPS_REM)},
   {"SUB",               OCINSN_MASK(OCINSNMIPS_SUB)},
 
   {"AND",               OCINSN_MASK(OCINSNMIPS_AND)},
   {"ORN",               OCINSN_MASK(OCINSNMIPS_NOR)},
   {"ORR",               OCINSN_MASK(OCINSNMIPS_OR)},
+  {"SxA",               OCINSN_MASK(OCINSNMIPS_SxA)},
+  {"SxL",               OCINSN_MASK(OCINSNMIPS_SxL)},
   {"XOR",               OCINSN_MASK(OCINSNMIPS_XOR)},
 
   {"Bxx",               OCINSN_MASK(OCINSNMIPS_Bxx)},

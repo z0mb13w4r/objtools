@@ -16,7 +16,7 @@
 #define OCINSNRISCV_DIV                (OCINSN_DIV | OCINSN_OPERAND3)
 #define OCINSNRISCV_MUL                (OCINSN_MUL | OCINSN_OPERAND3)
 #define OCINSNRISCV_MULH               ((0x16) | OCINSN_OPERAND3)
-#define OCINSNRISCV_REM                ((0x17) | OCINSN_OPERAND3)
+#define OCINSNRISCV_REM                (OCINSN_REM | OCINSN_OPERAND3)
 #define OCINSNRISCV_SUB                (OCINSN_SUB | OCINSN_OPERAND3)
 
 #define OCINSNRISCV_MADD               (OCINSN_MADD | OCINSN_OPERAND4 | OCINSN_OPERAND5)
@@ -51,8 +51,8 @@
 #define OCINSNRISCV_LINK               (OCINSN_00)
 #define OCINSNRISCV_REGISTER           (OCINSN_01)
 #define OCINSNRISCV_IMMEDIATE          (OCINSN_02)
-#define OCINSNRISCV_UPPER              (OCINSN_03)
-#define OCINSNRISCV_STACK              (OCINSN_04)
+#define OCINSNRISCV_UPPER              (OCINSN_04)
+#define OCINSNRISCV_STACK              (OCINSN_05)
 
 #define OCINSNRISCV_DN                 (OCINSN_L)
 #define OCINSNRISCV_UP                 (OCINSN_G)

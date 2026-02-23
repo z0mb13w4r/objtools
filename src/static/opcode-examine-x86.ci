@@ -654,7 +654,6 @@ static convert_t oeINSTRUCTIONNAMES_x86_64[] = {
   {"DEC",               OCINSN_MASK(OCINSTRUCTION_DEC)},
   {"DIV",               OCINSN_MASK(OCINSTRUCTION_DIV)},
   {"DIVSD",             OCINSN_MASK(OCINSTRUCTION_DIVSD)},
-  {"IDIV",              OCINSN_MASK(OCINSTRUCTION_IDIV)},
   {"IMUL",              OCINSN_MASK(OCINSTRUCTION_IMUL)},
   {"INC",               OCINSN_MASK(OCINSTRUCTION_INC)},
   {"MUL",               OCINSN_MASK(OCINSTRUCTION_MUL)},
