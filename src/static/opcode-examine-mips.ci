@@ -29,6 +29,11 @@ static oestruct_t oeINSTRUCTIONS_MIPS[] = {
   OCSTRUCT("addu",      OCINSNMIPS_ADDU),
   OCSTRUCT("add",       OCINSNMIPS_ADD),
 
+  OCSTRUCT("subiu",     OCINSNMIPS_SUBIU),
+  OCSTRUCT("subi",      OCINSNMIPS_SUBI),
+  OCSTRUCT("subu",      OCINSNMIPS_SUBU),
+  OCSTRUCT("sub",       OCINSNMIPS_SUB),
+
   {NULL}
 };
 
@@ -151,6 +156,7 @@ static convert_t oeINSTRUCTIONNAMES_MIPS[] = {
   {"NOP",               OCINSN_MASK(OCINSNMIPS_NOP)},
 
   {"ADD",               OCINSN_MASK(OCINSNMIPS_ADD)},
+  {"SUB",               OCINSN_MASK(OCINSNMIPS_SUB)},
 
   {"Bxx",               OCINSN_MASK(OCINSNMIPS_Bxx)},
   {"Jxx",               OCINSN_MASK(OCINSNMIPS_Jxx)},
