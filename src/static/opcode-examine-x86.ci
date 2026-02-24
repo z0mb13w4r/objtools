@@ -313,7 +313,7 @@ static oestruct_t oeINSTRUCTIONS_x86_64[] = {
   OCSTRUCT("movl",      OCINSNX86_MOVL),
   OCSTRUCT("movq",      OCINSNX86_MOVQ),
   OCSTRUCT("movw",      OCINSNX86_MOVW),
-  OCSTRUCT("mov",       OCINSNX86_MOV),
+  OCSTRUCT("mov",       OCINSNX86_MOVE),
 
   OCSTRUCT("fldl2e",    OCINSNX86_FLDL2E),
   OCSTRUCT("fldl2t",    OCINSNX86_FLDL2T),
@@ -637,6 +637,9 @@ static convert_t oeINSTRUCTIONFLAGS_x86_64[] = {
 };
 
 static convert_t oeINSTRUCTIONNAMES_x86_64[] = {
+  {"MOVE",              OCINSN_MASK(OCINSNX86_MOVE)},
+  {"NOP",               OCINSN_MASK(OCINSNX86_NOP)},
+
   {"BT",                OCINSN_MASK(OCINSNX86_BT)},
   {"CALL",              OCINSN_MASK(OCINSNX86_CALL)},
   {"ENDBR",             OCINSN_MASK(OCINSNX86_ENDBR)},
@@ -680,7 +683,6 @@ static convert_t oeINSTRUCTIONNAMES_x86_64[] = {
   {"MOVSXD",            OCINSN_MASK(OCINSNX86_MOVSXD)},
   {"MOVSX",             OCINSN_MASK(OCINSNX86_MOVSX)},
   {"MOVZX",             OCINSN_MASK(OCINSNX86_MOVZX)},
-  {"MOV",               OCINSN_MASK(OCINSNX86_MOV)},
   {"FLD",               OCINSN_MASK(OCINSNX86_FLD)},
   {"LEA",               OCINSN_MASK(OCINSNX86_LEA)},
   {"FST",               OCINSN_MASK(OCINSNX86_FST)},
@@ -692,7 +694,6 @@ static convert_t oeINSTRUCTIONNAMES_x86_64[] = {
   {"Cyyy",              OCINSN_MASK(OCINSNX86_Cyyy)},
   {"CVTSI2SD",          OCINSN_MASK(OCINSNX86_CVTSI2SD)},
   {"CVTTSD2SI",         OCINSN_MASK(OCINSNX86_CVTTSD2SI)},
-  {"NOP",               OCINSN_MASK(OCINSNX86_NOP)},
   {"INS",               OCINSN_MASK(OCINSNX86_INS)},
   {"CMPS",              OCINSN_MASK(OCINSNX86_CMPS)},
   {"LODS",              OCINSN_MASK(OCINSNX86_LODS)},
