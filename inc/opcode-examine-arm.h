@@ -1,6 +1,7 @@
 #ifndef __OPCODE_EXAMINE_ARM_H_
 #define __OPCODE_EXAMINE_ARM_H_
 
+#define OCINSNARM_LOAD             (OCINSN_LDA | OCINSN_OPERAND2)
 #define OCINSNARM_MOVE             (OCINSN_MOV | OCINSN_OPERAND2)
 #define OCINSNARM_STORE            (OCINSN_STA | OCINSN_OPERAND2)
 #define OCINSNARM_NOP              (OCINSN_NOP | OCINSN_OPERAND0)
@@ -33,7 +34,6 @@
 #define OCINSNARM_ADR              ((0x22) | OCINSN_OPERAND2)
 #define OCINSNARM_LDM              ((0x23) | OCINSN_OPERAND2)
 #define OCINSNARM_LDP              ((0x24) | OCINSN_OPERAND3)
-#define OCINSNARM_LDR              ((0x25) | OCINSN_OPERAND2)
 #define OCINSNARM_STP              ((0x26) | OCINSN_OPERAND3)
 #define OCINSNARM_MVN              ((0x29) | OCINSN_OPERAND2)
 #define OCINSNARM_STM              ((0x2a) | OCINSN_OPERAND2)
@@ -405,6 +405,7 @@
 #define OCINSNARM_ROL              (OCINSNARM_ROx | OCINSN_LT)
 #define OCINSNARM_ROR              (OCINSNARM_ROx | OCINSN_RT)
 
+#define OCINSNARM_LDR              (OCINSNARM_LOAD | OCINSNARM_REGISTER)
 #define OCINSNARM_LDRCC            (OCINSNARM_LDR | OCINSNARM_CC)
 #define OCINSNARM_LDRCS            (OCINSNARM_LDR | OCINSNARM_CS)
 #define OCINSNARM_LDREQ            (OCINSNARM_LDR | OCINSNARM_EQ)

@@ -796,6 +796,7 @@ static convert_t oeINSTRUCTIONFLAGS_ARM[] = {
 };
 
 static convert_t oeINSTRUCTIONNAMES_ARM[] = {
+  {"LOAD",              OCINSN_MASK(OCINSNARM_LOAD)},
   {"MOVE",              OCINSN_MASK(OCINSNARM_MOVE)},
   {"STORE",             OCINSN_MASK(OCINSNARM_STORE)},
   {"NOP",               OCINSN_MASK(OCINSNARM_NOP)},
@@ -828,7 +829,6 @@ static convert_t oeINSTRUCTIONNAMES_ARM[] = {
   {"ADR",               OCINSN_MASK(OCINSNARM_ADR)},
   {"LDM",               OCINSN_MASK(OCINSNARM_LDM)},
   {"LDP",               OCINSN_MASK(OCINSNARM_LDP)},
-  {"LDR",               OCINSN_MASK(OCINSNARM_LDR)},
   {"STP",               OCINSN_MASK(OCINSNARM_STP)},
   {"MVN",               OCINSN_MASK(OCINSNARM_MVN)},
   {"STM",               OCINSN_MASK(OCINSNARM_STM)},
