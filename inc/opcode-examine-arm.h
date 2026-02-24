@@ -45,7 +45,7 @@
 #define OCINSNARM_BFI              ((0x31) | OCINSN_OPERAND2)
 #define OCINSNARM_BFX              ((0x32) | OCINSN_OPERAND2)
 #define OCINSNARM_XT               ((0x33) | OCINSN_OPERAND2)
-#define OCINSNARM_REV              ((0x34) | OCINSN_OPERAND2)
+#define OCINSNARM_REV              (OCINSN_REV | OCINSN_OPERAND2)
 
 #define OCINSNARM_SMADDL           ((0x50) | OCINSN_OPERAND4)
 #define OCINSNARM_CCMP             ((0x51) | OCINSN_OPERAND4)

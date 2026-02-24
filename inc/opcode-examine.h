@@ -46,6 +46,7 @@
 #define OCINSN_POP                     (248)
 #define OCINSN_HLT                     (249)
 #define OCINSN_RET                     (250)
+#define OCINSN_REV                     (250)
 #define OCINSN_NOP                     (251)
 #define OCINSN_CALL                    (252)
 #define OCINSN_UNDEF                   (253)
