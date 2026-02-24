@@ -29,7 +29,7 @@
 #define OCINSNX86_SIGNED           (OCINSN_S)
 #define OCINSNX86_UNSIGNED         (OCINSN_N)
 
-#define OCINSNX86_CALL             ((0x01) | OCINSN_OPERAND1)
+#define OCINSNX86_CALL             (OCINSN_CALL | OCINSN_OPERAND1)
 #define OCINSNX86_ENDBR            ((0x02) | OCINSN_OPERAND0)
 #define OCINSNX86_JMP              (OCINSN_Jxx | OCINSN_OPERAND1)
 #define OCINSNX86_BT               (OCINSN_BTST | OCINSN_OPERAND2)
