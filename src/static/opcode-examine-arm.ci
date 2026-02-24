@@ -487,7 +487,7 @@ static oestruct_t oeINSTRUCTIONS_ARM[] = {
   OCSTRUCT("movpl",     OCINSNARM_MOVPL),
   OCSTRUCT("movvc",     OCINSNARM_MOVVC),
   OCSTRUCT("movvs",     OCINSNARM_MOVVS),
-  OCSTRUCT("mov",       OCINSNARM_MOV),
+  OCSTRUCT("mov",       OCINSNARM_MOVE),
 
   OCSTRUCT("mvncc",     OCINSNARM_MVNCC),
   OCSTRUCT("mvncs",     OCINSNARM_MVNCS),
@@ -795,6 +795,10 @@ static convert_t oeINSTRUCTIONFLAGS_ARM[] = {
 };
 
 static convert_t oeINSTRUCTIONNAMES_ARM[] = {
+  {"MOVE",              OCINSN_MASK(OCINSNARM_MOVE)},
+  {"STORE",             OCINSN_MASK(OCINSNARM_STORE)},
+  {"NOP",               OCINSN_MASK(OCINSNARM_NOP)},
+
   {"BH",                OCINSN_MASK(OCINSNARM_BH)},
   {"BX",                OCINSN_MASK(OCINSNARM_BX)},
   {"CB",                OCINSN_MASK(OCINSNARM_CB)},
@@ -804,7 +808,6 @@ static convert_t oeINSTRUCTIONNAMES_ARM[] = {
   {"TST",               OCINSN_MASK(OCINSNARM_TST)},
   {"HLT",               OCINSN_MASK(OCINSNARM_HLT)},
   {"RET",               OCINSN_MASK(OCINSNARM_RET)},
-  {"NOP",               OCINSN_MASK(OCINSNARM_NOP)},
   {"PUSH",              OCINSN_MASK(OCINSNARM_PUSH)},
   {"POP",               OCINSN_MASK(OCINSNARM_POP)},
   {"ADD",               OCINSN_MASK(OCINSNARM_ADD)},
@@ -826,8 +829,6 @@ static convert_t oeINSTRUCTIONNAMES_ARM[] = {
   {"LDP",               OCINSN_MASK(OCINSNARM_LDP)},
   {"LDR",               OCINSN_MASK(OCINSNARM_LDR)},
   {"STP",               OCINSN_MASK(OCINSNARM_STP)},
-  {"STR",               OCINSN_MASK(OCINSNARM_STR)},
-  {"MOV",               OCINSN_MASK(OCINSNARM_MOV)},
   {"MVN",               OCINSN_MASK(OCINSNARM_MVN)},
   {"STM",               OCINSN_MASK(OCINSNARM_STM)},
   {"STUR",              OCINSN_MASK(OCINSNARM_STUR)},
