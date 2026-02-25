@@ -350,6 +350,9 @@ static oestruct_t oeINSTRUCTIONS_RISCV[] = {
   OCSTRUCT("blt",          OCINSNRISCV_BLT),
   OCSTRUCT("bne",          OCINSNRISCV_BNE),
 
+  OCSTRUCT("c.ecall",      OCINSNRISCV_ECALL),
+  OCSTRUCT("ecall",        OCINSNRISCV_ECALL),
+
   OCSTRUCT("c.ebreak",     OCINSNRISCV_EBREAK),
   OCSTRUCT("ebreak",       OCINSNRISCV_EBREAK),
 
@@ -443,6 +446,7 @@ static convert_t oeINSTRUCTIONNAMES_RISCV[] = {
   {"Jxx",               OCINSN_MASK(OCINSNRISCV_Jxx)},
   {"Bxx",               OCINSN_MASK(OCINSNRISCV_Bxx)},
 
+  {"ECALL",             OCINSN_MASK(OCINSNRISCV_ECALL)},
   {"EBREAK",            OCINSN_MASK(OCINSNRISCV_EBREAK)},
   {"UNDEF",             OCINSN_MASK(OCINSNRISCV_UNDEF)},
 
