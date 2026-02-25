@@ -394,6 +394,8 @@ static convert_t oeINSTRUCTIONFLAGS_RISCV[] = {
   {"IMMEDIATE",         OCINSNRISCV_IMMEDIATE},
   {"UPPER",             OCINSNRISCV_UPPER},
   {"STACK",             OCINSNRISCV_STACK},
+  {"HIGH",              OCINSNRISCV_HIGH},
+  {"PC",                OCINSNRISCV_PC},
 
   {0, 0}
 };
@@ -413,7 +415,6 @@ static convert_t oeINSTRUCTIONNAMES_RISCV[] = {
   {"ADDI16xx",          OCINSN_MASK(OCINSNRISCV_ADDI16xx)},
   {"DIV",               OCINSN_MASK(OCINSNRISCV_DIV)},
   {"MUL",               OCINSN_MASK(OCINSNRISCV_MUL)},
-  {"MULH",              OCINSN_MASK(OCINSNRISCV_MULH)},
   {"REM",               OCINSN_MASK(OCINSNRISCV_REM)},
   {"SUB",               OCINSN_MASK(OCINSNRISCV_SUB)},
 
