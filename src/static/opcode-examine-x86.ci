@@ -662,7 +662,6 @@ static convert_t oeINSTRUCTIONNAMES_x86_64[] = {
   {"MUL",               OCINSN_MASK(OCINSNX86_MUL)},
   {"NEG",               OCINSN_MASK(OCINSNX86_NEG)},
   {"NOT",               OCINSN_MASK(OCINSNX86_NOT)},
-  {"SBB",               OCINSN_MASK(OCINSNX86_SBB)},
   {"SUB",               OCINSN_MASK(OCINSNX86_SUB)},
   {"AND",               OCINSN_MASK(OCINSNX86_AND)},
   {"OR",                OCINSN_MASK(OCINSNX86_OR)},
