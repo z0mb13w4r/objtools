@@ -779,6 +779,7 @@ static convert_t oeINSTRUCTIONFLAGS_ARM[] = {
   {"256BIT",            OCINSN_256BIT},
   {"512BIT",            OCINSN_512BIT},
   {"FLOAT",             OCINSN_FLOAT},
+  {"STRING",            OCINSN_STRING},
   {"OPERAND0",          OCINSN_OPERAND0},
   {"OPERAND1",          OCINSN_OPERAND1},
   {"OPERAND2",          OCINSN_OPERAND2},
