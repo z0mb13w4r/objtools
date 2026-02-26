@@ -13,7 +13,7 @@ cd objtools
 ./prerequisite.sh
 ```
 
-#### Build everything:####
+#### Build everything:
 
 ```bash
 cd misc
