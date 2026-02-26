@@ -435,15 +435,14 @@ static convert_t oeINSTRUCTIONNAMES_RISCV[] = {
   {"XNOR",              OCINSN_MASK(OCINSNRISCV_XNOR)},
   {"XOR",               OCINSN_MASK(OCINSNRISCV_XOR)},
 
-  {"SEXT",              OCINSN_MASK(OCINSNRISCV_SEXT)},
-  {"ZEXT",              OCINSN_MASK(OCINSNRISCV_ZEXT)},
-
   {"Jxx",               OCINSN_MASK(OCINSNRISCV_Jxx)},
   {"Bxx",               OCINSN_MASK(OCINSNRISCV_Bxx)},
 
   {"ECALL",             OCINSN_MASK(OCINSNRISCV_ECALL)},
   {"EBREAK",            OCINSN_MASK(OCINSNRISCV_EBREAK)},
   {"UNDEF",             OCINSN_MASK(OCINSNRISCV_UNDEF)},
+
+  {"TOEXTEND",          OCINSN_MASK(OCINSNRISCV_xEXT)},
 
   {0, 0}
 };
