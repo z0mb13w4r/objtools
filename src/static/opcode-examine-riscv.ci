@@ -426,7 +426,6 @@ static convert_t oeINSTRUCTIONNAMES_RISCV[] = {
 
   {"AND",               OCINSN_MASK(OCINSNRISCV_AND)},
   {"ANDN",              OCINSN_MASK(OCINSNRISCV_ANDN)},
-  {"BINV",              OCINSN_MASK(OCINSNRISCV_BINV)},
   {"MIN",               OCINSN_MASK(OCINSNRISCV_MIN)},
   {"MAX",               OCINSN_MASK(OCINSNRISCV_MAX)},
   {"NEG",               OCINSN_MASK(OCINSNRISCV_NEG)},
