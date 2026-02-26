@@ -18,6 +18,10 @@ These tools were originally designed as a research project for industrial contro
 
 **readpe-ng** displays information about one or more PE format object files.
 
+### How to build ###
+
+See the [BUILD.md](BUILD.md) for detailed instructions.
+
 ### Support ###
 
 If you can contribute or you want to, feel free to do it at [PayPal](https://www.paypal.com/ncp/payment/L6UQHUDXKSHTC), I will be really thankful for anything, even if it is a coffee, because that helps me a lot to know that you care:)
