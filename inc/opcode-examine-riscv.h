@@ -29,10 +29,8 @@
 #define OCINSNRISCV_ROx                (OCINSN_ROx | OCINSN_OPERAND3)
 #define OCINSNRISCV_SxA                (OCINSN_SxA | OCINSN_OPERAND3)
 #define OCINSNRISCV_SxL                (OCINSN_SxL | OCINSN_OPERAND3)
-#define OCINSNRISCV_XNOR               ((0x3c) | OCINSN_OPERAND3)
-#define OCINSNRISCV_XNORN              ((0x3d) | OCINSN_OPERAND3)
+#define OCINSNRISCV_XNOR               (OCINSN_XNOR | OCINSN_OPERAND3)
 #define OCINSNRISCV_XOR                (OCINSN_XOR | OCINSN_OPERAND3)
-#define OCINSNRISCV_XORN               ((0x3f) | OCINSN_OPERAND3)
 
 #define OCINSNRISCV_SEXT               ((0x50) | OCINSN_OPERAND2)
 #define OCINSNRISCV_ZEXT               ((0x51) | OCINSN_OPERAND2)
