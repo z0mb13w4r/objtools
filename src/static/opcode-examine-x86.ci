@@ -638,6 +638,7 @@ static convert_t oeINSTRUCTIONFLAGS_x86_64[] = {
 };
 
 static convert_t oeINSTRUCTIONNAMES_x86_64[] = {
+  {"STORE",             OCINSN_MASK(OCINSNX86_STORE)},
   {"MOVE",              OCINSN_MASK(OCINSNX86_MOVE)},
   {"NOP",               OCINSN_MASK(OCINSNX86_NOP)},
 
@@ -669,7 +670,6 @@ static convert_t oeINSTRUCTIONNAMES_x86_64[] = {
   {"SAx",               OCINSN_MASK(OCINSNX86_SAx)},
   {"SHx",               OCINSN_MASK(OCINSNX86_SHx)},
   {"XOR",               OCINSN_MASK(OCINSNX86_XOR)},
-  {"SETx",              OCINSN_MASK(OCINSNX86_SETx)},
   {"MOVSD",             OCINSN_MASK(OCINSNX86_MOVSD)},
   {"MOVSx",             OCINSN_MASK(OCINSNX86_MOVSx)},
   {"MOVZx",             OCINSN_MASK(OCINSNX86_MOVZx)},
