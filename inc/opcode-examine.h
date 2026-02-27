@@ -63,7 +63,7 @@
 #define OCINSN_MADD                    OCINSN_JOIN(OCINSN_MUL, OCINSN_ADD)
 #define OCINSN_MSUB                    OCINSN_JOIN(OCINSN_MUL, OCINSN_SUB)
 #define OCINSN_RSB                     OCINSN_JOIN(OCINSN_REV, OCINSN_SUB)
-#define OCINSN_MOVSxx                  OCINSN_JOIN(OCINSN_MOV, OCINSN_TOEXTEND)
+#define OCINSN_MOVyxx                  OCINSN_JOIN(OCINSN_MOV, OCINSN_TOEXTEND)
 
 #define OCINSN_00               U64MASK(16)
 #define OCINSN_01               U64MASK(17)
