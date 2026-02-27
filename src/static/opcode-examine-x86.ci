@@ -683,7 +683,6 @@ static convert_t oeINSTRUCTIONNAMES_x86_64[] = {
   {"FXCH",              OCINSN_MASK(OCINSNX86_FXCH)},
   {"XCHG",              OCINSN_MASK(OCINSNX86_XCHG)},
   {"Cxxx",              OCINSN_MASK(OCINSNX86_Cxxx)},
-  {"Cyyy",              OCINSN_MASK(OCINSNX86_Cyyy)},
   {"CVTSI2SD",          OCINSN_MASK(OCINSNX86_CVTSI2SD)},
   {"CVTTSD2SI",         OCINSN_MASK(OCINSNX86_CVTTSD2SI)},
   {"INS",               OCINSN_MASK(OCINSNX86_INS)},
