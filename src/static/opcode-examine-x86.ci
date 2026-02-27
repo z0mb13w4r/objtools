@@ -680,8 +680,6 @@ static convert_t oeINSTRUCTIONNAMES_x86_64[] = {
   {"MOVDQU",            OCINSN_MASK(OCINSNX86_MOVDQU)},
   {"MOVUPS",            OCINSN_MASK(OCINSNX86_MOVUPS)},
   {"LEA",               OCINSN_MASK(OCINSNX86_LEA)},
-  {"FST",               OCINSN_MASK(OCINSNX86_FST)},
-  {"FSTP",              OCINSN_MASK(OCINSNX86_FSTP)},
   {"FXCH",              OCINSN_MASK(OCINSNX86_FXCH)},
   {"XCHG",              OCINSN_MASK(OCINSNX86_XCHG)},
   {"Cxxx",              OCINSN_MASK(OCINSNX86_Cxxx)},
