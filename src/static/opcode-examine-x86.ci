@@ -642,6 +642,7 @@ static convert_t oeINSTRUCTIONNAMES_x86_64[] = {
   {"STORE",             OCINSN_MASK(OCINSNX86_STORE)},
   {"MOVE",              OCINSN_MASK(OCINSNX86_MOVE)},
   {"NOP",               OCINSN_MASK(OCINSNX86_NOP)},
+  {"MOVSxx",            OCINSN_MASK(OCINSNX86_MOVSxx)},
 
   {"BT",                OCINSN_MASK(OCINSNX86_BT)},
   {"CALL",              OCINSN_MASK(OCINSNX86_CALL)},
@@ -671,7 +672,6 @@ static convert_t oeINSTRUCTIONNAMES_x86_64[] = {
   {"SHx",               OCINSN_MASK(OCINSNX86_SHx)},
   {"XOR",               OCINSN_MASK(OCINSNX86_XOR)},
   {"MOVSD",             OCINSN_MASK(OCINSNX86_MOVSD)},
-  {"MOVSx",             OCINSN_MASK(OCINSNX86_MOVSx)},
   {"MOVZx",             OCINSN_MASK(OCINSNX86_MOVZx)},
   {"MOVABS",            OCINSN_MASK(OCINSNX86_MOVABS)},
   {"MOVAPD",            OCINSN_MASK(OCINSNX86_MOVAPD)},
