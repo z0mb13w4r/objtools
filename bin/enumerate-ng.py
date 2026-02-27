@@ -151,8 +151,8 @@ def ask_info():
   go('Installed compilers', "dpkg --list 2>/dev/null | grep compiler | grep -v decompiler 2>/dev/null && yum list installed 'gcc*' 2>/dev/null | grep gcc 2>/dev/null")
   go('Can we read/write sensitive files', 'ls -la /etc/passwd 2>/dev/null; ls -la /etc/group 2>/dev/null; ls -la /etc/profile 2>/dev/null; ls -la /etc/shadow 2>/dev/null; ls -la /etc/master.passwd 2>/dev/null')
   #go('SUID files', 'find $(find / -perm -4000 -type f 2>/dev/null) -perm -4000 -type f -exec ls -la {} 2>/dev/null \;')
-  gx('Possibly interesting SUID files', 'find $(find / -perm -4000 -type f 2>/dev/null) -perm -4000 -type f -exec ls -la {} \; 2>/dev/null | grep -w "' + BINBIGLIST + '" 2>/dev/null')
-  gx('World-writable SUID files', 'find $(find / -perm -4000 -type f 2>/dev/null) -perm -4002 -type f -exec ls -la {} 2>/dev/null \;')
+  #gx('Possibly interesting SUID files', 'find $(find / -perm -4000 -type f 2>/dev/null) -perm -4000 -type f -exec ls -la {} \; 2>/dev/null | grep -w "' + BINBIGLIST + '" 2>/dev/null')
+  #gx('World-writable SUID files', 'find $(find / -perm -4000 -type f 2>/dev/null) -perm -4002 -type f -exec ls -la {} 2>/dev/null \;')
   gx('World-writable SUID files owned by root', 'find $(find / -perm -4000 -type f 2>/dev/null) -uid 0 -perm -4002 -type f -exec ls -la {} 2>/dev/null \;')
   go('SGID files', 'find $(find / -perm -2000 -type f 2>/dev/null) -perm -2000 -type f -exec ls -la {} 2>/dev/null \;')
   gx('Possibly interesting SGID files', 'find $(find / -perm -2000 -type f 2>/dev/null) -perm -2000 -type f  -exec ls -la {} \; 2>/dev/null | grep -w "' + BINBIGLIST + '" 2>/dev/null')
@@ -161,6 +161,27 @@ def ask_info():
   gx('Files with POSIX capabilities set', 'getcap -r / 2>/dev/null || /sbin/getcap -r / 2>/dev/null')
   gx('Users with specific POSIX capabilities', "grep -v '^#\|none\|^$' /etc/security/capability.conf 2>/dev/null")
   #
+  #gx('Private SSH keys found!', 'grep -rl "PRIVATE KEY-----" /home 2>/dev/null')
+  #gx('AWS secret keys found!', 'grep -rli "aws_secret_access_key" /home 2>/dev/null')
+  gx('Git credentials saved on the machine!', 'find / -name ".git-credentials" 2>/dev/null')
+  #go('World-writable files (excluding /proc and /sys)', 'find / ! -path "*/proc/*" ! -path "/sys/*" -perm -2 -type f -exec ls -la {} 2>/dev/null \;')
+  go('Plan file permissions and contents', 'find /home -iname *.plan -exec ls -la {} \; -exec cat {} 2>/dev/null \;')
+  go('Plan file permissions and contents', 'find /usr/home -iname *.plan -exec ls -la {} \; -exec cat {} 2>/dev/null \;')
+  gx('rhost config file(s) and file contents', 'find /home -iname *.rhosts -exec ls -la {} 2>/dev/null \; -exec cat {} 2>/dev/null \;')
+  gx('rhost config file(s) and file contents', 'find /usr/home -iname *.rhosts -exec ls -la {} 2>/dev/null \; -exec cat {} 2>/dev/null \;')
+  gx('Hosts.equiv file and contents', 'find /etc -iname hosts.equiv -exec ls -la {} 2>/dev/null \; -exec cat {} 2>/dev/null \;')
+  go('NFS config details', 'ls -la /etc/exports 2>/dev/null; cat /etc/exports 2>/dev/null')
+  go('NFS displaying partitions and filesystems - you need to check if exotic filesystems', 'cat /etc/fstab 2>/dev/null')
+  #gx('Looks like there are credentials in /etc/fstab!', "grep username /etc/fstab 2>/dev/null | awk '{sub(/.*\username=/,"");sub(/\,.*/,"")}1' 2>/dev/null | xargs -r echo username: 2>/dev/null; grep password /etc/fstab 2>/dev/null | awk '{sub(/.*\password=/,"");sub(/\,.*/,"")}1' 2>/dev/null | xargs -r echo password: 2>/dev/null; grep domain /etc/fstab 2>/dev/null | awk '{sub(/.*\domain=/,"");sub(/\,.*/,"")}1' 2>/dev/null | xargs -r echo domain: 2>/dev/null")
+  gx('/etc/fstab contains a credentials file!', "grep cred /etc/fstab 2>/dev/null | awk '{sub(/.*\credentials=/,"");sub(/\,.*/,"")}1' 2>/dev/null | xargs -I{} sh -c 'ls -la {}; cat {}' 2>/dev/null")
+  #
+  go('All *.conf files in /etc (recursive 1 level)', 'find /etc/ -maxdepth 1 -name *.conf -type f -exec ls -la {} \; 2>/dev/null')
+  go("Current user's history files", 'ls -la ~/.*_history 2>/dev/null')
+  gx("Root's history files are accessible!", 'ls -la /root/.*_history 2>/dev/null')
+  go('Location and contents (if accessible) of .bash_history file(s)', 'find /home -name .bash_history -print -exec cat {} 2>/dev/null \;')
+  go('Location and Permissions (if accessible) of .bak file(s)', 'find / -name *.bak -type f 2</dev/null')
+  go('Any interesting mail in /var/mail', 'ls -la /var/mail 2>/dev/null')
+  gx('We can read /var/mail/root!', 'head /var/mail/root 2>/dev/null')
 
 
 if __name__ == '__main__':
