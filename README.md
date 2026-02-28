@@ -18,6 +18,10 @@ These tools were originally designed as a research project for industrial contro
 
 **readpe-ng** displays information about one or more PE format object files.
 
+### Builds ###
+
+Dowloand the latest [release](https://github.com/z0mb13w4r/objtools/releases).
+
 ### How to build ###
 
 See the [BUILD.md](BUILD.md) for detailed instructions.
