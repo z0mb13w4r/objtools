@@ -332,7 +332,7 @@ int capstone_raw2(handle_t p, handle_t s, unknown_t data, const size_t size, con
       } else {
 //printf("offset = %lx\n", k);
         if (evilcount < 3) {
-          curr_state = curr_state != core_state ? core_state : CS_MODE_RISCVC;
+          curr_state = curr_state != core_state ? core_state : CS_MODE_RISCV_C;
           if (CS_ERR_OK == cs_close(&oc->cs)) {
             cs_open(CS_ARCH_RISCV, curr_state, &oc->cs);
             ++evilcount;
