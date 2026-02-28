@@ -20,7 +20,7 @@ These tools were originally designed as a research project for industrial contro
 
 ### Builds ###
 
-Dowloand the latest [release](https://github.com/z0mb13w4r/objtools/releases).
+Download the latest [release](https://github.com/z0mb13w4r/objtools/releases).
 
 ### How to build ###
 
