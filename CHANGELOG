@@ -1,0 +1,25 @@
+v1.2
+-----------------------------------------------------------------------
+[+] Added big-endian support.
+[+] Added MIPS architecture support.
+[+] Improved RISC-V architecture support.
+[+] Enhanced readelf-ng and objdump-ng.
+[+] Bug fixes.
+#######################################################################
+
+v1.1
+-----------------------------------------------------------------------
+[+] Added ARM Thumb architecture support.
+[+] Added RISC-V architecture support.
+[+] Enhanced readelf-ng and objdump-ng.
+[+] Bug fixes.
+#######################################################################
+
+v1.0
+-----------------------------------------------------------------------
+[+] Added ARM architecture support.
+[+] Improved x86-64 architecture support.
+[+] Enhanced readelf-ng and objdump-ng.
+[+] Bug fixes.
+#######################################################################
+
