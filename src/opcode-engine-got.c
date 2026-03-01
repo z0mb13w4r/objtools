@@ -100,7 +100,8 @@ static char zSTP[]  = "x010100110iiiiiiiTTTTTnnnnnttttt"; // C6.2.413 STP pre-in
 // arm-instructionset.pdf
 static char zADD0[] = "xxxx0000100Snnnnddddssssssssmmmm"; // 4.5 Data Processing
 static char zADD1[] = "xxxx0010100Snnnnddddrrrriiiiiiii"; // 4.5 Data Processing
-static char zLDR0[] = "xxxx01IPUBWLnnnnddddoooooooooooo"; // 4.9 Single Data Transfer (LDR, STR)
+static char zLDR0[] = "xxxx010PUBWLnnnnddddiiiiiiiiiiii"; // 4.9 Single Data Transfer (LDR, STR)
+static char zLDR1[] = "xxxx011PUBWLnnnnddddssssssssmmmm"; // 4.9 Single Data Transfer (LDR, STR)
 
 static uint32_t is00(handle_t p, const char* x, const size_t size, const int c, const uint32_t v) {
   if (x && 32 == size) {
@@ -163,20 +164,28 @@ static void execute_section32arm(handle_t p, handle_t s, handle_t q) {
         const uint32_t Rn = is00(s, zADD0, sizeof(zADD0) - 1, 'n', xx) >> 16;
         const uint32_t Rd = is00(s, zADD0, sizeof(zADD0) - 1, 'd', xx) >> 12;
         const uint32_t Rm = is00(s, zADD0, sizeof(zADD0) - 1, 'm', xx);
-//printf("|Rn=%x:r%d", Rn, Rn);
-//printf("|Rd=%x:r%d", Rd, Rd);
-//printf("|Rm=%x:r%d", Rm, Rm);
+//printf("|Rn=0x%x:r%d", Rn, Rn);
+//printf("|Rd=0x%x:r%d", Rd, Rd);
+//printf("|Rm=0x%x:r%d", Rm, Rm);
       } else if (is01(s, zADD1, sizeof(zADD1) - 1, xx)) {
 //printf(":ADDI");
         const uint32_t Rn = is00(s, zADD1, sizeof(zADD1) - 1, 'n', xx) >> 16;
         const uint32_t Rd = is00(s, zADD1, sizeof(zADD1) - 1, 'd', xx) >> 12;
-        const uint32_t Ir = is00(s, zADD1, sizeof(zADD1) - 1, 'r', xx) >> 8;
-        const uint32_t Im = is00(s, zADD1, sizeof(zADD1) - 1, 'i', xx);
-//printf("|Rn=%x:r%d", Rn, Rn);
-//printf("|Rd=%x:r%d", Rd, Rd);
-//printf("|imm=%d", Im);
-//printf("|rotate=%d", Ir);
+        const uint32_t ir = is00(s, zADD1, sizeof(zADD1) - 1, 'r', xx) >> 8;
+        const uint32_t im = is00(s, zADD1, sizeof(zADD1) - 1, 'i', xx);
+//printf("|Rn=0x%x:r%d", Rn, Rn);
+//printf("|Rd=0x%x:r%d", Rd, Rd);
+//printf("|imm=0x%x:%d", im, im);
+//printf("|rotate=0x%x:%d", ir, ir);
       } else if (is01(s, zLDR0, sizeof(zLDR0) - 1, xx)) {
+//printf(":LDRI");
+        const uint32_t Rn = is00(s, zLDR0, sizeof(zLDR0) - 1, 'n', xx) >> 16;
+        const uint32_t Rd = is00(s, zLDR0, sizeof(zLDR0) - 1, 'd', xx) >> 12;
+        const uint32_t im = is00(s, zLDR0, sizeof(zLDR0) - 1, 'i', xx);
+//printf("|Rn=0x%x:r%d", Rn, Rn);
+//printf("|Rd=0x%x:r%d", Rd, Rd);
+//printf("|imm=0x%x:%d", im, im);
+      } else if (is01(s, zLDR1, sizeof(zLDR1) - 1, xx)) {
 //printf(":LDR");
       }
 //printf("\n");
