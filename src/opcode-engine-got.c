@@ -61,16 +61,56 @@ static char zBR[]   = "1101011000011111000000nnnnnmmmmm"; // C6.2.46 BR
 static char zLDR[]  = "1s11100101iiiiiiiiiiiinnnnnttttt"; // C6.2.215 LDR (immediate) unsigned offset
 static char zSTP[]  = "x010100110iiiiiiiTTTTTnnnnnttttt"; // C6.2.413 STP pre-index
 
+//static char zLDR0[] = "0x011000iiiiiiiiiiiiiiiiiiittttt"; // C6.2.216 LDR (literal)
+//static char zLDR0[] = "1x111000011mmmmmoooS10nnnnnttttt"; // C6.2.217 LDR (register)
+//static char zLDR0[] = "1x111000010iiiiiiiii01nnnnnttttt"; // C6.2.215 LDR (immediate) post-index
+//static char zLDR0[] = "1x111000010iiiiiiiii11nnnnnttttt"; // C6.2.215 LDR (immediate) pre-index
+
+//static char zLDR0[] = "00111000011xxxxxxxxx10xxxxxttttt"; // ldrb Rt ADDR_REGOFF
+//static char zLDR0[] = "0011100001xiiiiiiiiiI1xxxxxttttt"; // ldrb Rt ADDR_SIMM9
+//static char zLDR0[] = "00x1100101iiiiiiiiiiiinnnnnttttt"; // ldrb Rt ADDR_UIMM12
+//static char zLDR0[] = "xx011100iiiiiiiiiiiiiiiiiiittttt"; // ldr Ft ADDR_PCREL19
+//static char zLDR0[] = "xx111100x1xxxxxxxxxx10xxxxxttttt"; // ldr Ft ADDR_REGOFF
+//static char zLDR0[] = "xx111100x1xiiiiiiiiiI1xxxxxttttt"; // ldr Ft ADDR_SIMM9
+//static char zLDR0[] = "xxx11101x1iiiiiiiiiiiinnnnnttttt"; // ldr Ft ADDR_UIMM12
+//static char zLDR0[] = "01111000011xxxxxxxxx10xxxxxttttt"; // ldrh Rt ADDR_REGOFF
+//static char zLDR0[] = "0111100001xiiiiiiiiiI1xxxxxttttt"; // ldrh Rt ADDR_SIMM9
+//static char zLDR0[] = "01x1100101iiiiiiiiiiiinnnnnttttt"; // ldrh Rt ADDR_UIMM12
+//static char zLDR0[] = "0x011000iiiiiiiiiiiiiiiiiiittttt"; // ldr Rt ADDR_PCREL19
+//static char zLDR0[] = "1x111000011xxxxxxxxx10xxxxxttttt"; // ldr Rt ADDR_REGOFF
+//static char zLDR0[] = "1x11100001xiiiiiiiiiI1xxxxxttttt"; // ldr Rt ADDR_SIMM9
+//static char zLDR0[] = "1xx1100101iiiiiiiiiiiinnnnnttttt"; // ldr Rt ADDR_UIMM12
+//static char zLDR0[] = "001110001x1xxxxxxxxx10xxxxxttttt"; // ldrsb Rt ADDR_REGOFF
+//static char zLDR0[] = "001110001xxiiiiiiiiiI1xxxxxttttt"; // ldrsb Rt ADDR_SIMM9
+//static char zLDR0[] = "00x110011xiiiiiiiiiiiinnnnnttttt"; // ldrsb Rt ADDR_UIMM12
+//static char zLDR0[] = "011110001x1xxxxxxxxx10xxxxxttttt"; // ldrsh Rt ADDR_REGOFF
+//static char zLDR0[] = "x11110001xxiiiiiiiiiI1xxxxxttttt"; // ldrsh Rt ADDR_SIMM9
+//static char zLDR0[] = "01x110011xiiiiiiiiiiiinnnnnttttt"; // ldrsh Rt ADDR_UIMM12
+//static char zLDR0[] = "10011000iiiiiiiiiiiiiiiiiiittttt"; // ldrsw Rt ADDR_PCREL19
+//static char zLDR0[] = "101110001x1xxxxxxxxx10xxxxxttttt"; // ldrsw Rt ADDR_REGOFF
+//static char zLDR0[] = "101110001xxiiiiiiiiiI1xxxxxttttt"; // ldrsw Rt ADDR_SIMM9
+//static char zLDR0[] = "10x110011xiiiiiiiiiiiinnnnnttttt"; // ldrsw Rt ADDR_UIMM12
+
+//static char zADD0[] = "x0001011xx0xxxxxxxxxxxnnnnnddddd"; // add Rd Rn Rm_SFT
+//static char zADD0[] = "x00x0001SSiiiiiiiiiiiinnnnnddddd"; // add Rd_SP Rn_SP AIMM
+//static char zADD0[] = "x00010110x1xxxxxxxxxxxnnnnnddddd"; // add Rd_SP Rn_SP Rm_EXT
+//static char zADD0[] = "x1011110xx1mmmmmx00001nnnnnddddd"; // add Sd Sn Sm
+//static char zADD0[] = "xx001110xx1mmmmm100001nnnnnddddd"; // add Vd Vn Vm
+static char zADD0[] = "xxxx00I0100Snnnnddddoooooooooooo";
+
 static uint32_t is00(handle_t p, const char* x, const size_t size, const int c, const uint32_t v) {
   if (x && 32 == size) {
+//printf("[0:%c:%x]", c, v);
     uint32_t xx = 0;
     for (size_t i = 0; i < size; ++i) {
       if (c == x[i]) {
         uint32_t mask = (1 << (31 - i));
         if ('1' == c) {
+//printf("[%ld:%x]", i, mask);
           if (0 == (v & mask)) return 0;
           xx |= mask;
         } else if ('0' == c) {
+//printf("[%ld:%x]", i, mask);
           if (0 != (v & mask)) return 0;
           xx |= mask;
         } else if (v & mask) {
@@ -92,26 +132,32 @@ static uint32_t is01(handle_t p, const char* x, const size_t size, const uint32_
 static void execute_section32arm(handle_t p, handle_t s, handle_t q) {
   puchar_t pp = ocget_rawdata(s);
   if (pp) {
-    execute_new(q, 0x0000054c, "strcmp");
-    execute_new(q, 0x00000558, "__cxa_finalize");
-    execute_new(q, 0x00000564, "read");
-    execute_new(q, 0x00000570, "__stack_chk_fail");
-    execute_new(q, 0x0000057c, "strcpy");
-    execute_new(q, 0x00000588, "puts");
-    execute_new(q, 0x00000594, "malloc");
-    execute_new(q, 0x000005a0, "__libc_start_main");
-    execute_new(q, 0x000005ac, "__gmon_start__");
-    execute_new(q, 0x000005b8, "__ctype_b_loc");
-    execute_new(q, 0x000005c4, "strlen");
-    execute_new(q, 0x000005d0, "__printf_chk");
-    execute_new(q, 0x000005dc, "abort");
+    execute_new(q, 0x54c /* prev_vaddr0 */, "strcmp" /*ocget_namebyvaddr(p, this_vaddr, NULL)*/);
+    execute_new(q, 0x558 /* prev_vaddr0 */, "__cxa_finalize");
+    execute_new(q, 0x564 /* prev_vaddr0 */, "read");
+    execute_new(q, 0x570 /* prev_vaddr0 */, "__stack_chk_fail");
+    execute_new(q, 0x57c /* prev_vaddr0 */, "strcpy");
+    execute_new(q, 0x588 /* prev_vaddr0 */, "puts");
+    execute_new(q, 0x594 /* prev_vaddr0 */, "malloc");
+    execute_new(q, 0x5a0 /* prev_vaddr0 */, "__libc_start_main");
+    execute_new(q, 0x5ac /* prev_vaddr0 */, "__gmon_start__");
+    execute_new(q, 0x5b8 /* prev_vaddr0 */, "__ctype_b_loc");
+    execute_new(q, 0x5c4 /* prev_vaddr0 */, "strlen");
+    execute_new(q, 0x5d0 /* prev_vaddr0 */, "__printf_chk");
+    execute_new(q, 0x5dc /* prev_vaddr0 */, "abort");
 
     uint64_t curr_vaddr = ocget_vmaddress(s);
-    for (uint64_t i = 0; i < ocget_size(s); ) {
-      uint64_t siz = 1;
+    uint64_t prev_vaddr0 = 0;
+    uint32_t prev_vaddr1 = 0;
+    uint32_t prev_vaddr2 = 0;
 
-      i += siz;
-      curr_vaddr += siz;
+    for (uint64_t i = 0; i < ocget_size(s); i += 4, curr_vaddr += 4) {
+      const uint32_t xx = ocmake_u32(p, pp[i + 0], pp[i + 1], pp[i + 2], pp[i + 3]);
+//printf("%03lx:%08x", curr_vaddr, xx);
+      if (is01(s, zADD0, sizeof(zADD0) - 1, xx)) {
+//printf(":ADD");
+      }
+//printf("\n");
     }
   }
 }
