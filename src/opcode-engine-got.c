@@ -98,8 +98,8 @@ static char zSTP[]  = "x010100110iiiiiiiTTTTTnnnnnttttt"; // C6.2.413 STP pre-in
 //static char zADD0[] = "xx001110xx1mmmmm100001nnnnnddddd"; // add Vd Vn Vm
 
 // arm-instructionset.pdf
-static char zADD0[] = "xxxx0000100Snnnnddddoooooooooooo"; // 4.5 Data Processing
-static char zADD1[] = "xxxx0010100Snnnnddddoooooooooooo"; // 4.5 Data Processing
+static char zADD0[] = "xxxx0000100Snnnnddddssssssssmmmm"; // 4.5 Data Processing
+static char zADD1[] = "xxxx0010100Snnnnddddrrrriiiiiiii"; // 4.5 Data Processing
 static char zLDR0[] = "xxxx01IPUBWLnnnnddddoooooooooooo"; // 4.9 Single Data Transfer (LDR, STR)
 
 static uint32_t is00(handle_t p, const char* x, const size_t size, const int c, const uint32_t v) {
@@ -162,14 +162,20 @@ static void execute_section32arm(handle_t p, handle_t s, handle_t q) {
 //printf(":ADD");
         const uint32_t Rn = is00(s, zADD0, sizeof(zADD0) - 1, 'n', xx) >> 16;
         const uint32_t Rd = is00(s, zADD0, sizeof(zADD0) - 1, 'd', xx) >> 12;
+        const uint32_t Rm = is00(s, zADD0, sizeof(zADD0) - 1, 'm', xx);
 //printf("|Rn=%x:r%d", Rn, Rn);
 //printf("|Rd=%x:r%d", Rd, Rd);
+//printf("|Rm=%x:r%d", Rm, Rm);
       } else if (is01(s, zADD1, sizeof(zADD1) - 1, xx)) {
 //printf(":ADDI");
         const uint32_t Rn = is00(s, zADD1, sizeof(zADD1) - 1, 'n', xx) >> 16;
         const uint32_t Rd = is00(s, zADD1, sizeof(zADD1) - 1, 'd', xx) >> 12;
+        const uint32_t Ir = is00(s, zADD1, sizeof(zADD1) - 1, 'r', xx) >> 8;
+        const uint32_t Im = is00(s, zADD1, sizeof(zADD1) - 1, 'i', xx);
 //printf("|Rn=%x:r%d", Rn, Rn);
 //printf("|Rd=%x:r%d", Rd, Rd);
+//printf("|imm=%d", Im);
+//printf("|rotate=%d", Ir);
       } else if (is01(s, zLDR0, sizeof(zLDR0) - 1, xx)) {
 //printf(":LDR");
       }
