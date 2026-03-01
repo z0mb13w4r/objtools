@@ -159,6 +159,12 @@ static void execute_section32arm(handle_t p, handle_t s, handle_t q) {
 //printf("%03lx:%08x", curr_vaddr, xx);
       if (is01(s, zADD0, sizeof(zADD0) - 1, xx)) {
 //printf(":ADD");
+        const uint32_t I  = is00(s, zADD0, sizeof(zADD0) - 1, 'I', xx);
+        const uint32_t Rn = is00(s, zADD0, sizeof(zADD0) - 1, 'n', xx) >> 16;
+        const uint32_t Rd = is00(s, zADD0, sizeof(zADD0) - 1, 'd', xx) >> 12;
+//printf("|I=%s", I ? "y" : "n");
+//printf("|Rn=%x:r%d", Rn, Rn);
+//printf("|Rd=%x:r%d", Rd, Rd);
       } else if (is01(s, zLDR0, sizeof(zLDR0) - 1, xx)) {
 //printf(":LDR");
       }
