@@ -25,33 +25,6 @@ static handle_t execute_new(handle_t p, const uint64_t vaddr, const char* name) 
   return p;
 }
 
-static void execute_section32arm(handle_t p, handle_t s, handle_t q) {
-  puchar_t pp = ocget_rawdata(s);
-  if (pp) {
-    execute_new(q, 0x0000054c, "strcmp");
-    execute_new(q, 0x00000558, "__cxa_finalize");
-    execute_new(q, 0x00000564, "read");
-    execute_new(q, 0x00000570, "__stack_chk_fail");
-    execute_new(q, 0x0000057c, "strcpy");
-    execute_new(q, 0x00000588, "puts");
-    execute_new(q, 0x00000594, "malloc");
-    execute_new(q, 0x000005a0, "__libc_start_main");
-    execute_new(q, 0x000005ac, "__gmon_start__");
-    execute_new(q, 0x000005b8, "__ctype_b_loc");
-    execute_new(q, 0x000005c4, "strlen");
-    execute_new(q, 0x000005d0, "__printf_chk");
-    execute_new(q, 0x000005dc, "abort");
-
-    uint64_t curr_vaddr = ocget_vmaddress(s);
-    for (uint64_t i = 0; i < ocget_size(s); ) {
-      uint64_t siz = 1;
-
-      i += siz;
-      curr_vaddr += siz;
-    }
-  }
-}
-
 static void execute_section32x86(handle_t p, handle_t s, handle_t q) {
   puchar_t pp = ocget_rawdata(s);
   if (pp) {
@@ -114,6 +87,33 @@ static uint32_t is00(handle_t p, const char* x, const size_t size, const int c, 
 
 static uint32_t is01(handle_t p, const char* x, const size_t size, const uint32_t v) {
   return is00(p, x, size, '1', v) && is00(p, x, size, '0', v);
+}
+
+static void execute_section32arm(handle_t p, handle_t s, handle_t q) {
+  puchar_t pp = ocget_rawdata(s);
+  if (pp) {
+    execute_new(q, 0x0000054c, "strcmp");
+    execute_new(q, 0x00000558, "__cxa_finalize");
+    execute_new(q, 0x00000564, "read");
+    execute_new(q, 0x00000570, "__stack_chk_fail");
+    execute_new(q, 0x0000057c, "strcpy");
+    execute_new(q, 0x00000588, "puts");
+    execute_new(q, 0x00000594, "malloc");
+    execute_new(q, 0x000005a0, "__libc_start_main");
+    execute_new(q, 0x000005ac, "__gmon_start__");
+    execute_new(q, 0x000005b8, "__ctype_b_loc");
+    execute_new(q, 0x000005c4, "strlen");
+    execute_new(q, 0x000005d0, "__printf_chk");
+    execute_new(q, 0x000005dc, "abort");
+
+    uint64_t curr_vaddr = ocget_vmaddress(s);
+    for (uint64_t i = 0; i < ocget_size(s); ) {
+      uint64_t siz = 1;
+
+      i += siz;
+      curr_vaddr += siz;
+    }
+  }
 }
 
 static void execute_section64arm(handle_t p, handle_t s, handle_t q) {
