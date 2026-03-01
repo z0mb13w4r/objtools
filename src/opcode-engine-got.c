@@ -96,7 +96,10 @@ static char zSTP[]  = "x010100110iiiiiiiTTTTTnnnnnttttt"; // C6.2.413 STP pre-in
 //static char zADD0[] = "x00010110x1xxxxxxxxxxxnnnnnddddd"; // add Rd_SP Rn_SP Rm_EXT
 //static char zADD0[] = "x1011110xx1mmmmmx00001nnnnnddddd"; // add Sd Sn Sm
 //static char zADD0[] = "xx001110xx1mmmmm100001nnnnnddddd"; // add Vd Vn Vm
-static char zADD0[] = "xxxx00I0100Snnnnddddoooooooooooo";
+
+// arm-instructionset.pdf
+static char zADD0[] = "xxxx00I0100Snnnnddddoooooooooooo"; // 4.5 Data Processing
+static char zLDR0[] = "xxxx01IPUBWLnnnnddddoooooooooooo"; // 4.9 Single Data Transfer (LDR, STR)
 
 static uint32_t is00(handle_t p, const char* x, const size_t size, const int c, const uint32_t v) {
   if (x && 32 == size) {
@@ -106,11 +109,11 @@ static uint32_t is00(handle_t p, const char* x, const size_t size, const int c, 
       if (c == x[i]) {
         uint32_t mask = (1 << (31 - i));
         if ('1' == c) {
-//printf("[%ld:%x]", i, mask);
+//printf("[1:%ld:%x]", i, mask);
           if (0 == (v & mask)) return 0;
           xx |= mask;
         } else if ('0' == c) {
-//printf("[%ld:%x]", i, mask);
+//printf("[0:%ld:%x]", i, mask);
           if (0 != (v & mask)) return 0;
           xx |= mask;
         } else if (v & mask) {
@@ -156,6 +159,8 @@ static void execute_section32arm(handle_t p, handle_t s, handle_t q) {
 //printf("%03lx:%08x", curr_vaddr, xx);
       if (is01(s, zADD0, sizeof(zADD0) - 1, xx)) {
 //printf(":ADD");
+      } else if (is01(s, zLDR0, sizeof(zLDR0) - 1, xx)) {
+//printf(":LDR");
       }
 //printf("\n");
     }
