@@ -975,6 +975,7 @@ static const char* _ecget_name32byaddr0(const pbuffer_t p, const int vaddr, uint
         Elf32_Sym *st = fget(f);
         if (st) {
           if (ELF_ST_TYPE(st->st_info) != STT_SECTION && ELF_ST_TYPE(st->st_info) != STT_NOTYPE) {
+//printf("[%x:%s]\n", st->st_value, ecget_namebyoffset(p, sh->sh_link, st->st_name));
             if (offset) {
               if (st->st_value <= vaddr) {
                 uint64_t offset0 = vaddr - st->st_value;
@@ -1024,7 +1025,19 @@ static const char* _ecget_name32byaddr1(const pbuffer_t p, const int vaddr, uint
 
           if (SHT_REL == s0->sh_type) {
 //printf("++R++");
+            handle_t p0 = fget32byshdr(p, s0);
+            if (p0) {
+              for (size_t j = 0; j < cnt; ++j) {
+                MEMSTACK(Elf32_Rel, rx);
+                Elf32_Rel *r0 = ecconvert_rel32(p, rx, fgetp(p0, sizeof(Elf32_Rel)));
+                if (r0 && r0->r_offset == vaddr) {
+                }
+              }
+
+              ffree(p0);
+            }
           } else if (SHT_RELA == s0->sh_type) {
+//printf("++RA++");
             handle_t p0 = fget32byshdr(p, s0);
             if (p0) {
               for (size_t j = 0; j < cnt; ++j) {
@@ -1067,7 +1080,7 @@ static const char* _ecget_name32byaddr1(const pbuffer_t p, const int vaddr, uint
                           if (vername && vername[0]) {
                             snprintf(name + n, NELEMENTS(name) - n, "@%s", vername);
                           }
-//printf("!!!!:%s", name);
+//printf("[%x:%s]", r0->r_offset, name);
                           return name;
                         }
                       }
