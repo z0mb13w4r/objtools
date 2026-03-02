@@ -1033,6 +1033,16 @@ static const char* _ecget_name32byaddr1(const pbuffer_t p, const int vaddr, uint
                 if (r0 && r0->r_offset == vaddr) {
                   if (isused(get_RELTYPEDEF(p), ELF32_R_TYPE(r0->r_info))) {
                   } else if (isused(get_RELTYPEVER(p), ELF32_R_TYPE(r0->r_info))) {
+                    MEMSTACK(Elf32_Shdr, dx);
+                    Elf32_Shdr *d0 = ecget_shdr32byindex(p, dx, s0->sh_link);
+                    if (d0) {
+                      Elf32_Off offset = ELF32_R_SYM(r0->r_info);
+
+                      MEMSTACK(Elf32_Sym, sy);
+                      Elf32_Sym *s1 = ecconvert_sym32(p, sy, getp(p, d0->sh_offset + (offset * d0->sh_entsize), d0->sh_entsize));
+                      if (s1) {
+                      }
+                    }
                   }
                 }
               }
@@ -1050,10 +1060,10 @@ static const char* _ecget_name32byaddr1(const pbuffer_t p, const int vaddr, uint
                   MEMSTACK(Elf32_Shdr, dx);
                   Elf32_Shdr *d0 = ecget_shdr32byindex(p, dx, s0->sh_link);
                   if (d0) {
-                    Elf32_Off  off = ELF32_R_SYM(r0->r_info);
+                    Elf32_Off offset = ELF32_R_SYM(r0->r_info);
 
                     MEMSTACK(Elf32_Sym, sy);
-                    Elf32_Sym *s1 = ecconvert_sym32(p, sy, getp(p, d0->sh_offset + (off * d0->sh_entsize), d0->sh_entsize));
+                    Elf32_Sym *s1 = ecconvert_sym32(p, sy, getp(p, d0->sh_offset + (offset * d0->sh_entsize), d0->sh_entsize));
                     if (s1) {
                       const char* symname = ecget_namebyoffset(p, d0->sh_link, s1->st_name);
                       const char* secname = ecget_secnamebyindex(p, s1->st_shndx);
@@ -1070,7 +1080,7 @@ static const char* _ecget_name32byaddr1(const pbuffer_t p, const int vaddr, uint
                           Elf32_Shdr *v0 = ecget_shdr32bytype(p, vx, SHT_GNU_versym);
                           if (v0) {
                             MEMSTACK(Elf32_Versym, vy);
-                            Elf32_Versym *v1 = ecconvert_versym32(p, vy, getp(p, v0->sh_offset + (off * v0->sh_entsize), v0->sh_entsize));
+                            Elf32_Versym *v1 = ecconvert_versym32(p, vy, getp(p, v0->sh_offset + (offset * v0->sh_entsize), v0->sh_entsize));
                             if (v1) {
                               *v1 = *v1 & VERSYM_VERSION;
                               if (*v1 && *v1 < NELEMENTS(vnames)) {
