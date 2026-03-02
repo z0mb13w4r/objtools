@@ -1031,6 +1031,9 @@ static const char* _ecget_name32byaddr1(const pbuffer_t p, const int vaddr, uint
                 MEMSTACK(Elf32_Rel, rx);
                 Elf32_Rel *r0 = ecconvert_rel32(p, rx, fgetp(p0, sizeof(Elf32_Rel)));
                 if (r0 && r0->r_offset == vaddr) {
+                  if (isused(get_RELTYPEDEF(p), ELF32_R_TYPE(r0->r_info))) {
+                  } else if (isused(get_RELTYPEVER(p), ELF32_R_TYPE(r0->r_info))) {
+                  }
                 }
               }
 
