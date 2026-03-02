@@ -137,19 +137,19 @@ static uint32_t is01(handle_t p, const char* x, const size_t size, const uint32_
 static void execute_section32arm(handle_t p, handle_t s, handle_t q) {
   puchar_t pp = ocget_rawdata(s);
   if (pp) {
-    execute_new(q, 0x54c /* prev_vaddr0 */, /*"strcmp"*/ ocget_namebyvaddr(p, 0x00010fa8 /*this_vaddr*/, NULL));
-    execute_new(q, 0x558 /* prev_vaddr0 */, /*"__cxa_finalize"*/ ocget_namebyvaddr(p, 0x00010fac /*this_vaddr*/, NULL));
-    execute_new(q, 0x564 /* prev_vaddr0 */, /*"read"*/ ocget_namebyvaddr(p, 0x00010fb0 /*this_vaddr*/, NULL));
-    execute_new(q, 0x570 /* prev_vaddr0 */, /*"__stack_chk_fail"*/ ocget_namebyvaddr(p, 0x00010fb4 /*this_vaddr*/, NULL));
-    execute_new(q, 0x57c /* prev_vaddr0 */, /*"strcpy"*/ ocget_namebyvaddr(p, 0x00010fb8 /*this_vaddr*/, NULL));
-    execute_new(q, 0x588 /* prev_vaddr0 */, /*"puts"*/ ocget_namebyvaddr(p, 0x00010fbc /*this_vaddr*/, NULL));
-    execute_new(q, 0x594 /* prev_vaddr0 */, /*"malloc"*/ ocget_namebyvaddr(p, 0x00010fc0 /*this_vaddr*/, NULL));
-    execute_new(q, 0x5a0 /* prev_vaddr0 */, /*"__libc_start_main"*/ ocget_namebyvaddr(p, 0x00010fc4 /*this_vaddr*/, NULL));
-    execute_new(q, 0x5ac /* prev_vaddr0 */, /*"__gmon_start__"*/ ocget_namebyvaddr(p, 0x00010fc8 /*this_vaddr*/, NULL));
-    execute_new(q, 0x5b8 /* prev_vaddr0 */, /*"__ctype_b_loc"*/ ocget_namebyvaddr(p, 0x00010fcc /*this_vaddr*/, NULL));
-    execute_new(q, 0x5c4 /* prev_vaddr0 */, /*"strlen"*/ ocget_namebyvaddr(p, 0x00010fd0 /*this_vaddr*/, NULL));
-    execute_new(q, 0x5d0 /* prev_vaddr0 */, /*"__printf_chk"*/ ocget_namebyvaddr(p, 0x00010fd4 /*this_vaddr*/, NULL));
-    execute_new(q, 0x5dc /* prev_vaddr0 */, /*"abort"*/ ocget_namebyvaddr(p, 0x00010fd8 /*this_vaddr*/, NULL));
+    //execute_new(q, 0x54c /* prev_vaddr0 */, /*"strcmp"*/ ocget_namebyvaddr(p, 0x00010fa8 /*this_vaddr*/, NULL));
+    //execute_new(q, 0x558 /* prev_vaddr0 */, /*"__cxa_finalize"*/ ocget_namebyvaddr(p, 0x00010fac /*this_vaddr*/, NULL));
+    //execute_new(q, 0x564 /* prev_vaddr0 */, /*"read"*/ ocget_namebyvaddr(p, 0x00010fb0 /*this_vaddr*/, NULL));
+    //execute_new(q, 0x570 /* prev_vaddr0 */, /*"__stack_chk_fail"*/ ocget_namebyvaddr(p, 0x00010fb4 /*this_vaddr*/, NULL));
+    //execute_new(q, 0x57c /* prev_vaddr0 */, /*"strcpy"*/ ocget_namebyvaddr(p, 0x00010fb8 /*this_vaddr*/, NULL));
+    //execute_new(q, 0x588 /* prev_vaddr0 */, /*"puts"*/ ocget_namebyvaddr(p, 0x00010fbc /*this_vaddr*/, NULL));
+    //execute_new(q, 0x594 /* prev_vaddr0 */, /*"malloc"*/ ocget_namebyvaddr(p, 0x00010fc0 /*this_vaddr*/, NULL));
+    //execute_new(q, 0x5a0 /* prev_vaddr0 */, /*"__libc_start_main"*/ ocget_namebyvaddr(p, 0x00010fc4 /*this_vaddr*/, NULL));
+    //execute_new(q, 0x5ac /* prev_vaddr0 */, /*"__gmon_start__"*/ ocget_namebyvaddr(p, 0x00010fc8 /*this_vaddr*/, NULL));
+    //execute_new(q, 0x5b8 /* prev_vaddr0 */, /*"__ctype_b_loc"*/ ocget_namebyvaddr(p, 0x00010fcc /*this_vaddr*/, NULL));
+    //execute_new(q, 0x5c4 /* prev_vaddr0 */, /*"strlen"*/ ocget_namebyvaddr(p, 0x00010fd0 /*this_vaddr*/, NULL));
+    //execute_new(q, 0x5d0 /* prev_vaddr0 */, /*"__printf_chk"*/ ocget_namebyvaddr(p, 0x00010fd4 /*this_vaddr*/, NULL));
+    //execute_new(q, 0x5dc /* prev_vaddr0 */, /*"abort"*/ ocget_namebyvaddr(p, 0x00010fd8 /*this_vaddr*/, NULL));
 
     uint64_t curr_vaddr = ocget_vmaddress(s);
     uint64_t prev_vaddr0 = 0;
@@ -177,14 +177,22 @@ static void execute_section32arm(handle_t p, handle_t s, handle_t q) {
 //printf("|Rd=0x%x:r%d", Rd, Rd);
 //printf("|imm=0x%x:%d", im, im);
 //printf("|rotate=0x%x:%d", ir, ir);
+        if (!prev_vaddr0) {
+          prev_vaddr0 = curr_vaddr;
+//printf("|*");
+        } else {
+          prev_vaddr1 = 0x10000;
+        }
       } else if (is01(s, zLDR0, sizeof(zLDR0) - 1, xx)) {
 //printf(":LDRI");
         const uint32_t Rn = is00(s, zLDR0, sizeof(zLDR0) - 1, 'n', xx) >> 16;
         const uint32_t Rd = is00(s, zLDR0, sizeof(zLDR0) - 1, 'd', xx) >> 12;
-        const uint32_t im = is00(s, zLDR0, sizeof(zLDR0) - 1, 'i', xx);
+        prev_vaddr2       = is00(s, zLDR0, sizeof(zLDR0) - 1, 'i', xx);
 //printf("|Rn=0x%x:r%d", Rn, Rn);
 //printf("|Rd=0x%x:r%d", Rd, Rd);
-//printf("|imm=0x%x:%d", im, im);
+//printf("|imm=0x%x:%d", prev_vaddr2, prev_vaddr2);
+        execute_new(q, prev_vaddr0, ocget_namebyvaddr(p, curr_vaddr + prev_vaddr1 + prev_vaddr2, NULL));
+        prev_vaddr0 = 0;
       } else if (is01(s, zLDR1, sizeof(zLDR1) - 1, xx)) {
 //printf(":LDR");
       }
