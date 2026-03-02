@@ -137,19 +137,19 @@ static uint32_t is01(handle_t p, const char* x, const size_t size, const uint32_
 static void execute_section32arm(handle_t p, handle_t s, handle_t q) {
   puchar_t pp = ocget_rawdata(s);
   if (pp) {
-    execute_new(q, 0x54c /* prev_vaddr0 */, "strcmp" /*ocget_namebyvaddr(p, this_vaddr, NULL)*/);
-    execute_new(q, 0x558 /* prev_vaddr0 */, "__cxa_finalize");
-    execute_new(q, 0x564 /* prev_vaddr0 */, "read");
-    execute_new(q, 0x570 /* prev_vaddr0 */, "__stack_chk_fail");
-    execute_new(q, 0x57c /* prev_vaddr0 */, "strcpy");
-    execute_new(q, 0x588 /* prev_vaddr0 */, "puts");
-    execute_new(q, 0x594 /* prev_vaddr0 */, "malloc");
-    execute_new(q, 0x5a0 /* prev_vaddr0 */, "__libc_start_main");
-    execute_new(q, 0x5ac /* prev_vaddr0 */, "__gmon_start__");
-    execute_new(q, 0x5b8 /* prev_vaddr0 */, "__ctype_b_loc");
-    execute_new(q, 0x5c4 /* prev_vaddr0 */, "strlen");
-    execute_new(q, 0x5d0 /* prev_vaddr0 */, "__printf_chk");
-    execute_new(q, 0x5dc /* prev_vaddr0 */, "abort");
+    execute_new(q, 0x54c /* prev_vaddr0 */, /*"strcmp"*/ ocget_namebyvaddr(p, 0x00010fa8 /*this_vaddr*/, NULL));
+    execute_new(q, 0x558 /* prev_vaddr0 */, /*"__cxa_finalize"*/ ocget_namebyvaddr(p, 0x00010fac /*this_vaddr*/, NULL));
+    execute_new(q, 0x564 /* prev_vaddr0 */, /*"read"*/ ocget_namebyvaddr(p, 0x00010fb0 /*this_vaddr*/, NULL));
+    execute_new(q, 0x570 /* prev_vaddr0 */, /*"__stack_chk_fail"*/ ocget_namebyvaddr(p, 0x00010fb4 /*this_vaddr*/, NULL));
+    execute_new(q, 0x57c /* prev_vaddr0 */, /*"strcpy"*/ ocget_namebyvaddr(p, 0x00010fb8 /*this_vaddr*/, NULL));
+    execute_new(q, 0x588 /* prev_vaddr0 */, /*"puts"*/ ocget_namebyvaddr(p, 0x00010fbc /*this_vaddr*/, NULL));
+    execute_new(q, 0x594 /* prev_vaddr0 */, /*"malloc"*/ ocget_namebyvaddr(p, 0x00010fc0 /*this_vaddr*/, NULL));
+    execute_new(q, 0x5a0 /* prev_vaddr0 */, /*"__libc_start_main"*/ ocget_namebyvaddr(p, 0x00010fc4 /*this_vaddr*/, NULL));
+    execute_new(q, 0x5ac /* prev_vaddr0 */, /*"__gmon_start__"*/ ocget_namebyvaddr(p, 0x00010fc8 /*this_vaddr*/, NULL));
+    execute_new(q, 0x5b8 /* prev_vaddr0 */, /*"__ctype_b_loc"*/ ocget_namebyvaddr(p, 0x00010fcc /*this_vaddr*/, NULL));
+    execute_new(q, 0x5c4 /* prev_vaddr0 */, /*"strlen"*/ ocget_namebyvaddr(p, 0x00010fd0 /*this_vaddr*/, NULL));
+    execute_new(q, 0x5d0 /* prev_vaddr0 */, /*"__printf_chk"*/ ocget_namebyvaddr(p, 0x00010fd4 /*this_vaddr*/, NULL));
+    execute_new(q, 0x5dc /* prev_vaddr0 */, /*"abort"*/ ocget_namebyvaddr(p, 0x00010fd8 /*this_vaddr*/, NULL));
 
     uint64_t curr_vaddr = ocget_vmaddress(s);
     uint64_t prev_vaddr0 = 0;
