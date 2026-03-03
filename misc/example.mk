@@ -26,6 +26,7 @@ else ifeq ($(CROSS),ARM64)
 else ifeq ($(CROSS),WIN32)
 else ifeq ($(CROSS),WIN64)
 else ifeq ($(CROSS),MIPS32)
+else ifeq ($(CROSS),MIPS64)
 else ifeq ($(CROSS),LINUX32)
 else ifeq ($(CROSS),RISCV64)
 else
@@ -109,6 +110,11 @@ else ifeq ($(CROSS),ARM64)
 else ifeq ($(CROSS),MIPS32)
 	CROSS_COMPILE = mips-linux-gnu-
 	DFLAGS += -DENV_LINUX -DLINUX -DTARGET_MIPS32
+	EFLAGS  =
+	LFLAGS +=
+else ifeq ($(CROSS),MIPS64)
+	CROSS_COMPILE = mips64-linux-gnuabi64-
+	DFLAGS += -DENV_LINUX -DLINUX -DTARGET_MIPS64
 	EFLAGS  =
 	LFLAGS +=
 else ifeq ($(CROSS),RISCV64)
@@ -205,6 +211,7 @@ help:
 	@echo ' set CROSS=WIN32 to build Windows 32-bit version.'
 	@echo ' set CROSS=WIN64 to build Windows 64-bit version.'
 	@echo ' set CROSS=MIPS32 to build MIPS 32-bit version.'
+	@echo ' set CROSS=MIPS64 to build MIPS 64-bit version.'
 	@echo ' set CROSS=LINUX32 to build 32-bit version.'
 	@echo ' set CROSS=LINUX64 to build native version.'
 	@echo ' '
