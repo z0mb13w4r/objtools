@@ -1584,32 +1584,32 @@ static int dump_hash32(const pbuffer_t p, pfind_t q, const uint64_t sh_name) {
   return 0;
 }
 
-static int dump_hash64(const pbuffer_t p, pfind_t q, const uint64_t sh_name) {
-  uint64_t nbucket  = fgetu64(q);
-  uint64_t nchain   = fgetu64(q);
-  uint64_t *bucket  = CAST(uint64_t*, q->item) + 2;
-  uint64_t *chain   = CAST(uint64_t*, q->item) + 2 + nbucket;
-
-  if (nbucket > 1) {
-    MALLOCA(uint32_t, size, nbucket);
-
-    /* compute distribution of chain lengths. */
-    uint_fast32_t msize = 0;
-    uint_fast32_t nsyms = 0;
-    for (uint64_t k = 0; k < nbucket; ++k) {
-      uint64_t x = ecconvert_u64(p, bucket[k]);
-      while (x > 0 && x < nchain) {
-        ++nsyms;
-        if (msize < ++size[k]) ++msize;
-        x = ecconvert_u64(p, chain[x]);
-      }
-    }
-
-    return dump_gnuhash0(p, msize, size, nbucket, nsyms, sh_name);
-  }
-
-  return 0;
-}
+//static int dump_hash64(const pbuffer_t p, pfind_t q, const uint64_t sh_name) {
+//  uint64_t nbucket  = fgetu64(q);
+//  uint64_t nchain   = fgetu64(q);
+//  uint64_t *bucket  = CAST(uint64_t*, q->item) + 2;
+//  uint64_t *chain   = CAST(uint64_t*, q->item) + 2 + nbucket;
+//
+//  if (nbucket > 1) {
+//    MALLOCA(uint32_t, size, nbucket);
+//
+//    /* compute distribution of chain lengths. */
+//    uint_fast32_t msize = 0;
+//    uint_fast32_t nsyms = 0;
+//    for (uint64_t k = 0; k < nbucket; ++k) {
+//      uint64_t x = ecconvert_u64(p, bucket[k]);
+//      while (x > 0 && x < nchain) {
+//        ++nsyms;
+//        if (msize < ++size[k]) ++msize;
+//        x = ecconvert_u64(p, chain[x]);
+//      }
+//    }
+//
+//    return dump_gnuhash0(p, msize, size, nbucket, nsyms, sh_name);
+//  }
+//
+//  return 0;
+//}
 
 static int dump_histogram32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
   int n = 0;
@@ -1644,7 +1644,7 @@ static int dump_histogram64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *e
         if (SHT_GNU_HASH == s0->sh_type) {
           n += dump_gnuhash1(p, p0, s0->sh_name);
         } else if (SHT_HASH == s0->sh_type) {
-          n += dump_hash64(p, p0, s0->sh_name);
+          n += dump_hash32(p, p0, s0->sh_name);
         }
 
         ffree(p0);
@@ -2226,14 +2226,16 @@ static int dump_archspecific1(const pbuffer_t p, const poptions_t o, const uint6
 static uint64_t dump_archspecific2(const pbuffer_t p, const poptions_t o, handle_t q, const uint64_t caddr, const uint64_t saddr) {
   int n = 0;
 
-  n += printf_nice(caddr, USE_LHEX32);
+  const imode_t USE_LHEXNN = isELF64(p) ? USE_LHEX64 : USE_LHEX32;
+
+  n += printf_nice(caddr, USE_LHEXNN);
 
   if (caddr < saddr + 0xfff0) {
     n += printf_nice((0x7ff0 - (caddr - saddr)), USE_DEC | USE_DASH);
     n += printf_text("gp", USE_RB);
   }
 
-  n += printf_nice(fgetuNN(q), USE_LHEX32);
+  n += printf_nice(fgetuNN(q), USE_LHEXNN);
 
   return caddr + (isELF32(p) ? 4 : 8);
 }
@@ -2242,7 +2244,9 @@ static int dump_archspecific3(const pbuffer_t p, const poptions_t o,
                        const uint64_t st_value, const uint64_t st_info, const uint64_t st_shndx, const uint64_t st_name, const uint64_t sh_link) {
   int n = 0;
 
-  n += printf_nice(st_value, USE_LHEX32);
+  const imode_t USE_LHEXNN = isELF64(p) ? USE_LHEX64 : USE_LHEX32;
+
+  n += printf_nice(st_value, USE_LHEXNN);
   n += printf_pick(ecSTTTYPE, ELF_ST_TYPE(st_info), USE_LT | USE_SPACE | SET_PAD(8));
   n += printf_text(get_SHNINDEX(st_shndx), USE_LT | USE_SPACE);
 
@@ -2257,6 +2261,8 @@ static int dump_archspecific3(const pbuffer_t p, const poptions_t o,
 static int dump_archspecific4(const pbuffer_t p, const poptions_t o, const uint64_t sh_addr, const uint64_t sh_offset, const uint64_t sh_size) {
   int n = 0;
 
+  const imode_t USE_LHEXNN = isELF64(p) ? USE_LHEX64 : USE_LHEX32;
+
   handle_t p0 = fgetbyoffset(p, sh_offset, sh_size, MEMFIND_NOCHUNKSIZE);
   if (p0) {
     size_t gotno_size = ecget_value(p, SHT_DYNAMIC, DT_MIPS_LOCAL_GOTNO);
@@ -2266,7 +2272,7 @@ static int dump_archspecific4(const pbuffer_t p, const poptions_t o, const uint6
       n += printf_eol();
       n += printf_text("PRIMARY GOT", USE_EOL);
       n += printf_text("Canonical gp value", USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-      n += printf_nice(0x7ff0 + sh_addr, USE_LHEX32 | USE_EOL);
+      n += printf_nice(0x7ff0 + sh_addr, USE_LHEXNN | USE_EOL);
 
       n += printf_eol();
       n += printf_text("RESERVED ENTRIES", USE_LT | USE_EOL);
