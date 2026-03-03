@@ -14,6 +14,11 @@ static convert_t ecSHDRFLAGS[] = {
   {0, 0}
 };
 
+#define SHF_MASKOS0                    (0x01000000)
+#define SHF_MASKOS1                    (0x02000000)
+#define SHF_MASKOS2                    (0x04000000)
+#define SHF_MASKOS3                    (0x08000000)
+
 #define SHF_MASKPROC0                  (0x10000000)
 #define SHF_MASKPROC1                  (0x20000000)
 #define SHF_MASKPROC2                  (0x40000000)
@@ -36,6 +41,10 @@ static convert_t ecSHDRFLAGSLITE[] = {
   {"p",                            SHF_MASKPROC1},
   {"p",                            SHF_MASKPROC2},
   {"p",                            SHF_MASKPROC3},
+  {"o",                            SHF_MASKOS0},
+  {"o",                            SHF_MASKOS1},
+  {"o",                            SHF_MASKOS2},
+  {"o",                            SHF_MASKOS3},
 
   {0, 0}
 };
