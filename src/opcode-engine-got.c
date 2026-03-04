@@ -172,17 +172,18 @@ static void execute_section32arm(handle_t p, handle_t s, handle_t q) {
 //printf(":ADDI");
         const uint32_t Rn = is00(s, zADD1, sizeof(zADD1) - 1, 'n', xx) >> 16;
 //        const uint32_t Rd = is00(s, zADD1, sizeof(zADD1) - 1, 'd', xx) >> 12;
-//        const uint32_t ir = is00(s, zADD1, sizeof(zADD1) - 1, 'r', xx) >> 8;
-//        const uint32_t im = is00(s, zADD1, sizeof(zADD1) - 1, 'i', xx);
+        const uint32_t ir = is00(s, zADD1, sizeof(zADD1) - 1, 'r', xx) >> 8;
+        const uint32_t im = is00(s, zADD1, sizeof(zADD1) - 1, 'i', xx);
 //printf("|Rn=0x%x:r%d", Rn, Rn);
 //printf("|Rd=0x%x:r%d", Rd, Rd);
-//printf("|imm=0x%x:%d[0x%x:%d]=0x%x:%d", im, im, ir, ir, im << ir, im << ir);
+//printf("|imm=0x%x:%d[0x%x:%d]=0x%x:%d", im, im, ir, ir, im << ir << 2, im << ir << 2);
         if (15 == Rn) {
           prev_vaddr0 = curr_vaddr;
           prev_vaddr1 = curr_vaddr + 8;
 //printf("|*");
         } else {
-          prev_vaddr1 += 0x10000;
+//          prev_vaddr1 += 0x10000;
+          prev_vaddr1 += im << ir << 2;
         }
       } else if (is01(s, zLDR0, sizeof(zLDR0) - 1, xx)) {
 //printf(":LDRI");
@@ -263,6 +264,10 @@ static void execute_section64arm(handle_t p, handle_t s, handle_t q) {
   }
 }
 
+static void execute_section64riscv(handle_t p, handle_t s, handle_t q) {
+
+}
+
 static void execute_section64x86(handle_t p, handle_t s, handle_t q) {
   puchar_t pp = ocget_rawdata(s);
   if (pp) {
@@ -305,6 +310,9 @@ static void callback_sections32(handle_t p, handle_t shdr, unknown_t param) {
       execute_section32arm(p, shdr, param);
     }
   } else if (EM_RISCV == e) {
+
+  } else if (EM_MIPS == e || EM_MIPS_RS3_LE == e) {
+
   } else {
     if (0 == xstrcmp(name, ".plt.got")) {
       execute_section32x86(p, shdr, param);
@@ -322,6 +330,11 @@ static void callback_sections64(handle_t p, handle_t shdr, unknown_t param) {
       execute_section64arm(p, shdr, param);
     }
   } else if (EM_RISCV == e) {
+    if (0 == xstrcmp(name, ".plt")) {
+      execute_section64riscv(p, shdr, param);
+    }
+  } else if (EM_MIPS == e || EM_MIPS_RS3_LE == e) {
+
   } else {
     if (0 == xstrcmp(name, ".plt.got")) {
       execute_section64x86(p, shdr, param);
