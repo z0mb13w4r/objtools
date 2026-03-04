@@ -53,6 +53,12 @@ static void execute_section32x86(handle_t p, handle_t s, handle_t q) {
   }
 }
 
+// arm-instructionset.pdf
+//static char zADD0[] = "xxxx0000100Snnnnddddssssssssmmmm"; // 4.5 Data Processing
+//static char zLDR0[] = "xxxx011PUBWLnnnnddddssssssssmmmm"; // 4.9 Single Data Transfer (LDR, STR)
+static char zADD32[] = "xxxx0010100Snnnnddddrrrriiiiiiii"; // 4.5 Data Processing
+static char zLDR32[] = "xxxx010PUBWLnnnnddddiiiiiiiiiiii"; // 4.9 Single Data Transfer (LDR, STR)
+
 // DDI0487_M_a_a_a-profile_architecture_reference_manual.pdf
 //                     10987654321098765432109876543210
 static char zADD64[]  = "x00100010Siiiiiiiiiiiinnnnnddddd"; // C6.2.5 ADD (immediate)
@@ -60,12 +66,6 @@ static char zADRP64[] = "1II10000iiiiiiiiiiiiiiiiiiiddddd"; // C6.2.13 ADRP
 static char zBR64[]   = "1101011000011111000000nnnnnmmmmm"; // C6.2.46 BR
 static char zLDR64[]  = "1s11100101iiiiiiiiiiiinnnnnttttt"; // C6.2.215 LDR (immediate) unsigned offset
 static char zSTP64[]  = "x010100110iiiiiiiTTTTTnnnnnttttt"; // C6.2.413 STP pre-index
-
-// arm-instructionset.pdf
-//static char zADD0[] = "xxxx0000100Snnnnddddssssssssmmmm"; // 4.5 Data Processing
-//static char zLDR0[] = "xxxx011PUBWLnnnnddddssssssssmmmm"; // 4.9 Single Data Transfer (LDR, STR)
-static char zADD32[] = "xxxx0010100Snnnnddddrrrriiiiiiii"; // 4.5 Data Processing
-static char zLDR32[] = "xxxx010PUBWLnnnnddddiiiiiiiiiiii"; // 4.9 Single Data Transfer (LDR, STR)
 
 static uint32_t is00(handle_t p, const char* x, const size_t size, const int c, const uint32_t v) {
   if (x && 32 == size) {
