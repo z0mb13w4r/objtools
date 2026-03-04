@@ -63,9 +63,9 @@ static char zSTP[]  = "x010100110iiiiiiiTTTTTnnnnnttttt"; // C6.2.413 STP pre-in
 
 // arm-instructionset.pdf
 //static char zADD0[] = "xxxx0000100Snnnnddddssssssssmmmm"; // 4.5 Data Processing
-static char zADD1[] = "xxxx0010100Snnnnddddrrrriiiiiiii"; // 4.5 Data Processing
-static char zLDR0[] = "xxxx010PUBWLnnnnddddiiiiiiiiiiii"; // 4.9 Single Data Transfer (LDR, STR)
-//static char zLDR1[] = "xxxx011PUBWLnnnnddddssssssssmmmm"; // 4.9 Single Data Transfer (LDR, STR)
+//static char zLDR0[] = "xxxx011PUBWLnnnnddddssssssssmmmm"; // 4.9 Single Data Transfer (LDR, STR)
+static char zADD32[] = "xxxx0010100Snnnnddddrrrriiiiiiii"; // 4.5 Data Processing
+static char zLDR32[] = "xxxx010PUBWLnnnnddddiiiiiiiiiiii"; // 4.9 Single Data Transfer (LDR, STR)
 
 static uint32_t is00(handle_t p, const char* x, const size_t size, const int c, const uint32_t v) {
   if (x && 32 == size) {
@@ -109,12 +109,12 @@ static void execute_section32arm(handle_t p, handle_t s, handle_t q) {
     for (uint64_t i = 0; i < ocget_size(s); i += 4, curr_vaddr += 4) {
       const uint32_t xx = ocmake_u32(p, pp[i + 0], pp[i + 1], pp[i + 2], pp[i + 3]);
 //printf("%03lx:%08x", curr_vaddr, xx);
-      if (is01(s, zADD1, sizeof(zADD1) - 1, xx)) {
+      if (is01(s, zADD32, sizeof(zADD32) - 1, xx)) {
 //printf(":ADDI");
-        const uint32_t Rn = is00(s, zADD1, sizeof(zADD1) - 1, 'n', xx) >> 16;
-//        const uint32_t Rd = is00(s, zADD1, sizeof(zADD1) - 1, 'd', xx) >> 12;
-        const uint32_t ir = is00(s, zADD1, sizeof(zADD1) - 1, 'r', xx) >> 8;
-        const uint32_t im = is00(s, zADD1, sizeof(zADD1) - 1, 'i', xx);
+        const uint32_t Rn = is00(s, zADD32, sizeof(zADD32) - 1, 'n', xx) >> 16;
+//        const uint32_t Rd = is00(s, zADD32, sizeof(zADD32) - 1, 'd', xx) >> 12;
+        const uint32_t ir = is00(s, zADD32, sizeof(zADD32) - 1, 'r', xx) >> 8;
+        const uint32_t im = is00(s, zADD32, sizeof(zADD32) - 1, 'i', xx);
 //printf("|Rn=0x%x:r%d", Rn, Rn);
 //printf("|Rd=0x%x:r%d", Rd, Rd);
 //printf("|imm=0x%x:%d[0x%x:%d]=0x%x:%d", im, im, ir, ir, im << ir << 2, im << ir << 2);
@@ -125,22 +125,22 @@ static void execute_section32arm(handle_t p, handle_t s, handle_t q) {
         } else {
           prev_vaddr1 += im << ir << 2;
         }
-      } else if (is01(s, zLDR0, sizeof(zLDR0) - 1, xx)) {
+      } else if (is01(s, zLDR32, sizeof(zLDR32) - 1, xx)) {
 //printf(":LDRI");
-//        const uint32_t Rn = is00(s, zLDR0, sizeof(zLDR0) - 1, 'n', xx) >> 16;
-//        const uint32_t Rd = is00(s, zLDR0, sizeof(zLDR0) - 1, 'd', xx) >> 12;
-        prev_vaddr2       = is00(s, zLDR0, sizeof(zLDR0) - 1, 'i', xx);
+//        const uint32_t Rn = is00(s, zLDR32, sizeof(zLDR32) - 1, 'n', xx) >> 16;
+//        const uint32_t Rd = is00(s, zLDR32, sizeof(zLDR32) - 1, 'd', xx) >> 12;
+        prev_vaddr2       = is00(s, zLDR32, sizeof(zLDR32) - 1, 'i', xx);
 //printf("|Rn=0x%x:r%d", Rn, Rn);
 //printf("|Rd=0x%x:r%d", Rd, Rd);
 //printf("|imm=0x%x:%d", prev_vaddr2, prev_vaddr2);
         execute_new(q, prev_vaddr0, ocget_namebyvaddr(p, prev_vaddr1 + prev_vaddr2, NULL));
         prev_vaddr0 = 0;
-//      } else if (is01(s, zADD0, sizeof(zADD0) - 1, xx)) {
+//      } else if (is01(s, zADD1, sizeof(zADD1) - 1, xx)) {
 //printf(":ADD");
-//        const uint32_t Rn = is00(s, zADD0, sizeof(zADD0) - 1, 'n', xx) >> 16;
-//        const uint32_t Rd = is00(s, zADD0, sizeof(zADD0) - 1, 'd', xx) >> 12;
-//        const uint32_t Rs = is00(s, zADD0, sizeof(zADD0) - 1, 's', xx) >> 4;
-//        const uint32_t Rm = is00(s, zADD0, sizeof(zADD0) - 1, 'm', xx);
+//        const uint32_t Rn = is00(s, zADD1, sizeof(zADD1) - 1, 'n', xx) >> 16;
+//        const uint32_t Rd = is00(s, zADD1, sizeof(zADD1) - 1, 'd', xx) >> 12;
+//        const uint32_t Rs = is00(s, zADD1, sizeof(zADD1) - 1, 's', xx) >> 4;
+//        const uint32_t Rm = is00(s, zADD1, sizeof(zADD1) - 1, 'm', xx);
 //printf("|Rn=0x%x:r%d", Rn, Rn);
 //printf("|Rd=0x%x:r%d", Rd, Rd);
 //printf("|Rm=0x%x:r%d[0x%x:%d]", Rm, Rm, Rs, Rs);
