@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 import pexpect
-#import subprocess
-
-USERNAME=''
+import argparse
 
 BINBIGLIST='aria2c\|arp\|ash\|awk\|base64\|bash\|busybox\|cat\|chmod\|chown\|cp\|csh\|curl\|cut\|dash\|date\|dd\|diff\|dmsetup\|docker\|ed\|emacs\|env\|expand\|expect\|file\|find\|flock\|fmt\|fold\|ftp\|gawk\|gdb\|gimp\|git\|grep\|head\|ht\|iftop\|ionice\|ip$\|irb\|jjs\|jq\|jrunscript\|ksh\|ld.so\|ldconfig\|less\|logsave\|lua\|make\|man\|mawk\|more\|mv\|mysql\|nano\|nawk\|nc\|netcat\|nice\|nl\|nmap\|node\|od\|openssl\|perl\|pg\|php\|pic\|pico\|python\|readelf\|rlwrap\|rpm\|rpmquery\|rsync\|ruby\|run-parts\|rvim\|scp\|script\|sed\|setarch\|sftp\|sh\|shuf\|socat\|sort\|sqlite3\|ssh$\|start-stop-daemon\|stdbuf\|strace\|systemctl\|tail\|tar\|taskset\|tclsh\|tee\|telnet\|tftp\|time\|timeout\|ul\|unexpand\|uniq\|unshare\|vi\|vim\|watch\|wget\|wish\|xargs\|xxd\|zip\|zsh'
 
@@ -10,33 +8,37 @@ def mk(msg):
   print('\033[33m### ' + msg + ' ' + '#'*(52 - len(msg)) + '\033[00m')
 
 
-def xx(c):
-  p = pexpect.spawn('bash', ['-c', c])
-  return p.read()
+def xx(cmd):
+  t = 30
+  for x in range(10):
+    try:
+      p = pexpect.spawn('bash', ['-c', cmd], timeout=t)
+      return p.read()
+    except pexpect.exceptions.TIMEOUT:
+      t += 1000
+
+  return None
 
 
-def go(m,c0,c1=None):
+def go(msg,c0,c1=None):
   r = xx(c0)
   if r is None:
     r = xx(c1)
 
   if r:
-    print(f'\033[31m[-] ' + m + f':\033[00m\n' + r.decode('utf-8'))
-
-  #p = subprocess.Popen(['bash', '-c', '"' + c + '"'], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
-  #print(f'\033[31m[-] ' + m + f':\033[00m\n' + p.stdout.read().decode('utf-8'))
+    print(f'\033[31m[-] ' + msg + f':\033[00m\n' + r.decode('utf-8'))
 
 
-def gx(m,c0,c1=None):
+def gx(msg,c0,c1=None):
   r = xx(c0)
   if r is None:
     r = xx(c1)
 
   if r:
-    print(f'\033[33m[-] ' + m + f':\033[00m\n' + r.decode('utf-8'))
+    print(f'\033[33m[-] ' + msg + f':\033[00m\n' + r.decode('utf-8'))
 
 
-def sys_info():
+def sys_info(args):
   mk('SYSTEM')
   go('Kernel information', 'uname -a 2>/dev/null')
   go('Kernel information (continued)', 'cat /proc/version 2>/dev/null')
@@ -44,7 +46,7 @@ def sys_info():
   go('Hostname', 'cat /etc/hostname 2>/dev/null')
 
 
-def usr_info():
+def usr_info(args):
   mk('USER/GROUP')
   go('Current user/group info', 'id 2>/dev/null')
   go('Users that have previously logged onto the system', 'lastlog 2>/dev/null | tail -n +2 | grep -v "Never" 2>/dev/null')
@@ -63,16 +65,21 @@ def usr_info():
   go('Accounts that have recently used sudo', 'find /home -name .sudo_as_admin_successful 2>/dev/null')
   go("We can read root's home directory!", 'ls -ahl /root/ 2>/dev/null')
   go('Are permissions on /home directories lax', 'ls -ahl /home/ 2>/dev/null')
-  #go('Files not owned by user but writable by group', 'find / -writable ! -user ' + USERNAME + ' -type f ! -path "/proc/*" ! -path "/sys/*" -exec ls -al {} \; 2>/dev/null')
-  #go('Files owned by our user', 'find / -user ' + USERNAME + ' -type f ! -path "/proc/*" ! -path "/sys/*" -exec ls -al {} \; 2>/dev/null')
-  #go('Hidden files', 'find / -name ".*" -type f ! -path "/proc/*" ! -path "/sys/*" -exec ls -al {} \; 2>/dev/null')
-  #go('World-readable files within /home', 'find /home/ -perm -4 -type f -exec ls -al {} \; 2>/dev/null')
-  #go('Home directory contents', 'ls -ahl ~')
-  #go('SSH keys/host information found in the following locations', 'find / \( -name "id_dsa*" -o -name "id_rsa*" -o -name "known_hosts" -o -name "authorized_hosts" -o -name "authorized_keys" \) -exec ls -al {}')
+
+  if args.username:
+    go('Files not owned by user but writable by group', 'find / -writable ! -user ' + args.username + ' -type f ! -path "/proc/*" ! -path "/sys/*" -exec ls -al {} \; 2>/dev/null')
+    go('Files owned by our user', 'find / -user ' + args.username + ' -type f ! -path "/proc/*" ! -path "/sys/*" -exec ls -al {} \; 2>/dev/null')
+
+  if args.more:
+    go('Hidden files', 'find / -name ".*" -type f ! -path "/proc/*" ! -path "/sys/*" -exec ls -al {} \; 2>/dev/null')
+    go('World-readable files within /home', 'find /home/ -perm -4 -type f -exec ls -al {} \; 2>/dev/null')
+    go('Home directory contents', 'ls -ahl ~')
+    go('SSH keys/host information found in the following locations', 'find / \( -name "id_dsa*" -o -name "id_rsa*" -o -name "known_hosts" -o -name "authorized_hosts" -o -name "authorized_keys" \) -exec ls -al {}')
+
   go('Root is allowed to login via SSH', 'grep "PermitRootLogin " /etc/ssh/sshd_config 2>/dev/null | grep -v "#"')
 
 
-def env_info():
+def env_info(args):
   mk('ENVIRONMENTAL')
   go('Environment information', 'env 2>/dev/null | grep -v "LS_COLORS" 2>/dev/null')
   go('SELinux seems to be present', 'sestatus 2>/dev/null')
@@ -84,7 +91,7 @@ def env_info():
   go('Password and storage information', 'grep "^PASS_MAX_DAYS\|^PASS_MIN_DAYS\|^PASS_WARN_AGE\|^ENCRYPT_METHOD" /etc/login.defs 2>/dev/null')
 
 
-def job_info():
+def job_info(args):
   mk('JOBS/TASKS')
   go('Cron jobs', 'ls -la /etc/cron* 2>/dev/null')
   go('World-writable cron jobs and file contents', 'find /etc/cron* -perm -0002 -type f -exec ls -la {} \; -exec cat {} 2>/dev/null \;')
@@ -96,7 +103,7 @@ def job_info():
   go('Systemd timers', 'systemctl list-timers --all 2>/dev/null')
 
 
-def net_info():
+def net_info(args):
   mk('NETWORKING')
   go('Network and IP info', '/sbin/ifconfig -a 2>/dev/null', '/sbin/ip a 2>/dev/null')
   go('ARP history', 'arp -a 2>/dev/null', 'ip n 2>/dev/null')
@@ -107,7 +114,7 @@ def net_info():
   go('Listening UDP', 'netstat -nupl 2>/dev/null', 'ss -u -l -n 2>/dev/null')
 
 
-def srv_info():
+def srv_info(args):
   mk('SERVICES')
   go('Running processes', 'ps aux 2>/dev/null')
   go('Process binaries and associated permissions (from above list)', "ps aux 2>/dev/null | awk '{print $11}' | xargs -r ls -la 2>/dev/null | awk '!x[$0]++' 2>/dev/null")
@@ -128,7 +135,7 @@ def srv_info():
   gx('/lib/systemd/* config files not belonging to root', 'find /lib/systemd/ \! -uid 0 -type f 2>/dev/null | xargs -r ls -la 2>/dev/null')
 
 
-def sft_conf():
+def sft_conf(args):
   mk('SOFTWARE')
   go('Sudo version', 'sudo -V 2>/dev/null | grep "Sudo version" 2>/dev/null')
   go('MYSQL version', 'mysql --version 2>/dev/null')
@@ -146,7 +153,7 @@ def sft_conf():
   go('www home dir contents', 'ls -alhR /var/www/ 2>/dev/null; ls -alhR /srv/www/htdocs/ 2>/dev/null; ls -alhR /usr/local/www/apache2/data/ 2>/dev/null; ls -alhR /opt/lampp/htdocs/ 2>/dev/null')
 
 
-def ask_info():
+def ask_info(args):
   mk('INTERESTING FILES')
   go('Useful file locations', 'which nc 2>/dev/null; which netcat 2>/dev/null; which wget 2>/dev/null; which nmap 2>/dev/null; which gcc 2>/dev/null; which curl 2>/dev/null')
   go('Installed compilers', "dpkg --list 2>/dev/null | grep compiler | grep -v decompiler 2>/dev/null && yum list installed 'gcc*' 2>/dev/null | grep gcc 2>/dev/null")
@@ -162,7 +169,7 @@ def ask_info():
   gx('Files with POSIX capabilities set', 'getcap -r / 2>/dev/null || /sbin/getcap -r / 2>/dev/null')
   gx('Users with specific POSIX capabilities', "grep -v '^#\|none\|^$' /etc/security/capability.conf 2>/dev/null")
   #
-  #gx('Private SSH keys found!', 'grep -rl "PRIVATE KEY-----" /home 2>/dev/null')
+  gx('Private SSH keys found!', 'grep -rl "PRIVATE KEY-----" /home 2>/dev/null')
   #gx('AWS secret keys found!', 'grep -rli "aws_secret_access_key" /home 2>/dev/null')
   gx('Git credentials saved on the machine!', 'find / -name ".git-credentials" 2>/dev/null')
   #go('World-writable files (excluding /proc and /sys)', 'find / ! -path "*/proc/*" ! -path "/sys/*" -perm -2 -type f -exec ls -la {} 2>/dev/null \;')
@@ -186,12 +193,17 @@ def ask_info():
 
 
 if __name__ == '__main__':
-  sys_info()
-  usr_info()
-  env_info()
-  job_info()
-  net_info()
-  srv_info()
-  sft_conf()
-  ask_info()
+  p = argparse.ArgumentParser(prog='enumerate-ng', description='this is a description')
+  p.add_argument('-u', '--username', help='user password for sudo checks (insecure).')
+  p.add_argument('-m', '--more', action='store_true', help='more thorough tests.')
+  g = p.parse_args()
+
+  sys_info(g)
+  usr_info(g)
+  env_info(g)
+  job_info(g)
+  net_info(g)
+  srv_info(g)
+  sft_conf(g)
+  ask_info(g)
 
