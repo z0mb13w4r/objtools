@@ -10,12 +10,15 @@ def mk(msg):
   print('\033[33m### ' + msg + ' ' + '#'*(52 - len(msg)) + '\033[00m')
 
 
+def xx(c):
+  p = pexpect.spawn('bash', ['-c', c])
+  return p.read()
+
+
 def go(m,c0,c1=None):
-  p = pexpect.spawn('bash', ['-c', c0])
-  r = p.read()
+  r = xx(c0)
   if r is None:
-    p = pexpect.spawn('bash', ['-c', c1])
-    r = p.read()
+    r = xx(c1)
 
   if r:
     print(f'\033[31m[-] ' + m + f':\033[00m\n' + r.decode('utf-8'))
@@ -25,11 +28,9 @@ def go(m,c0,c1=None):
 
 
 def gx(m,c0,c1=None):
-  p = pexpect.spawn('bash', ['-c', c0])
-  r = p.read()
+  r = xx(c0)
   if r is None:
-    p = pexpect.spawn('bash', ['-c', c1])
-    r = p.read()
+    r = xx(c1)
 
   if r:
     print(f'\033[33m[-] ' + m + f':\033[00m\n' + r.decode('utf-8'))
