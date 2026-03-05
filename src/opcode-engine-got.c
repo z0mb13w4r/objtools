@@ -217,7 +217,8 @@ static char zSTP[]  = "x010100110iiiiiiiTTTTTnnnnnttttt"; // C6.2.413 STP pre-in
 static void execute_section64riscv(handle_t p, handle_t s, handle_t q) {
 // unpriv-isa-asciidoc.pdf
 //                     10987654321098765432109876543210
-static char zADD0[] = "iiiiiiiiiiiisssssfffdddddooooooo"; // 2.4.1. Integer Register-Immediate Instructions
+static char zDEF0[] = "iiiiiiiiiiiisssssfffdddddooooooo"; // 2.4.1. Integer Register-Immediate Instructions
+static char zADD0[] = "iiiiiiiiiiiisssss000ddddd0010011"; // 2.4.1. Integer Register-Immediate Instructions
 static char zJMP0[] = "iiiiiiiiiiiisssssfffddddd1100111"; // 2.5.1. Unconditional Jumps
 
   puchar_t pp = ocget_rawdata(s);
@@ -241,13 +242,15 @@ static char zJMP0[] = "iiiiiiiiiiiisssssfffddddd1100111"; // 2.5.1. Unconditiona
     for (uint64_t i = 0; i < ocget_size(s); i += 4, curr_vaddr += 4) {
       const uint32_t xx = ocmake_u32(p, pp[i + 0], pp[i + 1], pp[i + 2], pp[i + 3]);
 //printf("%03lx:%08x ", curr_vaddr, xx);
-        const uint32_t o = is00(s, zADD0, sizeof(zADD0) - 1, 'o', xx);
-        const uint32_t d = is00(s, zADD0, sizeof(zADD0) - 1, 'd', xx) >> 7;
-        const uint32_t f = is00(s, zADD0, sizeof(zADD0) - 1, 'f', xx) >> 12;
-        const uint32_t t = is00(s, zADD0, sizeof(zADD0) - 1, 's', xx) >> 15;
-        const uint32_t i = is00(s, zADD0, sizeof(zADD0) - 1, 'i', xx) >> 20;
+        const uint32_t o = is00(s, zDEF0, sizeof(zDEF0) - 1, 'o', xx);
+        const uint32_t d = is00(s, zDEF0, sizeof(zDEF0) - 1, 'd', xx) >> 7;
+        const uint32_t f = is00(s, zDEF0, sizeof(zDEF0) - 1, 'f', xx) >> 12;
+        const uint32_t t = is00(s, zDEF0, sizeof(zDEF0) - 1, 's', xx) >> 15;
+        const uint32_t i = is00(s, zDEF0, sizeof(zDEF0) - 1, 'i', xx) >> 20;
         if (is01(s, zJMP0, sizeof(zJMP0) - 1, xx)) {
 //printf("|JMP=%x:%d", o, o);
+        } else if (is01(s, zADD0, sizeof(zADD0) - 1, xx)) {
+//printf("|ADD=%x:%d", o, o);
         } else {
 //printf("|o=%x:%d", o, o);
         }
