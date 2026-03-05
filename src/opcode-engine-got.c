@@ -218,6 +218,7 @@ static void execute_section64riscv(handle_t p, handle_t s, handle_t q) {
 // unpriv-isa-asciidoc.pdf
 //                     10987654321098765432109876543210
 static char zADD0[] = "iiiiiiiiiiiisssssfffdddddooooooo"; // 2.4.1. Integer Register-Immediate Instructions
+static char zJMP0[] = "iiiiiiiiiiiisssssfffddddd1100111"; // 2.5.1. Unconditional Jumps
 
   puchar_t pp = ocget_rawdata(s);
   if (pp) {
@@ -245,7 +246,11 @@ static char zADD0[] = "iiiiiiiiiiiisssssfffdddddooooooo"; // 2.4.1. Integer Regi
         const uint32_t f = is00(s, zADD0, sizeof(zADD0) - 1, 'f', xx) >> 12;
         const uint32_t t = is00(s, zADD0, sizeof(zADD0) - 1, 's', xx) >> 15;
         const uint32_t i = is00(s, zADD0, sizeof(zADD0) - 1, 'i', xx) >> 20;
+        if (is01(s, zJMP0, sizeof(zJMP0) - 1, xx)) {
+//printf("|JMP=%x:%d", o, o);
+        } else {
 //printf("|o=%x:%d", o, o);
+        }
 //printf("|d=%x:%d", d, d);
 //printf("|f=%x:%d", f, f);
 //printf("|s=%x:%d", t, t);
