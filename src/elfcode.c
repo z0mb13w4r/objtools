@@ -974,8 +974,9 @@ static const char* _ecget_name32byaddr0(const pbuffer_t p, const int vaddr, uint
       for (size_t j = 0; j < cnt; ++j) {
         Elf32_Sym *st = fget(f);
         if (st) {
-          uint32_t st_info = ELF_ST_TYPE(st->st_info);
-          if (STT_SECTION != st_info && STT_NOTYPE != st_info && STT_FILE != st_info) {
+          uint32_t st_bind = ELF_ST_BIND(st->st_info);
+          uint32_t st_type = ELF_ST_TYPE(st->st_info);
+          if (STT_SECTION != st_type && STT_NOTYPE != st_type && STT_FILE != st_type) {
 //printf("[%x:%s]\n", st->st_value, ecget_namebyoffset(p, sh->sh_link, st->st_name));
             if (offset) {
               if (st->st_value <= vaddr) {
@@ -990,7 +991,7 @@ static const char* _ecget_name32byaddr0(const pbuffer_t p, const int vaddr, uint
               name = ecget_namebyoffset(p, sh->sh_link, st->st_name);
               break;
             }
-          } else if (STT_NOTYPE == st_info && STB_GLOBAL == ELF_ST_BIND(st->st_info)) {
+          } else if (STT_NOTYPE == st_type && (STB_GLOBAL == st_bind || STB_LOCAL == st_bind)) {
             if (st->st_value == vaddr) {
 //printf("+++%x+++", vaddr);
               name = ecget_namebyoffset(p, sh->sh_link, st->st_name);
@@ -1181,7 +1182,9 @@ static const char* _ecget_name64byaddr0(const pbuffer_t p, const int vaddr, uint
       for (size_t j = 0; j < cnt; ++j) {
         Elf64_Sym *st = fget(f);
         if (st) {
-          if (STT_SECTION != ELF_ST_TYPE(st->st_info) && STT_NOTYPE != ELF_ST_TYPE(st->st_info)) {
+          uint32_t st_bind = ELF_ST_BIND(st->st_info);
+          uint32_t st_type = ELF_ST_TYPE(st->st_info);
+          if (STT_SECTION != st_type && STT_NOTYPE != st_type && STT_FILE != st_type) {
             if (offset) {
               if (st->st_value <= vaddr) {
                 uint64_t offset0 = vaddr - st->st_value;
@@ -1195,7 +1198,7 @@ static const char* _ecget_name64byaddr0(const pbuffer_t p, const int vaddr, uint
               name = ecget_namebyoffset(p, sh->sh_link, st->st_name);
               break;
             }
-          } else if (STT_NOTYPE == ELF_ST_TYPE(st->st_info) && STB_GLOBAL == ELF_ST_BIND(st->st_info)) {
+          } else if (STT_NOTYPE == st_type && (STB_GLOBAL == st_bind || STB_LOCAL == st_bind)) {
             if (st->st_value == vaddr) {
 //printf("+++%x+++", vaddr);
               name = ecget_namebyoffset(p, sh->sh_link, st->st_name);
