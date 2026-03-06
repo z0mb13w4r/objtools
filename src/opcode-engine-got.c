@@ -214,6 +214,18 @@ static char zSTP[]  = "x010100110iiiiiiiTTTTTnnnnnttttt"; // C6.2.413 STP pre-in
   }
 }
 
+static bool_t s12signed(const uint32_t x) {
+  return x & 0x800 ? TRUE : FALSE;
+}
+
+static uint32_t s12(const uint32_t x) {
+  if (s12signed(x)) {
+    return ((~x) & 0x7ff) + 1;
+  }
+
+  return x & 0xfff;
+}
+
 static void execute_section64riscv(handle_t p, handle_t s, handle_t q) {
 // unpriv-isa-asciidoc.pdf
 //                      10987654321098765432109876543210
@@ -268,13 +280,11 @@ static char zLD0[]   = "iiiiiiiiiiiisssssfffddddd0000011"; // 7.3. Load and Stor
 //printf("|d=0x%x:%d", d, d);
 //printf("|i=0x%x:%d", i, i);
       } else if (is01(s, zLD0, sizeof(zLD0) - 1, xx)) {
-        uint32_t vi = i & 0x800 ? ((~i) & 0x7ff) + 1 : i;
-        char si = i & 0x800 ? '-' : '+';
 //printf("|LD=0x%x:%d", o, o);
 //printf("|d=0x%x:%d", d, d);
 //printf("|f=0x%x:%d", f, f);
 //printf("|s=0x%x:%d", t, t);
-//printf("|i=%c0x%x:%c%d", si, vi, si, vi);
+//printf("|i=%c0x%x:%c%d", s12signed(i) ? '-' : '+', s12(i), s12signed(i) ? '-' : '+', s12(i));
       } else {
 //printf("|o=0x%x:%d", o, o);
 //printf("|d=0x%x:%d", d, d);
