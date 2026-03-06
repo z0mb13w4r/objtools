@@ -250,35 +250,37 @@ static char zLD0[]   = "iiiiiiiiiiiisssssfffddddd0000011"; // 7.3. Load and Stor
       const uint32_t t = is00(s, zDEF0, sizeof(zDEF0) - 1, 's', xx) >> 15;
       const uint32_t i = is00(s, zDEF0, sizeof(zDEF0) - 1, 'i', xx) >> 20;
       if (is01(s, zJMP0, sizeof(zJMP0) - 1, xx)) {
-//printf("|JMP=%x:%d", o, o);
-//printf("|d=%x:%d", d, d);
-//printf("|f=%x:%d", f, f);
-//printf("|s=%x:%d", t, t);
-//printf("|i=%x:%d", i, i);
+//printf("|JMP=0x%x:%d", o, o);
+//printf("|d=0x%x:%d", d, d);
+//printf("|f=0x%x:%d", f, f);
+//printf("|s=0x%x:%d", t, t);
+//printf("|i=0x%x:%d", i, i);
       } else if (is01(s, zADD0, sizeof(zADD0) - 1, xx)) {
-//printf("|ADD=%x:%d", o, o);
-//printf("|d=%x:%d", d, d);
-//printf("|f=%x:%d", f, f);
-//printf("|s=%x:%d", t, t);
-//printf("|i=%x:%d", i, i);
+//printf("|ADD=0x%x:%d", o, o);
+//printf("|d=0x%x:%d", d, d);
+//printf("|f=0x%x:%d", f, f);
+//printf("|s=0x%x:%d", t, t);
+//printf("|i=0x%x:%d", i, i);
       } else if (is01(s, zAUIPC, sizeof(zAUIPC) - 1, xx)) {
         const uint32_t i = is00(s, zAUIPC, sizeof(zAUIPC) - 1, 'i', xx) >> 12;
         const uint32_t d = is00(s, zAUIPC, sizeof(zAUIPC) - 1, 'd', xx) >> 7;
-//printf("|AUIPC=%x:%d", o, o);
-//printf("|d=%x:%d", d, d);
-//printf("|i=%x:%d", i, i);
+//printf("|AUIPC=0x%x:%d", o, o);
+//printf("|d=0x%x:%d", d, d);
+//printf("|i=0x%x:%d", i, i);
       } else if (is01(s, zLD0, sizeof(zLD0) - 1, xx)) {
-//printf("|LD=%x:%d", o, o);
-//printf("|d=%x:%d", d, d);
-//printf("|f=%x:%d", f, f);
-//printf("|s=%x:%d", t, t);
-//printf("|i=%x:%d", i, i);
+        uint32_t vi = i & 0x800 ? ((~i) & 0x7ff) + 1 : i;
+        char si = i & 0x800 ? '-' : '+';
+//printf("|LD=0x%x:%d", o, o);
+//printf("|d=0x%x:%d", d, d);
+//printf("|f=0x%x:%d", f, f);
+//printf("|s=0x%x:%d", t, t);
+//printf("|i=%c0x%x:%c%d", si, vi, si, vi);
       } else {
-//printf("|o=%x:%d", o, o);
-//printf("|d=%x:%d", d, d);
-//printf("|f=%x:%d", f, f);
-//printf("|s=%x:%d", t, t);
-//printf("|i=%x:%d", i, i);
+//printf("|o=0x%x:%d", o, o);
+//printf("|d=0x%x:%d", d, d);
+//printf("|f=0x%x:%d", f, f);
+//printf("|s=0x%x:%d", t, t);
+//printf("|i=0x%x:%d", i, i);
       }
 //printf("\n");
     }
