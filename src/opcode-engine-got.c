@@ -221,6 +221,7 @@ static char zDEF0[]  = "iiiiiiiiiiiisssssfffdddddooooooo"; // 2.4.1. Integer Reg
 static char zADD0[]  = "iiiiiiiiiiiisssss000ddddd0010011"; // 2.4.1. Integer Register-Immediate Instructions
 static char zJMP0[]  = "iiiiiiiiiiiisssssfffddddd1100111"; // 2.5.1. Unconditional Jumps
 static char zAUIPC[] = "iiiiiiiiiiiiiiiiiiiiddddd0010111"; // 2.4.1. Integer Register-Immediate Instructions
+static char zLD0[]   = "iiiiiiiiiiiisssssfffddddd0000011"; // 7.3. Load and Store Instructions
 
   puchar_t pp = ocget_rawdata(s);
   if (pp) {
@@ -262,8 +263,15 @@ static char zAUIPC[] = "iiiiiiiiiiiiiiiiiiiiddddd0010111"; // 2.4.1. Integer Reg
 //printf("|i=%x:%d", i, i);
       } else if (is01(s, zAUIPC, sizeof(zAUIPC) - 1, xx)) {
         const uint32_t i = is00(s, zAUIPC, sizeof(zAUIPC) - 1, 'i', xx) >> 12;
+        const uint32_t d = is00(s, zAUIPC, sizeof(zAUIPC) - 1, 'd', xx) >> 7;
 //printf("|AUIPC=%x:%d", o, o);
 //printf("|d=%x:%d", d, d);
+//printf("|i=%x:%d", i, i);
+      } else if (is01(s, zLD0, sizeof(zLD0) - 1, xx)) {
+//printf("|LD=%x:%d", o, o);
+//printf("|d=%x:%d", d, d);
+//printf("|f=%x:%d", f, f);
+//printf("|s=%x:%d", t, t);
 //printf("|i=%x:%d", i, i);
       } else {
 //printf("|o=%x:%d", o, o);
