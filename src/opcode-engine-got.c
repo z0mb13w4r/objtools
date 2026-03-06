@@ -272,7 +272,7 @@ static char zLD0[]   = "iiiiiiiiiiiisssssfffddddd0000011"; // 7.3. Load and Stor
 //printf("|d=0x%x:%d", d, d);
 //printf("|f=0x%x:%d", f, f);
 //printf("|s=0x%x:%d", t, t);
-//printf("|i=0x%x:%d", i, i);
+//printf("|i=%c0x%x:%c%d", s12signed(i) ? '-' : '+', s12(i), s12signed(i) ? '-' : '+', s12(i));
       } else if (is01(s, zAUIPC, sizeof(zAUIPC) - 1, xx)) {
         const uint32_t i = is00(s, zAUIPC, sizeof(zAUIPC) - 1, 'i', xx) >> 12;
         const uint32_t d = is00(s, zAUIPC, sizeof(zAUIPC) - 1, 'd', xx) >> 7;
