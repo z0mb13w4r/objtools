@@ -19,6 +19,7 @@ static handle_t execute_new(handle_t p, const uint64_t vaddr, const char* name) 
 
       g0->symbol->name = xstrdup(oname);
       g0->symbol->role |= OPSYMBOL_NAME;
+//printf("%03lx:%s\n", vaddr, g0->symbol->name);
     }
   }
 
@@ -280,7 +281,11 @@ static char zLD0[]   = "iiiiiiiiiiiisssssfffddddd0000011"; // 7.3. Load and Stor
 //printf("|s=0x%x:%d", t, t);
 //printf("|i=%c0x%x:%c%d", s12signed(i) ? '-' : '+', s12(i), s12signed(i) ? '-' : '+', s12(i));
         if (prev_vaddr0 != ocget_vmaddress(s)) {
-          execute_new(q, prev_vaddr0, ocget_namebyvaddr(p, prev_vaddr1 - prev_vaddr2, NULL));
+          if (s12signed(i)) {
+            execute_new(q, prev_vaddr0, ocget_namebyvaddr(p, prev_vaddr1 - prev_vaddr2, NULL));
+          } else {
+            execute_new(q, prev_vaddr0, ocget_namebyvaddr(p, prev_vaddr1 + prev_vaddr2, NULL));
+          }
         }
       } else {
 //printf("|o=0x%x:%d", o, o);
