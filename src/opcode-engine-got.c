@@ -242,17 +242,6 @@ static char zLD0[]   = "iiiiiiiiiiiisssssfffddddd0000011"; // 7.3. Load and Stor
     uint32_t prev_vaddr1 = 0;
     uint32_t prev_vaddr2 = 0;
 
-//    execute_new(q, 0x7f0 /*prev_vaddr0*/, ocget_namebyvaddr(p, 0x2020 /*prev_vaddr1 + prev_vaddr2*/, NULL));
-//    execute_new(q, 0x800 /*prev_vaddr0*/, ocget_namebyvaddr(p, 0x2028 /*prev_vaddr1 + prev_vaddr2*/, NULL));
-//    execute_new(q, 0x810 /*prev_vaddr0*/, ocget_namebyvaddr(p, 0x2030 /*prev_vaddr1 + prev_vaddr2*/, NULL));
-//    execute_new(q, 0x820 /*prev_vaddr0*/, ocget_namebyvaddr(p, 0x2038 /*prev_vaddr1 + prev_vaddr2*/, NULL));
-//    execute_new(q, 0x830 /*prev_vaddr0*/, ocget_namebyvaddr(p, 0x2040 /*prev_vaddr1 + prev_vaddr2*/, NULL));
-//    execute_new(q, 0x840 /*prev_vaddr0*/, ocget_namebyvaddr(p, 0x2048 /*prev_vaddr1 + prev_vaddr2*/, NULL));
-//    execute_new(q, 0x850 /*prev_vaddr0*/, ocget_namebyvaddr(p, 0x2050 /*prev_vaddr1 + prev_vaddr2*/, NULL));
-//    execute_new(q, 0x860 /*prev_vaddr0*/, ocget_namebyvaddr(p, 0x2058 /*prev_vaddr1 + prev_vaddr2*/, NULL));
-//    execute_new(q, 0x870 /*prev_vaddr0*/, ocget_namebyvaddr(p, 0x2060 /*prev_vaddr1 + prev_vaddr2*/, NULL));
-//    execute_new(q, 0x880 /*prev_vaddr0*/, ocget_namebyvaddr(p, 0x2068 /*prev_vaddr1 + prev_vaddr2*/, NULL));
-
     for (uint64_t i = 0; i < ocget_size(s); i += 4, curr_vaddr += 4) {
       const uint32_t xx = ocmake_u32(p, pp[i + 0], pp[i + 1], pp[i + 2], pp[i + 3]);
 //printf("%03lx:%08x ", curr_vaddr, xx);
