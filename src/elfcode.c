@@ -884,7 +884,7 @@ const char* _ecget_secname64byoffset(const pbuffer_t p, const int offset) {
   return NULL;
 }
 
-const char* ecget_secnamebyaddr(const pbuffer_t p, const int addr) {
+const char* ecget_secnamebyaddr(const pbuffer_t p, const uint64_t addr) {
   if (isELF(p)) {
     if (isELF32(p))        return _ecget_secname32byaddr(p, addr);
     else if (isELF64(p))   return _ecget_secname64byaddr(p, addr);
@@ -893,7 +893,7 @@ const char* ecget_secnamebyaddr(const pbuffer_t p, const int addr) {
   return NULL;
 }
 
-const char* _ecget_secname32byaddr(const pbuffer_t p, const int vaddr) {
+const char* _ecget_secname32byaddr(const pbuffer_t p, const uint64_t vaddr) {
   MEMSTACK(Elf32_Ehdr, ex);
   Elf32_Ehdr *e = ecget_ehdr32(p, ex);
   if (e) {
@@ -909,7 +909,7 @@ const char* _ecget_secname32byaddr(const pbuffer_t p, const int vaddr) {
   return NULL;
 }
 
-const char* _ecget_secname64byaddr(const pbuffer_t p, const int vaddr) {
+const char* _ecget_secname64byaddr(const pbuffer_t p, const uint64_t vaddr) {
   MEMSTACK(Elf64_Ehdr, ex);
   Elf64_Ehdr *e = ecget_ehdr64(p, ex);
   if (e) {
@@ -954,7 +954,7 @@ const char* _ecget_name64byoffset(const pbuffer_t p, const int index, const int 
   return NULL;
 }
 
-const char* ecget_namebyaddr(const pbuffer_t p, const int vaddr, uint64_t *offset) {
+const char* ecget_namebyaddr(const pbuffer_t p, const uint64_t vaddr, uint64_t *offset) {
   if (isELF(p)) {
     if (isELF32(p))        return _ecget_name32byaddr(p, vaddr, offset);
     else if (isELF64(p))   return _ecget_name64byaddr(p, vaddr, offset);
@@ -963,7 +963,7 @@ const char* ecget_namebyaddr(const pbuffer_t p, const int vaddr, uint64_t *offse
   return NULL;
 }
 
-static const char* _ecget_name32byaddr0(const pbuffer_t p, const int vaddr, uint64_t *offset) {
+static const char* _ecget_name32byaddr0(const pbuffer_t p, const uint64_t vaddr, uint64_t *offset) {
   MEMSTACK(Elf32_Shdr, sx);
   Elf32_Shdr *s0 = ecget_shdr32bytype(p, sx, SHT_SYMTAB);
   if (s0) {
@@ -1011,7 +1011,7 @@ static const char* _ecget_name32byaddr0(const pbuffer_t p, const int vaddr, uint
   return NULL;
 }
 
-static const char* _ecget_name32byaddr1(const pbuffer_t p, const int vaddr, uint64_t *offset) {
+static const char* _ecget_name32byaddr1(const pbuffer_t p, const uint64_t vaddr, uint64_t *offset) {
   STATICA(char, name, 1024);
   MALLOCA(version_t, vnames, 1024);
   ecmake_versionnames32(p, vnames, NELEMENTS(vnames));
@@ -1147,11 +1147,11 @@ static const char* _ecget_name32byaddr1(const pbuffer_t p, const int vaddr, uint
   return NULL;
 }
 
-static const char* _ecget_name32byaddr2(const pbuffer_t p, const int vaddr, uint64_t *offset) {
+static const char* _ecget_name32byaddr2(const pbuffer_t p, const uint64_t vaddr, uint64_t *offset) {
   return _ecget_secname32byaddr(p, vaddr);
 }
 
-const char* _ecget_name32byaddr(const pbuffer_t p, const int vaddr, uint64_t *offset) {
+const char* _ecget_name32byaddr(const pbuffer_t p, const uint64_t vaddr, uint64_t *offset) {
   const char* name = _ecget_name32byaddr0(p, vaddr, NULL);
   if (NULL == name) {
     name = _ecget_name32byaddr0(p, vaddr + 1, NULL);
@@ -1172,7 +1172,7 @@ const char* _ecget_name32byaddr(const pbuffer_t p, const int vaddr, uint64_t *of
   return name;
 }
 
-static const char* _ecget_name64byaddr0(const pbuffer_t p, const int vaddr, uint64_t *offset) {
+static const char* _ecget_name64byaddr0(const pbuffer_t p, const uint64_t vaddr, uint64_t *offset) {
   MEMSTACK(Elf64_Shdr, sx);
   Elf64_Shdr *s0 = ecget_shdr64bytype(p, sx, SHT_SYMTAB);
   if (s0) {
@@ -1184,6 +1184,7 @@ static const char* _ecget_name64byaddr0(const pbuffer_t p, const int vaddr, uint
         MEMSTACK(Elf64_Sym, sy);
         Elf64_Sym *s1 = ecconvert_sym64(p, sy, fget(f));
         if (s1) {
+//printf("+++%lx:%ld:%lx+++\n", vaddr, j, s1->st_value);
           uint32_t st_bind = ELF_ST_BIND(s1->st_info);
           uint32_t st_type = ELF_ST_TYPE(s1->st_info);
           if (STT_SECTION != st_type && STT_NOTYPE != st_type && STT_FILE != st_type) {
@@ -1219,7 +1220,7 @@ static const char* _ecget_name64byaddr0(const pbuffer_t p, const int vaddr, uint
   return NULL;
 }
 
-static const char* _ecget_name64byaddr1(const pbuffer_t p, const int vaddr, uint64_t *offset) {
+static const char* _ecget_name64byaddr1(const pbuffer_t p, const uint64_t vaddr, uint64_t *offset) {
   STATICA(char, name, 1024);
   MALLOCA(version_t, vnames, 1024);
   ecmake_versionnames64(p, vnames, NELEMENTS(vnames));
@@ -1355,11 +1356,11 @@ static const char* _ecget_name64byaddr1(const pbuffer_t p, const int vaddr, uint
   return NULL;
 }
 
-static const char* _ecget_name64byaddr2(const pbuffer_t p, const int vaddr, uint64_t *offset) {
+static const char* _ecget_name64byaddr2(const pbuffer_t p, const uint64_t vaddr, uint64_t *offset) {
   return _ecget_secname64byaddr(p, vaddr);
 }
 
-const char* _ecget_name64byaddr(const pbuffer_t p, const int vaddr, uint64_t *offset) {
+const char* _ecget_name64byaddr(const pbuffer_t p, const uint64_t vaddr, uint64_t *offset) {
   const char* name = _ecget_name64byaddr0(p, vaddr, NULL);
   if (NULL == name) {
     name = _ecget_name64byaddr0(p, vaddr + 1, NULL);
