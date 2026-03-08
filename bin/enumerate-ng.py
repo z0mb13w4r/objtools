@@ -66,6 +66,26 @@ def gx(args,msg,c0,c1=None):
       print(f'\033[33m[-] ' + msg + f':\033[00m\n' + r.decode('utf-8'))
 
 
+def po(args,msg,c0,c1=None):
+  if args.norun:
+    r = xx(c0)
+    if r is None:
+      r = xx(c1)
+
+    if r:
+      print(f'\033[31m[-] ' + msg + f':\033[00m\n' + r.decode('utf-8'))
+
+
+def px(args,msg,c0,c1=None):
+  if args.norun:
+    r = xx(c0)
+    if r is None:
+      r = xx(c1)
+
+    if r:
+      print(f'\033[33m[-] ' + msg + f':\033[00m\n' + r.decode('utf-8'))
+
+
 def sys_info(args):
   if args.system:
     mk('SYSTEM')
@@ -89,8 +109,11 @@ def usr_info(args):
     gx(args, 'We can read the master.passwd file!', 'cat /etc/master.passwd 2>/dev/null')
     go(args, 'Super user account(s)', "grep -v -E '^#' /etc/passwd | awk -F: '$3 == 0 {print $1}' 2>/dev/null")
     go(args, 'Sudoers configuration (condensed)', 'grep -v -e "^$" /etc/sudoers 2>/dev/null | grep -v "#" 2>/dev/null')
-    #gx('We can sudo without supplying a password!', "echo '' | sudo -S -l -k 2>/dev/null")
-    #
+
+    gx(args, 'We can sudo without supplying a password!', "echo '' | sudo -S -l -k 2>/dev/null")
+    if args.password:
+      gx(args, 'We can sudo with supplying a password!', "echo '" + args.password + "' | sudo -S -l -k 2>/dev/null")
+
     #gx('Possible sudo pwnage!', "echo '' | sudo -S -l -k 2>/dev/null | xargs -n 1 2>/dev/null | sed 's/,*$//g' 2>/dev/null | grep -w '" + BINBIGLIST + "' 2>/dev/null")
     go(args, 'Accounts that have recently used sudo', 'find /home -name .sudo_as_admin_successful 2>/dev/null')
     go(args, "We can read root's home directory!", 'ls -ahl /root/ 2>/dev/null')
