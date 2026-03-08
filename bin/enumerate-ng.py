@@ -40,6 +40,7 @@ def xx(cmd):
     try:
       p = pexpect.spawn('bash', ['-c', cmd], timeout=t)
       return p.read()
+
     except pexpect.exceptions.TIMEOUT:
       t += 1000
 
@@ -114,7 +115,7 @@ def usr_info(args):
     if args.password:
       gx(args, 'We can sudo with supplying a password!', "echo '" + args.password + "' | sudo -S -l -k 2>/dev/null")
 
-    #gx('Possible sudo pwnage!', "echo '' | sudo -S -l -k 2>/dev/null | xargs -n 1 2>/dev/null | sed 's/,*$//g' 2>/dev/null | grep -w '" + BINBIGLIST + "' 2>/dev/null")
+    gx(args, 'Possible sudo pwnage!', "echo '' | sudo -S -l -k 2>/dev/null | xargs -n 1 2>/dev/null | sed 's/,*$//g' 2>/dev/null | grep -w '" + BINBIGLIST + "' 2>/dev/null")
     go(args, 'Accounts that have recently used sudo', 'find /home -name .sudo_as_admin_successful 2>/dev/null')
     go(args, "We can read root's home directory!", 'ls -ahl /root/ 2>/dev/null')
     go(args, 'Are permissions on /home directories lax', 'ls -ahl /home/ 2>/dev/null')
