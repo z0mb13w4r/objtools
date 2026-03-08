@@ -2,6 +2,32 @@
 import pexpect
 import argparse
 
+PROGRAM_NAME = 'enumerate-ng.py'
+VERSION_VALUE = '0.0'
+
+LICENSE_TEXT = '''COPYRIGHT
+  MIT License
+
+  Copyright (c) 2025 Kyle Wickens
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.'''
+
 BINBIGLIST='aria2c\|arp\|ash\|awk\|base64\|bash\|busybox\|cat\|chmod\|chown\|cp\|csh\|curl\|cut\|dash\|date\|dd\|diff\|dmsetup\|docker\|ed\|emacs\|env\|expand\|expect\|file\|find\|flock\|fmt\|fold\|ftp\|gawk\|gdb\|gimp\|git\|grep\|head\|ht\|iftop\|ionice\|ip$\|irb\|jjs\|jq\|jrunscript\|ksh\|ld.so\|ldconfig\|less\|logsave\|lua\|make\|man\|mawk\|more\|mv\|mysql\|nano\|nawk\|nc\|netcat\|nice\|nl\|nmap\|node\|od\|openssl\|perl\|pg\|php\|pic\|pico\|python\|readelf\|rlwrap\|rpm\|rpmquery\|rsync\|ruby\|run-parts\|rvim\|scp\|script\|sed\|setarch\|sftp\|sh\|shuf\|socat\|sort\|sqlite3\|ssh$\|start-stop-daemon\|stdbuf\|strace\|systemctl\|tail\|tar\|taskset\|tclsh\|tee\|telnet\|tftp\|time\|timeout\|ul\|unexpand\|uniq\|unshare\|vi\|vim\|watch\|wget\|wish\|xargs\|xxd\|zip\|zsh'
 
 def mk(msg):
@@ -209,6 +235,7 @@ if __name__ == '__main__':
   p.add_argument('-p', '--password', help='user password for sudo checks (insecure).')
   p.add_argument('-d', '--path', default='', help='path to the firmware image.')
   p.add_argument('-m', '--more', action='store_true', help='more thorough tests.')
+  p.add_argument('-v', '--version', action='store_true', help='verion number of ' + PROGRAM_NAME)
   p.add_argument('--system', action='store_true', help='system information.')
   p.add_argument('--user', action='store_true', help='user & group information.')
   p.add_argument('--env', action='store_true', help='environmental information.')
@@ -222,12 +249,17 @@ if __name__ == '__main__':
   if not(g.system or g.user or g.env or g.tasks or g.network or g.services or g.software or g.cool):
     g.system = g.user = g.env = g.tasks = g.network = g.services = g.software = g.cool = True
 
-  sys_info(g)
-  usr_info(g)
-  env_info(g)
-  job_info(g)
-  net_info(g)
-  srv_info(g)
-  sft_conf(g)
-  ask_info(g)
+  if g.version:
+    print(PROGRAM_NAME + ' v' + VERSION_VALUE + '\n')
+    print(LICENSE_TEXT)
+
+  else:
+    sys_info(g)
+    usr_info(g)
+    env_info(g)
+    job_info(g)
+    net_info(g)
+    srv_info(g)
+    sft_conf(g)
+    ask_info(g)
 
