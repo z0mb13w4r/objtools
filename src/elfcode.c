@@ -965,36 +965,37 @@ const char* ecget_namebyaddr(const pbuffer_t p, const int vaddr, uint64_t *offse
 
 static const char* _ecget_name32byaddr0(const pbuffer_t p, const int vaddr, uint64_t *offset) {
   MEMSTACK(Elf32_Shdr, sx);
-  Elf32_Shdr *sh = ecget_shdr32bytype(p, sx, SHT_SYMTAB);
-  if (sh) {
-    size_t cnt = sh->sh_size / sh->sh_entsize;
-    handle_t f = fgetbyshdr(p, sh);
+  Elf32_Shdr *s0 = ecget_shdr32bytype(p, sx, SHT_SYMTAB);
+  if (s0) {
+    size_t cnt = s0->sh_size / s0->sh_entsize;
+    handle_t f = fgetbyshdr(p, s0);
     if (f) {
       const char *name = NULL;
       for (size_t j = 0; j < cnt; ++j) {
-        Elf32_Sym *st = fget(f);
-        if (st) {
-          uint32_t st_bind = ELF_ST_BIND(st->st_info);
-          uint32_t st_type = ELF_ST_TYPE(st->st_info);
+        MEMSTACK(Elf32_Sym, sy);
+        Elf32_Sym *s1 = ecconvert_sym32(p, sy, fget(f));
+        if (s1) {
+          uint32_t st_bind = ELF_ST_BIND(s1->st_info);
+          uint32_t st_type = ELF_ST_TYPE(s1->st_info);
           if (STT_SECTION != st_type && STT_NOTYPE != st_type && STT_FILE != st_type) {
 //printf("[%x:%s]\n", st->st_value, ecget_namebyoffset(p, sh->sh_link, st->st_name));
             if (offset) {
-              if (st->st_value <= vaddr) {
-                uint64_t offset0 = vaddr - st->st_value;
+              if (s1->st_value <= vaddr) {
+                uint64_t offset0 = vaddr - s1->st_value;
                 if (offset0 < *offset) {
-                  name = ecget_namebyoffset(p, sh->sh_link, st->st_name);
+                  name = ecget_namebyoffset(p, s0->sh_link, s1->st_name);
                   *offset = offset0;
                 }
               }
-            } else if (st->st_value == vaddr) {
+            } else if (s1->st_value == vaddr) {
 //printf("+++%x+++", vaddr);
-              name = ecget_namebyoffset(p, sh->sh_link, st->st_name);
+              name = ecget_namebyoffset(p, s0->sh_link, s1->st_name);
               break;
             }
           } else if (STT_NOTYPE == st_type && (STB_GLOBAL == st_bind || STB_LOCAL == st_bind)) {
-            if (st->st_value == vaddr) {
+            if (s1->st_value == vaddr) {
 //printf("+++%x+++", vaddr);
-              name = ecget_namebyoffset(p, sh->sh_link, st->st_name);
+              name = ecget_namebyoffset(p, s0->sh_link, s1->st_name);
               break;
             }
           }
@@ -1287,8 +1288,6 @@ static const char* _ecget_name64byaddr1(const pbuffer_t p, const int vaddr, uint
 
               ffree(p0);
             }
-
-
           } else if (SHT_RELA == s0->sh_type) {
 //printf("++RA++");
             handle_t p0 = fget64byshdr(p, s0);
