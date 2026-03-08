@@ -46,187 +46,189 @@ def xx(cmd):
   return None
 
 
-def go(msg,c0,c1=None):
-  r = xx(c0)
-  if r is None:
-    r = xx(c1)
+def go(args,msg,c0,c1=None):
+  if not args.norun:
+    r = xx(c0)
+    if r is None:
+      r = xx(c1)
 
-  if r:
-    print(f'\033[31m[-] ' + msg + f':\033[00m\n' + r.decode('utf-8'))
+    if r:
+      print(f'\033[31m[-] ' + msg + f':\033[00m\n' + r.decode('utf-8'))
 
 
-def gx(msg,c0,c1=None):
-  r = xx(c0)
-  if r is None:
-    r = xx(c1)
+def gx(args,msg,c0,c1=None):
+  if not args.norun:
+    r = xx(c0)
+    if r is None:
+      r = xx(c1)
 
-  if r:
-    print(f'\033[33m[-] ' + msg + f':\033[00m\n' + r.decode('utf-8'))
+    if r:
+      print(f'\033[33m[-] ' + msg + f':\033[00m\n' + r.decode('utf-8'))
 
 
 def sys_info(args):
   if args.system:
     mk('SYSTEM')
-    go('Kernel information', 'uname -a 2>/dev/null')
-    go('Kernel information (continued)', 'cat /proc/version 2>/dev/null')
-    go('Specific release information', 'cat /etc/*-release 2>/dev/null')
-    go('Hostname', 'cat /etc/hostname 2>/dev/null')
+    go(args, 'Kernel information', 'uname -a 2>/dev/null')
+    go(args, 'Kernel information (continued)', 'cat /proc/version 2>/dev/null')
+    go(args, 'Specific release information', 'cat /etc/*-release 2>/dev/null')
+    go(args, 'Hostname', 'cat /etc/hostname 2>/dev/null')
 
 
 def usr_info(args):
   if args.user:
     mk('USER/GROUP')
-    go('Current user/group info', 'id 2>/dev/null')
-    go('Users that have previously logged onto the system', 'lastlog 2>/dev/null | tail -n +2 | grep -v "Never" 2>/dev/null')
-    go('Who else is logged on', 'w 2>/dev/null')
-    go('Group memberships', 'for i in $(cut -d":" -f1 /etc/passwd 2>/dev/null); do id $i; done 2>/dev/null')
-    go('It looks like we have some admin users', 'for i in $(cut -d":" -f1 /etc/passwd 2>/dev/null); do id $i | grep "(adm)"; done 2>/dev/null')
-    gx('It looks like we have password hashes in /etc/passwd!', 'grep -v "^[^:]*:[x]" /etc/passwd 2>/dev/null')
-    go('Contents of /etc/passwd', 'cat /etc/passwd 2>/dev/null')
-    gx('We can read the shadow file!', 'cat /etc/shadow 2>/dev/null')
-    gx('We can read the master.passwd file!', 'cat /etc/master.passwd 2>/dev/null')
-    go('Super user account(s)', "grep -v -E '^#' /etc/passwd | awk -F: '$3 == 0 {print $1}' 2>/dev/null")
-    go('Sudoers configuration (condensed)', 'grep -v -e "^$" /etc/sudoers 2>/dev/null | grep -v "#" 2>/dev/null')
+    go(args, 'Current user/group info', 'id 2>/dev/null')
+    go(args, 'Users that have previously logged onto the system', 'lastlog 2>/dev/null | tail -n +2 | grep -v "Never" 2>/dev/null')
+    go(args, 'Who else is logged on', 'w 2>/dev/null')
+    go(args, 'Group memberships', 'for i in $(cut -d":" -f1 /etc/passwd 2>/dev/null); do id $i; done 2>/dev/null')
+    go(args, 'It looks like we have some admin users', 'for i in $(cut -d":" -f1 /etc/passwd 2>/dev/null); do id $i | grep "(adm)"; done 2>/dev/null')
+    gx(args, 'It looks like we have password hashes in /etc/passwd!', 'grep -v "^[^:]*:[x]" /etc/passwd 2>/dev/null')
+    go(args, 'Contents of /etc/passwd', 'cat /etc/passwd 2>/dev/null')
+    gx(args, 'We can read the shadow file!', 'cat /etc/shadow 2>/dev/null')
+    gx(args, 'We can read the master.passwd file!', 'cat /etc/master.passwd 2>/dev/null')
+    go(args, 'Super user account(s)', "grep -v -E '^#' /etc/passwd | awk -F: '$3 == 0 {print $1}' 2>/dev/null")
+    go(args, 'Sudoers configuration (condensed)', 'grep -v -e "^$" /etc/sudoers 2>/dev/null | grep -v "#" 2>/dev/null')
     #gx('We can sudo without supplying a password!', "echo '' | sudo -S -l -k 2>/dev/null")
     #
     #gx('Possible sudo pwnage!', "echo '' | sudo -S -l -k 2>/dev/null | xargs -n 1 2>/dev/null | sed 's/,*$//g' 2>/dev/null | grep -w '" + BINBIGLIST + "' 2>/dev/null")
-    go('Accounts that have recently used sudo', 'find /home -name .sudo_as_admin_successful 2>/dev/null')
-    go("We can read root's home directory!", 'ls -ahl /root/ 2>/dev/null')
-    go('Are permissions on /home directories lax', 'ls -ahl /home/ 2>/dev/null')
+    go(args, 'Accounts that have recently used sudo', 'find /home -name .sudo_as_admin_successful 2>/dev/null')
+    go(args, "We can read root's home directory!", 'ls -ahl /root/ 2>/dev/null')
+    go(args, 'Are permissions on /home directories lax', 'ls -ahl /home/ 2>/dev/null')
 
     if args.username:
-      go('Files not owned by user but writable by group', 'find / -writable ! -user ' + args.username + ' -type f ! -path "/proc/*" ! -path "/sys/*" -exec ls -al {} \; 2>/dev/null')
-      go('Files owned by our user', 'find / -user ' + args.username + ' -type f ! -path "/proc/*" ! -path "/sys/*" -exec ls -al {} \; 2>/dev/null')
+      go(args, 'Files not owned by user but writable by group', 'find / -writable ! -user ' + args.username + ' -type f ! -path "/proc/*" ! -path "/sys/*" -exec ls -al {} \; 2>/dev/null')
+      go(args, 'Files owned by our user', 'find / -user ' + args.username + ' -type f ! -path "/proc/*" ! -path "/sys/*" -exec ls -al {} \; 2>/dev/null')
 
     if args.more:
-      go('Hidden files', 'find / -name ".*" -type f ! -path "/proc/*" ! -path "/sys/*" -exec ls -al {} \; 2>/dev/null')
-      go('World-readable files within /home', 'find /home/ -perm -4 -type f -exec ls -al {} \; 2>/dev/null')
+      go(args, 'Hidden files', 'find / -name ".*" -type f ! -path "/proc/*" ! -path "/sys/*" -exec ls -al {} \; 2>/dev/null')
+      go(args, 'World-readable files within /home', 'find /home/ -perm -4 -type f -exec ls -al {} \; 2>/dev/null')
       if args.username:
-        go('Home directory contents', 'ls -ahl /home/' + args.username + '/')
+        go(args, 'Home directory contents', 'ls -ahl /home/' + args.username + '/')
 
-      go('SSH keys/host information found in the following locations',
+      go(args, 'SSH keys/host information found in the following locations',
          'find / \( -name "id_dsa*" -o -name "id_rsa*" -o -name "known_hosts" -o -name "authorized_hosts" -o -name "authorized_keys" \) -exec ls -la {} 2>/dev/null \;')
 
-    go('Root is allowed to login via SSH', 'grep "PermitRootLogin " /etc/ssh/sshd_config 2>/dev/null | grep -v "#"')
+    go(args, 'Root is allowed to login via SSH', 'grep "PermitRootLogin " /etc/ssh/sshd_config 2>/dev/null | grep -v "#"')
 
 
 def env_info(args):
   if args.env:
     mk('ENVIRONMENTAL')
-    go('Environment information', 'env 2>/dev/null | grep -v "LS_COLORS" 2>/dev/null')
-    go('SELinux seems to be present', 'sestatus 2>/dev/null')
-    go('Path information', 'echo $PATH 2>/dev/null')
-    go('Path information (writeable)', 'ls -ld $(echo $PATH | tr ":" " ")')
-    go('Available shells', 'cat /etc/shells 2>/dev/null')
-    go('Current umask value', 'umask -S 2>/dev/null & umask 2>/dev/null')
-    go('umask value as specified in /etc/login.defs', 'grep -i "^UMASK" /etc/login.defs 2>/dev/null')
-    go('Password and storage information', 'grep "^PASS_MAX_DAYS\|^PASS_MIN_DAYS\|^PASS_WARN_AGE\|^ENCRYPT_METHOD" /etc/login.defs 2>/dev/null')
+    go(args, 'Environment information', 'env 2>/dev/null | grep -v "LS_COLORS" 2>/dev/null')
+    go(args, 'SELinux seems to be present', 'sestatus 2>/dev/null')
+    go(args, 'Path information', 'echo $PATH 2>/dev/null')
+    go(args, 'Path information (writeable)', 'ls -ld $(echo $PATH | tr ":" " ")')
+    go(args, 'Available shells', 'cat /etc/shells 2>/dev/null')
+    go(args, 'Current umask value', 'umask -S 2>/dev/null & umask 2>/dev/null')
+    go(args, 'umask value as specified in /etc/login.defs', 'grep -i "^UMASK" /etc/login.defs 2>/dev/null')
+    go(args, 'Password and storage information', 'grep "^PASS_MAX_DAYS\|^PASS_MIN_DAYS\|^PASS_WARN_AGE\|^ENCRYPT_METHOD" /etc/login.defs 2>/dev/null')
 
 
 def job_info(args):
   if args.tasks:
     mk('JOBS/TASKS')
-    go('Cron jobs', 'ls -la /etc/cron* 2>/dev/null')
-    go('World-writable cron jobs and file contents', 'find /etc/cron* -perm -0002 -type f -exec ls -la {} \; -exec cat {} 2>/dev/null \;')
-    go('Crontab contents', 'cat /etc/crontab 2>/dev/null')
-    go('Anything interesting in /var/spool/cron/crontabs', 'ls -la /var/spool/cron/crontabs 2>/dev/null')
-    go('Anacron jobs and associated file permissions', 'ls -la /etc/anacrontab 2>/dev/null; cat /etc/anacrontab 2>/dev/null')
-    go('When were jobs last executed (/var/spool/anacron contents)', 'ls -la /var/spool/anacron 2>/dev/null')
-    go('Jobs held by all users', 'cut -d ":" -f 1 /etc/passwd | xargs -n1 crontab -l -u 2>/dev/null')
-    go('Systemd timers', 'systemctl list-timers --all 2>/dev/null')
+    go(args, 'Cron jobs', 'ls -la /etc/cron* 2>/dev/null')
+    go(args, 'World-writable cron jobs and file contents', 'find /etc/cron* -perm -0002 -type f -exec ls -la {} \; -exec cat {} 2>/dev/null \;')
+    go(args, 'Crontab contents', 'cat /etc/crontab 2>/dev/null')
+    go(args, 'Anything interesting in /var/spool/cron/crontabs', 'ls -la /var/spool/cron/crontabs 2>/dev/null')
+    go(args, 'Anacron jobs and associated file permissions', 'ls -la /etc/anacrontab 2>/dev/null; cat /etc/anacrontab 2>/dev/null')
+    go(args, 'When were jobs last executed (/var/spool/anacron contents)', 'ls -la /var/spool/anacron 2>/dev/null')
+    go(args, 'Jobs held by all users', 'cut -d ":" -f 1 /etc/passwd | xargs -n1 crontab -l -u 2>/dev/null')
+    go(args, 'Systemd timers', 'systemctl list-timers --all 2>/dev/null')
 
 
 def net_info(args):
   if args.network:
     mk('NETWORKING')
-    go('Network and IP info', '/sbin/ifconfig -a 2>/dev/null', '/sbin/ip a 2>/dev/null')
-    go('ARP history', 'arp -a 2>/dev/null', 'ip n 2>/dev/null')
-    go('Nameserver(s)', 'grep "nameserver" /etc/resolv.conf 2>/dev/null')
-    go('Nameserver(s)', 'systemd-resolve --status 2>/dev/null')
-    go('Default route', 'route 2>/dev/null | grep default', 'ip r 2>/dev/null | grep default')
-    go('Listening TCP', 'netstat -ntpl 2>/dev/null', 'ss -t -l -n 2>/dev/null')
-    go('Listening UDP', 'netstat -nupl 2>/dev/null', 'ss -u -l -n 2>/dev/null')
+    go(args, 'Network and IP info', '/sbin/ifconfig -a 2>/dev/null', '/sbin/ip a 2>/dev/null')
+    go(args, 'ARP history', 'arp -a 2>/dev/null', 'ip n 2>/dev/null')
+    go(args, 'Nameserver(s)', 'grep "nameserver" /etc/resolv.conf 2>/dev/null')
+    go(args, 'Nameserver(s)', 'systemd-resolve --status 2>/dev/null')
+    go(args, 'Default route', 'route 2>/dev/null | grep default', 'ip r 2>/dev/null | grep default')
+    go(args, 'Listening TCP', 'netstat -ntpl 2>/dev/null', 'ss -t -l -n 2>/dev/null')
+    go(args, 'Listening UDP', 'netstat -nupl 2>/dev/null', 'ss -u -l -n 2>/dev/null')
 
 
 def srv_info(args):
   if args.services:
     mk('SERVICES')
-    go('Running processes', 'ps aux 2>/dev/null')
-    go('Process binaries and associated permissions (from above list)', "ps aux 2>/dev/null | awk '{print $11}' | xargs -r ls -la 2>/dev/null | awk '!x[$0]++' 2>/dev/null")
-    go('Contents of /etc/inetd.conf', 'cat /etc/inetd.conf 2>/dev/null')
-    go('The related inetd binary permissions', "awk '{print $7}' /etc/inetd.conf 2>/dev/null | xargs -r ls -la 2>/dev/null")
-    go('Contents of /etc/xinetd.conf', 'cat /etc/xinetd.conf 2>/dev/null')
-    go('/etc/xinetd.d is included in /etc/xinetd.conf - associated binary permissions are listed below', 'grep "/etc/xinetd.d" /etc/xinetd.conf 2>/dev/null')
-    go('The related xinetd binary permissions', "awk '{print $7}' /etc/xinetd.conf 2>/dev/null | xargs -r ls -la 2>/dev/null")
-    go('/etc/init.d/ binary permissions', 'ls -la /etc/init.d 2>/dev/null')
-    gx('/etc/init.d/ files not belonging to root', 'find /etc/init.d/ \! -uid 0 -type f 2>/dev/null | xargs -r ls -la 2>/dev/null')
-    go('/etc/rc.d/init.d binary permissions', 'ls -la /etc/rc.d/init.d 2>/dev/null')
-    gx('/etc/rc.d/init.d files not belonging to root', 'find /etc/rc.d/init.d \! -uid 0 -type f 2>/dev/null | xargs -r ls -la 2>/dev/null')
-    go('/usr/local/etc/rc.d binary permissions', 'ls -la /usr/local/etc/rc.d 2>/dev/null')
-    gx('/usr/local/etc/rc.d files not belonging to root', 'find /usr/local/etc/rc.d \! -uid 0 -type f 2>/dev/null | xargs -r ls -la 2>/dev/null')
-    go('/etc/init/ config file permissions', 'ls -la /etc/init/ 2>/dev/null')
-    gx('/etc/init/ config files not belonging to root', 'find /etc/init \! -uid 0 -type f 2>/dev/null | xargs -r ls -la 2>/dev/null')
-    go('/lib/systemd/* config file permissions', 'ls -lthR /lib/systemd/ 2>/dev/null')
-    gx('/lib/systemd/* config files not belonging to root', 'find /lib/systemd/ \! -uid 0 -type f 2>/dev/null | xargs -r ls -la 2>/dev/null')
+    go(args, 'Running processes', 'ps aux 2>/dev/null')
+    go(args, 'Process binaries and associated permissions (from above list)', "ps aux 2>/dev/null | awk '{print $11}' | xargs -r ls -la 2>/dev/null | awk '!x[$0]++' 2>/dev/null")
+    go(args, 'Contents of /etc/inetd.conf', 'cat /etc/inetd.conf 2>/dev/null')
+    go(args, 'The related inetd binary permissions', "awk '{print $7}' /etc/inetd.conf 2>/dev/null | xargs -r ls -la 2>/dev/null")
+    go(args, 'Contents of /etc/xinetd.conf', 'cat /etc/xinetd.conf 2>/dev/null')
+    go(args, '/etc/xinetd.d is included in /etc/xinetd.conf - associated binary permissions are listed below', 'grep "/etc/xinetd.d" /etc/xinetd.conf 2>/dev/null')
+    go(args, 'The related xinetd binary permissions', "awk '{print $7}' /etc/xinetd.conf 2>/dev/null | xargs -r ls -la 2>/dev/null")
+    go(args, '/etc/init.d/ binary permissions', 'ls -la /etc/init.d 2>/dev/null')
+    gx(args, '/etc/init.d/ files not belonging to root', 'find /etc/init.d/ \! -uid 0 -type f 2>/dev/null | xargs -r ls -la 2>/dev/null')
+    go(args, '/etc/rc.d/init.d binary permissions', 'ls -la /etc/rc.d/init.d 2>/dev/null')
+    gx(args, '/etc/rc.d/init.d files not belonging to root', 'find /etc/rc.d/init.d \! -uid 0 -type f 2>/dev/null | xargs -r ls -la 2>/dev/null')
+    go(args, '/usr/local/etc/rc.d binary permissions', 'ls -la /usr/local/etc/rc.d 2>/dev/null')
+    gx(args, '/usr/local/etc/rc.d files not belonging to root', 'find /usr/local/etc/rc.d \! -uid 0 -type f 2>/dev/null | xargs -r ls -la 2>/dev/null')
+    go(args, '/etc/init/ config file permissions', 'ls -la /etc/init/ 2>/dev/null')
+    gx(args, '/etc/init/ config files not belonging to root', 'find /etc/init \! -uid 0 -type f 2>/dev/null | xargs -r ls -la 2>/dev/null')
+    go(args, '/lib/systemd/* config file permissions', 'ls -lthR /lib/systemd/ 2>/dev/null')
+    gx(args, '/lib/systemd/* config files not belonging to root', 'find /lib/systemd/ \! -uid 0 -type f 2>/dev/null | xargs -r ls -la 2>/dev/null')
 
 
 def sft_conf(args):
   if args.software:
     mk('SOFTWARE')
-    go('Sudo version', 'sudo -V 2>/dev/null | grep "Sudo version" 2>/dev/null')
-    go('MYSQL version', 'mysql --version 2>/dev/null')
-    gx('We can connect to the local MYSQL service with default root/root credentials!', 'mysqladmin -uroot -proot version 2>/dev/null')
-    gx("We can connect to the local MYSQL service as 'root' and without a password!", 'mysqladmin -uroot version 2>/dev/null')
-    go('Postgres version', 'psql -V 2>/dev/null')
-    gx("We can connect to Postgres DB 'template0' as user 'postgres' with no password!", "psql -U postgres -w template0 -c 'select version()' 2>/dev/null | grep version")
-    gx("We can connect to Postgres DB 'template1' as user 'postgres' with no password!", "psql -U postgres -w template1 -c 'select version()' 2>/dev/null | grep version")
-    gx("We can connect to Postgres DB 'template0' as user 'psql' with no password!", "psql -U pgsql -w template0 -c 'select version()' 2>/dev/null | grep version")
-    gx("We can connect to Postgres DB 'template1' as user 'psql' with no password!", "psql -U pgsql -w template1 -c 'select version()' 2>/dev/null | grep version")
-    go('Apache version', 'apache2 -v 2>/dev/null; httpd -v 2>/dev/null')
-    go('Apache user configuration', "grep -i 'user\|group' /etc/apache2/envvars 2>/dev/null | awk '{sub(/.*\export /,"")}1' 2>/dev/null")
-    go('Installed Apache modules', 'apache2ctl -M 2>/dev/null; httpd -M 2>/dev/null')
+    go(args, 'Sudo version', 'sudo -V 2>/dev/null | grep "Sudo version" 2>/dev/null')
+    go(args, 'MYSQL version', 'mysql --version 2>/dev/null')
+    gx(args, 'We can connect to the local MYSQL service with default root/root credentials!', 'mysqladmin -uroot -proot version 2>/dev/null')
+    gx(args, "We can connect to the local MYSQL service as 'root' and without a password!", 'mysqladmin -uroot version 2>/dev/null')
+    go(args, 'Postgres version', 'psql -V 2>/dev/null')
+    gx(args, "We can connect to Postgres DB 'template0' as user 'postgres' with no password!", "psql -U postgres -w template0 -c 'select version()' 2>/dev/null | grep version")
+    gx(args, "We can connect to Postgres DB 'template1' as user 'postgres' with no password!", "psql -U postgres -w template1 -c 'select version()' 2>/dev/null | grep version")
+    gx(args, "We can connect to Postgres DB 'template0' as user 'psql' with no password!", "psql -U pgsql -w template0 -c 'select version()' 2>/dev/null | grep version")
+    gx(args, "We can connect to Postgres DB 'template1' as user 'psql' with no password!", "psql -U pgsql -w template1 -c 'select version()' 2>/dev/null | grep version")
+    go(args, 'Apache version', 'apache2 -v 2>/dev/null; httpd -v 2>/dev/null')
+    go(args, 'Apache user configuration', "grep -i 'user\|group' /etc/apache2/envvars 2>/dev/null | awk '{sub(/.*\export /,"")}1' 2>/dev/null")
+    go(args, 'Installed Apache modules', 'apache2ctl -M 2>/dev/null; httpd -M 2>/dev/null')
     #go('htpasswd found - could contain passwords', 'find / -name .htpasswd -print -exec cat {} \; 2>/dev/null')
-    go('www home dir contents', 'ls -alhR /var/www/ 2>/dev/null; ls -alhR /srv/www/htdocs/ 2>/dev/null; ls -alhR /usr/local/www/apache2/data/ 2>/dev/null; ls -alhR /opt/lampp/htdocs/ 2>/dev/null')
+    go(args, 'www home dir contents', 'ls -alhR /var/www/ 2>/dev/null; ls -alhR /srv/www/htdocs/ 2>/dev/null; ls -alhR /usr/local/www/apache2/data/ 2>/dev/null; ls -alhR /opt/lampp/htdocs/ 2>/dev/null')
 
 
 def ask_info(args):
   if args.cool:
     mk('INTERESTING FILES')
-    go('Useful file locations', 'which nc 2>/dev/null; which netcat 2>/dev/null; which wget 2>/dev/null; which nmap 2>/dev/null; which gcc 2>/dev/null; which curl 2>/dev/null')
-    go('Installed compilers', "dpkg --list 2>/dev/null | grep compiler | grep -v decompiler 2>/dev/null && yum list installed 'gcc*' 2>/dev/null | grep gcc 2>/dev/null")
-    go('Can we read/write sensitive files', 'ls -la /etc/passwd 2>/dev/null; ls -la /etc/group 2>/dev/null; ls -la /etc/profile 2>/dev/null; ls -la /etc/shadow 2>/dev/null; ls -la /etc/master.passwd 2>/dev/null')
+    go(args, 'Useful file locations', 'which nc 2>/dev/null; which netcat 2>/dev/null; which wget 2>/dev/null; which nmap 2>/dev/null; which gcc 2>/dev/null; which curl 2>/dev/null')
+    go(args, 'Installed compilers', "dpkg --list 2>/dev/null | grep compiler | grep -v decompiler 2>/dev/null && yum list installed 'gcc*' 2>/dev/null | grep gcc 2>/dev/null")
+    go(args, 'Can we read/write sensitive files', 'ls -la /etc/passwd 2>/dev/null; ls -la /etc/group 2>/dev/null; ls -la /etc/profile 2>/dev/null; ls -la /etc/shadow 2>/dev/null; ls -la /etc/master.passwd 2>/dev/null')
     #go('SUID files', 'find $(find / -perm -4000 -type f 2>/dev/null) -perm -4000 -type f -exec ls -la {} 2>/dev/null \;')
     #gx('Possibly interesting SUID files', 'find $(find / -perm -4000 -type f 2>/dev/null) -perm -4000 -type f -exec ls -la {} \; 2>/dev/null | grep -w "' + BINBIGLIST + '" 2>/dev/null')
     #gx('World-writable SUID files', 'find $(find / -perm -4000 -type f 2>/dev/null) -perm -4002 -type f -exec ls -la {} 2>/dev/null \;')
-    gx('World-writable SUID files owned by root', 'find $(find / -perm -4000 -type f 2>/dev/null) -uid 0 -perm -4002 -type f -exec ls -la {} 2>/dev/null \;')
-    go('SGID files', 'find $(find / -perm -2000 -type f 2>/dev/null) -perm -2000 -type f -exec ls -la {} 2>/dev/null \;')
-    gx('Possibly interesting SGID files', 'find $(find / -perm -2000 -type f 2>/dev/null) -perm -2000 -type f  -exec ls -la {} \; 2>/dev/null | grep -w "' + BINBIGLIST + '" 2>/dev/null')
-    gx('World-writable SGID files', 'find $(find / -perm -2000 -type f 2>/dev/null) -perm -2002 -type f -exec ls -la {} 2>/dev/null \;')
-    gx('World-writable SGID files owned by root', 'find $(find / -perm -2000 -type f 2>/dev/null) -uid 0 -perm -2002 -type f -exec ls -la {} 2>/dev/null \;')
-    gx('Files with POSIX capabilities set', 'getcap -r / 2>/dev/null || /sbin/getcap -r / 2>/dev/null')
-    gx('Users with specific POSIX capabilities', "grep -v '^#\|none\|^$' /etc/security/capability.conf 2>/dev/null")
+    gx(args, 'World-writable SUID files owned by root', 'find $(find / -perm -4000 -type f 2>/dev/null) -uid 0 -perm -4002 -type f -exec ls -la {} 2>/dev/null \;')
+    go(args, 'SGID files', 'find $(find / -perm -2000 -type f 2>/dev/null) -perm -2000 -type f -exec ls -la {} 2>/dev/null \;')
+    gx(args, 'Possibly interesting SGID files', 'find $(find / -perm -2000 -type f 2>/dev/null) -perm -2000 -type f  -exec ls -la {} \; 2>/dev/null | grep -w "' + BINBIGLIST + '" 2>/dev/null')
+    gx(args, 'World-writable SGID files', 'find $(find / -perm -2000 -type f 2>/dev/null) -perm -2002 -type f -exec ls -la {} 2>/dev/null \;')
+    gx(args, 'World-writable SGID files owned by root', 'find $(find / -perm -2000 -type f 2>/dev/null) -uid 0 -perm -2002 -type f -exec ls -la {} 2>/dev/null \;')
+    gx(args, 'Files with POSIX capabilities set', 'getcap -r / 2>/dev/null || /sbin/getcap -r / 2>/dev/null')
+    gx(args, 'Users with specific POSIX capabilities', "grep -v '^#\|none\|^$' /etc/security/capability.conf 2>/dev/null")
     #
-    gx('Private SSH keys found!', 'grep -rl "PRIVATE KEY-----" /home 2>/dev/null')
+    gx(args, 'Private SSH keys found!', 'grep -rl "PRIVATE KEY-----" /home 2>/dev/null')
     #gx('AWS secret keys found!', 'grep -rli "aws_secret_access_key" /home 2>/dev/null')
-    gx('Git credentials saved on the machine!', 'find / -name ".git-credentials" 2>/dev/null')
+    gx(args, 'Git credentials saved on the machine!', 'find / -name ".git-credentials" 2>/dev/null')
     #go('World-writable files (excluding /proc and /sys)', 'find / ! -path "*/proc/*" ! -path "/sys/*" -perm -2 -type f -exec ls -la {} 2>/dev/null \;')
-    go('Plan file permissions and contents', 'find /home -iname *.plan -exec ls -la {} \; -exec cat {} 2>/dev/null \;')
-    go('Plan file permissions and contents', 'find /usr/home -iname *.plan -exec ls -la {} \; -exec cat {} 2>/dev/null \;')
-    gx('rhost config file(s) and file contents', 'find /home -iname *.rhosts -exec ls -la {} 2>/dev/null \; -exec cat {} 2>/dev/null \;')
-    gx('rhost config file(s) and file contents', 'find /usr/home -iname *.rhosts -exec ls -la {} 2>/dev/null \; -exec cat {} 2>/dev/null \;')
-    gx('Hosts.equiv file and contents', 'find /etc -iname hosts.equiv -exec ls -la {} 2>/dev/null \; -exec cat {} 2>/dev/null \;')
-    go('NFS config details', 'ls -la /etc/exports 2>/dev/null; cat /etc/exports 2>/dev/null')
-    go('NFS displaying partitions and filesystems - you need to check if exotic filesystems', 'cat /etc/fstab 2>/dev/null')
+    go(args, 'Plan file permissions and contents', 'find /home -iname *.plan -exec ls -la {} \; -exec cat {} 2>/dev/null \;')
+    go(args, 'Plan file permissions and contents', 'find /usr/home -iname *.plan -exec ls -la {} \; -exec cat {} 2>/dev/null \;')
+    gx(args, 'rhost config file(s) and file contents', 'find /home -iname *.rhosts -exec ls -la {} 2>/dev/null \; -exec cat {} 2>/dev/null \;')
+    gx(args, 'rhost config file(s) and file contents', 'find /usr/home -iname *.rhosts -exec ls -la {} 2>/dev/null \; -exec cat {} 2>/dev/null \;')
+    gx(args, 'Hosts.equiv file and contents', 'find /etc -iname hosts.equiv -exec ls -la {} 2>/dev/null \; -exec cat {} 2>/dev/null \;')
+    go(args, 'NFS config details', 'ls -la /etc/exports 2>/dev/null; cat /etc/exports 2>/dev/null')
+    go(args, 'NFS displaying partitions and filesystems - you need to check if exotic filesystems', 'cat /etc/fstab 2>/dev/null')
     #gx('Looks like there are credentials in /etc/fstab!', "grep username /etc/fstab 2>/dev/null | awk '{sub(/.*\username=/,"");sub(/\,.*/,"")}1' 2>/dev/null | xargs -r echo username: 2>/dev/null; grep password /etc/fstab 2>/dev/null | awk '{sub(/.*\password=/,"");sub(/\,.*/,"")}1' 2>/dev/null | xargs -r echo password: 2>/dev/null; grep domain /etc/fstab 2>/dev/null | awk '{sub(/.*\domain=/,"");sub(/\,.*/,"")}1' 2>/dev/null | xargs -r echo domain: 2>/dev/null")
-    gx('/etc/fstab contains a credentials file!', "grep cred /etc/fstab 2>/dev/null | awk '{sub(/.*\credentials=/,"");sub(/\,.*/,"")}1' 2>/dev/null | xargs -I{} sh -c 'ls -la {}; cat {}' 2>/dev/null")
+    gx(args, '/etc/fstab contains a credentials file!', "grep cred /etc/fstab 2>/dev/null | awk '{sub(/.*\credentials=/,"");sub(/\,.*/,"")}1' 2>/dev/null | xargs -I{} sh -c 'ls -la {}; cat {}' 2>/dev/null")
     #
-    go('All *.conf files in /etc (recursive 1 level)', 'find /etc/ -maxdepth 1 -name *.conf -type f -exec ls -la {} \; 2>/dev/null')
-    go("Current user's history files", 'ls -la ~/.*_history 2>/dev/null')
-    gx("Root's history files are accessible!", 'ls -la /root/.*_history 2>/dev/null')
-    go('Location and contents (if accessible) of .bash_history file(s)', 'find /home -name .bash_history -print -exec cat {} 2>/dev/null \;')
-    go('Location and Permissions (if accessible) of .bak file(s)', 'find / -name *.bak -type f 2</dev/null')
-    go('Any interesting mail in /var/mail', 'ls -la /var/mail 2>/dev/null')
-    gx('We can read /var/mail/root!', 'head /var/mail/root 2>/dev/null')
+    go(args, 'All *.conf files in /etc (recursive 1 level)', 'find /etc/ -maxdepth 1 -name *.conf -type f -exec ls -la {} \; 2>/dev/null')
+    go(args, "Current user's history files", 'ls -la ~/.*_history 2>/dev/null')
+    gx(args, "Root's history files are accessible!", 'ls -la /root/.*_history 2>/dev/null')
+    go(args, 'Location and contents (if accessible) of .bash_history file(s)', 'find /home -name .bash_history -print -exec cat {} 2>/dev/null \;')
+    go(args, 'Location and Permissions (if accessible) of .bak file(s)', 'find / -name *.bak -type f 2</dev/null')
+    go(args, 'Any interesting mail in /var/mail', 'ls -la /var/mail 2>/dev/null')
+    gx(args, 'We can read /var/mail/root!', 'head /var/mail/root 2>/dev/null')
 
 
 if __name__ == '__main__':
@@ -244,6 +246,7 @@ if __name__ == '__main__':
   p.add_argument('--services', action='store_true', help='services information.')
   p.add_argument('--software', action='store_true', help='software information.')
   p.add_argument('--cool', action='store_true', help='interesting files information.')
+  p.add_argument('--norun', action='store_true', help='development switch.')
   g = p.parse_args()
 
   if not(g.system or g.user or g.env or g.tasks or g.network or g.services or g.software or g.cool):
