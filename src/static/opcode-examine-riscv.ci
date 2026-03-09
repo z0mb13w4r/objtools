@@ -389,10 +389,10 @@ static convert_t oeINSTRUCTIONFLAGS_RISCV[] = {
   {"OPERAND3",          OCINSN_OPERAND3},
   {"OPERAND4",          OCINSN_OPERAND4},
   {"OPERAND5",          OCINSN_OPERAND5},
+  {"REGISTER",          OCINSN_REGISTER},
+  {"IMMEDIATE",         OCINSN_IMMEDIATE},
+  {"LINK",              OCINSN_LINK},
 
-  {"LINK",              OCINSNRISCV_LINK},
-  {"REGISTER",          OCINSNRISCV_REGISTER},
-  {"IMMEDIATE",         OCINSNRISCV_IMMEDIATE},
   {"UPPER",             OCINSNRISCV_UPPER},
   {"STACK",             OCINSNRISCV_STACK},
   {"HIGH",              OCINSNRISCV_HIGH},

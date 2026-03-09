@@ -179,11 +179,11 @@ static convert_t oeINSTRUCTIONFLAGS_MIPS[] = {
   {"OPERAND3",          OCINSN_OPERAND3},
   {"OPERAND4",          OCINSN_OPERAND4},
   {"OPERAND5",          OCINSN_OPERAND5},
+  {"REGISTER",          OCINSN_REGISTER},
+  {"IMMEDIATE",         OCINSN_IMMEDIATE},
+  {"ADDRESS",           OCINSN_ADDRESS},
+  {"LINK",              OCINSN_LINK},
 
-  {"LINK",              OCINSNMIPS_LINK},
-  {"REGISTER",          OCINSNMIPS_REGISTER},
-  {"IMMEDIATE",         OCINSNMIPS_IMMEDIATE},
-  {"ADDRESS",           OCINSNMIPS_ADDRESS},
   {"UPPER",             OCINSNMIPS_UPPER},
 
   {0, 0}
