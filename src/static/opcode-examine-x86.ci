@@ -597,9 +597,7 @@ static convert_t oeINSTRUCTIONFLAGS_x86_64[] = {
   {"TWO",               OCINSNX86_TWO},
   {"FOUR",              OCINSNX86_FOUR},
   {"ZERO",              OCINSNX86_ZERO},
-  {"LOG2",              OCINSNX86_LOG2},
   {"LOGE",              OCINSNX86_LOGE},
-  {"LOG10",             OCINSNX86_LOG10},
   {"EULER",             OCINSNX86_EULER},
 
   {"LT",                OCINSN_LT},
@@ -644,6 +642,8 @@ static convert_t oeINSTRUCTIONNAMES_x86_64[] = {
   {"MOVE",              OCINSN_MASK(OCINSNX86_MOVE)},
   {"NOP",               OCINSN_MASK(OCINSNX86_NOP)},
   {"MOVyxx",            OCINSN_MASK(OCINSNX86_MOVyxx)},
+  {"xLDL2x",            OCINSN_MASK(OCINSNX86_xLDL2x)},
+  {"xLDL10x",           OCINSN_MASK(OCINSNX86_xLDL10x)},
 
   {"BT",                OCINSN_MASK(OCINSNX86_BT)},
   {"CALL",              OCINSN_MASK(OCINSNX86_CALL)},

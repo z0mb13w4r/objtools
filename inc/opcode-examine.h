@@ -17,6 +17,8 @@
 #define OECODE_OPERAND3                (4)
 #define OECODE_OPERAND4                (5)
 
+#define OCINSN_LOG2                    (211)
+#define OCINSN_LOG10                   (212)
 #define OCINSN_FXCH                    (213)
 #define OCINSN_XCHG                    (214)
 #define OCINSN_INS                     (215)
