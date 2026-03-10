@@ -967,10 +967,13 @@ static const char* _ecget_name32byaddr0(const pbuffer_t p, const uint64_t vaddr,
   MEMSTACK(Elf32_Shdr, sx);
   Elf32_Shdr *s0 = ecget_shdr32bytype(p, sx, SHT_SYMTAB);
   if (s0) {
+    bool_t isarm32 = EM_ARM == ecget_emachine(p);
+    bool_t isarm32thumb = FALSE;
+
+    const char *name = NULL;
     size_t cnt = s0->sh_size / s0->sh_entsize;
     handle_t f = fgetbyshdr(p, s0);
     if (f) {
-      const char *name = NULL;
       for (size_t j = 0; j < cnt; ++j) {
         MEMSTACK(Elf32_Sym, sy);
         Elf32_Sym *s1 = ecconvert_sym32(p, sy, fget(f));
@@ -990,7 +993,9 @@ static const char* _ecget_name32byaddr0(const pbuffer_t p, const uint64_t vaddr,
             } else if (s1->st_value == vaddr) {
               const char* name0 = ecget_namebyoffset(p, s0->sh_link, s1->st_name);
 //printf("+++[A:%lx:%s]+++", vaddr, name0);
-              if (name0 && '$' != name0[0]) {
+              if (name0 && isarm32 && (0 == xstrcmp(name0, "$a") || 0 == xstrcmp(name0, "$d") || 0 == xstrcmp(name0, "$t"))) {
+                isarm32thumb = TRUE;
+              } else {
                 name = name0;
                 break;
               }
@@ -999,7 +1004,9 @@ static const char* _ecget_name32byaddr0(const pbuffer_t p, const uint64_t vaddr,
             if (s1->st_value == vaddr) {
               const char* name0 = ecget_namebyoffset(p, s0->sh_link, s1->st_name);
 //printf("+++[B:%lx:%s]+++", vaddr, name0);
-              if (name0 && '$' != name0[0]) {
+              if (name0 && isarm32 && (0 == xstrcmp(name0, "$a") || 0 == xstrcmp(name0, "$d") || 0 == xstrcmp(name0, "$t"))) {
+                isarm32thumb = TRUE;
+              } else {
                 name = name0;
                 break;
               }
@@ -1009,9 +1016,45 @@ static const char* _ecget_name32byaddr0(const pbuffer_t p, const uint64_t vaddr,
           f = fnext(f);
         }
       }
-
-      return name && name[0] ? name : NULL;
     }
+
+    if (isarm32thumb) {
+      handle_t f = fgetbyshdr(p, s0);
+      if (f) {
+        for (size_t j = 0; j < cnt; ++j) {
+          MEMSTACK(Elf32_Sym, sy);
+          Elf32_Sym *s1 = ecconvert_sym32(p, sy, fget(f));
+          if (s1) {
+            uint32_t st_bind = ELF_ST_BIND(s1->st_info);
+            uint32_t st_type = ELF_ST_TYPE(s1->st_info);
+            if (STT_SECTION != st_type && STT_NOTYPE != st_type && STT_FILE != st_type) {
+//printf("[%x:%s]\n", st->st_value, ecget_namebyoffset(p, sh->sh_link, st->st_name));
+              if (s1->st_value == (vaddr + 1)) {
+                const char* name0 = ecget_namebyoffset(p, s0->sh_link, s1->st_name);
+//printf("+++[A:%lx:%s]+++", vaddr, name0);
+                if (name0 && 0 != xstrcmp(name0, "$a") && 0 != xstrcmp(name0, "$d") && 0 != xstrcmp(name0, "$t")) {
+                  name = name0;
+                  break;
+                }
+              }
+            } else if (STT_NOTYPE == st_type && (STB_GLOBAL == st_bind || STB_LOCAL == st_bind)) {
+              if (s1->st_value == (vaddr + 1)) {
+                const char* name0 = ecget_namebyoffset(p, s0->sh_link, s1->st_name);
+//printf("+++[B:%lx:%s]+++", vaddr, name0);
+                if (name0 && 0 != xstrcmp(name0, "$a") && 0 != xstrcmp(name0, "$d") && 0 != xstrcmp(name0, "$t")) {
+                  name = name0;
+                  break;
+                }
+              }
+            }
+
+            f = fnext(f);
+          }
+        }
+      }
+    }
+
+    return name && name[0] ? name : NULL;
   }
 
   return NULL;
