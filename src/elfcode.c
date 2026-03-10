@@ -964,18 +964,21 @@ const char* ecget_namebyaddr(const pbuffer_t p, const uint64_t vaddr, uint64_t *
 }
 
 static bool_t checksec(const pbuffer_t p, const char* name) {
-  return name && (EM_ARM == ecget_emachine(p)) && (0 == xstrcmp(name, "$a") || 0 == xstrcmp(name, "$d") || 0 == xstrcmp(name, "$t"));
+  return name && (EM_ARM == ecget_emachine(p) || EM_AARCH64 == ecget_emachine(p))
+    && (0 == xstrcmp(name, "$a") || 0 == xstrcmp(name, "$d") || 0 == xstrcmp(name, "$t") || 0 == xstrcmp(name, "$x"));
 }
 
 static const char* _ecget_name32byaddr0(const pbuffer_t p, const uint64_t vaddr, uint64_t *offset) {
   MEMSTACK(Elf32_Shdr, sx);
   Elf32_Shdr *s0 = ecget_shdr32bytype(p, sx, SHT_SYMTAB);
   if (s0) {
-    bool_t isneeded = FALSE;
-
-    const char *currname = NULL;
-    const char *prevname = NULL;
+    MALLOCA(thumb_t, thumbs, 1024);
+    size_t siz = ecmake_sectionthumbs(p, thumbs, NELEMENTS(thumbs));
     size_t cnt = s0->sh_size / s0->sh_entsize;
+
+    bool_t isneeded = FALSE;
+    const char *name = NULL;
+
     handle_t f = fgetbyshdr(p, s0);
     if (f) {
       for (size_t j = 0; j < cnt; ++j) {
@@ -990,10 +993,8 @@ static const char* _ecget_name32byaddr0(const pbuffer_t p, const uint64_t vaddr,
               if (s1->st_value <= vaddr) {
                 uint64_t offset0 = vaddr - s1->st_value;
                 if (offset0 < *offset) {
-                  const char* name0 = ecget_namebyoffset(p, s0->sh_link, s1->st_name);
-                  *offset = checksec(p, prevname) && !checksec(p, name0) ? offset0 + 1 : offset0;
-//if (name0) printf("+++[C:%lx:%lx:%s:%s:%s:%s]+++\n", vaddr, *offset, prevname, checksec(p, prevname) ? "y" : "n", name0, checksec(p, name0) ? "y" : "n");
-                  prevname = currname = name0;
+                  name = ecget_namebyoffset(p, s0->sh_link, s1->st_name);
+                  *offset = echeck_sectionthumbs(thumbs, siz, s1->st_value - 1) ? offset0 + 1 : offset0;
                 }
               }
             } else if (s1->st_value == vaddr) {
@@ -1002,7 +1003,7 @@ static const char* _ecget_name32byaddr0(const pbuffer_t p, const uint64_t vaddr,
               if (name0 && checksec(p, name0)) {
                 isneeded = TRUE;
               } else {
-                currname = name0;
+                name = name0;
                 break;
               }
             }
@@ -1013,15 +1014,8 @@ static const char* _ecget_name32byaddr0(const pbuffer_t p, const uint64_t vaddr,
               if (name0 && checksec(p, name0)) {
                 isneeded = TRUE;
               } else {
-                currname = name0;
+                name = name0;
                 break;
-              }
-            } else if (offset) {
-              if (s1->st_value <= vaddr) {
-                uint64_t offset0 = vaddr - s1->st_value;
-                if (offset0 < *offset) {
-                  prevname = ecget_namebyoffset(p, s0->sh_link, s1->st_name);
-                }
               }
             }
           }
@@ -1046,7 +1040,7 @@ static const char* _ecget_name32byaddr0(const pbuffer_t p, const uint64_t vaddr,
                 const char* name0 = ecget_namebyoffset(p, s0->sh_link, s1->st_name);
 //printf("+++[A:%lx:%s]+++", vaddr, name0);
                 if (name0 && !checksec(p, name0)) {
-                  currname = name0;
+                  name = name0;
                   break;
                 }
               }
@@ -1055,7 +1049,7 @@ static const char* _ecget_name32byaddr0(const pbuffer_t p, const uint64_t vaddr,
                 const char* name0 = ecget_namebyoffset(p, s0->sh_link, s1->st_name);
 //printf("+++[B:%lx:%s]+++", vaddr, name0);
                 if (name0 && checksec(p, name0)) {
-                  currname = name0;
+                  name = name0;
                   break;
                 }
               }
@@ -1067,7 +1061,7 @@ static const char* _ecget_name32byaddr0(const pbuffer_t p, const uint64_t vaddr,
       }
     }
 
-    return currname && currname[0] ? currname : NULL;
+    return name && name[0] ? name : NULL;
   }
 
   return NULL;
@@ -1239,9 +1233,12 @@ static const char* _ecget_name64byaddr0(const pbuffer_t p, const uint64_t vaddr,
   Elf64_Shdr *s0 = ecget_shdr64bytype(p, sx, SHT_SYMTAB);
   if (s0) {
     size_t cnt = s0->sh_size / s0->sh_entsize;
+
+    bool_t isneeded = FALSE;
+    const char *name = NULL;
+
     handle_t f = fgetbyshdr(p, s0);
     if (f) {
-      const char *name = NULL;
       for (size_t j = 0; j < cnt; ++j) {
         MEMSTACK(Elf64_Sym, sy);
         Elf64_Sym *s1 = ecconvert_sym64(p, sy, fget(f));
@@ -1259,24 +1256,34 @@ static const char* _ecget_name64byaddr0(const pbuffer_t p, const uint64_t vaddr,
                 }
               }
             } else if (s1->st_value == vaddr) {
-//printf("+++%x+++", vaddr);
-              name = ecget_namebyoffset(p, s0->sh_link, s1->st_name);
-              break;
+              const char* name0 = ecget_namebyoffset(p, s0->sh_link, s1->st_name);
+//printf("+++[A:%lx:%s]+++", vaddr, name0);
+              if (name0 && checksec(p, name0)) {
+                isneeded = TRUE;
+              } else {
+                name = name0;
+                break;
+              }
             }
           } else if (STT_NOTYPE == st_type && (STB_GLOBAL == st_bind || STB_LOCAL == st_bind)) {
             if (s1->st_value == vaddr) {
-//printf("+++%x+++", vaddr);
-              name = ecget_namebyoffset(p, s0->sh_link, s1->st_name);
-              break;
+              const char* name0 = ecget_namebyoffset(p, s0->sh_link, s1->st_name);
+//printf("+++[B:%lx:%s]+++", vaddr, name0);
+              if (name0 && checksec(p, name0)) {
+                isneeded = TRUE;
+              } else {
+                name = name0;
+                break;
+              }
             }
           }
 
           f = fnext(f);
         }
       }
-
-      return name && name[0] ? name : NULL;
     }
+
+    return name && name[0] ? name : NULL;
   }
 
   return NULL;
@@ -1642,6 +1649,21 @@ handle_t fgetbyoffset(const pbuffer_t p, const int offset, const size_t size, co
   else if (isELF64(p)) chunksiz |= MEMFIND_64BIT;
 
   return fmalloc(getp(p, offset, size), size, chunksiz);
+}
+
+int echeck_sectionthumbs(pthumb_t thumbs, const size_t maxthumbs, const uint64_t vaddr) {
+  if (thumbs && maxthumbs) {
+    pthumb_t p0 = thumbs;
+
+    for (size_t i = 0; i < maxthumbs; ++i, ++p0) {
+      if (vaddr == p0->vaddr) {
+//printf("%lx:%c\n", p0->vaddr, p0->value);
+        return p0->value;
+      }
+    }
+  }
+
+  return 0;
 }
 
 int ecmake_sectionthumbs(const pbuffer_t p, pthumb_t thumbs, const size_t maxthumbs) {

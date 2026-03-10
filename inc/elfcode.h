@@ -159,6 +159,7 @@ handle_t fget32byshdr(const pbuffer_t p, Elf32_Shdr *shdr);
 handle_t fget64byshdr(const pbuffer_t p, Elf64_Shdr *shdr);
 handle_t fgetbyoffset(const pbuffer_t p, const int offset , const size_t size, const size_t chunksize);
 
+int echeck_sectionthumbs(pthumb_t thumbs, const size_t maxthumbs, const uint64_t vaddr);
 int ecmake_sectionthumbs(const pbuffer_t p, pthumb_t thumbs, const size_t maxthumbs);
 
 int ecmake_versionnames32(const pbuffer_t p, pversion_t vnames, const size_t maxvnames);

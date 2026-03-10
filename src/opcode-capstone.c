@@ -221,21 +221,6 @@ int capstone_raw0(handle_t p, handle_t s, unknown_t data, const size_t size, con
   return n;
 }
 
-static uchar_t capstone_check(pthumb_t thumbs, const size_t maxthumbs, const uint64_t vaddr) {
-  if (thumbs && maxthumbs) {
-    pthumb_t p0 = thumbs;
-
-    for (size_t i = 0; i < maxthumbs; ++i, ++p0) {
-      if (vaddr == p0->vaddr) {
-//printf("%lx:%c\n", p0->vaddr, p0->value);
-        return p0->value;
-      }
-    }
-  }
-
-  return 0;
-}
-
 int capstone_raw1(handle_t p, handle_t s, unknown_t data, const size_t size, const uint64_t vaddr) {
   int n = 0;
   if (data && isopcode(p) && ismodeNXXN(s, MODE_OCSHDRWRAP)) {
@@ -249,7 +234,7 @@ int capstone_raw1(handle_t p, handle_t s, unknown_t data, const size_t size, con
 
     char prev_state = 'a';
     for (size_t k = 0; k < size; ) {
-      char curr_state = capstone_check(thumbs, siz, caddr);
+      char curr_state = echeck_sectionthumbs(thumbs, siz, caddr);
       curr_state = curr_state ? curr_state : prev_state;
 //printf("<--- %lx|%c\n", caddr, curr_state);
 
@@ -273,7 +258,7 @@ int capstone_raw1(handle_t p, handle_t s, unknown_t data, const size_t size, con
         if (count > 0) {
           for (size_t i = 0; i < count; ++i) {
             if (ocuse_vaddr(p, insn[i].address)) {
-              char next_state = capstone_check(thumbs, siz, caddr);
+              char next_state = echeck_sectionthumbs(thumbs, siz, caddr);
               next_state = next_state ? next_state : prev_state;
               if (next_state != curr_state) break;
 
