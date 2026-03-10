@@ -963,14 +963,18 @@ const char* ecget_namebyaddr(const pbuffer_t p, const uint64_t vaddr, uint64_t *
   return NULL;
 }
 
+static bool_t checksec(const pbuffer_t p, const char* name) {
+  return name && (EM_ARM == ecget_emachine(p)) && (0 == xstrcmp(name, "$a") || 0 == xstrcmp(name, "$d") || 0 == xstrcmp(name, "$t"));
+}
+
 static const char* _ecget_name32byaddr0(const pbuffer_t p, const uint64_t vaddr, uint64_t *offset) {
   MEMSTACK(Elf32_Shdr, sx);
   Elf32_Shdr *s0 = ecget_shdr32bytype(p, sx, SHT_SYMTAB);
   if (s0) {
-    bool_t isarm32 = EM_ARM == ecget_emachine(p);
-    bool_t isarm32thumb = FALSE;
+    bool_t isneeded = FALSE;
 
-    const char *name = NULL;
+    const char *currname = NULL;
+    const char *prevname = NULL;
     size_t cnt = s0->sh_size / s0->sh_entsize;
     handle_t f = fgetbyshdr(p, s0);
     if (f) {
@@ -981,22 +985,24 @@ static const char* _ecget_name32byaddr0(const pbuffer_t p, const uint64_t vaddr,
           uint32_t st_bind = ELF_ST_BIND(s1->st_info);
           uint32_t st_type = ELF_ST_TYPE(s1->st_info);
           if (STT_SECTION != st_type && STT_NOTYPE != st_type && STT_FILE != st_type) {
-//printf("[%x:%s]\n", st->st_value, ecget_namebyoffset(p, sh->sh_link, st->st_name));
+//printf("[%x:%s]\n", s1->st_value, ecget_namebyoffset(p, s0->sh_link, s1->st_name));
             if (offset) {
               if (s1->st_value <= vaddr) {
                 uint64_t offset0 = vaddr - s1->st_value;
                 if (offset0 < *offset) {
-                  name = ecget_namebyoffset(p, s0->sh_link, s1->st_name);
-                  *offset = offset0;
+                  const char* name0 = ecget_namebyoffset(p, s0->sh_link, s1->st_name);
+                  *offset = checksec(p, prevname) && !checksec(p, name0) ? offset0 + 1 : offset0;
+//if (name0) printf("+++[C:%lx:%lx:%s:%s:%s:%s]+++\n", vaddr, *offset, prevname, checksec(p, prevname) ? "y" : "n", name0, checksec(p, name0) ? "y" : "n");
+                  prevname = currname = name0;
                 }
               }
             } else if (s1->st_value == vaddr) {
               const char* name0 = ecget_namebyoffset(p, s0->sh_link, s1->st_name);
 //printf("+++[A:%lx:%s]+++", vaddr, name0);
-              if (name0 && isarm32 && (0 == xstrcmp(name0, "$a") || 0 == xstrcmp(name0, "$d") || 0 == xstrcmp(name0, "$t"))) {
-                isarm32thumb = TRUE;
+              if (name0 && checksec(p, name0)) {
+                isneeded = TRUE;
               } else {
-                name = name0;
+                currname = name0;
                 break;
               }
             }
@@ -1004,11 +1010,18 @@ static const char* _ecget_name32byaddr0(const pbuffer_t p, const uint64_t vaddr,
             if (s1->st_value == vaddr) {
               const char* name0 = ecget_namebyoffset(p, s0->sh_link, s1->st_name);
 //printf("+++[B:%lx:%s]+++", vaddr, name0);
-              if (name0 && isarm32 && (0 == xstrcmp(name0, "$a") || 0 == xstrcmp(name0, "$d") || 0 == xstrcmp(name0, "$t"))) {
-                isarm32thumb = TRUE;
+              if (name0 && checksec(p, name0)) {
+                isneeded = TRUE;
               } else {
-                name = name0;
+                currname = name0;
                 break;
+              }
+            } else if (offset) {
+              if (s1->st_value <= vaddr) {
+                uint64_t offset0 = vaddr - s1->st_value;
+                if (offset0 < *offset) {
+                  prevname = ecget_namebyoffset(p, s0->sh_link, s1->st_name);
+                }
               }
             }
           }
@@ -1018,7 +1031,7 @@ static const char* _ecget_name32byaddr0(const pbuffer_t p, const uint64_t vaddr,
       }
     }
 
-    if (isarm32thumb) {
+    if (isneeded) {
       handle_t f = fgetbyshdr(p, s0);
       if (f) {
         for (size_t j = 0; j < cnt; ++j) {
@@ -1028,12 +1041,12 @@ static const char* _ecget_name32byaddr0(const pbuffer_t p, const uint64_t vaddr,
             uint32_t st_bind = ELF_ST_BIND(s1->st_info);
             uint32_t st_type = ELF_ST_TYPE(s1->st_info);
             if (STT_SECTION != st_type && STT_NOTYPE != st_type && STT_FILE != st_type) {
-//printf("[%x:%s]\n", st->st_value, ecget_namebyoffset(p, sh->sh_link, st->st_name));
+//printf("[%x:%s]\n", s1->st_value, ecget_namebyoffset(p, s0->sh_link, s1->st_name));
               if (s1->st_value == (vaddr + 1)) {
                 const char* name0 = ecget_namebyoffset(p, s0->sh_link, s1->st_name);
 //printf("+++[A:%lx:%s]+++", vaddr, name0);
-                if (name0 && 0 != xstrcmp(name0, "$a") && 0 != xstrcmp(name0, "$d") && 0 != xstrcmp(name0, "$t")) {
-                  name = name0;
+                if (name0 && !checksec(p, name0)) {
+                  currname = name0;
                   break;
                 }
               }
@@ -1041,8 +1054,8 @@ static const char* _ecget_name32byaddr0(const pbuffer_t p, const uint64_t vaddr,
               if (s1->st_value == (vaddr + 1)) {
                 const char* name0 = ecget_namebyoffset(p, s0->sh_link, s1->st_name);
 //printf("+++[B:%lx:%s]+++", vaddr, name0);
-                if (name0 && 0 != xstrcmp(name0, "$a") && 0 != xstrcmp(name0, "$d") && 0 != xstrcmp(name0, "$t")) {
-                  name = name0;
+                if (name0 && checksec(p, name0)) {
+                  currname = name0;
                   break;
                 }
               }
@@ -1054,7 +1067,7 @@ static const char* _ecget_name32byaddr0(const pbuffer_t p, const uint64_t vaddr,
       }
     }
 
-    return name && name[0] ? name : NULL;
+    return currname && currname[0] ? currname : NULL;
   }
 
   return NULL;
