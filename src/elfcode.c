@@ -988,15 +988,21 @@ static const char* _ecget_name32byaddr0(const pbuffer_t p, const uint64_t vaddr,
                 }
               }
             } else if (s1->st_value == vaddr) {
-//printf("+++%x+++", vaddr);
-              name = ecget_namebyoffset(p, s0->sh_link, s1->st_name);
-              break;
+              const char* name0 = ecget_namebyoffset(p, s0->sh_link, s1->st_name);
+//printf("+++[A:%lx:%s]+++", vaddr, name0);
+              if (name0 && '$' != name0[0]) {
+                name = name0;
+                break;
+              }
             }
           } else if (STT_NOTYPE == st_type && (STB_GLOBAL == st_bind || STB_LOCAL == st_bind)) {
             if (s1->st_value == vaddr) {
-//printf("+++%x+++", vaddr);
-              name = ecget_namebyoffset(p, s0->sh_link, s1->st_name);
-              break;
+              const char* name0 = ecget_namebyoffset(p, s0->sh_link, s1->st_name);
+//printf("+++[B:%lx:%s]+++", vaddr, name0);
+              if (name0 && '$' != name0[0]) {
+                name = name0;
+                break;
+              }
             }
           }
 
@@ -1152,24 +1158,24 @@ static const char* _ecget_name32byaddr2(const pbuffer_t p, const uint64_t vaddr,
 }
 
 const char* _ecget_name32byaddr(const pbuffer_t p, const uint64_t vaddr, uint64_t *offset) {
-  const char* name = _ecget_name32byaddr0(p, vaddr, NULL);
-  if (NULL == name) {
-    name = _ecget_name32byaddr0(p, vaddr + 1, NULL);
+  const char* name0 = _ecget_name32byaddr0(p, vaddr, NULL);
+  const char* name1 = _ecget_name32byaddr2(p, vaddr, NULL);
+
+  if (NULL == name0 && name1) {
+    name0 = _ecget_name32byaddr0(p, vaddr + 1, NULL);
   }
 
-  if (NULL == name) {
-    name = _ecget_name32byaddr1(p, vaddr, NULL);
+  if (NULL == name0) {
+    name0 = _ecget_name32byaddr1(p, vaddr, NULL);
   }
-  if (NULL == name) {
-    name = _ecget_name32byaddr2(p, vaddr, NULL);
-  }
-  if (NULL == name && offset) {
+
+  if (NULL == name0 && offset) {
     uint64_t offset0 = UINT_MAX;
-    name = _ecget_name32byaddr0(p, vaddr, &offset0);
+    name0 = _ecget_name32byaddr0(p, vaddr, &offset0);
     *offset = offset0;
   }
 
-  return name;
+  return name0 ? name0 : name1;
 }
 
 static const char* _ecget_name64byaddr0(const pbuffer_t p, const uint64_t vaddr, uint64_t *offset) {
@@ -1361,23 +1367,24 @@ static const char* _ecget_name64byaddr2(const pbuffer_t p, const uint64_t vaddr,
 }
 
 const char* _ecget_name64byaddr(const pbuffer_t p, const uint64_t vaddr, uint64_t *offset) {
-  const char* name = _ecget_name64byaddr0(p, vaddr, NULL);
-  if (NULL == name) {
-    name = _ecget_name64byaddr0(p, vaddr + 1, NULL);
+  const char* name0 = _ecget_name64byaddr0(p, vaddr, NULL);
+  const char* name1 = _ecget_name64byaddr2(p, vaddr, NULL);
+
+  if (NULL == name0 && name1) {
+    name0 = _ecget_name64byaddr0(p, vaddr + 1, NULL);
   }
-  if (NULL == name) {
-    name = _ecget_name64byaddr1(p, vaddr, NULL);
+
+  if (NULL == name0) {
+    name0 = _ecget_name64byaddr1(p, vaddr, NULL);
   }
-  if (NULL == name) {
-    name = _ecget_name64byaddr2(p, vaddr, NULL);
-  }
-  if (NULL == name && offset) {
+
+  if (NULL == name0 && offset) {
     uint64_t offset0 = UINT_MAX;
-    name = _ecget_name64byaddr0(p, vaddr, &offset0);
+    name0 = _ecget_name64byaddr0(p, vaddr, &offset0);
     *offset = offset0;
   }
 
-  return name;
+  return name0 ? name0 : name1;
 }
 
 const char* ecget_nhdrnamebyindex(const pbuffer_t p, const int index) {
