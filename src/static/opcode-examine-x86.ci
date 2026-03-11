@@ -591,9 +591,6 @@ static oestruct_t oeSIZEPTRS_x86_64[] = {
 };
 
 static convert_t oeINSTRUCTIONFLAGS_x86_64[] = {
-  {"ALIGNED",           OCINSNX86_ALIGNED},
-  {"UNALIGNED",         OCINSNX86_UNALIGNED},
-
   {"NOCHECK",           OCINSNX86_NOCHECK},
   {"NOTRACK",           OCINSNX86_NOTRACK},
 
@@ -613,6 +610,8 @@ static convert_t oeINSTRUCTIONFLAGS_x86_64[] = {
   {"ADDRESS",           OCINSN_ADDRESS},
   {"IMMEDIATE",         OCINSN_IMMEDIATE},
   {"REGISTER",          OCINSN_REGISTER},
+  {"ALIGNED",           OCINSN_ALIGNED},
+  {"UNALIGNED",         OCINSN_UNALIGNED},
 
   {"LT",                OCINSN_LT},
   {"RT",                OCINSN_RT},
