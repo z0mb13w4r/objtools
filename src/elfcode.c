@@ -1246,7 +1246,7 @@ static const char* _ecget_name64byaddr0(const pbuffer_t p, const uint64_t vaddr,
 //printf("+++%lx:%ld:%lx+++\n", vaddr, j, s1->st_value);
           uint32_t st_bind = ELF_ST_BIND(s1->st_info);
           uint32_t st_type = ELF_ST_TYPE(s1->st_info);
-          if (STT_SECTION != st_type && STT_NOTYPE != st_type && STT_FILE != st_type) {
+          if (STT_SECTION != st_type && STT_NOTYPE != st_type && STT_FILE != st_type && SHN_ABS != s1->st_shndx) {
             if (offset) {
               if (s1->st_value <= vaddr) {
                 uint64_t offset0 = vaddr - s1->st_value;
