@@ -304,6 +304,10 @@ bool_t ocuse_insn(handle_t p, const uint64_t insn) {
     case EM_X86_64:
       return 0xcc != insn && 0x90 != insn && 0x00 != insn;
 
+    case EM_MIPS:
+    case EM_MIPS_RS3_LE:
+      return 0x00 != insn;
+
     default:
       return TRUE;
     }
