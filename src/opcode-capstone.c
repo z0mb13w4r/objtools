@@ -352,13 +352,33 @@ int capstone_raw3(handle_t p, handle_t s, unknown_t data, const size_t size, con
 
     size_t   caddrsize = ocget_archsize(p) / 8;
     uint64_t caddr = vaddr;
+    uint64_t mskip = 0;
+    uint64_t nskip = 0;
+
     for (size_t k = 0; k < size; ) {
       cs_insn *insn = NULL;
       size_t count = cs_disasm(oc->cs, p0, caddrsize, caddr, 0, &insn);
       if (count > 0) {
         for (size_t i = 0; i < count; ++i) {
           if (ocuse_vaddr(p, insn[i].address)) {
-            n += capstone_printf0(p, insn[i].bytes, insn[i].mnemonic, insn[i].op_str, insn[i].size, insn[i].address);
+            int n1 = 0;
+            int n2 = 0;
+            uint64_t mcode = ocmake_uNN(p, insn[i].bytes, insn[i].size);
+            if (nskip && mskip != mcode) {
+              if (nskip > 1) {
+                n1 += printf_text(">>>>>>>>", USE_LT | USE_SPACE | USE_COLON);
+                n1 += printf_eol();
+              }
+              nskip = 0;
+            }
+            if (0 == nskip) {
+              n2 += capstone_printf0(p, insn[i].bytes, insn[i].mnemonic, insn[i].op_str, insn[i].size, insn[i].address);
+            }
+            if (!ocuse_insn(p, mcode)) {
+              mskip = mcode;
+              ++nskip;
+            }
+            n += n1 + n2;
           }
 
           k += insn[i].size;
