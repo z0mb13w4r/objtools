@@ -1056,6 +1056,22 @@ uint64_t ocmake_u64(handle_t p, const uchar_t v0, const uchar_t v1, const uchar_
          MODE_PUT4(CAST(uint64_t, v4)) | MODE_PUT5(CAST(uint64_t, v5)) | MODE_PUT6(CAST(uint64_t, v6)) | MODE_PUT7(CAST(uint64_t, v7));
 }
 
+uint64_t ocmake_uNN(handle_t p, const puchar_t mcode, const size_t size) {
+  if (mcode && size) {
+    if (size >= 8) {
+      return ocmake_u64(p, mcode[0], mcode[1], mcode[2], mcode[3], mcode[4], mcode[5], mcode[6], mcode[7]);
+    } else if (size >= 4) {
+      return ocmake_u32(p, mcode[0], mcode[1], mcode[2], mcode[3]);
+    } else if (size >= 2) {
+      return ocmake_u16(p, mcode[0], mcode[1]);
+    }
+
+    return mcode[0];
+  }
+
+  return 0;
+}
+
 handle_t ocmalloc() {
   popcode_t p = xmalloc(sizeof(opcode_t), MODE_HEAP);
   if (p) {
