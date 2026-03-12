@@ -299,6 +299,9 @@ int capstone_raw2(handle_t p, handle_t s, unknown_t data, const size_t size, con
     int curr_state = core_state;
     int prev_state = core_state;
 
+    uint64_t mskip = 0;
+    uint64_t nskip = 0;
+
     int evilcount = 0;
     for (size_t k = 0; k < size; ) {
       cs_insn *insn = NULL;
@@ -306,7 +309,24 @@ int capstone_raw2(handle_t p, handle_t s, unknown_t data, const size_t size, con
       if (count > 0) {
         for (size_t i = 0; i < count; ++i) {
           if (ocuse_vaddr(p, insn[i].address)) {
-            n += capstone_printf0(p, insn[i].bytes, insn[i].mnemonic, insn[i].op_str, insn[i].size, insn[i].address);
+            int n1 = 0;
+            int n2 = 0;
+            uint64_t mcode = ocmake_uNN(p, insn[i].bytes, insn[i].size);
+            if (nskip && mskip != mcode) {
+              if (nskip > 1) {
+                n1 += printf_text(">>>>>>>>", USE_LT | USE_SPACE | USE_COLON);
+                n1 += printf_eol();
+              }
+              nskip = 0;
+            }
+            if (0 == nskip) {
+              n2 += capstone_printf0(p, insn[i].bytes, insn[i].mnemonic, insn[i].op_str, insn[i].size, insn[i].address);
+            }
+            if (!ocuse_insn(p, mcode)) {
+              mskip = mcode;
+              ++nskip;
+            }
+            n += n1 + n2;
           }
 
           k += insn[i].size;
