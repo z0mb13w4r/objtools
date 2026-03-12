@@ -665,7 +665,6 @@ static convert_t oeINSTRUCTIONNAMES_x86_64[] = {
   {"TEST",              OCINSN_MASK(OCINSNX86_TEST)},
   {"CMPXCHG",           OCINSN_MASK(OCINSNX86_CMPXCHG)},
   {"CMP",               OCINSN_MASK(OCINSNX86_CMP)},
-  {"COMISD",            OCINSN_MASK(OCINSNX86_COMISD)},
   {"LEAVE",             OCINSN_MASK(OCINSNX86_LEAVE)},
   {"RET",               OCINSN_MASK(OCINSNX86_RET)},
   {"HLT",               OCINSN_MASK(OCINSNX86_HLT)},
