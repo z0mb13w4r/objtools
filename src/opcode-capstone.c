@@ -190,23 +190,26 @@ int capstone_raw0(handle_t p, handle_t s, unknown_t data, const size_t size, con
     cs_insn *insn = NULL;
     size_t count = cs_disasm(oc->cs, data, size, vaddr, 0, &insn);
     if (count > 0) {
-      bool_t bskip = FALSE;
-      uchar_t iskip = 0;
+      uint64_t mskip = 0;
+      uint64_t nskip = 0;
       for (size_t i = 0; i < count; ++i) {
         if (ocuse_vaddr(p, insn[i].address)) {
           int n1 = 0;
           int n2 = 0;
-          if (bskip && iskip != insn[i].bytes[0]) {
-            n1 += printf_text(">>>>>>>>", USE_LT | USE_SPACE | USE_COLON);
-            n1 += printf_eol();
-            bskip = FALSE;
+          uint64_t mcode = ocmake_uNN(p, insn[i].bytes, insn[i].size);
+          if (nskip && mskip != mcode) {
+            if (nskip > 1) {
+              n1 += printf_text(">>>>>>>>", USE_LT | USE_SPACE | USE_COLON);
+              n1 += printf_eol();
+            }
+            nskip = 0;
           }
-          if (!bskip) {
+          if (0 == nskip) {
             n2 += capstone_printf0(p, insn[i].bytes, insn[i].mnemonic, insn[i].op_str, insn[i].size, insn[i].address);
           }
-          if (!ocuse_insn(p, insn[i].bytes[0])) {
-            iskip = insn[i].bytes[0];
-            bskip = TRUE;
+          if (!ocuse_insn(p, mcode)) {
+            mskip = mcode;
+            ++nskip;
           }
           n += n1 + n2;
         }
