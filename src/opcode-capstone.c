@@ -232,6 +232,9 @@ int capstone_raw1(handle_t p, handle_t s, unknown_t data, const size_t size, con
     uint64_t caddr = vaddr;
     size_t   caddrsize = 4;
 
+    uint64_t mskip = 0;
+    uint64_t nskip = 0;
+
     char prev_state = 'a';
     for (size_t k = 0; k < size; ) {
       char curr_state = echeck_sectionthumbs(thumbs, siz, caddr);
@@ -262,7 +265,24 @@ int capstone_raw1(handle_t p, handle_t s, unknown_t data, const size_t size, con
               next_state = next_state ? next_state : prev_state;
               if (next_state != curr_state) break;
 
-              n += capstone_printf0(p, insn[i].bytes, insn[i].mnemonic, insn[i].op_str, insn[i].size, insn[i].address);
+              int n1 = 0;
+              int n2 = 0;
+              uint64_t mcode = ocmake_uNN(p, insn[i].bytes, insn[i].size);
+              if (nskip && mskip != mcode) {
+                if (nskip > 1) {
+                  n1 += printf_text(">>>>>>>>", USE_LT | USE_SPACE | USE_COLON);
+                  n1 += printf_eol();
+                }
+                nskip = 0;
+              }
+              if (0 == nskip) {
+                n2 += capstone_printf0(p, insn[i].bytes, insn[i].mnemonic, insn[i].op_str, insn[i].size, insn[i].address);
+              }
+              if (!ocuse_insn(p, mcode)) {
+                mskip = mcode;
+                ++nskip;
+              }
+              n += n1 + n2;
             }
 
             k += insn[i].size;
