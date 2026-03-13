@@ -81,7 +81,7 @@ int dump_actions2(const pbuffer_t p, const poptions_t o, const handle_t s, const
     n += printf_text("String dump of section", USE_LT);
     n += printf_text(name, USE_LT | USE_SPACE | USE_SQ | USE_COLON | USE_EOL);
   } else if (ACT_DISASSEMBLE == action) {
-    n += printf_text("Disassemble of section", USE_LT);
+    n += printf_text("Disassembly of section", USE_LT);
     n += printf_text(name, USE_LT | USE_SPACE | USE_SQ | USE_COLON | USE_EOL);
 
     ocdisassemble_open(oc, o);

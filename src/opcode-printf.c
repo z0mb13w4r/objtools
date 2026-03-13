@@ -374,6 +374,8 @@ int opcode_printf_source(handle_t p, const uint64_t vaddr) {
       if (MODE_ISANY(oc->action, OPTPROGRAM_LINE_NUMBERS) && issp) {
         n += printf_yoke(name, "()", USE_LT | USE_COLON | USE_EOL);
       }
+
+      oc->prev_name = curr_name;
     }
 
     if (MODE_ISANY(oc->action, OPTPROGRAM_LINE_NUMBERS)) {
@@ -394,7 +396,6 @@ int opcode_printf_source(handle_t p, const uint64_t vaddr) {
         oc->prev_discriminator = curr_discriminator;
         oc->prev_sourcecode = curr_sourcecode;
         oc->prev_source = curr_source;
-        oc->prev_name = curr_name;
       }
     }
 
