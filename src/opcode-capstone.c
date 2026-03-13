@@ -444,6 +444,22 @@ int capstone_raw3(handle_t p, handle_t s, unknown_t data, const size_t size, con
   return n;
 }
 
+int capstone_rawX(handle_t p, handle_t s, unknown_t data, const size_t size, const uint64_t vaddr) {
+  if (isopcode(p)) {
+    if (EM_MIPS == ocget_machine(p) || EM_MIPS_RS3_LE == ocget_machine(p)) {
+      return capstone_raw3(p, s, data, size, vaddr);
+    } else if (EM_RISCV == ocget_machine(p)) {
+      return capstone_raw2(p, s, data, size, vaddr);
+    } else if (ecmake_sectionthumbs(ocget(p, OPCODE_RAWDATA), NULL, 0)) {
+      return capstone_raw1(p, s, data, size, vaddr);
+    }
+
+    return capstone_raw0(p, s, data, size, vaddr);
+  }
+
+  return 0;
+}
+
 int capstone_run(handle_t p, handle_t s) {
   int n = 0;
   if (isopcode(p) && isopshdr(s)) {
@@ -452,15 +468,7 @@ int capstone_run(handle_t p, handle_t s) {
 
     if (p0) {
       if (bfd_get_section_contents(ocget(p, OPCODE_BFD), ocget(s, MODE_OCSHDR), p0, 0, sz)) {
-        if (EM_MIPS == ocget_machine(p) || EM_MIPS_RS3_LE == ocget_machine(p)) {
-          n += capstone_raw3(p, s, p0, sz, ocget_vmaddress(s));
-        } else if (EM_RISCV == ocget_machine(p)) {
-          n += capstone_raw2(p, s, p0, sz, ocget_vmaddress(s));
-        } else if (ecmake_sectionthumbs(ocget(p, OPCODE_RAWDATA), NULL, 0)) {
-          n += capstone_raw1(p, s, p0, sz, ocget_vmaddress(s));
-        } else {
-          n += capstone_raw0(p, s, p0, sz, ocget_vmaddress(s));
-        }
+        n += capstone_raw0(p, s, p0, sz, ocget_vmaddress(s));
       }
 
       xfree(p0);
@@ -468,7 +476,10 @@ int capstone_run(handle_t p, handle_t s) {
   } else if (isopcode(p) && ismodeNXXN(s, MODE_OCSHDRWRAP)) {
     const size_t sz = ocget_size(s);
     if (0 != sz) {
-      n += capstone_raw0(p, s, getp(ocget(p, OPCODE_RAWDATA), ocget_offset(s), sz), sz, ocget_vmaddress(s));
+      unknown_t p0 = getp(ocget(p, OPCODE_RAWDATA), ocget_offset(s), sz);
+      if (p0) {
+        n += capstone_rawX(p, s, p0, sz, ocget_vmaddress(s));
+      }
     }
   }
 
