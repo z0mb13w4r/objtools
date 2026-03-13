@@ -694,7 +694,6 @@ static convert_t oeINSTRUCTIONNAMES_x86_64[] = {
   {"OUTS",              OCINSN_MASK(OCINSNX86_OUTS)},
   {"FINIT",             OCINSN_MASK(OCINSNX86_FINIT)},
   {"BSWAP",             OCINSN_MASK(OCINSNX86_BSWAP)},
-  {"BSF",               OCINSN_MASK(OCINSNX86_BSF)},
   {"SHAx",              OCINSN_MASK(OCINSNX86_SHA1x)},
   {"PADDx",             OCINSN_MASK(OCINSNX86_PADDx)},
   {"PEXTRx",            OCINSN_MASK(OCINSNX86_PEXTRx)},
