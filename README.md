@@ -16,7 +16,7 @@ This suite of tools was inspired by a problem I encountered while comparing two 
 
 **objhash-ng** generates hashes of ELF format object files for malware detection and digital forensics. The utility is capable of fuzz-hashing and context-triggered piecewise hashing.
 
-**readelf-ng** displays information about one or more ELF format object files. [Wiki...](https://github.com/z0mb13w4r/objtools/wiki/readelf%E2%80%90ng)
+**readelf-ng** displays information about one or more ELF format object files. [MORE INFO...](https://github.com/z0mb13w4r/objtools/wiki/readelf%E2%80%90ng)
 
 **readpe-ng** displays information about one or more PE format object files.
 
