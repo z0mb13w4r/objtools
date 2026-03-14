@@ -51,28 +51,32 @@ static int get_csarch(handle_t p, handle_t o) {
   return CS_ARCH_X86;
 }
 
+static int get_csendian(handle_t p, const int csmode) {
+  return ocisBE(p) ? csmode | CS_MODE_BIG_ENDIAN : csmode | CS_MODE_LITTLE_ENDIAN;
+}
+
 static int get_csmode(handle_t p, handle_t o) {
   if (isoptions(o)) {
     poptions_t op = CAST(poptions_t, o);
     switch (OPTDISASSEMBLE_GET(op->ocdump)) {
-    case OPTDISASSEMBLE_I386:      return CS_MODE_32;
-    case OPTDISASSEMBLE_I8086:     return CS_MODE_16;
-    case OPTDISASSEMBLE_X86_64:    return CS_MODE_64;
-    case OPTDISASSEMBLE_ARM32:     return CS_MODE_ARM;
-    case OPTDISASSEMBLE_ARM64:     return ocisLE(p) ? CS_MODE_LITTLE_ENDIAN : CS_MODE_BIG_ENDIAN;
-    case OPTDISASSEMBLE_RISCV32:   return CS_MODE_RISCV32;
-    case OPTDISASSEMBLE_RISCV64:   return CS_MODE_RISCV64;
-    case OPTDISASSEMBLE_MIPS1:     return CS_MODE_MIPS1;
-    case OPTDISASSEMBLE_MIPS2:     return CS_MODE_MIPS2;
-    case OPTDISASSEMBLE_MIPS3:     return CS_MODE_MIPS3;
-    case OPTDISASSEMBLE_MIPS4:     return CS_MODE_MIPS4;
-    case OPTDISASSEMBLE_MIPS5:     return CS_MODE_MIPS5;
-    case OPTDISASSEMBLE_MIPS32:    return CS_MODE_MIPS32;
-    case OPTDISASSEMBLE_MIPS32R2:  return CS_MODE_MIPS32R2;
-    case OPTDISASSEMBLE_MIPS32R6:  return CS_MODE_MIPS32R6;
-    case OPTDISASSEMBLE_MIPS64:    return CS_MODE_MIPS64;
-    case OPTDISASSEMBLE_MIPS64R2:  return CS_MODE_MIPS64R2;
-    case OPTDISASSEMBLE_MIPS64R6:  return CS_MODE_MIPS64R6;
+    case OPTDISASSEMBLE_I386:      return get_csendian(p, CS_MODE_32);
+    case OPTDISASSEMBLE_I8086:     return get_csendian(p, CS_MODE_16);
+    case OPTDISASSEMBLE_X86_64:    return get_csendian(p, CS_MODE_64);
+    case OPTDISASSEMBLE_ARM32:     return get_csendian(p, CS_MODE_ARM);
+    case OPTDISASSEMBLE_ARM64:     return get_csendian(p, CS_MODE_ARM);
+    case OPTDISASSEMBLE_RISCV32:   return get_csendian(p, CS_MODE_RISCV32);
+    case OPTDISASSEMBLE_RISCV64:   return get_csendian(p, CS_MODE_RISCV64);
+    case OPTDISASSEMBLE_MIPS1:     return get_csendian(p, CS_MODE_MIPS1);
+    case OPTDISASSEMBLE_MIPS2:     return get_csendian(p, CS_MODE_MIPS2);
+    case OPTDISASSEMBLE_MIPS3:     return get_csendian(p, CS_MODE_MIPS3);
+    case OPTDISASSEMBLE_MIPS4:     return get_csendian(p, CS_MODE_MIPS4);
+    case OPTDISASSEMBLE_MIPS5:     return get_csendian(p, CS_MODE_MIPS5);
+    case OPTDISASSEMBLE_MIPS32:    return get_csendian(p, CS_MODE_MIPS32);
+    case OPTDISASSEMBLE_MIPS32R2:  return get_csendian(p, CS_MODE_MIPS32R2);
+    case OPTDISASSEMBLE_MIPS32R6:  return get_csendian(p, CS_MODE_MIPS32R6);
+    case OPTDISASSEMBLE_MIPS64:    return get_csendian(p, CS_MODE_MIPS64);
+    case OPTDISASSEMBLE_MIPS64R2:  return get_csendian(p, CS_MODE_MIPS64R2);
+    case OPTDISASSEMBLE_MIPS64R6:  return get_csendian(p, CS_MODE_MIPS64R6);
     default:
       break;
     }
