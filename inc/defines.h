@@ -142,6 +142,10 @@
 
 #define MODE_MASK0              (0x00ffffff)
 #define MODE_MASK1              (0xff000000)
+#define MODE_MASK2(x)           ((x) & 0x03)
+#define MODE_MASK3(x)           ((x) & 0x07)
+#define MODE_MASK4(x)           ((x) & 0x0f)
+#define MODE_MASK6(x)           ((x) & 0x3f)
 #define MODE_MASK8(x)           ((x) & 0xff)
 #define MODE_MASK16(x)          ((x) & 0xffff)
 #define MODE_MASK24(x)          ((x) & 0xffffff)
@@ -158,6 +162,17 @@
 #define MODE_ISLOCKED16(x,y)    (MODE_MASK16(x) == MODE_MASK16(y))
 #define MODE_ISLOCKED24(x,y)    (MODE_MASK24(x) == MODE_MASK24(y))
 #define MODE_ISLOCKED32(x,y)    (MODE_MASK32(x) == MODE_MASK32(y))
+
+#define GET_XX2(x,y)            ((x) & (0x03 << (y)))
+#define SET_XX2(x,y)            (MODE_MASK2(x) << (y))
+#define GET_XX3(x,y)            ((x) & (0x07 << (y)))
+#define SET_XX3(x,y)            (MODE_MASK3(x) << (y))
+#define GET_XX4(x,y)            ((x) & (0x0f << (y)))
+#define SET_XX4(x,y)            (MODE_MASK4(x) << (y))
+#define GET_XX6(x,y)            ((x) & (0x3f << (y)))
+#define SET_XX6(x,y)            (MODE_MASK6(x) << (y))
+#define GET_XX8(x,y)            ((x) & (0xff << (y)))
+#define SET_XX8(x,y)            (MODE_MASK8(x) << (y))
 
 typedef uint64_t addrz_t;
 typedef uint64_t maskz_t;

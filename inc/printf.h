@@ -97,17 +97,6 @@
 #define USE_SLEB128       (28)
 #define USE_ULEB128       (29)
 
-#define GET_XX2(x,y)      ((x) & (0x03 << (y)))
-#define SET_XX2(x,y)      (((x) & 0x03) << (y))
-#define GET_XX3(x,y)      ((x) & (0x07 << (y)))
-#define SET_XX3(x,y)      (((x) & 0x07) << (y))
-#define GET_XX4(x,y)      ((x) & (0x0f << (y)))
-#define SET_XX4(x,y)      (((x) & 0x0f) << (y))
-#define GET_XX6(x,y)      ((x) & (0x3f << (y)))
-#define SET_XX6(x,y)      (((x) & 0x3f) << (y))
-#define GET_XX8(x,y)      ((x) & (0xff << (y)))
-#define SET_XX8(x,y)      (((x) & 0xff) << (y))
-
 #define GET_PAD(x)        GET_XX8(x, 0)
 #define SET_PAD(x)        SET_XX8(x, 0)
 #define GET_STYLE(x)      GET_XX8(x, 0)
