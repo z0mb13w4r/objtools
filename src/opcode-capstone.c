@@ -21,6 +21,18 @@ static int get_csarch(handle_t p, handle_t o) {
     case OPTDISASSEMBLE_RISCV32:
     case OPTDISASSEMBLE_RISCV64:
       return CS_ARCH_RISCV;
+    case OPTDISASSEMBLE_MIPS1:
+    case OPTDISASSEMBLE_MIPS2:
+    case OPTDISASSEMBLE_MIPS3:
+    case OPTDISASSEMBLE_MIPS4:
+    case OPTDISASSEMBLE_MIPS5:
+    case OPTDISASSEMBLE_MIPS32:
+    case OPTDISASSEMBLE_MIPS32R2:
+    case OPTDISASSEMBLE_MIPS32R6:
+    case OPTDISASSEMBLE_MIPS64:
+    case OPTDISASSEMBLE_MIPS64R2:
+    case OPTDISASSEMBLE_MIPS64R6:
+      return CS_ARCH_MIPS;
     }
   }
 
@@ -49,7 +61,18 @@ static int get_csmode(handle_t p, handle_t o) {
     case OPTDISASSEMBLE_ARM32:     return CS_MODE_ARM;
     case OPTDISASSEMBLE_ARM64:     return ocisLE(p) ? CS_MODE_LITTLE_ENDIAN : CS_MODE_BIG_ENDIAN;
     case OPTDISASSEMBLE_RISCV32:   return CS_MODE_RISCV32;
-    case OPTDISASSEMBLE_RISCV64:   return CS_MODE_RISCV32;
+    case OPTDISASSEMBLE_RISCV64:   return CS_MODE_RISCV64;
+    case OPTDISASSEMBLE_MIPS1:     return CS_MODE_MIPS1;
+    case OPTDISASSEMBLE_MIPS2:     return CS_MODE_MIPS2;
+    case OPTDISASSEMBLE_MIPS3:     return CS_MODE_MIPS3;
+    case OPTDISASSEMBLE_MIPS4:     return CS_MODE_MIPS4;
+    case OPTDISASSEMBLE_MIPS5:     return CS_MODE_MIPS5;
+    case OPTDISASSEMBLE_MIPS32:    return CS_MODE_MIPS32;
+    case OPTDISASSEMBLE_MIPS32R2:  return CS_MODE_MIPS32R2;
+    case OPTDISASSEMBLE_MIPS32R6:  return CS_MODE_MIPS32R6;
+    case OPTDISASSEMBLE_MIPS64:    return CS_MODE_MIPS64;
+    case OPTDISASSEMBLE_MIPS64R2:  return CS_MODE_MIPS64R2;
+    case OPTDISASSEMBLE_MIPS64R6:  return CS_MODE_MIPS64R6;
     default:
       break;
     }
@@ -72,7 +95,7 @@ static int get_csmode(handle_t p, handle_t o) {
     case EF_MIPS_ARCH_1:             csmode = CS_MODE_MIPS1;         break;
     case EF_MIPS_ARCH_2:             csmode = CS_MODE_MIPS2;         break;
     case EF_MIPS_ARCH_3:             csmode = CS_MODE_MIPS3;         break;
-    case EF_MIPS_ARCH_4:             csmode = CS_MODE_MIPS4;;        break;
+    case EF_MIPS_ARCH_4:             csmode = CS_MODE_MIPS4;         break;
     case EF_MIPS_ARCH_5:             csmode = CS_MODE_MIPS5;         break;
     case EF_MIPS_ARCH_32:            csmode = CS_MODE_MIPS32;        break;
     case EF_MIPS_ARCH_32R2:          csmode = CS_MODE_MIPS32R2;      break;
