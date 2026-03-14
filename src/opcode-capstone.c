@@ -9,13 +9,17 @@
 static int get_csarch(handle_t p, handle_t o) {
   if (isoptions(o)) {
     poptions_t op = CAST(poptions_t, o);
-    if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_X86_64 | OPTDISASSEMBLE_I386 | OPTDISASSEMBLE_I8086)) {
+    switch (OPTDISASSEMBLE_GET(op->ocdump)) {
+    case OPTDISASSEMBLE_I386:
+    case OPTDISASSEMBLE_I8086:
+    case OPTDISASSEMBLE_X86_64:
       return CS_ARCH_X86;
-    } else if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_ARM32)) {
+    case OPTDISASSEMBLE_ARM32:
       return CS_ARCH_ARM;
-    } else if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_ARM64)) {
+    case OPTDISASSEMBLE_ARM64:
       return CS_ARCH_AARCH64;
-    } else if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_RISCV32 | OPTDISASSEMBLE_RISCV64)) {
+    case OPTDISASSEMBLE_RISCV32:
+    case OPTDISASSEMBLE_RISCV64:
       return CS_ARCH_RISCV;
     }
   }
@@ -38,13 +42,17 @@ static int get_csarch(handle_t p, handle_t o) {
 static int get_csmode(handle_t p, handle_t o) {
   if (isoptions(o)) {
     poptions_t op = CAST(poptions_t, o);
-    if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_X86_64))        return CS_MODE_64;
-    else if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_I386))     return CS_MODE_32;
-    else if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_I8086))    return CS_MODE_16;
-    else if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_ARM32))    return CS_MODE_ARM;
-    else if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_ARM64))    return ocisLE(p) ? CS_MODE_LITTLE_ENDIAN : CS_MODE_BIG_ENDIAN;
-    else if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_RISCV64))  return CS_MODE_RISCV64;
-    else if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_RISCV32))  return CS_MODE_RISCV32;
+    switch (OPTDISASSEMBLE_GET(op->ocdump)) {
+    case OPTDISASSEMBLE_I386:      return CS_MODE_32;
+    case OPTDISASSEMBLE_I8086:     return CS_MODE_16;
+    case OPTDISASSEMBLE_X86_64:    return CS_MODE_64;
+    case OPTDISASSEMBLE_ARM32:     return CS_MODE_ARM;
+    case OPTDISASSEMBLE_ARM64:     return ocisLE(p) ? CS_MODE_LITTLE_ENDIAN : CS_MODE_BIG_ENDIAN;
+    case OPTDISASSEMBLE_RISCV32:   return CS_MODE_RISCV32;
+    case OPTDISASSEMBLE_RISCV64:   return CS_MODE_RISCV32;
+    default:
+      break;
+    }
   }
 
   const uint64_t type = ocget_type(p);

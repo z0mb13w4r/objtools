@@ -99,20 +99,6 @@ int opcodelib_open(handle_t p, handle_t o) {
           di->disassembler_options = args = opcodelib_strncat(args, "intel",   ",", MAXSIZE);
         }
 
-        if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_X86_64)) {
-          di->disassembler_options = args = opcodelib_strncat(args, "x86-64",  ",", MAXSIZE);
-        } else if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_I386)) {
-          di->disassembler_options = args = opcodelib_strncat(args, "i386",    ",", MAXSIZE);
-        } else if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_I8086)) {
-          di->disassembler_options = args = opcodelib_strncat(args, "i8086",   ",", MAXSIZE);
-        }
-
-        if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_AMD64)) {
-          di->disassembler_options = args = opcodelib_strncat(args, "amd64",   ",", MAXSIZE);
-        } else if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_INTEL64)) {
-          di->disassembler_options = args = opcodelib_strncat(args, "intel64", ",", MAXSIZE);
-        }
-
         if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_ADDR16)) {
           di->disassembler_options = opcodelib_strncat(args, "addr16", ",", MAXSIZE);
         } else if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_ADDR32)) {
@@ -125,6 +111,26 @@ int opcodelib_open(handle_t p, handle_t o) {
           di->disassembler_options = opcodelib_strncat(args, "data16", ",", MAXSIZE);
         } else if (MODE_ISANY(op->ocdump, OPTDISASSEMBLE_DATA32)) {
           di->disassembler_options = opcodelib_strncat(args, "data32", ",", MAXSIZE);
+        }
+
+        switch (OPTDISASSEMBLE_GET(op->ocdump)) {
+        case OPTDISASSEMBLE_X86_64:
+          di->disassembler_options = args = opcodelib_strncat(args, "x86-64",  ",", MAXSIZE);
+          break;
+        case OPTDISASSEMBLE_I386:
+          di->disassembler_options = args = opcodelib_strncat(args, "i386",    ",", MAXSIZE);
+          break;
+        case OPTDISASSEMBLE_I8086:
+          di->disassembler_options = args = opcodelib_strncat(args, "i8086",   ",", MAXSIZE);
+          break;
+        case OPTDISASSEMBLE_AMD64:
+          di->disassembler_options = args = opcodelib_strncat(args, "amd64",   ",", MAXSIZE);
+          break;
+        case OPTDISASSEMBLE_INTEL64:
+          di->disassembler_options = args = opcodelib_strncat(args, "intel64", ",", MAXSIZE);
+          break;
+        default:
+          break;
         }
 
         if (bfd_big_endian(bf))          di->endian_code = di->display_endian = di->endian = BFD_ENDIAN_BIG;
