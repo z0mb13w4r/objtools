@@ -1,4 +1,4 @@
-.TH OBJDUMP-NG "1" "February 2026" "objtools 1.2" "User Commands"
+.TH OBJDUMP-NG "1" "March 2026" "objtools 1.3" "User Commands"
 .SH NAME
 objdump-ng: display information about ELF and PE files.
 
@@ -378,17 +378,43 @@ Select the AT&T syntax mode.
 .IX Item "intel"
 .PD
 Select the Intel syntax mode.
-.ie n .IP """x86-64""" 4
-.IX Item "x86-64"
+.ie n .IP """arm32""" 4
+.IX Item "arm32"
 .PD 0
+.ie n .IP """arm64""" 4
+.IX Item "arm64"
 .ie n .IP """i386""" 4
 .IX Item "i386"
 .ie n .IP """i8086""" 4
 .IX Item "i8086"
-.ie n .IP """arm32""" 4
-.IX Item "arm32"
-.ie n .IP """arm64""" 4
-.IX Item "arm64"
+.ie n .IP """x86-64""" 4
+.IX Item "x86-64"
+.ie n .IP """riscv32""" 4
+.IX Item "riscv32"
+.ie n .IP """riscv64""" 4
+.IX Item "riscv64"
+.ie n .IP """mips1""" 4
+.IX Item "mips1"
+.ie n .IP """mips2""" 4
+.IX Item "mips2"
+.ie n .IP """mips3""" 4
+.IX Item "mips3"
+.ie n .IP """mips4""" 4
+.IX Item "mips4"
+.ie n .IP """mips5""" 4
+.IX Item "mips5"
+.ie n .IP """mips32""" 4
+.IX Item "mips32"
+.ie n .IP """mips32r2""" 4
+.IX Item "mips32r2"
+.ie n .IP """mips32r6""" 4
+.IX Item "mips32r6"
+.ie n .IP """mips64""" 4
+.IX Item "mips64"
+.ie n .IP """mips64r2""" 4
+.IX Item "mips64r2"
+.ie n .IP """mips64r6""" 4
+.IX Item "mips64r6"
 .PD
 Select disassembly for the given architecture.
 .ie n .IP """amd64""" 4
