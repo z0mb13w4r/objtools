@@ -1,5 +1,6 @@
 #!/bin/bash
 
+RMBIN=/usr/bin/rm
 TRBIN=/usr/bin/tr
 CUTBIN=/usr/bin/cut
 SEDBIN=/usr/bin/sed
@@ -18,15 +19,24 @@ DPKGDEBBIN=/usr/bin/dpkg-deb
 EXTERNBIN=../bin
 EXTERNMAN=../man
 
+REL=$($GREPBIN DISTRIB_RELEASE /etc/lsb-release | $CUTBIN -d '=' -f 2)
 VER=$($GREPBIN Version $EXTERNBIN/control | $CUTBIN -d ' ' -f 2)
 ARCH=$($GREPBIN Architecture $EXTERNBIN/control | $CUTBIN -d ' ' -f 2)
 
-NAME=objtools-$VER-$ARCH
+NAME=objtools-$VER-ubuntu-$REL-$ARCH
 USRBIN=$NAME/usr/bin
 USRMAN=$NAME/usr/share/man/man1
 LOCALBIN=$NAME/usr/local/bin
 LOCALMAN=$NAME/usr/local/share/man/
 DEBIANBIN=$NAME/DEBIAN
+
+echo $NAME
+$RMBIN *-ng
+$RMBIN *-ng.map
+$RMBIN $EXTERNBIN/*-ng
+$RMBIN $EXTERNBIN/releaseI386/*.a
+$RMBIN -r $NAME/
+$RMBIN $NAME.deb
 
 $MAKEBIN -f readpe-ng.mk all
 $MAKEBIN -f convert-ng.mk all
@@ -48,6 +58,7 @@ $COPYBIN -v $EXTERNBIN/objdump-ng $USRBIN/
 $COPYBIN -v $EXTERNBIN/objhash-ng $USRBIN/
 $COPYBIN -v $EXTERNBIN/readelf-ng $USRBIN/
 $COPYBIN -v $EXTERNBIN/objdwarf-ng $USRBIN/
+$COPYBIN -v $EXTERNBIN/enumerate-ng.py $USRBIN/
 
 $COPYBIN -v $EXTERNMAN/readpe-ng.1 $USRMAN/
 $COPYBIN -v $EXTERNMAN/convert-ng.1 $USRMAN/
