@@ -78,12 +78,15 @@ static int dump_reloc1(handle_t p, arelent *r) {
     const char *symname = sym ? bfd_asymbol_name(sym) : NULL;
     const char *secname = sec ? bfd_section_name(sec) : NULL;
 
-    bool_t hidden = FALSE;
+    bool hidden = FALSE;
     const char *vername = NULL;
     if (0 == (sym->flags & (BSF_SECTION_SYM | BSF_SYNTHETIC))) {
       bfd* f = ocget(p, OPCODE_BFD);
-
+#ifdef BUILD_UBUNTU_24_04
+      vername = bfd_get_symbol_version_string(f, sym, TRUE, &hidden);
+#else
       vername = bfd_get_symbol_version_string(f, sym, &hidden);
+#endif
       if (bfd_is_und_section(bfd_asymbol_section(sym))) {
         hidden = TRUE;
       }
@@ -606,7 +609,7 @@ static int do_archive(const handle_t p, const poptions_t o) {
   bfd *lf = NULL;
 
   for ( ; ; ) {
-    bfd *nf = bfd_openr_next_archived_file(ocgetbfd(p), nf);
+    bfd *nf = bfd_openr_next_archived_file(ocgetbfd(p), lf);
     if (nf) {
       printf("%s\n", bfd_get_filename(nf));
     } else {
