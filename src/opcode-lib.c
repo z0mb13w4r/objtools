@@ -29,7 +29,26 @@ static int custom_fprintf(void *p, const char * format, ...) {
 
   return n;
 }
+#ifdef BUILD_UBUNTU_24_04
+static int styled_fprintf(void *p, enum disassembler_style style, const char * format, ...) {
+  popcode_t oc = CAST(popcode_t, p);
+  va_list args;
+  char o[1024];
 
+  int n = 0;
+  if (oc->items[OPCODE_OUTDATA]) {
+    pbstring_t ps = CAST(pbstring_t, oc->items[OPCODE_OUTDATA]);
+    if (ps) {
+      va_start(args, format);
+      n = vsnprintf(o, sizeof(o), format, args);
+      va_end(args);
+      bstrcat(ps, o);
+    }
+  }
+
+  return n;
+}
+#endif
 static void custom_fprintf_address(bfd_vma vma, struct disassemble_info *di) {
   int n = 0;
   if (di && di->application_data) {
@@ -75,8 +94,14 @@ int opcodelib_open(handle_t p, handle_t o) {
 
       if (di) {
         /* Construct and configure the disassembler_info class using stdout */
-        init_disassemble_info(di, oc, CAST(fprintf_ftype, custom_fprintf));
-
+#ifdef BUILD_UBUNTU_24_04
+        init_disassemble_info(di, oc,
+                 CAST(fprintf_ftype, custom_fprintf),
+                 CAST(fprintf_styled_ftype, styled_fprintf));
+#else
+        init_disassemble_info(di, oc,
+                 CAST(fprintf_ftype, custom_fprintf));
+#endif
         di->application_data = oc;
         di->arch = bfd_get_arch(bf);
         di->mach = bfd_get_mach(bf);
