@@ -581,10 +581,18 @@ int printf_book(const char* p[], const imode_t mode) {
 int printf_hurt(const unknown_t p, const size_t size, const imode_t mode) {
   int n = 0;
   if (0 != size) {
-    n += printf_pack(mode & USE_TAB2 ? 4 : 0);
-    n += printf_pack(mode & USE_TAB1 ? 2 : 0);
-    n += printf_pack(mode & USE_SPACE ? 1 : 0);
-    n += printf_sore(p, size, mode & ~(USE_SPACE | USE_TAB1 | USE_TAB2));
+    const imode_t mode0 = GET_POS0(mode);
+    const imode_t modex = mode & ~USE_POS0MASK;
+    n += printf_pack(USE_TAB2 == mode0 || (USE_TAB2 | USE_0x) == mode0 ? 4 : 0);
+    n += printf_pack(USE_TAB1 == mode0 || (USE_TAB1 | USE_0x) == mode0 ? 2 : 0);
+    n += printf_pack(USE_SPACE == mode0 || (USE_SPACE | USE_0x) == mode0 ? 1 : 0);
+    if (USE_SPACE == mode0 || USE_TAB1 == mode0 || USE_TAB2 == mode0) {
+      n += printf_sore(p, size, modex);
+    } else if ((USE_SPACE | USE_0x) == mode0 || (USE_TAB1 | USE_0x) == mode0 || (USE_TAB2 | USE_0x) == mode0) {
+      n += printf_sore(p, size, modex | USE_0x);
+    } else {
+      n += printf_sore(p, size, mode);
+    }
   }
 
   return n;
