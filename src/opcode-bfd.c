@@ -84,7 +84,11 @@ static char* opcodebfd_getsymbol1(handle_t p, const uint64_t vaddr, uint64_t *of
           asymbol *sym = cr[i]->sym_ptr_ptr && *cr[i]->sym_ptr_ptr ? *cr[i]->sym_ptr_ptr : NULL;
           const char *symname = sym ? bfd_asymbol_name(sym) : NULL;
           if (symname && symname[0]) {
+#ifdef BUILD_UBUNTU_24_04
             bool hidden = FALSE;
+#else
+            bool_t hidden = FALSE;
+#endif
             const char *vername = NULL;
             if (0 == (sym->flags & (BSF_SECTION_SYM | BSF_SYNTHETIC))) {
               bfd* f = ocget(p, OPCODE_BFD);
