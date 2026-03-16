@@ -7,6 +7,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define BUILD_UBUNTU_20_04
+//#define BUILD_UBUNTU_24_04
+
 #define ECODE_OK             (0)
 #define ECODE_GENERIC        (-1)
 #define ECODE_MALLOC         (-2)

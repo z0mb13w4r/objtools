@@ -1,9 +1,6 @@
 #ifndef __ELFCODE_H_
 #define __ELFCODE_H_
 
-//#define BUILD_UBUNTU_20_04
-#define BUILD_UBUNTU_24_04
-
 #include <elf.h>
 #include "buffer.h"
 #include "objutils.h"
