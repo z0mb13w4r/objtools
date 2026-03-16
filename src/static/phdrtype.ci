@@ -64,7 +64,9 @@ convert_t ecPHDRTYPEMIPS[] = {
   {0, 0}
 };
 
-#define PT_RISCV_ATTRIBUTES            (0x70000003)
+#ifdef BUILD_UBUNTU_20_04
+#define PT_RISCV_ATTRIBUTES            (PT_LOPROC + 3)
+#endif
 
 convert_t ecPHDRTYPERISCV[] = {
   { "RISCV_ATTRIBUTES",            PT_RISCV_ATTRIBUTES},
