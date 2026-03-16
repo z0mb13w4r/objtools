@@ -1,28 +1,37 @@
 #ifndef __ELFCODE_H_
 #define __ELFCODE_H_
 
+//#define BUILD_UBUNTU_20_04
+#define BUILD_UBUNTU_24_04
+
 #include <elf.h>
 #include "buffer.h"
 #include "objutils.h"
 
+#ifdef BUILD_UBUNTU_20_04
 #define SHT_RELR                   (19)
 #define SHT_MIPS_ABIFLAGS          (SHT_LOPROC + 0x2a)
+#endif
 
 #define PT_GNU_MBIND_NUM           (4096)
 #define PT_GNU_MBIND_LO            (PT_LOOS + 0x474e555)
 #define PT_GNU_MBIND_HI            (PT_GNU_MBIND_LO + PT_GNU_MBIND_NUM - 1)
 
+#ifdef BUILD_UBUNTU_20_04
 #define PT_GNU_PROPERTY            (PT_LOOS + 0x474e553) /* GNU property */
-#define PT_GNU_SFRAME              (PT_LOOS + 0x474e554) /* SFrame stack trace information */
 
+#define PT_GNU_SFRAME              (PT_LOOS + 0x474e554) /* SFrame stack trace information */
+#endif
 #define VERSYM_HIDDEN              (0x8000)
 #define VERSYM_VERSION             (0x7fff)
 
+#ifdef BUILD_UBUNTU_20_04
 #define EF_MIPS_ARCH_32R6          (0x90000000)
 #define EF_MIPS_ARCH_64R6          (0xa0000000)
 
 #define EF_MIPS_ABI                (0x0000f000)
 #define EF_MIPS_MACH               (0x00ff0000)
+#endif
 #define EF_MIPS_MASK               (EF_MIPS_MACH | EF_MIPS_ABI | EF_MIPS_ARCH)
 
 /* These three macros disassemble and assemble a symbol table st_info field,
