@@ -90,9 +90,11 @@ static convert_t zRELTYPE64ARM[] = {
 };
 
 #define R_RISCV_TLSDESC            (12)
+#ifdef BUILD_UBUNTU_20_04
 #define R_RISCV_IRELATIVE          (58)
 #define R_RISCV_SET_ULEB128        (60)
 #define R_RISCV_SUB_ULEB128        (61)
+#endif
 #define R_RISCV_TLSDESC_HI20       (62)
 #define R_RISCV_TLSDESC_LOAD_LO12  (63)
 #define R_RISCV_TLSDESC_ADD_LO12   (64)
