@@ -1,6 +1,8 @@
+#ifdef BUILD_UBUNTU_20_04
 #define DT_RELRSZ                      (35)
 #define DT_RELR                        (36)
 #define DT_RELRENT                     (37)
+#endif
 
 #define DT_GNU_FLAGS_1                 (0x6ffffdf4)
 
