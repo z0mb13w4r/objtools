@@ -107,12 +107,16 @@ static int ocdwarf_debug_macro_crude0(handle_t p, handle_t s, handle_t d, handle
       printf_e("not supported flags %lx", flags);
     }
 
+    int i = 0;
     while (!fiseof(f)) {
       uint64_t op = fgetu8(f);
 //printf("opcode = %lx\n", op);
       if (0x0 == op) break;
 
-      n += ocdwarf_printf_MACRO(p, op, USE_NONE);
+      if (MODE_ISANY(oc->ocdump, OPTDWARF_ENHANCED)) {
+        n += ocdwarf_printf_DEC(p, i++, USE_SB);
+      }
+      n += ocdwarf_printf_MACRO(p, op, USE_SPECIAL);
 
       if (DW_MACRO_define == op || DW_MACRO_undef == op) {
         uint64_t nline = fgetuleb128(f);
