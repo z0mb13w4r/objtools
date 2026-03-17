@@ -6,6 +6,7 @@ PRGNAME=/usr/bin/objdump
 #PRGNAME=/usr/bin/aarch64-linux-gnu-objdump
 #PRGNAME=/usr/bin/riscv64-linux-gnu-objdump
 #PRGNAME=/usr/bin/mips-linux-gnu-objdump
+#PRGNAME=/usr/bin/mips64-linux-gnuabi64-objdump
 
 NAME=samples/exampled-32
 #NAME=samples/exampled-64
@@ -17,8 +18,10 @@ NAME=samples/exampled-32
 #NAME=samples/exampled-arm64.o
 #NAME=samples/exampled-riscv64
 #NAME=samples/exampled-riscv64.o
-NAME=samples/exampled-mips32
-NAME=samples/exampled-mips32.o
+#NAME=samples/exampled-mips32
+#NAME=samples/exampled-mips64
+#NAME=samples/exampled-mips32.o
+#NAME=samples/exampled-mips64.o
 
 #NAME=samples/example-043-arm32
 #NAME=samples/example-043-arm32.o
@@ -51,7 +54,7 @@ NAME=samples/exampled-mips32.o
 #NAME=samples/binutils-2.45-risc-v64/riscv64-unknown-elf-strings
 #NAME=samples/binutils-2.45-risc-v64/riscv64-unknown-elf-addr2line
 
-#PICK='-p'
+PICK='-p'
 #PICK='-h'
 #PICK='-t'
 #PICK='-r'
@@ -59,7 +62,7 @@ NAME=samples/exampled-mips32.o
 #PICK='-T'
 #PICK='-f'
 #PICK='-s'
-#PICK='-x'
+PICK='-x'
 
 #PICK='-g'
 #PICK='-e'
@@ -76,6 +79,7 @@ PICK='-dSl'
 #PICK='-dSl -M intel'
 #PICK='-dSl -M intel-mnemonic'
 #PICK="-dSl -M 'intel-mnemonic,x86-64'"
+#PICK="-dSl -M i386"
 #PICK='-W'
 
 #PICK='--dwarf=info'
