@@ -1,10 +1,11 @@
 #!/bin/bash
 
-#NAME1=samples/example-043.exe
+NAME1=samples/example-043.exe
 #NAME1=samples/bstrings.dll
-NAME1=samples/msvcp120.dll
+#NAME1=samples/msvcp120.dll
 NAME2=${NAME1}-pecheck
 PICK='-a'
+#PICK='-C .text'
 
 PRGNAMENG=./readpe-ng
 OUT1=test-1.out
