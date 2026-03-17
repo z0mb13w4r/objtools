@@ -10,7 +10,7 @@ This suite of tools was inspired by a problem I encountered while comparing two 
 
 **objcopy-ng** copies the contents of an object file to another using the GNU BFD Library to readand write the object files. It can write the destination object file in a format different from that of the source object file.
 
-**objdump-ng** displays information about one or more object files. This information is useful to malware researchers and binary analysis, as this utility is lightweight compared to many commercial applications (x86, ARM, AARCH64, MIPS and RISC-V).
+**objdump-ng** displays information about one or more object files. This information is useful to malware researchers and binary analysis, as this utility is lightweight compared to many commercial applications (x86, ARM, AARCH64, MIPS and RISC-V). [MORE INFO...](https://github.com/z0mb13w4r/objtools/wiki/objdump%E2%80%90ng)
 
 **objdwarf-ng** displays the dwarf information about one or more ELF format object files in standard and enhanced formats.
 
