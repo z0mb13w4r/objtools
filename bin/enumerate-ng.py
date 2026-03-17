@@ -211,19 +211,19 @@ def sft_conf(args):
     go(args, 'Apache version', 'apache2 -v 2>/dev/null; httpd -v 2>/dev/null')
     go(args, 'Apache user configuration', "grep -i 'user\|group' /etc/apache2/envvars 2>/dev/null | awk '{sub(/.*\export /,"")}1' 2>/dev/null")
     go(args, 'Installed Apache modules', 'apache2ctl -M 2>/dev/null; httpd -M 2>/dev/null')
-    #go('htpasswd found - could contain passwords', 'find / -name .htpasswd -print -exec cat {} \; 2>/dev/null')
+    go(args, 'htpasswd found - could contain passwords', 'find / -name .htpasswd -print -exec cat {} \; 2>/dev/null')
     go(args, 'www home dir contents', 'ls -alhR /var/www/ 2>/dev/null; ls -alhR /srv/www/htdocs/ 2>/dev/null; ls -alhR /usr/local/www/apache2/data/ 2>/dev/null; ls -alhR /opt/lampp/htdocs/ 2>/dev/null')
 
 
 def ask_info(args):
-  if args.cool:
+  if args.useful:
     mk('INTERESTING FILES')
     go(args, 'Useful file locations', 'which nc 2>/dev/null; which netcat 2>/dev/null; which wget 2>/dev/null; which nmap 2>/dev/null; which gcc 2>/dev/null; which curl 2>/dev/null')
     go(args, 'Installed compilers', "dpkg --list 2>/dev/null | grep compiler | grep -v decompiler 2>/dev/null && yum list installed 'gcc*' 2>/dev/null | grep gcc 2>/dev/null")
     go(args, 'Can we read/write sensitive files', 'ls -la /etc/passwd 2>/dev/null; ls -la /etc/group 2>/dev/null; ls -la /etc/profile 2>/dev/null; ls -la /etc/shadow 2>/dev/null; ls -la /etc/master.passwd 2>/dev/null')
-    #go('SUID files', 'find $(find / -perm -4000 -type f 2>/dev/null) -perm -4000 -type f -exec ls -la {} 2>/dev/null \;')
-    #gx('Possibly interesting SUID files', 'find $(find / -perm -4000 -type f 2>/dev/null) -perm -4000 -type f -exec ls -la {} \; 2>/dev/null | grep -w "' + BINBIGLIST + '" 2>/dev/null')
-    #gx('World-writable SUID files', 'find $(find / -perm -4000 -type f 2>/dev/null) -perm -4002 -type f -exec ls -la {} 2>/dev/null \;')
+    go(args, 'SUID files', 'find $(find / -perm -4000 -type f 2>/dev/null) -perm -4000 -type f -exec ls -la {} 2>/dev/null \;')
+    gx(args, 'Possibly interesting SUID files', 'find $(find / -perm -4000 -type f 2>/dev/null) -perm -4000 -type f -exec ls -la {} \; 2>/dev/null | grep -w "' + BINBIGLIST + '" 2>/dev/null')
+    gx(args, 'World-writable SUID files', 'find $(find / -perm -4000 -type f 2>/dev/null) -perm -4002 -type f -exec ls -la {} 2>/dev/null \;')
     gx(args, 'World-writable SUID files owned by root', 'find $(find / -perm -4000 -type f 2>/dev/null) -uid 0 -perm -4002 -type f -exec ls -la {} 2>/dev/null \;')
     go(args, 'SGID files', 'find $(find / -perm -2000 -type f 2>/dev/null) -perm -2000 -type f -exec ls -la {} 2>/dev/null \;')
     gx(args, 'Possibly interesting SGID files', 'find $(find / -perm -2000 -type f 2>/dev/null) -perm -2000 -type f  -exec ls -la {} \; 2>/dev/null | grep -w "' + BINBIGLIST + '" 2>/dev/null')
@@ -233,9 +233,9 @@ def ask_info(args):
     gx(args, 'Users with specific POSIX capabilities', "grep -v '^#\|none\|^$' /etc/security/capability.conf 2>/dev/null")
     #
     gx(args, 'Private SSH keys found!', 'grep -rl "PRIVATE KEY-----" /home 2>/dev/null')
-    #gx('AWS secret keys found!', 'grep -rli "aws_secret_access_key" /home 2>/dev/null')
+    gx(args, 'AWS secret keys found!', 'grep -rli "aws_secret_access_key" /home 2>/dev/null')
     gx(args, 'Git credentials saved on the machine!', 'find / -name ".git-credentials" 2>/dev/null')
-    #go('World-writable files (excluding /proc and /sys)', 'find / ! -path "*/proc/*" ! -path "/sys/*" -perm -2 -type f -exec ls -la {} 2>/dev/null \;')
+    go(args, 'World-writable files (excluding /proc and /sys)', 'find / ! -path "*/proc/*" ! -path "/sys/*" -perm -2 -type f -exec ls -la {} 2>/dev/null \;')
     go(args, 'Plan file permissions and contents', 'find /home -iname *.plan -exec ls -la {} \; -exec cat {} 2>/dev/null \;')
     go(args, 'Plan file permissions and contents', 'find /usr/home -iname *.plan -exec ls -la {} \; -exec cat {} 2>/dev/null \;')
     gx(args, 'rhost config file(s) and file contents', 'find /home -iname *.rhosts -exec ls -la {} 2>/dev/null \; -exec cat {} 2>/dev/null \;')
@@ -243,8 +243,8 @@ def ask_info(args):
     gx(args, 'Hosts.equiv file and contents', 'find /etc -iname hosts.equiv -exec ls -la {} 2>/dev/null \; -exec cat {} 2>/dev/null \;')
     go(args, 'NFS config details', 'ls -la /etc/exports 2>/dev/null; cat /etc/exports 2>/dev/null')
     go(args, 'NFS displaying partitions and filesystems - you need to check if exotic filesystems', 'cat /etc/fstab 2>/dev/null')
-    #gx('Looks like there are credentials in /etc/fstab!', "grep username /etc/fstab 2>/dev/null | awk '{sub(/.*\username=/,"");sub(/\,.*/,"")}1' 2>/dev/null | xargs -r echo username: 2>/dev/null; grep password /etc/fstab 2>/dev/null | awk '{sub(/.*\password=/,"");sub(/\,.*/,"")}1' 2>/dev/null | xargs -r echo password: 2>/dev/null; grep domain /etc/fstab 2>/dev/null | awk '{sub(/.*\domain=/,"");sub(/\,.*/,"")}1' 2>/dev/null | xargs -r echo domain: 2>/dev/null")
-    gx(args, '/etc/fstab contains a credentials file!', "grep cred /etc/fstab 2>/dev/null | awk '{sub(/.*\credentials=/,"");sub(/\,.*/,"")}1' 2>/dev/null | xargs -I{} sh -c 'ls -la {}; cat {}' 2>/dev/null")
+    gx(args, 'Looks like there are credentials in /etc/fstab!', "grep username /etc/fstab 2>/dev/null")
+    gx(args, '/etc/fstab contains a credentials file!', "grep cred /etc/fstab 2>/dev/null")
     #
     go(args, 'All *.conf files in /etc (recursive 1 level)', 'find /etc/ -maxdepth 1 -name *.conf -type f -exec ls -la {} \; 2>/dev/null')
     go(args, "Current user's history files", 'ls -la ~/.*_history 2>/dev/null')
@@ -269,12 +269,12 @@ if __name__ == '__main__':
   p.add_argument('--network', action='store_true', help='networking information.')
   p.add_argument('--services', action='store_true', help='services information.')
   p.add_argument('--software', action='store_true', help='software information.')
-  p.add_argument('--cool', action='store_true', help='interesting files information.')
+  p.add_argument('--useful', action='store_true', help='interesting files information.')
   p.add_argument('--norun', action='store_true', help='development switch.')
   g = p.parse_args()
 
-  if not(g.system or g.user or g.env or g.tasks or g.network or g.services or g.software or g.cool):
-    g.system = g.user = g.env = g.tasks = g.network = g.services = g.software = g.cool = True
+  if not(g.system or g.user or g.env or g.tasks or g.network or g.services or g.software or g.useful):
+    g.system = g.user = g.env = g.tasks = g.network = g.services = g.software = g.useful = True
 
   if g.version:
     print(PROGRAM_NAME + ' v' + VERSION_VALUE + '\n')
