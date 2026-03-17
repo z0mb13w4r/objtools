@@ -10,9 +10,10 @@ NAME=samples/exampled-32
 #NAME=samples/exampled-arm64.o
 #NAME=samples/exampled-riscv64
 #NAME=samples/exampled-riscv64.o
-NAME=samples/exampled-mips32
-NAME=samples/exampled-mips32.o
-
+#NAME=samples/exampled-mips32
+#NAME=samples/exampled-mips64
+#NAME=samples/exampled-mips32.o
+#NAME=samples/exampled-mips64.o
 
 #NAME=samples/example-043-arm32
 #NAME=samples/example-043-arm32.o
