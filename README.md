@@ -10,13 +10,13 @@ This suite of tools was inspired by a problem I encountered while comparing two 
 
 **objcopy-ng** copies the contents of an object file to another using the GNU BFD Library to readand write the object files. It can write the destination object file in a format different from that of the source object file.
 
-**objdump-ng** displays information about one or more object files. This information is useful to malware researchers and binary analysis, as this utility is lightweight compared to many commercial applications (x86, ARM, AARCH64, MIPS and RISC-V). [MORE INFO...](https://github.com/z0mb13w4r/objtools/wiki/objdump%E2%80%90ng)
+**objdump-ng** displays information about one or more object files. This information is useful to malware researchers and binary analysis, as this utility is lightweight compared to many commercial applications (x86, ARM, AARCH64, MIPS and RISC-V). [READ MORE...](https://github.com/z0mb13w4r/objtools/wiki/objdump%E2%80%90ng)
 
 **objdwarf-ng** displays the dwarf information about one or more ELF format object files in standard and enhanced formats.
 
 **objhash-ng** generates hashes of ELF format object files for malware detection and digital forensics. The utility is capable of fuzz-hashing and context-triggered piecewise hashing.
 
-**readelf-ng** displays information about one or more ELF format object files. [MORE INFO...](https://github.com/z0mb13w4r/objtools/wiki/readelf%E2%80%90ng)
+**readelf-ng** displays information about one or more ELF format object files. [READ MORE...](https://github.com/z0mb13w4r/objtools/wiki/readelf%E2%80%90ng)
 
 **readpe-ng** displays information about one or more PE format object files.
 
@@ -30,11 +30,9 @@ See the [BUILD.md](BUILD.md) for detailed instructions.
 
 ### Support & Sponsorship ###
 
-If you can contribute or you want to, feel free to do it at [PayPal](https://www.paypal.com/ncp/payment/L6UQHUDXKSHTC), I will be really thankful for anything, even if it is a coffee, because that helps me a lot to know that you care:)
+If you find this project useful and would like to keep it maintained, with new features and a regular release cycle or want to support my research. Then, you can sponsor me at [PayPal](https://www.paypal.com/ncp/payment/2DAZRCQM7MDFG), or you can buy me a coffee at [PayPal](https://www.paypal.com/ncp/payment/L6UQHUDXKSHTC). I will be really thankful for anything, even if it is a coffee, because that helps me a lot to know that you care:)
 
-If you find this project useful and would like to keep it maintained, new features added and a regular release cycle. Then, could you sponsor at [PayPal](https://www.paypal.com/ncp/payment/2DAZRCQM7MDFG).
-
-If you require a service contract that includes: email support, technical help, support tickets, prioritised bug fixes with immediate release. Drop us an email: enquiries@uber-techie.co.uk
+If you require a service contract that includes: email support, technical help, support tickets, prioritised bug fixes with immediate release. Drop me an email: enquiries@uber-techie.co.uk
 
 ### Dependencies ###
 
