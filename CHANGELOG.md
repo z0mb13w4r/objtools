@@ -1,4 +1,16 @@
-v1.2
+v1.3 - 
+-----------------------------------------------------------------------
+[+] Compatibility REMnux v8.
+[+] Added ARM32 GOT support.
+[+] Added RISC-V GOT support.
+[+] Updated Capstone Engine.
+[+] Improved symbol identification.
+[+] Fixed enumerate-ng.py pexpect timeout.
+[+] Enhanced readelf-ng, objdump-ng and enumerate-ng.py.
+[+] Bug fixes.
+#######################################################################
+
+v1.2 - 27/02/2026
 -----------------------------------------------------------------------
 [+] Added big-endian support.
 [+] Added MIPS architecture support.
@@ -7,7 +19,7 @@ v1.2
 [+] Bug fixes.
 #######################################################################
 
-v1.1
+v1.1 - 31/01/2026
 -----------------------------------------------------------------------
 [+] Added ARM Thumb architecture support.
 [+] Added RISC-V architecture support.
@@ -15,8 +27,9 @@ v1.1
 [+] Bug fixes.
 #######################################################################
 
-v1.0
+v1.0 - 03/01/2026
 -----------------------------------------------------------------------
+[+] Compatibility REMnux v7.
 [+] Added ARM architecture support.
 [+] Improved x86-64 architecture support.
 [+] Enhanced readelf-ng and objdump-ng.
