@@ -9,7 +9,7 @@
 
 static int usage(poptions_t o, const char* name, const args_t args[], const int ecode) {
   int n = 0;
-  n += usage_name(o, name, args, zDESCRIPTION);
+  n += usage_name(o, name, args, zDESCRIPTIONELF);
   n += usage_synopsis0(o, name, args);
   n += usage_synopsis3(o, name, zOBJHASHARGS1);
   n += printf_eol();
