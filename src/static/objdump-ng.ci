@@ -51,7 +51,7 @@ static const args_t zOBJDUMPARGS[] = {
   {'d', "--disassemble",       OPTPROGRAM_DISASSEMBLE,                                   zDUMPDISASSEMBLE},
   {'c', "--capstone",          OPTPROGRAM_CAPSTONE,                                      zDUMPCAPSTONE},
   {'g', "--debugging",         OPTOBJDUMP_DEBUGGING_DBGS,                                zDUMPDEBUGGING},
-  {'e', "--debugging-tags",    OPTOBJDUMP_DEBUGGING_TAGS | OPTPROGRAM_DEMANGLE,          zDUMPDEBUGGINGTAGS},
+  {'e', "--debugging-tags",    OPTOBJDUMP_DEBUGGING_TAGS /*| OPTPROGRAM_DEMANGLE*/,          zDUMPDEBUGGINGTAGS},
   {'s', "--full-contents",     OPTOBJDUMP_SECTIONS,                                      zDUMPSECTIONS},
   {'t', "--symbols",           OPTOBJDUMP_SYMBOLS,                                       zDUMPSYMBOLS},
   {'r', "--reloc",             OPTOBJDUMP_RELOC,                                         zDUMPRELOC},
