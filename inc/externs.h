@@ -114,6 +114,7 @@ extern char zDISASSEMBLEDATA[];
 
 extern const char zDESCRIPTION[];
 extern const char zDESCRIPTIONPE[];
+extern const char zDESCRIPTIONDAT[];
 extern const char zDESCRIPTIONELF[];
 
 extern const char *zALLSEE[];

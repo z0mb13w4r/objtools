@@ -11,7 +11,7 @@ static const args_t zCONVERTARGS[] = {
 
 static const char *zCONVERTDESCRIPTION[] = {
   "is a Swiss Army Knife for manipulating data in complex ways using operations",
-  "xor, addition, substruction, logical shifts and rotations, base32 and base64.",
+  "xor, addition, subtraction, logical shifts and rotations, base32 and base64.",
   0
 };
 
