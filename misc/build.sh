@@ -31,12 +31,12 @@ LOCALMAN=$NAME/usr/local/share/man/
 DEBIANBIN=$NAME/DEBIAN
 
 echo $NAME
-$RMBIN *-ng
-$RMBIN *-ng.map
-$RMBIN $EXTERNBIN/*-ng
-$RMBIN $EXTERNBIN/releaseI386/*.a
-$RMBIN -r $NAME/
-$RMBIN $NAME.deb
+$RMBIN -v *-ng
+$RMBIN -v *-ng.map
+$RMBIN -v $EXTERNBIN/*-ng
+$RMBIN -v $EXTERNBIN/releaseI386/*.a
+$RMBIN -vrf $NAME/
+$RMBIN -v $NAME.deb
 
 $MAKEBIN -f readpe-ng.mk all
 $MAKEBIN -f convert-ng.mk all
