@@ -237,14 +237,16 @@ def ask_info(args):
     go(args,
        'Can we read/write sensitive files',
        'ls -la /etc/passwd 2>/dev/null; ls -la /etc/group 2>/dev/null; ls -la /etc/profile 2>/dev/null; ls -la /etc/shadow 2>/dev/null; ls -la /etc/master.passwd 2>/dev/null')
-    go(args, 'SUID files', 'find $(find / -perm -4000 -type f 2>/dev/null) -perm -4000 -type f -exec ls -la {} 2>/dev/null \;')
+
+    suid = xy("find / -perm -4000 -type f 2>/dev/null | tr '\n' ' '")
+    go(args, 'SUID files', 'find ' + suid + ' -perm -4000 -type f -exec ls -la {} 2>/dev/null \;')
     gx(args,
        'Possibly interesting SUID files',
-       'find $(find / -perm -4000 -type f 2>/dev/null) -perm -4000 -type f -exec ls -la {} \; 2>/dev/null | grep -w "' + BINBIGLIST + '" 2>/dev/null')
-    gx(args, 'World-writable SUID files', 'find $(find / -perm -4000 -type f 2>/dev/null) -perm -4002 -type f -exec ls -la {} 2>/dev/null \;')
+       'find ' + suid + ' -perm -4000 -type f -exec ls -la {} \; 2>/dev/null | grep -w "' + BINBIGLIST + '" 2>/dev/null')
+    gx(args, 'World-writable SUID files', 'find ' + suid + ' -perm -4002 -type f -exec ls -la {} 2>/dev/null \;')
     gx(args,
        'World-writable SUID files owned by root',
-       'find $(find / -perm -4000 -type f 2>/dev/null) -uid 0 -perm -4002 -type f -exec ls -la {} 2>/dev/null \;')
+       'find ' + suid + ' -uid 0 -perm -4002 -type f -exec ls -la {} 2>/dev/null \;')
 
     sgid = xy("find / -perm -2000 -type f 2>/dev/null | tr '\n' ' '")
     go(args, 'SGID files', 'find ' + sgid + ' -perm -2000 -type f -exec ls -la {} 2>/dev/null \;')
