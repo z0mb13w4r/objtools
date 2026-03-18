@@ -53,27 +53,39 @@ def xy(args, color, msg, c0, c1):
     r = xx(c1)
 
   if r:
-    print(color + f'[-] ' + msg + f':\033[00m\n' + r.decode('utf-8'))
+    rx = r.decode('utf-8')
+    print(color + f'[-] ' + msg + f':\033[00m\n' + rx)
+    return rx
+
+  return None
 
 
 def go(args, msg, c0, c1=None):
   if not args.norun:
-    xy(args, f'\033[31m', msg, c0, c1)
+    return xy(args, f'\033[31m', msg, c0, c1)
+
+  return None
 
 
 def gx(args, msg, c0, c1=None):
   if not args.norun:
     xy(args, f'\033[33m', msg, c0, c1)
 
+  return None
+
 
 def po(args, msg, c0, c1=None):
   if args.norun:
     xy(args, f'\033[31m', msg, c0, c1)
 
+  return None
+
 
 def px(args, msg, c0, c1=None):
   if args.norun:
     xy(args, f'\033[33m', msg, c0, c1)
+
+  return None
 
 
 def sys_info(args):
