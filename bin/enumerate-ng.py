@@ -228,23 +228,43 @@ def sft_conf(args):
 def ask_info(args):
   if args.useful:
     mk('INTERESTING FILES')
-    go(args, 'Useful file locations', 'which nc 2>/dev/null; which netcat 2>/dev/null; which wget 2>/dev/null; which nmap 2>/dev/null; which gcc 2>/dev/null; which curl 2>/dev/null')
-    go(args, 'Installed compilers', "dpkg --list 2>/dev/null | grep compiler | grep -v decompiler 2>/dev/null && yum list installed 'gcc*' 2>/dev/null | grep gcc 2>/dev/null")
-    go(args, 'Can we read/write sensitive files', 'ls -la /etc/passwd 2>/dev/null; ls -la /etc/group 2>/dev/null; ls -la /etc/profile 2>/dev/null; ls -la /etc/shadow 2>/dev/null; ls -la /etc/master.passwd 2>/dev/null')
+    go(args,
+       'Useful file locations',
+       'which nc 2>/dev/null; which netcat 2>/dev/null; which wget 2>/dev/null; which nmap 2>/dev/null; which gcc 2>/dev/null; which curl 2>/dev/null')
+    go(args,
+       'Installed compilers',
+       "dpkg --list 2>/dev/null | grep compiler | grep -v decompiler 2>/dev/null && yum list installed 'gcc*' 2>/dev/null | grep gcc 2>/dev/null")
+    go(args,
+       'Can we read/write sensitive files',
+       'ls -la /etc/passwd 2>/dev/null; ls -la /etc/group 2>/dev/null; ls -la /etc/profile 2>/dev/null; ls -la /etc/shadow 2>/dev/null; ls -la /etc/master.passwd 2>/dev/null')
     go(args, 'SUID files', 'find $(find / -perm -4000 -type f 2>/dev/null) -perm -4000 -type f -exec ls -la {} 2>/dev/null \;')
-    gx(args, 'Possibly interesting SUID files', 'find $(find / -perm -4000 -type f 2>/dev/null) -perm -4000 -type f -exec ls -la {} \; 2>/dev/null | grep -w "' + BINBIGLIST + '" 2>/dev/null')
+    gx(args,
+       'Possibly interesting SUID files',
+       'find $(find / -perm -4000 -type f 2>/dev/null) -perm -4000 -type f -exec ls -la {} \; 2>/dev/null | grep -w "' + BINBIGLIST + '" 2>/dev/null')
     gx(args, 'World-writable SUID files', 'find $(find / -perm -4000 -type f 2>/dev/null) -perm -4002 -type f -exec ls -la {} 2>/dev/null \;')
-    gx(args, 'World-writable SUID files owned by root', 'find $(find / -perm -4000 -type f 2>/dev/null) -uid 0 -perm -4002 -type f -exec ls -la {} 2>/dev/null \;')
+    gx(args,
+       'World-writable SUID files owned by root',
+       'find $(find / -perm -4000 -type f 2>/dev/null) -uid 0 -perm -4002 -type f -exec ls -la {} 2>/dev/null \;')
     go(args, 'SGID files', 'find $(find / -perm -2000 -type f 2>/dev/null) -perm -2000 -type f -exec ls -la {} 2>/dev/null \;')
-    gx(args, 'Possibly interesting SGID files', 'find $(find / -perm -2000 -type f 2>/dev/null) -perm -2000 -type f  -exec ls -la {} \; 2>/dev/null | grep -w "' + BINBIGLIST + '" 2>/dev/null')
-    gx(args, 'World-writable SGID files', 'find $(find / -perm -2000 -type f 2>/dev/null) -perm -2002 -type f -exec ls -la {} 2>/dev/null \;')
-    gx(args, 'World-writable SGID files owned by root', 'find $(find / -perm -2000 -type f 2>/dev/null) -uid 0 -perm -2002 -type f -exec ls -la {} 2>/dev/null \;')
+    gx(args,
+       'Possibly interesting SGID files',
+       'find $(find / -perm -2000 -type f 2>/dev/null) -perm -2000 -type f  -exec ls -la {} \; 2>/dev/null | grep -w "' + BINBIGLIST + '" 2>/dev/null')
+    gx(args,
+       'World-writable SGID files',
+       'find $(find / -perm -2000 -type f 2>/dev/null) -perm -2002 -type f -exec ls -la {} 2>/dev/null \;')
+    gx(args,
+       'World-writable SGID files owned by root',
+       'find $(find / -perm -2000 -type f 2>/dev/null) -uid 0 -perm -2002 -type f -exec ls -la {} 2>/dev/null \;')
     caps = gx(args, 'Files with POSIX capabilities set', 'getcap -r / 2>/dev/null || /sbin/getcap -r / 2>/dev/null')
     gx(args, 'Users with specific POSIX capabilities', "grep -v '^#\|none\|^$' /etc/security/capability.conf 2>/dev/null")
 
     x = gx(args, 'Users with specific POSIX capabilities', "grep -v '^#\|none\|^$' /etc/security/capability.conf 2>/dev/null")
     if x:
       y = gx(args, 'Capabilities associated with the current user', "echo -e '" + x + "' | grep '" + args.username + "' | awk '{print $1}' 2>/dev/null")
+      if y:
+        gx(args,
+          'Files with the same capabilities associated with the current user (You may want to try abusing those capabilties)',
+          'echo -e "' + y + '" | while read -r cap ; do echo -e "' + caps + '" | grep "$cap" ; done 2>/dev/null')
       #
 
     gx(args, 'Private SSH keys found!', 'grep -rl "PRIVATE KEY-----" /home 2>/dev/null')
