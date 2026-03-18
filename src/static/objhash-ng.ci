@@ -1,5 +1,5 @@
-static char zHASHHEADERS[]      = "Displays the information contained in the file's section headers and report the SHA-256 for the section header.";
-static char zHASHSECTIONS[]     = "Displays the information contained in the file's section headers and report the SHA-256 for the section data.";
+static char zHASHHEADERS[]      = "Displays the information contained in the file's section headers and reports the SHA-256 for the section header.";
+static char zHASHSECTIONS[]     = "Displays the information contained in the file's section headers and reports the SHA-256 for the section data.";
 static char zHASHING[]          = "Encodes the input file using the specified cryptographic hash.";
 static char zHASHPIECEWISE[]    = "Piecewise mode. Breaks files into chunks before hashing.";
 static char zHASHTHRESHOLD[]    = "Threshold mode. Only hash files smaller than the given the threshold.";
@@ -29,7 +29,7 @@ static const args_t zOBJHASHARGS1[] = {
 };
 static const char *zOBJHASHDESCRIPTION[] = {
   "generates hashes of ELF format object files for malware detection and",
-  "digitial forensics. The utility is capable of fuzz-hashing and context-triggered",
+  "digitial forensics. The utility is supports fuzz-hashing and context-triggered",
   "piecewise hashing. The options control what particular information to display.",
   "",
   "objfile... are the object files to be examined. 32-bit and 64-bit ELF files",
