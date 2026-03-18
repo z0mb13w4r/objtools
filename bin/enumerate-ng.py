@@ -230,9 +230,14 @@ def ask_info(args):
     gx(args, 'Possibly interesting SGID files', 'find $(find / -perm -2000 -type f 2>/dev/null) -perm -2000 -type f  -exec ls -la {} \; 2>/dev/null | grep -w "' + BINBIGLIST + '" 2>/dev/null')
     gx(args, 'World-writable SGID files', 'find $(find / -perm -2000 -type f 2>/dev/null) -perm -2002 -type f -exec ls -la {} 2>/dev/null \;')
     gx(args, 'World-writable SGID files owned by root', 'find $(find / -perm -2000 -type f 2>/dev/null) -uid 0 -perm -2002 -type f -exec ls -la {} 2>/dev/null \;')
-    gx(args, 'Files with POSIX capabilities set', 'getcap -r / 2>/dev/null || /sbin/getcap -r / 2>/dev/null')
+    caps = gx(args, 'Files with POSIX capabilities set', 'getcap -r / 2>/dev/null || /sbin/getcap -r / 2>/dev/null')
     gx(args, 'Users with specific POSIX capabilities', "grep -v '^#\|none\|^$' /etc/security/capability.conf 2>/dev/null")
-    #
+
+    x = gx(args, 'Users with specific POSIX capabilities', "grep -v '^#\|none\|^$' /etc/security/capability.conf 2>/dev/null")
+    if x:
+      y = gx(args, 'Capabilities associated with the current user', "echo -e '" + x + "' | grep '" + args.username + "' | awk '{print $1}' 2>/dev/null")
+      #
+
     gx(args, 'Private SSH keys found!', 'grep -rl "PRIVATE KEY-----" /home 2>/dev/null')
     gx(args, 'AWS secret keys found!', 'grep -rli "aws_secret_access_key" /home 2>/dev/null')
     gx(args, 'Git credentials saved on the machine!', 'find / -name ".git-credentials" 2>/dev/null')
