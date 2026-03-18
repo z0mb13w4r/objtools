@@ -85,7 +85,7 @@ def gx(args, msg, c0, c1=None):
 
 def po(args, msg, c0, c1=None):
   if args.norun:
-    xzy(args, f'\033[31m', msg, c0, c1)
+    xz(args, f'\033[31m', msg, c0, c1)
 
   return None
 
@@ -245,17 +245,20 @@ def ask_info(args):
     gx(args,
        'World-writable SUID files owned by root',
        'find $(find / -perm -4000 -type f 2>/dev/null) -uid 0 -perm -4002 -type f -exec ls -la {} 2>/dev/null \;')
-    go(args, 'SGID files', 'find $(find / -perm -2000 -type f 2>/dev/null) -perm -2000 -type f -exec ls -la {} 2>/dev/null \;')
+
+    sgid = xy("find / -perm -2000 -type f 2>/dev/null | tr '\n' ' '")
+    go(args, 'SGID files', 'find ' + sgid + ' -perm -2000 -type f -exec ls -la {} 2>/dev/null \;')
     gx(args,
        'Possibly interesting SGID files',
-       'find $(find / -perm -2000 -type f 2>/dev/null) -perm -2000 -type f  -exec ls -la {} \; 2>/dev/null | grep -w "' + BINBIGLIST + '" 2>/dev/null')
+       'find ' + sgid + ' -perm -2000 -type f  -exec ls -la {} \; 2>/dev/null | grep -w "' + BINBIGLIST + '" 2>/dev/null')
     gx(args,
        'World-writable SGID files',
-       'find $(find / -perm -2000 -type f 2>/dev/null) -perm -2002 -type f -exec ls -la {} 2>/dev/null \;')
+       'find ' + sgid + ' -perm -2002 -type f -exec ls -la {} 2>/dev/null \;')
     gx(args,
        'World-writable SGID files owned by root',
-       'find $(find / -perm -2000 -type f 2>/dev/null) -uid 0 -perm -2002 -type f -exec ls -la {} 2>/dev/null \;')
+       'find ' + sgid + ' -uid 0 -perm -2002 -type f -exec ls -la {} 2>/dev/null \;')
     caps = gx(args, 'Files with POSIX capabilities set', 'getcap -r / 2>/dev/null || /sbin/getcap -r / 2>/dev/null')
+
     gx(args, 'Users with specific POSIX capabilities', "grep -v '^#\|none\|^$' /etc/security/capability.conf 2>/dev/null")
 
     x = gx(args, 'Users with specific POSIX capabilities', "grep -v '^#\|none\|^$' /etc/security/capability.conf 2>/dev/null")
