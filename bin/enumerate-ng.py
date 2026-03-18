@@ -60,14 +60,11 @@ def xy(c0, c1=None):
 
 
 def xz(args, color, msg, c0, c1=None):
-  r = xx(c0)
-  if r is None:
-    r = xx(c1)
+  r = xy(c0, c1)
 
   if r:
-    rx = r.decode('utf-8')
-    print(color + f'[-] ' + msg + f':\033[00m\n' + rx)
-    return rx
+    print(color + f'[-] ' + msg + f':\033[00m\n' + r)
+    return r
 
   return None
 
