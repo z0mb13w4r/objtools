@@ -30,7 +30,7 @@ static char zCOPYUPDATESECTION[]           = "Replace the existing contents of a
 static const char *zCOPYDESCRIPTION[] = {
   "copies the contents of an object file to another using the GNU BFD Library",
   "to readand write the object files. It can write the destination object file in a format",
-  "different from that of the source object file. The options control the behaviour",
+  "different from the source object files. The options control the behaviour",
   "of the utility.",
   "",
   "objfile... are the object files to be examined. 32-bit and 64-bit ELF and PE files",
