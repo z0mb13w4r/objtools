@@ -47,44 +47,33 @@ def xx(cmd):
   return None
 
 
-def go(args,msg,c0,c1=None):
+def xy(args, color, msg, c0, c1):
+  r = xx(c0)
+  if r is None:
+    r = xx(c1)
+
+  if r:
+    print(color + f'[-] ' + msg + f':\033[00m\n' + r.decode('utf-8'))
+
+
+def go(args, msg, c0, c1=None):
   if not args.norun:
-    r = xx(c0)
-    if r is None:
-      r = xx(c1)
-
-    if r:
-      print(f'\033[31m[-] ' + msg + f':\033[00m\n' + r.decode('utf-8'))
+    xy(args, f'\033[31m', msg, c0, c1)
 
 
-def gx(args,msg,c0,c1=None):
+def gx(args, msg, c0, c1=None):
   if not args.norun:
-    r = xx(c0)
-    if r is None:
-      r = xx(c1)
-
-    if r:
-      print(f'\033[33m[-] ' + msg + f':\033[00m\n' + r.decode('utf-8'))
+    xy(args, f'\033[33m', msg, c0, c1)
 
 
-def po(args,msg,c0,c1=None):
+def po(args, msg, c0, c1=None):
   if args.norun:
-    r = xx(c0)
-    if r is None:
-      r = xx(c1)
-
-    if r:
-      print(f'\033[31m[-] ' + msg + f':\033[00m\n' + r.decode('utf-8'))
+    xy(args, f'\033[31m', msg, c0, c1)
 
 
-def px(args,msg,c0,c1=None):
+def px(args, msg, c0, c1=None):
   if args.norun:
-    r = xx(c0)
-    if r is None:
-      r = xx(c1)
-
-    if r:
-      print(f'\033[33m[-] ' + msg + f':\033[00m\n' + r.decode('utf-8'))
+    xy(args, f'\033[33m', msg, c0, c1)
 
 
 def sys_info(args):
