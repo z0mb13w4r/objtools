@@ -30,6 +30,7 @@ LICENSE_TEXT = '''COPYRIGHT
 
 BINBIGLIST='aria2c\|arp\|ash\|awk\|base64\|bash\|busybox\|cat\|chmod\|chown\|cp\|csh\|curl\|cut\|dash\|date\|dd\|diff\|dmsetup\|docker\|ed\|emacs\|env\|expand\|expect\|file\|find\|flock\|fmt\|fold\|ftp\|gawk\|gdb\|gimp\|git\|grep\|head\|ht\|iftop\|ionice\|ip$\|irb\|jjs\|jq\|jrunscript\|ksh\|ld.so\|ldconfig\|less\|logsave\|lua\|make\|man\|mawk\|more\|mv\|mysql\|nano\|nawk\|nc\|netcat\|nice\|nl\|nmap\|node\|od\|openssl\|perl\|pg\|php\|pic\|pico\|python\|readelf\|rlwrap\|rpm\|rpmquery\|rsync\|ruby\|run-parts\|rvim\|scp\|script\|sed\|setarch\|sftp\|sh\|shuf\|socat\|sort\|sqlite3\|ssh$\|start-stop-daemon\|stdbuf\|strace\|systemctl\|tail\|tar\|taskset\|tclsh\|tee\|telnet\|tftp\|time\|timeout\|ul\|unexpand\|uniq\|unshare\|vi\|vim\|watch\|wget\|wish\|xargs\|xxd\|zip\|zsh'
 
+
 def mk(msg):
   print('\033[33m### ' + msg + ' ' + '#'*(52 - len(msg)) + '\033[00m')
 
@@ -47,7 +48,18 @@ def xx(cmd):
   return None
 
 
-def xy(args, color, msg, c0, c1):
+def xy(c0, c1=None):
+  r = xx(c0)
+  if r is None:
+    r = xx(c1)
+
+  if r:
+    return r.decode('utf-8')
+
+  return None
+
+
+def xz(args, color, msg, c0, c1=None):
   r = xx(c0)
   if r is None:
     r = xx(c1)
@@ -62,28 +74,28 @@ def xy(args, color, msg, c0, c1):
 
 def go(args, msg, c0, c1=None):
   if not args.norun:
-    return xy(args, f'\033[31m', msg, c0, c1)
+    return xz(args, f'\033[31m', msg, c0, c1)
 
   return None
 
 
 def gx(args, msg, c0, c1=None):
   if not args.norun:
-    xy(args, f'\033[33m', msg, c0, c1)
+    xz(args, f'\033[33m', msg, c0, c1)
 
   return None
 
 
 def po(args, msg, c0, c1=None):
   if args.norun:
-    xy(args, f'\033[31m', msg, c0, c1)
+    xzy(args, f'\033[31m', msg, c0, c1)
 
   return None
 
 
 def px(args, msg, c0, c1=None):
   if args.norun:
-    xy(args, f'\033[33m', msg, c0, c1)
+    xz(args, f'\033[33m', msg, c0, c1)
 
   return None
 
@@ -287,6 +299,9 @@ if __name__ == '__main__':
     print(LICENSE_TEXT)
 
   else:
+    if not g.username:
+      g.username = xy("whoami 2>/dev/null | tr -d '\n'")
+
     sys_info(g)
     usr_info(g)
     env_info(g)
