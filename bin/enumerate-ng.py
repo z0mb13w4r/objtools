@@ -492,7 +492,21 @@ def ask_info(args):
     gx(args,
        '/etc/fstab contains a credentials file!',
        "grep cred /etc/fstab 2>/dev/null")
-    #
+
+    if args.keyword:
+      go(args,
+         'Find keyword ' + args.keyword + ' in .conf files (recursive 4 levels - output format filepath:identified line number where keyword appears)',
+         'find / -maxdepth 4 -name *.conf -type f -exec grep -Hn ' + args.keyword + ' {} \; 2>/dev/null')
+      go(args,
+         'Find keyword ' + args.keyword + ' in .php files (recursive 10 levels - output format filepath:identified line number where keyword appears)',
+         'find / -maxdepth 10 -name *.php -type f -exec grep -Hn ' + args.keyword + ' {} \; 2>/dev/null')
+      go(args,
+         'Find keyword ' + args.keyword + ' in .log files (recursive 4 levels - output format filepath:identified line number where keyword appears)',
+         'find / -maxdepth 4 -name *.log -type f -exec grep -Hn ' + args.keyword + ' {} \; 2>/dev/null')
+      go(args,
+         'Find keyword ' + args.keyword + ' in .ini files (recursive 4 levels - output format filepath:identified line number where keyword appears)',
+         'find / -maxdepth 4 -name *.ini -type f -exec grep -Hn ' + args.keyword + ' {} \; 2>/dev/null')
+
     go(args,
        'All *.conf files in /etc (recursive 1 level)',
        'find /etc/ -maxdepth 1 -name *.conf -type f -exec ls -la {} \; 2>/dev/null')
@@ -524,6 +538,7 @@ if __name__ == '__main__':
                    escalation, or lateral movement within a network.""")
   p.add_argument('-u', '--username', help='username for checks.')
   p.add_argument('-p', '--password', help='user password for sudo checks (insecure).')
+  p.add_argument('-k', '--keyword', help='keyword search.')
   p.add_argument('-d', '--path', default='', help='path to the firmware image.')
   p.add_argument('-m', '--more', action='store_true', help='more thorough tests.')
   p.add_argument('-v', '--version', action='store_true', help='verion number of ' + PROGRAM_NAME)
@@ -535,7 +550,7 @@ if __name__ == '__main__':
   p.add_argument('--services', action='store_true', help='services information.')
   p.add_argument('--software', action='store_true', help='software information.')
   p.add_argument('--useful', action='store_true', help='interesting files information.')
-  p.add_argument('--norun', action='store_true', help='development switch.')
+  p.add_argument('--norun', action='store_true', help=argparse.SUPPRESS)
   g = p.parse_args()
 
   if not(g.system or g.user or g.env or g.tasks or g.network or g.services or g.software or g.useful):
