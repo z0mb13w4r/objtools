@@ -100,18 +100,20 @@ def px(args, msg, c0, c1=None):
 def sys_info(args):
   if args.system:
     mk('SYSTEM')
-    go(args,
-       'Kernel information',
-       'uname -a 2>/dev/null')
+    if not args.path:
+      go(args,
+         'Kernel information',
+         'uname -a 2>/dev/null')
+
     go(args,
        'Kernel information (continued)',
-       'cat /proc/version 2>/dev/null')
+       'cat ' + args.path + '/proc/version 2>/dev/null')
     go(args,
        'Specific release information',
-       'cat /etc/*-release 2>/dev/null')
+       'cat ' + args.path + '/etc/*-release 2>/dev/null')
     go(args,
        'Hostname',
-       'cat /etc/hostname 2>/dev/null')
+       'cat ' + args.path + '/etc/hostname 2>/dev/null')
 
 
 def usr_info(args):
