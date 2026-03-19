@@ -109,41 +109,87 @@ def sys_info(args):
 def usr_info(args):
   if args.user:
     mk('USER/GROUP')
-    go(args, 'Current user/group info', 'id 2>/dev/null')
-    go(args, 'Users that have previously logged onto the system', 'lastlog 2>/dev/null | tail -n +2 | grep -v "Never" 2>/dev/null')
-    go(args, 'Who else is logged on', 'w 2>/dev/null')
-    go(args, 'Group memberships', 'for i in $(cut -d":" -f1 /etc/passwd 2>/dev/null); do id $i; done 2>/dev/null')
-    go(args, 'It looks like we have some admin users', 'for i in $(cut -d":" -f1 /etc/passwd 2>/dev/null); do id $i | grep "(adm)"; done 2>/dev/null')
-    gx(args, 'It looks like we have password hashes in /etc/passwd!', 'grep -v "^[^:]*:[x]" /etc/passwd 2>/dev/null')
-    go(args, 'Contents of /etc/passwd', 'cat /etc/passwd 2>/dev/null')
-    gx(args, 'We can read the shadow file!', 'cat /etc/shadow 2>/dev/null')
-    gx(args, 'We can read the master.passwd file!', 'cat /etc/master.passwd 2>/dev/null')
-    go(args, 'Super user account(s)', "grep -v -E '^#' /etc/passwd | awk -F: '$3 == 0 {print $1}' 2>/dev/null")
-    go(args, 'Sudoers configuration (condensed)', 'grep -v -e "^$" /etc/sudoers 2>/dev/null | grep -v "#" 2>/dev/null')
+    go(args,
+       'Current user/group info',
+       'id 2>/dev/null')
+    go(args,
+       'Users that have previously logged onto the system',
+       'lastlog 2>/dev/null | tail -n +2 | grep -v "Never" 2>/dev/null')
+    go(args,
+       'Who else is logged on',
+       'w 2>/dev/null')
+    go(args,
+       'Group memberships',
+       'for i in $(cut -d":" -f1 /etc/passwd 2>/dev/null); do id $i; done 2>/dev/null')
+    go(args,
+       'It looks like we have some admin users',
+       'for i in $(cut -d":" -f1 /etc/passwd 2>/dev/null); do id $i | grep "(adm)"; done 2>/dev/null')
+    gx(args,
+       'It looks like we have password hashes in /etc/passwd!',
+       'grep -v "^[^:]*:[x]" /etc/passwd 2>/dev/null')
+    go(args,
+       'Contents of /etc/passwd',
+       'cat /etc/passwd 2>/dev/null')
+    gx(args,
+       'We can read the shadow file!',
+       'cat /etc/shadow 2>/dev/null')
+    gx(args,
+       'We can read the master.passwd file!',
+       'cat /etc/master.passwd 2>/dev/null')
+    go(args,
+       'Super user account(s)',
+       "grep -v -E '^#' /etc/passwd | awk -F: '$3 == 0 {print $1}' 2>/dev/null")
+    go(args,
+       'Sudoers configuration (condensed)',
+       'grep -v -e "^$" /etc/sudoers 2>/dev/null | grep -v "#" 2>/dev/null')
 
-    gx(args, 'We can sudo without supplying a password!', "echo '' | sudo -S -l -k 2>/dev/null")
+    gx(args,
+       'We can sudo without supplying a password!',
+       "echo '' | sudo -S -l -k 2>/dev/null")
+
     if args.password:
-      gx(args, 'We can sudo with supplying a password!', "echo '" + args.password + "' | sudo -S -l -k 2>/dev/null")
+      gx(args,
+         'We can sudo with supplying a password!',
+         "echo '" + args.password + "' | sudo -S -l -k 2>/dev/null")
 
-    gx(args, 'Possible sudo pwnage!', "echo '' | sudo -S -l -k 2>/dev/null | xargs -n 1 2>/dev/null | sed 's/,*$//g' 2>/dev/null | grep -w '" + BINBIGLIST + "' 2>/dev/null")
-    go(args, 'Accounts that have recently used sudo', 'find /home -name .sudo_as_admin_successful 2>/dev/null')
-    go(args, "We can read root's home directory!", 'ls -ahl /root/ 2>/dev/null')
-    go(args, 'Are permissions on /home directories lax', 'ls -ahl /home/ 2>/dev/null')
+    gx(args,
+       'Possible sudo pwnage!',
+        "echo '' | sudo -S -l -k 2>/dev/null | xargs -n 1 2>/dev/null | sed 's/,*$//g' 2>/dev/null | grep -w '" + BINBIGLIST + "' 2>/dev/null")
+    go(args,
+       'Accounts that have recently used sudo',
+       'find /home -name .sudo_as_admin_successful 2>/dev/null')
+    go(args,
+       "We can read root's home directory!",
+       'ls -ahl /root/ 2>/dev/null')
+    go(args,
+       'Are permissions on /home directories lax',
+       'ls -ahl /home/ 2>/dev/null')
 
     if args.username:
-      go(args, 'Files not owned by user but writable by group', 'find / -writable ! -user ' + args.username + ' -type f ! -path "/proc/*" ! -path "/sys/*" -exec ls -al {} \; 2>/dev/null')
-      go(args, 'Files owned by our user', 'find / -user ' + args.username + ' -type f ! -path "/proc/*" ! -path "/sys/*" -exec ls -al {} \; 2>/dev/null')
+      go(args,
+         'Files not owned by user but writable by group',
+         'find / -writable ! -user ' + args.username + ' -type f ! -path "/proc/*" ! -path "/sys/*" -exec ls -al {} \; 2>/dev/null')
+      go(args,
+         'Files owned by our user',
+         'find / -user ' + args.username + ' -type f ! -path "/proc/*" ! -path "/sys/*" -exec ls -al {} \; 2>/dev/null')
 
     if args.more:
-      go(args, 'Hidden files', 'find / -name ".*" -type f ! -path "/proc/*" ! -path "/sys/*" -exec ls -al {} \; 2>/dev/null')
+      go(args,
+         'Hidden files',
+         'find / -name ".*" -type f ! -path "/proc/*" ! -path "/sys/*" -exec ls -al {} \; 2>/dev/null')
       go(args, 'World-readable files within /home', 'find /home/ -perm -4 -type f -exec ls -al {} \; 2>/dev/null')
       if args.username:
-        go(args, 'Home directory contents', 'ls -ahl /home/' + args.username + '/')
+        go(args,
+           'Home directory contents',
+           'ls -ahl /home/' + args.username + '/')
 
-      go(args, 'SSH keys/host information found in the following locations',
+      go(args,
+         'SSH keys/host information found in the following locations',
          'find / \( -name "id_dsa*" -o -name "id_rsa*" -o -name "known_hosts" -o -name "authorized_hosts" -o -name "authorized_keys" \) -exec ls -la {} 2>/dev/null \;')
 
-    go(args, 'Root is allowed to login via SSH', 'grep "PermitRootLogin " /etc/ssh/sshd_config 2>/dev/null | grep -v "#"')
+    go(args,
+       'Root is allowed to login via SSH',
+       'grep "PermitRootLogin " /etc/ssh/sshd_config 2>/dev/null | grep -v "#"')
 
 
 def env_info(args):
