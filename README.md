@@ -12,7 +12,7 @@ This suite of tools was inspired by a problem I encountered while comparing two 
 
 **objdump-ng** displays information about one or more object files. This information is useful to malware researchers and binary analysis, as this utility is lightweight compared to many commercial applications (x86, ARM, AARCH64, MIPS and RISC-V). [READ MORE...](https://github.com/z0mb13w4r/objtools/wiki/objdump%E2%80%90ng)
 
-**objdwarf-ng** displays the dwarf information about one or more ELF format object files in standard and enhanced formats.
+**objdwarf-ng** displays the dwarf information about one or more ELF format object files in standard and enhanced formats. [READ MORE...](https://github.com/z0mb13w4r/objtools/wiki/objdwarf%E2%80%90ng)
 
 **objhash-ng** generates hashes of ELF format object files for malware detection and digital forensics. The utility is supports fuzz-hashing and context-triggered piecewise hashing.
 
