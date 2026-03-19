@@ -517,7 +517,11 @@ def ask_info(args):
 
 
 if __name__ == '__main__':
-  p = argparse.ArgumentParser(prog='enumerate-ng', description='Used for enumeration and privilege escalation to harden devices or understanding how an adversary obtained persistence, privilege escalation, or lateral movement within a network.')
+  p = argparse.ArgumentParser(
+    prog='enumerate-ng',
+    description="""Used for enumeration and privilege escalation to harden devices
+                   or understanding how an adversary obtained persistence, privilege
+                   escalation, or lateral movement within a network.""")
   p.add_argument('-u', '--username', help='username for checks.')
   p.add_argument('-p', '--password', help='user password for sudo checks (insecure).')
   p.add_argument('-d', '--path', default='', help='path to the firmware image.')
