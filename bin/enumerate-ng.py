@@ -100,10 +100,18 @@ def px(args, msg, c0, c1=None):
 def sys_info(args):
   if args.system:
     mk('SYSTEM')
-    go(args, 'Kernel information', 'uname -a 2>/dev/null')
-    go(args, 'Kernel information (continued)', 'cat /proc/version 2>/dev/null')
-    go(args, 'Specific release information', 'cat /etc/*-release 2>/dev/null')
-    go(args, 'Hostname', 'cat /etc/hostname 2>/dev/null')
+    go(args,
+       'Kernel information',
+       'uname -a 2>/dev/null')
+    go(args,
+       'Kernel information (continued)',
+       'cat /proc/version 2>/dev/null')
+    go(args,
+       'Specific release information',
+       'cat /etc/*-release 2>/dev/null')
+    go(args,
+       'Hostname',
+       'cat /etc/hostname 2>/dev/null')
 
 
 def usr_info(args):
@@ -195,80 +203,190 @@ def usr_info(args):
 def env_info(args):
   if args.env:
     mk('ENVIRONMENTAL')
-    go(args, 'Environment information', 'env 2>/dev/null | grep -v "LS_COLORS" 2>/dev/null')
-    go(args, 'SELinux seems to be present', 'sestatus 2>/dev/null')
-    go(args, 'Path information', 'echo $PATH 2>/dev/null')
-    go(args, 'Path information (writeable)', 'ls -ld $(echo $PATH | tr ":" " ")')
-    go(args, 'Available shells', 'cat /etc/shells 2>/dev/null')
-    go(args, 'Current umask value', 'umask -S 2>/dev/null & umask 2>/dev/null')
-    go(args, 'umask value as specified in /etc/login.defs', 'grep -i "^UMASK" /etc/login.defs 2>/dev/null')
-    go(args, 'Password and storage information', 'grep "^PASS_MAX_DAYS\|^PASS_MIN_DAYS\|^PASS_WARN_AGE\|^ENCRYPT_METHOD" /etc/login.defs 2>/dev/null')
+    go(args,
+       'Environment information', 'env 2>/dev/null | grep -v "LS_COLORS" 2>/dev/null')
+    go(args,
+       'SELinux seems to be present',
+       'sestatus 2>/dev/null')
+    go(args,
+       'Path information',
+       'echo $PATH 2>/dev/null')
+    go(args,
+       'Path information (writeable)',
+       'ls -ld $(echo $PATH | tr ":" " ")')
+    go(args,
+       'Available shells',
+       'cat /etc/shells 2>/dev/null')
+    go(args,
+       'Current umask value',
+       'umask -S 2>/dev/null & umask 2>/dev/null')
+    go(args,
+       'umask value as specified in /etc/login.defs',
+       'grep -i "^UMASK" /etc/login.defs 2>/dev/null')
+    go(args,
+       'Password and storage information',
+       'grep "^PASS_MAX_DAYS\|^PASS_MIN_DAYS\|^PASS_WARN_AGE\|^ENCRYPT_METHOD" /etc/login.defs 2>/dev/null')
 
 
 def job_info(args):
   if args.tasks:
     mk('JOBS/TASKS')
-    go(args, 'Cron jobs', 'ls -la /etc/cron* 2>/dev/null')
-    go(args, 'World-writable cron jobs and file contents', 'find /etc/cron* -perm -0002 -type f -exec ls -la {} \; -exec cat {} 2>/dev/null \;')
-    go(args, 'Crontab contents', 'cat /etc/crontab 2>/dev/null')
-    go(args, 'Anything interesting in /var/spool/cron/crontabs', 'ls -la /var/spool/cron/crontabs 2>/dev/null')
-    go(args, 'Anacron jobs and associated file permissions', 'ls -la /etc/anacrontab 2>/dev/null; cat /etc/anacrontab 2>/dev/null')
-    go(args, 'When were jobs last executed (/var/spool/anacron contents)', 'ls -la /var/spool/anacron 2>/dev/null')
-    go(args, 'Jobs held by all users', 'cut -d ":" -f 1 /etc/passwd | xargs -n1 crontab -l -u 2>/dev/null')
-    go(args, 'Systemd timers', 'systemctl list-timers --all 2>/dev/null')
+    go(args,
+       'Cron jobs',
+       'ls -la /etc/cron* 2>/dev/null')
+    go(args,
+       'World-writable cron jobs and file contents',
+       'find /etc/cron* -perm -0002 -type f -exec ls -la {} \; -exec cat {} 2>/dev/null \;')
+    go(args,
+       'Crontab contents',
+       'cat /etc/crontab 2>/dev/null')
+    go(args,
+       'Anything interesting in /var/spool/cron/crontabs',
+       'ls -la /var/spool/cron/crontabs 2>/dev/null')
+    go(args,
+       'Anacron jobs and associated file permissions',
+       'ls -la /etc/anacrontab 2>/dev/null; cat /etc/anacrontab 2>/dev/null')
+    go(args,
+       'When were jobs last executed (/var/spool/anacron contents)',
+       'ls -la /var/spool/anacron 2>/dev/null')
+    go(args,
+       'Jobs held by all users',
+        'cut -d ":" -f 1 /etc/passwd | xargs -n1 crontab -l -u 2>/dev/null')
+    go(args,
+       'Systemd timers',
+       'systemctl list-timers --all 2>/dev/null')
 
 
 def net_info(args):
   if args.network:
     mk('NETWORKING')
-    go(args, 'Network and IP info', '/sbin/ifconfig -a 2>/dev/null', '/sbin/ip a 2>/dev/null')
-    go(args, 'ARP history', 'arp -a 2>/dev/null', 'ip n 2>/dev/null')
-    go(args, 'Nameserver(s)', 'grep "nameserver" /etc/resolv.conf 2>/dev/null')
-    go(args, 'Nameserver(s)', 'systemd-resolve --status 2>/dev/null')
-    go(args, 'Default route', 'route 2>/dev/null | grep default', 'ip r 2>/dev/null | grep default')
-    go(args, 'Listening TCP', 'netstat -ntpl 2>/dev/null', 'ss -t -l -n 2>/dev/null')
-    go(args, 'Listening UDP', 'netstat -nupl 2>/dev/null', 'ss -u -l -n 2>/dev/null')
+    go(args,
+       'Network and IP info',
+       '/sbin/ifconfig -a 2>/dev/null', '/sbin/ip a 2>/dev/null')
+    go(args,
+       'ARP history',
+       'arp -a 2>/dev/null', 'ip n 2>/dev/null')
+    go(args,
+       'Nameserver(s)',
+       'grep "nameserver" /etc/resolv.conf 2>/dev/null')
+    go(args,
+       'Nameserver(s)',
+       'systemd-resolve --status 2>/dev/null')
+    go(args,
+       'Default route',
+       'route 2>/dev/null | grep default',
+       'ip r 2>/dev/null | grep default')
+    go(args,
+       'Listening TCP',
+       'netstat -ntpl 2>/dev/null',
+       'ss -t -l -n 2>/dev/null')
+    go(args,
+       'Listening UDP',
+       'netstat -nupl 2>/dev/null',
+       'ss -u -l -n 2>/dev/null')
 
 
 def srv_info(args):
   if args.services:
     mk('SERVICES')
-    go(args, 'Running processes', 'ps aux 2>/dev/null')
-    go(args, 'Process binaries and associated permissions (from above list)', "ps aux 2>/dev/null | awk '{print $11}' | xargs -r ls -la 2>/dev/null | awk '!x[$0]++' 2>/dev/null")
-    go(args, 'Contents of /etc/inetd.conf', 'cat /etc/inetd.conf 2>/dev/null')
-    go(args, 'The related inetd binary permissions', "awk '{print $7}' /etc/inetd.conf 2>/dev/null | xargs -r ls -la 2>/dev/null")
-    go(args, 'Contents of /etc/xinetd.conf', 'cat /etc/xinetd.conf 2>/dev/null')
-    go(args, '/etc/xinetd.d is included in /etc/xinetd.conf - associated binary permissions are listed below', 'grep "/etc/xinetd.d" /etc/xinetd.conf 2>/dev/null')
-    go(args, 'The related xinetd binary permissions', "awk '{print $7}' /etc/xinetd.conf 2>/dev/null | xargs -r ls -la 2>/dev/null")
-    go(args, '/etc/init.d/ binary permissions', 'ls -la /etc/init.d 2>/dev/null')
-    gx(args, '/etc/init.d/ files not belonging to root', 'find /etc/init.d/ \! -uid 0 -type f 2>/dev/null | xargs -r ls -la 2>/dev/null')
-    go(args, '/etc/rc.d/init.d binary permissions', 'ls -la /etc/rc.d/init.d 2>/dev/null')
-    gx(args, '/etc/rc.d/init.d files not belonging to root', 'find /etc/rc.d/init.d \! -uid 0 -type f 2>/dev/null | xargs -r ls -la 2>/dev/null')
-    go(args, '/usr/local/etc/rc.d binary permissions', 'ls -la /usr/local/etc/rc.d 2>/dev/null')
-    gx(args, '/usr/local/etc/rc.d files not belonging to root', 'find /usr/local/etc/rc.d \! -uid 0 -type f 2>/dev/null | xargs -r ls -la 2>/dev/null')
-    go(args, '/etc/init/ config file permissions', 'ls -la /etc/init/ 2>/dev/null')
-    gx(args, '/etc/init/ config files not belonging to root', 'find /etc/init \! -uid 0 -type f 2>/dev/null | xargs -r ls -la 2>/dev/null')
-    go(args, '/lib/systemd/* config file permissions', 'ls -lthR /lib/systemd/ 2>/dev/null')
-    gx(args, '/lib/systemd/* config files not belonging to root', 'find /lib/systemd/ \! -uid 0 -type f 2>/dev/null | xargs -r ls -la 2>/dev/null')
+    go(args,
+       'Running processes',
+       'ps aux 2>/dev/null')
+    go(args,
+       'Process binaries and associated permissions (from above list)',
+       "ps aux 2>/dev/null | awk '{print $11}' | xargs -r ls -la 2>/dev/null | awk '!x[$0]++' 2>/dev/null")
+    go(args,
+       'Contents of /etc/inetd.conf',
+       'cat /etc/inetd.conf 2>/dev/null')
+    go(args,
+       'The related inetd binary permissions',
+       "awk '{print $7}' /etc/inetd.conf 2>/dev/null | xargs -r ls -la 2>/dev/null")
+    go(args,
+       'Contents of /etc/xinetd.conf',
+       'cat /etc/xinetd.conf 2>/dev/null')
+    go(args,
+       '/etc/xinetd.d is included in /etc/xinetd.conf - associated binary permissions are listed below',
+       'grep "/etc/xinetd.d" /etc/xinetd.conf 2>/dev/null')
+    go(args,
+       'The related xinetd binary permissions',
+       "awk '{print $7}' /etc/xinetd.conf 2>/dev/null | xargs -r ls -la 2>/dev/null")
+    go(args,
+       '/etc/init.d/ binary permissions',
+       'ls -la /etc/init.d 2>/dev/null')
+    gx(args,
+       '/etc/init.d/ files not belonging to root',
+       'find /etc/init.d/ \! -uid 0 -type f 2>/dev/null | xargs -r ls -la 2>/dev/null')
+    go(args,
+       '/etc/rc.d/init.d binary permissions',
+       'ls -la /etc/rc.d/init.d 2>/dev/null')
+    gx(args,
+       '/etc/rc.d/init.d files not belonging to root',
+       'find /etc/rc.d/init.d \! -uid 0 -type f 2>/dev/null | xargs -r ls -la 2>/dev/null')
+    go(args,
+       '/usr/local/etc/rc.d binary permissions',
+       'ls -la /usr/local/etc/rc.d 2>/dev/null')
+    gx(args,
+       '/usr/local/etc/rc.d files not belonging to root',
+       'find /usr/local/etc/rc.d \! -uid 0 -type f 2>/dev/null | xargs -r ls -la 2>/dev/null')
+    go(args,
+       '/etc/init/ config file permissions',
+       'ls -la /etc/init/ 2>/dev/null')
+    gx(args,
+       '/etc/init/ config files not belonging to root',
+       'find /etc/init \! -uid 0 -type f 2>/dev/null | xargs -r ls -la 2>/dev/null')
+    go(args,
+       '/lib/systemd/* config file permissions',
+       'ls -lthR /lib/systemd/ 2>/dev/null')
+    gx(args,
+       '/lib/systemd/* config files not belonging to root',
+       'find /lib/systemd/ \! -uid 0 -type f 2>/dev/null | xargs -r ls -la 2>/dev/null')
 
 
 def sft_conf(args):
   if args.software:
     mk('SOFTWARE')
-    go(args, 'Sudo version', 'sudo -V 2>/dev/null | grep "Sudo version" 2>/dev/null')
-    go(args, 'MYSQL version', 'mysql --version 2>/dev/null')
-    gx(args, 'We can connect to the local MYSQL service with default root/root credentials!', 'mysqladmin -uroot -proot version 2>/dev/null')
-    gx(args, "We can connect to the local MYSQL service as 'root' and without a password!", 'mysqladmin -uroot version 2>/dev/null')
-    go(args, 'Postgres version', 'psql -V 2>/dev/null')
-    gx(args, "We can connect to Postgres DB 'template0' as user 'postgres' with no password!", "psql -U postgres -w template0 -c 'select version()' 2>/dev/null | grep version")
-    gx(args, "We can connect to Postgres DB 'template1' as user 'postgres' with no password!", "psql -U postgres -w template1 -c 'select version()' 2>/dev/null | grep version")
-    gx(args, "We can connect to Postgres DB 'template0' as user 'psql' with no password!", "psql -U pgsql -w template0 -c 'select version()' 2>/dev/null | grep version")
-    gx(args, "We can connect to Postgres DB 'template1' as user 'psql' with no password!", "psql -U pgsql -w template1 -c 'select version()' 2>/dev/null | grep version")
-    go(args, 'Apache version', 'apache2 -v 2>/dev/null; httpd -v 2>/dev/null')
-    go(args, 'Apache user configuration', "grep -i 'user\|group' /etc/apache2/envvars 2>/dev/null | awk '{sub(/.*\export /,"")}1' 2>/dev/null")
-    go(args, 'Installed Apache modules', 'apache2ctl -M 2>/dev/null; httpd -M 2>/dev/null')
-    go(args, 'htpasswd found - could contain passwords', 'find / -name .htpasswd -print -exec cat {} \; 2>/dev/null')
-    go(args, 'www home dir contents', 'ls -alhR /var/www/ 2>/dev/null; ls -alhR /srv/www/htdocs/ 2>/dev/null; ls -alhR /usr/local/www/apache2/data/ 2>/dev/null; ls -alhR /opt/lampp/htdocs/ 2>/dev/null')
+    go(args,
+       'Sudo version',
+       'sudo -V 2>/dev/null | grep "Sudo version" 2>/dev/null')
+    go(args,
+       'MYSQL version',
+       'mysql --version 2>/dev/null')
+    gx(args,
+       'We can connect to the local MYSQL service with default root/root credentials!',
+       'mysqladmin -uroot -proot version 2>/dev/null')
+    gx(args,
+       "We can connect to the local MYSQL service as 'root' and without a password!",
+       'mysqladmin -uroot version 2>/dev/null')
+    go(args,
+       'Postgres version',
+       'psql -V 2>/dev/null')
+    gx(args,
+       "We can connect to Postgres DB 'template0' as user 'postgres' with no password!",
+       "psql -U postgres -w template0 -c 'select version()' 2>/dev/null | grep version")
+    gx(args,
+       "We can connect to Postgres DB 'template1' as user 'postgres' with no password!",
+       "psql -U postgres -w template1 -c 'select version()' 2>/dev/null | grep version")
+    gx(args,
+       "We can connect to Postgres DB 'template0' as user 'psql' with no password!",
+       "psql -U pgsql -w template0 -c 'select version()' 2>/dev/null | grep version")
+    gx(args,
+       "We can connect to Postgres DB 'template1' as user 'psql' with no password!",
+       "psql -U pgsql -w template1 -c 'select version()' 2>/dev/null | grep version")
+    go(args,
+       'Apache version',
+       'apache2 -v 2>/dev/null; httpd -v 2>/dev/null')
+    go(args,
+       'Apache user configuration',
+       "grep -i 'user\|group' /etc/apache2/envvars 2>/dev/null | awk '{sub(/.*\export /,"")}1' 2>/dev/null")
+    go(args,
+       'Installed Apache modules',
+       'apache2ctl -M 2>/dev/null; httpd -M 2>/dev/null')
+    go(args,
+       'htpasswd found - could contain passwords',
+       'find / -name .htpasswd -print -exec cat {} \; 2>/dev/null')
+    go(args,
+       'www home dir contents',
+       'ls -alhR /var/www/ 2>/dev/null; ls -alhR /srv/www/htdocs/ 2>/dev/null; ls -alhR /usr/local/www/apache2/data/ 2>/dev/null; ls -alhR /opt/lampp/htdocs/ 2>/dev/null')
 
 
 def ask_info(args):
