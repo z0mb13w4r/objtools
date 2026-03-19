@@ -165,7 +165,7 @@ def usr_info(args):
        'Are permissions on /home directories lax',
        'ls -ahl /home/ 2>/dev/null')
 
-    if args.username:
+    if args.more and args.username:
       go(args,
          'Files not owned by user but writable by group',
          'find / -writable ! -user ' + args.username + ' -type f ! -path "/proc/*" ! -path "/sys/*" -exec ls -al {} \; 2>/dev/null')
@@ -309,14 +309,21 @@ def ask_info(args):
 
     gx(args, 'Users with specific POSIX capabilities', "grep -v '^#\|none\|^$' /etc/security/capability.conf 2>/dev/null")
 
-    x = gx(args, 'Users with specific POSIX capabilities', "grep -v '^#\|none\|^$' /etc/security/capability.conf 2>/dev/null")
-    if x:
-      y = gx(args, 'Capabilities associated with the current user', "echo -e '" + x + "' | grep '" + args.username + "' | awk '{print $1}' 2>/dev/null")
-      if y:
-        gx(args,
+    x0 = gx(args, 'Users with specific POSIX capabilities', "grep -v '^#\|none\|^$' /etc/security/capability.conf 2>/dev/null")
+    if x0:
+      x1 = gx(args, 'Capabilities associated with the current user', "echo -e '" + x0 + "' | grep '" + args.username + "' | awk '{print $1}' 2>/dev/null")
+      if x1:
+        x2 = gx(args,
           'Files with the same capabilities associated with the current user (You may want to try abusing those capabilties)',
-          'echo -e "' + y + '" | while read -r cap ; do echo -e "' + caps + '" | grep "$cap" ; done 2>/dev/null')
-      #
+          'echo -e "' + x1 + '" | while read -r cap ; do echo -e "' + caps + '" | grep "$cap" ; done 2>/dev/null')
+        if x2:
+          x3 = gx(args,
+                  'Permissions of files with the same capabilities associated with the current user',
+                  'echo -e "' + x2 + '" | awk "{print $1}" | while read -r f; do ls -la $f ;done 2>/dev/null')
+          if x3:
+            gx(args,
+               'User/Group writable files with the same capabilities associated with the current user',
+               'echo -e "' + x2 + '" | awk "{print $1}" | while read -r f; do find $f -writable -exec ls -la {} + ;done 2>/dev/null')
 
     gx(args, 'Private SSH keys found!', 'grep -rl "PRIVATE KEY-----" /home 2>/dev/null')
     gx(args, 'AWS secret keys found!', 'grep -rli "aws_secret_access_key" /home 2>/dev/null')
