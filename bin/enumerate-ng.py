@@ -182,10 +182,12 @@ def usr_info(args):
     if args.more and args.username:
       go(args,
          'Files not owned by user but writable by group',
-         'find / -writable ! -user ' + args.username + ' -type f ! -path "/proc/*" ! -path "/sys/*" -exec ls -al {} \; 2>/dev/null')
+         'find ' + args.path + '/ -writable ! -user ' + args.username
+                 + ' -type f ! -path "' + args.path + '/proc/*" ! -path "' + args.path + '/sys/*" -exec ls -al {} \; 2>/dev/null')
       go(args,
          'Files owned by our user',
-         'find / -user ' + args.username + ' -type f ! -path "/proc/*" ! -path "/sys/*" -exec ls -al {} \; 2>/dev/null')
+         'find ' + args.path + '/ -user ' + args.username
+                 + ' -type f ! -path "' + args.path + '/proc/*" ! -path "' + args.path + '/sys/*" -exec ls -al {} \; 2>/dev/null')
 
     if args.more:
       go(args,
