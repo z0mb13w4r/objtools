@@ -217,29 +217,34 @@ def usr_info(args):
 def env_info(args):
   if args.env:
     mk('ENVIRONMENTAL')
-    go(args,
-       'Environment information', 'env 2>/dev/null | grep -v "LS_COLORS" 2>/dev/null')
-    go(args,
-       'SELinux seems to be present',
-       'sestatus 2>/dev/null')
-    go(args,
-       'Path information',
-       'echo $PATH 2>/dev/null')
-    go(args,
-       'Path information (writeable)',
-       'ls -ld $(echo $PATH | tr ":" " ")')
+    if not args.path:
+      go(args,
+         'Environment information', 'env 2>/dev/null | grep -v "LS_COLORS" 2>/dev/null')
+      go(args,
+         'SELinux seems to be present',
+         'sestatus 2>/dev/null')
+      go(args,
+         'Path information',
+         'echo $PATH 2>/dev/null')
+      go(args,
+         'Path information (writeable)',
+         'ls -ld $(echo $PATH | tr ":" " ")')
+
     go(args,
        'Available shells',
-       'cat /etc/shells 2>/dev/null')
-    go(args,
-       'Current umask value',
-       'umask -S 2>/dev/null & umask 2>/dev/null')
+       'cat ' + args.path + '/etc/shells 2>/dev/null')
+
+    if not args.path:
+      go(args,
+         'Current umask value',
+         'umask -S 2>/dev/null & umask 2>/dev/null')
+
     go(args,
        'umask value as specified in /etc/login.defs',
-       'grep -i "^UMASK" /etc/login.defs 2>/dev/null')
+       'grep -i "^UMASK" ' + args.path + '/etc/login.defs 2>/dev/null')
     go(args,
        'Password and storage information',
-       'grep "^PASS_MAX_DAYS\|^PASS_MIN_DAYS\|^PASS_WARN_AGE\|^ENCRYPT_METHOD" /etc/login.defs 2>/dev/null')
+       'grep "^PASS_MAX_DAYS\|^PASS_MIN_DAYS\|^PASS_WARN_AGE\|^ENCRYPT_METHOD" ' + args.path + '/etc/login.defs 2>/dev/null')
 
 
 def job_info(args):
