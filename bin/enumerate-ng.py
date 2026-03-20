@@ -373,48 +373,56 @@ def srv_info(args):
 def sft_conf(args):
   if args.software:
     mk('SOFTWARE')
-    go(args,
-       'Sudo version',
-       'sudo -V 2>/dev/null | grep "Sudo version" 2>/dev/null')
-    go(args,
-       'MYSQL version',
-       'mysql --version 2>/dev/null')
-    gx(args,
-       'We can connect to the local MYSQL service with default root/root credentials!',
-       'mysqladmin -uroot -proot version 2>/dev/null')
-    gx(args,
-       "We can connect to the local MYSQL service as 'root' and without a password!",
-       'mysqladmin -uroot version 2>/dev/null')
-    go(args,
-       'Postgres version',
-       'psql -V 2>/dev/null')
-    gx(args,
-       "We can connect to Postgres DB 'template0' as user 'postgres' with no password!",
-       "psql -U postgres -w template0 -c 'select version()' 2>/dev/null | grep version")
-    gx(args,
-       "We can connect to Postgres DB 'template1' as user 'postgres' with no password!",
-       "psql -U postgres -w template1 -c 'select version()' 2>/dev/null | grep version")
-    gx(args,
-       "We can connect to Postgres DB 'template0' as user 'psql' with no password!",
-       "psql -U pgsql -w template0 -c 'select version()' 2>/dev/null | grep version")
-    gx(args,
-       "We can connect to Postgres DB 'template1' as user 'psql' with no password!",
-       "psql -U pgsql -w template1 -c 'select version()' 2>/dev/null | grep version")
-    go(args,
-       'Apache version',
-       'apache2 -v 2>/dev/null; httpd -v 2>/dev/null')
+    if not args.path:
+      go(args,
+         'Sudo version',
+         'sudo -V 2>/dev/null | grep "Sudo version" 2>/dev/null')
+      go(args,
+         'MYSQL version',
+         'mysql --version 2>/dev/null')
+      gx(args,
+         'We can connect to the local MYSQL service with default root/root credentials!',
+         'mysqladmin -uroot -proot version 2>/dev/null')
+      gx(args,
+         "We can connect to the local MYSQL service as 'root' and without a password!",
+         'mysqladmin -uroot version 2>/dev/null')
+      go(args,
+         'Postgres version',
+         'psql -V 2>/dev/null')
+      gx(args,
+         "We can connect to Postgres DB 'template0' as user 'postgres' with no password!",
+         "psql -U postgres -w template0 -c 'select version()' 2>/dev/null | grep version")
+      gx(args,
+         "We can connect to Postgres DB 'template1' as user 'postgres' with no password!",
+         "psql -U postgres -w template1 -c 'select version()' 2>/dev/null | grep version")
+      gx(args,
+         "We can connect to Postgres DB 'template0' as user 'psql' with no password!",
+         "psql -U pgsql -w template0 -c 'select version()' 2>/dev/null | grep version")
+      gx(args,
+         "We can connect to Postgres DB 'template1' as user 'psql' with no password!",
+         "psql -U pgsql -w template1 -c 'select version()' 2>/dev/null | grep version")
+      go(args,
+         'Apache version',
+         'apache2 -v 2>/dev/null; httpd -v 2>/dev/null')
+
     go(args,
        'Apache user configuration',
-       "grep -i 'user\|group' /etc/apache2/envvars 2>/dev/null | awk '{sub(/.*\export /,"")}1' 2>/dev/null")
-    go(args,
-       'Installed Apache modules',
-       'apache2ctl -M 2>/dev/null; httpd -M 2>/dev/null')
+       "grep -i 'user\|group' " + args.path + "/etc/apache2/envvars 2>/dev/null | awk '{sub(/.*\export /,"")}1' 2>/dev/null")
+
+    if not args.path:
+      go(args,
+         'Installed Apache modules',
+         'apache2ctl -M 2>/dev/null; httpd -M 2>/dev/null')
+
     go(args,
        'htpasswd found - could contain passwords',
-       'find / -name .htpasswd -print -exec cat {} \; 2>/dev/null')
+       'find ' + args.path + '/ -name .htpasswd -print -exec cat {} \; 2>/dev/null')
     go(args,
        'www home dir contents',
-       'ls -alhR /var/www/ 2>/dev/null; ls -alhR /srv/www/htdocs/ 2>/dev/null; ls -alhR /usr/local/www/apache2/data/ 2>/dev/null; ls -alhR /opt/lampp/htdocs/ 2>/dev/null')
+       'ls -alhR /var/www/ 2>/dev/null;'
+         + 'ls -alhR ' + args.path + '/srv/www/htdocs/ 2>/dev/null;'
+         + 'ls -alhR ' + args.path + '/usr/local/www/apache2/data/ 2>/dev/null;'
+         + 'ls -alhR ' + args.path + '/opt/lampp/htdocs/ 2>/dev/null')
 
 
 def ask_info(args):
