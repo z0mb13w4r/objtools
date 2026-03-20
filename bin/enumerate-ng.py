@@ -183,29 +183,35 @@ def usr_info(args):
       go(args,
          'Files not owned by user but writable by group',
          'find ' + args.path + '/ -writable ! -user ' + args.username
-                 + ' -type f ! -path "' + args.path + '/proc/*" ! -path "' + args.path + '/sys/*" -exec ls -al {} \; 2>/dev/null')
+                 + ' -type f ! -path "' + args.path + '/proc/*" ! -path "' + args.path + '/sys/*" '
+                 + '-exec ls -al {} \; 2>/dev/null')
       go(args,
          'Files owned by our user',
          'find ' + args.path + '/ -user ' + args.username
-                 + ' -type f ! -path "' + args.path + '/proc/*" ! -path "' + args.path + '/sys/*" -exec ls -al {} \; 2>/dev/null')
+                 + ' -type f ! -path "' + args.path + '/proc/*" ! -path "' + args.path + '/sys/*" '
+                 + '-exec ls -al {} \; 2>/dev/null')
 
     if args.more:
       go(args,
          'Hidden files',
-         'find / -name ".*" -type f ! -path "/proc/*" ! -path "/sys/*" -exec ls -al {} \; 2>/dev/null')
-      go(args, 'World-readable files within /home', 'find /home/ -perm -4 -type f -exec ls -al {} \; 2>/dev/null')
+         'find ' + args.path + '/ -name ".*" -type f ! -path "' + args.path + '/proc/*" ! -path "' + args.path + '/sys/*" '
+                 + '-exec ls -al {} \; 2>/dev/null')
+      go(args,
+         'World-readable files within /home',
+         'find ' + args.path + '/home/ -perm -4 -type f -exec ls -al {} \; 2>/dev/null')
       if args.username:
         go(args,
            'Home directory contents',
-           'ls -ahl /home/' + args.username + '/')
+           'ls -ahl ' + args.path + '/home/' + args.username + '/')
 
       go(args,
          'SSH keys/host information found in the following locations',
-         'find / \( -name "id_dsa*" -o -name "id_rsa*" -o -name "known_hosts" -o -name "authorized_hosts" -o -name "authorized_keys" \) -exec ls -la {} 2>/dev/null \;')
+         'find ' + args.path + '/ \( -name "id_dsa*" -o -name "id_rsa*" -o -name "known_hosts" -o -name "authorized_hosts" -o -name "authorized_keys" \) '
+                 +'-exec ls -la {} 2>/dev/null \;')
 
     go(args,
        'Root is allowed to login via SSH',
-       'grep "PermitRootLogin " /etc/ssh/sshd_config 2>/dev/null | grep -v "#"')
+       'grep "PermitRootLogin " ' + args.path + '/etc/ssh/sshd_config 2>/dev/null | grep -v "#"')
 
 
 def env_info(args):
