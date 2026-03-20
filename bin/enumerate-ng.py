@@ -252,28 +252,31 @@ def job_info(args):
     mk('JOBS/TASKS')
     go(args,
        'Cron jobs',
-       'ls -la /etc/cron* 2>/dev/null')
+       'ls -la ' + args.path + '/etc/cron* 2>/dev/null')
     go(args,
        'World-writable cron jobs and file contents',
-       'find /etc/cron* -perm -0002 -type f -exec ls -la {} \; -exec cat {} 2>/dev/null \;')
+       'find ' + args.path + '/etc/cron* -perm -0002 -type f -exec ls -la {} \; -exec cat {} 2>/dev/null \;')
     go(args,
        'Crontab contents',
-       'cat /etc/crontab 2>/dev/null')
+       'cat ' + args.path + '/etc/crontab 2>/dev/null')
     go(args,
        'Anything interesting in /var/spool/cron/crontabs',
-       'ls -la /var/spool/cron/crontabs 2>/dev/null')
+       'ls -la ' + args.path + '/var/spool/cron/crontabs 2>/dev/null')
     go(args,
        'Anacron jobs and associated file permissions',
-       'ls -la /etc/anacrontab 2>/dev/null; cat /etc/anacrontab 2>/dev/null')
+       'ls -la ' + args.path + '/etc/anacrontab 2>/dev/null;'
+                 + ' cat ' + args.path + '/etc/anacrontab 2>/dev/null')
     go(args,
        'When were jobs last executed (/var/spool/anacron contents)',
-       'ls -la /var/spool/anacron 2>/dev/null')
-    go(args,
-       'Jobs held by all users',
-        'cut -d ":" -f 1 /etc/passwd | xargs -n1 crontab -l -u 2>/dev/null')
-    go(args,
-       'Systemd timers',
-       'systemctl list-timers --all 2>/dev/null')
+       'ls -la ' + args.path + '/var/spool/anacron 2>/dev/null')
+
+    if not args.path:
+      go(args,
+         'Jobs held by all users',
+          'cut -d ":" -f 1 /etc/passwd | xargs -n1 crontab -l -u 2>/dev/null')
+      go(args,
+         'Systemd timers',
+         'systemctl list-timers --all 2>/dev/null')
 
 
 def net_info(args):
