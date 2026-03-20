@@ -315,57 +315,59 @@ def net_info(args):
 def srv_info(args):
   if args.services:
     mk('SERVICES')
-    go(args,
-       'Running processes',
-       'ps aux 2>/dev/null')
-    go(args,
-       'Process binaries and associated permissions (from above list)',
-       "ps aux 2>/dev/null | awk '{print $11}' | xargs -r ls -la 2>/dev/null | awk '!x[$0]++' 2>/dev/null")
+    if not args.path:
+      go(args,
+         'Running processes',
+         'ps aux 2>/dev/null')
+      go(args,
+         'Process binaries and associated permissions (from above list)',
+         "ps aux 2>/dev/null | awk '{print $11}' | xargs -r ls -la 2>/dev/null | awk '!x[$0]++' 2>/dev/null")
+
     go(args,
        'Contents of /etc/inetd.conf',
-       'cat /etc/inetd.conf 2>/dev/null')
+       'cat ' + args.path + '/etc/inetd.conf 2>/dev/null')
     go(args,
        'The related inetd binary permissions',
-       "awk '{print $7}' /etc/inetd.conf 2>/dev/null | xargs -r ls -la 2>/dev/null")
+       "awk '{print $7}' " + args.path + "/etc/inetd.conf 2>/dev/null | xargs -r ls -la 2>/dev/null")
     go(args,
        'Contents of /etc/xinetd.conf',
-       'cat /etc/xinetd.conf 2>/dev/null')
+       'cat ' + args.path + '/etc/xinetd.conf 2>/dev/null')
     go(args,
        '/etc/xinetd.d is included in /etc/xinetd.conf - associated binary permissions are listed below',
-       'grep "/etc/xinetd.d" /etc/xinetd.conf 2>/dev/null')
+       'grep "/etc/xinetd.d" ' + args.path + '/etc/xinetd.conf 2>/dev/null')
     go(args,
        'The related xinetd binary permissions',
-       "awk '{print $7}' /etc/xinetd.conf 2>/dev/null | xargs -r ls -la 2>/dev/null")
+       "awk '{print $7}' " + args.path + "/etc/xinetd.conf 2>/dev/null | xargs -r ls -la 2>/dev/null")
     go(args,
        '/etc/init.d/ binary permissions',
-       'ls -la /etc/init.d 2>/dev/null')
+       'ls -la ' + args.path + '/etc/init.d 2>/dev/null')
     gx(args,
        '/etc/init.d/ files not belonging to root',
-       'find /etc/init.d/ \! -uid 0 -type f 2>/dev/null | xargs -r ls -la 2>/dev/null')
+       'find ' + args.path + '/etc/init.d/ \! -uid 0 -type f 2>/dev/null | xargs -r ls -la 2>/dev/null')
     go(args,
        '/etc/rc.d/init.d binary permissions',
-       'ls -la /etc/rc.d/init.d 2>/dev/null')
+       'ls -la ' + args.path + '/etc/rc.d/init.d 2>/dev/null')
     gx(args,
        '/etc/rc.d/init.d files not belonging to root',
-       'find /etc/rc.d/init.d \! -uid 0 -type f 2>/dev/null | xargs -r ls -la 2>/dev/null')
+       'find ' + args.path + '/etc/rc.d/init.d \! -uid 0 -type f 2>/dev/null | xargs -r ls -la 2>/dev/null')
     go(args,
        '/usr/local/etc/rc.d binary permissions',
        'ls -la /usr/local/etc/rc.d 2>/dev/null')
     gx(args,
        '/usr/local/etc/rc.d files not belonging to root',
-       'find /usr/local/etc/rc.d \! -uid 0 -type f 2>/dev/null | xargs -r ls -la 2>/dev/null')
+       'find ' + args.path + '/usr/local/etc/rc.d \! -uid 0 -type f 2>/dev/null | xargs -r ls -la 2>/dev/null')
     go(args,
        '/etc/init/ config file permissions',
-       'ls -la /etc/init/ 2>/dev/null')
+       'ls -la ' + args.path + '/etc/init/ 2>/dev/null')
     gx(args,
        '/etc/init/ config files not belonging to root',
-       'find /etc/init \! -uid 0 -type f 2>/dev/null | xargs -r ls -la 2>/dev/null')
+       'find ' + args.path + '/etc/init \! -uid 0 -type f 2>/dev/null | xargs -r ls -la 2>/dev/null')
     go(args,
        '/lib/systemd/* config file permissions',
-       'ls -lthR /lib/systemd/ 2>/dev/null')
+       'ls -lthR ' + args.path + '/lib/systemd/ 2>/dev/null')
     gx(args,
        '/lib/systemd/* config files not belonging to root',
-       'find /lib/systemd/ \! -uid 0 -type f 2>/dev/null | xargs -r ls -la 2>/dev/null')
+       'find ' + args.path + '/lib/systemd/ \! -uid 0 -type f 2>/dev/null | xargs -r ls -la 2>/dev/null')
 
 
 def sft_conf(args):
