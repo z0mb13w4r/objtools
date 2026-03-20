@@ -282,30 +282,34 @@ def job_info(args):
 def net_info(args):
   if args.network:
     mk('NETWORKING')
-    go(args,
-       'Network and IP info',
-       '/sbin/ifconfig -a 2>/dev/null', '/sbin/ip a 2>/dev/null')
-    go(args,
-       'ARP history',
-       'arp -a 2>/dev/null', 'ip n 2>/dev/null')
+    if not args.path:
+      go(args,
+         'Network and IP info',
+         '/sbin/ifconfig -a 2>/dev/null', '/sbin/ip a 2>/dev/null')
+      go(args,
+         'ARP history',
+         'arp -a 2>/dev/null', 'ip n 2>/dev/null')
+
     go(args,
        'Nameserver(s)',
-       'grep "nameserver" /etc/resolv.conf 2>/dev/null')
-    go(args,
-       'Nameserver(s)',
-       'systemd-resolve --status 2>/dev/null')
-    go(args,
-       'Default route',
-       'route 2>/dev/null | grep default',
-       'ip r 2>/dev/null | grep default')
-    go(args,
-       'Listening TCP',
-       'netstat -ntpl 2>/dev/null',
-       'ss -t -l -n 2>/dev/null')
-    go(args,
-       'Listening UDP',
-       'netstat -nupl 2>/dev/null',
-       'ss -u -l -n 2>/dev/null')
+       'grep "nameserver" ' + args.path + '/etc/resolv.conf 2>/dev/null')
+
+    if not args.path:
+      go(args,
+         'Nameserver(s)',
+         'systemd-resolve --status 2>/dev/null')
+      go(args,
+         'Default route',
+         'route 2>/dev/null | grep default',
+         'ip r 2>/dev/null | grep default')
+      go(args,
+         'Listening TCP',
+         'netstat -ntpl 2>/dev/null',
+         'ss -t -l -n 2>/dev/null')
+      go(args,
+         'Listening UDP',
+         'netstat -nupl 2>/dev/null',
+         'ss -u -l -n 2>/dev/null')
 
 
 def srv_info(args):
