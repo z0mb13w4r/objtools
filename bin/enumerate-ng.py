@@ -3,7 +3,7 @@ import pexpect
 import argparse
 
 PROGRAM_NAME = 'enumerate-ng.py'
-VERSION_VALUE = '0.0'
+VERSION_VALUE = '0.1'
 
 LICENSE_TEXT = '''COPYRIGHT
   MIT License
@@ -428,17 +428,28 @@ def sft_conf(args):
 def ask_info(args):
   if args.useful:
     mk('INTERESTING FILES')
-    go(args,
-       'Useful file locations',
-       'which nc 2>/dev/null; which netcat 2>/dev/null; which wget 2>/dev/null; which nmap 2>/dev/null; which gcc 2>/dev/null; which curl 2>/dev/null')
-    go(args,
-       'Installed compilers',
-       "dpkg --list 2>/dev/null | grep compiler | grep -v decompiler 2>/dev/null && yum list installed 'gcc*' 2>/dev/null | grep gcc 2>/dev/null")
+    if not args.path:
+      go(args,
+         'Useful file locations',
+         'which nc 2>/dev/null;'
+           + 'which netcat 2>/dev/null;'
+           + 'which wget 2>/dev/null;'
+           + 'which nmap 2>/dev/null;'
+           + 'which gcc 2>/dev/null;'
+           + 'which curl 2>/dev/null')
+      go(args,
+         'Installed compilers',
+         "dpkg --list 2>/dev/null | grep compiler | grep -v decompiler 2>/dev/null && yum list installed 'gcc*' 2>/dev/null | grep gcc 2>/dev/null")
+
     go(args,
        'Can we read/write sensitive files',
-       'ls -la /etc/passwd 2>/dev/null; ls -la /etc/group 2>/dev/null; ls -la /etc/profile 2>/dev/null; ls -la /etc/shadow 2>/dev/null; ls -la /etc/master.passwd 2>/dev/null')
+       'ls -la ' + args.path + '/etc/passwd 2>/dev/null;'
+         + 'ls -la ' + args.path + '/etc/group 2>/dev/null;'
+         + 'ls -la ' + args.path + '/etc/profile 2>/dev/null;'
+         + 'ls -la ' + args.path + '/etc/shadow 2>/dev/null;'
+         + 'ls -la ' + args.path + '/etc/master.passwd 2>/dev/null')
 
-    suid = xy("find / -perm -4000 -type f 2>/dev/null | tr '\n' ' '")
+    suid = xy("find " + args.path + "/ -perm -4000 -type f 2>/dev/null | tr '\n' ' '")
     go(args,
        'SUID files',
        'find ' + suid + ' -perm -4000 -type f -exec ls -la {} 2>/dev/null \;')
@@ -452,7 +463,7 @@ def ask_info(args):
        'World-writable SUID files owned by root',
        'find ' + suid + ' -uid 0 -perm -4002 -type f -exec ls -la {} 2>/dev/null \;')
 
-    sgid = xy("find / -perm -2000 -type f 2>/dev/null | tr '\n' ' '")
+    sgid = xy("find " + args.path + "/ -perm -2000 -type f 2>/dev/null | tr '\n' ' '")
     go(args,
        'SGID files',
        'find ' + sgid + ' -perm -2000 -type f -exec ls -la {} 2>/dev/null \;')
@@ -465,13 +476,14 @@ def ask_info(args):
     gx(args,
        'World-writable SGID files owned by root',
        'find ' + sgid + ' -uid 0 -perm -2002 -type f -exec ls -la {} 2>/dev/null \;')
-    caps = gx(args, 'Files with POSIX capabilities set', 'getcap -r / 2>/dev/null || /sbin/getcap -r / 2>/dev/null')
+
+    caps = gx(args, 'Files with POSIX capabilities set', 'getcap -r ' + args.path + '/ 2>/dev/null || /sbin/getcap -r ' + args.path + '/ 2>/dev/null')
 
     gx(args,
        'Users with specific POSIX capabilities',
-       "grep -v '^#\|none\|^$' /etc/security/capability.conf 2>/dev/null")
+       "grep -v '^#\|none\|^$' " + args.path + "/etc/security/capability.conf 2>/dev/null")
 
-    x0 = gx(args, 'Users with specific POSIX capabilities', "grep -v '^#\|none\|^$' /etc/security/capability.conf 2>/dev/null")
+    x0 = gx(args, 'Users with specific POSIX capabilities', "grep -v '^#\|none\|^$' " + args.path + "/etc/security/capability.conf 2>/dev/null")
     if x0:
       x1 = gx(args,
               'Capabilities associated with the current user',
@@ -491,79 +503,82 @@ def ask_info(args):
 
     gx(args,
        'Private SSH keys found!',
-       'grep -rl "PRIVATE KEY-----" /home 2>/dev/null')
+       'grep -rl "PRIVATE KEY-----" ' + args.path + '/home 2>/dev/null')
     gx(args,
        'AWS secret keys found!',
-       'grep -rli "aws_secret_access_key" /home 2>/dev/null')
+       'grep -rli "aws_secret_access_key" ' + args.path + '/home 2>/dev/null')
     gx(args,
        'Git credentials saved on the machine!',
-       'find / -name ".git-credentials" 2>/dev/null')
+       'find ' + args.path + '/ -name ".git-credentials" 2>/dev/null')
     go(args,
        'World-writable files (excluding /proc and /sys)',
-       'find / ! -path "*/proc/*" ! -path "/sys/*" -perm -2 -type f -exec ls -la {} 2>/dev/null \;')
+       'find ' + args.path + '/ ! -path "*/proc/*" ! -path "/sys/*" -perm -2 -type f -exec ls -la {} 2>/dev/null \;')
     go(args,
        'Plan file permissions and contents',
-       'find /home -iname *.plan -exec ls -la {} \; -exec cat {} 2>/dev/null \;')
+       'find ' + args.path + '/home -iname *.plan -exec ls -la {} \; -exec cat {} 2>/dev/null \;')
     go(args,
        'Plan file permissions and contents',
-       'find /usr/home -iname *.plan -exec ls -la {} \; -exec cat {} 2>/dev/null \;')
+       'find ' + args.path + '/usr/home -iname *.plan -exec ls -la {} \; -exec cat {} 2>/dev/null \;')
     gx(args,
        'rhost config file(s) and file contents',
-       'find /home -iname *.rhosts -exec ls -la {} 2>/dev/null \; -exec cat {} 2>/dev/null \;')
+       'find ' + args.path + '/home -iname *.rhosts -exec ls -la {} 2>/dev/null \; -exec cat {} 2>/dev/null \;')
     gx(args,
        'rhost config file(s) and file contents',
-       'find /usr/home -iname *.rhosts -exec ls -la {} 2>/dev/null \; -exec cat {} 2>/dev/null \;')
+       'find ' + args.path + '/usr/home -iname *.rhosts -exec ls -la {} 2>/dev/null \; -exec cat {} 2>/dev/null \;')
     gx(args,
        'Hosts.equiv file and contents',
-       'find /etc -iname hosts.equiv -exec ls -la {} 2>/dev/null \; -exec cat {} 2>/dev/null \;')
+       'find ' + args.path + '/etc -iname hosts.equiv -exec ls -la {} 2>/dev/null \; -exec cat {} 2>/dev/null \;')
     go(args,
        'NFS config details',
-       'ls -la /etc/exports 2>/dev/null; cat /etc/exports 2>/dev/null')
+       'ls -la ' + args.path + '/etc/exports 2>/dev/null; cat ' + args.path + '/etc/exports 2>/dev/null')
     go(args,
        'NFS displaying partitions and filesystems - you need to check if exotic filesystems',
-       'cat /etc/fstab 2>/dev/null')
+       'cat ' + args.path + '/etc/fstab 2>/dev/null')
     gx(args,
        'Looks like there are credentials in /etc/fstab!',
-       "grep username /etc/fstab 2>/dev/null")
+       'grep username ' + args.path + '/etc/fstab 2>/dev/null')
     gx(args,
        '/etc/fstab contains a credentials file!',
-       "grep cred /etc/fstab 2>/dev/null")
+       'grep cred ' + args.path + '/etc/fstab 2>/dev/null')
 
     if args.keyword:
       go(args,
          'Find keyword ' + args.keyword + ' in .conf files (recursive 4 levels - output format filepath:identified line number where keyword appears)',
-         'find / -maxdepth 4 -name *.conf -type f -exec grep -Hn ' + args.keyword + ' {} \; 2>/dev/null')
+         'find ' + args.path + '/ -maxdepth 4 -name *.conf -type f -exec grep -Hn ' + args.keyword + ' {} \; 2>/dev/null')
       go(args,
          'Find keyword ' + args.keyword + ' in .php files (recursive 10 levels - output format filepath:identified line number where keyword appears)',
-         'find / -maxdepth 10 -name *.php -type f -exec grep -Hn ' + args.keyword + ' {} \; 2>/dev/null')
+         'find ' + args.path + '/ -maxdepth 10 -name *.php -type f -exec grep -Hn ' + args.keyword + ' {} \; 2>/dev/null')
       go(args,
          'Find keyword ' + args.keyword + ' in .log files (recursive 4 levels - output format filepath:identified line number where keyword appears)',
-         'find / -maxdepth 4 -name *.log -type f -exec grep -Hn ' + args.keyword + ' {} \; 2>/dev/null')
+         'find ' + args.path + '/ -maxdepth 4 -name *.log -type f -exec grep -Hn ' + args.keyword + ' {} \; 2>/dev/null')
       go(args,
          'Find keyword ' + args.keyword + ' in .ini files (recursive 4 levels - output format filepath:identified line number where keyword appears)',
-         'find / -maxdepth 4 -name *.ini -type f -exec grep -Hn ' + args.keyword + ' {} \; 2>/dev/null')
+         'find ' + args.path + '/ -maxdepth 4 -name *.ini -type f -exec grep -Hn ' + args.keyword + ' {} \; 2>/dev/null')
 
     go(args,
        'All *.conf files in /etc (recursive 1 level)',
-       'find /etc/ -maxdepth 1 -name *.conf -type f -exec ls -la {} \; 2>/dev/null')
-    go(args,
-       "Current user's history files",
-       'ls -la ~/.*_history 2>/dev/null')
+       'find ' + args.path + '/etc/ -maxdepth 1 -name *.conf -type f -exec ls -la {} \; 2>/dev/null')
+
+    if args.username:
+      go(args,
+         "Current user's history files",
+         'ls -la ' + args.path + '/home/' + args.username + '/.*_history 2>/dev/null')
+
     gx(args,
        "Root's history files are accessible!",
-       'ls -la /root/.*_history 2>/dev/null')
+       'ls -la ' + args.path + '/root/.*_history 2>/dev/null')
     go(args,
        'Location and contents (if accessible) of .bash_history file(s)',
-       'find /home -name .bash_history -print -exec cat {} 2>/dev/null \;')
+       'find ' + args.path + '/home -name .bash_history -print -exec cat {} 2>/dev/null \;')
     go(args,
        'Location and Permissions (if accessible) of .bak file(s)',
-       'find / -name *.bak -type f 2</dev/null')
+       'find ' + args.path + '/ -name *.bak -type f 2</dev/null')
     go(args,
        'Any interesting mail in /var/mail',
-       'ls -la /var/mail 2>/dev/null')
+       'ls -la ' + args.path + '/var/mail 2>/dev/null')
     gx(args,
        'We can read /var/mail/root!',
-       'head /var/mail/root 2>/dev/null')
+       'head ' + args.path + '/var/mail/root 2>/dev/null')
 
 
 if __name__ == '__main__':
