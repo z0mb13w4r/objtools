@@ -18,6 +18,7 @@ DPKGDEBBIN=/usr/bin/dpkg-deb
 
 EXTERNBIN=../bin
 EXTERNMAN=../man
+EXTERNSRC=../src
 
 REL=$($GREPBIN DISTRIB_RELEASE /etc/lsb-release | $CUTBIN -d '=' -f 2)
 VER=$($GREPBIN Version $EXTERNBIN/control | $CUTBIN -d ' ' -f 2)
@@ -83,5 +84,7 @@ $FINDBIN $NAME/usr/ -type f -exec $MD5SUMBIN '{}' \; | $SEDBIN "s/$NAME\///" > $
 
 $DPKGDEBBIN --build $NAME
 
-echo $($GREPBIN Version $EXTERNBIN/control | $CUTBIN -d ' ' -f 2) $($HEADBIN -1 $EXTERNMAN/* | $GREPBIN '.TH' | $CUTBIN -d ' ' -f 7 | $TRBIN -d '"')
+echo $($GREPBIN Version $EXTERNBIN/control | $CUTBIN -d ' ' -f 2) \
+     $($HEADBIN -1 $EXTERNMAN/* | $GREPBIN '.TH' | $CUTBIN -d ' ' -f 7 | $TRBIN -d '"') \
+     $($GREPBIN '#define VERSION_VALUE' $EXTERNSRC/options.c | $CUTBIN -d ' ' -f 3 | $TRBIN -d '"')
 
