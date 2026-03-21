@@ -1,4 +1,4 @@
-v1.3 - 
+v1.3 - 21/03/2026
 -----------------------------------------------------------------------
 [+] Compatibility REMnux v8.  
 [+] Added ARM32 GOT support.  
@@ -6,6 +6,7 @@ v1.3 -
 [+] Updated Capstone Engine.  
 [+] Improved symbol identification.  
 [+] Fixed enumerate-ng.py pexpect timeout.  
+[+] Added firmware paths to enumerate-ng.  
 [+] Enhanced readelf-ng, objdump-ng and enumerate-ng.py.  
 [+] Bug fixes.  
 
