@@ -140,7 +140,15 @@ static int dump_actionsELF0(const pbuffer_t p, const poptions_t o, const char* n
     if (0 != sh_size && sh_type != SHT_NOBITS) {
       n += printf_data(p0, sh_size, sh_addr, USE_HEXDUMP);
       n += printf_eol();
-      n += printf_sore(p0, sh_size, USE_SHA256 | USE_SPACE);
+      if (MODE_ISANY(o->action, OPTOBJHASH_SHA1)) {
+        n += printf_sore(p0, sh_size, USE_SHA1 | USE_SPACE);
+      } else if (MODE_ISANY(o->action, OPTOBJHASH_SHA256)) {
+        n += printf_sore(p0, sh_size, USE_SHA256 | USE_SPACE);
+      } else if (MODE_ISANY(o->action, OPTOBJHASH_SHA512)) {
+        n += printf_sore(p0, sh_size, USE_SHA512 | USE_SPACE);
+      } else {
+        n += printf_sore(p0, sh_size, USE_MD5 | USE_SPACE);
+      }
       n += printf_eol();
     } else {
       printf_w("section '%s' has no data to dump!", name);
@@ -153,7 +161,15 @@ static int dump_actionsELF0(const pbuffer_t p, const poptions_t o, const char* n
     if (0 != sh_size && sh_type != SHT_NOBITS) {
       n += printf_data(p0, sh_size, sh_addr, USE_STRDUMP8);
       n += printf_eol();
-      n += printf_sore(p0, sh_size, USE_SHA256 | USE_SPACE);
+      if (MODE_ISANY(o->action, OPTOBJHASH_SHA1)) {
+        n += printf_sore(p0, sh_size, USE_SHA1 | USE_SPACE);
+      } else if (MODE_ISANY(o->action, OPTOBJHASH_SHA256)) {
+        n += printf_sore(p0, sh_size, USE_SHA256 | USE_SPACE);
+      } else if (MODE_ISANY(o->action, OPTOBJHASH_SHA512)) {
+        n += printf_sore(p0, sh_size, USE_SHA512 | USE_SPACE);
+      } else {
+        n += printf_sore(p0, sh_size, USE_MD5 | USE_SPACE);
+      }
       n += printf_eol();
     } else {
       printf_w("section '%s' has no data to dump!", name);
