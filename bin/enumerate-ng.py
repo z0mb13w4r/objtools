@@ -28,7 +28,7 @@ LICENSE_TEXT = '''COPYRIGHT
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.'''
 
-BINBIGLIST='aria2c\|arp\|ash\|awk\|base64\|bash\|busybox\|cat\|chmod\|chown\|cp\|csh\|curl\|cut\|dash\|date\|dd\|diff\|dmsetup\|docker\|ed\|emacs\|env\|expand\|expect\|file\|find\|flock\|fmt\|fold\|ftp\|gawk\|gdb\|gimp\|git\|grep\|head\|ht\|iftop\|ionice\|ip$\|irb\|jjs\|jq\|jrunscript\|ksh\|ld.so\|ldconfig\|less\|logsave\|lua\|make\|man\|mawk\|more\|mv\|mysql\|nano\|nawk\|nc\|netcat\|nice\|nl\|nmap\|node\|od\|openssl\|perl\|pg\|php\|pic\|pico\|python\|readelf\|rlwrap\|rpm\|rpmquery\|rsync\|ruby\|run-parts\|rvim\|scp\|script\|sed\|setarch\|sftp\|sh\|shuf\|socat\|sort\|sqlite3\|ssh$\|start-stop-daemon\|stdbuf\|strace\|systemctl\|tail\|tar\|taskset\|tclsh\|tee\|telnet\|tftp\|time\|timeout\|ul\|unexpand\|uniq\|unshare\|vi\|vim\|watch\|wget\|wish\|xargs\|xxd\|zip\|zsh'
+BINBIGLIST=r'aria2c\|arp\|ash\|awk\|base64\|bash\|busybox\|cat\|chmod\|chown\|cp\|csh\|curl\|cut\|dash\|date\|dd\|diff\|dmsetup\|docker\|ed\|emacs\|env\|expand\|expect\|file\|find\|flock\|fmt\|fold\|ftp\|gawk\|gdb\|gimp\|git\|grep\|head\|ht\|iftop\|ionice\|ip$\|irb\|jjs\|jq\|jrunscript\|ksh\|ld.so\|ldconfig\|less\|logsave\|lua\|make\|man\|mawk\|more\|mv\|mysql\|nano\|nawk\|nc\|netcat\|nice\|nl\|nmap\|node\|od\|openssl\|perl\|pg\|php\|pic\|pico\|python\|readelf\|rlwrap\|rpm\|rpmquery\|rsync\|ruby\|run-parts\|rvim\|scp\|script\|sed\|setarch\|sftp\|sh\|shuf\|socat\|sort\|sqlite3\|ssh$\|start-stop-daemon\|stdbuf\|strace\|systemctl\|tail\|tar\|taskset\|tclsh\|tee\|telnet\|tftp\|time\|timeout\|ul\|unexpand\|uniq\|unshare\|vi\|vim\|watch\|wget\|wish\|xargs\|xxd\|zip\|zsh'
 
 
 def mk(msg):
@@ -184,21 +184,22 @@ def usr_info(args):
          'Files not owned by user but writable by group',
          'find ' + args.path + '/ -writable ! -user ' + args.username
                  + ' -type f ! -path "' + args.path + '/proc/*" ! -path "' + args.path + '/sys/*" '
-                 + '-exec ls -al {} \; 2>/dev/null')
+                 + r'-exec ls -al {} \; 2>/dev/null')
       go(args,
          'Files owned by our user',
          'find ' + args.path + '/ -user ' + args.username
                  + ' -type f ! -path "' + args.path + '/proc/*" ! -path "' + args.path + '/sys/*" '
-                 + '-exec ls -al {} \; 2>/dev/null')
+                 + r'-exec ls -al {} \; 2>/dev/null')
 
     if args.more:
       go(args,
          'Hidden files',
          'find ' + args.path + '/ -name ".*" -type f ! -path "' + args.path + '/proc/*" ! -path "' + args.path + '/sys/*" '
-                 + '-exec ls -al {} \; 2>/dev/null')
+                 + r'-exec ls -al {} \; 2>/dev/null')
       go(args,
          'World-readable files within /home',
-         'find ' + args.path + '/home/ -perm -4 -type f -exec ls -al {} \; 2>/dev/null')
+         'find ' + args.path + '/home/ -perm -4 -type f '
+                 + r'-exec ls -al {} \; 2>/dev/null')
       if args.username:
         go(args,
            'Home directory contents',
@@ -206,8 +207,9 @@ def usr_info(args):
 
       go(args,
          'SSH keys/host information found in the following locations',
-         'find ' + args.path + '/ \( -name "id_dsa*" -o -name "id_rsa*" -o -name "known_hosts" -o -name "authorized_hosts" -o -name "authorized_keys" \) '
-                 +'-exec ls -la {} 2>/dev/null \;')
+         'find ' + args.path
+                 + r'/ \( -name "id_dsa*" -o -name "id_rsa*" -o -name "known_hosts" -o -name "authorized_hosts" -o -name "authorized_keys" \) '
+                 + r'-exec ls -la {} 2>/dev/null \;')
 
     go(args,
        'Root is allowed to login via SSH',
@@ -244,7 +246,7 @@ def env_info(args):
        'grep -i "^UMASK" ' + args.path + '/etc/login.defs 2>/dev/null')
     go(args,
        'Password and storage information',
-       'grep "^PASS_MAX_DAYS\|^PASS_MIN_DAYS\|^PASS_WARN_AGE\|^ENCRYPT_METHOD" ' + args.path + '/etc/login.defs 2>/dev/null')
+       r'grep "^PASS_MAX_DAYS\|^PASS_MIN_DAYS\|^PASS_WARN_AGE\|^ENCRYPT_METHOD" ' + args.path + '/etc/login.defs 2>/dev/null')
 
 
 def job_info(args):
@@ -255,7 +257,8 @@ def job_info(args):
        'ls -la ' + args.path + '/etc/cron* 2>/dev/null')
     go(args,
        'World-writable cron jobs and file contents',
-       'find ' + args.path + '/etc/cron* -perm -0002 -type f -exec ls -la {} \; -exec cat {} 2>/dev/null \;')
+       'find ' + args.path
+               + r'/etc/cron* -perm -0002 -type f -exec ls -la {} \; -exec cat {} 2>/dev/null \;')
     go(args,
        'Crontab contents',
        'cat ' + args.path + '/etc/crontab 2>/dev/null')
@@ -343,31 +346,31 @@ def srv_info(args):
        'ls -la ' + args.path + '/etc/init.d 2>/dev/null')
     gx(args,
        '/etc/init.d/ files not belonging to root',
-       'find ' + args.path + '/etc/init.d/ \! -uid 0 -type f 2>/dev/null | xargs -r ls -la 2>/dev/null')
+       'find ' + args.path + r'/etc/init.d/ \! -uid 0 -type f 2>/dev/null | xargs -r ls -la 2>/dev/null')
     go(args,
        '/etc/rc.d/init.d binary permissions',
        'ls -la ' + args.path + '/etc/rc.d/init.d 2>/dev/null')
     gx(args,
        '/etc/rc.d/init.d files not belonging to root',
-       'find ' + args.path + '/etc/rc.d/init.d \! -uid 0 -type f 2>/dev/null | xargs -r ls -la 2>/dev/null')
+       'find ' + args.path + r'/etc/rc.d/init.d \! -uid 0 -type f 2>/dev/null | xargs -r ls -la 2>/dev/null')
     go(args,
        '/usr/local/etc/rc.d binary permissions',
        'ls -la /usr/local/etc/rc.d 2>/dev/null')
     gx(args,
        '/usr/local/etc/rc.d files not belonging to root',
-       'find ' + args.path + '/usr/local/etc/rc.d \! -uid 0 -type f 2>/dev/null | xargs -r ls -la 2>/dev/null')
+       'find ' + args.path + r'/usr/local/etc/rc.d \! -uid 0 -type f 2>/dev/null | xargs -r ls -la 2>/dev/null')
     go(args,
        '/etc/init/ config file permissions',
        'ls -la ' + args.path + '/etc/init/ 2>/dev/null')
     gx(args,
        '/etc/init/ config files not belonging to root',
-       'find ' + args.path + '/etc/init \! -uid 0 -type f 2>/dev/null | xargs -r ls -la 2>/dev/null')
+       'find ' + args.path + r'/etc/init \! -uid 0 -type f 2>/dev/null | xargs -r ls -la 2>/dev/null')
     go(args,
        '/lib/systemd/* config file permissions',
        'ls -lthR ' + args.path + '/lib/systemd/ 2>/dev/null')
     gx(args,
        '/lib/systemd/* config files not belonging to root',
-       'find ' + args.path + '/lib/systemd/ \! -uid 0 -type f 2>/dev/null | xargs -r ls -la 2>/dev/null')
+       'find ' + args.path + r'/lib/systemd/ \! -uid 0 -type f 2>/dev/null | xargs -r ls -la 2>/dev/null')
 
 
 def sft_conf(args):
@@ -407,7 +410,8 @@ def sft_conf(args):
 
     go(args,
        'Apache user configuration',
-       "grep -i 'user\|group' " + args.path + "/etc/apache2/envvars 2>/dev/null | awk '{sub(/.*\export /,"")}1' 2>/dev/null")
+       r"grep -i 'user\|group' " + args.path
+                                 + r"/etc/apache2/envvars 2>/dev/null | awk '{sub(/.*\export /,"")}1' 2>/dev/null")
 
     if not args.path:
       go(args,
@@ -416,7 +420,8 @@ def sft_conf(args):
 
     go(args,
        'htpasswd found - could contain passwords',
-       'find ' + args.path + '/ -name .htpasswd -print -exec cat {} \; 2>/dev/null')
+       'find ' + args.path
+               + r'/ -name .htpasswd -print -exec cat {} \; 2>/dev/null')
     go(args,
        'www home dir contents',
        'ls -alhR /var/www/ 2>/dev/null;'
@@ -452,38 +457,48 @@ def ask_info(args):
     suid = xy("find " + args.path + "/ -perm -4000 -type f 2>/dev/null | tr '\n' ' '")
     go(args,
        'SUID files',
-       'find ' + suid + ' -perm -4000 -type f -exec ls -la {} 2>/dev/null \;')
+       'find ' + suid
+               + r' -perm -4000 -type f -exec ls -la {} 2>/dev/null \;')
     gx(args,
        'Possibly interesting SUID files',
-       'find ' + suid + ' -perm -4000 -type f -exec ls -la {} \; 2>/dev/null | grep -w "' + BINBIGLIST + '" 2>/dev/null')
+       'find ' + suid
+               + r' -perm -4000 -type f -exec ls -la {} \; 2>/dev/null | grep -w "' + BINBIGLIST + '" 2>/dev/null')
     gx(args,
        'World-writable SUID files',
-       'find ' + suid + ' -perm -4002 -type f -exec ls -la {} 2>/dev/null \;')
+       'find ' + suid
+               + r' -perm -4002 -type f -exec ls -la {} 2>/dev/null \;')
     gx(args,
        'World-writable SUID files owned by root',
-       'find ' + suid + ' -uid 0 -perm -4002 -type f -exec ls -la {} 2>/dev/null \;')
+       'find ' + suid
+               + r' -uid 0 -perm -4002 -type f -exec ls -la {} 2>/dev/null \;')
 
     sgid = xy("find " + args.path + "/ -perm -2000 -type f 2>/dev/null | tr '\n' ' '")
     go(args,
        'SGID files',
-       'find ' + sgid + ' -perm -2000 -type f -exec ls -la {} 2>/dev/null \;')
+       'find ' + sgid
+               + r' -perm -2000 -type f -exec ls -la {} 2>/dev/null \;')
     gx(args,
        'Possibly interesting SGID files',
-       'find ' + sgid + ' -perm -2000 -type f  -exec ls -la {} \; 2>/dev/null | grep -w "' + BINBIGLIST + '" 2>/dev/null')
+       'find ' + sgid
+               + r' -perm -2000 -type f  -exec ls -la {} \; 2>/dev/null | grep -w "' + BINBIGLIST + '" 2>/dev/null')
     gx(args,
        'World-writable SGID files',
-       'find ' + sgid + ' -perm -2002 -type f -exec ls -la {} 2>/dev/null \;')
+       'find ' + sgid
+               + r' -perm -2002 -type f -exec ls -la {} 2>/dev/null \;')
     gx(args,
        'World-writable SGID files owned by root',
-       'find ' + sgid + ' -uid 0 -perm -2002 -type f -exec ls -la {} 2>/dev/null \;')
+       'find ' + sgid
+               + r' -uid 0 -perm -2002 -type f -exec ls -la {} 2>/dev/null \;')
 
     caps = gx(args, 'Files with POSIX capabilities set', 'getcap -r ' + args.path + '/ 2>/dev/null || /sbin/getcap -r ' + args.path + '/ 2>/dev/null')
 
     gx(args,
        'Users with specific POSIX capabilities',
-       "grep -v '^#\|none\|^$' " + args.path + "/etc/security/capability.conf 2>/dev/null")
+       r"grep -v '^#\|none\|^$' " + args.path + "/etc/security/capability.conf 2>/dev/null")
 
-    x0 = gx(args, 'Users with specific POSIX capabilities', "grep -v '^#\|none\|^$' " + args.path + "/etc/security/capability.conf 2>/dev/null")
+    x0 = gx(args,
+            'Users with specific POSIX capabilities',
+            r"grep -v '^#\|none\|^$' " + args.path + "/etc/security/capability.conf 2>/dev/null")
     if x0:
       x1 = gx(args,
               'Capabilities associated with the current user',
@@ -512,25 +527,32 @@ def ask_info(args):
        'find ' + args.path + '/ -name ".git-credentials" 2>/dev/null')
     go(args,
        'World-writable files (excluding /proc and /sys)',
-       'find ' + args.path + '/ ! -path "*/proc/*" ! -path "/sys/*" -perm -2 -type f -exec ls -la {} 2>/dev/null \;')
+       'find ' + args.path
+               + r'/ ! -path "*/proc/*" ! -path "/sys/*" -perm -2 -type f -exec ls -la {} 2>/dev/null \;')
     go(args,
        'Plan file permissions and contents',
-       'find ' + args.path + '/home -iname *.plan -exec ls -la {} \; -exec cat {} 2>/dev/null \;')
+       'find ' + args.path
+               + r'/home -iname *.plan -exec ls -la {} \; -exec cat {} 2>/dev/null \;')
     go(args,
        'Plan file permissions and contents',
-       'find ' + args.path + '/usr/home -iname *.plan -exec ls -la {} \; -exec cat {} 2>/dev/null \;')
+       'find ' + args.path
+               + r'/usr/home -iname *.plan -exec ls -la {} \; -exec cat {} 2>/dev/null \;')
     gx(args,
        'rhost config file(s) and file contents',
-       'find ' + args.path + '/home -iname *.rhosts -exec ls -la {} 2>/dev/null \; -exec cat {} 2>/dev/null \;')
+       'find ' + args.path
+               + r'/home -iname *.rhosts -exec ls -la {} 2>/dev/null \; -exec cat {} 2>/dev/null \;')
     gx(args,
        'rhost config file(s) and file contents',
-       'find ' + args.path + '/usr/home -iname *.rhosts -exec ls -la {} 2>/dev/null \; -exec cat {} 2>/dev/null \;')
+       'find ' + args.path
+               + r'/usr/home -iname *.rhosts -exec ls -la {} 2>/dev/null \; -exec cat {} 2>/dev/null \;')
     gx(args,
        'Hosts.equiv file and contents',
-       'find ' + args.path + '/etc -iname hosts.equiv -exec ls -la {} 2>/dev/null \; -exec cat {} 2>/dev/null \;')
+       'find ' + args.path
+               + r'/etc -iname hosts.equiv -exec ls -la {} 2>/dev/null \; -exec cat {} 2>/dev/null \;')
     go(args,
        'NFS config details',
-       'ls -la ' + args.path + '/etc/exports 2>/dev/null; cat ' + args.path + '/etc/exports 2>/dev/null')
+       'ls -la ' + args.path + '/etc/exports 2>/dev/null; cat '
+                 + args.path + '/etc/exports 2>/dev/null')
     go(args,
        'NFS displaying partitions and filesystems - you need to check if exotic filesystems',
        'cat ' + args.path + '/etc/fstab 2>/dev/null')
@@ -544,20 +566,25 @@ def ask_info(args):
     if args.keyword:
       go(args,
          'Find keyword ' + args.keyword + ' in .conf files (recursive 4 levels - output format filepath:identified line number where keyword appears)',
-         'find ' + args.path + '/ -maxdepth 4 -name *.conf -type f -exec grep -Hn ' + args.keyword + ' {} \; 2>/dev/null')
+         'find ' + args.path + r'/ -maxdepth 4 -name *.conf -type f -exec grep -Hn '
+                 + args.keyword + r' {} \; 2>/dev/null')
       go(args,
          'Find keyword ' + args.keyword + ' in .php files (recursive 10 levels - output format filepath:identified line number where keyword appears)',
-         'find ' + args.path + '/ -maxdepth 10 -name *.php -type f -exec grep -Hn ' + args.keyword + ' {} \; 2>/dev/null')
+         'find ' + args.path + r'/ -maxdepth 10 -name *.php -type f -exec grep -Hn '
+                 + args.keyword + r' {} \; 2>/dev/null')
       go(args,
          'Find keyword ' + args.keyword + ' in .log files (recursive 4 levels - output format filepath:identified line number where keyword appears)',
-         'find ' + args.path + '/ -maxdepth 4 -name *.log -type f -exec grep -Hn ' + args.keyword + ' {} \; 2>/dev/null')
+         'find ' + args.path + r'/ -maxdepth 4 -name *.log -type f -exec grep -Hn '
+                 + args.keyword + r' {} \; 2>/dev/null')
       go(args,
          'Find keyword ' + args.keyword + ' in .ini files (recursive 4 levels - output format filepath:identified line number where keyword appears)',
-         'find ' + args.path + '/ -maxdepth 4 -name *.ini -type f -exec grep -Hn ' + args.keyword + ' {} \; 2>/dev/null')
+         'find ' + args.path + r'/ -maxdepth 4 -name *.ini -type f -exec grep -Hn '
+                 + args.keyword + r' {} \; 2>/dev/null')
 
     go(args,
        'All *.conf files in /etc (recursive 1 level)',
-       'find ' + args.path + '/etc/ -maxdepth 1 -name *.conf -type f -exec ls -la {} \; 2>/dev/null')
+       'find ' + args.path
+               + r'/etc/ -maxdepth 1 -name *.conf -type f -exec ls -la {} \; 2>/dev/null')
 
     if args.username:
       go(args,
@@ -569,7 +596,7 @@ def ask_info(args):
        'ls -la ' + args.path + '/root/.*_history 2>/dev/null')
     go(args,
        'Location and contents (if accessible) of .bash_history file(s)',
-       'find ' + args.path + '/home -name .bash_history -print -exec cat {} 2>/dev/null \;')
+       'find ' + args.path + r'/home -name .bash_history -print -exec cat {} 2>/dev/null \;')
     go(args,
        'Location and Permissions (if accessible) of .bak file(s)',
        'find ' + args.path + '/ -name *.bak -type f 2</dev/null')
