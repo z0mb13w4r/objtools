@@ -29,22 +29,24 @@ aptcheck libtool
 aptcheck pkg-config
 aptcheck gcc
 aptcheck g++
-aptcheck gcc-multilib
-aptcheck g++-multilib
-aptcheck gcc-mingw-w64
-aptcheck g++-mingw-w64
-aptcheck gcc-arm-linux-gnueabihf
-aptcheck g++-arm-linux-gnueabihf
-aptcheck gcc-aarch64-linux-gnu
-aptcheck g++-aarch64-linux-gnu
-aptcheck gcc-riscv64-linux-gnu
-aptcheck g++-riscv64-linux-gnu
-aptcheck gcc-mips-linux-gnu
-aptcheck g++-mips-linux-gnu
+#aptcheck gcc-multilib
+#aptcheck g++-multilib
+#aptcheck gcc-mingw-w64
+#aptcheck g++-mingw-w64
+#aptcheck gcc-arm-linux-gnueabihf
+#aptcheck g++-arm-linux-gnueabihf
+#aptcheck gcc-aarch64-linux-gnu
+#aptcheck g++-aarch64-linux-gnu
+#aptcheck gcc-riscv64-linux-gnu
+#aptcheck g++-riscv64-linux-gnu
+#aptcheck gcc-mips-linux-gnu
+#aptcheck g++-mips-linux-gnu
+#aptcheck gcc-mips64-linux-gnuabi64
+#aptcheck g++-mips64-linux-gnuabi64
 aptcheck libssl-dev
 aptcheck binutils-dev
 
-VERDWARF=0.11.1
+VERDWARF=2.3.1
 VERSSDEEP=2.14.1
 
 LIBDWARF=libdwarf-${VERDWARF}
