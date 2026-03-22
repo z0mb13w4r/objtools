@@ -71,9 +71,7 @@ static int dump_hash1(const poptions_t o, const unknown_t p, const size_t size, 
   int n = 0;
 
   n += dump_hash0(o, p, size, USE_NONE);
-
-  int sz = MAX(0, maxsize - n);
-  n += printf_pack(sz);
+  n += printf_pack(MAX(0, maxsize - n));
 
   return n;
 }
@@ -242,38 +240,52 @@ static int dump_actionsELF0(const pbuffer_t p, const poptions_t o, const char* n
 }
 
 static int dump_actionsELF1(const poptions_t o, const unknown_t p, const size_t size, const size_t chunksize, const size_t limitsize) {
-  int n = 0;
+  int n0 = 0;
+  int n1 = 0;
   if (p && o && chunksize && limitsize <= size) {
+    int maxsize = 32;
+    if (MODE_ISANY(o->action, OPTOBJHASH_SSDEEP)) {
+      pfind_t p0 = fmalloc(p, size, chunksize);
+
+      while (!fiseof(p0)) {
+        size_t chunksiz = MIN(chunksize, p0->epos - p0->cpos + 1);
+
+        maxsize = MAX(maxsize, printf_sore(fget(p0), chunksiz, USE_SSDEEP | USE_NOTEXT | USE_NOPRINT));
+        p0 = fnext(p0);
+      }
+    }
+
     pfind_t p0 = fmalloc(p, size, chunksize);
     while (!fiseof(p0)) {
       size_t chunksiz = MIN(chunksize, p0->epos - p0->cpos + 1);
       if (MODE_ISANY(o->action, OPTOBJHASH_SHA1)) {
-        n += printf_sore(fget(p0), chunksiz, USE_SHA1 | USE_NOTEXT);
+        n0 += printf_sore(fget(p0), chunksiz, USE_SHA1 | USE_NOTEXT);
       } else if (MODE_ISANY(o->action, OPTOBJHASH_SHA256)) {
-        n += printf_sore(fget(p0), chunksiz, USE_SHA256 | USE_NOTEXT);
+        n0 += printf_sore(fget(p0), chunksiz, USE_SHA256 | USE_NOTEXT);
       } else if (MODE_ISANY(o->action, OPTOBJHASH_SHA512)) {
-        n += printf_sore(fget(p0), chunksiz, USE_SHA512 | USE_NOTEXT);
+        n0 += printf_sore(fget(p0), chunksiz, USE_SHA512 | USE_NOTEXT);
       } else if (MODE_ISANY(o->action, OPTOBJHASH_SSDEEP)) {
-        n += printf_sore(fget(p0), chunksiz, USE_SSDEEP | USE_NOTEXT);
+        n1  = printf_sore(fget(p0), chunksiz, USE_SSDEEP | USE_NOTEXT);
+        n0 += printf_pack(MAX(0, maxsize - n1));
       } else {
-        n += printf_sore(fget(p0), chunksiz, USE_MD5 | USE_NOTEXT);
+        n0 += printf_sore(fget(p0), chunksiz, USE_MD5 | USE_NOTEXT);
       }
 
-      n += printf_text(o->inpname, USE_LT | USE_SPACE);
-      n += printf_text("offset", USE_LT | USE_SPACE);
-      n += printf_nice(p0->cpos, USE_DEC);
-      n += printf_nice(p0->cpos + chunksiz - 1, USE_DEC | USE_DASH | USE_NOSPACE);
-      n += printf_eol();
+      n0 += printf_text(o->inpname, USE_LT | USE_SPACE);
+      n0 += printf_text("offset", USE_LT | USE_SPACE);
+      n0 += printf_nice(p0->cpos, USE_DEC);
+      n0 += printf_nice(p0->cpos + chunksiz - 1, USE_DEC | USE_DASH | USE_NOSPACE);
+      n0 += printf_eol();
 
       p0 = fnext(p0);
     }
 
-    n += printf_eol();
+    n0 += printf_eol();
 
     ffree(p0);
   }
 
-  return n;
+  return n0;
 }
 
 static int dump_hash(const pbuffer_t p, const poptions_t o) {
