@@ -57,14 +57,16 @@ imode_t make_epos(const imode_t mode) {
 static int printf_post(const char* o, const imode_t mode) {
   int n = 0;
 
-  if (o) {
-    n += printf_color(mode);
-    fprintf(STDOUT, "%s", o);
-    n += printf_color(GET_COLOR(mode) ? USE_RESET : 0);
-  }
+  if (MODE_ISNOT(mode, USE_NOPRINT)) {
+    if (o) {
+      n += printf_color(mode);
+      fprintf(STDOUT, "%s", o);
+      n += printf_color(GET_COLOR(mode) ? USE_RESET : USE_NONE);
+    }
 
-  if (mode & USE_EOL) {
-    n += printf_eol();
+    if (mode & USE_EOL) {
+      n += printf_eol();
+    }
   }
 
   return n;
