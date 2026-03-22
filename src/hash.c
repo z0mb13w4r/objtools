@@ -5,12 +5,12 @@
 #include "memuse.h"
 #include "memfind.h"
 
-static int evp(const char* name, const unknown_t p, const size_t size, puchar_t md) {
-  if (NULL == p || NULL == name) return -1;
+static int evp(const EVP_MD* q, const unknown_t p, const size_t size, puchar_t md) {
+  if (NULL == p || NULL == q) return -1;
 
   unknown_t context = EVP_MD_CTX_create();
   if (context) {
-    int x = EVP_DigestInit_ex(context, EVP_get_digestbyname(name), NULL);
+    int x = EVP_DigestInit_ex(context, q, NULL);
     if (x) {
       x = EVP_DigestUpdate(context, p, size);
     }
@@ -30,7 +30,7 @@ static int evp(const char* name, const unknown_t p, const size_t size, puchar_t 
 int md5(const unknown_t p, const size_t size, puchar_t md) {
   xmemclr(md, MD5_DIGEST_LENGTH);
 #ifdef BUILD_UBUNTU_24_04
-  return evp("md5", p, size, md);
+  return evp(EVP_md5(), p, size, md);
 #else
   MD5_CTX context;
 
@@ -46,7 +46,7 @@ int md5(const unknown_t p, const size_t size, puchar_t md) {
 int sha1(const unknown_t p, const size_t size, puchar_t md) {
   xmemclr(md, SHA_DIGEST_LENGTH);
 #ifdef BUILD_UBUNTU_24_04
-  return evp("sha1", p, size, md);
+  return evp(EVP_sha1(), p, size, md);
 #else
   SHA_CTX context;
 
@@ -62,7 +62,7 @@ int sha1(const unknown_t p, const size_t size, puchar_t md) {
 int sha256(const unknown_t p, const size_t size, puchar_t md) {
   xmemclr(md, SHA256_DIGEST_LENGTH);
 #ifdef BUILD_UBUNTU_24_04
-  return evp("sha256", p, size, md);
+  return evp(EVP_sha256(), p, size, md);
 #else
   SHA256_CTX context;
 
@@ -78,7 +78,7 @@ int sha256(const unknown_t p, const size_t size, puchar_t md) {
 int sha512(const unknown_t p, const size_t size, puchar_t md) {
   xmemclr(md, SHA512_DIGEST_LENGTH);
 #ifdef BUILD_UBUNTU_24_04
-  return evp("sha512", p, size, md);
+  return evp(EVP_sha512(), p, size, md);
 #else
   SHA512_CTX context;
   if (NULL == p)                             return -1;
@@ -93,7 +93,7 @@ int sha512(const unknown_t p, const size_t size, puchar_t md) {
 int ripemd160(const unknown_t p, const size_t size, puchar_t md) {
   xmemclr(md, RIPEMD160_DIGEST_LENGTH);
 #ifdef BUILD_UBUNTU_24_04
-  return evp("ripemd160", p, size, md);
+  return evp(EVP_ripemd160(), p, size, md);
 #else
   RIPEMD160_CTX context;
 
