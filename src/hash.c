@@ -1,22 +1,54 @@
 #include <math.h>
 #include <fuzzy.h>
+#include <openssl/evp.h>
 #include "hash.h"
 #include "memuse.h"
 #include "memfind.h"
 
+static int evp(const char* name, const unknown_t p, const size_t size, puchar_t md) {
+  if (NULL == p || NULL == name) return -1;
+
+  unknown_t context = EVP_MD_CTX_create();
+  if (context) {
+    int x = EVP_DigestInit_ex(context, EVP_get_digestbyname(name), NULL);
+    if (x) {
+      x = EVP_DigestUpdate(context, p, size);
+    }
+
+    if (x) {
+      x = EVP_DigestFinal_ex(context, md, NULL);
+    }
+
+    EVP_MD_CTX_destroy(context);
+
+    return x ? 0 : -1;
+  }
+
+  return -1;
+}
+
 int md5(const unknown_t p, const size_t size, puchar_t md) {
+  xmemclr(md, MD5_DIGEST_LENGTH);
+#ifdef BUILD_UBUNTU_24_04
+  return evp("md5", p, size, md);
+#else
   MD5_CTX context;
+
   if (NULL == p)                             return -1;
   if (!MD5_Init(&context))                   return -1;
   if (!MD5_Update(&context, p, size))        return -1;
   if (!MD5_Final(md, &context))              return -1;
 
   return 0;
+#endif
 }
 
 int sha1(const unknown_t p, const size_t size, puchar_t md) {
-  SHA_CTX context;
   xmemclr(md, SHA_DIGEST_LENGTH);
+#ifdef BUILD_UBUNTU_24_04
+  return evp("sha1", p, size, md);
+#else
+  SHA_CTX context;
 
   if (NULL == p)                             return -1;
   if (!SHA1_Init(&context))                  return -1;
@@ -24,11 +56,15 @@ int sha1(const unknown_t p, const size_t size, puchar_t md) {
   if (!SHA1_Final(md, &context))             return -1;
 
   return 0;
+#endif
 }
 
 int sha256(const unknown_t p, const size_t size, puchar_t md) {
-  SHA256_CTX context;
   xmemclr(md, SHA256_DIGEST_LENGTH);
+#ifdef BUILD_UBUNTU_24_04
+  return evp("sha256", p, size, md);
+#else
+  SHA256_CTX context;
 
   if (NULL == p)                             return -1;
   if (!SHA256_Init(&context))                return -1;
@@ -36,23 +72,30 @@ int sha256(const unknown_t p, const size_t size, puchar_t md) {
   if (!SHA256_Final(md, &context))           return -1;
 
   return 0;
+#endif
 }
 
 int sha512(const unknown_t p, const size_t size, puchar_t md) {
-  SHA512_CTX context;
   xmemclr(md, SHA512_DIGEST_LENGTH);
-
+#ifdef BUILD_UBUNTU_24_04
+  return evp("sha512", p, size, md);
+#else
+  SHA512_CTX context;
   if (NULL == p)                             return -1;
   if (!SHA512_Init(&context))                return -1;
   if (!SHA512_Update(&context, p, size))     return -1;
   if (!SHA512_Final(md, &context))           return -1;
 
   return 0;
+#endif
 }
 
 int ripemd160(const unknown_t p, const size_t size, puchar_t md) {
-  RIPEMD160_CTX context;
   xmemclr(md, RIPEMD160_DIGEST_LENGTH);
+#ifdef BUILD_UBUNTU_24_04
+  return evp("ripemd160", p, size, md);
+#else
+  RIPEMD160_CTX context;
 
   if (NULL == p)                             return -1;
   if (!RIPEMD160_Init(&context))             return -1;
@@ -60,6 +103,7 @@ int ripemd160(const unknown_t p, const size_t size, puchar_t md) {
   if (!RIPEMD160_Final(md, &context))        return -1;
 
   return 0;
+#endif
 }
 
 // Shannon Entropy
