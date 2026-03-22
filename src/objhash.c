@@ -53,18 +53,26 @@ static int dump_create1(const pbuffer_t p, const poptions_t o, const char* name,
 static int dump_hash0(const poptions_t o, const unknown_t p, const size_t size, const imode_t mode) {
   int n = 0;
   if (MODE_ISANY(o->action, OPTOBJHASH_SHA1)) {
-    n += printf_sore(p, size, USE_SHA1 | USE_NOTEXT);
+    n += printf_sore(p, size, USE_SHA1 | USE_NOTEXT | mode);
   } else if (MODE_ISANY(o->action, OPTOBJHASH_SHA256)) {
-    n += printf_sore(p, size, USE_SHA256 | USE_NOTEXT);
+    n += printf_sore(p, size, USE_SHA256 | USE_NOTEXT | mode);
   } else if (MODE_ISANY(o->action, OPTOBJHASH_SHA512)) {
-    n += printf_sore(p, size, USE_SHA512 | USE_NOTEXT);
+    n += printf_sore(p, size, USE_SHA512 | USE_NOTEXT | mode);
   } else if (MODE_ISANY(o->action, OPTOBJHASH_SSDEEP)) {
-    n += printf_sore(p, size, USE_SSDEEP | USE_NOTEXT);
+    n += printf_sore(p, size, USE_SSDEEP | USE_NOTEXT | mode);
   } else {
-    n += printf_sore(p, size, USE_MD5 | USE_NOTEXT);
+    n += printf_sore(p, size, USE_MD5 | USE_NOTEXT | mode);
   }
 
-  int sz = MAX(0, CAST(int, GET_PAD(mode)) - n);
+  return n;
+}
+
+static int dump_hash1(const poptions_t o, const unknown_t p, const size_t size, const int maxsize) {
+  int n = 0;
+
+  n += dump_hash0(o, p, size, USE_NONE);
+
+  int sz = MAX(0, maxsize - n);
   n += printf_pack(sz);
 
   return n;
@@ -86,7 +94,19 @@ static int dump_createELF32(const pbuffer_t p, const poptions_t o, const imode_t
     } else if (MODE_ISANY(o->action, OPTOBJHASH_SHA512)) {
       maxsize1 = 128;
     } else if (MODE_ISANY(o->action, OPTOBJHASH_SSDEEP)) {
-      maxsize1 = MAXSIZE;
+      maxsize1 = MAXSIZE0;
+
+      for (Elf32_Half i = 0; i < e0->e_shnum; ++i) {
+        MEMSTACK(Elf32_Shdr, sx);
+        Elf32_Shdr *s0 = ecget_shdr32byindex(p, sx, i);
+        if (s0) {
+          if (OPTOBJHASH_HEADERS == mode) {
+            maxsize1 = MAX(maxsize1, dump_hash0(o, getp(p, e0->e_shoff + (e0->e_shentsize * i), e0->e_shentsize), e0->e_shentsize, USE_NOPRINT));
+          } else if (OPTOBJHASH_SECTIONS == mode) {
+            maxsize1 = MAX(maxsize1, dump_hash0(o, getp(p, s0->sh_offset, s0->sh_size), s0->sh_size, USE_NOPRINT));
+          }
+        }
+      }
     }
 
     n += dump_create0(p, o, mode, maxsize0, maxsize1);
@@ -96,12 +116,12 @@ static int dump_createELF32(const pbuffer_t p, const poptions_t o, const imode_t
       Elf32_Shdr *s0 = ecget_shdr32byindex(p, sx, i);
       if (s0) {
         if (OPTOBJHASH_HEADERS == mode) {
-          n += dump_hash0(o, getp(p, e0->e_shoff + (e0->e_shentsize * i), e0->e_shentsize), e0->e_shentsize, SET_PAD(MAXSIZE0));
+          n += dump_hash1(o, getp(p, e0->e_shoff + (e0->e_shentsize * i), e0->e_shentsize), e0->e_shentsize, maxsize1);
         } else if (OPTOBJHASH_SECTIONS == mode) {
-          n += dump_hash0(o, getp(p, s0->sh_offset, s0->sh_size), s0->sh_size, SET_PAD(MAXSIZE0));
+          n += dump_hash1(o, getp(p, s0->sh_offset, s0->sh_size), s0->sh_size, maxsize1);
         }
 
-        n += dump_create1(p, o, ecget_secnamebyindex(p, i), s0->sh_type, s0->sh_offset, s0->sh_size, s0->sh_addr, MAXSIZE);
+        n += dump_create1(p, o, ecget_secnamebyindex(p, i), s0->sh_type, s0->sh_offset, s0->sh_size, s0->sh_addr, maxsize0);
       }
     }
 
@@ -127,7 +147,20 @@ static int dump_createELF64(const pbuffer_t p, const poptions_t o, const imode_t
     } else if (MODE_ISANY(o->action, OPTOBJHASH_SHA512)) {
       maxsize1 = 128;
     } else if (MODE_ISANY(o->action, OPTOBJHASH_SSDEEP)) {
-      maxsize1 = MAXSIZE;
+      maxsize1 = MAXSIZE0;
+
+      for (Elf64_Half i = 0; i < e0->e_shnum; ++i) {
+        MEMSTACK(Elf64_Shdr, sx);
+        Elf64_Shdr *s0 = ecget_shdr64byindex(p, sx, i);
+        if (s0) {
+          if (OPTOBJHASH_HEADERS == mode) {
+            maxsize1 = MAX(maxsize1, dump_hash0(o, getp(p, e0->e_shoff + (e0->e_shentsize * i), e0->e_shentsize), e0->e_shentsize, USE_NOPRINT));
+          } else if (OPTOBJHASH_SECTIONS == mode) {
+            maxsize1 = MAX(maxsize1, dump_hash0(o, getp(p, s0->sh_offset, s0->sh_size), s0->sh_size, USE_NOPRINT));
+          }
+        }
+      }
+
     }
 
     n += dump_create0(p, o, mode, maxsize0, maxsize1);
@@ -137,11 +170,11 @@ static int dump_createELF64(const pbuffer_t p, const poptions_t o, const imode_t
       Elf64_Shdr *s0 = ecget_shdr64byindex(p, sx, i);
       if (s0) {
         if (OPTOBJHASH_HEADERS == mode) {
-          n += dump_hash0(o, getp(p, e0->e_shoff + (e0->e_shentsize * i), e0->e_shentsize), e0->e_shentsize, SET_PAD(MAXSIZE0));
+          n += dump_hash1(o, getp(p, e0->e_shoff + (e0->e_shentsize * i), e0->e_shentsize), e0->e_shentsize, maxsize1);
         } else if (OPTOBJHASH_SECTIONS == mode) {
-          n += dump_hash0(o, getp(p, s0->sh_offset, s0->sh_size), s0->sh_size, SET_PAD(MAXSIZE0));
+          n += dump_hash1(o, getp(p, s0->sh_offset, s0->sh_size), s0->sh_size, maxsize1);
         }
-        n += dump_create1(p, o, ecget_secnamebyindex(p, i), s0->sh_type, s0->sh_offset, s0->sh_size, s0->sh_addr, MAXSIZE);
+        n += dump_create1(p, o, ecget_secnamebyindex(p, i), s0->sh_type, s0->sh_offset, s0->sh_size, s0->sh_addr, maxsize0);
       }
     }
 
@@ -250,7 +283,7 @@ static int dump_hash(const pbuffer_t p, const poptions_t o) {
     n += printf_nice(p->size, USE_DEC | USE_COLON);
   }
 
-  n += dump_hash0(o, p->data, p->size, USE_NONE);
+  n += dump_hash1(o, p->data, p->size, USE_NONE);
 
   n += printf_text(o->inpname, USE_LT | USE_SPACE);
   n += printf_eol();
