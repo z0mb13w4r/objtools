@@ -5,6 +5,7 @@
 #include "memuse.h"
 #include "memfind.h"
 
+#ifdef BUILD_UBUNTU_24_04
 static int evp(const EVP_MD* q, const unknown_t p, const size_t size, puchar_t md) {
   if (NULL == p || NULL == q) return -1;
 
@@ -26,6 +27,7 @@ static int evp(const EVP_MD* q, const unknown_t p, const size_t size, puchar_t m
 
   return -1;
 }
+#endif
 
 int md5(const unknown_t p, const size_t size, puchar_t md) {
   xmemclr(md, MD5_DIGEST_LENGTH);
