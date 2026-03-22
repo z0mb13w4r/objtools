@@ -11,24 +11,24 @@ static size_t limitsize = 0;
 
 static const int MAXSIZE0 = 26;
 
-static int dump_create0(const pbuffer_t p, const poptions_t o, const imode_t mode, const int maxsize) {
+static int dump_create0(const pbuffer_t p, const poptions_t o, const imode_t mode, const int maxsize0, const int maxsize1) {
   int n = 0;
   if (OPTOBJHASH_HEADERS == mode)       n += printf_text("SECTION HEADERS", USE_LT | USE_COLON | USE_EOL);
   else if (OPTOBJHASH_SECTIONS == mode) n += printf_text("SECTION DATA", USE_LT | USE_COLON | USE_EOL);
 
   if (MODE_ISANY(o->action, OPTOBJHASH_SHA1)) {
-    n += printf_text("SHA1", USE_LT | SET_PAD(40));
+    n += printf_text("SHA1", USE_LT | SET_PAD(maxsize1));
   } else if (MODE_ISANY(o->action, OPTOBJHASH_SHA256)) {
-    n += printf_text("SHA-256", USE_LT | SET_PAD(64));
+    n += printf_text("SHA-256", USE_LT | SET_PAD(maxsize1));
   } else if (MODE_ISANY(o->action, OPTOBJHASH_SHA512)) {
-    n += printf_text("SHA-512", USE_LT | SET_PAD(128));
+    n += printf_text("SHA-512", USE_LT | SET_PAD(maxsize1));
   } else if (MODE_ISANY(o->action, OPTOBJHASH_SSDEEP)) {
-    n += printf_text("SSDEEP", USE_LT | SET_PAD(MAXSIZE0));
+    n += printf_text("SSDEEP", USE_LT | SET_PAD(maxsize1));
   } else {
-    n += printf_text("MD5", USE_LT | SET_PAD(32));
+    n += printf_text("MD5", USE_LT | SET_PAD(maxsize1));
   }
 
-  n += printf_text("Name", USE_LT | USE_SPACE | SET_PAD(maxsize));
+  n += printf_text("Name", USE_LT | USE_SPACE | SET_PAD(maxsize0));
   n += printf_text("Type", USE_LT | USE_SPACE | SET_PAD(16));
   n += printf_text("Address", USE_LT | USE_SPACE | SET_PAD(isELF64(p) ? 17 : 9));
   n += printf_text("Offset   Size", USE_LT | USE_SPACE | USE_EOL);
@@ -77,7 +77,19 @@ static int dump_createELF32(const pbuffer_t p, const poptions_t o, const imode_t
   MEMSTACK(Elf32_Ehdr, ex);
   Elf32_Ehdr *e0 = ecget_ehdr32(p, ex);
   if (e0) {
-    n += dump_create0(p, o, mode, MAXSIZE);
+    int maxsize0 = MAXSIZE;
+    int maxsize1 = 32;
+    if (MODE_ISANY(o->action, OPTOBJHASH_SHA1)) {
+      maxsize1 = 40;
+    } else if (MODE_ISANY(o->action, OPTOBJHASH_SHA256)) {
+      maxsize1 = 64;
+    } else if (MODE_ISANY(o->action, OPTOBJHASH_SHA512)) {
+      maxsize1 = 128;
+    } else if (MODE_ISANY(o->action, OPTOBJHASH_SSDEEP)) {
+      maxsize1 = MAXSIZE;
+    }
+
+    n += dump_create0(p, o, mode, maxsize0, maxsize1);
 
     for (Elf32_Half i = 0; i < e0->e_shnum; ++i) {
       MEMSTACK(Elf32_Shdr, sx);
@@ -106,7 +118,19 @@ static int dump_createELF64(const pbuffer_t p, const poptions_t o, const imode_t
   MEMSTACK(Elf64_Ehdr, ex);
   Elf64_Ehdr *e0 = ecget_ehdr64(p, ex);
   if (e0) {
-    n += dump_create0(p, o, mode, MAXSIZE);
+    int maxsize0 = MAXSIZE;
+    int maxsize1 = 32;
+    if (MODE_ISANY(o->action, OPTOBJHASH_SHA1)) {
+      maxsize1 = 40;
+    } else if (MODE_ISANY(o->action, OPTOBJHASH_SHA256)) {
+      maxsize1 = 64;
+    } else if (MODE_ISANY(o->action, OPTOBJHASH_SHA512)) {
+      maxsize1 = 128;
+    } else if (MODE_ISANY(o->action, OPTOBJHASH_SSDEEP)) {
+      maxsize1 = MAXSIZE;
+    }
+
+    n += dump_create0(p, o, mode, maxsize0, maxsize1);
 
     for (Elf64_Half i = 0; i < e0->e_shnum; ++i) {
       MEMSTACK(Elf64_Shdr, sx);
@@ -146,6 +170,8 @@ static int dump_actionsELF0(const pbuffer_t p, const poptions_t o, const char* n
         n += printf_sore(p0, sh_size, USE_SHA256 | USE_SPACE);
       } else if (MODE_ISANY(o->action, OPTOBJHASH_SHA512)) {
         n += printf_sore(p0, sh_size, USE_SHA512 | USE_SPACE);
+      } else if (MODE_ISANY(o->action, OPTOBJHASH_SSDEEP)) {
+        n += printf_sore(p0, sh_size, USE_SSDEEP | USE_SPACE);
       } else {
         n += printf_sore(p0, sh_size, USE_MD5 | USE_SPACE);
       }
@@ -167,6 +193,8 @@ static int dump_actionsELF0(const pbuffer_t p, const poptions_t o, const char* n
         n += printf_sore(p0, sh_size, USE_SHA256 | USE_SPACE);
       } else if (MODE_ISANY(o->action, OPTOBJHASH_SHA512)) {
         n += printf_sore(p0, sh_size, USE_SHA512 | USE_SPACE);
+      } else if (MODE_ISANY(o->action, OPTOBJHASH_SSDEEP)) {
+        n += printf_sore(p0, sh_size, USE_SSDEEP | USE_SPACE);
       } else {
         n += printf_sore(p0, sh_size, USE_MD5 | USE_SPACE);
       }
