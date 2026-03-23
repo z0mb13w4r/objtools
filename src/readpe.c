@@ -377,14 +377,14 @@ static int dump_version0(const pbuffer_t p, const uint16_t wLength, const uint16
                          const pushort_t szKey, const size_t szKeySize, const char* name) {
   int n = 0;
   n += printf_text(name, USE_LT | USE_COLON | USE_EOL);
-  n += printf_text("wLength", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("Length", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(wLength, USE_FHEX16 | USE_EOL);
-  n += printf_text("wValueLength", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("ValueLength", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(wValueLength, USE_FHEX16 | USE_EOL);
-  n += printf_text("wType", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("Type", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(wType, USE_FHEX16);
   n += printf_pick(peSTRINGTYPE, wType, USE_SPACE | USE_EOL);
-  n += printf_text("szKey", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE + 1));
+  n += printf_text("Key", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE + 1));
   if (0 == xstrcmp(name, "StringTable")) {
     n += printf_sore(szKey, szKeySize, USE_STR16);
     n += printf_text(get_LANG(szKey), USE_LT | USE_SPACE | USE_EOL);
@@ -401,16 +401,16 @@ static int dump_version1(const pbuffer_t p, const uint16_t wLength, const uint16
                          const char* name) {
   int n = 0;
   n += printf_text(name, USE_LT | USE_COLON | USE_EOL);
-  n += printf_text("wLength", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("Length", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(wLength, USE_FHEX16 | USE_EOL);
-  n += printf_text("wValueLength", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("ValueLength", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(wValueLength, USE_FHEX16 | USE_EOL);
-  n += printf_text("wType", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("Type", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(wType, USE_FHEX16);
   n += printf_pick(peSTRINGTYPE, wType, USE_SPACE | USE_EOL);
-  n += printf_text("szKey", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE + 1));
+  n += printf_text("Key", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE + 1));
   n += printf_sore(szKey, szKeySize, USE_STR16 | USE_EOL);
-  n += printf_text("szValue", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE + 1));
+  n += printf_text("Value", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE + 1));
   n += printf_sore(szValue, szValueSize, USE_STR16 | USE_EOL);
   n += printf_eol();
 
@@ -421,14 +421,14 @@ static int dump_version2(const pbuffer_t p, const uint16_t wLength, const uint16
                          const pushort_t szKey, const size_t szKeySize, const pushort_t Value, const size_t ValueSize) {
   int n = 0;
   n += printf_text("Var", USE_LT | USE_COLON | USE_EOL);
-  n += printf_text("wLength", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("Length", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(wLength, USE_FHEX16 | USE_EOL);
-  n += printf_text("wValueLength", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("ValueLength", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(wValueLength, USE_FHEX16 | USE_EOL);
-  n += printf_text("wType", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("Type", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(wType, USE_FHEX16);
   n += printf_pick(peSTRINGTYPE, wType, USE_SPACE | USE_EOL);
-  n += printf_text("szKey", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE + 1));
+  n += printf_text("Key", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE + 1));
   n += printf_sore(szKey, szKeySize, USE_STR16 | USE_EOL);
   n += printf_text("Value", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE + 1));
   n += printf_sore(Value, ValueSize, USE_HEX | USE_EOL);
@@ -445,30 +445,30 @@ static int dump_version3(const pbuffer_t p, const uint32_t dwSignature, const ui
                          const uint32_t dwFileDateMS, const uint32_t dwFileDateLS) {
   int n = 0;
   n += printf_text("VS FIXEDFILEINFO", USE_LT | USE_COLON | USE_EOL);
-  n += printf_text("dwSignature", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("Signature", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(dwSignature, USE_FHEX32 | USE_EOL);
-  n += printf_text("dwStrucVersion", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("StrucVersion", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(dwStrucVersion, USE_FHEX32 | USE_EOL);
-  n += printf_text("dwFileVersionMS", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("FileVersionMS", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(dwFileVersionMS, USE_FHEX32 | USE_EOL);
-  n += printf_text("dwFileVersionLS", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("FileVersionLS", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(dwFileVersionLS, USE_FHEX32 | USE_EOL);
-  n += printf_text("dwProductVersionMS", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("ProductVersionMS", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(dwProductVersionMS, USE_FHEX32 | USE_EOL);
-  n += printf_text("dwProductVersionLS", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("ProductVersionLS", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(dwProductVersionLS, USE_FHEX32 | USE_EOL);
-  n += printf_text("dwFileFlagsMask", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("FileFlagsMask", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(dwFileFlagsMask, USE_FHEX32 | USE_EOL);
-  n += printf_text("dwFileFlags", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("FileFlags", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(dwFileFlags, USE_FHEX32);
   n += printf_mask(peVERFILEFLAGS, dwFileFlags, USE_EOL);
-  n += printf_text("dwFileOS", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("FileOS", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(dwFileOS, USE_FHEX32);
   n += printf_pick(peVERFILEOS, dwFileOS, USE_SPACE | USE_EOL);
-  n += printf_text("dwFileType", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("FileType", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(dwFileType, USE_FHEX32);
   n += printf_pick(peVERFILETYPE, dwFileType, USE_SPACE | USE_EOL);
-  n += printf_text("dwFileSubtype", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("FileSubtype", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   if (VFT_DRV == dwFileType) {
     n += printf_nice(dwFileSubtype, USE_FHEX32 | USE_EOL);
     n += printf_pick(peVERFILESUBTYPEDRV, dwFileSubtype, USE_SPACE | USE_EOL);
@@ -480,9 +480,9 @@ static int dump_version3(const pbuffer_t p, const uint32_t dwSignature, const ui
   } else {
     n += printf_nice(dwFileSubtype, USE_FHEX32 | USE_EOL);
   }
-  n += printf_text("dwFileDateMS", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("FileDateMS", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(dwFileDateMS, USE_FHEX32 | USE_EOL);
-  n += printf_text("dwFileDateLS", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("FileDateLS", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(dwFileDateLS, USE_FHEX32 | USE_EOL);
   n += printf_eol();
 
