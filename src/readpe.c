@@ -123,7 +123,14 @@ static int dump_ntheader2(const pbuffer_t p, const uint16_t Magic, const uint8_t
   if (issafe(p)) {
     const imode_t USE_FHEXNN = isPE64(p) ? USE_FHEX64 : USE_FHEX32;
 
-    n += printf_text("IMAGE OPTIONAL HEADER", USE_LT | USE_COLON | USE_EOL);
+    if (isPE32(p)) {
+      n += printf_text("IMAGE OPTIONAL HEADER32", USE_LT | USE_COLON | USE_EOL);
+    } else if (isPE64(p)) {
+      n += printf_text("IMAGE OPTIONAL HEADER64", USE_LT | USE_COLON | USE_EOL);
+    } else {
+      n += printf_text("IMAGE OPTIONAL HEADER", USE_LT | USE_COLON | USE_EOL);
+    }
+
     n += printf_text("Magic", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     n += printf_nice(Magic, USE_FHEX16);
     n += printf_pick(peOPTHDRMAGIC, Magic, USE_LT | USE_SPACE | USE_EOL);
