@@ -527,6 +527,7 @@ PIMAGE_SECTION_HEADER peget_sectionhdrbyRVA(const pbuffer_t p, const uint64_t va
 
 unknown_t peget_chunkbyRVA(const pbuffer_t p, const int index, const uint64_t vaddr, const size_t size);
 unknown_t peget_chunkbyentry(const pbuffer_t p, const int index);
+unknown_t peget_chunkbyindex(const pbuffer_t p, const int index);
 unknown_t peget_chunkbyname(const pbuffer_t p, const char* name);
 
 DWORD get_dwordbyRVA(const pbuffer_t p, const int index, const uint64_t vaddr);

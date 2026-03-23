@@ -237,6 +237,11 @@ unknown_t peget_chunkbyentry(const pbuffer_t p, const int index) {
   return NULL;
 }
 
+unknown_t peget_chunkbyindex(const pbuffer_t p, const int index) {
+  PIMAGE_SECTION_HEADER p0 = peget_sectionhdrbyindex(p, index);
+  return p0 ? getp(p, p0->PointerToRawData, p0->SizeOfRawData) : NULL;
+}
+
 unknown_t peget_chunkbyname(const pbuffer_t p, const char* name) {
   PIMAGE_SECTION_HEADER p0 = peget_sectionhdrbyname(p, name);
   return p0 ? getp(p, p0->PointerToRawData, p0->SizeOfRawData) : NULL;
