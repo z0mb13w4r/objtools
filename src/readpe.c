@@ -267,9 +267,18 @@ static int dump_sectionheaders0(const pbuffer_t p, const poptions_t o, const uin
       n += printf_text("Characteristics", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
       n += printf_nice(p0->Characteristics, USE_FHEX32);
       n += printf_mask(peSECTIONHDR, p0->Characteristics, USE_EOL);
+
+      if (MODE_ISANY(o->action, OPTPROGRAM_HASH)) {
+        n += printf_sore(peget_chunkbyindex(p, i), p0->SizeOfRawData, USE_HASHALL | USE_EOL);
+      }
+      if (MODE_ISANY(o->action, OPTPROGRAM_ENTROPY)) {
+        n += printf_sore(peget_chunkbyindex(p, i), p0->SizeOfRawData, USE_ENTROPY | USE_EOL);
+      }
+
       n += printf_eol();
     }
   }
+
 
   return n;
 }
