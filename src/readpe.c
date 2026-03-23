@@ -237,8 +237,9 @@ static int dump_ntheader64(const pbuffer_t p, const poptions_t o) {
   return n;
 }
 
-static int dump_sectionheaders0(const pbuffer_t p, const uint16_t NumberOfSections) {
+static int dump_sectionheaders0(const pbuffer_t p, const poptions_t o, const uint16_t NumberOfSections) {
   int n = 0;
+
   for (uint16_t i = 0; i < NumberOfSections; ++i) {
     PIMAGE_SECTION_HEADER p0 = peget_sectionhdrbyindex(p, i);
     if (p0) {
@@ -277,7 +278,7 @@ static int dump_sectionheaders32(const pbuffer_t p, const poptions_t o) {
   int n = 0;
   PIMAGE_NT_HEADERS32 p0 = peget_nt32hdr(p);
   if (p0) {
-    n += dump_sectionheaders0(p, p0->FileHeader.NumberOfSections);
+    n += dump_sectionheaders0(p, o, p0->FileHeader.NumberOfSections);
   }
 
   return n;
@@ -287,7 +288,7 @@ static int dump_sectionheaders64(const pbuffer_t p, const poptions_t o) {
   int n = 0;
   PIMAGE_NT_HEADERS64 p0 = peget_nt64hdr(p);
   if (p0) {
-    n += dump_sectionheaders0(p, p0->FileHeader.NumberOfSections);
+    n += dump_sectionheaders0(p, o, p0->FileHeader.NumberOfSections);
   }
 
   return n;
