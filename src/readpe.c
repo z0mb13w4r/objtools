@@ -1317,7 +1317,8 @@ static int dump_actionsNN(const pbuffer_t p, const poptions_t o) {
 
 int readpe(const pbuffer_t p, const poptions_t o) {
   if (isPE(p)) {
-    if (MODE_ISANY(o->action, OPTPROGRAM_INFO))               dump_summary(p, o);
+    dump_summary(p, o);
+
     if (MODE_ISANY(o->action, OPTREADPE_DOSHEADER))           dump_dosheaderNN(p, o);
 
     if (isPE32(p)) {
