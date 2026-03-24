@@ -138,7 +138,8 @@
 
 #define OPTREADPE_ALL                  (OPTREADPE_DOSHEADER | OPTREADPE_NTHEADER | OPTREADPE_SECTIONGROUPS \
                                            | OPTREADPE_SECTIONHEADERS | OPTREADPE_RUNTIME | OPTREADPE_RELOCS \
-                                           | OPTREADPE_IAT | OPTREADPE_EAT | OPTREADPE_RESOURCE | OPTREADPE_VERSION)
+                                           | OPTREADPE_IAT | OPTREADPE_EAT | OPTREADPE_RESOURCE | OPTREADPE_DEBUG \
+                                           | OPTREADPE_VERSION)
 
 #define OPTOBJCOPY_CHANGE_WARNINGS                 U64MASK(0)
 #define OPTOBJCOPY_DEBUGGING                       U64MASK(1)
