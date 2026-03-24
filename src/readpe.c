@@ -1136,7 +1136,7 @@ static int dump_debugNN(const pbuffer_t p, const poptions_t o) {
 
   PIMAGE_DEBUG_DIRECTORY p0 = peget_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_DEBUG);
   if (p0) {
-    n += printf_text("IMAGE_DEBUG_DIRECTORY", USE_LT | USE_COLON | USE_EOL);
+    n += printf_text("IMAGE DEBUG DIRECTORY", USE_LT | USE_COLON | USE_EOL);
 
     n += printf_text("Characteristics", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     n += printf_nice(p0->Characteristics, USE_FHEX32 | USE_EOL);
