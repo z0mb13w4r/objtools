@@ -1199,6 +1199,12 @@ static int dump_relocNN(const pbuffer_t p, const poptions_t o) {
 
   PIMAGE_SECTION_HEADER p0 = peget_sectionhdrbyname(p, SECTION_RELOC);
   PIMAGE_BASE_RELOCATION p1 = peget_chunkbyname(p, SECTION_RELOC);
+
+  if (NULL == p0 || NULL == p1) {
+    p0 = peget_sectionhdrbyentry(p, IMAGE_DIRECTORY_ENTRY_BASERELOC);
+    p1 = peget_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_BASERELOC);
+  }
+
   if (p0 && p1) {
     for (DWORD x = 0; x < p0->SizeOfRawData; ) {
       if (0 != p1->SizeOfBlock) {
