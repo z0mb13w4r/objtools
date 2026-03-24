@@ -273,7 +273,8 @@ static int dump_sectionheaders0(const pbuffer_t p, const poptions_t o, const uin
       n += printf_nice(p0->NumberOfLinenumbers, USE_FHEX16 | USE_EOL);
       n += printf_text("Characteristics", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
       n += printf_nice(p0->Characteristics, USE_FHEX32);
-      n += printf_mask(peSECTIONHDR, p0->Characteristics, USE_EOL);
+      n += printf_mask(peSECTIONHDR, p0->Characteristics & ~IMAGE_SCN_ALIGN_MASK, USE_NONE);
+      n += printf_picknull(peSECTIONHDRALIGN, p0->Characteristics & IMAGE_SCN_ALIGN_MASK, USE_SPACE | USE_EOL);
 
       if (MODE_ISANY(o->action, OPTPROGRAM_HASH)) {
         n += printf_sore(peget_chunkbyindex(p, i), p0->SizeOfRawData, USE_HASHALL | USE_EOL);
