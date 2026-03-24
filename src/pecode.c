@@ -231,6 +231,8 @@ unknown_t peget_chunkbyentry(const pbuffer_t p, const int index) {
       return peget_chunkbyRVA(p, index, p0->VirtualAddress, sizeof(IMAGE_DEBUG_DIRECTORY));
     } else if (IMAGE_DIRECTORY_ENTRY_EXCEPTION == index) {
       return peget_chunkbyRVA(p, index, p0->VirtualAddress, sizeof(IMAGE_RUNTIME_FUNCTION_ENTRY));
+    } else if (IMAGE_DIRECTORY_ENTRY_BASERELOC == index) {
+      return peget_chunkbyRVA(p, index, p0->VirtualAddress, sizeof(IMAGE_BASE_RELOCATION));
     }
   }
 
