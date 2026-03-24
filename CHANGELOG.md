@@ -1,6 +1,7 @@
 v1.4 - 
 -----------------------------------------------------------------------
 [+] Updated dwarflib code (v2.3.1).  
+[+] Enhanced readpe-ng and enumerate-ng.  
 [+] Bug fixes.  
 
 v1.3 - 21/03/2026
@@ -12,7 +13,7 @@ v1.3 - 21/03/2026
 [+] Improved symbol identification.  
 [+] Fixed enumerate-ng.py pexpect timeout.  
 [+] Added firmware paths to enumerate-ng.  
-[+] Enhanced readelf-ng, objdump-ng and enumerate-ng.py.  
+[+] Enhanced readelf-ng, objdump-ng and enumerate-ng.  
 [+] Bug fixes.  
 
 v1.2 - 27/02/2026
