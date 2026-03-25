@@ -248,6 +248,11 @@ static int dump_sectionheaders0(const pbuffer_t p, const poptions_t o) {
   int n = 0;
   if (MODE_ISNOT(o->action, OPTPROGRAM_VERBOSE)) {
     n += printf_text("IMAGE SECTION HEADER", USE_LT | USE_COLON | USE_EOL);
+    n += printf_text("Name", USE_LT | USE_SPACE | SET_PAD(9));
+    n += printf_text("VAddr", USE_LT | USE_SPACE | SET_PAD(11));
+    n += printf_text("Size", USE_LT | USE_SPACE | SET_PAD(11));
+    n += printf_text("SHA-256", USE_LT | USE_SPACE);
+    n += printf_eol();
   }
 
   return n;
