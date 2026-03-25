@@ -69,22 +69,22 @@ static int get_options_readpe(poptions_t o, int argc, char** argv, char* name) {
           return odeath(o, THIS_NAME, argv[i] + 1);
         }
         oinsertsname(o, ACT_HEXDUMP, argv[++i]);
-      } else if (0 == xstrcmp(argv[i], "-p")) {
+      } else if (0 == xstrcmp(argv[i], "-s")) {
         if (argc <= (i + 1)) {
           return odeath(o, THIS_NAME, argv[i] + 1);
         }
         oinsertsname(o, ACT_STRDUMP8, argv[++i]);
-      } else if (0 == xstrcmp(argv[i], "-U")) {
+      } else if (0 == xstrcmp(argv[i], "-u")) {
         if (argc <= (i + 1)) {
           return odeath(o, THIS_NAME, argv[i] + 1);
         }
         oinsertsname(o, ACT_STRDUMP16, argv[++i]);
-      } else if (0 == xstrcmp(argv[i], "-R")) {
+      } else if (0 == xstrcmp(argv[i], "-r")) {
         if (argc <= (i + 1)) {
           return odeath(o, THIS_NAME, argv[i] + 1);
         }
         oinsertsname(o, ACT_RELDUMP, argv[++i]);
-      } else if (0 == xstrcmp(argv[i], "-Z")) {
+      } else if (0 == xstrcmp(argv[i], "-c")) {
         if (argc <= (i + 1)) {
           return odeath(o, THIS_NAME, argv[i] + 1);
         }
@@ -99,7 +99,7 @@ static int get_options_readpe(poptions_t o, int argc, char** argv, char* name) {
           return odeath(o, THIS_NAME, argv[i] + 1);
         }
         oinsertsname(o, ACT_ZLIB, argv[++i]);
-      } else if (0 == xstrcmp(argv[i], "-T")) {
+      } else if (0 == xstrcmp(argv[i], "-t")) {
         if (argc <= (i + 1)) {
           return odeath(o, THIS_NAME, argv[i] + 1);
         }
