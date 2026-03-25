@@ -29,18 +29,20 @@ static int dump_dosheaderNN(const pbuffer_t p, const poptions_t o) {
     n += printf_text("IMAGE DOS HEADER", USE_LT | USE_COLON | USE_EOL);
     n += printf_text("e_magic", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     n += printf_nice(dos->e_magic, USE_FHEX16 | USE_EOL);
-    n += printf_text("e_cblp", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-    n += printf_nice(dos->e_cblp, USE_FHEX16 | USE_EOL);
-    n += printf_text("e_cp", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-    n += printf_nice(dos->e_cp, USE_FHEX16 | USE_EOL);
-    n += printf_text("e_crlc", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-    n += printf_nice(dos->e_crlc, USE_FHEX16 | USE_EOL);
-    n += printf_text("e_cparhdr", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-    n += printf_nice(dos->e_cparhdr, USE_FHEX16 | USE_EOL);
-    n += printf_text("e_minalloc", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-    n += printf_nice(dos->e_minalloc, USE_FHEX16 | USE_EOL);
-    n += printf_text("e_maxalloc", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-    n += printf_nice(dos->e_maxalloc, USE_FHEX16 | USE_EOL);
+    if (MODE_ISANY(o->action, OPTPROGRAM_VERBOSE)) {
+      n += printf_text("e_cblp", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_nice(dos->e_cblp, USE_FHEX16 | USE_EOL);
+      n += printf_text("e_cp", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_nice(dos->e_cp, USE_FHEX16 | USE_EOL);
+      n += printf_text("e_crlc", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_nice(dos->e_crlc, USE_FHEX16 | USE_EOL);
+      n += printf_text("e_cparhdr", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_nice(dos->e_cparhdr, USE_FHEX16 | USE_EOL);
+      n += printf_text("e_minalloc", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_nice(dos->e_minalloc, USE_FHEX16 | USE_EOL);
+      n += printf_text("e_maxalloc", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_nice(dos->e_maxalloc, USE_FHEX16 | USE_EOL);
+    }
     n += printf_text("e_ss", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     n += printf_nice(dos->e_ss, USE_FHEX16 | USE_EOL);
     n += printf_text("e_sp", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
@@ -53,18 +55,22 @@ static int dump_dosheaderNN(const pbuffer_t p, const poptions_t o) {
     n += printf_nice(dos->e_cs, USE_FHEX16 | USE_EOL);
     n += printf_text("e_lfarlc", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     n += printf_nice(dos->e_lfarlc, USE_FHEX16 | USE_EOL);
-    n += printf_text("e_ovno", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-    n += printf_nice(dos->e_ovno, USE_FHEX16 | USE_EOL);
-    n += printf_text("e_res", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-    for (i = 0; i < NELEMENTS(dos->e_res) - 1; ++i) n += printf_nice(dos->e_res[i], USE_FHEX16);
-    n += printf_nice(dos->e_res[i], USE_FHEX16 | USE_EOL);
+    if (MODE_ISANY(o->action, OPTPROGRAM_VERBOSE)) {
+      n += printf_text("e_ovno", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_nice(dos->e_ovno, USE_FHEX16 | USE_EOL);
+      n += printf_text("e_res", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      for (i = 0; i < NELEMENTS(dos->e_res) - 1; ++i) n += printf_nice(dos->e_res[i], USE_FHEX16);
+      n += printf_nice(dos->e_res[i], USE_FHEX16 | USE_EOL);
+    }
     n += printf_text("e_oemid", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     n += printf_nice(dos->e_oemid, USE_FHEX16 | USE_EOL);
     n += printf_text("e_oeminfo", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     n += printf_nice(dos->e_oeminfo, USE_FHEX16 | USE_EOL);
-    n += printf_text("e_res2", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-    for (i = 0; i < NELEMENTS(dos->e_res2) - 1; ++i) n += printf_nice(dos->e_res2[i], USE_FHEX16);
-    n += printf_nice(dos->e_res2[i], USE_FHEX16 | USE_EOL);
+    if (MODE_ISANY(o->action, OPTPROGRAM_VERBOSE)) {
+      n += printf_text("e_res2", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      for (i = 0; i < NELEMENTS(dos->e_res2) - 1; ++i) n += printf_nice(dos->e_res2[i], USE_FHEX16);
+      n += printf_nice(dos->e_res2[i], USE_FHEX16 | USE_EOL);
+    }
     n += printf_text("e_lfanew", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     n += printf_nice(dos->e_lfanew, USE_FHEX16 | USE_EOL);
     n += printf_eol();
@@ -354,15 +360,17 @@ static int dump_sectiongroups0(const pbuffer_t p) {
   return n;
 }
 
-static int dump_sectiongroups1(const pbuffer_t p, const int index, const uint32_t VirtualAddress, const uint32_t Size) {
+static int dump_sectiongroups1(const pbuffer_t p, const poptions_t o, const int index, const uint32_t VirtualAddress, const uint32_t Size) {
   const int MAXSIZE = strlenpick(peOPTHDRENTRY) + 2;
 
   int n = 0;
-  n += printf_pick(peOPTHDRENTRY, index, USE_LT | USE_TAB | SET_PAD(MAXSIZE));
-  if (0 != VirtualAddress) n += printf_nice(VirtualAddress, USE_FHEX32);
-  else                     n += printf_text("NONE", USE_LT | USE_SPACE | SET_PAD(11));
-  if (0 != Size)           n += printf_nice(Size, USE_FHEX32 | USE_EOL);
-  else                     n += printf_text("NONE", USE_LT | USE_SPACE | USE_EOL);
+  if (MODE_ISANY(o->action, OPTPROGRAM_VERBOSE) || VirtualAddress || Size) {
+    n += printf_pick(peOPTHDRENTRY, index, USE_LT | USE_TAB | SET_PAD(MAXSIZE));
+    if (0 != VirtualAddress) n += printf_nice(VirtualAddress, USE_FHEX32);
+    else                     n += printf_text("NONE", USE_LT | USE_SPACE | SET_PAD(11));
+    if (0 != Size)           n += printf_nice(Size, USE_FHEX32 | USE_EOL);
+    else                     n += printf_text("NONE", USE_LT | USE_SPACE | USE_EOL);
+  }
 
   return n;
 }
@@ -377,7 +385,7 @@ static int dump_sectiongroups32(const pbuffer_t p, const poptions_t o) {
     n += dump_sectiongroups0(p);
 
     for (size_t i = 0; i < op->NumberOfRvaAndSizes; ++i, ++dd) {
-      n += dump_sectiongroups1(p, i, dd->VirtualAddress, dd->Size);
+      n += dump_sectiongroups1(p, o, i, dd->VirtualAddress, dd->Size);
     }
 
     n += printf_eol();
@@ -396,7 +404,7 @@ static int dump_sectiongroups64(const pbuffer_t p, const poptions_t o) {
     n += dump_sectiongroups0(p);
 
     for (size_t i = 0; i < op->NumberOfRvaAndSizes; ++i, ++dd) {
-      n += dump_sectiongroups1(p, i, dd->VirtualAddress, dd->Size);
+      n += dump_sectiongroups1(p, o, i, dd->VirtualAddress, dd->Size);
     }
 
     n += printf_eol();

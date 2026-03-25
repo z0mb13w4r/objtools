@@ -150,6 +150,7 @@ int dump_summary(const pbuffer_t p, const poptions_t o) {
       }
       if (MODE_ISANY(o->action, OPTPROGRAM_ENTROPY)) {
         n += printf_sore(p->data, p->size, USE_ENTROPY | USE_EOL);
+        n += printf_eol();
       }
     }
   }
