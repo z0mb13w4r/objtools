@@ -602,24 +602,27 @@ static int dump_iat0(const pbuffer_t p, PIMAGE_IMPORT_DESCRIPTOR p0) {
   return n;
 }
 
-static int dump_iat1(const pbuffer_t p, const uint32_t Characteristics, const uint32_t OriginalFirstThunk,
+static int dump_iat1(const pbuffer_t p, const poptions_t o,
+              const uint32_t Characteristics, const uint32_t OriginalFirstThunk,
               const uint32_t TimeDateStamp, const uint32_t ForwarderChain,
               const uint32_t Name, const char* sname, const uint32_t FirstThunk) {
   int n = 0;
-  n += printf_text("OriginalFirstThunk", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  n += printf_nice(OriginalFirstThunk, USE_FHEX32 | USE_EOL);
-  n += printf_text("Characteristics", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  n += printf_nice(Characteristics, USE_FHEX32 | USE_EOL);
-  n += printf_text("TimeDateStamp", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  n += printf_nice(TimeDateStamp, USE_FHEX32);
-  n += printf_nice(TimeDateStamp, USE_TIMEDATE | USE_SB | USE_EOL);
-  n += printf_text("ForwarderChain", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  n += printf_nice(ForwarderChain, USE_FHEX32 | USE_EOL);
-  n += printf_text("Name", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  n += printf_nice(Name, USE_FHEX32);
-  n += printf_text(sname, USE_LT | USE_SPACE | USE_SB | USE_EOL);
-  n += printf_text("FirstThunk", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  n += printf_nice(FirstThunk, USE_FHEX32 | USE_EOL);
+  if (MODE_ISANY(o->action, OPTPROGRAM_VERBOSE)) {
+    n += printf_text("OriginalFirstThunk", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(OriginalFirstThunk, USE_FHEX32 | USE_EOL);
+    n += printf_text("Characteristics", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(Characteristics, USE_FHEX32 | USE_EOL);
+    n += printf_text("TimeDateStamp", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(TimeDateStamp, USE_FHEX32);
+    n += printf_nice(TimeDateStamp, USE_TIMEDATE | USE_SB | USE_EOL);
+    n += printf_text("ForwarderChain", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(ForwarderChain, USE_FHEX32 | USE_EOL);
+    n += printf_text("Name", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(Name, USE_FHEX32);
+    n += printf_text(sname, USE_LT | USE_SPACE | USE_SB | USE_EOL);
+    n += printf_text("FirstThunk", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_nice(FirstThunk, USE_FHEX32 | USE_EOL);
+  }
 
   return n;
 }
@@ -650,8 +653,8 @@ static int dump_iat32(const pbuffer_t p, const poptions_t o) {
       char* Name = getp(p, peconvert2va(s0, p1->Name), 1);
 
       n += dump_iat0(p, p1);
-      n += dump_iat1(p, p1->Characteristics, p1->OriginalFirstThunk, p1->TimeDateStamp, p1->ForwarderChain,
-                p1->Name, Name, p1->FirstThunk);
+      n += dump_iat1(p, o, p1->Characteristics, p1->OriginalFirstThunk, p1->TimeDateStamp,
+                p1->ForwarderChain, p1->Name, Name, p1->FirstThunk);
 
       PIMAGE_THUNK_DATA32 p2 = (PIMAGE_THUNK_DATA32)
         getp(p, peconvert2va(s0, p1->OriginalFirstThunk), sizeof(IMAGE_THUNK_DATA32));
@@ -694,8 +697,8 @@ static int dump_iat64(const pbuffer_t p, const poptions_t o) {
       char* Name = getp(p, peconvert2va(s0, p1->Name), 1);
 
       n += dump_iat0(p, p1);
-      n += dump_iat1(p, p1->Characteristics, p1->OriginalFirstThunk, p1->TimeDateStamp, p1->ForwarderChain,
-                p1->Name, Name, p1->FirstThunk);
+      n += dump_iat1(p, o, p1->Characteristics, p1->OriginalFirstThunk, p1->TimeDateStamp,
+                p1->ForwarderChain, p1->Name, Name, p1->FirstThunk);
 
       PIMAGE_THUNK_DATA64 p2 = peget_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_IMPORT, p1->OriginalFirstThunk, sizeof(PIMAGE_THUNK_DATA64));
 
