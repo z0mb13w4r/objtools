@@ -244,13 +244,24 @@ static int dump_ntheader64(const pbuffer_t p, const poptions_t o) {
   return n;
 }
 
-static int dump_sectionheaders0(const pbuffer_t p, const poptions_t o, const uint16_t NumberOfSections) {
+static int dump_sectionheaders0(const pbuffer_t p, const poptions_t o) {
+  int n = 0;
+  if (MODE_ISNOT(o->action, OPTPROGRAM_VERBOSE)) {
+    n += printf_text("IMAGE SECTION HEADER", USE_LT | USE_COLON | USE_EOL);
+  }
+
+  return n;
+}
+
+static int dump_sectionheaders1(const pbuffer_t p, const poptions_t o, const uint16_t NumberOfSections) {
   int n = 0;
 
   for (uint16_t i = 0; i < NumberOfSections; ++i) {
     PIMAGE_SECTION_HEADER p0 = peget_sectionhdrbyindex(p, i);
     if (p0) {
-      n += printf_text("IMAGE SECTION HEADER", USE_LT | USE_COLON | USE_EOL);
+      if (MODE_ISANY(o->action, OPTPROGRAM_VERBOSE)) {
+        n += printf_text("IMAGE SECTION HEADER", USE_LT | USE_COLON | USE_EOL);
+      }
       n += printf_text("Name", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
       n += printf_sore(p0->Name, sizeof(p0->Name), USE_STR | USE_SPACE | USE_EOL);
       n += printf_text("Misc.PhysicalAddress", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
@@ -287,7 +298,6 @@ static int dump_sectionheaders0(const pbuffer_t p, const poptions_t o, const uin
     }
   }
 
-
   return n;
 }
 
@@ -295,7 +305,8 @@ static int dump_sectionheaders32(const pbuffer_t p, const poptions_t o) {
   int n = 0;
   PIMAGE_NT_HEADERS32 p0 = peget_nt32hdr(p);
   if (p0) {
-    n += dump_sectionheaders0(p, o, p0->FileHeader.NumberOfSections);
+    n += dump_sectionheaders0(p, o);
+    n += dump_sectionheaders1(p, o, p0->FileHeader.NumberOfSections);
   }
 
   return n;
@@ -305,7 +316,8 @@ static int dump_sectionheaders64(const pbuffer_t p, const poptions_t o) {
   int n = 0;
   PIMAGE_NT_HEADERS64 p0 = peget_nt64hdr(p);
   if (p0) {
-    n += dump_sectionheaders0(p, o, p0->FileHeader.NumberOfSections);
+    n += dump_sectionheaders0(p, o);
+    n += dump_sectionheaders1(p, o, p0->FileHeader.NumberOfSections);
   }
 
   return n;
