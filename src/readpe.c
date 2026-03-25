@@ -254,51 +254,65 @@ static int dump_sectionheaders0(const pbuffer_t p, const poptions_t o) {
 }
 
 static int dump_sectionheaders1(const pbuffer_t p, const poptions_t o, const uint16_t NumberOfSections) {
-  int n = 0;
+  int n0 = 0;
+  int n1 = 0;
 
   for (uint16_t i = 0; i < NumberOfSections; ++i) {
     PIMAGE_SECTION_HEADER p0 = peget_sectionhdrbyindex(p, i);
     if (p0) {
       if (MODE_ISANY(o->action, OPTPROGRAM_VERBOSE)) {
-        n += printf_text("IMAGE SECTION HEADER", USE_LT | USE_COLON | USE_EOL);
-      }
-      n += printf_text("Name", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-      n += printf_sore(p0->Name, sizeof(p0->Name), USE_STR | USE_SPACE | USE_EOL);
-      n += printf_text("Misc.PhysicalAddress", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-      n += printf_nice(p0->Misc.PhysicalAddress, USE_FHEX32 | USE_EOL);
-      n += printf_text("Misc.VirtualSize", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-      n += printf_nice(p0->Misc.VirtualSize, USE_FHEX32 | USE_EOL);
-      n += printf_text("VirtualAddress", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-      n += printf_nice(p0->VirtualAddress, USE_FHEX32 | USE_EOL);
-      n += printf_text("SizeOfRawData", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-      n += printf_nice(p0->SizeOfRawData, USE_FHEX32 | USE_EOL);
-      n += printf_text("PointerToRawData", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-      n += printf_nice(p0->PointerToRawData, USE_FHEX32 | USE_EOL);
-      n += printf_text("PointerToRelocations", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-      n += printf_nice(p0->PointerToRelocations, USE_FHEX32 | USE_EOL);
-      n += printf_text("PointerToLinenumbers", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-      n += printf_nice(p0->PointerToLinenumbers, USE_FHEX32 | USE_EOL);
-      n += printf_text("NumberOfRelocations", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-      n += printf_nice(p0->NumberOfRelocations, USE_FHEX16 | USE_EOL);
-      n += printf_text("NumberOfLinenumbers", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-      n += printf_nice(p0->NumberOfLinenumbers, USE_FHEX16 | USE_EOL);
-      n += printf_text("Characteristics", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-      n += printf_nice(p0->Characteristics, USE_FHEX32);
-      n += printf_mask(peSECTIONHDR, p0->Characteristics & ~IMAGE_SCN_ALIGN_MASK, USE_NONE);
-      n += printf_picknull(peSECTIONHDRALIGN, p0->Characteristics & IMAGE_SCN_ALIGN_MASK, USE_SPACE | USE_EOL);
+        n0 += printf_text("IMAGE SECTION HEADER", USE_LT | USE_COLON | USE_EOL);
+        n0 += printf_text("Name", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        n0 += printf_sore(p0->Name, sizeof(p0->Name), USE_STR | USE_SPACE | USE_EOL);
+        n0 += printf_text("Misc.PhysicalAddress", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        n0 += printf_nice(p0->Misc.PhysicalAddress, USE_FHEX32 | USE_EOL);
+        n0 += printf_text("Misc.VirtualSize", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        n0 += printf_nice(p0->Misc.VirtualSize, USE_FHEX32 | USE_EOL);
+        n0 += printf_text("VirtualAddress", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        n0 += printf_nice(p0->VirtualAddress, USE_FHEX32 | USE_EOL);
+        n0 += printf_text("SizeOfRawData", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        n0 += printf_nice(p0->SizeOfRawData, USE_FHEX32 | USE_EOL);
+        n0 += printf_text("PointerToRawData", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        n0 += printf_nice(p0->PointerToRawData, USE_FHEX32 | USE_EOL);
+        n0 += printf_text("PointerToRelocations", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        n0 += printf_nice(p0->PointerToRelocations, USE_FHEX32 | USE_EOL);
+        n0 += printf_text("PointerToLinenumbers", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        n0 += printf_nice(p0->PointerToLinenumbers, USE_FHEX32 | USE_EOL);
+        n0 += printf_text("NumberOfRelocations", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        n0 += printf_nice(p0->NumberOfRelocations, USE_FHEX16 | USE_EOL);
+        n0 += printf_text("NumberOfLinenumbers", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        n0 += printf_nice(p0->NumberOfLinenumbers, USE_FHEX16 | USE_EOL);
+        n0 += printf_text("Characteristics", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        n0 += printf_nice(p0->Characteristics, USE_FHEX32);
+        n0 += printf_mask(peSECTIONHDR, p0->Characteristics & ~IMAGE_SCN_ALIGN_MASK, USE_NONE);
+        n0 += printf_picknull(peSECTIONHDRALIGN, p0->Characteristics & IMAGE_SCN_ALIGN_MASK, USE_SPACE | USE_EOL);
 
-      if (MODE_ISANY(o->action, OPTPROGRAM_HASH)) {
-        n += printf_sore(peget_chunkbyindex(p, i), p0->SizeOfRawData, USE_HASHALL | USE_EOL);
-      }
-      if (MODE_ISANY(o->action, OPTPROGRAM_ENTROPY)) {
-        n += printf_sore(peget_chunkbyindex(p, i), p0->SizeOfRawData, USE_ENTROPY | USE_EOL);
+        if (MODE_ISANY(o->action, OPTPROGRAM_HASH)) {
+          n0 += printf_sore(peget_chunkbyindex(p, i), p0->SizeOfRawData, USE_HASHALL | USE_EOL);
+        }
+        if (MODE_ISANY(o->action, OPTPROGRAM_ENTROPY)) {
+          n0 += printf_sore(peget_chunkbyindex(p, i), p0->SizeOfRawData, USE_ENTROPY | USE_EOL);
+        }
+      } else {
+        n1  = printf_sore(p0->Name, sizeof(p0->Name), USE_STR | USE_SPACE);
+        n0 += printf_pack(sizeof(p0->Name) - n1 + 1) + n1;
+        n0 += printf_nice(p0->VirtualAddress, USE_FHEX32);
+        n0 += printf_nice(p0->SizeOfRawData, USE_FHEX32);
+        n0 += printf_nice(p0->Characteristics, USE_FHEX32);
+        if (MODE_ISANY(o->action, OPTPROGRAM_HASH)) {
+          n0 += printf_sore(peget_chunkbyindex(p, i), p0->SizeOfRawData, USE_SHA256 | USE_NOTEXT);
+        }
       }
 
-      n += printf_eol();
+      n0 += printf_eol();
     }
   }
 
-  return n;
+  if (MODE_ISNOT(o->action, OPTPROGRAM_VERBOSE) && NumberOfSections) {
+    n0 += printf_eol();
+  }
+
+  return n0;
 }
 
 static int dump_sectionheaders32(const pbuffer_t p, const poptions_t o) {
