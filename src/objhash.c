@@ -292,7 +292,7 @@ static int dump_hash(const pbuffer_t p, const poptions_t o) {
   int n = 0;
 
   if (MODE_ISANY(o->action, OPTOBJHASH_FILESIZE)) {
-    n += printf_nice(p->size, USE_DEC | USE_COLON);
+    n += printf_nice(p->size, USE_DEC | USE_COLON | USE_NOSPACE);
   }
 
   n += dump_hash1(o, p->data, p->size, USE_NONE);
