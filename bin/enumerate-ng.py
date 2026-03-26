@@ -3,7 +3,7 @@ import pexpect
 import argparse
 
 PROGRAM_NAME = 'enumerate-ng.py'
-VERSION_VALUE = '0.1'
+VERSION_VALUE = '0.2'
 
 LICENSE_TEXT = '''COPYRIGHT
   MIT License
