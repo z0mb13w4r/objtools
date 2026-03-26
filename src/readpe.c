@@ -361,12 +361,17 @@ static int dump_sectionheaders64(const pbuffer_t p, const poptions_t o) {
   return n;
 }
 
-static int dump_sectiongroups0(const pbuffer_t p) {
-  const int MAXSIZE = strlenpick(peOPTHDRENTRY) + 2;
+static int dump_sectiongroups0(const pbuffer_t p, const poptions_t o) {
+  const int MAXSIZE0 = strlenpick(peOPTHDRENTRY) + 2;
+  const int MAXSIZE1 = strlenpick(peOPTHDRENTRYLITE) + 2;
 
   int n = 0;
   n += printf_text("IMAGE DIRECTORY", USE_LT | USE_COLON | USE_EOL);
-  n += printf_text("Name", USE_LT | USE_TAB | SET_PAD(MAXSIZE));
+  if (MODE_ISANY(o->action, OPTPROGRAM_VERBOSE)) {
+    n += printf_text("Name", USE_LT | USE_TAB | SET_PAD(MAXSIZE0));
+  } else {
+    n += printf_text("Name", USE_LT | USE_TAB | SET_PAD(MAXSIZE1));
+  }
   n += printf_text("RVA", USE_LT | USE_SPACE | SET_PAD(11));
   n += printf_text("Size", USE_LT | USE_SPACE | USE_EOL);
 
@@ -374,11 +379,16 @@ static int dump_sectiongroups0(const pbuffer_t p) {
 }
 
 static int dump_sectiongroups1(const pbuffer_t p, const poptions_t o, const int index, const uint32_t VirtualAddress, const uint32_t Size) {
-  const int MAXSIZE = strlenpick(peOPTHDRENTRY) + 2;
+  const int MAXSIZE0 = strlenpick(peOPTHDRENTRY) + 2;
+  const int MAXSIZE1 = strlenpick(peOPTHDRENTRYLITE) + 2;
 
   int n = 0;
   if (MODE_ISANY(o->action, OPTPROGRAM_VERBOSE) || VirtualAddress || Size) {
-    n += printf_pick(peOPTHDRENTRY, index, USE_LT | USE_TAB | SET_PAD(MAXSIZE));
+    if (MODE_ISANY(o->action, OPTPROGRAM_VERBOSE)) {
+      n += printf_pick(peOPTHDRENTRY, index, USE_LT | USE_TAB | SET_PAD(MAXSIZE0));
+    } else {
+      n += printf_pick(peOPTHDRENTRYLITE, index, USE_LT | USE_TAB | SET_PAD(MAXSIZE1));
+    }
     if (0 != VirtualAddress) n += printf_nice(VirtualAddress, USE_FHEX32);
     else                     n += printf_text("NONE", USE_LT | USE_SPACE | SET_PAD(11));
     if (0 != Size)           n += printf_nice(Size, USE_FHEX32 | USE_EOL);
@@ -395,7 +405,7 @@ static int dump_sectiongroups32(const pbuffer_t p, const poptions_t o) {
     PIMAGE_OPTIONAL_HEADER32 op = &nt->OptionalHeader;
     PIMAGE_DATA_DIRECTORY dd = op->DataDirectory;
 
-    n += dump_sectiongroups0(p);
+    n += dump_sectiongroups0(p, o);
 
     for (size_t i = 0; i < op->NumberOfRvaAndSizes; ++i, ++dd) {
       n += dump_sectiongroups1(p, o, i, dd->VirtualAddress, dd->Size);
@@ -414,7 +424,7 @@ static int dump_sectiongroups64(const pbuffer_t p, const poptions_t o) {
     PIMAGE_OPTIONAL_HEADER64 op = &nt->OptionalHeader;
     PIMAGE_DATA_DIRECTORY dd = op->DataDirectory;
 
-    n += dump_sectiongroups0(p);
+    n += dump_sectiongroups0(p, o);
 
     for (size_t i = 0; i < op->NumberOfRvaAndSizes; ++i, ++dd) {
       n += dump_sectiongroups1(p, o, i, dd->VirtualAddress, dd->Size);

@@ -129,6 +129,28 @@ static convert_t peOPTHDRENTRY[] = {
   {"IMAGE_DIRECTORY_ENTRY_SECURITY",             IMAGE_DIRECTORY_ENTRY_SECURITY},
   {"IMAGE_DIRECTORY_ENTRY_TLS",                  IMAGE_DIRECTORY_ENTRY_TLS},
   {"IMAGE_DIRECTORY_ENTRY_RESERVED",             IMAGE_DIRECTORY_ENTRY_RESERVED},
+
+  {0, 0}
+};
+
+static convert_t peOPTHDRENTRYLITE[] = {
+  {"ARCHITECTURE",                               IMAGE_DIRECTORY_ENTRY_ARCHITECTURE},
+  {"BASERELOC",                                  IMAGE_DIRECTORY_ENTRY_BASERELOC},
+  {"COM_DESCRIPTOR",                             IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR},
+  {"DEBUG",                                      IMAGE_DIRECTORY_ENTRY_DEBUG},
+  {"EXCEPTION",                                  IMAGE_DIRECTORY_ENTRY_EXCEPTION},
+  {"GLOBALPTR",                                  IMAGE_DIRECTORY_ENTRY_GLOBALPTR},
+  {"IAT",                                        IMAGE_DIRECTORY_ENTRY_IAT},
+  {"EXPORT",                                     IMAGE_DIRECTORY_ENTRY_EXPORT},
+  {"IMPORT",                                     IMAGE_DIRECTORY_ENTRY_IMPORT},
+  {"BOUND_IMPORT",                               IMAGE_DIRECTORY_ENTRY_BOUND_IMPORT},
+  {"DELAY_IMPORT",                               IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT},
+  {"LOAD_CONFIG",                                IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG},
+  {"RESOURCE",                                   IMAGE_DIRECTORY_ENTRY_RESOURCE},
+  {"SECURITY",                                   IMAGE_DIRECTORY_ENTRY_SECURITY},
+  {"TLS",                                        IMAGE_DIRECTORY_ENTRY_TLS},
+  {"RESERVED",                                   IMAGE_DIRECTORY_ENTRY_RESERVED},
+
   {0, 0}
 };
 
