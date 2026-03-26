@@ -119,7 +119,8 @@ static int dump_ntheader1(const pbuffer_t p, const poptions_t o, const uint16_t 
   return n;
 }
 
-static int dump_ntheader2(const pbuffer_t p, const uint16_t Magic, const uint8_t MajorLinkerVersion, const uint8_t MinorLinkerVersion,
+static int dump_ntheader2(const pbuffer_t p, const poptions_t o, const uint16_t Magic,
+                   const uint8_t MajorLinkerVersion, const uint8_t MinorLinkerVersion,
                    const uint32_t SizeOfCode, const uint32_t SizeOfInitializedData, const uint32_t SizeOfUninitializedData,
                    const uint32_t AddressOfEntryPoint, const uint32_t BaseOfCode, const uint32_t BaseOfData, const uint64_t ImageBase,
                    const uint32_t SectionAlignment,const uint32_t FileAlignment,
@@ -186,7 +187,11 @@ static int dump_ntheader2(const pbuffer_t p, const uint16_t Magic, const uint8_t
     n += printf_nice(CheckSum, USE_FHEX32 | USE_EOL);
     n += printf_text("Subsystem", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     n += printf_nice(Subsystem, USE_FHEX16);
-    n += printf_pick(peOPTHDRSUBSYSTEM, Subsystem, USE_LT | USE_SPACE | USE_EOL);
+    if (MODE_ISANY(o->action, OPTPROGRAM_VERBOSE)) {
+      n += printf_pick(peOPTHDRSUBSYSTEM, Subsystem, USE_LT | USE_SPACE | USE_EOL);
+    } else {
+      n += printf_pick(peOPTHDRSUBSYSTEMLITE, Subsystem, USE_LT | USE_SPACE | USE_EOL);
+    }
     n += printf_text("DllCharacteristics", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     n += printf_nice(DllCharacteristics, USE_FHEX16);
     n += printf_mask(peOPTHDRCHARACTERISTICS, DllCharacteristics, USE_EOL);
@@ -219,7 +224,7 @@ static int dump_ntheader32(const pbuffer_t p, const poptions_t o) {
 
     n += dump_ntheader1(p, o, fp->Machine, fp->NumberOfSections, fp->TimeDateStamp, fp->PointerToSymbolTable,
                    fp->NumberOfSymbols, fp->SizeOfOptionalHeader, fp->Characteristics);
-    n += dump_ntheader2(p, op->Magic, op->MajorLinkerVersion, op->MinorLinkerVersion, op->SizeOfCode, op->SizeOfInitializedData,
+    n += dump_ntheader2(p, o, op->Magic, op->MajorLinkerVersion, op->MinorLinkerVersion, op->SizeOfCode, op->SizeOfInitializedData,
                    op->SizeOfUninitializedData, op->AddressOfEntryPoint, op->BaseOfCode, op->BaseOfData, op->ImageBase,
                    op->SectionAlignment, op->FileAlignment, op->MajorOperatingSystemVersion, op->MinorOperatingSystemVersion,
                    op->MajorImageVersion, op->MinorImageVersion, op->MajorSubsystemVersion, op->MinorSubsystemVersion,
@@ -242,7 +247,7 @@ static int dump_ntheader64(const pbuffer_t p, const poptions_t o) {
 
     n += dump_ntheader1(p, o, fp->Machine, fp->NumberOfSections, fp->TimeDateStamp, fp->PointerToSymbolTable,
                    fp->NumberOfSymbols, fp->SizeOfOptionalHeader, fp->Characteristics);
-    n += dump_ntheader2(p, op->Magic, op->MajorLinkerVersion, op->MinorLinkerVersion, op->SizeOfCode, op->SizeOfInitializedData,
+    n += dump_ntheader2(p, o, op->Magic, op->MajorLinkerVersion, op->MinorLinkerVersion, op->SizeOfCode, op->SizeOfInitializedData,
                    op->SizeOfUninitializedData, op->AddressOfEntryPoint, op->BaseOfCode, 0L, op->ImageBase,
                    op->SectionAlignment, op->FileAlignment, op->MajorOperatingSystemVersion, op->MinorOperatingSystemVersion,
                    op->MajorImageVersion, op->MinorImageVersion, op->MajorSubsystemVersion, op->MinorSubsystemVersion,
