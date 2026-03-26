@@ -88,6 +88,27 @@ static convert_t peOPTHDRCHARACTERISTICS[] = {
   {"IMAGE_DLLCHARACTERISTICS_WDM_DRIVER",            IMAGE_DLLCHARACTERISTICS_WDM_DRIVER},
   {"IMAGE_DLLCHARACTERISTICS_GUARD_CF",              IMAGE_DLLCHARACTERISTICS_GUARD_CF},
   {"IMAGE_DLLCHARACTERISTICS_TERMINAL_SERVER_AWARE", IMAGE_DLLCHARACTERISTICS_TERMINAL_SERVER_AWARE},
+
+  {0, 0}
+};
+
+static convert_t peOPTHDRCHARACTERISTICSLITE[] = {
+  {"RESERVED_0",                                     0x0001},
+  {"RESERVED_1",                                     0x0002},
+  {"RESERVED_2",                                     0x0004},
+  {"RESERVED_3",                                     0x0008},
+  {"HIGH_ENTROPY_VA",                                IMAGE_DLLCHARACTERISTICS_HIGH_ENTROPY_VA},
+  {"DYNAMIC_BASE",                                   IMAGE_DLLCHARACTERISTICS_DYNAMIC_BASE},
+  {"FORCE_INTEGRITY",                                IMAGE_DLLCHARACTERISTICS_FORCE_INTEGRITY},
+  {"NX_COMPAT",                                      IMAGE_DLLCHARACTERISTICS_NX_COMPAT},
+  {"NO_ISOLATION",                                   IMAGE_DLLCHARACTERISTICS_NO_ISOLATION},
+  {"NO_SEH",                                         IMAGE_DLLCHARACTERISTICS_NO_SEH},
+  {"NO_BIND",                                        IMAGE_DLLCHARACTERISTICS_NO_BIND},
+  {"APPCONTAINER",                                   IMAGE_DLLCHARACTERISTICS_APPCONTAINER},
+  {"WDM_DRIVER",                                     IMAGE_DLLCHARACTERISTICS_WDM_DRIVER},
+  {"GUARD_CF",                                       IMAGE_DLLCHARACTERISTICS_GUARD_CF},
+  {"TERMINAL_SERVER_AWARE",                          IMAGE_DLLCHARACTERISTICS_TERMINAL_SERVER_AWARE},
+
   {0, 0}
 };
 

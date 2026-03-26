@@ -194,7 +194,11 @@ static int dump_ntheader2(const pbuffer_t p, const poptions_t o, const uint16_t 
     }
     n += printf_text("DllCharacteristics", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     n += printf_nice(DllCharacteristics, USE_FHEX16);
-    n += printf_mask(peOPTHDRCHARACTERISTICS, DllCharacteristics, USE_EOL);
+    if (MODE_ISANY(o->action, OPTPROGRAM_VERBOSE)) {
+      n += printf_mask(peOPTHDRCHARACTERISTICS, DllCharacteristics, USE_EOL);
+    } else {
+      n += printf_mask(peOPTHDRCHARACTERISTICSLITE, DllCharacteristics, USE_EOL);
+    }
     n += printf_text("SizeOfStackReserve", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     n += printf_nice(SizeOfStackReserve, USE_FHEXNN | USE_EOL);
     n += printf_text("SizeOfStackCommit", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
