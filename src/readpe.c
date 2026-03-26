@@ -89,7 +89,7 @@ static int dump_ntheader0(const pbuffer_t p, const uint32_t Signature) {
   return n;
 }
 
-static int dump_ntheader1(const pbuffer_t p, const uint16_t Machine, const uint16_t NumberOfSections,
+static int dump_ntheader1(const pbuffer_t p, const poptions_t o, const uint16_t Machine, const uint16_t NumberOfSections,
                    const uint32_t TimeDateStamp, const uint32_t PointerToSymbolTable, const uint32_t NumberOfSymbols,
                    const uint16_t SizeOfOptionalHeader, const uint16_t Characteristics) {
   int n = 0;
@@ -109,7 +109,11 @@ static int dump_ntheader1(const pbuffer_t p, const uint16_t Machine, const uint1
   n += printf_nice(SizeOfOptionalHeader, USE_FHEX16 | USE_EOL);
   n += printf_text("Characteristics", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(Characteristics, USE_FHEX16);
-  n += printf_mask(peFILEHDR, Characteristics, USE_EOL);
+  if (MODE_ISANY(o->action, OPTPROGRAM_VERBOSE)) {
+    n += printf_mask(peFILEHDR, Characteristics, USE_EOL);
+  } else {
+    n += printf_mask(peFILEHDRLITE, Characteristics, USE_EOL);
+  }
   n += printf_eol();
 
   return n;
@@ -213,7 +217,7 @@ static int dump_ntheader32(const pbuffer_t p, const poptions_t o) {
     PIMAGE_FILE_HEADER fp = &nt->FileHeader;
     PIMAGE_OPTIONAL_HEADER32 op = &nt->OptionalHeader;
 
-    n += dump_ntheader1(p, fp->Machine, fp->NumberOfSections, fp->TimeDateStamp, fp->PointerToSymbolTable,
+    n += dump_ntheader1(p, o, fp->Machine, fp->NumberOfSections, fp->TimeDateStamp, fp->PointerToSymbolTable,
                    fp->NumberOfSymbols, fp->SizeOfOptionalHeader, fp->Characteristics);
     n += dump_ntheader2(p, op->Magic, op->MajorLinkerVersion, op->MinorLinkerVersion, op->SizeOfCode, op->SizeOfInitializedData,
                    op->SizeOfUninitializedData, op->AddressOfEntryPoint, op->BaseOfCode, op->BaseOfData, op->ImageBase,
@@ -236,7 +240,7 @@ static int dump_ntheader64(const pbuffer_t p, const poptions_t o) {
     PIMAGE_FILE_HEADER fp = &nt->FileHeader;
     PIMAGE_OPTIONAL_HEADER64 op = &nt->OptionalHeader;
 
-    n += dump_ntheader1(p, fp->Machine, fp->NumberOfSections, fp->TimeDateStamp, fp->PointerToSymbolTable,
+    n += dump_ntheader1(p, o, fp->Machine, fp->NumberOfSections, fp->TimeDateStamp, fp->PointerToSymbolTable,
                    fp->NumberOfSymbols, fp->SizeOfOptionalHeader, fp->Characteristics);
     n += dump_ntheader2(p, op->Magic, op->MajorLinkerVersion, op->MinorLinkerVersion, op->SizeOfCode, op->SizeOfInitializedData,
                    op->SizeOfUninitializedData, op->AddressOfEntryPoint, op->BaseOfCode, 0L, op->ImageBase,
