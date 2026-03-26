@@ -35,6 +35,7 @@ static const args_t zREADPEARGS[] = {
   {'S', "--section-headers", OPTREADPE_SECTIONHEADERS,     zPESECTIONHDRS},
   {'V', "--version-info",    OPTREADPE_VERSION,            zPEVERSIONINFO},
   {'a', "--all",             OPTREADPE_ALL,                NULL},
+  {'l', "--lite",            OPTREADPE_LITE,               NULL},
   {'H', "--headers",         OPTREADPE_HEADERS,            zPEHDRS},
   {'G', "--section-groups",  OPTREADPE_SECTIONGROUPS,      zPESECTIONGROUPS},
   {'D', "--dos-header",      OPTREADPE_DOSHEADER,          zPEDOSHDR},
