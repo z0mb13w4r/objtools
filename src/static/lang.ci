@@ -274,29 +274,26 @@ static const char* get_SUBLANG(const uint64_t x, const uint64_t y) {
   return strpick(zSUBLANGDEFAULT, y);
 }
 
-static const char* get_LANGsz(const pushort_t szKey) {
-  static char o[64];
-
-  ushort_t x = hex16(szKey[2] & 0x00ff, szKey[3] & 0x00ff);
-  ushort_t y = hex16(szKey[0] & 0x00ff, szKey[1] & 0x00ff);
-
+static const char* get_LANG(char *o, const size_t size, const uint16_t x, const uint16_t y) {
   int n = 0;
-  n += snprintf(o + n, sizeof(o) - n, "%s", strpick(zLANG, x));
-  n += snprintf(o + n, sizeof(o) - n, " %s", get_SUBLANG(x, y));
+  n += snprintf(o + n, size - n, "%s", strpick(zLANG, x));
+  if (n < size) {
+    n += snprintf(o + n, size - n, " %s", get_SUBLANG(x, y));
+  }
 
   return o;
 }
 
+static const char* get_LANGsz(const pushort_t szKey) {
+  uint16_t x = hex16(szKey[2] & 0x00ff, szKey[3] & 0x00ff);
+  uint16_t y = hex16(szKey[0] & 0x00ff, szKey[1] & 0x00ff);
+
+  static char o[128];
+  return get_LANG(o, sizeof(o), x, y);
+}
+
 static const char* get_LANGu16(const uint16_t x) {
   static char o[128];
-
-  uint16_t y = MODE_GET0(x);
-  uint16_t z = MODE_GET1(x);
-
-  int n = 0;
-  n += snprintf(o + n, sizeof(o) - n, "%s", strpick(zLANG, y));
-  n += snprintf(o + n, sizeof(o) - n, " %s", get_SUBLANG(y, z));
-
-  return o;
+  return get_LANG(o, sizeof(o), MODE_GET0(x), MODE_GET1(x));
 }
 
