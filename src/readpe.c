@@ -450,7 +450,7 @@ static int dump_version0(const pbuffer_t p, const uint16_t wLength, const uint16
   n += printf_text("Key", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE + 1));
   if (0 == xstrcmp(name, "StringTable")) {
     n += printf_sore(szKey, szKeySize, USE_STR16);
-    n += printf_text(get_LANG(szKey), USE_LT | USE_SPACE | USE_EOL);
+    n += printf_text(get_LANGsz(szKey), USE_LT | USE_SPACE | USE_EOL);
   } else {
     n += printf_sore(szKey, szKeySize, USE_STR16 | USE_EOL);
   }

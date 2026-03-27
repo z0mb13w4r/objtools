@@ -274,7 +274,7 @@ static const char* get_SUBLANG(const uint64_t x, const uint64_t y) {
   return strpick(zSUBLANGDEFAULT, y);
 }
 
-static const char* get_LANG(const pushort_t szKey) {
+static const char* get_LANGsz(const pushort_t szKey) {
   static char o[64];
 
   ushort_t x = hex16(szKey[2] & 0x00ff, szKey[3] & 0x00ff);
