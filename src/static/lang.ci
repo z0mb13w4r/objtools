@@ -287,3 +287,16 @@ static const char* get_LANG(const pushort_t szKey) {
   return o;
 }
 
+static const char* get_LANGu16(const uint16_t x) {
+  static char o[128];
+
+  uint16_t y = MODE_GET0(x);
+  uint16_t z = MODE_GET1(x);
+
+  int n = 0;
+  n += snprintf(o + n, sizeof(o) - n, "%s", strpick(zLANG, y));
+  n += snprintf(o + n, sizeof(o) - n, " %s", get_SUBLANG(y, z));
+
+  return o;
+}
+
