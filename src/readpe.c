@@ -267,7 +267,7 @@ static int dump_sectionheaders0(const pbuffer_t p, const poptions_t o) {
   int n = 0;
   if (MODE_ISNOT(o->action, OPTPROGRAM_VERBOSE)) {
     n += printf_text("IMAGE SECTION HEADER", USE_LT | USE_COLON | USE_EOL);
-    n += printf_text("Name", USE_LT | USE_SPACE | SET_PAD(9));
+    n += printf_text("Name", USE_LT | USE_TAB | SET_PAD(9));
     n += printf_text("VAddr", USE_LT | USE_SPACE | SET_PAD(11));
     n += printf_text("Size", USE_LT | USE_SPACE | SET_PAD(11));
     n += printf_text("SHA-256", USE_LT | USE_SPACE);
@@ -318,7 +318,7 @@ static int dump_sectionheaders1(const pbuffer_t p, const poptions_t o, const uin
           n0 += printf_sore(peget_chunkbyindex(p, i), p0->SizeOfRawData, USE_ENTROPY | USE_EOL);
         }
       } else {
-        n1  = printf_sore(p0->Name, sizeof(p0->Name), USE_STR | USE_SPACE);
+        n1  = printf_sore(p0->Name, sizeof(p0->Name), USE_STR | USE_TAB);
         n0 += printf_pack(sizeof(p0->Name) - n1 + 1) + n1;
         n0 += printf_nice(p0->VirtualAddress, USE_FHEX32);
         n0 += printf_nice(p0->SizeOfRawData, USE_FHEX32);
@@ -684,20 +684,28 @@ static int dump_iat1(const pbuffer_t p, const poptions_t o,
     n += printf_text(sname, USE_LT | USE_SPACE | USE_SB | USE_EOL);
     n += printf_text("FirstThunk", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     n += printf_nice(FirstThunk, USE_FHEX32 | USE_EOL);
+  } else {
+    n += printf_nice(Name, USE_TAB | USE_FHEX32);
+    n += printf_text(sname, USE_LT | USE_SPACE | USE_SB);
+    n += printf_eol();
   }
 
   return n;
 }
 
-static int dump_iat2(const pbuffer_t p, const uint64_t AddressOfData) {
+static int dump_iat2(const pbuffer_t p, const poptions_t o, const uint64_t AddressOfData) {
   int n = 0;
   if (issafe(p)) {
     const imode_t USE_FHEXNN = isPE64(p) ? USE_FHEX64 : USE_FHEX32;
-    if (isPE32(p))      n += printf_text("IMAGE THUNK DATA32", USE_LT | USE_COLON | USE_EOL);
-    else if (isPE64(p)) n += printf_text("IMAGE THUNK DATA64", USE_LT | USE_COLON | USE_EOL);
+    if (MODE_ISANY(o->action, OPTPROGRAM_VERBOSE)) {
+      if (isPE32(p))      n += printf_text("IMAGE THUNK DATA32", USE_LT | USE_COLON | USE_EOL);
+      else if (isPE64(p)) n += printf_text("IMAGE THUNK DATA64", USE_LT | USE_COLON | USE_EOL);
 
-    n += printf_text("AddressOfData", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-    n += printf_nice(AddressOfData, USE_FHEXNN | USE_EOL);
+      n += printf_text("AddressOfData", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_nice(AddressOfData, USE_FHEXNN | USE_EOL);
+    } else {
+      n += printf_nice(AddressOfData, USE_FHEXNN | USE_TAB);
+    }
   }
 
   return n;
@@ -722,7 +730,7 @@ static int dump_iat32(const pbuffer_t p, const poptions_t o) {
         getp(p, peconvert2va(s0, p1->OriginalFirstThunk), sizeof(IMAGE_THUNK_DATA32));
 
       while (p2 && p2->AddressOfData) {
-        n += dump_iat2(p, p2->AddressOfData);
+        n += dump_iat2(p, o, p2->AddressOfData);
         uint64_t Ordinal = (p2->AddressOfData & ~IMAGE_THUNK_DATA_IS_IMPORT_ORDINAL) & 0xffff;
         if (p2->AddressOfData & IMAGE_THUNK_DATA_IS_IMPORT_ORDINAL) {
           n += printf_text(get_ORDDLL(p, Name, Ordinal), USE_LT | USE_TAB2);
