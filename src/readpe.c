@@ -888,11 +888,8 @@ static int dump_resource1(const pbuffer_t p, const uint32_t NameIsString, const 
   n += printf_text("IMAGE RESOURCE DIRECTORY ENTRY", USE_LT);
   n += printf_nice(z, USE_SB | USE_COLON | USE_EOL);
   n += printf_text("Name", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  if (NameIsString) {
+  if (NameIsString || 1 != z) {
     n += printf_nice(Name, USE_FHEX32 | USE_EOL);
-  } else  if (1 != z) {
-    n += printf_nice(Name, USE_FHEX32);
-    n += printf_text(get_LANGu16(Name), USE_LT | USE_SPACE | USE_EOL);
   } else {
     n += printf_nice(Name, USE_FHEX32);
     n += printf_pick(peRESOURCETYPE, Name, USE_SPACE | USE_EOL);

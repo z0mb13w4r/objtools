@@ -8,8 +8,22 @@
 #define LANG_SPANISH                       (0x0a)
 #define LANG_FRENCH                        (0x0c)
 #define LANG_ITALIAN                       (0x10)
+#define LANG_KOREAN                        (0x12)
+#define LANG_DUTCH                         (0x13)
+#define LANG_NORWEGIAN                     (0x14)
 #define LANG_PORTUGUESE                    (0x16)
+#define LANG_ROMANIAN                      (0x18)
 #define LANG_RUSSIAN                       (0x19)
+#define LANG_SERBIAN                       (0x1a)
+#define LANG_CROATIAN                      (0x1a)
+#define LANG_SWEDISH                       (0x1d)
+#define LANG_URDU                          (0x20)
+#define LANG_LITHUANIAN                    (0x27)
+#define LANG_AZERI                         (0x2c)
+#define LANG_GAELIC                        (0x3c)
+#define LANG_MALAY                         (0x3e)
+#define LANG_UZBEK                         (0x43)
+#define LANG_NEPALI                        (0x61)
 
 static convert_t zLANG[] = {
   {"LANG_NEUTRAL",         0x00},
@@ -19,7 +33,7 @@ static convert_t zLANG[] = {
   {"LANG_ARABIC",          LANG_ARABIC},
   {"LANG_ARMENIAN",        0x2b},
   {"LANG_ASSAMESE",        0x4d},
-  {"LANG_AZERI",           0x2c},
+  {"LANG_AZERI",           LANG_AZERI},
   {"LANG_BASQUE",          0x2d},
   {"LANG_BELARUSIAN",      0x23},
   {"LANG_BENGALI",         0x45},
@@ -30,7 +44,7 @@ static convert_t zLANG[] = {
   {"LANG_CZECH",           0x05},
   {"LANG_DANISH",          0x06},
   {"LANG_DIVEHI",          0x65},
-  {"LANG_DUTCH",           0x13},
+  {"LANG_DUTCH",           LANG_DUTCH},
   {"LANG_ENGLISH",         LANG_ENGLISH},
   {"LANG_ESTONIAN",        0x25},
   {"LANG_FAEROESE",        0x38},
@@ -53,18 +67,18 @@ static convert_t zLANG[] = {
   {"LANG_KASHMIRI",        0x60},
   {"LANG_KAZAK",           0x3f},
   {"LANG_KONKANI",         0x57},
-  {"LANG_KOREAN",          0x12},
+  {"LANG_KOREAN",          LANG_KOREAN},
   {"LANG_KYRGYZ",          0x40},
   {"LANG_LATVIAN",         0x26},
-  {"LANG_LITHUANIAN",      0x27},
+  {"LANG_LITHUANIAN",      LANG_LITHUANIAN},
   {"LANG_MACEDONIAN",      0x2f},
-  {"LANG_MALAY",           0x3e},
+  {"LANG_MALAY",           LANG_MALAY},
   {"LANG_MALAYALAM",       0x4c},
   {"LANG_MANIPURI",        0x58},
   {"LANG_MARATHI",         0x4e},
   {"LANG_MONGOLIAN",       0x50},
-  {"LANG_NEPALI",          0x61},
-  {"LANG_NORWEGIAN",       0x14},
+  {"LANG_NEPALI",          LANG_NEPALI},
+  {"LANG_NORWEGIAN",       LANG_NORWEGIAN},
   {"LANG_ORIYA",           0x48},
   {"LANG_POLISH",          0x15},
   {"LANG_PORTUGUESE",      LANG_PORTUGUESE},
@@ -72,13 +86,13 @@ static convert_t zLANG[] = {
   {"LANG_ROMANIAN",        0x18},
   {"LANG_RUSSIAN",         0x19},
   {"LANG_SANSKRIT",        0x4f},
-  {"LANG_SERBIAN",         0x1a},
+  {"LANG_SERBIAN",         LANG_SERBIAN},
   {"LANG_SINDHI",          0x59},
   {"LANG_SLOVAK",          0x1b},
   {"LANG_SLOVENIAN",       0x24},
   {"LANG_SPANISH",         LANG_SPANISH},
   {"LANG_SWAHILI",         0x41},
-  {"LANG_SWEDISH",         0x1d},
+  {"LANG_SWEDISH",         LANG_SWEDISH},
   {"LANG_SYRIAC",          0x5a},
   {"LANG_TAMIL",           0x49},
   {"LANG_TATAR",           0x44},
@@ -86,10 +100,10 @@ static convert_t zLANG[] = {
   {"LANG_THAI",            0x1e},
   {"LANG_TURKISH",         0x1f},
   {"LANG_UKRAINIAN",       0x22},
-  {"LANG_URDU",            0x20},
-  {"LANG_UZBEK",           0x43},
+  {"LANG_URDU",            LANG_URDU},
+  {"LANG_UZBEK",           LANG_UZBEK},
   {"LANG_VIETNAMESE",      0x2a},
-  {"LANG_GAELIC",          0x3c},
+  {"LANG_GAELIC",          LANG_GAELIC},
   {"LANG_MALTESE",         0x3a},
   {"LANG_MAORI",           0x28},
   {"LANG_RHAETO_ROMANCE",  0x17},
@@ -129,6 +143,12 @@ static convert_t zSUBLANGARABIC[] = {
   {0,           0}
 };
 
+static convert_t zSUBLANG_AZERI[] = {
+  {"SUBLANG_AZERI_LATIN",                0x01},
+  {"SUBLANG_AZERI_CYRILLIC",             0x02},
+  {0,           0}
+};
+
 static convert_t zSUBLANGCHINESE[] = {
   {"SUBLANG_CHINESE_TRADITIONAL",        0x01},
   {"SUBLANG_CHINESE_SIMPLIFIED",         0x02},
@@ -142,6 +162,13 @@ static convert_t zSUBLANGDEFAULT[] = {
   {"SUBLANG_NEUTRAL",                    0x00},
   {"SUBLANG_DEFAULT",                    0x01},
   {"SUBLANG_SYS_DEFAULT",                0x02},
+  {0,           0}
+};
+
+static convert_t zSUBLANGDUTCH[] = {
+  {"SUBLANG_DUTCH",                      0x01},
+  {"SUBLANG_DUTCH_BELGIAN",              0x02},
+  {"SUBLANG_DUTCH_SURINAM",              0x03},
   {0,           0}
 };
 
@@ -172,6 +199,13 @@ static convert_t zSUBLANGFRENCH[] = {
   {0,           0}
 };
 
+static convert_t zSUBLANGGAELIC[] = {
+  {"SUBLANG_GAELIC",                     0x01},
+  {"SUBLANG_GAELIC_SCOTTISH",            0x02},
+  {"SUBLANG_GAELIC_MANX",                0x03},
+  {0,           0}
+};
+
 static convert_t zSUBLANGGERMAN[] = {
   {"SUBLANG_GERMAN",                     0x01},
   {"SUBLANG_GERMAN_SWISS",               0x02},
@@ -187,15 +221,56 @@ static convert_t zSUBLANGITALIAN[] = {
   {0,           0}
 };
 
+static convert_t zSUBLANGKOREAN[] = {
+  {"SUBLANG_KOREAN",                     0x01},
+  {0,      0}
+};
+
+static convert_t zSUBLANGLITHUANIAN[] = {
+  {"SUBLANG_LITHUANIAN",                 0x01},
+  {"SUBLANG_LITHUANIAN_CLASSIC",         0x02},
+  {0,           0}
+};
+
+static convert_t zSUBLANGMALAY[] = {
+  {"SUBLANG_MALAY_MALAYSIA",             0x01},
+  {"SUBLANG_MALAY_BRUNEI_DARUSSALAM",    0x02},
+  {0,           0}
+};
+
+static convert_t zSUBLANGNEPALI[] = {
+  {"SUBLANG_NEPALI_INDIA",               0x02},
+  {0,      0}
+};
+
+static convert_t zSUBLANGNORWEGIAN[] = {
+  {"SUBLANG_NORWEGIAN_BOKMAL",           0x01},
+  {"SUBLANG_NORWEGIAN_NYNORSK",          0x02},
+  {0,           0}
+};
+
 static convert_t zSUBLANGPORTUGUESE[] = {
   {"SUBLANG_PORTUGUESE_BRAZILIAN",       0x01},
   {"SUBLANG_PORTUGUESE",                 0x02},
   {0,           0}
 };
 
+static convert_t zSUBLANGROMANIAN[] = {
+  {"SUBLANG_ROMANIAN",                   0x01},
+  {"SUBLANG_ROMANIAN_MOLDAVIA",          0x02},
+  {0,           0}
+};
+
 static convert_t zSUBLANGRUSSIAN[] = {
   {"SUBLANG_RUSSIAN",                    0x01},
   {"SUBLANG_RUSSIAN_MOLDAVIA",           0x02},
+  {0,           0}
+};
+
+static convert_t zSUBLANGSERBIAN[] = {
+  {"SUBLANG_CROATIAN",                   0x01},
+  {"SUBLANG_SERBIAN_LATIN",              0x02},
+  {"SUBLANG_SERBIAN_CYRILLIC",           0x03},
   {0,           0}
 };
 
@@ -223,50 +298,49 @@ static convert_t zSUBLANGSPANISH[] = {
   {0,           0}
 };
 
-static convert_t zSUBLANG[] = {
-  {"SUBLANG_AZERI_LATIN",                0x01},
-  {"SUBLANG_AZERI_CYRILLIC",             0x02},
-  {"SUBLANG_DUTCH",                      0x01},
-  {"SUBLANG_DUTCH_BELGIAN",              0x02},
-  {"SUBLANG_KASHMIRI_SASIA",             0x02},
-  {"SUBLANG_KASHMIRI_INDIA",             0x02},
-  {"SUBLANG_KOREAN",                     0x01},
-  {"SUBLANG_LITHUANIAN",                 0x01},
-  {"SUBLANG_MALAY_MALAYSIA",             0x01},
-  {"SUBLANG_MALAY_BRUNEI_DARUSSALAM",    0x02},
-  {"SUBLANG_NEPALI_INDIA",               0x02},
-  {"SUBLANG_NORWEGIAN_BOKMAL",           0x01},
-  {"SUBLANG_NORWEGIAN_NYNORSK",          0x02},
-  {"SUBLANG_SERBIAN_LATIN",              0x02},
-  {"SUBLANG_SERBIAN_CYRILLIC",           0x03},
+static convert_t zSUBLANGSWEDISH[] = {
   {"SUBLANG_SWEDISH",                    0x01},
   {"SUBLANG_SWEDISH_FINLAND",            0x02},
+  {0,           0}
+};
+
+static convert_t zSUBLANGURDU[] = {
   {"SUBLANG_URDU_PAKISTAN",              0x01},
   {"SUBLANG_URDU_INDIA",                 0x02},
+  {0,           0}
+};
+
+static convert_t zSUBLANGUZBEK[] = {
   {"SUBLANG_UZBEK_LATIN",                0x01},
   {"SUBLANG_UZBEK_CYRILLIC",             0x02},
-  {"SUBLANG_DUTCH_SURINAM",              0x03},
-  {"SUBLANG_ROMANIAN",                   0x01},
-  {"SUBLANG_ROMANIAN_MOLDAVIA",          0x02},
-  {"SUBLANG_CROATIAN",                   0x01},
-  {"SUBLANG_LITHUANIAN_CLASSIC",         0x02},
-  {"SUBLANG_GAELIC",                     0x01},
-  {"SUBLANG_GAELIC_SCOTTISH",            0x02},
-  {"SUBLANG_GAELIC_MANX",                0x03},
-  {0,      0}
+  {0,           0}
 };
 
 static const char* get_SUBLANG(const uint64_t x, const uint64_t y) {
   switch (x) {
   case LANG_ARABIC:                return strpick(zSUBLANGARABIC, y);
+  case LANG_AZERI:                 return strpick(zSUBLANG_AZERI, y);
   case LANG_CHINESE:               return strpick(zSUBLANGCHINESE, y);
+  case LANG_DUTCH:                 return strpick(zSUBLANGDUTCH, y);
   case LANG_ENGLISH:               return strpick(zSUBLANGENGLISH, y);
   case LANG_FRENCH:                return strpick(zSUBLANGFRENCH, y);
+  case LANG_GAELIC:                return strpick(zSUBLANGGAELIC, y);
   case LANG_GERMAN:                return strpick(zSUBLANGGERMAN, y);
   case LANG_ITALIAN:               return strpick(zSUBLANGITALIAN, y);
+  case LANG_KOREAN:                return strpick(zSUBLANGKOREAN, y);
+  case LANG_LITHUANIAN:            return strpick(zSUBLANGLITHUANIAN, y);
+  case LANG_MALAY:                 return strpick(zSUBLANGMALAY, y);
+  case LANG_NEPALI:                return strpick(zSUBLANGNEPALI, y);
+  case LANG_NORWEGIAN:             return strpick(zSUBLANGNORWEGIAN, y);
   case LANG_PORTUGUESE:            return strpick(zSUBLANGPORTUGUESE, y);
+  case LANG_ROMANIAN:              return strpick(zSUBLANGROMANIAN, y);
   case LANG_RUSSIAN:               return strpick(zSUBLANGRUSSIAN, y);
+  case LANG_SERBIAN:               return strpick(zSUBLANGSERBIAN, y);
   case LANG_SPANISH:               return strpick(zSUBLANGSPANISH, y);
+  case LANG_SWEDISH:               return strpick(zSUBLANGSWEDISH, y);
+  case LANG_URDU:                  return strpick(zSUBLANGURDU, y);
+  case LANG_UZBEK:                 return strpick(zSUBLANGUZBEK, y);
+
   default:
     break;
   }
@@ -285,8 +359,8 @@ static const char* get_LANG(char *o, const size_t size, const uint16_t x, const 
 }
 
 static const char* get_LANGsz(const pushort_t szKey) {
-  uint16_t x = hex16(szKey[2] & 0x00ff, szKey[3] & 0x00ff);
-  uint16_t y = hex16(szKey[0] & 0x00ff, szKey[1] & 0x00ff);
+  uint16_t x = hex16(MODE_MASK8(szKey[2]), MODE_MASK8(szKey[3]));
+  uint16_t y = hex16(MODE_MASK8(szKey[0]), MODE_MASK8(szKey[1]));
 
   static char o[128];
   return get_LANG(o, sizeof(o), x, y);
