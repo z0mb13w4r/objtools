@@ -8,6 +8,8 @@ This suite of tools was inspired by a problem I encountered while comparing two 
 
 **enumerate-ng.py** is a script inspired by rebootuser’s LinEnum for enumeration and privilege escalation, and enhanced to be used with both devices and firmware images. This information is useful for hardening devices or for understanding how an adversary obtained persistence, privilege escalation, or lateral movement. [READ MORE...](https://github.com/z0mb13w4r/objtools/wiki/enumerate%E2%80%90ng)
 
+**detect-ng** is a tool for file and compiler identification supporting signature-based and heuristic analysis.
+
 **objcopy-ng** copies the contents of an object file to another using the GNU BFD Library to readand write the object files. It can write the destination object file in a format different from the source object files.
 
 **objdump-ng** displays information about one or more object files. This information is useful to malware researchers and binary analysis, as this utility is lightweight compared to many commercial applications (x86, ARM, AARCH64, MIPS and RISC-V). [READ MORE...](https://github.com/z0mb13w4r/objtools/wiki/objdump%E2%80%90ng)
