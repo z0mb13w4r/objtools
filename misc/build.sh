@@ -39,6 +39,7 @@ $RMBIN -v $EXTERNBIN/releaseI386/*.a
 $RMBIN -vrf $NAME/
 $RMBIN -v $NAME.deb
 
+$MAKEBIN -f detect-ng.mk all
 $MAKEBIN -f readpe-ng.mk all
 $MAKEBIN -f convert-ng.mk all
 $MAKEBIN -f objcopy-ng.mk all
@@ -52,6 +53,7 @@ $MKDIRBIN -v -p $USRBIN
 $MKDIRBIN -v -p $USRMAN
 $MKDIRBIN -v -p $DEBIANBIN
 
+$COPYBIN -v $EXTERNBIN/detect-ng $USRBIN/
 $COPYBIN -v $EXTERNBIN/readpe-ng $USRBIN/
 $COPYBIN -v $EXTERNBIN/convert-ng $USRBIN/
 #$COPYBIN -v $EXTERNBIN/objcopy-ng $USRBIN/
