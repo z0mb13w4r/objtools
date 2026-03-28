@@ -11,7 +11,7 @@
 
 static int usage(poptions_t o, const char* name, const args_t args[], const int ecode) {
   int n = 0;
-  n += usage_name(o, name, args, zDESCRIPTION);
+  n += usage_name(o, name, args, zDESCRIPTIONPE);
   n += usage_synopsis0(o, name, args);
   n += usage_synopsis2(o, name, zDISASSEMBLEARGS, zREADPEARGS2, zREADPEARGS3);
   n += printf_eol();

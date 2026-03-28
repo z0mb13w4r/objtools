@@ -5,6 +5,7 @@ const char zDESCRIPTIONDAT[] = "Swiss Army Knife for data manipulation.";
 
 const char *zALLSEE[] = {
   "convert-ng",
+  "detect-ng",
   "objcopy-ng",
   "objdump-ng",
   "objdwarf-ng",
