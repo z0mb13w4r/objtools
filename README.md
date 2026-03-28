@@ -42,6 +42,8 @@ https://github.com/ssdeep-project/ssdeep - GPL-2.0 license
 
 https://github.com/davea42/libdwarf-code - LGPL license
 
+https://github.com/packing-box/peid - GPL-3.0 license
+
 ### License ###
 
 objtools-ng is published under the MIT license.
