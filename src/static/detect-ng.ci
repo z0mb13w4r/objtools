@@ -1,0 +1,15 @@
+static const char *zPEDESCRIPTION[] = {
+  "displays information about one or more PE format object files. The options",
+  "control what particular information to display.",
+  "",
+  "pefile... are the object files to be examined. 32-bit and 64-bit PE files",
+  "are supported.",
+  0
+};
+
+static const args_t zDETECTARGS[] = {
+  {'h', "--help",            OPTPROGRAM_HELP,              NULL},
+  {'v', "--version",         OPTPROGRAM_VERSION,           NULL},
+  {0, NULL}
+};
+

@@ -18,6 +18,7 @@ all:
 	$(MAKE) -f objcopy-ng.mk DEBUG=$(DEBUG) CROSS=$(CROSS) PROFILE=$(PROFILE) all
 	$(MAKE) -f convert-ng.mk DEBUG=$(DEBUG) CROSS=$(CROSS) PROFILE=$(PROFILE) all
 	$(MAKE) -f readpe-ng.mk DEBUG=$(DEBUG) CROSS=$(CROSS) PROFILE=$(PROFILE) all
+	$(MAKE) -f detect-ng.mk DEBUG=$(DEBUG) CROSS=$(CROSS) PROFILE=$(PROFILE) all
 
 clean:
 	$(MAKE) -f objdwarf-ng.mk DEBUG=$(DEBUG) CROSS=$(CROSS) PROFILE=$(PROFILE) clean
@@ -27,6 +28,7 @@ clean:
 	$(MAKE) -f objcopy-ng.mk DEBUG=$(DEBUG) CROSS=$(CROSS) PROFILE=$(PROFILE) clean
 	$(MAKE) -f convert-ng.mk DEBUG=$(DEBUG) CROSS=$(CROSS) PROFILE=$(PROFILE) clean
 	$(MAKE) -f readpe-ng.mk DEBUG=$(DEBUG) CROSS=$(CROSS) PROFILE=$(PROFILE) clean
+	$(MAKE) -f detect-ng.mk DEBUG=$(DEBUG) CROSS=$(CROSS) PROFILE=$(PROFILE) clean
 
 cleanall:
 	$(MAKE) -f objtoollib.mk DEBUG=$(DEBUG) CROSS=$(CROSS) PROFILE=$(PROFILE) cleanall
@@ -37,4 +39,5 @@ cleanall:
 	$(MAKE) -f objcopy-ng.mk DEBUG=$(DEBUG) CROSS=$(CROSS) PROFILE=$(PROFILE) cleanall
 	$(MAKE) -f convert-ng.mk DEBUG=$(DEBUG) CROSS=$(CROSS) PROFILE=$(PROFILE) cleanall
 	$(MAKE) -f readpe-ng.mk DEBUG=$(DEBUG) CROSS=$(CROSS) PROFILE=$(PROFILE) cleanall
+	$(MAKE) -f detect-ng.mk DEBUG=$(DEBUG) CROSS=$(CROSS) PROFILE=$(PROFILE) cleanall
 
