@@ -60,6 +60,18 @@ uint64_t fgetu32(handle_t p);
 uint64_t fgetu64(handle_t p);
 uint64_t fgetuNN(handle_t p);
 
+int64_t fpeeks8(handle_t p);
+int64_t fpeeks16(handle_t p);
+int64_t fpeeks32(handle_t p);
+int64_t fpeeks64(handle_t p);
+int64_t fpeeksNN(handle_t p);
+
+uint64_t fpeeku8(handle_t p);
+uint64_t fpeeku16(handle_t p);
+uint64_t fpeeku32(handle_t p);
+uint64_t fpeeku64(handle_t p);
+uint64_t fpeekuNN(handle_t p);
+
 uint64_t fgetuleb128(handle_t p);
 
 handle_t fsetu8(handle_t p, const int8_t v);

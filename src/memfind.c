@@ -174,6 +174,74 @@ uint64_t fgetuNN(handle_t p) {
   return 0;
 }
 
+int64_t fpeeks8(handle_t p) {
+  unknown_t p0 = fpeekp(p, sizeof(int8_t));
+  return p0 ? endian_s8(fisbe(p), *CAST(int8_t*, p0)) : 0;
+}
+
+int64_t fpeeks16(handle_t p) {
+  unknown_t p0 = fpeekp(p, sizeof(int16_t));
+  return p0 ? endian_s16(fisbe(p), *CAST(int16_t*, p0)) : 0;
+}
+
+int64_t fpeeks32(handle_t p) {
+  unknown_t p0 = fpeekp(p, sizeof(int32_t));
+  return p0 ? endian_s32(fisbe(p), *CAST(int32_t*, p0)) : 0;
+}
+
+int64_t fpeeks64(handle_t p) {
+  unknown_t p0 = fgetp(p, sizeof(int64_t));
+  return p0 ? endian_s64(fisbe(p), *CAST(int64_t*, p0)) : 0;
+}
+
+int64_t fpeeksNN(handle_t p) {
+  if (isfind(p)) {
+    pfind_t p0 = CAST(pfind_t, p);
+    if (p0) {
+      if (MODE_ISANY(p0->role, MEMFIND_64BIT))       return fpeeks64(p);
+      else if (MODE_ISANY(p0->role, MEMFIND_32BIT))  return fpeeks32(p);
+
+      return fpeeks16(p);
+    }
+  }
+
+  return 0;
+}
+
+uint64_t fpeeku8(handle_t p) {
+  unknown_t p0 = fpeekp(p, sizeof(uint8_t));
+  return p0 ? endian_u8(fisbe(p), *CAST(uint8_t*, p0)) : 0;
+}
+
+uint64_t fpeeku16(handle_t p) {
+  unknown_t p0 = fpeekp(p, sizeof(uint16_t));
+  return p0 ? endian_u16(fisbe(p), *CAST(uint16_t*, p0)) : 0;
+}
+
+uint64_t fpeeku32(handle_t p) {
+  unknown_t p0 = fpeekp(p, sizeof(uint32_t));
+  return p0 ? endian_u32(fisbe(p), *CAST(uint32_t*, p0)) : 0;
+}
+
+uint64_t fpeeku64(handle_t p) {
+  unknown_t p0 = fpeekp(p, sizeof(uint64_t));
+  return p0 ? endian_u64(fisbe(p), *CAST(uint64_t*, p0)) : 0;
+}
+
+uint64_t fpeekuNN(handle_t p) {
+  if (isfind(p)) {
+    pfind_t p0 = CAST(pfind_t, p);
+    if (p0) {
+      if (MODE_ISANY(p0->role, MEMFIND_64BIT))       return fpeeku64(p);
+      else if (MODE_ISANY(p0->role, MEMFIND_32BIT))  return fpeeku32(p);
+
+      return fpeeku16(p);
+    }
+  }
+
+  return 0;
+}
+
 uint64_t fgetuleb128(handle_t p) {
   uint64_t n = 0;
 
