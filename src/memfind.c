@@ -267,8 +267,8 @@ char* fgetline(handle_t p) {
 
     char* p0 = fget(p);
     while ((c = fgets8(p)) && '\r' != c && '\n' != c);
-    if ('\r' == c) fsetu8(p, 0);
-    if ('\n' == c) fsetu8(p, 0);
+    if ('\r' == c) { fsetu8(p, 0);  c = fpeeks8(p); }
+    if ('\n' == c)   fsetu8(p, 0);
 
 //    while ('\r' == (c = fgets8(p)) && '\n' == c);
 
