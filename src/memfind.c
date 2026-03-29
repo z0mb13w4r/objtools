@@ -309,11 +309,7 @@ handle_t fsetu8byoffset(handle_t p, const uint64_t offset, const uint8_t v) {
     pfind_t p0 = CAST(pfind_t, p);
     if (p0) {
       p0->cpos = offset;
-
-      if (p0->item && p0->cpos <= p0->epos) {
-        CAST(puchar_t, p0->item)[p0->cpos++] = v;
-        return p;
-      }
+      return fsetu8(p, v);
     }
   }
 
@@ -325,15 +321,7 @@ handle_t fsetu16byoffset(handle_t p, const uint64_t offset, const uint16_t v) {
     pfind_t p0 = CAST(pfind_t, p);
     if (p0) {
       p0->cpos = offset;
-
-      if (p0->item && p0->cpos <= p0->epos) {
-        CAST(puchar_t, p0->item)[p0->cpos++] = MODE_GET0(v);
-      }
-
-      if (p0->item && p0->cpos <= p0->epos) {
-        CAST(puchar_t, p0->item)[p0->cpos++] = MODE_GET1(v);
-        return p;
-      }
+      return fsetu16(p, v);
     }
   }
 
@@ -345,23 +333,7 @@ handle_t fsetu32byoffset(handle_t p, const uint64_t offset, const uint32_t v) {
     pfind_t p0 = CAST(pfind_t, p);
     if (p0) {
       p0->cpos = offset;
-
-      if (p0->item && p0->cpos <= p0->epos) {
-        CAST(puchar_t, p0->item)[p0->cpos++] = MODE_GET0(v);
-      }
-
-      if (p0->item && p0->cpos <= p0->epos) {
-        CAST(puchar_t, p0->item)[p0->cpos++] = MODE_GET1(v);
-      }
-
-      if (p0->item && p0->cpos <= p0->epos) {
-        CAST(puchar_t, p0->item)[p0->cpos++] = MODE_GET2(v);
-      }
-
-      if (p0->item && p0->cpos <= p0->epos) {
-        CAST(puchar_t, p0->item)[p0->cpos++] = MODE_GET3(v);
-        return p;
-      }
+      return fsetu32(p, v);
     }
   }
 
@@ -373,39 +345,7 @@ handle_t fsetu64byoffset(handle_t p, const uint64_t offset, const uint64_t v) {
     pfind_t p0 = CAST(pfind_t, p);
     if (p0) {
       p0->cpos = offset;
-
-      if (p0->item && p0->cpos <= p0->epos) {
-        CAST(puchar_t, p0->item)[p0->cpos++] = MODE_GET0(v);
-      }
-
-      if (p0->item && p0->cpos <= p0->epos) {
-        CAST(puchar_t, p0->item)[p0->cpos++] = MODE_GET1(v);
-      }
-
-      if (p0->item && p0->cpos <= p0->epos) {
-        CAST(puchar_t, p0->item)[p0->cpos++] = MODE_GET2(v);
-      }
-
-      if (p0->item && p0->cpos <= p0->epos) {
-        CAST(puchar_t, p0->item)[p0->cpos++] = MODE_GET3(v);
-      }
-
-      if (p0->item && p0->cpos <= p0->epos) {
-        CAST(puchar_t, p0->item)[p0->cpos++] = MODE_GET4(v);
-      }
-
-      if (p0->item && p0->cpos <= p0->epos) {
-        CAST(puchar_t, p0->item)[p0->cpos++] = MODE_GET5(v);
-      }
-
-      if (p0->item && p0->cpos <= p0->epos) {
-        CAST(puchar_t, p0->item)[p0->cpos++] = MODE_GET6(v);
-      }
-
-      if (p0->item && p0->cpos <= p0->epos) {
-        CAST(puchar_t, p0->item)[p0->cpos++] = MODE_GET7(v);
-        return p;
-      }
+      return fsetu64(p, v);
     }
   }
 
