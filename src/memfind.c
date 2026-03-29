@@ -177,6 +177,22 @@ uint64_t fgetuleb128(handle_t p) {
   return n;
 }
 
+char* fgetline(handle_t p) {
+  if (isfind(p)) {
+    char c = 0;
+//    while ('\r' == (c = fgets8(p)) && '\n' == c);
+
+    char* p0 = fget(p);
+    while ((c = fgets8(p)) && '\r' != c && '\n' != c);
+
+//    while ('\r' == (c = fgets8(p)) && '\n' == c);
+
+    return p0;
+  }
+
+  return NULL;
+}
+
 char* fgetstring(handle_t p) {
   if (isfind(p)) {
     char* p0 = fget(p);
@@ -188,7 +204,107 @@ char* fgetstring(handle_t p) {
   return NULL;
 }
 
-handle_t fsetu8byoffset(handle_t p, const uint64_t offset, const int8_t v) {
+handle_t fsetu8(handle_t p, const int8_t v) {
+  if (isfind(p)) {
+    pfind_t p0 = CAST(pfind_t, p);
+    if (p0) {
+      if (p0->item && p0->cpos <= p0->epos) {
+        CAST(puchar_t, p0->item)[p0->cpos++] = v;
+        return p;
+      }
+    }
+  }
+
+  return NULL;
+}
+
+handle_t fsetu16(handle_t p, const uint16_t v) {
+  if (isfind(p)) {
+    pfind_t p0 = CAST(pfind_t, p);
+    if (p0) {
+      if (p0->item && p0->cpos <= p0->epos) {
+        CAST(puchar_t, p0->item)[p0->cpos++] = MODE_GET0(v);
+      }
+
+      if (p0->item && p0->cpos <= p0->epos) {
+        CAST(puchar_t, p0->item)[p0->cpos++] = MODE_GET1(v);
+        return p;
+      }
+    }
+  }
+
+  return NULL;
+}
+
+handle_t fsetu32(handle_t p, const uint32_t v) {
+  if (isfind(p)) {
+    pfind_t p0 = CAST(pfind_t, p);
+    if (p0) {
+      if (p0->item && p0->cpos <= p0->epos) {
+        CAST(puchar_t, p0->item)[p0->cpos++] = MODE_GET0(v);
+      }
+
+      if (p0->item && p0->cpos <= p0->epos) {
+        CAST(puchar_t, p0->item)[p0->cpos++] = MODE_GET1(v);
+      }
+
+      if (p0->item && p0->cpos <= p0->epos) {
+        CAST(puchar_t, p0->item)[p0->cpos++] = MODE_GET2(v);
+      }
+
+      if (p0->item && p0->cpos <= p0->epos) {
+        CAST(puchar_t, p0->item)[p0->cpos++] = MODE_GET3(v);
+        return p;
+      }
+    }
+  }
+
+  return NULL;
+}
+
+handle_t fsetu64(handle_t p, const uint64_t v) {
+  if (isfind(p)) {
+    pfind_t p0 = CAST(pfind_t, p);
+    if (p0) {
+      if (p0->item && p0->cpos <= p0->epos) {
+        CAST(puchar_t, p0->item)[p0->cpos++] = MODE_GET0(v);
+      }
+
+      if (p0->item && p0->cpos <= p0->epos) {
+        CAST(puchar_t, p0->item)[p0->cpos++] = MODE_GET1(v);
+      }
+
+      if (p0->item && p0->cpos <= p0->epos) {
+        CAST(puchar_t, p0->item)[p0->cpos++] = MODE_GET2(v);
+      }
+
+      if (p0->item && p0->cpos <= p0->epos) {
+        CAST(puchar_t, p0->item)[p0->cpos++] = MODE_GET3(v);
+      }
+
+      if (p0->item && p0->cpos <= p0->epos) {
+        CAST(puchar_t, p0->item)[p0->cpos++] = MODE_GET4(v);
+      }
+
+      if (p0->item && p0->cpos <= p0->epos) {
+        CAST(puchar_t, p0->item)[p0->cpos++] = MODE_GET5(v);
+      }
+
+      if (p0->item && p0->cpos <= p0->epos) {
+        CAST(puchar_t, p0->item)[p0->cpos++] = MODE_GET6(v);
+      }
+
+      if (p0->item && p0->cpos <= p0->epos) {
+        CAST(puchar_t, p0->item)[p0->cpos++] = MODE_GET7(v);
+        return p;
+      }
+    }
+  }
+
+  return NULL;
+}
+
+handle_t fsetu8byoffset(handle_t p, const uint64_t offset, const uint8_t v) {
   if (isfind(p)) {
     pfind_t p0 = CAST(pfind_t, p);
     if (p0) {
@@ -204,7 +320,7 @@ handle_t fsetu8byoffset(handle_t p, const uint64_t offset, const int8_t v) {
   return NULL;
 }
 
-handle_t fsetu16byoffset(handle_t p, const uint64_t offset, const int16_t v) {
+handle_t fsetu16byoffset(handle_t p, const uint64_t offset, const uint16_t v) {
   if (isfind(p)) {
     pfind_t p0 = CAST(pfind_t, p);
     if (p0) {
@@ -224,7 +340,7 @@ handle_t fsetu16byoffset(handle_t p, const uint64_t offset, const int16_t v) {
   return NULL;
 }
 
-handle_t fsetu32byoffset(handle_t p, const uint64_t offset, const int32_t v) {
+handle_t fsetu32byoffset(handle_t p, const uint64_t offset, const uint32_t v) {
   if (isfind(p)) {
     pfind_t p0 = CAST(pfind_t, p);
     if (p0) {
@@ -252,7 +368,7 @@ handle_t fsetu32byoffset(handle_t p, const uint64_t offset, const int32_t v) {
   return NULL;
 }
 
-handle_t fsetu64byoffset(handle_t p, const uint64_t offset, const int64_t v) {
+handle_t fsetu64byoffset(handle_t p, const uint64_t offset, const uint64_t v) {
   if (isfind(p)) {
     pfind_t p0 = CAST(pfind_t, p);
     if (p0) {

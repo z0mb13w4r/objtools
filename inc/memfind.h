@@ -60,11 +60,17 @@ uint64_t fgetuNN(handle_t p);
 
 uint64_t fgetuleb128(handle_t p);
 
-handle_t fsetu8byoffset(handle_t p, const uint64_t offset, const int8_t v);
-handle_t fsetu16byoffset(handle_t p, const uint64_t offset, const int16_t v);
-handle_t fsetu32byoffset(handle_t p, const uint64_t offset, const int32_t v);
-handle_t fsetu64byoffset(handle_t p, const uint64_t offset, const int64_t v);
+handle_t fsetu8(handle_t p, const int8_t v);
+handle_t fsetu16(handle_t p, const uint16_t v);
+handle_t fsetu32(handle_t p, const uint32_t v);
+handle_t fsetu64(handle_t p, const uint64_t v);
 
+handle_t fsetu8byoffset(handle_t p, const uint64_t offset, const uint8_t v);
+handle_t fsetu16byoffset(handle_t p, const uint64_t offset, const uint16_t v);
+handle_t fsetu32byoffset(handle_t p, const uint64_t offset, const uint32_t v);
+handle_t fsetu64byoffset(handle_t p, const uint64_t offset, const uint64_t v);
+
+char* fgetline(handle_t p);
 char* fgetstring(handle_t p);
 
 #endif
