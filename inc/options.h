@@ -333,6 +333,10 @@ typedef struct options_s {
     char outname[PATH_MAX];
     char inpname1[PATH_MAX];
   };
+  union {
+    char outname0[PATH_MAX];
+    char logname[PATH_MAX];
+  };
   char prgname[256];
 
   uint64_t  saddress; /* --start-address */
