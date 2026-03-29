@@ -2479,8 +2479,7 @@ static int dump_dwarf64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr)
 
 int readelf(const pbuffer_t p, const poptions_t o) {
   if (isELF(p)) {
-    dump_summary(p, o);
-
+    if (MODE_ISNOT(o->action, OPTREADELF_FILEHEADER))           dump_summary(p, o);
     if (MODE_ISANY(o->action, OPTREADELF_FILEHEADER))           dump_elfheader(p, o);
 
     if (isELF32(p)) {
