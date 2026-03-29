@@ -42,8 +42,10 @@ static int get_options_detect(poptions_t o, int argc, char** argv, char* name) {
         return odeath(o, THIS_NAME, argv[i] + 1);
       }
       o->action |= action;
-    } else if (0 == o->inpname[0]) {
-      xstrncpy(o->inpname, argv[i], NELEMENTS(o->inpname));
+    } else if (0 == o->inpname0[0]) {
+      xstrncpy(o->inpname0, argv[i], NELEMENTS(o->inpname0));
+    } else if (0 == o->inpname1[0]) {
+      xstrncpy(o->inpname1, argv[i], NELEMENTS(o->inpname1));
     } else {
       return odeath(o, THIS_NAME, argv[i]);
     }
@@ -65,16 +67,16 @@ int main(int argc, char* argv[]) {
   poptions_t o = omalloc();
   if (o) {
     x = get_options_detect(o, argc - 1, argv + 1, argv[0]);
-    if (ECODE_ISOK(x) && o->inpname[0]) {
-      pbuffer_t p = bopen(o->inpname);
+    if (ECODE_ISOK(x) && o->inpname0[0]) {
+      pbuffer_t p = bopen(o->inpname0);
       if (p) {
         if (isPE(p)) {
           x = detect(p, o);
         } else {
-          printf_e("'%s': invalid file format.", o->inpname);
+          printf_e("'%s': invalid file format.", o->inpname0);
         }
       } else {
-        printf_e("'%s': no such file.", o->inpname);
+        printf_e("'%s': no such file.", o->inpname0);
       }
 
       bfree(p);
