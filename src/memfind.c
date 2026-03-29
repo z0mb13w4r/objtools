@@ -91,6 +91,21 @@ unknown_t fgetp(handle_t p, const size_t chunksize) {
   return NULL;
 }
 
+unknown_t fpeekp(handle_t p, const size_t chunksize) {
+  unknown_t p0 = fget(p);
+  if (p0) {
+    pfind_t p1 = CAST(pfind_t, p);
+    if (p1) {
+      if ((p1->cpos + chunksize) <= p1->epos) return p0;
+      else p1->item = NULL;
+
+      if ((p1->cpos + chunksize) == (p1->epos + 1)) return p0;
+    }
+  }
+
+  return NULL;
+}
+
 int64_t fgets8(handle_t p) {
   unknown_t p0 = fgetp(p, sizeof(int8_t));
   return p0 ? endian_s8(fisbe(p), *CAST(int8_t*, p0)) : 0;
@@ -184,6 +199,8 @@ char* fgetline(handle_t p) {
 
     char* p0 = fget(p);
     while ((c = fgets8(p)) && '\r' != c && '\n' != c);
+    if ('\r' == c) fsetu8(p, 0);
+    if ('\n' == c) fsetu8(p, 0);
 
 //    while ('\r' == (c = fgets8(p)) && '\n' == c);
 
