@@ -262,17 +262,17 @@ uint64_t fgetuleb128(handle_t p) {
 
 char* fgetline(handle_t p) {
   if (isfind(p)) {
-    char c = 0;
-//    while ('\r' == (c = fgets8(p)) && '\n' == c);
+    pfind_t p0 = CAST(pfind_t, p);
+    if (p0) {
+      char c = 0;
+      char* p1 = fget(p);
 
-    char* p0 = fget(p);
-    while ((c = fgets8(p)) && '\r' != c && '\n' != c);
-    if ('\r' == c) { fsetu8(p, 0);  c = fpeeks8(p); }
-    if ('\n' == c)   fsetu8(p, 0);
+      while ((c = fgets8(p)) && '\r' != c && '\n' != c);
+      if ('\r' == c || '\n' == c) fsetu8byoffset(p, p0->cpos - 1, 0);
+      if ('\r' == c)              fsetu8(p, 0);
 
-//    while ('\r' == (c = fgets8(p)) && '\n' == c);
-
-    return p0;
+      return p1;
+    }
   }
 
   return NULL;
