@@ -14,15 +14,15 @@ int data_create(const pbuffer_t p, const poptions_t o) {
     handle_t f = fcalloc(p1->data, p1->size, MEMFIND_NOCHUNKSIZE);
     if (f) {
       regex_t preg1;
-      if (regcomp(&preg1, "\\[\\(.*\\)\\]", REG_NEWLINE)) // REG_EXTENDED
+      if (regcomp(&preg1, "\\[(.*)\\]", REG_EXTENDED))
         exit(EXIT_FAILURE);
 
       regex_t preg2;
-      if (regcomp(&preg2, "signature = \\(\\([0-9A-F?]\\{2\\} \\?\\)\\+\\)", REG_NEWLINE)) // REG_EXTENDED
+      if (regcomp(&preg2, "signature = (([0-9A-F?]{2} ?)+)", REG_EXTENDED))
         exit(EXIT_FAILURE);
 
       regex_t preg3;
-      if (regcomp(&preg3, "ep_only = \\(false\\|true\\)", REG_NEWLINE)) // REG_EXTENDED
+      if (regcomp(&preg3, "ep_only = (false|true)", REG_EXTENDED))
         exit(EXIT_FAILURE);
 
       printf_i("create: %s", o->inpname1);
