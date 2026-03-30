@@ -6,11 +6,11 @@
 #define MODE_BUFFER             (MODE_PUT0('B') | MODE_PUT1('U') | MODE_PUT2('F'))
 
 typedef struct buffer_s {
-  smode_t  mode;
-  char     note[256];
+  smode_t   mode;
+  char      note[256];
 
-  size_t   size;
-  void    *data;
+  size_t    size;
+  unknown_t data;
 
 } buffer_t, *pbuffer_t;
 
