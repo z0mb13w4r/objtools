@@ -24,21 +24,18 @@ int data_create(const pbuffer_t p, const poptions_t o) {
         if (p2 && *p2) {
           int x1 = regex_match(r1, p2);
           if (x1) {
-printf("$NAME$ \"%.*s\" is found at position %d to %d (%ld).\n",
-            (int)regex_getsize(r1, 1), p2 + regex_getso(r1, 1),
-            regex_getso(r1, 1), regex_geteo(r1, 1) - 1, regex_getsize(r1, 1));
+printf("$NAME$ \"%s\" is found at position %d to %d (%ld).\n",
+            regex_getvalue(r1, 1), regex_getso(r1, 1), regex_geteo(r1, 1) - 1, regex_getsize(r1, 1));
           } else {
             int x2 = regex_match(r2, p2);
             if (x2) {
-printf("$SIGNATURE$ \"%.*s\" is found at position %d to %d (%ld).\n",
-              (int)regex_getsize(r2, 1), p2 + regex_getso(r2, 1),
-              regex_getso(r2, 1), regex_geteo(r2, 1) - 1, regex_getsize(r2, 1));
+printf("$SIGNATURE$ \"%s\" is found at position %d to %d (%ld).\n",
+              regex_getvalue(r2, 1), regex_getso(r2, 1), regex_geteo(r2, 1) - 1, regex_getsize(r2, 1));
             } else {
               int x3 = regex_match(r3, p2);
               if (x3) {
-printf("$FLAG$ \"%.*s\" is found at position %d to %d (%ld).\n",
-                (int)regex_getsize(r3, 1), p2 + regex_getso(r3, 1),
-                regex_getso(r3, 1), regex_geteo(r3, 1) - 1, regex_getsize(r3, 1));
+printf("$FLAG$ \"%s\" is found at position %d to %d (%ld).\n",
+                regex_getvalue(r3, 1), regex_getso(r3, 1), regex_geteo(r3, 1) - 1, regex_getsize(r3, 1));
               }
             }
           }

@@ -1,8 +1,6 @@
 #include "memuse.h"
 #include "objregex.h"
 
-#define REGEXGROUP_MAXSIZE           (10)
-
 bool_t isregex(handle_t p) {
   return ismode(p, MODE_REGEX);
 }
@@ -32,6 +30,10 @@ handle_t rfree(handle_t p) {
       regfree(p0->data);
     }
 
+    for (size_t i = 0; i < REGEXGROUP_MAXSIZE; ++i) {
+      xfree(p0->values[i]);
+    }
+
     xfree(p0->groups);
     xfree(p0->match);
     xfree(p0->data);
@@ -47,6 +49,12 @@ bool_t regex_match(handle_t p, const char *match) {
     pre_t p0 = CAST(pre_t, p);
     if (p0->data && p0->groups) {
       xfree(p0->match);
+
+      for (size_t i = 0; i < REGEXGROUP_MAXSIZE; ++i) {
+        xfree(p0->values[i]);
+        p0->values[i] = NULL;
+      }
+
       p0->match = xstrdup(match);
       return 0 == regexec(p0->data, p0->match, REGEXGROUP_MAXSIZE, p0->groups, 0);
     }
@@ -89,12 +97,16 @@ size_t regex_getsize(handle_t p, const int index) {
   return 0;
 }
 
-const char* regex_getname(handle_t p, const int index) {
+const char* regex_getvalue(handle_t p, const int index) {
   if (isregex(p)) {
     pre_t p0 = CAST(pre_t, p);
     if (p0->groups && 0 <= index && index <= REGEXGROUP_MAXSIZE) {
       regmatch_t *p1 = CAST(regmatch_t *, p0->groups) + index;
-      return xstrndup(CAST(const char*, p0->match) + p1->rm_so, p1->rm_eo - p1->rm_so);
+      if (NULL == p0->values[index] && -1 != p1->rm_so) {
+        p0->values[index] = xstrndup(CAST(const char*, p0->match) + p1->rm_so, p1->rm_eo - p1->rm_so);
+      }
+
+      return p0->values[index];
     }
   }
 
