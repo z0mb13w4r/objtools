@@ -52,3 +52,37 @@ bool_t regex_match(handle_t p, const char *match) {
   return FALSE;
 }
 
+int regex_getso(handle_t p, const int index) {
+  if (isregex(p)) {
+    pre_t p0 = CAST(pre_t, p);
+    if (p0->groups && 0 <= index && index <= REGEXGROUP_MAXSIZE) {
+      return CAST(regmatch_t *, p0->groups)[index].rm_so;
+    }
+  }
+
+  return -1;
+}
+
+int regex_geteo(handle_t p, const int index) {
+  if (isregex(p)) {
+    pre_t p0 = CAST(pre_t, p);
+    if (p0->groups && 0 <= index && index <= REGEXGROUP_MAXSIZE) {
+      return CAST(regmatch_t *, p0->groups)[index].rm_eo;
+    }
+  }
+
+  return -1;
+}
+
+size_t regex_getsize(handle_t p, const int index) {
+  if (isregex(p)) {
+    pre_t p0 = CAST(pre_t, p);
+    if (p0->groups && 0 <= index && index <= REGEXGROUP_MAXSIZE) {
+      regmatch_t *p1 = CAST(regmatch_t *, p0->groups) + index;
+      return p1->rm_eo - p1->rm_so;
+    }
+  }
+
+  return 0;
+}
+
