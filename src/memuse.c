@@ -157,12 +157,12 @@ char *xstrncpy(char *dst, const char *src, size_t count) {
 }
 
 char* xstrdup(const char *str) {
-  return str ? xstrndup(str, xstrlen(str) + 1) : NULL;
+  return str ? xstrndup(str, xstrlen(str)) : NULL;
 }
 
 char* xstrndup(const char *str, size_t size) {
   if (str && size) {
-    char*  p = xmalloc(size, MODE_HEAP);
+    char*  p = xmalloc(size + 1, MODE_HEAP);
     return xstrncpy(p, str, size);
   }
 

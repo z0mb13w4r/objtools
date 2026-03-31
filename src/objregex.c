@@ -33,6 +33,7 @@ handle_t rfree(handle_t p) {
     }
 
     xfree(p0->groups);
+    xfree(p0->match);
     xfree(p0->data);
     xfree(p0);
     return NULL;
@@ -45,7 +46,9 @@ bool_t regex_match(handle_t p, const char *match) {
   if (isregex(p)) {
     pre_t p0 = CAST(pre_t, p);
     if (p0->data && p0->groups) {
-      return 0 == regexec(p0->data, match, REGEXGROUP_MAXSIZE, p0->groups, 0);
+      xfree(p0->match);
+      p0->match = xstrdup(match);
+      return 0 == regexec(p0->data, p0->match, REGEXGROUP_MAXSIZE, p0->groups, 0);
     }
   }
 
@@ -84,5 +87,17 @@ size_t regex_getsize(handle_t p, const int index) {
   }
 
   return 0;
+}
+
+const char* regex_getname(handle_t p, const int index) {
+  if (isregex(p)) {
+    pre_t p0 = CAST(pre_t, p);
+    if (p0->groups && 0 <= index && index <= REGEXGROUP_MAXSIZE) {
+      regmatch_t *p1 = CAST(regmatch_t *, p0->groups) + index;
+      return xstrndup(CAST(const char*, p0->match) + p1->rm_so, p1->rm_eo - p1->rm_so);
+    }
+  }
+
+  return NULL;
 }
 
