@@ -54,6 +54,7 @@ SRCS_C = \
 	options.c \
 	readelf.c \
 	scripts.c \
+	objregex.c \
 	objutils.c \
 	opcode-bfd.c \
 	opcode-elf.c \
