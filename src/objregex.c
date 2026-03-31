@@ -13,7 +13,7 @@ handle_t rmalloc(const char *pattern) {
     p0->data = xmalloc(sizeof(regex_t), MODE_HEAP);
     p0->groups = xmalloc(REGEXGROUP_MAXSIZE * sizeof(regmatch_t), MODE_HEAP);
 
-    if (regcomp(p0->data, pattern, REG_EXTENDED)) {
+    if (0 == regcomp(p0->data, pattern, REG_EXTENDED)) {
       return setmode(p0, MODE_REGEX);
     }
 
@@ -45,7 +45,7 @@ bool_t regex_match(handle_t p, const char *match) {
   if (isregex(p)) {
     pre_t p0 = CAST(pre_t, p);
     if (p0->data && p0->groups) {
-      return !regexec(p0->data, match, REGEXGROUP_MAXSIZE, p0->groups, 0);
+      return 0 == regexec(p0->data, match, REGEXGROUP_MAXSIZE, p0->groups, 0);
     }
   }
 
