@@ -68,13 +68,12 @@ handle_t setmode(handle_t p, const nmode_t mode) {
 }
 
 unknown_t cmalloc(const unknown_t p, const size_t size, const nmode_t mode) {
+  unknown_t p0 = xmalloc(size, mode);
   if (p) {
-    unknown_t p0 = xmalloc(size, mode);
     xmemcpy(p0, p, size);
-    return p0;
   }
 
-  return NULL;
+  return p0;
 }
 
 unknown_t xmalloc(const size_t size, const nmode_t mode) {

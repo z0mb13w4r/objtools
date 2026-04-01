@@ -389,10 +389,10 @@ handle_t fsetu64(handle_t p, const uint64_t v) {
   return NULL;
 }
 
-handle_t fsetchunk(handle_t p,  const nmode_t mode, const size_t size) {
+handle_t fsetchunk(handle_t p, const nmode_t mode, const size_t size) {
   if (isfind(p)) {
     p = fsetu32(p, mode);
-    p = fsetu32(p, mode);
+    p = fsetu32(p, size);
 
     return p;
   }
@@ -615,5 +615,23 @@ handle_t ffree(handle_t p) {
   }
 
   return p;
+}
+
+size_t fset(handle_t p, const char* name) {
+  if (isfind(p)) {
+    return xset(fget(p), fgetsize(p), name);
+  }
+
+  return 0;
+}
+
+handle_t fshrink(handle_t p) {
+  if (isfind(p)) {
+    pfind_t p0 = CAST(pfind_t, p);
+    p0->epos = p0->cpos;
+    p0->cpos = 0;
+  }
+
+  return NULL;
 }
 
