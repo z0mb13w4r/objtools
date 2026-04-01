@@ -8,19 +8,19 @@
 #include "objregex.h"
 
 int data_create(const pbuffer_t p, const poptions_t o) {
-  pbuffer_t p1 = bopen(o->inpname1);
-  if (p1) {
+  pbuffer_t inp1 = bopen(o->inpname1);
+  if (inp1) {
     printf_i("opened: %s", o->inpname1);
 
-    handle_t f = fcalloc(p1->data, p1->size, MEMFIND_NOCHUNKSIZE);
-    if (f) {
+    handle_t inp2 = fcalloc(inp1->data, inp1->size, MEMFIND_NOCHUNKSIZE);
+    if (inp2) {
       pre_t r1 = rmalloc("\\[(.*)\\]");
       pre_t r2 = rmalloc("signature = (([0-9A-F?]{2} ?)+)");
       pre_t r3 = rmalloc("ep_only = (false|true)");
 
       printf_i("create: %s", o->inpname1);
-      while (!fiseof(f)) {
-        char *p2 = fgetline(f);
+      while (!fiseof(inp2)) {
+        char *p2 = fgetline(inp2);
         if (p2 && *p2) {
           int x1 = regex_match(r1, p2);
           if (x1) {
@@ -46,14 +46,13 @@ printf("$FLAG$ \"%s\" is found at position %d to %d (%ld).\n",
       rfree(r2);
       rfree(r1);
 
-      ffree(f);
+      ffree(inp2);
     }
 
+    bfree(inp1);
   } else {
     printf_e("'%s': no such file.", o->inpname1);
   }
-
-  bfree(p1);
 
   return 0;
 }
