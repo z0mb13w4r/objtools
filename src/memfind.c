@@ -389,6 +389,17 @@ handle_t fsetu64(handle_t p, const uint64_t v) {
   return NULL;
 }
 
+handle_t fsetchunk(handle_t p,  const nmode_t mode, const size_t size) {
+  if (isfind(p)) {
+    p = fsetu32(p, mode);
+    p = fsetu32(p, mode);
+
+    return p;
+  }
+
+  return NULL;
+}
+
 handle_t fsetu8byoffset(handle_t p, const uint64_t offset, const uint8_t v) {
   if (isfind(p)) {
     pfind_t p0 = CAST(pfind_t, p);

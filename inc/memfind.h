@@ -78,6 +78,7 @@ handle_t fsetu8(handle_t p, const int8_t v);
 handle_t fsetu16(handle_t p, const uint16_t v);
 handle_t fsetu32(handle_t p, const uint32_t v);
 handle_t fsetu64(handle_t p, const uint64_t v);
+handle_t fsetchunk(handle_t p,  const nmode_t mode, const size_t size);
 
 handle_t fsetu8byoffset(handle_t p, const uint64_t offset, const uint8_t v);
 handle_t fsetu16byoffset(handle_t p, const uint64_t offset, const uint16_t v);
