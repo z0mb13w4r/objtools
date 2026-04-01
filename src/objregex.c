@@ -97,6 +97,10 @@ size_t regex_getsize(handle_t p, const int index) {
   return 0;
 }
 
+bool_t regex_isvalue(handle_t p, const int index) {
+  return -1 != regex_getso(p, index);
+}
+
 const char* regex_getvalue(handle_t p, const int index) {
   if (isregex(p)) {
     pre_t p0 = CAST(pre_t, p);
