@@ -516,7 +516,7 @@ handle_t fcalloc(unknown_t p, const size_t size, const size_t chunksize) {
       p0->cpos += size;
       return p1;
     }
-  } else if (p) {
+  } else if (size) {
     pfind_t p0 = xmalloc(sizeof(find_t), MODE_HEAP);
     if (p0) {
       p0->cpos = 0;

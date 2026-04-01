@@ -13,7 +13,8 @@ int data_create(const pbuffer_t p, const poptions_t o) {
     printf_i("opened: %s", o->inpname1);
 
     handle_t inp2 = fcalloc(inp1->data, inp1->size, MEMFIND_NOCHUNKSIZE);
-    if (inp2) {
+    handle_t out2 = fcalloc(NULL, inp1->size, MEMFIND_NOCHUNKSIZE);
+    if (inp2 && out2) {
       pre_t r1 = rmalloc("\\[(.*)\\]");
       pre_t r2 = rmalloc("signature = (([0-9A-F?]{2} ?)+)");
       pre_t r3 = rmalloc("ep_only = (false|true)");
@@ -45,9 +46,10 @@ printf("$FLAG$ \"%s\" is found at position %d to %d (%ld).\n",
       rfree(r3);
       rfree(r2);
       rfree(r1);
-
-      ffree(inp2);
     }
+
+    ffree(inp2);
+    ffree(out2);
 
     bfree(inp1);
   } else {
