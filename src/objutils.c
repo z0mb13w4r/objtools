@@ -209,6 +209,28 @@ bool_t ishexb(unknown_t p, const size_t size) {
   return FALSE;
 }
 
+bool_t isspecial8(int x) {
+  return '!' == x || '#' == x || '$' == x || '&' == x ||
+         '*' == x || '+' == x || '-' == x || '.' == x ||
+         ':' == x || ';' == x || '=' == x || '?' == x ||
+         '@' == x || '^' == x || '_' == x || '|' == x ||
+         '~' == x;
+}
+
+bool_t isspecialb(unknown_t p, const size_t size) {
+  if (p && 0 != size) {
+    puchar_t p0 = CAST(puchar_t, p);
+    for (size_t i = 0; i < size; ++i) {
+      if (!isspecial8(p0[i])) return FALSE;
+    }
+
+    return TRUE;
+  }
+
+  return FALSE;
+}
+
+
 int64_t bin8(int x) {
   return '0' <= x && x <= '1' ? x - '0' : 0;
 }

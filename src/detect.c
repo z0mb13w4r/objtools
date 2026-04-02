@@ -49,8 +49,12 @@ printf("$SIGNATURE$ \"%s\" is found at position %d to %d (%ld).\n",
               regex_getvalue(r2, 1), regex_getso(r2, 1), regex_geteo(r2, 1) - 1, regex_getsize(r2, 1));
 
                 freset(out1);
+                const char* c = regex_getvalue(r2, 1);
                 for (size_t i = 0; i <= regex_getsize(r2, 1); ++i) {
-                  fsetu8(out1, regex_getvalue(r2, 1)[i]);
+                  const int ch = c[i];
+                  if (ishex8(ch) || isspecial8(ch)) {
+                    fsetu8(out1, ch);
+                  }
                 }
                 fsetu8(out1, 0);
 

@@ -39,6 +39,9 @@ bool_t isdecb(unknown_t p, const size_t size);
 bool_t ishex8(int x);
 bool_t ishexb(unknown_t p, const size_t size);
 
+bool_t isspecial8(int x);
+bool_t isspecialb(unknown_t p, const size_t size);
+
 bool_t isbool(const char* p, const size_t size);
 
 uint64_t ulog2(uint64_t  x);
