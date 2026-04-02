@@ -10,6 +10,9 @@ static const char *zPEDESCRIPTION[] = {
 static const args_t zDETECTARGS[] = {
   {'h', "--help",            OPTPROGRAM_HELP,              NULL},
   {'v', "--version",         OPTPROGRAM_VERSION,           NULL},
+  {'V', "--verbose",         OPTPROGRAM_VERBOSE,           NULL},
+  {'c', "--create",          OPTDETECT_CREATE,             NULL},
+
   {0, NULL}
 };
 

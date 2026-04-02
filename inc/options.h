@@ -201,6 +201,8 @@
 #define OPTOBJHASH_HASHES              (OPTOBJHASH_MD5 | OPTOBJHASH_SHA1 | OPTOBJHASH_SHA256 | OPTOBJHASH_SHA512 \
                                            | OPTOBJHASH_SSDEEP)
 
+#define OPTDETECT_CREATE                           U64MASK(0)
+
 #define OPTUSE_SIZE                                U64MASK(60)
 #define OPTUSE_ADDRESS                             U64MASK(61)
 #define OPTUSE_SECTION                             U64MASK(62)

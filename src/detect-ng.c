@@ -53,11 +53,11 @@ static int get_options_detect(poptions_t o, int argc, char** argv, char* name) {
     }
   }
 
-  if (o->action & OPTPROGRAM_VERSION) {
+  if (MODE_ISANY(o->action, OPTPROGRAM_VERSION)) {
     return version0(o, THIS_NAME, zDETECTARGS);
   }
 
-  if (o->action & OPTPROGRAM_HELP) {
+  if (MODE_ISANY(o->action, OPTPROGRAM_HELP)) {
     return usage(o, THIS_NAME, zDETECTARGS, ECODE_OK);
   }
 
@@ -74,6 +74,8 @@ int main(int argc, char* argv[]) {
       if (p) {
         if (isPE(p)) {
           x = detect(p, o);
+        } else if (MODE_ISANY(o->action, OPTDETECT_CREATE)) {
+          x = detect_create(p, o);
         } else {
           printf_e("'%s': invalid file format.", o->inpname0);
         }
