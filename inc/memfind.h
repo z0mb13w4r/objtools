@@ -40,6 +40,8 @@ unknown_t fupdate(handle_t p, const size_t cpos, const size_t chunksize);
 unknown_t fpeekp(handle_t p, const size_t chunksize);
 
 handle_t freset(handle_t p);
+handle_t fshrink(handle_t p);
+
 handle_t fnext(handle_t p);
 handle_t fstep(handle_t p, const size_t chunksize);
 handle_t fcalloc(unknown_t p, const size_t size, const size_t chunksize);
@@ -74,7 +76,7 @@ uint64_t fpeekuNN(handle_t p);
 
 uint64_t fgetuleb128(handle_t p);
 
-handle_t fsetu8(handle_t p, const int8_t v);
+handle_t fsetu8(handle_t p, const uint8_t v);
 handle_t fsetu16(handle_t p, const uint16_t v);
 handle_t fsetu32(handle_t p, const uint32_t v);
 handle_t fsetu64(handle_t p, const uint64_t v);
@@ -91,8 +93,6 @@ char* fgetline(handle_t p);
 char* fgetstring(handle_t p);
 
 size_t fset(handle_t p, const char* name);
-
-handle_t fshrink(handle_t p);
 
 #endif
 

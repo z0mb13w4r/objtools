@@ -301,7 +301,7 @@ char* fgetstring(handle_t p) {
   return NULL;
 }
 
-handle_t fsetu8(handle_t p, const int8_t v) {
+handle_t fsetu8(handle_t p, const uint8_t v) {
   if (isfind(p)) {
     pfind_t p0 = CAST(pfind_t, p);
     if (p0) {
@@ -494,10 +494,21 @@ handle_t freset(handle_t p) {
   if (isfind(p)) {
     pfind_t p0 = CAST(pfind_t, p);
     if (p0) {
+      p0->epos = p0->size - 1;
       p0->cpos = 0;
     }
 
     return p0;
+  }
+
+  return NULL;
+}
+
+handle_t fshrink(handle_t p) {
+  if (isfind(p)) {
+    pfind_t p0 = CAST(pfind_t, p);
+    p0->epos = p0->cpos;
+    p0->cpos = 0;
   }
 
   return NULL;
@@ -635,15 +646,5 @@ size_t fset(handle_t p, const char* name) {
   }
 
   return 0;
-}
-
-handle_t fshrink(handle_t p) {
-  if (isfind(p)) {
-    pfind_t p0 = CAST(pfind_t, p);
-    p0->epos = p0->cpos;
-    p0->cpos = 0;
-  }
-
-  return NULL;
 }
 
