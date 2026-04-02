@@ -217,7 +217,7 @@ ulong_t xstrncrc32(const char* src, size_t count) {
   return crc32_calculate(CRC_DEF32, CAST(puchar_t, src), count);
 }
 
-unknown_t xmemcpy(unknown_t dst, const unknown_t src, size_t count) {
+unknown_t xmemcpy(unknown_t dst, cunknown_t src, size_t count) {
   return dst && src && count ? memcpy(dst, src, count) : NULL;
 }
 

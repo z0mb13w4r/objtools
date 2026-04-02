@@ -187,6 +187,8 @@ typedef char     smode_t[4];
 typedef void    *handle_t;
 typedef void    *unknown_t, **punknown_t;
 
+typedef const void *cunknown_t;
+
 typedef uint64_t pick_t, *ppick_t;
 
 typedef int      bool_t;

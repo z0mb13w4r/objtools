@@ -57,7 +57,7 @@ ushort_t xstrncrc16(const char* src, size_t count);
 ulong_t  xstrcrc32(const char* src);
 ulong_t  xstrncrc32(const char* src, size_t count);
 
-unknown_t xmemcpy(unknown_t dst, const unknown_t src, size_t count);
+unknown_t xmemcpy(unknown_t dst, cunknown_t src, size_t count);
 unknown_t xmemset(unknown_t ptr, int value, size_t count);
 unknown_t xmemclr(unknown_t ptr, size_t count);
 

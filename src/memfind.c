@@ -82,9 +82,23 @@ unknown_t fgetp(handle_t p, const size_t chunksize) {
       p1->cpos += chunksize;
 
       if (p1->cpos <= p1->epos) return p0;
-      else p1->item = NULL;
+      else /*if (!ismode(p, MODE_FINDC))*/ p1->item = NULL;
 
       if (p1->cpos == (p1->epos + 1)) return p0;
+    }
+  }
+
+  return NULL;
+}
+
+unknown_t fsetp(handle_t p, cunknown_t q, const size_t chunksize) {
+  unknown_t p0 = fget(p);
+  if (p0 && q && chunksize) {
+    pfind_t p1 = CAST(pfind_t, p);
+    if ((p1->cpos + chunksize) <= p1->epos) {
+      xmemcpy(p0, q, chunksize);
+      p1->cpos += chunksize;
+      return p;
     }
   }
 
@@ -95,12 +109,10 @@ unknown_t fpeekp(handle_t p, const size_t chunksize) {
   unknown_t p0 = fget(p);
   if (p0) {
     pfind_t p1 = CAST(pfind_t, p);
-    if (p1) {
-      if ((p1->cpos + chunksize) <= p1->epos) return p0;
-      else p1->item = NULL;
+    if ((p1->cpos + chunksize) <= p1->epos) return p0;
+    else /*if (!ismode(p, MODE_FINDC))*/ p1->item = NULL;
 
-      if ((p1->cpos + chunksize) == (p1->epos + 1)) return p0;
-    }
+    if ((p1->cpos + chunksize) == (p1->epos + 1)) return p0;
   }
 
   return NULL;
@@ -389,10 +401,10 @@ handle_t fsetu64(handle_t p, const uint64_t v) {
   return NULL;
 }
 
-handle_t fsetchunk(handle_t p, const nmode_t mode, const size_t size) {
+handle_t fsetchunk(handle_t p, const nmode_t mode, const size_t chunksize) {
   if (isfind(p)) {
     p = fsetu32(p, mode);
-    p = fsetu32(p, size);
+    p = fsetu32(p, chunksize);
 
     return p;
   }
@@ -454,7 +466,7 @@ handle_t fnext(handle_t p) {
     if (p0) {
       p0->cpos += p0->chunksize;
       if (p0->cpos <= p0->epos) return p0;
-      else p0->item = NULL;
+      else /*if (!ismode(p, MODE_FINDC))*/ p0->item = NULL;
     }
 
     return p0;
@@ -469,7 +481,7 @@ handle_t fstep(handle_t p, const size_t chunksize) {
     if (p0) {
       p0->cpos += chunksize;
       if (p0->cpos <= p0->epos) return p0;
-      else p0->item = NULL;
+      else /*if (!ismode(p, MODE_FINDC))*/ p0->item = NULL;
     }
 
     return p0;
@@ -498,7 +510,7 @@ unknown_t fmove(handle_t p, const size_t cpos) {
       p0->cpos = cpos;
 
       if (p0->cpos <= p0->epos) return fget(p);
-      else p0->item = NULL;
+      else /*if (!ismode(p, MODE_FINDC))*/ p0->item = NULL;
     }
   }
 
@@ -512,7 +524,7 @@ unknown_t fupdate(handle_t p, const size_t cpos, const size_t chunksize) {
       p0->cpos = cpos;
       p0->chunksize = chunksize;
       if (p0->cpos <= p0->epos) return fget(p);
-      else p0->item = NULL;
+      else /*if (!ismode(p, MODE_FINDC))*/ p0->item = NULL;
     }
   }
 
