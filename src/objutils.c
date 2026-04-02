@@ -31,6 +31,24 @@ bool_t isused(ppick_t p, const pick_t x) {
   return FALSE;
 }
 
+bool_t isbool(const char* p, const size_t size) {
+static char* zBOOLS[] = {
+  "TRUE", "True", "true",
+  "ON", "On", "on",
+  "T", "t",
+  "Y", "y",
+  "1", 0
+};
+
+  for (size_t i = 0; zBOOLS[i]; ++i) {
+    if (0 == xstrncmp(zBOOLS[i], p, size)) {
+      return TRUE;
+    }
+  }
+
+  return FALSE;
+}
+
 bool_t isnamedone(const char* names[], const size_t maxnames, const char* check) {
   size_t i = 0;
   for (i = 0; i < maxnames && names[i]; ++i) {
