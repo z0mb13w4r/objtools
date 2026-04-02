@@ -75,7 +75,11 @@ int main(int argc, char* argv[]) {
         if (isPE(p)) {
           x = detect(p, o);
         } else if (MODE_ISANY(o->action, OPTDETECT_CREATE)) {
-          x = detect_create(p, o);
+          if (o->outname[0]) {
+            x = detect_create(p, o);
+          } else {
+            printf_e("missing output file.");
+          }
         } else {
           printf_e("'%s': invalid file format.", o->inpname0);
         }
