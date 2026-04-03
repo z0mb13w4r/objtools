@@ -519,7 +519,7 @@ handle_t freset(handle_t p) {
 handle_t fshrink(handle_t p) {
   if (isfind(p)) {
     pfind_t p0 = CAST(pfind_t, p);
-    p0->epos = p0->cpos;
+    p0->epos = p0->cpos - 1;
     p0->cpos = 0;
   }
 
