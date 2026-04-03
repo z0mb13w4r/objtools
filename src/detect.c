@@ -32,7 +32,7 @@ int detect_create(const pbuffer_t p, const poptions_t o) {
             }
 
             fsetchunk(out2, SIGNATURE_NAME, regex_getsize(r1, 1) + 1);
-            fsetp(out2, regex_getvalue(r1, 1), regex_getsize(r1, 1));
+            fsetp(out2, regex_getvalue(r1, 1), regex_getsize(r1, 1) + 1);
           }
         } else {
           int x2 = regex_match(r2, p2);
@@ -67,7 +67,7 @@ int detect_create(const pbuffer_t p, const poptions_t o) {
                     isbool(regex_getvalue(r3, 1), regex_getsize(r3, 1)) ? "y" : "n");
                 }
 
-                fsetchunk(out2, SIGNATURE_FLAG, regex_getsize(r2, 1) + 1);
+                fsetchunk(out2, SIGNATURE_FLAG, sizeof(uint32_t));
                 fsetu32(out2, isbool(regex_getvalue(r3, 1), regex_getsize(r3, 1)) ? SIGNATURE_EP_ONLY : SIGNATURE_NONE);
               }
             }
@@ -92,7 +92,41 @@ int detect_create(const pbuffer_t p, const poptions_t o) {
 }
 
 int detect_compare(const pbuffer_t p, const poptions_t o) {
-  printf("%s\n", o->inpname1);
+  pbuffer_t s0 = bopen(o->inpname1);
+  if (s0) {
+    handle_t s1 = fcalloc(s0->data, s0->size, MEMFIND_NOBLOCKSIZE);
+    if (s1) {
+      size_t  size = 0;
+      nmode_t mode = 0;
+
+      mode = fgetchunk(s1, &size);
+      if (SIGNATURE_MAGIC0 == mode) {
+//        fstep(s1, size);
+printf("%s\n", o->inpname1);
+        while (!fiseof(s1)) {
+          mode = fgetchunk(s1, &size);
+          if (SIGNATURE_NAME == mode) {
+printf("$NAME$\n");
+          } else if (SIGNATURE_SIGNATURE == mode) {
+printf("$SIGNATURE$\n");
+          } else if (SIGNATURE_FLAG == mode) {
+printf("$FLAG$\n");
+          } else {
+            printf_e("'%s': bad magic %08x.", o->inpname1, mode);
+            break;
+          }
+
+          fstep(s1, size);
+        }
+      }
+
+      ffree(s1);
+    }
+
+    bfree(s0);
+  } else {
+    printf_e("'%s': no such file.", o->inpname1);
+  }
 
   return 0;
 }
