@@ -15,8 +15,9 @@
 #define STDERR stdout
 #define STDOUT stdout
 
-#define MAX_BUFFER_SIZE        (1024)
-#define MAX_PADDING_SIZE       (256)
+#define BUFFER_MAXSIZE        (1024)
+#define BUFFER_BIGSIZE        (2048)
+#define PADDING_MAXSIZE       (256)
 
 #define PRINT1(x)              snprintf(o + n, size - n, x)
 #define PRINT2(x,y)            snprintf(o + n, size - n, x, y)
@@ -79,7 +80,7 @@ int printf_errname(const char* name) {
 
 int printf_spos(char* o, const size_t size, const imode_t mode, const bool_t usespace) {
   int n = 0;
-  if (o) {
+  if (o && 0 < size) {
     switch (GET_POS0(mode)) {
     case USE_AT:                   n += PRINT1("@");     break;
     case USE_ATAT:                 n += PRINT1("@@");    break;
@@ -136,7 +137,7 @@ int printf_spos(char* o, const size_t size, const imode_t mode, const bool_t use
 
 int printf_epos(char* o, const size_t size, const imode_t mode) {
   int n = 0;
-  if (o) {
+  if (o && 0 < size) {
     switch (GET_BRACKET(mode)) {
     case USE_CB:
     case USE_CBRT:                 n += PRINT1("}");         break;
@@ -266,7 +267,7 @@ int printf_tidy(char* o, const size_t size, const double v, const imode_t mode) 
 
 int printf_neat(char* o, const size_t size, const uint64_t v, const imode_t mode) {
   int n = 0;
-  if (o) {
+  if (o && 0 < size) {
     const imode_t mode0 = GET_POS0(mode);
     const imode_t modex = GET_STYLE(mode);
     const bool_t  usespace = (0 == (mode & USE_NOSPACE) && 0 == mode0 && USE_CHARCTRL != modex && USE_CHAR != modex)
@@ -428,12 +429,12 @@ int printf_eol() {
 }
 
 int printf_mark(const int c, const int size, const imode_t mode) {
-  MALLOCA(char, o, MAX_BUFFER_SIZE + 1);
+  MALLOCA(char, o, BUFFER_MAXSIZE + 1);
 
   int n = 0;
   if (0 < size) {
-    for (size_t i = 0; i < MIN(size, MAX_BUFFER_SIZE); ++i) {
-      snprintf(o + i, MAX_BUFFER_SIZE - i, "%c", c);
+    for (size_t i = 0; i < MIN(size, BUFFER_MAXSIZE); ++i) {
+      snprintf(o + i, BUFFER_MAXSIZE - i, "%c", c);
     }
     n += printf_post(o, mode);
   }
@@ -453,7 +454,7 @@ int printf_pack(const int size) {
 }
 
 int printf_open(const imode_t mode) {
-  MALLOCA(char, o, MAX_BUFFER_SIZE);
+  MALLOCA(char, o, BUFFER_MAXSIZE);
 
   int n = 0;
   n += printf_spos(o, sizeof(o), mode, MODE_USESPACES(mode));
@@ -463,7 +464,7 @@ int printf_open(const imode_t mode) {
 }
 
 int printf_stop(const imode_t mode) {
-  MALLOCA(char, o, MAX_BUFFER_SIZE);
+  MALLOCA(char, o, BUFFER_MAXSIZE);
 
   int n = 0;
   n += printf_epos(o, sizeof(o), mode);
@@ -473,7 +474,7 @@ int printf_stop(const imode_t mode) {
 }
 
 int printf_nice(const uint64_t v, const imode_t mode) {
-  MALLOCA(char, o, MAX_BUFFER_SIZE);
+  MALLOCA(char, o, BUFFER_MAXSIZE);
 
   int n = 0;
   n += printf_neat(o, sizeof(o), v, mode);
@@ -483,7 +484,7 @@ int printf_nice(const uint64_t v, const imode_t mode) {
 }
 
 int printf_real(const double v, const imode_t mode) {
-  MALLOCA(char, o, MAX_BUFFER_SIZE);
+  MALLOCA(char, o, BUFFER_MAXSIZE);
 
   int n = 0;
   n += printf_tidy(o, sizeof(o), v, mode);
@@ -493,7 +494,7 @@ int printf_real(const double v, const imode_t mode) {
 }
 
 int printf_join(const char* p, const uint64_t v, const imode_t mode) {
-  MALLOCA(char, o, MAX_BUFFER_SIZE);
+  MALLOCA(char, o, BUFFER_MAXSIZE);
 
   int n = 0;
   if (p) {
@@ -510,7 +511,7 @@ int printf_join(const char* p, const uint64_t v, const imode_t mode) {
 }
 
 int printf_yoke(const char* p, const char* q, const imode_t mode) {
-  MALLOCA(char, o, MAX_BUFFER_SIZE);
+  MALLOCA(char, o, BUFFER_MAXSIZE);
 
   int n = 0;
   if (p) {
@@ -527,7 +528,7 @@ int printf_yoke(const char* p, const char* q, const imode_t mode) {
 }
 
 int printf_tack(const uint64_t v0, const imode_t m0, const char* v1, const uint64_t v2, const imode_t m2, const imode_t mode) {
-  MALLOCA(char, o, MAX_BUFFER_SIZE);
+  MALLOCA(char, o, BUFFER_MAXSIZE);
 
   int n = 0;
   if (v1) {
@@ -543,8 +544,8 @@ int printf_tack(const uint64_t v0, const imode_t m0, const char* v1, const uint6
 }
 
 int printf_text(const char* p, const imode_t mode) {
-  MALLOCA(char, o1, MAX_BUFFER_SIZE);
-  MALLOCA(char, o2, MAX_BUFFER_SIZE + MAX_PADDING_SIZE);
+  MALLOCA(char, o1, BUFFER_MAXSIZE);
+  MALLOCA(char, o2, BUFFER_MAXSIZE + PADDING_MAXSIZE);
 
   int n = 0;
   const char* p0 = p ? p : "";
@@ -554,7 +555,7 @@ int printf_text(const char* p, const imode_t mode) {
     n += printf_work(o1, sizeof(o1), p0, mode);
   }
 
-  int sz = MIN(MAX(0, CAST(int, GET_PAD(mode)) - n), MAX_PADDING_SIZE);
+  int sz = MIN(MAX(0, CAST(int, GET_PAD(mode)) - n), PADDING_MAXSIZE);
   if (sz) {
     if (USE_RT == GET_FORMAT(mode)) {
       snprintf(o2, sizeof(o2), "%*s%s", sz, " ", o1);
@@ -636,7 +637,7 @@ int printf_sore(const unknown_t p, const size_t size, const imode_t mode) {
     }
   }
 
-  MALLOCA(char, o, MAX_BUFFER_SIZE);
+  MALLOCA(char, o, BUFFER_BIGSIZE);
 
   puchar_t p0 = CAST(puchar_t, p);
   if (USE_STR == modex || USE_STRSIZE == modex) {
@@ -978,7 +979,7 @@ int printf_data(const unknown_t p, const size_t size, const addrz_t addr, const 
 }
 
 int printf_mask(const pconvert_t p, const maskz_t mask, const imode_t mode) {
-  MALLOCA(char, o, MAX_BUFFER_SIZE);
+  MALLOCA(char, o, BUFFER_MAXSIZE);
 
   int n = 0;
   if (p) {
@@ -1037,7 +1038,7 @@ int printf_picknull(const pconvert_t p, const pick_t x, const imode_t mode) {
 }
 
 int printf_d(const char* format, ...) {
-  MALLOCA(char, o, MAX_BUFFER_SIZE);
+  MALLOCA(char, o, BUFFER_MAXSIZE);
 
   va_list pVAList;
   va_start(pVAList, format);
@@ -1052,7 +1053,7 @@ int printf_d(const char* format, ...) {
 }
 
 int printf_e(const char* format, ...) {
-  MALLOCA(char, o, MAX_BUFFER_SIZE);
+  MALLOCA(char, o, BUFFER_MAXSIZE);
 
   va_list pVAList;
   va_start(pVAList, format);
@@ -1067,7 +1068,7 @@ int printf_e(const char* format, ...) {
 }
 
 int printf_i(const char* format, ...) {
-  MALLOCA(char, o, MAX_BUFFER_SIZE);
+  MALLOCA(char, o, BUFFER_MAXSIZE);
 
   va_list pVAList;
   va_start(pVAList, format);
@@ -1082,7 +1083,7 @@ int printf_i(const char* format, ...) {
 }
 
 int printf_w(const char* format, ...) {
-  MALLOCA(char, o, MAX_BUFFER_SIZE);
+  MALLOCA(char, o, BUFFER_MAXSIZE);
 
   va_list pVAList;
   va_start(pVAList, format);
@@ -1097,7 +1098,7 @@ int printf_w(const char* format, ...) {
 }
 
 void printf_x(const char* format, ...) {
-  MALLOCA(char, o, MAX_BUFFER_SIZE);
+  MALLOCA(char, o, BUFFER_MAXSIZE);
 
   va_list pVAList;
   va_start(pVAList, format);
