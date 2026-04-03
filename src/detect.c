@@ -103,23 +103,31 @@ int detect_compare(const pbuffer_t p, const poptions_t o) {
       if (SIGNATURE_MAGIC0 == mode) {
         fstep(s1, size);
 
+        const char* signature = NULL;
+        size_t      signaturesize = 0;
+        const char* signaturename = NULL;
         while (!fiseof(s1)) {
           mode = fgetchunk(s1, &size);
           if (SIGNATURE_NAME == mode) {
-            const char* blk = fgetp(s1, size);
-printf("$NAME$ = %s\n", blk);
+            signaturename = fgetp(s1, size);
+            if (MODE_ISANY(o->action, OPTPROGRAM_VERBOSE)) {
+printf("$NAME$ = %s\n", signaturename);
+            }
           } else if (SIGNATURE_SIGNATURE == mode) {
-            const char* blk = fgetp(s1, size);
-printf("$SIGNATURE$ = %s\n", blk);
+            signature = fgetp(s1, size);
+            signaturesize = size;
+            if (MODE_ISANY(o->action, OPTPROGRAM_VERBOSE)) {
+printf("$SIGNATURE$ = %s\n", signature);
+            }
           } else if (SIGNATURE_FLAG == mode) {
             const uint32_t val = fgetu32(s1);
+            if (MODE_ISANY(o->action, OPTPROGRAM_VERBOSE)) {
 printf("$FLAG$ = %x\n", val);
+            }
           } else {
             printf_e("'%s': bad magic %08x.", o->inpname1, mode);
             break;
           }
-
-//          fstep(s1, size);
         }
       }
 
@@ -136,8 +144,6 @@ printf("$FLAG$ = %x\n", val);
 
 int detect(const pbuffer_t p, const poptions_t o) {
   if (isPE(p)) {
-    o->action |= OPTPROGRAM_INFO;
-
     dump_summary(p, o);
     detect_compare(p, o);
 

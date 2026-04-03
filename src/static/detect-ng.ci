@@ -12,6 +12,8 @@ static const args_t zDETECTARGS[] = {
   {'v', "--version",         OPTPROGRAM_VERSION,           NULL},
   {'V', "--verbose",         OPTPROGRAM_VERBOSE,           NULL},
   {'c', "--create",          OPTDETECT_CREATE,             NULL},
+  {'X', "--hash",            OPTPROGRAM_HASH,              NULL},
+  {'E', "--entropy",         OPTPROGRAM_ENTROPY,           NULL},
 
   {0, NULL}
 };
