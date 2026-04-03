@@ -186,6 +186,18 @@ uint64_t fgetuNN(handle_t p) {
   return 0;
 }
 
+nmode_t fgetchunk(handle_t p, size_t *chunksize) {
+  if (isfind(p)) {
+    uint32_t mode = fgetu32(p);
+    uint32_t size = fgetu32(p);
+
+    if (chunksize) *chunksize = mode ? size : 0;
+    return mode ? mode : 0;
+  }
+
+  return 0;
+}
+
 int64_t fpeeks8(handle_t p) {
   unknown_t p0 = fpeekp(p, sizeof(int8_t));
   return p0 ? endian_s8(fisbe(p), *CAST(int8_t*, p0)) : 0;

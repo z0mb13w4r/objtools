@@ -68,6 +68,8 @@ int64_t fpeeks32(handle_t p);
 int64_t fpeeks64(handle_t p);
 int64_t fpeeksNN(handle_t p);
 
+nmode_t fgetchunk(handle_t p, size_t *chunksize);
+
 uint64_t fpeeku8(handle_t p);
 uint64_t fpeeku16(handle_t p);
 uint64_t fpeeku32(handle_t p);
