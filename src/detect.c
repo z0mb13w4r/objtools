@@ -101,22 +101,25 @@ int detect_compare(const pbuffer_t p, const poptions_t o) {
 
       mode = fgetchunk(s1, &size);
       if (SIGNATURE_MAGIC0 == mode) {
-//        fstep(s1, size);
-printf("%s\n", o->inpname1);
+        fstep(s1, size);
+
         while (!fiseof(s1)) {
           mode = fgetchunk(s1, &size);
           if (SIGNATURE_NAME == mode) {
-printf("$NAME$\n");
+            const char* blk = fgetp(s1, size);
+printf("$NAME$ = %s\n", blk);
           } else if (SIGNATURE_SIGNATURE == mode) {
-printf("$SIGNATURE$\n");
+            const char* blk = fgetp(s1, size);
+printf("$SIGNATURE$ = %s\n", blk);
           } else if (SIGNATURE_FLAG == mode) {
-printf("$FLAG$\n");
+            const uint32_t val = fgetu32(s1);
+printf("$FLAG$ = %x\n", val);
           } else {
             printf_e("'%s': bad magic %08x.", o->inpname1, mode);
             break;
           }
 
-          fstep(s1, size);
+//          fstep(s1, size);
         }
       }
 
