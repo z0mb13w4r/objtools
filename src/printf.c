@@ -88,6 +88,7 @@ int printf_spos(char* o, const size_t size, const imode_t mode, const bool_t use
     case USE_TAB2:                 n += PRINT1("   ");   break;
     case USE_COMMA:                n += PRINT1(", ");    break;
     case USE_0x:                   n += PRINT1("0x");    break;
+    case USE_DOLLAR:               n += PRINT1("$");     break;
     default:                       break;
     }
 
@@ -196,6 +197,7 @@ int printf_work(char* o, const size_t size, const char* p, const imode_t mode) {
     case USE_TAB2:           n += PRINT1("    ");       break;
     case USE_DOT:            n += PRINT1(".");          break;
     case USE_COMMA:          n += PRINT1(", ");         break;
+    case USE_DOLLAR:         n += PRINT1("$");          break;
     default:                 break;
     }
 
