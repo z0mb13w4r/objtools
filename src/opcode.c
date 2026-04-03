@@ -757,21 +757,21 @@ uint64_t ocget_eoffset(handle_t p, handle_t s) {
 }
 
 handle_t ocfget_rawdata(handle_t p) {
-  size_t chunksiz = MEMFIND_NOCHUNKSIZE;
-  if (ocisBE(p))    chunksiz |= MEMFIND_BIGENDIAN;
-  if (ocis32(p))    chunksiz |= MEMFIND_32BIT;
-  else if (ocis64(p)) chunksiz |= MEMFIND_64BIT;
+  size_t blocksiz = MEMFIND_NOBLOCKSIZE;
+  if (ocisBE(p))    blocksiz |= MEMFIND_BIGENDIAN;
+  if (ocis32(p))    blocksiz |= MEMFIND_32BIT;
+  else if (ocis64(p)) blocksiz |= MEMFIND_64BIT;
 
-  return fcalloc(ocget_rawdata(p), ocget_size(p), chunksiz);
+  return fcalloc(ocget_rawdata(p), ocget_size(p), blocksiz);
 }
 
 handle_t ocfget_rawdatabyname(handle_t p, const char* name) {
-  size_t chunksiz = MEMFIND_NOCHUNKSIZE;
-  if (ocisBE(p))    chunksiz |= MEMFIND_BIGENDIAN;
-  if (ocis32(p))    chunksiz |= MEMFIND_32BIT;
-  else if (ocis64(p)) chunksiz |= MEMFIND_64BIT;
+  size_t blocksiz = MEMFIND_NOBLOCKSIZE;
+  if (ocisBE(p))    blocksiz |= MEMFIND_BIGENDIAN;
+  if (ocis32(p))    blocksiz |= MEMFIND_32BIT;
+  else if (ocis64(p)) blocksiz |= MEMFIND_64BIT;
 
-  return fcalloc(ocget_rawdatabyname(p, name), ocget_sizebyname(p, name), chunksiz);
+  return fcalloc(ocget_rawdatabyname(p, name), ocget_sizebyname(p, name), blocksiz);
 }
 
 unknown_t ocget_rawdata(handle_t p) {

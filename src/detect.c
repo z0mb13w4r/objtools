@@ -9,9 +9,9 @@
 #include "signatures.h"
 
 int detect_create(const pbuffer_t p, const poptions_t o) {
-  handle_t inp2 = fcalloc(p->data, p->size, MEMFIND_NOCHUNKSIZE);
-  handle_t out1 = fcalloc(NULL, p->size, MEMFIND_NOCHUNKSIZE);
-  handle_t out2 = fcalloc(NULL, p->size, MEMFIND_NOCHUNKSIZE);
+  handle_t inp2 = fcalloc(p->data, p->size, MEMFIND_NOBLOCKSIZE);
+  handle_t out1 = fcalloc(NULL, p->size, MEMFIND_NOBLOCKSIZE);
+  handle_t out2 = fcalloc(NULL, p->size, MEMFIND_NOBLOCKSIZE);
 
   if (inp2 && out1 && out2) {
     pre_t r1 = rmalloc("\\[(.*)\\]");

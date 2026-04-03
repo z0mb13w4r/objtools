@@ -7,7 +7,7 @@
 #define MODE_FINDC              (MODE_PUT0('F') | MODE_PUT1('N') | MODE_PUT2('D') | MODE_PUT3('C'))
 
 #define MEMFIND_NONE            U32MASK_NONE
-#define MEMFIND_NOCHUNKSIZE     U32MASK(28)
+#define MEMFIND_NOBLOCKSIZE     U32MASK(28)
 #define MEMFIND_32BIT           U32MASK(29)
 #define MEMFIND_64BIT           U32MASK(30)
 #define MEMFIND_BIGENDIAN       U32MASK(31)
@@ -15,7 +15,7 @@
 
 typedef struct find_s {
   smode_t   mode;
-  size_t    cpos, epos, size, chunksize;
+  size_t    cpos, epos, size, blocksize;
   nmode_t   role;
   unknown_t item;
 
@@ -34,19 +34,19 @@ size_t fgetstate(handle_t p);
 
 unknown_t fget(handle_t p);
 unknown_t fmove(handle_t p, const size_t cpos);
-unknown_t fgetp(handle_t p, const size_t chunksize);
-unknown_t fupdate(handle_t p, const size_t cpos, const size_t chunksize);
+unknown_t fgetp(handle_t p, const size_t blocksize);
+unknown_t fupdate(handle_t p, const size_t cpos, const size_t blocksize);
 
-unknown_t fpeekp(handle_t p, const size_t chunksize);
+unknown_t fpeekp(handle_t p, const size_t blocksize);
 
 handle_t freset(handle_t p);
 handle_t fshrink(handle_t p);
 
 handle_t fnext(handle_t p);
-handle_t fstep(handle_t p, const size_t chunksize);
-handle_t fcalloc(unknown_t p, const size_t size, const size_t chunksize);
-handle_t fmalloc(unknown_t p, const size_t size, const size_t chunksize);
-handle_t fxalloc(const size_t size, const size_t chunksize);
+handle_t fstep(handle_t p, const size_t blocksize);
+handle_t fcalloc(unknown_t p, const size_t size, const size_t blocksize);
+handle_t fmalloc(unknown_t p, const size_t size, const size_t blocksize);
+handle_t fxalloc(const size_t size, const size_t blocksize);
 handle_t fswap(handle_t p, handle_t q);
 handle_t ffree(handle_t p);
 
@@ -87,7 +87,7 @@ handle_t fsetu16byoffset(handle_t p, const uint64_t offset, const uint16_t v);
 handle_t fsetu32byoffset(handle_t p, const uint64_t offset, const uint32_t v);
 handle_t fsetu64byoffset(handle_t p, const uint64_t offset, const uint64_t v);
 
-unknown_t fsetp(handle_t p, cunknown_t q, const size_t chunksize);
+unknown_t fsetp(handle_t p, cunknown_t q, const size_t blocksize);
 
 char* fgetline(handle_t p);
 char* fgetstring(handle_t p);

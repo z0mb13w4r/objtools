@@ -2094,7 +2094,7 @@ const int MAXSIZE = 30;
 static int dump_archspecific0(const pbuffer_t p, const poptions_t o, const char* name, const uint64_t sh_offset, const uint64_t sh_size) {
   int n = 0;
 
-  handle_t p0 = fgetbyoffset(p, sh_offset, sh_size, MEMFIND_NOCHUNKSIZE);
+  handle_t p0 = fgetbyoffset(p, sh_offset, sh_size, MEMFIND_NOBLOCKSIZE);
   if (p0) {
     char version = fgetu8(p0);
     if ('A' == version) {
@@ -2184,7 +2184,7 @@ static int dump_archspecific0(const pbuffer_t p, const poptions_t o, const char*
 static int dump_archspecific1(const pbuffer_t p, const poptions_t o, const uint64_t sh_offset, const uint64_t sh_size) {
   int n = 0;
 
-  handle_t p0 = fgetbyoffset(p, sh_offset, sh_size, MEMFIND_NOCHUNKSIZE);
+  handle_t p0 = fgetbyoffset(p, sh_offset, sh_size, MEMFIND_NOBLOCKSIZE);
   if (p0) {
     n += printf_text("MIPS ABI Flags Version", USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     n += printf_nice(fgetu16(p0), USE_DEC | USE_EOL);
@@ -2263,7 +2263,7 @@ static int dump_archspecific4(const pbuffer_t p, const poptions_t o, const uint6
 
   const imode_t USE_LHEXNN = isELF64(p) ? USE_LHEX64 : USE_LHEX32;
 
-  handle_t p0 = fgetbyoffset(p, sh_offset, sh_size, MEMFIND_NOCHUNKSIZE);
+  handle_t p0 = fgetbyoffset(p, sh_offset, sh_size, MEMFIND_NOBLOCKSIZE);
   if (p0) {
     size_t gotno_size = ecget_value(p, SHT_DYNAMIC, DT_MIPS_LOCAL_GOTNO);
 

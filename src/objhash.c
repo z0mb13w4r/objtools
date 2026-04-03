@@ -6,7 +6,7 @@
 #include "memfind.h"
 #include "objhash.h"
 
-static size_t chunksize = 0;
+static size_t blocksize = 0;
 static size_t limitsize = 0;
 
 static const int MAXSIZE0 = 26;
@@ -239,42 +239,42 @@ static int dump_actionsELF0(const pbuffer_t p, const poptions_t o, const char* n
   return n;
 }
 
-static int dump_actionsELF1(const poptions_t o, const unknown_t p, const size_t size, const size_t chunksize, const size_t limitsize) {
+static int dump_actionsELF1(const poptions_t o, const unknown_t p, const size_t size, const size_t blocksize, const size_t limitsize) {
   int n0 = 0;
   int n1 = 0;
-  if (p && o && chunksize && limitsize <= size) {
+  if (p && o && blocksize && limitsize <= size) {
     int maxsize = 32;
     if (MODE_ISANY(o->action, OPTOBJHASH_SSDEEP)) {
-      pfind_t p0 = fmalloc(p, size, chunksize);
+      pfind_t p0 = fmalloc(p, size, blocksize);
 
       while (!fiseof(p0)) {
-        size_t chunksiz = MIN(chunksize, p0->epos - p0->cpos + 1);
+        size_t blocksiz = MIN(blocksize, p0->epos - p0->cpos + 1);
 
-        maxsize = MAX(maxsize, printf_sore(fget(p0), chunksiz, USE_SSDEEP | USE_NOTEXT | USE_NOPRINT));
+        maxsize = MAX(maxsize, printf_sore(fget(p0), blocksiz, USE_SSDEEP | USE_NOTEXT | USE_NOPRINT));
         p0 = fnext(p0);
       }
     }
 
-    pfind_t p0 = fmalloc(p, size, chunksize);
+    pfind_t p0 = fmalloc(p, size, blocksize);
     while (!fiseof(p0)) {
-      size_t chunksiz = MIN(chunksize, p0->epos - p0->cpos + 1);
+      size_t blocksiz = MIN(blocksize, p0->epos - p0->cpos + 1);
       if (MODE_ISANY(o->action, OPTOBJHASH_SHA1)) {
-        n0 += printf_sore(fget(p0), chunksiz, USE_SHA1 | USE_NOTEXT);
+        n0 += printf_sore(fget(p0), blocksiz, USE_SHA1 | USE_NOTEXT);
       } else if (MODE_ISANY(o->action, OPTOBJHASH_SHA256)) {
-        n0 += printf_sore(fget(p0), chunksiz, USE_SHA256 | USE_NOTEXT);
+        n0 += printf_sore(fget(p0), blocksiz, USE_SHA256 | USE_NOTEXT);
       } else if (MODE_ISANY(o->action, OPTOBJHASH_SHA512)) {
-        n0 += printf_sore(fget(p0), chunksiz, USE_SHA512 | USE_NOTEXT);
+        n0 += printf_sore(fget(p0), blocksiz, USE_SHA512 | USE_NOTEXT);
       } else if (MODE_ISANY(o->action, OPTOBJHASH_SSDEEP)) {
-        n1  = printf_sore(fget(p0), chunksiz, USE_SSDEEP | USE_NOTEXT);
+        n1  = printf_sore(fget(p0), blocksiz, USE_SSDEEP | USE_NOTEXT);
         n0 += printf_pack(MAX(0, maxsize - n1));
       } else {
-        n0 += printf_sore(fget(p0), chunksiz, USE_MD5 | USE_NOTEXT);
+        n0 += printf_sore(fget(p0), blocksiz, USE_MD5 | USE_NOTEXT);
       }
 
       n0 += printf_text(o->inpname, USE_LT | USE_SPACE);
       n0 += printf_text("offset", USE_LT | USE_SPACE);
       n0 += printf_nice(p0->cpos, USE_DEC);
-      n0 += printf_nice(p0->cpos + chunksiz - 1, USE_DEC | USE_DASH | USE_NOSPACE);
+      n0 += printf_nice(p0->cpos + blocksiz - 1, USE_DEC | USE_DASH | USE_NOSPACE);
       n0 += printf_eol();
 
       p0 = fnext(p0);
@@ -321,7 +321,7 @@ static int dump_actionsELF32(const pbuffer_t p, const poptions_t o) {
       x = x->actions;
     }
 
-    n += dump_actionsELF1(o, p->data, p->size, chunksize, limitsize);
+    n += dump_actionsELF1(o, p->data, p->size, blocksize, limitsize);
   }
 
   return n;
@@ -345,7 +345,7 @@ static int dump_actionsELF64(const pbuffer_t p, const poptions_t o) {
       x = x->actions;
     }
 
-    n += dump_actionsELF1(o, p->data, p->size, chunksize, limitsize);
+    n += dump_actionsELF1(o, p->data, p->size, blocksize, limitsize);
   }
 
   return n;
@@ -357,7 +357,7 @@ static int dump_actionsPRE(const pbuffer_t p, const poptions_t o) {
     paction_t x = o->actions;
     while (x) {
       if (ACT_PIECEWISE == x->action) {
-        chunksize = x->uvalue;
+        blocksize = x->uvalue;
       } else if (ACT_THRESHOLD == x->action) {
         limitsize = x->uvalue;
       }

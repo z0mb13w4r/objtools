@@ -138,7 +138,7 @@ handle_t ssdeep_encode(unknown_t src, size_t srcsize) {
   if (src && srcsize) {
     puchar_t psrc = CAST(puchar_t, src);
 
-    pfind_t dst = fxalloc(FUZZY_MAX_RESULT, MEMFIND_NOCHUNKSIZE);
+    pfind_t dst = fxalloc(FUZZY_MAX_RESULT, MEMFIND_NOBLOCKSIZE);
     if (dst) {
       char *pdst = CAST(char *, dst->item);
       if (!fuzzy_hash_buf(psrc, srcsize, pdst)) {

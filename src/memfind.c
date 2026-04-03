@@ -67,19 +67,19 @@ size_t fgetstate(handle_t p) {
   if (isfind(p)) {
     pfind_t p0 = CAST(pfind_t, p);
     if (p0) {
-      return p0->chunksize | p0->role;
+      return p0->blocksize | p0->role;
     }
   }
 
   return 0;
 }
 
-unknown_t fgetp(handle_t p, const size_t chunksize) {
+unknown_t fgetp(handle_t p, const size_t blocksize) {
   unknown_t p0 = fget(p);
   if (p0) {
     pfind_t p1 = CAST(pfind_t, p);
     if (p1) {
-      p1->cpos += chunksize;
+      p1->cpos += blocksize;
 
       if (p1->cpos <= p1->epos) return p0;
       else /*if (!ismode(p, MODE_FINDC))*/ p1->item = NULL;
@@ -91,13 +91,13 @@ unknown_t fgetp(handle_t p, const size_t chunksize) {
   return NULL;
 }
 
-unknown_t fsetp(handle_t p, cunknown_t q, const size_t chunksize) {
+unknown_t fsetp(handle_t p, cunknown_t q, const size_t blocksize) {
   unknown_t p0 = fget(p);
-  if (p0 && q && chunksize) {
+  if (p0 && q && blocksize) {
     pfind_t p1 = CAST(pfind_t, p);
-    if ((p1->cpos + chunksize) <= p1->epos) {
-      xmemcpy(p0, q, chunksize);
-      p1->cpos += chunksize;
+    if ((p1->cpos + blocksize) <= p1->epos) {
+      xmemcpy(p0, q, blocksize);
+      p1->cpos += blocksize;
       return p;
     }
   }
@@ -105,14 +105,14 @@ unknown_t fsetp(handle_t p, cunknown_t q, const size_t chunksize) {
   return NULL;
 }
 
-unknown_t fpeekp(handle_t p, const size_t chunksize) {
+unknown_t fpeekp(handle_t p, const size_t blocksize) {
   unknown_t p0 = fget(p);
   if (p0) {
     pfind_t p1 = CAST(pfind_t, p);
-    if ((p1->cpos + chunksize) <= p1->epos) return p0;
+    if ((p1->cpos + blocksize) <= p1->epos) return p0;
     else /*if (!ismode(p, MODE_FINDC))*/ p1->item = NULL;
 
-    if ((p1->cpos + chunksize) == (p1->epos + 1)) return p0;
+    if ((p1->cpos + blocksize) == (p1->epos + 1)) return p0;
   }
 
   return NULL;
@@ -464,7 +464,7 @@ handle_t fnext(handle_t p) {
   if (isfind(p)) {
     pfind_t p0 = CAST(pfind_t, p);
     if (p0) {
-      p0->cpos += p0->chunksize;
+      p0->cpos += p0->blocksize;
       if (p0->cpos <= p0->epos) return p0;
       else /*if (!ismode(p, MODE_FINDC))*/ p0->item = NULL;
     }
@@ -475,11 +475,11 @@ handle_t fnext(handle_t p) {
   return NULL;
 }
 
-handle_t fstep(handle_t p, const size_t chunksize) {
+handle_t fstep(handle_t p, const size_t blocksize) {
   if (isfind(p)) {
     pfind_t p0 = CAST(pfind_t, p);
     if (p0) {
-      p0->cpos += chunksize;
+      p0->cpos += blocksize;
       if (p0->cpos <= p0->epos) return p0;
       else /*if (!ismode(p, MODE_FINDC))*/ p0->item = NULL;
     }
@@ -528,12 +528,12 @@ unknown_t fmove(handle_t p, const size_t cpos) {
   return NULL;
 }
 
-unknown_t fupdate(handle_t p, const size_t cpos, const size_t chunksize) {
+unknown_t fupdate(handle_t p, const size_t cpos, const size_t blocksize) {
   if (isfind(p)) {
     pfind_t p0 = CAST(pfind_t, p);
     if (p0) {
       p0->cpos = cpos;
-      p0->chunksize = chunksize;
+      p0->blocksize = blocksize;
       if (p0->cpos <= p0->epos) return fget(p);
       else /*if (!ismode(p, MODE_FINDC))*/ p0->item = NULL;
     }
@@ -542,11 +542,11 @@ unknown_t fupdate(handle_t p, const size_t cpos, const size_t chunksize) {
   return NULL;
 }
 
-handle_t fcalloc(unknown_t p, const size_t size, const size_t chunksize) {
+handle_t fcalloc(unknown_t p, const size_t size, const size_t blocksize) {
   if (isfind(p)) {
     pfind_t p0 = CAST(pfind_t, p);
     if (p0 && p0->item) {
-      handle_t p1 = fcalloc(CAST(puchar_t, p0->item) + p0->cpos, size, chunksize);
+      handle_t p1 = fcalloc(CAST(puchar_t, p0->item) + p0->cpos, size, blocksize);
       p0->cpos += size;
       return p1;
     }
@@ -557,8 +557,8 @@ handle_t fcalloc(unknown_t p, const size_t size, const size_t chunksize) {
       p0->epos = size - 1;
       p0->size = size;
       p0->item = cmalloc(p, size, MODE_HEAP);
-      p0->role = chunksize & MEMFIND_MASK;
-      p0->chunksize = chunksize & ~MEMFIND_MASK;
+      p0->role = blocksize & MEMFIND_MASK;
+      p0->blocksize = blocksize & ~MEMFIND_MASK;
     }
 
     return setmode(p0, MODE_FINDC);
@@ -567,11 +567,11 @@ handle_t fcalloc(unknown_t p, const size_t size, const size_t chunksize) {
   return NULL;
 }
 
-handle_t fmalloc(unknown_t p, const size_t size, const size_t chunksize) {
+handle_t fmalloc(unknown_t p, const size_t size, const size_t blocksize) {
   if (isfind(p)) {
     pfind_t p0 = CAST(pfind_t, p);
     if (p0 && p0->item) {
-      handle_t p1 = fmalloc(CAST(puchar_t, p0->item) + p0->cpos, size, chunksize);
+      handle_t p1 = fmalloc(CAST(puchar_t, p0->item) + p0->cpos, size, blocksize);
       p0->cpos += size;
       return p1;
     }
@@ -582,8 +582,8 @@ handle_t fmalloc(unknown_t p, const size_t size, const size_t chunksize) {
       p0->epos = size - 1;
       p0->size = size;
       p0->item = p;
-      p0->role = chunksize & MEMFIND_MASK;
-      p0->chunksize = chunksize & ~MEMFIND_MASK;
+      p0->role = blocksize & MEMFIND_MASK;
+      p0->blocksize = blocksize & ~MEMFIND_MASK;
     }
 
     return setmode(p0, MODE_FIND);
@@ -592,15 +592,15 @@ handle_t fmalloc(unknown_t p, const size_t size, const size_t chunksize) {
   return NULL;
 }
 
-handle_t fxalloc(const size_t size, const size_t chunksize) {
+handle_t fxalloc(const size_t size, const size_t blocksize) {
   pfind_t p0 = xmalloc(sizeof(find_t), MODE_HEAP);
   if (p0) {
     p0->cpos = 0;
     p0->epos = size - 1;
     p0->size = size;
     p0->item = xmalloc(size, MODE_HEAP);
-    p0->role = chunksize & MEMFIND_MASK;
-    p0->chunksize = chunksize & ~MEMFIND_MASK;
+    p0->role = blocksize & MEMFIND_MASK;
+    p0->blocksize = blocksize & ~MEMFIND_MASK;
   }
 
   return setmode(p0, MODE_FINDC);
@@ -617,7 +617,7 @@ handle_t fswap(handle_t p, handle_t q) {
     p0->epos = q0->epos;
     p0->size = q0->size;
     p0->item = q0->item;
-    p0->chunksize = q0->chunksize;
+    p0->blocksize = q0->blocksize;
 
     xfree(q0);
 

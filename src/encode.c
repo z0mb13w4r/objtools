@@ -84,7 +84,7 @@ handle_t bin8_encode(unknown_t src, size_t srcsize) {
     size_t dstsize = srcsize * 10 + 1;
     puchar_t psrc = CAST(puchar_t, src);
 
-    pfind_t dst = fxalloc(dstsize, MEMFIND_NOCHUNKSIZE);
+    pfind_t dst = fxalloc(dstsize, MEMFIND_NOBLOCKSIZE);
     if (dst) {
       puchar_t pdst = CAST(puchar_t, dst->item);
 
@@ -120,7 +120,7 @@ handle_t bin16_encode(unknown_t src, size_t srcsize) {
     size_t dstsize = srcsize * 10 + 1;
     puchar_t psrc = CAST(puchar_t, src);
 
-    pfind_t dst = fxalloc(dstsize, MEMFIND_NOCHUNKSIZE);
+    pfind_t dst = fxalloc(dstsize, MEMFIND_NOBLOCKSIZE);
     if (dst) {
       puchar_t pdst = CAST(puchar_t, dst->item);
       pdst[dst->cpos++] = binN(psrc[0] & U32MASK(7));
@@ -163,7 +163,7 @@ handle_t bin32_encode(unknown_t src, size_t srcsize) {
     size_t dstsize = srcsize * 10 + 1;
     puchar_t psrc = CAST(puchar_t, src);
 
-    pfind_t dst = fxalloc(dstsize, MEMFIND_NOCHUNKSIZE);
+    pfind_t dst = fxalloc(dstsize, MEMFIND_NOBLOCKSIZE);
     if (dst) {
       puchar_t pdst = CAST(puchar_t, dst->item);
       pdst[dst->cpos++] = binN(psrc[0] & U32MASK(7));
@@ -206,7 +206,7 @@ handle_t dec8_encode(unknown_t src, size_t srcsize) {
     size_t dstsize = srcsize * 5 + 1;
     uint8_t *psrc = CAST(uint8_t*, src);
 
-    pfind_t dst = fxalloc(dstsize, MEMFIND_NOCHUNKSIZE);
+    pfind_t dst = fxalloc(dstsize, MEMFIND_NOBLOCKSIZE);
     if (dst) {
       puchar_t pdst = CAST(puchar_t, dst->item);
 
@@ -237,7 +237,7 @@ handle_t dec16_encode(unknown_t src, size_t srcsize) {
     size_t dstsize = srcsize * 8 + 1;
     uint16_t *psrc = CAST(uint16_t*, src);
 
-    pfind_t dst = fxalloc(dstsize, MEMFIND_NOCHUNKSIZE);
+    pfind_t dst = fxalloc(dstsize, MEMFIND_NOBLOCKSIZE);
     if (dst) {
       puchar_t pdst = CAST(puchar_t, dst->item);
 
@@ -275,7 +275,7 @@ handle_t dec32_encode(unknown_t src, size_t srcsize) {
     size_t dstsize = srcsize * 8 + 1;
     uint32_t *psrc = CAST(uint32_t*, src);
 
-    pfind_t dst = fxalloc(dstsize, MEMFIND_NOCHUNKSIZE);
+    pfind_t dst = fxalloc(dstsize, MEMFIND_NOBLOCKSIZE);
     if (dst) {
       puchar_t pdst = CAST(puchar_t, dst->item);
 
@@ -329,7 +329,7 @@ handle_t hex8_encode(unknown_t src, size_t srcsize) {
     size_t dstsize = srcsize * 6 + 1;
     puchar_t psrc = CAST(puchar_t, src);
 
-    pfind_t dst = fxalloc(dstsize, MEMFIND_NOCHUNKSIZE);
+    pfind_t dst = fxalloc(dstsize, MEMFIND_NOBLOCKSIZE);
     if (dst) {
       puchar_t pdst = CAST(puchar_t, dst->item);
       pdst[dst->cpos++] = '0';
@@ -362,7 +362,7 @@ handle_t hex16_encode(unknown_t src, size_t srcsize) {
     size_t dstsize = srcsize * 4 + 1;
     puchar_t psrc = CAST(puchar_t, src);
 
-    pfind_t dst = fxalloc(dstsize, MEMFIND_NOCHUNKSIZE);
+    pfind_t dst = fxalloc(dstsize, MEMFIND_NOBLOCKSIZE);
     if (dst) {
       puchar_t pdst = CAST(puchar_t, dst->item);
       pdst[dst->cpos++] = '0';
@@ -397,7 +397,7 @@ handle_t hex32_encode(unknown_t src, size_t srcsize) {
     size_t dstsize = srcsize * 3 + 1;
     puchar_t psrc = CAST(puchar_t, src);
 
-    pfind_t dst = fxalloc(dstsize, MEMFIND_NOCHUNKSIZE);
+    pfind_t dst = fxalloc(dstsize, MEMFIND_NOBLOCKSIZE);
     if (dst) {
       puchar_t pdst = CAST(puchar_t, dst->item);
       pdst[dst->cpos++] = '0';
@@ -448,7 +448,7 @@ handle_t base32_encode(unknown_t src, size_t srcsize) {
     size_t maxsize = srcsize * 3 + 1;
     puchar_t psrc = CAST(puchar_t, src);
 
-    pfind_t dst = fxalloc(maxsize, MEMFIND_NOCHUNKSIZE);
+    pfind_t dst = fxalloc(maxsize, MEMFIND_NOBLOCKSIZE);
     if (dst) {
       puchar_t pdst = CAST(puchar_t, dst->item);
 
@@ -510,7 +510,7 @@ handle_t base58_encode(unknown_t src, size_t srcsize) {
     size_t maxsize = srcsize * 4 / 3 + 4;
     puchar_t psrc = CAST(puchar_t, src);
 
-    pfind_t dst = fxalloc(maxsize, MEMFIND_NOCHUNKSIZE);
+    pfind_t dst = fxalloc(maxsize, MEMFIND_NOBLOCKSIZE);
     if (dst) {
       puchar_t pdst = CAST(puchar_t, dst->item);
       puchar_t ptmp = xmalloc(srcsize * 137 / 100, MODE_HEAP);
@@ -559,7 +559,7 @@ handle_t base64_encode(unknown_t src, size_t srcsize) {
     size_t maxsize = srcsize * 4 / 3 + 4;
     puchar_t psrc = CAST(puchar_t, src);
 
-    pfind_t dst = fxalloc(maxsize, MEMFIND_NOCHUNKSIZE);
+    pfind_t dst = fxalloc(maxsize, MEMFIND_NOBLOCKSIZE);
     if (dst) {
       puchar_t pdst = CAST(puchar_t, dst->item);
 
@@ -604,41 +604,41 @@ handle_t base85_encode(unknown_t src, size_t srcsize) {
     puchar_t psrc = CAST(puchar_t, src);
 
     size_t maxsize = ((srcsize + 3) / 4) * 5;
-    pfind_t dst = fxalloc(maxsize, MEMFIND_NOCHUNKSIZE);
+    pfind_t dst = fxalloc(maxsize, MEMFIND_NOBLOCKSIZE);
     if (dst) {
       puchar_t pdst = CAST(puchar_t, dst->item);
 
       size_t si = 0;
       while (si < srcsize) {
-        size_t chunk;
-        size_t chunksize = srcsize - si;
+        size_t block;
+        size_t blocksize = srcsize - si;
 
-        if (chunksize >= 4) {
-          chunk  = (CAST(size_t, psrc[si++]) << 24u);
-          chunk |= (CAST(size_t, psrc[si++]) << 16u);
-          chunk |= (CAST(size_t, psrc[si++]) <<  8u);
-          chunk |= (CAST(size_t, psrc[si++]) <<  0u);
+        if (blocksize >= 4) {
+          block  = (CAST(size_t, psrc[si++]) << 24u);
+          block |= (CAST(size_t, psrc[si++]) << 16u);
+          block |= (CAST(size_t, psrc[si++]) <<  8u);
+          block |= (CAST(size_t, psrc[si++]) <<  0u);
         } else {
-          chunk  =                   (CAST(size_t, psrc[si++]) << 24u);
-          chunk |= ((si < srcsize) ? (CAST(size_t, psrc[si++]) << 16u) : 0u);
-          chunk |= ((si < srcsize) ? (CAST(size_t, psrc[si++]) <<  8u) : 0u);
-          chunk |= ((si < srcsize) ? (CAST(size_t, psrc[si++]) <<  0u) : 0u);
+          block  =                   (CAST(size_t, psrc[si++]) << 24u);
+          block |= ((si < srcsize) ? (CAST(size_t, psrc[si++]) << 16u) : 0u);
+          block |= ((si < srcsize) ? (CAST(size_t, psrc[si++]) <<  8u) : 0u);
+          block |= ((si < srcsize) ? (CAST(size_t, psrc[si++]) <<  0u) : 0u);
         }
 
-        if (base85_encode_zero && (0u == chunk) && (chunksize >= 4)) {
+        if (base85_encode_zero && (0u == block) && (blocksize >= 4)) {
           pdst[dst->cpos++] = 'z';
         } else {
-          pdst[dst->cpos + 4] = (chunk % base85_max) + base85_def;
-          chunk /= base85_max;
-          pdst[dst->cpos + 3] = (chunk % base85_max) + base85_def;
-          chunk /= base85_max;
-          pdst[dst->cpos + 2] = (chunk % base85_max) + base85_def;
-          chunk /= base85_max;
-          pdst[dst->cpos + 1] = (chunk % base85_max) + base85_def;
-          chunk /= base85_max;
-          pdst[dst->cpos + 0] = CAST(uchar_t, chunk) + base85_def;
+          pdst[dst->cpos + 4] = (block % base85_max) + base85_def;
+          block /= base85_max;
+          pdst[dst->cpos + 3] = (block % base85_max) + base85_def;
+          block /= base85_max;
+          pdst[dst->cpos + 2] = (block % base85_max) + base85_def;
+          block /= base85_max;
+          pdst[dst->cpos + 1] = (block % base85_max) + base85_def;
+          block /= base85_max;
+          pdst[dst->cpos + 0] = CAST(uchar_t, block) + base85_def;
 
-          dst->cpos += chunksize >= 4 ? 5 : chunksize + 1;
+          dst->cpos += blocksize >= 4 ? 5 : blocksize + 1;
         }
       }
 
@@ -655,7 +655,7 @@ handle_t base85_encode(unknown_t src, size_t srcsize) {
 
 handle_t vigenere_encode(unknown_t src, size_t srcsize, unknown_t key, size_t keysize) {
   if (src && srcsize && key && keysize) {
-    pfind_t dst = fxalloc(srcsize, MEMFIND_NOCHUNKSIZE);
+    pfind_t dst = fxalloc(srcsize, MEMFIND_NOBLOCKSIZE);
     if (dst) {
       puchar_t pdst = CAST(puchar_t, dst->item);
 
