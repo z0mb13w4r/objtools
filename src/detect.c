@@ -8,14 +8,6 @@
 #include "objregex.h"
 #include "signatures.h"
 
-#define DETECT_MAGIC0          (MODE_PUT0('S') | MODE_PUT1('G') | MODE_PUT2('N') | MODE_PUT3('0'))
-#define DETECT_FLAG            (MODE_PUT0('F') | MODE_PUT1('L') | MODE_PUT2('A') | MODE_PUT3('G'))
-#define DETECT_NAME            (MODE_PUT0('N') | MODE_PUT1('A') | MODE_PUT2('M') | MODE_PUT3('E'))
-#define DETECT_SIGNATURE       (MODE_PUT0('S') | MODE_PUT1('I') | MODE_PUT2('G') | MODE_PUT3('N'))
-
-#define DETECT_NONE            (U32MASK_NONE)
-#define DETECT_EP_ONLY         (U32MASK(0))
-
 int detect_create(const pbuffer_t p, const poptions_t o) {
   handle_t inp2 = fcalloc(p->data, p->size, MEMFIND_NOCHUNKSIZE);
   handle_t out1 = fcalloc(NULL, p->size, MEMFIND_NOCHUNKSIZE);
@@ -26,7 +18,7 @@ int detect_create(const pbuffer_t p, const poptions_t o) {
     pre_t r2 = rmalloc("signature = (([0-9A-F?]{2} ?)+)");
     pre_t r3 = rmalloc("ep_only = (false|true)");
 
-    fsetchunk(out2, DETECT_MAGIC0, 0);
+    fsetchunk(out2, SIGNATURE_MAGIC0, 0);
 
     while (!fiseof(inp2)) {
       char *p2 = fgetline(inp2);
@@ -39,7 +31,7 @@ int detect_create(const pbuffer_t p, const poptions_t o) {
                 regex_getvalue(r1, 1), regex_getso(r1, 1), regex_geteo(r1, 1) - 1, regex_getsize(r1, 1));
             }
 
-            fsetchunk(out2, DETECT_NAME, regex_getsize(r1, 1) + 1);
+            fsetchunk(out2, SIGNATURE_NAME, regex_getsize(r1, 1) + 1);
             fsetp(out2, regex_getvalue(r1, 1), regex_getsize(r1, 1));
           }
         } else {
@@ -62,7 +54,7 @@ int detect_create(const pbuffer_t p, const poptions_t o) {
               fsetu8(out1, 0);
 
               fshrink(out1);
-              fsetchunk(out2, DETECT_SIGNATURE, fgetsize(out1));
+              fsetchunk(out2, SIGNATURE_SIGNATURE, fgetsize(out1));
               fsetp(out2, fget(out1), fgetsize(out1));
             }
           } else {
@@ -75,8 +67,8 @@ int detect_create(const pbuffer_t p, const poptions_t o) {
                     isbool(regex_getvalue(r3, 1), regex_getsize(r3, 1)) ? "y" : "n");
                 }
 
-                fsetchunk(out2, DETECT_FLAG, regex_getsize(r2, 1) + 1);
-                fsetu32(out2, isbool(regex_getvalue(r3, 1), regex_getsize(r3, 1)) ? DETECT_EP_ONLY : DETECT_NONE);
+                fsetchunk(out2, SIGNATURE_FLAG, regex_getsize(r2, 1) + 1);
+                fsetu32(out2, isbool(regex_getvalue(r3, 1), regex_getsize(r3, 1)) ? SIGNATURE_EP_ONLY : SIGNATURE_NONE);
               }
             }
           }
