@@ -92,6 +92,7 @@ int detect_create(const pbuffer_t p, const poptions_t o) {
 }
 
 int detect_compare(const pbuffer_t p, const poptions_t o) {
+  int n = 0;
   pbuffer_t s0 = bopen(o->inpname1);
   if (s0) {
     handle_t s1 = fcalloc(s0->data, s0->size, MEMFIND_NOBLOCKSIZE);
@@ -103,26 +104,29 @@ int detect_compare(const pbuffer_t p, const poptions_t o) {
       if (SIGNATURE_MAGIC0 == mode) {
         fstep(s1, size);
 
-        const char* signature = NULL;
-        size_t      signaturesize = 0;
-        const char* signaturename = NULL;
+        char*  signature = NULL;
+        size_t signaturesize = 0;
+        char*  signaturename = NULL;
         while (!fiseof(s1)) {
           mode = fgetchunk(s1, &size);
           if (SIGNATURE_NAME == mode) {
             signaturename = fgetp(s1, size);
             if (MODE_ISANY(o->action, OPTPROGRAM_VERBOSE)) {
-printf("$NAME$ = %s\n", signaturename);
+              n += printf_text("NAME", USE_LT | USE_COLON);
+              n += printf_sore(signaturename, size, USE_STR | USE_SPACE | USE_SQ | USE_EOL);
             }
           } else if (SIGNATURE_SIGNATURE == mode) {
             signature = fgetp(s1, size);
             signaturesize = size;
             if (MODE_ISANY(o->action, OPTPROGRAM_VERBOSE)) {
-printf("$SIGNATURE$ = %s\n", signature);
+              n += printf_text("SIGNATURE", USE_LT | USE_COLON);
+              n += printf_sore(signature, signaturesize, USE_STR | USE_SPACE | USE_EOL);
             }
           } else if (SIGNATURE_FLAG == mode) {
             const uint32_t val = fgetu32(s1);
             if (MODE_ISANY(o->action, OPTPROGRAM_VERBOSE)) {
-printf("$FLAG$ = %x\n", val);
+              n += printf_text("FLAG", USE_LT | USE_COLON);
+              n += printf_nice(val, USE_LHEX | USE_EOL);
             }
           } else {
             printf_e("'%s': bad magic %08x.", o->inpname1, mode);
@@ -139,7 +143,7 @@ printf("$FLAG$ = %x\n", val);
     printf_e("'%s': no such file.", o->inpname1);
   }
 
-  return 0;
+  return n;
 }
 
 int detect(const pbuffer_t p, const poptions_t o) {
