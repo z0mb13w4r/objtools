@@ -6,7 +6,9 @@
 #include "printf.h"
 #include "memfind.h"
 #include "objregex.h"
+#include "signatures.h"
 
+#define DETECT_MAGIC0          (MODE_PUT0('S') | MODE_PUT1('G') | MODE_PUT2('N') | MODE_PUT3('0'))
 #define DETECT_FLAG            (MODE_PUT0('F') | MODE_PUT1('L') | MODE_PUT2('A') | MODE_PUT3('G'))
 #define DETECT_NAME            (MODE_PUT0('N') | MODE_PUT1('A') | MODE_PUT2('M') | MODE_PUT3('E'))
 #define DETECT_SIGNATURE       (MODE_PUT0('S') | MODE_PUT1('I') | MODE_PUT2('G') | MODE_PUT3('N'))
@@ -23,6 +25,8 @@ int detect_create(const pbuffer_t p, const poptions_t o) {
     pre_t r1 = rmalloc("\\[(.*)\\]");
     pre_t r2 = rmalloc("signature = (([0-9A-F?]{2} ?)+)");
     pre_t r3 = rmalloc("ep_only = (false|true)");
+
+    fsetchunk(out2, DETECT_MAGIC0, 0);
 
     while (!fiseof(inp2)) {
       char *p2 = fgetline(inp2);
@@ -95,11 +99,18 @@ int detect_create(const pbuffer_t p, const poptions_t o) {
   return 0;
 }
 
+int detect_compare(const pbuffer_t p, const poptions_t o) {
+  printf("%s\n", o->inpname1);
+
+  return 0;
+}
+
 int detect(const pbuffer_t p, const poptions_t o) {
   if (isPE(p)) {
     o->action |= OPTPROGRAM_INFO;
 
     dump_summary(p, o);
+    detect_compare(p, o);
 
   } else {
     printf_e("not an PE file - it has the wrong magic bytes at the start.");
