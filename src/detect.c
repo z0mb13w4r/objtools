@@ -117,17 +117,22 @@ int detect_compare(const pbuffer_t p, const poptions_t o) {
             }
           } else if (SIGNATURE_SIGNATURE == mode) {
             signature = fgetp(s1, size);
-            signaturesize = size;
+            signaturesize = size - 1;
             if (MODE_ISANY(o->action, OPTPROGRAM_VERBOSE)) {
               n += printf_text("SIGNATURE", USE_LT | USE_COLON);
               n += printf_sore(signature, signaturesize, USE_STR | USE_SPACE | USE_EOL);
             }
           } else if (SIGNATURE_FLAG == mode) {
-            const uint32_t val = fgetu32(s1);
+            const uint32_t mode = fgetu32(s1);
             if (MODE_ISANY(o->action, OPTPROGRAM_VERBOSE)) {
               n += printf_text("FLAG", USE_LT | USE_COLON);
-              n += printf_nice(val, USE_LHEX | USE_EOL);
+              n += printf_nice(mode, USE_LHEX | USE_EOL);
             }
+
+            if (signature_pecode(p, signature, signaturesize, mode)) {
+              n += printf_text("MATCHED", USE_LT | USE_COLON);
+              n += printf_text(signaturename, USE_LT | USE_SPACE | USE_SQ | USE_EOL);
+	    }
           } else {
             printf_e("'%s': bad magic %08x.", o->inpname1, mode);
             break;
