@@ -64,6 +64,12 @@ WORD peget_sectioncount(const pbuffer_t p) {
   return 0;
 }
 
+DWORD peget_addressofentrypoint(const pbuffer_t p) {
+  if (isPE32(p))       return CAST(PIMAGE_NT_HEADERS32, peget_nt32hdr(p))->OptionalHeader.AddressOfEntryPoint;
+  else if (isPE64(p))  return CAST(PIMAGE_NT_HEADERS64, peget_nt64hdr(p))->OptionalHeader.AddressOfEntryPoint;
+  return 0;
+}
+
 PIMAGE_DOS_HEADER peget_doshdr(const pbuffer_t p) {
   return CAST(PIMAGE_DOS_HEADER, getp(p, 0, sizeof(IMAGE_DOS_HEADER)));
 }
