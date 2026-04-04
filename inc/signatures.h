@@ -22,5 +22,7 @@ typedef struct signatures_s {
 
 } signatures_t, *psignatures_t;
 
+int signature_pecode(handle_t p, const char* data, const size_t datasize, const uint32_t mode);
+
 #endif
 
