@@ -202,6 +202,8 @@
                                            | OPTOBJHASH_SSDEEP)
 
 #define OPTDETECT_CREATE                           U64MASK(0)
+#define OPTDETECT_EPONLY                           U64MASK(1)
+#define OPTDETECT_MATCHONCE                        U64MASK(2)
 
 #define OPTUSE_SIZE                                U64MASK(60)
 #define OPTUSE_ADDRESS                             U64MASK(61)

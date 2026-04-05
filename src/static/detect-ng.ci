@@ -7,11 +7,17 @@ static const char *zPEDESCRIPTION[] = {
   0
 };
 
+static char zDETECTCREATE[]    = "Create a signature database.";
+static char zDETECTEPONLY[]    = "Only consider signatures from entry point.";
+static char zDETECTMATCHONCE[] = "Match only one signature, then stop.";
+
 static const args_t zDETECTARGS[] = {
   {'h', "--help",            OPTPROGRAM_HELP,              NULL},
   {'v', "--version",         OPTPROGRAM_VERSION,           NULL},
   {'V', "--verbose",         OPTPROGRAM_VERBOSE,           NULL},
-  {'c', "--create",          OPTDETECT_CREATE,             NULL},
+  {'c', "--create",          OPTDETECT_CREATE,             zDETECTCREATE},
+  {'e', "--ep-only",         OPTDETECT_EPONLY,             zDETECTEPONLY},
+  {'m', "--match-once",      OPTDETECT_MATCHONCE,          zDETECTMATCHONCE},
   {'X', "--hash",            OPTPROGRAM_HASH,              NULL},
   {'E', "--entropy",         OPTPROGRAM_ENTROPY,           NULL},
 
