@@ -129,7 +129,7 @@ int detect_compare(const pbuffer_t p, const poptions_t o) {
               n += printf_nice(mode, USE_LHEX | USE_EOL);
             }
 
-            if (signature_pecode(p, signature, signaturesize, mode)) {
+            if (signaturesize == signature_pecode(p, signature, signaturesize, mode)) {
               n += printf_text("MATCHED", USE_LT | USE_COLON);
               n += printf_text(signaturename, USE_LT | USE_SPACE | USE_SQ | USE_EOL);
 	    }
