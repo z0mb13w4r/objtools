@@ -11,7 +11,7 @@
 #define SIGNATURE_NAME         (MODE_PUT0('N') | MODE_PUT1('A') | MODE_PUT2('M') | MODE_PUT3('E'))
 #define SIGNATURE_SIGNATURE    (MODE_PUT0('S') | MODE_PUT1('I') | MODE_PUT2('G') | MODE_PUT3('N'))
 
-#define MODE_SIGNATURE          (MODE_PUT0('S') | MODE_PUT1('I') | MODE_PUT2('G') | | MODE_PUT3('N'))
+#define MODE_SIGNATURE         (MODE_PUT0('S') | MODE_PUT1('I') | MODE_PUT2('G') | | MODE_PUT3('N'))
 
 typedef struct signatures_s {
   smode_t   mode;
@@ -21,6 +21,7 @@ typedef struct signatures_s {
 
 } signatures_t, *psignatures_t;
 
+int signature_scan(handle_t p, const char* data, const size_t datasize, const uint32_t mode);
 int signature_pecode(handle_t p, const char* data, const size_t datasize, const uint32_t mode);
 
 #endif
