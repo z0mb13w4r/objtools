@@ -65,8 +65,15 @@ WORD peget_sectioncount(const pbuffer_t p) {
 }
 
 DWORD peget_addressofentrypoint(const pbuffer_t p) {
-  if (isPE32(p))       return CAST(PIMAGE_NT_HEADERS32, peget_nt32hdr(p))->OptionalHeader.AddressOfEntryPoint;
-  else if (isPE64(p))  return CAST(PIMAGE_NT_HEADERS64, peget_nt64hdr(p))->OptionalHeader.AddressOfEntryPoint;
+  if (isPE32(p)) {
+    DWORD vaddr = CAST(PIMAGE_NT_HEADERS32, peget_nt32hdr(p))->OptionalHeader.AddressOfEntryPoint;
+    PIMAGE_SECTION_HEADER p0 = peget_sectionhdrbyRVA(p, vaddr);
+    return p0 ? peconvert2va(p0, vaddr) : 0;
+  } else if (isPE64(p)) {
+    DWORD vaddr = CAST(PIMAGE_NT_HEADERS64, peget_nt64hdr(p))->OptionalHeader.AddressOfEntryPoint;
+    PIMAGE_SECTION_HEADER p0 = peget_sectionhdrbyRVA(p, vaddr);
+    return p0 ? peconvert2va(p0, vaddr) : 0;
+  }
   return 0;
 }
 
