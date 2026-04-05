@@ -47,12 +47,14 @@ int signature_pecode(handle_t p, const char* data, const size_t datasize, const 
     if (p1) {
       int maxcount = 0;
       if (MODE_ISANY(mode, SIGNATURE_EP_ONLY)) {
-        fmove(p1, peget_addressofentrypoint(p));
-        maxcount = signature_scan(p1, data, datasize, mode);
+        if (fmove(p1, peget_addressofentrypoint(p))) {
+          maxcount = signature_scan(p1, data, datasize, mode);
+        }
       } else {
         for (int i = 0; i < (filesize - safesize); ++i) {
-          fmove(p1, i);
-          maxcount = MAX(maxcount, signature_scan(p1, data, datasize, mode));
+          if (fmove(p1, i)) {
+            maxcount = MAX(maxcount, signature_scan(p1, data, datasize, mode));
+          }
         }
       }
 
