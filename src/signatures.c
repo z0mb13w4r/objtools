@@ -1,5 +1,7 @@
 #include "pecode.h"
+#include "printf.h"
 #include "memfind.h"
+#include "options.h"
 #include "objutils.h"
 #include "signatures.h"
 
@@ -66,3 +68,61 @@ int signature_pecode(handle_t p, const char* data, const size_t datasize, const 
 
   return -1;
 }
+
+int signature_pedump(handle_t p, handle_t q, const imode_t mode) {
+  int n = 0;
+  handle_t s1 = fmalloc(bget(q), bgetsize(q), MEMFIND_NOBLOCKSIZE);
+  if (s1) {
+    size_t  size = 0;
+    nmode_t role = 0;
+
+    role = fgetchunk(s1, &size);
+    if (SIGNATURE_MAGIC0 == role) {
+      fstep(s1, size);
+
+      char*  signature = NULL;
+      size_t signaturesize = 0;
+      char*  signaturename = NULL;
+      while (!fiseof(s1)) {
+        role = fgetchunk(s1, &size);
+        if (SIGNATURE_NAME == role) {
+          signaturename = fgetp(s1, size);
+          if (MODE_ISANY(mode, OPTPROGRAM_VERBOSE)) {
+            n += printf_text("NAME", USE_LT | USE_COLON);
+            n += printf_sore(signaturename, size, USE_STR | USE_SPACE | USE_SQ | USE_EOL);
+          }
+        } else if (SIGNATURE_SIGNATURE == role) {
+          signature = fgetp(s1, size);
+          signaturesize = size - 1;
+          if (MODE_ISANY(mode, OPTPROGRAM_VERBOSE)) {
+            n += printf_text("SIGNATURE", USE_LT | USE_COLON);
+            n += printf_sore(signature, signaturesize, USE_STR | USE_SPACE | USE_EOL);
+          }
+        } else if (SIGNATURE_FLAG == role) {
+          const uint32_t mode = fgetu32(s1);
+          if (MODE_ISANY(mode, OPTPROGRAM_VERBOSE)) {
+            n += printf_text("FLAG", USE_LT | USE_COLON);
+            n += printf_nice(mode, USE_LHEX | USE_EOL);
+          }
+
+          const bool_t isok = MODE_ISNOT(mode, OPTDETECT_EPONLY) || MODE_ISANY(mode, SIGNATURE_EP_ONLY);
+          if (isok && (signaturesize == signature_pecode(p, signature, signaturesize, mode))) {
+            n += printf_text("MATCHED", USE_LT | USE_COLON);
+            n += printf_text(signaturename, USE_LT | USE_SPACE | USE_SQ | USE_EOL);
+            n += printf_text("SIGNATURE", USE_LT | USE_COLON);
+            n += printf_sore(signature, signaturesize, USE_STR | USE_SPACE | USE_EOL);
+            if (MODE_ISANY(mode, OPTDETECT_MATCHONCE)) break;
+          }
+        } else {
+          printf_e("bad magic %08x.", role);
+          break;
+        }
+      }
+    }
+
+    ffree(s1);
+  }
+
+  return n;
+}
+

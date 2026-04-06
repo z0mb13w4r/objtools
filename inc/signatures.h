@@ -23,6 +23,7 @@ typedef struct signatures_s {
 
 int signature_scan(handle_t p, const char* data, const size_t datasize, const uint32_t mode);
 int signature_pecode(handle_t p, const char* data, const size_t datasize, const uint32_t mode);
+int signature_pedump(handle_t p, handle_t q, const imode_t mode);
 
 #endif
 
