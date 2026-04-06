@@ -107,9 +107,9 @@ int signature_pedump(handle_t p, handle_t q, const imode_t mode) {
 
           const bool_t isok = MODE_ISNOT(mode, OPTDETECT_EPONLY) || MODE_ISANY(mode, SIGNATURE_EP_ONLY);
           if (isok && (signaturesize == signature_pecode(p, signature, signaturesize, mode))) {
-            n += printf_text("MATCHED", USE_LT | USE_COLON);
+            n += printf_text("MATCHED", USE_LT | USE_TAB | USE_COLON);
             n += printf_text(signaturename, USE_LT | USE_SPACE | USE_SQ | USE_EOL);
-            n += printf_text("SIGNATURE", USE_LT | USE_COLON);
+            n += printf_text("SIGNATURE", USE_LT | USE_TAB | USE_COLON);
             n += printf_sore(signature, signaturesize, USE_STR | USE_SPACE | USE_EOL);
             if (MODE_ISANY(mode, OPTDETECT_MATCHONCE)) break;
           }

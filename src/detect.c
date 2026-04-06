@@ -8,8 +8,6 @@
 #include "objregex.h"
 #include "signatures.h"
 
-//#include "static/sig-userdb.ci"
-
 int detect_create(const pbuffer_t p, const poptions_t o) {
   handle_t inp2 = fcalloc(p->data, p->size, MEMFIND_NOBLOCKSIZE);
   handle_t out1 = fcalloc(NULL, p->size, MEMFIND_NOBLOCKSIZE);
@@ -95,10 +93,10 @@ int detect_create(const pbuffer_t p, const poptions_t o) {
 
 int detect_compare(const pbuffer_t p, const poptions_t o) {
   int n = 0;
-  pbuffer_t s0 = bopen(o->inpname1);
-  if (s0) {
-    n = signature_pedump(p, s0, o->action);
-    bfree(s0);
+  handle_t q = bopen(o->inpname1);
+  if (q) {
+    n = signature_pedump(p, q, o->action);
+    bfree(q);
   } else {
     printf_e("'%s': no such file.", o->inpname1);
   }

@@ -18,6 +18,7 @@ static char zPEDEBUG[]           = "Displays the contents of the debug informati
 static char zPECONFIG[]          = "Displays the contents of the configuration section.";
 static char zPERESOURCE[]        = "Displays the contents of the resource information section.";
 static char zPEDISASSEMBLE[]     = "Display the assembler mnemonics for the machine instructions from the input file.";
+static char zPEDETECT[]          = "Displays the contents of the signature analysis.";
 
 static const char *zPEDESCRIPTION[] = {
   "displays information about one or more PE format object files. The options",
@@ -47,6 +48,7 @@ static const args_t zREADPEARGS[] = {
   {'g', "--debug",           OPTREADPE_DEBUG,              zPEDEBUG},
   {'f', "--config",          OPTREADPE_CONFIG,             zPECONFIG},
   {'o', "--resource",        OPTREADPE_RESOURCE,           zPERESOURCE},
+  {'d', "--detect",          OPTREADPE_DETECT,             zPEDETECT},
   {'x', "--hex-dump",        0,                            zHEXDUMP,           OPTUSE_SECTION},
   {'c', "--code-dump",       0,                            zCODEDUMP,          OPTUSE_SECTION},
   {'s', "--string-dump",     0,                            zSTRDUMP,           OPTUSE_SECTION},

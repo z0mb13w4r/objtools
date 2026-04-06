@@ -133,6 +133,7 @@
 #define OPTREADPE_IAT                              U64MASK(9)
 #define OPTREADPE_EAT                              U64MASK(10)
 #define OPTREADPE_VERSION                          U64MASK(11)
+#define OPTREADPE_DETECT                           U64MASK(12)
 
 #define OPTREADPE_HEADERS              (OPTREADPE_DOSHEADER | OPTREADPE_NTHEADER | OPTREADPE_SECTIONHEADERS)
 

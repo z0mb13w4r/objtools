@@ -6,6 +6,7 @@
 #include "printf.h"
 #include "readpe.h"
 #include "memfind.h"
+#include "signatures.h"
 
 #include "static/dbghdr.ci"
 #include "static/filehdr.ci"
@@ -16,6 +17,7 @@
 #include "static/res_types.ci"
 #include "static/unw_flags.ci"
 #include "static/verinfo.ci"
+//#include "static/sig-userdb.ci"
 
 static const int MAXSIZE = 36;
 
@@ -75,6 +77,39 @@ static int dump_dosheaderNN(const pbuffer_t p, const poptions_t o) {
     n += printf_nice(dos->e_lfanew, USE_FHEX16 | USE_EOL);
     n += printf_eol();
   }
+
+  return n;
+}
+
+static int dump_detector0(const pbuffer_t p, const poptions_t o, const char* name) {
+  int n = 0;
+
+  handle_t q = bopen(name);
+  if (q) {
+    n = signature_pedump(p, q, o->action);
+    bfree(q);
+  } else {
+    printf_e("'%s': no such file.", name);
+  }
+
+  return n;
+}
+
+static int dump_detector(const pbuffer_t p, const poptions_t o) {
+  int n = 0;
+
+  n += printf_text("SIGNATURE ANALYSIS", USE_LT | USE_COLON | USE_EOL);
+  n += dump_detector0(p, o, "sigs/userdb.sig");
+//  n += dump_detector0(p, o, "sigs/compiler.userdb.sig");
+//  n += dump_detector0(p, o, "sigs/file_format.userdb.sig");
+//  n += dump_detector0(p, o, "sigs/installer.userdb.sig");
+//  n += dump_detector0(p, o, "sigs/joiner.userdb.sig");
+//  n += dump_detector0(p, o, "sigs/overlay.userdb.sig");
+//  n += dump_detector0(p, o, "sigs/packer.userdb.sig");
+//  n += dump_detector0(p, o, "sigs/protection.userdb.sig");
+//  n += dump_detector0(p, o, "sigs/protector.userdb.sig");
+//  n += dump_detector0(p, o, "sigs/sfx_archive.userdb.sig");
+  n += printf_eol();
 
   return n;
 }
@@ -1416,6 +1451,7 @@ int readpe(const pbuffer_t p, const poptions_t o) {
     dump_summary(p, o);
 
     if (MODE_ISANY(o->action, OPTREADPE_DOSHEADER))           dump_dosheaderNN(p, o);
+    if (MODE_ISANY(o->action, OPTREADPE_DETECT))              dump_detector(p, o);
 
     if (isPE32(p)) {
       if (MODE_ISANY(o->action, OPTREADPE_NTHEADER))          dump_ntheader32(p, o);
