@@ -95,6 +95,7 @@ int detect_compare(const pbuffer_t p, const poptions_t o) {
   int n = 0;
   handle_t q = bopen(o->inpname1);
   if (q) {
+    n += printf_text("SIGNATURE ANALYSIS", USE_LT | USE_COLON | USE_EOL);
     n = signature_pedump(p, q, o->action);
     bfree(q);
   } else {
