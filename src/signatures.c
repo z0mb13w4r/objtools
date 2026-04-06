@@ -43,7 +43,7 @@ int signature_pecode(handle_t p, const char* data, const size_t datasize, const 
   const size_t filesize = bgetsize(p);
   const size_t safesize = (datasize + 1) / 2;
   if (isPE(p) && data && safesize < bgetsize(p)) {
-    handle_t p1 = fcalloc(bget(p), bgetsize(p), MEMFIND_NOBLOCKSIZE);
+    handle_t p1 = fmalloc(bget(p), bgetsize(p), MEMFIND_NOBLOCKSIZE);
     if (p1) {
       int maxcount = 0;
       if (MODE_ISANY(mode, SIGNATURE_EP_ONLY)) {

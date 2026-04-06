@@ -8,6 +8,8 @@
 #include "objregex.h"
 #include "signatures.h"
 
+//#include "static/sig-userdb.ci"
+
 int detect_create(const pbuffer_t p, const poptions_t o) {
   handle_t inp2 = fcalloc(p->data, p->size, MEMFIND_NOBLOCKSIZE);
   handle_t out1 = fcalloc(NULL, p->size, MEMFIND_NOBLOCKSIZE);
@@ -95,7 +97,7 @@ int detect_compare(const pbuffer_t p, const poptions_t o) {
   int n = 0;
   pbuffer_t s0 = bopen(o->inpname1);
   if (s0) {
-    handle_t s1 = fcalloc(s0->data, s0->size, MEMFIND_NOBLOCKSIZE);
+    handle_t s1 = fmalloc(s0->data, s0->size, MEMFIND_NOBLOCKSIZE);
     if (s1) {
       size_t  size = 0;
       nmode_t mode = 0;
