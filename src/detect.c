@@ -68,7 +68,7 @@ int detect_create(const pbuffer_t p, const poptions_t o) {
                 }
 
                 fsetchunk(out2, SIGNATURE_FLAG, sizeof(uint32_t));
-                fsetu32(out2, isbool(regex_getvalue(r3, 1), regex_getsize(r3, 1)) ? SIGNATURE_EP_ONLY : SIGNATURE_NONE);
+                fsetu32(out2, isbool(regex_getvalue(r3, 1), regex_getsize(r3, 1)) ? SIGNATURE_EPONLY : SIGNATURE_NONE);
               }
             }
           }
@@ -96,7 +96,11 @@ int detect_compare(const pbuffer_t p, const poptions_t o) {
   handle_t q = bopen(o->inpname1);
   if (q) {
     n += printf_text("SIGNATURE ANALYSIS", USE_LT | USE_COLON | USE_EOL);
-    n = signature_pedump(p, q, o->action);
+    imode_t mode = SIGNATURE_NONE;
+    if (MODE_ISANY(o->action, OPTPROGRAM_VERBOSE))   mode |= SIGNATURE_VERBOSE;
+    if (MODE_ISANY(o->action, OPTDETECT_EPONLY))     mode |= SIGNATURE_NOSCANS;
+    if (MODE_ISANY(o->action, OPTDETECT_MATCHONCE))  mode |= SIGNATURE_MATCHONCE;
+    n = signature_pedump(p, q, mode);
     bfree(q);
   } else {
     printf_e("'%s': no such file.", o->inpname1);

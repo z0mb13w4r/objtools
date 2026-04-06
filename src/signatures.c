@@ -48,7 +48,7 @@ int signature_pecode(handle_t p, const char* data, const size_t datasize, const 
     handle_t p1 = fmalloc(bget(p), bgetsize(p), MEMFIND_NOBLOCKSIZE);
     if (p1) {
       int maxcount = 0;
-      if (MODE_ISANY(mode, SIGNATURE_EP_ONLY)) {
+      if (MODE_ISANY(mode, SIGNATURE_EPONLY)) {
         if (fmove(p1, peget_addressofentrypoint(p))) {
           maxcount = signature_scan(p1, data, datasize, mode);
         }
@@ -87,31 +87,31 @@ int signature_pedump(handle_t p, handle_t q, const imode_t mode) {
         role = fgetchunk(s1, &size);
         if (SIGNATURE_NAME == role) {
           signaturename = fgetp(s1, size);
-          if (MODE_ISANY(mode, OPTPROGRAM_VERBOSE)) {
+          if (MODE_ISANY(mode, SIGNATURE_VERBOSE)) {
             n += printf_text("NAME", USE_LT | USE_COLON);
             n += printf_sore(signaturename, size, USE_STR | USE_SPACE | USE_SQ | USE_EOL);
           }
         } else if (SIGNATURE_SIGNATURE == role) {
           signature = fgetp(s1, size);
           signaturesize = size - 1;
-          if (MODE_ISANY(mode, OPTPROGRAM_VERBOSE)) {
+          if (MODE_ISANY(mode, SIGNATURE_VERBOSE)) {
             n += printf_text("SIGNATURE", USE_LT | USE_COLON);
             n += printf_sore(signature, signaturesize, USE_STR | USE_SPACE | USE_EOL);
           }
         } else if (SIGNATURE_FLAG == role) {
-          const uint32_t mode = fgetu32(s1);
-          if (MODE_ISANY(mode, OPTPROGRAM_VERBOSE)) {
+          const uint32_t flag = fgetu32(s1);
+          if (MODE_ISANY(mode, SIGNATURE_VERBOSE)) {
             n += printf_text("FLAG", USE_LT | USE_COLON);
-            n += printf_nice(mode, USE_LHEX | USE_EOL);
+            n += printf_nice(flag, USE_LHEX | USE_EOL);
           }
 
-          const bool_t isok = MODE_ISNOT(mode, OPTDETECT_EPONLY) || MODE_ISANY(mode, SIGNATURE_EP_ONLY);
-          if (isok && (signaturesize == signature_pecode(p, signature, signaturesize, mode))) {
+          const bool_t isok = MODE_ISNOT(mode, SIGNATURE_NOSCANS) || MODE_ISANY(flag, SIGNATURE_EPONLY);
+          if (isok && (signaturesize == signature_pecode(p, signature, signaturesize, flag))) {
             n += printf_text("MATCHED", USE_LT | USE_TAB | USE_COLON);
             n += printf_text(signaturename, USE_LT | USE_SPACE | USE_SQ | USE_EOL);
             n += printf_text("SIGNATURE", USE_LT | USE_TAB | USE_COLON);
             n += printf_sore(signature, signaturesize, USE_STR | USE_SPACE | USE_EOL);
-            if (MODE_ISANY(mode, OPTDETECT_MATCHONCE)) break;
+            if (MODE_ISANY(mode, SIGNATURE_MATCHONCE)) break;
           }
         } else {
           printf_e("bad magic %08x.", role);

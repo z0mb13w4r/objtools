@@ -86,7 +86,9 @@ static int dump_detector0(const pbuffer_t p, const poptions_t o, const char* nam
 
   handle_t q = bopen(name);
   if (q) {
-    n = signature_pedump(p, q, o->action);
+    imode_t mode = SIGNATURE_NONE;
+    if (MODE_ISANY(o->action, OPTPROGRAM_VERBOSE))   mode |= SIGNATURE_VERBOSE;
+    n = signature_pedump(p, q, mode);
     bfree(q);
   } else {
     printf_e("'%s': no such file.", name);
