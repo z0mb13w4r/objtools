@@ -4,7 +4,7 @@ These tools were originally designed as part of a research project on industrial
 
 This suite of tools was inspired by a problem I encountered while comparing two subtly different executables that were compiled from the same source code. Also, having binaries built with different cross-compilers raises the question of which flavour of readelf or objdump to use? After I reached 12 and started thinking about a simple solution that could be automated and didn't require a $ 7,000-a-year software license.
 
-![WELCOME](https://github.com/z0mb13w4r/z0mb13w4r/blob/main/readelf-ng/readelf-ng-relocs.png)
+![WELCOME](https://github.com/z0mb13w4r/z0mb13w4r/blob/main/objtools-image.png)
 
 **convert-ng** is a Swiss Army Knife for manipulating data in complex ways using operations, xor, addition, subtraction, logical shifts and rotations, base32, base58, base64, base85 and vigeneree cipher. [READ MORE...](https://github.com/z0mb13w4r/objtools/wiki/convert%E2%80%90ng)
 
