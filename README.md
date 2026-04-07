@@ -16,7 +16,7 @@ This suite of tools was inspired by a problem I encountered while comparing two 
 
 **objdwarf-ng** displays the dwarf information about one or more ELF format object files in standard and enhanced formats. [READ MORE...](https://github.com/z0mb13w4r/objtools/wiki/objdwarf%E2%80%90ng)
 
-**objhash-ng** generates hashes of ELF format object files for malware detection and digital forensics. The utility is supports fuzz-hashing and context-triggered piecewise hashing.
+**objhash-ng** generates hashes of ELF format object files for malware detection and digital forensics. The utility is supports fuzz-hashing and context-triggered piecewise hashing. [READ MORE...](https://github.com/z0mb13w4r/objtools/wiki/objhash%E2%80%90ng)
 
 **readelf-ng** displays information about one or more ELF format object files. [READ MORE...](https://github.com/z0mb13w4r/objtools/wiki/readelf%E2%80%90ng)
 
