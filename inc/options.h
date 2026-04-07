@@ -141,7 +141,7 @@
 #define OPTREADPE_ALL                  (OPTREADPE_DOSHEADER | OPTREADPE_NTHEADER | OPTREADPE_SECTIONHEADERS \
                                            | OPTREADPE_SECTIONGROUPS | OPTREADPE_RUNTIME | OPTREADPE_RELOCS \
                                            | OPTREADPE_IAT | OPTREADPE_EAT | OPTREADPE_RESOURCE | OPTREADPE_DEBUG \
-                                           | OPTREADPE_VERSION)
+                                           | OPTREADPE_VERSION | OPTREADPE_DOSSTUB)
 
 #define OPTREADPE_LITE                 (OPTREADPE_DOSHEADER | OPTREADPE_NTHEADER | OPTREADPE_SECTIONHEADERS \
                                            | OPTREADPE_SECTIONGROUPS | OPTREADPE_IAT | OPTREADPE_EAT)
