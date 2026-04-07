@@ -81,7 +81,23 @@ static int dump_dosheaderNN(const pbuffer_t p, const poptions_t o) {
   return n;
 }
 
-static int dump_detector0(const pbuffer_t p, const poptions_t o, const char* name) {
+static int dump_dosstubNN(const pbuffer_t p, const poptions_t o) {
+  int n = 0;
+
+  PIMAGE_DOS_HEADER p0 = peget_doshdr(p);
+  if (p0) {
+    const size_t off = sizeof(IMAGE_DOS_HEADER);
+    const size_t siz = p0->e_lfanew - sizeof(IMAGE_DOS_HEADER);
+
+    n += printf_text("IMAGE DOS STUB", USE_LT | USE_COLON | USE_EOL);
+    n += printf_data(getp(p, off, siz), siz, off, USE_HEXDUMP);
+    n += printf_eol();
+  }
+
+  return n;
+}
+
+static int dump_detectorNN0(const pbuffer_t p, const poptions_t o, const char* name) {
   int n = 0;
 
   handle_t q = bopen(name);
@@ -97,20 +113,20 @@ static int dump_detector0(const pbuffer_t p, const poptions_t o, const char* nam
   return n;
 }
 
-static int dump_detector(const pbuffer_t p, const poptions_t o) {
+static int dump_detectorNN(const pbuffer_t p, const poptions_t o) {
   int n = 0;
 
   n += printf_text("SIGNATURE ANALYSIS", USE_LT | USE_COLON | USE_EOL);
-  n += dump_detector0(p, o, "sigs/userdb.sig");
-//  n += dump_detector0(p, o, "sigs/compiler.userdb.sig");
-//  n += dump_detector0(p, o, "sigs/file_format.userdb.sig");
-//  n += dump_detector0(p, o, "sigs/installer.userdb.sig");
-//  n += dump_detector0(p, o, "sigs/joiner.userdb.sig");
-//  n += dump_detector0(p, o, "sigs/overlay.userdb.sig");
-//  n += dump_detector0(p, o, "sigs/packer.userdb.sig");
-//  n += dump_detector0(p, o, "sigs/protection.userdb.sig");
-//  n += dump_detector0(p, o, "sigs/protector.userdb.sig");
-//  n += dump_detector0(p, o, "sigs/sfx_archive.userdb.sig");
+  n += dump_detectorNN0(p, o, "sigs/userdb.sig");
+//  n += dump_detectorNN0(p, o, "sigs/compiler.userdb.sig");
+//  n += dump_detectorNN0(p, o, "sigs/file_format.userdb.sig");
+//  n += dump_detectorNN0(p, o, "sigs/installer.userdb.sig");
+//  n += dump_detectorNN0(p, o, "sigs/joiner.userdb.sig");
+//  n += dump_detectorNN0(p, o, "sigs/overlay.userdb.sig");
+//  n += dump_detectorNN0(p, o, "sigs/packer.userdb.sig");
+//  n += dump_detectorNN0(p, o, "sigs/protection.userdb.sig");
+//  n += dump_detectorNN0(p, o, "sigs/protector.userdb.sig");
+//  n += dump_detectorNN0(p, o, "sigs/sfx_archive.userdb.sig");
   n += printf_eol();
 
   return n;
@@ -1453,7 +1469,8 @@ int readpe(const pbuffer_t p, const poptions_t o) {
     dump_summary(p, o);
 
     if (MODE_ISANY(o->action, OPTREADPE_DOSHEADER))           dump_dosheaderNN(p, o);
-    if (MODE_ISANY(o->action, OPTREADPE_DETECT))              dump_detector(p, o);
+    if (MODE_ISANY(o->action, OPTREADPE_DOSSTUB))             dump_dosstubNN(p, o);
+    if (MODE_ISANY(o->action, OPTREADPE_DETECT))              dump_detectorNN(p, o);
 
     if (isPE32(p)) {
       if (MODE_ISANY(o->action, OPTREADPE_NTHEADER))          dump_ntheader32(p, o);

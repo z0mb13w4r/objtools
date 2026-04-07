@@ -9,6 +9,7 @@ static char zPESECTIONGROUPS[]   = "Displays the information contained in the fi
 static char zPEVERSIONINFO[]     = "Displays the information contained in the file's version section.";
 static char zPEHDRS[]            = "Displays the information contained in the file's headers.";
 static char zPEDOSHDR[]          = "Displays the contents of the DOS header.";
+static char zPEDOSSTUB[]         = "Displays the contents of the DOS stub.";
 static char zPENTHDR[]           = "Displays the contents of the NT header.";
 static char zPERELOCS[]          = "Displays the contents of the file's relocation section.";
 static char zPEEAT[]             = "Displays the contents of the Export Address Table section.";
@@ -40,6 +41,7 @@ static const args_t zREADPEARGS[] = {
   {'H', "--headers",         OPTREADPE_HEADERS,            zPEHDRS},
   {'G', "--section-groups",  OPTREADPE_SECTIONGROUPS,      zPESECTIONGROUPS},
   {'D', "--dos-header",      OPTREADPE_DOSHEADER,          zPEDOSHDR},
+  {'O', "--dos-stub",        OPTREADPE_DOSSTUB,            zPEDOSSTUB},
   {'N', "--nt-header",       OPTREADPE_NTHEADER,           zPENTHDR},
   {'R', "--relocs",          OPTREADPE_RELOCS,             zPERELOCS},
   {'E', "--eat",             OPTREADPE_EAT,                zPEEAT},
