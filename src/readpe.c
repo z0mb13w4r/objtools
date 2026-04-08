@@ -117,7 +117,7 @@ static int dump_detectorNN(const pbuffer_t p, const poptions_t o) {
   int n = 0;
 
   n += printf_text("SIGNATURE ANALYSIS", USE_LT | USE_COLON | USE_EOL);
-  n += dump_detectorNN0(p, o, "sigs/userdb.sig");
+  n += dump_detectorNN0(p, o, "/usr/share/objtools/userdb.sig");
 //  n += dump_detectorNN0(p, o, "sigs/compiler.userdb.sig");
 //  n += dump_detectorNN0(p, o, "sigs/file_format.userdb.sig");
 //  n += dump_detectorNN0(p, o, "sigs/installer.userdb.sig");
