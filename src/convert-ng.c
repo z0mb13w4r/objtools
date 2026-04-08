@@ -91,7 +91,7 @@ int main(int argc, char* argv[]) {
     if (ECODE_ISOK(x) && o->inpname[0]) {
       pbuffer_t p = bopen(o->inpname);
       if (issafe(p)) {
-        pfind_t b0 = fcalloc(p->data, p->size, MEMFIND_NOCHUNKSIZE);
+        pfind_t b0 = fcalloc(p->data, p->size, MEMFIND_NOBLOCKSIZE);
         if (b0) {
           bool_t isok = TRUE;
           int32_t step = 0;
