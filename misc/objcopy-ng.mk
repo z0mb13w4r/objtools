@@ -21,11 +21,6 @@ SRCS_CPP =
 #---------------------------------------------------------------------
 TARGETBASE = objcopy-ng
 
-ifeq ($(CROSS),ARM)
-else
-	CROSS = I386
-endif
-
 ifeq ($(DEBUG),y)
 	DIR_OBJ = debug$(CROSS)/
 	TARGET = $(TARGETBASE)d
@@ -50,9 +45,6 @@ LIB_INCS = \
 	-I../inc/ \
 	-I../inc/capstone/
 
-ifeq ($(CROSS),WIN)
-SYS_OBJS =
-else
 SYS_OBJS = \
 	-lcapstone \
 	-lopcodes \
@@ -61,7 +53,6 @@ SYS_OBJS = \
 	-lfuzzy \
 	-lbfd \
 	-lrt
-endif
 
 LIB_OBJS = \
 	-lobjtool
@@ -99,17 +90,10 @@ PROFILE_FILE = gmon.out
 
 # GNU toolchain definitions
 #---------------------------------------------------------------------
-ifeq ($(CROSS),ARM)
-	CROSS_COMPILE = /home/WF_3.02/wrlinux-3.0/sysroots/arm-mm6-glibc-small/x86-linux2/arm-wrs-linux-gnueabi-arm_iwmmxt_el-glibc_small-
-	DFLAGS += -DENV_LINUX -DLINUX -DTARGET_ARM
-	EFLAGS  = -Wl,--no-enum-size-warning
-	LFLAGS +=
-else
-	CROSS_COMPILE =
-	DFLAGS += -DENV_LINUX -DLINUX
-	EFLAGS  =
-	LFLAGS +=
-endif
+CROSS_COMPILE =
+DFLAGS += -DENV_LINUX -DLINUX
+EFLAGS  =
+LFLAGS +=
 
 AS		= $(CROSS_COMPILE)as
 LD		= $(CROSS_COMPILE)ld
@@ -245,11 +229,7 @@ ifeq ($(DEBUG),y)
 	-$(STRIP) -o $(STRIPPED_FILE) -s $(TARGET)
 	@echo 'Finished stripping target: $@'
 else
-ifeq ($(CROSS),ARM)
-	-$(CP) $(TARGET) ../bin/$(TARGET)-arm
-else
 	-$(CP) $(TARGET) ../bin/
-endif
 	@echo 'Finished copying target: $@'
 endif
 
