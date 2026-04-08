@@ -27,6 +27,7 @@ ARCH=$($GREPBIN Architecture $EXTERNBIN/control | $CUTBIN -d ' ' -f 2)
 NAME=objtools-$VER-ubuntu-$REL-$ARCH
 USRBIN=$NAME/usr/bin
 USRMAN=$NAME/usr/share/man/man1
+USROBJ=$NAME/usr/share/objtools
 LOCALBIN=$NAME/usr/local/bin
 LOCALMAN=$NAME/usr/local/share/man/
 DEBIANBIN=$NAME/DEBIAN
@@ -51,6 +52,7 @@ $MAKEBIN -f objdwarf-ng.mk all
 $MKDIRBIN -v -p $NAME
 $MKDIRBIN -v -p $USRBIN
 $MKDIRBIN -v -p $USRMAN
+$MKDIRBIN -v -p $USROBJ
 $MKDIRBIN -v -p $DEBIANBIN
 
 $COPYBIN -v $EXTERNBIN/detect-ng $USRBIN/
@@ -71,6 +73,7 @@ $COPYBIN -v $EXTERNMAN/readelf-ng.1 $USRMAN/
 $COPYBIN -v $EXTERNMAN/objdwarf-ng.1 $USRMAN/
 
 $COPYBIN -v $EXTERNBIN/control $DEBIANBIN/
+$COPYBIN -v $EXTERNBIN/userdb.sig $USROBJ/
 
 $GZIPBIN -v $USRMAN/readpe-ng.1
 $GZIPBIN -v $USRMAN/convert-ng.1
