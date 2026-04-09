@@ -11,6 +11,7 @@ DIR_CXX = ../$(DIR_SRC)
 # Name of c source files to be included in build.
 #---------------------------------------------------------------------
 SRCS_C = \
+	objdump.c \
 	objdump-ng.c
 
 # Name of cpp source files to be included in build.
@@ -43,7 +44,8 @@ STRIPPED_FILE = $(TARGET)-stripped
 #---------------------------------------------------------------------
 LIB_INCS = \
 	-I../inc/ \
-	-I../inc/capstone/
+	-I../inc/capstone/ \
+	-I../inc/libdwarf/
 
 SYS_OBJS = \
 	-lcapstone \

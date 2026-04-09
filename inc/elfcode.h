@@ -8,6 +8,7 @@
 #ifdef BUILD_UBUNTU_20_04
 #define SHT_RELR                   (19)
 #define SHT_MIPS_ABIFLAGS          (SHT_LOPROC + 0x2a)
+#define SHT_RISCV_ATTRIBUTES       (SHT_LOPROC + 0x03)
 #endif
 
 #define PT_GNU_MBIND_NUM           (4096)
@@ -175,14 +176,19 @@ char* get_EHDRFLAGSEX(const pbuffer_t p, const uint64_t e_flags);
 
 ppick_t get_RELTYPEDEF(const pbuffer_t p);
 ppick_t get_RELTYPEVER(const pbuffer_t p);
+ppick_t get_RELTYPEPACK(const pbuffer_t p);
+ppick_t get_RELTYPESAFE(const pbuffer_t p);
 ppick_t get_RELTYPESYM32(const pbuffer_t p);
 ppick_t get_RELTYPESYM64(const pbuffer_t p);
 ppick_t get_RELTYPESHEX8(const pbuffer_t p);
 ppick_t get_RELTYPESHEX16(const pbuffer_t p);
 ppick_t get_RELTYPESHEX32(const pbuffer_t p);
 ppick_t get_RELTYPESHEX64(const pbuffer_t p);
+ppick_t get_DYNTAGDEC(const pbuffer_t p, const uint64_t tag);
+ppick_t get_DYNTAGFHEX(const pbuffer_t p, const uint64_t tag);
 
 pconvert_t get_GNUTAG(const pbuffer_t p);
+pconvert_t get_RELTYPE(const pbuffer_t p);
 pconvert_t get_EHDRFLAGS(const pbuffer_t p);
 pconvert_t get_DYNTAG(const pbuffer_t p, const uint64_t d_tag);
 pconvert_t get_PHDRTYPE(const pbuffer_t p, const uint64_t p_type);

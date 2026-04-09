@@ -11,6 +11,7 @@ DIR_CXX = ../$(DIR_SRC)
 # Name of c source files to be included in build.
 #---------------------------------------------------------------------
 SRCS_C = \
+	convert.c \
 	convert-ng.c
 
 # Name of cpp source files to be included in build.

@@ -13,20 +13,14 @@
 #include "static/dt_flags.ci"
 #include "static/dt_flags_1.ci"
 #include "static/dt_posflag_1.ci"
-#include "static/dyntag.ci"
-#include "static/ehdrflags.ci"
 #include "static/ehdrmachine.ci"
 #include "static/ehdrosabi.ci"
 #include "static/ehdrtype.ci"
 #include "static/gnuabitab.ci"
-#include "static/gnu_tag.ci"
 #include "static/gnuproperty.ci"
 #include "static/nhdrtype.ci"
-#include "static/phdrtype.ci"
 #include "static/public_tag.ci"
-#include "static/reltype.ci"
 #include "static/shdrflags.ci"
-#include "static/shdrtype.ci"
 #include "static/shnindex.ci"
 #include "static/stbbind.ci"
 #include "static/stttype.ci"
@@ -823,7 +817,7 @@ static int dump_relocsrel32(const pbuffer_t p, const poptions_t o, Elf32_Shdr *s
 
 static int dump_relocsrel64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *shdr) {
   int n = 0;
-  const int MAXSIZE = strlenpick(zRELTYPE64) + 2;
+  const int MAXSIZE = strlenpick(get_RELTYPE(p)) + 2;
 
   n += printf_text("Offset", USE_LT | USE_SPACE | SET_PAD(14));
   n += printf_text("Info", USE_LT | SET_PAD(13));
@@ -841,7 +835,7 @@ static int dump_relocsrel64(const pbuffer_t p, const poptions_t o, Elf64_Shdr *s
       if (r0) {
         n += printf_nice(r0->r_offset, USE_LHEX48);
         n += printf_nice(r0->r_info, USE_LHEX48);
-        n += printf_pick(zRELTYPE64, ELF64_R_TYPE(r0->r_info), USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
+        n += printf_pick(get_RELTYPE(p), ELF64_R_TYPE(r0->r_info), USE_LT | USE_SPACE | SET_PAD(MAXSIZE));
 // TBD
         n += printf_eol();
       }

@@ -3,6 +3,13 @@
 #include "elfcode-endian.h"
 #include "memfind.h"
 
+#include "static/dyntag.ci"
+#include "static/ehdrflags.ci"
+#include "static/gnu_tag.ci"
+#include "static/phdrtype.ci"
+#include "static/reltype.ci"
+#include "static/shdrtype.ci"
+
 /* .tbss is special. It doesn't contribute memory space to normal
    segments and it doesn't take file space in normal segments. */
 static bool_t check_tbss(const uint64_t sh_flags, const uint64_t sh_type, const uint64_t p_type) {

@@ -22,6 +22,7 @@ extern pick_t ecMACRODEF[];
 extern pick_t ecMACRODEFSTR[];
 
 extern pick_t ecDYNTAGNAME[];
+extern pick_t ecDYNTAGBYTES[];
 
 extern convert_t ecDWAT[];
 extern convert_t ecDWOP[];

@@ -11,6 +11,7 @@ DIR_CXX = ../$(DIR_SRC)
 # Name of c source files to be included in build.
 #---------------------------------------------------------------------
 SRCS_C = \
+	readpe.c \
 	readpe-ng.c
 
 # Name of cpp source files to be included in build.

@@ -18,7 +18,6 @@ SRCS_C = \
 	arcode.c \
 	buffer.c \
 	decode.c \
-	detect.c \
 	encode.c \
 	memuse.c \
 	opcode.c \
@@ -26,9 +25,7 @@ SRCS_C = \
 	pefunc.c \
 	printf.c \
 	readar.c \
-	readpe.c \
 	bstring.c \
-	convert.c \
 	elfcode.c \
 	elfcode-endian.c \
 	elfcode-memfind.c \
@@ -49,10 +46,7 @@ SRCS_C = \
 	ocdwarf-eh-frame.c \
 	ocdwarf-stroffset.c \
 	objcopy.c \
-	objdump.c \
-	objhash.c \
 	options.c \
-	readelf.c \
 	scripts.c \
 	objregex.c \
 	objutils.c \

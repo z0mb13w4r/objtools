@@ -1,4 +1,4 @@
-CROSS = I386
+CROSS =
 
 ifeq ($(DEBUG),y)
 else

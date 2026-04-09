@@ -100,8 +100,6 @@ static convert_t ecSHDRTYPEMIPS[] = {
   {0, 0}
 };
 
-#define SHT_RISCV_ATTRIBUTES           (SHT_LOPROC + 3)
-
 static convert_t ecSHDRTYPERISCV[] = {
   {"RISCV_ATTRIBUTES",             SHT_RISCV_ATTRIBUTES},
 

@@ -171,7 +171,7 @@ convert_t ecDYNTAGX86[] = {
   {0, 0}
 };
 
-static pick_t ecDYNTAGBYTES[] = {
+pick_t ecDYNTAGBYTES[] = {
   DT_PLTRELSZ,
   DT_RELASZ,
   DT_STRSZ,
