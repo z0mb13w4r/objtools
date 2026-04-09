@@ -21,10 +21,7 @@ typedef struct peobject_s {
   ppefunc_t   func;
 } peobject_t, *ppeobject_t;
 
-ppefunc_t funcchoice(const ppefunc_t p, const char* name);
-
-const char* funcpick(const ppefunc_t p, const pick_t x);
-const char* funcpicknull(const ppefunc_t p, const pick_t x);
+ppefunc_t peget_FUNC(const ppefunc_t p, const char* name);
 
 const char* peget_ORDDLL(const pbuffer_t p, const char* name, const pick_t x);
 

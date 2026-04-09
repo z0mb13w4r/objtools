@@ -3,7 +3,19 @@
 
 #include "static/pefuncs.ci"
 
-const char* funcpick(const ppefunc_t p, const pick_t x) {
+static const char* funcpicknull(const ppefunc_t p, const pick_t x) {
+  if (p) {
+    for (ppefunc_t pp = p; 0 != pp->text; ++pp) {
+      if (pp->ords == x) {
+        return pp->text;
+      }
+    }
+  }
+
+  return NULL;
+}
+
+static const char* funcpick(const ppefunc_t p, const pick_t x) {
   if (p) {
     const char* s = funcpicknull(p, x);
     if (NULL == s) {
@@ -16,19 +28,7 @@ const char* funcpick(const ppefunc_t p, const pick_t x) {
   return NULL;
 }
 
-const char* funcpicknull(const ppefunc_t p, const pick_t x) {
-  if (p) {
-    for (ppefunc_t pp = p; 0 != pp->text; ++pp) {
-      if (pp->ords == x) {
-        return pp->text;
-      }
-    }
-  }
-
-  return NULL;
-}
-
-ppefunc_t funcchoice(const ppefunc_t p, const char* name) {
+ppefunc_t peget_FUNC(const ppefunc_t p, const char* name) {
   if (p) {
     for (ppefunc_t pp = p; 0 != pp->text; ++pp) {
       if (0 == strcasecmp(pp->text, name)) {
@@ -55,7 +55,7 @@ const char* peget_ORDDLL(const pbuffer_t p, const char* name, const pick_t x) {
 imode_t peget_MODEFUNC(const pbuffer_t p, const char* name) {
   if (name) {
     for (ppeobject_t pp = pePEOBJECTS; 0 != pp->name; ++pp) {
-      ppefunc_t p0 = funcchoice(pp->func, name);
+      ppefunc_t p0 = peget_FUNC(pp->func, name);
       if (p0) {
         return p0->mode;
       }
