@@ -38,6 +38,7 @@ static convert_t peDEBUGHDR[] = {
   {"UNDEFINED_0",                            17},
   {"UNDEFINED_1",                            18},
   {"IMAGE_DEBUG_TYPE_EX_DLLCHARACTERISTICS", IMAGE_DEBUG_TYPE_EX_DLLCHARACTERISTICS},
+
   {0, 0}
 };
 
