@@ -32,11 +32,13 @@ static pefunc_t peADVAPI32[] = {
   {"RegSaveKeyExA",                    -1,   PEFUNC_ALERT},
   {"RegSaveKeyExW",                    -1,   PEFUNC_ALERT},
   {"RegCloseKey",                      -1,   PEFUNC_ALERT},
+
   {0, 0}
 };
 
 static pefunc_t peADVPACK[] = {
   {"IsNTAdmin",                        -1,   PEFUNC_BLACKLIST},
+
   {0, 0}
 };
 
@@ -160,6 +162,7 @@ static pefunc_t peCOMCTL32[] = {
   {"SetWindowSubclass",                410},
   {"RemoveWindowSubclass",             412},
   {"DefSubclassProc",                  413},
+
   {0, 0}
 };
 
@@ -167,16 +170,19 @@ static pefunc_t peCRYPT32[] = {
   {"CertOpenSystemStoreA",             -1,   PEFUNC_BLACKLIST},
   {"CertOpenSystemStoreW",             -1,   PEFUNC_BLACKLIST},
   {"CertOpenStore",                    -1,   PEFUNC_BLACKLIST},
+
   {0, 0}
 };
 
 static pefunc_t peGDI32[] = {
   {"BitBlt",                           -1,   PEFUNC_ALERT},
+
   {0, 0}
 };
 
 static pefunc_t peIPHLPAPI[] = {
   {"GetAdaptersInfo",                  -1,   PEFUNC_ALERT},
+
   {0, 0}
 };
 
@@ -286,6 +292,7 @@ static pefunc_t peKERNEL32[] = {
   {"VirtualLock",                      -1,   PEFUNC_BLACKLIST},
   {"VirtualUnlock",                    -1,   PEFUNC_BLACKLIST},
   {"Wow64DisableWow64FsRedirection",   -1,   PEFUNC_BLACKLIST},
+
   {0, 0}
 };
 
@@ -306,12 +313,14 @@ static pefunc_t peMSGINA[] = {
   {"WlxShutdown",                      -1,   PEFUNC_BLACKLIST},
   {"WlxStartApplication",              -1,   PEFUNC_BLACKLIST},
   {"WlxWkstaLockedSAS",                -1,   PEFUNC_BLACKLIST},
+
   {0, 0}
 };
 
 static pefunc_t peNETAPI32[] = {
   {"NetScheduleJobAdd",                -1,   PEFUNC_CRITICAL},
   {"NetShareEnum",                     -1,   PEFUNC_CRITICAL},
+
   {0, 0}
 };
 
@@ -323,6 +332,7 @@ static pefunc_t peNTDLL[] = {
   {"NtSuspendProcess",                 -1,   PEFUNC_BLACKLIST},
   {"NtResumeProcess",                  -1,   PEFUNC_BLACKLIST},
   {"NtUnmapViewOfSection",             -1,   PEFUNC_BLACKLIST},
+
   {0, 0}
 };
 
@@ -332,6 +342,7 @@ static pefunc_t peNTOSKRNL[] = {
   {"RtlCreateRegistryKey",             -1,  PEFUNC_BLACKLIST},
   {"RtlDeleteRegistryValue",           -1,  PEFUNC_BLACKLIST},
   {"RtlWriteRegistryValue",            -1,  PEFUNC_BLACKLIST},
+
   {0, 0},
 };
 
@@ -748,6 +759,7 @@ static pefunc_t peOLEAUT32[] = {
   {"UnRegisterTypeLibForUser",         443},
   {"OaEnablePerUserTLibRegistration",  444},
   {"OACleanup",                        500},
+
   {0, 0}
 };
 
@@ -757,32 +769,38 @@ static pefunc_t peOLE32[] = {
   {"DllRegisterServer",                -1,   PEFUNC_INFO},
   {"DllUnregisterServer",              -1,   PEFUNC_INFO},
   {"OleInitialize",                    -1,   PEFUNC_INFO},
+
   {0, 0}
 };
 
 static pefunc_t peSFC[] = {
   {"SfcTerminateWatcherThread",        -1,   PEFUNC_BLACKLIST},
+
   {0, 0}
 };
 
 static pefunc_t peSECUR32[] = {
   {"LsaEnumerateLogonSessions",        -1,   PEFUNC_BLACKLIST},
+
   {0, 0}
 };
 
 static pefunc_t peSHELL32[] = {
   {"ShellExecuteA",                    -1,   PEFUNC_BLACKLIST},
   {"ShellExecuteW",                    -1,   PEFUNC_BLACKLIST},
+
   {0, 0}
 };
 
 static pefunc_t peSHLWAPI[] = {
   {"DllInstall",                       -1,   PEFUNC_INFO},
+
   {0, 0}
 };
 
 static pefunc_t peURLMON[] = {
   {"URLDownloadToFile",                -1,   PEFUNC_CRITICAL},
+
   {0, 0}
 };
 
@@ -808,6 +826,7 @@ static pefunc_t peUSER32[] = {
   {"GetClipboardData",                 -1,   PEFUNC_ALERT},
   {"MapVirtualKeyA",                   -1,   PEFUNC_ALERT},
   {"MapVirtualKeyW",                   -1,   PEFUNC_ALERT},
+
   {0, 0}
 };
 
@@ -832,6 +851,7 @@ static pefunc_t peWININET[] = {
   {"HttpSendRequestExW",               -1,   PEFUNC_CRITICAL},
   {"HttpEndRequestA",                  -1,   PEFUNC_CRITICAL},
   {"HttpEndRequestW",                  -1,   PEFUNC_CRITICAL},
+
   {0, 0}
 };
 
@@ -912,6 +932,7 @@ static pefunc_t peWSOCK32[] = {
   {"TransmitFile",                     1140},
   {"AcceptEx",                         1141},
   {"GetAcceptExSockaddrs",             1142},
+
   {0, 0}
 };
 
@@ -1098,6 +1119,7 @@ static pefunc_t peWS2_32[] = {
   {"inet_ntop",                        180},
   {"inet_pton",                        181},
   {"WEP",                              500},
+
   {0, 0}
 };
 
@@ -1108,6 +1130,7 @@ static pefunc_t peUNKNOWN[] = {
   {"SamIConnect",                      -1,   PEFUNC_BLACKLIST},
   {"SamIGetPrivateData",               -1,   PEFUNC_BLACKLIST},
   {"SamQueryInformationUse",           -1,   PEFUNC_BLACKLIST},
+
   {0, 0}
 };
 
@@ -1135,6 +1158,27 @@ static peobject_t pePEOBJECTS[] = {
   {"WS2_32.dll",     peWS2_32},
   {"WSOCK32.dll",    peWSOCK32},
   {"unknown.dll",    peUNKNOWN},
+
   {0, 0},
+};
+
+convert_t peTHREATLEVEL[] = {
+  {"",                       PEFUNC_UNKNOWN},
+  {"",                       PEFUNC_INFO},
+  {"*",                      PEFUNC_ALERT},
+  {"**",                     PEFUNC_CRITICAL},
+  {"***",                    PEFUNC_BLACKLIST},
+
+  {0, 0}
+};
+
+convert_t peTHREATLEVELFULL[] = {
+  {"UNKNOWN",                PEFUNC_UNKNOWN},
+  {"INFO",                   PEFUNC_INFO},
+  {"ALERT",                  PEFUNC_ALERT},
+  {"CRITICAL",               PEFUNC_CRITICAL},
+  {"BLACKLIST",              PEFUNC_BLACKLIST},
+
+  {0, 0}
 };
 

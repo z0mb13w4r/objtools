@@ -76,6 +76,9 @@ extern convert_t ecREGISTERS_ARM64[];
 extern convert_t ecREGISTERS_RISCV32[];
 extern convert_t ecREGISTERS_RISCV64[];
 
+extern convert_t peTHREATLEVEL[];
+extern convert_t peTHREATLEVELFULL[];
+
 extern args_t zSCRIPTCOMMANDS[];
 extern args_t zSCRIPTCOMMANDSEX[];
 
