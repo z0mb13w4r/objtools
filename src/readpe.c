@@ -793,7 +793,9 @@ static int dump_iat32(const pbuffer_t p, const poptions_t o) {
           PIMAGE_IMPORT_BY_NAME p3 = getp(p, peconvert2va(s0, p2->AddressOfData), sizeof(IMAGE_IMPORT_BY_NAME));
           if (p3) {
             n += printf_text(p3->Name, USE_LT | USE_TAB2);
-            n += printf_nice(p3->Hint, USE_DEC | USE_SB | USE_EOL);
+            n += printf_nice(p3->Hint, USE_DEC | USE_SB);
+            n += printf_pick(peTHREATLEVEL, peget_MODEFUNC(p, p3->Name), USE_SPACE);
+            n += printf_eol();
           }
         }
 
@@ -835,7 +837,9 @@ static int dump_iat64(const pbuffer_t p, const poptions_t o) {
           PIMAGE_IMPORT_BY_NAME p3 = getp(p, peconvert2va(s0, p2->AddressOfData), sizeof(IMAGE_IMPORT_BY_NAME));
           if (p3) {
             n += printf_text(p3->Name, USE_LT | USE_TAB2);
-            n += printf_nice(p3->Hint, USE_DEC | USE_SB | USE_EOL);
+            n += printf_nice(p3->Hint, USE_DEC | USE_SB);
+            n += printf_pick(peTHREATLEVEL, peget_MODEFUNC(p, p3->Name), USE_SPACE);
+            n += printf_eol();
           }
         }
 
