@@ -11,6 +11,8 @@
 #include "static/rel_type.ci"
 #include "static/stb_bind.ci"
 #include "static/stt_type.ci"
+#include "static/vna_flag.ci"
+#include "static/stv_visibility.ci"
 #include "static/ehdr_flag.ci"
 #include "static/ehdr_type.ci"
 #include "static/nhdr_type.ci"

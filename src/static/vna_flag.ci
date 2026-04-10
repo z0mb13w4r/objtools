@@ -1,6 +1,7 @@
-static convert_t ecVNA_FLAGS[] = {
+convert_t ecVNAFLAG[] = {
   {"BASE", VER_FLG_BASE},
   {"WEAK", VER_FLG_WEAK},
+
   {0, 0}
 };
 

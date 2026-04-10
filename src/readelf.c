@@ -15,8 +15,6 @@
 #include "static/gnuproperty.ci"
 #include "static/public_tag.ci"
 #include "static/shnindex.ci"
-#include "static/stvvisibility.ci"
-#include "static/vna_flags.ci"
 
 static int dump_relocsdef0(const pbuffer_t p, const uint64_t sh_link,
                           const uint64_t st_value, const uint64_t st_name, const uint64_t st_shndx) {
@@ -1779,7 +1777,7 @@ static int dump_versionneed2(const pbuffer_t p, const int offset, const uint64_t
   n += printf_text("Name", USE_TAB | USE_COLON);
   n += printf_text(ecget_namebyoffset(p, sh_link, vna_name), USE_LT | USE_SPACE | SET_PAD(14));
   n += printf_text("Flags", USE_SPACE | USE_COLON);
-  n += printf_masknone(ecVNA_FLAGS, vna_flags, USE_LT);
+  n += printf_masknone(ecVNAFLAG, vna_flags, USE_LT);
   n += printf_text("Version", USE_TAB | USE_COLON);
   n += printf_nice(vna_other, USE_DEC | USE_EOL);
 
