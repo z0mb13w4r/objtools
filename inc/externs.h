@@ -55,10 +55,15 @@ extern convert_t ecDWEXPRLITE[];
 extern convert_t ecDWCHILDREN[];
 extern convert_t ecDWCHILDRENLITE[];
 
+extern convert_t ecEHDRMACHINE[];
+
 extern convert_t ecGNUTAGMIPSREGSIZE[];
 extern convert_t ecGNUTAGMIPSABIFP[];
 extern convert_t ecGNUTAGMIPSISAEXT[];
 extern convert_t ecGNUTAGMIPSASES[];
+
+extern convert_t ecSHDRFLAGS[];
+extern convert_t ecSHDRFLAGSLITE[];
 
 extern convert_t oeSEGMENTFLAGS_x86_64[];
 

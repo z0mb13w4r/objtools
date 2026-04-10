@@ -1,4 +1,4 @@
-static convert_t ecEHDRMACHINE[] = {
+convert_t ecEHDRMACHINE[] = {
   {"None",                         EM_NONE},
   {"ARM",                          EM_ARM},
   {"Intel 80386",                  EM_386},
@@ -7,6 +7,7 @@ static convert_t ecEHDRMACHINE[] = {
   {"RISC-V",                       EM_RISCV},
   {"MIPS R3000",                   EM_MIPS},
   {"MIPS R3000 (LE)",              EM_MIPS_RS3_LE},
+
   {0, 0}
 };
 

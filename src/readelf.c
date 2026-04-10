@@ -10,13 +10,11 @@
 #include "readelf.h"
 #include "objutils.h"
 
-#include "static/ehdrmachine.ci"
 #include "static/ehdrosabi.ci"
 #include "static/gnuabitab.ci"
 #include "static/gnuproperty.ci"
 #include "static/nhdrtype.ci"
 #include "static/public_tag.ci"
-#include "static/shdrflags.ci"
 #include "static/shnindex.ci"
 #include "static/stbbind.ci"
 #include "static/stttype.ci"

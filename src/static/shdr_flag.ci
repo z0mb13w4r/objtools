@@ -1,4 +1,4 @@
-static convert_t ecSHDRFLAGS[] = {
+convert_t ecSHDRFLAGS[] = {
   {"WRITE",                        SHF_WRITE},
   {"ALLOC",                        SHF_ALLOC},
   {"EXEC",                         SHF_EXECINSTR},
@@ -11,6 +11,7 @@ static convert_t ecSHDRFLAGS[] = {
   {"TLS",                          SHF_TLS},
   {"EXCLUDE",                      SHF_EXCLUDE},
   {"COMPRESSED",                   SHF_COMPRESSED},
+
   {0, 0}
 };
 
@@ -24,7 +25,7 @@ static convert_t ecSHDRFLAGS[] = {
 #define SHF_MASKPROC2                  (0x40000000)
 #define SHF_MASKPROC3                  (0x80000000)
 
-static convert_t ecSHDRFLAGSLITE[] = {
+convert_t ecSHDRFLAGSLITE[] = {
   {"W",                            SHF_WRITE},
   {"A",                            SHF_ALLOC},
   {"X",                            SHF_EXECINSTR},

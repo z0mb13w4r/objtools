@@ -9,10 +9,12 @@
 #include "static/dyn_tag.ci"
 #include "static/gnu_tag.ci"
 #include "static/rel_type.ci"
-#include "static/ehdr_flags.ci"
+#include "static/ehdr_flag.ci"
 #include "static/ehdr_type.ci"
 #include "static/phdr_type.ci"
+#include "static/shdr_flag.ci"
 #include "static/shdr_type.ci"
+#include "static/ehdr_machine.ci"
 
 /* .tbss is special. It doesn't contribute memory space to normal
    segments and it doesn't take file space in normal segments. */
