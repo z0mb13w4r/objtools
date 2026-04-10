@@ -93,7 +93,7 @@ static convert_t ecNHDRTYPECORE[] = {
   {0, 0}
 };
 
-static pconvert_t get_NHDRTYPE(const pbuffer_t p) {
+pconvert_t get_NHDRTYPE(const pbuffer_t p) {
   if (ET_CORE == ecget_etype(p)) {
     return ecNHDRTYPECORE;
   }

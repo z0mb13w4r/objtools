@@ -11,6 +11,7 @@
 #include "static/rel_type.ci"
 #include "static/ehdr_flag.ci"
 #include "static/ehdr_type.ci"
+#include "static/nhdr_type.ci"
 #include "static/phdr_type.ci"
 #include "static/shdr_flag.ci"
 #include "static/shdr_type.ci"

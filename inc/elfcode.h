@@ -172,7 +172,7 @@ int ecmake_sectionthumbs(const pbuffer_t p, pthumb_t thumbs, const size_t maxthu
 int ecmake_versionnames32(const pbuffer_t p, pversion_t vnames, const size_t maxvnames);
 int ecmake_versionnames64(const pbuffer_t p, pversion_t vnames, const size_t maxvnames);
 
-char* get_EHDRFLAGSEX(const pbuffer_t p, const uint64_t e_flags);
+char* get_EHDRFLAGEX(const pbuffer_t p, const uint64_t e_flags);
 
 ppick_t get_RELTYPEDEF(const pbuffer_t p);
 ppick_t get_RELTYPEVER(const pbuffer_t p);
@@ -190,7 +190,8 @@ ppick_t get_DYNTAGFHEX(const pbuffer_t p, const uint64_t tag);
 pconvert_t get_GNUTAG(const pbuffer_t p);
 pconvert_t get_RELTYPE(const pbuffer_t p);
 pconvert_t get_EHDRTYPE(const pbuffer_t p);
-pconvert_t get_EHDRFLAGS(const pbuffer_t p);
+pconvert_t get_EHDRFLAG(const pbuffer_t p);
+pconvert_t get_NHDRTYPE(const pbuffer_t p);
 pconvert_t get_DYNTAG(const pbuffer_t p, const uint64_t d_tag);
 pconvert_t get_PHDRTYPE(const pbuffer_t p, const uint64_t p_type);
 pconvert_t get_SHDRTYPE(const pbuffer_t p, const uint64_t sh_type);

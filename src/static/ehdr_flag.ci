@@ -81,7 +81,7 @@ static convert_t ecEHDRFLAGSMIPS[] = {
   {0, 0}
 };
 
-pconvert_t get_EHDRFLAGS(const pbuffer_t p) {
+pconvert_t get_EHDRFLAG(const pbuffer_t p) {
   switch (ecget_emachine(p)) {
   case EM_ARM:
     switch (EF_ARM_EABI_VERSION(ecget_eflags(p))) {
@@ -136,7 +136,7 @@ pconvert_t get_EHDRFLAGS(const pbuffer_t p) {
 #define EF_MIPS_ABI_EABI64             (0x00004000)
 #endif
 
-char* get_EHDRFLAGSEX(const pbuffer_t p, const uint64_t e_flags) {
+char* get_EHDRFLAGEX(const pbuffer_t p, const uint64_t e_flags) {
   STATICA(char, o, 1024);
 
 #define PRINT1(x)              snprintf(o + n, sizeof(o) - n, x)

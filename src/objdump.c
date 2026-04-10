@@ -466,8 +466,8 @@ static int dump_privatehdr(const handle_t p, const poptions_t o) {
     if (EM_MIPS == ocget_machine(p) || EM_MIPS_RS3_LE == ocget_machine(p)) {
       n += printf_text("private flags =", USE_LT | USE_TAB | SET_PAD(MAXSIZE));
       n += printf_nice(ocget_type(p), USE_LHEX | USE_COLON);
-      n += printf_mask(get_EHDRFLAGS(ocget(p, OPCODE_RAWDATA)), ocget_type(p) & ~EF_MIPS_MASK, USE_NONE);
-      n += printf_text(get_EHDRFLAGSEX(ocget(p, OPCODE_RAWDATA), ocget_type(p)), USE_LT);
+      n += printf_mask(get_EHDRFLAG(ocget(p, OPCODE_RAWDATA)), ocget_type(p) & ~EF_MIPS_MASK, USE_NONE);
+      n += printf_text(get_EHDRFLAGEX(ocget(p, OPCODE_RAWDATA), ocget_type(p)), USE_LT);
       n += printf_eol();
 
       ocdo_sections(p, callback_mipsarch0, &max_name_size);
