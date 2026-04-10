@@ -12,6 +12,8 @@
 #include "static/stb_bind.ci"
 #include "static/stt_type.ci"
 #include "static/vna_flag.ci"
+#include "static/shn_index.ci"
+#include "static/gnu_abitab.ci"
 #include "static/stv_visibility.ci"
 #include "static/ehdr_flag.ci"
 #include "static/ehdr_type.ci"
@@ -19,6 +21,7 @@
 #include "static/phdr_type.ci"
 #include "static/shdr_flag.ci"
 #include "static/shdr_type.ci"
+#include "static/ehdr_osabi.ci"
 #include "static/ehdr_machine.ci"
 
 /* .tbss is special. It doesn't contribute memory space to normal

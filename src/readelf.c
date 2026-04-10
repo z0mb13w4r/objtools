@@ -10,11 +10,8 @@
 #include "readelf.h"
 #include "objutils.h"
 
-#include "static/ehdrosabi.ci"
-#include "static/gnuabitab.ci"
 #include "static/gnuproperty.ci"
 #include "static/public_tag.ci"
-#include "static/shnindex.ci"
 
 static int dump_relocsdef0(const pbuffer_t p, const uint64_t sh_link,
                           const uint64_t st_value, const uint64_t st_name, const uint64_t st_shndx) {

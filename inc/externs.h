@@ -57,6 +57,7 @@ extern convert_t ecDWCHILDRENLITE[];
 
 extern convert_t ecEHDRMACHINE[];
 
+extern convert_t ecGNUABITAB[];
 extern convert_t ecGNUTAGMIPSREGSIZE[];
 extern convert_t ecGNUTAGMIPSABIFP[];
 extern convert_t ecGNUTAGMIPSISAEXT[];

@@ -279,8 +279,8 @@ pconvert_t get_DYNTAG(const pbuffer_t p, const uint64_t d_tag) {
   return ecDYNTAG;
 }
 
-ppick_t get_DYNTAGDEC(const pbuffer_t p, const uint64_t tag) {
-  if ((tag >= DT_LOPROC) && (tag <= DT_HIPROC)) {
+ppick_t get_DYNTAGDEC(const pbuffer_t p, const uint64_t d_tag) {
+  if ((d_tag >= DT_LOPROC) && (d_tag <= DT_HIPROC)) {
     switch (ecget_emachine(p)) {
     case EM_MIPS:
     case EM_MIPS_RS3_LE:
@@ -294,8 +294,8 @@ ppick_t get_DYNTAGDEC(const pbuffer_t p, const uint64_t tag) {
   return ecDYNTAGDEC;
 }
 
-ppick_t get_DYNTAGFHEX(const pbuffer_t p, const uint64_t tag) {
-  if ((tag >= DT_LOPROC) && (tag <= DT_HIPROC)) {
+ppick_t get_DYNTAGFHEX(const pbuffer_t p, const uint64_t d_tag) {
+  if ((d_tag >= DT_LOPROC) && (d_tag <= DT_HIPROC)) {
     switch (ecget_emachine(p)) {
     case EM_MIPS:
     case EM_MIPS_RS3_LE:

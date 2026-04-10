@@ -30,6 +30,7 @@ static convert_t ecEHDROSABI[] = {
   {"FenixOS",                      ELFOSABI_FENIXOS},
   {"Nuxi CloudABI",                ELFOSABI_CLOUDABI},
   {"Stratus Technologies OpenVOS", ELFOSABI_OPENVOS},
+
   {0, 0}
 };
 
@@ -37,27 +38,31 @@ static convert_t ecEHDROSABIAMDGPU[] = {
   {"AMD HSA",    ELFOSABI_AMDGPU_HSA},
   {"AMD PAL",    ELFOSABI_AMDGPU_PAL},
   {"AMD Mesa3D", ELFOSABI_AMDGPU_MESA3D},
+
   {0, 0}
 };
 
 static convert_t ecEHDROSABIARM[] = {
   {"ARM",        ELFOSABI_ARM},
   {"ARM FDPIC",  ELFOSABI_ARM_FDPIC},
+
   {0, 0}
 };
 
 static convert_t ecEHDROSABIMSP430[] = {
   {"Standalone App",   ELFOSABI_STANDALONE},
+
   {0, 0}
 };
 
 static convert_t ecEHDROSABIC6000[] = {
   {"Bare-metal C6000", ELFOSABI_C6000_ELFABI},
   {"Linux C6000",      ELFOSABI_C6000_LINUX},
+
   {0, 0}
 };
 
-static const char* get_EHDROSABI(pbuffer_t p) {
+const char* get_EHDROSABI(pbuffer_t p) {
   if (p) {
     const unsigned int osabi = getb(p, EI_OSABI);
     const char* s = strpicknull(ecEHDROSABI, osabi);

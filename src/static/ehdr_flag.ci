@@ -143,7 +143,7 @@ pconvert_t get_EHDRFLAG(const pbuffer_t p) {
 #define EF_MIPS_ABI_EABI64             (0x00004000)
 #endif
 
-char* get_EHDRFLAGEX(const pbuffer_t p, const uint64_t e_flags) {
+const char* get_EHDRFLAGEX(const pbuffer_t p, const uint64_t e_flags) {
   STATICA(char, o, 1024);
 
 #define PRINT1(x)              snprintf(o + n, sizeof(o) - n, x)

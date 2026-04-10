@@ -172,7 +172,10 @@ int ecmake_sectionthumbs(const pbuffer_t p, pthumb_t thumbs, const size_t maxthu
 int ecmake_versionnames32(const pbuffer_t p, pversion_t vnames, const size_t maxvnames);
 int ecmake_versionnames64(const pbuffer_t p, pversion_t vnames, const size_t maxvnames);
 
-char* get_EHDRFLAGEX(const pbuffer_t p, const uint64_t e_flags);
+const char* get_SHNINDEX(const pick_t st_shndx);
+
+const char* get_EHDROSABI(pbuffer_t p);
+const char* get_EHDRFLAGEX(const pbuffer_t p, const uint64_t e_flags);
 
 ppick_t get_RELTYPEDEF(const pbuffer_t p);
 ppick_t get_RELTYPEVER(const pbuffer_t p);
@@ -184,8 +187,8 @@ ppick_t get_RELTYPESHEX8(const pbuffer_t p);
 ppick_t get_RELTYPESHEX16(const pbuffer_t p);
 ppick_t get_RELTYPESHEX32(const pbuffer_t p);
 ppick_t get_RELTYPESHEX64(const pbuffer_t p);
-ppick_t get_DYNTAGDEC(const pbuffer_t p, const uint64_t tag);
-ppick_t get_DYNTAGFHEX(const pbuffer_t p, const uint64_t tag);
+ppick_t get_DYNTAGDEC(const pbuffer_t p, const uint64_t d_tag);
+ppick_t get_DYNTAGFHEX(const pbuffer_t p, const uint64_t d_tag);
 
 pconvert_t get_GNUTAG(const pbuffer_t p);
 pconvert_t get_RELTYPE(const pbuffer_t p);
