@@ -58,6 +58,9 @@ extern convert_t ecDWCHILDRENLITE[];
 extern convert_t ecEHDRMACHINE[];
 
 extern convert_t ecGNUABITAB[];
+extern convert_t ecGNUPROPERTY[];
+extern convert_t ecGNUPROPERTY_X86_FEATURE_1_AND[];
+
 extern convert_t ecGNUTAGMIPSREGSIZE[];
 extern convert_t ecGNUTAGMIPSABIFP[];
 extern convert_t ecGNUTAGMIPSISAEXT[];

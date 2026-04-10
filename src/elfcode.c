@@ -14,6 +14,7 @@
 #include "static/vna_flag.ci"
 #include "static/shn_index.ci"
 #include "static/gnu_abitab.ci"
+#include "static/gnu_property.ci"
 #include "static/stv_visibility.ci"
 #include "static/ehdr_flag.ci"
 #include "static/ehdr_type.ci"

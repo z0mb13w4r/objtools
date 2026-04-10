@@ -10,7 +10,6 @@
 #include "readelf.h"
 #include "objutils.h"
 
-#include "static/gnuproperty.ci"
 #include "static/public_tag.ci"
 
 static int dump_relocsdef0(const pbuffer_t p, const uint64_t sh_link,
