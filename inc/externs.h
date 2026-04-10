@@ -24,6 +24,10 @@ extern pick_t ecMACRODEFSTR[];
 extern pick_t ecDYNTAGNAME[];
 extern pick_t ecDYNTAGBYTES[];
 
+extern convert_t ecDT_FLAGS[];
+extern convert_t ecDT_FLAGSMIPS[];
+extern convert_t ecDT_FLAGS_1[];
+
 extern convert_t ecDWAT[];
 extern convert_t ecDWOP[];
 extern convert_t ecDWUT[];

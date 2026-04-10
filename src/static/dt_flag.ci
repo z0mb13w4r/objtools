@@ -1,4 +1,4 @@
-static convert_t ecDT_FLAGS[] = {
+convert_t ecDT_FLAGS[] = {
   {"ORIGIN",     DF_ORIGIN},
   {"SYMBOLIC",   DF_SYMBOLIC},
   {"TEXTREL",    DF_TEXTREL},
@@ -8,7 +8,7 @@ static convert_t ecDT_FLAGS[] = {
   {0, 0}
 };
 
-static convert_t ecDT_FLAGSMIPS[] = {
+convert_t ecDT_FLAGSMIPS[] = {
   {"QUICKSTART",             RHF_QUICKSTART},
   {"NOTPOT",                 RHF_NOTPOT},
   {"NO_LIBRARY_REPLACEMENT", RHF_NO_LIBRARY_REPLACEMENT},

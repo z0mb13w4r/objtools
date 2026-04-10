@@ -10,8 +10,6 @@
 #include "readelf.h"
 #include "objutils.h"
 
-#include "static/dt_flags.ci"
-#include "static/dt_flags_1.ci"
 #include "static/dt_posflag_1.ci"
 #include "static/ehdrmachine.ci"
 #include "static/ehdrosabi.ci"

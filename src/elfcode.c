@@ -3,12 +3,14 @@
 #include "elfcode-endian.h"
 #include "memfind.h"
 
-#include "static/dyntag.ci"
-#include "static/ehdrflags.ci"
+#include "static/dt_flag.ci"
+#include "static/dt_flag_1.ci"
+#include "static/dyn_tag.ci"
 #include "static/gnu_tag.ci"
-#include "static/phdrtype.ci"
-#include "static/reltype.ci"
-#include "static/shdrtype.ci"
+#include "static/rel_type.ci"
+#include "static/ehdr_flags.ci"
+#include "static/phdr_type.ci"
+#include "static/shdr_type.ci"
 
 /* .tbss is special. It doesn't contribute memory space to normal
    segments and it doesn't take file space in normal segments. */
