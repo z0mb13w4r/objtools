@@ -1,10 +1,13 @@
 #!/bin/bash
 
 NAME1=samples/example-043.exe
-#NAME1=samples/bstrings.dll
+NAME1=samples/bstrings.dll
 #NAME1=samples/msvcp120.dll
+#NAME1=samples/msfservice.exe
+NAME1=samples/msfshell.dll
+#NAME1=samples/msfshell.exe
 NAME2=${NAME1}-pecheck
-PICK='-a'
+PICK='-aXey'
 #PICK='-C .text'
 
 PRGNAMENG=./readpe-ng
@@ -33,11 +36,6 @@ function go_2() {
     | sed 's/^[0-9a-zA-Z]*\.DLL\.//g' \
     | sed 's/0x0*\([0-9A-F]\)/0x\1/g' \
     | sed 's/Hint//g' \
-    | sed "/^Entropy/d" \
-    | sed "/^MD5/d" \
-    | sed "/^SHA-1/d" \
-    | sed "/^SHA-256/d" \
-    | sed "/^SHA-512/d" \
     | sed "/^---/d" \
     | sed "/entropy/d" \
     | sed -e 's/\(0x[0-9A-F]*\)/\L\1/' \
@@ -50,12 +48,12 @@ function go_2() {
 go_rm $OUT1
 go_rm $OUT2
 
-if [ "$1" == "p" ]; then
+if [ "$1" == "-p" ]; then
   echo $PRGNAMENG ${PICK} ${NAME1}
-elif [ "$1" == "y" ]; then
+elif [ "$1" == "-y" ]; then
   $PRGNAMENG ${PICK} ${NAME1} > ${OUT1}
   sed '1,25d' ${NAME2} > ${OUT2}
-elif [ "$1" == "h" ]; then
+elif [ "$1" == "-h" ]; then
   $PRGNAMENG -H
 else
   go_1
