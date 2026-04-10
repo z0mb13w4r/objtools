@@ -24,7 +24,6 @@ SRCS_C = \
 	pecode.c \
 	pefunc.c \
 	printf.c \
-	readar.c \
 	bstring.c \
 	elfcode.c \
 	elfcode-endian.c \

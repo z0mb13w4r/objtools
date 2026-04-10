@@ -11,6 +11,7 @@ DIR_CXX = ../$(DIR_SRC)
 # Name of c source files to be included in build.
 #---------------------------------------------------------------------
 SRCS_C = \
+	readar.c \
 	readelf.c \
 	objdwarf-ng.c
 
