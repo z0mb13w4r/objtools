@@ -1,7 +1,8 @@
-static convert_t ecSTBBIND[] = {
+convert_t ecSTBBIND[] = {
   {"LOCAL",    STB_LOCAL},
   {"GLOBAL",   STB_GLOBAL},
   {"WEAK",     STB_WEAK},
+
   {0, 0}
 };
 

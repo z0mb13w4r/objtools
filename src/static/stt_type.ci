@@ -1,7 +1,7 @@
 #define STT_RELC             (8)
 #define STT_SRELC            (9)
 
-static convert_t ecSTTTYPE[] = {
+convert_t ecSTTTYPE[] = {
   {"NOTYPE",  STT_NOTYPE},
   {"OBJECT",  STT_OBJECT},
   {"FUNC",    STT_FUNC},
@@ -11,6 +11,7 @@ static convert_t ecSTTTYPE[] = {
   {"TLS",     STT_TLS},
   {"RELC",    STT_RELC},
   {"SRELC",   STT_SRELC},
+
   {0, 0}
 };
 

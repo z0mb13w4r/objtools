@@ -15,8 +15,6 @@
 #include "static/gnuproperty.ci"
 #include "static/public_tag.ci"
 #include "static/shnindex.ci"
-#include "static/stbbind.ci"
-#include "static/stttype.ci"
 #include "static/stvvisibility.ci"
 #include "static/vna_flags.ci"
 

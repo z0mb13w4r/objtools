@@ -9,6 +9,8 @@
 #include "static/dyn_tag.ci"
 #include "static/gnu_tag.ci"
 #include "static/rel_type.ci"
+#include "static/stb_bind.ci"
+#include "static/stt_type.ci"
 #include "static/ehdr_flag.ci"
 #include "static/ehdr_type.ci"
 #include "static/nhdr_type.ci"

@@ -24,6 +24,7 @@ static convert_t ecNHDRTYPE[] = {
   {"NT_GNU_PROPERTY_TYPE_0",                                                 NT_GNU_PROPERTY_TYPE_0},
   {"NT_GNU_BUILD_ATTRIBUTE_OPEN",                                            NT_GNU_BUILD_ATTRIBUTE_OPEN},
   {"NT_GNU_BUILD_ATTRIBUTE_FUNC",                                            NT_GNU_BUILD_ATTRIBUTE_FUNC},
+
   {0, 0}
 };
 
@@ -90,6 +91,7 @@ static convert_t ecNHDRTYPECORE[] = {
   {"NT_WIN32PSTATUS (win32_pstatus structure)",                              NT_WIN32PSTATUS},
   {"NT_SIGINFO (siginfo_t data)",                                            NT_SIGINFO},
   {"NT_FILE (mapped files)",                                                 NT_FILE},
+
   {0, 0}
 };
 

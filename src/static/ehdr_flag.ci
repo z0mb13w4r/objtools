@@ -2,6 +2,7 @@
 static convert_t ecEHDRFLAGS32ARMv1[] = {
   {"EABIv1",                             EF_ARM_EABI_VER1},
   {"sorted symbol tables",               EF_ARM_SYMSARESORTED},
+
   {0, 0}
 };
 
@@ -10,6 +11,7 @@ static convert_t ecEHDRFLAGS32ARMv2[] = {
   {"sorted symbol tables",               EF_ARM_SYMSARESORTED},
   {"dynamic symbols use segment index",  EF_ARM_DYNSYMSUSESEGIDX},
   {"mapping symbols precede others",     EF_ARM_MAPSYMSFIRST},
+
   {0, 0}
 };
 
@@ -17,6 +19,7 @@ static convert_t ecEHDRFLAGS32ARMv3[] = {
   {"EABIv3",                             EF_ARM_EABI_VER3},
   {"relocatable executable",             EF_ARM_RELEXEC},
   {"position independent",               EF_ARM_PIC},
+
   {0, 0}
 };
 
@@ -26,6 +29,7 @@ static convert_t ecEHDRFLAGS32ARMv4[] = {
   {"LE8",                    EF_ARM_LE8},
   {"relocatable executable", EF_ARM_RELEXEC},
   {"position independent",   EF_ARM_PIC},
+
   {0, 0}
 };
 
@@ -37,6 +41,7 @@ static convert_t ecEHDRFLAGS32ARMv5[] = {
   {"hard-float ABI",         EF_ARM_ABI_FLOAT_HARD},
   {"relocatable executable", EF_ARM_RELEXEC},
   {"position independent",   EF_ARM_PIC},
+
   {0, 0}
 };
 
@@ -53,6 +58,7 @@ static convert_t ecEHDRFLAGSRISCV[] = {
   {"single-float ABI",       EF_RISCV_FLOAT_ABI_SINGLE},
   {"double-float ABI",       EF_RISCV_FLOAT_ABI_DOUBLE},
   {"quad-float ABI",         EF_RISCV_FLOAT_ABI_QUAD},
+
   {0, 0}
 };
 
@@ -78,6 +84,7 @@ static convert_t ecEHDRFLAGSMIPS[] = {
   {"mdmx",                   EF_MIPS_ARCH_ASE_MDMX},
   {"mips16",                 EF_MIPS_ARCH_ASE_M16},
   {"micromips",              EF_MIPS_ARCH_ASE_MICROMIPS},
+
   {0, 0}
 };
 

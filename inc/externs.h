@@ -65,6 +65,9 @@ extern convert_t ecGNUTAGMIPSASES[];
 extern convert_t ecSHDRFLAGS[];
 extern convert_t ecSHDRFLAGSLITE[];
 
+extern convert_t ecSTBBIND[];
+extern convert_t ecSTTTYPE[];
+
 extern convert_t oeSEGMENTFLAGS_x86_64[];
 
 extern convert_t ecHAS_FLAGS[];
