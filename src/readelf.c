@@ -10,10 +10,8 @@
 #include "readelf.h"
 #include "objutils.h"
 
-#include "static/dt_posflag_1.ci"
 #include "static/ehdrmachine.ci"
 #include "static/ehdrosabi.ci"
-#include "static/ehdrtype.ci"
 #include "static/gnuabitab.ci"
 #include "static/gnuproperty.ci"
 #include "static/nhdrtype.ci"

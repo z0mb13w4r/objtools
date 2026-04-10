@@ -5,10 +5,12 @@
 
 #include "static/dt_flag.ci"
 #include "static/dt_flag_1.ci"
+#include "static/dt_posflag_1.ci"
 #include "static/dyn_tag.ci"
 #include "static/gnu_tag.ci"
 #include "static/rel_type.ci"
 #include "static/ehdr_flags.ci"
+#include "static/ehdr_type.ci"
 #include "static/phdr_type.ci"
 #include "static/shdr_type.ci"
 

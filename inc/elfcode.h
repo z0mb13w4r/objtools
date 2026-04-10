@@ -189,6 +189,7 @@ ppick_t get_DYNTAGFHEX(const pbuffer_t p, const uint64_t tag);
 
 pconvert_t get_GNUTAG(const pbuffer_t p);
 pconvert_t get_RELTYPE(const pbuffer_t p);
+pconvert_t get_EHDRTYPE(const pbuffer_t p);
 pconvert_t get_EHDRFLAGS(const pbuffer_t p);
 pconvert_t get_DYNTAG(const pbuffer_t p, const uint64_t d_tag);
 pconvert_t get_PHDRTYPE(const pbuffer_t p, const uint64_t p_type);
