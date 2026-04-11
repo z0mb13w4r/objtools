@@ -2053,6 +2053,31 @@ static int dump_notes2(const pbuffer_t p, const uint64_t p_offset, const uint64_
   return n;
 }
 
+static int dump_notes3(const pbuffer_t p, const uint64_t p_offset, const uint64_t p_filesz, const handle_t notes) {
+  int n = 0;
+//  n += printf_data(fget(notes), p_filesz, 0, USE_HEXDUMP);
+
+  while (!fiseof(notes)) {
+//printf("cpos = %lx\n", fgetcpos(notes));
+    MEMSTACK(Elf64_Nhdr, nx);
+    Elf64_Nhdr *n0 = ecconvert_nhdr64(p, nx, fgetp(notes, sizeof(Elf64_Nhdr)));
+    if (n0) {
+//printf("n_namesz = %x\n", n0->n_namesz);
+//printf("n_descsz = %x\n", n0->n_descsz);
+//printf("n_type = %x\n", n0->n_type);
+
+      n += printf_sore(fgetp(notes, n0->n_namesz), n0->n_namesz, USE_STR);
+      n += printf_nice(n0->n_descsz, USE_FHEX32);
+      n += printf_pick(get_NHDRTYPE(p), n0->n_type, USE_LT | USE_SPACE | USE_EOL);
+
+//      n += printf_sore(fgetp(notes, n0->n_descsz + 3), n0->n_descsz, USE_HEX | USE_EOL);
+      fstep(notes, n0->n_descsz + 3);
+    }
+  }
+
+  return n;
+}
+
 static int dump_notes32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
   int n = 0;
   if (ET_CORE != ehdr->e_type) {
@@ -2060,10 +2085,10 @@ static int dump_notes32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr)
       MEMSTACK(Elf32_Nhdr, nx);
       Elf32_Nhdr *n0 = ecget_nhdr32byindex(p, nx, i);
       if (n0) {
-        handle_t pc = ecget_nhdrdesc32byindex(p, i);
+        handle_t notes = ecget_nhdrdesc32byindex(p, i);
         n += dump_notes0(p, i, ehdr->e_machine, n0->n_descsz, n0->n_type);
-        n += dump_notes1(p, i, ehdr->e_machine, n0->n_descsz, n0->n_type, pc);
-        ffree(pc);
+        n += dump_notes1(p, i, ehdr->e_machine, n0->n_descsz, n0->n_type, notes);
+        ffree(notes);
       }
     }
   } else if (0 == ehdr->e_phnum) {
@@ -2088,10 +2113,10 @@ static int dump_notes64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr)
       MEMSTACK(Elf64_Nhdr, nx);
       Elf64_Nhdr *n0 = ecget_nhdr64byindex(p, nx, i);
       if (n0) {
-        handle_t pc = ecget_nhdrdesc64byindex(p, i);
+        handle_t notes = ecget_nhdrdesc64byindex(p, i);
         n += dump_notes0(p, i, ehdr->e_machine, n0->n_descsz, n0->n_type);
-        n += dump_notes1(p, i, ehdr->e_machine, n0->n_descsz, n0->n_type, pc);
-        ffree(pc);
+        n += dump_notes1(p, i, ehdr->e_machine, n0->n_descsz, n0->n_type, notes);
+        ffree(notes);
       }
     }
   } else if (0 == ehdr->e_phnum) {
@@ -2101,7 +2126,10 @@ static int dump_notes64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr)
       MEMSTACK(Elf64_Phdr, px);
       Elf64_Phdr *p0 = ecget_phdr64byindex(p, px, i);
       if (p0 && PT_NOTE == p0->p_type) {
+        handle_t notes = fgetbyoffset(p, p0->p_offset , p0->p_filesz, MEMFIND_NOBLOCKSIZE);
         n += dump_notes2(p, p0->p_offset, p0->p_filesz);
+        n += dump_notes3(p, p0->p_offset, p0->p_filesz, notes);
+        ffree(notes);
       }
     }
   }
