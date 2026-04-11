@@ -2055,6 +2055,8 @@ static int dump_notes32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr)
         ffree(pc);
       }
     }
+  } else if (0 == ehdr->e_phnum) {
+    printf_w("No notes found file.");
   }
 
   return n;
@@ -2073,6 +2075,9 @@ static int dump_notes64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr)
         ffree(pc);
       }
     }
+  } else if (0 == ehdr->e_phnum) {
+    printf_w("No notes found file.");
+  } else {
   }
 
   return n;
