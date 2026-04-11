@@ -2042,6 +2042,17 @@ static int dump_notes1(const pbuffer_t p, const int index, const uint64_t e_mach
   return n;
 }
 
+static int dump_notes2(const pbuffer_t p, const uint64_t p_offset, const uint64_t p_filesz) {
+  int n = 0;
+  n += printf_text("Displaying notes found at file offset", USE_LT);
+  n += printf_nice(p_offset, USE_FHEX32);
+  n += printf_text("with length", USE_LT | USE_SPACE);
+  n += printf_nice(p_filesz, USE_FHEX32 | USE_COLON);
+  n += printf_eol();
+
+  return n;
+}
+
 static int dump_notes32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
   int n = 0;
   if (ET_CORE != ehdr->e_type) {
@@ -2057,6 +2068,14 @@ static int dump_notes32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr)
     }
   } else if (0 == ehdr->e_phnum) {
     printf_w("No notes found file.");
+  } else {
+    for (Elf32_Half i = 0; i < ehdr->e_phnum; ++i) {
+      MEMSTACK(Elf32_Phdr, px);
+      Elf32_Phdr *p0 = ecget_phdr32byindex(p, px, i);
+      if (p0 && PT_NOTE == p0->p_type) {
+        n += dump_notes2(p, p0->p_offset, p0->p_filesz);
+      }
+    }
   }
 
   return n;
@@ -2078,6 +2097,13 @@ static int dump_notes64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr)
   } else if (0 == ehdr->e_phnum) {
     printf_w("No notes found file.");
   } else {
+    for (Elf64_Half i = 0; i < ehdr->e_phnum; ++i) {
+      MEMSTACK(Elf64_Phdr, px);
+      Elf64_Phdr *p0 = ecget_phdr64byindex(p, px, i);
+      if (p0 && PT_NOTE == p0->p_type) {
+        n += dump_notes2(p, p0->p_offset, p0->p_filesz);
+      }
+    }
   }
 
   return n;
