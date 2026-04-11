@@ -1,6 +1,7 @@
 v1.4 - 
 -----------------------------------------------------------------------
 [+] Updated dwarflib code (v2.3.1).  
+[+] Added core dump analysis to readelf-ng.  
 [+] Added signature detection through readpe-ng & detect-ng.  
 [+] Enhanced readpe-ng and enumerate-ng.  
 [+] Bug fixes.  
