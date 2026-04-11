@@ -334,25 +334,29 @@ static int dump_sectionheaders32(const pbuffer_t p, const poptions_t o, Elf32_Eh
   const int MAXSIZE = MAX(ecget_secnamemaxsize(p) + 1, 21);
 
   int n = 0;
-  n += dump_sectionheaders0(p, o, MAXSIZE);
+  if (0 == ehdr->e_shnum) {
+    printf_w("There are no sections in this file.");
+  } else {
+    n += dump_sectionheaders0(p, o, MAXSIZE);
 
-  for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
-    MEMSTACK(Elf32_Shdr, sx);
-    Elf32_Shdr *s0 = ecget_shdr32byindex(p, sx, i);
-    if (s0) {
-      n += dump_sectionheaders1(p, o, i, MAXSIZE, s0->sh_type,
-               s0->sh_addr, s0->sh_offset, s0->sh_size, s0->sh_entsize,
-               s0->sh_flags, s0->sh_link, s0->sh_info, s0->sh_addralign);
+    for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
+      MEMSTACK(Elf32_Shdr, sx);
+      Elf32_Shdr *s0 = ecget_shdr32byindex(p, sx, i);
+      if (s0) {
+        n += dump_sectionheaders1(p, o, i, MAXSIZE, s0->sh_type,
+                 s0->sh_addr, s0->sh_offset, s0->sh_size, s0->sh_entsize,
+                 s0->sh_flags, s0->sh_link, s0->sh_info, s0->sh_addralign);
 
-      if (MODE_ISANY(o->action, OPTPROGRAM_HASH)) {
-        n += printf_sore(getp(p, s0->sh_offset, s0->sh_size), s0->sh_size, USE_SHA256 | USE_SPACE | USE_NOTEXT);
+        if (MODE_ISANY(o->action, OPTPROGRAM_HASH)) {
+          n += printf_sore(getp(p, s0->sh_offset, s0->sh_size), s0->sh_size, USE_SHA256 | USE_SPACE | USE_NOTEXT);
+        }
+
+        n += printf_eol();
       }
-
-      n += printf_eol();
     }
-  }
 
-  n += dump_sectionheaders2(p, o);
+    n += dump_sectionheaders2(p, o);
+  }
 
   return n;
 }
@@ -361,25 +365,29 @@ static int dump_sectionheaders64(const pbuffer_t p, const poptions_t o, Elf64_Eh
   const int MAXSIZE = MAX(ecget_secnamemaxsize(p) + 2, 21);
 
   int n = 0;
-  n += dump_sectionheaders0(p, o, MAXSIZE);
+  if (0 == ehdr->e_shnum) {
+    printf_w("There are no sections in this file.");
+  } else {
+    n += dump_sectionheaders0(p, o, MAXSIZE);
 
-  for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
-    MEMSTACK(Elf64_Shdr, sx);
-    Elf64_Shdr *s0 = ecget_shdr64byindex(p, sx, i);
-    if (s0) {
-      n += dump_sectionheaders1(p, o, i, MAXSIZE, s0->sh_type,
-               s0->sh_addr, s0->sh_offset, s0->sh_size, s0->sh_entsize,
-               s0->sh_flags, s0->sh_link, s0->sh_info, s0->sh_addralign);
+    for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
+      MEMSTACK(Elf64_Shdr, sx);
+      Elf64_Shdr *s0 = ecget_shdr64byindex(p, sx, i);
+      if (s0) {
+        n += dump_sectionheaders1(p, o, i, MAXSIZE, s0->sh_type,
+                 s0->sh_addr, s0->sh_offset, s0->sh_size, s0->sh_entsize,
+                 s0->sh_flags, s0->sh_link, s0->sh_info, s0->sh_addralign);
 
-      if (MODE_ISANY(o->action, OPTPROGRAM_HASH)) {
-        n += printf_sore(getp(p, s0->sh_offset, s0->sh_size), s0->sh_size, USE_SHA256 | USE_SPACE | USE_NOTEXT);
+        if (MODE_ISANY(o->action, OPTPROGRAM_HASH)) {
+          n += printf_sore(getp(p, s0->sh_offset, s0->sh_size), s0->sh_size, USE_SHA256 | USE_SPACE | USE_NOTEXT);
+        }
+
+        n += printf_eol();
       }
-
-      n += printf_eol();
     }
-  }
 
-  n += dump_sectionheaders2(p, o);
+    n += dump_sectionheaders2(p, o);
+  }
 
   return n;
 }
