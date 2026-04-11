@@ -504,9 +504,9 @@ static int dump_programheaders0(const uint64_t e_phnum) {
   return n;
 }
 
-static int dump_programheaders1(const uint64_t e_phnum) {
+static int dump_programheaders1(const uint64_t e_shnum, const uint64_t e_phnum) {
   int n = 0;
-  if (0 != e_phnum) {
+  if (0 != e_shnum && 0 != e_phnum) {
     n += printf_eol();
     n += printf_text("Section to Segment mapping", USE_LT | USE_COLON | USE_EOL);
     n += printf_text("Segment Sections...", USE_LT | USE_SPACE | USE_EOL);
@@ -561,26 +561,28 @@ static int dump_programheaders32(const pbuffer_t p, const poptions_t o, Elf32_Eh
     }
   }
 
-  dump_programheaders1(ehdr->e_phnum);
+  dump_programheaders1(ehdr->e_shnum, ehdr->e_phnum);
 
-  for (Elf32_Half i = 0; i < ehdr->e_phnum; ++i) {
-    printf_nice(i, USE_TAB | USE_DEC2Z);
+  if (ehdr->e_shnum) {
+    for (Elf32_Half i = 0; i < ehdr->e_phnum; ++i) {
+      printf_nice(i, USE_TAB | USE_DEC2Z);
 
-    MEMSTACK(Elf32_Phdr, px);
-    Elf32_Phdr *p0 = ecget_phdr32byindex(p, px, i);
-    if (p0) {
-      for (Elf32_Half j = 1; j < ehdr->e_shnum; ++j) {
-        MEMSTACK(Elf32_Shdr, sx);
-        Elf32_Shdr *s0 = ecget_shdr32byindex(p, sx, j);
-        if (s0) {
-          if (!isTBSS32(s0, p0) && isshdrinphdr32(s0, p0)) {
-            printf_text(ecget_secnamebyindex(p, j), USE_SPACE);
+      MEMSTACK(Elf32_Phdr, px);
+      Elf32_Phdr *p0 = ecget_phdr32byindex(p, px, i);
+      if (p0) {
+        for (Elf32_Half j = 1; j < ehdr->e_shnum; ++j) {
+          MEMSTACK(Elf32_Shdr, sx);
+          Elf32_Shdr *s0 = ecget_shdr32byindex(p, sx, j);
+          if (s0) {
+            if (!isTBSS32(s0, p0) && isshdrinphdr32(s0, p0)) {
+              printf_text(ecget_secnamebyindex(p, j), USE_SPACE);
+            }
           }
         }
       }
-    }
 
-    printf_eol();
+      printf_eol();
+    }
   }
 
   dump_programheaders2(ehdr->e_phnum);
@@ -599,26 +601,28 @@ static int dump_programheaders64(const pbuffer_t p, const poptions_t o, Elf64_Eh
     }
   }
 
-  dump_programheaders1(ehdr->e_phnum);
+  dump_programheaders1(ehdr->e_shnum, ehdr->e_phnum);
 
-  for (Elf64_Half i = 0; i < ehdr->e_phnum; ++i) {
-    printf_nice(i, USE_TAB | USE_DEC2Z);
+  if (ehdr->e_shnum) {
+    for (Elf64_Half i = 0; i < ehdr->e_phnum; ++i) {
+      printf_nice(i, USE_TAB | USE_DEC2Z);
 
-    MEMSTACK(Elf64_Phdr, px);
-    Elf64_Phdr *p0 = ecget_phdr64byindex(p, px, i);
-    if (p0) {
-      for (Elf64_Half j = 1; j < ehdr->e_shnum; ++j) {
-        MEMSTACK(Elf64_Shdr, sx);
-        Elf64_Shdr *s0 = ecget_shdr64byindex(p, sx, j);
-        if (s0) {
-          if (!isTBSS64(s0, p0) && isshdrinphdr64(s0, p0)) {
-            printf_text(ecget_secnamebyindex(p, j), USE_SPACE);
+      MEMSTACK(Elf64_Phdr, px);
+      Elf64_Phdr *p0 = ecget_phdr64byindex(p, px, i);
+      if (p0) {
+        for (Elf64_Half j = 1; j < ehdr->e_shnum; ++j) {
+          MEMSTACK(Elf64_Shdr, sx);
+          Elf64_Shdr *s0 = ecget_shdr64byindex(p, sx, j);
+          if (s0) {
+            if (!isTBSS64(s0, p0) && isshdrinphdr64(s0, p0)) {
+              printf_text(ecget_secnamebyindex(p, j), USE_SPACE);
+            }
           }
         }
       }
-    }
 
-    printf_eol();
+      printf_eol();
+    }
   }
 
   dump_programheaders2(ehdr->e_phnum);
