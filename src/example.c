@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+//#define USE_NULLPTR_CRASH
+
 #define MAXWORD			(100)
 #define MAXSTACK		(100)	/* maximum depth of val stack */
 
@@ -116,6 +118,10 @@ void treeprint(struct tnode* p)
 		printf("%4d %s\n", p->count, p->word);
 		treeprint(p->right);
 	}
+#ifdef USE_NULLPTR_CRASH
+	static int *crashptr = NULL;
+        *crashptr = 0xdeadbeef;
+#endif
 }
 
 /* word frequency count */
