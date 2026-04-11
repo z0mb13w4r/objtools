@@ -41,6 +41,9 @@ NAME=samples/exampled-32
 #NAME=samples/binutils-2.45-risc-v64/riscv64-unknown-elf-strings
 #NAME=samples/binutils-2.45-risc-v64/riscv64-unknown-elf-addr2line
 
+#NAME=samples/example-64.coredump
+NAME=samples/exampled-64.coredump
+
 PICK1='-a'
 #PICK1='-a -D'
 #PICK1='-a -C'
