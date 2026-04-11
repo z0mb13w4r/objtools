@@ -24,6 +24,7 @@
 #include "static/shdr_type.ci"
 #include "static/ehdr_osabi.ci"
 #include "static/ehdr_machine.ci"
+#include "static/public_tag.ci"
 
 /* .tbss is special. It doesn't contribute memory space to normal
    segments and it doesn't take file space in normal segments. */
