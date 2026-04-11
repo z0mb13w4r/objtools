@@ -3,6 +3,8 @@ static convert_t ecEHDRTYPE[] = {
   {"REL (Relocatable file)",       ET_REL},
   {"EXEC (Executable file)",       ET_EXEC},
   {"DYN (Shared object file)",     ET_DYN},
+  {"CORE (Core file)",             ET_CORE},
+
   {0, 0}
 };
 
@@ -11,6 +13,7 @@ static convert_t ecEHDRTYPEPIE[] = {
   {"REL (Relocatable file)",       ET_REL},
   {"EXEC (Executable file)",       ET_EXEC},
   {"DYN (Position-Independent Executable file)",     ET_DYN},
+
   {0, 0}
 };
 
