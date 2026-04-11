@@ -2070,8 +2070,40 @@ static int dump_notes3(const pbuffer_t p, const uint64_t p_offset, const uint64_
       n += printf_nice(n0->n_descsz, USE_FHEX32);
       n += printf_pick(get_NHDRTYPE(p), n0->n_type, USE_LT | USE_SPACE | USE_EOL);
 
-//      n += printf_sore(fgetp(notes, n0->n_descsz + 3), n0->n_descsz, USE_HEX | USE_EOL);
-      fstep(notes, n0->n_descsz + 3);
+      if (NT_FILE == n0->n_type) {
+                               fgetu16(notes); fgetu8(notes);
+        const uint64_t count = fgetu64(notes);
+        const uint64_t psize = fgetu64(notes);
+
+        n0->n_descsz -= 3 + 8 + 8;
+
+        n += printf_text("PAGE SIZE", USE_LT | USE_TAB | USE_COLON);
+        n += printf_nice(psize, USE_DEC | USE_EOL);
+
+        for (uint64_t i = 0; i < count; i++) {
+          const uint64_t cpos = fgetu64(notes);
+          const uint64_t epos = fgetu64(notes);
+          const uint64_t fofs = fgetu64(notes);
+
+          n0->n_descsz -= 8 + 8 + 8;
+
+          n += printf_nice(cpos, USE_FHEX64 | USE_TAB);
+          n += printf_nice(epos, USE_FHEX64);
+          n += printf_nice(fofs, USE_FHEX64);
+          n += printf_eol();
+        }
+
+        fstep(notes, n0->n_descsz + 3);
+
+      } else if (NT_X86_XSTATE == n0->n_type) {
+        fstep(notes, 2);
+
+        n += printf_text("DESCRIPTION DATA", USE_LT | USE_TAB | USE_COLON);
+        n += printf_sore(fgetp(notes, n0->n_descsz), n0->n_descsz, USE_HEX);
+        n += printf_eol();
+      } else {
+        fstep(notes, n0->n_descsz + 3);
+      }
     }
   }
 
