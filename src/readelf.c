@@ -2109,6 +2109,7 @@ static int dump_notes3(const pbuffer_t p, const uint64_t p_offset, const uint64_
         fstep(notes, 2);
 
         n += printf_text("DESCRIPTION DATA", USE_LT | USE_TAB | USE_COLON);
+        n += printf_pack(1);
         n += printf_sore(fgetp(notes, n0->n_descsz), n0->n_descsz, USE_HEX);
         n += printf_eol();
       } else {
