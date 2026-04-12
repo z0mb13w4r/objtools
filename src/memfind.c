@@ -555,28 +555,11 @@ unknown_t fupdate(handle_t p, const size_t cpos, const size_t blocksize) {
 }
 
 handle_t fcalloc(unknown_t p, const size_t size, const size_t blocksize) {
-  if (isfind(p)) {
-    pfind_t p0 = CAST(pfind_t, p);
-    if (p0 && p0->item) {
-      handle_t p1 = fcalloc(CAST(puchar_t, p0->item) + p0->cpos, size, blocksize);
-      p0->cpos += size;
-      return p1;
-    }
-  } else if (size) {
-    pfind_t p0 = xmalloc(sizeof(find_t), MODE_HEAP);
-    if (p0) {
-      p0->cpos = 0;
-      p0->epos = size - 1;
-      p0->size = size;
-      p0->item = cmalloc(p, size, MODE_HEAP);
-      p0->role = blocksize & MEMFIND_MASK;
-      p0->blocksize = blocksize & ~MEMFIND_MASK;
-    }
+  return fmalloc(p, size, blocksize | MEMFIND_MALLOC);
+}
 
-    return setmode(p0, MODE_FINDC);
-  }
-
-  return NULL;
+handle_t fxalloc(const size_t size, const size_t blocksize) {
+  return fmalloc(NULL, size, blocksize | MEMFIND_MALLOC);
 }
 
 handle_t fmalloc(unknown_t p, const size_t size, const size_t blocksize) {
@@ -587,35 +570,22 @@ handle_t fmalloc(unknown_t p, const size_t size, const size_t blocksize) {
       p0->cpos += size;
       return p1;
     }
-  } else if (p) {
+  } else if (size) {
     pfind_t p0 = xmalloc(sizeof(find_t), MODE_HEAP);
     if (p0) {
       p0->cpos = 0;
       p0->epos = size - 1;
       p0->size = size;
-      p0->item = p;
       p0->role = blocksize & MEMFIND_MASK;
+      p0->role = p ? p0->role : p0->role | MEMFIND_MALLOC;
       p0->blocksize = blocksize & ~MEMFIND_MASK;
+      p0->item = MODE_ISANY(p0->role, MEMFIND_MALLOC) ? cmalloc(p, size, MODE_HEAP) : p;
     }
 
-    return setmode(p0, MODE_FIND);
+    return setmode(p0, MODE_ISANY(p0->role, MEMFIND_MALLOC) ? MODE_FINDC : MODE_FIND);
   }
 
   return NULL;
-}
-
-handle_t fxalloc(const size_t size, const size_t blocksize) {
-  pfind_t p0 = xmalloc(sizeof(find_t), MODE_HEAP);
-  if (p0) {
-    p0->cpos = 0;
-    p0->epos = size - 1;
-    p0->size = size;
-    p0->item = xmalloc(size, MODE_HEAP);
-    p0->role = blocksize & MEMFIND_MASK;
-    p0->blocksize = blocksize & ~MEMFIND_MASK;
-  }
-
-  return setmode(p0, MODE_FINDC);
 }
 
 handle_t fswap(handle_t p, handle_t q) {

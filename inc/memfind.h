@@ -7,11 +7,12 @@
 #define MODE_FINDC              (MODE_PUT0('F') | MODE_PUT1('N') | MODE_PUT2('D') | MODE_PUT3('C'))
 
 #define MEMFIND_NONE            U32MASK_NONE
-#define MEMFIND_NOBLOCKSIZE     U32MASK(28)
+#define MEMFIND_NOBLOCKSIZE     U32MASK(27)
+#define MEMFIND_MALLOC          U32MASK(28)
 #define MEMFIND_32BIT           U32MASK(29)
 #define MEMFIND_64BIT           U32MASK(30)
 #define MEMFIND_BIGENDIAN       U32MASK(31)
-#define MEMFIND_MASK            (MEMFIND_32BIT | MEMFIND_64BIT | MEMFIND_BIGENDIAN)
+#define MEMFIND_MASK            (MEMFIND_32BIT | MEMFIND_64BIT | MEMFIND_BIGENDIAN | MEMFIND_MALLOC)
 
 typedef struct find_s {
   smode_t   mode;
