@@ -16,7 +16,8 @@
 
 typedef struct find_s {
   smode_t   mode;
-  size_t    cpos, epos, size, blocksize;
+  uint64_t  cpos, epos;
+  size_t    size, blocksize;
   nmode_t   role;
   unknown_t item;
 
@@ -30,6 +31,7 @@ bool_t fisbe(handle_t p);
 bool_t fisle(handle_t p);
 
 size_t fgetcpos(handle_t p);
+size_t fgetepos(handle_t p);
 size_t fgetsize(handle_t p);
 size_t fgetstate(handle_t p);
 
@@ -45,6 +47,7 @@ handle_t fshrink(handle_t p);
 
 handle_t fnext(handle_t p);
 handle_t fstep(handle_t p, const size_t blocksize);
+handle_t fgalloc(unknown_t p, const uint64_t offset, const size_t size, const size_t blocksize);
 handle_t fcalloc(unknown_t p, const size_t size, const size_t blocksize);
 handle_t fmalloc(unknown_t p, const size_t size, const size_t blocksize);
 handle_t fxalloc(const size_t size, const size_t blocksize);

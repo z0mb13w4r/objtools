@@ -52,6 +52,15 @@ size_t fgetcpos(handle_t p) {
   return 0;
 }
 
+size_t fgetepos(handle_t p) {
+  if (isfind(p)) {
+    pfind_t p0 = CAST(pfind_t, p);
+    return p0 ? p0->epos : 0;
+  }
+
+  return 0;
+}
+
 size_t fgetsize(handle_t p) {
   if (isfind(p)) {
     pfind_t p0 = CAST(pfind_t, p);
@@ -583,6 +592,16 @@ handle_t fmalloc(unknown_t p, const size_t size, const size_t blocksize) {
     }
 
     return setmode(p0, MODE_ISANY(p0->role, MEMFIND_MALLOC) ? MODE_FINDC : MODE_FIND);
+  }
+
+  return NULL;
+}
+
+handle_t fgalloc(unknown_t p, const uint64_t offset, const size_t size, const size_t blocksize) {
+  if (isfind(p)) {
+    return fgetcpos(p) + offset + size < fgetepos(p) ? fgalloc(fget(p), offset, size, blocksize) : NULL;
+  } else if (p) {
+    return fmalloc(CAST(puchar_t, p) + offset, size, blocksize);
   }
 
   return NULL;
