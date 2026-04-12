@@ -2044,80 +2044,75 @@ static int dump_notes1(const pbuffer_t p, const int index, const uint64_t e_mach
 
 static int dump_notes2(const pbuffer_t p, const uint64_t p_offset, const uint64_t p_filesz) {
   int n = 0;
+
   n += printf_text("Displaying notes found at file offset", USE_LT);
   n += printf_nice(p_offset, USE_FHEX32);
   n += printf_text("with length", USE_LT | USE_SPACE);
   n += printf_nice(p_filesz, USE_FHEX32 | USE_COLON);
   n += printf_eol();
 
-  return n;
-}
-
-static int dump_notes3(const pbuffer_t p, const uint64_t p_offset, const uint64_t p_filesz, const handle_t notes) {
-  int n = 0;
-  const int MAXSIZE = strlenpick(get_NHDRTYPE(p)) + 2;
-  const imode_t USE_FHEXNN = isELF64(p) ? USE_FHEX64 : USE_FHEX32;
-
-  n += printf_text("Owner", USE_LT | SET_PAD(MAXSIZE));
+  n += printf_text("Owner", USE_LT | SET_PAD(20));
   n += printf_text("Data size", USE_LT | SET_PAD(17));
   n += printf_text("Description", USE_LT | USE_EOL);
 
-  while (!fiseof(notes)) {
-    MEMSTACK(Elf64_Nhdr, nx);
-    Elf64_Nhdr *n0 = ecconvert_nhdr64(p, nx, fgetp(notes, sizeof(Elf64_Nhdr)));
-    if (n0) {
-      n += printf_sore(fgetp(notes, n0->n_namesz), n0->n_namesz, USE_STR);
-      n += printf_nice(n0->n_descsz, USE_FHEX32);
-      n += printf_pick(get_NHDRTYPE(p), n0->n_type, USE_LT | USE_SPACE | USE_EOL);
+  return n;
+}
 
-      if (NT_FILE == n0->n_type) {
-        fstep(notes, 3);
+static int dump_notes3(const pbuffer_t p, const uint64_t n_namesz, const uint64_t n_descsz, const uint64_t n_type, const handle_t notes) {
+  int n = 0;
+  const imode_t USE_FHEXNN = isELF64(p) ? USE_FHEX64 : USE_FHEX32;
 
-        const uint64_t smark = fgetcpos(notes);
-        const uint64_t count = fgetuNN(notes);
-        const uint64_t psize = fgetuNN(notes);
+  n += printf_sore(fgetp(notes, n_namesz), n_namesz, USE_STR);
+  n += printf_nice(n_descsz, USE_FHEX32);
+  n += printf_pick(get_NHDRTYPE(p), n_type, USE_LT | USE_SPACE | USE_EOL);
 
-        n0->n_descsz -= 3 + fgetcpos(notes) - smark;
+  if (NT_FILE == n_type) {
+    fstep(notes, 3);
 
-        n += printf_text("PAGE SIZE", USE_LT | USE_TAB | USE_COLON);
-        n += printf_nice(psize, USE_DEC | USE_EOL);
+    const uint64_t smark = fgetcpos(notes);
+    const uint64_t count = fgetuNN(notes);
+    const uint64_t psize = fgetuNN(notes);
 
-        n += printf_text("Start", USE_LT | SET_PAD(17));
-        n += printf_text("End", USE_LT | SET_PAD(17));
-        n += printf_text("Page Offset", USE_LT | USE_EOL);
+    uint64_t descsz0 = n_descsz;
+    descsz0 -= 3 + fgetcpos(notes) - smark;
 
-        handle_t n1 = fgalloc(notes, count * 3 * 8, n0->n_descsz - (count * 3 * 8) + 3, MEMFIND_NOBLOCKSIZE);
+    n += printf_text("PAGE SIZE", USE_LT | USE_TAB | USE_COLON);
+    n += printf_nice(psize, USE_DEC | USE_EOL);
 
-        for (uint64_t i = 0; i < count; i++) {
-          const uint64_t spos = fgetcpos(notes);
-          const uint64_t cpos = fgetuNN(notes);
-          const uint64_t epos = fgetuNN(notes);
-          const uint64_t fofs = fgetuNN(notes);
+    n += printf_text("Start", USE_LT | SET_PAD(17));
+    n += printf_text("End", USE_LT | SET_PAD(17));
+    n += printf_text("Page Offset", USE_LT | USE_EOL);
 
-          n0->n_descsz -= fgetcpos(notes) - spos;
+    handle_t n1 = fgalloc(notes, count * 3 * 8, descsz0 - (count * 3 * 8) + 3, MEMFIND_NOBLOCKSIZE);
 
-          n += printf_nice(cpos, USE_FHEXNN | USE_TAB);
-          n += printf_nice(epos, USE_FHEXNN);
-          n += printf_nice(fofs, USE_FHEXNN);
-          n += printf_eol();
+    for (uint64_t i = 0; i < count; i++) {
+      const uint64_t spos = fgetcpos(notes);
+      const uint64_t cpos = fgetuNN(notes);
+      const uint64_t epos = fgetuNN(notes);
+      const uint64_t fofs = fgetuNN(notes);
 
-          n += printf_text(fgetstring(n1), USE_LT);
-          n += printf_eol();
-        }
+      descsz0 -= fgetcpos(notes) - spos;
 
-        fstep(notes, n0->n_descsz + 3);
-        ffree(n1);
-      } else if (NT_X86_XSTATE == n0->n_type) {
-        fstep(notes, 2);
+      n += printf_nice(cpos, USE_FHEXNN | USE_TAB);
+      n += printf_nice(epos, USE_FHEXNN);
+      n += printf_nice(fofs, USE_FHEXNN);
+      n += printf_eol();
 
-        n += printf_text("DESCRIPTION DATA", USE_LT | USE_TAB | USE_COLON);
-        n += printf_pack(1);
-        n += printf_sore(fgetp(notes, n0->n_descsz), n0->n_descsz, USE_HEX);
-        n += printf_eol();
-      } else {
-        fstep(notes, n0->n_descsz + 3);
-      }
+      n += printf_text(fgetstring(n1), USE_LT);
+      n += printf_eol();
     }
+
+    fstep(notes, descsz0 + 3);
+    ffree(n1);
+  } else if (NT_X86_XSTATE == n_type) {
+    fstep(notes, 2);
+
+    n += printf_text("DESCRIPTION DATA", USE_LT | USE_TAB | USE_COLON);
+    n += printf_pack(1);
+    n += printf_sore(fgetp(notes, n_descsz), n_descsz, USE_HEX);
+    n += printf_eol();
+  } else {
+    fstep(notes, n_descsz + 3);
   }
 
   return n;
@@ -2144,6 +2139,19 @@ static int dump_notes32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr)
       Elf32_Phdr *p0 = ecget_phdr32byindex(p, px, i);
       if (p0 && PT_NOTE == p0->p_type) {
         n += dump_notes2(p, p0->p_offset, p0->p_filesz);
+
+        handle_t p1 = fgetbyoffset(p, p0->p_offset , p0->p_filesz, MEMFIND_NOBLOCKSIZE);
+        if (p1) {
+          while (!fiseof(p1)) {
+            MEMSTACK(Elf32_Nhdr, nx);
+            Elf32_Nhdr *n0 = ecconvert_nhdr32(p, nx, fgetp(p1, sizeof(Elf32_Nhdr)));
+            if (n0) {
+              n += dump_notes3(p, n0->n_namesz, n0->n_descsz, n0->n_type, p1);
+            }
+          }
+
+          ffree(p1);
+        }
       }
     }
   }
@@ -2171,10 +2179,20 @@ static int dump_notes64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr)
       MEMSTACK(Elf64_Phdr, px);
       Elf64_Phdr *p0 = ecget_phdr64byindex(p, px, i);
       if (p0 && PT_NOTE == p0->p_type) {
-        handle_t notes = fgetbyoffset(p, p0->p_offset , p0->p_filesz, MEMFIND_NOBLOCKSIZE);
         n += dump_notes2(p, p0->p_offset, p0->p_filesz);
-        n += dump_notes3(p, p0->p_offset, p0->p_filesz, notes);
-        ffree(notes);
+
+        handle_t p1 = fgetbyoffset(p, p0->p_offset , p0->p_filesz, MEMFIND_NOBLOCKSIZE);
+        if (p1) {
+          while (!fiseof(p1)) {
+            MEMSTACK(Elf64_Nhdr, nx);
+            Elf64_Nhdr *n0 = ecconvert_nhdr64(p, nx, fgetp(p1, sizeof(Elf64_Nhdr)));
+            if (n0) {
+              n += dump_notes3(p, n0->n_namesz, n0->n_descsz, n0->n_type, p1);
+            }
+          }
+
+          ffree(p1);
+        }
       }
     }
   }
