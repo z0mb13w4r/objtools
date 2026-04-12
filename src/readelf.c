@@ -2056,6 +2056,11 @@ static int dump_notes2(const pbuffer_t p, const uint64_t p_offset, const uint64_
 static int dump_notes3(const pbuffer_t p, const uint64_t p_offset, const uint64_t p_filesz, const handle_t notes) {
   int n = 0;
 //  n += printf_data(fget(notes), p_filesz, 0, USE_HEXDUMP);
+  const int MAXSIZE = strlenpick(get_NHDRTYPE(p)) + 2;
+
+  n += printf_text("Owner", USE_LT | SET_PAD(MAXSIZE));
+  n += printf_text("Data size", USE_LT | SET_PAD(17));
+  n += printf_text("Description", USE_LT | USE_EOL);
 
   while (!fiseof(notes)) {
 //printf("cpos = %lx\n", fgetcpos(notes));
@@ -2071,7 +2076,8 @@ static int dump_notes3(const pbuffer_t p, const uint64_t p_offset, const uint64_
       n += printf_pick(get_NHDRTYPE(p), n0->n_type, USE_LT | USE_SPACE | USE_EOL);
 
       if (NT_FILE == n0->n_type) {
-                               fgetu16(notes); fgetu8(notes);
+        fstep(notes, 3);
+
         const uint64_t count = fgetu64(notes);
         const uint64_t psize = fgetu64(notes);
 
@@ -2079,6 +2085,10 @@ static int dump_notes3(const pbuffer_t p, const uint64_t p_offset, const uint64_
 
         n += printf_text("PAGE SIZE", USE_LT | USE_TAB | USE_COLON);
         n += printf_nice(psize, USE_DEC | USE_EOL);
+
+        n += printf_text("Start", USE_LT | SET_PAD(17));
+        n += printf_text("End", USE_LT | SET_PAD(17));
+        n += printf_text("Page Offset", USE_LT | USE_EOL);
 
         for (uint64_t i = 0; i < count; i++) {
           const uint64_t cpos = fgetu64(notes);
