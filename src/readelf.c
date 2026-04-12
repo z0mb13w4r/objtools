@@ -2055,7 +2055,6 @@ static int dump_notes2(const pbuffer_t p, const uint64_t p_offset, const uint64_
 
 static int dump_notes3(const pbuffer_t p, const uint64_t p_offset, const uint64_t p_filesz, const handle_t notes) {
   int n = 0;
-//  n += printf_data(fget(notes), p_filesz, 0, USE_HEXDUMP);
   const int MAXSIZE = strlenpick(get_NHDRTYPE(p)) + 2;
   const imode_t USE_FHEXNN = isELF64(p) ? USE_FHEX64 : USE_FHEX32;
 
@@ -2064,14 +2063,9 @@ static int dump_notes3(const pbuffer_t p, const uint64_t p_offset, const uint64_
   n += printf_text("Description", USE_LT | USE_EOL);
 
   while (!fiseof(notes)) {
-//printf("cpos = %lx\n", fgetcpos(notes));
     MEMSTACK(Elf64_Nhdr, nx);
     Elf64_Nhdr *n0 = ecconvert_nhdr64(p, nx, fgetp(notes, sizeof(Elf64_Nhdr)));
     if (n0) {
-//printf("n_namesz = %x\n", n0->n_namesz);
-//printf("n_descsz = %x\n", n0->n_descsz);
-//printf("n_type = %x\n", n0->n_type);
-
       n += printf_sore(fgetp(notes, n0->n_namesz), n0->n_namesz, USE_STR);
       n += printf_nice(n0->n_descsz, USE_FHEX32);
       n += printf_pick(get_NHDRTYPE(p), n0->n_type, USE_LT | USE_SPACE | USE_EOL);
@@ -2093,9 +2087,6 @@ static int dump_notes3(const pbuffer_t p, const uint64_t p_offset, const uint64_
         n += printf_text("Page Offset", USE_LT | USE_EOL);
 
         handle_t n1 = fgalloc(notes, count * 3 * 8, n0->n_descsz - (count * 3 * 8) + 3, MEMFIND_NOBLOCKSIZE);
-
-//  n += printf_data(CAST(puchar_t, fget(notes)) + (count * 3 * 8), n0->n_descsz - (count * 3 * 8) + 3, 0, USE_HEXDUMP);
-//  n += printf_data(fget(n1), fgetsize(n1), 0, USE_HEXDUMP);
 
         for (uint64_t i = 0; i < count; i++) {
           const uint64_t spos = fgetcpos(notes);
