@@ -23,7 +23,7 @@
 #define PRINT2(x,y)            snprintf(o + n, size - n, x, y)
 
 #define MODE_USESPACE(x)       (USE_SPACE == GET_POS0(x))
-#define MODE_USESPACES(x)      (USE_SPACE == GET_POS0(x) || USE_TAB1 == GET_POS0(x) || USE_TAB2 == GET_POS0(x))
+#define MODE_USESPACES(x)      (USE_SPACE == GET_POS0(x) || USE_TAB1 == GET_POS0(x) || USE_TAB2 == GET_POS0(x) || USE_TAB3 == GET_POS0(x))
 
 #define MODE_NOSPACES(x,y,z)   (MODE_ISANY(x, USE_NOSPACE) ? (y) : (z))
 
@@ -87,6 +87,7 @@ int printf_spos(char* o, const size_t size, const imode_t mode, const bool_t use
     case USE_DOT:                  n += PRINT1(".");     break;
     case USE_TAB:                  n += PRINT1(" ");     break;
     case USE_TAB2:                 n += PRINT1("   ");   break;
+    case USE_TAB3:                 n += PRINT1("     "); break;
     case USE_COMMA:                n += PRINT1(", ");    break;
     case USE_0x:                   n += PRINT1("0x");    break;
     case USE_POUND:                n += PRINT1("£");     break;
@@ -197,6 +198,7 @@ int printf_work(char* o, const size_t size, const char* p, const imode_t mode) {
     case USE_SPACE:          n += PRINT1(" ");          break;
     case USE_TAB1:           n += PRINT1("  ");         break;
     case USE_TAB2:           n += PRINT1("    ");       break;
+    case USE_TAB3:           n += PRINT1("      ");     break;
     case USE_DOT:            n += PRINT1(".");          break;
     case USE_COMMA:          n += PRINT1(", ");         break;
     case USE_POUND:          n += PRINT1("£");          break;
