@@ -2079,10 +2079,11 @@ static int dump_notes3(const pbuffer_t p, const uint64_t p_offset, const uint64_
       if (NT_FILE == n0->n_type) {
         fstep(notes, 3);
 
+        const uint64_t smark = fgetcpos(notes);
         const uint64_t count = fgetuNN(notes);
         const uint64_t psize = fgetuNN(notes);
 
-        n0->n_descsz -= 3 + 8 + 8;
+        n0->n_descsz -= 3 + fgetcpos(notes) - smark;
 
         n += printf_text("PAGE SIZE", USE_LT | USE_TAB | USE_COLON);
         n += printf_nice(psize, USE_DEC | USE_EOL);
@@ -2091,12 +2092,18 @@ static int dump_notes3(const pbuffer_t p, const uint64_t p_offset, const uint64_
         n += printf_text("End", USE_LT | SET_PAD(17));
         n += printf_text("Page Offset", USE_LT | USE_EOL);
 
+//  n += printf_data(CAST(puchar_t, fget(notes)) + (count * 3 * 8), n0->n_descsz - (count * 3 * 8) + 3, 0, USE_HEXDUMP);
+
+//        handle_t n1 = fmalloc(unknown_t p,
+//                   n0->n_descsz - (count * 3 * 8), MEMFIND_NOBLOCKSIZE);
+
         for (uint64_t i = 0; i < count; i++) {
+          const uint64_t spos = fgetcpos(notes);
           const uint64_t cpos = fgetuNN(notes);
           const uint64_t epos = fgetuNN(notes);
           const uint64_t fofs = fgetuNN(notes);
 
-          n0->n_descsz -= 8 + 8 + 8;
+          n0->n_descsz -= fgetcpos(notes) - spos;
 
           n += printf_nice(cpos, USE_FHEXNN | USE_TAB);
           n += printf_nice(epos, USE_FHEXNN);
