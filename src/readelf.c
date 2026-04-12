@@ -2092,10 +2092,10 @@ static int dump_notes3(const pbuffer_t p, const uint64_t p_offset, const uint64_
         n += printf_text("End", USE_LT | SET_PAD(17));
         n += printf_text("Page Offset", USE_LT | USE_EOL);
 
-//  n += printf_data(CAST(puchar_t, fget(notes)) + (count * 3 * 8), n0->n_descsz - (count * 3 * 8) + 3, 0, USE_HEXDUMP);
+        handle_t n1 = fgalloc(notes, count * 3 * 8, n0->n_descsz - (count * 3 * 8) + 3, MEMFIND_NOBLOCKSIZE);
 
-//        handle_t n1 = fmalloc(unknown_t p,
-//                   n0->n_descsz - (count * 3 * 8), MEMFIND_NOBLOCKSIZE);
+//  n += printf_data(CAST(puchar_t, fget(notes)) + (count * 3 * 8), n0->n_descsz - (count * 3 * 8) + 3, 0, USE_HEXDUMP);
+//  n += printf_data(fget(n1), fgetsize(n1), 0, USE_HEXDUMP);
 
         for (uint64_t i = 0; i < count; i++) {
           const uint64_t spos = fgetcpos(notes);
@@ -2109,10 +2109,13 @@ static int dump_notes3(const pbuffer_t p, const uint64_t p_offset, const uint64_
           n += printf_nice(epos, USE_FHEXNN);
           n += printf_nice(fofs, USE_FHEXNN);
           n += printf_eol();
+
+          n += printf_text(fgetstring(n1), USE_LT);
+          n += printf_eol();
         }
 
         fstep(notes, n0->n_descsz + 3);
-
+        ffree(n1);
       } else if (NT_X86_XSTATE == n0->n_type) {
         fstep(notes, 2);
 
