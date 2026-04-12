@@ -1961,15 +1961,17 @@ static int dump_actions64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehd
 
 static int dump_notes0(const pbuffer_t p, const int index, const uint64_t e_machine,
                        const uint64_t n_descsz, const uint64_t n_type) {
+  const int MAXSIZE = 22;
+
   int n = 0;
   n += printf_text("Displaying notes found in", USE_LT);
   n += printf_text(ecget_secnamebyindex(p, index), USE_LT | USE_SPACE | USE_SQ | USE_COLON | USE_EOL);
 
-  n += printf_text("Owner", USE_LT | USE_TAB | SET_PAD(22));
+  n += printf_text("Owner", USE_LT | USE_TAB | SET_PAD(MAXSIZE));
   n += printf_text("Data size", USE_LT | USE_SPACE | SET_PAD(11));
   n += printf_text("Description", USE_LT | USE_SPACE | USE_EOL);
 
-  n += printf_text(ecget_nhdrnamebyindex(p, index), USE_LT | USE_TAB | SET_PAD(22));
+  n += printf_text(ecget_nhdrnamebyindex(p, index), USE_LT | USE_TAB | SET_PAD(MAXSIZE));
   n += printf_nice(n_descsz, USE_FHEX32);
   n += printf_pick(get_NHDRTYPE(p), n_type, USE_LT | USE_SPACE | USE_EOL);
 
@@ -2043,6 +2045,8 @@ static int dump_notes1(const pbuffer_t p, const int index, const uint64_t e_mach
 }
 
 static int dump_notes2(const pbuffer_t p, const uint64_t p_offset, const uint64_t p_filesz) {
+  const int MAXSIZE = 22;
+
   int n = 0;
 
   n += printf_text("Displaying notes found at file offset", USE_LT);
@@ -2051,20 +2055,25 @@ static int dump_notes2(const pbuffer_t p, const uint64_t p_offset, const uint64_
   n += printf_nice(p_filesz, USE_FHEX32 | USE_COLON);
   n += printf_eol();
 
-  n += printf_text("Owner", USE_LT | SET_PAD(20));
-  n += printf_text("Data size", USE_LT | SET_PAD(17));
-  n += printf_text("Description", USE_LT | USE_EOL);
+  n += printf_text("Owner", USE_LT | USE_TAB | SET_PAD(MAXSIZE));
+  n += printf_text("Data size", USE_LT | USE_SPACE | SET_PAD(11));
+  n += printf_text("Description", USE_LT | USE_SPACE | USE_EOL);
 
   return n;
 }
 
 static int dump_notes3(const pbuffer_t p, const uint64_t n_namesz, const uint64_t n_descsz, const uint64_t n_type, const handle_t notes) {
-  int n = 0;
+  const int MAXSIZE0 = 22;
+  const int MAXSIZE1 = isELF64(p) ? 19 : 12;
+
+  int n0 = 0;
+  int n1 = 0;
   const imode_t USE_FHEXNN = isELF64(p) ? USE_FHEX64 : USE_FHEX32;
 
-  n += printf_sore(fgetp(notes, n_namesz), n_namesz, USE_STR);
-  n += printf_nice(n_descsz, USE_FHEX32);
-  n += printf_pick(get_NHDRTYPE(p), n_type, USE_LT | USE_SPACE | USE_EOL);
+  n1  = printf_sore(fgetp(notes, n_namesz), n_namesz, USE_STR | USE_TAB);
+  n0 += printf_pack(MAXSIZE0 - n1);
+  n0 += printf_nice(n_descsz, USE_FHEX32);
+  n0 += printf_pick(get_NHDRTYPE(p), n_type, USE_LT | USE_SPACE | USE_EOL);
 
   if (NT_FILE == n_type) {
     fstep(notes, 3);
@@ -2076,12 +2085,12 @@ static int dump_notes3(const pbuffer_t p, const uint64_t n_namesz, const uint64_
     uint64_t descsz0 = n_descsz;
     descsz0 -= 3 + fgetcpos(notes) - smark;
 
-    n += printf_text("PAGE SIZE", USE_LT | USE_TAB | USE_COLON);
-    n += printf_nice(psize, USE_DEC | USE_EOL);
+    n0 += printf_text("PAGE SIZE", USE_LT | USE_TAB2 | USE_COLON);
+    n0 += printf_nice(psize, USE_DEC | USE_EOL);
 
-    n += printf_text("Start", USE_LT | SET_PAD(17));
-    n += printf_text("End", USE_LT | SET_PAD(17));
-    n += printf_text("Page Offset", USE_LT | USE_EOL);
+    n0 += printf_text("Start", USE_LT | USE_TAB2 | SET_PAD(MAXSIZE1 + 4));
+    n0 += printf_text("End", USE_LT | SET_PAD(MAXSIZE1));
+    n0 += printf_text("Page Offset", USE_LT | USE_EOL);
 
     handle_t n1 = fgalloc(notes, count * 3 * 8, descsz0 - (count * 3 * 8) + 3, MEMFIND_NOBLOCKSIZE);
 
@@ -2093,13 +2102,13 @@ static int dump_notes3(const pbuffer_t p, const uint64_t n_namesz, const uint64_
 
       descsz0 -= fgetcpos(notes) - spos;
 
-      n += printf_nice(cpos, USE_FHEXNN | USE_TAB);
-      n += printf_nice(epos, USE_FHEXNN);
-      n += printf_nice(fofs, USE_FHEXNN);
-      n += printf_eol();
+      n0 += printf_nice(cpos, USE_FHEXNN | USE_TAB2);
+      n0 += printf_nice(epos, USE_FHEXNN);
+      n0 += printf_nice(fofs, USE_FHEXNN);
+      n0 += printf_eol();
 
-      n += printf_text(fgetstring(n1), USE_LT);
-      n += printf_eol();
+      n0 += printf_text(fgetstring(n1), USE_LT| USE_TAB3);
+      n0 += printf_eol();
     }
 
     fstep(notes, descsz0 + 3);
@@ -2107,15 +2116,15 @@ static int dump_notes3(const pbuffer_t p, const uint64_t n_namesz, const uint64_
   } else if (NT_X86_XSTATE == n_type) {
     fstep(notes, 2);
 
-    n += printf_text("DESCRIPTION DATA", USE_LT | USE_TAB | USE_COLON);
-    n += printf_pack(1);
-    n += printf_sore(fgetp(notes, n_descsz), n_descsz, USE_HEX);
-    n += printf_eol();
+    n0 += printf_text("DESCRIPTION DATA", USE_LT | USE_TAB | USE_COLON);
+    n0 += printf_pack(1);
+    n0 += printf_sore(fgetp(notes, n_descsz), n_descsz, USE_HEX);
+    n0 += printf_eol();
   } else {
     fstep(notes, n_descsz + 3);
   }
 
-  return n;
+  return n0;
 }
 
 static int dump_notes32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
