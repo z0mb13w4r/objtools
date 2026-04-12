@@ -2078,8 +2078,8 @@ static int dump_notes3(const pbuffer_t p, const uint64_t p_offset, const uint64_
       if (NT_FILE == n0->n_type) {
         fstep(notes, 3);
 
-        const uint64_t count = fgetu64(notes);
-        const uint64_t psize = fgetu64(notes);
+        const uint64_t count = fgetuNN(notes);
+        const uint64_t psize = fgetuNN(notes);
 
         n0->n_descsz -= 3 + 8 + 8;
 
@@ -2091,9 +2091,9 @@ static int dump_notes3(const pbuffer_t p, const uint64_t p_offset, const uint64_
         n += printf_text("Page Offset", USE_LT | USE_EOL);
 
         for (uint64_t i = 0; i < count; i++) {
-          const uint64_t cpos = fgetu64(notes);
-          const uint64_t epos = fgetu64(notes);
-          const uint64_t fofs = fgetu64(notes);
+          const uint64_t cpos = fgetuNN(notes);
+          const uint64_t epos = fgetuNN(notes);
+          const uint64_t fofs = fgetuNN(notes);
 
           n0->n_descsz -= 8 + 8 + 8;
 
