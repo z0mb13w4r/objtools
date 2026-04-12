@@ -2057,6 +2057,7 @@ static int dump_notes3(const pbuffer_t p, const uint64_t p_offset, const uint64_
   int n = 0;
 //  n += printf_data(fget(notes), p_filesz, 0, USE_HEXDUMP);
   const int MAXSIZE = strlenpick(get_NHDRTYPE(p)) + 2;
+  const imode_t USE_FHEXNN = isELF64(p) ? USE_FHEX64 : USE_FHEX32;
 
   n += printf_text("Owner", USE_LT | SET_PAD(MAXSIZE));
   n += printf_text("Data size", USE_LT | SET_PAD(17));
@@ -2097,9 +2098,9 @@ static int dump_notes3(const pbuffer_t p, const uint64_t p_offset, const uint64_
 
           n0->n_descsz -= 8 + 8 + 8;
 
-          n += printf_nice(cpos, USE_FHEX64 | USE_TAB);
-          n += printf_nice(epos, USE_FHEX64);
-          n += printf_nice(fofs, USE_FHEX64);
+          n += printf_nice(cpos, USE_FHEXNN | USE_TAB);
+          n += printf_nice(epos, USE_FHEXNN);
+          n += printf_nice(fofs, USE_FHEXNN);
           n += printf_eol();
         }
 
