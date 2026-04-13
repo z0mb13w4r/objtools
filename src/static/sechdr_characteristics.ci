@@ -20,7 +20,7 @@
 #define IMAGE_SCN_MEM_READ               (0x40000000)
 #define IMAGE_SCN_MEM_WRITE              (0x80000000)
 
-static convert_t peSECTIONHDR[] = {
+convert_t peSECTIONHDR[] = {
   {"RESERVED_1",                       0x00000001},
   {"RESERVED_2",                       0x00000002},
   {"RESERVED_3",                       0x00000004},
@@ -67,9 +67,8 @@ static convert_t peSECTIONHDR[] = {
 #define IMAGE_SCN_ALIGN_2048BYTES        (0x00c00000)
 #define IMAGE_SCN_ALIGN_4096BYTES        (0x00d00000)
 #define IMAGE_SCN_ALIGN_8192BYTES        (0x00e00000)
-#define IMAGE_SCN_ALIGN_MASK             (0x00f00000)
 
-static convert_t peSECTIONHDRALIGN[] = {
+convert_t peSECTIONHDRALIGN[] = {
   {"IMAGE_SCN_ALIGN_1BYTES",           IMAGE_SCN_ALIGN_1BYTES},
   {"IMAGE_SCN_ALIGN_2BYTES",           IMAGE_SCN_ALIGN_2BYTES},
   {"IMAGE_SCN_ALIGN_4BYTES",           IMAGE_SCN_ALIGN_4BYTES},

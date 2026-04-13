@@ -9,7 +9,6 @@
 #include "signatures.h"
 
 #include "static/lang.ci"
-#include "static/sechdr.ci"
 #include "static/string_type.ci"
 #include "static/res_types.ci"
 #include "static/unw_flags.ci"

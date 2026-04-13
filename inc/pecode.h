@@ -60,6 +60,8 @@
 #define RT_HTML                                  (23)
 #define RT_MANIFEST                              (24)
 
+#define IMAGE_SCN_ALIGN_MASK                     (0x00f00000)
+
 #define peconvert2va(x,y)                        ((y) - (x)->VirtualAddress + (x)->PointerToRawData)
 
 typedef BYTE GUID[16];

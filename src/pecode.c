@@ -4,6 +4,7 @@
 
 #include "static/nthdr_optional.ci"
 #include "static/nthdr_characteristics.ci"
+#include "static/sechdr_characteristics.ci"
 #include "static/debughdr_type.ci"
 
 typedef struct machine_s {

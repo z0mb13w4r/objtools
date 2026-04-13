@@ -104,6 +104,8 @@ extern convert_t peOPTHDRSUBSYSTEM[];
 extern convert_t peOPTHDRSUBSYSTEMLITE[];
 extern convert_t peOPTHDRCHARACTERISTICS[];
 extern convert_t peOPTHDRCHARACTERISTICSLITE[];
+extern convert_t peSECTIONHDR[];
+extern convert_t peSECTIONHDRALIGN[];
 extern convert_t peOPTHDRENTRY[];
 extern convert_t peOPTHDRENTRYLITE[];
 extern convert_t peTHREATLEVEL[];
