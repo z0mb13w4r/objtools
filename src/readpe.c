@@ -8,10 +8,7 @@
 #include "memfind.h"
 #include "signatures.h"
 
-#include "static/dbghdr.ci"
-#include "static/filehdr.ci"
 #include "static/lang.ci"
-#include "static/opthdr.ci"
 #include "static/sechdr.ci"
 #include "static/string_type.ci"
 #include "static/res_types.ci"
@@ -163,9 +160,9 @@ static int dump_ntheader1(const pbuffer_t p, const poptions_t o, const uint16_t 
   n += printf_text("Characteristics", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(Characteristics, USE_FHEX16);
   if (MODE_ISANY(o->action, OPTPROGRAM_VERBOSE)) {
-    n += printf_mask(peFILEHDR, Characteristics, USE_EOL);
+    n += printf_mask(peNTHDRTYPE, Characteristics, USE_EOL);
   } else {
-    n += printf_mask(peFILEHDRLITE, Characteristics, USE_EOL);
+    n += printf_mask(peNTHDRTYPELITE, Characteristics, USE_EOL);
   }
   n += printf_eol();
 
@@ -1278,7 +1275,7 @@ static int dump_debugNN(const pbuffer_t p, const poptions_t o) {
     n += printf_nice(p0->MinorVersion, USE_DEC | USE_DOT | USE_EOL);
     n += printf_text("Type", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     n += printf_nice(p0->Type, USE_FHEX32);
-    n += printf_pick(peDEBUGHDR, p0->Type, USE_SPACE | USE_EOL);
+    n += printf_pick(peDEBUGTYPE, p0->Type, USE_SPACE | USE_EOL);
     n += printf_text("SizeOfData", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     n += printf_nice(p0->SizeOfData, USE_FHEX32 | USE_EOL);
     n += printf_text("AddressOfRawData", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));

@@ -17,7 +17,7 @@
 #define IMAGE_DEBUG_TYPE_REPRO                 (16)
 #define IMAGE_DEBUG_TYPE_EX_DLLCHARACTERISTICS (20)
 
-static convert_t peDEBUGHDR[] = {
+convert_t peDEBUGTYPE[] = {
   {"IMAGE_DEBUG_TYPE_UNKNOWN",               IMAGE_DEBUG_TYPE_UNKNOWN},
   {"IMAGE_DEBUG_TYPE_COFF",                  IMAGE_DEBUG_TYPE_COFF},
   {"IMAGE_DEBUG_TYPE_CODEVIEW",              IMAGE_DEBUG_TYPE_CODEVIEW},

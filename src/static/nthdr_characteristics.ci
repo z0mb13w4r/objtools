@@ -14,7 +14,7 @@
 #define IMAGE_FILE_UP_SYSTEM_ONLY          (0x4000)
 #define IMAGE_FILE_BYTES_REVERSED_HI       (0x8000)
 
-static convert_t peFILEHDR[] = {
+convert_t peNTHDRTYPE[] = {
   {"IMAGE_FILE_RELOCS_STRIPPED",         IMAGE_FILE_RELOCS_STRIPPED},
   {"IMAGE_FILE_EXECUTABLE_IMAGE",        IMAGE_FILE_EXECUTABLE_IMAGE},
   {"IMAGE_FILE_LINE_NUMS_STRIPPED",      IMAGE_FILE_LINE_NUMS_STRIPPED},
@@ -34,7 +34,7 @@ static convert_t peFILEHDR[] = {
   {0, 0}
 };
 
-static convert_t peFILEHDRLITE[] = {
+convert_t peNTHDRTYPELITE[] = {
   {"32BIT",                              IMAGE_FILE_32BIT_MACHINE},
   {"DLL",                                IMAGE_FILE_DLL},
   {"EXE",                                IMAGE_FILE_EXECUTABLE_IMAGE},
