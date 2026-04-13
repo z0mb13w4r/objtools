@@ -60,6 +60,14 @@
 #define RT_HTML                                  (23)
 #define RT_MANIFEST                              (24)
 
+#define VFT_UNKNOWN                              (0x00000000)
+#define VFT_APP                                  (0x00000001)
+#define VFT_DLL                                  (0x00000002)
+#define VFT_DRV                                  (0x00000003)
+#define VFT_FONT                                 (0x00000004)
+#define VFT_VXD                                  (0x00000005)
+#define VFT_STATIC_LIB                           (0x00000007)
+
 #define IMAGE_SCN_ALIGN_MASK                     (0x00f00000)
 
 #define peconvert2va(x,y)                        ((y) - (x)->VirtualAddress + (x)->PointerToRawData)

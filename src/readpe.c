@@ -10,7 +10,6 @@
 
 #include "static/lang.ci"
 #include "static/unw_flags.ci"
-#include "static/verinfo.ci"
 //#include "static/sig-userdb.ci"
 
 static const int MAXSIZE = 36;

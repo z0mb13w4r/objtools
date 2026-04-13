@@ -112,6 +112,11 @@ extern convert_t peTHREATLEVEL[];
 extern convert_t peTHREATLEVELFULL[];
 extern convert_t peSTRINGTYPE[];
 extern convert_t peRESOURCETYPE[];
+extern convert_t peVERFILEFLAGS[];
+extern convert_t peVERFILEOS[];
+extern convert_t peVERFILETYPE[];
+extern convert_t peVERFILESUBTYPEDRV[];
+extern convert_t peVERFILESUBTYPEFONT[];
 
 extern args_t zSCRIPTCOMMANDS[];
 extern args_t zSCRIPTCOMMANDSEX[];

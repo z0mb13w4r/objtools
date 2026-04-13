@@ -6,6 +6,7 @@
 #include "static/nthdr_characteristics.ci"
 #include "static/sechdr_characteristics.ci"
 #include "static/version_string.ci"
+#include "static/version_infomation.ci"
 #include "static/debughdr_type.ci"
 #include "static/resource_type.ci"
 
