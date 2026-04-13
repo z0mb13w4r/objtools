@@ -1,6 +1,7 @@
-static convert_t peSTRINGTYPE[] = {
+convert_t peSTRINGTYPE[] = {
   {"TEXT",    1},
   {"BINARY",  0},
+
   {0, 0}
 };
 

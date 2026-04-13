@@ -110,6 +110,8 @@ extern convert_t peOPTHDRENTRY[];
 extern convert_t peOPTHDRENTRYLITE[];
 extern convert_t peTHREATLEVEL[];
 extern convert_t peTHREATLEVELFULL[];
+extern convert_t peSTRINGTYPE[];
+extern convert_t peRESOURCETYPE[];
 
 extern args_t zSCRIPTCOMMANDS[];
 extern args_t zSCRIPTCOMMANDSEX[];

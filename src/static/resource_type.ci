@@ -1,4 +1,4 @@
-static convert_t peRESOURCETYPE[] = {
+convert_t peRESOURCETYPE[] = {
   {"RT_CURSOR",         RT_CURSOR},
   {"RT_BITMAP",         RT_BITMAP},
   {"RT_ICON",           RT_ICON},
@@ -20,6 +20,7 @@ static convert_t peRESOURCETYPE[] = {
   {"RT_ANIICON",        RT_ANIICON},
   {"RT_HTML",           RT_HTML},
   {"RT_MANIFEST",       RT_MANIFEST},
+
   {0, 0}
 };
 

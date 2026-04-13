@@ -5,7 +5,9 @@
 #include "static/nthdr_optional.ci"
 #include "static/nthdr_characteristics.ci"
 #include "static/sechdr_characteristics.ci"
+#include "static/version_string.ci"
 #include "static/debughdr_type.ci"
+#include "static/resource_type.ci"
 
 typedef struct machine_s {
   uchar_t x0;
