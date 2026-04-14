@@ -26,7 +26,7 @@ cd misc
 make
 ```
 
-### Build individual tool:
+#### Build individual tool:
 
 ```bash
 cd misc
