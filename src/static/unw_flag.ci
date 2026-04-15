@@ -4,26 +4,17 @@
 #define UNW_FLAG_FHANDLER    (3)
 #define UNW_FLAG_CHAININFO   (4)
 
-static convert_t peUNW_FLAGS[] = {
+convert_t peUNWFLAGS[] = {
   {"UNW_FLAG_NHANDLER",  UNW_FLAG_NHANDLER},
   {"UNW_FLAG_EHANDLER",  UNW_FLAG_EHANDLER},
   {"UNW_FLAG_UHANDLER",  UNW_FLAG_UHANDLER},
   {"UNW_FLAG_FHANDLER",  UNW_FLAG_FHANDLER},
   {"UNW_FLAG_CHAININFO", UNW_FLAG_CHAININFO},
+
   {0, 0}
 };
 
-#define UWOP_PUSH_NONVOL     (0)
-#define UWOP_ALLOC_LARGE     (1)
-#define UWOP_ALLOC_SMALL     (2)
-#define UWOP_SET_FPREG       (3)
-#define UWOP_SAVE_NONVOL     (4)
-#define UWOP_SAVE_NONVOL_FAR (5)
-#define UWOP_SAVE_XMM128     (8)
-#define UWOP_SAVE_XMM128_FAR (9)
-#define UWOP_PUSH_MACHFRAME  (10)
-
-static convert_t peUNW_CODES[] = {
+convert_t peUNWCODES[] = {
   {"UWOP_PUSH_NONVOL",     UWOP_PUSH_NONVOL},
   {"UWOP_ALLOC_LARGE",     UWOP_ALLOC_LARGE},
   {"UWOP_ALLOC_SMALL",     UWOP_ALLOC_SMALL},
@@ -33,10 +24,11 @@ static convert_t peUNW_CODES[] = {
   {"UWOP_SAVE_XMM128",     UWOP_SAVE_XMM128},
   {"UWOP_SAVE_XMM128_FAR", UWOP_SAVE_XMM128_FAR},
   {"UWOP_PUSH_MACHFRAME",  UWOP_PUSH_MACHFRAME},
+
   {0, 0}
 };
 
-static convert_t peUNW_INFO[] = {
+convert_t peUNWINFO[] = {
   {"RAX",  0},
   {"RCX",  1},
   {"RDX",  2},
@@ -53,6 +45,7 @@ static convert_t peUNW_INFO[] = {
   {"R13",  13},
   {"R14",  14},
   {"R15",  15},
+
   {0, 0}
 };
 

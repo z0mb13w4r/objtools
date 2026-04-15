@@ -68,6 +68,16 @@
 #define VFT_VXD                                  (0x00000005)
 #define VFT_STATIC_LIB                           (0x00000007)
 
+#define UWOP_PUSH_NONVOL                         (0)
+#define UWOP_ALLOC_LARGE                         (1)
+#define UWOP_ALLOC_SMALL                         (2)
+#define UWOP_SET_FPREG                           (3)
+#define UWOP_SAVE_NONVOL                         (4)
+#define UWOP_SAVE_NONVOL_FAR                     (5)
+#define UWOP_SAVE_XMM128                         (8)
+#define UWOP_SAVE_XMM128_FAR                     (9)
+#define UWOP_PUSH_MACHFRAME                      (10)
+
 #define IMAGE_SCN_ALIGN_MASK                     (0x00f00000)
 
 #define peconvert2va(x,y)                        ((y) - (x)->VirtualAddress + (x)->PointerToRawData)

@@ -117,6 +117,9 @@ extern convert_t peVERFILEOS[];
 extern convert_t peVERFILETYPE[];
 extern convert_t peVERFILESUBTYPEDRV[];
 extern convert_t peVERFILESUBTYPEFONT[];
+extern convert_t peUNWFLAGS[];
+extern convert_t peUNWCODES[];
+extern convert_t peUNWINFO[];
 
 extern args_t zSCRIPTCOMMANDS[];
 extern args_t zSCRIPTCOMMANDSEX[];

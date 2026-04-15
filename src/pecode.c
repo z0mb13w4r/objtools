@@ -2,6 +2,7 @@
 #include "memfind.h"
 #include "objutils.h"
 
+#include "static/unw_flag.ci"
 #include "static/nthdr_optional.ci"
 #include "static/nthdr_characteristics.ci"
 #include "static/sechdr_characteristics.ci"
