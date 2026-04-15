@@ -55,7 +55,8 @@ SYS_OBJS = \
 	-ldwarf \
 	-lfuzzy \
 	-lbfd \
-	-lrt
+	-lrt \
+	-lz
 
 LIB_OBJS = \
 	-lobjtool
