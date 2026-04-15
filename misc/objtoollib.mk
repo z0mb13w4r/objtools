@@ -58,6 +58,7 @@ SRCS_C = \
 	opcode-capstone.c \
 	opcode-demangle.c \
 	opcode-engine-got.c \
+	zlib-memfind.c \
 	signatures.c
 
 # Name of cpp source files to be included in build.
