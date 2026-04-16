@@ -129,7 +129,7 @@ handle_t fappendp(handle_t p, cunknown_t q, const size_t blocksize) {
     }
 
     if ((p0->epos + blocksize) < p0->size) {
-      xmemcpy(CAST(puchar_t, p0->item) + p0->epos, q, blocksize);
+      xmemcpy(CAST(puchar_t, p0->item) + p0->epos + 1, q, blocksize);
       p0->epos += blocksize;
       return p;
     }
@@ -611,7 +611,7 @@ handle_t fmalloc(unknown_t p, const size_t size, const size_t blocksize) {
       p0->blocksize = blocksize & ~MEMFIND_MASK;
 
       p0->cpos = 0;
-      p0->epos = MODE_ISANY(p0->role, MEMFIND_FILL) ? 0 : size - 1;
+      p0->epos = MODE_ISANY(p0->role, MEMFIND_FILL) ? -1 : size - 1;
       p0->size = size;
       p0->item = MODE_ISANY(p0->role, MEMFIND_MALLOC) ? cmalloc(p, size, MODE_HEAP) : p;
     }
