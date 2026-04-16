@@ -2,7 +2,35 @@
 
 #include "zlib-memfind.h"
 
-#define CHUNK 16384
+#define CHUNK                      (16384)
+
+typedef struct swapmode_s {
+  int     mode0;
+  imode_t mode1;
+} swapmode_t, *pswapmode_t;
+
+static swapmode_t zZLIBLEVELS[] = {
+  {Z_NO_COMPRESSION,           ZLIB_NO_COMPRESSION},
+  {Z_BEST_SPEED,               ZLIB_BEST_SPEED},
+  {Z_BEST_COMPRESSION,         ZLIB_BEST_COMPRESSION},
+  {Z_DEFAULT_COMPRESSION,      ZLIB_DEFAULT_COMPRESSION},
+
+  {0, 0}
+};
+
+static int get_swapmode(const pswapmode_t p, const imode_t mode, const int def) {
+  if (p) {
+    for (pswapmode_t pp = p; 0 != pp->mode1; ++pp) {
+      if (mode == pp->mode1) return pp->mode0;
+    }
+  }
+
+  return def;
+}
+
+static int get_ZLIBLEVELS(const imode_t mode) {
+  return get_swapmode(zZLIBLEVELS, mode, Z_DEFAULT_COMPRESSION);
+}
 
 handle_t zlib_compress(handle_t p, const imode_t mode) {
   int ret, flush;
@@ -16,7 +44,7 @@ handle_t zlib_compress(handle_t p, const imode_t mode) {
   strm.zalloc = Z_NULL;
   strm.zfree = Z_NULL;
   strm.opaque = Z_NULL;
-//  ret = deflateInit(&strm, level);
+  ret = deflateInit(&strm, get_ZLIBLEVELS(mode));
   if (Z_OK == ret) {
     /* compress until end of file */
     do {
