@@ -7,12 +7,13 @@
 #define MODE_FINDC              (MODE_PUT0('F') | MODE_PUT1('N') | MODE_PUT2('D') | MODE_PUT3('C'))
 
 #define MEMFIND_NONE            U32MASK_NONE
-#define MEMFIND_NOBLOCKSIZE     U32MASK(27)
+#define MEMFIND_NOBLOCKSIZE     U32MASK(26)
+#define MEMFIND_FILL            U32MASK(27)
 #define MEMFIND_MALLOC          U32MASK(28)
 #define MEMFIND_32BIT           U32MASK(29)
 #define MEMFIND_64BIT           U32MASK(30)
 #define MEMFIND_BIGENDIAN       U32MASK(31)
-#define MEMFIND_MASK            (MEMFIND_32BIT | MEMFIND_64BIT | MEMFIND_BIGENDIAN | MEMFIND_MALLOC)
+#define MEMFIND_MASK            (MEMFIND_32BIT | MEMFIND_64BIT | MEMFIND_BIGENDIAN | MEMFIND_MALLOC | MEMFIND_FILL)
 
 typedef struct find_s {
   smode_t   mode;
@@ -87,13 +88,14 @@ handle_t fsetu16(handle_t p, const uint16_t v);
 handle_t fsetu32(handle_t p, const uint32_t v);
 handle_t fsetu64(handle_t p, const uint64_t v);
 handle_t fsetchunk(handle_t p, const nmode_t mode, const size_t chunksize);
+handle_t fsetp(handle_t p, cunknown_t q, const size_t blocksize);
 
 handle_t fsetu8byoffset(handle_t p, const uint64_t offset, const uint8_t v);
 handle_t fsetu16byoffset(handle_t p, const uint64_t offset, const uint16_t v);
 handle_t fsetu32byoffset(handle_t p, const uint64_t offset, const uint32_t v);
 handle_t fsetu64byoffset(handle_t p, const uint64_t offset, const uint64_t v);
 
-unknown_t fsetp(handle_t p, cunknown_t q, const size_t blocksize);
+handle_t fappendp(handle_t p, cunknown_t q, const size_t blocksize);
 
 char* fgetline(handle_t p);
 char* fgetstring(handle_t p);

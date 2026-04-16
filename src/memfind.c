@@ -85,7 +85,7 @@ size_t fgetstate(handle_t p) {
 
 unknown_t fgetp(handle_t p, const size_t blocksize) {
   unknown_t p0 = fget(p);
-  if (p0) {
+  if (p0 && 0 < blocksize) {
     pfind_t p1 = CAST(pfind_t, p);
     if (p1) {
       p1->cpos += blocksize;
@@ -100,13 +100,37 @@ unknown_t fgetp(handle_t p, const size_t blocksize) {
   return NULL;
 }
 
-unknown_t fsetp(handle_t p, cunknown_t q, const size_t blocksize) {
+handle_t fsetp(handle_t p, cunknown_t q, const size_t blocksize) {
   unknown_t p0 = fget(p);
-  if (p0 && q && blocksize) {
+  if (p0 && q && 0 < blocksize) {
     pfind_t p1 = CAST(pfind_t, p);
     if ((p1->cpos + blocksize) <= p1->epos) {
       xmemcpy(p0, q, blocksize);
       p1->cpos += blocksize;
+      return p;
+    }
+  }
+
+  return NULL;
+}
+
+handle_t fappendp(handle_t p, cunknown_t q, const size_t blocksize) {
+  if (ismode(p, MODE_FINDC) && 0 < blocksize) {
+    pfind_t p0 = CAST(pfind_t, p);
+    if ((p0->epos + blocksize) >= p0->size) {
+      unknown_t p1 = xmalloc(p0->size + p0->blocksize, MODE_HEAP);
+      if (p1) {
+        xmemcpy(p1, p0->item, p0->size);
+        xfree(p0->item);
+
+        p0->size += p0->blocksize;
+        p0->item = p1;
+      }
+    }
+
+    if ((p0->epos + blocksize) < p0->size) {
+      xmemcpy(CAST(puchar_t, p0->item) + p0->epos, q, blocksize);
+      p0->epos += blocksize;
       return p;
     }
   }
@@ -582,12 +606,13 @@ handle_t fmalloc(unknown_t p, const size_t size, const size_t blocksize) {
   } else if (size) {
     pfind_t p0 = xmalloc(sizeof(find_t), MODE_HEAP);
     if (p0) {
-      p0->cpos = 0;
-      p0->epos = size - 1;
-      p0->size = size;
       p0->role = blocksize & MEMFIND_MASK;
       p0->role = p ? p0->role : p0->role | MEMFIND_MALLOC;
       p0->blocksize = blocksize & ~MEMFIND_MASK;
+
+      p0->cpos = 0;
+      p0->epos = MODE_ISANY(p0->role, MEMFIND_FILL) ? 0 : size - 1;
+      p0->size = size;
       p0->item = MODE_ISANY(p0->role, MEMFIND_MALLOC) ? cmalloc(p, size, MODE_HEAP) : p;
     }
 
