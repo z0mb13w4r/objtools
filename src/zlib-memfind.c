@@ -80,10 +80,45 @@ handle_t zlib_compress(handle_t p, const imode_t mode) {
 }
 
 handle_t zlib_decompress(handle_t p) {
+  MALLOCA(unsigned char, out, ZLIB_CHUNKSIZE);
+
   if (isfind(p)) {
     handle_t q = fxalloc(ZLIB_MAXCHUNKSIZE, ZLIB_MAXCHUNKSIZE | MEMFIND_FILL);
     if (isfind(q)) {
       z_stream strm;
+
+      /* allocate inflate state */
+      strm.zalloc = Z_NULL;
+      strm.zfree = Z_NULL;
+      strm.opaque = Z_NULL;
+      strm.avail_in = 0;
+      strm.next_in = Z_NULL;
+      int ret = inflateInit(&strm);
+      if (Z_OK == ret) {
+        /* decompress until deflate stream ends or end of file */
+        while (!fiseof(p)) {
+          strm.avail_in = MIN(ZLIB_CHUNKSIZE, fgetsize(p));
+          strm.next_in = fgetp(p, strm.avail_in);
+
+          /* run inflate() on input until output buffer not full */
+          do {
+            strm.avail_out = ZLIB_CHUNKSIZE;
+            strm.next_out = out;
+            ret = inflate(&strm, Z_NO_FLUSH);
+            assert(ret != Z_STREAM_ERROR);  /* state not clobbered */
+
+            if (Z_NEED_DICT == ret || Z_DATA_ERROR == ret || Z_MEM_ERROR == ret) break;
+
+            fappendp(q, out, ZLIB_CHUNKSIZE - strm.avail_out);
+          } while (strm.avail_out == 0);
+
+          if (Z_NEED_DICT == ret || Z_DATA_ERROR == ret || Z_MEM_ERROR == ret) break;
+          /* done when inflate() says it's done */
+        }
+
+        /* clean up and return */
+        inflateEnd(&strm);
+      }
 
       return q;
     }
