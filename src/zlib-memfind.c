@@ -37,7 +37,7 @@ handle_t zlib_compress(handle_t p, const imode_t mode) {
   MALLOCA(unsigned char, out, ZLIB_CHUNKSIZE);
 
   if (isfind(p)) {
-    handle_t q = fxalloc(ZLIB_MAXCHUNKSIZE, ZLIB_MAXCHUNKSIZE);
+    handle_t q = fxalloc(ZLIB_MAXCHUNKSIZE, ZLIB_MAXCHUNKSIZE | MEMFIND_FILL);
     if (isfind(q)) {
       z_stream strm;
 
@@ -59,11 +59,8 @@ handle_t zlib_compress(handle_t p, const imode_t mode) {
             strm.next_out = out;
             ret = deflate(&strm, fiseof(p) ? Z_FINISH : Z_NO_FLUSH);    /* no bad return value */
             assert(ret != Z_STREAM_ERROR);  /* state not clobbered */
-//            have = ZLIB_CHUNKSIZE - strm.avail_out;
-//            if (fwrite(out, 1, have, dest) != have || ferror(dest)) {
-//              (void)deflateEnd(&strm);
-//              return Z_ERRNO;
-//            }
+
+            fappendp(q, out, ZLIB_CHUNKSIZE - strm.avail_out);
           } while (strm.avail_out == 0);
           assert(strm.avail_in == 0);     /* all input will be used */
 
