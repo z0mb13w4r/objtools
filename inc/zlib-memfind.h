@@ -9,7 +9,7 @@
 #include "memfind.h"
 
 handle_t zlib_compress(handle_t p, const imode_t mode);
-handle_t zlib_decompress(handle_t p, handle_t q);
+handle_t zlib_decompress(handle_t p);
 
 #endif
 

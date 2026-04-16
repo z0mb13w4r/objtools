@@ -79,7 +79,16 @@ handle_t zlib_compress(handle_t p, const imode_t mode) {
   return NULL;
 }
 
-handle_t zlib_decompress(handle_t p, handle_t q) {
+handle_t zlib_decompress(handle_t p) {
+  if (isfind(p)) {
+    handle_t q = fxalloc(ZLIB_MAXCHUNKSIZE, ZLIB_MAXCHUNKSIZE | MEMFIND_FILL);
+    if (isfind(q)) {
+      z_stream strm;
+
+      return q;
+    }
+  }
+
   return NULL;
 }
 
