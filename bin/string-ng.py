@@ -1,0 +1,134 @@
+#!/usr/bin/env python3
+import pexpect
+import argparse
+
+PROGRAM_NAME = 'string-ng.py'
+VERSION_VALUE = '0.0'
+
+LICENSE_TEXT = '''COPYRIGHT
+  MIT License
+
+  Copyright (c) 2025 Kyle Wickens
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.'''
+
+BINBIGLIST=r'aria2c\|arp\|ash\|awk\|base64\|bash\|busybox\|cat\|chmod\|chown\|cp\|csh\|curl\|cut\|dash\|date\|dd\|diff\|dmsetup\|docker\|ed\|emacs\|env\|expand\|expect\|file\|find\|flock\|fmt\|fold\|ftp\|gawk\|gdb\|gimp\|git\|grep\|head\|ht\|iftop\|ionice\|ip$\|irb\|jjs\|jq\|jrunscript\|ksh\|ld.so\|ldconfig\|less\|logsave\|lua\|make\|man\|mawk\|more\|mv\|mysql\|nano\|nawk\|nc\|netcat\|nice\|nl\|nmap\|node\|od\|openssl\|perl\|pg\|php\|pic\|pico\|python\|readelf\|rlwrap\|rpm\|rpmquery\|rsync\|ruby\|run-parts\|rvim\|scp\|script\|sed\|setarch\|sftp\|sh\|shuf\|socat\|sort\|sqlite3\|ssh$\|start-stop-daemon\|stdbuf\|strace\|systemctl\|tail\|tar\|taskset\|tclsh\|tee\|telnet\|tftp\|time\|timeout\|ul\|unexpand\|uniq\|unshare\|vi\|vim\|watch\|wget\|wish\|xargs\|xxd\|zip\|zsh'
+DIRBIGLIST=r'/dev\|/var\|/tmp\|/usr\|/etc\|/bin\|/sbin\|/mnt\|/root\|/boot\|/home\|/media\|/opt\|/proc\|/lib\|/pts'
+TXTBIGLIST=r'ptm\|tty\|group\|passwd\|shells\|xterm'
+EXTBIGLIST=r'gz\|zip\|7z\|pub'
+
+def mk(msg):
+  print('\033[33m### ' + msg + ' ' + '#'*(52 - len(msg)) + '\033[00m')
+
+
+def xx(cmd):
+  t = 30
+  for x in range(10):
+    try:
+      p = pexpect.spawn('bash', ['-c', cmd], timeout=t)
+      return p.read()
+
+    except pexpect.exceptions.TIMEOUT:
+      t += 1000
+
+  return None
+
+
+def xy(c0, c1=None):
+  r = xx(c0)
+  if r is None:
+    r = xx(c1)
+
+  if r:
+    return r.decode('utf-8')
+
+  return None
+
+
+def xz(args, color, msg, c0, c1=None):
+  r = xy(c0, c1)
+
+  if r:
+    print(color + f'[-] ' + msg + f':\033[00m\n' + r)
+    return r
+
+  return None
+
+
+def go(args, msg, c0, c1=None):
+  if not args.norun:
+    return xz(args, f'\033[31m', msg, c0, c1)
+
+  return None
+
+
+def gx(args, msg, c0, c1=None):
+  if not args.norun:
+    xz(args, f'\033[33m', msg, c0, c1)
+
+  return None
+
+
+def po(args, msg, c0, c1=None):
+  if args.norun:
+    xz(args, f'\033[31m', msg, c0, c1)
+
+  return None
+
+
+def px(args, msg, c0, c1=None):
+  if args.norun:
+    xz(args, f'\033[33m', msg, c0, c1)
+
+  return None
+
+
+def sys_info(args):
+  if args.system:
+    mk('SYSTEM')
+    go(args, 'Found some interesting directories', 'strings ' + args.name + ' | grep -w "' + DIRBIGLIST + '"')
+    go(args, 'Found some interesting commands', 'strings ' + args.name + ' | grep -w "' + BINBIGLIST + '"')
+    go(args, 'Found some interesting extensions', 'strings ' + args.name + ' | grep -w "' + EXTBIGLIST + '"')
+    go(args, 'Found some interesting files', 'strings ' + args.name + ' | grep -w "' + TXTBIGLIST + '"')
+    go(args, 'Found some interesting text', 'strings ' + args.name + ' | grep -E "[[:alnum:]]+"')
+
+
+if __name__ == '__main__':
+  p = argparse.ArgumentParser(
+    prog=PROGRAM_NAME,
+    description="""Used to scan binaries for high value strings for binary and
+                   malware analysis.""")
+  p.add_argument('name')           # positional argument
+  p.add_argument('-k', '--keyword', help='keyword search.')
+  p.add_argument('-V', '--verbose', action='store_true', help='more verbose checks.')
+  p.add_argument('-v', '--version', action='store_true', help='verion number of ' + PROGRAM_NAME)
+  p.add_argument('--system', action='store_true', help='system information.')
+  p.add_argument('--norun', action='store_true', help=argparse.SUPPRESS)
+  g = p.parse_args()
+
+  if not(g.system):
+    g.system = True
+
+  if g.version:
+    print(PROGRAM_NAME + ' v' + VERSION_VALUE + '\n')
+    print(LICENSE_TEXT)
+
+  else:
+    sys_info(g)
+
