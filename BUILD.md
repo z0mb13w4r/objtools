@@ -3,7 +3,7 @@
 #### Install packages:
 
 ```bash
-sudo apt-get install -y make cmake autoconf libtool pkg-config gcc g++ libssl-dev binutils-dev
+sudo apt-get install -y make cmake autoconf libtool pkg-config gcc g++ libssl-dev zlib1g-dev binutils-dev
 ```
 
 #### Clone this repo:
