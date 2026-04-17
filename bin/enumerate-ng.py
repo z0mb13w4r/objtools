@@ -3,7 +3,7 @@ import pexpect
 import argparse
 
 PROGRAM_NAME = 'enumerate-ng.py'
-VERSION_VALUE = '0.2'
+VERSION_VALUE = '0.3'
 
 LICENSE_TEXT = '''COPYRIGHT
   MIT License
@@ -610,7 +610,7 @@ def ask_info(args):
 
 if __name__ == '__main__':
   p = argparse.ArgumentParser(
-    prog='enumerate-ng',
+    prog=PROGRAM_NAME,
     description="""Used for enumeration and privilege escalation to harden devices
                    or understanding how an adversary obtained persistence, privilege
                    escalation, or lateral movement within a network.""")
