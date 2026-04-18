@@ -2,7 +2,7 @@
 import pexpect
 import argparse
 
-PROGRAM_NAME = 'string-ng.py'
+PROGRAM_NAME = 'strings-ng.py'
 VERSION_VALUE = '0.0'
 
 LICENSE_TEXT = '''COPYRIGHT
@@ -28,7 +28,10 @@ LICENSE_TEXT = '''COPYRIGHT
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.'''
 
-BINBIGLIST=r'aria2c\|arp\|ash\|awk\|base64\|bash\|busybox\|cat\|chmod\|chown\|cp\|csh\|curl\|cut\|dash\|date\|dd\|diff\|dmsetup\|docker\|ed\|emacs\|env\|expand\|expect\|file\|find\|flock\|fmt\|fold\|ftp\|gawk\|gdb\|gimp\|git\|grep\|head\|ht\|iftop\|ionice\|ip$\|irb\|jjs\|jq\|jrunscript\|ksh\|ld.so\|ldconfig\|less\|logsave\|lua\|make\|man\|mawk\|more\|mv\|mysql\|nano\|nawk\|nc\|netcat\|nice\|nl\|nmap\|node\|od\|openssl\|perl\|pg\|php\|pic\|pico\|python\|readelf\|rlwrap\|rpm\|rpmquery\|rsync\|ruby\|run-parts\|rvim\|scp\|script\|sed\|setarch\|sftp\|sh\|shuf\|socat\|sort\|sqlite3\|ssh$\|start-stop-daemon\|stdbuf\|strace\|systemctl\|tail\|tar\|taskset\|tclsh\|tee\|telnet\|tftp\|time\|timeout\|ul\|unexpand\|uniq\|unshare\|vi\|vim\|watch\|wget\|wish\|xargs\|xxd\|zip\|zsh'
+
+BINBIGLIST=r'aria2c\|arp\|ash\|awk\|base64\|bash\|busybox\|cat\|chmod\|chown\|cp\|csh\|curl\|cut\|dash\|date\|dd\|diff\|dmsetup\|docker\|ed\|emacs\|env\|expand\|expect\|find\|flock\|fmt\|fold\|ftp\|gawk\|gdb\|gimp\|git\|grep\|head\|ht\|iftop\|ionice\|ip$\|irb\|jjs\|jq\|jrunscript\|ksh\|ld.so\|ldconfig\|less\|logsave\|lua\|make\|man\|mawk\|more\|mv\|mysql\|nano\|nawk\|nc\|netcat\|nice\|nl\|nmap\|node\|od\|openssl\|perl\|pg\|php\|pic\|pico\|python\|readelf\|rlwrap\|rpm\|rpmquery\|rsync\|ruby\|run-parts\|rvim\|scp\|script\|sed\|setarch\|sftp\|sh\|shuf\|socat\|sort\|sqlite3\|ssh$\|start-stop-daemon\|stdbuf\|strace\|systemctl\|tail\|tar\|taskset\|tclsh\|tee\|telnet\|tftp\|time\|timeout\|ul\|unexpand\|uniq\|unshare\|vi\|vim\|watch\|wget\|wish\|xargs\|xxd\|zip\|zsh'
+## file\|
+EXEBIGLIST=r'reboot\|poweroff\|halt\|netstat\|systemd'
 DIRBIGLIST=r'/dev\|/var\|/tmp\|/usr\|/etc\|/bin\|/sbin\|/mnt\|/root\|/boot\|/home\|/media\|/opt\|/proc\|/lib\|/pts'
 TXTBIGLIST=r'ptm\|tty\|group\|passwd\|shells\|xterm'
 EXTBIGLIST=r'gz\|zip\|7z\|pub'
@@ -65,7 +68,10 @@ def xz(args, color, msg, c0, c1=None):
   r = xy(c0, c1)
 
   if r:
-    print(color + f'[-] ' + msg + f':\033[00m\n' + r)
+    if msg:
+      print(color + f'[-] ' + msg + f':\033[00m')
+
+    print(r)
     return r
 
   return None
@@ -85,6 +91,13 @@ def gx(args, msg, c0, c1=None):
   return None
 
 
+def gz(args, c0, c1=None):
+  if not args.norun:
+    xz(args, None, None, c0, c1)
+
+  return None
+
+
 def po(args, msg, c0, c1=None):
   if args.norun:
     xz(args, f'\033[31m', msg, c0, c1)
@@ -99,14 +112,34 @@ def px(args, msg, c0, c1=None):
   return None
 
 
+def all_info(args):
+  gz(args, 'strings ' + args.name)
+
+
+def dir_info(args):
+  if args.directories:
+    mk('DIRECTORY')
+    gz(args, 'strings ' + args.name + ' | grep -w "' + DIRBIGLIST + '" | grep -v "' + BINBIGLIST + '" | grep -v "' + EXEBIGLIST + '"')
+
+
+def ext_info(args):
+  if args.extensions:
+    mk('EXTENSIONS')
+    gz(args, 'strings ' + args.name + ' | grep -w "' + EXTBIGLIST + '"')
+    #gz(args, 'strings ' + args.name + ' | grep -w "' + TXTBIGLIST + '"')
+    #go(args, 'Found some interesting text', 'strings ' + args.name + ' | grep -E "[[:alnum:]]+"')
+
+
 def sys_info(args):
-  if args.system:
-    mk('SYSTEM')
-    go(args, 'Found some interesting directories', 'strings ' + args.name + ' | grep -w "' + DIRBIGLIST + '"')
-    go(args, 'Found some interesting commands', 'strings ' + args.name + ' | grep -w "' + BINBIGLIST + '"')
-    go(args, 'Found some interesting extensions', 'strings ' + args.name + ' | grep -w "' + EXTBIGLIST + '"')
-    go(args, 'Found some interesting files', 'strings ' + args.name + ' | grep -w "' + TXTBIGLIST + '"')
-    go(args, 'Found some interesting text', 'strings ' + args.name + ' | grep -E "[[:alnum:]]+"')
+  if args.privilege:
+    mk('PRIVILEGE ESCALATION')
+    gz(args, 'strings ' + args.name + ' | grep -w "' + BINBIGLIST + '"')
+
+
+def bin_info(args):
+  if args.binaries:
+    mk('BINARIES')
+    gz(args, 'strings ' + args.name + ' | grep -w "' + EXEBIGLIST + '"')
 
 
 if __name__ == '__main__':
@@ -115,20 +148,29 @@ if __name__ == '__main__':
     description="""Used to scan binaries for high value strings for binary and
                    malware analysis.""")
   p.add_argument('name')           # positional argument
-  p.add_argument('-k', '--keyword', help='keyword search.')
+  #p.add_argument('-k', '--keyword', help='keyword search.')
   p.add_argument('-V', '--verbose', action='store_true', help='more verbose checks.')
   p.add_argument('-v', '--version', action='store_true', help='verion number of ' + PROGRAM_NAME)
-  p.add_argument('--system', action='store_true', help='system information.')
+  p.add_argument('-a', '--all', action='store_true', help='display all the strings.')
+  p.add_argument('-b', '--binaries', action='store_true', help='search for possible binaries.')
+  p.add_argument('-p', '--privilege', action='store_true', help='search for possible privilege escalation information.')
+  p.add_argument('-e', '--extensions', action='store_true', help='search for possible extensions.')
+  p.add_argument('-d', '--directories', action='store_true', help='search for possible directories.')
   p.add_argument('--norun', action='store_true', help=argparse.SUPPRESS)
   g = p.parse_args()
 
-  if not(g.system):
-    g.system = True
+  if not(g.privilege or g.binaries or g.extensions or g.directories):
+    g.binaries = g.privilege = g.extensions = g.directories = True
 
   if g.version:
     print(PROGRAM_NAME + ' v' + VERSION_VALUE + '\n')
     print(LICENSE_TEXT)
 
-  else:
-    sys_info(g)
+  elif g.all:
+    all_info(g)
 
+  else:
+    dir_info(g)
+    bin_info(g)
+    sys_info(g)
+    ext_info(g)
