@@ -1,0 +1,79 @@
+#!/bin/bash
+
+GITBIN=/usr/bin/git
+SUDOBIN=/usr/bin/sudo
+YARABIN=/usr/bin/yara
+
+NEO23X0_RULES=https://github.com/Neo23x0/signature-base.git
+
+function yara_run() {
+  if [ -e "${1}" ]; then
+    ${YARABIN} -w "${1}" "${2}"
+  fi
+}
+
+function yara_forge() {
+  yara_run "/usr/local/yara-forge/packages/core/yara-rules-core.yar" "${*}"
+}
+
+function yara_rules() {
+  yara_run "/usr/local/yara-rules/index.yar" "${*}"
+}
+
+function yara_neo23x0() {
+  yara_run "/usr/local/yara-neo23x0/index.yar" "${*}"
+}
+
+function yara_update() {
+  if [ -d "${2}" ]; then
+    cd ${2} && ${SUDOBIN} ${GITBIN} pull
+  else
+    ${SUDOBIN} ${GITBIN} clone ${1} ${2}
+  fi
+}
+
+POSITIONAL_ARGS=()
+
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    -r|--yara-rules)
+      YARA_RULES=YES
+      shift # past argument
+      ;;
+    -f|--yara-forge)
+      YARA_FORGE=YES
+      shift # past argument
+      ;;
+    -u|--update)
+      YARA_UPDATE=YES
+      shift # past argument
+      ;;
+    -*|--*)
+      echo "Unknown option $1"
+      exit 1
+      ;;
+    *)
+      POSITIONAL_ARGS+=("$1") # save positional arg
+      shift # past argument
+      ;;
+  esac
+done
+
+set -- "${POSITIONAL_ARGS[@]}" # restore positional parameters
+
+if [ "${YARA_UPDATE}" == "YES" ]; then
+  yara_update https://github.com/Yara-Rules/rules.git /usr/local/yara-rules
+  yara_update https://github.com/Neo23x0/signature-base.git /usr/local/yara-neo23x0
+fi
+
+if [ ! -z "${POSITIONAL_ARGS}" ]; then
+  if [ "${YARA_RULES}" == "YES" ]; then
+    yara_rules "${POSITIONAL_ARGS}"
+  elif [ "${YARA_FORGE}" == "YES" ]; then
+    yara_forge "${POSITIONAL_ARGS}"
+  else
+    yara_rules "${*}"
+    yara_forge "${*}"
+    yara_neo23x0 "${*}"
+  fi
+fi
