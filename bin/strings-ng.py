@@ -78,30 +78,9 @@ def xz(args, color, msg, c0, c1=None):
   return None
 
 
-def gx(args, msg, c0, c1=None):
-  if not args.norun:
-    xz(args, f'\033[33m', msg, c0, c1)
-
-  return None
-
-
 def gz(args, c0, c1=None):
   if not args.norun:
     xz(args, None, None, c0, c1)
-
-  return None
-
-
-def po(args, msg, c0, c1=None):
-  if args.norun:
-    xz(args, f'\033[31m', msg, c0, c1)
-
-  return None
-
-
-def px(args, msg, c0, c1=None):
-  if args.norun:
-    xz(args, f'\033[33m', msg, c0, c1)
 
   return None
 
