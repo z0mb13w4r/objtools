@@ -24,7 +24,7 @@ This suite of tools was inspired by a problem I encountered while comparing two 
 
 **readpe-ng** displays information about one or more PE format object files.
 
-**strings-ng** is a script that is used to print the sequences of printable characters in files. To search for possible privilege escalation, lateral movement, binary execution and data exfiltration.
+**strings-ng** is a script that is used to print the sequences of printable characters in files. To search for possible privilege escalation, lateral movement, binary execution and data exfiltration methods.
 
 ### Builds ###
 
