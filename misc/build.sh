@@ -33,12 +33,19 @@ LOCALMAN=$NAME/usr/local/share/man/
 DEBIANBIN=$NAME/DEBIAN
 
 echo $NAME
-$RMBIN -v *-ng
-$RMBIN -v *-ng.map
-$RMBIN -v $EXTERNBIN/*-ng
-$RMBIN -v $EXTERNBIN/releaseI386/*.a
+$RMBIN -v $EXTERNBIN/convert-ng
+$RMBIN -v $EXTERNBIN/detect-ng
+$RMBIN -v $EXTERNBIN/objcopy-ng
+$RMBIN -v $EXTERNBIN/objdump-ng
+$RMBIN -v $EXTERNBIN/objdwarf-ng
+$RMBIN -v $EXTERNBIN/objhash-ng
+$RMBIN -v $EXTERNBIN/readelf-ng
+$RMBIN -v $EXTERNBIN/readpe-ng
+$RMBIN -v $EXTERNBIN/release/*.a
 $RMBIN -vrf $NAME/
 $RMBIN -v $NAME.deb
+$RMBIN -v *-ng.map
+$RMBIN -v *-ng
 
 $MAKEBIN -f detect-ng.mk all
 $MAKEBIN -f readpe-ng.mk all
@@ -53,6 +60,7 @@ $MKDIRBIN -v -p $NAME
 $MKDIRBIN -v -p $USRBIN
 $MKDIRBIN -v -p $USRMAN
 $MKDIRBIN -v -p $USROBJ
+$MKDIRBIN -v -p $LOCALBIN
 $MKDIRBIN -v -p $DEBIANBIN
 
 $COPYBIN -v $EXTERNBIN/detect-ng $USRBIN/
@@ -63,8 +71,9 @@ $COPYBIN -v $EXTERNBIN/objdump-ng $USRBIN/
 $COPYBIN -v $EXTERNBIN/objhash-ng $USRBIN/
 $COPYBIN -v $EXTERNBIN/readelf-ng $USRBIN/
 $COPYBIN -v $EXTERNBIN/objdwarf-ng $USRBIN/
-$COPYBIN -v $EXTERNBIN/strings-ng.py $USRBIN/
-$COPYBIN -v $EXTERNBIN/enumerate-ng.py $USRBIN/
+$COPYBIN -v $EXTERNBIN/strings-ng.py $LOCALBIN/
+$COPYBIN -v $EXTERNBIN/enumerate-ng.py $LOCALBIN/
+$COPYBIN -v $EXTERNBIN/yara-rules-ng $LOCALBIN/
 
 $COPYBIN -v $EXTERNMAN/readpe-ng.1 $USRMAN/
 $COPYBIN -v $EXTERNMAN/convert-ng.1 $USRMAN/
