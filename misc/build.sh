@@ -63,6 +63,7 @@ $COPYBIN -v $EXTERNBIN/objdump-ng $USRBIN/
 $COPYBIN -v $EXTERNBIN/objhash-ng $USRBIN/
 $COPYBIN -v $EXTERNBIN/readelf-ng $USRBIN/
 $COPYBIN -v $EXTERNBIN/objdwarf-ng $USRBIN/
+$COPYBIN -v $EXTERNBIN/strings-ng.py $USRBIN/
 $COPYBIN -v $EXTERNBIN/enumerate-ng.py $USRBIN/
 
 $COPYBIN -v $EXTERNMAN/readpe-ng.1 $USRMAN/
