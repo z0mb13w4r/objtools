@@ -8,6 +8,16 @@
 #define MAXWORD			(100)
 #define MAXSTACK		(100)	/* maximum depth of val stack */
 
+static char TMPDIR[] = "/tmp";
+static char USBDIR[] = "/dev/usb";
+static char CPUFILE[] = "/proc/cpuinfo";
+static char CURLBIN[] = "/usr/bin/curl";
+static char VIMBIN[]  = "/usr/bin/vim";
+static char PDFFILE[] = "test2026.pdf";
+static char IPADDRESS[] = "192.168.1.99";
+static char GITADDRESS[] = "https://github.com/z0mb13w4r";
+static char NETSTATBIN[] = "/usr/bin/netstat";
+
 size_t read(int fd, void *buf, size_t count);
 
 char buff[MAXSTACK];			/* buffer for ungetch */
