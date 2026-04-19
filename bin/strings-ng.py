@@ -78,13 +78,6 @@ def xz(args, color, msg, c0, c1=None):
   return None
 
 
-def go(args, msg, c0, c1=None):
-  if not args.norun:
-    return xz(args, f'\033[31m', msg, c0, c1)
-
-  return None
-
-
 def gx(args, msg, c0, c1=None):
   if not args.norun:
     xz(args, f'\033[33m', msg, c0, c1)
@@ -129,7 +122,7 @@ def ext_info(args):
     mk('POSSSIBLE EXTENSIONS')
     gz(args, 'strings ' + args.name + ' | grep -w "' + EXTBIGLIST + '"')
     #gz(args, 'strings ' + args.name + ' | grep -w "' + TXTBIGLIST + '"')
-    #go(args, 'Found some interesting text', 'strings ' + args.name + ' | grep -E "[[:alnum:]]+"')
+    #gz(args, 'strings ' + args.name + ' | grep -E "[[:alnum:]]+"')
     print('')
 
 
