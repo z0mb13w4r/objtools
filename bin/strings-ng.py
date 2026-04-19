@@ -3,7 +3,7 @@ import pexpect
 import argparse
 
 PROGRAM_NAME = 'strings-ng.py'
-VERSION_VALUE = '0.0'
+VERSION_VALUE = '0.1'
 
 LICENSE_TEXT = '''COPYRIGHT
   MIT License
@@ -36,6 +36,17 @@ DIRBIGLIST=r'/dev\|/var\|/tmp\|/usr\|/etc\|/bin\|/sbin\|/mnt\|/root\|/boot\|/hom
 INTBIGLIST=r'USER-AGENT\|HOST\|Cookie\|POST\|GET\|url\|http\|https\|udp\|dns'
 TXTBIGLIST=r'ptm\|tty\|group\|passwd\|shells\|xterm'
 EXTBIGLIST=r'gz\|zip\|7z\|pub\|pdf\|doc\|docx\|png\|jpg\|jpeg'
+
+
+def pk(args):
+  if args.data:
+    return 'strings --data ' + args.name
+
+  elif args.offset:
+    return 'strings --radix=x ' + args.name
+
+  return 'strings ' + args.name
+
 
 def mk(msg):
   print('\033[33m### ' + msg + ' ' + '#'*(52 - len(msg)) + '\033[00m')
@@ -92,38 +103,38 @@ def all_info(args):
 def dir_info(args):
   if args.directories:
     mk('DIRECTORIES')
-    gz(args, 'strings ' + args.name + ' | grep -w "' + DIRBIGLIST + '" | grep -v "' + BINBIGLIST + '" | grep -v "' + EXEBIGLIST + '"')
+    gz(args, pk(args) + ' | grep -w "' + DIRBIGLIST + '" | grep -v "' + BINBIGLIST + '" | grep -v "' + EXEBIGLIST + '"')
     print('')
 
 
 def ext_info(args):
   if args.extensions:
     mk('POSSSIBLE EXTENSIONS')
-    gz(args, 'strings ' + args.name + ' | grep -w "' + EXTBIGLIST + '"')
-    #gz(args, 'strings ' + args.name + ' | grep -w "' + TXTBIGLIST + '"')
-    #gz(args, 'strings ' + args.name + ' | grep -E "[[:alnum:]]+"')
+    gz(args, pk(args) + ' | grep -w "' + EXTBIGLIST + '"')
+    #gz(args, pk(args) + ' | grep -w "' + TXTBIGLIST + '"')
+    #gz(args, pk(args) + ' | grep -E "[[:alnum:]]+"')
     print('')
 
 
 def sys_info(args):
   if args.privilege:
     mk('POSSIBLE PRIVILEGE ESCALATION')
-    gz(args, 'strings ' + args.name + ' | grep -w "' + BINBIGLIST + '"')
+    gz(args, pk(args) + ' | grep -w "' + BINBIGLIST + '"')
     print('')
 
 
 def bin_info(args):
   if args.binaries:
     mk('BINARIES')
-    gz(args, 'strings ' + args.name + ' | grep -w "' + EXEBIGLIST + '"')
+    gz(args, pk(args) + ' | grep -w "' + EXEBIGLIST + '"')
     print('')
 
 
 def int_info(args):
   if args.internet:
     mk('INTERNET')
-    gz(args, 'strings ' + args.name + ' | grep -w "' + INTBIGLIST + '"')
-    gz(args, 'strings ' + args.name + ' | egrep "[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}" | grep -v "' + INTBIGLIST + '"')
+    gz(args, pk(args) + ' | grep -w "' + INTBIGLIST + '"')
+    gz(args, pk(args) + ' | egrep "[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}" | grep -v "' + INTBIGLIST + '"')
     print('')
 
 
@@ -142,6 +153,8 @@ if __name__ == '__main__':
   p.add_argument('-e', '--extensions', action='store_true', help='search for possible extensions.')
   p.add_argument('-d', '--directories', action='store_true', help='search for possible directories.')
   p.add_argument('-i', '--internet', action='store_true', help='search for possible internet triggers.')
+  p.add_argument('-x', '--data', action='store_true', help='only print strings from initialized, loaded data sections in the file.')
+  p.add_argument('-o', '--offset', action='store_true', help='print the offset within the file before each string.')
   p.add_argument('--norun', action='store_true', help=argparse.SUPPRESS)
   g = p.parse_args()
 
