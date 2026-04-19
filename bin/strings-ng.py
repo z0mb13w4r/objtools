@@ -39,7 +39,10 @@ EXTBIGLIST=r'gz\|zip\|7z\|pub\|pdf\|doc\|docx\|png\|jpg\|jpeg'
 
 
 def pk(args):
-  if args.data:
+  if args.data and args.offset:
+    return 'strings --data --radix=x ' + args.name
+
+  elif args.data:
     return 'strings --data ' + args.name
 
   elif args.offset:
