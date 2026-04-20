@@ -1,10 +1,24 @@
 #!/bin/bash
 
+CPBIN=/usr/bin/cp
+JQBIN=/usr/bin/jq
+LSBIN=/usr/bin/ls
+RMBIN=/usr/bin/rm
+CATBIN=/usr/bin/cat
 GITBIN=/usr/bin/git
+CURLBIN=/usr/bin/curl
 SUDOBIN=/usr/bin/sudo
+WGETBIN=/usr/bin/wget
 YARABIN=/usr/bin/yara
+MKDIRBIN=/usr/bin/mkdir
+UNZIPBIN=/usr/bin/unzip
 
-NEO23X0_RULES=https://github.com/Neo23x0/signature-base.git
+GITHUB=https://github.com/
+
+TMP=/tmp/
+USRLOCAL=/usr/local/
+YARAFORGE=yara-forge/
+USRYARAFORGE=${USRLOCAL}${YARAFORGE}
 
 function yara_run() {
   if [ -e "${1}" ]; then
@@ -12,23 +26,55 @@ function yara_run() {
   fi
 }
 
+function yara_capev2() {
+  yara_run "${USRLOCAL}yara-capev2/index.yar" "${*}"
+}
+
 function yara_forge() {
-  yara_run "/usr/local/yara-forge/packages/core/yara-rules-core.yar" "${*}"
+  yara_run "${USRLOCAL}yara-forge/packages/core/yara-rules-core.yar" "${*}"
+  yara_run "${USRLOCAL}yara-forge/packages/extended/yara-rules-extended.yar" "${*}"
+}
+
+function yara_intezer() {
+  yara_run "${USRLOCAL}yara-intezer/index.yar" "${*}"
 }
 
 function yara_rules() {
-  yara_run "/usr/local/yara-rules/index.yar" "${*}"
+  yara_run "${USRLOCAL}yara-rules/index.yar" "${*}"
 }
 
 function yara_neo23x0() {
-  yara_run "/usr/local/yara-neo23x0/index.yar" "${*}"
+  yara_run "${USRLOCAL}yara-neo23x0/index.yar" "${*}"
 }
 
-function yara_update() {
-  if [ -d "${2}" ]; then
-    cd ${2} && ${SUDOBIN} ${GITBIN} pull
+function yara_opensrc() {
+  yara_run "${USRLOCAL}yara-opensrc/index.yar" "${*}"
+}
+
+function yara_exact() {
+  GITHUB=${TMP}yara-forge-rules.txt
+
+  ${RMBIN} -v ${TMP}yara-forge-rules*
+  ${RMBIN} -vr ${TMP}${YARAFORGE}
+  ${WGETBIN} https://api.github.com/repos/${1}/releases/latest -O ${GITHUB}
+  FILES=$(${CATBIN} ${GITHUB} | ${JQBIN} -r '(.assets[].browser_download_url | select(. | contains(".zip")))')
+
+  ${WGETBIN} -P ${TMP} ${FILES}
+
+  FILES=($(${LSBIN} -1 ${TMP}yara-forge-rules*.zip))
+  for i in "${FILES[@]}"; do
+    #echo ${i}
+    ${UNZIPBIN} ${i} -d ${TMP}yara-forge/
+  done
+
+  ${SUDOBIN} ${CPBIN} -Rfv ${TMP}yara-forge/ ${USRLOCAL}/
+}
+
+function yara_fetch() {
+  if [ -d "${USRLOCAL}${2}" ]; then
+    cd ${USRLOCAL}${2} && ${SUDOBIN} ${GITBIN} pull
   else
-    ${SUDOBIN} ${GITBIN} clone ${1} ${2}
+    ${SUDOBIN} ${GITBIN} clone ${GITHUB}${1} ${USRLOCAL}${2}
   fi
 }
 
@@ -49,11 +95,11 @@ while [[ $# -gt 0 ]]; do
       shift # past argument
       ;;
     -*|--*)
-      echo "Unknown option $1"
+      echo "Unknown option ${1}"
       exit 1
       ;;
     *)
-      POSITIONAL_ARGS+=("$1") # save positional arg
+      POSITIONAL_ARGS+=("${1}") # save positional arg
       shift # past argument
       ;;
   esac
@@ -62,8 +108,12 @@ done
 set -- "${POSITIONAL_ARGS[@]}" # restore positional parameters
 
 if [ "${YARA_UPDATE}" == "YES" ]; then
-  yara_update https://github.com/Yara-Rules/rules.git /usr/local/yara-rules
-  yara_update https://github.com/Neo23x0/signature-base.git /usr/local/yara-neo23x0
+  yara_exact YARAHQ/yara-forge
+  yara_fetch Yara-Rules/rules.git yara-rules
+  #yara_fetch Neo23x0/signature-base.git yara-neo23x0
+  #yara_fetch intezer/yara-rules.git yara-intezer
+  #yara_fetch kevoreilly/CAPEv2.git yara-capev2
+  #yara_fetch mikesxrs/Open-Source-YARA-rules.git yara-opensrc
 fi
 
 if [ ! -z "${POSITIONAL_ARGS}" ]; then
@@ -74,6 +124,10 @@ if [ ! -z "${POSITIONAL_ARGS}" ]; then
   else
     yara_rules "${*}"
     yara_forge "${*}"
-    yara_neo23x0 "${*}"
+    #yara_neo23x0 "${*}"
+    #yara_intezer "${*}"
+    #yara_capev2 "${*}"
+    #yara_opensrc "${*}"
   fi
 fi
+
