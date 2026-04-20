@@ -1,5 +1,8 @@
 #!/bin/bash
 
+VERSION=1.0
+SCRIPTNAME=$(basename "$0")
+
 CPBIN=/usr/bin/cp
 JQBIN=/usr/bin/jq
 LSBIN=/usr/bin/ls
@@ -19,6 +22,23 @@ TMP=/tmp/
 USRLOCAL=/usr/local/
 YARAFORGE=yara-forge/
 USRYARAFORGE=${USRLOCAL}${YARAFORGE}
+
+function show_usage() {
+  ${CATBIN} << EOF
+Usage: ${SCRIPTNAME} v${VERSION}
+EXAMPLES:
+  ${SCRIPTNAME} <source/path/name>
+  ${SCRIPTNAME} {-r|--yara-rules} <source/path/name>
+  ${SCRIPTNAME} {-f|--yara-forge} <source/path/name>
+  ${SCRIPTNAME} {-u|--update}
+  ${SCRIPTNAME} {-v|--version}
+  ${SCRIPTNAME} {-h|--help}
+EOF
+}
+
+function show_version() {
+  echo "${SCRIPTNAME} v${VERSION}"
+}
 
 function yara_run() {
   if [ -e "${1}" ]; then
@@ -83,15 +103,23 @@ POSITIONAL_ARGS=()
 while [[ $# -gt 0 ]]; do
   case $1 in
     -r|--yara-rules)
-      YARA_RULES=YES
+      ARG_YARA_RULES=YES
       shift # past argument
       ;;
     -f|--yara-forge)
-      YARA_FORGE=YES
+      ARG_YARA_FORGE=YES
       shift # past argument
       ;;
     -u|--update)
-      YARA_UPDATE=YES
+      ARG_YARA_UPDATE=YES
+      shift # past argument
+      ;;
+    -h|--help)
+      ARG_HELP=YES
+      shift # past argument
+      ;;
+    -v|--version)
+      ARG_VERSION=YES
       shift # past argument
       ;;
     -*|--*)
@@ -107,19 +135,25 @@ done
 
 set -- "${POSITIONAL_ARGS[@]}" # restore positional parameters
 
-if [ "${YARA_UPDATE}" == "YES" ]; then
+if [ "${ARG_HELP}" == "YES" ]; then
+  show_usage
+  exit 0
+elif [ "${ARG_VERSION}" == "YES" ]; then
+  show_version
+  exit 0
+fi
+
+if [ "${ARG_YARA_UPDATE}" == "YES" ]; then
   yara_exact YARAHQ/yara-forge
   yara_fetch Yara-Rules/rules.git yara-rules
   #yara_fetch Neo23x0/signature-base.git yara-neo23x0
   #yara_fetch intezer/yara-rules.git yara-intezer
   #yara_fetch kevoreilly/CAPEv2.git yara-capev2
   #yara_fetch mikesxrs/Open-Source-YARA-rules.git yara-opensrc
-fi
-
-if [ ! -z "${POSITIONAL_ARGS}" ]; then
-  if [ "${YARA_RULES}" == "YES" ]; then
+elif [ ! -z "${POSITIONAL_ARGS}" ]; then
+  if [ "${ARG_YARA_RULES}" == "YES" ]; then
     yara_rules "${POSITIONAL_ARGS}"
-  elif [ "${YARA_FORGE}" == "YES" ]; then
+  elif [ "${ARG_YARA_FORGE}" == "YES" ]; then
     yara_forge "${POSITIONAL_ARGS}"
   else
     yara_rules "${*}"
@@ -129,5 +163,10 @@ if [ ! -z "${POSITIONAL_ARGS}" ]; then
     #yara_capev2 "${*}"
     #yara_opensrc "${*}"
   fi
+else
+  show_usage
+  exit 1
 fi
+
+exit 0
 
