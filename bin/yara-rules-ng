@@ -79,10 +79,10 @@ function yara_exact() {
   FILES=($(${LSBIN} -1 ${TMP}yara-forge-rules*.zip))
   for i in "${FILES[@]}"; do
     #echo ${i}
-    ${UNZIPBIN} ${i} -d ${TMP}yara-forge/
+    ${UNZIPBIN} ${i} -d ${TMP}${YARAFORGE}
   done
 
-  ${SUDOBIN} ${CPBIN} -Rfv ${TMP}yara-forge/ ${USRLOCAL}/
+  ${SUDOBIN} ${CPBIN} -Rfv ${TMP}${YARAFORGE} ${USRLOCAL}/
 }
 
 function yara_fetch() {
