@@ -21,7 +21,10 @@ GITHUB=https://github.com/
 TMP=/tmp/
 USRLOCAL=/usr/local/
 YARAFORGE=yara-forge/
+USRYARARULES=${USRLOCAL}yara-rules/index.yar
 USRYARAFORGE=${USRLOCAL}${YARAFORGE}
+USRYARAFORGECORE=${USRYARAFORGE}packages/core/yara-rules-core.yar
+USRYARAFORGEEXTENDED=${USRYARAFORGE}packages/extended/yara-rules-extended.yar
 
 function show_usage() {
   ${CATBIN} << EOF
@@ -51,17 +54,8 @@ function yara_capev2() {
   yara_run "${USRLOCAL}yara-capev2/index.yar" "${*}"
 }
 
-function yara_forge() {
-  yara_run "${USRLOCAL}yara-forge/packages/core/yara-rules-core.yar" "${*}"
-  yara_run "${USRLOCAL}yara-forge/packages/extended/yara-rules-extended.yar" "${*}"
-}
-
 function yara_intezer() {
   yara_run "${USRLOCAL}yara-intezer/index.yar" "${*}"
-}
-
-function yara_rules() {
-  yara_run "${USRLOCAL}yara-rules/index.yar" "${*}"
 }
 
 function yara_neo23x0() {
@@ -160,12 +154,15 @@ elif [ ! -z "${POSITIONAL_ARGS}" ]; then
   if [ ! -z "${ARG_YARA_CHECK}" ]; then
     yara_run "${ARG_YARA_CHECK}" "${POSITIONAL_ARGS}"
   elif [ "${ARG_YARA_RULES}" == "YES" ]; then
-    yara_rules "${POSITIONAL_ARGS}"
+    yara_run "${USRYARARULES}" "${POSITIONAL_ARGS}"
   elif [ "${ARG_YARA_FORGE}" == "YES" ]; then
-    yara_forge "${POSITIONAL_ARGS}"
+    yara_run "${USRYARAFORGECORE}" "${POSITIONAL_ARGS}"
+    yara_run "${USRYARAFORGEEXTENDED}" "${POSITIONAL_ARGS}"
   else
-    yara_rules "${*}"
-    yara_forge "${*}"
+    yara_run "${USRYARARULES}" "${*}"
+    yara_run "${USRYARAFORGECORE}" "${*}"
+    yara_run "${USRYARAFORGEEXTENDED}" "${*}"
+
     #yara_neo23x0 "${*}"
     #yara_intezer "${*}"
     #yara_capev2 "${*}"
@@ -177,4 +174,3 @@ else
 fi
 
 exit 0
-
