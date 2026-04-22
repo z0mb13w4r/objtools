@@ -28,6 +28,7 @@ function show_usage() {
 Usage: ${SCRIPTNAME} v${VERSION}
 EXAMPLES:
   ${SCRIPTNAME} <source/path/name>
+  ${SCRIPTNAME} <source/path/name> {-c|--check} <source/path/yara/rule>
   ${SCRIPTNAME} {-r|--yara-rules} <source/path/name>
   ${SCRIPTNAME} {-f|--yara-forge} <source/path/name>
   ${SCRIPTNAME} {-u|--update}
@@ -101,7 +102,12 @@ function yara_fetch() {
 POSITIONAL_ARGS=()
 
 while [[ $# -gt 0 ]]; do
-  case $1 in
+  case ${1} in
+    -c|--check)
+      ARG_YARA_CHECK="${2}"
+      shift # past argument
+      shift # past value
+      ;;
     -r|--yara-rules)
       ARG_YARA_RULES=YES
       shift # past argument
@@ -151,7 +157,9 @@ if [ "${ARG_YARA_UPDATE}" == "YES" ]; then
   #yara_fetch kevoreilly/CAPEv2.git yara-capev2
   #yara_fetch mikesxrs/Open-Source-YARA-rules.git yara-opensrc
 elif [ ! -z "${POSITIONAL_ARGS}" ]; then
-  if [ "${ARG_YARA_RULES}" == "YES" ]; then
+  if [ ! -z "${ARG_YARA_CHECK}" ]; then
+    yara_run "${ARG_YARA_CHECK}" "${POSITIONAL_ARGS}"
+  elif [ "${ARG_YARA_RULES}" == "YES" ]; then
     yara_rules "${POSITIONAL_ARGS}"
   elif [ "${ARG_YARA_FORGE}" == "YES" ]; then
     yara_forge "${POSITIONAL_ARGS}"
