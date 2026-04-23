@@ -100,7 +100,7 @@ def gz(args, c0, c1=None):
 
 
 def all_info(args):
-  gz(args, 'strings ' + args.name)
+  gz(args, pk(args))
 
 
 def dir_info(args):
