@@ -31,12 +31,13 @@ LICENSE_TEXT = '''COPYRIGHT
 
 BINBIGLIST=r'aria2c\|arp\|ash\|awk\|base64\|bash\|busybox\|cat\|chmod\|chown\|cp\|csh\|curl\|cut\|dash\|date\|dd\|diff\|dmsetup\|docker\|ed\|emacs\|env\|expand\|expect\|find\|flock\|fmt\|fold\|ftp\|gawk\|gdb\|gimp\|git\|grep\|head\|ht\|iftop\|ionice\|ip$\|irb\|jjs\|jq\|jrunscript\|ksh\|ld.so\|ldconfig\|less\|logsave\|lua\|make\|man\|mawk\|more\|mv\|mysql\|nano\|nawk\|nc\|netcat\|nice\|nl\|nmap\|node\|od\|openssl\|perl\|pg\|php\|pic\|pico\|python\|readelf\|rlwrap\|rpm\|rpmquery\|rsync\|ruby\|run-parts\|rvim\|scp\|script\|sed\|setarch\|sftp\|sh\|shuf\|socat\|sort\|sqlite3\|ssh$\|start-stop-daemon\|stdbuf\|strace\|systemctl\|tail\|tar\|taskset\|tclsh\|tee\|telnet\|tftp\|time\|timeout\|ul\|unexpand\|uniq\|unshare\|vi\|vim\|watch\|wget\|wish\|xargs\|xxd\|zip\|zsh'
 ## file\|
-EXEBIGLIST=r'reboot\|poweroff\|halt\|netstat\|systemd\|ftpget\|ftpput\|watchdog'
-DIRBIGLIST=r'/dev\|/var\|/tmp\|/usr\|/etc\|/bin\|/sbin\|/mnt\|/root\|/boot\|/home\|/media\|/opt\|/proc\|/lib\|/pts'
+EXEBIGLIST=r'reboot\|poweroff\|halt\|netstat\|systemd\|ftpget\|ftpput\|watchdog\|adb\|adbd\|docker\|dockerd'
+DIRBIGLIST=r'/dev\|/var\|/tmp\|/usr\|/etc\|/bin\|/sbin\|/mnt\|/root\|/boot\|/home\|/media\|/opt\|/proc\|/lib\|/pts\|/data\|/local'
 INTBIGLIST=r'USER-AGENT\|HOST\|Cookie\|POST\|GET\|url\|http\|https\|udp\|dns\|google'
 TXTBIGLIST=r'ptm\|tty\|group\|passwd\|shells\|xterm'
 EXTBIGLIST=r'gz\|zip\|7z\|pub\|pdf\|doc\|docx\|png\|jpg\|jpeg'
-
+SECBIGLIST=r'\.shstrtab\|\.init\|\.text\|\.fini\|.rodata\|\.ctors\|\.dtors\|\.data\|\.bss'
+MGCBINLIST=r'pid\|upx\|abcdefghijklmnopqrstuvw.*012345678\|\.x86\|\.x86_64\|\.arm\|\.arm5\|\.arm6\|\.arm7\|\.mips\|\.mipsel\|\.sh4\|\.ppc\|TeamSpeak'
 
 def pk(args):
   if args.data and args.offset:
@@ -126,6 +127,20 @@ def sys_info(args):
     print('')
 
 
+def sec_info(args):
+  if args.sections:
+    mk('POSSIBLE SECTIONS')
+    gz(args, pk(args) + ' | grep -w "' + SECBIGLIST + '"')
+    print('')
+
+
+def mgc_info(args):
+  if args.magic:
+    mk('POSSIBLE MAGIC STRINGS')
+    gz(args, pk(args) + ' | grep -wi "' + MGCBINLIST + '"')
+    print('')
+
+
 def bin_info(args):
   if args.binaries:
     mk('BINARIES')
@@ -156,13 +171,15 @@ if __name__ == '__main__':
   p.add_argument('-e', '--extensions', action='store_true', help='search for possible extensions.')
   p.add_argument('-d', '--directories', action='store_true', help='search for possible directories.')
   p.add_argument('-i', '--internet', action='store_true', help='search for possible internet triggers.')
+  p.add_argument('-s', '--sections', action='store_true', help='search for possible sections.')
+  p.add_argument('-m', '--magic', action='store_true', help='search for possible magic strings.')
   p.add_argument('-x', '--data', action='store_true', help='only print strings from initialized, loaded data sections in the file.')
   p.add_argument('-o', '--offset', action='store_true', help='print the offset within the file before each string.')
   p.add_argument('--norun', action='store_true', help=argparse.SUPPRESS)
   g = p.parse_args()
 
-  if not(g.privilege or g.binaries or g.extensions or g.directories or g.internet):
-    g.binaries = g.privilege = g.extensions = g.directories = g.internet = True
+  if not(g.privilege or g.binaries or g.extensions or g.directories or g.internet or g.sections or g.magic):
+    g.binaries = g.privilege = g.extensions = g.directories = g.internet = g.sections = g.magic = True
 
   if g.version:
     print(PROGRAM_NAME + ' v' + VERSION_VALUE + '\n')
@@ -175,5 +192,8 @@ if __name__ == '__main__':
     dir_info(g)
     bin_info(g)
     sys_info(g)
+    sec_info(g)
     ext_info(g)
     int_info(g)
+    mgc_info(g)
+
