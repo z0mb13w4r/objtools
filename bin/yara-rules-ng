@@ -67,12 +67,12 @@ function yara_opensrc() {
 }
 
 function yara_exact() {
-  GITHUB=${TMP}yara-forge-rules.txt
+  GITHUBTXT=${TMP}yara-forge-rules.txt
 
   ${RMBIN} -v ${TMP}yara-forge-rules*
   ${RMBIN} -vr ${TMP}${YARAFORGE}
-  ${WGETBIN} https://api.github.com/repos/${1}/releases/latest -O ${GITHUB}
-  FILES=$(${CATBIN} ${GITHUB} | ${JQBIN} -r '(.assets[].browser_download_url | select(. | contains(".zip")))')
+  ${WGETBIN} https://api.github.com/repos/${1}/releases/latest -O ${GITHUBTXT}
+  FILES=$(${CATBIN} ${GITHUBTXT} | ${JQBIN} -r '(.assets[].browser_download_url | select(. | contains(".zip")))')
 
   ${WGETBIN} -P ${TMP} ${FILES}
 
