@@ -1,6 +1,8 @@
 v1.4 - 
 -----------------------------------------------------------------------
 [+] Updated dwarflib code (v2.3.1).  
+[+] Added strings-ng-py script.  
+[+] Added yara-rules-ng script.  
 [+] Added zlib encoding and decoding.  
 [+] Added core dump analysis to readelf-ng.  
 [+] Added signature detection through readpe-ng & detect-ng.  
@@ -14,6 +16,7 @@ v1.3 - 21/03/2026
 [+] Added RISC-V GOT support.  
 [+] Updated Capstone Engine.  
 [+] Improved symbol identification.  
+[+] Added enumerate-ng.py script.  
 [+] Fixed enumerate-ng.py pexpect timeout.  
 [+] Added firmware paths to enumerate-ng.  
 [+] Enhanced readelf-ng, objdump-ng and enumerate-ng.  
