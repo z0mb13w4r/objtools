@@ -94,6 +94,8 @@ $GZIPBIN -v $USRMAN/objdwarf-ng.1
 
 $SUDOBIN $CHOWNBIN root:root $USRBIN/*
 $SUDOBIN $CHOWNBIN root:root $USRMAN/*
+$SUDOBIN $CHOWNBIN root:root $USROBJ/*
+$SUDOBIN $CHOWNBIN root:root $LOCALBIN/*
 
 $FINDBIN $NAME/usr/ -type f -exec $MD5SUMBIN '{}' \; | $SEDBIN "s/$NAME\///" > $DEBIANBIN/md5sums
 
