@@ -71,6 +71,7 @@ LIB_PATHS = \
 #=====================================================================================================================================
 # Set compile flags, dependant on DEBUG flag being set.
 #---------------------------------------------------------------------
+DFLAGS += -DBUILD_$(shell cat /etc/lsb-release | grep DISTRIB_ID | cut -d '=' -f 2 | tr '[:lower:]' '[:upper:]')_$(shell cat /etc/lsb-release | grep DISTRIB_RELEASE | cut -d '=' -f 2 | tr '.' '_')
 
 ifeq ($(DEBUG),y)
 	CFLAGS = -g3 -O0 -Wall -Wno-unknown-pragmas -c -fmessage-length=0 -MMD -MP -ggdb
