@@ -3,7 +3,7 @@ import pexpect
 import argparse
 
 PROGRAM_NAME = 'strings-ng.py'
-VERSION_VALUE = '0.1'
+VERSION_VALUE = '1.0'
 
 LICENSE_TEXT = '''COPYRIGHT
   MIT License
@@ -40,7 +40,10 @@ SECBIGLIST=r'\.shstrtab\|\.init\|\.text\|\.fini\|.rodata\|\.ctors\|\.dtors\|\.da
 MGCBINLIST=r'pid\|upx\|abcdefghijklmnopqrstuvw.*012345678\|\.x86\|\.x86_64\|\.arm\|\.arm5\|\.arm6\|\.arm7\|\.mips\|\.mipsel\|\.sh4\|\.ppc\|TeamSpeak'
 
 def pk(args):
-  if args.data and args.offset:
+  if g.version:
+    return 'strings --version | head -n 1 | cut -d ")" -f 2 | cut -d " " -f 2'
+
+  elif args.data and args.offset:
     return 'strings --data --radix=x ' + args.name
 
   elif args.data:
@@ -98,6 +101,12 @@ def gz(args, c0, c1=None):
     xz(args, None, None, c0, c1)
 
   return None
+
+
+def ver_info(args):
+  print(PROGRAM_NAME + ' v' + VERSION_VALUE)
+  print('strings  v' + xy(pk(g)))
+  print(LICENSE_TEXT)
 
 
 def all_info(args):
@@ -161,7 +170,7 @@ if __name__ == '__main__':
     prog=PROGRAM_NAME,
     description="""Used to scan binaries for high value strings for binary and
                    malware analysis.""")
-  p.add_argument('name')           # positional argument
+  p.add_argument('name', nargs='?')           # positional argument
   #p.add_argument('-k', '--keyword', help='keyword search.')
   p.add_argument('-V', '--verbose', action='store_true', help='more verbose checks.')
   p.add_argument('-v', '--version', action='store_true', help='verion number of ' + PROGRAM_NAME)
@@ -182,8 +191,7 @@ if __name__ == '__main__':
     g.binaries = g.privilege = g.extensions = g.directories = g.internet = g.sections = g.magic = True
 
   if g.version:
-    print(PROGRAM_NAME + ' v' + VERSION_VALUE + '\n')
-    print(LICENSE_TEXT)
+    ver_info(g)
 
   elif g.all:
     all_info(g)
