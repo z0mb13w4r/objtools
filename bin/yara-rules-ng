@@ -10,6 +10,7 @@ RMBIN=/usr/bin/rm
 CATBIN=/usr/bin/cat
 GITBIN=/usr/bin/git
 CURLBIN=/usr/bin/curl
+DIFFBIN=/usr/bin/diff
 SUDOBIN=/usr/bin/sudo
 WGETBIN=/usr/bin/wget
 YARABIN=/usr/bin/yara
@@ -22,8 +23,9 @@ TMP=/tmp/
 USRLOCAL=/usr/local/
 YARAFORGE=yara-forge/
 USRYARARULES=${USRLOCAL}yara-rules/index.yar
-USRYARAFORGECORE=${USRLOCAL}${YARAFORGE}packages/core/yara-rules-core.yar
-USRYARAFORGEEXTENDED=${USRLOCAL}${YARAFORGE}packages/extended/yara-rules-extended.yar
+USRYARAFORGE=${USRLOCAL}${YARAFORGE}
+USRYARAFORGECORE=${USRYARAFORGE}packages/core/yara-rules-core.yar
+USRYARAFORGEEXTENDED=${USRYARAFORGE}packages/extended/yara-rules-extended.yar
 USRYARAZOMBIE=${USRLOCAL}yara-z0mb13w4r/index.yar
 
 function show_usage() {
@@ -68,22 +70,30 @@ function yara_opensrc() {
 }
 
 function yara_exact() {
-  GITHUBTXT=${TMP}yara-forge-rules.txt
+  YARADATE=yara-forge-date.txt
+  YARARULE=yara-forge-rules.txt
+  GITHUBTAG=${TMP}${YARADATE}
+  GITHUBTXT=${TMP}${YARARULE}
 
   ${RMBIN} -v ${TMP}yara-forge-rules*
   ${RMBIN} -vr ${TMP}${YARAFORGE}
   ${WGETBIN} https://api.github.com/repos/${1}/releases/latest -O ${GITHUBTXT}
-  FILES=$(${CATBIN} ${GITHUBTXT} | ${JQBIN} -r '(.assets[].browser_download_url | select(. | contains(".zip")))')
+  ${CATBIN} ${GITHUBTXT} | ${JQBIN} -r '(.tag_name)' > ${GITHUBTAG}
 
-  ${WGETBIN} -P ${TMP} ${FILES}
+  if [ ! -f "${USRYARAFORGE}${YARADATE}" ] || [ ! -z "$(${DIFFBIN} ${GITHUBTAG} ${USRYARAFORGE}${YARADATE})" ]; then
+    ${WGETBIN} -P ${TMP} $(${CATBIN} ${GITHUBTXT} | ${JQBIN} -r '(.assets[].browser_download_url | select(. | contains(".zip")))')
 
-  FILES=($(${LSBIN} -1 ${TMP}yara-forge-rules*.zip))
-  for i in "${FILES[@]}"; do
-    #echo ${i}
-    ${UNZIPBIN} ${i} -d ${TMP}${YARAFORGE}
-  done
+    FILES=($(${LSBIN} -1 ${TMP}yara-forge-rules*.zip))
+    for i in "${FILES[@]}"; do
+      #echo ${i}
+      ${UNZIPBIN} ${i} -d ${TMP}${YARAFORGE}
+    done
 
-  ${SUDOBIN} ${CPBIN} -Rfv ${TMP}${YARAFORGE} ${USRLOCAL}/
+    ${SUDOBIN} ${CPBIN} -Rfv ${TMP}${YARAFORGE} ${USRLOCAL}/
+    ${SUDOBIN} ${CPBIN} ${GITHUBTAG} ${USRYARAFORGE}
+  else
+    echo "Already up to date."
+  fi
 }
 
 function yara_fetch() {
@@ -183,3 +193,4 @@ else
 fi
 
 exit 0
+
