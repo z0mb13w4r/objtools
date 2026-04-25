@@ -44,6 +44,7 @@ aptcheck g++
 #aptcheck gcc-mips64-linux-gnuabi64
 #aptcheck g++-mips64-linux-gnuabi64
 aptcheck libssl-dev
+aptcheck libjson-c-dev
 aptcheck binutils-dev
 
 VERDWARF=2.3.1
@@ -82,22 +83,9 @@ cdmk ${LIBSSDEEP}
 make
 
 # ---- LIBRARY SYMLINKS ----
-cdmv ${LIB}
-
-ln -s ${LIBDWARF}/build/src/lib/libdwarf/ libdwarf
-cdmv libdwarf
+cdmv ${LIB}/libdwarf
 ln -s .libs libs
 
-cdmv ${LIB}
-
-ln -s ${LIBSSDEEP} ssdeep
-cdmv ssdeep
+cdmv ${LIB}/ssdeep
 ln -s .libs libs
-
-# ---- INCLUDE SYMLINKS ----
-cdmv ${INC}
-
-ln -s ../libs/ssdeep/ ssdeep
-ln -s ../libs/capstone/include/ capstone
-ln -s ../libs/libdwarf-${VERDWARF}/src/lib/libdwarf/ libdwarf
 
