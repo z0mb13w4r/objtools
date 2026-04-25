@@ -69,15 +69,10 @@ SRCS_CPP =
 #---------------------------------------------------------------------
 TARGETBASE = objtool
 
-ifeq ($(CROSS),ARM)
-else
-	CROSS = I386
-endif
-
 ifeq ($(DEBUG),y)
-	DIR_OBJ = debug$(CROSS)/
+	DIR_OBJ = debug/
 else
-	DIR_OBJ = release$(CROSS)/
+	DIR_OBJ = release/
 	DEBUG = n
 endif
 
@@ -102,6 +97,7 @@ LIB_INCS = \
 #=====================================================================================================================================
 # Set compile flags, dependant on DEBUG flag being set.
 #---------------------------------------------------------------------
+DFLAGS += -DBUILD_$(shell cat /etc/lsb-release | grep DISTRIB_ID | cut -d '=' -f 2 | tr '[:lower:]' '[:upper:]')_$(shell cat /etc/lsb-release | grep DISTRIB_RELEASE | cut -d '=' -f 2 | tr '.' '_')
 
 ifeq ($(DEBUG),y)
 	CFLAGS = -g3 -O0 -Wall -Wno-unknown-pragmas -c -fmessage-length=0 -MMD -MP -ggdb
@@ -120,13 +116,8 @@ endif
 
 # GNU toolchain definitions
 #---------------------------------------------------------------------
-ifeq ($(CROSS),ARM)
-	CROSS_COMPILE = /home/WF_3.02/wrlinux-3.0/sysroots/arm-mm6-glibc-small/x86-linux2/arm-wrs-linux-gnueabi-arm_iwmmxt_el-glibc_small-
-	DFLAGS += -DENV_LINUX -DLINUX -DTARGET_ARM
-else
-	CROSS_COMPILE =
-	DFLAGS += -DENV_LINUX -DLINUX -DLIBDWARF_STATIC
-endif
+CROSS_COMPILE =
+DFLAGS += -DENV_LINUX -DLINUX -DLIBDWARF_STATIC
 
 AS		= $(CROSS_COMPILE)as
 LD		= $(CROSS_COMPILE)ld
