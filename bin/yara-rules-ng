@@ -28,6 +28,8 @@ USRYARAFORGECORE=${USRYARAFORGE}packages/core/yara-rules-core.yar
 USRYARAFORGEEXTENDED=${USRYARAFORGE}packages/extended/yara-rules-extended.yar
 USRYARAZOMBIE=${USRLOCAL}yara-z0mb13w4r/index.yar
 
+YARA_ARGS='-w'
+
 function show_usage() {
   ${CATBIN} << EOF
 Usage: ${SCRIPTNAME} v${VERSION}
@@ -37,6 +39,7 @@ EXAMPLES:
   ${SCRIPTNAME} {-r|--yara-rules} <source/path/name>
   ${SCRIPTNAME} {-f|--yara-forge} <source/path/name>
   ${SCRIPTNAME} {-u|--update}
+  ${SCRIPTNAME} {-V|--verbose}
   ${SCRIPTNAME} {-v|--version}
   ${SCRIPTNAME} {-h|--help}
 EOF
@@ -49,7 +52,7 @@ function show_version() {
 
 function yara_run() {
   if [ -e "${1}" ]; then
-    ${YARABIN} -w "${1}" "${2}"
+    ${YARABIN} ${YARA_ARGS} "${1}" "${2}"
   fi
 }
 
@@ -135,6 +138,10 @@ while [[ $# -gt 0 ]]; do
       ;;
     -v|--version)
       ARG_VERSION=YES
+      shift # past argument
+      ;;
+    -V|--verbose)
+      YARA_ARGS+=' -s'
       shift # past argument
       ;;
     -*|--*)
