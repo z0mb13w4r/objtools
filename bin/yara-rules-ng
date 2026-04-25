@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION=1.0
+VERSION=1.1
 SCRIPTNAME=$(basename "$0")
 
 CPBIN=/usr/bin/cp
@@ -42,6 +42,7 @@ EOF
 
 function show_version() {
   echo "${SCRIPTNAME} v${VERSION}"
+  echo "yara v"$(${YARABIN} -v)
 }
 
 function yara_run() {
