@@ -14,6 +14,7 @@ static int usage(poptions_t o, const char* name, const args_t args[], const int 
   n += usage_name(o, name, args, zDESCRIPTIONPE);
   n += usage_synopsis0(o, name, args);
   n += usage_synopsis2(o, name, zDISASSEMBLEARGS, zREADPEARGS2, zREADPEARGS3);
+  n += usage_objname(o, name, "pefile");
   n += printf_eol();
   n += usage_description(o, name, args, zPEDESCRIPTION);
   n += usage_options0(o, name, args);
