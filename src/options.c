@@ -24,6 +24,18 @@ int usage_name(poptions_t o, const char* name, const args_t args[], const char* 
   return n;
 }
 
+int usage_objname(poptions_t o, const char* name, const char* objname) {
+  int n = 0;
+  int z = xstrlen(name) + 2;
+
+  n += printf_pack(z);
+  n += printf_text(objname, USE_LT | USE_SPACE);
+  n += printf_text("...", USE_LT);
+  n += printf_eol();
+
+  return n;
+}
+
 static int usage_synopsisX(poptions_t o, const args_t* p, char* m, const size_t size) {
   if (o && p && m) {
     if (p->option1 && p->option2) {

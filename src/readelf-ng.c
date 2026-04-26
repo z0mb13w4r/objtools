@@ -16,6 +16,7 @@ static int usage(poptions_t o, const char* name, const args_t args[], const int 
   n += usage_synopsis1(o, name, zDEBUGELFARGS, zREADELFARGS0, zREADELFARGS1);
   n += usage_synopsis2(o, name, zDISASSEMBLEARGS, zREADELFARGS2, zREADELFARGS3);
   n += usage_synopsis2(o, name, zSCRIPTCOMMANDS, zREADELFARGS4, zREADELFARGS5);
+  n += usage_objname(o, name, "elffile");
   n += printf_eol();
   n += usage_description(o, name, args, zELFDESCRIPTION);
   n += usage_options0(o, name, args);
