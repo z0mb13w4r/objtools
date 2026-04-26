@@ -2,6 +2,7 @@
 v1.5 -
 [+] Added verbose to the yara-rules-ng script.  
 [+] Enhanced the build system.  
+[+] Updated man pages.  
 [+] Bug fixes.  
 
 v1.4 - 25/04/2026
