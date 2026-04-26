@@ -12,11 +12,11 @@ static int usage(poptions_t o, const char* name, const args_t args[], const int 
   n += usage_name(o, name, args, zDESCRIPTIONELF);
   n += usage_synopsis0(o, name, args);
   n += usage_synopsis3(o, name, zOBJHASHARGS1);
+  n += usage_objname(o, name, "elffile");
   n += printf_eol();
   n += usage_description(o, name, args, zOBJHASHDESCRIPTION);
   n += usage_options0(o, name, args);
   n += usage_options2(o, name, zOBJHASHARGS1, NULL, NULL);
-
   n += usage_seealso(o, name, args);
   n += usage_copyright(o, name, args);
 
