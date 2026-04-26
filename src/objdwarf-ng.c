@@ -13,6 +13,7 @@ static int usage(poptions_t o, const char* name, const args_t args[], const int 
   n += usage_name(o, name, args, zDESCRIPTIONELF);
   n += usage_synopsis0(o, name, args);
   n += usage_synopsis1(o, name, zDEBUGELFARGS, zOBJDWARFARGS0, zOBJDWARFARGS1);
+  n += usage_objname(o, name, "elffile");
   n += printf_eol();
   n += usage_description(o, name, args, zOBJDWARFDESCRIPTION);
   n += usage_options0(o, name, args);
