@@ -75,6 +75,7 @@ $COPYBIN -v $EXTERNBIN/strings-ng.py $LOCALBIN/
 $COPYBIN -v $EXTERNBIN/enumerate-ng.py $LOCALBIN/
 $COPYBIN -v $EXTERNBIN/yara-rules-ng $LOCALBIN/
 
+$COPYBIN -v $EXTERNMAN/detect-ng.1 $USRMAN/
 $COPYBIN -v $EXTERNMAN/readpe-ng.1 $USRMAN/
 $COPYBIN -v $EXTERNMAN/convert-ng.1 $USRMAN/
 $COPYBIN -v $EXTERNMAN/objdump-ng.1 $USRMAN/
@@ -85,6 +86,7 @@ $COPYBIN -v $EXTERNMAN/objdwarf-ng.1 $USRMAN/
 $COPYBIN -v $EXTERNBIN/control $DEBIANBIN/
 $COPYBIN -v $EXTERNBIN/userdb.sig $USROBJ/
 
+$GZIPBIN -v $USRMAN/detect-ng.1
 $GZIPBIN -v $USRMAN/readpe-ng.1
 $GZIPBIN -v $USRMAN/convert-ng.1
 $GZIPBIN -v $USRMAN/objdump-ng.1

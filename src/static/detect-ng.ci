@@ -4,6 +4,8 @@ static const char *zPEDESCRIPTION[] = {
   "",
   "pefile... are the object files to be examined. 32-bit and 64-bit PE files",
   "are supported.",
+  "",
+  "sigfile   are the signature file to be applied.",
   0
 };
 

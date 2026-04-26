@@ -383,6 +383,7 @@ int usage_copyright(poptions_t o, const char* name, const args_t args[]);
 
 int usage_name(poptions_t o, const char* name, const args_t args[], const char* desc);
 int usage_objname(poptions_t o, const char* name, const char* objname);
+int usage_onename(poptions_t o, const char* name, const char* objname);
 
 int version0(poptions_t o, const char* name, const args_t args[]);
 
