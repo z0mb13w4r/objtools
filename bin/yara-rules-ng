@@ -36,6 +36,7 @@ Usage: ${SCRIPTNAME} v${VERSION}
 EXAMPLES:
   ${SCRIPTNAME} <source/path/name>
   ${SCRIPTNAME} <source/path/name> {-c|--check} <source/path/yara/rule>
+  ${SCRIPTNAME} {-z|--yara-z0mb13w4r} <source/path/name>
   ${SCRIPTNAME} {-r|--yara-rules} <source/path/name>
   ${SCRIPTNAME} {-f|--yara-forge} <source/path/name>
   ${SCRIPTNAME} {-u|--update}
