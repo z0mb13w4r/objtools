@@ -35,7 +35,7 @@ EXEBIGLIST=r'reboot\|poweroff\|halt\|netstat\|systemd\|ftpget\|ftpput\|watchdog\
 DIRBIGLIST=r'/dev\|/var\|/tmp\|/usr\|/etc\|/bin\|/sbin\|/mnt\|/root\|/boot\|/home\|/media\|/opt\|/proc\|/lib\|/pts\|/data\|/local'
 INTBIGLIST=r'USER-AGENT\|HOST\|Cookie\|POST\|GET\|url\|http\|https\|udp\|dns\|google'
 TXTBIGLIST=r'ptm\|tty\|group\|passwd\|shells\|xterm'
-EXTBIGLIST=r'gz\|zip\|7z\|pub\|pdf\|doc\|docx\|png\|jpg\|jpeg'
+EXTBIGLIST=r'\.gz$\|\.zip$\|\.7z$\|\.pub$\|\.pdf$\|\.doc$\|\.docx$\|\.png$\|\,jpg$\|\.jpeg$\|\.go$\|\.exe$\|\.ps1$\|\.sh$\|\.py$'
 SECBIGLIST=r'\.shstrtab\|\.init\|\.text\|\.fini\|.rodata\|\.ctors\|\.dtors\|\.data\|\.bss'
 MGCBINLIST=r'pid\|upx\|abcdefghijklmnopqrstuvw.*012345678\|\.x86\|\.x86_64\|\.arm\|\.arm5\|\.arm6\|\.arm7\|\.mips\|\.mipsel\|\.sh4\|\.ppc\|TeamSpeak'
 
@@ -123,7 +123,7 @@ def dir_info(args):
 def ext_info(args):
   if args.extensions:
     mk('POSSSIBLE EXTENSIONS')
-    gz(args, pk(args) + ' | grep -w "' + EXTBIGLIST + '"')
+    gz(args, pk(args) + ' | grep "' + EXTBIGLIST + '"')
     #gz(args, pk(args) + ' | grep -w "' + TXTBIGLIST + '"')
     #gz(args, pk(args) + ' | grep -E "[[:alnum:]]+"')
     print('')
