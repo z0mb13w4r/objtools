@@ -26,7 +26,7 @@ This suite of tools was inspired by a problem I encountered while comparing two 
 
 **strings-ng** is a script that is used to print the sequences of printable characters in files. To search for possible privilege escalation, lateral movement, binary execution and data exfiltration methods.
 
-**yara-rules-ng** is a bash script that was inspired by the REMnux yara-rules script. This script can be used to scan against a collection of open-source YARA rules, including Yara-Rules, Yara-Forge and my collection of YARA rules. [READ MORE...](https://github.com/z0mb13w4r/objtools/wiki/yara%E2%80%90rules%E2%80%90ng)
+**yara-rules-ng** is a bash script that was inspired by the REMnux yara-rules script. This script can be used to scan against a collection of open-source YARA rules, including Yara-Rules Project, Yara-Forge and my collection of YARA rules. [READ MORE...](https://github.com/z0mb13w4r/objtools/wiki/yara%E2%80%90rules%E2%80%90ng)
 
 ### Builds ###
 
