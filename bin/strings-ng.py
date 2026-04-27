@@ -147,7 +147,7 @@ def sec_info(args):
 def mgc_info(args):
   if args.magic:
     mk('POSSIBLE MAGIC STRINGS')
-    gz(args, pk(args) + ' | grep -wi "' + MGCBINLIST + '"')
+    gz(args, pk(args) + ' | grep -wi "' + MGCBINLIST + '" | grep -v "' + DIRBIGLIST + '"')
     print('')
 
 
