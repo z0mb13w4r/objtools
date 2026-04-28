@@ -1,6 +1,8 @@
+v1.5 - ??/04/2026
 -----------------------------------------------------------------------
-v1.5 -
 [+] Added verbose to the yara-rules-ng script.  
+[+] Enhanced corruption detection (readelf-ng).  
+[+] Enhanced the strings-ng.py script.  
 [+] Enhanced the build system.  
 [+] Updated man pages.  
 [+] Bug fixes.  
