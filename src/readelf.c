@@ -515,10 +515,10 @@ static int dump_programheaders1(const uint64_t e_shnum, const uint64_t e_phnum) 
   return n;
 }
 
-static int dump_programheaders2(const uint64_t e_phnum, const bool_t iscorrupt) {
+static int dump_programheaders2(const uint64_t e_phnum, const int errorcnt) {
   int n = 0;
-  if (iscorrupt) {
-    printf_e("There are only corrupted program headers in this file.");
+  if (errorcnt) {
+    printf_e("There are corrupted program headers in this file.");
   } else if (0 == e_phnum) {
     printf_w("There are no program headers in this file.");
   } else {
@@ -566,50 +566,43 @@ static int dump_programheaders32(const pbuffer_t p, const poptions_t o, Elf32_Eh
 
   n += dump_programheaders1(ehdr->e_shnum, ehdr->e_phnum);
 
-  bool_t iscorrupt = FALSE;
+  int errorcnt = 0;
   if (ehdr->e_shnum) {
     for (Elf32_Half i = 0; i < ehdr->e_phnum; ++i) {
-      printf_nice(i, USE_TAB | USE_DEC2Z);
-
       MEMSTACK(Elf32_Phdr, px);
       Elf32_Phdr *p0 = ecget_phdr32byindex(p, px, i);
       if (p0) {
+        bool_t isok = FALSE;
+        MEMSTACK(Elf32_Shdr, sx);
         for (Elf32_Half j = 1; j < ehdr->e_shnum; ++j) {
-          MEMSTACK(Elf32_Shdr, sx);
           Elf32_Shdr *s0 = ecget_shdr32byindex(p, sx, j);
-          if (NULL == s0) {
-            iscorrupt = TRUE;
-          }
+          if (s0) isok = TRUE;
+          else ++errorcnt;
         }
-      } else {
-        iscorrupt = TRUE;
-      }
-    }
 
-    if (!iscorrupt) {
-      for (Elf32_Half i = 0; i < ehdr->e_phnum; ++i) {
-        n += printf_nice(i, USE_TAB | USE_DEC2Z);
+        if (isok) {
+          n += printf_nice(i, USE_TAB | USE_DEC2Z);
 
-        MEMSTACK(Elf32_Phdr, px);
-        Elf32_Phdr *p0 = ecget_phdr32byindex(p, px, i);
-        if (p0) {
           for (Elf32_Half j = 1; j < ehdr->e_shnum; ++j) {
-            MEMSTACK(Elf32_Shdr, sx);
             Elf32_Shdr *s0 = ecget_shdr32byindex(p, sx, j);
             if (s0) {
               if (!isTBSS32(s0, p0) && isshdrinphdr32(s0, p0)) {
                 n += printf_text(ecget_secnamebyindex(p, j), USE_SPACE);
               }
+            } else {
+              ++errorcnt;
             }
           }
-        }
 
-        n += printf_eol();
+          n += printf_eol();
+        }
+      } else {
+        ++errorcnt;
       }
     }
   }
 
-  n += dump_programheaders2(ehdr->e_phnum, iscorrupt);
+  n += dump_programheaders2(ehdr->e_phnum, errorcnt);
 
   return n;
 }
@@ -628,48 +621,42 @@ static int dump_programheaders64(const pbuffer_t p, const poptions_t o, Elf64_Eh
 
   n = dump_programheaders1(ehdr->e_shnum, ehdr->e_phnum);
 
-  bool_t iscorrupt = FALSE;
+  int errorcnt = 0;
   if (ehdr->e_shnum) {
     for (Elf64_Half i = 0; i < ehdr->e_phnum; ++i) {
       MEMSTACK(Elf64_Phdr, px);
       Elf64_Phdr *p0 = ecget_phdr64byindex(p, px, i);
       if (p0) {
+        bool_t isok = FALSE;
+        MEMSTACK(Elf64_Shdr, sx);
         for (Elf64_Half j = 1; j < ehdr->e_shnum; ++j) {
-          MEMSTACK(Elf64_Shdr, sx);
           Elf64_Shdr *s0 = ecget_shdr64byindex(p, sx, j);
-          if (NULL == s0) {
-            iscorrupt = TRUE;
-          }
+          if (s0) isok = TRUE;
+          else ++errorcnt;
         }
-      } else {
-        iscorrupt = TRUE;
-      }
-    }
 
-    if (!iscorrupt) {
-      for (Elf64_Half i = 0; i < ehdr->e_phnum; ++i) {
-        n = printf_nice(i, USE_TAB | USE_DEC2Z);
-
-        MEMSTACK(Elf64_Phdr, px);
-        Elf64_Phdr *p0 = ecget_phdr64byindex(p, px, i);
-        if (p0) {
+        if (isok) {
+          n = printf_nice(i, USE_TAB | USE_DEC2Z);
           for (Elf64_Half j = 1; j < ehdr->e_shnum; ++j) {
-            MEMSTACK(Elf64_Shdr, sx);
             Elf64_Shdr *s0 = ecget_shdr64byindex(p, sx, j);
             if (s0) {
               if (!isTBSS64(s0, p0) && isshdrinphdr64(s0, p0)) {
                 n = printf_text(ecget_secnamebyindex(p, j), USE_SPACE);
               }
+            } else {
+              ++errorcnt;
             }
           }
-        }
 
-        n = printf_eol();
+          n = printf_eol();
+        }
+      } else {
+        ++errorcnt;
       }
     }
   }
 
-  n = dump_programheaders2(ehdr->e_phnum, iscorrupt);
+  n = dump_programheaders2(ehdr->e_phnum, errorcnt);
 
   return n;
 }
