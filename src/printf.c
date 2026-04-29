@@ -504,6 +504,17 @@ int printf_show(const uint64_t v, const imode_t mode) {
     } else {
       n += printf_nice(MODE_GET0(v), USE_CHARCTRL);
     }
+  } else if (USE_FHEX24 == modez || USE_LHEX24 == modez) {
+    if (MODE_GET2(v)) {
+      n += printf_nice(MODE_GET0(v), USE_CHARCTRL);
+      n += printf_nice(MODE_GET1(v), USE_CHARCTRL);
+      n += printf_nice(MODE_GET2(v), USE_CHARCTRL);
+    } else if (MODE_GET1(v)) {
+      n += printf_nice(MODE_GET0(v), USE_CHARCTRL);
+      n += printf_nice(MODE_GET1(v), USE_CHARCTRL);
+    } else {
+      n += printf_nice(MODE_GET0(v), USE_CHARCTRL);
+    }
   } else if (USE_FHEX32 == modez || USE_LHEX32 == modez) {
     if (MODE_GET3(v)) {
       n += printf_nice(MODE_GET0(v), USE_CHARCTRL);
