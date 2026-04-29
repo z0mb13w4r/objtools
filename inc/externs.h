@@ -99,6 +99,8 @@ extern convert_t ecREGISTERS_RISCV64[];
 extern convert_t peDEBUGTYPE[];
 extern convert_t peNTHDRTYPE[];
 extern convert_t peNTHDRTYPELITE[];
+extern convert_t peNTHDRMACHINE[];
+extern convert_t peNTHDRMACHINELITE[];
 extern convert_t peOPTHDRMAGIC[];
 extern convert_t peOPTHDRSUBSYSTEM[];
 extern convert_t peOPTHDRSUBSYSTEMLITE[];
