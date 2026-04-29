@@ -487,6 +487,47 @@ int printf_nice(const uint64_t v, const imode_t mode) {
   return n;
 }
 
+int printf_show(const uint64_t v, const imode_t mode) {
+  int n = 0;
+  const imode_t modex = mode & ~USE_FLAGMASK;
+  const imode_t modez = GET_STYLE(mode);
+
+  n += printf_nice(v, modex);
+
+  n += printf_nice('(', USE_CHAR | USE_SPACE);
+  if (USE_FHEX16 == modez || USE_LHEX16 == modez) {
+    if (MODE_GET1(v)) {
+      n += printf_nice(MODE_GET0(v), USE_CHARCTRL);
+      n += printf_nice(MODE_GET1(v), USE_CHARCTRL);
+    } else {
+      n += printf_nice(MODE_GET0(v), USE_CHARCTRL);
+    }
+  } else if (USE_FHEX32 == modez || USE_LHEX32 == modez) {
+    if (MODE_GET3(v)) {
+      n += printf_nice(MODE_GET0(v), USE_CHARCTRL);
+      n += printf_nice(MODE_GET1(v), USE_CHARCTRL);
+      n += printf_nice(MODE_GET2(v), USE_CHARCTRL);
+      n += printf_nice(MODE_GET3(v), USE_CHARCTRL);
+    } else if (MODE_GET2(v)) {
+      n += printf_nice(MODE_GET0(v), USE_CHARCTRL);
+      n += printf_nice(MODE_GET1(v), USE_CHARCTRL);
+      n += printf_nice(MODE_GET2(v), USE_CHARCTRL);
+    } else if (MODE_GET1(v)) {
+      n += printf_nice(MODE_GET0(v), USE_CHARCTRL);
+      n += printf_nice(MODE_GET1(v), USE_CHARCTRL);
+    } else {
+      n += printf_nice(MODE_GET0(v), USE_CHARCTRL);
+    }
+  }
+  n += printf_nice(')', USE_CHAR | USE_NOSPACE);
+
+  if (mode & USE_EOL) {
+    n += printf_eol();
+  }
+
+  return n;
+}
+
 int printf_real(const double v, const imode_t mode) {
   MALLOCA(char, o, BUFFER_MAXSIZE);
 

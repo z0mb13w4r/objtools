@@ -214,6 +214,7 @@ int printf_text(const char* p, const imode_t mode);
 
 int printf_neat(char* o, const size_t size, const uint64_t v, const imode_t mode);
 int printf_nice(const uint64_t v, const imode_t mode);
+int printf_show(const uint64_t v, const imode_t mode);
 
 int printf_tidy(char* o, const size_t size, const double v, const imode_t mode);
 int printf_real(const double v, const imode_t mode);
