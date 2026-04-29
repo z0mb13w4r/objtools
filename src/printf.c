@@ -495,7 +495,9 @@ int printf_show(const uint64_t v, const imode_t mode) {
   n += printf_nice(v, modex);
 
   n += printf_nice('(', USE_CHAR | USE_SPACE);
-  if (USE_FHEX16 == modez || USE_LHEX16 == modez) {
+  if (USE_FHEX8 == modez || USE_LHEX8 == modez) {
+    n += printf_nice(MODE_GET0(v), USE_CHARCTRL);
+  } else if (USE_FHEX16 == modez || USE_LHEX16 == modez) {
     if (MODE_GET1(v)) {
       n += printf_nice(MODE_GET0(v), USE_CHARCTRL);
       n += printf_nice(MODE_GET1(v), USE_CHARCTRL);
