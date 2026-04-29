@@ -141,11 +141,11 @@ static int dump_ntheader1(const pbuffer_t p, const poptions_t o, const uint16_t 
   n += printf_text("IMAGE FILE HEADER", USE_LT | USE_COLON | USE_EOL);
   n += printf_text("Machine", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(Machine, USE_FHEX16);
-//  if (MODE_ISANY(o->action, OPTPROGRAM_VERBOSE)) {
-    n += printf_pick(peNTHDRMACHINE, Machine, USE_EOL);
-//  } else {
-//    n += printf_pick(peNTHDRMACHINELITE, Machine, USE_EOL);
-//  }
+  if (MODE_ISANY(o->action, OPTPROGRAM_VERBOSE)) {
+    n += printf_pick(peNTHDRMACHINE, Machine, USE_SPACE | USE_EOL);
+  } else {
+    n += printf_pick(peNTHDRMACHINELITE, Machine, USE_SPACE | USE_EOL);
+  }
   n += printf_text("NumberOfSections", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(NumberOfSections, USE_FHEX16 | USE_EOL);
   n += printf_text("TimeDateStamp", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
