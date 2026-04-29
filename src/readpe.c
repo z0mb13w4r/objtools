@@ -22,7 +22,7 @@ static int dump_dosheaderNN(const pbuffer_t p, const poptions_t o) {
 
     n += printf_text("IMAGE DOS HEADER", USE_LT | USE_COLON | USE_EOL);
     n += printf_text("e_magic", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-    n += printf_nice(dos->e_magic, USE_FHEX16 | USE_EOL);
+    n += printf_show(dos->e_magic, USE_FHEX16 | USE_EOL);
     if (MODE_ISANY(o->action, OPTPROGRAM_VERBOSE)) {
       n += printf_text("e_cblp", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
       n += printf_nice(dos->e_cblp, USE_FHEX16 | USE_EOL);
@@ -128,7 +128,7 @@ static int dump_ntheader0(const pbuffer_t p, const uint32_t Signature) {
   int n = 0;
   n += printf_text("IMAGE NT HEADER", USE_LT | USE_COLON | USE_EOL);
   n += printf_text("Signature", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  n += printf_nice(Signature, USE_FHEX32 | USE_EOL);
+  n += printf_show(Signature, USE_FHEX32 | USE_EOL);
   n += printf_eol();
 
   return n;
