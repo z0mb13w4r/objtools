@@ -341,11 +341,19 @@ static int dump_sectionheaders1(const pbuffer_t p, const poptions_t o, const uin
         n0 += printf_text("Misc.PhysicalAddress", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
         n0 += printf_nice(p0->Misc.PhysicalAddress, USE_FHEX32 | USE_EOL);
         n0 += printf_text("Misc.VirtualSize", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-        n0 += printf_nice(p0->Misc.VirtualSize, USE_FHEX32 | USE_EOL);
+        n0 += printf_nice(p0->Misc.VirtualSize, USE_BYTES);
+        if (MODE_ISANY(o->action, OPTPROGRAM_VERBOSE)) {
+          n0 += printf_nice(p0->Misc.VirtualSize, USE_FHEX32);
+        }
+        n0 += printf_eol();
         n0 += printf_text("VirtualAddress", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
         n0 += printf_nice(p0->VirtualAddress, USE_FHEX32 | USE_EOL);
         n0 += printf_text("SizeOfRawData", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-        n0 += printf_nice(p0->SizeOfRawData, USE_FHEX32 | USE_EOL);
+        n0 += printf_nice(p0->SizeOfRawData, USE_BYTES);
+        if (MODE_ISANY(o->action, OPTPROGRAM_VERBOSE)) {
+          n0 += printf_nice(p0->SizeOfRawData, USE_FHEX32);
+        }
+        n0 += printf_eol();
         n0 += printf_text("PointerToRawData", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
         n0 += printf_nice(p0->PointerToRawData, USE_FHEX32 | USE_EOL);
         n0 += printf_text("PointerToRelocations", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
