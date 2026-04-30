@@ -224,6 +224,18 @@ static int dump_ntheader2(const pbuffer_t p, const poptions_t o, const uint16_t 
     n += printf_nice(MinorSubsystemVersion, USE_DEC | USE_DOT | USE_EOL);
     n += printf_text("Win32VersionValue", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     n += printf_nice(Win32VersionValue, USE_FHEX32 | USE_EOL);
+    if (MODE_ISANY(o->action, OPTPROGRAM_VERBOSE)) {
+      if (0 == Win32VersionValue) {
+        n += printf_text("Overwrite OS major version", USE_LT | USE_TAB2 | USE_COLON | SET_PAD(MAXSIZE));
+        n += printf_text("default", USE_LT | USE_SPACE | USE_RB | USE_EOL);
+        n += printf_text("Overwrite OS minor version", USE_LT | USE_TAB2 | USE_COLON | SET_PAD(MAXSIZE));
+        n += printf_text("default", USE_LT | USE_SPACE | USE_RB | USE_EOL);
+        n += printf_text("Overwrite OS build number", USE_LT | USE_TAB2 | USE_COLON | SET_PAD(MAXSIZE));
+        n += printf_text("default", USE_LT | USE_SPACE | USE_RB | USE_EOL);
+        n += printf_text("Overwrite OS platform id", USE_LT | USE_TAB2 | USE_COLON | SET_PAD(MAXSIZE));
+        n += printf_text("default", USE_LT | USE_SPACE | USE_RB | USE_EOL);
+      }
+    }
     n += printf_text("SizeOfImage", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     n += printf_nice(SizeOfImage, USE_FHEX32 | USE_EOL);
     n += printf_text("SizeOfHeaders", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
