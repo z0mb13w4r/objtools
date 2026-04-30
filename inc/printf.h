@@ -110,6 +110,7 @@
 #define SET_POS1(x)       SET_XX4(x, 20)
 #define GET_COLOR(x)      GET_XX4(x, 24)
 #define SET_COLOR(x)      SET_XX4(x, 24)
+#define GET_FLAG(x)       GET_XX6(x, 28)
 #define SET_FLAG(x)       SET_XX6(x, 28)
 
 #define USE_NONE          (0)

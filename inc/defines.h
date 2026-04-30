@@ -179,7 +179,7 @@
 #define SET_XX3(x,y)            (MODE_MASK3(x) << (y))
 #define GET_XX4(x,y)            ((x) & (0x0f << (y)))
 #define SET_XX4(x,y)            (MODE_MASK4(x) << (y))
-#define GET_XX6(x,y)            ((x) & (0x3f << (y)))
+#define GET_XX6(x,y)            ((x) & (0x3fULL << (y)))
 #define SET_XX6(x,y)            (MODE_MASK6(x) << (y))
 #define GET_XX8(x,y)            ((x) & (0xff << (y)))
 #define SET_XX8(x,y)            (MODE_MASK8(x) << (y))
