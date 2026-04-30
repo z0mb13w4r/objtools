@@ -33,9 +33,9 @@ static const char *zPEDESCRIPTION[] = {
 static const args_t zREADPEARGS[] = {
   {'h', "--help",            OPTPROGRAM_HELP,              NULL},
   {'v', "--version",         OPTPROGRAM_VERSION,           NULL},
-  {'y', "--verbose",         OPTPROGRAM_VERBOSE,           NULL},
+  {'V', "--verbose",         OPTPROGRAM_VERBOSE,           NULL},
   {'S', "--section-headers", OPTREADPE_SECTIONHEADERS,     zPESECTIONHDRS},
-  {'V', "--version-info",    OPTREADPE_VERSION,            zPEVERSIONINFO},
+  {'F', "--version-info",    OPTREADPE_VERSION,            zPEVERSIONINFO},
   {'a', "--all",             OPTREADPE_ALL,                NULL},
   {'l', "--lite",            OPTREADPE_LITE,               NULL},
   {'H', "--headers",         OPTREADPE_HEADERS,            zPEHDRS},
