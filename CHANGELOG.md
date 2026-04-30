@@ -4,6 +4,7 @@ v1.5 - ??/04/2026
 [+] Enhanced corruption detection (readelf-ng).  
 [+] Enhanced the strings-ng.py script.  
 [+] Enhanced the build system.  
+[+] Updated Capstone Engine.  
 [+] Updated man pages.  
 [+] Bug fixes.  
 
