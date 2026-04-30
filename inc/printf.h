@@ -60,6 +60,7 @@
 #define USE_CORRUPT       (54)
 #define USE_UNKNOWN       (55)
 #define USE_WARNING       (56)
+#define USE_OPTIONMASK    SET_OPTION(255)
 
 #define USE_REALp1        (0)
 #define USE_REALp2        (1)
@@ -99,7 +100,8 @@
 
 #define GET_PAD(x)        GET_XX8(x, 0)
 #define SET_PAD(x)        SET_XX8(x, 0)
-#define GET_STYLE(x)      GET_XX8(x, 0)
+#define GET_OPTION(x)     GET_XX8(x, 0)
+#define SET_OPTION(x)     SET_XX8(x, 0)
 #define GET_FORMAT(x)     GET_XX2(x, 8)
 #define SET_FORMAT(x)     SET_XX2(x, 8)
 #define GET_BRACKET(x)    GET_XX6(x, 10)
