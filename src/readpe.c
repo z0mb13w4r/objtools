@@ -3,10 +3,10 @@
 #include "opcode.h"
 #include "pecode.h"
 #include "pefunc.h"
-#include "printf.h"
 #include "readpe.h"
 #include "memfind.h"
 #include "signatures.h"
+#include "printf-custom.h"
 
 #include "static/lang.ci"
 //#include "static/sig-userdb.ci"
@@ -140,12 +140,7 @@ static int dump_ntheader1(const pbuffer_t p, const poptions_t o, const uint16_t 
   int n = 0;
   n += printf_text("IMAGE FILE HEADER", USE_LT | USE_COLON | USE_EOL);
   n += printf_text("Machine", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-  n += printf_nice(Machine, USE_FHEX16);
-  if (MODE_ISANY(o->action, OPTPROGRAM_VERBOSE)) {
-    n += printf_pick(peNTHDRMACHINE, Machine, USE_SPACE | USE_EOL);
-  } else {
-    n += printf_pick(peNTHDRMACHINELITE, Machine, USE_SPACE | USE_EOL);
-  }
+  n += printf_fork(o, peNTHDRMACHINE, peNTHDRMACHINELITE, Machine, USE_FHEX16 | USE_EOL);
   n += printf_text("NumberOfSections", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_nice(NumberOfSections, USE_FHEX16 | USE_EOL);
   n += printf_text("TimeDateStamp", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
@@ -236,12 +231,7 @@ static int dump_ntheader2(const pbuffer_t p, const poptions_t o, const uint16_t 
     n += printf_text("CheckSum", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     n += printf_nice(CheckSum, USE_FHEX32 | USE_EOL);
     n += printf_text("Subsystem", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-    n += printf_nice(Subsystem, USE_FHEX16);
-    if (MODE_ISANY(o->action, OPTPROGRAM_VERBOSE)) {
-      n += printf_pick(peOPTHDRSUBSYSTEM, Subsystem, USE_LT | USE_SPACE | USE_EOL);
-    } else {
-      n += printf_pick(peOPTHDRSUBSYSTEMLITE, Subsystem, USE_LT | USE_SPACE | USE_EOL);
-    }
+    n += printf_fork(o, peOPTHDRSUBSYSTEM, peOPTHDRSUBSYSTEMLITE, Subsystem, USE_FHEX16 | USE_EOL);
     n += printf_text("DllCharacteristics", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     n += printf_nice(DllCharacteristics, USE_FHEX16);
     if (MODE_ISANY(o->action, OPTPROGRAM_VERBOSE)) {
