@@ -194,6 +194,9 @@ if __name__ == '__main__':
   if g.version:
     ver_info(g)
 
+  elif not g.name:
+    p.print_help()
+
   elif g.all:
     all_info(g)
 
