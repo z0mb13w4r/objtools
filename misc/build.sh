@@ -37,7 +37,7 @@ $RMBIN -v $EXTERNBIN/convert-ng
 $RMBIN -v $EXTERNBIN/detect-ng
 $RMBIN -v $EXTERNBIN/objcopy-ng
 $RMBIN -v $EXTERNBIN/objdump-ng
-$RMBIN -v $EXTERNBIN/objdwarf-ng
+$RMBIN -v $EXTERNBIN/objdwarf-ng$SUDOBIN 
 $RMBIN -v $EXTERNBIN/objhash-ng
 $RMBIN -v $EXTERNBIN/readelf-ng
 $RMBIN -v $EXTERNBIN/readpe-ng
@@ -56,50 +56,50 @@ $MAKEBIN -f objhash-ng.mk all
 $MAKEBIN -f readelf-ng.mk all
 $MAKEBIN -f objdwarf-ng.mk all
 
-$MKDIRBIN -v -p $NAME
-$MKDIRBIN -v -p $USRBIN
-$MKDIRBIN -v -p $USRMAN
-$MKDIRBIN -v -p $USROBJ
-$MKDIRBIN -v -p $LOCALBIN
-$MKDIRBIN -v -p $DEBIANBIN
+$SUDOBIN $MKDIRBIN -v -p $NAME
+$SUDOBIN $MKDIRBIN -v -p $USRBIN
+$SUDOBIN $MKDIRBIN -v -p $USRMAN
+$SUDOBIN $MKDIRBIN -v -p $USROBJ
+$SUDOBIN $MKDIRBIN -v -p $LOCALBIN
+$SUDOBIN $MKDIRBIN -v -p $DEBIANBIN
 
-$COPYBIN -v $EXTERNBIN/detect-ng $USRBIN/
-$COPYBIN -v $EXTERNBIN/readpe-ng $USRBIN/
-$COPYBIN -v $EXTERNBIN/convert-ng $USRBIN/
-#$COPYBIN -v $EXTERNBIN/objcopy-ng $USRBIN/
-$COPYBIN -v $EXTERNBIN/objdump-ng $USRBIN/
-$COPYBIN -v $EXTERNBIN/objhash-ng $USRBIN/
-$COPYBIN -v $EXTERNBIN/readelf-ng $USRBIN/
-$COPYBIN -v $EXTERNBIN/objdwarf-ng $USRBIN/
-$COPYBIN -v $EXTERNBIN/strings-ng.py $LOCALBIN/
-$COPYBIN -v $EXTERNBIN/enumerate-ng.py $LOCALBIN/
-$COPYBIN -v $EXTERNBIN/yara-rules-ng $LOCALBIN/
+$SUDOBIN $COPYBIN -v $EXTERNBIN/detect-ng $USRBIN/
+$SUDOBIN $COPYBIN -v $EXTERNBIN/readpe-ng $USRBIN/
+$SUDOBIN $COPYBIN -v $EXTERNBIN/convert-ng $USRBIN/
+#$SUDOBIN $COPYBIN -v $EXTERNBIN/objcopy-ng $USRBIN/
+$SUDOBIN $COPYBIN -v $EXTERNBIN/objdump-ng $USRBIN/
+$SUDOBIN $COPYBIN -v $EXTERNBIN/objhash-ng $USRBIN/
+$SUDOBIN $COPYBIN -v $EXTERNBIN/readelf-ng $USRBIN/
+$SUDOBIN $COPYBIN -v $EXTERNBIN/objdwarf-ng $USRBIN/
+$SUDOBIN $COPYBIN -v $EXTERNBIN/strings-ng.py $LOCALBIN/
+$SUDOBIN $COPYBIN -v $EXTERNBIN/enumerate-ng.py $LOCALBIN/
+$SUDOBIN $COPYBIN -v $EXTERNBIN/yara-rules-ng $LOCALBIN/
 
-$COPYBIN -v $EXTERNMAN/detect-ng.1 $USRMAN/
-$COPYBIN -v $EXTERNMAN/readpe-ng.1 $USRMAN/
-$COPYBIN -v $EXTERNMAN/convert-ng.1 $USRMAN/
-$COPYBIN -v $EXTERNMAN/objdump-ng.1 $USRMAN/
-$COPYBIN -v $EXTERNMAN/objhash-ng.1 $USRMAN/
-$COPYBIN -v $EXTERNMAN/readelf-ng.1 $USRMAN/
-$COPYBIN -v $EXTERNMAN/objdwarf-ng.1 $USRMAN/
+$SUDOBIN $COPYBIN -v $EXTERNMAN/detect-ng.1 $USRMAN/
+$SUDOBIN $COPYBIN -v $EXTERNMAN/readpe-ng.1 $USRMAN/
+$SUDOBIN $COPYBIN -v $EXTERNMAN/convert-ng.1 $USRMAN/
+$SUDOBIN $COPYBIN -v $EXTERNMAN/objdump-ng.1 $USRMAN/
+$SUDOBIN $COPYBIN -v $EXTERNMAN/objhash-ng.1 $USRMAN/
+$SUDOBIN $COPYBIN -v $EXTERNMAN/readelf-ng.1 $USRMAN/
+$SUDOBIN $COPYBIN -v $EXTERNMAN/objdwarf-ng.1 $USRMAN/
 
-$COPYBIN -v $EXTERNBIN/control $DEBIANBIN/
-$COPYBIN -v $EXTERNBIN/userdb.sig $USROBJ/
+$SUDOBIN $COPYBIN -v $EXTERNBIN/control $DEBIANBIN/
+$SUDOBIN $COPYBIN -v $EXTERNBIN/userdb.sig $USROBJ/
 
-$GZIPBIN -v $USRMAN/detect-ng.1
-$GZIPBIN -v $USRMAN/readpe-ng.1
-$GZIPBIN -v $USRMAN/convert-ng.1
-$GZIPBIN -v $USRMAN/objdump-ng.1
-$GZIPBIN -v $USRMAN/objhash-ng.1
-$GZIPBIN -v $USRMAN/readelf-ng.1
-$GZIPBIN -v $USRMAN/objdwarf-ng.1
+$SUDOBIN $GZIPBIN -v $USRMAN/detect-ng.1
+$SUDOBIN $GZIPBIN -v $USRMAN/readpe-ng.1
+$SUDOBIN $GZIPBIN -v $USRMAN/convert-ng.1
+$SUDOBIN $GZIPBIN -v $USRMAN/objdump-ng.1
+$SUDOBIN $GZIPBIN -v $USRMAN/objhash-ng.1
+$SUDOBIN $GZIPBIN -v $USRMAN/readelf-ng.1
+$SUDOBIN $GZIPBIN -v $USRMAN/objdwarf-ng.1
 
-$SUDOBIN $CHOWNBIN root:root $USRBIN/*
-$SUDOBIN $CHOWNBIN root:root $USRMAN/*
-$SUDOBIN $CHOWNBIN root:root $USROBJ/*
-$SUDOBIN $CHOWNBIN root:root $LOCALBIN/*
+#$SUDOBIN $CHOWNBIN root:root $USRBIN/*
+#$SUDOBIN $CHOWNBIN root:root $USRMAN/*
+#$SUDOBIN $CHOWNBIN root:root $USROBJ/*
+#$SUDOBIN $CHOWNBIN root:root $LOCALBIN/*
 
-$FINDBIN $NAME/usr/ -type f -exec $MD5SUMBIN '{}' \; | $SEDBIN "s/$NAME\///" > $DEBIANBIN/md5sums
+$SUDOBIN $FINDBIN $NAME/usr/ -type f -exec $MD5SUMBIN '{}' \; | $SEDBIN "s/$NAME\///" > $DEBIANBIN/md5sums
 
 $DPKGDEBBIN --build $NAME
 
