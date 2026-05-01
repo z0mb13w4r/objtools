@@ -4,6 +4,7 @@ RMBIN=/usr/bin/rm
 TRBIN=/usr/bin/tr
 CUTBIN=/usr/bin/cut
 SEDBIN=/usr/bin/sed
+TEEBIN=/usr/bin/tee
 COPYBIN=/usr/bin/cp
 FINDBIN=/usr/bin/find
 GREPBIN=/usr/bin/grep
@@ -37,7 +38,7 @@ $RMBIN -v $EXTERNBIN/convert-ng
 $RMBIN -v $EXTERNBIN/detect-ng
 $RMBIN -v $EXTERNBIN/objcopy-ng
 $RMBIN -v $EXTERNBIN/objdump-ng
-$RMBIN -v $EXTERNBIN/objdwarf-ng$SUDOBIN 
+$RMBIN -v $EXTERNBIN/objdwarf-ng
 $RMBIN -v $EXTERNBIN/objhash-ng
 $RMBIN -v $EXTERNBIN/readelf-ng
 $RMBIN -v $EXTERNBIN/readpe-ng
@@ -99,7 +100,7 @@ $SUDOBIN $GZIPBIN -v $USRMAN/objdwarf-ng.1
 #$SUDOBIN $CHOWNBIN root:root $USROBJ/*
 #$SUDOBIN $CHOWNBIN root:root $LOCALBIN/*
 
-$SUDOBIN $FINDBIN $NAME/usr/ -type f -exec $MD5SUMBIN '{}' \; | $SEDBIN "s/$NAME\///" > $DEBIANBIN/md5sums
+$SUDOBIN $FINDBIN $NAME/usr/ -type f -exec $MD5SUMBIN '{}' \; | $SUDOBIN $SEDBIN "s/$NAME\///" | $SUDOBIN $TEEBIN $DEBIANBIN/md5sums
 
 $DPKGDEBBIN --build $NAME
 
