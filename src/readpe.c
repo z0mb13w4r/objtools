@@ -12,6 +12,7 @@
 //#include "static/sig-userdb.ci"
 
 static const int MAXSIZE = 36;
+static const int MAXSIZE1 = 44;
 
 static int dump_dosheaderNN(const pbuffer_t p, const poptions_t o) {
   int n = 0;
@@ -1037,45 +1038,45 @@ static int dump_config0(const pbuffer_t p, const uint32_t Size, const uint32_t T
 
     printf_text("IMAGE LOAD CONFIG DIRECTORY", USE_LT | USE_COLON | USE_EOL);
 
-    n += printf_text("Size", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("Size", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE1));
     n += printf_nice(Size, USE_DEC | USE_EOL);
-    n += printf_text("TimeDateStamp", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("TimeDateStamp", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE1));
     n += printf_nice(TimeDateStamp, USE_FHEX32);
     n += printf_nice(TimeDateStamp, USE_TIMEDATE | USE_SB | USE_EOL);
-    n += printf_text("Version", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("Version", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE1));
     n += printf_nice(MajorVersion, USE_DEC);
     n += printf_nice(MinorVersion, USE_DEC | USE_DOT | USE_EOL);
-    n += printf_text("GlobalFlagsClear", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("GlobalFlagsClear", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE1));
     n += printf_nice(GlobalFlagsClear, USE_FHEX32 | USE_EOL);
-    n += printf_text("GlobalFlagsSet", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("GlobalFlagsSet", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE1));
     n += printf_nice(GlobalFlagsSet, USE_FHEX32 | USE_EOL);
-    n += printf_text("CriticalSectionDefaultTimeout", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("CriticalSectionDefaultTimeout", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE1));
     n += printf_nice(CriticalSectionDefaultTimeout, USE_FHEX32 | USE_EOL);
-    n += printf_text("DeCommitFreeBlockThreshold", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("DeCommitFreeBlockThreshold", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE1));
     n += printf_nice(DeCommitFreeBlockThreshold, USE_FHEXNN | USE_EOL);
-    n += printf_text("DeCommitTotalFreeThreshold", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("DeCommitTotalFreeThreshold", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE1));
     n += printf_nice(DeCommitTotalFreeThreshold, USE_FHEXNN | USE_EOL);
-    n += printf_text("LockPrefixTable", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("LockPrefixTable", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE1));
     n += printf_nice(LockPrefixTable, USE_FHEXNN | USE_EOL);
-    n += printf_text("MaximumAllocationSize", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("MaximumAllocationSize", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE1));
     n += printf_nice(MaximumAllocationSize, USE_FHEXNN | USE_EOL);
-    n += printf_text("VirtualMemoryThreshold", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("VirtualMemoryThreshold", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE1));
     n += printf_nice(VirtualMemoryThreshold, USE_FHEXNN | USE_EOL);
-    n += printf_text("ProcessAffinityMask", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("ProcessAffinityMask", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE1));
     n += printf_nice(ProcessAffinityMask, USE_FHEXNN | USE_EOL);
-    n += printf_text("ProcessHeapFlags", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("ProcessHeapFlags", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE1));
     n += printf_nice(ProcessHeapFlags, USE_FHEX32 | USE_EOL);
-    n += printf_text("CSDVersion", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("CSDVersion", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE1));
     n += printf_nice(CSDVersion, USE_FHEX16 | USE_EOL);
-    n += printf_text("Reserved1", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("Reserved1", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE1));
     n += printf_nice(Reserved1, USE_FHEX16 | USE_EOL);
-    n += printf_text("EditList", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("EditList", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE1));
     n += printf_nice(EditList, USE_FHEXNN | USE_EOL);
-    n += printf_text("SecurityCookie", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("SecurityCookie", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE1));
     n += printf_nice(SecurityCookie, USE_FHEXNN | USE_EOL);
-    n += printf_text("SEHandlerTable", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("SEHandlerTable", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE1));
     n += printf_nice(SEHandlerTable, USE_FHEXNN | USE_EOL);
-    n += printf_text("SEHandlerCount", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("SEHandlerCount", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE1));
     n += printf_nice(SEHandlerCount, USE_FHEXNN | USE_EOL);
     n += printf_eol();
   }
@@ -1089,16 +1090,17 @@ static int dump_config1(const pbuffer_t p, const uint64_t GuardCFCheckFunctionPo
   if (issafe(p)) {
     const imode_t USE_FHEXNN = isPE64(p) ? USE_FHEX64 : USE_FHEX32;
 
-    n += printf_text("GuardCFCheckFunctionPointer", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("GuardCFCheckFunctionPointer", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE1));
     n += printf_nice(GuardCFCheckFunctionPointer, USE_FHEXNN | USE_EOL);
-    n += printf_text("GuardCFDispatchFunctionPointer", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("GuardCFDispatchFunctionPointer", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE1));
     n += printf_nice(GuardCFDispatchFunctionPointer, USE_FHEXNN | USE_EOL);
-    n += printf_text("GuardCFFunctionTable", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("GuardCFFunctionTable", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE1));
     n += printf_nice(GuardCFFunctionTable, USE_FHEXNN | USE_EOL);
-    n += printf_text("GuardCFFunctionCount", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("GuardCFFunctionCount", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE1));
     n += printf_nice(GuardCFFunctionCount, USE_FHEXNN | USE_EOL);
-    n += printf_text("GuardFlags", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("GuardFlags", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE1));
     n += printf_nice(GuardFlags, USE_FHEX32 | USE_EOL);
+    n += printf_eol();
   }
 
   return n;
@@ -1113,26 +1115,27 @@ static int dump_config2(const pbuffer_t p, const uint16_t CodeIntegrityFlags, co
   if (issafe(p)) {
     const imode_t USE_FHEXNN = isPE64(p) ? USE_FHEX64 : USE_FHEX32;
 
-    n += printf_text("CodeIntegrityFlags", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("CodeIntegrityFlags", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE1));
     n += printf_nice(CodeIntegrityFlags, USE_FHEX16 | USE_EOL);
-    n += printf_text("CodeIntegrityCatalog", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("CodeIntegrityCatalog", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE1));
     n += printf_nice(CodeIntegrityCatalog, USE_FHEX16 | USE_EOL);
-    n += printf_text("CodeIntegrityCatalogOffset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("CodeIntegrityCatalogOffset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE1));
     n += printf_nice(CodeIntegrityCatalogOffset, USE_FHEX32 | USE_EOL);
-    n += printf_text("CodeIntegrityReserved", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("CodeIntegrityReserved", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE1));
     n += printf_nice(CodeIntegrityReserved, USE_FHEX32 | USE_EOL);
-    n += printf_text("GuardAddressTakenIatEntryTable", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("GuardAddressTakenIatEntryTable", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE1));
     n += printf_nice(GuardAddressTakenIatEntryTable, USE_FHEXNN | USE_EOL);
-    n += printf_text("GuardAddressTakenIatEntryCount", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("GuardAddressTakenIatEntryCount", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE1));
     n += printf_nice(GuardAddressTakenIatEntryCount, USE_FHEXNN | USE_EOL);
-    n += printf_text("GuardLongJumpTargetTable", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("GuardLongJumpTargetTable", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE1));
     n += printf_nice(GuardLongJumpTargetTable, USE_FHEXNN | USE_EOL);
-    n += printf_text("GuardLongJumpTargetCount", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("GuardLongJumpTargetCount", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE1));
     n += printf_nice(GuardLongJumpTargetCount, USE_FHEXNN | USE_EOL);
-    n += printf_text("DynamicValueRelocTable", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("DynamicValueRelocTable", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE1));
     n += printf_nice(DynamicValueRelocTable, USE_FHEXNN | USE_EOL);
-    n += printf_text("CHPEMetadataPointer", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("CHPEMetadataPointer", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE1));
     n += printf_nice(CHPEMetadataPointer, USE_FHEXNN | USE_EOL);
+    n += printf_eol();
   }
 
   return n;
@@ -1145,20 +1148,21 @@ static int dump_config3(const pbuffer_t p, const uint64_t GuardRFFailureRoutine,
   if (issafe(p)) {
     const imode_t USE_FHEXNN = isPE64(p) ? USE_FHEX64 : USE_FHEX32;
 
-    n += printf_text("GuardRFFailureRoutine", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("GuardRFFailureRoutine", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE1));
     n += printf_nice(GuardRFFailureRoutine, USE_FHEXNN | USE_EOL);
-    n += printf_text("GuardRFFailureRoutineFunctionPointer", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("GuardRFFailureRoutineFunctionPointer", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE1));
     n += printf_nice(GuardRFFailureRoutineFunctionPointer, USE_FHEXNN | USE_EOL);
-    n += printf_text("DynamicValueRelocTableOffset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("DynamicValueRelocTableOffset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE1));
     n += printf_nice(DynamicValueRelocTableOffset, USE_FHEX32 | USE_EOL);
-    n += printf_text("DynamicValueRelocTableSection", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("DynamicValueRelocTableSection", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE1));
     n += printf_nice(DynamicValueRelocTableSection, USE_FHEX16 | USE_EOL);
-    n += printf_text("Reserved2", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("Reserved2", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE1));
     n += printf_nice(Reserved2, USE_FHEX16 | USE_EOL);
-    n += printf_text("GuardRFVerifyStackPointerFunctionPointer", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("GuardRFVerifyStackPointerFunctionPointer", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE1));
     n += printf_nice(GuardRFVerifyStackPointerFunctionPointer, USE_FHEXNN | USE_EOL);
-    n += printf_text("HotPatchTableOffset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("HotPatchTableOffset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE1));
     n += printf_nice(HotPatchTableOffset, USE_FHEX32 | USE_EOL);
+    n += printf_eol();
   }
 
   return n;
@@ -1173,26 +1177,27 @@ static int dump_config4(const pbuffer_t p, const uint32_t Reserved3, const uint6
   if (issafe(p)) {
     const imode_t USE_FHEXNN = isPE64(p) ? USE_FHEX64 : USE_FHEX32;
 
-    n += printf_text("Reserved3", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("Reserved3", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE1));
     n += printf_nice(Reserved3, USE_FHEX32 | USE_EOL);
-    n += printf_text("EnclaveConfigurationPointer", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("EnclaveConfigurationPointer", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE1));
     n += printf_nice(EnclaveConfigurationPointer, USE_FHEXNN | USE_EOL);
-    n += printf_text("VolatileMetadataPointer", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("VolatileMetadataPointer", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE1));
     n += printf_nice(VolatileMetadataPointer, USE_FHEXNN | USE_EOL);
-    n += printf_text("GuardEHContinuationTable", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("GuardEHContinuationTable", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE1));
     n += printf_nice(GuardEHContinuationTable, USE_FHEXNN | USE_EOL);
-    n += printf_text("GuardEHContinuationCount", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("GuardEHContinuationCount", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE1));
     n += printf_nice(GuardEHContinuationCount, USE_FHEXNN | USE_EOL);
-    n += printf_text("GuardXFGCheckFunctionPointer", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("GuardXFGCheckFunctionPointer", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE1));
     n += printf_nice(GuardXFGCheckFunctionPointer, USE_FHEXNN | USE_EOL);
-    n += printf_text("GuardXFGDispatchFunctionPointer", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("GuardXFGDispatchFunctionPointer", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE1));
     n += printf_nice(GuardXFGDispatchFunctionPointer, USE_FHEXNN | USE_EOL);
-    n += printf_text("GuardXFGTableDispatchFunctionPointer", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("GuardXFGTableDispatchFunctionPointer", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE1));
     n += printf_nice(GuardXFGTableDispatchFunctionPointer, USE_FHEXNN | USE_EOL);
-    n += printf_text("CastGuardOsDeterminedFailureMode", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("CastGuardOsDeterminedFailureMode", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE1));
     n += printf_nice(CastGuardOsDeterminedFailureMode, USE_FHEXNN | USE_EOL);
-    n += printf_text("GuardMemcpyFunctionPointer", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("GuardMemcpyFunctionPointer", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE1));
     n += printf_nice(GuardMemcpyFunctionPointer, USE_FHEXNN | USE_EOL);
+    n += printf_eol();
   }
 
   return n;
@@ -1226,9 +1231,6 @@ static int dump_config32(const pbuffer_t p, const poptions_t o) {
                  p0->GuardEHContinuationTable, p0->GuardEHContinuationCount, p0->GuardXFGCheckFunctionPointer,
                  p0->GuardXFGDispatchFunctionPointer, p0->GuardXFGTableDispatchFunctionPointer,
                  p0->CastGuardOsDeterminedFailureMode, p0->GuardMemcpyFunctionPointer);
-  }
-  if (p0) {
-    n += printf_eol();
   }
 
   return n;
