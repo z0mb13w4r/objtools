@@ -319,10 +319,15 @@ static int dump_sectionheaders0(const pbuffer_t p, const poptions_t o) {
   int n = 0;
   if (MODE_ISNOT(o->action, OPTPROGRAM_VERBOSE)) {
     n += printf_text("IMAGE SECTION HEADER", USE_LT | USE_COLON | USE_EOL);
-    n += printf_text("Name", USE_LT | USE_TAB | SET_PAD(9));
+    n += printf_text("Name", USE_LT | USE_TAB | SET_PAD(10));
     n += printf_text("VAddr", USE_LT | USE_SPACE | SET_PAD(11));
+    n += printf_text("VSize", USE_LT | USE_SPACE | SET_PAD(11));
     n += printf_text("Size", USE_LT | USE_SPACE | SET_PAD(11));
-    n += printf_text("SHA-256", USE_LT | USE_SPACE);
+    n += printf_text("Ptr2Data", USE_LT | USE_SPACE | SET_PAD(11));
+    n += printf_text("Attributes", USE_LT | USE_SPACE | SET_PAD(11));
+    if (MODE_ISANY(o->action, OPTPROGRAM_HASH)) {
+      n += printf_text("SHA-256", USE_LT | USE_SPACE);
+    }
     n += printf_eol();
   }
 
@@ -371,12 +376,14 @@ static int dump_sectionheaders1(const pbuffer_t p, const poptions_t o, const uin
         }
       } else {
         n1  = printf_sore(p0->Name, sizeof(p0->Name), USE_STR | USE_TAB);
-        n0 += printf_pack(sizeof(p0->Name) - n1 + 1) + n1;
+        n0 += printf_pack(sizeof(p0->Name) - n1 + 2) + n1;
         n0 += printf_nice(p0->VirtualAddress, USE_FHEX32);
+        n0 += printf_nice(p0->Misc.VirtualSize, USE_FHEX32);
         n0 += printf_nice(p0->SizeOfRawData, USE_FHEX32);
+        n0 += printf_nice(p0->PointerToRawData, USE_FHEX32);
         n0 += printf_nice(p0->Characteristics, USE_FHEX32);
         if (MODE_ISANY(o->action, OPTPROGRAM_HASH)) {
-          n0 += printf_sore(peget_chunkbyindex(p, i), p0->SizeOfRawData, USE_SHA256 | USE_NOTEXT);
+          n0 += printf_sore(peget_chunkbyindex(p, i), p0->SizeOfRawData, USE_SHA256 | USE_NOTEXT | USE_SPACE);
         }
       }
 
