@@ -1341,18 +1341,34 @@ static int dump_relocNN(const pbuffer_t p, const poptions_t o) {
     p1 = peget_chunkbyentry(p, IMAGE_DIRECTORY_ENTRY_BASERELOC);
   }
 
-  if (p0 && p1) {
+  if (p0 && p1 && p0->SizeOfRawData) {
+    if (MODE_ISNOT(o->action, OPTPROGRAM_VERBOSE)) {
+      n += printf_text("IMAGE BASE RELOCATION", USE_LT | USE_COLON | USE_EOL);
+      n += printf_text("VADDR", USE_LT | USE_TAB | SET_PAD(12));
+      n += printf_text("SIZEBLK", USE_LT | USE_SPACE);
+      n += printf_eol();
+    }
+
     for (DWORD x = 0; x < p0->SizeOfRawData; ) {
       if (0 != p1->SizeOfBlock) {
-        n += printf_text("IMAGE BASE RELOCATION", USE_LT | USE_COLON | USE_EOL);
-        n += printf_text("VirtualAddress", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-        n += printf_nice(p1->VirtualAddress, USE_FHEX32 | USE_EOL);
-        n += printf_text("SizeOfBlock", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-        n += printf_nice(p1->SizeOfBlock, USE_FHEX32 | USE_EOL);
-        n += printf_eol();
+        if (MODE_ISANY(o->action, OPTPROGRAM_VERBOSE)) {
+          n += printf_text("IMAGE BASE RELOCATION", USE_LT | USE_COLON | USE_EOL);
+          n += printf_text("VirtualAddress", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+          n += printf_nice(p1->VirtualAddress, USE_FHEX32 | USE_EOL);
+          n += printf_text("SizeOfBlock", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+          n += printf_nice(p1->SizeOfBlock, USE_FHEX32 | USE_EOL);
+          n += printf_eol();
+        } else {
+          n += printf_nice(p1->VirtualAddress, USE_FHEX32 | USE_TAB);
+          n += printf_nice(p1->SizeOfBlock, USE_FHEX32 | USE_EOL);
+        }
       }
       x += p1->SizeOfBlock ? p1->SizeOfBlock : sizeof(IMAGE_BASE_RELOCATION);
       p1 = CAST(PIMAGE_BASE_RELOCATION, CAST(puchar_t, p1) + p1->SizeOfBlock);
+    }
+
+    if (MODE_ISNOT(o->action, OPTPROGRAM_VERBOSE)) {
+      n += printf_eol();
     }
   }
 
