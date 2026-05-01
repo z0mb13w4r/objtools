@@ -11,7 +11,7 @@
 #include "static/lang.ci"
 //#include "static/sig-userdb.ci"
 
-static const int MAXSIZE = 36;
+static const int MAXSIZE0 = 36;
 static const int MAXSIZE1 = 44;
 
 static int dump_dosheaderNN(const pbuffer_t p, const poptions_t o) {
@@ -22,51 +22,51 @@ static int dump_dosheaderNN(const pbuffer_t p, const poptions_t o) {
     size_t i = 0;
 
     n += printf_text("IMAGE DOS HEADER", USE_LT | USE_COLON | USE_EOL);
-    n += printf_text("e_magic", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("e_magic", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
     n += printf_show(dos->e_magic, USE_FHEX16 | USE_EOL);
     if (MODE_ISANY(o->action, OPTPROGRAM_VERBOSE)) {
-      n += printf_text("e_cblp", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_text("e_cblp", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
       n += printf_nice(dos->e_cblp, USE_FHEX16 | USE_EOL);
-      n += printf_text("e_cp", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_text("e_cp", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
       n += printf_nice(dos->e_cp, USE_FHEX16 | USE_EOL);
-      n += printf_text("e_crlc", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_text("e_crlc", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
       n += printf_nice(dos->e_crlc, USE_FHEX16 | USE_EOL);
-      n += printf_text("e_cparhdr", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_text("e_cparhdr", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
       n += printf_nice(dos->e_cparhdr, USE_FHEX16 | USE_EOL);
-      n += printf_text("e_minalloc", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_text("e_minalloc", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
       n += printf_nice(dos->e_minalloc, USE_FHEX16 | USE_EOL);
-      n += printf_text("e_maxalloc", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_text("e_maxalloc", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
       n += printf_nice(dos->e_maxalloc, USE_FHEX16 | USE_EOL);
     }
-    n += printf_text("e_ss", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("e_ss", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
     n += printf_nice(dos->e_ss, USE_FHEX16 | USE_EOL);
-    n += printf_text("e_sp", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("e_sp", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
     n += printf_nice(dos->e_sp, USE_FHEX16 | USE_EOL);
-    n += printf_text("e_csum", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("e_csum", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
     n += printf_nice(dos->e_csum, USE_FHEX16 | USE_EOL);
-    n += printf_text("e_ip", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("e_ip", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
     n += printf_nice(dos->e_ip, USE_FHEX16 | USE_EOL);
-    n += printf_text("e_cs", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("e_cs", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
     n += printf_nice(dos->e_cs, USE_FHEX16 | USE_EOL);
-    n += printf_text("e_lfarlc", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("e_lfarlc", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
     n += printf_nice(dos->e_lfarlc, USE_FHEX16 | USE_EOL);
     if (MODE_ISANY(o->action, OPTPROGRAM_VERBOSE)) {
-      n += printf_text("e_ovno", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_text("e_ovno", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
       n += printf_nice(dos->e_ovno, USE_FHEX16 | USE_EOL);
-      n += printf_text("e_res", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_text("e_res", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
       for (i = 0; i < NELEMENTS(dos->e_res) - 1; ++i) n += printf_nice(dos->e_res[i], USE_FHEX16);
       n += printf_nice(dos->e_res[i], USE_FHEX16 | USE_EOL);
     }
-    n += printf_text("e_oemid", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("e_oemid", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
     n += printf_nice(dos->e_oemid, USE_FHEX16 | USE_EOL);
-    n += printf_text("e_oeminfo", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("e_oeminfo", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
     n += printf_nice(dos->e_oeminfo, USE_FHEX16 | USE_EOL);
     if (MODE_ISANY(o->action, OPTPROGRAM_VERBOSE)) {
-      n += printf_text("e_res2", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_text("e_res2", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
       for (i = 0; i < NELEMENTS(dos->e_res2) - 1; ++i) n += printf_nice(dos->e_res2[i], USE_FHEX16);
       n += printf_nice(dos->e_res2[i], USE_FHEX16 | USE_EOL);
     }
-    n += printf_text("e_lfanew", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("e_lfanew", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
     n += printf_nice(dos->e_lfanew, USE_FHEX16 | USE_EOL);
     n += printf_eol();
   }
@@ -128,7 +128,7 @@ static int dump_detectorNN(const pbuffer_t p, const poptions_t o) {
 static int dump_ntheader0(const pbuffer_t p, const uint32_t Signature) {
   int n = 0;
   n += printf_text("IMAGE NT HEADER", USE_LT | USE_COLON | USE_EOL);
-  n += printf_text("Signature", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("Signature", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
   n += printf_show(Signature, USE_FHEX32 | USE_EOL);
   n += printf_eol();
 
@@ -140,20 +140,20 @@ static int dump_ntheader1(const pbuffer_t p, const poptions_t o, const uint16_t 
                    const uint16_t SizeOfOptionalHeader, const uint16_t Characteristics) {
   int n = 0;
   n += printf_text("IMAGE FILE HEADER", USE_LT | USE_COLON | USE_EOL);
-  n += printf_text("Machine", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("Machine", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
   n += printf_fork(o, peNTHDRMACHINE, peNTHDRMACHINELITE, Machine, USE_FHEX16 | USE_EOL);
-  n += printf_text("NumberOfSections", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("NumberOfSections", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
   n += printf_nice(NumberOfSections, USE_FHEX16 | USE_EOL);
-  n += printf_text("TimeDateStamp", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("TimeDateStamp", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
   n += printf_nice(TimeDateStamp, USE_FHEX32);
   n += printf_nice(TimeDateStamp, USE_TIMEDATE | USE_SB | USE_EOL);
-  n += printf_text("PointerToSymbolTable", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("PointerToSymbolTable", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
   n += printf_nice(PointerToSymbolTable, USE_FHEX32 | USE_EOL);
-  n += printf_text("NumberOfSymbols", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("NumberOfSymbols", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
   n += printf_nice(NumberOfSymbols, USE_FHEX32 | USE_EOL);
-  n += printf_text("SizeOfOptionalHeader", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("SizeOfOptionalHeader", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
   n += printf_nice(SizeOfOptionalHeader, USE_FHEX16 | USE_EOL);
-  n += printf_text("Characteristics", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("Characteristics", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
   n += printf_nice(Characteristics, USE_FHEX16);
   if (MODE_ISANY(o->action, OPTPROGRAM_VERBOSE)) {
     n += printf_mask(peNTHDRTYPE, Characteristics, USE_EOL);
@@ -188,81 +188,81 @@ static int dump_ntheader2(const pbuffer_t p, const poptions_t o, const uint16_t 
       n += printf_text("IMAGE OPTIONAL HEADER", USE_LT | USE_COLON | USE_EOL);
     }
 
-    n += printf_text("Magic", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("Magic", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
     n += printf_nice(Magic, USE_FHEX16);
     n += printf_pick(peOPTHDRMAGIC, Magic, USE_LT | USE_SPACE | USE_EOL);
-    n += printf_text("LinkerVersion", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("LinkerVersion", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
     n += printf_nice(MajorLinkerVersion, USE_DEC);
     n += printf_nice(MinorLinkerVersion, USE_DEC | USE_DOT | USE_EOL);
-    n += printf_text("SizeOfCode", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("SizeOfCode", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
     n += printf_nice(SizeOfCode, USE_FHEX32 | USE_EOL);
-    n += printf_text("SizeOfInitializedData", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("SizeOfInitializedData", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
     n += printf_nice(SizeOfInitializedData, USE_FHEX32 | USE_EOL);
-    n += printf_text("SizeOfUninitializedData", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("SizeOfUninitializedData", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
     n += printf_nice(SizeOfUninitializedData, USE_FHEX32 | USE_EOL);
-    n += printf_text("AddressOfEntryPoint", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("AddressOfEntryPoint", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
     n += printf_nice(AddressOfEntryPoint, USE_FHEX32 | USE_EOL);
-    n += printf_text("BaseOfCode", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("BaseOfCode", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
     n += printf_nice(BaseOfCode, USE_FHEX32 | USE_EOL);
     if (isPE32(p)) {
-      n += printf_text("BaseOfData", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_text("BaseOfData", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
       n += printf_nice(BaseOfData, USE_FHEX32 | USE_EOL);
     }
-    n += printf_text("ImageBase", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("ImageBase", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
     n += printf_nice(ImageBase, USE_FHEXNN | USE_EOL);
-    n += printf_text("SectionAlignment", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("SectionAlignment", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
     n += printf_nice(SectionAlignment, USE_FHEX32 | USE_EOL);
-    n += printf_text("FileAlignment", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("FileAlignment", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
     n += printf_nice(FileAlignment, USE_FHEX32 | USE_EOL);
-    n += printf_text("OperatingSystemVersion", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("OperatingSystemVersion", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
     n += printf_nice(MajorOperatingSystemVersion, USE_DEC);
     n += printf_nice(MinorOperatingSystemVersion, USE_DEC | USE_DOT | USE_EOL);
-    n += printf_text("ImageVersion", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("ImageVersion", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
     n += printf_nice(MajorImageVersion, USE_DEC);
     n += printf_nice(MinorImageVersion, USE_DEC | USE_DOT | USE_EOL);
-    n += printf_text("SubsystemVersion", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("SubsystemVersion", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
     n += printf_nice(MajorSubsystemVersion, USE_DEC);
     n += printf_nice(MinorSubsystemVersion, USE_DEC | USE_DOT | USE_EOL);
-    n += printf_text("Win32VersionValue", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("Win32VersionValue", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
     n += printf_nice(Win32VersionValue, USE_FHEX32 | USE_EOL);
     if (MODE_ISANY(o->action, OPTPROGRAM_VERBOSE)) {
       if (0 == Win32VersionValue) {
-        n += printf_text("Overwrite OS major version", USE_LT | USE_TAB2 | USE_COLON | SET_PAD(MAXSIZE));
+        n += printf_text("Overwrite OS major version", USE_LT | USE_TAB2 | USE_COLON | SET_PAD(MAXSIZE0));
         n += printf_text("default", USE_LT | USE_SPACE | USE_RB | USE_EOL);
-        n += printf_text("Overwrite OS minor version", USE_LT | USE_TAB2 | USE_COLON | SET_PAD(MAXSIZE));
+        n += printf_text("Overwrite OS minor version", USE_LT | USE_TAB2 | USE_COLON | SET_PAD(MAXSIZE0));
         n += printf_text("default", USE_LT | USE_SPACE | USE_RB | USE_EOL);
-        n += printf_text("Overwrite OS build number", USE_LT | USE_TAB2 | USE_COLON | SET_PAD(MAXSIZE));
+        n += printf_text("Overwrite OS build number", USE_LT | USE_TAB2 | USE_COLON | SET_PAD(MAXSIZE0));
         n += printf_text("default", USE_LT | USE_SPACE | USE_RB | USE_EOL);
-        n += printf_text("Overwrite OS platform id", USE_LT | USE_TAB2 | USE_COLON | SET_PAD(MAXSIZE));
+        n += printf_text("Overwrite OS platform id", USE_LT | USE_TAB2 | USE_COLON | SET_PAD(MAXSIZE0));
         n += printf_text("default", USE_LT | USE_SPACE | USE_RB | USE_EOL);
       }
     }
-    n += printf_text("SizeOfImage", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("SizeOfImage", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
     n += printf_nice(SizeOfImage, USE_FHEX32 | USE_EOL);
-    n += printf_text("SizeOfHeaders", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("SizeOfHeaders", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
     n += printf_nice(SizeOfHeaders, USE_FHEX32 | USE_EOL);
-    n += printf_text("CheckSum", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("CheckSum", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
     n += printf_nice(CheckSum, USE_FHEX32 | USE_EOL);
-    n += printf_text("Subsystem", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("Subsystem", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
     n += printf_fork(o, peOPTHDRSUBSYSTEM, peOPTHDRSUBSYSTEMLITE, Subsystem, USE_FHEX16 | USE_EOL);
-    n += printf_text("DllCharacteristics", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("DllCharacteristics", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
     n += printf_nice(DllCharacteristics, USE_FHEX16);
     if (MODE_ISANY(o->action, OPTPROGRAM_VERBOSE)) {
       n += printf_mask(peOPTHDRCHARACTERISTICS, DllCharacteristics, USE_EOL);
     } else {
       n += printf_mask(peOPTHDRCHARACTERISTICSLITE, DllCharacteristics, USE_EOL);
     }
-    n += printf_text("SizeOfStackReserve", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("SizeOfStackReserve", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
     n += printf_nice(SizeOfStackReserve, USE_FHEXNN | USE_EOL);
-    n += printf_text("SizeOfStackCommit", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("SizeOfStackCommit", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
     n += printf_nice(SizeOfStackCommit, USE_FHEXNN | USE_EOL);
-    n += printf_text("SizeOfHeapReserve", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("SizeOfHeapReserve", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
     n += printf_nice(SizeOfHeapReserve, USE_FHEXNN | USE_EOL);
-    n += printf_text("SizeOfHeapCommit", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("SizeOfHeapCommit", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
     n += printf_nice(SizeOfHeapCommit, USE_FHEXNN | USE_EOL);
-    n += printf_text("LoaderFlags", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("LoaderFlags", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
     n += printf_nice(LoaderFlags, USE_FHEX32 | USE_EOL);
-    n += printf_text("NumberOfRvaAndSizes", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("NumberOfRvaAndSizes", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
     n += printf_nice(NumberOfRvaAndSizes, USE_FHEX32 | USE_EOL);
     n += printf_eol();
   }
@@ -344,27 +344,27 @@ static int dump_sectionheaders1(const pbuffer_t p, const poptions_t o, const uin
     if (p0) {
       if (MODE_ISANY(o->action, OPTPROGRAM_VERBOSE)) {
         n0 += printf_text("IMAGE SECTION HEADER", USE_LT | USE_COLON | USE_EOL);
-        n0 += printf_text("Name", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        n0 += printf_text("Name", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
         n0 += printf_sore(p0->Name, sizeof(p0->Name), USE_STR | USE_SPACE | USE_EOL);
-        n0 += printf_text("Misc.PhysicalAddress", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        n0 += printf_text("Misc.PhysicalAddress", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
         n0 += printf_nice(p0->Misc.PhysicalAddress, USE_FHEX32 | USE_EOL);
-        n0 += printf_text("Misc.VirtualSize", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        n0 += printf_text("Misc.VirtualSize", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
         n0 += printf_size(o, p0->Misc.VirtualSize, USE_FHEX32 | USE_EOL);
-        n0 += printf_text("VirtualAddress", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        n0 += printf_text("VirtualAddress", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
         n0 += printf_nice(p0->VirtualAddress, USE_FHEX32 | USE_EOL);
-        n0 += printf_text("SizeOfRawData", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        n0 += printf_text("SizeOfRawData", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
         n0 += printf_size(o, p0->SizeOfRawData, USE_FHEX32 | USE_EOL);
-        n0 += printf_text("PointerToRawData", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        n0 += printf_text("PointerToRawData", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
         n0 += printf_nice(p0->PointerToRawData, USE_FHEX32 | USE_EOL);
-        n0 += printf_text("PointerToRelocations", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        n0 += printf_text("PointerToRelocations", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
         n0 += printf_nice(p0->PointerToRelocations, USE_FHEX32 | USE_EOL);
-        n0 += printf_text("PointerToLinenumbers", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        n0 += printf_text("PointerToLinenumbers", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
         n0 += printf_nice(p0->PointerToLinenumbers, USE_FHEX32 | USE_EOL);
-        n0 += printf_text("NumberOfRelocations", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        n0 += printf_text("NumberOfRelocations", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
         n0 += printf_nice(p0->NumberOfRelocations, USE_FHEX16 | USE_EOL);
-        n0 += printf_text("NumberOfLinenumbers", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        n0 += printf_text("NumberOfLinenumbers", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
         n0 += printf_nice(p0->NumberOfLinenumbers, USE_FHEX16 | USE_EOL);
-        n0 += printf_text("Characteristics", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        n0 += printf_text("Characteristics", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
         n0 += printf_nice(p0->Characteristics, USE_FHEX32);
         n0 += printf_mask(peSECTIONHDR, p0->Characteristics & ~IMAGE_SCN_ALIGN_MASK, USE_NONE);
         n0 += printf_picknull(peSECTIONHDRALIGN, p0->Characteristics & IMAGE_SCN_ALIGN_MASK, USE_SPACE | USE_EOL);
@@ -500,14 +500,14 @@ static int dump_version0(const pbuffer_t p, const uint16_t wLength, const uint16
                          const pushort_t szKey, const size_t szKeySize, const char* name) {
   int n = 0;
   n += printf_text(name, USE_LT | USE_COLON | USE_EOL);
-  n += printf_text("Length", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("Length", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
   n += printf_nice(wLength, USE_FHEX16 | USE_EOL);
-  n += printf_text("ValueLength", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("ValueLength", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
   n += printf_nice(wValueLength, USE_FHEX16 | USE_EOL);
-  n += printf_text("Type", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("Type", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
   n += printf_nice(wType, USE_FHEX16);
   n += printf_pick(peSTRINGTYPE, wType, USE_SPACE | USE_EOL);
-  n += printf_text("Key", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE + 1));
+  n += printf_text("Key", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0 + 1));
   if (0 == xstrcmp(name, "StringTable")) {
     n += printf_sore(szKey, szKeySize, USE_STR16);
     n += printf_text(get_LANGsz(szKey), USE_LT | USE_SPACE | USE_EOL);
@@ -524,16 +524,16 @@ static int dump_version1(const pbuffer_t p, const uint16_t wLength, const uint16
                          const char* name) {
   int n = 0;
   n += printf_text(name, USE_LT | USE_COLON | USE_EOL);
-  n += printf_text("Length", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("Length", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
   n += printf_nice(wLength, USE_FHEX16 | USE_EOL);
-  n += printf_text("ValueLength", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("ValueLength", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
   n += printf_nice(wValueLength, USE_FHEX16 | USE_EOL);
-  n += printf_text("Type", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("Type", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
   n += printf_nice(wType, USE_FHEX16);
   n += printf_pick(peSTRINGTYPE, wType, USE_SPACE | USE_EOL);
-  n += printf_text("Key", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE + 1));
+  n += printf_text("Key", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0 + 1));
   n += printf_sore(szKey, szKeySize, USE_STR16 | USE_EOL);
-  n += printf_text("Value", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE + 1));
+  n += printf_text("Value", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0 + 1));
   n += printf_sore(szValue, szValueSize, USE_STR16 | USE_EOL);
   n += printf_eol();
 
@@ -544,16 +544,16 @@ static int dump_version2(const pbuffer_t p, const uint16_t wLength, const uint16
                          const pushort_t szKey, const size_t szKeySize, const pushort_t Value, const size_t ValueSize) {
   int n = 0;
   n += printf_text("Var", USE_LT | USE_COLON | USE_EOL);
-  n += printf_text("Length", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("Length", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
   n += printf_nice(wLength, USE_FHEX16 | USE_EOL);
-  n += printf_text("ValueLength", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("ValueLength", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
   n += printf_nice(wValueLength, USE_FHEX16 | USE_EOL);
-  n += printf_text("Type", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("Type", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
   n += printf_nice(wType, USE_FHEX16);
   n += printf_pick(peSTRINGTYPE, wType, USE_SPACE | USE_EOL);
-  n += printf_text("Key", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE + 1));
+  n += printf_text("Key", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0 + 1));
   n += printf_sore(szKey, szKeySize, USE_STR16 | USE_EOL);
-  n += printf_text("Value", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE + 1));
+  n += printf_text("Value", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0 + 1));
   n += printf_sore(Value, ValueSize, USE_HEX | USE_EOL);
   n += printf_eol();
 
@@ -568,30 +568,30 @@ static int dump_version3(const pbuffer_t p, const uint32_t dwSignature, const ui
                          const uint32_t dwFileDateMS, const uint32_t dwFileDateLS) {
   int n = 0;
   n += printf_text("VS FIXEDFILEINFO", USE_LT | USE_COLON | USE_EOL);
-  n += printf_text("Signature", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("Signature", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
   n += printf_nice(dwSignature, USE_FHEX32 | USE_EOL);
-  n += printf_text("StrucVersion", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("StrucVersion", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
   n += printf_nice(dwStrucVersion, USE_FHEX32 | USE_EOL);
-  n += printf_text("FileVersionMS", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("FileVersionMS", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
   n += printf_nice(dwFileVersionMS, USE_FHEX32 | USE_EOL);
-  n += printf_text("FileVersionLS", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("FileVersionLS", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
   n += printf_nice(dwFileVersionLS, USE_FHEX32 | USE_EOL);
-  n += printf_text("ProductVersionMS", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("ProductVersionMS", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
   n += printf_nice(dwProductVersionMS, USE_FHEX32 | USE_EOL);
-  n += printf_text("ProductVersionLS", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("ProductVersionLS", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
   n += printf_nice(dwProductVersionLS, USE_FHEX32 | USE_EOL);
-  n += printf_text("FileFlagsMask", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("FileFlagsMask", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
   n += printf_nice(dwFileFlagsMask, USE_FHEX32 | USE_EOL);
-  n += printf_text("FileFlags", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("FileFlags", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
   n += printf_nice(dwFileFlags, USE_FHEX32);
   n += printf_mask(peVERFILEFLAGS, dwFileFlags, USE_EOL);
-  n += printf_text("FileOS", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("FileOS", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
   n += printf_nice(dwFileOS, USE_FHEX32);
   n += printf_pick(peVERFILEOS, dwFileOS, USE_SPACE | USE_EOL);
-  n += printf_text("FileType", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("FileType", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
   n += printf_nice(dwFileType, USE_FHEX32);
   n += printf_pick(peVERFILETYPE, dwFileType, USE_SPACE | USE_EOL);
-  n += printf_text("FileSubtype", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("FileSubtype", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
   if (VFT_DRV == dwFileType) {
     n += printf_nice(dwFileSubtype, USE_FHEX32 | USE_EOL);
     n += printf_pick(peVERFILESUBTYPEDRV, dwFileSubtype, USE_SPACE | USE_EOL);
@@ -603,9 +603,9 @@ static int dump_version3(const pbuffer_t p, const uint32_t dwSignature, const ui
   } else {
     n += printf_nice(dwFileSubtype, USE_FHEX32 | USE_EOL);
   }
-  n += printf_text("FileDateMS", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("FileDateMS", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
   n += printf_nice(dwFileDateMS, USE_FHEX32 | USE_EOL);
-  n += printf_text("FileDateLS", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("FileDateLS", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
   n += printf_nice(dwFileDateLS, USE_FHEX32 | USE_EOL);
   n += printf_eol();
 
@@ -730,19 +730,19 @@ static int dump_iat1(const pbuffer_t p, const poptions_t o,
               const uint32_t Name, const char* sname, const uint32_t FirstThunk) {
   int n = 0;
   if (MODE_ISANY(o->action, OPTPROGRAM_VERBOSE)) {
-    n += printf_text("OriginalFirstThunk", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("OriginalFirstThunk", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
     n += printf_nice(OriginalFirstThunk, USE_FHEX32 | USE_EOL);
-    n += printf_text("Characteristics", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("Characteristics", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
     n += printf_nice(Characteristics, USE_FHEX32 | USE_EOL);
-    n += printf_text("TimeDateStamp", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("TimeDateStamp", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
     n += printf_nice(TimeDateStamp, USE_FHEX32);
     n += printf_nice(TimeDateStamp, USE_TIMEDATE | USE_SB | USE_EOL);
-    n += printf_text("ForwarderChain", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("ForwarderChain", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
     n += printf_nice(ForwarderChain, USE_FHEX32 | USE_EOL);
-    n += printf_text("Name", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("Name", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
     n += printf_nice(Name, USE_FHEX32);
     n += printf_text(sname, USE_LT | USE_SPACE | USE_SB | USE_EOL);
-    n += printf_text("FirstThunk", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("FirstThunk", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
     n += printf_nice(FirstThunk, USE_FHEX32 | USE_EOL);
   } else {
     n += printf_nice(Name, USE_TAB | USE_FHEX32);
@@ -761,7 +761,7 @@ static int dump_iat2(const pbuffer_t p, const poptions_t o, const uint64_t Addre
       if (isPE32(p))      n += printf_text("IMAGE THUNK DATA32", USE_LT | USE_COLON | USE_EOL);
       else if (isPE64(p)) n += printf_text("IMAGE THUNK DATA64", USE_LT | USE_COLON | USE_EOL);
 
-      n += printf_text("AddressOfData", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_text("AddressOfData", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
       n += printf_nice(AddressOfData, USE_FHEXNN | USE_EOL);
     } else {
       n += printf_nice(AddressOfData, USE_FHEXNN | USE_TAB);
@@ -867,28 +867,28 @@ static int dump_eat0(const pbuffer_t p, const uint32_t Characteristics, const ui
                      const uint32_t AddressOfFunctions, const uint32_t AddressOfNames, const uint32_t AddressOfNameOrdinals) {
   int n = 0;
   n += printf_text("IMAGE EXPORT DIRECTORY", USE_LT | USE_COLON | USE_EOL);
-  n += printf_text("Characteristics", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("Characteristics", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
   n += printf_nice(Characteristics, USE_FHEX32 | USE_EOL);
-  n += printf_text("TimeDateStamp", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("TimeDateStamp", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
   n += printf_nice(TimeDateStamp, USE_FHEX32);
   n += printf_nice(TimeDateStamp, USE_TIMEDATE | USE_SB | USE_EOL);
-  n += printf_text("Version", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("Version", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
   n += printf_nice(MajorVersion, USE_DEC);
   n += printf_nice(MinorVersion, USE_DEC | USE_DOT | USE_EOL);
-  n += printf_text("Name", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("Name", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
   n += printf_nice(Name, USE_FHEX32);
   n += printf_text(sname, USE_LT | USE_SPACE | USE_SB | USE_EOL);
-  n += printf_text("Base", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("Base", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
   n += printf_nice(Base, USE_FHEX32 | USE_EOL);
-  n += printf_text("NumberOfFunctions", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("NumberOfFunctions", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
   n += printf_nice(NumberOfFunctions, USE_FHEX32 | USE_EOL);
-  n += printf_text("NumberOfNames", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("NumberOfNames", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
   n += printf_nice(NumberOfNames, USE_FHEX32 | USE_EOL);
-  n += printf_text("AddressOfFunctions", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("AddressOfFunctions", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
   n += printf_nice(AddressOfFunctions, USE_FHEX32 | USE_EOL);
-  n += printf_text("AddressOfNames", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("AddressOfNames", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
   n += printf_nice(AddressOfNames, USE_FHEX32 | USE_EOL);
-  n += printf_text("AddressOfNameOrdinals", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("AddressOfNameOrdinals", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
   n += printf_nice(AddressOfNameOrdinals, USE_FHEX32 | USE_EOL);
 
   return n;
@@ -929,17 +929,17 @@ static int dump_resource0(const pbuffer_t p, const uint32_t Characteristics, con
                           const uint16_t NumberOfNamedEntries, const uint16_t NumberOfIdEntries) {
   int n = 0;
   n += printf_text("IMAGE RESOURCE DIRECTORY", USE_LT | USE_COLON | USE_EOL);
-  n += printf_text("Characteristics", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("Characteristics", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
   n += printf_nice(Characteristics, USE_FHEX32 | USE_EOL);
-  n += printf_text("TimeDateStamp", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("TimeDateStamp", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
   n += printf_nice(TimeDateStamp, USE_FHEX32);
   n += printf_nice(TimeDateStamp, USE_TIMEDATE | USE_SB | USE_EOL);
-  n += printf_text("Version", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("Version", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
   n += printf_nice(MajorVersion, USE_DEC);
   n += printf_nice(MinorVersion, USE_DEC | USE_DOT | USE_EOL);
-  n += printf_text("NumberOfNamedEntries", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("NumberOfNamedEntries", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
   n += printf_nice(NumberOfNamedEntries, USE_DEC | USE_EOL);
-  n += printf_text("NumberOfIdEntries", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("NumberOfIdEntries", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
   n += printf_nice(NumberOfIdEntries, USE_DEC | USE_EOL);
   n += printf_eol();
 
@@ -951,14 +951,14 @@ static int dump_resource1(const pbuffer_t p, const uint32_t NameIsString, const 
   int n = 0;
   n += printf_text("IMAGE RESOURCE DIRECTORY ENTRY", USE_LT);
   n += printf_nice(z, USE_SB | USE_COLON | USE_EOL);
-  n += printf_text("Name", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("Name", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
   if (NameIsString || 1 != z) {
     n += printf_nice(Name, USE_FHEX32 | USE_EOL);
   } else {
     n += printf_nice(Name, USE_FHEX32);
     n += printf_pick(peRESOURCETYPE, Name, USE_SPACE | USE_EOL);
   }
-  n += printf_text("OffsetToData", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("OffsetToData", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
   n += printf_nice(OffsetToData, USE_FHEX32 | USE_EOL);
 
   return n;
@@ -968,13 +968,13 @@ static int dump_resource2(const pbuffer_t p, const uint32_t OffsetToData, const 
                           const uint32_t CodePage, const uint32_t Reserved) {
   int n = 0;
   n += printf_text("IMAGE RESOURCE DATA ENTRY", USE_LT | USE_COLON | USE_EOL);
-  n += printf_text("OffsetToData", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("OffsetToData", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
   n += printf_nice(OffsetToData, USE_FHEX32 | USE_EOL);
-  n += printf_text("Size", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("Size", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
   n += printf_nice(Size, USE_FHEX32 | USE_EOL);
-  n += printf_text("CodePage", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("CodePage", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
   n += printf_nice(CodePage, USE_FHEX32 | USE_EOL);
-  n += printf_text("Reserved", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+  n += printf_text("Reserved", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
   n += printf_nice(Reserved, USE_FHEX32 | USE_EOL);
   n += printf_eol();
 
@@ -1276,22 +1276,22 @@ static int dump_debugNN(const pbuffer_t p, const poptions_t o) {
   if (p0) {
     n += printf_text("IMAGE DEBUG DIRECTORY", USE_LT | USE_COLON | USE_EOL);
 
-    n += printf_text("Characteristics", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("Characteristics", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
     n += printf_nice(p0->Characteristics, USE_FHEX32 | USE_EOL);
-    n += printf_text("TimeDateStamp", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("TimeDateStamp", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
     n += printf_nice(p0->TimeDateStamp, USE_FHEX32);
     n += printf_nice(p0->TimeDateStamp, USE_TIMEDATE | USE_SB | USE_EOL);
-    n += printf_text("Version", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("Version", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
     n += printf_nice(p0->MajorVersion, USE_DEC);
     n += printf_nice(p0->MinorVersion, USE_DEC | USE_DOT | USE_EOL);
-    n += printf_text("Type", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("Type", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
     n += printf_nice(p0->Type, USE_FHEX32);
     n += printf_pick(peDEBUGTYPE, p0->Type, USE_SPACE | USE_EOL);
-    n += printf_text("SizeOfData", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("SizeOfData", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
     n += printf_nice(p0->SizeOfData, USE_FHEX32 | USE_EOL);
-    n += printf_text("AddressOfRawData", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("AddressOfRawData", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
     n += printf_nice(p0->AddressOfRawData, USE_FHEX32 | USE_EOL);
-    n += printf_text("PointerToRawData", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+    n += printf_text("PointerToRawData", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
     n += printf_nice(p0->PointerToRawData, USE_FHEX32 | USE_EOL);
     n += printf_eol();
 // TBD
@@ -1300,13 +1300,13 @@ static int dump_debugNN(const pbuffer_t p, const poptions_t o) {
       PCV_INFO_PDB70 p2 = peget_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_DEBUG, p0->AddressOfRawData, sizeof(CV_INFO_PDB70));
       if (p2) {
         n += printf_text("CV INFO PDB70", USE_LT | USE_COLON | USE_EOL);
-        n += printf_text("CvSignature", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        n += printf_text("CvSignature", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
         n += printf_nice(p2->CvSignature, USE_FHEX32 | USE_EOL);
-        n += printf_text("Signature", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        n += printf_text("Signature", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
         n += printf_sore(&p2->Signature, sizeof(p2->Signature), USE_GUID | USE_SPACE | USE_EOL);
-        n += printf_text("Age", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        n += printf_text("Age", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
         n += printf_nice(p2->Age, USE_FHEX32 | USE_EOL);
-        n += printf_text("PdbFileName", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        n += printf_text("PdbFileName", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
         n += printf_text(CAST(const char*, p2->PdbFileName), USE_LT | USE_SPACE | USE_EOL);
         n += printf_eol();
       }
@@ -1314,15 +1314,15 @@ static int dump_debugNN(const pbuffer_t p, const poptions_t o) {
       PCV_INFO_PDB20 p2 = peget_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_DEBUG, p0->AddressOfRawData, sizeof(CV_INFO_PDB20));
       if (p2) {
         n += printf_text("CV INFO PDB20", USE_LT | USE_COLON | USE_EOL);
-        n += printf_text("CvSignature", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        n += printf_text("CvSignature", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
         n += printf_nice(p2->CvHeader.Signature, USE_FHEX32 | USE_EOL);
-        n += printf_text("CvOffset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        n += printf_text("CvOffset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
         n += printf_nice(p2->CvHeader.Offset, USE_FHEX32 | USE_EOL);
-        n += printf_text("Signature", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        n += printf_text("Signature", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
         n += printf_nice(p2->Signature, USE_FHEX32 | USE_EOL);
-        n += printf_text("Age", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        n += printf_text("Age", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
         n += printf_nice(p2->Age, USE_FHEX32 | USE_EOL);
-        n += printf_text("PdbFileName", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        n += printf_text("PdbFileName", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
         n += printf_text(CAST(const char*, p2->PdbFileName), USE_LT | USE_SPACE | USE_EOL);
         n += printf_eol();
       }
@@ -1355,9 +1355,9 @@ static int dump_relocNN(const pbuffer_t p, const poptions_t o) {
       if (0 != p1->SizeOfBlock) {
         if (MODE_ISANY(o->action, OPTPROGRAM_VERBOSE)) {
           n += printf_text("IMAGE BASE RELOCATION", USE_LT | USE_COLON | USE_EOL);
-          n += printf_text("VirtualAddress", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+          n += printf_text("VirtualAddress", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
           n += printf_nice(p1->VirtualAddress, USE_FHEX32 | USE_EOL);
-          n += printf_text("SizeOfBlock", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+          n += printf_text("SizeOfBlock", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
           n += printf_nice(p1->SizeOfBlock, USE_FHEX32 | USE_EOL);
           n += printf_eol();
         } else {
@@ -1388,29 +1388,29 @@ static int dump_runtimeNN(const pbuffer_t p, const poptions_t o) {
     for (DWORD x = 0; x < s0->SizeOfRawData; x += sizeof(IMAGE_RUNTIME_FUNCTION_ENTRY), ++p1) {
       if (0 != p1->BeginAddress) {
         n += printf_text("RUNTIME FUNCTION", USE_LT | USE_COLON | USE_EOL);
-        n += printf_text("BeginAddress", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        n += printf_text("BeginAddress", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
         n += printf_nice(p1->BeginAddress, USE_FHEX32 | USE_EOL);
-        n += printf_text("EndAddress", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        n += printf_text("EndAddress", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
         n += printf_nice(p1->EndAddress, USE_FHEX32 | USE_EOL);
-        n += printf_text("UnwindData", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+        n += printf_text("UnwindData", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
         n += printf_nice(p1->UnwindData, USE_FHEX32 | USE_EOL);
         n += printf_eol();
 
         PUNWIND_INFO p2 = peget_chunkbyRVA(p, IMAGE_DIRECTORY_ENTRY_UNKNOWN, p1->UnwindData, sizeof(UNWIND_INFO));
         if (p2) {
           n += printf_text("UNWIND INFO", USE_LT | USE_COLON | USE_EOL);
-          n += printf_text("Version", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+          n += printf_text("Version", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
           n += printf_nice(p2->Version, USE_FHEX32 | USE_EOL);
-          n += printf_text("Flags", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+          n += printf_text("Flags", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
           n += printf_nice(p2->Flags, USE_FHEX32);
           n += printf_pick(peUNWFLAGS, p2->Flags, USE_SPACE | USE_EOL);
-          n += printf_text("SizeOfProlog", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+          n += printf_text("SizeOfProlog", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
           n += printf_nice(p2->SizeOfProlog, USE_FHEX32 | USE_EOL);
-          n += printf_text("CountOfCodes", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+          n += printf_text("CountOfCodes", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
           n += printf_nice(p2->CountOfCodes, USE_FHEX32 | USE_EOL);
-          n += printf_text("FrameRegister", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+          n += printf_text("FrameRegister", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
           n += printf_nice(p2->FrameRegister, USE_FHEX32 | USE_EOL);
-          n += printf_text("FrameOffset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+          n += printf_text("FrameOffset", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
           n += printf_nice(p2->FrameOffset, USE_FHEX32 | USE_EOL);
           n += printf_eol();
 
@@ -1418,12 +1418,12 @@ static int dump_runtimeNN(const pbuffer_t p, const poptions_t o) {
           for (BYTE i = 0; i < p2->CountOfCodes; ++i, x3 += 2) {
             PUNWIND_CODE p3 = CAST(PUNWIND_CODE, x3);
             n += printf_text("UNWIND CODE", USE_LT | USE_COLON | USE_EOL);
-            n += printf_text("OffsetProlog", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+            n += printf_text("OffsetProlog", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
             n += printf_nice(p3->OffsetProlog, USE_FHEX8 | USE_EOL);
-            n += printf_text("UnwindCode", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+            n += printf_text("UnwindCode", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
             n += printf_nice(p3->UnwindCode, USE_FHEX8);
             n += printf_pick(peUNWCODES, p3->UnwindCode, USE_SPACE | USE_EOL);
-            n += printf_text("OpInfo", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+            n += printf_text("OpInfo", USE_LT | USE_TAB | USE_COLON | SET_PAD(MAXSIZE0));
             n += printf_nice(p3->OpInfo, USE_FHEX8);
             if (UWOP_ALLOC_SMALL == p3->UnwindCode) {
               n += printf_text(".ALLOCSTACK", USE_LT | USE_SPACE);
