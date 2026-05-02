@@ -8,7 +8,7 @@ This suite of tools was inspired by a problem I encountered while comparing two 
 
 **convert-ng** is a Swiss Army Knife for manipulating data in complex ways using operations, xor, addition, subtraction, logical shifts and rotations, base32, base58, base64, base85 and vigeneree cipher. [READ MORE...](https://github.com/z0mb13w4r/objtools/wiki/convert%E2%80%90ng)
 
-**detect-ng** is a tool for file and compiler identification supporting signature-based and heuristic analysis.
+**detect-ng** is a tool for file and compiler identification supporting signature-based and heuristic analysis. [READ MORE...](https://github.com/z0mb13w4r/objtools/wiki/detect%E2%80%90ng)
 
 **enumerate-ng.py** is a script inspired by rebootuser’s LinEnum for enumeration and privilege escalation, and enhanced to be used with both devices and firmware images. This information is useful for hardening devices or for understanding how an adversary obtained persistence, privilege escalation, or lateral movement. [READ MORE...](https://github.com/z0mb13w4r/objtools/wiki/enumerate%E2%80%90ng)
 
