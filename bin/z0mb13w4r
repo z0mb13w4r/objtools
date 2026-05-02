@@ -7,6 +7,8 @@ TMP=/tmp/
 
 CATBIN=/usr/bin/cat
 CUTBIN=/usr/bin/cut
+DPKGBIN=/usr/bin/dpkg
+SUDOBIN=/usr/bin/sudo
 WGETBIN=/usr/bin/wget
 
 function show_usage() {
@@ -14,7 +16,6 @@ function show_usage() {
 Usage: ${SCRIPTNAME} v${VERSION}
 EXAMPLES:
   ${SCRIPTNAME} {-u|--update}
-  ${SCRIPTNAME} {-V|--verbose}
   ${SCRIPTNAME} {-v|--version}
   ${SCRIPTNAME} {-h|--help}
 EOF
@@ -26,6 +27,10 @@ function fetch_gdrive() {
 
 function fetch_item() {
   echo $(${CUTBIN} -d ' ' -f ${1} ${TMP}NOTE)
+}
+
+function debian() {
+  ${SUDOBIN} ${DPKGBIN} -i ${1}
 }
 
 POSITIONAL_ARGS=()
@@ -46,10 +51,6 @@ while [[ $# -gt 0 ]]; do
       ;;
     -v|--version)
       ARG_VERSION=YES
-      shift # past argument
-      ;;
-    -V|--verbose)
-      YARA_ARGS+=' -s'
       shift # past argument
       ;;
     -*|--*)
@@ -79,7 +80,7 @@ fi
 
 if [ "${ARG_DEVELOP}" == "YES" ]; then
   fetch_gdrive "1LDqJ_y3mdUH7Xm9JkBDmc7laucPE54IB" "${TMP}NOTE"
-  #fetch_gdrive "159scb5AIllJBETYbpiatgJMCcwqLtHqs" "${TMP}$(${CATBIN} ${TMP}NOTE)"
   fetch_gdrive "$(fetch_item '2')" "${TMP}$(fetch_item '1')"
+  debian "${TMP}$(fetch_item '1')"
 fi
 
