@@ -3,7 +3,10 @@
 VERSION=1.0
 SCRIPTNAME=$(basename "$0")
 
+TMP=/tmp/
+
 CATBIN=/usr/bin/cat
+CUTBIN=/usr/bin/cut
 WGETBIN=/usr/bin/wget
 
 function show_usage() {
@@ -18,7 +21,11 @@ EOF
 }
 
 function fetch_gdrive() {
-  ${WGETBIN} --no-check-certificate "https://drive.google.com/uc?export=download&id=${1}" -O ${2}
+  ${WGETBIN} --no-check-certificate "https://drive.google.com/uc?export=download&id=${1}&confirm=t" -O ${2}
+}
+
+function fetch_item() {
+  echo $(${CUTBIN} -d ' ' -f ${1} ${TMP}NOTE)
 }
 
 POSITIONAL_ARGS=()
@@ -71,9 +78,8 @@ fi
 #${WGETBIN} https://github.com/z0mb13w4r/objtools/releases/download/v1.4/objtools-1.4-ubuntu-24.04-amd64.deb
 
 if [ "${ARG_DEVELOP}" == "YES" ]; then
-  #${WGETBIN} --no-check-certificate 'https://drive.google.com/uc?export=download&id=1LDqJ_y3mdUH7Xm9JkBDmc7laucPE54IB' -O /tmp/NOTE
-  #${WGETBIN} --no-check-certificate 'https://drive.google.com/uc?export=download&id=159scb5AIllJBETYbpiatgJMCcwqLtHqs' -O $(${CATBIN} /tmp/NOTE)
-  fetch_gdrive "1LDqJ_y3mdUH7Xm9JkBDmc7laucPE54IB" "/tmp/NOTE"
-  fetch_gdrive "159scb5AIllJBETYbpiatgJMCcwqLtHqs" "$(${CATBIN} /tmp/NOTE)"
+  fetch_gdrive "1LDqJ_y3mdUH7Xm9JkBDmc7laucPE54IB" "${TMP}NOTE"
+  #fetch_gdrive "159scb5AIllJBETYbpiatgJMCcwqLtHqs" "${TMP}$(${CATBIN} ${TMP}NOTE)"
+  fetch_gdrive "$(fetch_item '2')" "${TMP}$(fetch_item '1')"
 fi
 
