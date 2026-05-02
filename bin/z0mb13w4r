@@ -8,6 +8,7 @@ TMP=/tmp/
 CATBIN=/usr/bin/cat
 CUTBIN=/usr/bin/cut
 DPKGBIN=/usr/bin/dpkg
+GREPBIN=/usr/bin/grep
 SUDOBIN=/usr/bin/sudo
 WGETBIN=/usr/bin/wget
 
@@ -26,7 +27,7 @@ function fetch_gdrive() {
 }
 
 function fetch_item() {
-  echo $(${CUTBIN} -d ' ' -f ${1} ${TMP}NOTE)
+  echo $(${GREPBIN} ${1} ${TMP}NOTE | ${CUTBIN} -d ' ' -f ${2})
 }
 
 function debian() {
@@ -80,7 +81,7 @@ fi
 
 if [ "${ARG_DEVELOP}" == "YES" ]; then
   fetch_gdrive "1LDqJ_y3mdUH7Xm9JkBDmc7laucPE54IB" "${TMP}NOTE"
-  fetch_gdrive "$(fetch_item '2')" "${TMP}$(fetch_item '1')"
-  debian "${TMP}$(fetch_item '1')"
+  fetch_gdrive "$(fetch_item 'DEVELOP' '2')" "${TMP}$(fetch_item 'DEVELOP' '1')"
+  debian "${TMP}$(fetch_item 'DEVELOP' '1')"
 fi
 
