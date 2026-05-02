@@ -95,14 +95,11 @@ $SUDOBIN $GZIPBIN -v $LOCALMAN/objhash-ng.1
 $SUDOBIN $GZIPBIN -v $LOCALMAN/readelf-ng.1
 $SUDOBIN $GZIPBIN -v $LOCALMAN/objdwarf-ng.1
 
-#$SUDOBIN $CHOWNBIN root:root $USRBIN/*
-#$SUDOBIN $CHOWNBIN root:root $USRMAN/*
-#$SUDOBIN $CHOWNBIN root:root $USROBJ/*
-#$SUDOBIN $CHOWNBIN root:root $LOCALBIN/*
-
 $SUDOBIN $FINDBIN $NAME/usr/ -type f -exec $MD5SUMBIN '{}' \; | $SUDOBIN $SEDBIN "s/$NAME\///" | $SUDOBIN $TEEBIN $DEBIANBIN/md5sums
 
 $DPKGDEBBIN --build $NAME
+
+$SUDOBIN $CHOWNBIN -R $USER:$USER $NAME
 
 echo $($GREPBIN Version $EXTERNBIN/control | $CUTBIN -d ' ' -f 2) \
      $($HEADBIN -1 $EXTERNMAN/* | $GREPBIN '.TH' | $CUTBIN -d ' ' -f 7 | $TRBIN -d '"') \
