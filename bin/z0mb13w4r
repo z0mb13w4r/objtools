@@ -23,7 +23,11 @@ EOF
 }
 
 function fetch_gdrive() {
-  ${WGETBIN} --no-check-certificate "https://drive.google.com/uc?export=download&id=${1}&confirm=t" -O ${2}
+  ${WGETBIN} --no-check-certificate "https://drive.google.com/uc?export=download&id=${1}&confirm=t" -O ${TMP}${2}
+}
+
+function fetch_github() {
+  ${WGETBIN} https://github.com/${1}/${2} -O ${TMP}${2}
 }
 
 function fetch_item() {
@@ -31,7 +35,7 @@ function fetch_item() {
 }
 
 function debian() {
-  ${SUDOBIN} ${DPKGBIN} -i ${1}
+  ${SUDOBIN} ${DPKGBIN} -i ${TMP}${1}
 }
 
 POSITIONAL_ARGS=()
@@ -75,13 +79,14 @@ elif [ "${ARG_VERSION}" == "YES" ]; then
   exit 0
 fi
 
-
-#${WGETBIN} https://github.com/WerWolv/ImHex/releases/download/v1.38.1/imhex-1.38.1-Ubuntu-24.04-x86_64.deb
-#${WGETBIN} https://github.com/z0mb13w4r/objtools/releases/download/v1.4/objtools-1.4-ubuntu-24.04-amd64.deb
-
 if [ "${ARG_DEVELOP}" == "YES" ]; then
-  fetch_gdrive "1LDqJ_y3mdUH7Xm9JkBDmc7laucPE54IB" "${TMP}NOTE"
-  fetch_gdrive "$(fetch_item 'DEVELOP' '2')" "${TMP}$(fetch_item 'DEVELOP' '1')"
-  debian "${TMP}$(fetch_item 'DEVELOP' '1')"
+  fetch_gdrive "1LDqJ_y3mdUH7Xm9JkBDmc7laucPE54IB" "NOTE"
+  fetch_gdrive "$(fetch_item 'DEVELOP' '2')" "$(fetch_item 'DEVELOP' '1')"
+  debian "$(fetch_item 'DEVELOP' '1')"
+elif [ "${ARG_UPDATE}" == "YES" ]; then
+  fetch_github "$(fetch_item 'GITHUB1' '2')" "$(fetch_item 'GITHUB1' '1')"
+  fetch_github "$(fetch_item 'GITHUB2' '2')" "$(fetch_item 'GITHUB2' '1')"
+  debian "$(fetch_item 'GITHUB1' '1')"
+  debian "$(fetch_item 'GITHUB2' '1')"
 fi
 
