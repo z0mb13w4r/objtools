@@ -19,6 +19,7 @@ function show_usage() {
 Usage: ${SCRIPTNAME} v${VERSION}
 EXAMPLES:
   ${SCRIPTNAME} {-u|--update}
+  ${SCRIPTNAME} {-d|--develop}
   ${SCRIPTNAME} {-v|--version}
   ${SCRIPTNAME} {-h|--help}
 EOF
