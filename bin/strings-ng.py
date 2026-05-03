@@ -36,8 +36,8 @@ DIRBIGLIST=r'/sys\|kernel\|/dev\|/var\|/tmp\|/usr\|/etc\|/bin\|/sbin\|/mnt\|/roo
 INTBIGLIST=r'USER-AGENT\|HOST\|Cookie\|POST\|GET\|url\|http\|https\|udp\|dns\|google'
 TXTBIGLIST=r'ptm\|tty\|group\|passwd\|shells\|xterm'
 EXTBIGLIST=r'\.gz$\|\.zip$\|\.7z$\|\.pub$\|\.pdf$\|\.doc$\|\.docx$\|\.png$\|\,jpg$\|\.jpeg$\|\.go$\|\.exe$\|\.ps1$\|\.sh$\|\.py$'
-SECBIGLIST=r'\.shstrtab\|\.init\|\.text\|\.fini\|.rodata\|\.ctors\|\.dtors\|\.data\|\.bss\|\.noptrdata\|\.elfdata\|\.typelink\|\.itablink\|\.gosymtab\|\.gopclntab'
-MGCBINLIST=r'pid\|upx\|abcdefghijklmnopqrstuvw.*012345678\|\.x86\|\.x86_64\|\.arm\|\.arm5\|\.arm6\|\.arm7\|\.mips\|\.mipsel\|\.sh4\|\.ppc\|TeamSpeak\|build\|net\|os\|io\|syscall\|crypto\|unicode\|runtime'
+SECBIGLIST=r'\.shstrtab\|\.init\|\.text\|\.fini\|.rodata\|\.ctors\|\.dtors\|\.data\|\.xdata\|\.idata\|\.rdata\|\.rsrc\|\.bss\|\.noptrdata\|\.elfdata\|\.typelink\|\.itablink\|\.gosymtab\|\.gopclntab'
+MGCBINLIST=r'pid\|upx\|abcdefghijklmnopqrstuvw.*012345678\|abcdefghijklmnopqrstuvwxyz\|ABCDEFGHIJKLMNOPQRSTUVWXYZ\|\.x86\|\.x86_64\|\.arm\|\.arm5\|\.arm6\|\.arm7\|\.mips\|\.mipsel\|\.sh4\|\.ppc\|TeamSpeak\|build\|net\|os\|io\|syscall\|crypto\|unicode\|runtime\|Sunday\|Monday\|Tuesday\|Wednesday\|Thursday\|Friday\|Saturday\|January\|February\|March\|April\|June\|July\|August\|September\|October\|November\|December'
 
 
 def pk(args):
@@ -148,6 +148,7 @@ def mgc_info(args):
   if args.magic:
     mk('POSSIBLE MAGIC STRINGS')
     gz(args, pk(args) + ' | grep -wi "' + MGCBINLIST + '" | grep -v "' + DIRBIGLIST + '"')
+    gz(args, pk(args) + ' | egrep "[A-Za-z0-9+/]{4}*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)"')
     print('')
 
 
