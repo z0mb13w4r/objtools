@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# curl -O https://raw.githubusercontent.com/z0mb13w4r/objtools/master/bin/z0mb13w4r
+
 VERSION=1.0
 SCRIPTNAME=$(basename "$0")
 
@@ -84,6 +86,7 @@ if [ "${ARG_DEVELOP}" == "YES" ]; then
   fetch_gdrive "$(fetch_item 'DEVELOP' '2')" "$(fetch_item 'DEVELOP' '1')"
   debian "$(fetch_item 'DEVELOP' '1')"
 elif [ "${ARG_UPDATE}" == "YES" ]; then
+  fetch_gdrive "1LDqJ_y3mdUH7Xm9JkBDmc7laucPE54IB" "NOTE"
   fetch_github "$(fetch_item 'GITHUB1' '2')" "$(fetch_item 'GITHUB1' '1')"
   fetch_github "$(fetch_item 'GITHUB2' '2')" "$(fetch_item 'GITHUB2' '1')"
   debian "$(fetch_item 'GITHUB1' '1')"
