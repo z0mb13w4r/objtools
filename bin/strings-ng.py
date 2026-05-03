@@ -148,7 +148,7 @@ def mgc_info(args):
   if args.magic:
     mk('POSSIBLE MAGIC STRINGS')
     gz(args, pk(args) + ' | grep -wi "' + MGCBINLIST + '" | grep -v "' + DIRBIGLIST + '"')
-    gz(args, pk(args) + ' | egrep "[A-Za-z0-9+/]{4}*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)"')
+    #gz(args, pk(args) + ' | egrep "[A-Za-z0-9+/]{4}*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)"')
     print('')
 
 
