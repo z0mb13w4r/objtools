@@ -21,12 +21,12 @@ static char NETSTATBIN[] = "/usr/bin/netstat";
 size_t read(int fd, void *buf, size_t count);
 
 char buff[MAXSTACK];			/* buffer for ungetch */
-int  bufp = 0;					/* next free position in buff */
+int  bufp = 0;				/* next free position in buff */
 
-struct tnode {					/* the tree node */
-	char* word;					/* points to the text */
-	int count;					/* number of occurrences */
-	struct tnode* left;			/* left child */
+struct tnode {				/* the tree node */
+	char* word;			/* points to the text */
+	int count;			/* number of occurrences */
+	struct tnode* left;		/* left child */
 	struct tnode* right;		/* right child */
 };
 
@@ -149,3 +149,4 @@ int main()
 	treeprint(root);
 	return 0;
 }
+
