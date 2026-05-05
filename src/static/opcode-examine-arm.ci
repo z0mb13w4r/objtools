@@ -378,6 +378,7 @@ static oestruct_t oeINSTRUCTIONS_ARM[] = {
   OCSTRUCT("lsl",       OCINSNARM_LSL),
   OCSTRUCT("lsrs",      OCINSNARM_LSRS),
   OCSTRUCT("lsr",       OCINSNARM_LSR),
+  OCSTRUCT("rols",      OCINSNARM_ROLS),
   OCSTRUCT("rol",       OCINSNARM_ROL),
   OCSTRUCT("ror",       OCINSNARM_ROR),
   OCSTRUCT("clz",       OCINSNARM_CLZ),
