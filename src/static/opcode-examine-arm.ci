@@ -129,6 +129,11 @@ static oestruct_t oeINSTRUCTIONS_ARM[] = {
   OCSTRUCT("nop",       OCINSNARM_NOP),
 
   OCSTRUCT("push",      OCINSNARM_PUSH),
+
+  OCSTRUCT("pop.b",     OCINSNARM_POPB),
+  OCSTRUCT("pop.d",     OCINSNARM_POPD),
+  OCSTRUCT("pop.h",     OCINSNARM_POPH),
+  OCSTRUCT("pop.w",     OCINSNARM_POPW),
   OCSTRUCT("pop",       OCINSNARM_POP),
 
   OCSTRUCT("add.b",     OCINSNARM_ADDB),
