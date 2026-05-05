@@ -427,6 +427,7 @@
 #define OCINSNARM_ASR              (OCINSNARM_ASx | OCINSN_RT)
 #define OCINSNARM_LSL              (OCINSNARM_LSx | OCINSN_LT)
 #define OCINSNARM_LSR              (OCINSNARM_LSx | OCINSN_RT)
+#define OCINSNARM_LSRS             (OCINSNARM_LSR | OCINSNARM_STATUS)
 #define OCINSNARM_ROL              (OCINSNARM_ROx | OCINSN_LT)
 #define OCINSNARM_ROR              (OCINSNARM_ROx | OCINSN_RT)
 
