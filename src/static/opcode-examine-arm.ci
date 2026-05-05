@@ -121,6 +121,10 @@ static oestruct_t oeINSTRUCTIONS_ARM[] = {
 
   OCSTRUCT("csel",      OCINSNARM_CSEL),
   OCSTRUCT("cset",      OCINSNARM_CSET),
+  OCSTRUCT("cmp.b",     OCINSNARM_CMPB),
+  OCSTRUCT("cmp.d",     OCINSNARM_CMPD),
+  OCSTRUCT("cmp.h",     OCINSNARM_CMPH),
+  OCSTRUCT("cmp.w",     OCINSNARM_CMPW),
   OCSTRUCT("cmp",       OCINSNARM_CMP),
   OCSTRUCT("cmn",       OCINSNARM_CMN),
 
