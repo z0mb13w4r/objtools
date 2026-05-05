@@ -390,9 +390,7 @@ static oestruct_t oeINSTRUCTIONS_ARM[] = {
   OCSTRUCT("adrp",      OCINSNARM_ADR),
   OCSTRUCT("adr",       OCINSNARM_ADR),
 
-  OCSTRUCT("ldr.b",     OCINSNARM_LDRB),
   OCSTRUCT("ldr.d",     OCINSNARM_LDRD),
-  OCSTRUCT("ldr.h",     OCINSNARM_LDRH),
   OCSTRUCT("ldr.w",     OCINSNARM_LDRW),
 
   OCSTRUCT("ldrswcc",   OCINSNARM_LDRSWCC),
@@ -426,6 +424,7 @@ static oestruct_t oeINSTRUCTIONS_ARM[] = {
   OCSTRUCT("ldrbvc",    OCINSNARM_LDRBVC),
   OCSTRUCT("ldrbvs",    OCINSNARM_LDRBVS),
   OCSTRUCT("ldrb.w",    OCINSNARM_LDRBW),
+  OCSTRUCT("ldr.b",     OCINSNARM_LDRB),
   OCSTRUCT("ldrb",      OCINSNARM_LDRB),
 
   OCSTRUCT("ldrhcc",    OCINSNARM_LDRHCC),
@@ -443,6 +442,7 @@ static oestruct_t oeINSTRUCTIONS_ARM[] = {
   OCSTRUCT("ldrhvc",    OCINSNARM_LDRHVC),
   OCSTRUCT("ldrhvs",    OCINSNARM_LDRHVS),
   OCSTRUCT("ldrh.w",    OCINSNARM_LDRHW),
+  OCSTRUCT("ldr.h",     OCINSNARM_LDRH),
   OCSTRUCT("ldrh",      OCINSNARM_LDRH),
 
   OCSTRUCT("ldrcc",     OCINSNARM_LDRCC),
