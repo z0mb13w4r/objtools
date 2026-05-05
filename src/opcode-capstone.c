@@ -503,7 +503,7 @@ int capstone_run(handle_t p, handle_t s) {
 
     if (p0) {
       if (bfd_get_section_contents(ocget(p, OPCODE_BFD), ocget(s, MODE_OCSHDR), p0, 0, sz)) {
-        n += capstone_raw0(p, s, p0, sz, ocget_vmaddress(s));
+        n += capstone_rawX(p, s, p0, sz, ocget_vmaddress(s));
       }
 
       xfree(p0);
