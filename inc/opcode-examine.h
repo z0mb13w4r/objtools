@@ -134,18 +134,24 @@
 #define OCINSN_NO               (OCINSN_N | OCINSN_O)
 #define OCINSN_NS               (OCINSN_N | OCINSN_S)
 
-#define OCOPERAND_IVALUE0              (0x01)
-#define OCOPERAND_UVALUE0              (0x02)
-#define OPOPERAND_REGISTER0            (0x03)
-#define OCOPERAND_IVALUE1              (0x04)
-#define OCOPERAND_UVALUE1              (0x08)
-#define OPOPERAND_REGISTER1            (0x0c)
-#define OCOPERAND_IVALUE2              (0x10)
-#define OCOPERAND_UVALUE2              (0x20)
-#define OPOPERAND_REGISTER2            (0x30)
-#define OCOPERAND_IVALUE3              (0x40)
-#define OCOPERAND_UVALUE3              (0x80)
-#define OPOPERAND_REGISTER3            (0xc0)
+#define OCOPERAND_IVALUE0              (0x001)
+#define OCOPERAND_UVALUE0              (0x002)
+#define OPOPERAND_REGISTER0            (0x003)
+#define OCOPERAND_IVALUE1              (0x004)
+#define OCOPERAND_UVALUE1              (0x008)
+#define OPOPERAND_REGISTER1            (0x00c)
+#define OCOPERAND_IVALUE2              (0x010)
+#define OCOPERAND_UVALUE2              (0x020)
+#define OPOPERAND_REGISTER2            (0x030)
+#define OCOPERAND_IVALUE3              (0x040)
+#define OCOPERAND_UVALUE3              (0x080)
+#define OPOPERAND_REGISTER3            (0x0c0)
+#define OCOPERAND_IVALUE4              (0x100)
+#define OCOPERAND_UVALUE4              (0x200)
+#define OPOPERAND_REGISTER4            (0x300)
+#define OCOPERAND_IVALUE5              (0x400)
+#define OCOPERAND_UVALUE5              (0x800)
+#define OPOPERAND_REGISTER5            (0xc00)
 
 #define OPOPERAND_SIZE                 U64MASK(51)
 // ----- GAP OPSIZE -----
@@ -221,6 +227,14 @@ typedef struct ocoperand_s {
   union {
     int64_t  ivalue3;
     uint64_t uvalue3;
+  };
+  union {
+    int64_t  ivalue4;
+    uint64_t uvalue4;
+  };
+  union {
+    int64_t  ivalue5;
+    uint64_t uvalue5;
   };
 } ocoperand_t, *pocoperand_t;
 
