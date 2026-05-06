@@ -1,3 +1,4 @@
+#include "memfind.h"
 #include "objutils.h"
 #include "opcode-printf.h"
 #include "opcode-examine.h"
@@ -256,7 +257,7 @@ static bool_t oeisskipped(int c) {
 }
 
 static bool_t oeisstripped(int c0, int c1) {
-  return ('(' == c0 && ')' == c1) || ('[' == c0 && ']' == c1);
+  return ('(' == c0 && ')' == c1) || ('[' == c0 && ']' == c1) || ('{' == c0 && '}' == c1);
 }
 
 static unknown_t oeskip(unknown_t p, const size_t size) {
@@ -337,147 +338,78 @@ size_t oeskiphex(unknown_t p, const size_t size) {
   return 0;
 }
 
-static unknown_t oesplit(handle_t e, unknown_t m, const size_t size, punknown_t o1, punknown_t o2, punknown_t o3, punknown_t o4, punknown_t o5, punknown_t o6, punknown_t o7) {
+static unknown_t oenext(handle_t p) {
+  if (!fiseof(p)) {
+    unknown_t p0 = fget(p);
+    if (p0) {
+      uint32_t cbcnt = 0;
+      uint32_t rbcnt = 0;
+      uint32_t sbcnt = 0;
+
+      while (!fisnull(p)) {
+        uint64_t c = fpeeku8(p);
+
+        if ('{' == c) ++cbcnt;
+        else if ('}' == c) --cbcnt;
+        else if ('(' == c) ++rbcnt;
+        else if (')' == c) --rbcnt;
+        else if ('[' == c) ++sbcnt;
+        else if (']' == c) --sbcnt;
+        else if (',' == c && 0 == cbcnt && 0 == rbcnt && 0 == sbcnt) break;
+
+        fnext(p);
+      }
+
+      fsetu8(p, 0);
+    }
+
+    return oeskip(p0, USE_STRLEN);
+  }
+
+  return NULL;
+}
+
+static unknown_t oesplit(handle_t e, unknown_t m, const size_t size,
+                         punknown_t o1, punknown_t o2, punknown_t o3, punknown_t o4,
+                         punknown_t o5, punknown_t o6, punknown_t o7) {
   if (m && USE_STRLEN == size) {
     return oesplit(e, m, xstrlen(m), o1, o2, o3, o4, o5, o6, o7);
-  } else if (isocexamine(e) && m && o1 && o2 && o3 && o4 && o5 && o6 && o7) {
-    char *m0 = CAST(char*, m);
-
-    size_t i = 0;
-    if (i < size) {
-      int rbcnt = 0;
-      int sbcnt = 0;
-
-      *o1 = m0 + i;
-      for ( ; i < size; ++i) {
-        char c = m0[i];
-        if ('(' == c) ++rbcnt;
-        else if (')' == c) --rbcnt;
-        else if ('[' == c) ++sbcnt;
-        else if (']' == c) --sbcnt;
-        else if (',' == c && 0 == rbcnt && 0 == sbcnt) break;
+  } else if (isocexamine(e) && m && o1) {
+    handle_t p0 = fcalloc(m, size + 1, sizeof(char));
+    if (p0) {
+      if (o1) {
+        *o1 = oenext(p0);
+//        printf("++%s++", CAST(char*, *o1));
+      }
+      if (o2) {
+        *o2 = oenext(p0);
+//        printf("%s++", CAST(char*, *o2));
+      }
+      if (o3) {
+        *o3 = oenext(p0);
+//        printf("%s++", CAST(char*, *o3));
+      }
+      if (o4) {
+        *o4 = oenext(p0);
+//        printf("%s++", CAST(char*, *o4));
+      }
+      if (o5) {
+        *o5 = oenext(p0);
+//        printf("%s++", CAST(char*, *o5));
+      }
+      if (o6) {
+        *o6 = oenext(p0);
+//        printf("%s++", CAST(char*, *o6));
+      }
+      if (o7) {
+        *o7 = oenext(p0);
+//        printf("%s++", CAST(char*, *o7));
       }
 
-      m0[i++] = 0;
+      ffree(p0);
     }
 
-    if (i < size) {
-      int rbcnt = 0;
-      int sbcnt = 0;
-
-      *o2 = m0 + i;
-      for ( ; i < size; ++i) {
-        char c = m0[i];
-        if ('(' == c) ++rbcnt;
-        else if (')' == c) --rbcnt;
-        else if ('[' == c) ++sbcnt;
-        else if (']' == c) --sbcnt;
-        else if (',' == c && 0 == rbcnt && 0 == sbcnt) break;
-      }
-
-      m0[i++] = 0;
-    }
-
-    if (i < size) {
-      int rbcnt = 0;
-      int sbcnt = 0;
-
-      *o3 = m0 + i;
-      for ( ; i < size; ++i) {
-        char c = m0[i];
-        if ('(' == c) ++rbcnt;
-        else if (')' == c) --rbcnt;
-        else if ('[' == c) ++sbcnt;
-        else if (']' == c) --sbcnt;
-        else if (',' == c && 0 == rbcnt && 0 == sbcnt) break;
-      }
-
-      m0[i++] = 0;
-    }
-
-    if (i < size) {
-      int rbcnt = 0;
-      int sbcnt = 0;
-
-      *o4 = m0 + i;
-      for ( ; i < size; ++i) {
-        char c = m0[i];
-        if ('(' == c) ++rbcnt;
-        else if (')' == c) --rbcnt;
-        else if ('[' == c) ++sbcnt;
-        else if (']' == c) --sbcnt;
-        else if (',' == c && 0 == rbcnt && 0 == sbcnt) break;
-      }
-
-      m0[i++] = 0;
-    }
-
-    if (i < size) {
-      int rbcnt = 0;
-      int sbcnt = 0;
-
-      *o5 = m0 + i;
-      for ( ; i < size; ++i) {
-        char c = m0[i];
-        if ('(' == c) ++rbcnt;
-        else if (')' == c) --rbcnt;
-        else if ('[' == c) ++sbcnt;
-        else if (']' == c) --sbcnt;
-        else if (',' == c && 0 == rbcnt && 0 == sbcnt) break;
-      }
-
-      m0[i++] = 0;
-    }
-
-    if (i < size) {
-      int rbcnt = 0;
-      int sbcnt = 0;
-
-      *o6 = m0 + i;
-      for ( ; i < size; ++i) {
-        char c = m0[i];
-        if ('(' == c) ++rbcnt;
-        else if (')' == c) --rbcnt;
-        else if ('[' == c) ++sbcnt;
-        else if (']' == c) --sbcnt;
-        else if (',' == c && 0 == rbcnt && 0 == sbcnt) break;
-      }
-
-      m0[i++] = 0;
-    }
-
-    if (i < size) {
-      *o7 = m0 + i;
-    }
-
-    if (*o1) {
-//      printf("++%s++", CAST(char*, *o1));
-      *o1 = oeskip(*o1, USE_STRLEN);
-    }
-    if (*o2) {
-//      printf("%s++", CAST(char*, *o2));
-      *o2 = oeskip(*o2, USE_STRLEN);
-    }
-    if (*o3) {
-//      printf("%s++", CAST(char*, *o3));
-      *o3 = oeskip(*o3, USE_STRLEN);
-    }
-    if (*o4) {
-//      printf("%s++", CAST(char*, *o4));
-      *o4 = oeskip(*o4, USE_STRLEN);
-    }
-    if (*o5) {
-//      printf("%s++", CAST(char*, *o5));
-      *o5 = oeskip(*o5, USE_STRLEN);
-    }
-    if (*o6) {
-//      printf("%s++", CAST(char*, *o6));
-      *o6 = oeskip(*o6, USE_STRLEN);
-    }
-    if (*o7) {
-//      printf("%s++", CAST(char*, *o7));
-      *o7 = oeskip(*o7, USE_STRLEN);
-    }
+    printf("\n");
 
     return *o1;
   }
@@ -791,9 +723,8 @@ static unknown_t oeinsert_operands(handle_t p, handle_t e, unknown_t q, unknown_
     poestruct_t q0 = CAST(poestruct_t, q);
 
     unknown_t m1 = NULL, m2 = NULL, m3 = NULL, m4 = NULL, m5 = NULL, m6 = NULL, m7 = NULL;
-    if (MODE_ISANY(q0->action, OCINSN_OPERAND1 | OCINSN_OPERAND2 | OCINSN_OPERAND3 | OCINSN_OPERAND4)) {
+    if (MODE_ISANY(q0->action, OCINSN_OPERAND1 | OCINSN_OPERAND2 | OCINSN_OPERAND3 | OCINSN_OPERAND4 | OCINSN_OPERAND5)) {
       oesplit(e, m, USE_STRLEN, &m1, &m2, &m3, &m4, &m5, &m6, &m7);
-
       if (m1) {
         e0->op1 = oeinsert_operand(p, e, q, m1);
       } else if (MODE_ISNOT(q0->action, OCINSN_OPERAND0)) {
@@ -805,7 +736,7 @@ static unknown_t oeinsert_operands(handle_t p, handle_t e, unknown_t q, unknown_
       }
     }
 
-    if (MODE_ISANY(q0->action, OCINSN_OPERAND2 | OCINSN_OPERAND3 | OCINSN_OPERAND4)) {
+    if (MODE_ISANY(q0->action, OCINSN_OPERAND2 | OCINSN_OPERAND3 | OCINSN_OPERAND4 | OCINSN_OPERAND5)) {
       if (m2) {
         e0->op2 = oeinsert_operand(p, e, q, m2);
       } else if (MODE_ISNOT(q0->action, OCINSN_OPERAND1)) {
@@ -817,7 +748,7 @@ static unknown_t oeinsert_operands(handle_t p, handle_t e, unknown_t q, unknown_
       }
     }
 
-    if (MODE_ISANY(q0->action, OCINSN_OPERAND3 | OCINSN_OPERAND4)) {
+    if (MODE_ISANY(q0->action, OCINSN_OPERAND3 | OCINSN_OPERAND4 | OCINSN_OPERAND5)) {
       if (m3) {
         e0->op3 = oeinsert_operand(p, e, q, m3);
       } else if (MODE_ISNOT(q0->action, OCINSN_OPERAND2)) {
@@ -829,7 +760,7 @@ static unknown_t oeinsert_operands(handle_t p, handle_t e, unknown_t q, unknown_
       }
     }
 
-    if (MODE_ISANY(q0->action, OCINSN_OPERAND4)) {
+    if (MODE_ISANY(q0->action, OCINSN_OPERAND4 | OCINSN_OPERAND5)) {
       if (m4) {
         e0->op4 = oeinsert_operand(p, e, q, m4);
       } else if (MODE_ISNOT(q0->action, OCINSN_OPERAND3)) {
@@ -838,6 +769,18 @@ static unknown_t oeinsert_operands(handle_t p, handle_t e, unknown_t q, unknown_
 #endif
       } else {
         e0->mc->cvalue &= ~OCINSN_OPERAND4;
+      }
+    }
+
+    if (MODE_ISANY(q0->action, OCINSN_OPERAND5)) {
+      if (m4) {
+        e0->op4 = oeinsert_operand(p, e, q, m4);
+      } else if (MODE_ISNOT(q0->action, OCINSN_OPERAND4)) {
+#ifdef OPCODE_EXAMINE_OPERAND
+        printf_e("Missing operand #5");
+#endif
+      } else {
+        e0->mc->cvalue &= ~OCINSN_OPERAND5;
       }
     }
   }
