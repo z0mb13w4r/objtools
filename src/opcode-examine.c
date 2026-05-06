@@ -528,6 +528,14 @@ static unknown_t oedo_register(handle_t p, handle_t e, unknown_t o, unknown_t m)
         o0->ivalue2 = oedecb(m0, USE_STRLEN);
         o0->cvalue |= OCOPERAND_IVALUE2;
         m0 = NULL;
+      } else {
+        poestruct_t r2 = oepick_REG(p, m0, USE_STRLEN);
+        if (r2) {
+          o0->uvalue2 = r2->action;
+          o0->cvalue |= OPOPERAND_REGISTER2;
+//printf("++%s:%s:%lx++", m0, r2->mc, r2->action);
+          m0 = oeskip(m0 + r2->mcsize, xstrlen(m0) - r2->mcsize);
+        }
       }
 
 #ifdef OPCODE_EXAMINE_OPERAND
