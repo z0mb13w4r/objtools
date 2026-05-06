@@ -488,17 +488,17 @@ static unknown_t oedo_opvalue(handle_t p, unknown_t m, uint64_t *cvalue, int64_t
 
     if (oeishexb(m0, USE_STRLEN)) {
       *uvalue = oehexb(m0, USE_STRLEN);
-      *cvalue |= MODE_ISANY(mask, OCOPERAND_UVALUE1 | OCOPERAND_UVALUE2 | OCOPERAND_UVALUE3 | OCOPERAND_UVALUE4 | OCOPERAND_UVALUE5 | OCOPERAND_UVALUE6 | OCOPERAND_UVALUE7);
+      *cvalue |= MODE_ISANY(mask, OCOPERAND_UVALUEMASK);
       m0 = NULL;
     } else if (oeisdecb(m0, USE_STRLEN)) {
       *ivalue = oedecb(m0, USE_STRLEN);
-      *cvalue |= MODE_ISANY(mask, OCOPERAND_IVALUE1 | OCOPERAND_IVALUE2 | OCOPERAND_IVALUE3 | OCOPERAND_IVALUE4 | OCOPERAND_IVALUE5 | OCOPERAND_IVALUE6 | OCOPERAND_IVALUE7);
+      *cvalue |= MODE_ISANY(mask, OCOPERAND_IVALUEMASK);
       m0 = NULL;
     } else {
       poestruct_t r0 = oepick_REG(p, m0, USE_STRLEN);
       if (r0) {
         *uvalue = r0->action;
-        *cvalue |= MODE_ISANY(mask, OPOPERAND_REGISTER1 | OPOPERAND_REGISTER2 | OPOPERAND_REGISTER3 | OPOPERAND_REGISTER4 | OPOPERAND_REGISTER5 | OPOPERAND_REGISTER6 | OPOPERAND_REGISTER7);
+        *cvalue |= MODE_ISANY(mask, OPOPERAND_REGISTERMASK);
 //printf("++%s:%s:%lx++", m0, r1->mc, r1->action);
         m0 = oeskip(m0 + r0->mcsize, xstrlen(m0) - r0->mcsize);
       }

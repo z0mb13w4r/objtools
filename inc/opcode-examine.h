@@ -159,6 +159,17 @@
 #define OCOPERAND_UVALUE7              (0x8000)
 #define OPOPERAND_REGISTER7            (0xc000)
 
+#define OCOPERAND_IVALUEMASK           (OCOPERAND_IVALUE0 | OCOPERAND_IVALUE1 | OCOPERAND_IVALUE2 \
+                                         | OCOPERAND_IVALUE3 | OCOPERAND_IVALUE4 | OCOPERAND_IVALUE5 \
+                                         | OCOPERAND_IVALUE6 | OCOPERAND_IVALUE7)
+#define OCOPERAND_UVALUEMASK           (OCOPERAND_IVALUE0 | OCOPERAND_UVALUE1 | OCOPERAND_UVALUE2 \
+                                         | OCOPERAND_UVALUE3 | OCOPERAND_UVALUE4 | OCOPERAND_UVALUE5 \
+                                         | OCOPERAND_UVALUE6 | OCOPERAND_UVALUE7)
+
+#define OPOPERAND_REGISTERMASK         (OPOPERAND_REGISTER0 | OPOPERAND_REGISTER1 | OPOPERAND_REGISTER2 \
+                                         | OPOPERAND_REGISTER3 | OPOPERAND_REGISTER4 | OPOPERAND_REGISTER5 \
+                                         | OPOPERAND_REGISTER6 | OPOPERAND_REGISTER7)
+
 #define OPOPERAND_SIZE                 U64MASK(51)
 // ----- GAP OPSIZE -----
 #define OPOPERAND_SEGMENT              U64MASK(55)
