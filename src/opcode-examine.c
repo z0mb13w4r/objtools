@@ -488,17 +488,17 @@ static unknown_t oedo_opvalue(handle_t p, unknown_t m, uint64_t *cvalue, int64_t
 
     if (oeishexb(m0, USE_STRLEN)) {
       *uvalue = oehexb(m0, USE_STRLEN);
-      *cvalue |= MODE_ISANY(mask, OCOPERAND_UVALUE1 | OCOPERAND_UVALUE2 | OCOPERAND_UVALUE3 | OCOPERAND_UVALUE4 | OCOPERAND_UVALUE5);
+      *cvalue |= MODE_ISANY(mask, OCOPERAND_UVALUE1 | OCOPERAND_UVALUE2 | OCOPERAND_UVALUE3 | OCOPERAND_UVALUE4 | OCOPERAND_UVALUE5 | OCOPERAND_UVALUE6 | OCOPERAND_UVALUE7);
       m0 = NULL;
     } else if (oeisdecb(m0, USE_STRLEN)) {
       *ivalue = oedecb(m0, USE_STRLEN);
-      *cvalue |= MODE_ISANY(mask, OCOPERAND_IVALUE1 | OCOPERAND_IVALUE2 | OCOPERAND_IVALUE3 | OCOPERAND_IVALUE4 | OCOPERAND_IVALUE5);
+      *cvalue |= MODE_ISANY(mask, OCOPERAND_IVALUE1 | OCOPERAND_IVALUE2 | OCOPERAND_IVALUE3 | OCOPERAND_IVALUE4 | OCOPERAND_IVALUE5 | OCOPERAND_IVALUE6 | OCOPERAND_IVALUE7);
       m0 = NULL;
     } else {
       poestruct_t r0 = oepick_REG(p, m0, USE_STRLEN);
       if (r0) {
         *uvalue = r0->action;
-        *cvalue |= MODE_ISANY(mask, OPOPERAND_REGISTER1 | OPOPERAND_REGISTER2 | OPOPERAND_REGISTER3 | OPOPERAND_REGISTER4 | OPOPERAND_REGISTER5);
+        *cvalue |= MODE_ISANY(mask, OPOPERAND_REGISTER1 | OPOPERAND_REGISTER2 | OPOPERAND_REGISTER3 | OPOPERAND_REGISTER4 | OPOPERAND_REGISTER5 | OPOPERAND_REGISTER6 | OPOPERAND_REGISTER7);
 //printf("++%s:%s:%lx++", m0, r1->mc, r1->action);
         m0 = oeskip(m0 + r0->mcsize, xstrlen(m0) - r0->mcsize);
       }
@@ -535,6 +535,8 @@ static unknown_t oedo_register(handle_t p, handle_t e, unknown_t o, unknown_t m)
       m0 = oedo_opvalue(p, m0, &o0->cvalue, &o0->ivalue3, &o0->uvalue3, OPOPERAND_REGISTER3);
       m0 = oedo_opvalue(p, m0, &o0->cvalue, &o0->ivalue4, &o0->uvalue4, OPOPERAND_REGISTER4);
       m0 = oedo_opvalue(p, m0, &o0->cvalue, &o0->ivalue5, &o0->uvalue5, OPOPERAND_REGISTER5);
+      m0 = oedo_opvalue(p, m0, &o0->cvalue, &o0->ivalue6, &o0->uvalue6, OPOPERAND_REGISTER6);
+      m0 = oedo_opvalue(p, m0, &o0->cvalue, &o0->ivalue7, &o0->uvalue7, OPOPERAND_REGISTER7);
 
 #ifdef OPCODE_EXAMINE_OPERAND
       if (m0) {

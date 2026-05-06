@@ -76,6 +76,22 @@ static int ocdebugf_cvalue1(handle_t p, uint64_t cv) {
       n += printf_text("UVALUE5", USE_LT | USE_SPACE);
     }
 
+    if (MODE_ISSET(cv, OPOPERAND_REGISTER6)) {
+      n += printf_text("REGISTER6", USE_LT | USE_SPACE);
+    } else if (MODE_ISSET(cv, OCOPERAND_IVALUE6)) {
+      n += printf_text("IVALUE6", USE_LT | USE_SPACE);
+    } else if (MODE_ISSET(cv, OCOPERAND_UVALUE6)) {
+      n += printf_text("UVALUE6", USE_LT | USE_SPACE);
+    }
+
+    if (MODE_ISSET(cv, OPOPERAND_REGISTER7)) {
+      n += printf_text("REGISTER7", USE_LT | USE_SPACE);
+    } else if (MODE_ISSET(cv, OCOPERAND_IVALUE7)) {
+      n += printf_text("IVALUE7", USE_LT | USE_SPACE);
+    } else if (MODE_ISSET(cv, OCOPERAND_UVALUE7)) {
+      n += printf_text("UVALUE7", USE_LT | USE_SPACE);
+    }
+
     if (0 == cv) {
       n += printf_nice(MODE_MASK12(cv), USE_UNKNOWN);
     }
@@ -241,6 +257,55 @@ static int ocdebugf_nvalue5(handle_t p, const uint64_t cv, const uint64_t nv) {
   return ECODE_HANDLE;
 }
 
+static int ocdebugf_nvalue6(handle_t p, const uint64_t cv, const uint64_t nv) {
+  if (isopcode(p)) {
+    int n = 0;
+
+    if (MODE_ISSET(cv, OPOPERAND_REGISTER6)) {
+      n += printf_text("REGISTER6", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_pick(oegetREGISTERNAMES(p), nv, USE_SPACE);
+      n += printf_mask(oegetREGISTERFLAGS(p), MODE_HIDE8(nv), USE_NONE);
+      n += printf_eol();
+    } else if (MODE_ISSET(cv, OCOPERAND_IVALUE6)) {
+      n += printf_text("IVALUE6", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_nice(nv, USE_DEC);
+      n += printf_eol();
+    } else if (MODE_ISSET(cv, OCOPERAND_UVALUE6)) {
+      n += printf_text("UVALUE6", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_nice(nv, USE_FHEX64);
+      n += printf_eol();
+    }
+
+    return n;
+  }
+
+  return ECODE_HANDLE;
+}
+
+static int ocdebugf_nvalue7(handle_t p, const uint64_t cv, const uint64_t nv) {
+  if (isopcode(p)) {
+    int n = 0;
+
+    if (MODE_ISSET(cv, OPOPERAND_REGISTER7)) {
+      n += printf_text("REGISTER7", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_pick(oegetREGISTERNAMES(p), nv, USE_SPACE);
+      n += printf_mask(oegetREGISTERFLAGS(p), MODE_HIDE8(nv), USE_NONE);
+      n += printf_eol();
+    } else if (MODE_ISSET(cv, OCOPERAND_IVALUE7)) {
+      n += printf_text("IVALUE7", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_nice(nv, USE_DEC);
+      n += printf_eol();
+    } else if (MODE_ISSET(cv, OCOPERAND_UVALUE7)) {
+      n += printf_text("UVALUE7", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_nice(nv, USE_FHEX64);
+      n += printf_eol();
+    }
+
+    return n;
+  }
+
+  return ECODE_HANDLE;
+}
 
 static int ocdebugf(handle_t p, handle_t q) {
   if (isopcode(p) && isocexamine(q)) {
@@ -281,6 +346,8 @@ static int ocdebugf(handle_t p, handle_t q) {
       n += ocdebugf_nvalue3(p, o0->cvalue, o0->uvalue3);
       n += ocdebugf_nvalue4(p, o0->cvalue, o0->uvalue4);
       n += ocdebugf_nvalue5(p, o0->cvalue, o0->uvalue5);
+      n += ocdebugf_nvalue6(p, o0->cvalue, o0->uvalue6);
+      n += ocdebugf_nvalue7(p, o0->cvalue, o0->uvalue7);
     }
     if (o1) {
       n += printf_text("OPERAND2", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
@@ -292,6 +359,8 @@ static int ocdebugf(handle_t p, handle_t q) {
       n += ocdebugf_nvalue3(p, o1->cvalue, o1->uvalue3);
       n += ocdebugf_nvalue4(p, o1->cvalue, o1->uvalue4);
       n += ocdebugf_nvalue5(p, o1->cvalue, o1->uvalue5);
+      n += ocdebugf_nvalue6(p, o1->cvalue, o1->uvalue6);
+      n += ocdebugf_nvalue7(p, o1->cvalue, o1->uvalue7);
     }
     if (o2) {
       n += printf_text("OPERAND3", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
@@ -303,6 +372,8 @@ static int ocdebugf(handle_t p, handle_t q) {
       n += ocdebugf_nvalue3(p, o2->cvalue, o2->uvalue3);
       n += ocdebugf_nvalue4(p, o2->cvalue, o2->uvalue4);
       n += ocdebugf_nvalue5(p, o2->cvalue, o2->uvalue5);
+      n += ocdebugf_nvalue6(p, o2->cvalue, o2->uvalue6);
+      n += ocdebugf_nvalue7(p, o2->cvalue, o2->uvalue7);
     }
     if (o3) {
       n += printf_text("OPERAND4", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
@@ -314,6 +385,8 @@ static int ocdebugf(handle_t p, handle_t q) {
       n += ocdebugf_nvalue3(p, o3->cvalue, o3->uvalue3);
       n += ocdebugf_nvalue4(p, o3->cvalue, o3->uvalue4);
       n += ocdebugf_nvalue5(p, o3->cvalue, o3->uvalue5);
+      n += ocdebugf_nvalue6(p, o3->cvalue, o3->uvalue6);
+      n += ocdebugf_nvalue7(p, o3->cvalue, o3->uvalue7);
     }
     n += printf_mark('+', 100, USE_EOL);
 
