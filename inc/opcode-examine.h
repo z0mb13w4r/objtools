@@ -244,8 +244,6 @@ handle_t oecreate(handle_t p, const uint64_t vaddr, unknown_t mnemonic, unknown_
 
 unknown_t oeget(handle_t p, const imode_t mode);
 unknown_t oejump(unknown_t p, const size_t size);
-size_t    oeskipdec(unknown_t p, const size_t size);
-size_t    oeskiphex(unknown_t p, const size_t size);
 
 uint64_t  oedecb(unknown_t p, const size_t size);
 uint64_t  oehexb(unknown_t p, const size_t size);
