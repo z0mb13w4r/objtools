@@ -14,6 +14,10 @@ bool_t fiseof(handle_t p) {
   return TRUE;
 }
 
+bool_t fisnull(handle_t p) {
+  return fiseof(p) || 0 == fpeeku8(p);
+}
+
 bool_t fisbe(handle_t p) {
   if (isfind(p)) {
     pfind_t p0 = CAST(pfind_t, p);

@@ -27,6 +27,7 @@ typedef struct find_s {
 bool_t isfind(handle_t p);
 
 bool_t fiseof(handle_t p);
+bool_t fisnull(handle_t p);
 
 bool_t fisbe(handle_t p);
 bool_t fisle(handle_t p);
