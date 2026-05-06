@@ -253,7 +253,7 @@ static poestruct_t oepick_SEG(handle_t p, unknown_t m, const size_t size) {
 }
 
 static bool_t oeisskipped(int c) {
-  return ' ' == c || '\t' == c || '%' == c ? TRUE : FALSE;
+  return ' ' == c || '\t' == c || '%' == c || '!' == c ? TRUE : FALSE;
 }
 
 static bool_t oeisstripped(int c0, int c1) {
@@ -360,6 +360,7 @@ static unknown_t oenext(handle_t p) {
         fnext(p);
       }
 
+      // null terminate the string.
       fsetu8(p, 0);
     }
 
