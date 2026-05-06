@@ -1,8 +1,8 @@
 #ifndef __OPCODE_EXAMINE_H_
 #define __OPCODE_EXAMINE_H_
 
-//#define OPCODE_EXAMINE_MNEMONIC
-//#define OPCODE_EXAMINE_OPERAND
+#define OPCODE_EXAMINE_MNEMONIC
+#define OPCODE_EXAMINE_OPERAND
 
 #include "opcode.h"
 #include "objutils.h"
@@ -88,6 +88,9 @@
 #define OCINSN_09               U64MASK(25)
 #define OCINSN_10               U64MASK(26)
 #define OCINSN_11               U64MASK(27)
+
+#define OCINSN_OPERAND6         (OCINSN_10)
+#define OCINSN_OPERAND7         (OCINSN_11)
 
 #define OCINSN_PACKED           U64MASK(28)
 #define OCINSN_ALIGNED          U64MASK(29)
@@ -244,7 +247,6 @@ handle_t oecreate(handle_t p, const uint64_t vaddr, unknown_t mnemonic, unknown_
 
 unknown_t oeget(handle_t p, const imode_t mode);
 unknown_t oejump(unknown_t p, const size_t size);
-unknown_t oeskip(unknown_t p, const size_t size);
 size_t    oeskipdec(unknown_t p, const size_t size);
 size_t    oeskiphex(unknown_t p, const size_t size);
 

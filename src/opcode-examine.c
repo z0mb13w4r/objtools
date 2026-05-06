@@ -259,7 +259,7 @@ static bool_t oeisstripped(int c0, int c1) {
   return ('(' == c0 && ')' == c1) || ('[' == c0 && ']' == c1);
 }
 
-unknown_t oeskip(unknown_t p, const size_t size) {
+static unknown_t oeskip(unknown_t p, const size_t size) {
   if (p && USE_STRLEN == size) {
     return oeskip(p, xstrlen(p));
   } else if (p && 0 != size) {
@@ -337,10 +337,10 @@ size_t oeskiphex(unknown_t p, const size_t size) {
   return 0;
 }
 
-unknown_t oesplit(handle_t e, unknown_t m, const size_t size, punknown_t o1, punknown_t o2, punknown_t o3, punknown_t o4) {
+static unknown_t oesplit(handle_t e, unknown_t m, const size_t size, punknown_t o1, punknown_t o2, punknown_t o3, punknown_t o4, punknown_t o5, punknown_t o6, punknown_t o7) {
   if (m && USE_STRLEN == size) {
-    return oesplit(e, m, xstrlen(m), o1, o2, o3, o4);
-  } else if (isocexamine(e) && m && o1 && o2 && o3 && o4) {
+    return oesplit(e, m, xstrlen(m), o1, o2, o3, o4, o5, o6, o7);
+  } else if (isocexamine(e) && m && o1 && o2 && o3 && o4 && o5 && o6 && o7) {
     char *m0 = CAST(char*, m);
 
     size_t i = 0;
@@ -396,7 +396,58 @@ unknown_t oesplit(handle_t e, unknown_t m, const size_t size, punknown_t o1, pun
     }
 
     if (i < size) {
+      int rbcnt = 0;
+      int sbcnt = 0;
+
       *o4 = m0 + i;
+      for ( ; i < size; ++i) {
+        char c = m0[i];
+        if ('(' == c) ++rbcnt;
+        else if (')' == c) --rbcnt;
+        else if ('[' == c) ++sbcnt;
+        else if (']' == c) --sbcnt;
+        else if (',' == c && 0 == rbcnt && 0 == sbcnt) break;
+      }
+
+      m0[i++] = 0;
+    }
+
+    if (i < size) {
+      int rbcnt = 0;
+      int sbcnt = 0;
+
+      *o5 = m0 + i;
+      for ( ; i < size; ++i) {
+        char c = m0[i];
+        if ('(' == c) ++rbcnt;
+        else if (')' == c) --rbcnt;
+        else if ('[' == c) ++sbcnt;
+        else if (']' == c) --sbcnt;
+        else if (',' == c && 0 == rbcnt && 0 == sbcnt) break;
+      }
+
+      m0[i++] = 0;
+    }
+
+    if (i < size) {
+      int rbcnt = 0;
+      int sbcnt = 0;
+
+      *o6 = m0 + i;
+      for ( ; i < size; ++i) {
+        char c = m0[i];
+        if ('(' == c) ++rbcnt;
+        else if (')' == c) --rbcnt;
+        else if ('[' == c) ++sbcnt;
+        else if (']' == c) --sbcnt;
+        else if (',' == c && 0 == rbcnt && 0 == sbcnt) break;
+      }
+
+      m0[i++] = 0;
+    }
+
+    if (i < size) {
+      *o7 = m0 + i;
     }
 
     if (*o1) {
@@ -414,6 +465,18 @@ unknown_t oesplit(handle_t e, unknown_t m, const size_t size, punknown_t o1, pun
     if (*o4) {
 //      printf("%s++", CAST(char*, *o4));
       *o4 = oeskip(*o4, USE_STRLEN);
+    }
+    if (*o5) {
+//      printf("%s++", CAST(char*, *o5));
+      *o5 = oeskip(*o5, USE_STRLEN);
+    }
+    if (*o6) {
+//      printf("%s++", CAST(char*, *o6));
+      *o6 = oeskip(*o6, USE_STRLEN);
+    }
+    if (*o7) {
+//      printf("%s++", CAST(char*, *o7));
+      *o7 = oeskip(*o7, USE_STRLEN);
     }
 
     return *o1;
@@ -598,8 +661,8 @@ static unknown_t oedo_value(handle_t p, handle_t e, unknown_t o, unknown_t m) {
 //printf("++%s++\n", m0);
       m0size = xstrlen(m0);
 
-      unknown_t m1 = NULL, m2 = NULL, m3 = NULL, m4 = NULL;
-      oesplit(e, m0, USE_STRLEN, &m1, &m2, &m3, &m4);
+      unknown_t m1 = NULL, m2 = NULL, m3 = NULL, m4 = NULL, m5 = NULL, m6 = NULL, m7 = NULL;
+      oesplit(e, m0, USE_STRLEN, &m1, &m2, &m3, &m4, &m5, &m6, &m7);
 //printf("++%s+%s+%s++", CAST(char*, m1), CAST(char*, m2), CAST(char*, m3));
 
       poestruct_t r1 = oepick_REG(p, m1, USE_STRLEN);
@@ -727,9 +790,9 @@ static unknown_t oeinsert_operands(handle_t p, handle_t e, unknown_t q, unknown_
     pocexamine_t e0 = oeget(e, OECODE_THIS);
     poestruct_t q0 = CAST(poestruct_t, q);
 
-    unknown_t m1 = NULL, m2 = NULL, m3 = NULL, m4 = NULL;
+    unknown_t m1 = NULL, m2 = NULL, m3 = NULL, m4 = NULL, m5 = NULL, m6 = NULL, m7 = NULL;
     if (MODE_ISANY(q0->action, OCINSN_OPERAND1 | OCINSN_OPERAND2 | OCINSN_OPERAND3 | OCINSN_OPERAND4)) {
-      oesplit(e, m, USE_STRLEN, &m1, &m2, &m3, &m4);
+      oesplit(e, m, USE_STRLEN, &m1, &m2, &m3, &m4, &m5, &m6, &m7);
 
       if (m1) {
         e0->op1 = oeinsert_operand(p, e, q, m1);
