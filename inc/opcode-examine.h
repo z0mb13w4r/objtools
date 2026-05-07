@@ -212,6 +212,8 @@
 
 #define MODE_OCEXAMINE                 (MODE_PUT0('O') | MODE_PUT1('C') | MODE_PUT2('E'))
 
+#define OCUNION_MAXSIZE                (32 + 1)
+
 #include "opcode-examine-arm.h"
 #include "opcode-examine-x86.h"
 #include "opcode-examine-mips.h"
@@ -232,34 +234,42 @@ typedef struct ocoperand_s {
   union {
     int64_t  ivalue0;
     uint64_t uvalue0;
+    char     svalue0[OCUNION_MAXSIZE];
   };
   union {
     int64_t  ivalue1;
     uint64_t uvalue1;
+    char     svalue1[OCUNION_MAXSIZE];
   };
   union {
     int64_t  ivalue2;
     uint64_t uvalue2;
+    char     svalue2[OCUNION_MAXSIZE];
   };
   union {
     int64_t  ivalue3;
     uint64_t uvalue3;
+    char     svalue3[OCUNION_MAXSIZE];
   };
   union {
     int64_t  ivalue4;
     uint64_t uvalue4;
+    char     svalue4[OCUNION_MAXSIZE];
   };
   union {
     int64_t  ivalue5;
     uint64_t uvalue5;
+    char     svalue5[OCUNION_MAXSIZE];
   };
   union {
     int64_t  ivalue6;
     uint64_t uvalue6;
+    char     svalue6[OCUNION_MAXSIZE];
   };
   union {
     int64_t  ivalue7;
     uint64_t uvalue7;
+    char     svalue7[OCUNION_MAXSIZE];
   };
 } ocoperand_t, *pocoperand_t;
 
