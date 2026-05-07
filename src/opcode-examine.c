@@ -602,8 +602,6 @@ static unknown_t oedo_value(handle_t p, handle_t e, unknown_t o, unknown_t m) {
     m0 = oeskip(m0 + m0size, USE_STRLEN);
     if (m0) {
 //printf("++%s++\n", m0);
-      m0size = xstrlen(m0);
-
       unknown_t m1 = NULL, m2 = NULL, m3 = NULL, m4 = NULL, m5 = NULL, m6 = NULL, m7 = NULL;
       oesplit(e, m0, USE_STRLEN, &m1, &m2, &m3, &m4, &m5, &m6, &m7);
 //printf("++%s+%s+%s++", STRING(m1), STRING(m2), STRING(m3));
