@@ -28,6 +28,9 @@
 #define OCINSNMIPS_UNSIGNED        (OCINSN_N)
 #define OCINSNMIPS_ZERO            (OCINSN_Z)
 
+#define OCINSNMIPS_DN              (OCINSN_L)
+#define OCINSNMIPS_UP              (OCINSN_G)
+
 #define OCINSNMIPS_EQ              (OCINSN_E)
 #define OCINSNMIPS_EQZ             (OCINSN_E | OCINSN_Z)
 #define OCINSNMIPS_GE              (OCINSN_GE)
@@ -97,6 +100,11 @@
 #define OCINSNMIPS_JAL             (OCINSNMIPS_Jxx | OCINSN_LINK)
 #define OCINSNMIPS_JALR            (OCINSNMIPS_JAL | OCINSN_REGISTER)
 #define OCINSNMIPS_JR              (OCINSNMIPS_Jxx | OCINSN_REGISTER)
+
+#define OCINSNMIPS_xEXT            (OCINSN_TOEXTEND | OCINSN_OPERAND2)
+#define OCINSNMIPS_SEXT            (OCINSNMIPS_xEXT | OCINSNMIPS_SIGNED)
+#define OCINSNMIPS_SEB             (OCINSNMIPS_SEXT | OCINSN_8BIT | OCINSN_32BIT | OCINSNMIPS_UP)
+#define OCINSNMIPS_SEH             (OCINSNMIPS_SEXT | OCINSN_16BIT | OCINSN_32BIT | OCINSNMIPS_UP)
 
 #define OCREGMIPS_R0               (0x00)
 #define OCREGMIPS_R1               (0x01)
