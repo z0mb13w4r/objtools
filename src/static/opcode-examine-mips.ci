@@ -48,6 +48,8 @@ static oestruct_t oeINSTRUCTIONS_MIPS[] = {
   OCSTRUCT("addu",      OCINSNMIPS_ADDU),
   OCSTRUCT("add",       OCINSNMIPS_ADD),
 
+  OCSTRUCT("daddu",     OCINSNMIPS_DADDU),
+
   OCSTRUCT("div",       OCINSNMIPS_DIV),
   OCSTRUCT("rem",       OCINSNMIPS_REM),
   OCSTRUCT("mul",       OCINSNMIPS_MUL),
