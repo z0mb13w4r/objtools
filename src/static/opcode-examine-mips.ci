@@ -28,6 +28,7 @@ static oestruct_t oeINSTRUCTIONS_MIPS[] = {
   OCSTRUCT("lhu",       OCINSNMISP_LHU),
   OCSTRUCT("lwu",       OCINSNMISP_LWU),
   OCSTRUCT("lb",        OCINSNMISP_LB),
+  OCSTRUCT("ld",        OCINSNMISP_LD),
   OCSTRUCT("lh",        OCINSNMISP_LH),
   OCSTRUCT("lw",        OCINSNMISP_LW),
 
