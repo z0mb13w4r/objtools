@@ -302,6 +302,8 @@ static size_t oeskipdec(unknown_t p, const size_t size) {
       return 2;
     } else if (size >= 1 && '+' == p0[0]) {
       return 1;
+    } else if (size >= 2 && '$' == p0[0] && '-' == p0[1]) {
+      return 2;
     } else if (size >= 1 && '$' == p0[0]) {
       return 1;
     } else if (size >= 2 && '#' == p0[0] && '-' == p0[1]) {
@@ -448,7 +450,10 @@ uint64_t oedecb(unknown_t p, const size_t size) {
   } else if (p && size) {
     size_t sz = oeskipdec(p, size);
     puchar_t p0 = CAST(puchar_t, p);
-    return ('-' == p0[0]) || ('#' == p0[0] && '-' == p0[1]) ? -decb(p0 + sz, size - sz) : decb(p0 + sz, size - sz);
+    return ('-' == p0[0])
+        || ('$' == p0[0] && '-' == p0[1])
+        || ('#' == p0[0] && '-' == p0[1])
+           ? -decb(p0 + sz, size - sz) : decb(p0 + sz, size - sz);
   }
 
   return decb(p, size);
