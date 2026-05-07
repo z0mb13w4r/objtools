@@ -606,46 +606,20 @@ static unknown_t oedo_value(handle_t p, handle_t e, unknown_t o, unknown_t m) {
 
       unknown_t m1 = NULL, m2 = NULL, m3 = NULL, m4 = NULL, m5 = NULL, m6 = NULL, m7 = NULL;
       oesplit(e, m0, USE_STRLEN, &m1, &m2, &m3, &m4, &m5, &m6, &m7);
-//printf("++%s+%s+%s++", CAST(char*, m1), CAST(char*, m2), CAST(char*, m3));
+//printf("++%s+%s+%s++", STRING(m1), STRING(m2), STRING(m3));
 
-      poestruct_t r1 = oepick_REG(p, m1, USE_STRLEN);
-      if (r1) {
-        o0->uvalue1 = r1->action;
-        o0->cvalue |= OPOPERAND_REGISTER1;
-//printf("++%s++", m0);
-        m1 = oeskip(m1 + r1->mcsize, xstrlen(m1) - r1->mcsize);
-      } else if (oeishexb(m1, USE_STRLEN)) {
-        o0->uvalue1 = oehexb(m1, USE_STRLEN);
-        o0->cvalue |= OCOPERAND_UVALUE1;
-        m1 = NULL;
-      }
+      m1 = oedo_opvalue(p, m1, &o0->cvalue, &o0->ivalue1, &o0->uvalue1, OPOPERAND_REGISTER1);
+      m2 = oedo_opvalue(p, m2, &o0->cvalue, &o0->ivalue2, &o0->uvalue2, OPOPERAND_REGISTER2);
+      m3 = oedo_opvalue(p, m3, &o0->cvalue, &o0->ivalue3, &o0->uvalue3, OPOPERAND_REGISTER3);
+      m4 = oedo_opvalue(p, m4, &o0->cvalue, &o0->ivalue4, &o0->uvalue4, OPOPERAND_REGISTER4);
+      m5 = oedo_opvalue(p, m5, &o0->cvalue, &o0->ivalue5, &o0->uvalue5, OPOPERAND_REGISTER5);
+      m6 = oedo_opvalue(p, m6, &o0->cvalue, &o0->ivalue6, &o0->uvalue6, OPOPERAND_REGISTER6);
+      m7 = oedo_opvalue(p, m7, &o0->cvalue, &o0->ivalue7, &o0->uvalue7, OPOPERAND_REGISTER7);
 
-      poestruct_t r2 = oepick_REG(p, m2, USE_STRLEN);
-      if (r2) {
-        o0->uvalue2 = r2->action;
-        o0->cvalue |= OPOPERAND_REGISTER2;
-//printf("++%s++", m2);
-        m2 = oeskip(m2 + r2->mcsize, xstrlen(m2) - r2->mcsize);
-      } else if (oeishexb(m2, USE_STRLEN)) {
-        o0->uvalue2 = oehexb(m2, USE_STRLEN);
-        o0->cvalue |= OCOPERAND_UVALUE2;
-        m2 = NULL;
-      }
-
-      poestruct_t r3 = oepick_REG(p, m3, USE_STRLEN);
-      if (r3) {
-        o0->uvalue3 = r3->action;
-        o0->cvalue |= OPOPERAND_REGISTER3;
-//printf("++%s++", m3);
-        m3 = oeskip(m3 + r3->mcsize, xstrlen(m3) - r3->mcsize);
-      } else if (oeishexb(m3, USE_STRLEN)) {
-        o0->uvalue3 = oehexb(m3, USE_STRLEN);
-        o0->cvalue |= OCOPERAND_UVALUE3;
-        m3 = NULL;
-      }
 #ifdef OPCODE_EXAMINE_OPERAND
-      if (m1 || m2 || m3) {
-        printf_e("The operand has not been processed '%s:%s:%s'", m1, m2, m3);
+      if (m1 || m2 || m3 || m4 || m5 || m6 || m7) {
+        printf_e("The operand has not been processed '%s:%s:%s:%s:%s:%s:%s'",
+                 STRING(m1), STRING(m2), STRING(m3), STRING(m4), STRING(m5), STRING(m6), STRING(m7));
       }
 #endif
     }

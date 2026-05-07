@@ -119,6 +119,10 @@
 #define FALSE        (0)
 #endif
 
+#ifndef STRING
+#define STRING(x)    ((x) ? CAST(char*, x) : "")
+#endif
+
 #define MODE_GET0(x)            MODE_MASK8((x) >>  0)
 #define MODE_GET1(x)            MODE_MASK8((x) >>  8)
 #define MODE_GET2(x)            MODE_MASK8((x) >> 16)
