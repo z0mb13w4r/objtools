@@ -113,18 +113,20 @@ static int ocdebugf_nvalueX(handle_t p, const uint64_t cv, const uint64_t nv, co
       n += printf_yoke("REGISTER", id, USE_LT | USE_COLON | SET_PAD(MAXSIZE));
       n += printf_pick(oegetREGISTERNAMES(p), nv, USE_SPACE);
       n += printf_mask(oegetREGISTERFLAGS(p), MODE_HIDE8(nv), USE_NONE);
+      n += printf_eol();
     } else if (MODE_ISSET(cv, MODE_ISANY(mask, OCOPERAND_IVALUEMASK))) {
       n += printf_yoke("IVALUE", id, USE_LT | USE_COLON | SET_PAD(MAXSIZE));
       n += printf_nice(nv, USE_DEC);
+      n += printf_eol();
     } else if (MODE_ISSET(cv, MODE_ISANY(mask, OCOPERAND_UVALUEMASK))) {
       n += printf_yoke("UVALUE", id, USE_LT | USE_COLON | SET_PAD(MAXSIZE));
       n += printf_nice(nv, USE_FHEX64);
+      n += printf_eol();
     } else if (sv[0]) {
       n += printf_yoke("UNKNOWN", id, USE_LT | USE_COLON | SET_PAD(MAXSIZE));
       n += printf_text(sv, USE_LT | USE_SPACE);
+      n += printf_eol();
     }
-
-    n += printf_eol();
 
     return n;
   }
