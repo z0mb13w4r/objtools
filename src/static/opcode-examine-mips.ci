@@ -75,6 +75,7 @@ static oestruct_t oeINSTRUCTIONS_MIPS[] = {
   OCSTRUCT("sra",       OCINSNMIPS_SRA),
   OCSTRUCT("srl",       OCINSNMIPS_SRL),
 
+  OCSTRUCT("dsll",      OCINSNMIPS_DSLL),
   OCSTRUCT("dsra",      OCINSNMIPS_DSRA),
   OCSTRUCT("dsrl",      OCINSNMIPS_DSRL),
 
