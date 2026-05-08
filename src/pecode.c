@@ -81,21 +81,34 @@ uint64_t peget_machine(const pbuffer_t p) {
 }
 
 WORD peget_sectioncount(const pbuffer_t p) {
-  if (isPE32(p))       return CAST(PIMAGE_NT_HEADERS32, peget_nt32hdr(p))->FileHeader.NumberOfSections;
-  else if (isPE64(p))  return CAST(PIMAGE_NT_HEADERS64, peget_nt64hdr(p))->FileHeader.NumberOfSections;
+  if (isPE32(p)) {
+    PIMAGE_NT_HEADERS32 p0 = peget_nt32hdr(p);
+    return p0 ? p0->FileHeader.NumberOfSections : 0;
+  } else if (isPE64(p)) {
+    PIMAGE_NT_HEADERS64 p0 = peget_nt64hdr(p);
+    return p0 ? p0->FileHeader.NumberOfSections : 0;
+  }
+
   return 0;
 }
 
 DWORD peget_addressofentrypoint(const pbuffer_t p) {
   if (isPE32(p)) {
-    DWORD vaddr = CAST(PIMAGE_NT_HEADERS32, peget_nt32hdr(p))->OptionalHeader.AddressOfEntryPoint;
-    PIMAGE_SECTION_HEADER p0 = peget_sectionhdrbyRVA(p, vaddr);
-    return p0 ? peconvert2va(p0, vaddr) : 0;
+    PIMAGE_NT_HEADERS32 p0 = peget_nt32hdr(p);
+    if (p0) {
+      DWORD vaddr = p0->OptionalHeader.AddressOfEntryPoint;
+      PIMAGE_SECTION_HEADER p1 = peget_sectionhdrbyRVA(p, vaddr);
+      return p1 ? peconvert2va(p1, vaddr) : 0;
+    }
   } else if (isPE64(p)) {
-    DWORD vaddr = CAST(PIMAGE_NT_HEADERS64, peget_nt64hdr(p))->OptionalHeader.AddressOfEntryPoint;
-    PIMAGE_SECTION_HEADER p0 = peget_sectionhdrbyRVA(p, vaddr);
-    return p0 ? peconvert2va(p0, vaddr) : 0;
+    PIMAGE_NT_HEADERS64 p0 = peget_nt64hdr(p);
+    if (p0) {
+      DWORD vaddr = p0->OptionalHeader.AddressOfEntryPoint;
+      PIMAGE_SECTION_HEADER p1 = peget_sectionhdrbyRVA(p, vaddr);
+      return p1 ? peconvert2va(p1, vaddr) : 0;
+    }
   }
+
   return 0;
 }
 
