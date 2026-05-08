@@ -533,6 +533,8 @@ bool_t isPE(const pbuffer_t p);
 bool_t isPE32(const pbuffer_t p);
 bool_t isPE64(const pbuffer_t p);
 
+uint64_t peget_machine(const pbuffer_t p);
+
 WORD peget_sectioncount(const pbuffer_t p);
 DWORD peget_addressofentrypoint(const pbuffer_t p);
 

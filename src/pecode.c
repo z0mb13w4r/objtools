@@ -68,6 +68,18 @@ bool_t isPE64(const pbuffer_t p) {
   return isPE(p) && checkbytes(p, zIS64BIT);
 }
 
+uint64_t peget_machine(const pbuffer_t p) {
+  if (isPE32(p)) {
+    PIMAGE_NT_HEADERS32 p0 = peget_nt32hdr(p);
+    return p0 ? p0->FileHeader.Machine : 0;
+  } else if (isPE64(p)) {
+    PIMAGE_NT_HEADERS64 p0 = peget_nt64hdr(p);
+    return p0 ? p0->FileHeader.Machine : 0;
+  }
+
+  return 0;
+}
+
 WORD peget_sectioncount(const pbuffer_t p) {
   if (isPE32(p))       return CAST(PIMAGE_NT_HEADERS32, peget_nt32hdr(p))->FileHeader.NumberOfSections;
   else if (isPE64(p))  return CAST(PIMAGE_NT_HEADERS64, peget_nt64hdr(p))->FileHeader.NumberOfSections;
