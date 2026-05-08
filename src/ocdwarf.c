@@ -61,17 +61,9 @@ bool_t ocdwarf_isneeded(handle_t p, handle_t s) {
 
 int ocdwarf_open(handle_t p, handle_t o) {
   if (isopcode(p) && isoptions(o)) {
+    ocsetup(p, o);
+
     popcode_t oc = ocget(p, OPCODE_THIS);
-    poptions_t op = CAST(poptions_t, o);
-
-    oc->action = op->action;
-    oc->ocdump = op->ocdump;
-    oc->saddress = op->saddress;
-    oc->eaddress = op->eaddress;
-
-    MEMCPYA(oc->inpname0, op->inpname0);
-    MEMCPYA(oc->inpname1, op->inpname1);
-
     oc->items[OPCODE_DWARF] = xmalloc(sizeof(ocdwarf_t), MODE_HEAP);
     if (oc->items[OPCODE_DWARF]) {
       pocdwarf_t ws = CAST(pocdwarf_t, oc->items[OPCODE_DWARF]);

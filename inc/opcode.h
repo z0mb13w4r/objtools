@@ -173,6 +173,7 @@ handle_t ocfree(handle_t p);
 handle_t ocopen(const char* name);
 handle_t ocattach(handle_t p);
 int occlose(handle_t p);
+int ocsetup(handle_t p, handle_t o);
 
 bool_t    ochas(handle_t p, const imode_t mode);
 unknown_t ocget(handle_t p, const imode_t mode);

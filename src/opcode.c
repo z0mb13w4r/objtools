@@ -1157,6 +1157,24 @@ int occlose(handle_t p) {
   return ECODE_HANDLE;
 }
 
+int ocsetup(handle_t p, handle_t o) {
+  if (isopcode(p) && isoptions(o)) {
+    popcode_t oc = ocget(p, OPCODE_THIS);
+    poptions_t op = CAST(poptions_t, o);
+
+    oc->action = op->action;
+    oc->ocdump = op->ocdump;
+    oc->saddress = op->saddress;
+    oc->eaddress = op->eaddress;
+
+    MEMCPYA(oc->inpname0, op->inpname0);
+    MEMCPYA(oc->inpname1, op->inpname1);
+    return ECODE_HANDLE;
+  }
+
+  return ECODE_HANDLE;
+}
+
 void occonfig(const char* name, const char* target) {
   static int isconfigured = 0;
 
@@ -1217,6 +1235,8 @@ int ocdo_sections(handle_t p, opcbfunc_t cbfunc, unknown_t param) {
 
 int ocdisassemble_open(handle_t p, handle_t o) {
   if (ocisPE(p) || ECODE_OK == ocdwarf_open(p, o)) {
+    ocsetup(p, o);
+
     popcode_t oc = ocget(p, OPCODE_THIS);
     if (MODE_ISSET(oc->action, OPTPROGRAM_CAPSTONE) || isattached(p)) {
       return capstone_open(p, o);
