@@ -70,6 +70,7 @@ static oestruct_t oeINSTRUCTIONS_x86_64[] = {
   OCSTRUCT("testq",     OCINSNX86_TESTQ),
   OCSTRUCT("testw",     OCINSNX86_TESTW),
   OCSTRUCT("test",      OCINSNX86_TEST),
+  OCSTRUCT("cmpxchgl",  OCINSNX86_CMPXCHGL),
   OCSTRUCT("cmpxchg",   OCINSNX86_CMPXCHG),
   OCSTRUCT("cmpb",      OCINSNX86_CMPB),
   OCSTRUCT("cmpl",      OCINSNX86_CMPL),
