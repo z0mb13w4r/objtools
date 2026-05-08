@@ -123,6 +123,10 @@
 #define STRING(x)    ((x) ? CAST(char*, x) : "")
 #endif
 
+#ifndef YESNO
+#define YESNO(x)     ((x) ? "y" : "n")
+#endif
+
 #define MODE_GET0(x)            MODE_MASK8((x) >>  0)
 #define MODE_GET1(x)            MODE_MASK8((x) >>  8)
 #define MODE_GET2(x)            MODE_MASK8((x) >> 16)
