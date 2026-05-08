@@ -61,6 +61,10 @@ static oestruct_t oeINSTRUCTIONS_MIPS[] = {
   OCSTRUCT("subu",      OCINSNMIPS_SUBU),
   OCSTRUCT("sub",       OCINSNMIPS_SUB),
 
+  OCSTRUCT("dsubiu",    OCINSNMIPS_DSUBIU),
+  OCSTRUCT("dsubi",     OCINSNMIPS_DSUBI),
+  OCSTRUCT("dsubu",     OCINSNMIPS_DSUBU),
+
   OCSTRUCT("andi",      OCINSNMIPS_ANDI),
   OCSTRUCT("and",       OCINSNMIPS_AND),
   OCSTRUCT("nori",      OCINSNMIPS_NORI),
