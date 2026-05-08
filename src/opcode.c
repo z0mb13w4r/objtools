@@ -500,18 +500,32 @@ uint64_t ocget_value(handle_t p) {
 }
 
 uint64_t ocget_machine(handle_t p) {
-  if (isopcode(p)) {
+  if (isopcode(p) || ismode(p, MODE_OCSHDR) || ismode(p, MODE_OCSHDR32) || ismode(p, MODE_OCSHDR64)) {
     handle_t p0 = ocget(p, OPCODE_RAWDATA);
-    return isELF(p0) ? ecget_emachine(p0) : 0;
-  } else if (ismode(p, MODE_OCSHDR)) {
-    handle_t p0 = ocget(p, OPCODE_RAWDATA);
-    return isELF(p0) ? ecget_emachine(p0) : 0;
-  } else if (ismode(p, MODE_OCSHDR32)) {
-    handle_t p0 = ocget(p, OPCODE_RAWDATA);
-    return isELF(p0) ? ecget_emachine(p0) : 0;
-  } else if (ismode(p, MODE_OCSHDR64)) {
-    handle_t p0 = ocget(p, OPCODE_RAWDATA);
-    return isELF(p0) ? ecget_emachine(p0) : 0;
+    if (isELF(p0)) {
+      return ecget_emachine(p0);
+    } else if (isPE(p0)) {
+      switch (peget_machine(p0)) {
+      case IMAGE_FILE_MACHINE_ARM:
+        return EM_ARM;
+      case IMAGE_FILE_MACHINE_ARM64:
+        return EM_AARCH64;
+      case IMAGE_FILE_MACHINE_RISCV32:
+      case IMAGE_FILE_MACHINE_RISCV64:
+      case IMAGE_FILE_MACHINE_RISCV128:
+        return EM_RISCV;
+      case IMAGE_FILE_MACHINE_MIPS16:
+      case IMAGE_FILE_MACHINE_MIPSFPU:
+      case IMAGE_FILE_MACHINE_MIPSFPU16:
+        return EM_MIPS_RS3_LE;
+      case IMAGE_FILE_MACHINE_I386:
+        return EM_386;
+      case IMAGE_FILE_MACHINE_IA64:
+        return EM_X86_64;
+      default:
+        break;
+      }
+    }
   }
 
   return 0;
