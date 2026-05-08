@@ -79,6 +79,11 @@ static oestruct_t oeINSTRUCTIONS_MIPS[] = {
   OCSTRUCT("sra",       OCINSNMIPS_SRA),
   OCSTRUCT("srl",       OCINSNMIPS_SRL),
 
+  OCSTRUCT("dsla32",    OCINSNMIPS_DSLA32),
+  OCSTRUCT("dsll32",    OCINSNMIPS_DSLL32),
+  OCSTRUCT("dsra32",    OCINSNMIPS_DSRA32),
+  OCSTRUCT("dsrl32",    OCINSNMIPS_DSRL32),
+
   OCSTRUCT("dsla",      OCINSNMIPS_DSLA),
   OCSTRUCT("dsll",      OCINSNMIPS_DSLL),
   OCSTRUCT("dsra",      OCINSNMIPS_DSRA),
@@ -203,6 +208,7 @@ static convert_t oeINSTRUCTIONFLAGS_MIPS[] = {
   {"LINK",              OCINSN_LINK},
 
   {"UPPER",             OCINSNMIPS_UPPER},
+  {"ADD32",             OCINSNMIPS_ADD32},
 
   {0, 0}
 };
