@@ -453,7 +453,12 @@ static oestruct_t oeINSTRUCTIONS_x86_64[] = {
   OCSTRUCT("inq",       OCINSNX86_INQ),
   OCSTRUCT("ins",       OCINSNX86_INS),
   OCSTRUCT("inw",       OCINSNX86_INW),
+
+  OCSTRUCT("outb",      OCINSNX86_OUTB),
+  OCSTRUCT("outl",      OCINSNX86_OUTL),
+  OCSTRUCT("outq",      OCINSNX86_OUTQ),
   OCSTRUCT("outs",      OCINSNX86_OUTS),
+  OCSTRUCT("outw",      OCINSNX86_OUTW),
 
   OCSTRUCT("cmpsb",     OCINSNX86_CMPSB),
   OCSTRUCT("cmpsl",     OCINSNX86_CMPSL),
@@ -787,7 +792,7 @@ static convert_t oeINSTRUCTIONNAMES_x86_64[] = {
   {"CVTSI2SD",          OCINSN_MASK(OCINSNX86_CVTSI2SD)},
   {"CVTTSD2SI",         OCINSN_MASK(OCINSNX86_CVTTSD2SI)},
   {"IN",                OCINSN_MASK(OCINSNX86_IN)},
-  {"OUTS",              OCINSN_MASK(OCINSNX86_OUTS)},
+  {"OUT",               OCINSN_MASK(OCINSNX86_OUT)},
   {"FINIT",             OCINSN_MASK(OCINSNX86_FINIT)},
   {"SHAx",              OCINSN_MASK(OCINSNX86_SHA1x)},
   {"PADDx",             OCINSN_MASK(OCINSNX86_PADDx)},
