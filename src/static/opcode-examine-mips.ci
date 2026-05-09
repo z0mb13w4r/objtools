@@ -253,7 +253,7 @@ static convert_t oeREGISTERFLAGS_MIPS[] = {
 };
 
 static convert_t oeREGISTERNAMES_MIPS[] = {
-  {"ZERO",              OCREGMIPS_R0},
+  {"RZERO",             OCREGMIPS_R0},
   {"AT",                OCREGMIPS_R1},
   {"V0",                OCREGMIPS_R2},
   {"V1",                OCREGMIPS_R3},

@@ -534,6 +534,8 @@ static oestruct_t oeREGISTERS_x86_64[] = {
   OCSTRUCT("gs",        OCREGISTER_GS),
   OCSTRUCT("fs",        OCREGISTER_FS),
 
+  OCSTRUCT("eiz",       OCREGISTER_ZERO),
+
   OCSTRUCT("rax",       OCREGISTER_RAX),
   OCSTRUCT("eax",       OCREGISTER_EAX),
   OCSTRUCT("ax",        OCREGISTER_AX),
@@ -866,6 +868,8 @@ static convert_t oeREGISTERNAMES_x86_64[] = {
   {"ES",                OCREGISTER_ES},
   {"GS",                OCREGISTER_GS},
   {"FS",                OCREGISTER_FS},
+
+  {"RZERO",             OCREGISTER_ZERO},
 
   {"RAX",               OCREGISTER_RAX},
   {"EAX",               OCREGISTER_EAX},
