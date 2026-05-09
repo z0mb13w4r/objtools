@@ -527,6 +527,8 @@ static oestruct_t oeINSTRUCTIONS_x86_64[] = {
 };
 
 static oestruct_t oeREGISTERS_x86_64[] = {
+  OCSTRUCT("cs",        OCREGISTER_CS),
+
   OCSTRUCT("rax",       OCREGISTER_RAX),
   OCSTRUCT("eax",       OCREGISTER_EAX),
   OCSTRUCT("ax",        OCREGISTER_AX),
@@ -852,6 +854,8 @@ static convert_t oeREGISTERFLAGS_x86_64[] = {
 };
 
 static convert_t oeREGISTERNAMES_x86_64[] = {
+  {"CS",                OCREGISTER_CS},
+
   {"RAX",               OCREGISTER_RAX},
   {"EAX",               OCREGISTER_EAX},
   {"AX",                OCREGISTER_AX},

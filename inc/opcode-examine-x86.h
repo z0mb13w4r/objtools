@@ -635,7 +635,9 @@
 #define OCREGISTER_ZMM14               ((0x76) | OCREGISTER_512BIT | OCREGISTER_ZMM)
 #define OCREGISTER_ZMM15               ((0x77) | OCREGISTER_512BIT | OCREGISTER_ZMM)
 
-#define OCREGISTER_ST                  ((0x78) | OCREGISTER_STACKIDX)
+#define OCREGISTER_CS                  ((0x78))
+
+#define OCREGISTER_ST                  ((0x79) | OCREGISTER_STACKIDX)
 
 #endif
 
