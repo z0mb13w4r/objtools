@@ -636,9 +636,14 @@
 #define OCREGISTER_ZMM14               ((0x76) | OCREGISTER_512BIT | OCREGISTER_ZMM)
 #define OCREGISTER_ZMM15               ((0x77) | OCREGISTER_512BIT | OCREGISTER_ZMM)
 
-#define OCREGISTER_CS                  ((0x78) | OCREGISTER_SEGMENT)
+#define OCREGISTER_ST                  ((0x78) | OCREGISTER_STACKIDX)
 
-#define OCREGISTER_ST                  ((0x79) | OCREGISTER_STACKIDX)
+#define OCREGISTER_CS                  ((0x79) | OCREGISTER_SEGMENT)
+#define OCREGISTER_DS                  ((0x7a) | OCREGISTER_SEGMENT)
+#define OCREGISTER_SS                  ((0x7b) | OCREGISTER_SEGMENT)
+#define OCREGISTER_ES                  ((0x7c) | OCREGISTER_SEGMENT)
+#define OCREGISTER_GS                  ((0x7d) | OCREGISTER_SEGMENT)
+#define OCREGISTER_FS                  ((0x7e) | OCREGISTER_SEGMENT)
 
 #endif
 
