@@ -828,6 +828,7 @@ convert_t oeSEGMENTFLAGS_x86_64[] = {
 };
 
 static convert_t oeREGISTERFLAGS_x86_64[] = {
+  {"SEGMENT",           OCREGISTER_SEGMENT},
   {"XMM",               OCREGISTER_XMM},
   {"YMM",               OCREGISTER_YMM},
   {"ZMM",               OCREGISTER_ZMM},

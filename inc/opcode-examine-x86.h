@@ -495,6 +495,7 @@
 #define OCREGISTER_COUNTER             (OCREGISTER_11)
 #define OCREGISTER_BASE                (OCREGISTER_12)
 #define OCREGISTER_ACCUMULATOR         (OCREGISTER_13)
+#define OCREGISTER_SEGMENT             (OCREGISTER_14)
 
 #define OCREGISTER_RAX                 ((0x01) | OCREGISTER_64BIT  | OCREGISTER_ACCUMULATOR)
 #define OCREGISTER_EAX                 ((0x02) | OCREGISTER_32BIT  | OCREGISTER_ACCUMULATOR)
@@ -635,7 +636,7 @@
 #define OCREGISTER_ZMM14               ((0x76) | OCREGISTER_512BIT | OCREGISTER_ZMM)
 #define OCREGISTER_ZMM15               ((0x77) | OCREGISTER_512BIT | OCREGISTER_ZMM)
 
-#define OCREGISTER_CS                  ((0x78))
+#define OCREGISTER_CS                  ((0x78) | OCREGISTER_SEGMENT)
 
 #define OCREGISTER_ST                  ((0x79) | OCREGISTER_STACKIDX)
 
