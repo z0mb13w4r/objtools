@@ -106,6 +106,7 @@ static oestruct_t oeINSTRUCTIONS_x86_64[] = {
   OCSTRUCT("pushq",     OCINSNX86_PUSHQ),
   OCSTRUCT("pushw",     OCINSNX86_PUSHW),
   OCSTRUCT("push",      OCINSNX86_PUSH),
+  OCSTRUCT("popa",      OCINSNX86_POPA),
   OCSTRUCT("popb",      OCINSNX86_POPB),
   OCSTRUCT("popl",      OCINSNX86_POPL),
   OCSTRUCT("popq",      OCINSNX86_POPQ),
