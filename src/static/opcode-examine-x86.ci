@@ -311,6 +311,10 @@ static oestruct_t oeINSTRUCTIONS_x86_64[] = {
   OCSTRUCT("cmovsq",    OCINSNX86_CMOVSQ),
   OCSTRUCT("cmovsw",    OCINSNX86_CMOVSW),
   OCSTRUCT("cmovs",     OCINSNX86_CMOVS),
+  OCSTRUCT("cmovzb",    OCINSNX86_CMOVZB),
+  OCSTRUCT("cmovzl",    OCINSNX86_CMOVZL),
+  OCSTRUCT("cmovzq",    OCINSNX86_CMOVZQ),
+  OCSTRUCT("cmovzw",    OCINSNX86_CMOVZW),
   OCSTRUCT("cmovz",     OCINSNX86_CMOVZ),
 
   OCSTRUCT("movsbl",    OCINSNX86_MOVSBL),
