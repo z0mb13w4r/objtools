@@ -799,7 +799,8 @@ handle_t oecreate(handle_t p, const uint64_t vaddr, unknown_t mnemonic, unknown_
 
     char* m1 = NULL;
     m1 = oeinsert_comment(e0, m0);
-    m1 = oeinsert_prefix(e0, m0);
+    m1 = oeinsert_prefix(e0, m1);
+
     poestruct_t pi = oepick(oegetINSTRUCTIONS(p), m1, USE_STRLEN);
 
     if (pi) {
