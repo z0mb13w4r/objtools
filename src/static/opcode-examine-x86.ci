@@ -457,6 +457,7 @@ static oestruct_t oeINSTRUCTIONS_x86_64[] = {
   OCSTRUCT("inl",       OCINSNX86_INL),
   OCSTRUCT("inq",       OCINSNX86_INQ),
   OCSTRUCT("inw",       OCINSNX86_INW),
+  OCSTRUCT("in",        OCINSNX86_IN),
 
   OCSTRUCT("outsb",     OCINSNX86_OUTSB),
   OCSTRUCT("outsl",     OCINSNX86_OUTSL),
@@ -466,6 +467,7 @@ static oestruct_t oeINSTRUCTIONS_x86_64[] = {
   OCSTRUCT("outl",      OCINSNX86_OUTL),
   OCSTRUCT("outq",      OCINSNX86_OUTQ),
   OCSTRUCT("outw",      OCINSNX86_OUTW),
+  OCSTRUCT("out",       OCINSNX86_OUT),
 
   OCSTRUCT("cmpsb",     OCINSNX86_CMPSB),
   OCSTRUCT("cmpsl",     OCINSNX86_CMPSL),
