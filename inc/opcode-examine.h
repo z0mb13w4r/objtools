@@ -23,7 +23,7 @@
 #define OCINSN_LOG10                   (210)
 #define OCINSN_FXCH                    (211)
 #define OCINSN_XCHG                    (212)
-#define OCINSN_INS                     (213)
+#define OCINSN_IN                      (213)
 #define OCINSN_OUTS                    (214)
 #define OCINSN_CMP                     (215)
 #define OCINSN_TST                     (216)
