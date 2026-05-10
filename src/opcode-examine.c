@@ -90,6 +90,18 @@ pconvert_t oegetINSTRUCTIONNAMES(handle_t p) {
   return NULL;
 }
 
+pconvert_t oegetPREFIXNAMES(handle_t p) {
+  switch (ocget_machine(p)) {
+  case EM_386:
+  case EM_X86_64:
+    return oePREFIXNAMES_x86_64;
+  default:
+    break;
+  }
+
+  return NULL;
+}
+
 pconvert_t oegetINSTRUCTIONFLAGS(handle_t p) {
   switch (ocget_machine(p)) {
   case EM_ARM:
@@ -171,6 +183,7 @@ handle_t oefree(handle_t p) {
     pocexamine_t p0 = CAST(pocexamine_t, p);
     xfree(p0->op1);
     xfree(p0->op2);
+    xfree(p0->pc);
     xfree(p0->mc);
     xfree(p);
     return NULL;
@@ -182,6 +195,8 @@ handle_t oefree(handle_t p) {
 unknown_t oeget(handle_t p, const imode_t mode) {
   if (isocexamine(p) && OECODE_THIS == mode) {
     return CAST(pocexamine_t, p);
+  } else if (isocexamine(p) && OECODE_PREFIX == mode) {
+    return CAST(pocexamine_t, p)->pc;
   } else if (isocexamine(p) && OECODE_MNEMONIC == mode) {
     return CAST(pocexamine_t, p)->mc;
   } else if (isocexamine(p) && OECODE_OPERAND1 == mode) {
@@ -670,17 +685,26 @@ static unknown_t oeinsert_comment(handle_t p, unknown_t m) {
   return NULL;
 }
 
-static unknown_t oeinsert_prefix(handle_t p, unknown_t m) {
-  if (isocexamine(p) && m) {
+static unknown_t oeinsert_prefix(handle_t p, handle_t e, unknown_t m) {
+  if (isocexamine(e) && m) {
     char *m0 = CAST(char*, m);
-    pocmnemonic_t p1 = oeget(p, OECODE_MNEMONIC);
-
     size_t m0size = xstrlen(m0);
+
     poestruct_t d0 = oepick(oegetPREFIXTYPES(p), m0, m0size);
-    if (p1 && d0) {
-      p1->cvalue |= d0->action;
+    if (d0) {
+      pocexamine_t e0 = oeget(e, OECODE_THIS);
+      pocmnemonic_t e1 = oeget(e, OECODE_PREFIX);
+      if (e0) {
+        if (NULL == e1) {
+          e1 = e0->pc = xmalloc(sizeof(ocmnemonic_t), MODE_HEAP);
+        }
+
+        if (e1) {
+          e1->cvalue |= d0->action;
 //printf("++%s++", d0->mc);
-      return oeskip(m0 + d0->mcsize, m0size - d0->mcsize);
+          return oeskip(m0 + d0->mcsize, m0size - d0->mcsize);
+        }
+      }
     }
 
     return oeskip(m0, m0size);
@@ -811,7 +835,7 @@ handle_t oecreate(handle_t p, const uint64_t vaddr, unknown_t mnemonic, unknown_
 
     char* m1 = NULL;
     m1 = oeinsert_comment(e0, m0);
-    m1 = oeinsert_prefix(e0, m1);
+    m1 = oeinsert_prefix(p, e0, m1);
 
     poestruct_t pi = oepick(oegetINSTRUCTIONS(p), m1, USE_STRLEN);
 
@@ -820,7 +844,7 @@ handle_t oecreate(handle_t p, const uint64_t vaddr, unknown_t mnemonic, unknown_
       m1 = oeinsert_operands(p, e0, pi, operands ? o0 : m1);
     } else {
 #ifdef OPCODE_EXAMINE_MNEMONIC
-      printf_e("The mnemonic is missing from the table oeINSTRUCTIONS");
+      printf_e("The mnemonic '%s' is missing from the table oeINSTRUCTIONS", m1);
 #endif
     }
   }

@@ -1,23 +1,24 @@
 #ifndef __OPCODE_EXAMINE_X86_H_
 #define __OPCODE_EXAMINE_X86_H_
 
-#define OCINSNX86_NOCHECK          (OCINSN_00)
-#define OCINSNX86_NOTRACK          (OCINSN_01)
-#define OCINSNX86_ONE              (OCINSN_02)
-#define OCINSNX86_TEN              (OCINSN_03)
-#define OCINSNX86_TWO              (OCINSN_04)
-#define OCINSNX86_FOUR             (OCINSN_05)
-#define OCINSNX86_ZERO             (OCINSN_06)
-#define OCINSNX86_EULER            (OCINSN_07)
-#define OCINSNX86_BND              (OCINSN_08)
-#define OCINSNX86_REP              (OCINSN_09)
-#define OCINSNX86_LOCK             (OCINSN_10)
-#define OCINSNX86_DATA             (OCINSN_11)
+#define OCINSNX86_NOCHECK          (0x00)
+#define OCINSNX86_NOTRACK          (0x01)
+#define OCINSNX86_BND              (0x02)
+#define OCINSNX86_REP              (0x03)
+#define OCINSNX86_LOCK             (0x04)
+#define OCINSNX86_DATA             (0x05)
 
 #define OCINSNX86_REPE             (OCINSNX86_REP | OCINSN_E)
 #define OCINSNX86_REPNE            (OCINSNX86_REP | OCINSN_NE)
 #define OCINSNX86_DATA16           (OCINSNX86_DATA | OCINSN_16BIT)
 #define OCINSNX86_DATA32           (OCINSNX86_DATA | OCINSN_32BIT)
+
+#define OCINSNX86_ONE              (OCINSN_00)
+#define OCINSNX86_TEN              (OCINSN_01)
+#define OCINSNX86_TWO              (OCINSN_02)
+#define OCINSNX86_FOUR             (OCINSN_03)
+#define OCINSNX86_ZERO             (OCINSN_04)
+#define OCINSNX86_EULER            (OCINSN_05)
 
 #define OCINSNX86_DN               (OCINSN_L)
 #define OCINSNX86_UP               (OCINSN_G)

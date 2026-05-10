@@ -11,11 +11,12 @@
 #define OCINSN_MASK(x)                 MODE_MASK16(x)
 
 #define OECODE_THIS                    (0)
-#define OECODE_MNEMONIC                (1)
-#define OECODE_OPERAND1                (2)
-#define OECODE_OPERAND2                (3)
-#define OECODE_OPERAND3                (4)
-#define OECODE_OPERAND4                (5)
+#define OECODE_PREFIX                  (1)
+#define OECODE_MNEMONIC                (2)
+#define OECODE_OPERAND1                (3)
+#define OECODE_OPERAND2                (4)
+#define OECODE_OPERAND3                (5)
+#define OECODE_OPERAND4                (6)
 
 #define OCINSN_PI                      (207)
 #define OCINSN_LOGE                    (208)
@@ -280,6 +281,7 @@ typedef struct ocexamine_s {
   uint64_t   vaddr;
   char       comment[160];
 
+  pocmnemonic_t pc;
   pocmnemonic_t mc;
   pocoperand_t  op1;
   pocoperand_t  op2;
@@ -302,6 +304,8 @@ bool_t    oeisdecb(unknown_t p, const size_t size);
 bool_t    oeishexb(unknown_t p, const size_t size);
 
 ppick_t oegetADDRLOOKUP(handle_t p);
+
+pconvert_t oegetPREFIXNAMES(handle_t p);
 pconvert_t oegetINSTRUCTIONFLAGS(handle_t p);
 pconvert_t oegetINSTRUCTIONNAMES(handle_t p);
 pconvert_t oegetREGISTERFLAGS(handle_t p);

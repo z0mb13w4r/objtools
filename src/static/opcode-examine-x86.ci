@@ -712,21 +712,25 @@ static oestruct_t oeSIZEPTRS_x86_64[] = {
   {NULL}
 };
 
-static convert_t oeINSTRUCTIONFLAGS_x86_64[] = {
+static convert_t oePREFIXNAMES_x86_64[] = {
   {"NOCHECK",           OCINSNX86_NOCHECK},
   {"NOTRACK",           OCINSNX86_NOTRACK},
 
+  {"BND",               OCINSNX86_BND},
+  {"REP",               OCINSNX86_REP},
+  {"DATA",              OCINSNX86_DATA},
+  {"LOCK",              OCINSNX86_LOCK},
+
+  {0, 0}
+};
+
+static convert_t oeINSTRUCTIONFLAGS_x86_64[] = {
   {"ONE",               OCINSNX86_ONE},
   {"TEN",               OCINSNX86_TEN},
   {"TWO",               OCINSNX86_TWO},
   {"FOUR",              OCINSNX86_FOUR},
   {"ZERO",              OCINSNX86_ZERO},
   {"EULER",             OCINSNX86_EULER},
-
-  {"BND",               OCINSNX86_BND},
-  {"REP",               OCINSNX86_REP},
-  {"DATA",              OCINSNX86_DATA},
-  {"LOCK",              OCINSNX86_LOCK},
 
   {"LINK",              OCINSN_LINK},
   {"ADDRESS",           OCINSN_ADDRESS},
