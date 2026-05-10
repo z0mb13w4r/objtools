@@ -1,6 +1,28 @@
 #ifndef __OPCODE_EXAMINE_X86_H_
 #define __OPCODE_EXAMINE_X86_H_
 
+#define OPOPERAND_SIZE             (OPOPERAND_00)
+#define OPOPERAND_SEGMENT          (OPOPERAND_01)
+#define OCOPERAND_ABSOLUTE         (OPOPERAND_02)
+
+#define OPSIZE_BYTEPTR             (OPOPERAND_05 | OPOPERAND_SIZE)
+#define OPSIZE_WORDPTR             (OPOPERAND_06 | OPOPERAND_SIZE)
+#define OPSIZE_DWORDPTR            (OPOPERAND_07 | OPOPERAND_SIZE)
+
+#define OPSEGMENT_CS               (OPOPERAND_08 | OPOPERAND_SEGMENT)
+#define OPSEGMENT_DS               (OPOPERAND_09 | OPOPERAND_SEGMENT)
+#define OPSEGMENT_SS               (OPOPERAND_10 | OPOPERAND_SEGMENT)
+#define OPSEGMENT_ES               (OPOPERAND_11 | OPOPERAND_SEGMENT)
+#define OPSEGMENT_GS               (OPOPERAND_12 | OPOPERAND_SEGMENT)
+#define OPSEGMENT_FS               (OPOPERAND_13 | OPOPERAND_SEGMENT)
+
+#define OCINSNX86_ONE              (OCINSN_00)
+#define OCINSNX86_TEN              (OCINSN_01)
+#define OCINSNX86_TWO              (OCINSN_02)
+#define OCINSNX86_FOUR             (OCINSN_03)
+#define OCINSNX86_ZERO             (OCINSN_04)
+#define OCINSNX86_EULER            (OCINSN_05)
+
 #define OCINSNX86_NOCHECK          (0x00)
 #define OCINSNX86_NOTRACK          (0x01)
 #define OCINSNX86_BND              (0x02)
@@ -15,13 +37,6 @@
 #define OCINSNX86_ADDR32           (OCINSNX86_ADDR | OCINSN_32BIT)
 #define OCINSNX86_DATA16           (OCINSNX86_DATA | OCINSN_16BIT)
 #define OCINSNX86_DATA32           (OCINSNX86_DATA | OCINSN_32BIT)
-
-#define OCINSNX86_ONE              (OCINSN_00)
-#define OCINSNX86_TEN              (OCINSN_01)
-#define OCINSNX86_TWO              (OCINSN_02)
-#define OCINSNX86_FOUR             (OCINSN_03)
-#define OCINSNX86_ZERO             (OCINSN_04)
-#define OCINSNX86_EULER            (OCINSN_05)
 
 #define OCINSNX86_DN               (OCINSN_L)
 #define OCINSNX86_UP               (OCINSN_G)

@@ -159,6 +159,20 @@
 #define OCOPERAND_IVALUE7              (0x4000)
 #define OCOPERAND_UVALUE7              (0x8000)
 #define OPOPERAND_REGISTER7            (0xc000)
+#define OPOPERAND_00                   U64MASK(50)
+#define OPOPERAND_01                   U64MASK(51)
+#define OPOPERAND_02                   U64MASK(52)
+#define OPOPERAND_03                   U64MASK(53)
+#define OPOPERAND_04                   U64MASK(54)
+#define OPOPERAND_05                   U64MASK(55)
+#define OPOPERAND_06                   U64MASK(56)
+#define OPOPERAND_07                   U64MASK(57)
+#define OPOPERAND_08                   U64MASK(58)
+#define OPOPERAND_09                   U64MASK(59)
+#define OPOPERAND_10                   U64MASK(60)
+#define OPOPERAND_11                   U64MASK(61)
+#define OPOPERAND_12                   U64MASK(62)
+#define OPOPERAND_13                   U64MASK(63)
 
 #define OCOPERAND_IVALUEMASK           (OCOPERAND_IVALUE0 | OCOPERAND_IVALUE1 | OCOPERAND_IVALUE2 \
                                          | OCOPERAND_IVALUE3 | OCOPERAND_IVALUE4 | OCOPERAND_IVALUE5 \
@@ -170,23 +184,6 @@
 #define OPOPERAND_REGISTERMASK         (OPOPERAND_REGISTER0 | OPOPERAND_REGISTER1 | OPOPERAND_REGISTER2 \
                                          | OPOPERAND_REGISTER3 | OPOPERAND_REGISTER4 | OPOPERAND_REGISTER5 \
                                          | OPOPERAND_REGISTER6 | OPOPERAND_REGISTER7)
-
-#define OPOPERAND_SIZE                 U64MASK(51)
-// ----- GAP OPSIZE -----
-#define OPOPERAND_SEGMENT              U64MASK(55)
-// ---- GAP OPSEGMENT ----
-#define OCOPERAND_ABSOLUTE             U64MASK(62)
-
-#define OPSIZE_BYTEPTR                 (U64MASK(52) | OPOPERAND_SIZE)
-#define OPSIZE_WORDPTR                 (U64MASK(53) | OPOPERAND_SIZE)
-#define OPSIZE_DWORDPTR                (U64MASK(54) | OPOPERAND_SIZE)
-
-#define OPSEGMENT_CS                   (U64MASK(56) | OPOPERAND_SEGMENT)
-#define OPSEGMENT_DS                   (U64MASK(57) | OPOPERAND_SEGMENT)
-#define OPSEGMENT_SS                   (U64MASK(58) | OPOPERAND_SEGMENT)
-#define OPSEGMENT_ES                   (U64MASK(59) | OPOPERAND_SEGMENT)
-#define OPSEGMENT_GS                   (U64MASK(60) | OPOPERAND_SEGMENT)
-#define OPSEGMENT_FS                   (U64MASK(61) | OPOPERAND_SEGMENT)
 
 #define OCREGISTER_00                  U64MASK(40)
 #define OCREGISTER_01                  U64MASK(41)
