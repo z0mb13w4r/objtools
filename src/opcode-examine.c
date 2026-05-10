@@ -38,6 +38,18 @@ ppick_t oegetADDRLOOKUP(handle_t p) {
   return NULL;
 }
 
+static poestruct_t oegetPREFIXTYPES(handle_t p) {
+  switch (ocget_machine(p)) {
+  case EM_386:
+  case EM_X86_64:
+    return oePREFIXTYPES_x86_64;
+  default:
+    break;
+  }
+
+  return NULL;
+}
+
 static poestruct_t oegetINSTRUCTIONS(handle_t p) {
   switch (ocget_machine(p)) {
   case EM_ARM:
@@ -664,7 +676,7 @@ static unknown_t oeinsert_prefix(handle_t p, unknown_t m) {
     pocmnemonic_t p1 = oeget(p, OECODE_MNEMONIC);
 
     size_t m0size = xstrlen(m0);
-    poestruct_t d0 = oepick(oePREFIXTYPES_x86_64, m0, m0size);
+    poestruct_t d0 = oepick(oegetPREFIXTYPES(p), m0, m0size);
     if (p1 && d0) {
       p1->cvalue |= d0->action;
 //printf("++%s++", d0->mc);
