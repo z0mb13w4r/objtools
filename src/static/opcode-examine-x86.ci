@@ -26,6 +26,7 @@ static oestruct_t oePREFIXTYPES_x86_64[] = {
 };
 
 static oestruct_t oeINSTRUCTIONS_x86_64[] = {
+  OCSTRUCT("lcall",     OCINSNX86_LCALL),
   OCSTRUCT("callb",     OCINSNX86_CALLB),
   OCSTRUCT("calll",     OCINSNX86_CALLL),
   OCSTRUCT("callq",     OCINSNX86_CALLQ),
