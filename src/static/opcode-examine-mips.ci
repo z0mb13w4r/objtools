@@ -183,6 +183,7 @@ static convert_t oeINSTRUCTIONFLAGS_MIPS[] = {
   {"L",                 OCINSN_L},
   {"N",                 OCINSN_N},
   {"O",                 OCINSN_O},
+  {"P",                 OCINSN_P},
   {"S",                 OCINSN_S},
   {"Z",                 OCINSN_Z},
   {"1BIT",              OCINSN_1BIT},
