@@ -273,6 +273,7 @@ static oestruct_t oeINSTRUCTIONS_x86_64[] = {
   OCSTRUCT("seto",      OCINSNX86_SETO),
   OCSTRUCT("sets",      OCINSNX86_SETS),
   OCSTRUCT("setz",      OCINSNX86_SETE),
+  OCSTRUCT("std",       OCINSNX86_SETD),
 
   OCSTRUCT("cmovnaeb",  OCINSNX86_CMOVBB),
   OCSTRUCT("cmovnael",  OCINSNX86_CMOVBL),
