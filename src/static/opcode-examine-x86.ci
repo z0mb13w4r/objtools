@@ -107,6 +107,7 @@ static oestruct_t oeINSTRUCTIONS_x86_64[] = {
   OCSTRUCT("leaveq",    OCINSNX86_LEAVEQ),
   OCSTRUCT("leavew",    OCINSNX86_LEAVEW),
   OCSTRUCT("leave",     OCINSNX86_LEAVE),
+  OCSTRUCT("lret",      OCINSNX86_LRET),
   OCSTRUCT("retb",      OCINSNX86_RETB),
   OCSTRUCT("retl",      OCINSNX86_RETL),
   OCSTRUCT("retq",      OCINSNX86_RETQ),
