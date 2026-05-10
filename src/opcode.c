@@ -521,6 +521,7 @@ uint64_t ocget_machine(handle_t p) {
       case IMAGE_FILE_MACHINE_I386:
         return EM_386;
       case IMAGE_FILE_MACHINE_IA64:
+      case IMAGE_FILE_MACHINE_AMD64:
         return EM_X86_64;
       default:
         break;
