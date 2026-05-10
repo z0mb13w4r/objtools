@@ -15,6 +15,13 @@ static oestruct_t oePREFIXTYPES_x86_64[] = {
   OCSTRUCT("data16",    OCINSNX86_DATA16),
   OCSTRUCT("data32",    OCINSNX86_DATA32),
 
+  OCSTRUCT("cs",        OCINSNX86_CS),
+  OCSTRUCT("ds",        OCINSNX86_DS),
+  OCSTRUCT("ss",        OCINSNX86_SS),
+  OCSTRUCT("es",        OCINSNX86_ES),
+  OCSTRUCT("gs",        OCINSNX86_GS),
+  OCSTRUCT("fs",        OCINSNX86_FS),
+
   {NULL}
 };
 
@@ -725,6 +732,13 @@ static convert_t oePREFIXNAMES_x86_64[] = {
   {"DATA",              OCINSNX86_DATA},
   {"LOCK",              OCINSNX86_LOCK},
 
+  {"CS",                OCINSNX86_CS},
+  {"DS",                OCINSNX86_DS},
+  {"SS",                OCINSNX86_SS},
+  {"ES",                OCINSNX86_ES},
+  {"GS",                OCINSNX86_GS},
+  {"FS",                OCINSNX86_FS},
+
   {0, 0}
 };
 
@@ -735,6 +749,7 @@ static convert_t oeINSTRUCTIONFLAGS_x86_64[] = {
   {"FOUR",              OCINSNX86_FOUR},
   {"ZERO",              OCINSNX86_ZERO},
   {"EULER",             OCINSNX86_EULER},
+  {"SEGMENT",           OCINSNX86_SEGMENT},
 
   {"LINK",              OCINSN_LINK},
   {"ADDRESS",           OCINSN_ADDRESS},

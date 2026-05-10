@@ -22,6 +22,7 @@
 #define OCINSNX86_FOUR             (OCINSN_03)
 #define OCINSNX86_ZERO             (OCINSN_04)
 #define OCINSNX86_EULER            (OCINSN_05)
+#define OCINSNX86_SEGMENT          (OCINSN_06)
 
 #define OCINSNX86_NOCHECK          (0x00)
 #define OCINSNX86_NOTRACK          (0x01)
@@ -30,6 +31,12 @@
 #define OCINSNX86_LOCK             (0x04)
 #define OCINSNX86_ADDR             (0x05)
 #define OCINSNX86_DATA             (0x06)
+#define OCINSNX86_CS               (0x07 | OCINSNX86_SEGMENT)
+#define OCINSNX86_DS               (0x08 | OCINSNX86_SEGMENT)
+#define OCINSNX86_SS               (0x09 | OCINSNX86_SEGMENT)
+#define OCINSNX86_ES               (0x0a | OCINSNX86_SEGMENT)
+#define OCINSNX86_GS               (0x0b | OCINSNX86_SEGMENT)
+#define OCINSNX86_FS               (0x0c | OCINSNX86_SEGMENT)
 
 #define OCINSNX86_REPE             (OCINSNX86_REP | OCINSN_E)
 #define OCINSNX86_REPNE            (OCINSNX86_REP | OCINSN_NE)
