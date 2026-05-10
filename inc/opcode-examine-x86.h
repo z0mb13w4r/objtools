@@ -6,10 +6,13 @@
 #define OCINSNX86_BND              (0x02)
 #define OCINSNX86_REP              (0x03)
 #define OCINSNX86_LOCK             (0x04)
-#define OCINSNX86_DATA             (0x05)
+#define OCINSNX86_ADDR             (0x05)
+#define OCINSNX86_DATA             (0x06)
 
 #define OCINSNX86_REPE             (OCINSNX86_REP | OCINSN_E)
 #define OCINSNX86_REPNE            (OCINSNX86_REP | OCINSN_NE)
+#define OCINSNX86_ADDR16           (OCINSNX86_ADDR | OCINSN_16BIT)
+#define OCINSNX86_ADDR32           (OCINSNX86_ADDR | OCINSN_32BIT)
 #define OCINSNX86_DATA16           (OCINSNX86_DATA | OCINSN_16BIT)
 #define OCINSNX86_DATA32           (OCINSNX86_DATA | OCINSN_32BIT)
 
