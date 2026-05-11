@@ -115,6 +115,7 @@ static oestruct_t oeINSTRUCTIONS_x86_64[] = {
   OCSTRUCT("leaveq",    OCINSNX86_LEAVEQ),
   OCSTRUCT("leavew",    OCINSNX86_LEAVEW),
   OCSTRUCT("leave",     OCINSNX86_LEAVE),
+  OCSTRUCT("iret",      OCINSNX86_IRET),
   OCSTRUCT("lret",      OCINSNX86_LRET),
   OCSTRUCT("retb",      OCINSNX86_RETB),
   OCSTRUCT("retl",      OCINSNX86_RETL),
@@ -850,6 +851,7 @@ static convert_t oeINSTRUCTIONNAMES_x86_64[] = {
   {"NOP",               OCINSN_MASK(OCINSNX86_NOP)},
   {"MOVyxx",            OCINSN_MASK(OCINSNX86_MOVyxx)},
 
+  {"IRET",              OCINSN_MASK(OCINSNX86_IRET)},
   {"xLDPI",             OCINSN_MASK(OCINSNX86_xLDPI)},
   {"xLDLEx",            OCINSN_MASK(OCINSNX86_xLDLEx)},
   {"xLDL2x",            OCINSN_MASK(OCINSNX86_xLDL2x)},
