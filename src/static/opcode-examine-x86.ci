@@ -595,6 +595,8 @@ static oestruct_t oeINSTRUCTIONS_x86_64[] = {
 
   OCSTRUCT("bound",     OCINSNX86_BOUND),
 
+  OCSTRUCT("arpl",      OCINSNX86_ARPL),
+
   OCSTRUCT("ud0",       OCINSNX86_UNDEF),
   OCSTRUCT("ud1",       OCINSNX86_UNDEF1),
   OCSTRUCT("ud2",       OCINSNX86_UNDEF2),
@@ -857,6 +859,8 @@ static convert_t oeINSTRUCTIONNAMES_x86_64[] = {
   {"MOVyxx",            OCINSN_MASK(OCINSNX86_MOVyxx)},
   {"CLR",               OCINSN_MASK(OCINSNX86_CLR)},
   {"SET",               OCINSN_MASK(OCINSNX86_SET)},
+  {"ADJUST",            OCINSN_MASK(OCINSNX86_ADJUST)},
+  {"RPL",               OCINSN_MASK(OCINSNX86_RPL)},
 
   {"CLRC",              OCINSN_MASK(OCINSNX86_CLRC)},
   {"CLRD",              OCINSN_MASK(OCINSNX86_CLRD)},
@@ -869,6 +873,7 @@ static convert_t oeINSTRUCTIONNAMES_x86_64[] = {
   {"xLDLEx",            OCINSN_MASK(OCINSNX86_xLDLEx)},
   {"xLDL2x",            OCINSN_MASK(OCINSNX86_xLDL2x)},
   {"xLDL10x",           OCINSN_MASK(OCINSNX86_xLDL10x)},
+  {"ARPL",              OCINSN_MASK(OCINSNX86_ARPL)},
 
   {"BT",                OCINSN_MASK(OCINSNX86_BT)},
   {"CALL",              OCINSN_MASK(OCINSNX86_CALL)},
