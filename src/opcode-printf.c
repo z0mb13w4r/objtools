@@ -112,7 +112,7 @@ static int ocdebugf_mcvalueZ(handle_t p, unknown_t m, const char *name, unknown_
 
     n += printf_text(name, USE_LT | USE_COLON | SET_PAD(MAXSIZE));
     n += printf_text(m0->data, USE_LT | USE_SPACE | USE_EOL);
-    n += ocdebugf_cvalue0(p, m0->cvalue, oegetPREFIXNAMES(p), oegetINSTRUCTIONFLAGS(p));
+    n += ocdebugf_cvalue0(p, m0->cvalue, x, y);
     if (0 != m0->uvalue) {
       n += printf_text("UVALUE", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
       n += opcode_printf_FADDR(p, m0->uvalue, USE_EOL);
@@ -210,7 +210,7 @@ static int ocdebugf(handle_t p, handle_t q) {
       n += ocdebugf_mcvalueZ(p, p2, "PREFIX3", oegetPREFIXNAMES(p), oegetINSTRUCTIONFLAGS(p));
     }
     if (m0) {
-      n += ocdebugf_mcvalueZ(p, p0, "MNEMONIC", oegetINSTRUCTIONNAMES(p), oegetINSTRUCTIONFLAGS(p));
+      n += ocdebugf_mcvalueZ(p, m0, "MNEMONIC", oegetINSTRUCTIONNAMES(p), oegetINSTRUCTIONFLAGS(p));
     }
     if (o0) {
       n += ocdebugf_opvalueZ(p, o0, "OPERAND1");
