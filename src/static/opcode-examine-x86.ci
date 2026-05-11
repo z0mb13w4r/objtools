@@ -558,6 +558,8 @@ static oestruct_t oeINSTRUCTIONS_x86_64[] = {
 
   OCSTRUCT("cpuid",     OCINSNX86_CPUID),
 
+  OCSTRUCT("bound",     OCINSNX86_BOUND),
+
   OCSTRUCT("ud0",       OCINSNX86_UNDEF),
   OCSTRUCT("ud1",       OCINSNX86_UNDEF1),
   OCSTRUCT("ud2",       OCINSNX86_UNDEF2),
@@ -865,6 +867,7 @@ static convert_t oeINSTRUCTIONNAMES_x86_64[] = {
   {"PSHUFx",            OCINSN_MASK(OCINSNX86_PSHUFx)},
   {"PCMPEQx",           OCINSN_MASK(OCINSNX86_PCMPEQx)},
   {"CPUID",             OCINSN_MASK(OCINSNX86_CPUID)},
+  {"BOUND",             OCINSN_MASK(OCINSNX86_BOUND)},
   {"UNDEF",             OCINSN_MASK(OCINSNX86_UNDEF)},
 
   {0, 0}
