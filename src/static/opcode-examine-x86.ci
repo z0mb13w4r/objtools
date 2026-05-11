@@ -321,6 +321,7 @@ static oestruct_t oeINSTRUCTIONS_x86_64[] = {
   OCSTRUCT("setz",      OCINSNX86_SETE),
   OCSTRUCT("stc",       OCINSNX86_SETC),
   OCSTRUCT("std",       OCINSNX86_SETD),
+  OCSTRUCT("sti",       OCINSNX86_SETI),
 
   OCSTRUCT("cmovnaeb",  OCINSNX86_CMOVBB),
   OCSTRUCT("cmovnael",  OCINSNX86_CMOVBL),
@@ -773,21 +774,21 @@ static oestruct_t oeSIZEPTRS_x86_64[] = {
 };
 
 static convert_t oePREFIXNAMES_x86_64[] = {
-  {"NOCHECK",           OCINSNX86_NOCHECK},
-  {"NOTRACK",           OCINSNX86_NOTRACK},
+  {"NOCHECK",           OCINSN_MASK(OCINSNX86_NOCHECK)},
+  {"NOTRACK",           OCINSN_MASK(OCINSNX86_NOTRACK)},
 
-  {"BND",               OCINSNX86_BND},
-  {"REP",               OCINSNX86_REP},
-  {"ADDR",              OCINSNX86_ADDR},
-  {"DATA",              OCINSNX86_DATA},
-  {"LOCK",              OCINSNX86_LOCK},
+  {"BND",               OCINSN_MASK(OCINSNX86_BND)},
+  {"REP",               OCINSN_MASK(OCINSNX86_REP)},
+  {"ADDR",              OCINSN_MASK(OCINSNX86_ADDR)},
+  {"DATA",              OCINSN_MASK(OCINSNX86_DATA)},
+  {"LOCK",              OCINSN_MASK(OCINSNX86_LOCK)},
 
-  {"CS",                OCINSNX86_CS},
-  {"DS",                OCINSNX86_DS},
-  {"SS",                OCINSNX86_SS},
-  {"ES",                OCINSNX86_ES},
-  {"GS",                OCINSNX86_GS},
-  {"FS",                OCINSNX86_FS},
+  {"CS",                OCINSN_MASK(OCINSNX86_CS)},
+  {"DS",                OCINSN_MASK(OCINSNX86_DS)},
+  {"SS",                OCINSN_MASK(OCINSNX86_SS)},
+  {"ES",                OCINSN_MASK(OCINSNX86_ES)},
+  {"GS",                OCINSN_MASK(OCINSNX86_GS)},
+  {"FS",                OCINSN_MASK(OCINSNX86_FS)},
 
   {0, 0}
 };
@@ -851,6 +852,9 @@ static convert_t oeINSTRUCTIONNAMES_x86_64[] = {
   {"NOP",               OCINSN_MASK(OCINSNX86_NOP)},
   {"MOVyxx",            OCINSN_MASK(OCINSNX86_MOVyxx)},
 
+  {"SETC",              OCINSN_MASK(OCINSNX86_SETC)},
+  {"SETD",              OCINSN_MASK(OCINSNX86_SETD)},
+  {"SETI",              OCINSN_MASK(OCINSNX86_SETI)},
   {"IRET",              OCINSN_MASK(OCINSNX86_IRET)},
   {"xLDPI",             OCINSN_MASK(OCINSNX86_xLDPI)},
   {"xLDLEx",            OCINSN_MASK(OCINSNX86_xLDLEx)},
