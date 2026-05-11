@@ -319,6 +319,10 @@ static oestruct_t oeINSTRUCTIONS_x86_64[] = {
   OCSTRUCT("seto",      OCINSNX86_SETO),
   OCSTRUCT("sets",      OCINSNX86_SETS),
   OCSTRUCT("setz",      OCINSNX86_SETE),
+
+  OCSTRUCT("clc",       OCINSNX86_CLRC),
+  OCSTRUCT("cld",       OCINSNX86_CLRD),
+  OCSTRUCT("cli",       OCINSNX86_CLRI),
   OCSTRUCT("stc",       OCINSNX86_SETC),
   OCSTRUCT("std",       OCINSNX86_SETD),
   OCSTRUCT("sti",       OCINSNX86_SETI),
@@ -851,7 +855,12 @@ static convert_t oeINSTRUCTIONNAMES_x86_64[] = {
   {"MOVE",              OCINSN_MASK(OCINSNX86_MOVE)},
   {"NOP",               OCINSN_MASK(OCINSNX86_NOP)},
   {"MOVyxx",            OCINSN_MASK(OCINSNX86_MOVyxx)},
+  {"CLR",               OCINSN_MASK(OCINSNX86_CLR)},
+  {"SET",               OCINSN_MASK(OCINSNX86_SET)},
 
+  {"CLRC",              OCINSN_MASK(OCINSNX86_CLRC)},
+  {"CLRD",              OCINSN_MASK(OCINSNX86_CLRD)},
+  {"CLRI",              OCINSN_MASK(OCINSNX86_CLRI)},
   {"SETC",              OCINSN_MASK(OCINSNX86_SETC)},
   {"SETD",              OCINSN_MASK(OCINSNX86_SETD)},
   {"SETI",              OCINSN_MASK(OCINSNX86_SETI)},
