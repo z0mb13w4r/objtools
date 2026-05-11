@@ -183,7 +183,11 @@ handle_t oefree(handle_t p) {
     pocexamine_t p0 = CAST(pocexamine_t, p);
     xfree(p0->op1);
     xfree(p0->op2);
-    xfree(p0->pc);
+    xfree(p0->op3);
+    xfree(p0->op4);
+    xfree(p0->pc1);
+    xfree(p0->pc2);
+    xfree(p0->pc3);
     xfree(p0->mc);
     xfree(p);
     return NULL;
@@ -195,8 +199,12 @@ handle_t oefree(handle_t p) {
 unknown_t oeget(handle_t p, const imode_t mode) {
   if (isocexamine(p) && OECODE_THIS == mode) {
     return CAST(pocexamine_t, p);
-  } else if (isocexamine(p) && OECODE_PREFIX == mode) {
-    return CAST(pocexamine_t, p)->pc;
+  } else if (isocexamine(p) && OECODE_PREFIX1 == mode) {
+    return CAST(pocexamine_t, p)->pc1;
+  } else if (isocexamine(p) && OECODE_PREFIX2 == mode) {
+    return CAST(pocexamine_t, p)->pc2;
+  } else if (isocexamine(p) && OECODE_PREFIX3 == mode) {
+    return CAST(pocexamine_t, p)->pc3;
   } else if (isocexamine(p) && OECODE_MNEMONIC == mode) {
     return CAST(pocexamine_t, p)->mc;
   } else if (isocexamine(p) && OECODE_OPERAND1 == mode) {
@@ -290,7 +298,7 @@ static bool_t oeisstripped(int c0, int c1) {
 static unknown_t oeskip(unknown_t p, const size_t size) {
   if (p && USE_STRLEN == size) {
     return oeskip(p, xstrlen(p));
-  } else if (p && 0 != size) {
+  } else if (p && 0 < size) {
     puchar_t p0 = CAST(puchar_t, p);
     for (size_t i = 0; i < size && *p0; ++i, ++p0) {
       if (!oeisskipped(*p0)) break;
@@ -688,26 +696,44 @@ static unknown_t oeinsert_comment(handle_t p, unknown_t m) {
 static unknown_t oeinsert_prefix(handle_t p, handle_t e, unknown_t m) {
   if (isocexamine(e) && m) {
     char *m0 = CAST(char*, m);
-    size_t m0size = xstrlen(m0);
 
-    poestruct_t d0 = oepick(oegetPREFIXTYPES(p), m0, m0size);
-    if (d0) {
-      pocexamine_t e0 = oeget(e, OECODE_THIS);
-      pocmnemonic_t e1 = oeget(e, OECODE_PREFIX);
-      if (e0) {
-        if (NULL == e1) {
-          e1 = e0->pc = xmalloc(sizeof(ocmnemonic_t), MODE_HEAP);
-        }
-
+    pocexamine_t e0 = oeget(e, OECODE_THIS);
+    if (e0) {
+      poestruct_t d1 = oepick(oegetPREFIXTYPES(p), m0, USE_STRLEN);
+      if (d1) {
+        pocmnemonic_t e1 = e0->pc1 = xmalloc(sizeof(ocmnemonic_t), MODE_HEAP);
         if (e1) {
-          e1->cvalue |= d0->action;
-//printf("++%s++", d0->mc);
-          return oeskip(m0 + d0->mcsize, m0size - d0->mcsize);
+          e1->cvalue |= d1->action;
+          xstrncpy(e1->data, d1->mc, d1->mcsize);
+//printf("++%s++", d1->mc);
+          m0 = oeskip(m0 + d1->mcsize, xstrlen(m0) - d1->mcsize);
+        }
+      }
+
+      poestruct_t d2 = oepick(oegetPREFIXTYPES(p), m0, USE_STRLEN);
+      if (d2) {
+        pocmnemonic_t e2 = e0->pc2 = xmalloc(sizeof(ocmnemonic_t), MODE_HEAP);
+        if (e2) {
+          e2->cvalue |= d2->action;
+          xstrncpy(e2->data, d2->mc, d2->mcsize);
+//printf("++%s++", d2->mc);
+          m0 = oeskip(m0 + d2->mcsize, xstrlen(m0) - d2->mcsize);
+        }
+      }
+
+      poestruct_t d3 = oepick(oegetPREFIXTYPES(p), m0, USE_STRLEN);
+      if (d3) {
+        pocmnemonic_t e3 = e0->pc3 = xmalloc(sizeof(ocmnemonic_t), MODE_HEAP);
+        if (e3) {
+          e3->cvalue |= d3->action;
+          xstrncpy(e3->data, d3->mc, d3->mcsize);
+//printf("++%s++", d3->mc);
+          m0 = oeskip(m0 + d3->mcsize, xstrlen(m0) - d3->mcsize);
         }
       }
     }
 
-    return oeskip(m0, m0size);
+    return oeskip(m0, USE_STRLEN);
   }
 
   return NULL;

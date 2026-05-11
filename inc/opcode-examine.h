@@ -11,12 +11,14 @@
 #define OCINSN_MASK(x)                 MODE_MASK16(x)
 
 #define OECODE_THIS                    (0)
-#define OECODE_PREFIX                  (1)
-#define OECODE_MNEMONIC                (2)
-#define OECODE_OPERAND1                (3)
-#define OECODE_OPERAND2                (4)
-#define OECODE_OPERAND3                (5)
-#define OECODE_OPERAND4                (6)
+#define OECODE_PREFIX1                 (1)
+#define OECODE_PREFIX2                 (2)
+#define OECODE_PREFIX3                 (3)
+#define OECODE_MNEMONIC                (4)
+#define OECODE_OPERAND1                (5)
+#define OECODE_OPERAND2                (6)
+#define OECODE_OPERAND3                (7)
+#define OECODE_OPERAND4                (8)
 
 #define OCINSN_PI                      (207)
 #define OCINSN_LOGE                    (208)
@@ -279,8 +281,10 @@ typedef struct ocexamine_s {
   uint64_t   vaddr;
   char       comment[160];
 
-  pocmnemonic_t pc;
   pocmnemonic_t mc;
+  pocmnemonic_t pc1;
+  pocmnemonic_t pc2;
+  pocmnemonic_t pc3;
   pocoperand_t  op1;
   pocoperand_t  op2;
   pocoperand_t  op3;
