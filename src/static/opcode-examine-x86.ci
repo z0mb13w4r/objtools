@@ -33,8 +33,11 @@ static oestruct_t oeINSTRUCTIONS_x86_64[] = {
   OCSTRUCT("callw",     OCINSNX86_CALLW),
   OCSTRUCT("call",      OCINSNX86_CALL),
 
+  OCSTRUCT("ljmp",      OCINSNX86_LJMP),
+  OCSTRUCT("jmpb",      OCINSNX86_JMPB),
   OCSTRUCT("jmpl",      OCINSNX86_JMPL),
   OCSTRUCT("jmpq",      OCINSNX86_JMPQ),
+  OCSTRUCT("jmpw",      OCINSNX86_JMPW),
   OCSTRUCT("jnae",      OCINSNX86_JB),
   OCSTRUCT("jnbe",      OCINSNX86_JA),
   OCSTRUCT("jnge",      OCINSNX86_JL),
