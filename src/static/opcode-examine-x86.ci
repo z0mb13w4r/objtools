@@ -596,6 +596,7 @@ static oestruct_t oeINSTRUCTIONS_x86_64[] = {
   OCSTRUCT("bound",     OCINSNX86_BOUND),
 
   OCSTRUCT("aaa",       OCINSNX86_AAA),
+  OCSTRUCT("aad",       OCINSNX86_AAD),
   OCSTRUCT("aam",       OCINSNX86_AAM),
   OCSTRUCT("aas",       OCINSNX86_AAS),
   OCSTRUCT("arpl",      OCINSNX86_ARPL),
@@ -881,6 +882,7 @@ static convert_t oeINSTRUCTIONNAMES_x86_64[] = {
   {"xLDL2x",            OCINSN_MASK(OCINSNX86_xLDL2x)},
   {"xLDL10x",           OCINSN_MASK(OCINSNX86_xLDL10x)},
   {"AAA",               OCINSN_MASK(OCINSNX86_AAA)},
+  {"AAD",               OCINSN_MASK(OCINSNX86_AAD)},
   {"AAM",               OCINSN_MASK(OCINSNX86_AAM)},
   {"AAS",               OCINSN_MASK(OCINSNX86_AAS)},
   {"ARPL",              OCINSN_MASK(OCINSNX86_ARPL)},
