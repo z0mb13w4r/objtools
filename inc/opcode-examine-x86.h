@@ -23,6 +23,7 @@
 #define OCINSNX86_ZERO             (OCINSN_04)
 #define OCINSNX86_EULER            (OCINSN_05)
 #define OCINSNX86_SEGMENT          (OCINSN_06)
+#define OCINSNX86_REGISTER         (OCINSN_07)
 
 #define OCPREFIX86_NOCHECK         (0x00)
 #define OCPREFIX86_NOTRACK         (0x01)
@@ -72,13 +73,14 @@
 #define OCINSNX86_TFLAG            ((0x07))
 #define OCINSNX86_DFLAG            ((0x08))
 #define OCINSNX86_OFLAG            ((0x09))
-#define OCINSNX86_AHFLAG           ((0x0a))
+#define OCINSNX86_AHFLAG           ((0x0a) | OCINSNX86_REGISTER)
 #define OCINSNX86_CS               ((0x0b) | OCINSNX86_SEGMENT)
 #define OCINSNX86_DS               ((0x0c) | OCINSNX86_SEGMENT)
 #define OCINSNX86_SS               ((0x0d) | OCINSNX86_SEGMENT)
 #define OCINSNX86_ES               ((0x0e) | OCINSNX86_SEGMENT)
 #define OCINSNX86_GS               ((0x0f) | OCINSNX86_SEGMENT)
 #define OCINSNX86_FS               ((0x10) | OCINSNX86_SEGMENT)
+#define OCINSNX86_LDTR             ((0x11) | OCINSNX86_REGISTER)
 #define OCINSNX86_ENDBR            ((0x20) | OCINSN_OPERAND0)
 #define OCINSNX86_LEAVE            ((0x21) | OCINSN_OPERAND0)
 #define OCINSNX86_CVTSI2SD         ((0x22) | OCINSN_OPERAND2)
@@ -141,6 +143,9 @@
 
 #define OCINSNX86_LAHF             (OCINSN_JOIN(OCINSN_LDA, OCINSNX86_AHFLAG) | OCINSN_OPERAND0)
 #define OCINSNX86_SAHF             (OCINSN_JOIN(OCINSN_STA, OCINSNX86_AHFLAG) | OCINSN_OPERAND0)
+
+#define OCINSNX86_LLDT             (OCINSN_JOIN(OCINSN_LDA, OCINSNX86_LDTR) | OCINSN_OPERAND1)
+#define OCINSNX86_SLDT             (OCINSN_JOIN(OCINSN_STA, OCINSNX86_LDTR) | OCINSN_OPERAND1)
 
 #define OCINSNX86_IRET             (OCINSN_JOIN(OCINSN_RET, OCINSNX86_IFLAG) | OCINSN_OPERAND0)
 

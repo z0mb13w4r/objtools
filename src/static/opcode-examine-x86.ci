@@ -613,6 +613,9 @@ static oestruct_t oeINSTRUCTIONS_x86_64[] = {
   OCSTRUCT("lahf",      OCINSNX86_LAHF),
   OCSTRUCT("sahf",      OCINSNX86_SAHF),
 
+  OCSTRUCT("lldt",      OCINSNX86_LLDT),
+  OCSTRUCT("sldt",      OCINSNX86_SLDT),
+
   OCSTRUCT("finit",     OCINSNX86_FINIT),
   OCSTRUCT("fninit",    OCINSNX86_FNINIT),
 
@@ -870,6 +873,7 @@ static convert_t oeINSTRUCTIONFLAGS_x86_64[] = {
   {"ZERO",              OCINSNX86_ZERO},
   {"EULER",             OCINSNX86_EULER},
   {"SEGMENT",           OCINSNX86_SEGMENT},
+  {"REGISTER",          OCINSNX86_REGISTER},
 
   {"LT",                OCINSN_LT},
   {"RT",                OCINSN_RT},
@@ -938,6 +942,7 @@ static convert_t oeINSTRUCTIONNAMES_x86_64[] = {
   {"DFLAG",             OCINSN_MASK(OCINSNX86_DFLAG)},
   {"OFLAG",             OCINSN_MASK(OCINSNX86_OFLAG)},
   {"AH<->FLAGS",        OCINSN_MASK(OCINSNX86_AHFLAG)},
+  {"LDTR",              OCINSN_MASK(OCINSNX86_LDTR)},
 
   {"CS",                OCINSN_MASK(OCINSNX86_CS)},
   {"DS",                OCINSN_MASK(OCINSNX86_DS)},
