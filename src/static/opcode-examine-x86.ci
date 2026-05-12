@@ -1,26 +1,26 @@
 static oestruct_t oePREFIXTYPES_x86_64[] = {
-  OCSTRUCT("bnd",       OCINSNX86_BND),
-  OCSTRUCT("lock",      OCINSNX86_LOCK),
-  OCSTRUCT("notrack",   OCINSNX86_NOTRACK),
+  OCSTRUCT("bnd",       OCPREFIX86_BND),
+  OCSTRUCT("lock",      OCPREFIX86_LOCK),
+  OCSTRUCT("notrack",   OCPREFIX86_NOTRACK),
 
-  OCSTRUCT("repne",     OCINSNX86_REPNE),
-  OCSTRUCT("repnz",     OCINSNX86_REPNE),
-  OCSTRUCT("repe",      OCINSNX86_REPE),
-  OCSTRUCT("repz",      OCINSNX86_REPE),
-  OCSTRUCT("rep",       OCINSNX86_REP),
+  OCSTRUCT("repne",     OCPREFIX86_REPNE),
+  OCSTRUCT("repnz",     OCPREFIX86_REPNE),
+  OCSTRUCT("repe",      OCPREFIX86_REPE),
+  OCSTRUCT("repz",      OCPREFIX86_REPE),
+  OCSTRUCT("rep",       OCPREFIX86_REP),
 
-  OCSTRUCT("addr16",    OCINSNX86_ADDR16),
-  OCSTRUCT("addr32",    OCINSNX86_ADDR32),
+  OCSTRUCT("addr16",    OCPREFIX86_ADDR16),
+  OCSTRUCT("addr32",    OCPREFIX86_ADDR32),
 
-  OCSTRUCT("data16",    OCINSNX86_DATA16),
-  OCSTRUCT("data32",    OCINSNX86_DATA32),
+  OCSTRUCT("data16",    OCPREFIX86_DATA16),
+  OCSTRUCT("data32",    OCPREFIX86_DATA32),
 
-  OCSTRUCT("cs",        OCINSNX86_CS),
-  OCSTRUCT("ds",        OCINSNX86_DS),
-  OCSTRUCT("ss",        OCINSNX86_SS),
-  OCSTRUCT("es",        OCINSNX86_ES),
-  OCSTRUCT("gs",        OCINSNX86_GS),
-  OCSTRUCT("fs",        OCINSNX86_FS),
+  OCSTRUCT("cs",        OCPREFIX86_CS),
+  OCSTRUCT("ds",        OCPREFIX86_DS),
+  OCSTRUCT("ss",        OCPREFIX86_SS),
+  OCSTRUCT("es",        OCPREFIX86_ES),
+  OCSTRUCT("gs",        OCPREFIX86_GS),
+  OCSTRUCT("fs",        OCPREFIX86_FS),
 
   {NULL}
 };
@@ -794,21 +794,21 @@ static oestruct_t oeSIZEPTRS_x86_64[] = {
 };
 
 static convert_t oePREFIXNAMES_x86_64[] = {
-  {"NOCHECK",           OCINSN_MASK(OCINSNX86_NOCHECK)},
-  {"NOTRACK",           OCINSN_MASK(OCINSNX86_NOTRACK)},
+  {"NOCHECK",           OCINSN_MASK(OCPREFIX86_NOCHECK)},
+  {"NOTRACK",           OCINSN_MASK(OCPREFIX86_NOTRACK)},
 
-  {"BND",               OCINSN_MASK(OCINSNX86_BND)},
-  {"REP",               OCINSN_MASK(OCINSNX86_REP)},
-  {"ADDR",              OCINSN_MASK(OCINSNX86_ADDR)},
-  {"DATA",              OCINSN_MASK(OCINSNX86_DATA)},
-  {"LOCK",              OCINSN_MASK(OCINSNX86_LOCK)},
+  {"BND",               OCINSN_MASK(OCPREFIX86_BND)},
+  {"REP",               OCINSN_MASK(OCPREFIX86_REP)},
+  {"ADDR",              OCINSN_MASK(OCPREFIX86_ADDR)},
+  {"DATA",              OCINSN_MASK(OCPREFIX86_DATA)},
+  {"LOCK",              OCINSN_MASK(OCPREFIX86_LOCK)},
 
-  {"CS",                OCINSN_MASK(OCINSNX86_CS)},
-  {"DS",                OCINSN_MASK(OCINSNX86_DS)},
-  {"SS",                OCINSN_MASK(OCINSNX86_SS)},
-  {"ES",                OCINSN_MASK(OCINSNX86_ES)},
-  {"GS",                OCINSN_MASK(OCINSNX86_GS)},
-  {"FS",                OCINSN_MASK(OCINSNX86_FS)},
+  {"CS",                OCINSN_MASK(OCPREFIX86_CS)},
+  {"DS",                OCINSN_MASK(OCPREFIX86_DS)},
+  {"SS",                OCINSN_MASK(OCPREFIX86_SS)},
+  {"ES",                OCINSN_MASK(OCPREFIX86_ES)},
+  {"GS",                OCINSN_MASK(OCPREFIX86_GS)},
+  {"FS",                OCINSN_MASK(OCPREFIX86_FS)},
 
   {0, 0}
 };
