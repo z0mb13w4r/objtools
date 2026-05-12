@@ -74,7 +74,7 @@
 #define OCINSN_TOFLOAT                 (254)
 #define OCINSN_TOEXTEND                (255)
 
-#define OCINSN_JOIN(x,y)               (MODE_PUT0(x) | MODE_PUT1(y))
+#define OCINSN_JOIN(x,y)               (MODE_HIDE16(x) | MODE_PUT0(x) | MODE_PUT1(y))
 
 #define OCINSN_ORN                     OCINSN_JOIN(OCINSN_ORR, OCINSN_NOT)
 #define OCINSN_ANDN                    OCINSN_JOIN(OCINSN_AND, OCINSN_NOT)
