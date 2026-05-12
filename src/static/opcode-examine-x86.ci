@@ -182,7 +182,6 @@ static oestruct_t oeINSTRUCTIONS_x86_64[] = {
   OCSTRUCT("divq",      OCINSNX86_DIVQ),
   OCSTRUCT("divw",      OCINSNX86_DIVW),
   OCSTRUCT("div",       OCINSNX86_DIV),
-
   OCSTRUCT("fiaddb",    OCINSNX86_FIADDB),
   OCSTRUCT("fiaddl",    OCINSNX86_FIADDL),
   OCSTRUCT("fiaddq",    OCINSNX86_FIADDQ),
@@ -191,7 +190,14 @@ static oestruct_t oeINSTRUCTIONS_x86_64[] = {
   OCSTRUCT("faddp",     OCINSNX86_FADDP),
   OCSTRUCT("fadds",     OCINSNX86_FADDS),
   OCSTRUCT("fadd",      OCINSNX86_FADD),
-
+  OCSTRUCT("fidivb",    OCINSNX86_FIDIVB),
+  OCSTRUCT("fidivl",    OCINSNX86_FIDIVL),
+  OCSTRUCT("fidivq",    OCINSNX86_FIDIVQ),
+  OCSTRUCT("fidivw",    OCINSNX86_FIDIVW),
+  OCSTRUCT("fidiv",     OCINSNX86_FIDIV),
+  OCSTRUCT("fdivp",     OCINSNX86_FDIVP),
+  OCSTRUCT("fdivs",     OCINSNX86_FDIVS),
+  OCSTRUCT("fdiv",      OCINSNX86_FDIV),
   OCSTRUCT("fimulb",    OCINSNX86_FIMULB),
   OCSTRUCT("fimull",    OCINSNX86_FIMULL),
   OCSTRUCT("fimulq",    OCINSNX86_FIMULQ),
