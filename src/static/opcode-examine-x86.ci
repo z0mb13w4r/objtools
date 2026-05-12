@@ -879,6 +879,13 @@ static convert_t oeINSTRUCTIONNAMES_x86_64[] = {
   {"ADJUSTDEC",         OCINSN_MASK(OCINSNX86_ADJUSTDEC)},
   {"RPL",               OCINSN_MASK(OCINSNX86_RPL)},
 
+  {"CS",                OCINSN_MASK(OCINSNX86_CS)},
+  {"DS",                OCINSN_MASK(OCINSNX86_DS)},
+  {"SS",                OCINSN_MASK(OCINSNX86_SS)},
+  {"ES",                OCINSN_MASK(OCINSNX86_ES)},
+  {"GS",                OCINSN_MASK(OCINSNX86_GS)},
+  {"FS",                OCINSN_MASK(OCINSNX86_FS)},
+
   {"BT",                OCINSN_MASK(OCINSNX86_BT)},
   {"CALL",              OCINSN_MASK(OCINSNX86_CALL)},
   {"ENDBR",             OCINSN_MASK(OCINSNX86_ENDBR)},
