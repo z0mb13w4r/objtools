@@ -183,13 +183,14 @@ static oestruct_t oeINSTRUCTIONS_x86_64[] = {
   OCSTRUCT("divw",      OCINSNX86_DIVW),
   OCSTRUCT("div",       OCINSNX86_DIV),
 
-  OCSTRUCT("fadd",      OCINSNX86_FADD),
-  OCSTRUCT("fadds",     OCINSNX86_FADDS),
-  OCSTRUCT("fiadd",     OCINSNX86_FIADD),
   OCSTRUCT("fiaddb",    OCINSNX86_FIADDB),
   OCSTRUCT("fiaddl",    OCINSNX86_FIADDL),
   OCSTRUCT("fiaddq",    OCINSNX86_FIADDQ),
   OCSTRUCT("fiaddw",    OCINSNX86_FIADDW),
+  OCSTRUCT("fiadd",     OCINSNX86_FIADD),
+  OCSTRUCT("faddp",     OCINSNX86_FADDP),
+  OCSTRUCT("fadds",     OCINSNX86_FADDS),
+  OCSTRUCT("fadd",      OCINSNX86_FADD),
 
   OCSTRUCT("fimulb",    OCINSNX86_FIMULB),
   OCSTRUCT("fimull",    OCINSNX86_FIMULL),
