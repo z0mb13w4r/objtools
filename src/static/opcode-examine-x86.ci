@@ -192,6 +192,8 @@ static oestruct_t oeINSTRUCTIONS_x86_64[] = {
   OCSTRUCT("idivq",     OCINSNX86_IDIVQ),
   OCSTRUCT("idivw",     OCINSNX86_IDIVW),
   OCSTRUCT("idiv",      OCINSNX86_IDIV),
+  OCSTRUCT("fimul",     OCINSNX86_FIMUL),
+  OCSTRUCT("fmulp",     OCINSNX86_FMULP),
   OCSTRUCT("fmul",      OCINSNX86_FMUL),
   OCSTRUCT("imulb",     OCINSNX86_IMULB),
   OCSTRUCT("imull",     OCINSNX86_IMULL),
