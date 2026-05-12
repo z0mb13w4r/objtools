@@ -9,6 +9,8 @@
 
 #define OCFLAG_MASK(x)                 MODE_HIDE16(x)
 #define OCINSN_MASK(x)                 MODE_MASK16(x)
+#define OCINSN_GET0(x)                 MODE_GET0(x)
+#define OCINSN_GET1(x)                 MODE_GET1(x)
 
 #define OECODE_THIS                    (0)
 #define OECODE_PREFIX1                 (1)

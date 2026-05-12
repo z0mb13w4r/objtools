@@ -9,9 +9,15 @@ static int ocdebugf_cvalue0(handle_t p, const uint64_t cv, const pconvert_t x, c
   if (isopcode(p)) {
     int n = 0;
 
+    const uint64_t cv0 = OCINSN_GET0(cv);
+    const uint64_t cv1 = OCINSN_GET1(cv);
+
     n += printf_text("CVALUE", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
     n += printf_nice(cv, USE_FHEX64);
-    n += printf_pick(x, OCINSN_MASK(cv), USE_SPACE);
+    n += printf_pick(x, cv0, USE_SPACE);
+    if (cv1) {
+      n += printf_pick(x, cv1, USE_SPACE);
+    }
     n += printf_mask(y, OCFLAG_MASK(cv), USE_NONE);
     n += printf_eol();
 
