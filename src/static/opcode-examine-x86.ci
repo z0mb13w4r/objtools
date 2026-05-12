@@ -509,6 +509,12 @@ static oestruct_t oeINSTRUCTIONS_x86_64[] = {
   OCSTRUCT("lea",       OCINSNX86_LEA),
   OCSTRUCT("fst",       OCINSNX86_FST),
 
+  OCSTRUCT("lds",       OCINSNX86_LDS),
+  OCSTRUCT("les",       OCINSNX86_LES),
+  OCSTRUCT("lfs",       OCINSNX86_LFS),
+  OCSTRUCT("lgs",       OCINSNX86_LGS),
+  OCSTRUCT("lss",       OCINSNX86_LSS),
+
   OCSTRUCT("cbw",       OCINSNX86_CBW),
   OCSTRUCT("cdqe",      OCINSNX86_CDQE),
   OCSTRUCT("cltd",      OCINSNX86_CLTQ),
