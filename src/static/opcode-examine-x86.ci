@@ -33,6 +33,11 @@ static oestruct_t oeINSTRUCTIONS_x86_64[] = {
   OCSTRUCT("callw",     OCINSNX86_CALLW),
   OCSTRUCT("call",      OCINSNX86_CALL),
 
+  OCSTRUCT("int3",      OCINSNX86_SYSCALL),
+  OCSTRUCT("int1",      OCINSNX86_SYSCALL),
+  OCSTRUCT("into",      OCINSNX86_SYSCALL),
+  OCSTRUCT("int",       OCINSNX86_SYSCALL),
+
   OCSTRUCT("ljmp",      OCINSNX86_LJMP),
   OCSTRUCT("jmpb",      OCINSNX86_JMPB),
   OCSTRUCT("jmpl",      OCINSNX86_JMPL),
@@ -959,6 +964,7 @@ static convert_t oeINSTRUCTIONNAMES_x86_64[] = {
 
   {"BT",                OCINSN_MASK(OCINSNX86_BT)},
   {"CALL",              OCINSN_MASK(OCINSNX86_CALL)},
+  {"SYSCALL",           OCINSN_MASK(OCINSNX86_SYSCALL)},
   {"ENDBR",             OCINSN_MASK(OCINSNX86_ENDBR)},
   {"Jxx",               OCINSN_MASK(OCINSNX86_JMP)},
   {"LOOP",              OCINSN_MASK(OCINSNX86_LOOP)},
