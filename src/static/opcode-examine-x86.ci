@@ -38,6 +38,8 @@ static oestruct_t oeINSTRUCTIONS_x86_64[] = {
   OCSTRUCT("into",      OCINSNX86_SYSCALL),
   OCSTRUCT("int",       OCINSNX86_SYSCALL),
 
+  OCSTRUCT("jecxz",     OCINSNX86_JECXZ),
+
   OCSTRUCT("ljmp",      OCINSNX86_LJMP),
   OCSTRUCT("jmpb",      OCINSNX86_JMPB),
   OCSTRUCT("jmpl",      OCINSNX86_JMPL),
@@ -1177,6 +1179,7 @@ static convert_t oeINSTRUCTIONNAMES_x86_64[] = {
   {"OFLAG",             OCINSN_MASK(OCINSNX86_OFLAG)},
   {"AH<->FLAGS",        OCINSN_MASK(OCINSNX86_AHFLAG)},
   {"LDTR",              OCINSN_MASK(OCINSNX86_LDTR)},
+  {"CX",                OCINSN_MASK(OCINSNX86_CX)},
 
   {"CS",                OCINSN_MASK(OCINSNX86_CS)},
   {"DS",                OCINSN_MASK(OCINSNX86_DS)},
