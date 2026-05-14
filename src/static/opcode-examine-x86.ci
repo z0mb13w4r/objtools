@@ -33,6 +33,7 @@ static oestruct_t oeINSTRUCTIONS_x86_64[] = {
   OCSTRUCT("callw",     OCINSNX86_CALLW),
   OCSTRUCT("call",      OCINSNX86_CALL),
 
+  OCSTRUCT("icebp",     OCINSNX86_SYSCALL),
   OCSTRUCT("int3",      OCINSNX86_SYSCALL),
   OCSTRUCT("int1",      OCINSNX86_SYSCALL),
   OCSTRUCT("into",      OCINSNX86_SYSCALL),
