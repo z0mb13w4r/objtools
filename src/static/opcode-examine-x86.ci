@@ -351,6 +351,7 @@ static oestruct_t oeINSTRUCTIONS_x86_64[] = {
   OCSTRUCT("andq",      OCINSNX86_ANDQ),
   OCSTRUCT("andw",      OCINSNX86_ANDW),
   OCSTRUCT("and",       OCINSNX86_AND),
+  OCSTRUCT("por",       OCINSNX86_POR),
   OCSTRUCT("orb",       OCINSNX86_ORB),
   OCSTRUCT("orl",       OCINSNX86_ORL),
   OCSTRUCT("orq",       OCINSNX86_ORQ),
@@ -889,6 +890,7 @@ static oestruct_t oeINSTRUCTIONS_x86_64[] = {
   OCSTRUCT("cpuid",     OCINSNX86_CPUID),
 
   OCSTRUCT("bound",     OCINSNX86_BOUND),
+  OCSTRUCT("xlat",      OCINSNX86_XLAT),
 
   OCSTRUCT("aaa",       OCINSNX86_AAA),
   OCSTRUCT("aad",       OCINSNX86_AAD),
@@ -1223,6 +1225,7 @@ static convert_t oeINSTRUCTIONNAMES_x86_64[] = {
   {"CVTTSD2SI",         OCINSN_MASK(OCINSNX86_CVTTSD2SI)},
   {"IN",                OCINSN_MASK(OCINSNX86_IN)},
   {"OUT",               OCINSN_MASK(OCINSNX86_OUT)},
+  {"XLAT",              OCINSN_MASK(OCINSNX86_XLAT)},
   {"FINIT",             OCINSN_MASK(OCINSNX86_FINIT)},
   {"SHAx",              OCINSN_MASK(OCINSNX86_SHA1x)},
   {"PADDx",             OCINSN_MASK(OCINSNX86_PADDx)},
