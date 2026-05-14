@@ -428,6 +428,8 @@ static oestruct_t oeINSTRUCTIONS_x86_64[] = {
   OCSTRUCT("sets",      OCINSNX86_SETS),
   OCSTRUCT("setz",      OCINSNX86_SETE),
 
+  OCSTRUCT("cmc",       OCINSNX86_CMC),
+
   OCSTRUCT("clc",       OCINSNX86_CLRC),
   OCSTRUCT("cld",       OCINSNX86_CLRD),
   OCSTRUCT("cli",       OCINSNX86_CLRI),
