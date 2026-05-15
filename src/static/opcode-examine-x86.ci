@@ -937,6 +937,7 @@ static oestruct_t oeINSTRUCTIONS_x86_64[] = {
   OCSTRUCT("ud1",       OCINSNX86_UNDEF1),
   OCSTRUCT("ud2",       OCINSNX86_UNDEF2),
 
+  OCSTRUCT("(bad)",     OCINSNX86_UNDEF),
   OCSTRUCT("bad",       OCINSNX86_UNDEF),
 
   {NULL}

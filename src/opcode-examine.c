@@ -291,8 +291,24 @@ static bool_t oeisskipped(int c) {
   return ' ' == c || '\t' == c || '%' == c || '!' == c ? TRUE : FALSE;
 }
 
-static bool_t oeisstripped(int c0, int c1) {
-  return ('(' == c0 && ')' == c1) || ('[' == c0 && ']' == c1) || ('{' == c0 && '}' == c1);
+static bool_t oeisstripped0(puchar_t p0, puchar_t p1, const int c0, const int c1) {
+//  printf("+++%c+++%c+++", *p0, *p1);
+  int32_t cnt = 0;
+  for (puchar_t p = p0 + 1; p < p1; ++p) {
+    if (c0 == *p) ++cnt;
+    else if (c1 == *p) {
+      --cnt;
+      if (cnt < 0) return FALSE;
+    }
+  }
+
+  return TRUE;
+}
+
+static bool_t oeisstripped(puchar_t p0, puchar_t p1) {
+  return ('(' == *p0 && ')' == *p1 && oeisstripped0(p0, p1, '(', ')'))
+      || ('[' == *p0 && ']' == *p1 && oeisstripped0(p0, p1, '[', ']'))
+      || ('{' == *p0 && '}' == *p1 && oeisstripped0(p0, p1, '{', '}'));
 }
 
 static unknown_t oeskip(unknown_t p, const size_t size) {
@@ -310,7 +326,7 @@ static unknown_t oeskip(unknown_t p, const size_t size) {
       *p1 = 0;
     }
 
-    if (oeisstripped(*p0, *p1)) {
+    if (oeisstripped(p0, p1)) {
       ++p0;
       *p1 = 0;
     }
