@@ -39,6 +39,7 @@ static oestruct_t oeINSTRUCTIONS_x86_64[] = {
   OCSTRUCT("into",      OCINSNX86_SYSCALL),
   OCSTRUCT("int",       OCINSNX86_SYSCALL),
 
+  OCSTRUCT("jcxz",      OCINSNX86_JCXZ),
   OCSTRUCT("jecxz",     OCINSNX86_JECXZ),
 
   OCSTRUCT("ljmp",      OCINSNX86_LJMP),
