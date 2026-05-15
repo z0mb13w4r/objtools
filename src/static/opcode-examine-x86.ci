@@ -768,11 +768,21 @@ static oestruct_t oeINSTRUCTIONS_x86_64[] = {
   OCSTRUCT("fld",       OCINSNX86_FLD),
 
   OCSTRUCT("fbstp",     OCINSNX86_FBSTP),
+
+  OCSTRUCT("fildb",     OCINSNX86_FILDB),
+  OCSTRUCT("fildll",    OCINSNX86_FILDL),
+  OCSTRUCT("fildl",     OCINSNX86_FILDL),
+  OCSTRUCT("fildq",     OCINSNX86_FILDQ),
+  OCSTRUCT("fildw",     OCINSNX86_FILDW),
+  OCSTRUCT("filds",     OCINSNX86_FILDS),
+  OCSTRUCT("fild",      OCINSNX86_FILD),
+
   OCSTRUCT("fstpb",     OCINSNX86_FSTPB),
   OCSTRUCT("fstpl",     OCINSNX86_FSTPL),
   OCSTRUCT("fstpq",     OCINSNX86_FSTPQ),
   OCSTRUCT("fstpt",     OCINSNX86_FSTPT),
   OCSTRUCT("fstpw",     OCINSNX86_FSTPW),
+  OCSTRUCT("fstps",     OCINSNX86_FSTPS),
   OCSTRUCT("fstp",      OCINSNX86_FSTP),
 
   OCSTRUCT("fisttpb",   OCINSNX86_FISTTPB),
