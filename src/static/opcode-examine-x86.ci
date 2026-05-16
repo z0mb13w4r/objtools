@@ -759,6 +759,8 @@ static oestruct_t oeINSTRUCTIONS_x86_64[] = {
 
   OCSTRUCT("fstcw",     OCINSNX86_FSTCW),
   OCSTRUCT("fnstcw",    OCINSNX86_FNSTCW),
+  OCSTRUCT("fstsw",     OCINSNX86_FSTSW),
+  OCSTRUCT("fnstsw",    OCINSNX86_FNSTSW),
   OCSTRUCT("fstenv",    OCINSNX86_FSTENV),
   OCSTRUCT("fnstenv",   OCINSNX86_FNSTENV),
 
@@ -787,14 +789,6 @@ static oestruct_t oeINSTRUCTIONS_x86_64[] = {
   OCSTRUCT("fildw",     OCINSNX86_FILDW),
   OCSTRUCT("filds",     OCINSNX86_FILDS),
   OCSTRUCT("fild",      OCINSNX86_FILD),
-
-  OCSTRUCT("fstpb",     OCINSNX86_FSTPB),
-  OCSTRUCT("fstpl",     OCINSNX86_FSTPL),
-  OCSTRUCT("fstpq",     OCINSNX86_FSTPQ),
-  OCSTRUCT("fstpt",     OCINSNX86_FSTPT),
-  OCSTRUCT("fstpw",     OCINSNX86_FSTPW),
-  OCSTRUCT("fstps",     OCINSNX86_FSTPS),
-  OCSTRUCT("fstp",      OCINSNX86_FSTP),
 
   OCSTRUCT("fisttpb",   OCINSNX86_FISTTPB),
   OCSTRUCT("fisttpll",  OCINSNX86_FISTTPL),
@@ -830,10 +824,20 @@ static oestruct_t oeINSTRUCTIONS_x86_64[] = {
   OCSTRUCT("leaq",      OCINSNX86_LEAQ),
   OCSTRUCT("leaw",      OCINSNX86_LEAW),
   OCSTRUCT("lea",       OCINSNX86_LEA),
+
+  OCSTRUCT("fstpb",     OCINSNX86_FSTPB),
+  OCSTRUCT("fstpl",     OCINSNX86_FSTPL),
+  OCSTRUCT("fstpq",     OCINSNX86_FSTPQ),
+  OCSTRUCT("fstpt",     OCINSNX86_FSTPT),
+  OCSTRUCT("fstpw",     OCINSNX86_FSTPW),
+  OCSTRUCT("fstps",     OCINSNX86_FSTPS),
+  OCSTRUCT("fstp",      OCINSNX86_FSTP),
   OCSTRUCT("fstb",      OCINSNX86_FSTB),
   OCSTRUCT("fstl",      OCINSNX86_FSTL),
   OCSTRUCT("fstq",      OCINSNX86_FSTQ),
   OCSTRUCT("fstw",      OCINSNX86_FSTW),
+  OCSTRUCT("fsts",      OCINSNX86_FSTS),
+  OCSTRUCT("fstp",      OCINSNX86_FSTP),
   OCSTRUCT("fst",       OCINSNX86_FST),
   OCSTRUCT("lds",       OCINSNX86_LDS),
   OCSTRUCT("les",       OCINSNX86_LES),
@@ -1268,6 +1272,7 @@ static convert_t oeINSTRUCTIONNAMES_x86_64[] = {
   {"BCD",               OCINSN_MASK(OCINSNX86_BCD)},
   {"ENV",               OCINSN_MASK(OCINSNX86_ENV)},
   {"CW",                OCINSN_MASK(OCINSNX86_CW)},
+  {"SW",                OCINSN_MASK(OCINSNX86_SW)},
   {"CX",                OCINSN_MASK(OCINSNX86_CX)},
 
   {"CS",                OCINSN_MASK(OCINSNX86_CS)},
