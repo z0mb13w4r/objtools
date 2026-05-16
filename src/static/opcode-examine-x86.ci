@@ -757,6 +757,9 @@ static oestruct_t oeINSTRUCTIONS_x86_64[] = {
   OCSTRUCT("fldenvs",   OCINSNX86_FLDENVS),
   OCSTRUCT("fldenv",    OCINSNX86_FLDENV),
 
+  OCSTRUCT("fstcw",     OCINSNX86_FSTCW),
+  OCSTRUCT("fnstcw",    OCINSNX86_FNSTCW),
+
   OCSTRUCT("fldl2e",    OCINSNX86_FLDL2E),
   OCSTRUCT("fldl2t",    OCINSNX86_FLDL2T),
   OCSTRUCT("fldlg2",    OCINSNX86_FLDLG2),
@@ -1190,6 +1193,7 @@ static convert_t oeINSTRUCTIONFLAGS_x86_64[] = {
   {"REVERSE",           OCINSNX86_REVERSE},
   {"SEGMENT",           OCINSNX86_SEGMENT},
   {"REGISTER",          OCINSNX86_REGISTER},
+  {"CHECK",             OCINSNX86_CHECK},
 
   {"LT",                OCINSN_LT},
   {"RT",                OCINSN_RT},
