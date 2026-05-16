@@ -435,6 +435,7 @@ static oestruct_t oeINSTRUCTIONS_x86_64[] = {
   OCSTRUCT("clc",       OCINSNX86_CLRC),
   OCSTRUCT("cld",       OCINSNX86_CLRD),
   OCSTRUCT("cli",       OCINSNX86_CLRI),
+  OCSTRUCT("clts",      OCINSNX86_CLTS),
   OCSTRUCT("stc",       OCINSNX86_SETC),
   OCSTRUCT("std",       OCINSNX86_SETD),
   OCSTRUCT("sti",       OCINSNX86_SETI),
