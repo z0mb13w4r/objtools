@@ -759,6 +759,8 @@ static oestruct_t oeINSTRUCTIONS_x86_64[] = {
 
   OCSTRUCT("fstcw",     OCINSNX86_FSTCW),
   OCSTRUCT("fnstcw",    OCINSNX86_FNSTCW),
+  OCSTRUCT("fstenv",    OCINSNX86_FSTENV),
+  OCSTRUCT("fnstenv",   OCINSNX86_FNSTENV),
 
   OCSTRUCT("fldl2e",    OCINSNX86_FLDL2E),
   OCSTRUCT("fldl2t",    OCINSNX86_FLDL2T),
