@@ -752,6 +752,7 @@ static oestruct_t oeINSTRUCTIONS_x86_64[] = {
   OCSTRUCT("movw",      OCINSNX86_MOVW),
   OCSTRUCT("mov",       OCINSNX86_MOVE),
 
+  OCSTRUCT("fbld",      OCINSNX86_FBLD),
   OCSTRUCT("fldcw",     OCINSNX86_FLDCW),
   OCSTRUCT("fldenvs",   OCINSNX86_FLDENVS),
   OCSTRUCT("fldenv",    OCINSNX86_FLDENV),
@@ -1258,6 +1259,7 @@ static convert_t oeINSTRUCTIONNAMES_x86_64[] = {
   {"OFLAG",             OCINSN_MASK(OCINSNX86_OFLAG)},
   {"AH<->FLAGS",        OCINSN_MASK(OCINSNX86_AHFLAG)},
   {"LDTR",              OCINSN_MASK(OCINSNX86_LDTR)},
+  {"BCD",               OCINSN_MASK(OCINSNX86_BCD)},
   {"ENV",               OCINSN_MASK(OCINSNX86_ENV)},
   {"CW",                OCINSN_MASK(OCINSNX86_CW)},
   {"CX",                OCINSN_MASK(OCINSNX86_CX)},
