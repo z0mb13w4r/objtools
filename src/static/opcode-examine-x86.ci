@@ -26,6 +26,14 @@ static oestruct_t oePREFIXTYPES_x86_64[] = {
 };
 
 static oestruct_t oeINSTRUCTIONS_x86_64[] = {
+  OCSTRUCT("fsincos",   OCINSNX86_FSINCOS),
+  OCSTRUCT("fabs",      OCINSNX86_FABS),
+  OCSTRUCT("fsqrt",     OCINSNX86_FSQRT),
+  OCSTRUCT("fcos",      OCINSNX86_FCOS),
+  OCSTRUCT("fsin",      OCINSNX86_FSIN),
+  OCSTRUCT("fptan",     OCINSNX86_FTAN),
+  OCSTRUCT("fpatan",    OCINSNX86_FATAN),
+
   OCSTRUCT("lcallb",    OCINSNX86_LCALLB),
   OCSTRUCT("lcalll",    OCINSNX86_LCALLL),
   OCSTRUCT("lcallq",    OCINSNX86_LCALLQ),
@@ -1290,6 +1298,13 @@ static convert_t oeINSTRUCTIONNAMES_x86_64[] = {
   {"ES",                OCINSN_MASK(OCINSNX86_ES)},
   {"GS",                OCINSN_MASK(OCINSNX86_GS)},
   {"FS",                OCINSN_MASK(OCINSNX86_FS)},
+
+  {"ABS",               OCINSN_MASK(OCINSNX86_FABS)},
+  {"SQRT",              OCINSN_MASK(OCINSNX86_FSQRT)},
+  {"COS",               OCINSN_MASK(OCINSNX86_FCOS)},
+  {"SIN",               OCINSN_MASK(OCINSNX86_FSIN)},
+  {"TAN",               OCINSN_MASK(OCINSNX86_FTAN)},
+  {"ATAN",              OCINSN_MASK(OCINSNX86_FATAN)},
 
   {"BT",                OCINSN_MASK(OCINSNX86_BT)},
   {"CALL",              OCINSN_MASK(OCINSNX86_CALL)},

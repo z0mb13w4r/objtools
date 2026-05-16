@@ -22,6 +22,12 @@
 #define OECODE_OPERAND3                (7)
 #define OECODE_OPERAND4                (8)
 
+#define OCINSN_ABS                     (198)
+#define OCINSN_SQRT                    (199)
+#define OCINSN_COS                     (200)
+#define OCINSN_SIN                     (201)
+#define OCINSN_TAN                     (202)
+#define OCINSN_ATAN                    (203)
 #define OCINSN_PI                      (204)
 #define OCINSN_LOGE                    (205)
 #define OCINSN_LOG2                    (206)
