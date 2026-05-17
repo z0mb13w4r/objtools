@@ -750,6 +750,9 @@ static oestruct_t oeINSTRUCTIONS_ARM[] = {
   OCSTRUCT("autiaz",    OCINSNARM_AUTIAZ),
   OCSTRUCT("autiaz",    OCINSNARM_AUTIZA),
 
+  OCSTRUCT("csinc",     OCINSNX86_CSINC),
+  OCSTRUCT("cinc",      OCINSNX86_CINC),
+
   OCSTRUCT("rev16",     OCINSNARM_REV16),
   OCSTRUCT("rev",       OCINSNARM_REV),
 
