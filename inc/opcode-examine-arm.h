@@ -7,7 +7,7 @@
 
 #define OCINSNARM_CARRY            (OCINSN_C)
 #define OCINSNARM_KEEP             (OCINSN_S)
-#define OCINSNARM_NEG              (OCINSN_N)
+#define OCINSNARM_NEGATIVE         (OCINSN_N)
 #define OCINSNARM_SIGNED           (OCINSN_S)
 #define OCINSNARM_STATUS           (OCINSN_S)
 #define OCINSNARM_UNSIGNED         (OCINSN_N)
@@ -16,8 +16,8 @@
 #define OCINSNARM_DN               (OCINSN_L)
 #define OCINSNARM_UP               (OCINSN_G)
 
-#define OCINSNARM_CC               (OCINSNARM_CARRY | OCINSNARM_CLR)
-#define OCINSNARM_CS               (OCINSNARM_CARRY | OCINSNARM_SET)
+#define OCINSNARM_CC               (OCINSN_C | OCINSNARM_CLR)
+#define OCINSNARM_CS               (OCINSN_C | OCINSNARM_SET)
 #define OCINSNARM_EQ               (OCINSN_E)
 #define OCINSNARM_GE               (OCINSN_GE)
 #define OCINSNARM_GT               (OCINSN_G)
@@ -25,9 +25,9 @@
 #define OCINSNARM_LE               (OCINSN_LE)
 #define OCINSNARM_LS               (OCINSN_Z | OCINSNARM_SET)
 #define OCINSNARM_LT               (OCINSN_L)
-#define OCINSNARM_MI               (OCINSNARM_NEG | OCINSNARM_SET)
+#define OCINSNARM_MI               (OCINSN_N | OCINSNARM_SET)
 #define OCINSNARM_NE               (OCINSN_NE)
-#define OCINSNARM_PL               (OCINSNARM_NEG | OCINSNARM_CLR)
+#define OCINSNARM_PL               (OCINSN_N | OCINSNARM_CLR)
 #define OCINSNARM_VC               (OCINSN_O | OCINSNARM_CLR)
 #define OCINSNARM_VS               (OCINSN_O | OCINSNARM_SET)
 
@@ -96,6 +96,8 @@
 #define OCINSNX86_CSINC            (OCINSN_JOIN(OCINSN_INC, OCINSN_CMP) | OCINSN_OPERAND4)
 #define OCINSNX86_CNEG             (OCINSN_JOIN(OCINSN_NEG, OCINSN_CMP) | OCINSN_OPERAND3)
 #define OCINSNX86_CSNEG            (OCINSN_JOIN(OCINSN_NEG, OCINSN_CMP) | OCINSN_OPERAND4)
+
+#define OCINSNARM_MOVN             (OCINSN_JOIN(OCINSN_MOV, OCINSN_NOT) | OCINSN_OPERAND2)
 
 #define OCINSNARM_TSTB             (OCINSNARM_TST | OCINSN_8BIT)
 #define OCINSNARM_TSTD             (OCINSNARM_TST | OCINSN_64BIT)
@@ -217,7 +219,7 @@
 #define OCINSNARM_CMPH             (OCINSNARM_CMP | OCINSN_16BIT)
 #define OCINSNARM_CMPW             (OCINSNARM_CMP | OCINSN_32BIT)
 
-#define OCINSNARM_CMN              (OCINSNARM_CMP | OCINSNARM_NEG)
+#define OCINSNARM_CMN              (OCINSNARM_CMP | OCINSNARM_NEGATIVE)
 #define OCINSNARM_CSEL             (OCINSNARM_CMP | OCINSNARM_SEL)
 #define OCINSNARM_CSET             (OCINSNARM_CMP | OCINSNARM_SET)
 
@@ -596,7 +598,6 @@
 #define OCINSNARM_STRHVS           (OCINSNARM_STRH | OCINSNARM_VS)
 
 #define OCINSNARM_MOVK             (OCINSNARM_MOVE | OCINSNARM_KEEP)
-#define OCINSNARM_MOVN             (OCINSNARM_MOVE | OCINSNARM_NEG)
 #define OCINSNARM_MOVS             (OCINSNARM_MOVE | OCINSNARM_STATUS)
 #define OCINSNARM_MOVZ             (OCINSNARM_MOVE | OCINSNARM_ZERO)
 
