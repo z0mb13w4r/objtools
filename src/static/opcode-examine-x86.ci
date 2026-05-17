@@ -965,6 +965,8 @@ static oestruct_t oeINSTRUCTIONS_x86_64[] = {
   OCSTRUCT("fwait",     OCINSNX86_FWAIT),
   OCSTRUCT("wait",      OCINSNX86_FWAIT),
 
+  OCSTRUCT("bswapl",    OCINSNX86_BSWAPL),
+  OCSTRUCT("bswapq",    OCINSNX86_BSWAPQ),
   OCSTRUCT("bswap",     OCINSNX86_BSWAP),
   OCSTRUCT("bsf",       OCINSNX86_BSF),
 
