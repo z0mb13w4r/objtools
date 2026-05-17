@@ -752,6 +752,8 @@ static oestruct_t oeINSTRUCTIONS_ARM[] = {
 
   OCSTRUCT("csinc",     OCINSNX86_CSINC),
   OCSTRUCT("cinc",      OCINSNX86_CINC),
+  OCSTRUCT("csneg",     OCINSNX86_CSNEG),
+  OCSTRUCT("cneg",      OCINSNX86_CNEG),
 
   OCSTRUCT("rev16",     OCINSNARM_REV16),
   OCSTRUCT("rev",       OCINSNARM_REV),
