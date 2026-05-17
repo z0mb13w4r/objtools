@@ -9,6 +9,9 @@ static oestruct_t oePREFIXTYPES_x86_64[] = {
   OCSTRUCT("repz",      OCPREFIX86_REPE),
   OCSTRUCT("rep",       OCPREFIX86_REP),
 
+  OCSTRUCT("rex.W",     OCPREFIX86_REX16),
+  OCSTRUCT("rex.L",     OCPREFIX86_REX32),
+
   OCSTRUCT("addr16",    OCPREFIX86_ADDR16),
   OCSTRUCT("addr32",    OCPREFIX86_ADDR32),
 
@@ -1193,6 +1196,8 @@ static convert_t oePREFIXNAMES_x86_64[] = {
 
   {"BND",               OCINSN_MASK(OCPREFIX86_BND)},
   {"REP",               OCINSN_MASK(OCPREFIX86_REP)},
+  {"REX",               OCINSN_MASK(OCPREFIX86_REX)},
+
   {"ADDR",              OCINSN_MASK(OCPREFIX86_ADDR)},
   {"DATA",              OCINSN_MASK(OCPREFIX86_DATA)},
   {"LOCK",              OCINSN_MASK(OCPREFIX86_LOCK)},
