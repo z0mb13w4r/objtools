@@ -755,6 +755,7 @@ static oestruct_t oeINSTRUCTIONS_x86_64[] = {
   OCSTRUCT("movaps",    OCINSNX86_MOVAPS),
   OCSTRUCT("movdqa",    OCINSNX86_MOVDQA),
   OCSTRUCT("movdqu",    OCINSNX86_MOVDQU),
+  OCSTRUCT("movlps",    OCINSNX86_MOVLPS),
   OCSTRUCT("movups",    OCINSNX86_MOVUPS),
   OCSTRUCT("movsb",     OCINSNX86_MOVSB),
   OCSTRUCT("movsd",     OCINSNX86_MOVSD),
