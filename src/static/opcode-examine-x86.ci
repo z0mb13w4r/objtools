@@ -875,6 +875,7 @@ static oestruct_t oeINSTRUCTIONS_x86_64[] = {
   OCSTRUCT("cwtl",      OCINSNX86_CWTL),
   OCSTRUCT("cqto",      OCINSNX86_CQTO),
   OCSTRUCT("xchgl",     OCINSNX86_XCHGL),
+  OCSTRUCT("xchgq",     OCINSNX86_XCHGQ),
   OCSTRUCT("xchg",      OCINSNX86_XCHG),
   OCSTRUCT("cvtsi2sd",  OCINSNX86_CVTSI2SD),
   OCSTRUCT("cvttsd2si", OCINSNX86_CVTTSD2SI),
