@@ -971,6 +971,9 @@ static oestruct_t oeINSTRUCTIONS_x86_64[] = {
   OCSTRUCT("bsfl",      OCINSNX86_BSFL),
   OCSTRUCT("bsfq",      OCINSNX86_BSFQ),
   OCSTRUCT("bsf",       OCINSNX86_BSF),
+  OCSTRUCT("bsrl",      OCINSNX86_BSRL),
+  OCSTRUCT("bsrq",      OCINSNX86_BSRQ),
+  OCSTRUCT("bsr",       OCINSNX86_BSR),
 
   OCSTRUCT("sha1msg1",  OCINSNX86_SHA1MSG1),
   OCSTRUCT("sha1msg2",  OCINSNX86_SHA1MSG2),
