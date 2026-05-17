@@ -564,13 +564,13 @@ static oestruct_t oeINSTRUCTIONS_ARM[] = {
   OCSTRUCT("movn",      OCINSNARM_MOVN),
   OCSTRUCT("movs",      OCINSNARM_MOVS),
   OCSTRUCT("movz",      OCINSNARM_MOVZ),
+  OCSTRUCT("movi",      OCINSNARM_MOVI),
+  OCSTRUCT("fmov",      OCINSNARM_FMOV),
 
   OCSTRUCT("mov.b",     OCINSNARM_MOVB),
   OCSTRUCT("mov.d",     OCINSNARM_MOVD),
   OCSTRUCT("mov.h",     OCINSNARM_MOVH),
   OCSTRUCT("mov.w",     OCINSNARM_MOVW),
-
-  OCSTRUCT("fmov",      OCINSNARM_FMOV),
 
   OCSTRUCT("movcc",     OCINSNARM_MOVCC),
   OCSTRUCT("movcs",     OCINSNARM_MOVCS),
