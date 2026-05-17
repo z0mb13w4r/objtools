@@ -817,7 +817,7 @@ static unknown_t oeinsert_operands(handle_t p, handle_t e, unknown_t q, unknown_
     if (MODE_ISANY(q0->action, OCINSN_OPERAND2 | OCINSN_OPERAND3 | OCINSN_OPERAND4 | OCINSN_OPERAND5)) {
       if (m2) {
         e0->op2 = oeinsert_operand(p, e, q, m2);
-      } else if (MODE_ISNOT(q0->action, OCINSN_OPERAND1)) {
+      } else if (MODE_ISNOT(q0->action, OCINSN_OPERAND0 | OCINSN_OPERAND1)) {
 #ifdef OPCODE_EXAMINE_OPERAND
         printf_e("Missing operand #2");
 #endif
