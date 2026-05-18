@@ -221,9 +221,6 @@ static oestruct_t oeINSTRUCTIONS_ARM[] = {
   OCSTRUCT("mulvs",     OCINSNARM_MULVS),
   OCSTRUCT("mul",       OCINSNARM_MUL),
 
-  OCSTRUCT("madd",      OCINSNARM_MADD),
-  OCSTRUCT("msub",      OCINSNARM_MSUB),
-
   OCSTRUCT("sdiv",      OCINSNARM_SDIV),
   OCSTRUCT("udiv",      OCINSNARM_UDIV),
 
@@ -774,9 +771,13 @@ static oestruct_t oeINSTRUCTIONS_ARM[] = {
 
   OCSTRUCT("sbfiz",     OCINSNARM_SBFIZ),
   OCSTRUCT("ubfiz",     OCINSNARM_UBFIZ),
+  OCSTRUCT("sbfi",      OCINSNARM_SBFI),
+  OCSTRUCT("ubfi",      OCINSNARM_UBFI),
+  OCSTRUCT("bfi",       OCINSNARM_BFI),
 
   OCSTRUCT("sbfx",      OCINSNARM_SBFX),
   OCSTRUCT("ubfx",      OCINSNARM_UBFX),
+  OCSTRUCT("bfx",       OCINSNARM_BFX),
 
   OCSTRUCT("sxtb",      OCINSNARM_SXTB),
   OCSTRUCT("sxth",      OCINSNARM_SXTH),
@@ -785,6 +786,8 @@ static oestruct_t oeINSTRUCTIONS_ARM[] = {
   OCSTRUCT("uxth",      OCINSNARM_UXTH),
   OCSTRUCT("uxtw",      OCINSNARM_UXTW),
 
+  OCSTRUCT("madd",      OCINSNARM_MADD),
+  OCSTRUCT("msub",      OCINSNARM_MSUB),
   OCSTRUCT("smaddh",    OCINSNARM_SMADDH),
   OCSTRUCT("smaddl",    OCINSNARM_SMADDL),
   OCSTRUCT("smadd",     OCINSNARM_SMADD),
@@ -970,6 +973,9 @@ static convert_t oeINSTRUCTIONNAMES_ARM[] = {
   {"NOT",               OCINSN_MASK(OCINSNARM_NOT)},
   {"NOP",               OCINSN_MASK(OCINSNARM_NOP)},
 
+  {"SET",               OCINSN_MASK(OCINSNARM_BFI)},
+  {"EXT",               OCINSN_MASK(OCINSNARM_BFX)},
+
   {"BH",                OCINSN_MASK(OCINSNARM_BH)},
   {"BX",                OCINSN_MASK(OCINSNARM_BX)},
   {"CB",                OCINSN_MASK(OCINSNARM_CB)},
@@ -1008,8 +1014,6 @@ static convert_t oeINSTRUCTIONNAMES_ARM[] = {
   {"MCRR",              OCINSN_MASK(OCINSNARM_MCRR)},
   {"MRC",               OCINSN_MASK(OCINSNARM_MRC)},
   {"MRRC",              OCINSN_MASK(OCINSNARM_MRRC)},
-  {"BFI",               OCINSN_MASK(OCINSNARM_BFI)},
-  {"BFX",               OCINSN_MASK(OCINSNARM_BFX)},
   {"XT",                OCINSN_MASK(OCINSNARM_XT)},
 
   {"CCMP",              OCINSN_MASK(OCINSNARM_CCMP)},
