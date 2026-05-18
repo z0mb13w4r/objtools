@@ -387,7 +387,8 @@ static oestruct_t oeINSTRUCTIONS_ARM[] = {
   OCSTRUCT("orns",      OCINSNARM_ORNS),
   OCSTRUCT("orn",       OCINSNARM_ORN),
 
-  OCSTRUCT("neg",       OCINSNARM_NEGx),
+  OCSTRUCT("negs",      OCINSNARM_NEGS),
+  OCSTRUCT("neg",       OCINSNARM_NEG),
 
   OCSTRUCT("asls",      OCINSNARM_ASLS),
   OCSTRUCT("asl",       OCINSNARM_ASL),
@@ -981,7 +982,7 @@ static convert_t oeINSTRUCTIONNAMES_ARM[] = {
   {"EOR",               OCINSN_MASK(OCINSNARM_EOR)},
   {"ORR",               OCINSN_MASK(OCINSNARM_ORR)},
   {"ORN",               OCINSN_MASK(OCINSNARM_ORN)},
-  {"NEG",               OCINSN_MASK(OCINSNARM_NEGx)},
+  {"NEG",               OCINSN_MASK(OCINSNARM_NEG)},
   {"ASx",               OCINSN_MASK(OCINSNARM_ASx)},
   {"LSx",               OCINSN_MASK(OCINSNARM_LSx)},
   {"ROx",               OCINSN_MASK(OCINSNARM_ROx)},
