@@ -788,6 +788,9 @@ static oestruct_t oeINSTRUCTIONS_ARM[] = {
   OCSTRUCT("smaddh",    OCINSNARM_SMADDH),
   OCSTRUCT("smaddl",    OCINSNARM_SMADDL),
   OCSTRUCT("smadd",     OCINSNARM_SMADD),
+  OCSTRUCT("umaddh",    OCINSNARM_UMADDH),
+  OCSTRUCT("umaddl",    OCINSNARM_UMADDL),
+  OCSTRUCT("umadd",     OCINSNARM_UMADD),
 
   OCSTRUCT("ccmp",      OCINSNARM_CCMP),
 
