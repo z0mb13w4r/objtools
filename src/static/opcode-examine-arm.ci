@@ -1008,6 +1008,7 @@ static convert_t oeINSTRUCTIONNAMES_ARM[] = {
   {"NOT",               OCINSN_MASK(OCINSNARM_NOT)},
   {"NOP",               OCINSN_MASK(OCINSNARM_NOP)},
 
+  {"CLR",               OCINSN_MASK(OCINSNARM_BIC)},
   {"SET",               OCINSN_MASK(OCINSNARM_BFI)},
   {"EXT",               OCINSN_MASK(OCINSNARM_BFX)},
 
@@ -1028,7 +1029,6 @@ static convert_t oeINSTRUCTIONNAMES_ARM[] = {
   {"SUB",               OCINSN_MASK(OCINSNARM_SUB)},
   {"RSB",               OCINSN_MASK(OCINSNARM_RSB)},
   {"AND",               OCINSN_MASK(OCINSNARM_AND)},
-  {"BIC",               OCINSN_MASK(OCINSNARM_BIC)},
   {"EOR",               OCINSN_MASK(OCINSNARM_EOR)},
   {"ORR",               OCINSN_MASK(OCINSNARM_ORR)},
   {"ORN",               OCINSN_MASK(OCINSNARM_ORN)},
