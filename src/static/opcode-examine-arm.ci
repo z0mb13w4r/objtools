@@ -128,6 +128,9 @@ static oestruct_t oeINSTRUCTIONS_ARM[] = {
   OCSTRUCT("cmp",       OCINSNARM_CMP),
   OCSTRUCT("cmn",       OCINSNARM_CMN),
 
+  OCSTRUCT("ccmp",      OCINSNARM_CCMP),
+  OCSTRUCT("fcmp",      OCINSNARM_FCMP),
+
   OCSTRUCT("tst.b",     OCINSNARM_TSTB),
   OCSTRUCT("tst.d",     OCINSNARM_TSTD),
   OCSTRUCT("tst.h",     OCINSNARM_TSTH),
@@ -830,8 +833,6 @@ static oestruct_t oeINSTRUCTIONS_ARM[] = {
   OCSTRUCT("madd",      OCINSNARM_MADD),
   OCSTRUCT("mneg",      OCINSNARM_MNEG),
   OCSTRUCT("msub",      OCINSNARM_MSUB),
-
-  OCSTRUCT("ccmp",      OCINSNARM_CCMP),
 
   OCSTRUCT("pacia",     OCINSNARM_PACIA),
   OCSTRUCT("pacia1716", OCINSNARM_PACIA1716),
