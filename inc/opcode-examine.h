@@ -87,6 +87,7 @@
 #define OCINSN_ORN                     OCINSN_JOIN(OCINSN_ORR, OCINSN_NOT)
 #define OCINSN_ANDN                    OCINSN_JOIN(OCINSN_AND, OCINSN_NOT)
 #define OCINSN_MADD                    OCINSN_JOIN(OCINSN_MUL, OCINSN_ADD)
+#define OCINSN_MNEG                    OCINSN_JOIN(OCINSN_MUL, OCINSN_NEG)
 #define OCINSN_MSUB                    OCINSN_JOIN(OCINSN_MUL, OCINSN_SUB)
 #define OCINSN_RSB                     OCINSN_JOIN(OCINSN_REV, OCINSN_SUB)
 #define OCINSN_MOVyxx                  OCINSN_JOIN(OCINSN_MOV, OCINSN_TOEXTEND)
