@@ -221,6 +221,7 @@ static oestruct_t oeINSTRUCTIONS_ARM[] = {
   OCSTRUCT("mulvs",     OCINSNARM_MULVS),
   OCSTRUCT("mul",       OCINSNARM_MUL),
 
+  OCSTRUCT("fdiv",      OCINSNARM_FDIV),
   OCSTRUCT("sdiv",      OCINSNARM_SDIV),
   OCSTRUCT("udiv",      OCINSNARM_UDIV),
 
@@ -806,15 +807,21 @@ static oestruct_t oeINSTRUCTIONS_ARM[] = {
   OCSTRUCT("xtn",       OCINSNARM_XTN),
   OCSTRUCT("xt",        OCINSNARM_XT),
 
-  OCSTRUCT("madd",      OCINSNARM_MADD),
-  OCSTRUCT("mneg",      OCINSNARM_MNEG),
-  OCSTRUCT("msub",      OCINSNARM_MSUB),
   OCSTRUCT("smaddh",    OCINSNARM_SMADDH),
   OCSTRUCT("smaddl",    OCINSNARM_SMADDL),
   OCSTRUCT("smadd",     OCINSNARM_SMADD),
   OCSTRUCT("umaddh",    OCINSNARM_UMADDH),
   OCSTRUCT("umaddl",    OCINSNARM_UMADDL),
   OCSTRUCT("umadd",     OCINSNARM_UMADD),
+  OCSTRUCT("smsubh",    OCINSNARM_SMSUBH),
+  OCSTRUCT("smsubl",    OCINSNARM_SMSUBL),
+  OCSTRUCT("smsub",     OCINSNARM_SMSUB),
+  OCSTRUCT("umsubh",    OCINSNARM_UMSUBH),
+  OCSTRUCT("umsubl",    OCINSNARM_UMSUBL),
+  OCSTRUCT("umsub",     OCINSNARM_UMSUB),
+  OCSTRUCT("madd",      OCINSNARM_MADD),
+  OCSTRUCT("mneg",      OCINSNARM_MNEG),
+  OCSTRUCT("msub",      OCINSNARM_MSUB),
 
   OCSTRUCT("ccmp",      OCINSNARM_CCMP),
 
