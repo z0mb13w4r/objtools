@@ -857,6 +857,9 @@ static oestruct_t oeINSTRUCTIONS_ARM[] = {
   OCSTRUCT("scvtf",     OCINSNARM_SCVTF),
   OCSTRUCT("ucvtf",     OCINSNARM_UCVTF),
 
+  OCSTRUCT("fcvtzs",    OCINSNARM_FCVTZS),
+  OCSTRUCT("fcvtzu",    OCINSNARM_FCVTZU),
+
   OCSTRUCT("rev16",     OCINSNARM_REV16),
   OCSTRUCT("rev",       OCINSNARM_REV),
 
