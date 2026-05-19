@@ -225,6 +225,8 @@ static oestruct_t oeINSTRUCTIONS_ARM[] = {
   OCSTRUCT("sdiv",      OCINSNARM_SDIV),
   OCSTRUCT("udiv",      OCINSNARM_UDIV),
 
+  OCSTRUCT("fmul",      OCINSNARM_FMUL),
+
   OCSTRUCT("smulh",     OCINSNARM_SMULH),
   OCSTRUCT("smull",     OCINSNARM_SMULL),
   OCSTRUCT("smul",      OCINSNARM_SMUL),
