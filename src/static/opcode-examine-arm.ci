@@ -847,6 +847,9 @@ static oestruct_t oeINSTRUCTIONS_ARM[] = {
   OCSTRUCT("cneg",      OCINSNX86_CNEG),
   OCSTRUCT("ccmn",      OCINSNX86_CNEG),
 
+  OCSTRUCT("scvtf",     OCINSNARM_SCVTF),
+  OCSTRUCT("ucvtf",     OCINSNARM_UCVTF),
+
   OCSTRUCT("rev16",     OCINSNARM_REV16),
   OCSTRUCT("rev",       OCINSNARM_REV),
 
@@ -998,6 +1001,7 @@ static convert_t oeINSTRUCTIONFLAGS_ARM[] = {
 };
 
 static convert_t oeINSTRUCTIONNAMES_ARM[] = {
+  {"TOFLOAT",           OCINSN_MASK(OCINSNARM_TOFLOAT)},
   {"LOAD",              OCINSN_MASK(OCINSNARM_LOAD)},
   {"MOVE",              OCINSN_MASK(OCINSNARM_MOVE)},
   {"STORE",             OCINSN_MASK(OCINSNARM_STORE)},
