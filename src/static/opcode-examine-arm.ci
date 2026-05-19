@@ -315,6 +315,7 @@ static oestruct_t oeINSTRUCTIONS_ARM[] = {
   OCSTRUCT("andpl",     OCINSNARM_ANDPL),
   OCSTRUCT("andvc",     OCINSNARM_ANDVC),
   OCSTRUCT("andvs",     OCINSNARM_ANDVS),
+  OCSTRUCT("ands",      OCINSNARM_ANDS),
   OCSTRUCT("and",       OCINSNARM_AND),
 
   OCSTRUCT("biccc",     OCINSNARM_BICCC),
