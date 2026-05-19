@@ -396,6 +396,8 @@ static oestruct_t oeINSTRUCTIONS_ARM[] = {
   OCSTRUCT("negs",      OCINSNARM_NEGS),
   OCSTRUCT("neg",       OCINSNARM_NEG),
 
+  OCSTRUCT("fneg",      OCINSNARM_FNEG),
+
   OCSTRUCT("asls",      OCINSNARM_ASLS),
   OCSTRUCT("asl",       OCINSNARM_ASL),
   OCSTRUCT("asrs",      OCINSNARM_ASRS),
