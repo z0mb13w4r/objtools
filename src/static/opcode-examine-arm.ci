@@ -190,6 +190,10 @@ static oestruct_t oeINSTRUCTIONS_ARM[] = {
   OCSTRUCT("adcvs",     OCINSNARM_ADCVS),
   OCSTRUCT("adc",       OCINSNARM_ADC),
 
+  OCSTRUCT("fdiv",      OCINSNARM_FDIV),
+  OCSTRUCT("sdiv",      OCINSNARM_SDIV),
+  OCSTRUCT("udiv",      OCINSNARM_UDIV),
+
   OCSTRUCT("mlacc",     OCINSNARM_MLACC),
   OCSTRUCT("mlacs",     OCINSNARM_MLACS),
   OCSTRUCT("mlaeq",     OCINSNARM_MLAEQ),
@@ -221,10 +225,6 @@ static oestruct_t oeINSTRUCTIONS_ARM[] = {
   OCSTRUCT("mulvc",     OCINSNARM_MULVC),
   OCSTRUCT("mulvs",     OCINSNARM_MULVS),
   OCSTRUCT("mul",       OCINSNARM_MUL),
-
-  OCSTRUCT("fdiv",      OCINSNARM_FDIV),
-  OCSTRUCT("sdiv",      OCINSNARM_SDIV),
-  OCSTRUCT("udiv",      OCINSNARM_UDIV),
 
   OCSTRUCT("fmul",      OCINSNARM_FMUL),
 
@@ -272,6 +272,8 @@ static oestruct_t oeINSTRUCTIONS_ARM[] = {
   OCSTRUCT("subvc",     OCINSNARM_SUBVC),
   OCSTRUCT("subvs",     OCINSNARM_SUBVS),
   OCSTRUCT("sub",       OCINSNARM_SUB),
+
+  OCSTRUCT("fsub",      OCINSNARM_FSUB),
 
   OCSTRUCT("sbccc",     OCINSNARM_SBCCC),
   OCSTRUCT("sbccs",     OCINSNARM_SBCCS),
