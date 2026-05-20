@@ -996,6 +996,22 @@ static oestruct_t oeREGISTERS_ARM64[] = {
   OCSTRUCT("q30",       OCREGARM_Q30),
   OCSTRUCT("q31",       OCREGARM_Q31),
 
+  OCSTRUCT("al",        OCREGARM_AL),
+  OCSTRUCT("cc",        OCREGARM_CC),
+  OCSTRUCT("cs",        OCREGARM_CS),
+  OCSTRUCT("eq",        OCREGARM_EQ),
+  OCSTRUCT("ge",        OCREGARM_GE),
+  OCSTRUCT("gt",        OCREGARM_GT),
+  OCSTRUCT("hi",        OCREGARM_HI),
+  OCSTRUCT("le",        OCREGARM_LE),
+  OCSTRUCT("ls",        OCREGARM_LS),
+  OCSTRUCT("lt",        OCREGARM_LT),
+  OCSTRUCT("mi",        OCREGARM_MI),
+  OCSTRUCT("ne",        OCREGARM_NE),
+  OCSTRUCT("pl",        OCREGARM_PL),
+  OCSTRUCT("vc",        OCREGARM_VC),
+  OCSTRUCT("vs",        OCREGARM_VS),
+
   {NULL}
 };
 
@@ -1124,6 +1140,7 @@ static convert_t oeREGISTERFLAGS_ARM[] = {
   {"STACKPTR",          OCREGARM_STACKPTR},
   {"LINK",              OCREGARM_LINK},
   {"PROGRAM",           OCREGARM_PROGRAM},
+  {"CONDITION",         OCREGARM_CONDITION},
 
   {"8BITLO",            OCREGISTER_8BITLO},
   {"8BITHI",            OCREGISTER_8BITHI},
@@ -1262,6 +1279,22 @@ static convert_t oeREGISTERNAMES_ARM64[] = {
   {"Q29",               OCREG_MASK(OCREGARM_Q29)},
   {"Q30",               OCREG_MASK(OCREGARM_Q30)},
   {"Q31",               OCREG_MASK(OCREGARM_Q31)},
+
+  {"AL",                OCREG_MASK(OCREGARM_AL)},
+  {"CC",                OCREG_MASK(OCREGARM_CC)},
+  {"CS",                OCREG_MASK(OCREGARM_CS)},
+  {"EQ",                OCREG_MASK(OCREGARM_EQ)},
+  {"GE",                OCREG_MASK(OCREGARM_GE)},
+  {"GT",                OCREG_MASK(OCREGARM_GT)},
+  {"HI",                OCREG_MASK(OCREGARM_HI)},
+  {"LE",                OCREG_MASK(OCREGARM_LE)},
+  {"LS",                OCREG_MASK(OCREGARM_LS)},
+  {"LT",                OCREG_MASK(OCREGARM_LT)},
+  {"MI",                OCREG_MASK(OCREGARM_MI)},
+  {"NE",                OCREG_MASK(OCREGARM_NE)},
+  {"PL",                OCREG_MASK(OCREGARM_PL)},
+  {"VC",                OCREG_MASK(OCREGARM_VC)},
+  {"VS",                OCREG_MASK(OCREGARM_VS)},
 
   {0, 0}
 };

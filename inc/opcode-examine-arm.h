@@ -893,6 +893,7 @@
 #define OCREGARM_STACKPTR          (OCREGISTER_04)
 #define OCREGARM_LINK              (OCREGISTER_05)
 #define OCREGARM_PROGRAM           (OCREGISTER_06)
+#define OCREGARM_CONDITION         (OCREGISTER_07)
 
 #define OCREGARM_ZERO              ((0x00))
 
@@ -1017,6 +1018,22 @@
 #define OCREGARM_Q29               ((0x6b) | OCREGISTER_128BIT)
 #define OCREGARM_Q30               ((0x6c) | OCREGISTER_128BIT)
 #define OCREGARM_Q31               ((0x6e) | OCREGISTER_128BIT)
+
+#define OCREGARM_AL                ((0xf1) | OCREGARM_CONDITION)
+#define OCREGARM_CC                ((0xf2) | OCREGARM_CONDITION)
+#define OCREGARM_CS                ((0xf3) | OCREGARM_CONDITION)
+#define OCREGARM_EQ                ((0xf4) | OCREGARM_CONDITION)
+#define OCREGARM_GE                ((0xf5) | OCREGARM_CONDITION)
+#define OCREGARM_GT                ((0xf6) | OCREGARM_CONDITION)
+#define OCREGARM_HI                ((0xf7) | OCREGARM_CONDITION)
+#define OCREGARM_LE                ((0xf8) | OCREGARM_CONDITION)
+#define OCREGARM_LS                ((0xf9) | OCREGARM_CONDITION)
+#define OCREGARM_LT                ((0xfa) | OCREGARM_CONDITION)
+#define OCREGARM_MI                ((0xfb) | OCREGARM_CONDITION)
+#define OCREGARM_NE                ((0xfc) | OCREGARM_CONDITION)
+#define OCREGARM_PL                ((0xfd) | OCREGARM_CONDITION)
+#define OCREGARM_VC                ((0xfe) | OCREGARM_CONDITION)
+#define OCREGARM_VS                ((0xff) | OCREGARM_CONDITION)
 
 #endif
 
