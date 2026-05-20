@@ -1108,6 +1108,7 @@ static convert_t oeINSTRUCTIONNAMES_ARM[] = {
   {"STP",               OCINSN_MASK(OCINSNARM_STP)},
   {"STM",               OCINSN_MASK(OCINSNARM_STM)},
   {"STUR",              OCINSN_MASK(OCINSNARM_STUR)},
+  {"REV",               OCINSN_MASK(OCINSNARM_REV)},
 
   {"CDP",               OCINSN_MASK(OCINSNARM_CDP)},
   {"MCR",               OCINSN_MASK(OCINSNARM_MCR)},
