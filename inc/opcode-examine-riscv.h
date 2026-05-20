@@ -305,6 +305,8 @@
 #define OCINSNRISCV_BLEU               (OCINSNRISCV_BLE | OCINSNRISCV_UNSIGNED)
 #define OCINSNRISCV_BLTU               (OCINSNRISCV_BLT | OCINSNRISCV_UNSIGNED)
 
+#define OCREGRISCV_ZERO                (0x00)
+
 #define OCREGRISCV_FP                  (0x01)
 #define OCREGRISCV_GP                  (0x02)
 #define OCREGRISCV_RA                  (0x03)

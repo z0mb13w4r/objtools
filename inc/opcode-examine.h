@@ -12,6 +12,9 @@
 #define OCINSN_GET0(x)                 MODE_GET0(x)
 #define OCINSN_GET1(x)                 MODE_GET1(x)
 
+#define OCREG_HIDE(x)                  MODE_HIDE8(x)
+#define OCREG_MASK(x)                  MODE_MASK8(x)
+
 #define OECODE_THIS                    (0)
 #define OECODE_PREFIX1                 (1)
 #define OECODE_PREFIX2                 (2)

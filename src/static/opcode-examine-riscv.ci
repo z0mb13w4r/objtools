@@ -462,6 +462,8 @@ static oestruct_t oeREGISTERS_RISCV32[] = {
 };
 
 static oestruct_t oeREGISTERS_RISCV64[] = {
+  OCSTRUCT("zero",      OCREGRISCV_ZERO),
+
   OCSTRUCT("fp",        OCREGRISCV_FP),
   OCSTRUCT("gp",        OCREGRISCV_GP),
 
@@ -543,40 +545,42 @@ static convert_t oeREGISTERNAMES_RISCV32[] = {
 };
 
 static convert_t oeREGISTERNAMES_RISCV64[] = {
-  {"fp",                OCREGRISCV_FP},
-  {"gp",                OCREGRISCV_GP},
-  {"ra",                OCREGRISCV_RA},
-  {"sp",                OCREGRISCV_SP},
-  {"tp",                OCREGRISCV_TP},
+  {"ZERO",              OCREG_MASK(OCREGRISCV_ZERO)},
 
-  {"a0",                OCREGRISCV_A0},
-  {"a1",                OCREGRISCV_A1},
-  {"a2",                OCREGRISCV_A2},
-  {"a3",                OCREGRISCV_A3},
-  {"a4",                OCREGRISCV_A4},
-  {"a5",                OCREGRISCV_A5},
-  {"a6",                OCREGRISCV_A6},
-  {"a7",                OCREGRISCV_A7},
+  {"FP",                OCREG_MASK(OCREGRISCV_FP)},
+  {"GP",                OCREG_MASK(OCREGRISCV_GP)},
+  {"RA",                OCREG_MASK(OCREGRISCV_RA)},
+  {"SP",                OCREG_MASK(OCREGRISCV_SP)},
+  {"TP",                OCREG_MASK(OCREGRISCV_TP)},
 
-  {"s1",                OCREGRISCV_S1},
-  {"s2",                OCREGRISCV_S2},
-  {"s3",                OCREGRISCV_S3},
-  {"s4",                OCREGRISCV_S4},
-  {"s5",                OCREGRISCV_S5},
-  {"s6",                OCREGRISCV_S6},
-  {"s7",                OCREGRISCV_S7},
-  {"s8",                OCREGRISCV_S8},
-  {"s9",                OCREGRISCV_S9},
-  {"s10",               OCREGRISCV_S10},
-  {"s11",               OCREGRISCV_S11},
+  {"A0",                OCREG_MASK(OCREGRISCV_A0)},
+  {"A1",                OCREG_MASK(OCREGRISCV_A1)},
+  {"A2",                OCREG_MASK(OCREGRISCV_A2)},
+  {"A3",                OCREG_MASK(OCREGRISCV_A3)},
+  {"A4",                OCREG_MASK(OCREGRISCV_A4)},
+  {"A5",                OCREG_MASK(OCREGRISCV_A5)},
+  {"A6",                OCREG_MASK(OCREGRISCV_A6)},
+  {"A7",                OCREG_MASK(OCREGRISCV_A7)},
 
-  {"t0",                OCREGRISCV_T0},
-  {"t1",                OCREGRISCV_T1},
-  {"t2",                OCREGRISCV_T2},
-  {"t3",                OCREGRISCV_T3},
-  {"t4",                OCREGRISCV_T4},
-  {"t5",                OCREGRISCV_T5},
-  {"t6",                OCREGRISCV_T6},
+  {"S1",                OCREG_MASK(OCREGRISCV_S1)},
+  {"S2",                OCREG_MASK(OCREGRISCV_S2)},
+  {"S3",                OCREG_MASK(OCREGRISCV_S3)},
+  {"S4",                OCREG_MASK(OCREGRISCV_S4)},
+  {"S5",                OCREG_MASK(OCREGRISCV_S5)},
+  {"S6",                OCREG_MASK(OCREGRISCV_S6)},
+  {"S7",                OCREG_MASK(OCREGRISCV_S7)},
+  {"S8",                OCREG_MASK(OCREGRISCV_S8)},
+  {"S9",                OCREG_MASK(OCREGRISCV_S9)},
+  {"S10",               OCREG_MASK(OCREGRISCV_S10)},
+  {"S11",               OCREG_MASK(OCREGRISCV_S11)},
+
+  {"T0",                OCREG_MASK(OCREGRISCV_T0)},
+  {"T1",                OCREG_MASK(OCREGRISCV_T1)},
+  {"T2",                OCREG_MASK(OCREGRISCV_T2)},
+  {"T3",                OCREG_MASK(OCREGRISCV_T3)},
+  {"T4",                OCREG_MASK(OCREGRISCV_T4)},
+  {"T5",                OCREG_MASK(OCREGRISCV_T5)},
+  {"T6",                OCREG_MASK(OCREGRISCV_T6)},
 
   {0, 0}
 };
