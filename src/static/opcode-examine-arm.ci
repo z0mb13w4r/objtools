@@ -1046,12 +1046,13 @@ static convert_t oeINSTRUCTIONFLAGS_ARM[] = {
 };
 
 static convert_t oeINSTRUCTIONNAMES_ARM[] = {
-  {"TOFLOAT",           OCINSN_MASK(OCINSNARM_TOFLOAT)},
-  {"LOAD",              OCINSN_MASK(OCINSNARM_LOAD)},
-  {"MOVE",              OCINSN_MASK(OCINSNARM_MOVE)},
-  {"STORE",             OCINSN_MASK(OCINSNARM_STORE)},
-  {"NOT",               OCINSN_MASK(OCINSNARM_NOT)},
-  {"NOP",               OCINSN_MASK(OCINSNARM_NOP)},
+  {"TOFLOAT",           OCINSN_MASK(OCINSN_TOFLOAT)},
+  {"LOAD",              OCINSN_MASK(OCINSN_LDA)},
+  {"MOVE",              OCINSN_MASK(OCINSN_MOV)},
+  {"STORE",             OCINSN_MASK(OCINSN_STA)},
+  {"NOT",               OCINSN_MASK(OCINSN_NOT)},
+  {"NOP",               OCINSN_MASK(OCINSN_NOP)},
+  {"INC",               OCINSN_MASK(OCINSN_INC)},
 
   {"CLR",               OCINSN_MASK(OCINSNARM_BIC)},
   {"SET",               OCINSN_MASK(OCINSNARM_BFI)},
