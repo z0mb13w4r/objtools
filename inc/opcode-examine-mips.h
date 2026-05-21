@@ -26,7 +26,6 @@
 #define OCINSNMIPS_ADD32           (OCINSN_04)
 
 #define OCINSNMIPS_UNSIGNED        (OCINSN_N)
-#define OCINSNMIPS_ZERO            (OCINSN_Z)
 
 #define OCINSNMIPS_DN              (OCINSN_L)
 #define OCINSNMIPS_UP              (OCINSN_G)

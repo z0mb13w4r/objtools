@@ -166,6 +166,7 @@
 
 #define OCFLAG_CARRY            (OCINSN_C)
 #define OCFLAG_SIGNED           (OCINSN_S)
+#define OCFLAG_ZERO             (OCINSN_Z)
 
 #define OCOPERAND_IVALUE0              (0x0001)
 #define OCOPERAND_UVALUE0              (0x0002)
