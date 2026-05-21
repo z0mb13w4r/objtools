@@ -55,7 +55,7 @@
 #define OCINSNX86_UP               (OCINSN_G)
 
 #define OCINSNX86_CARRY            (OCINSN_C)
-#define OCINSNX86_BORROW           (OCINSN_C)
+#define OCINSNX86_BORROW           (OCINSN_B)
 #define OCINSNX86_SIGNED           (OCINSN_S)
 #define OCINSNX86_UNSIGNED         (OCINSN_N)
 #define OCINSNX86_STATUS           (OCINSN_S)

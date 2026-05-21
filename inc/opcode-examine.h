@@ -116,17 +116,17 @@
 #define OCINSN_REGISTER         U64MASK(33)
 #define OCINSN_LTSHIFT          U64MASK(34)
 #define OCINSN_RTSHIFT          U64MASK(35)
-#define OCINSN_A                U64MASK(36)
-#define OCINSN_B                U64MASK(37)
-#define OCINSN_C                U64MASK(38) // OCINSNX86_CFLAG
-#define OCINSN_E                U64MASK(39)
-#define OCINSN_G                U64MASK(40)
-#define OCINSN_L                U64MASK(41)
-#define OCINSN_N                U64MASK(42)
-#define OCINSN_O                U64MASK(43) // OCINSNX86_OFLAG
-#define OCINSN_P                U64MASK(44) // OCINSNX86_PFLAG
-#define OCINSN_S                U64MASK(45) // OCINSNX86_SFLAG
-#define OCINSN_Z                U64MASK(46) // OCINSNX86_ZFLAG
+#define OCINSN_A                U64MASK(36) // CONDITIONAL ABOVE
+#define OCINSN_B                U64MASK(37) // CONDITIONAL BELOW | BORROW
+#define OCINSN_C                U64MASK(38) // CONDITIONAL CARRY
+#define OCINSN_E                U64MASK(39) // CONDITIONAL EQUAL
+#define OCINSN_G                U64MASK(40) // CONDITIONAL GREATER | UP
+#define OCINSN_L                U64MASK(41) // CONDITIONAL LESS | DN
+#define OCINSN_N                U64MASK(42) // CONDITIONAL NOT | NEGIVATE | UNSIGNED
+#define OCINSN_O                U64MASK(43) // CONDITIONAL OVERFLOW
+#define OCINSN_P                U64MASK(44) // CONDITIONAL PARITY
+#define OCINSN_S                U64MASK(45) // CONDITIONAL SIGN
+#define OCINSN_Z                U64MASK(46) // CONDITIONAL ZERO
 #define OCINSN_1BIT             U64MASK(47)
 #define OCINSN_8BIT             U64MASK(48)
 #define OCINSN_16BIT            U64MASK(49)
