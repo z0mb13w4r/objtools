@@ -164,6 +164,8 @@
 #define OCINSN_LTZ              (OCINSN_LT | OCINSN_Z)
 #define OCINSN_NEZ              (OCINSN_NE | OCINSN_Z)
 
+#define OCFLAG_CARRY            (OCINSN_C)
+
 #define OCOPERAND_IVALUE0              (0x0001)
 #define OCOPERAND_UVALUE0              (0x0002)
 #define OPOPERAND_REGISTER0            (0x0003)
