@@ -154,6 +154,16 @@
 #define OCINSN_NP               (OCINSN_N | OCINSN_P)
 #define OCINSN_NS               (OCINSN_N | OCINSN_S)
 
+#define OCINSN_EQ               (OCINSN_E)
+#define OCINSN_EQZ              (OCINSN_EQ | OCINSN_Z)
+#define OCINSN_GEZ              (OCINSN_GE | OCINSN_Z)
+#define OCINSN_GT               (OCINSN_G)
+#define OCINSN_GTZ              (OCINSN_GT | OCINSN_Z)
+#define OCINSN_LEZ              (OCINSN_LE | OCINSN_Z)
+#define OCINSN_LTx              (OCINSN_L)
+#define OCINSN_LTZ              (OCINSN_LTx | OCINSN_Z)
+#define OCINSN_NEZ              (OCINSN_NE | OCINSN_Z)
+
 #define OCOPERAND_IVALUE0              (0x0001)
 #define OCOPERAND_UVALUE0              (0x0002)
 #define OPOPERAND_REGISTER0            (0x0003)
