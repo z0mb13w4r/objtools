@@ -399,7 +399,6 @@ static convert_t oeINSTRUCTIONFLAGS_RISCV[] = {
   {"REGISTER",          OCINSN_REGISTER},
   {"PACKED",            OCINSN_PACKED},
   {"ALIGNED",           OCINSN_ALIGNED},
-  {"UNALIGNED",         OCINSN_UNALIGNED},
 
   {"UPPER",             OCINSNRISCV_UPPER},
   {"STACK",             OCINSNRISCV_STACK},

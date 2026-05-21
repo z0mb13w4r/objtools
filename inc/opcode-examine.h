@@ -106,9 +106,8 @@
 #define OCINSN_08               U64MASK(24)
 #define OCINSN_09               U64MASK(25)
 
-#define OCINSN_PACKED           U64MASK(26)
-#define OCINSN_ALIGNED          U64MASK(27)
-#define OCINSN_UNALIGNED        U64MASK(28)
+#define OCINSN_PACKED           U64MASK(27)
+#define OCINSN_ALIGNED          U64MASK(28)
 #define OCINSN_LINK             U64MASK(29)
 #define OCINSN_STACK            U64MASK(30)
 #define OCINSN_ADDRESS          U64MASK(31)

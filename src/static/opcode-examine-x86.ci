@@ -1274,7 +1274,6 @@ static convert_t oeINSTRUCTIONFLAGS_x86_64[] = {
   {"REGISTER",          OCINSN_REGISTER},
   {"PACKED",            OCINSN_PACKED},
   {"ALIGNED",           OCINSN_ALIGNED},
-  {"UNALIGNED",         OCINSN_UNALIGNED},
 
   {0, 0}
 };

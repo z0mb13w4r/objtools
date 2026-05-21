@@ -1058,7 +1058,6 @@ static convert_t oeINSTRUCTIONFLAGS_ARM[] = {
   {"REGISTER",          OCINSN_REGISTER},
   {"PACKED",            OCINSN_PACKED},
   {"ALIGNED",           OCINSN_ALIGNED},
-  {"UNALIGNED",         OCINSN_UNALIGNED},
 
   {"CLR",               OCINSNARM_CLR},
   {"SET",               OCINSNARM_SET},

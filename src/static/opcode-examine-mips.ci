@@ -210,7 +210,6 @@ static convert_t oeINSTRUCTIONFLAGS_MIPS[] = {
   {"REGISTER",          OCINSN_REGISTER},
   {"PACKED",            OCINSN_PACKED},
   {"ALIGNED",           OCINSN_ALIGNED},
-  {"UNALIGNED",         OCINSN_UNALIGNED},
 
   {"UPPER",             OCINSNMIPS_UPPER},
   {"ADD32",             OCINSNMIPS_ADD32},
