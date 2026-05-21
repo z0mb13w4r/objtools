@@ -165,7 +165,9 @@
 #define OCINSN_NEZ              (OCINSN_NE | OCINSN_Z)
 
 #define OCFLAG_CARRY            (OCINSN_C)
-#define OCFLAG_SIGNED           (OCINSN_S)
+#define OCFLAG_OVERFLOW         (OCINSN_O)
+#define OCFLAG_PARITY           (OCINSN_P)
+#define OCFLAG_SIGN             (OCINSN_S)
 #define OCFLAG_ZERO             (OCINSN_Z)
 
 #define OCOPERAND_IVALUE0              (0x0001)
