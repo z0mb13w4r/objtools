@@ -160,8 +160,8 @@
 #define OCINSN_GT               (OCINSN_G)
 #define OCINSN_GTZ              (OCINSN_GT | OCINSN_Z)
 #define OCINSN_LEZ              (OCINSN_LE | OCINSN_Z)
-#define OCINSN_LTx              (OCINSN_L)
-#define OCINSN_LTZ              (OCINSN_LTx | OCINSN_Z)
+#define OCINSN_LT               (OCINSN_L)
+#define OCINSN_LTZ              (OCINSN_LT | OCINSN_Z)
 #define OCINSN_NEZ              (OCINSN_NE | OCINSN_Z)
 
 #define OCOPERAND_IVALUE0              (0x0001)
