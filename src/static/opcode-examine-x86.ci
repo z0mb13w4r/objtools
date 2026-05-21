@@ -1237,8 +1237,8 @@ static convert_t oeINSTRUCTIONFLAGS_x86_64[] = {
   {"REGISTER",          OCINSNX86_REGISTER},
   {"CHECK",             OCINSNX86_CHECK},
 
-  {"LT",                OCINSN_LT},
-  {"RT",                OCINSN_RT},
+  {"LT",                OCINSN_LTSHIFT},
+  {"RT",                OCINSN_RTSHIFT},
   {"A",                 OCINSN_A},
   {"B",                 OCINSN_B},
   {"C",                 OCINSN_C},

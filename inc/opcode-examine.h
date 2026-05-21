@@ -114,8 +114,8 @@
 #define OCINSN_ADDRESS          U64MASK(31)
 #define OCINSN_IMMEDIATE        U64MASK(32)
 #define OCINSN_REGISTER         U64MASK(33)
-#define OCINSN_LT               U64MASK(34)
-#define OCINSN_RT               U64MASK(35)
+#define OCINSN_LTSHIFT          U64MASK(34)
+#define OCINSN_RTSHIFT          U64MASK(35)
 #define OCINSN_A                U64MASK(36)
 #define OCINSN_B                U64MASK(37)
 #define OCINSN_C                U64MASK(38) // OCINSNX86_CFLAG

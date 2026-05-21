@@ -173,8 +173,8 @@ static oestruct_t oeREGISTERS_MIPS[] = {
 };
 
 static convert_t oeINSTRUCTIONFLAGS_MIPS[] = {
-  {"LT",                OCINSN_LT},
-  {"RT",                OCINSN_RT},
+  {"LT",                OCINSN_LTSHIFT},
+  {"RT",                OCINSN_RTSHIFT},
   {"A",                 OCINSN_A},
   {"B",                 OCINSN_B},
   {"C",                 OCINSN_C},

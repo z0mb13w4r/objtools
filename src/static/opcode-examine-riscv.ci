@@ -362,8 +362,8 @@ static oestruct_t oeINSTRUCTIONS_RISCV[] = {
 };
 
 static convert_t oeINSTRUCTIONFLAGS_RISCV[] = {
-  {"LT",                OCINSN_LT},
-  {"RT",                OCINSN_RT},
+  {"LT",                OCINSN_LTSHIFT},
+  {"RT",                OCINSN_RTSHIFT},
   {"A",                 OCINSN_A},
   {"B",                 OCINSN_B},
   {"C",                 OCINSN_C},
