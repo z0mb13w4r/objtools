@@ -683,14 +683,12 @@ static unknown_t oedo_value(handle_t p, handle_t e, unknown_t q, unknown_t o, un
     } else if (isnum) {
       o0->ivalue0 = oedecb(m0, m0size);
       o0->cvalue |= OCOPERAND_IVALUE0;
-    } else {
-//printf("++%s++", m0);
-#ifdef OPCODE_EXAMINE_OPERAND
-      printf_e("The operand has not been processed '%s'", m0);
-#endif
     }
 
-    m0 = oeskip(m0 + m0size, USE_STRLEN);
+    if (ishex || isnum) {
+      m0 = oeskip(m0 + m0size, USE_STRLEN);
+    }
+
     if (m0) {
 //printf("++%s++\n", m0);
       unknown_t m1 = NULL, m2 = NULL, m3 = NULL, m4 = NULL, m5 = NULL, m6 = NULL, m7 = NULL;
