@@ -587,7 +587,6 @@ static unknown_t oedo_opvalue(handle_t p, unknown_t q, unknown_t m, uint64_t *cv
 #ifdef OPCODE_EXAMINE_OPERAND
         printf_e("The operand has not been processed '%s'", m0);
 #endif
-
         xstrncpy(svalue, m0, OCUNION_MAXSIZE);
         m0 = NULL;
       }
@@ -686,6 +685,9 @@ static unknown_t oedo_value(handle_t p, handle_t e, unknown_t q, unknown_t o, un
       o0->cvalue |= OCOPERAND_IVALUE0;
     } else {
 //printf("++%s++", m0);
+#ifdef OPCODE_EXAMINE_OPERAND
+      printf_e("The operand has not been processed '%s'", m0);
+#endif
     }
 
     m0 = oeskip(m0 + m0size, USE_STRLEN);
