@@ -671,6 +671,7 @@ static unknown_t oedo_value(handle_t p, handle_t e, unknown_t q, unknown_t o, un
   if (isocexamine(e) && o && m) {
     char *m0 = CAST(char*, m);
     pocoperand_t o0 = CAST(pocoperand_t, o);
+    poestruct_t q0 = CAST(poestruct_t, q);
 
     size_t m0size = xstrichr(m0, '(');
     m0size = -1 == m0size ? xstrlen(m0) : m0size;
@@ -696,12 +697,16 @@ static unknown_t oedo_value(handle_t p, handle_t e, unknown_t q, unknown_t o, un
 //printf("++%s+%s+%s++", STRING(m1), STRING(m2), STRING(m3));
 
       m1 = oedo_opvalue(p, q, m1, &o0->cvalue, &o0->ivalue1, &o0->uvalue1, o0->svalue1, OPOPERAND_REGISTER1);
-      m2 = oedo_opvalue(p, q, m2, &o0->cvalue, &o0->ivalue2, &o0->uvalue2, o0->svalue2, OPOPERAND_REGISTER2);
-      m3 = oedo_opvalue(p, q, m3, &o0->cvalue, &o0->ivalue3, &o0->uvalue3, o0->svalue3, OPOPERAND_REGISTER3);
-      m4 = oedo_opvalue(p, q, m4, &o0->cvalue, &o0->ivalue4, &o0->uvalue4, o0->svalue4, OPOPERAND_REGISTER4);
-      m5 = oedo_opvalue(p, q, m5, &o0->cvalue, &o0->ivalue5, &o0->uvalue5, o0->svalue5, OPOPERAND_REGISTER5);
-      m6 = oedo_opvalue(p, q, m6, &o0->cvalue, &o0->ivalue6, &o0->uvalue6, o0->svalue6, OPOPERAND_REGISTER6);
-      m7 = oedo_opvalue(p, q, m7, &o0->cvalue, &o0->ivalue7, &o0->uvalue7, o0->svalue7, OPOPERAND_REGISTER7);
+      if (m2 || m3 || m4 || m5 || m6 || m7) {
+        m2 = oedo_opvalue(p, q, m2, &o0->cvalue, &o0->ivalue2, &o0->uvalue2, o0->svalue2, OPOPERAND_REGISTER2);
+        m3 = oedo_opvalue(p, q, m3, &o0->cvalue, &o0->ivalue3, &o0->uvalue3, o0->svalue3, OPOPERAND_REGISTER3);
+        m4 = oedo_opvalue(p, q, m4, &o0->cvalue, &o0->ivalue4, &o0->uvalue4, o0->svalue4, OPOPERAND_REGISTER4);
+        m5 = oedo_opvalue(p, q, m5, &o0->cvalue, &o0->ivalue5, &o0->uvalue5, o0->svalue5, OPOPERAND_REGISTER5);
+        m6 = oedo_opvalue(p, q, m6, &o0->cvalue, &o0->ivalue6, &o0->uvalue6, o0->svalue6, OPOPERAND_REGISTER6);
+        m7 = oedo_opvalue(p, q, m7, &o0->cvalue, &o0->ivalue7, &o0->uvalue7, o0->svalue7, OPOPERAND_REGISTER7);
+      } else if (m1 && MODE_ISANY(q0->action, OCINSN_TRYINSN)) {
+        m1 = oedo_opvalue(p, q, m1, &o0->cvalue, &o0->ivalue2, &o0->uvalue2, o0->svalue2, OPOPERAND_REGISTER2);
+      }
 
 #ifdef OPCODE_EXAMINE_OPERAND
       if (m1 || m2 || m3 || m4 || m5 || m6 || m7) {
