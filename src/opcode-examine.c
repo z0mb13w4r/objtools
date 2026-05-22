@@ -551,6 +551,7 @@ static unknown_t oedo_absolute(handle_t p, handle_t e, unknown_t o, unknown_t m)
 
 static unknown_t oedo_opvalue(handle_t p, unknown_t q, unknown_t m, uint64_t *cvalue, int64_t *ivalue, uint64_t *uvalue, char *svalue, const uint64_t mask) {
   if (m && cvalue && ivalue && uvalue) {
+    poestruct_t q0 = CAST(poestruct_t, q);
     char *m0 = CAST(char*, m);
 
     if (oeishexb(m0, USE_STRLEN)) {
@@ -568,6 +569,20 @@ static unknown_t oedo_opvalue(handle_t p, unknown_t q, unknown_t m, uint64_t *cv
         *cvalue |= MODE_ISANY(mask, OPOPERAND_REGISTERMASK);
 //printf("++%s:%s:%lx++", m0, r1->mc, r1->action);
         m0 = oeskip(m0 + r0->mcsize, xstrlen(m0) - r0->mcsize);
+      } else if (MODE_ISANY(q0->action, OCINSN_TRYINSN)) {
+//printf("++%s++", m0);
+        poestruct_t pi = oepick(oegetINSTRUCTIONS(p), m0, USE_STRLEN);
+        if (pi) {
+//printf("%s[%ld]++", pi->mc, pi->mcsize);
+          xstrncpy(svalue, pi->mc, pi->mcsize);
+          return oeskip(m0 + pi->mcsize, xstrlen(m0) - pi->mcsize);
+        } else {
+#ifdef OPCODE_EXAMINE_OPERAND
+          printf_e("The operand has not been processed '%s'", m0);
+#endif
+          xstrncpy(svalue, m0, OCUNION_MAXSIZE);
+          m0 = NULL;
+        }
       } else {
 #ifdef OPCODE_EXAMINE_OPERAND
         printf_e("The operand has not been processed '%s'", m0);
