@@ -74,8 +74,6 @@ extern convert_t ecSTTTYPE[];
 extern convert_t ecVNAFLAG[];
 extern convert_t ecSTVVISIBILITY[];
 
-extern convert_t oeSEGMENTFLAGS_x86_64[];
-
 extern convert_t ecHAS_FLAGS[];
 
 extern convert_t zBFDSYMBOL_FLAGS[];

@@ -102,7 +102,7 @@ static int ocdebugf_cvalue1(handle_t p, uint64_t cv) {
       n += printf_text("not set", USE_LT | USE_SPACE | USE_TB);
     }
 
-    n += printf_mask(oeSEGMENTFLAGS_x86_64, MODE_HIDE16(cv), USE_NONE);
+    n += printf_mask(oegetOPERANDFLAGS(p), MODE_HIDE16(cv), USE_NONE);
     n += printf_eol();
 
     return n;

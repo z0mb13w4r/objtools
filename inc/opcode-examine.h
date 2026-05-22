@@ -194,6 +194,8 @@
 #define OCOPERAND_IVALUE7              (0x4000)
 #define OCOPERAND_UVALUE7              (0x8000)
 #define OPOPERAND_REGISTER7            (0xc000)
+#define OPOPERAND_MVALUE0              U64MASK(48)
+#define OPOPERAND_MVALUE1              U64MASK(49)
 #define OPOPERAND_00                   U64MASK(50)
 #define OPOPERAND_01                   U64MASK(51)
 #define OPOPERAND_02                   U64MASK(52)
@@ -212,6 +214,9 @@
 #define OCOPERAND_IVALUEMASK           (OCOPERAND_IVALUE0 | OCOPERAND_IVALUE1 | OCOPERAND_IVALUE2 \
                                          | OCOPERAND_IVALUE3 | OCOPERAND_IVALUE4 | OCOPERAND_IVALUE5 \
                                          | OCOPERAND_IVALUE6 | OCOPERAND_IVALUE7)
+
+#define OCOPERAND_MVALUEMASK           (OPOPERAND_MVALUE0 | OPOPERAND_MVALUE1)
+
 #define OCOPERAND_UVALUEMASK           (OCOPERAND_UVALUE0 | OCOPERAND_UVALUE1 | OCOPERAND_UVALUE2 \
                                          | OCOPERAND_UVALUE3 | OCOPERAND_UVALUE4 | OCOPERAND_UVALUE5 \
                                          | OCOPERAND_UVALUE6 | OCOPERAND_UVALUE7)
@@ -340,6 +345,7 @@ bool_t    oeishexb(unknown_t p, const size_t size);
 ppick_t oegetADDRLOOKUP(handle_t p);
 
 pconvert_t oegetPREFIXNAMES(handle_t p);
+pconvert_t oegetOPERANDFLAGS(handle_t p);
 pconvert_t oegetINSTRUCTIONFLAGS(handle_t p);
 pconvert_t oegetINSTRUCTIONNAMES(handle_t p);
 pconvert_t oegetREGISTERFLAGS(handle_t p);

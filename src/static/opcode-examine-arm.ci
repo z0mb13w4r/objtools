@@ -1139,6 +1139,13 @@ static convert_t oeINSTRUCTIONNAMES_ARM[] = {
   {0, 0}
 };
 
+static convert_t oeOPERANDFLAGS_ARM[] = {
+  {"MVALUE0",           OPOPERAND_MVALUE0},
+  {"MVALUE1",           OPOPERAND_MVALUE1},
+
+  {0, 0}
+};
+
 static convert_t oeREGISTERFLAGS_ARM[] = {
   {"GENERAL",           OCREGARM_GENERAL},
   {"SYSCALL",           OCREGARM_SYSCALL},

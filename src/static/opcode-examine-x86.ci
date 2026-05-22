@@ -1374,7 +1374,7 @@ static convert_t oeINSTRUCTIONNAMES_x86_64[] = {
   {0, 0}
 };
 
-convert_t oeSEGMENTFLAGS_x86_64[] = {
+static convert_t oeOPERANDFLAGS_x86_64[] = {
   {"SIZE",              OPOPERAND_SIZE},
   {"SEGMENT",           OPOPERAND_SEGMENT},
   {"ABSOLUTE",          OCOPERAND_ABSOLUTE},

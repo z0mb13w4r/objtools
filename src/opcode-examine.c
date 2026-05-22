@@ -122,6 +122,21 @@ pconvert_t oegetINSTRUCTIONFLAGS(handle_t p) {
   return NULL;
 }
 
+pconvert_t oegetOPERANDFLAGS(handle_t p) {
+  switch (ocget_machine(p)) {
+  case EM_ARM:
+  case EM_AARCH64:
+    return oeOPERANDFLAGS_ARM;
+  case EM_386:
+  case EM_X86_64:
+    return oeOPERANDFLAGS_x86_64;
+  default:
+    break;
+  }
+
+  return NULL;
+}
+
 pconvert_t oegetREGISTERFLAGS(handle_t p) {
   switch (ocget_machine(p)) {
   case EM_ARM:
@@ -574,7 +589,8 @@ static unknown_t oedo_opvalue(handle_t p, unknown_t q, unknown_t m, uint64_t *cv
         poestruct_t pi = oepick(oegetINSTRUCTIONS(p), m0, USE_STRLEN);
         if (pi) {
 //printf("%s[%ld]++", pi->mc, pi->mcsize);
-          xstrncpy(svalue, pi->mc, pi->mcsize);
+          *cvalue |= MODE_ISANY(mask, OCOPERAND_UVALUEMASK | OCOPERAND_MVALUEMASK);
+          *uvalue = pi->action;
           return oeskip(m0 + pi->mcsize, xstrlen(m0) - pi->mcsize);
         } else {
 #ifdef OPCODE_EXAMINE_OPERAND
@@ -618,7 +634,7 @@ static unknown_t oedo_register(handle_t p, handle_t e, unknown_t q, unknown_t o,
         m0 = oeskip(m0 + 1, USE_STRLEN);
       }
 
-      m0 = oedo_opvalue(p, q, m0, &o0->cvalue, &o0->ivalue1, &o0->uvalue1, o0->svalue1, OPOPERAND_REGISTER1);
+      m0 = oedo_opvalue(p, q, m0, &o0->cvalue, &o0->ivalue1, &o0->uvalue1, o0->svalue1, OPOPERAND_REGISTER1 | OPOPERAND_MVALUE1);
       m0 = oedo_opvalue(p, q, m0, &o0->cvalue, &o0->ivalue2, &o0->uvalue2, o0->svalue2, OPOPERAND_REGISTER2);
       m0 = oedo_opvalue(p, q, m0, &o0->cvalue, &o0->ivalue3, &o0->uvalue3, o0->svalue3, OPOPERAND_REGISTER3);
       m0 = oedo_opvalue(p, q, m0, &o0->cvalue, &o0->ivalue4, &o0->uvalue4, o0->svalue4, OPOPERAND_REGISTER4);
@@ -696,7 +712,7 @@ static unknown_t oedo_value(handle_t p, handle_t e, unknown_t q, unknown_t o, un
       oesplit(e, m0, USE_STRLEN, &m1, &m2, &m3, &m4, &m5, &m6, &m7);
 //printf("++%s+%s+%s++", STRING(m1), STRING(m2), STRING(m3));
 
-      m1 = oedo_opvalue(p, q, m1, &o0->cvalue, &o0->ivalue1, &o0->uvalue1, o0->svalue1, OPOPERAND_REGISTER1);
+      m1 = oedo_opvalue(p, q, m1, &o0->cvalue, &o0->ivalue1, &o0->uvalue1, o0->svalue1, OPOPERAND_REGISTER1 | OPOPERAND_MVALUE1);
       if (m2 || m3 || m4 || m5 || m6 || m7) {
         m2 = oedo_opvalue(p, q, m2, &o0->cvalue, &o0->ivalue2, &o0->uvalue2, o0->svalue2, OPOPERAND_REGISTER2);
         m3 = oedo_opvalue(p, q, m3, &o0->cvalue, &o0->ivalue3, &o0->uvalue3, o0->svalue3, OPOPERAND_REGISTER3);
