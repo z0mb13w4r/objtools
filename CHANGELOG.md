@@ -1,6 +1,7 @@
 v1.5 - ??/04/2026
 -----------------------------------------------------------------------
 [+] Added verbose to the yara-rules-ng script.  
+[+] Enhanced Heuristic Assembly Language Analysis Engine.  
 [+] Enhanced corruption detection (readelf-ng).  
 [+] Enhanced the strings-ng.py script.  
 [+] Enhanced the build system.  
