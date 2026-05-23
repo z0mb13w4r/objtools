@@ -1,4 +1,4 @@
-v1.5 - ??/04/2026
+v1.5 - 23/05/2026
 -----------------------------------------------------------------------
 [+] Added verbose to the yara-rules-ng script.  
 [+] Enhanced Heuristic Assembly Language Analysis Engine.  
