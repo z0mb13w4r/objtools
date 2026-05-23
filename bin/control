@@ -1,8 +1,8 @@
 Package: objtools
-Version: 1.5
+Version: 1.6
 Architecture: amd64
 Maintainer: Kyle Wickens
-Depends: libssl-dev, binutils
+Depends: libssl-dev, zlib1g-dev, binutils-dev
 Description: objtools
  These tools were originally designed to be a research project
  and drop-in replacement for readelf, objcopy and objdump utilising
