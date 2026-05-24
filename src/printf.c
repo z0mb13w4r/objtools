@@ -1218,6 +1218,13 @@ int printf_copemute(const pconvert_t p, const pconvert_t q, const maskz_t mask, 
   return n;
 }
 
+int printf_copenone(const pconvert_t p, const pconvert_t q, const maskz_t mask, const imode_t mode) {
+  if (0 == mask) {
+    return printf_text("NONE", USE_SPACE | mode);
+  }
+
+  return printf_cope(p, q, mask, USE_SPACE | mode);
+}
 
 int printf_pick(const pconvert_t p, const pick_t x, const imode_t mode) {
   return printf_text(strpick(p, x), mode);
