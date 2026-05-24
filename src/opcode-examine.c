@@ -142,11 +142,6 @@ pconvert_t oegetREGISTERFLAGS(handle_t p) {
   case EM_ARM:
   case EM_AARCH64:
     return oeREGISTERFLAGS_ARM;
-  case EM_RISCV:
-    return oeREGISTERFLAGS_RISCV;
-  case EM_MIPS:
-  case EM_MIPS_RS3_LE:
-    return oeREGISTERFLAGS_MIPS;
   case EM_386:
   case EM_X86_64:
     return oeREGISTERFLAGS_x86_64;

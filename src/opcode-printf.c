@@ -139,7 +139,7 @@ static int ocdebugf_opvalueX(handle_t p, const uint64_t cv, const uint64_t nv, c
     if (MODE_ISSET(cv, MODE_ISANY(mask, OPOPERAND_REGISTERMASK))) {
       n += printf_yoke("REGISTER", id, USE_LT | USE_COLON | SET_PAD(MAXSIZE));
       n += printf_pick(oegetREGISTERNAMES(p), OCREG_MASK(nv), USE_SPACE);
-      n += printf_mask(oegetREGISTERFLAGS(p), OCREG_HIDE(nv), USE_NONE);
+      n += printf_cope(oeREGISTERFLAGS_DEF, oegetREGISTERFLAGS(p), OCREG_HIDE(nv), USE_NONE);
       n += printf_eol();
     } else if (MODE_ISSET(cv, MODE_ISANY(mask, OCOPERAND_IVALUEMASK))) {
       n += printf_yoke("IVALUE", id, USE_LT | USE_COLON | SET_PAD(MAXSIZE));

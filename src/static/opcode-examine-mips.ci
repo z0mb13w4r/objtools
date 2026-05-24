@@ -205,19 +205,6 @@ static convert_t oeINSTRUCTIONNAMES_MIPS[] = {
   {0, 0}
 };
 
-static convert_t oeREGISTERFLAGS_MIPS[] = {
-  {"8BITLO",            OCREGISTER_8BITLO},
-  {"8BITHI",            OCREGISTER_8BITHI},
-  {"16BIT",             OCREGISTER_16BIT},
-  {"32BIT",             OCREGISTER_32BIT},
-  {"64BIT",             OCREGISTER_64BIT},
-  {"128BIT",            OCREGISTER_128BIT},
-  {"256BIT",            OCREGISTER_256BIT},
-  {"512BIT",            OCREGISTER_512BIT},
-
-  {0, 0}
-};
-
 static convert_t oeREGISTERNAMES_MIPS[] = {
   {"ZERO",              OCREG_MASK(OCREGMIPS_R0)},
   {"AT",                OCREG_MASK(OCREGMIPS_R1)},

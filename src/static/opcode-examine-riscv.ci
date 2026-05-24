@@ -497,10 +497,6 @@ static oestruct_t oeREGISTERS_RISCV64[] = {
   {NULL}
 };
 
-static convert_t oeREGISTERFLAGS_RISCV[] = {
-  {0, 0}
-};
-
 static convert_t oeREGISTERNAMES_RISCV32[] = {
   {0, 0}
 };

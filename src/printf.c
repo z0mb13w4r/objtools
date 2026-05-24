@@ -1166,20 +1166,24 @@ int printf_cope(const pconvert_t p, const pconvert_t q, const maskz_t mask, cons
   MALLOCA(char, o, BUFFER_MAXSIZE);
 
   int n = 0;
-  if (p) {
+  if (p || q) {
     maskz_t v = mask;
     imode_t s = mode & USE_NOSPACE ? USE_NONE : USE_SPACE;
-    for (pconvert_t x = p; 0 != x->text; ++x) {
-      if ((x->type & mask) == x->type) {
-        n += printf_work(o + n, sizeof(o) - n, x->text, (mode & ~USE_EOL) | s);
-        v &= ~x->type;
+    if (p) {
+      for (pconvert_t x = p; 0 != x->text; ++x) {
+        if ((x->type & mask) == x->type) {
+          n += printf_work(o + n, sizeof(o) - n, x->text, (mode & ~USE_EOL) | s);
+          v &= ~x->type;
+        }
       }
     }
 
-    for (pconvert_t x = q; 0 != x->text; ++x) {
-      if ((x->type & mask) == x->type) {
-        n += printf_work(o + n, sizeof(o) - n, x->text, (mode & ~USE_EOL) | s);
-        v &= ~x->type;
+    if (q) {
+      for (pconvert_t x = q; 0 != x->text; ++x) {
+        if ((x->type & mask) == x->type) {
+          n += printf_work(o + n, sizeof(o) - n, x->text, (mode & ~USE_EOL) | s);
+          v &= ~x->type;
+        }
       }
     }
 
@@ -1203,7 +1207,9 @@ int printf_copemute(const pconvert_t p, const pconvert_t q, const maskz_t mask, 
         n += printf_text(x->text, (mode & ~USE_EOL) | USE_SPACE);
       }
     }
+  }
 
+  if (q) {
     for (pconvert_t x = q; 0 != x->text; ++x) {
       if ((x->type & mask) == x->type) {
         n += printf_text(x->text, (mode & ~USE_EOL) | USE_SPACE);
