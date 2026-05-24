@@ -3,9 +3,11 @@
 #include "opcode-engine.h"
 #include "opcode-printf.h"
 
+#include "static/opcode-examine-def.ci"
+
 static const int MAXSIZE = 24;
 
-static int ocdebugf_cvalue0(handle_t p, const uint64_t cv, const pconvert_t x, const pconvert_t y) {
+static int ocdebugf_cvalue0(handle_t p, const uint64_t cv, const pconvert_t x, const pconvert_t y, const pconvert_t z) {
   if (isopcode(p)) {
     int n = 0;
 
@@ -18,7 +20,7 @@ static int ocdebugf_cvalue0(handle_t p, const uint64_t cv, const pconvert_t x, c
     if (cv1) {
       n += printf_pick(x, cv1, USE_SPACE);
     }
-    n += printf_mask(y, OCFLAG_MASK(cv), USE_NONE);
+    n += printf_cope(y, z, OCFLAG_MASK(cv), USE_NONE);
     n += printf_eol();
 
     return n;
@@ -111,14 +113,14 @@ static int ocdebugf_cvalue1(handle_t p, uint64_t cv) {
   return ECODE_HANDLE;
 }
 
-static int ocdebugf_mcvalueZ(handle_t p, unknown_t m, const char *name, unknown_t x, unknown_t y) {
-  if (isopcode(p) && m && x && y && name) {
+static int ocdebugf_mcvalueZ(handle_t p, unknown_t m, const char *name, unknown_t x, unknown_t y, unknown_t z) {
+  if (isopcode(p) && m && x && y && z && name) {
     int n = 0;
     pocmnemonic_t m0 = CAST(pocmnemonic_t, m);
 
     n += printf_text(name, USE_LT | USE_COLON | SET_PAD(MAXSIZE));
     n += printf_text(m0->data, USE_LT | USE_SPACE | USE_EOL);
-    n += ocdebugf_cvalue0(p, m0->cvalue, x, y);
+    n += ocdebugf_cvalue0(p, m0->cvalue, x, y, z);
     if (0 != m0->uvalue) {
       n += printf_text("UVALUE", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
       n += opcode_printf_FADDR(p, m0->uvalue, USE_EOL);
@@ -207,16 +209,16 @@ static int ocdebugf(handle_t p, handle_t q) {
       n += printf_text(q0->comment, USE_LT | USE_SPACE | USE_EOL);
     }
     if (p0) {
-      n += ocdebugf_mcvalueZ(p, p0, "PREFIX1", oegetPREFIXNAMES(p), oegetINSTRUCTIONFLAGS(p));
+      n += ocdebugf_mcvalueZ(p, p0, "PREFIX1", oegetPREFIXNAMES(p), oeINSTRUCTIONFLAGS_DEF, oegetINSTRUCTIONFLAGS(p));
     }
     if (p1) {
-      n += ocdebugf_mcvalueZ(p, p1, "PREFIX2", oegetPREFIXNAMES(p), oegetINSTRUCTIONFLAGS(p));
+      n += ocdebugf_mcvalueZ(p, p1, "PREFIX2", oegetPREFIXNAMES(p), oeINSTRUCTIONFLAGS_DEF, oegetINSTRUCTIONFLAGS(p));
     }
     if (p2) {
-      n += ocdebugf_mcvalueZ(p, p2, "PREFIX3", oegetPREFIXNAMES(p), oegetINSTRUCTIONFLAGS(p));
+      n += ocdebugf_mcvalueZ(p, p2, "PREFIX3", oegetPREFIXNAMES(p), oeINSTRUCTIONFLAGS_DEF, oegetINSTRUCTIONFLAGS(p));
     }
     if (m0) {
-      n += ocdebugf_mcvalueZ(p, m0, "MNEMONIC", oegetINSTRUCTIONNAMES(p), oegetINSTRUCTIONFLAGS(p));
+      n += ocdebugf_mcvalueZ(p, m0, "MNEMONIC", oegetINSTRUCTIONNAMES(p), oeINSTRUCTIONFLAGS_DEF, oegetINSTRUCTIONFLAGS(p));
     }
     if (o0) {
       n += ocdebugf_opvalueZ(p, o0, "OPERAND1");
