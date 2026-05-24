@@ -1162,6 +1162,39 @@ int printf_masknone(const pconvert_t p, const maskz_t mask, const imode_t mode) 
   return printf_mask(p, mask, USE_SPACE | mode);
 }
 
+int printf_cope(const pconvert_t p, const pconvert_t q, const maskz_t mask, const imode_t mode) {
+  MALLOCA(char, o, BUFFER_MAXSIZE);
+
+  int n = 0;
+  if (p) {
+    maskz_t v = mask;
+    imode_t s = mode & USE_NOSPACE ? USE_NONE : USE_SPACE;
+    for (pconvert_t x = p; 0 != x->text; ++x) {
+      if ((x->type & mask) == x->type) {
+        n += printf_work(o + n, sizeof(o) - n, x->text, (mode & ~USE_EOL) | s);
+        v &= ~x->type;
+      }
+    }
+
+    for (pconvert_t x = q; 0 != x->text; ++x) {
+      if ((x->type & mask) == x->type) {
+        n += printf_work(o + n, sizeof(o) - n, x->text, (mode & ~USE_EOL) | s);
+        v &= ~x->type;
+      }
+    }
+
+    if (v) {
+      n += printf_neat(o + n, sizeof(o) - n, v, USE_UNKNOWN | USE_SPACE | (mode & ~USE_EOL));
+    }
+
+    n += printf_text(o, mode);
+  } else if (mode & USE_EOL) {
+    n += printf_eol();
+  }
+
+  return n;
+}
+
 int printf_pick(const pconvert_t p, const pick_t x, const imode_t mode) {
   return printf_text(strpick(p, x), mode);
 }
