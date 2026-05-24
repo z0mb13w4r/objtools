@@ -1195,6 +1195,30 @@ int printf_cope(const pconvert_t p, const pconvert_t q, const maskz_t mask, cons
   return n;
 }
 
+int printf_copemute(const pconvert_t p, const pconvert_t q, const maskz_t mask, const imode_t mode) {
+  int n = 0;
+  if (p) {
+    for (pconvert_t x = p; 0 != x->text; ++x) {
+      if ((x->type & mask) == x->type) {
+        n += printf_text(x->text, (mode & ~USE_EOL) | USE_SPACE);
+      }
+    }
+
+    for (pconvert_t x = q; 0 != x->text; ++x) {
+      if ((x->type & mask) == x->type) {
+        n += printf_text(x->text, (mode & ~USE_EOL) | USE_SPACE);
+      }
+    }
+  }
+
+  if (mode & USE_EOL) {
+    n += printf_eol();
+  }
+
+  return n;
+}
+
+
 int printf_pick(const pconvert_t p, const pick_t x, const imode_t mode) {
   return printf_text(strpick(p, x), mode);
 }

@@ -231,6 +231,7 @@ int printf_maskmute(const pconvert_t p, const maskz_t mask, const imode_t mode);
 int printf_masknone(const pconvert_t p, const maskz_t mask, const imode_t mode);
 
 int printf_cope(const pconvert_t p, const pconvert_t q, const maskz_t mask, const imode_t mode);
+int printf_copemute(const pconvert_t p, const pconvert_t q, const maskz_t mask, const imode_t mode);
 
 int printf_pick(const pconvert_t p, const pick_t x, const imode_t mode);
 int printf_picknull(const pconvert_t p, const pick_t x, const imode_t mode);
