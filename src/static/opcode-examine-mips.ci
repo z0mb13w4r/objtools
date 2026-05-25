@@ -180,26 +180,6 @@ static convert_t oeINSTRUCTIONFLAGS_MIPS[] = {
 };
 
 static convert_t oeINSTRUCTIONNAMES_MIPS[] = {
-  {"LOAD",              OCINSN_MASK(OCINSNMIPS_LOAD)},
-  {"MOVE",              OCINSN_MASK(OCINSNMIPS_MOVE)},
-  {"STORE",             OCINSN_MASK(OCINSNMIPS_STORE)},
-  {"NOP",               OCINSN_MASK(OCINSNMIPS_NOP)},
-
-  {"ADD",               OCINSN_MASK(OCINSNMIPS_ADD)},
-  {"DIV",               OCINSN_MASK(OCINSNMIPS_DIV)},
-  {"MUL",               OCINSN_MASK(OCINSNMIPS_MUL)},
-  {"REM",               OCINSN_MASK(OCINSNMIPS_REM)},
-  {"SUB",               OCINSN_MASK(OCINSNMIPS_SUB)},
-
-  {"AND",               OCINSN_MASK(OCINSNMIPS_AND)},
-  {"ORN",               OCINSN_MASK(OCINSNMIPS_NOR)},
-  {"ORR",               OCINSN_MASK(OCINSNMIPS_OR)},
-  {"SxA",               OCINSN_MASK(OCINSNMIPS_SxA)},
-  {"SxL",               OCINSN_MASK(OCINSNMIPS_SxL)},
-  {"XOR",               OCINSN_MASK(OCINSNMIPS_XOR)},
-
-  {"Bxx",               OCINSN_MASK(OCINSNMIPS_Bxx)},
-  {"Jxx",               OCINSN_MASK(OCINSNMIPS_Jxx)},
   {"xEXT",              OCINSN_MASK(OCINSNMIPS_xEXT)},
 
   {0, 0}
