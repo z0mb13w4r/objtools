@@ -374,46 +374,6 @@ static convert_t oeINSTRUCTIONFLAGS_RISCV[] = {
 };
 
 static convert_t oeINSTRUCTIONNAMES_RISCV[] = {
-  {"LOAD",              OCINSN_MASK(OCINSNRISCV_LOAD)},
-  {"STORE",             OCINSN_MASK(OCINSNRISCV_STORE)},
-  {"MOVE",              OCINSN_MASK(OCINSNRISCV_MOVE)},
-  {"COMPARE",           OCINSN_MASK(OCINSNRISCV_COMPARE)},
-  {"TOINT",             OCINSN_MASK(OCINSNRISCV_TOINT)},
-  {"TOFLOAT",           OCINSN_MASK(OCINSNRISCV_TOFLOAT)},
-  {"NOP",               OCINSN_MASK(OCINSNRISCV_NOP)},
-
-  {"ADD",               OCINSN_MASK(OCINSNRISCV_ADD)},
-  {"DIV",               OCINSN_MASK(OCINSNRISCV_DIV)},
-  {"MUL",               OCINSN_MASK(OCINSNRISCV_MUL)},
-  {"REM",               OCINSN_MASK(OCINSNRISCV_REM)},
-  {"SUB",               OCINSN_MASK(OCINSNRISCV_SUB)},
-
-  {"MADD",              OCINSN_MASK(OCINSNRISCV_MADD)},
-  {"MSUB",              OCINSN_MASK(OCINSNRISCV_MSUB)},
-
-  {"AND",               OCINSN_MASK(OCINSNRISCV_AND)},
-  {"ANDN",              OCINSN_MASK(OCINSNRISCV_ANDN)},
-  {"MIN",               OCINSN_MASK(OCINSNRISCV_MIN)},
-  {"MAX",               OCINSN_MASK(OCINSNRISCV_MAX)},
-  {"NEG",               OCINSN_MASK(OCINSNRISCV_NEG)},
-  {"NOT",               OCINSN_MASK(OCINSNRISCV_NOT)},
-  {"OR",                OCINSN_MASK(OCINSNRISCV_OR)},
-  {"ORN",               OCINSN_MASK(OCINSNRISCV_ORN)},
-  {"ROx",               OCINSN_MASK(OCINSNRISCV_ROx)},
-  {"SxA",               OCINSN_MASK(OCINSNRISCV_SxA)},
-  {"SxL",               OCINSN_MASK(OCINSNRISCV_SxL)},
-  {"XNOR",              OCINSN_MASK(OCINSNRISCV_XNOR)},
-  {"XOR",               OCINSN_MASK(OCINSNRISCV_XOR)},
-
-  {"RET",               OCINSN_MASK(OCINSNRISCV_RET)},
-  {"Jxx",               OCINSN_MASK(OCINSNRISCV_Jxx)},
-  {"Bxx",               OCINSN_MASK(OCINSNRISCV_Bxx)},
-
-  {"ECALL",             OCINSN_MASK(OCINSNRISCV_ECALL)},
-  {"EBREAK",            OCINSN_MASK(OCINSNRISCV_EBREAK)},
-  {"UNDEF",             OCINSN_MASK(OCINSNRISCV_UNDEF)},
-
-  {"TOEXTEND",          OCINSN_MASK(OCINSNRISCV_xEXT)},
 
   {0, 0}
 };
