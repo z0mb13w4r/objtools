@@ -7,21 +7,37 @@
 
 static const int MAXSIZE = 24;
 
-static int ocdebugf_cvalue0(handle_t p, const uint64_t cv, const pconvert_t x, const pconvert_t y, const pconvert_t z) {
+static int ocdebugf_cvalue0(handle_t p, const uint64_t v, const pconvert_t w, const pconvert_t x, const pconvert_t y, const pconvert_t z) {
   if (isopcode(p)) {
     int n = 0;
 
-    const uint64_t cv0 = OCINSN_GET0(cv);
-    const uint64_t cv1 = OCINSN_GET1(cv);
+    const uint64_t v0 = OCINSN_GET0(v);
+    const uint64_t v1 = OCINSN_GET1(v);
+    const uint64_t v2 = OCFLAG_MASK(v);
 
     n += printf_text("CVALUE", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
-    n += printf_nice(cv, USE_FHEX64);
-    n += printf_pick(x, cv0, USE_SPACE);
-    if (cv1) {
-      n += printf_pick(x, cv1, USE_SPACE);
+    n += printf_nice(v, USE_FHEX64);
+    n += printf_pick(w && MODE_ISSCOPE(v0, OCINSN_POSMIN, OCINSN_POSMAX) ? w : x, v0, USE_SPACE);
+    if (v1) {
+      n += printf_pick(w && MODE_ISSCOPE(v1, OCINSN_POSMIN, OCINSN_POSMAX) ? w : x, v1, USE_SPACE);
     }
-    n += printf_cope(y, z, OCFLAG_MASK(cv), USE_NONE);
+    n += printf_cope(y, z, v2, USE_NONE);
     n += printf_eol();
+
+    return n;
+  }
+
+  return ECODE_HANDLE;
+}
+
+static int ocdebugf_mvalue0(handle_t p, const uint64_t v) {
+  if (isopcode(p)) {
+    int n = 0;
+
+    if (0 != v) {
+      n += printf_text("UVALUE", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
+      n += opcode_printf_FADDR(p, v, USE_EOL);
+    }
 
     return n;
   }
@@ -113,23 +129,24 @@ static int ocdebugf_cvalue1(handle_t p, uint64_t cv) {
   return ECODE_HANDLE;
 }
 
-static int ocdebugf_mcvalueZ(handle_t p, unknown_t m, const char *name, unknown_t x, unknown_t y, unknown_t z) {
-  if (isopcode(p) && m && x && y && z && name) {
+static int ocdebugf_mcvalueY(handle_t p, unknown_t m, const char *name, unknown_t w, unknown_t x, unknown_t y, unknown_t z) {
+  if (isopcode(p) && m && w && x && y && z && name) {
     int n = 0;
     pocmnemonic_t m0 = CAST(pocmnemonic_t, m);
 
     n += printf_text(name, USE_LT | USE_COLON | SET_PAD(MAXSIZE));
     n += printf_text(m0->data, USE_LT | USE_SPACE | USE_EOL);
-    n += ocdebugf_cvalue0(p, m0->cvalue, x, y, z);
-    if (0 != m0->uvalue) {
-      n += printf_text("UVALUE", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
-      n += opcode_printf_FADDR(p, m0->uvalue, USE_EOL);
-    }
+    n += ocdebugf_cvalue0(p, m0->cvalue, w, x, y, z);
+    n += ocdebugf_mvalue0(p, m0->uvalue);
 
     return n;
   }
 
   return ECODE_HANDLE;
+}
+
+static int ocdebugf_mcvalueZ(handle_t p, unknown_t m, const char *name, unknown_t x, unknown_t y, unknown_t z) {
+  return ocdebugf_mcvalueY(p, m, name, NULL, x, y, z);
 }
 
 static int ocdebugf_opvalueX(handle_t p, const uint64_t cv, const uint64_t nv, const char *sv, const char *id, const uint64_t mask) {
@@ -218,7 +235,7 @@ static int ocdebugf(handle_t p, handle_t q) {
       n += ocdebugf_mcvalueZ(p, p2, "PREFIX3", oegetPREFIXNAMES(p), oeINSTRUCTIONFLAGS_DEF, oegetINSTRUCTIONFLAGS(p));
     }
     if (m0) {
-      n += ocdebugf_mcvalueZ(p, m0, "MNEMONIC", oegetINSTRUCTIONNAMES(p), oeINSTRUCTIONFLAGS_DEF, oegetINSTRUCTIONFLAGS(p));
+      n += ocdebugf_mcvalueY(p, m0, "MNEMONIC", oeINSTRUCTIONNAMES_DEF, oegetINSTRUCTIONNAMES(p), oeINSTRUCTIONFLAGS_DEF, oegetINSTRUCTIONFLAGS(p));
     }
     if (o0) {
       n += ocdebugf_opvalueZ(p, o0, "OPERAND1");
