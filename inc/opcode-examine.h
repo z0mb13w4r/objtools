@@ -25,6 +25,9 @@
 #define OECODE_OPERAND3                (7)
 #define OECODE_OPERAND4                (8)
 
+#define OCINSN_POSMIN                  (OCINSN_ABS)
+#define OCINSN_POSMAX                  (OCINSN_TOEXTEND)
+
 #define OCINSN_ABS                     (197)
 #define OCINSN_SQRT                    (198)
 #define OCINSN_COS                     (199)
