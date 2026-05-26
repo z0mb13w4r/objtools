@@ -1,3 +1,8 @@
+v1.6 - ??/06/2026
+-----------------------------------------------------------------------
+[+] Enhanced Heuristic Assembly Language Analysis Engine.  
+[+] Bug fixes.  
+
 v1.5 - 23/05/2026
 -----------------------------------------------------------------------
 [+] Added verbose to the yara-rules-ng script.  
@@ -17,6 +22,7 @@ v1.4 - 25/04/2026
 [+] Added zlib encoding and decoding.  
 [+] Added core dump analysis to readelf-ng.  
 [+] Added signature detection through readpe-ng & detect-ng.  
+[+] Enhanced Heuristic Assembly Language Analysis Engine.  
 [+] Enhanced readpe-ng and enumerate-ng.  
 [+] Bug fixes.  
 
