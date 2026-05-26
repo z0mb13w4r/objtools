@@ -589,14 +589,14 @@ static unknown_t oedo_opvalue(handle_t p, unknown_t q, unknown_t m, uint64_t *cv
           return oeskip(m0 + pi->mcsize, xstrlen(m0) - pi->mcsize);
         } else {
 #ifdef OPCODE_EXAMINE_OPERAND
-          printf_e("The operand has not been processed '%s'", m0);
+          printf_e("The operand has not been processed[1] '%s'", m0);
 #endif
           xstrncpy(svalue, m0, OCUNION_MAXSIZE);
           m0 = NULL;
         }
       } else {
 #ifdef OPCODE_EXAMINE_OPERAND
-        printf_e("The operand has not been processed '%s'", m0);
+        printf_e("The operand has not been processed[2] '%s'", m0);
 #endif
         xstrncpy(svalue, m0, OCUNION_MAXSIZE);
         m0 = NULL;
@@ -639,7 +639,7 @@ static unknown_t oedo_register(handle_t p, handle_t e, unknown_t q, unknown_t o,
 
 #ifdef OPCODE_EXAMINE_OPERAND
       if (m0) {
-        printf_e("The operand has not been processed '%s'", m0);
+        printf_e("The operand has not been processed[3] '%s'", m0);
       }
 #endif
       return NULL;
@@ -721,7 +721,7 @@ static unknown_t oedo_value(handle_t p, handle_t e, unknown_t q, unknown_t o, un
 
 #ifdef OPCODE_EXAMINE_OPERAND
       if (m1 || m2 || m3 || m4 || m5 || m6 || m7) {
-        printf_e("The operand has not been processed '%s:%s:%s:%s:%s:%s:%s'",
+        printf_e("The operand has not been processed[4] '%s:%s:%s:%s:%s:%s:%s'",
                  STRING(m1), STRING(m2), STRING(m3), STRING(m4), STRING(m5), STRING(m6), STRING(m7));
       }
 #endif
