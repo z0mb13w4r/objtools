@@ -1,6 +1,7 @@
 v1.6 - ??/06/2026
 -----------------------------------------------------------------------
 [+] Enhanced Heuristic Assembly Language Analysis Engine.  
+[+] Updated Capstone Engine.  
 [+] Bug fixes.  
 
 v1.5 - 23/05/2026
