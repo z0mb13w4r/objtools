@@ -235,7 +235,7 @@ static bool_t oeisok0(const uchar_t c) {
 }
 
 static bool_t oeisok1(const uchar_t c, const uchar_t x) {
-  return oeisok0(c) || ' ' == c || ',' == c || '(' == c || c == x;
+  return c == x || oeisok0(c) || ' ' == c || ',' == c || '(' == c;
 }
 
 static poestruct_t oepick1(poestruct_t p, unknown_t m, const size_t size, const uchar_t x) {
