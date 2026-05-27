@@ -234,16 +234,16 @@ static bool_t oeisok0(const uchar_t c) {
   return 0 == c || ':' == c;
 }
 
-static bool_t oeisok1(const uchar_t c) {
-  return oeisok0(c) || ' ' == c || ',' == c || '(' == c;
+static bool_t oeisok1(const uchar_t c, const uchar_t x) {
+  return oeisok0(c) || ' ' == c || ',' == c || '(' == c || c == x;
 }
 
-static poestruct_t oepick(poestruct_t p, unknown_t m, const size_t size) {
+static poestruct_t oepick1(poestruct_t p, unknown_t m, const size_t size, const uchar_t x) {
   if (m && USE_STRLEN == size) {
-    return oepick(p, m, xstrlen(m));
+    return oepick1(p, m, xstrlen(m), x);
   } else if (p && m && size) {
     for (poestruct_t pp = p; 0 != pp->mc; ++pp) {
-      if (0 == xstrncmp(m, pp->mc, pp->mcsize) && (oeisok0(pp->mc[pp->mcsize - 1]) || oeisok1(CAST(puchar_t, m)[pp->mcsize]))) {
+      if (0 == xstrncmp(m, pp->mc, pp->mcsize) && (oeisok0(pp->mc[pp->mcsize - 1]) || oeisok1(CAST(puchar_t, m)[pp->mcsize], x))) {
         return pp;
       }
     }
@@ -252,15 +252,19 @@ static poestruct_t oepick(poestruct_t p, unknown_t m, const size_t size) {
   return NULL;
 }
 
+static poestruct_t oepick(poestruct_t p, unknown_t m, const size_t size) {
+  return oepick1(p, m, size, 0);
+}
+
 static poestruct_t oepick_REG(handle_t p, unknown_t m, const size_t size) {
   if (m && USE_STRLEN == size) {
     return oepick_REG(p, m, xstrlen(m));
   } else if (m && size) {
     switch (ocget_machine(p)) {
     case EM_ARM:
-      return oepick(oeREGISTERS_ARM32, m, size);
+      return oepick1(oeREGISTERS_ARM32, m, size, '.');
     case EM_AARCH64:
-      return oepick(oeREGISTERS_ARM64, m, size);
+      return oepick1(oeREGISTERS_ARM64, m, size, '.');
     case EM_RISCV:
       return oepick(ocisELF32(p) ? oeREGISTERS_RISCV32 : oeREGISTERS_RISCV64, m, size);
     case EM_MIPS:
