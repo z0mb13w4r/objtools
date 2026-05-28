@@ -106,6 +106,7 @@ static convert_t oeINSTRUCTIONFLAGS_DEF[] = {
 };
 
 static convert_t oeREGISTERFLAGS_DEF[] = {
+  {"8BIT",              OCREGISTER_8BIT},
   {"8BITLO",            OCREGISTER_8BITLO},
   {"8BITHI",            OCREGISTER_8BITHI},
   {"16BIT",             OCREGISTER_16BIT},

@@ -243,7 +243,7 @@
 #define OCREGISTER_12                  U64MASK(52)
 #define OCREGISTER_13                  U64MASK(53)
 #define OCREGISTER_14                  U64MASK(54)
-#define OCREGISTER_15                  U64MASK(55)
+#define OCREGISTER_8BIT                U64MASK(55)
 #define OCREGISTER_8BITLO              U64MASK(56)
 #define OCREGISTER_8BITHI              U64MASK(57)
 #define OCREGISTER_16BIT               U64MASK(58)
