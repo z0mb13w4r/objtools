@@ -1050,6 +1050,19 @@
 #define OCREGARM_V30               ((0x8d) | OCREGISTER_128BIT)
 #define OCREGARM_V31               ((0x8e) | OCREGISTER_128BIT)
 
+#define OCREGARM_LANE2             ((0x8f))
+#define OCREGARM_LANE4             ((0x90))
+#define OCREGARM_LANE8             ((0x91))
+#define OCREGARM_LANE16            ((0x92))
+
+#define OCREGARM_2D                (OCREGARM_LANE2 | OCREGISTER_64BIT)
+#define OCREGARM_2S                (OCREGARM_LANE2 | OCREGISTER_32BIT)
+#define OCREGARM_4H                (OCREGARM_LANE4 | OCREGISTER_16BIT)
+#define OCREGARM_4S                (OCREGARM_LANE4 | OCREGISTER_32BIT)
+#define OCREGARM_8B                (OCREGARM_LANE8 | OCREGISTER_8BIT)
+#define OCREGARM_8H                (OCREGARM_LANE8 | OCREGISTER_16BIT)
+#define OCREGARM_16B               (OCREGARM_LANE16 | OCREGISTER_8BIT)
+
 #define OCREGARM_AL                ((0xf1) | OCREGARM_CONDITION)
 #define OCREGARM_CC                ((0xf2) | OCREGARM_CONDITION)
 #define OCREGARM_CS                ((0xf3) | OCREGARM_CONDITION)
