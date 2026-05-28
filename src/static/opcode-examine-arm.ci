@@ -1050,6 +1050,14 @@ static oestruct_t oeREGISTERS_ARM64[] = {
   OCSTRUCT("vc",        OCREGARM_VC),
   OCSTRUCT("vs",        OCREGARM_VS),
 
+  OCSTRUCT(".16b",      OCREGARM_16B),
+  OCSTRUCT(".2d",       OCREGARM_2D),
+  OCSTRUCT(".2s",       OCREGARM_2S),
+  OCSTRUCT(".4h",       OCREGARM_4H),
+  OCSTRUCT(".4s",       OCREGARM_4S),
+  OCSTRUCT(".8b",       OCREGARM_8B),
+  OCSTRUCT(".8h",       OCREGARM_8H),
+
   {NULL}
 };
 
@@ -1291,6 +1299,11 @@ static convert_t oeREGISTERNAMES_ARM64[] = {
   {"PL",                OCREG_MASK(OCREGARM_PL)},
   {"VC",                OCREG_MASK(OCREGARM_VC)},
   {"VS",                OCREG_MASK(OCREGARM_VS)},
+
+  {"LANE2",             OCREG_MASK(OCREGARM_LANE2)},
+  {"LANE4",             OCREG_MASK(OCREGARM_LANE4)},
+  {"LANE8",             OCREG_MASK(OCREGARM_LANE8)},
+  {"LANE16",            OCREG_MASK(OCREGARM_LANE16)},
 
   {0, 0}
 };
