@@ -1,4 +1,5 @@
 static convert_t oeINSTRUCTIONNAMES_DEF[] = {
+  {"MSK",               OCINSN_MSK},
   {"ABS",               OCINSN_ABS},
   {"SQRT",              OCINSN_SQRT},
   {"COS",               OCINSN_COS},
