@@ -1,5 +1,4 @@
 static convert_t oeINSTRUCTIONNAMES_DEF[] = {
-  {"MSK",               OCINSN_MSK},
   {"ABS",               OCINSN_ABS},
   {"SQRT",              OCINSN_SQRT},
   {"COS",               OCINSN_COS},
@@ -32,6 +31,7 @@ static convert_t oeINSTRUCTIONNAMES_DEF[] = {
   {"INC",               OCINSN_INC},
   {"MAX",               OCINSN_MAX},
   {"MIN",               OCINSN_MIN},
+  {"MSK",               OCINSN_MSK},
   {"MUL",               OCINSN_MUL},
   {"NEG",               OCINSN_NEG},
   {"NOT",               OCINSN_NOT},
@@ -39,6 +39,7 @@ static convert_t oeINSTRUCTIONNAMES_DEF[] = {
   {"REM",               OCINSN_REM},
   {"ROx",               OCINSN_ROx},
   {"SCA",               OCINSN_SCA},
+  {"SEL",               OCINSN_SEL},
   {"SUB",               OCINSN_SUB},
   {"SWP",               OCINSN_SWP},
   {"SxA",               OCINSN_SxA},
