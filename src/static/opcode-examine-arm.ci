@@ -119,6 +119,7 @@ static oestruct_t oeINSTRUCTIONS_ARM[] = {
   OCSTRUCT("tbnz",      OCINSNARM_TBNZ),
   OCSTRUCT("tbz",       OCINSNARM_TBZ),
 
+  OCSTRUCT("fcsel",     OCINSNX86_FCSEL),
   OCSTRUCT("csel",      OCINSNARM_CSEL),
   OCSTRUCT("cset",      OCINSNARM_CSET),
   OCSTRUCT("cmp.b",     OCINSNARM_CMPB),
