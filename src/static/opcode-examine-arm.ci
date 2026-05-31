@@ -1110,8 +1110,6 @@ static convert_t oeINSTRUCTIONNAMES_ARM[] = {
 };
 
 static convert_t oeOPERANDFLAGS_ARM[] = {
-  {"MVALUE0",           OPOPERAND_MVALUE0},
-  {"MVALUE1",           OPOPERAND_MVALUE1},
 
   {0, 0}
 };

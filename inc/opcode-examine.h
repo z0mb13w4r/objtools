@@ -175,32 +175,39 @@
 #define OCFLAG_SIGN             (OCINSN_S)
 #define OCFLAG_ZERO             (OCINSN_Z)
 
-#define OCOPERAND_IVALUE0              (0x0001)
-#define OCOPERAND_UVALUE0              (0x0002)
-#define OPOPERAND_REGISTER0            (0x0003)
-#define OCOPERAND_IVALUE1              (0x0004)
-#define OCOPERAND_UVALUE1              (0x0008)
-#define OPOPERAND_REGISTER1            (0x000c)
-#define OCOPERAND_IVALUE2              (0x0010)
-#define OCOPERAND_UVALUE2              (0x0020)
-#define OPOPERAND_REGISTER2            (0x0030)
-#define OCOPERAND_IVALUE3              (0x0040)
-#define OCOPERAND_UVALUE3              (0x0080)
-#define OPOPERAND_REGISTER3            (0x00c0)
-#define OCOPERAND_IVALUE4              (0x0100)
-#define OCOPERAND_UVALUE4              (0x0200)
-#define OPOPERAND_REGISTER4            (0x0300)
-#define OCOPERAND_IVALUE5              (0x0400)
-#define OCOPERAND_UVALUE5              (0x0800)
-#define OPOPERAND_REGISTER5            (0x0c00)
-#define OCOPERAND_IVALUE6              (0x1000)
-#define OCOPERAND_UVALUE6              (0x2000)
-#define OPOPERAND_REGISTER6            (0x3000)
-#define OCOPERAND_IVALUE7              (0x4000)
-#define OCOPERAND_UVALUE7              (0x8000)
-#define OPOPERAND_REGISTER7            (0xc000)
-#define OPOPERAND_MVALUE0              U64MASK(48)
-#define OPOPERAND_MVALUE1              U64MASK(49)
+#define OCOPERAND_IVALUE0              (0x00000001)
+#define OCOPERAND_UVALUE0              (0x00000002)
+#define OCOPERAND_MVALUE0              (0x00000003)
+#define OCOPERAND_REGISTER0            (0x0000000f)
+#define OCOPERAND_IVALUE1              (0x00000010)
+#define OCOPERAND_UVALUE1              (0x00000020)
+#define OCOPERAND_MVALUE1              (0x00000030)
+#define OCOPERAND_REGISTER1            (0x000000f0)
+#define OCOPERAND_IVALUE2              (0x00000100)
+#define OCOPERAND_UVALUE2              (0x00000200)
+#define OCOPERAND_MVALUE2              (0x00000300)
+#define OCOPERAND_REGISTER2            (0x00000f00)
+#define OCOPERAND_IVALUE3              (0x00001000)
+#define OCOPERAND_UVALUE3              (0x00002000)
+#define OCOPERAND_MVALUE3              (0x00003000)
+#define OCOPERAND_REGISTER3            (0x0000f000)
+#define OCOPERAND_IVALUE4              (0x00010000)
+#define OCOPERAND_UVALUE4              (0x00020000)
+#define OCOPERAND_MVALUE4              (0x00030000)
+#define OCOPERAND_REGISTER4            (0x000f0000)
+#define OCOPERAND_IVALUE5              (0x00100000)
+#define OCOPERAND_UVALUE5              (0x00200000)
+#define OCOPERAND_MVALUE5              (0x00300000)
+#define OCOPERAND_REGISTER5            (0x00f00000)
+#define OCOPERAND_IVALUE6              (0x01000000)
+#define OCOPERAND_UVALUE6              (0x02000000)
+#define OCOPERAND_MVALUE6              (0x03000000)
+#define OCOPERAND_REGISTER6            (0x0f000000)
+#define OCOPERAND_IVALUE7              (0x10000000)
+#define OCOPERAND_UVALUE7              (0x20000000)
+#define OCOPERAND_MVALUE7              (0x30000000)
+#define OCOPERAND_REGISTER7            (0xf0000000)
+
 #define OPOPERAND_00                   U64MASK(50)
 #define OPOPERAND_01                   U64MASK(51)
 #define OPOPERAND_02                   U64MASK(52)
@@ -220,15 +227,17 @@
                                          | OCOPERAND_IVALUE3 | OCOPERAND_IVALUE4 | OCOPERAND_IVALUE5 \
                                          | OCOPERAND_IVALUE6 | OCOPERAND_IVALUE7)
 
-#define OCOPERAND_MVALUEMASK           (OPOPERAND_MVALUE0 | OPOPERAND_MVALUE1)
+#define OCOPERAND_MVALUEMASK           (OCOPERAND_MVALUE0 | OCOPERAND_MVALUE1 | OCOPERAND_MVALUE2 \
+                                         | OCOPERAND_MVALUE3 | OCOPERAND_MVALUE4 | OCOPERAND_MVALUE5 \
+                                         | OCOPERAND_MVALUE6 | OCOPERAND_MVALUE7)
 
 #define OCOPERAND_UVALUEMASK           (OCOPERAND_UVALUE0 | OCOPERAND_UVALUE1 | OCOPERAND_UVALUE2 \
                                          | OCOPERAND_UVALUE3 | OCOPERAND_UVALUE4 | OCOPERAND_UVALUE5 \
                                          | OCOPERAND_UVALUE6 | OCOPERAND_UVALUE7)
 
-#define OPOPERAND_REGISTERMASK         (OPOPERAND_REGISTER0 | OPOPERAND_REGISTER1 | OPOPERAND_REGISTER2 \
-                                         | OPOPERAND_REGISTER3 | OPOPERAND_REGISTER4 | OPOPERAND_REGISTER5 \
-                                         | OPOPERAND_REGISTER6 | OPOPERAND_REGISTER7)
+#define OCOPERAND_REGISTERMASK         (OCOPERAND_REGISTER0 | OCOPERAND_REGISTER1 | OCOPERAND_REGISTER2 \
+                                         | OCOPERAND_REGISTER3 | OCOPERAND_REGISTER4 | OCOPERAND_REGISTER5 \
+                                         | OCOPERAND_REGISTER6 | OCOPERAND_REGISTER7)
 
 #define OCREGISTER_00                  U64MASK(40)
 #define OCREGISTER_01                  U64MASK(41)
