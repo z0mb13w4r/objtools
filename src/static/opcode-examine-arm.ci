@@ -1068,7 +1068,6 @@ static oestruct_t oeREGISTERS_ARM64[] = {
 static convert_t oeINSTRUCTIONFLAGS_ARM[] = {
   {"CLR",               OCINSNARM_CLR},
   {"SET",               OCINSNARM_SET},
-  {"SEL",               OCINSNARM_SEL},
 
   {0, 0}
 };
