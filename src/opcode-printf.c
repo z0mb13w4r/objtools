@@ -54,81 +54,81 @@ static int ocdebugf_cvalue1(handle_t p, uint64_t cv) {
 
     if (MODE_ISSET(cv, OCOPERAND_REGISTER0)) {
       n += printf_text("REGISTER0", USE_LT | USE_SPACE);
-    } else if (MODE_ISSET(cv, OCOPERAND_MVALUE0)) {
+    } else if (MODE_ISCUT(cv, OCOPERAND_MVALUE0, OCOPERAND_REGISTER0)) {
       n += printf_text("MVALUE0", USE_LT | USE_SPACE);
-    } else if (MODE_ISSET(cv, OCOPERAND_IVALUE0)) {
+    } else if (MODE_ISCUT(cv, OCOPERAND_IVALUE0, OCOPERAND_REGISTER0)) {
       n += printf_text("IVALUE0", USE_LT | USE_SPACE);
-    } else if (MODE_ISSET(cv, OCOPERAND_UVALUE0)) {
+    } else if (MODE_ISCUT(cv, OCOPERAND_UVALUE0, OCOPERAND_REGISTER0)) {
       n += printf_text("UVALUE0", USE_LT | USE_SPACE);
     }
 
     if (MODE_ISSET(cv, OCOPERAND_REGISTER1)) {
       n += printf_text("REGISTER1", USE_LT | USE_SPACE);
-    } else if (MODE_ISSET(cv, OCOPERAND_MVALUE1)) {
+    } else if (MODE_ISCUT(cv, OCOPERAND_MVALUE1, OCOPERAND_REGISTER1)) {
       n += printf_text("MVALUE1", USE_LT | USE_SPACE);
-    } else if (MODE_ISSET(cv, OCOPERAND_IVALUE1)) {
+    } else if (MODE_ISCUT(cv, OCOPERAND_IVALUE1, OCOPERAND_REGISTER1)) {
       n += printf_text("IVALUE1", USE_LT | USE_SPACE);
-    } else if (MODE_ISSET(cv, OCOPERAND_UVALUE1)) {
+    } else if (MODE_ISCUT(cv, OCOPERAND_UVALUE1, OCOPERAND_REGISTER1)) {
       n += printf_text("UVALUE1", USE_LT | USE_SPACE);
     }
 
     if (MODE_ISSET(cv, OCOPERAND_REGISTER2)) {
       n += printf_text("REGISTER2", USE_LT | USE_SPACE);
-    } else if (MODE_ISSET(cv, OCOPERAND_MVALUE2)) {
+    } else if (MODE_ISCUT(cv, OCOPERAND_MVALUE2, OCOPERAND_REGISTER2)) {
       n += printf_text("MVALUE2", USE_LT | USE_SPACE);
-    } else if (MODE_ISSET(cv, OCOPERAND_IVALUE2)) {
+    } else if (MODE_ISCUT(cv, OCOPERAND_IVALUE2, OCOPERAND_REGISTER2)) {
       n += printf_text("IVALUE2", USE_LT | USE_SPACE);
-    } else if (MODE_ISSET(cv, OCOPERAND_UVALUE2)) {
+    } else if (MODE_ISCUT(cv, OCOPERAND_UVALUE2, OCOPERAND_REGISTER2)) {
       n += printf_text("UVALUE2", USE_LT | USE_SPACE);
     }
 
     if (MODE_ISSET(cv, OCOPERAND_REGISTER3)) {
       n += printf_text("REGISTER3", USE_LT | USE_SPACE);
-    } else if (MODE_ISSET(cv, OCOPERAND_MVALUE3)) {
+    } else if (MODE_ISCUT(cv, OCOPERAND_MVALUE3, OCOPERAND_REGISTER3)) {
       n += printf_text("MVALUE3", USE_LT | USE_SPACE);
-    } else if (MODE_ISSET(cv, OCOPERAND_IVALUE3)) {
+    } else if (MODE_ISCUT(cv, OCOPERAND_IVALUE3, OCOPERAND_REGISTER3)) {
       n += printf_text("IVALUE3", USE_LT | USE_SPACE);
-    } else if (MODE_ISSET(cv, OCOPERAND_UVALUE3)) {
+    } else if (MODE_ISCUT(cv, OCOPERAND_UVALUE3, OCOPERAND_REGISTER3)) {
       n += printf_text("UVALUE3", USE_LT | USE_SPACE);
     }
 
     if (MODE_ISSET(cv, OCOPERAND_REGISTER4)) {
       n += printf_text("REGISTER4", USE_LT | USE_SPACE);
-    } else if (MODE_ISSET(cv, OCOPERAND_MVALUE4)) {
+    } else if (MODE_ISCUT(cv, OCOPERAND_MVALUE4, OCOPERAND_REGISTER4)) {
       n += printf_text("MVALUE4", USE_LT | USE_SPACE);
-    } else if (MODE_ISSET(cv, OCOPERAND_IVALUE4)) {
+    } else if (MODE_ISCUT(cv, OCOPERAND_IVALUE4, OCOPERAND_REGISTER4)) {
       n += printf_text("IVALUE4", USE_LT | USE_SPACE);
-    } else if (MODE_ISSET(cv, OCOPERAND_UVALUE4)) {
+    } else if (MODE_ISCUT(cv, OCOPERAND_UVALUE4, OCOPERAND_REGISTER4)) {
       n += printf_text("UVALUE4", USE_LT | USE_SPACE);
     }
 
     if (MODE_ISSET(cv, OCOPERAND_REGISTER5)) {
       n += printf_text("REGISTER5", USE_LT | USE_SPACE);
-    } else if (MODE_ISSET(cv, OCOPERAND_MVALUE5)) {
+    } else if (MODE_ISCUT(cv, OCOPERAND_MVALUE5, OCOPERAND_REGISTER5)) {
       n += printf_text("MVALUE5", USE_LT | USE_SPACE);
-    } else if (MODE_ISSET(cv, OCOPERAND_IVALUE5)) {
+    } else if (MODE_ISCUT(cv, OCOPERAND_IVALUE5, OCOPERAND_REGISTER5)) {
       n += printf_text("IVALUE5", USE_LT | USE_SPACE);
-    } else if (MODE_ISSET(cv, OCOPERAND_UVALUE5)) {
+    } else if (MODE_ISCUT(cv, OCOPERAND_UVALUE5, OCOPERAND_REGISTER5)) {
       n += printf_text("UVALUE5", USE_LT | USE_SPACE);
     }
 
     if (MODE_ISSET(cv, OCOPERAND_REGISTER6)) {
       n += printf_text("REGISTER6", USE_LT | USE_SPACE);
-    } else if (MODE_ISSET(cv, OCOPERAND_MVALUE6)) {
+    } else if (MODE_ISCUT(cv, OCOPERAND_MVALUE6, OCOPERAND_REGISTER6)) {
       n += printf_text("MVALUE6", USE_LT | USE_SPACE);
-    } else if (MODE_ISSET(cv, OCOPERAND_IVALUE6)) {
+    } else if (MODE_ISCUT(cv, OCOPERAND_IVALUE6, OCOPERAND_REGISTER6)) {
       n += printf_text("IVALUE6", USE_LT | USE_SPACE);
-    } else if (MODE_ISSET(cv, OCOPERAND_UVALUE6)) {
+    } else if (MODE_ISCUT(cv, OCOPERAND_UVALUE6, OCOPERAND_REGISTER6)) {
       n += printf_text("UVALUE6", USE_LT | USE_SPACE);
     }
 
     if (MODE_ISSET(cv, OCOPERAND_REGISTER7)) {
       n += printf_text("REGISTER7", USE_LT | USE_SPACE);
-    } else if (MODE_ISSET(cv, OCOPERAND_MVALUE7)) {
+    } else if (MODE_ISCUT(cv, OCOPERAND_MVALUE7, OCOPERAND_REGISTER7)) {
       n += printf_text("MVALUE7", USE_LT | USE_SPACE);
-    } else if (MODE_ISSET(cv, OCOPERAND_IVALUE7)) {
+    } else if (MODE_ISCUT(cv, OCOPERAND_IVALUE7, OCOPERAND_REGISTER7)) {
       n += printf_text("IVALUE7", USE_LT | USE_SPACE);
-    } else if (MODE_ISSET(cv, OCOPERAND_UVALUE7)) {
+    } else if (MODE_ISCUT(cv, OCOPERAND_UVALUE7, OCOPERAND_REGISTER7)) {
       n += printf_text("UVALUE7", USE_LT | USE_SPACE);
     }
 
