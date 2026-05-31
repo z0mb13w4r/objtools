@@ -1,10 +1,11 @@
 static convert_t oeINSTRUCTIONNAMES_DEF[] = {
   {"ABS",               OCINSN_ABS},
-  {"SQRT",              OCINSN_SQRT},
+  {"ATAN",              OCINSN_ATAN},
   {"COS",               OCINSN_COS},
   {"SIN",               OCINSN_SIN},
+  {"SHA",               OCINSN_SHA1},
+  {"SQRT",              OCINSN_SQRT},
   {"TAN",               OCINSN_TAN},
-  {"ATAN",              OCINSN_ATAN},
   {"PI",                OCINSN_PI},
   {"LOGE",              OCINSN_LOGE},
   {"LOG2",              OCINSN_LOG2},
