@@ -865,6 +865,10 @@ static unknown_t oeinsert_operands(handle_t p, handle_t e, unknown_t q, unknown_
       } else {
         e0->mc->cvalue &= ~OCINSN_OPERAND2;
       }
+    } else if (m2) {
+#ifdef OPCODE_EXAMINE_OPERAND
+        printf_e("Additional operand #2");
+#endif
     }
 
     if (MODE_ISANY(q0->action, OCINSN_OPERAND3 | OCINSN_OPERAND4 | OCINSN_OPERAND5)) {
@@ -877,6 +881,10 @@ static unknown_t oeinsert_operands(handle_t p, handle_t e, unknown_t q, unknown_
       } else {
         e0->mc->cvalue &= ~OCINSN_OPERAND3;
       }
+    } else if (m3) {
+#ifdef OPCODE_EXAMINE_OPERAND
+        printf_e("Additional operand #3");
+#endif
     }
 
     if (MODE_ISANY(q0->action, OCINSN_OPERAND4 | OCINSN_OPERAND5)) {
@@ -889,6 +897,10 @@ static unknown_t oeinsert_operands(handle_t p, handle_t e, unknown_t q, unknown_
       } else {
         e0->mc->cvalue &= ~OCINSN_OPERAND4;
       }
+    } else if (m4) {
+#ifdef OPCODE_EXAMINE_OPERAND
+        printf_e("Additional operand #4");
+#endif
     }
 
     if (MODE_ISANY(q0->action, OCINSN_OPERAND5)) {
@@ -901,6 +913,10 @@ static unknown_t oeinsert_operands(handle_t p, handle_t e, unknown_t q, unknown_
       } else {
         e0->mc->cvalue &= ~OCINSN_OPERAND5;
       }
+    } else if (m5) {
+#ifdef OPCODE_EXAMINE_OPERAND
+        printf_e("Additional operand #5");
+#endif
     }
   }
 
