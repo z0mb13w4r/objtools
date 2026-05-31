@@ -294,10 +294,10 @@ static oestruct_t oeINSTRUCTIONS_RISCV[] = {
   OCSTRUCT("zext.h",       OCINSNRISCV_ZEXTH),
   OCSTRUCT("zext.w",       OCINSNRISCV_ZEXTW),
 
-  OCSTRUCT("slt",          OCINSNRISCV_SLT),
-  OCSTRUCT("slti",         OCINSNRISCV_SLTI),
   OCSTRUCT("sltiu",        OCINSNRISCV_SLTIU),
+  OCSTRUCT("slti",         OCINSNRISCV_SLTI),
   OCSTRUCT("sltu",         OCINSNRISCV_SLTU),
+  OCSTRUCT("slt",          OCINSNRISCV_SLT),
 
   OCSTRUCT("seqz",         OCINSNRISCV_SEQZ),
   OCSTRUCT("sgtz",         OCINSNRISCV_SGTZ),
