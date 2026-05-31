@@ -173,7 +173,8 @@
 #define MODE_MASK               (MODE_MASK0 | MODE_MASK1)
 
 #define MODE_ISANY(x,y)         ((x) & (y))
-#define MODE_ISSET(x,y)         (((x) & (y)) == (y))
+#define MODE_ISCUT(x,y,z)       (MODE_ISANY(x, z) == (y))
+#define MODE_ISSET(x,y)         (MODE_ISANY(x, y) == (y))
 #define MODE_ISNOT(x,y)         (0 == MODE_ISANY(x, y))
 #define MODE_ISFIX(x,y,z)       (MODE_ISSET(x, y) && MODE_ISNOT(x, z))
 #define MODE_ISSCOPE(x, y, z)   ((y) <= (x) && (x) <= (z))
