@@ -232,6 +232,10 @@
 #define OPOPERAND_12                   U64MASK(62)
 #define OPOPERAND_13                   U64MASK(63)
 
+#define OCOPERAND_FVALUEMASK           (OCOPERAND_FVALUE0 | OCOPERAND_FVALUE1 | OCOPERAND_FVALUE2 \
+                                         | OCOPERAND_FVALUE3 | OCOPERAND_FVALUE4 | OCOPERAND_FVALUE5 \
+                                         | OCOPERAND_FVALUE6 | OCOPERAND_FVALUE7)
+
 #define OCOPERAND_IVALUEMASK           (OCOPERAND_IVALUE0 | OCOPERAND_IVALUE1 | OCOPERAND_IVALUE2 \
                                          | OCOPERAND_IVALUE3 | OCOPERAND_IVALUE4 | OCOPERAND_IVALUE5 \
                                          | OCOPERAND_IVALUE6 | OCOPERAND_IVALUE7)
