@@ -209,6 +209,25 @@ bool_t ishexb(unknown_t p, const size_t size) {
   return FALSE;
 }
 
+bool_t isrealb(unknown_t p, const size_t size) {
+  if (p && 0 != size) {
+    size_t cnt = 0;
+    puchar_t p0 = CAST(puchar_t, p);
+    for (size_t i = 0; i < size; ++i) {
+      if ('.' == p0[i]) {
+        ++cnt;
+        if (1 != cnt) return FALSE;
+      } else if (!isdec8(p0[i])) {
+        return FALSE;
+      }
+    }
+
+    return TRUE;
+  }
+
+  return FALSE;
+}
+
 bool_t isspecial8(int x) {
   return '!' == x || '#' == x || '$' == x || '&' == x ||
          '*' == x || '+' == x || '-' == x || '.' == x ||
