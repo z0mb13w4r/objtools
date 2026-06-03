@@ -197,7 +197,7 @@ bool_t ishex8(int x) {
 }
 
 bool_t ishexb(unknown_t p, const size_t size) {
-  if (p && 0 != size) {
+  if (p && 0 < size) {
     puchar_t p0 = CAST(puchar_t, p);
     for (size_t i = 0; i < size; ++i) {
       if (!ishex8(p0[i])) return FALSE;
@@ -209,15 +209,20 @@ bool_t ishexb(unknown_t p, const size_t size) {
   return FALSE;
 }
 
+bool_t isreal8(int x) {
+  if ('.' == x) return TRUE;
+  return isdec8(x);
+}
+
 bool_t isrealb(unknown_t p, const size_t size) {
-  if (p && 0 != size) {
+  if (p && 0 < size) {
     size_t cnt = 0;
     puchar_t p0 = CAST(puchar_t, p);
     for (size_t i = 0; i < size; ++i) {
       if ('.' == p0[i]) {
         ++cnt;
         if (1 != cnt) return FALSE;
-      } else if (!isdec8(p0[i])) {
+      } else if (!isreal8(p0[i])) {
         return FALSE;
       }
     }
@@ -237,7 +242,7 @@ bool_t isspecial8(int x) {
 }
 
 bool_t isspecialb(unknown_t p, const size_t size) {
-  if (p && 0 != size) {
+  if (p && 0 < size) {
     puchar_t p0 = CAST(puchar_t, p);
     for (size_t i = 0; i < size; ++i) {
       if (!isspecial8(p0[i])) return FALSE;
@@ -256,7 +261,7 @@ int64_t bin8(int x) {
 
 int64_t binb(unknown_t p, const size_t size) {
   int64_t x = 0;
-  if (p && 0 != size) {
+  if (p && 0 < size) {
     puchar_t p0 = CAST(puchar_t, p);
     for (size_t i = 0; i < size; ++i) {
       if (!isbin8(p0[i])) break;
@@ -273,7 +278,7 @@ int64_t dec8(int x) {
 
 int64_t decb(unknown_t p, const size_t size) {
   int64_t x = 0;
-  if (p && 0 != size) {
+  if (p && 0 < size) {
     puchar_t p0 = CAST(puchar_t, p);
     for (size_t i = 0; i < size; ++i) {
       if (!isdec8(p0[i])) break;
@@ -296,11 +301,27 @@ uint64_t hex16(int x0, int x1) {
 
 uint64_t hexb(unknown_t p, const size_t size) {
   uint64_t x = 0;
-  if (p && 0 != size) {
+  if (p && 0 < size) {
     puchar_t p0 = CAST(puchar_t, p);
     for (size_t i = 0; i < size; ++i) {
       if (!ishex8(p0[i])) break;
       x = (x << 4) | hex8(p0[i]);
+    }
+  }
+
+  return x;
+}
+
+double real8(int x) {
+  return '.' == x ? -1 : dec8(x);
+}
+
+double realb(unknown_t p, const size_t size) {
+  int64_t x = 0;
+  if (p && 0 < size) {
+    puchar_t p0 = CAST(puchar_t, p);
+    for (size_t i = 0; i < size; ++i) {
+      if (!isreal8(p0[i])) break;
     }
   }
 

@@ -42,6 +42,7 @@ bool_t ishexb(unknown_t p, const size_t size);
 bool_t isspecial8(int x);
 bool_t isspecialb(unknown_t p, const size_t size);
 
+bool_t isreal8(int x);
 bool_t isrealb(unknown_t p, const size_t size);
 
 bool_t isbool(const char* p, const size_t size);
@@ -70,6 +71,9 @@ int64_t decb(unknown_t p, const size_t size);
 uint64_t hex8(int x);
 uint64_t hex16(int x0, int x1);
 uint64_t hexb(unknown_t p, const size_t size);
+
+double real8(int x);
+double realb(unknown_t p, const size_t size);
 
 int strlen8(unknown_t s, const size_t maxsize);
 int strlen16(unknown_t s, const size_t maxsize);
