@@ -299,52 +299,52 @@ typedef struct ocoperand_s {
   char       data[160];
   uint64_t   cvalue;
   union {
-    int64_t  ivalue0;
-    uint64_t uvalue0;
-    double   rvalue0;
-    char     svalue0[OCUNION_MAXSIZE];
+    int64_t   ivalue0;
+    uint64_t  uvalue0;
+    float64_t rvalue0;
+    char      svalue0[OCUNION_MAXSIZE];
   };
   union {
-    int64_t  ivalue1;
-    uint64_t uvalue1;
-    double   rvalue1;
-    char     svalue1[OCUNION_MAXSIZE];
+    int64_t   ivalue1;
+    uint64_t  uvalue1;
+    float64_t rvalue1;
+    char      svalue1[OCUNION_MAXSIZE];
   };
   union {
-    int64_t  ivalue2;
-    uint64_t uvalue2;
-    double   rvalue2;
-    char     svalue2[OCUNION_MAXSIZE];
+    int64_t   ivalue2;
+    uint64_t  uvalue2;
+    float64_t rvalue2;
+    char      svalue2[OCUNION_MAXSIZE];
   };
   union {
-    int64_t  ivalue3;
-    uint64_t uvalue3;
-    double   rvalue3;
-    char     svalue3[OCUNION_MAXSIZE];
+    int64_t   ivalue3;
+    uint64_t  uvalue3;
+    float64_t rvalue3;
+    char      svalue3[OCUNION_MAXSIZE];
   };
   union {
-    int64_t  ivalue4;
-    uint64_t uvalue4;
-    double   rvalue4;
-    char     svalue4[OCUNION_MAXSIZE];
+    int64_t   ivalue4;
+    uint64_t  uvalue4;
+    float64_t rvalue4;
+    char      svalue4[OCUNION_MAXSIZE];
   };
   union {
-    int64_t  ivalue5;
-    uint64_t uvalue5;
-    double   rvalue5;
-    char     svalue5[OCUNION_MAXSIZE];
+    int64_t   ivalue5;
+    uint64_t  uvalue5;
+    float64_t rvalue5;
+    char      svalue5[OCUNION_MAXSIZE];
   };
   union {
-    int64_t  ivalue6;
-    uint64_t uvalue6;
-    double   rvalue6;
-    char     svalue6[OCUNION_MAXSIZE];
+    int64_t   ivalue6;
+    uint64_t  uvalue6;
+    float64_t rvalue6;
+    char      svalue6[OCUNION_MAXSIZE];
   };
   union {
-    int64_t  ivalue7;
-    uint64_t uvalue7;
-    double   rvalue7;
-    char     svalue7[OCUNION_MAXSIZE];
+    int64_t   ivalue7;
+    uint64_t  uvalue7;
+    float64_t rvalue7;
+    char      svalue7[OCUNION_MAXSIZE];
   };
 } ocoperand_t, *pocoperand_t;
 
@@ -374,8 +374,11 @@ unknown_t oejump(unknown_t p, const size_t size);
 
 uint64_t  oedecb(unknown_t p, const size_t size);
 uint64_t  oehexb(unknown_t p, const size_t size);
+float64_t oerealb(unknown_t p, const size_t size);
 bool_t    oeisdecb(unknown_t p, const size_t size);
 bool_t    oeishexb(unknown_t p, const size_t size);
+bool_t    oeisnegb(unknown_t p, const size_t size);
+bool_t    oeisrealb(unknown_t p, const size_t size);
 
 ppick_t oegetADDRLOOKUP(handle_t p);
 

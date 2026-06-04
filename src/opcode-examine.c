@@ -415,6 +415,28 @@ static size_t oeskiphex(unknown_t p, const size_t size) {
   return 0;
 }
 
+static size_t oeskipreal(unknown_t p, const size_t size) {
+  if (p && 0 != size) {
+    puchar_t p0 = CAST(puchar_t, p);
+
+    if (size >= 4 && '#' == p0[0] && '-' == p0[1] && '0' == p0[2] && 'x' == p0[3]) {
+      return 0;
+    } else if (size >= 3 && '#' == p0[0] && '0' == p0[1] && 'x' == p0[2]) {
+      return 0;
+    } else if (size >= 4 && '$' == p0[0] && '-' == p0[1] && '0' == p0[1] && 'x' == p0[2]) {
+      return 0;
+    } else if (size >= 3 && '$' == p0[0] && '0' == p0[1] && 'x' == p0[2]) {
+      return 0;
+    } else if (size >= 2 && '#' == p0[0] && ('+' == p0[1] || '-' == p0[1])) {
+      return 2;
+    } else if (size >= 1 && ('-' == p0[0] || '+' == p0[0] || '#' == p0[0])) {
+      return 1;
+    }
+  }
+
+  return 0;
+}
+
 static unknown_t oenext(handle_t p) {
   if (!fiseof(p)) {
     unknown_t p0 = fget(p);
@@ -495,6 +517,19 @@ static unknown_t oesplit(handle_t e, unknown_t m, const size_t size,
   return NULL;
 }
 
+bool_t oeisnegb(unknown_t p, const size_t size) {
+  if (p && USE_STRLEN == size) {
+    return oeisnegb(p, xstrlen(p));
+  } else if (p && size >= 2) {
+    puchar_t p0 = CAST(puchar_t, p);
+    return ('-' == p0[0])
+        || ('$' == p0[0] && '-' == p0[1])
+        || ('#' == p0[0] && '-' == p0[1]);
+  }
+
+  return FALSE;
+}
+
 bool_t oeisdecb(unknown_t p, const size_t size) {
   if (p && USE_STRLEN == size) {
     return oeisdecb(p, xstrlen(p));
@@ -517,16 +552,24 @@ bool_t oeishexb(unknown_t p, const size_t size) {
   return FALSE;
 }
 
+bool_t oeisrealb(unknown_t p, const size_t size) {
+  if (p && USE_STRLEN == size) {
+    return oeisrealb(p, xstrlen(p));
+  } else if (p && size) {
+    size_t sz = oeskipreal(p, size);
+    return isrealb(CAST(puchar_t, p) + sz, size - sz);
+  }
+
+  return FALSE;
+}
+
 uint64_t oedecb(unknown_t p, const size_t size) {
   if (p && USE_STRLEN == size) {
     return oedecb(p, xstrlen(p));
   } else if (p && size) {
     size_t sz = oeskipdec(p, size);
     puchar_t p0 = CAST(puchar_t, p);
-    return ('-' == p0[0])
-        || ('$' == p0[0] && '-' == p0[1])
-        || ('#' == p0[0] && '-' == p0[1])
-           ? -decb(p0 + sz, size - sz) : decb(p0 + sz, size - sz);
+    return oeisnegb(p, size) ? -decb(p0 + sz, size - sz) : decb(p0 + sz, size - sz);
   }
 
   return decb(p, size);
@@ -538,13 +581,22 @@ uint64_t oehexb(unknown_t p, const size_t size) {
   } else if (p && size) {
     size_t sz = oeskiphex(p, size);
     puchar_t p0 = CAST(puchar_t, p);
-    return ('-' == p0[0])
-        || ('$' == p0[0] && '-' == p0[1])
-        || ('#' == p0[0] && '-' == p0[1])
-           ? -hexb(p0 + sz, size - sz) : hexb(p0 + sz, size - sz);
+    return oeisnegb(p, size) ? -hexb(p0 + sz, size - sz) : hexb(p0 + sz, size - sz);
   }
 
   return hexb(p, size);
+}
+
+float64_t oerealb(unknown_t p, const size_t size) {
+  if (p && USE_STRLEN == size) {
+    return oerealb(p, xstrlen(p));
+  } else if (p && size) {
+    size_t sz = oeskipreal(p, size);
+    puchar_t p0 = CAST(puchar_t, p);
+    return oeisnegb(p, size) ? -realb(p0 + sz, size - sz) : realb(p0 + sz, size - sz);
+  }
+
+  return realb(p, size);
 }
 
 static unknown_t oedo_absolute(handle_t p, handle_t e, unknown_t o, unknown_t m) {
@@ -563,7 +615,7 @@ static unknown_t oedo_absolute(handle_t p, handle_t e, unknown_t o, unknown_t m)
   return NULL;
 }
 
-static unknown_t oedo_opvalue(handle_t p, unknown_t q, unknown_t m, uint64_t *cvalue, int64_t *ivalue, uint64_t *uvalue, char *svalue, const uint64_t mask) {
+static unknown_t oedo_opvalue(handle_t p, unknown_t q, unknown_t m, uint64_t *cvalue, int64_t *ivalue, uint64_t *uvalue, float64_t *rvalue, char *svalue, const uint64_t mask) {
   if (m && cvalue && ivalue && uvalue) {
     poestruct_t q0 = CAST(poestruct_t, q);
     char *m0 = CAST(char*, m);
@@ -575,6 +627,10 @@ static unknown_t oedo_opvalue(handle_t p, unknown_t q, unknown_t m, uint64_t *cv
     } else if (oeisdecb(m0, USE_STRLEN)) {
       *ivalue = oedecb(m0, USE_STRLEN);
       *cvalue |= MODE_ISANY(mask, OCOPERAND_IVALUEMASK);
+      m0 = NULL;
+    } else if (oeisrealb(m0, USE_STRLEN)) {
+      *rvalue = oerealb(m0, USE_STRLEN);
+      *cvalue |= MODE_ISANY(mask, OCOPERAND_RVALUEMASK);
       m0 = NULL;
     } else {
       poestruct_t r0 = oepick_REG(p, m0, USE_STRLEN);
@@ -633,13 +689,13 @@ static unknown_t oedo_register(handle_t p, handle_t e, unknown_t q, unknown_t o,
         m0 = oeskip(m0 + 1, USE_STRLEN);
       }
 
-      m0 = oedo_opvalue(p, q, m0, &o0->cvalue, &o0->ivalue1, &o0->uvalue1, o0->svalue1, OCOPERAND_REGISTER1);
-      m0 = oedo_opvalue(p, q, m0, &o0->cvalue, &o0->ivalue2, &o0->uvalue2, o0->svalue2, OCOPERAND_REGISTER2);
-      m0 = oedo_opvalue(p, q, m0, &o0->cvalue, &o0->ivalue3, &o0->uvalue3, o0->svalue3, OCOPERAND_REGISTER3);
-      m0 = oedo_opvalue(p, q, m0, &o0->cvalue, &o0->ivalue4, &o0->uvalue4, o0->svalue4, OCOPERAND_REGISTER4);
-      m0 = oedo_opvalue(p, q, m0, &o0->cvalue, &o0->ivalue5, &o0->uvalue5, o0->svalue5, OCOPERAND_REGISTER5);
-      m0 = oedo_opvalue(p, q, m0, &o0->cvalue, &o0->ivalue6, &o0->uvalue6, o0->svalue6, OCOPERAND_REGISTER6);
-      m0 = oedo_opvalue(p, q, m0, &o0->cvalue, &o0->ivalue7, &o0->uvalue7, o0->svalue7, OCOPERAND_REGISTER7);
+      m0 = oedo_opvalue(p, q, m0, &o0->cvalue, &o0->ivalue1, &o0->uvalue1, &o0->rvalue1, o0->svalue1, OCOPERAND_REGISTER1);
+      m0 = oedo_opvalue(p, q, m0, &o0->cvalue, &o0->ivalue2, &o0->uvalue2, &o0->rvalue2, o0->svalue2, OCOPERAND_REGISTER2);
+      m0 = oedo_opvalue(p, q, m0, &o0->cvalue, &o0->ivalue3, &o0->uvalue3, &o0->rvalue3, o0->svalue3, OCOPERAND_REGISTER3);
+      m0 = oedo_opvalue(p, q, m0, &o0->cvalue, &o0->ivalue4, &o0->uvalue4, &o0->rvalue4, o0->svalue4, OCOPERAND_REGISTER4);
+      m0 = oedo_opvalue(p, q, m0, &o0->cvalue, &o0->ivalue5, &o0->uvalue5, &o0->rvalue5, o0->svalue5, OCOPERAND_REGISTER5);
+      m0 = oedo_opvalue(p, q, m0, &o0->cvalue, &o0->ivalue6, &o0->uvalue6, &o0->rvalue6, o0->svalue6, OCOPERAND_REGISTER6);
+      m0 = oedo_opvalue(p, q, m0, &o0->cvalue, &o0->ivalue7, &o0->uvalue7, &o0->rvalue7, o0->svalue7, OCOPERAND_REGISTER7);
 
 #ifdef OPCODE_EXAMINE_OPERAND
       if (m0) {
@@ -693,15 +749,19 @@ static unknown_t oedo_value(handle_t p, handle_t e, unknown_t q, unknown_t o, un
 
     bool_t ishex = oeishexb(m0, m0size);
     bool_t isnum = oeisdecb(m0, m0size);
+    bool_t isreal = oeisrealb(m0, m0size);
     if (ishex) {
       o0->uvalue0 = oehexb(m0, m0size);
       o0->cvalue |= OCOPERAND_UVALUE0;
     } else if (isnum) {
       o0->ivalue0 = oedecb(m0, m0size);
       o0->cvalue |= OCOPERAND_IVALUE0;
+    } else if (isreal) {
+      o0->ivalue0 = oerealb(m0, m0size);
+      o0->cvalue |= OCOPERAND_RVALUE0;
     }
 
-    if (ishex || isnum) {
+    if (ishex || isnum || isreal) {
       m0 = oeskip(m0 + m0size, USE_STRLEN);
     }
 
@@ -711,16 +771,16 @@ static unknown_t oedo_value(handle_t p, handle_t e, unknown_t q, unknown_t o, un
       oesplit(e, m0, USE_STRLEN, &m1, &m2, &m3, &m4, &m5, &m6, &m7);
 //printf("++%s+%s+%s++", STRING(m1), STRING(m2), STRING(m3));
 
-      m1 = oedo_opvalue(p, q, m1, &o0->cvalue, &o0->ivalue1, &o0->uvalue1, o0->svalue1, OCOPERAND_REGISTER1);
+      m1 = oedo_opvalue(p, q, m1, &o0->cvalue, &o0->ivalue1, &o0->uvalue1, &o0->rvalue1, o0->svalue1, OCOPERAND_REGISTER1);
       if (m2 || m3 || m4 || m5 || m6 || m7) {
-        m2 = oedo_opvalue(p, q, m2, &o0->cvalue, &o0->ivalue2, &o0->uvalue2, o0->svalue2, OCOPERAND_REGISTER2);
-        m3 = oedo_opvalue(p, q, m3, &o0->cvalue, &o0->ivalue3, &o0->uvalue3, o0->svalue3, OCOPERAND_REGISTER3);
-        m4 = oedo_opvalue(p, q, m4, &o0->cvalue, &o0->ivalue4, &o0->uvalue4, o0->svalue4, OCOPERAND_REGISTER4);
-        m5 = oedo_opvalue(p, q, m5, &o0->cvalue, &o0->ivalue5, &o0->uvalue5, o0->svalue5, OCOPERAND_REGISTER5);
-        m6 = oedo_opvalue(p, q, m6, &o0->cvalue, &o0->ivalue6, &o0->uvalue6, o0->svalue6, OCOPERAND_REGISTER6);
-        m7 = oedo_opvalue(p, q, m7, &o0->cvalue, &o0->ivalue7, &o0->uvalue7, o0->svalue7, OCOPERAND_REGISTER7);
+        m2 = oedo_opvalue(p, q, m2, &o0->cvalue, &o0->ivalue2, &o0->uvalue2, &o0->rvalue2, o0->svalue2, OCOPERAND_REGISTER2);
+        m3 = oedo_opvalue(p, q, m3, &o0->cvalue, &o0->ivalue3, &o0->uvalue3, &o0->rvalue3, o0->svalue3, OCOPERAND_REGISTER3);
+        m4 = oedo_opvalue(p, q, m4, &o0->cvalue, &o0->ivalue4, &o0->uvalue4, &o0->rvalue4, o0->svalue4, OCOPERAND_REGISTER4);
+        m5 = oedo_opvalue(p, q, m5, &o0->cvalue, &o0->ivalue5, &o0->uvalue5, &o0->rvalue5, o0->svalue5, OCOPERAND_REGISTER5);
+        m6 = oedo_opvalue(p, q, m6, &o0->cvalue, &o0->ivalue6, &o0->uvalue6, &o0->rvalue6, o0->svalue6, OCOPERAND_REGISTER6);
+        m7 = oedo_opvalue(p, q, m7, &o0->cvalue, &o0->ivalue7, &o0->uvalue7, &o0->rvalue7, o0->svalue7, OCOPERAND_REGISTER7);
       } else if (m1 && MODE_ISANY(q0->action, OCINSN_TRYINSN)) {
-        m1 = oedo_opvalue(p, q, m1, &o0->cvalue, &o0->ivalue2, &o0->uvalue2, o0->svalue2, OCOPERAND_REGISTER2);
+        m1 = oedo_opvalue(p, q, m1, &o0->cvalue, &o0->ivalue2, &o0->uvalue2, &o0->rvalue2, o0->svalue2, OCOPERAND_REGISTER2);
       }
 
 #ifdef OPCODE_EXAMINE_OPERAND
