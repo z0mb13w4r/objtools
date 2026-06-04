@@ -55,7 +55,7 @@ static int ocdebugf_cvalue1(handle_t p, uint64_t cv) {
     if (MODE_ISSET(cv, OCOPERAND_REGISTER0)) {
       n += printf_text("REGISTER0", USE_LT | USE_SPACE);
     } else if (MODE_ISCUT(cv, OCOPERAND_RVALUE0, OCOPERAND_REGISTER0)) {
-      n += printf_text("FVALUE0", USE_LT | USE_SPACE);
+      n += printf_text("RVALUE0", USE_LT | USE_SPACE);
     } else if (MODE_ISCUT(cv, OCOPERAND_MVALUE0, OCOPERAND_REGISTER0)) {
       n += printf_text("MVALUE0", USE_LT | USE_SPACE);
     } else if (MODE_ISCUT(cv, OCOPERAND_IVALUE0, OCOPERAND_REGISTER0)) {
@@ -67,7 +67,7 @@ static int ocdebugf_cvalue1(handle_t p, uint64_t cv) {
     if (MODE_ISSET(cv, OCOPERAND_REGISTER1)) {
       n += printf_text("REGISTER1", USE_LT | USE_SPACE);
     } else if (MODE_ISCUT(cv, OCOPERAND_RVALUE1, OCOPERAND_REGISTER1)) {
-      n += printf_text("FVALUE1", USE_LT | USE_SPACE);
+      n += printf_text("RVALUE1", USE_LT | USE_SPACE);
     } else if (MODE_ISCUT(cv, OCOPERAND_MVALUE1, OCOPERAND_REGISTER1)) {
       n += printf_text("MVALUE1", USE_LT | USE_SPACE);
     } else if (MODE_ISCUT(cv, OCOPERAND_IVALUE1, OCOPERAND_REGISTER1)) {
@@ -79,7 +79,7 @@ static int ocdebugf_cvalue1(handle_t p, uint64_t cv) {
     if (MODE_ISSET(cv, OCOPERAND_REGISTER2)) {
       n += printf_text("REGISTER2", USE_LT | USE_SPACE);
     } else if (MODE_ISCUT(cv, OCOPERAND_RVALUE2, OCOPERAND_REGISTER2)) {
-      n += printf_text("FVALUE2", USE_LT | USE_SPACE);
+      n += printf_text("RVALUE2", USE_LT | USE_SPACE);
     } else if (MODE_ISCUT(cv, OCOPERAND_MVALUE2, OCOPERAND_REGISTER2)) {
       n += printf_text("MVALUE2", USE_LT | USE_SPACE);
     } else if (MODE_ISCUT(cv, OCOPERAND_IVALUE2, OCOPERAND_REGISTER2)) {
@@ -91,7 +91,7 @@ static int ocdebugf_cvalue1(handle_t p, uint64_t cv) {
     if (MODE_ISSET(cv, OCOPERAND_REGISTER3)) {
       n += printf_text("REGISTER3", USE_LT | USE_SPACE);
     } else if (MODE_ISCUT(cv, OCOPERAND_RVALUE3, OCOPERAND_REGISTER3)) {
-      n += printf_text("FVALUE3", USE_LT | USE_SPACE);
+      n += printf_text("RVALUE3", USE_LT | USE_SPACE);
     } else if (MODE_ISCUT(cv, OCOPERAND_MVALUE3, OCOPERAND_REGISTER3)) {
       n += printf_text("MVALUE3", USE_LT | USE_SPACE);
     } else if (MODE_ISCUT(cv, OCOPERAND_IVALUE3, OCOPERAND_REGISTER3)) {
@@ -103,7 +103,7 @@ static int ocdebugf_cvalue1(handle_t p, uint64_t cv) {
     if (MODE_ISSET(cv, OCOPERAND_REGISTER4)) {
       n += printf_text("REGISTER4", USE_LT | USE_SPACE);
     } else if (MODE_ISCUT(cv, OCOPERAND_RVALUE4, OCOPERAND_REGISTER4)) {
-      n += printf_text("FVALUE4", USE_LT | USE_SPACE);
+      n += printf_text("RVALUE4", USE_LT | USE_SPACE);
     } else if (MODE_ISCUT(cv, OCOPERAND_MVALUE4, OCOPERAND_REGISTER4)) {
       n += printf_text("MVALUE4", USE_LT | USE_SPACE);
     } else if (MODE_ISCUT(cv, OCOPERAND_IVALUE4, OCOPERAND_REGISTER4)) {
@@ -115,7 +115,7 @@ static int ocdebugf_cvalue1(handle_t p, uint64_t cv) {
     if (MODE_ISSET(cv, OCOPERAND_REGISTER5)) {
       n += printf_text("REGISTER5", USE_LT | USE_SPACE);
     } else if (MODE_ISCUT(cv, OCOPERAND_RVALUE5, OCOPERAND_REGISTER5)) {
-      n += printf_text("FVALUE5", USE_LT | USE_SPACE);
+      n += printf_text("RVALUE5", USE_LT | USE_SPACE);
     } else if (MODE_ISCUT(cv, OCOPERAND_MVALUE5, OCOPERAND_REGISTER5)) {
       n += printf_text("MVALUE5", USE_LT | USE_SPACE);
     } else if (MODE_ISCUT(cv, OCOPERAND_IVALUE5, OCOPERAND_REGISTER5)) {
@@ -127,7 +127,7 @@ static int ocdebugf_cvalue1(handle_t p, uint64_t cv) {
     if (MODE_ISSET(cv, OCOPERAND_REGISTER6)) {
       n += printf_text("REGISTER6", USE_LT | USE_SPACE);
     } else if (MODE_ISCUT(cv, OCOPERAND_RVALUE6, OCOPERAND_REGISTER6)) {
-      n += printf_text("FVALUE6", USE_LT | USE_SPACE);
+      n += printf_text("RVALUE6", USE_LT | USE_SPACE);
     } else if (MODE_ISCUT(cv, OCOPERAND_MVALUE6, OCOPERAND_REGISTER6)) {
       n += printf_text("MVALUE6", USE_LT | USE_SPACE);
     } else if (MODE_ISCUT(cv, OCOPERAND_IVALUE6, OCOPERAND_REGISTER6)) {
