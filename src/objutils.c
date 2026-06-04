@@ -319,9 +319,13 @@ float64_t real8(int x) {
 float64_t realb(unknown_t p, const size_t size) {
   float64_t x = 0;
   if (p && 0 < size) {
+    size_t cnt = 0;
     puchar_t p0 = CAST(puchar_t, p);
     for (size_t i = 0; i < size; ++i) {
-      if (!isreal8(p0[i])) break;
+      if ('.' == p0[i]) {
+        ++cnt;
+        if (1 != cnt) return x;
+      } else if (!isreal8(p0[i])) return x;
     }
   }
 
