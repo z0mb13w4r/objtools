@@ -242,7 +242,7 @@ int printf_work(char* o, const size_t size, const char* p, const imode_t mode) {
   return n;
 }
 
-int printf_tidy(char* o, const size_t size, const double v, const imode_t mode) {
+int printf_tidy(char* o, const size_t size, const float64_t v, const imode_t mode) {
   int n = 0;
   if (o && 0 < size) {
     const imode_t mode0 = GET_POS0(mode);
@@ -279,45 +279,45 @@ int printf_neat(char* o, const size_t size, const uint64_t v, const imode_t mode
 
     if (32 < (size - n)) {
       switch (modex) {
-      case USE_DEC:                  n += PRINT2("%" PRId64, v);                     break;
-      case USE_DEC2:                 n += PRINT2("%2" PRId64, v);                    break;
-      case USE_DEC2Z:                n += PRINT2("%2.2" PRId64, v);                  break;
-      case USE_DEC3:                 n += PRINT2("%3" PRId64, v);                    break;
-      case USE_DEC3Z:                n += PRINT2("%3.3" PRId64, v);                  break;
-      case USE_DEC4:                 n += PRINT2("%4" PRId64, v);                    break;
-      case USE_DEC4Z:                n += PRINT2("%4.4" PRId64, v);                  break;
-      case USE_DEC5:                 n += PRINT2("%5" PRId64, v);                    break;
-      case USE_DEC5Z:                n += PRINT2("%5.5" PRId64, v);                  break;
-      case USE_DEC8:                 n += PRINT2("%8" PRId64, v);                    break;
-      case USE_DEC8Z:                n += PRINT2("%8.8" PRId64, v);                  break;
-      case USE_DEC16:                n += PRINT2("%16" PRId64, v);                   break;
-      case USE_DEC16Z:               n += PRINT2("%16.16" PRId64, v);                break;
-      case USE_HEX2:                 n += PRINT2("%2" PRIx64, v);                    break;
-      case USE_HEX4:                 n += PRINT2("%4" PRIx64, v);                    break;
-      case USE_OCT:                  n += PRINT2("%" PRIo64, v);                     break;
-      case USE_OCT2:                 n += PRINT2("%2" PRIo64, v);                    break;
-      case USE_OCT5:                 n += PRINT2("%5" PRIo64, v);                    break;
-      case USE_FHEX:                 n += PRINT2("0x%" PRIx64, v);                   break;
-      case USE_LHEX:                 n += PRINT2("%" PRIx64, v);                     break;
-      case USE_FHEX8:                n += PRINT2("0x%2.2" PRIx64, v);                break;
-      case USE_LHEX8:                n += PRINT2("%2.2" PRIx64, v);                  break;
-      case USE_FHEX16:               n += PRINT2("0x%4.4" PRIx64, v);                break;
-      case USE_LHEX16:               n += PRINT2("%4.4" PRIx64, v);                  break;
-      case USE_FHEX24:               n += PRINT2("0x%6.6" PRIx64, v);                break;
-      case USE_LHEX24:               n += PRINT2("%6.6" PRIx64, v);                  break;
-      case USE_FHEX32:               n += PRINT2("0x%8.8" PRIx64, v);                break;
-      case USE_LHEX32:               n += PRINT2("%8.8" PRIx64, v);                  break;
-      case USE_FHEX48:               n += PRINT2("0x%12.12" PRIx64, v);              break;
-      case USE_LHEX48:               n += PRINT2("%12.12" PRIx64, v);                break;
-      case USE_FHEX64:               n += PRINT2("0x%16.16" PRIx64, v);              break;
-      case USE_LHEX64:               n += PRINT2("%16.16" PRIx64, v);                break;
-      case USE_POWER2:               n += PRINT2("2**%-2" PRId64, v);                break;
-      case USE_PERCENT:              n += PRINT2("%3.1f%%", CAST(double, v) / 10);   break;
-      case USE_ERROR:                n += PRINT2("<error: %" PRIx64 ">", v);         break;
-      case USE_CORRUPT:              n += PRINT2("<corrupt: %" PRIx64 ">", v);       break;
-      case USE_UNKNOWN:              n += PRINT2("<unknown: %" PRIx64 ">", v);       break;
-      case USE_WARNING:              n += PRINT2("<warning: %" PRIx64 ">", v);       break;
-      case USE_BOOL:                 n += PRINT1(v ? "true" : "false");              break;
+      case USE_DEC:                  n += PRINT2("%" PRId64, v);                      break;
+      case USE_DEC2:                 n += PRINT2("%2" PRId64, v);                      break;
+      case USE_DEC2Z:                n += PRINT2("%2.2" PRId64, v);                    break;
+      case USE_DEC3:                 n += PRINT2("%3" PRId64, v);                      break;
+      case USE_DEC3Z:                n += PRINT2("%3.3" PRId64, v);                    break;
+      case USE_DEC4:                 n += PRINT2("%4" PRId64, v);                      break;
+      case USE_DEC4Z:                n += PRINT2("%4.4" PRId64, v);                    break;
+      case USE_DEC5:                 n += PRINT2("%5" PRId64, v);                      break;
+      case USE_DEC5Z:                n += PRINT2("%5.5" PRId64, v);                    break;
+      case USE_DEC8:                 n += PRINT2("%8" PRId64, v);                      break;
+      case USE_DEC8Z:                n += PRINT2("%8.8" PRId64, v);                    break;
+      case USE_DEC16:                n += PRINT2("%16" PRId64, v);                     break;
+      case USE_DEC16Z:               n += PRINT2("%16.16" PRId64, v);                  break;
+      case USE_HEX2:                 n += PRINT2("%2" PRIx64, v);                      break;
+      case USE_HEX4:                 n += PRINT2("%4" PRIx64, v);                      break;
+      case USE_OCT:                  n += PRINT2("%" PRIo64, v);                       break;
+      case USE_OCT2:                 n += PRINT2("%2" PRIo64, v);                      break;
+      case USE_OCT5:                 n += PRINT2("%5" PRIo64, v);                      break;
+      case USE_FHEX:                 n += PRINT2("0x%" PRIx64, v);                     break;
+      case USE_LHEX:                 n += PRINT2("%" PRIx64, v);                       break;
+      case USE_FHEX8:                n += PRINT2("0x%2.2" PRIx64, v);                  break;
+      case USE_LHEX8:                n += PRINT2("%2.2" PRIx64, v);                    break;
+      case USE_FHEX16:               n += PRINT2("0x%4.4" PRIx64, v);                  break;
+      case USE_LHEX16:               n += PRINT2("%4.4" PRIx64, v);                    break;
+      case USE_FHEX24:               n += PRINT2("0x%6.6" PRIx64, v);                  break;
+      case USE_LHEX24:               n += PRINT2("%6.6" PRIx64, v);                    break;
+      case USE_FHEX32:               n += PRINT2("0x%8.8" PRIx64, v);                  break;
+      case USE_LHEX32:               n += PRINT2("%8.8" PRIx64, v);                    break;
+      case USE_FHEX48:               n += PRINT2("0x%12.12" PRIx64, v);                break;
+      case USE_LHEX48:               n += PRINT2("%12.12" PRIx64, v);                  break;
+      case USE_FHEX64:               n += PRINT2("0x%16.16" PRIx64, v);                break;
+      case USE_LHEX64:               n += PRINT2("%16.16" PRIx64, v);                  break;
+      case USE_POWER2:               n += PRINT2("2**%-2" PRId64, v);                  break;
+      case USE_PERCENT:              n += PRINT2("%3.1f%%", CAST(float64_t, v) / 10);  break;
+      case USE_ERROR:                n += PRINT2("<error: %" PRIx64 ">", v);           break;
+      case USE_CORRUPT:              n += PRINT2("<corrupt: %" PRIx64 ">", v);         break;
+      case USE_UNKNOWN:              n += PRINT2("<unknown: %" PRIx64 ">", v);         break;
+      case USE_WARNING:              n += PRINT2("<warning: %" PRIx64 ">", v);         break;
+      case USE_BOOL:                 n += PRINT1(v ? "true" : "false");                break;
 
       case USE_SDEC8:
         if (v < CHAR_MAX)            n += PRINT2("%" PRId64, v);
@@ -616,7 +616,7 @@ int printf_show(const uint64_t v, const imode_t mode) {
   return n;
 }
 
-int printf_real(const double v, const imode_t mode) {
+int printf_real(const float64_t v, const imode_t mode) {
   MALLOCA(char, o, BUFFER_MAXSIZE);
 
   int n = 0;
@@ -941,7 +941,7 @@ int printf_sore(const unknown_t p, const size_t size, const imode_t mode) {
       n += printf_nice(crc32_calculate(CRC_DEF32, p0, size), USE_FHEX32 | ymode);
     }
   } else if (USE_ENTROPY == modex) {
-    double entropy, min, max;
+    float64_t entropy, min, max;
     if (!entropy_calculate(p0, size, &entropy, &min, &max)) {
       if (MODE_ISNOT(mode, USE_NOTEXT)) {
         n += printf_text("ENTROPY", USE_LT | USE_COLON | mode0 | SET_PAD(MAXSIZE));
