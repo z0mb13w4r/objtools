@@ -211,6 +211,8 @@ typedef const void *cunknown_t;
 typedef uint64_t pick_t, *ppick_t;
 
 typedef int      bool_t;
+typedef float    float32_t;
+typedef double   float64_t;
 
 typedef unsigned int   uint_t,   *puint_t;
 typedef unsigned char  uchar_t,  *puchar_t;
