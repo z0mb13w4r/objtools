@@ -312,12 +312,12 @@ uint64_t hexb(unknown_t p, const size_t size) {
   return x;
 }
 
-double real8(int x) {
-  return '.' == x ? -1 : dec8(x);
+float64_t real8(int x) {
+  return '.' == x ? -1.0 : CAST(float64_t, dec8(x));
 }
 
-double realb(unknown_t p, const size_t size) {
-  int64_t x = 0;
+float64_t realb(unknown_t p, const size_t size) {
+  float64_t x = 0;
   if (p && 0 < size) {
     puchar_t p0 = CAST(puchar_t, p);
     for (size_t i = 0; i < size; ++i) {
