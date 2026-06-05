@@ -181,35 +181,35 @@ static int ocdebugf_mcvalueZ(handle_t p, unknown_t m, const char *name, unknown_
   return ocdebugf_mcvalueY(p, m, name, NULL, x, y, z);
 }
 
-static int ocdebugf_opvalueX(handle_t p, const uint64_t cv, const int64_t iv, const uint64_t uv, const float64_t rv,
-                             const char *sv, const char *id, const uint64_t mask) {
-  if (isopcode(p)) {
+static int ocdebugf_opvalueX(handle_t p, unknown_t v, const uint64_t cv, const char *id, const uint64_t mask) {
+  if (isopcode(p) && v) {
     int n = 0;
+    pocitem_t v0 = CAST(pocitem_t, v);
 
     if (MODE_ISSET(cv, MODE_ISANY(mask, OCOPERAND_REGISTERMASK))) {
       n += printf_yoke("REGISTER", id, USE_LT | USE_COLON | SET_PAD(MAXSIZE));
-      n += printf_pick(oegetREGISTERNAMES(p), OCREG_MASK(uv), USE_SPACE);
-      n += printf_cope(oeREGISTERFLAGS_DEF, oegetREGISTERFLAGS(p), OCREG_HIDE(uv), USE_NONE);
+      n += printf_pick(oegetREGISTERNAMES(p), OCREG_MASK(v0->uvalue), USE_SPACE);
+      n += printf_cope(oeREGISTERFLAGS_DEF, oegetREGISTERFLAGS(p), OCREG_HIDE(v0->uvalue), USE_NONE);
       n += printf_eol();
     } else if (MODE_ISSET(cv, MODE_ISANY(mask, OCOPERAND_RVALUEMASK))) {
       n += printf_yoke("RVALUE", id, USE_LT | USE_COLON | SET_PAD(MAXSIZE));
-      n += printf_real(rv, USE_REALp6);
+      n += printf_real(v0->rvalue, USE_REALp6);
       n += printf_eol();
     } else if (MODE_ISSET(cv, MODE_ISANY(mask, OCOPERAND_MVALUEMASK))) {
       n += printf_yoke("MVALUE", id, USE_LT | USE_COLON | SET_PAD(MAXSIZE));
-      n += printf_nice(uv, USE_FHEX64);
+      n += printf_nice(v0->uvalue, USE_FHEX64);
       n += printf_eol();
     } else if (MODE_ISSET(cv, MODE_ISANY(mask, OCOPERAND_IVALUEMASK))) {
       n += printf_yoke("IVALUE", id, USE_LT | USE_COLON | SET_PAD(MAXSIZE));
-      n += printf_nice(iv, USE_DEC);
+      n += printf_nice(v0->ivalue, USE_DEC);
       n += printf_eol();
     } else if (MODE_ISSET(cv, MODE_ISANY(mask, OCOPERAND_UVALUEMASK))) {
       n += printf_yoke("UVALUE", id, USE_LT | USE_COLON | SET_PAD(MAXSIZE));
-      n += printf_nice(uv, USE_FHEX64);
+      n += printf_nice(v0->uvalue, USE_FHEX64);
       n += printf_eol();
-    } else if (sv[0]) {
+    } else if (v0->svalue[0]) {
       n += printf_yoke("UNKNOWN", id, USE_LT | USE_COLON | SET_PAD(MAXSIZE));
-      n += printf_text(sv, USE_LT | USE_SPACE);
+      n += printf_text(v0->svalue, USE_LT | USE_SPACE);
       n += printf_eol();
     }
 
@@ -227,14 +227,14 @@ static int ocdebugf_opvalueZ(handle_t p, unknown_t o, const char *name) {
     n += printf_text(name, USE_LT | USE_COLON | SET_PAD(MAXSIZE));
     n += printf_text(o0->data, USE_LT | USE_SPACE | USE_EOL);
     n += ocdebugf_cvalue1(p, o0->cvalue);
-    n += ocdebugf_opvalueX(p, o0->cvalue, o0->ivalue0, o0->uvalue0, o0->rvalue0, o0->svalue0, "0", OCOPERAND_REGISTER0);
-    n += ocdebugf_opvalueX(p, o0->cvalue, o0->ivalue1, o0->uvalue1, o0->rvalue1, o0->svalue1, "1", OCOPERAND_REGISTER1);
-    n += ocdebugf_opvalueX(p, o0->cvalue, o0->ivalue2, o0->uvalue2, o0->rvalue2, o0->svalue2, "2", OCOPERAND_REGISTER2);
-    n += ocdebugf_opvalueX(p, o0->cvalue, o0->ivalue3, o0->uvalue3, o0->rvalue3, o0->svalue3, "3", OCOPERAND_REGISTER3);
-    n += ocdebugf_opvalueX(p, o0->cvalue, o0->ivalue4, o0->uvalue4, o0->rvalue4, o0->svalue4, "4", OCOPERAND_REGISTER4);
-    n += ocdebugf_opvalueX(p, o0->cvalue, o0->ivalue5, o0->uvalue5, o0->rvalue5, o0->svalue5, "5", OCOPERAND_REGISTER5);
-    n += ocdebugf_opvalueX(p, o0->cvalue, o0->ivalue6, o0->uvalue6, o0->rvalue6, o0->svalue6, "6", OCOPERAND_REGISTER6);
-    n += ocdebugf_opvalueX(p, o0->cvalue, o0->ivalue7, o0->uvalue7, o0->rvalue7, o0->svalue7, "7", OCOPERAND_REGISTER7);
+    n += ocdebugf_opvalueX(p, &o0->value0, o0->cvalue, "0", OCOPERAND_REGISTER0);
+    n += ocdebugf_opvalueX(p, &o0->value1, o0->cvalue, "1", OCOPERAND_REGISTER1);
+    n += ocdebugf_opvalueX(p, &o0->value2, o0->cvalue, "2", OCOPERAND_REGISTER2);
+    n += ocdebugf_opvalueX(p, &o0->value3, o0->cvalue, "3", OCOPERAND_REGISTER3);
+    n += ocdebugf_opvalueX(p, &o0->value4, o0->cvalue, "4", OCOPERAND_REGISTER4);
+    n += ocdebugf_opvalueX(p, &o0->value5, o0->cvalue, "5", OCOPERAND_REGISTER5);
+    n += ocdebugf_opvalueX(p, &o0->value6, o0->cvalue, "6", OCOPERAND_REGISTER6);
+    n += ocdebugf_opvalueX(p, &o0->value7, o0->cvalue, "7", OCOPERAND_REGISTER7);
 
     return n;
   }
@@ -487,11 +487,11 @@ int opcode_printf_detail(handle_t p, const uint64_t vaddr, unknown_t mnemonic, u
     if (m && o1 && (m->uvalue || isok)) {
       uint64_t uvalue = m->uvalue;
       if (o3 && (OCOPERAND_UVALUE0 == o3->cvalue)) {
-        uvalue = o3->uvalue0;
+        uvalue = o3->value0.uvalue;
       } else if (o2 && (OCOPERAND_UVALUE0 == o2->cvalue)) {
-        uvalue = o2->uvalue0;
+        uvalue = o2->value0.uvalue;
       } else if (o1 && (OCOPERAND_UVALUE0 == o1->cvalue)) {
-        uvalue = o1->uvalue0;
+        uvalue = o1->value0.uvalue;
       }
       ocget_symbol(p, uvalue, &name, NULL, NULL, NULL, NULL, NULL, NULL, NULL, &offset);
 

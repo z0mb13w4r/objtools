@@ -295,57 +295,24 @@ typedef struct ocmnemonic_s {
   };
 } ocmnemonic_t, *pocmnemonic_t;
 
+typedef union ocitem_u {
+  int64_t   ivalue;
+  uint64_t  uvalue;
+  float64_t rvalue;
+  char      svalue[OCUNION_MAXSIZE];
+} ocitem_t, *pocitem_t;
+
 typedef struct ocoperand_s {
   char       data[160];
   uint64_t   cvalue;
-  union {
-    int64_t   ivalue0;
-    uint64_t  uvalue0;
-    float64_t rvalue0;
-    char      svalue0[OCUNION_MAXSIZE];
-  };
-  union {
-    int64_t   ivalue1;
-    uint64_t  uvalue1;
-    float64_t rvalue1;
-    char      svalue1[OCUNION_MAXSIZE];
-  };
-  union {
-    int64_t   ivalue2;
-    uint64_t  uvalue2;
-    float64_t rvalue2;
-    char      svalue2[OCUNION_MAXSIZE];
-  };
-  union {
-    int64_t   ivalue3;
-    uint64_t  uvalue3;
-    float64_t rvalue3;
-    char      svalue3[OCUNION_MAXSIZE];
-  };
-  union {
-    int64_t   ivalue4;
-    uint64_t  uvalue4;
-    float64_t rvalue4;
-    char      svalue4[OCUNION_MAXSIZE];
-  };
-  union {
-    int64_t   ivalue5;
-    uint64_t  uvalue5;
-    float64_t rvalue5;
-    char      svalue5[OCUNION_MAXSIZE];
-  };
-  union {
-    int64_t   ivalue6;
-    uint64_t  uvalue6;
-    float64_t rvalue6;
-    char      svalue6[OCUNION_MAXSIZE];
-  };
-  union {
-    int64_t   ivalue7;
-    uint64_t  uvalue7;
-    float64_t rvalue7;
-    char      svalue7[OCUNION_MAXSIZE];
-  };
+  ocitem_t   value0;
+  ocitem_t   value1;
+  ocitem_t   value2;
+  ocitem_t   value3;
+  ocitem_t   value4;
+  ocitem_t   value5;
+  ocitem_t   value6;
+  ocitem_t   value7;
 } ocoperand_t, *pocoperand_t;
 
 typedef struct ocexamine_s {
