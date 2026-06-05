@@ -186,24 +186,24 @@ static int ocdebugf_opvalueX(handle_t p, unknown_t v, const uint64_t cv, const c
     int n = 0;
     pocitem_t v0 = CAST(pocitem_t, v);
 
-    if (MODE_ISSET(cv, MODE_ISANY(mask, OCOPERAND_REGISTERMASK))) {
+    if (MODE_ISNIP(cv, OCOPERAND_REGISTERMASK, mask)) {
       n += printf_yoke("REGISTER", id, USE_LT | USE_COLON | SET_PAD(MAXSIZE));
       n += printf_pick(oegetREGISTERNAMES(p), OCREG_MASK(v0->uvalue), USE_SPACE);
       n += printf_cope(oeREGISTERFLAGS_DEF, oegetREGISTERFLAGS(p), OCREG_HIDE(v0->uvalue), USE_NONE);
       n += printf_eol();
-    } else if (MODE_ISSET(cv, MODE_ISANY(mask, OCOPERAND_RVALUEMASK))) {
+    } else if (MODE_ISNIP(cv, OCOPERAND_RVALUEMASK, mask)) {
       n += printf_yoke("RVALUE", id, USE_LT | USE_COLON | SET_PAD(MAXSIZE));
       n += printf_real(v0->rvalue, USE_REALp6);
       n += printf_eol();
-    } else if (MODE_ISSET(cv, MODE_ISANY(mask, OCOPERAND_MVALUEMASK))) {
+    } else if (MODE_ISNIP(cv, OCOPERAND_MVALUEMASK, mask)) {
       n += printf_yoke("MVALUE", id, USE_LT | USE_COLON | SET_PAD(MAXSIZE));
       n += printf_nice(v0->uvalue, USE_FHEX64);
       n += printf_eol();
-    } else if (MODE_ISSET(cv, MODE_ISANY(mask, OCOPERAND_IVALUEMASK))) {
+    } else if (MODE_ISNIP(cv, OCOPERAND_IVALUEMASK, mask)) {
       n += printf_yoke("IVALUE", id, USE_LT | USE_COLON | SET_PAD(MAXSIZE));
       n += printf_nice(v0->ivalue, USE_DEC);
       n += printf_eol();
-    } else if (MODE_ISSET(cv, MODE_ISANY(mask, OCOPERAND_UVALUEMASK))) {
+    } else if (MODE_ISNIP(cv, OCOPERAND_UVALUEMASK, mask)) {
       n += printf_yoke("UVALUE", id, USE_LT | USE_COLON | SET_PAD(MAXSIZE));
       n += printf_nice(v0->uvalue, USE_FHEX64);
       n += printf_eol();
