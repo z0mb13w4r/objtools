@@ -77,17 +77,17 @@ uint64_t atovalue(const char* src) {
   const size_t siz = xstrlen(src);
   if (3 <= siz && '0' == src[0] && (('x' | 0x20) == src[1])) {
     return strtol(src + 2, NULL, 16);
-  } else if (3 <= siz && (('b' | 0x20) == src[siz - 1]) && (('k' | 0x20) == src[siz - 2])) {
+  } else if (3 <= siz && ('b' == LOWER8(src[siz - 1])) && ('k' == LOWER8(src[siz - 2]))) {
     return atol(src) * 1024;
-  } else if (3 <= siz && (('b' | 0x20) == src[siz - 1]) && (('m' | 0x20) == src[siz - 2])) {
+  } else if (3 <= siz && ('b' == LOWER8(src[siz - 1])) && ('m' == LOWER8(src[siz - 2]))) {
     return atol(src) * 1024 * 1024;
-  } else if (3 <= siz && (('b' | 0x20) == src[siz - 1]) && (('g' | 0x20) == src[siz - 2])) {
+  } else if (3 <= siz && ('b' == LOWER8(src[siz - 1])) && ('g' == LOWER8(src[siz - 2]))) {
     return atol(src) * 1024 * 1024 * 1024;
-  } else if (3 <= siz && (('b' | 0x20) == src[siz - 1]) && (('t' | 0x20) == src[siz - 2])) {
+  } else if (3 <= siz && ('b' == LOWER8(src[siz - 1])) && ('t' == LOWER8(src[siz - 2]))) {
     return atol(src) * 1024 * 1024 * 1024 * 1024;
-  } else if (2 <= siz && (('h' | 0x20) == src[siz - 1])) {
+  } else if (2 <= siz && ('h' == LOWER8(src[siz - 1]))) {
     return strtol(src, NULL, 16);
-  } else if (2 <= siz && (('b' | 0x20) == src[siz - 1])) {
+  } else if (2 <= siz && ('b' == LOWER8(src[siz - 1]))) {
     return strtol(src, NULL, 2);
   }
 
@@ -325,7 +325,12 @@ float64_t realb(unknown_t p, const size_t size) {
       if ('.' == p0[i]) {
         ++cnt;
         if (1 != cnt) return x;
-      } else if (!isreal8(p0[i])) return x;
+      } else if (!isreal8(p0[i])) {
+        return x;
+      } else if (1 == cnt) {
+      } else {
+        x = (x * 10) + real8(p0[i]);
+      }
     }
   }
 
