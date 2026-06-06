@@ -93,6 +93,10 @@
 #define LIMIT(x,b,t) MAX(b, MIN(x, t))
 #endif
 
+#ifndef RANGE
+#define RANGE(x, y, z) ((y) <= (x) && (x) <= (z))
+#endif
+
 #ifndef BOUND16
 #define BOUND16(x)   (CAST(size_t, ((x) + 1) / 2) * 2)
 #endif
@@ -102,7 +106,7 @@
 #endif
 
 #ifndef LOWER8
-#define LOWER8(x)    ((x) | 0x20)
+#define LOWER8(x)    (RANGE(x, 'A', 'Z') ? (x) | 0x20 : (x))
 #endif
 
 #ifndef U32MASK

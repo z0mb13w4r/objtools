@@ -75,7 +75,7 @@ uint64_t ulog2(uint64_t  x) {
 
 uint64_t atovalue(const char* src) {
   const size_t siz = xstrlen(src);
-  if (3 <= siz && '0' == src[0] && (('x' | 0x20) == src[1])) {
+  if (3 <= siz && '0' == src[0] && ('x' == LOWER8(src[1]))) {
     return strtol(src + 2, NULL, 16);
   } else if (3 <= siz && ('b' == LOWER8(src[siz - 1])) && ('k' == LOWER8(src[siz - 2]))) {
     return atol(src) * 1024;
