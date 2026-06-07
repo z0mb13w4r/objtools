@@ -12,7 +12,22 @@ static int dump_archeader(const pbuffer_t p, const poptions_t o) {
   if (p0) {
     n += printf_text("ARCHIVE HEADER", USE_LT | USE_COLON | USE_EOL);
     n += printf_text("Name", USE_TAB | USE_COLON | SET_PAD(MAXSIZE - 1));
-    n += printf_text(p0->ar_name, USE_LT | USE_SPACE | USE_EOL);
+    n += printf_sore(p0->ar_name, sizeof(p0->ar_name), USE_STR | USE_EOL);
+
+    n += printf_text("Date", USE_TAB | USE_COLON | SET_PAD(MAXSIZE - 1));
+    n += printf_sore(p0->ar_date, sizeof(p0->ar_date), USE_STR | USE_EOL);
+
+    n += printf_text("UID", USE_TAB | USE_COLON | SET_PAD(MAXSIZE - 1));
+    n += printf_sore(p0->ar_uid, sizeof(p0->ar_uid), USE_STR | USE_EOL);
+
+    n += printf_text("GID", USE_TAB | USE_COLON | SET_PAD(MAXSIZE - 1));
+    n += printf_sore(p0->ar_gid, sizeof(p0->ar_gid), USE_STR | USE_EOL);
+
+    n += printf_text("Mode", USE_TAB | USE_COLON | SET_PAD(MAXSIZE - 1));
+    n += printf_sore(p0->ar_mode, sizeof(p0->ar_mode), USE_STR | USE_EOL);
+
+    n += printf_text("Size", USE_TAB | USE_COLON | SET_PAD(MAXSIZE - 1));
+    n += printf_sore(p0->ar_size, sizeof(p0->ar_size), USE_STR | USE_EOL);
 
   }
 
