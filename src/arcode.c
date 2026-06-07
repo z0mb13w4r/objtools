@@ -10,3 +10,7 @@ bool_t isAR(const pbuffer_t p) {
   return FALSE;
 }
 
+unknown_t ecget_ahdr(const pbuffer_t p) {
+  return getp(p, SARMAG, sizeof(struct ar_hdr));
+}
+
