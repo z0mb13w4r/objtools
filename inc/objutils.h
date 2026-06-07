@@ -62,11 +62,11 @@ size_t strlenpick(const pconvert_t p);
 
 size_t fsize(FILE *f);
 
-int64_t bin8(int x);
-int64_t binb(unknown_t p, const size_t size);
+uint64_t bin8(int x);
+uint64_t binb(unknown_t p, const size_t size);
 
-int64_t dec8(int x);
-int64_t decb(unknown_t p, const size_t size);
+uint64_t dec8(int x);
+uint64_t decb(unknown_t p, const size_t size);
 
 uint64_t hex8(int x);
 uint64_t hex16(int x0, int x1);

@@ -255,12 +255,12 @@ bool_t isspecialb(unknown_t p, const size_t size) {
 }
 
 
-int64_t bin8(int x) {
+uint64_t bin8(int x) {
   return '0' <= x && x <= '1' ? x - '0' : 0;
 }
 
-int64_t binb(unknown_t p, const size_t size) {
-  int64_t x = 0;
+uint64_t binb(unknown_t p, const size_t size) {
+  uint64_t x = 0;
   if (p && 0 < size) {
     puchar_t p0 = CAST(puchar_t, p);
     for (size_t i = 0; i < size; ++i) {
@@ -272,12 +272,12 @@ int64_t binb(unknown_t p, const size_t size) {
   return x;
 }
 
-int64_t dec8(int x) {
+uint64_t dec8(int x) {
   return '0' <= x && x <= '9' ? x - '0' : 0;
 }
 
-int64_t decb(unknown_t p, const size_t size) {
-  int64_t x = 0;
+uint64_t decb(unknown_t p, const size_t size) {
+  uint64_t x = 0;
   if (p && 0 < size) {
     puchar_t p0 = CAST(puchar_t, p);
     for (size_t i = 0; i < size; ++i) {
