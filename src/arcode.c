@@ -2,9 +2,9 @@
 
 bool_t isAR(const pbuffer_t p) {
   if (issafe(p)) {
-    return '!' == getb(p, 0) && '<' == getb(p, 1) &&
-           'a' == getb(p, 2) && 'r' == getb(p, 3) && 'c' == getb(p, 4) && 'h' == getb(p, 5) &&
-           '>' == getb(p, 6) && 0x0a == getb(p, 7) ? TRUE : FALSE;
+    const bool_t isarch = 'a' == getb(p, 2) && 'r' == getb(p, 3) && 'c' == getb(p, 4) && 'h' == getb(p, 5);
+    const bool_t isthin = 't' == getb(p, 2) && 'h' == getb(p, 3) && 'i' == getb(p, 4) && 'n' == getb(p, 5);
+    return '!' == getb(p, 0) && '<' == getb(p, 1) && (isarch || isthin) && '>' == getb(p, 6) && 0x0a == getb(p, 7) ? TRUE : FALSE;
   }
 
   return FALSE;
