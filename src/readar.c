@@ -28,7 +28,6 @@ static int dump_archeader(const pbuffer_t p, const poptions_t o) {
 
     n += printf_text("Size", USE_TAB | USE_COLON | SET_PAD(MAXSIZE - 1));
     n += printf_sore(p0->ar_size, sizeof(p0->ar_size), USE_STR | USE_EOL);
-
   }
 
   return n;
@@ -37,6 +36,14 @@ static int dump_archeader(const pbuffer_t p, const poptions_t o) {
 int readar(const pbuffer_t p, const poptions_t o) {
   if (isAR(p)) {
     dump_archeader(p, o);
+
+    struct ar_hdr* p0 = ecget_ahdr(p);
+    if (p0) {
+      if (xstrncmp(p0->ar_name, "/               ", sizeof(p0->ar_name))) {
+      } else if (xstrncmp(p0->ar_name, "/SYM64/         ", sizeof(p0->ar_name))) {
+      } else if (xstrncmp(p0->ar_name, "//              ", sizeof(p0->ar_name))) {
+      }
+    }
   } else {
     printf_e("not an archive file - it has the wrong magic bytes at the start.");
   }
