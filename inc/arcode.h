@@ -3,7 +3,7 @@
 
 #include "buffer.h"
 
-int isAR(const pbuffer_t p);
+bool_t isAR(const pbuffer_t p);
 
 #endif
 
