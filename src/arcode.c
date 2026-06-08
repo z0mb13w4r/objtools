@@ -22,7 +22,7 @@ unknown_t ecget_ahdr(const pbuffer_t p, const int index) {
     struct ar_hdr* p1 = fgetp(p0, sizeof(struct ar_hdr));
     int i = 1;
     while (i < index && p1) {
-      printf("size = %ld\n", decb(p1->ar_size, sizeof(p1->ar_size)));
+//      printf("size = %ld\n", decb(p1->ar_size, sizeof(p1->ar_size)));
       fstep(p0, decb(p1->ar_size, sizeof(p1->ar_size)));
       p1 = fgetp(p0, sizeof(struct ar_hdr));
       ++i;
