@@ -1,4 +1,6 @@
 #include "arcode.h"
+#include "memfind.h"
+#include "objutils.h"
 
 bool_t isAR(const pbuffer_t p) {
   if (issafe(p)) {
@@ -10,7 +12,26 @@ bool_t isAR(const pbuffer_t p) {
   return FALSE;
 }
 
-unknown_t ecget_ahdr(const pbuffer_t p) {
-  return getp(p, SARMAG, sizeof(struct ar_hdr));
+unknown_t ecget_ahdr(const pbuffer_t p, const int index) {
+  if (0 == index) {
+    return getp(p, SARMAG, sizeof(struct ar_hdr));
+  }
+
+  handle_t p0 = fmalloc(CAST(puchar_t, p->data) + SARMAG, p->size - SARMAG, MEMFIND_NOBLOCKSIZE);
+  if (p0) {
+    struct ar_hdr* p1 = fgetp(p0, sizeof(struct ar_hdr));
+    int i = 1;
+    while (i < index && p1) {
+      printf("size = %ld\n", decb(p1->ar_size, sizeof(p1->ar_size)));
+      fstep(p0, decb(p1->ar_size, sizeof(p1->ar_size)));
+      p1 = fgetp(p0, sizeof(struct ar_hdr));
+      ++i;
+    }
+
+    ffree(p0);
+    return p1 && (index == i) ? p1 : NULL;
+  }
+
+  return NULL;
 }
 
