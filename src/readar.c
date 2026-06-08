@@ -3,7 +3,7 @@
 #include "readar.h"
 #include "objutils.h"
 
-static int dump_archeader(const pbuffer_t p, const poptions_t o, const int index) {
+static int dump_archive(const pbuffer_t p, const poptions_t o, const int index) {
   const int MAXSIZE = 36;
 
   int n = 0;
@@ -30,6 +30,11 @@ static int dump_archeader(const pbuffer_t p, const poptions_t o, const int index
     n += printf_sore(p0->ar_size, sizeof(p0->ar_size), USE_STR | USE_EOL);
 
 printf("size = %ld\n", decb(p0->ar_size, sizeof(p0->ar_size)));
+
+    if (xstrncmp(p0->ar_name, "/               ", sizeof(p0->ar_name))) {
+    } else if (xstrncmp(p0->ar_name, "/SYM64/         ", sizeof(p0->ar_name))) {
+    } else if (xstrncmp(p0->ar_name, "//              ", sizeof(p0->ar_name))) {
+    }
   }
 
   return n;
@@ -37,16 +42,8 @@ printf("size = %ld\n", decb(p0->ar_size, sizeof(p0->ar_size)));
 
 int readar(const pbuffer_t p, const poptions_t o) {
   if (isAR(p)) {
-    dump_archeader(p, o, 0);
-    dump_archeader(p, o, 1);
-
-    struct ar_hdr* p0 = ecget_ahdr(p, 0);
-    if (p0) {
-      if (xstrncmp(p0->ar_name, "/               ", sizeof(p0->ar_name))) {
-      } else if (xstrncmp(p0->ar_name, "/SYM64/         ", sizeof(p0->ar_name))) {
-      } else if (xstrncmp(p0->ar_name, "//              ", sizeof(p0->ar_name))) {
-      }
-    }
+    dump_archive(p, o, 0);
+    dump_archive(p, o, 1);
   } else {
     printf_e("not an archive file - it has the wrong magic bytes at the start.");
   }
