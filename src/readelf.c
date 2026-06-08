@@ -2295,7 +2295,7 @@ static int dump_archspecific0(const pbuffer_t p, const poptions_t o, const char*
 
         if (isok) {
           if (0 == xstrcmp(attrname, name)) {
-            handle_t p1 = fmalloc(p0, siz - 1, fgetstate(p0));
+            handle_t p1 = fmalloc(p0, siz - 1, fgetrole(p0));
             while (!fiseof(p1)) {
               uint64_t tag = fgetuleb128(p1);
               if (0 == tag) continue;
@@ -2327,7 +2327,7 @@ static int dump_archspecific0(const pbuffer_t p, const poptions_t o, const char*
 
             ffree(p1);
           } else if (0 == xstrcmp(attrname, "gnu")) {
-            handle_t p1 = fmalloc(p0, siz - 1, fgetstate(p0));
+            handle_t p1 = fmalloc(p0, siz - 1, fgetrole(p0));
             while (!fiseof(p1)) {
               uint64_t tag = fgetuleb128(p1);
               if (0 == tag) continue;

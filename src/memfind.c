@@ -76,7 +76,7 @@ size_t fgetsize(handle_t p) {
   return 0;
 }
 
-size_t fgetstate(handle_t p) {
+size_t fgetrole(handle_t p) {
   if (isfind(p)) {
     pfind_t p0 = CAST(pfind_t, p);
     if (p0) {
