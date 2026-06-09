@@ -42,8 +42,8 @@ printf("size = %ld\n", decb(p0->ar_size, sizeof(p0->ar_size)));
 
 int readar(const pbuffer_t p, const poptions_t o) {
   if (isAR(p)) {
-    dump_archive(p, o, 0);
-    dump_archive(p, o, 1);
+    int i = 0;
+    while (dump_archive(p, o, i++));
   } else {
     printf_e("not an archive file - it has the wrong magic bytes at the start.");
   }
