@@ -17,7 +17,8 @@ unknown_t ecget_ahdr(const pbuffer_t p, const int index) {
     return getp(p, SARMAG, sizeof(struct ar_hdr));
   }
 
-  handle_t p0 = fmalloc(CAST(puchar_t, p->data) + SARMAG, p->size - SARMAG, MEMFIND_NOBLOCKSIZE);
+  size_t size = bgetsize(p) - SARMAG;
+  handle_t p0 = fmalloc(getp(p, SARMAG, size), size, MEMFIND_NOBLOCKSIZE);
   if (p0) {
     struct ar_hdr* p1 = fgetp(p0, sizeof(struct ar_hdr));
     int i = 1;
@@ -36,6 +37,15 @@ unknown_t ecget_ahdr(const pbuffer_t p, const int index) {
 }
 
 handle_t ecget_archive(const pbuffer_t p, const int index) {
+  if (0 == index) {
+    size_t size0 = sizeof(struct ar_hdr);
+    struct ar_hdr* p0 = getp(p, SARMAG, size0);
+    if (p0) {
+      size_t size1 = decb(p0->ar_size, sizeof(p0->ar_size));
+      return fmalloc(getp(p, SARMAG, size0 + size1), size0 + size1, MEMFIND_NOBLOCKSIZE);
+    }
+  }
+
   return NULL;
 }
 
