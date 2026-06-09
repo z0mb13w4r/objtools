@@ -35,3 +35,7 @@ unknown_t ecget_ahdr(const pbuffer_t p, const int index) {
   return NULL;
 }
 
+handle_t ecget_archive(const pbuffer_t p, const int index) {
+  return NULL;
+}
+
