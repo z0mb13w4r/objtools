@@ -42,9 +42,11 @@ handle_t ecget_archive(const pbuffer_t p, const int index) {
     struct ar_hdr* p0 = getp(p, SARMAG, size0);
     if (p0) {
       size_t size1 = decb(p0->ar_size, sizeof(p0->ar_size));
-      unknown_t p1 = getp(p, SARMAG, size0 + size1);
-      if (p1) {
-        return fmalloc(p1, size0 + size1, MEMFIND_NOBLOCKSIZE);
+      if (0 < size1) {
+        unknown_t p1 = getp(p, SARMAG, size0 + size1);
+        if (p1) {
+          return fmalloc(p1, size0 + size1, MEMFIND_NOBLOCKSIZE);
+        }
       }
     }
   } else {
