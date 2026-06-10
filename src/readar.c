@@ -3,8 +3,15 @@
 #include "readar.h"
 #include "objutils.h"
 
+static const int MAXSIZE = 36;
+
+static int dump_achive0(const pbuffer_t p, const poptions_t o, const int index, const size_t size) {
+  int n = 0;
+
+  return n;
+}
+
 static int dump_archive(const pbuffer_t p, const poptions_t o, const int index) {
-  const int MAXSIZE = 36;
 
   int n = 0;
 
@@ -32,7 +39,9 @@ static int dump_archive(const pbuffer_t p, const poptions_t o, const int index) 
 printf("size = %ld\n", decb(p0->ar_size, sizeof(p0->ar_size)));
 
     if (xstrncmp(p0->ar_name, "/               ", sizeof(p0->ar_name))) {
+      n += dump_achive0(p, o, index, 4);
     } else if (xstrncmp(p0->ar_name, "/SYM64/         ", sizeof(p0->ar_name))) {
+      n += dump_achive0(p, o, index, 8);
     } else if (xstrncmp(p0->ar_name, "//              ", sizeof(p0->ar_name))) {
     }
   }
