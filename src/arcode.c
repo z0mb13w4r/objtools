@@ -13,44 +13,63 @@ bool_t isAR(const pbuffer_t p) {
 }
 
 unknown_t ecget_ahdr(const pbuffer_t p, const int index) {
-  if (0 == index) {
-    return getp(p, SARMAG, sizeof(struct ar_hdr));
-  }
-
-  size_t size = bgetsize(p) - SARMAG;
-  handle_t p0 = fmalloc(getp(p, SARMAG, size), size, MEMFIND_NOBLOCKSIZE);
-  if (p0) {
-    struct ar_hdr* p1 = fgetp(p0, sizeof(struct ar_hdr));
-    int i = 1;
-    while (i < index && p1) {
-//      printf("size = %ld\n", decb(p1->ar_size, sizeof(p1->ar_size)));
-      fstep(p0, decb(p1->ar_size, sizeof(p1->ar_size)));
-      p1 = fgetp(p0, sizeof(struct ar_hdr));
-      ++i;
+  if (isAR(p)) {
+    if (0 == index) {
+      return getp(p, SARMAG, sizeof(struct ar_hdr));
     }
 
-    ffree(p0);
-    return p1 && (index == i) ? p1 : NULL;
+    size_t size = bgetsize(p) - SARMAG;
+    handle_t p0 = fmalloc(getp(p, SARMAG, size), size, MEMFIND_NOBLOCKSIZE);
+    if (p0) {
+      struct ar_hdr* p1 = fgetp(p0, sizeof(struct ar_hdr));
+      int i = 1;
+      while (i < index && p1) {
+//printf("size = %ld\n", decb(p1->ar_size, sizeof(p1->ar_size)));
+        fstep(p0, decb(p1->ar_size, sizeof(p1->ar_size)));
+        p1 = fgetp(p0, sizeof(struct ar_hdr));
+        ++i;
+      }
+
+      ffree(p0);
+      return p1 && (index == i) ? p1 : NULL;
+    }
   }
 
   return NULL;
 }
 
 handle_t ecget_archive(const pbuffer_t p, const int index) {
-  if (0 == index) {
-    size_t size0 = sizeof(struct ar_hdr);
-    struct ar_hdr* p0 = getp(p, SARMAG, size0);
-    if (p0) {
-      size_t size1 = decb(p0->ar_size, sizeof(p0->ar_size));
-      if (0 < size1) {
-        unknown_t p1 = getp(p, SARMAG, size0 + size1);
-        if (p1) {
-          return fmalloc(p1, size0 + size1, MEMFIND_NOBLOCKSIZE);
+  const size_t HDRSIZE = sizeof(struct ar_hdr);
+
+  if (isAR(p)) {
+    if (0 == index) {
+      struct ar_hdr* p0 = getp(p, SARMAG, HDRSIZE);
+      if (p0) {
+        size_t size1 = decb(p0->ar_size, sizeof(p0->ar_size));
+        if (0 < size1) {
+          unknown_t p1 = getp(p, SARMAG, HDRSIZE + size1);
+          if (p1) {
+            return fmalloc(p1, HDRSIZE + size1, MEMFIND_NOBLOCKSIZE);
+          }
         }
       }
-    }
-  } else {
+    } else {
+      size_t size = bgetsize(p) - SARMAG;
+      handle_t p0 = fmalloc(getp(p, SARMAG, size), size, MEMFIND_NOBLOCKSIZE);
+      if (p0) {
+        struct ar_hdr* p1 = fgetp(p0, HDRSIZE);
+        int i = 1;
+        while (i < index && p1) {
+//printf("size = %ld\n", decb(p1->ar_size, sizeof(p1->ar_size)));
+          fstep(p0, decb(p1->ar_size, sizeof(p1->ar_size)));
+          p1 = fgetp(p0, HDRSIZE);
+          ++i;
+        }
 
+        ffree(p0);
+      }
+
+    }
   }
 
   return NULL;
