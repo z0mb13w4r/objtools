@@ -1,12 +1,19 @@
 #include "arcode.h"
 #include "printf.h"
 #include "readar.h"
+#include "memfind.h"
 #include "objutils.h"
 
 static const int MAXSIZE = 36;
 
 static int dump_achive0(const pbuffer_t p, const poptions_t o, const int index, const size_t size) {
   int n = 0;
+
+  handle_t p0 = ecget_archive(p, index);
+  if (p0) {
+
+    ffree(p0);
+  }
 
   return n;
 }
