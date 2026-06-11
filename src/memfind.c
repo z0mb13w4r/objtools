@@ -591,12 +591,12 @@ unknown_t fupdate(handle_t p, const size_t cpos, const size_t blocksize) {
   return NULL;
 }
 
-handle_t fcalloc(unknown_t p, const size_t size, const size_t blocksize) {
-  return fmalloc(p, size, blocksize | MEMFIND_MALLOC);
+handle_t fxalloc(const size_t size, const size_t blocksize) {
+  return fcalloc(NULL, size, blocksize);
 }
 
-handle_t fxalloc(const size_t size, const size_t blocksize) {
-  return fmalloc(NULL, size, blocksize | MEMFIND_MALLOC);
+handle_t fcalloc(unknown_t p, const size_t size, const size_t blocksize) {
+  return fmalloc(p, size, blocksize | MEMFIND_MALLOC);
 }
 
 handle_t fmalloc(unknown_t p, const size_t size, const size_t blocksize) {
