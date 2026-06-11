@@ -529,7 +529,8 @@ handle_t fstep(handle_t p, const size_t blocksize) {
     pfind_t p0 = CAST(pfind_t, p);
     if (p0) {
       p0->cpos += blocksize;
-      if (p0->cpos <= p0->epos) return p0;
+
+      if (ISSCOPE(p0->cpos, 0, p0->epos)) return p0;
       else /*if (!ismode(p, MODE_FINDC))*/ p0->item = NULL;
     }
 

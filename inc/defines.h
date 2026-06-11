@@ -32,6 +32,14 @@
 #define ECODE_ISNOENTRY(x)   (ECODE_NOENTRY == (x))
 #define ECODE_ISWARNING(x)   (ECODE_NOENTRY <= (x))
 
+#ifndef TRUE
+#define TRUE         (1)
+#endif
+
+#ifndef FALSE
+#define FALSE        (0)
+#endif
+
 #ifndef CAST
 #define CAST(x,y)    ((x)(y))
 #endif
@@ -119,20 +127,24 @@
 #define U64MASK(x)   (1ULL << (x))
 #endif
 
-#ifndef TRUE
-#define TRUE         (1)
-#endif
-
-#ifndef FALSE
-#define FALSE        (0)
-#endif
-
 #ifndef STRING
 #define STRING(x)    ((x) ? CAST(char*, x) : "")
 #endif
 
 #ifndef YESNO
 #define YESNO(x)     ((x) ? "y" : "n")
+#endif
+
+#ifndef ISANY
+#define ISANY(x,y)   ((x) & (y))
+#endif
+
+#ifndef ISNOT
+#define ISNOT(x,y)   (0 == ISANY(x, y))
+#endif
+
+#ifndef ISSCOPE
+#define ISSCOPE(x,y,z)   ((y) <= (x) && (x) <= (z))
 #endif
 
 #define MODE_GET0(x)            MODE_MASK8((x) >>  0)
@@ -180,13 +192,13 @@
 #define MODE_MASK32(x)          ((x) & 0xffffffff)
 #define MODE_MASK               (MODE_MASK0 | MODE_MASK1)
 
-#define MODE_ISANY(x,y)         ((x) & (y))
+#define MODE_ISANY(x,y)         ISANY(x, y)
+#define MODE_ISNOT(x,y)         ISNOT(x, y)
+#define MODE_ISSCOPE(x,y,z)     ISSCOPE(x,y,z)
 #define MODE_ISCUT(x,y,z)       (MODE_ISANY(x, z) == (y))
 #define MODE_ISNIP(x,y,z)       (MODE_ISANY(x, z) && MODE_ISANY(x, z) == MODE_ISANY(y, z))
 #define MODE_ISSET(x,y)         (MODE_ISANY(x, y) == (y))
-#define MODE_ISNOT(x,y)         (0 == MODE_ISANY(x, y))
 #define MODE_ISFIX(x,y,z)       (MODE_ISSET(x, y) && MODE_ISNOT(x, z))
-#define MODE_ISSCOPE(x, y, z)   ((y) <= (x) && (x) <= (z))
 
 #define MODE_ISLOCKED(x,y)      ((x) == (y))
 #define MODE_ISLOCKED8(x,y)     (MODE_MASK8(x)  == MODE_MASK8(y))
