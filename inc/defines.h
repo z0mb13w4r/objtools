@@ -143,6 +143,10 @@
 #define ISNOT(x,y)   (0 == ISANY(x, y))
 #endif
 
+#ifndef ISSIZE
+#define	ISSIZE(x)    (0 < (x))
+#endif
+
 #ifndef ISSCOPE
 #define ISSCOPE(x,y,z)   ((y) <= (x) && (x) <= (z))
 #endif

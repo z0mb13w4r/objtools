@@ -94,7 +94,7 @@ unknown_t fgetp(handle_t p, const size_t blocksize) {
     if (p1) {
       p1->cpos += blocksize;
 
-      if (p1->cpos <= p1->epos) return p0;
+      if (ISSCOPE(p1->cpos, 0, p1->epos)) return p0;
       else /*if (!ismode(p, MODE_FINDC))*/ p1->item = NULL;
 
       if (p1->cpos == (p1->epos + 1)) return p0;
@@ -354,7 +354,7 @@ handle_t fsetu8(handle_t p, const uint8_t v) {
   if (isfind(p)) {
     pfind_t p0 = CAST(pfind_t, p);
     if (p0) {
-      if (p0->item && p0->cpos <= p0->epos) {
+      if (p0->item && ISSCOPE(p0->cpos, 0, p0->epos)) {
         CAST(puchar_t, p0->item)[p0->cpos++] = v;
         return p;
       }
@@ -368,11 +368,11 @@ handle_t fsetu16(handle_t p, const uint16_t v) {
   if (isfind(p)) {
     pfind_t p0 = CAST(pfind_t, p);
     if (p0) {
-      if (p0->item && p0->cpos <= p0->epos) {
+      if (p0->item && ISSCOPE(p0->cpos, 0, p0->epos)) {
         CAST(puchar_t, p0->item)[p0->cpos++] = MODE_GET0(v);
       }
 
-      if (p0->item && p0->cpos <= p0->epos) {
+      if (p0->item && ISSCOPE(p0->cpos, 0, p0->epos)) {
         CAST(puchar_t, p0->item)[p0->cpos++] = MODE_GET1(v);
         return p;
       }
@@ -386,19 +386,19 @@ handle_t fsetu32(handle_t p, const uint32_t v) {
   if (isfind(p)) {
     pfind_t p0 = CAST(pfind_t, p);
     if (p0) {
-      if (p0->item && p0->cpos <= p0->epos) {
+      if (p0->item && ISSCOPE(p0->cpos, 0, p0->epos)) {
         CAST(puchar_t, p0->item)[p0->cpos++] = MODE_GET0(v);
       }
 
-      if (p0->item && p0->cpos <= p0->epos) {
+      if (p0->item && ISSCOPE(p0->cpos, 0, p0->epos)) {
         CAST(puchar_t, p0->item)[p0->cpos++] = MODE_GET1(v);
       }
 
-      if (p0->item && p0->cpos <= p0->epos) {
+      if (p0->item && ISSCOPE(p0->cpos, 0, p0->epos)) {
         CAST(puchar_t, p0->item)[p0->cpos++] = MODE_GET2(v);
       }
 
-      if (p0->item && p0->cpos <= p0->epos) {
+      if (p0->item && ISSCOPE(p0->cpos, 0, p0->epos)) {
         CAST(puchar_t, p0->item)[p0->cpos++] = MODE_GET3(v);
         return p;
       }
@@ -412,35 +412,35 @@ handle_t fsetu64(handle_t p, const uint64_t v) {
   if (isfind(p)) {
     pfind_t p0 = CAST(pfind_t, p);
     if (p0) {
-      if (p0->item && p0->cpos <= p0->epos) {
+      if (p0->item && ISSCOPE(p0->cpos, 0, p0->epos)) {
         CAST(puchar_t, p0->item)[p0->cpos++] = MODE_GET0(v);
       }
 
-      if (p0->item && p0->cpos <= p0->epos) {
+      if (p0->item && ISSCOPE(p0->cpos, 0, p0->epos)) {
         CAST(puchar_t, p0->item)[p0->cpos++] = MODE_GET1(v);
       }
 
-      if (p0->item && p0->cpos <= p0->epos) {
+      if (p0->item && ISSCOPE(p0->cpos, 0, p0->epos)) {
         CAST(puchar_t, p0->item)[p0->cpos++] = MODE_GET2(v);
       }
 
-      if (p0->item && p0->cpos <= p0->epos) {
+      if (p0->item && ISSCOPE(p0->cpos, 0, p0->epos)) {
         CAST(puchar_t, p0->item)[p0->cpos++] = MODE_GET3(v);
       }
 
-      if (p0->item && p0->cpos <= p0->epos) {
+      if (p0->item && ISSCOPE(p0->cpos, 0, p0->epos)) {
         CAST(puchar_t, p0->item)[p0->cpos++] = MODE_GET4(v);
       }
 
-      if (p0->item && p0->cpos <= p0->epos) {
+      if (p0->item && ISSCOPE(p0->cpos, 0, p0->epos)) {
         CAST(puchar_t, p0->item)[p0->cpos++] = MODE_GET5(v);
       }
 
-      if (p0->item && p0->cpos <= p0->epos) {
+      if (p0->item && ISSCOPE(p0->cpos, 0, p0->epos)) {
         CAST(puchar_t, p0->item)[p0->cpos++] = MODE_GET6(v);
       }
 
-      if (p0->item && p0->cpos <= p0->epos) {
+      if (p0->item && ISSCOPE(p0->cpos, 0, p0->epos)) {
         CAST(puchar_t, p0->item)[p0->cpos++] = MODE_GET7(v);
         return p;
       }
@@ -514,7 +514,7 @@ handle_t fnext(handle_t p) {
     pfind_t p0 = CAST(pfind_t, p);
     if (p0) {
       p0->cpos += p0->blocksize;
-      if (p0->cpos <= p0->epos) return p0;
+      if (ISSCOPE(p0->cpos, 0, p0->epos)) return p0;
       else /*if (!ismode(p, MODE_FINDC))*/ p0->item = NULL;
     }
 
@@ -570,7 +570,7 @@ unknown_t fmove(handle_t p, const size_t cpos) {
     if (p0) {
       p0->cpos = cpos;
 
-      if (p0->cpos <= p0->epos) return fget(p);
+      if (ISSCOPE(p0->cpos, 0, p0->epos)) return fget(p);
       else /*if (!ismode(p, MODE_FINDC))*/ p0->item = NULL;
     }
   }
@@ -584,7 +584,7 @@ unknown_t fupdate(handle_t p, const size_t cpos, const size_t blocksize) {
     if (p0) {
       p0->cpos = cpos;
       p0->blocksize = blocksize;
-      if (p0->cpos <= p0->epos) return fget(p);
+      if (ISSCOPE(p0->cpos, 0, p0->epos)) return fget(p);
       else /*if (!ismode(p, MODE_FINDC))*/ p0->item = NULL;
     }
   }
