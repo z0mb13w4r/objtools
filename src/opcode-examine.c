@@ -328,7 +328,7 @@ static bool_t oeisstripped(puchar_t p0, puchar_t p1) {
 static unknown_t oeskip(unknown_t p, const size_t size) {
   if (p && USE_STRLEN == size) {
     return oeskip(p, xstrlen(p));
-  } else if (p && 0 < size) {
+  } else if (p && ISSIZE(size)) {
     puchar_t p0 = CAST(puchar_t, p);
     for (size_t i = 0; i < size && *p0; ++i, ++p0) {
       if (!oeisskipped(*p0)) break;
