@@ -187,7 +187,7 @@ int printf_color(const imode_t mode) {
 
 int printf_work(char* o, const size_t size, const char* p, const imode_t mode) {
   int n = 0;
-  if (o && p && 0 < size) {
+  if (o && p && ISSIZE(size)) {
     const imode_t b = GET_BRACKET(mode);
     const imode_t p0 = GET_POS0(mode);
     const imode_t p1 = GET_POS1(mode);
@@ -244,7 +244,7 @@ int printf_work(char* o, const size_t size, const char* p, const imode_t mode) {
 
 int printf_tidy(char* o, const size_t size, const float64_t v, const imode_t mode) {
   int n = 0;
-  if (o && 0 < size) {
+  if (o && ISSIZE(size)) {
     const imode_t mode0 = GET_POS0(mode);
     const imode_t modex = GET_OPTION(mode);
     const bool_t  usespace = (0 == (mode & USE_NOSPACE) && 0 == mode0) || MODE_USESPACES(mode0);
@@ -269,7 +269,7 @@ int printf_tidy(char* o, const size_t size, const float64_t v, const imode_t mod
 
 int printf_neat(char* o, const size_t size, const uint64_t v, const imode_t mode) {
   int n = 0;
-  if (o && 0 < size) {
+  if (o && ISSIZE(size)) {
     const imode_t mode0 = GET_POS0(mode);
     const imode_t modex = GET_OPTION(mode);
     const bool_t  usespace = (0 == (mode & USE_NOSPACE) && 0 == mode0 && USE_CHARCTRL != modex && USE_CHAR != modex)
@@ -436,7 +436,7 @@ int printf_mark(const int c, const int size, const imode_t mode) {
   MALLOCA(char, o, BUFFER_MAXSIZE + 1);
 
   int n = 0;
-  if (0 < size) {
+  if (ISSIZE(size)) {
     for (size_t i = 0; i < MIN(size, BUFFER_MAXSIZE); ++i) {
       snprintf(o + i, BUFFER_MAXSIZE - i, "%c", c);
     }
@@ -720,7 +720,7 @@ int printf_book(const char* p[], const imode_t mode) {
 
 int printf_hurt(const unknown_t p, const size_t size, const imode_t mode) {
   int n = 0;
-  if (0 < size) {
+  if (ISSIZE(size)) {
     const imode_t mode0 = GET_POS0(mode);
     const imode_t modex = mode & ~USE_POS0MASK;
     n += printf_pack(USE_TAB2 == mode0 || (USE_TAB2 | USE_0x) == mode0 ? 4 : 0);
@@ -752,7 +752,7 @@ int printf_sore(const unknown_t p, const size_t size, const imode_t mode) {
   int n = 0;
 
   if (USE_HASHALL == modex) {
-    if (p && 0 < size) {
+    if (p && ISSIZE(size)) {
       n += printf_text("HASHES", USE_LT | USE_COLON | USE_EOL);
       n += printf_sore(p, size, USE_MD5 | USE_TAB | mode0);
       n += printf_sore(p, size, USE_SHA1 | USE_TAB | mode0);
@@ -761,7 +761,7 @@ int printf_sore(const unknown_t p, const size_t size, const imode_t mode) {
       n += printf_eol();
     }
   } else if (USE_CRCALL == modex) {
-    if (p && 0 < size) {
+    if (p && ISSIZE(size)) {
       n += printf_text("CRCS", USE_LT | USE_COLON | USE_EOL);
       n += printf_sore(p, size, USE_CRC8 | USE_TAB | mode0);
       n += printf_sore(p, size, USE_CRC16 | USE_TAB | mode0);
@@ -774,7 +774,7 @@ int printf_sore(const unknown_t p, const size_t size, const imode_t mode) {
 
   puchar_t p0 = CAST(puchar_t, p);
   if (USE_STR == modex || USE_STRSIZE == modex) {
-    if (p && 0 < size) {
+    if (p && ISSIZE(size)) {
       n += printf_spos(o, sizeof(o), mode, MODE_USESPACES(mode));
 
       for (size_t i = 0; i < size; ++i, ++p0) {
@@ -787,7 +787,7 @@ int printf_sore(const unknown_t p, const size_t size, const imode_t mode) {
 
     n += printf_post(o, mode);
   } else if (USE_STR16 == modex || USE_STR16SIZE == modex) {
-    if (p && 0 < size) {
+    if (p && ISSIZE(size)) {
       n += printf_spos(o, sizeof(o), mode, MODE_USESPACES(mode));
 
       pushort_t p1 = CAST(pushort_t, p);
@@ -801,7 +801,7 @@ int printf_sore(const unknown_t p, const size_t size, const imode_t mode) {
 
     n += printf_post(o, mode);
   } else if (USE_HEX == modex) {
-    if (p && 0 < size) {
+    if (p && ISSIZE(size)) {
       n += printf_spos(o, sizeof(o), mode, MODE_USESPACES(mode));
 
       for (size_t i = 0; i < size; ++i, ++p0) {
