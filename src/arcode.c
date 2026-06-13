@@ -38,7 +38,7 @@ unknown_t ecget_ahdr(const pbuffer_t p, const int index) {
   return NULL;
 }
 
-handle_t ecget_archive(const pbuffer_t p, const int index) {
+handle_t ecget_archive(const pbuffer_t p, const int index, const size_t blocksize) {
   const size_t HDRSIZE = sizeof(struct ar_hdr);
 
   if (isAR(p)) {
@@ -49,7 +49,7 @@ handle_t ecget_archive(const pbuffer_t p, const int index) {
         if (ISSIZE(size1)) {
           unknown_t p1 = getp(p, SARMAG, HDRSIZE + size1);
           if (p1) {
-            return fmalloc(p1, HDRSIZE + size1, MEMFIND_NOBLOCKSIZE);
+            return fmalloc(p1, HDRSIZE + size1, blocksize);
           }
         }
       }
@@ -76,7 +76,7 @@ handle_t ecget_archive(const pbuffer_t p, const int index) {
             unknown_t p3 = fmove(p0, cpos);
             if (p3) {
 //printf("size = %d:%ld\n", index, size1);
-              p2 = fmalloc(p3, HDRSIZE + size1, MEMFIND_NOBLOCKSIZE);
+              p2 = fmalloc(p3, HDRSIZE + size1, blocksize);
             }
           }
         }
