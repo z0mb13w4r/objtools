@@ -9,7 +9,7 @@ static const int MAXSIZE = 36;
 static int dump_achive0(const pbuffer_t p, const poptions_t o, const int index, const size_t size) {
   int n = 0;
 
-  handle_t p0 = ecget_archive(p, index, MEMFIND_NOBLOCKSIZE);
+  handle_t p0 = ecget_archive(p, index, MEMFIND_NOBLOCKSIZE | size);
   if (p0) {
     struct ar_hdr* p1 = fgetp(p0, sizeof(struct ar_hdr));
     if (p1) {
@@ -49,9 +49,9 @@ static int dump_archive(const pbuffer_t p, const poptions_t o, const int index) 
     n += printf_sore(p0->ar_size, sizeof(p0->ar_size), USE_STR | USE_EOL);
 
     if (xstrncmp(p0->ar_name, "/               ", sizeof(p0->ar_name))) {
-      n += dump_achive0(p, o, index, 4);
+      n += dump_achive0(p, o, index, MEMFIND_32BIT);
     } else if (xstrncmp(p0->ar_name, "/SYM64/         ", sizeof(p0->ar_name))) {
-      n += dump_achive0(p, o, index, 8);
+      n += dump_achive0(p, o, index, MEMFIND_64BIT);
     } else if (xstrncmp(p0->ar_name, "//              ", sizeof(p0->ar_name))) {
     }
   }
