@@ -751,7 +751,9 @@ int printf_sore(const unknown_t p, const size_t size, const imode_t mode) {
   const imode_t ymode = mode & (USE_POS0MASK | USE_POS1MASK | USE_FLAGMASK | USE_COLORMASK);
   int n = 0;
 
-  if (USE_HASHALL == modex) {
+  if (USE_HEXDUMP == modey) {
+    return printf_data(p, size, 0, mode);
+  } else if (USE_HASHALL == modex) {
     if (p && ISSIZE(size)) {
       n += printf_text("HASHES", USE_LT | USE_COLON | USE_EOL);
       n += printf_sore(p, size, USE_MD5 | USE_TAB | mode0);
