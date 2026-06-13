@@ -9,12 +9,14 @@ static const int MAXSIZE = 36;
 static int dump_achive0(const pbuffer_t p, const poptions_t o, const int index, const size_t size) {
   int n = 0;
 
-  handle_t p0 = ecget_archive(p, index, MEMFIND_NOBLOCKSIZE | size);
+  handle_t p0 = ecget_archive(p, index, size);
   if (p0) {
     struct ar_hdr* p1 = fgetp(p0, sizeof(struct ar_hdr));
     if (p1) {
 printf("size = %ld\n", decb(p1->ar_size, sizeof(p1->ar_size)));
-//      n += printf_sore(fget(p0), fgetsize(p0), USE_HEXDUMP);
+//printf_sore(fget(p0), fgetsize(p0), USE_HEXDUMP);
+printf("count = %ld\n", fgetuNN(p0));
+
     }
 
     ffree(p0);
@@ -48,9 +50,9 @@ static int dump_archive(const pbuffer_t p, const poptions_t o, const int index) 
     n += printf_text("Size", USE_TAB | USE_COLON | SET_PAD(MAXSIZE - 1));
     n += printf_sore(p0->ar_size, sizeof(p0->ar_size), USE_STR | USE_EOL);
 
-    if (xstrncmp(p0->ar_name, "/               ", sizeof(p0->ar_name))) {
+    if (0 == xstrncmp(p0->ar_name, "/               ", sizeof(p0->ar_name))) {
       n += dump_achive0(p, o, index, MEMFIND_32BIT);
-    } else if (xstrncmp(p0->ar_name, "/SYM64/         ", sizeof(p0->ar_name))) {
+    } else if (0 == xstrncmp(p0->ar_name, "/SYM64/         ", sizeof(p0->ar_name))) {
       n += dump_achive0(p, o, index, MEMFIND_64BIT);
     } else if (xstrncmp(p0->ar_name, "//              ", sizeof(p0->ar_name))) {
     }
