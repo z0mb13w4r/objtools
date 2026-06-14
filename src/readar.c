@@ -7,25 +7,28 @@
 static const int MAXSIZE = 36;
 
 static int dump_achive0(const pbuffer_t p, const poptions_t o, const int index, const size_t size) {
-  int n = 0;
+  int n0 = 0;
+  int n1 = 0;
 
   const imode_t USE_FHEXNN = MODE_ISANY(size, MEMFIND_64BIT) ? USE_FHEX64 : USE_FHEX32;
 
   handle_t p0 = ecget_archive(p, index, size);
   if (p0) {
-    n += printf_text("ARCHIVE BODY", USE_LT | USE_COLON | USE_EOL);
+    n0 += printf_text("ARCHIVE BODY", USE_LT | USE_COLON | USE_EOL);
 
     struct ar_hdr* p1 = fgetp(p0, sizeof(struct ar_hdr));
     if (p1) {
       size_t count = fgetuNN(p0);
-      n += printf_text("Count", USE_TAB | USE_COLON | SET_PAD(MAXSIZE - 1));
-      n += printf_nice(count, USE_DEC | USE_EOL);
+      n0 += printf_text("Count", USE_TAB | USE_COLON | SET_PAD(MAXSIZE - 1));
+      n0 += printf_nice(count, USE_DEC | USE_EOL);
 
-      n += printf_text("INDICES", USE_TAB | USE_COLON | USE_EOL);
+      n0 += printf_text("INDICES", USE_TAB | USE_COLON | USE_EOL);
       for (size_t i = 0; i < count; ++i) {
         if (fisokNN(p0)) {
-          n += printf_text("Index[]", USE_TAB2 | USE_COLON | SET_PAD(MAXSIZE - 1));
-          n += printf_nice(fgetuNN(p0), USE_FHEXNN | USE_EOL);
+          n1  = printf_text("Index", USE_TAB2);
+          n1 += printf_nice(i, USE_DEC | USE_SB | USE_COLON | USE_NOSPACE);
+          n0 += printf_pack(MAXSIZE - 1 - n1) + n1;
+          n0 += printf_nice(fgetuNN(p0), USE_FHEXNN | USE_EOL);
         } else {
           printf_e("missing indices from archive");
           break;
@@ -38,7 +41,7 @@ printf_sore(fget(p0), fgetsize(p0), USE_HEXDUMP);
     ffree(p0);
   }
 
-  return n;
+  return n0;
 }
 
 static int dump_archive(const pbuffer_t p, const poptions_t o, const int index) {
