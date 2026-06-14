@@ -15,8 +15,18 @@ static int dump_achive0(const pbuffer_t p, const poptions_t o, const int index, 
     if (p1) {
 printf("size = %ld\n", decb(p1->ar_size, sizeof(p1->ar_size)));
 //printf_sore(fget(p0), fgetsize(p0), USE_HEXDUMP);
-printf("count = %ld\n", fgetuNN(p0));
+      size_t count = fgetuNN(p0);
+printf("count = %ld\n", count);
+      for (size_t i = 0; i < count; ++i) {
+        if (fisokNN(p0)) {
+printf("%lx\n", fgetuNN(p0));
+        } else {
+printf("error has occurred\n");
+          break;
+        }
+      }
 
+printf_sore(fget(p0), fgetsize(p0), USE_HEXDUMP);
     }
 
     ffree(p0);
