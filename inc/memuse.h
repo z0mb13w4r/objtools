@@ -29,6 +29,9 @@ unknown_t xmalloc(const size_t size, const nmode_t mode);
 unknown_t cmalloc(const unknown_t p, const size_t size, const nmode_t mode);
 unknown_t xfree(unknown_t p);
 
+int xstreq(const char *x, const char *y);
+int xstrneq(const char *x, const char *y, size_t count);
+
 int xstrcmp(const char *x, const char *y);
 int xstrncmp(const char *x, const char *y, size_t count);
 

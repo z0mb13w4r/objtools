@@ -110,6 +110,14 @@ unknown_t xfree(unknown_t p) {
   return NULL;
 }
 
+int xstreq(const char *x, const char *y) {
+  return 0 == xstrcmp(x, y);
+}
+
+int xstrneq(const char *x, const char *y, size_t count) {
+  return 0 == xstrncmp(x, y, count);
+}
+
 int xstrcmp(const char *x, const char *y) {
   return x && y ? strcmp(x, y) : INT_MAX;
 }
