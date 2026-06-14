@@ -28,6 +28,11 @@ bool_t isfind(handle_t p);
 
 bool_t fiseof(handle_t p);
 bool_t fisnull(handle_t p);
+bool_t fisok8(handle_t p);
+bool_t fisok16(handle_t p);
+bool_t fisok32(handle_t p);
+bool_t fisok64(handle_t p);
+bool_t fisokNN(handle_t p);
 
 bool_t fisbe(handle_t p);
 bool_t fisle(handle_t p);

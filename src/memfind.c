@@ -36,6 +36,57 @@ bool_t fisle(handle_t p) {
   return TRUE;
 }
 
+bool_t fisok8(handle_t p) {
+  if (isfind(p)) {
+    pfind_t p0 = CAST(pfind_t, p);
+    return p0 && p0->item ? p0->cpos <= p0->epos : FALSE;
+  }
+
+  return FALSE;
+}
+
+bool_t fisok16(handle_t p) {
+  if (isfind(p)) {
+    pfind_t p0 = CAST(pfind_t, p);
+    return p0 && p0->item ? (p0->cpos + 1) <= p0->epos : FALSE;
+  }
+
+  return FALSE;
+}
+
+bool_t fisok32(handle_t p) {
+  if (isfind(p)) {
+    pfind_t p0 = CAST(pfind_t, p);
+    return p0 && p0->item ? (p0->cpos + 3) <= p0->epos : FALSE;
+  }
+
+  return FALSE;
+}
+
+bool_t fisok64(handle_t p) {
+  if (isfind(p)) {
+    pfind_t p0 = CAST(pfind_t, p);
+    return p0 && p0->item ? (p0->cpos + 7) <= p0->epos : FALSE;
+  }
+
+  return FALSE;
+}
+
+bool_t fisokNN(handle_t p) {
+  if (isfind(p)) {
+    pfind_t p0 = CAST(pfind_t, p);
+    if (p0) {
+      if (MODE_ISANY(p0->role, MEMFIND_64BIT))       return fisok64(p);
+      else if (MODE_ISANY(p0->role, MEMFIND_32BIT))  return fisok32(p);
+
+      return fisok16(p);
+    }
+  }
+
+  return FALSE;
+
+}
+
 unknown_t fget(handle_t p) {
   if (isfind(p)) {
     pfind_t p0 = CAST(pfind_t, p);
