@@ -63,6 +63,25 @@ printf_sore(fget(p0), fgetsize(p0), USE_HEXDUMP);
   return n;
 }
 
+static int dump_achive2(const pbuffer_t p, const poptions_t o, const int index, const size_t size) {
+  int n = 0;
+
+  handle_t p0 = ecget_archive(p, index, size);
+  if (p0) {
+    n += printf_text("ARCHIVE BODY", USE_LT | USE_COLON | USE_EOL);
+
+    struct ar_hdr* p1 = fgetp(p0, sizeof(struct ar_hdr));
+    if (p1) {
+
+printf_sore(fget(p0), fgetsize(p0), USE_HEXDUMP);
+    }
+
+    ffree(p0);
+  }
+
+  return n;
+}
+
 static int dump_archive(const pbuffer_t p, const poptions_t o, const int index) {
 
   int n = 0;
@@ -95,7 +114,7 @@ static int dump_archive(const pbuffer_t p, const poptions_t o, const int index) 
     } else if (xstrneq(p0->ar_name, "//              ", sizeof(p0->ar_name))) {
       n += dump_achive1(p, o, index, U32MASK_NONE);
     } else {
-
+      n += dump_achive2(p, o, index, U32MASK_NONE);
     }
   }
 
