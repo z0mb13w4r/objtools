@@ -12,6 +12,15 @@ bool_t isAR(const pbuffer_t p) {
   return FALSE;
 }
 
+bool_t isARthin(const pbuffer_t p) {
+  if (issafe(p)) {
+    const bool_t isthin = 't' == getb(p, 2) && 'h' == getb(p, 3) && 'i' == getb(p, 4) && 'n' == getb(p, 5);
+    return '!' == getb(p, 0) && '<' == getb(p, 1) && isthin && '>' == getb(p, 6) && '\n' == getb(p, 7) ? TRUE : FALSE;
+  }
+
+  return FALSE;
+}
+
 unknown_t ecget_ahdr(const pbuffer_t p, const int index) {
   if (isAR(p)) {
     if (0 == index) {
