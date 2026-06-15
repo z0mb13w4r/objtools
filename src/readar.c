@@ -35,7 +35,7 @@ static int dump_achive0(const pbuffer_t p, const poptions_t o, const int index, 
         }
       }
 
-printf_sore(fget(p0), fgetsize(p0), USE_HEXDUMP);
+//printf_sore(fget(p0), fgetsize(p0), USE_HEXDUMP);
     }
 
     ffree(p0);
@@ -69,11 +69,14 @@ static int dump_archive(const pbuffer_t p, const poptions_t o, const int index) 
     n += printf_text("Size", USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
     n += printf_sore(p0->ar_size, sizeof(p0->ar_size), USE_STR | USE_EOL);
 
-    if (0 == xstrncmp(p0->ar_name, "/               ", sizeof(p0->ar_name))) {
+    if (xstrneq(p0->ar_name, "/               ", sizeof(p0->ar_name))) {
       n += dump_achive0(p, o, index, MEMFIND_32BIT);
-    } else if (0 == xstrncmp(p0->ar_name, "/SYM64/         ", sizeof(p0->ar_name))) {
+    } else if (xstrneq(p0->ar_name, "/SYM64/         ", sizeof(p0->ar_name))) {
       n += dump_achive0(p, o, index, MEMFIND_64BIT);
-    } else if (xstrncmp(p0->ar_name, "//              ", sizeof(p0->ar_name))) {
+    } else if (xstrneq(p0->ar_name, "//              ", sizeof(p0->ar_name))) {
+
+    } else {
+
     }
   }
 
