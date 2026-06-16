@@ -97,15 +97,28 @@ handle_t bmalloc() {
   return setmode(p, MODE_BUFFER);
 }
 
-handle_t bmallocsize(const size_t size) {
-  handle_t p = bmalloc();
+handle_t bsalloc(const size_t size) {
+  pbuffer_t p = bmalloc();
   if (ismode(p, MODE_BUFFER)) {
-    pbuffer_t p0 = CAST(pbuffer_t, p);
-    p0->data = xmalloc(size, MODE_HEAP);
-    p0->size = size;
+    p->data = xmalloc(size, MODE_HEAP);
+    p->size = size;
   }
 
   return p;
+}
+
+handle_t bcalloc(unknown_t p, const size_t size) {
+  if (ismode(p, MODE_BUFFER)) {
+    pbuffer_t p0 = CAST(pbuffer_t, p);
+    return p0 ? bcalloc(p0->data, p0->size) : NULL;
+  }
+
+  pbuffer_t p0 = bsalloc(size);
+  if (p && ismode(p0, MODE_BUFFER)) {
+    xmemcpy(p0->data, p, p0->size);
+  }
+
+  return p0;
 }
 
 handle_t bfree(handle_t p) {

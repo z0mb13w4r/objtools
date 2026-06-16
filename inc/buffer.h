@@ -29,7 +29,8 @@ size_t bgetsize(handle_t p);
 unknown_t bget(handle_t p);
 
 handle_t bmalloc();
-handle_t bmallocsize(const size_t size);
+handle_t bsalloc(const size_t size);
+handle_t bcalloc(unknown_t p, const size_t size);
 handle_t bfree(handle_t p);
 handle_t bopen(const char* name);
 handle_t bclone(handle_t p, const int offset, const size_t size);
