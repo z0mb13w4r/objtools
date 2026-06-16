@@ -1,6 +1,7 @@
 #include "arcode.h"
 #include "printf.h"
 #include "readar.h"
+#include "readelf.h"
 #include "memfind.h"
 #include "objutils.h"
 
@@ -68,12 +69,14 @@ static int dump_achive2(const pbuffer_t p, const poptions_t o, const int index, 
 
   handle_t p0 = ecget_archive(p, index, size);
   if (p0) {
-    n += printf_text("ARCHIVE BODY", USE_LT | USE_COLON | USE_EOL);
-
     struct ar_hdr* p1 = fgetp(p0, sizeof(struct ar_hdr));
     if (p1) {
-
-printf_sore(fget(p0), fgetsize(p0), USE_HEXDUMP);
+//printf_sore(fget(p0), fgetsize(p0), USE_HEXDUMP);
+      handle_t p2 = bcalloc(fget(p0), fgetsize(p0));
+      if (p2) {
+        n += dumpelf(p2, o);
+        bfree(p2);
+      }
     }
 
     ffree(p0);

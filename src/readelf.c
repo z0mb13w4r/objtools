@@ -2651,6 +2651,30 @@ static int dump_dwarf64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr)
   return n;
 }
 
+int dumpelf(const pbuffer_t p, const poptions_t o) {
+  if (isELF(p)) {
+    dump_elfheader(p, o);
+
+    if (isELF32(p)) {
+      Elf32_Ehdr *ehdr = ecget_ehdr32(p, xmalloc(sizeof(Elf32_Ehdr), MODE_HEAP));
+      if (ehdr) {
+      }
+
+      xfree(ehdr);
+    } else if (isELF64(p)) {
+      Elf64_Ehdr *ehdr = ecget_ehdr64(p, xmalloc(sizeof(Elf64_Ehdr), MODE_HEAP));
+      if (ehdr) {
+      }
+
+      xfree(ehdr);
+    }
+  } else {
+    printf_e("not an ELF file - it has the wrong magic bytes at the start.");
+  }
+
+  return 0;
+}
+
 int readelf(const pbuffer_t p, const poptions_t o) {
   if (isELF(p)) {
     if (MODE_ISNOT(o->action, OPTREADELF_FILEHEADER))           dump_summary(p, o);
