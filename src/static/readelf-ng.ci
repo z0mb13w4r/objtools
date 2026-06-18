@@ -65,6 +65,7 @@ static const args_t zREADELFARGS[] = {
   {'I', "--info",            OPTPROGRAM_INFO,              NULL},
   {'X', "--hash",            OPTPROGRAM_HASH,              NULL},
   {'E', "--entropy",         OPTPROGRAM_ENTROPY,           NULL},
+  {0,   "--verbose",         OPTPROGRAM_VERBOSE,           NULL},
   {0, NULL}
 };
 
