@@ -59,6 +59,7 @@ static convert_t zRELTYPE64[] = {
   {"R_X86_64_GOTPC32",             R_X86_64_GOTPC32},
   {"R_X86_64_SIZE32",              R_X86_64_SIZE32},
   {"R_X86_64_SIZE64",              R_X86_64_SIZE64},
+  {"R_X86_64_REX_GOTPCRELX",       R_X86_64_REX_GOTPCRELX},
   {0, 0}
 };
 
@@ -195,6 +196,7 @@ static pick_t zRELTYPE64DEF[] = {
   R_X86_64_64,
   R_X86_64_PC32,
   R_X86_64_PLT32,
+  R_X86_64_REX_GOTPCRELX,
   PICK_END
 };
 
@@ -336,6 +338,7 @@ static pick_t zRELTYPE64SHEX32[] = {
   R_X86_64_PC32,
   R_X86_64_PLT32,
   R_X86_64_COPY,
+  R_X86_64_REX_GOTPCRELX,
   PICK_END
 };
 
