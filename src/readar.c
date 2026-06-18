@@ -94,11 +94,11 @@ static int dump_archive(const pbuffer_t p, const poptions_t o, const int index) 
 
   struct ar_hdr* p0 = ecget_ahdr(p, index);
   if (p0) {
-    n += printf_text("ARCHIVE HEADER", USE_LT | USE_COLON | USE_EOL);
-    n += printf_text("Name", USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
-    n += printf_sore(p0->ar_name, sizeof(p0->ar_name), USE_STR | USE_EOL);
-
     if (MODE_ISANY(o->action, OPTPROGRAM_VERBOSE)) {
+      n += printf_text("ARCHIVE HEADER", USE_LT | USE_COLON | USE_EOL);
+      n += printf_text("Name", USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
+      n += printf_sore(p0->ar_name, sizeof(p0->ar_name), USE_STR | USE_EOL);
+
       n += printf_text("Date", USE_TAB | USE_COLON | SET_PAD(MAXSIZE));
       n += printf_sore(p0->ar_date, sizeof(p0->ar_date), USE_STR | USE_EOL);
 
@@ -132,7 +132,10 @@ static int dump_archive(const pbuffer_t p, const poptions_t o, const int index) 
 int readar(const pbuffer_t p, const poptions_t o) {
   if (isAR(p)) {
     int i = 0;
-    while (dump_archive(p, o, i++));
+    while (ecget_ahdr(p, i)) {
+      dump_archive(p, o, i);
+      ++i;
+    }
   } else {
     printf_e("not an archive file - it has the wrong magic bytes at the start.");
   }
