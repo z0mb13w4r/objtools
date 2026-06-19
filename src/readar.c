@@ -74,7 +74,7 @@ static int dump_achive2(const pbuffer_t p, const poptions_t o, const int index, 
   if (p0) {
     struct ar_hdr* p1 = fgetp(p0, sizeof(struct ar_hdr));
     if (p1) {
-//printf_sore(fget(p0), fgetsize(p0), USE_HEXDUMP);
+//printf_sore(fget(p1), fgetsize(p1), USE_HEXDUMP);
       handle_t p2 = bcalloc(fget(p0), fgetsize(p0));
       if (p2) {
         n += dumpelf(p2, o);
@@ -121,8 +121,10 @@ static int dump_archive(const pbuffer_t p, const poptions_t o, const int index) 
       n += dump_achive0(p, o, index, MEMFIND_64BIT);
     } else if (xstrneq(p0->ar_name, "//              ", sizeof(p0->ar_name))) {
       n += dump_achive1(p, o, index, U32MASK_NONE);
-    } else {
+    } else if ('/' == p0->ar_name[0] && isdec8(p0->ar_name[1])) {
       n += dump_achive2(p, o, index, U32MASK_NONE);
+    } else {
+      printf_w("unknown archive section '%s'", p0->ar_name);
     }
   }
 
