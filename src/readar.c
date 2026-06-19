@@ -6,6 +6,7 @@
 #include "objutils.h"
 
 static const int MAXSIZE = 36;
+static int symindex = -1;
 
 static int dump_achive0(const pbuffer_t p, const poptions_t o, const int index, const size_t size) {
   int n0 = 0;
@@ -49,6 +50,7 @@ static int dump_achive0(const pbuffer_t p, const poptions_t o, const int index, 
 
 static int dump_achive1(const pbuffer_t p, const poptions_t o, const int index, const size_t size) {
   int n = 0;
+  symindex = index;
 
   if (MODE_ISANY(o->action, OPTPROGRAM_VERBOSE)) {
     handle_t p0 = ecget_archive(p, index, size);
@@ -75,6 +77,7 @@ static int dump_achive2(const pbuffer_t p, const poptions_t o, const int index, 
     struct ar_hdr* p1 = fgetp(p0, sizeof(struct ar_hdr));
     if (p1) {
 //printf_sore(fget(p1), fgetsize(p1), USE_HEXDUMP);
+printf("offset=%ld\n", decb(p1->ar_name + 1, sizeof(p1->ar_name) - 1));
       handle_t p2 = bcalloc(fget(p0), fgetsize(p0));
       if (p2) {
         n += dumpelf(p2, o);
