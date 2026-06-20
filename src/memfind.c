@@ -396,18 +396,18 @@ char* fgetsequence(handle_t p, int ch) {
     char* p0 = fget(p);
 
     uint64_t c = 0;
-    while (c == fgetu8(p)) {
+    while (c = fgetu8(p)) {
       if (c == ch) break;
     }
 
-    return xstrndup(p0, fgetcpos(p) - cpos + 1);
+    return xstrndup(p0, fgetcpos(p) - cpos - 1);
   }
 
   return NULL;
 }
 
 char* fgrabsequence(handle_t p, const uint64_t offset, int ch) {
-  if (fmove(p, offset)) {
+  if (fstep(p, offset)) {
     return fgetsequence(p, ch);
   }
 
@@ -644,7 +644,6 @@ unknown_t fmove(handle_t p, const size_t cpos) {
     pfind_t p0 = CAST(pfind_t, p);
     if (p0) {
       p0->cpos = cpos;
-
       if (ISSCOPE(p0->cpos, 0, p0->epos)) return fget(p);
       else /*if (!ismode(p, MODE_FINDC))*/ p0->item = NULL;
     }
