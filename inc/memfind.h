@@ -106,6 +106,7 @@ handle_t fappendp(handle_t p, cunknown_t q, const size_t blocksize);
 char* fgetline(handle_t p);
 char* fgetstring(handle_t p);
 char* fgetsequence(handle_t p, int ch);
+char* fgrabsequence(handle_t p, const uint64_t offset, int ch);
 
 size_t fset(handle_t p, const char* name);
 

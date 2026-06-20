@@ -406,6 +406,14 @@ char* fgetsequence(handle_t p, int ch) {
   return NULL;
 }
 
+char* fgrabsequence(handle_t p, const uint64_t offset, int ch) {
+  if (fmove(p, offset)) {
+    return fgetsequence(p, ch);
+  }
+
+  return NULL;
+}
+
 char* fgetstring(handle_t p) {
   if (isfind(p)) {
     char* p0 = fget(p);
