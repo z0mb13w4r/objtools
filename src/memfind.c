@@ -390,10 +390,26 @@ char* fgetline(handle_t p) {
   return NULL;
 }
 
+char* fgetsequence(handle_t p, int ch) {
+  if (isfind(p) && !fiseof(p)) {
+    size_t cpos = fgetcpos(p);
+    char* p0 = fget(p);
+
+    uint64_t c = 0;
+    while (c == fgetu8(p)) {
+      if (c == ch) break;
+    }
+
+    return xstrndup(p0, fgetcpos(p) - cpos + 1);
+  }
+
+  return NULL;
+}
+
 char* fgetstring(handle_t p) {
   if (isfind(p)) {
     char* p0 = fget(p);
-    while (fgets8(p));
+    while (fgetu8(p));
 
     return p0;
   }
