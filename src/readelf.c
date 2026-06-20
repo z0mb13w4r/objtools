@@ -2656,6 +2656,9 @@ static int dump_archive(const pbuffer_t p, const poptions_t o, const char* name)
 
   n += printf_text("FILE", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
   n += printf_text(o->inpname, USE_LT);
+  if (name) {
+    printf_text(name, USE_LT | USE_RB);
+  }
   n += printf_eol();
 
   return n;
