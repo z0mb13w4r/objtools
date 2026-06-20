@@ -73,16 +73,23 @@ static int dump_achive2(const pbuffer_t p, const poptions_t o, const int index, 
   int n = 0;
 
   handle_t p0 = ecget_archive(p, index, size);
+  handle_t q0 = ecget_archive(p, symindex, size);
   if (p0) {
     struct ar_hdr* p1 = fgetp(p0, sizeof(struct ar_hdr));
+    struct ar_hdr* q1 = fgetp(q0, sizeof(struct ar_hdr));
     if (p1) {
-//printf_sore(fget(p1), fgetsize(p1), USE_HEXDUMP);
-printf("offset=%ld\n", decb(p1->ar_name + 1, sizeof(p1->ar_name) - 1));
+//printf_sore(fget(p0), fgetsize(p0), USE_HEXDUMP);
+//printf_sore(fget(q0), fgetsize(q0), USE_HEXDUMP);
+
+      const size_t offset = decb(p1->ar_name + 1, sizeof(p1->ar_name) - 1);
+      const char* name = fgrabsequence(q0, offset, '/');
+//printf("offset=%ld:%s\n", offset, name);
       handle_t p2 = bcalloc(fget(p0), fgetsize(p0));
       if (p2) {
-        n += dumpelf(p2, o);
+        n += dumpelf(p2, o, name);
         bfree(p2);
       }
+      xfree(name);
     }
 
     ffree(p0);

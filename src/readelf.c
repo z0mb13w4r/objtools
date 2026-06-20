@@ -2651,7 +2651,7 @@ static int dump_dwarf64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr)
   return n;
 }
 
-static int dump_archive(const pbuffer_t p, const poptions_t o) {
+static int dump_archive(const pbuffer_t p, const poptions_t o, const char* name) {
   int n = 0;
 
   n += printf_text("FILE", USE_LT | USE_COLON | SET_PAD(MAXSIZE));
@@ -2661,9 +2661,9 @@ static int dump_archive(const pbuffer_t p, const poptions_t o) {
   return n;
 }
 
-int dumpelf(const pbuffer_t p, const poptions_t o) {
+int dumpelf(const pbuffer_t p, const poptions_t o, const char* name) {
   if (isELF(p)) {
-    dump_archive(p, o);
+    dump_archive(p, o, name);
     dump_elfheader(p, o);
 
     if (isELF32(p)) {

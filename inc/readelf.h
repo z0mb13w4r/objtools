@@ -4,8 +4,8 @@
 #include "elfcode.h"
 #include "options.h"
 
-int dumpelf(const pbuffer_t p, const poptions_t o);
 int readelf(const pbuffer_t p, const poptions_t o);
+int dumpelf(const pbuffer_t p, const poptions_t o, const char* name);
 
 #endif
 
