@@ -168,7 +168,7 @@ char* xstrdup(const char *str) {
 }
 
 char* xstrndup(const char *str, size_t size) {
-  if (str && size) {
+  if (str && ISSIZE(size)) {
     char*  p = xmalloc(size + 1, MODE_HEAP);
     return xstrncpy(p, str, size);
   }
