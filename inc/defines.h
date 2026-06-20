@@ -188,7 +188,7 @@
 #define MODE_MASK8(x)           ((x) & 0xff)
 #define MODE_MASK8LO(x)         ((x) & 0x00ff)
 #define MODE_MASK8HI(x)         ((x) & 0xff00)
-#define MODE_MASK12(x)           ((x) & 0xfff)
+#define MODE_MASK12(x)          ((x) & 0xfff)
 #define MODE_MASK16(x)          ((x) & 0xffff)
 #define MODE_MASK16LO(x)        ((x) & 0x0000ffff)
 #define MODE_MASK16HI(x)        ((x) & 0xffff0000)
