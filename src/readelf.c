@@ -2672,38 +2672,38 @@ int dumpelf(const pbuffer_t p, const poptions_t o, const char* name) {
     if (isELF32(p)) {
       Elf32_Ehdr *ehdr = ecget_ehdr32(p, xmalloc(sizeof(Elf32_Ehdr), MODE_HEAP));
       if (ehdr) {
-        dump_fileheader32(p, o, ehdr);
-        dump_sectionheaders32(p, o, ehdr);
-        dump_sectiongroups32(p, o, ehdr);
-        dump_programheaders32(p, o, ehdr);
-        dump_dynamic32(p, o, ehdr);
-        dump_relocs32(p, o, ehdr);
-        dump_unwind32(p, o, ehdr);
-        dump_symbols32(p, o, ehdr);
-        dump_histogram32(p, o, ehdr);
-        dump_version32(p, o, ehdr);
-        dump_notes32(p, o, ehdr);
-        dump_archspecific32(p, o, ehdr);
-        dump_dwarf32(p, o, ehdr);
+        if (MODE_ISANY(o->action, OPTREADELF_FILEHEADER))       dump_fileheader32(p, o, ehdr);
+        if (MODE_ISANY(o->action, OPTREADELF_SECTIONMASK))      dump_sectionheaders32(p, o, ehdr);
+        if (MODE_ISANY(o->action, OPTREADELF_SECTIONGROUPS))    dump_sectiongroups32(p, o, ehdr);
+        if (MODE_ISANY(o->action, OPTREADELF_PROGRAMHEADERS))   dump_programheaders32(p, o, ehdr);
+        if (MODE_ISANY(o->action, OPTREADELF_DYNAMIC))          dump_dynamic32(p, o, ehdr);
+        if (MODE_ISANY(o->action, OPTREADELF_RELOCS))           dump_relocs32(p, o, ehdr);
+        if (MODE_ISANY(o->action, OPTREADELF_UNWIND))           dump_unwind32(p, o, ehdr);
+        if (MODE_ISANY(o->action, OPTREADELF_SYMBOLS))          dump_symbols32(p, o, ehdr);
+        if (MODE_ISANY(o->action, OPTREADELF_HISTOGRAM))        dump_histogram32(p, o, ehdr);
+        if (MODE_ISANY(o->action, OPTREADELF_VERSION))          dump_version32(p, o, ehdr);
+        if (MODE_ISANY(o->action, OPTREADELF_NOTES))            dump_notes32(p, o, ehdr);
+        if (MODE_ISANY(o->action, OPTREADELF_ARCHSPECIFIC))     dump_archspecific32(p, o, ehdr);
+        if (MODE_ISANY(o->ocdump, OPTDWARF_DEBUGGING))          dump_dwarf32(p, o, ehdr);
       }
 
       xfree(ehdr);
     } else if (isELF64(p)) {
       Elf64_Ehdr *ehdr = ecget_ehdr64(p, xmalloc(sizeof(Elf64_Ehdr), MODE_HEAP));
       if (ehdr) {
-        dump_fileheader64(p, o, ehdr);
-        dump_sectionheaders64(p, o, ehdr);
-        dump_sectiongroups64(p, o, ehdr);
-        dump_programheaders64(p, o, ehdr);
-        dump_dynamic64(p, o, ehdr);
-        dump_relocs64(p, o, ehdr);
-        dump_unwind64(p, o, ehdr);
-        dump_symbols64(p, o, ehdr);
-        dump_histogram64(p, o, ehdr);
-        dump_version64(p, o, ehdr);
-        dump_notes64(p, o, ehdr);
-        dump_archspecific64(p, o, ehdr);
-        dump_dwarf64(p, o, ehdr);
+        if (MODE_ISANY(o->action, OPTREADELF_FILEHEADER))       dump_fileheader64(p, o, ehdr);
+        if (MODE_ISANY(o->action, OPTREADELF_SECTIONMASK))      dump_sectionheaders64(p, o, ehdr);
+        if (MODE_ISANY(o->action, OPTREADELF_SECTIONGROUPS))    dump_sectiongroups64(p, o, ehdr);
+        if (MODE_ISANY(o->action, OPTREADELF_PROGRAMHEADERS))   dump_programheaders64(p, o, ehdr);
+        if (MODE_ISANY(o->action, OPTREADELF_DYNAMIC))          dump_dynamic64(p, o, ehdr);
+        if (MODE_ISANY(o->action, OPTREADELF_RELOCS))           dump_relocs64(p, o, ehdr);
+        if (MODE_ISANY(o->action, OPTREADELF_UNWIND))           dump_unwind64(p, o, ehdr);
+        if (MODE_ISANY(o->action, OPTREADELF_SYMBOLS))          dump_symbols64(p, o, ehdr);
+        if (MODE_ISANY(o->action, OPTREADELF_HISTOGRAM))        dump_histogram64(p, o, ehdr);
+        if (MODE_ISANY(o->action, OPTREADELF_VERSION))          dump_version64(p, o, ehdr);
+        if (MODE_ISANY(o->action, OPTREADELF_NOTES))            dump_notes64(p, o, ehdr);
+        if (MODE_ISANY(o->action, OPTREADELF_ARCHSPECIFIC))     dump_archspecific64(p, o, ehdr);
+        if (MODE_ISANY(o->ocdump, OPTDWARF_DEBUGGING))          dump_dwarf64(p, o, ehdr);
       }
 
       xfree(ehdr);
