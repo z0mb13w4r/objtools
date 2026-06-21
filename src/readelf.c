@@ -2682,6 +2682,9 @@ int dumpelf(const pbuffer_t p, const poptions_t o, const char* name) {
         dump_symbols32(p, o, ehdr);
         dump_histogram32(p, o, ehdr);
         dump_version32(p, o, ehdr);
+        dump_notes32(p, o, ehdr);
+        dump_archspecific32(p, o, ehdr);
+        dump_dwarf32(p, o, ehdr);
       }
 
       xfree(ehdr);
@@ -2698,6 +2701,9 @@ int dumpelf(const pbuffer_t p, const poptions_t o, const char* name) {
         dump_symbols64(p, o, ehdr);
         dump_histogram64(p, o, ehdr);
         dump_version64(p, o, ehdr);
+        dump_notes64(p, o, ehdr);
+        dump_archspecific64(p, o, ehdr);
+        dump_dwarf64(p, o, ehdr);
       }
 
       xfree(ehdr);
