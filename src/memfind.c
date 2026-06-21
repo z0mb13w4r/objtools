@@ -396,7 +396,7 @@ char* fgetsequence(handle_t p, int ch) {
     char* p0 = fget(p);
 
     uint64_t c = 0;
-    while (c = fgetu8(p)) {
+    while ((c = fgetu8(p))) {
       if (c == ch) break;
     }
 
