@@ -1,6 +1,7 @@
 v1.6 - ??/06/2026
 -----------------------------------------------------------------------
 [+] Enhanced Heuristic Assembly Language Analysis Engine.  
+[+] Enhanced ELF linkable library analysis.  
 [+] Updated Capstone Engine.  
 [+] Bug fixes.  
 
