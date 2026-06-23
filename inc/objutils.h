@@ -45,6 +45,9 @@ bool_t isspecialb(unknown_t p, const size_t size);
 bool_t isreal8(int x);
 bool_t isrealb(unknown_t p, const size_t size);
 
+bool_t isstr8(int x);
+bool_t isstrb(unknown_t p, const size_t size);
+
 bool_t isbool(const char* p, const size_t size);
 
 uint64_t ulog2(uint64_t  x);

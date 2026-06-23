@@ -174,7 +174,7 @@ bool_t isbinb(unknown_t p, const size_t size) {
 }
 
 bool_t isdec8(int x) {
-  return '0' <= x && x <= '9' ? TRUE : FALSE;
+  return ISSCOPE(x, '0', '9') ? TRUE : FALSE;
 }
 
 bool_t isdecb(unknown_t p, const size_t size) {
@@ -191,8 +191,8 @@ bool_t isdecb(unknown_t p, const size_t size) {
 }
 
 bool_t ishex8(int x) {
-  if ('a' <= x && x <= 'f') return TRUE;
-  else if ('A' <= x && x <= 'F') return TRUE;
+  if (ISSCOPE(x, 'a', 'f')) return TRUE;
+  else if (ISSCOPE(x, 'A', 'F')) return TRUE;
   return isdec8(x);
 }
 
@@ -254,6 +254,22 @@ bool_t isspecialb(unknown_t p, const size_t size) {
   return FALSE;
 }
 
+bool_t isstr8(int x) {
+  return ISSCOPE(x, 'A', 'Z') || ISSCOPE(x, 'a', 'z') || isspecial8(x) || isdec8(x);
+}
+
+bool_t isstrb(unknown_t p, const size_t size) {
+  if (p && ISSIZE(size)) {
+    puchar_t p0 = CAST(puchar_t, p);
+    for (size_t i = 0; i < size; ++i) {
+      if (!isstr8(p0[i])) return FALSE;
+    }
+
+    return TRUE;
+  }
+
+  return FALSE;
+}
 
 uint64_t bin8(int x) {
   return '0' <= x && x <= '1' ? x - '0' : 0;
