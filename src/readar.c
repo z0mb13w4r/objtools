@@ -80,7 +80,6 @@ static int dump_achive2(const pbuffer_t p, const poptions_t o, const int index, 
     if (p1 && q1) {
 //printf_sore(fget(p0), fgetsize(p0), USE_HEXDUMP);
 //printf_sore(fget(q0), fgetsize(q0), USE_HEXDUMP);
-
       const size_t offset = decb(p1->ar_name + 1, sizeof(p1->ar_name) - 1);
       char* name = fgrabsequence(q0, offset, '/');
 //printf("offset=%ld:%s\n", offset, name);
@@ -90,6 +89,28 @@ static int dump_achive2(const pbuffer_t p, const poptions_t o, const int index, 
         bfree(p2);
       }
       xfree(name);
+    }
+
+    ffree(p0);
+  }
+
+  return n;
+}
+
+static int dump_achive3(const pbuffer_t p, const poptions_t o, const int index, const size_t size) {
+  int n = 0;
+
+  handle_t p0 = ecget_archive(p, index, size);
+  if (p0) {
+    struct ar_hdr* p1 = fgetp(p0, sizeof(struct ar_hdr));
+    if (p1) {
+//printf_sore(fget(p0), fgetsize(p0), USE_HEXDUMP);
+//printf("offset=%ld:%s\n", offset, p1->ar_name);
+      handle_t p2 = bcalloc(fget(p0), fgetsize(p0));
+      if (p2) {
+        n += dumpelf(p2, o, p1->ar_name);
+        bfree(p2);
+      }
     }
 
     ffree(p0);
@@ -133,6 +154,8 @@ static int dump_archive(const pbuffer_t p, const poptions_t o, const int index) 
       n += dump_achive1(p, o, index, U32MASK_NONE);
     } else if ('/' == p0->ar_name[0] && isdec8(p0->ar_name[1])) {
       n += dump_achive2(p, o, index, U32MASK_NONE);
+    } else if (isstr8(p0->ar_name[0])) {
+      n += dump_achive3(p, o, index, U32MASK_NONE);
     } else {
       printf_w("unknown archive section '%s'", p0->ar_name);
     }
