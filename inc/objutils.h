@@ -7,6 +7,8 @@
 
 #define PICK_END               (~0)
 
+#define USE_STRLEN    (-1)
+
 typedef struct args_s {
   char    option1;
   char   *option2;

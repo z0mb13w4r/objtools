@@ -3,8 +3,6 @@
 #include "opcode-printf.h"
 #include "opcode-examine.h"
 
-#define USE_STRLEN    (-1)
-
 #define OCSTRUCT(x,y) {x, sizeof(x) - 1, y}
 
 typedef struct oestruct_s {
