@@ -222,6 +222,19 @@ char* xstrndup(const char *str, size_t size) {
   return NULL;
 }
 
+char* xstrnab(const char *str, int ch) {
+  return xstrnnab(str, USE_STRLEN, ch);
+}
+
+char* xstrnnab(const char *str, size_t size, int ch) {
+  if USE_STRLEN == size) {
+    return xstrnnab(str, xstrlen(str), ch);
+  } else {
+  }
+
+  return NULL;
+}
+
 char* xstrgrab(const char* name, int spos, int epos) {
   MALLOCA(char, ii, 2 * 1024);
 

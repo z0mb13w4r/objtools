@@ -56,6 +56,9 @@ char *xstrncpy(char *dst, const char *src, size_t count);
 char* xstrdup(const char *str);
 char* xstrndup(const char *str, size_t size);
 
+char* xstrnab(const char *str, int ch);
+char* xstrnnab(const char *str, size_t size, int ch);
+
 char* xstrgrab(const char* name, int spos, int epos);
 
 uchar_t  xstrcrc8(const char* src);
