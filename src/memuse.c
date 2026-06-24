@@ -123,6 +123,10 @@ int xstrcmp(const char *x, const char *y) {
 }
 
 int xstrncmp(const char *x, const char *y, size_t count) {
+  if (USE_STRLEN == count) {
+    return 0 == xstrcmp(x, y);
+  }
+
   return x && y ? strncmp(x, y, count) : INT_MAX;
 }
 
@@ -184,6 +188,10 @@ char *xstrcat(char *dst, const char *src) {
 }
 
 char *xstrncat(char *dst, const char *src, size_t count) {
+  if (USE_STRLEN == count) {
+    return xstrcat(dst, src);
+  }
+
   return dst && src && count ? strncat(dst, src, count) : NULL;
 }
 
@@ -192,15 +200,21 @@ char *xstrcpy(char *dst, const char *src) {
 }
 
 char *xstrncpy(char *dst, const char *src, size_t count) {
+  if (USE_STRLEN == count) {
+    return xstrcpy(dst, src);
+  }
+
   return dst && src && count ? strncpy(dst, src, count) : NULL;
 }
 
 char* xstrdup(const char *str) {
-  return str ? xstrndup(str, xstrlen(str)) : NULL;
+  return str ? xstrndup(str, USE_STRLEN) : NULL;
 }
 
 char* xstrndup(const char *str, size_t size) {
-  if (str && ISSIZE(size)) {
+  if (USE_STRLEN == size) {
+    return xstrndup(str, xstrlen(str));
+  } else if (str && ISSIZE(size)) {
     char*  p = xmalloc(size + 1, MODE_HEAP);
     return xstrncpy(p, str, size);
   }
