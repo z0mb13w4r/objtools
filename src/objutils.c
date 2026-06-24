@@ -413,38 +413,6 @@ int strsize16(unknown_t s, const size_t maxsize) {
   return ECODE_NULL;
 }
 
-int strcmp8(const unknown_t s0, const char* s1, const size_t maxsize) {
-  if (s0 && s1) {
-    puchar_t p0 = CAST(puchar_t, s0);
-    puchar_t p1 = CAST(puchar_t, s1);
-    for (size_t i = 0; i < maxsize; ++i, ++p0, ++p1) {
-      const uchar_t c0 = *p0;
-      const uchar_t c1 = *p1;
-      if (0 == c0 || 0 == c1 || c0 != c1) return c0 - c1;
-    }
-
-    return ECODE_OK;
-  }
-
-  return ECODE_NULL;
-}
-
-int strcmp16(const unknown_t s0, const char* s1, const size_t maxsize) {
-  if (s0 && s1) {
-    pushort_t p0 = CAST(pushort_t, s0);
-    puchar_t  p1 = CAST(puchar_t, s1);
-    for (size_t i = 0; i < maxsize; i += 2, ++p0, ++p1) {
-      const uchar_t c0 = *p0 & 0xff;
-      const uchar_t c1 = *p1;
-      if (0 == c0 || 0 == c1 || c0 != c1) return c0 - c1;
-    }
-
-    return ECODE_OK;
-  }
-
-  return ECODE_NULL;
-}
-
 int8_t endian_s8(const bool_t yes, const int8_t v) {
   return v;
 }

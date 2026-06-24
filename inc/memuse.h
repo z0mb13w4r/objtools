@@ -3,6 +3,8 @@
 
 #include "defines.h"
 
+#define USE_STRLEN    (-1)
+
 #define MODE_HEAP             (MODE_PUT0('H') | MODE_PUT1('E') | MODE_PUT2('A') | MODE_PUT3('P'))
 #define MODE_STACK            (MODE_PUT0('S') | MODE_PUT1('T') | MODE_PUT2('C') | MODE_PUT3('K'))
 
@@ -34,6 +36,9 @@ int xstrneq(const char *x, const char *y, size_t count);
 
 int xstrcmp(const char *x, const char *y);
 int xstrncmp(const char *x, const char *y, size_t count);
+
+int xstrcmp8(const unknown_t s0, const char* s1, const size_t maxsize);
+int xstrcmp16(const unknown_t s0, const char* s1, const size_t maxsize);
 
 int xstrichr(const char *str, int ch);
 

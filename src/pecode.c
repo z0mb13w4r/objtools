@@ -304,7 +304,7 @@ DWORD get_dwordbyRVA(const pbuffer_t p, const int index, const uint64_t vaddr) {
 
 bool_t isvchunkkey(handle_t p, const char* name) {
   PVERSION_CHUNK p0 = fget(p);
-  return p0 ? 0 == strcmp16(p0->szKey, name, 32) : FALSE;
+  return p0 ? 0 == xstrcmp16(p0->szKey, name, 32) : FALSE;
 }
 
 handle_t fget_chunkbyRVA(const pbuffer_t p, const int index, const uint64_t vaddr, const size_t size) {

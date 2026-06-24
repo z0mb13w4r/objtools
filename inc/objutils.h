@@ -7,8 +7,6 @@
 
 #define PICK_END               (~0)
 
-#define USE_STRLEN    (-1)
-
 typedef struct args_s {
   char    option1;
   char   *option2;
@@ -84,8 +82,6 @@ int strlen8(unknown_t s, const size_t maxsize);
 int strlen16(unknown_t s, const size_t maxsize);
 int strsize8(unknown_t s, const size_t maxsize);
 int strsize16(unknown_t s, const size_t maxsize);
-int strcmp8(const unknown_t s0, const char* s1, const size_t maxsize);
-int strcmp16(const unknown_t s0, const char* s1, const size_t maxsize);
 
 int8_t  endian_s8(const bool_t yes, const int8_t v);
 int16_t endian_s16(const bool_t yes, const int16_t v);
