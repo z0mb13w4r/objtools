@@ -179,8 +179,8 @@ size_t xstrnlen(const char *s, size_t count) {
   return s ? strnlen(s, count) : 0;
 }
 
-char *xstrchr(const char* str, int ch) {
-  return str ? strchr(str, ch) : NULL;
+char *xstrchr(const char* s, int c) {
+  return s ? strchr(s, c) : NULL;
 }
 
 char *xstrcat(char *dst, const char *src) {
@@ -207,29 +207,31 @@ char *xstrncpy(char *dst, const char *src, size_t count) {
   return dst && src && count ? strncpy(dst, src, count) : NULL;
 }
 
-char* xstrdup(const char *str) {
-  return str ? xstrndup(str, USE_STRLEN) : NULL;
+char* xstrdup(const char *s) {
+  return s ? xstrndup(s, USE_STRLEN) : NULL;
 }
 
-char* xstrndup(const char *str, size_t size) {
-  if (USE_STRLEN == size) {
-    return xstrndup(str, xstrlen(str));
-  } else if (str && ISSIZE(size)) {
-    char*  p = xmalloc(size + 1, MODE_HEAP);
-    return xstrncpy(p, str, size);
+char* xstrndup(const char *s, size_t count) {
+  if (USE_STRLEN == count) {
+    return xstrndup(s, xstrlen(s));
+  } else if (s && ISSIZE(count)) {
+    char*  p = xmalloc(count + 1, MODE_HEAP);
+    return xstrncpy(p, s, count);
   }
 
   return NULL;
 }
 
-char* xstrnab(const char *str, int ch) {
-  return xstrnnab(str, USE_STRLEN, ch);
+char* xstrnab(const char *s, int c) {
+  return xstrnnab(s, USE_STRLEN, c);
 }
 
-char* xstrnnab(const char *str, size_t size, int ch) {
-  if (USE_STRLEN == size) {
-    return xstrnnab(str, xstrlen(str), ch);
-  } else {
+char* xstrnnab(const char *s, size_t count, int c) {
+  if (USE_STRLEN == count) {
+    return xstrnnab(s, xstrlen(s), c);
+  } else if (s && ISSIZE(count)) {
+    int epos = xstrnlen(s, count);
+    return memchr(s, c, count);
   }
 
   return NULL;

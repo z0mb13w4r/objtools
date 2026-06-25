@@ -48,16 +48,16 @@ size_t xstrnlen(const char *s, size_t count);
 char *xstrcat(char *dst, const char *src);
 char *xstrncat(char *dst, const char *src, size_t count);
 
-char *xstrchr(const char* str, int ch);
+char *xstrchr(const char* s, int c);
 
 char *xstrcpy(char *dst, const char *src);
 char *xstrncpy(char *dst, const char *src, size_t count);
 
-char* xstrdup(const char *str);
-char* xstrndup(const char *str, size_t size);
+char* xstrdup(const char *s);
+char* xstrndup(const char *s, size_t count);
 
-char* xstrnab(const char *str, int ch);
-char* xstrnnab(const char *str, size_t size, int ch);
+char* xstrnab(const char *s, int c);
+char* xstrnnab(const char *s, size_t count, int c);
 
 char* xstrgrab(const char* name, int spos, int epos);
 
