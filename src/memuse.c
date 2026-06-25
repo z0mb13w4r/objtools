@@ -227,7 +227,7 @@ char* xstrnab(const char *str, int ch) {
 }
 
 char* xstrnnab(const char *str, size_t size, int ch) {
-  if USE_STRLEN == size) {
+  if (USE_STRLEN == size) {
     return xstrnnab(str, xstrlen(str), ch);
   } else {
   }
