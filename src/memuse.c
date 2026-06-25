@@ -216,7 +216,7 @@ char* xstrndup(const char *s, size_t count) {
     return xstrndup(s, xstrlen(s));
   } else if (s && ISSIZE(count)) {
     char*  p = xmalloc(count + 1, MODE_HEAP);
-    return xstrncpy(p, s, count);
+    return p ? xstrncpy(p, s, count) : NULL;
   }
 
   return NULL;
@@ -230,8 +230,11 @@ char* xstrnnab(const char *s, size_t count, int c) {
   if (USE_STRLEN == count) {
     return xstrnnab(s, xstrlen(s), c);
   } else if (s && ISSIZE(count)) {
-    int epos = xstrnlen(s, count);
-    return memchr(s, c, count);
+    char* q = memchr(s, c, xstrnlen(s, count));
+    if (q) {
+      char* p = xmalloc(count + 1, MODE_HEAP);
+      return p ? xstrncpy(p, s, q - s) : NULL;
+    }
   }
 
   return NULL;

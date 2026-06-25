@@ -106,11 +106,13 @@ static int dump_achive3(const pbuffer_t p, const poptions_t o, const int index, 
     if (p1) {
 //printf_sore(fget(p0), fgetsize(p0), USE_HEXDUMP);
 //printf("offset=%ld:%s\n", offset, p1->ar_name);
+      char* name = xstrnnab(p1->ar_name, sizeof(p1->ar_name), '/');
       handle_t p2 = bcalloc(fget(p0), fgetsize(p0));
       if (p2) {
-        n += dumpelf(p2, o, p1->ar_name);
+        n += dumpelf(p2, o, name);
         bfree(p2);
       }
+      xfree(name);
     }
 
     ffree(p0);
