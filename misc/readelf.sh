@@ -42,7 +42,9 @@ NAME=samples/exampled-32
 #NAME=samples/binutils-2.45-risc-v64/riscv64-unknown-elf-addr2line
 
 #NAME=samples/example-64.coredump
-NAME=samples/exampled-64.coredump
+#NAME=samples/exampled-64.coredump
+NAME=samples/libdwarf.a
+NAME=samples/libfuzzy.a
 
 PICK1='-a'
 #PICK1='-a -D'
@@ -56,6 +58,7 @@ PICK1='-a'
 #PICK1='-g'
 #PICK1='-A'
 #PICK1='-h -u'
+#PICK1='-n'
 
 #PICK1='-l'
 #PICK1='-r -V'
@@ -150,7 +153,7 @@ elif [ "$1" == "-r" ] || [ "$1" == "--raw" ]; then
   ${PRGNAMENG} ${PICK1} ${NAME} > ${OUT1}
   ${PRGNAME} ${PICK1} ${NAME} | sed 's/[ \t]*$//' > ${OUT2}
 elif [ "$1" == "-v" ] || [ "$1" == "--verbose" ]; then
-  ${PRGNAMENG} ${PICK1} -V ${NAME} > ${OUT1}
+  ${PRGNAMENG} ${PICK1} --verbose ${NAME} > ${OUT1}
   ${PRGNAME} ${PICK1} ${NAME} > ${OUT2}
 elif [ "$1" == "-d" ] || [ "$1" == "--debug" ]; then
   gdb --args ${PRGNAMENG}d ${PICK1} ${NAME}
