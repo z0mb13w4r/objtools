@@ -36,18 +36,17 @@ static int get_options_coredump(poptions_t o, int argc, char** argv, char* name)
 
   for (int i = 0; i < argc; ++i) {
     if ('-' == argv[i][0] && '-' == argv[i][1]) {
-      MALLOCA(char, arg0, 1024);
-      MALLOCA(char, arg1, 1024);
-
-      if (ECODE_ISOK(breakup_args(argv[i], arg0, NELEMENTS(arg0), arg1, NELEMENTS(arg1)))) {
-      } else {
-        imode_t action = get_options2(o, zREADELFARGS, argv[i]);
-        if (0 == action) {
-          return odeath(o, THIS_NAME, argv[i] + 2);
-        }
-        o->action |= action;
+      imode_t action = get_options2(o, zREADELFARGS, argv[i]);
+      if (0 == action) {
+        return odeath(o, THIS_NAME, argv[i] + 2);
       }
+      o->action |= action;
     } else if ('-' == argv[i][0]) {
+      imode_t action = get_options1(o, zREADELFARGS, argv[i]);
+      if (0 == action) {
+        return odeath(o, THIS_NAME, argv[i] + 1);
+      }
+      o->action |= action;
     } else if (0 == o->inpname[0]) {
       xstrncpy(o->inpname, argv[i], NELEMENTS(o->inpname));
     } else {
