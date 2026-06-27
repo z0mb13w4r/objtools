@@ -1,13 +1,14 @@
 #!/bin/bash
 
 NAME1=samples/example-043.exe
-NAME1=samples/bstrings.dll
+#NAME1=samples/bstrings.dll
 #NAME1=samples/msvcp120.dll
-#NAME1=samples/msfservice.exe
+NAME1=samples/msfservice.exe
 NAME1=samples/msfshell.dll
-#NAME1=samples/msfshell.exe
+NAME1=samples/msfshell.exe
 NAME2=${NAME1}-pecheck
-PICK='-aXey'
+NAME2=${NAME1}-readpe
+PICK='-aV'
 #PICK='-C .text'
 
 PRGNAMENG=./readpe-ng
