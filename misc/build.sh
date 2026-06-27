@@ -42,6 +42,7 @@ $RMBIN -v $EXTERNBIN/objdwarf-ng
 $RMBIN -v $EXTERNBIN/objhash-ng
 $RMBIN -v $EXTERNBIN/readelf-ng
 $RMBIN -v $EXTERNBIN/readpe-ng
+$RMBIN -v $EXTERNBIN/coredump-ng
 $RMBIN -v $EXTERNBIN/release/*.a
 $RMBIN -vrf $NAME/
 $RMBIN -v $NAME.deb
@@ -56,6 +57,7 @@ $MAKEBIN -f objdump-ng.mk all
 $MAKEBIN -f objhash-ng.mk all
 $MAKEBIN -f readelf-ng.mk all
 $MAKEBIN -f objdwarf-ng.mk all
+$MAKEBIN -f coredump-ng.mk all
 
 $SUDOBIN $MKDIRBIN -v -p $NAME
 #$SUDOBIN $MKDIRBIN -v -p $USRBIN
