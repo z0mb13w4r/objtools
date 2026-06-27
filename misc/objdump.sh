@@ -8,7 +8,7 @@ PRGNAME=/usr/bin/objdump
 #PRGNAME=/usr/bin/mips-linux-gnu-objdump
 #PRGNAME=/usr/bin/mips64-linux-gnuabi64-objdump
 
-NAME=samples/exampled-32
+#NAME=samples/exampled-32
 #NAME=samples/exampled-64
 #NAME=samples/exampled-32.o
 #NAME=samples/exampled-64.o
@@ -27,11 +27,11 @@ NAME=samples/exampled-32
 #NAME=samples/example-043-arm32.o
 #NAME=samples/example-043-arm64
 #NAME=samples/example-043-arm64.o
-#NAME=samples/bstrings.dll
 #NAME=samples/example-043-win32.exe
 #NAME=samples/example-043-win64.exe
 #NAME=samples/exampled-win32.exe
 #NAME=samples/exampled-win64.exe
+#NAME=samples/bstrings.dll
 
 #NAME=samples/binutils-2.45/strip
 #NAME=samples/binutils-2.45/objcopy
@@ -46,7 +46,7 @@ NAME=samples/exampled-32
 #NAME=samples/binutils-2.44-arm64/arm-linux-gnueabi-readelf
 #NAME=samples/binutils-2.44-arm64/arm-linux-gnueabi-strings
 #NAME=samples/binutils-2.44-arm64/arm-linux-gnueabi-addr2line
-#NAME=samples/binutils-2.44-arm64/libopcodes-2.44-armel.so
+NAME=samples/binutils-2.44-arm64/libopcodes-2.44-armel.so
 #NAME=samples/binutils-2.45-risc-v64/riscv64-unknown-elf-strip
 #NAME=samples/binutils-2.45-risc-v64/riscv64-unknown-elf-objcopy
 #NAME=samples/binutils-2.45-risc-v64/riscv64-unknown-elf-objdump
@@ -68,6 +68,7 @@ PICK='-x'
 #PICK='-e'
 #PICK='-d'
 PICK='-dSl'
+PICK='-dl'
 
 #PICK='-dSl --prefix-addresses'
 #PICK='-dSl --no-addresses'
@@ -141,8 +142,10 @@ if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
 elif [ "$1" == "-p" ] || [ "$1" == "--print" ]; then
   echo ${PRGNAME} ${PICK} ${NAME}
   echo ${PRGNAMENG} ${PICK} ${NAME}
-elif [ "$1" == "-g" ] || [ "$1" == "--go" ]; then
+elif [ "$1" == "-g" ]; then
   ${PRGNAMENG} ${PICK} ${NAME}
+elif [ "$1" == "-gc" ]; then
+  ${PRGNAMENG} ${PICK} ${NAME} "-c"
 elif [ "$1" == "-s" ] || [ "$1" == "--show" ]; then
   ${PRGNAME} ${PICK} ${NAME}
 elif [ "$1" == "-r" ] || [ "$1" == "--raw" ]; then
@@ -153,9 +156,6 @@ elif [ "$1" == "-v" ] || [ "$1" == "--verbose" ]; then
   ${PRGNAME} ${PICK} ${NAME} > ${OUT2}
 elif [ "$1" == "-d" ] || [ "$1" == "--debug" ]; then
   gdb --args ${PRGNAMENG}d ${PICK} $NAME
-elif [ "$1" == "-1" ] || [ "$1" == "--level1" ]; then
-  go_1 "-1"
-  go_2
 elif [ "$1" == "-c" ] || [ "$1" == "--capstone" ]; then
   go_1 "-c"
   go_2
@@ -166,10 +166,16 @@ fi
 
 if [ -e "${OUT1}" ] && [ -e "${OUT2}" ]; then
   meld ${OUT1} ${OUT2}
-#  diff ${OUT1} ${OUT2}
+  diff ${OUT1} ${OUT2}
+#  echo ${NAME} ${1}
+#  grep -n '++' ${OUT1} | grep -v '+++++'
 #  grep -nw -A 1 'ERROR' ${OUT1}
 #  grep -nw 'ERROR' ${OUT1} | wc -l
-#  grep -nw '<unknown:' ${OUT1}
+#  grep -n 'UNKNOWN' ${OUT1}
+#  grep -n 'UNKNOWN' ${OUT1} | wc -l
+#  grep -nw -B 1 '<unknown:' ${OUT1}
 #  grep -nw '<unknown:' ${OUT1} | wc -l
+#  grep -nw -B 1 '<not set>' ${OUT1}
+#  grep -nw '<not set>' ${OUT1} | wc -l
 fi
 
