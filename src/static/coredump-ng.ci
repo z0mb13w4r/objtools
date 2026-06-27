@@ -1,0 +1,79 @@
+//static const char zREADELFARGS0[] = "-w";
+//static const char zREADELFARGS1[] = "--debug-dump";
+
+//static const char zREADELFARGS2[] = "-M";
+//static const char zREADELFARGS3[] = "--disassembler-options";
+
+//static const char zREADELFARGS4[] = "-T";
+//static const char zREADELFARGS5[] = "--script";
+
+static char zELFARCHSPECIFIC[]   = "Displays architecture-specific information in the file.";
+static char zELFHISTOGRAM[]      = "Display a histogram of bucket list lengths when displaying the contents of the symbol tables.";
+static char zELFSECTIONHEADERS[] = "Displays the information contained in the file's section headers.";
+static char zELFVERSIONINFO[]    = "Displays the contents of the version sections in the file.";
+static char zELFDYNAMIC[]        = "Displays the contents of the file's dynamic section.";
+static char zELFHEADERS[]        = "Display all the headers in the file.";
+static char zELFSECTIONGROUPS[]  = "Displays the information contained in the file's section groups.";
+static char zElFSECTIONDETAILS[] = "Displays the detailed section information. Implies -S.";
+static char zELFFILEHEADER[]     = "Displays the information contained in the ELF header at the start of the file.";
+static char zELFPROGRAMHEADERS[] = "Displays the information contained in the file's segment headers.";
+static char zELFNOTES[]          = "Displays the contents of the NOTE segments.";
+static char zELFRELOCS[]         = "Displays the contents of the file's relocation section.";
+static char zELFSYMBOLS[]        = "Displays the entries in symbol table section of the file.";
+static char zELFUNWIND[]         = "Displays the contents of the file's unwind section.";
+static char zELFDECOMPRESS[]     = "Requests that the section(s) being dumped by x, R or p options are decompressed before being displayed.";
+static char zELFUSEDYNAMIC[]     = "Use the dynamic section info when displaying symbols.";
+static char zELFDEMANGLE[]       = "Decode (demangle) low-level symbol names into user-level names. This makes C++ function names readable. Different compilers have different mangling styles.";
+static char zELFDISASSEMBLE[]    = "Display the assembler mnemonics for the machine instructions from the input file.";
+
+static const char *zELFDESCRIPTION[] = {
+  "displays information about one or more ELF format object files. The options",
+  "control what particular information to display.",
+  "",
+  "elffile... are the object files to be examined. 32-bit and 64-bit ELF files",
+  "are supported, as are archives containing ELF files.",
+  0
+};
+
+static const args_t zREADELFARGS[] = {
+  {'H', "--help",            OPTPROGRAM_HELP,              NULL},
+  {'v', "--version",         OPTPROGRAM_VERSION,           NULL},
+  {'A', "--arch-specific",   OPTREADELF_ARCHSPECIFIC,      zELFARCHSPECIFIC},
+  {'I', "--histogram",       OPTREADELF_HISTOGRAM,         zELFHISTOGRAM},
+  {'S', "--section-headers", OPTREADELF_SECTIONHEADERS,    zELFSECTIONHEADERS},
+  {'V', "--version-info",    OPTREADELF_VERSION,           zELFVERSIONINFO},
+  {'a', "--all",             OPTREADELF_ALL,               NULL},
+  {'d', "--dynamic",         OPTREADELF_DYNAMIC,           zELFDYNAMIC},
+  {'e', "--headers",         OPTREADELF_HEADERS,           zELFHEADERS},
+  {'g', "--section-groups",  OPTREADELF_SECTIONGROUPS,     zELFSECTIONGROUPS},
+  {'t', "--section-details", OPTREADELF_SECTIONDETAILS,    zElFSECTIONDETAILS},
+  {'h', "--file-header",     OPTREADELF_FILEHEADER,        zELFFILEHEADER},
+  {'l', "--program-headers", OPTREADELF_PROGRAMHEADERS,    zELFPROGRAMHEADERS},
+  {'n', "--notes",           OPTREADELF_NOTES,             zELFNOTES},
+  {'r', "--relocs",          OPTREADELF_RELOCS,            zELFRELOCS},
+  {'s', "--symbols",         OPTREADELF_SYMBOLS,           zELFSYMBOLS},
+  {'u', "--unwind",          OPTREADELF_UNWIND,            zELFUNWIND},
+  {'D', "--use-dynamic",     OPTREADELF_USEDYNAMIC,        zELFUSEDYNAMIC},
+  {'C', "--demangle",        OPTPROGRAM_DEMANGLE,          zELFDEMANGLE},
+  {'x', "--hex-dump",        0,                            zHEXDUMP,                 OPTUSE_SECTION},
+  {'Z', "--code-dump",       0,                            zCODEDUMP,                OPTUSE_SECTION},
+  {'p', "--string-dump",     0,                            zSTRDUMP,                 OPTUSE_SECTION},
+  {'U', "--unicode-dump",    0,                            zSTRDUMP,                 OPTUSE_SECTION},
+  {'R', "--relocated-dump",  0,                            zHEXDUMP,                 OPTUSE_SECTION},
+  {'z', "--decompress",      0,                            zELFDECOMPRESS},
+  {'m', "--disassemble",     0,                            zELFDISASSEMBLE},
+  {'I', "--info",            OPTPROGRAM_INFO,              NULL},
+  {'X', "--hash",            OPTPROGRAM_HASH,              NULL},
+  {'E', "--entropy",         OPTPROGRAM_ENTROPY,           NULL},
+  {0,   "--verbose",         OPTPROGRAM_VERBOSE,           NULL},
+  {0, NULL}
+};
+
+static const imodeswap_t zREADELFSWAP[] = {
+  {OPTPROGRAM_ENHANCED,        OPTDISASSEMBLE_ENHANCED},
+  {OPTPROGRAM_ENHANCED,        OPTDWARF_ENHANCED},
+  {OPTPROGRAM_VERBOSE,         OPTDISASSEMBLE_VERBOSE},
+  {OPTPROGRAM_VERBOSE,         OPTDWARF_VERBOSE},
+  {0, 0}
+};
+
