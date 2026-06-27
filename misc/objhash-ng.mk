@@ -70,6 +70,7 @@ LIB_PATHS = \
 #=====================================================================================================================================
 # Set compile flags, dependant on DEBUG flag being set.
 #---------------------------------------------------------------------
+DFLAGS += -DBUILD_$(shell cat /etc/lsb-release | grep DISTRIB_ID | cut -d '=' -f 2 | tr '[:lower:]' '[:upper:]')_$(shell cat /etc/lsb-release | grep DISTRIB_RELEASE | cut -d '=' -f 2 | tr '.' '_')
 
 ifeq ($(DEBUG),y)
 	CFLAGS = -g3 -O0 -Wall -Wno-unknown-pragmas -c -fmessage-length=0 -MMD -MP -ggdb
@@ -157,10 +158,7 @@ help:
 	@echo ' set DEBUG=y to build debug information.'
 	@echo ' set DEBUG=n to build release version.'
 	@echo ' '
-	@echo ' set CROSS=ARM to build ARM version.'
-	@echo ' set CROSS=I386 to build native version.'
-	@echo ' '
-	@echo ' e.g. make -f $(TARGETBASE).mk DEBUG=y CROSS=ARM all.'
+	@echo ' e.g. make -f $(TARGETBASE).mk DEBUG=y all.'
 	@echo '-----------------------------------------------------------------------------------'
 	@echo ' '
 

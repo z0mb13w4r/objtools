@@ -159,10 +159,7 @@ help:
 	@echo ' set DEBUG=y to build debug information.'
 	@echo ' set DEBUG=n to build release version.'
 	@echo ' '
-	@echo ' set CROSS=ARM to build ARM version.'
-	@echo ' set CROSS=I386 to build native version.'
-	@echo ' '
-	@echo ' e.g. make -f $(TARGETBASE).mk DEBUG=y CROSS=ARM all.'
+	@echo ' e.g. make -f $(TARGETBASE).mk DEBUG=y all.'
 	@echo '-----------------------------------------------------------------------------------'
 	@echo ' '
 
