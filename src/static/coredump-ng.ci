@@ -55,9 +55,6 @@ static const args_t zREADELFARGS[] = {
   {'D', "--use-dynamic",     OPTREADELF_USEDYNAMIC,        zELFUSEDYNAMIC},
   {'C', "--demangle",        OPTPROGRAM_DEMANGLE,          zELFDEMANGLE},
   {'m', "--disassemble",     0,                            zELFDISASSEMBLE},
-  {'I', "--info",            OPTPROGRAM_INFO,              NULL},
-  {'X', "--hash",            OPTPROGRAM_HASH,              NULL},
-  {'E', "--entropy",         OPTPROGRAM_ENTROPY,           NULL},
   {0,   "--verbose",         OPTPROGRAM_VERBOSE,           NULL},
   {0, NULL}
 };
