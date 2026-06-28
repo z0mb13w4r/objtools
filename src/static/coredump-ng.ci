@@ -21,7 +21,6 @@ static char zELFNOTES[]          = "Displays the contents of the NOTE segments."
 static char zELFRELOCS[]         = "Displays the contents of the file's relocation section.";
 static char zELFSYMBOLS[]        = "Displays the entries in symbol table section of the file.";
 static char zELFUNWIND[]         = "Displays the contents of the file's unwind section.";
-static char zELFDECOMPRESS[]     = "Requests that the section(s) being dumped by x, R or p options are decompressed before being displayed.";
 static char zELFUSEDYNAMIC[]     = "Use the dynamic section info when displaying symbols.";
 static char zELFDEMANGLE[]       = "Decode (demangle) low-level symbol names into user-level names. This makes C++ function names readable. Different compilers have different mangling styles.";
 static char zELFDISASSEMBLE[]    = "Display the assembler mnemonics for the machine instructions from the input file.";
