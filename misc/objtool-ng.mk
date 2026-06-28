@@ -13,6 +13,7 @@ DIR_CXX = ../$(DIR_SRC)
 SRCS_C = \
 	readar.c \
 	readpe.c \
+	dumpelf.c \
 	readelf.c \
 	objtool-ng.c
 

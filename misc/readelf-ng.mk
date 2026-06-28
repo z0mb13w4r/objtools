@@ -12,6 +12,7 @@ DIR_CXX = ../$(DIR_SRC)
 #---------------------------------------------------------------------
 SRCS_C = \
 	readar.c \
+	dumpelf.c \
 	readelf.c \
 	readelf-ng.c
 
