@@ -1246,7 +1246,7 @@ int dumpelf_unwind32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
       }
     }
 
-  } else {
+  } else if (MODE_ISNOT(o->action, OPRPROGRAM_NOWARNINGS)) {
     printf_w("The decoding of unwind sections for machine type %s is not currently supported.", strpick(ecEHDRMACHINE, ehdr->e_machine));
   }
 
@@ -1290,7 +1290,7 @@ int dumpelf_unwind64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
       }
     }
 
-  } else {
+  } else if (MODE_ISNOT(o->action, OPRPROGRAM_NOWARNINGS)) {
     printf_w("The decoding of unwind sections for machine type %s is not currently supported.", strpick(ecEHDRMACHINE, ehdr->e_machine));
   }
 
