@@ -670,7 +670,9 @@ int dumpelf_dynamic32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
   }
 
   if (0 == cnt) {
-    printf_w("There is no dynamic section in this file.");
+    if (MODE_ISNOT(o->action, OPRPROGRAM_NOWARNINGS)) {
+      printf_w("There is no dynamic section in this file.");
+    }
   } else {
     for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
       MEMSTACK(Elf32_Shdr, sx);
@@ -706,7 +708,9 @@ int dumpelf_dynamic64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
   }
 
   if (0 == cnt) {
-    printf_w("There is no dynamic section in this file.");
+    if (MODE_ISNOT(o->action, OPRPROGRAM_NOWARNINGS)) {
+      printf_w("There is no dynamic section in this file.");
+    }
   } else {
     for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
       MEMSTACK(Elf64_Shdr, sx);
