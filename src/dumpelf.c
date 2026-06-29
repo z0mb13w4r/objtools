@@ -236,7 +236,9 @@ int dumpelf_sectionheaders32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *
 
   int n = 0;
   if (0 == ehdr->e_shnum) {
-    printf_w("There are no sections in this file.");
+    if (MODE_ISNOT(o->action, OPRPROGRAM_NOWARNINGS)) {
+      printf_w("There are no sections in this file.");
+    }
   } else {
 
     int errorcnt = 0;
@@ -278,7 +280,9 @@ int dumpelf_sectionheaders64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *
 
   int n = 0;
   if (0 == ehdr->e_shnum) {
-    printf_w("There are no sections in this file.");
+    if (MODE_ISNOT(o->action, OPRPROGRAM_NOWARNINGS)) {
+      printf_w("There are no sections in this file.");
+    }
   } else {
     int errorcnt = 0;
     bool_t isok = FALSE;
