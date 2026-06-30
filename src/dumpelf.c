@@ -2225,7 +2225,9 @@ int dumpelf_notes32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
       }
     }
   } else if (0 == ehdr->e_phnum) {
-    printf_w("No notes found file.");
+    if (MODE_ISNOT(o->action, OPRPROGRAM_NOWARNINGS)) {
+      printf_w("No notes found file.");
+    }
   } else {
     for (Elf32_Half i = 0; i < ehdr->e_phnum; ++i) {
       MEMSTACK(Elf32_Phdr, px);
@@ -2266,7 +2268,9 @@ int dumpelf_notes64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
       }
     }
   } else if (0 == ehdr->e_phnum) {
-    printf_w("No notes found file.");
+    if (MODE_ISNOT(o->action, OPRPROGRAM_NOWARNINGS)) {
+      printf_w("No notes found file.");
+    }
   } else {
     for (Elf64_Half i = 0; i < ehdr->e_phnum; ++i) {
       MEMSTACK(Elf64_Phdr, px);
