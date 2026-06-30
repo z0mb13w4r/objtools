@@ -2006,7 +2006,7 @@ int dumpelf_actions32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
           dump_actions1(p, o, s0->sh_offset, s0->sh_type != SHT_NOBITS ? s0->sh_size : 0);
         }
         dump_actions2(p, o, ps, x->secname, x->action, s0->sh_offset, s0->sh_type != SHT_NOBITS ? s0->sh_size : 0, s0->sh_addr);
-      } else {
+      } else if (MODE_ISNOT(o->action, OPRPROGRAM_NOWARNINGS)) {
         printf_w("section '%s' was not dumped because it does not exist!", x->secname);
       }
     }
@@ -2032,7 +2032,7 @@ int dumpelf_actions64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
           dump_actions1(p, o, s0->sh_offset, s0->sh_type != SHT_NOBITS ? s0->sh_size : 0);
         }
         n += dump_actions2(p, o, ps, x->secname, x->action, s0->sh_offset, s0->sh_type != SHT_NOBITS ? s0->sh_size : 0, s0->sh_addr);
-      } else {
+      } else if (MODE_ISNOT(o->action, OPRPROGRAM_NOWARNINGS)) {
         printf_w("section '%s' was not dumped because it does not exist!", x->secname);
       }
     }
