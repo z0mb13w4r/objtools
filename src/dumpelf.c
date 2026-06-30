@@ -1376,7 +1376,9 @@ int dumpelf_symbols32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
   }
 
   if (0 == cnt) {
-    printf_w("Dynamic symbol information is not available for displaying symbols.");
+    if (MODE_ISNOT(o->action, OPRPROGRAM_NOWARNINGS)) {
+      printf_w("Dynamic symbol information is not available for displaying symbols.");
+    }
   } else if (MODE_ISANY(o->action, OPTREADELF_USEDYNAMIC)) {
     // binutils-2.45
     for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
@@ -1475,7 +1477,9 @@ int dumpelf_symbols64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
   }
 
   if (0 == cnt) {
-    printf_w("Dynamic symbol information is not available for displaying symbols.");
+    if (MODE_ISNOT(o->action, OPRPROGRAM_NOWARNINGS)) {
+      printf_w("Dynamic symbol information is not available for displaying symbols.");
+    }
   } else if (MODE_ISANY(o->action, OPTREADELF_USEDYNAMIC)) {
     // binutils-2.45
     for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
