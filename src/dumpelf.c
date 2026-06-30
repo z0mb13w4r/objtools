@@ -1935,7 +1935,9 @@ int dumpelf_version32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
   }
 
   if (0 == cnt) {
-    printf_w("No version information found in this file.");
+    if (MODE_ISNOT(o->action, OPRPROGRAM_NOWARNINGS)) {
+      printf_w("No version information found in this file.");
+    }
   } else {
     for (Elf32_Half i = 0; i < ehdr->e_shnum; ++i) {
       MEMSTACK(Elf32_Shdr, sx);
@@ -1964,7 +1966,9 @@ int dumpelf_version64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
   }
 
   if (0 == cnt) {
-    printf_w("No version information found in this file.");
+    if (MODE_ISNOT(o->action, OPRPROGRAM_NOWARNINGS)) {
+      printf_w("No version information found in this file.");
+    }
   } else {
     for (Elf64_Half i = 0; i < ehdr->e_shnum; ++i) {
       MEMSTACK(Elf64_Shdr, sx);
