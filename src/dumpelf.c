@@ -447,12 +447,14 @@ static int dump_programheaders1(const uint64_t e_shnum, const uint64_t e_phnum) 
   return n;
 }
 
-static int dump_programheaders2(const uint64_t e_phnum, const int errorcnt) {
+static int dump_programheaders2(const pbuffer_t p, const poptions_t o, const uint64_t e_phnum, const int errorcnt) {
   int n = 0;
   if (errorcnt) {
     printf_e("There are corrupted program headers in this file.");
   } else if (0 == e_phnum) {
-    printf_w("There are no program headers in this file.");
+    if (MODE_ISNOT(o->action, OPRPROGRAM_NOWARNINGS)) {
+      printf_w("There are no program headers in this file.");
+    }
   } else {
     n += printf_eol();
   }
@@ -534,7 +536,7 @@ int dumpelf_programheaders32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *
     }
   }
 
-  n += dump_programheaders2(ehdr->e_phnum, errorcnt);
+  n += dump_programheaders2(p, o, ehdr->e_phnum, errorcnt);
 
   return n;
 }
@@ -588,7 +590,7 @@ int dumpelf_programheaders64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *
     }
   }
 
-  n = dump_programheaders2(ehdr->e_phnum, errorcnt);
+  n = dump_programheaders2(p, o, ehdr->e_phnum, errorcnt);
 
   return n;
 }
