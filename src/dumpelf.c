@@ -2221,6 +2221,10 @@ static int dump_notesX(const pbuffer_t p, const poptions_t o, const uint64_t n_n
     n0 += dump_notes3(p, o, n_descsz, notes);
   } else if (NT_X86_XSTATE == n_type) {
     n0 += dump_notes4(p, o, n_descsz, notes);
+  } else if (NT_PRSTATUS == n_type) {
+    fstep(notes, n_descsz + 3);
+  } else if (NT_PRPSINFO == n_type) {
+    fstep(notes, n_descsz + 3);
   } else {
     fstep(notes, n_descsz + 3);
   }
