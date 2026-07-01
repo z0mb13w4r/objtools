@@ -2206,6 +2206,22 @@ static int dump_notes4(const pbuffer_t p, const poptions_t o, const uint64_t n_d
   return n;
 }
 
+static int dump_notes5(const pbuffer_t p, const poptions_t o, const uint64_t n_descsz, const handle_t notes) {
+  int n = 0;
+
+  fstep(notes, n_descsz + 3);
+
+  return n;
+}
+
+static int dump_notes6(const pbuffer_t p, const poptions_t o, const uint64_t n_descsz, const handle_t notes) {
+  int n = 0;
+
+  fstep(notes, n_descsz + 3);
+
+  return n;
+}
+
 static int dump_notesX(const pbuffer_t p, const poptions_t o, const uint64_t n_namesz, const uint64_t n_descsz, const uint64_t n_type, const handle_t notes) {
   const int MAXSIZE = 22;
 
@@ -2222,9 +2238,9 @@ static int dump_notesX(const pbuffer_t p, const poptions_t o, const uint64_t n_n
   } else if (NT_X86_XSTATE == n_type) {
     n0 += dump_notes4(p, o, n_descsz, notes);
   } else if (NT_PRSTATUS == n_type) {
-    fstep(notes, n_descsz + 3);
+    n0 += dump_notes5(p, o, n_descsz, notes);
   } else if (NT_PRPSINFO == n_type) {
-    fstep(notes, n_descsz + 3);
+    n0 += dump_notes6(p, o, n_descsz, notes);
   } else {
     fstep(notes, n_descsz + 3);
   }
