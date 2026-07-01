@@ -34,7 +34,7 @@ static int get_options_coredump(poptions_t o, int argc, char** argv, char* name)
   strname(o->prgname, name);
   printf_errname(o->prgname);
 
-  o->action = OPRPROGRAM_NOWARNINGS;
+  o->action = OPRPROGRAM_NOWARNINGS | OPRPROGRAM_COREDUMPDETAILED;
 
   for (int i = 0; i < argc; ++i) {
     if ('-' == argv[i][0] && '-' == argv[i][1]) {
