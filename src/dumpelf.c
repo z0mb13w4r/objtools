@@ -2193,6 +2193,19 @@ static int dump_notes3(const pbuffer_t p, const poptions_t o, const uint64_t n_d
   return n;
 }
 
+static int dump_notes4(const pbuffer_t p, const poptions_t o, const uint64_t n_descsz, const handle_t notes) {
+  int n = 0;
+
+  fstep(notes, 2);
+
+  n += printf_text("DESCRIPTION DATA", USE_LT | USE_TAB | USE_COLON);
+  n += printf_pack(1);
+  n += printf_sore(fgetp(notes, n_descsz), n_descsz, USE_HEX);
+  n += printf_eol();
+
+  return n;
+}
+
 static int dump_notesX(const pbuffer_t p, const poptions_t o, const uint64_t n_namesz, const uint64_t n_descsz, const uint64_t n_type, const handle_t notes) {
   const int MAXSIZE = 22;
 
@@ -2207,12 +2220,7 @@ static int dump_notesX(const pbuffer_t p, const poptions_t o, const uint64_t n_n
   if (NT_FILE == n_type) {
     n0 += dump_notes3(p, o, n_descsz, notes);
   } else if (NT_X86_XSTATE == n_type) {
-    fstep(notes, 2);
-
-    n0 += printf_text("DESCRIPTION DATA", USE_LT | USE_TAB | USE_COLON);
-    n0 += printf_pack(1);
-    n0 += printf_sore(fgetp(notes, n_descsz), n_descsz, USE_HEX);
-    n0 += printf_eol();
+    n0 += dump_notes4(p, o, n_descsz, notes);
   } else {
     fstep(notes, n_descsz + 3);
   }
