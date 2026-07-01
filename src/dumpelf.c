@@ -2209,6 +2209,9 @@ static int dump_notes4(const pbuffer_t p, const poptions_t o, const uint64_t n_d
 static int dump_notes5(const pbuffer_t p, const poptions_t o, const uint64_t n_descsz, const handle_t notes) {
   int n = 0;
 
+  if (MODE_ISANY(o->action, OPRPROGRAM_COREDUMPDETAILED)) {
+  }
+
   fstep(notes, n_descsz + 3);
 
   return n;
@@ -2216,6 +2219,9 @@ static int dump_notes5(const pbuffer_t p, const poptions_t o, const uint64_t n_d
 
 static int dump_notes6(const pbuffer_t p, const poptions_t o, const uint64_t n_descsz, const handle_t notes) {
   int n = 0;
+
+  if (MODE_ISANY(o->action, OPRPROGRAM_COREDUMPDETAILED)) {
+  }
 
   fstep(notes, n_descsz + 3);
 
