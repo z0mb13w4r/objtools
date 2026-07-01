@@ -2150,7 +2150,7 @@ static int dump_notes3(const pbuffer_t p, const poptions_t o, const uint64_t n_d
   int n = 0;
 
   const imode_t USE_FHEXNN = isELF64(p) ? USE_FHEX64 : USE_FHEX32;
-  const int MAXSIZE1 = isELF64(p) ? 19 : 12;
+  const int MAXSIZE = isELF64(p) ? 19 : 12;
 
   fstep(notes, 3);
 
@@ -2164,11 +2164,11 @@ static int dump_notes3(const pbuffer_t p, const poptions_t o, const uint64_t n_d
   n += printf_text("PAGE SIZE", USE_LT | USE_TAB2 | USE_COLON);
   n += printf_nice(psize, USE_DEC | USE_EOL);
 
-  n += printf_text("Start", USE_LT | USE_TAB2 | SET_PAD(MAXSIZE1 + 4));
-  n += printf_text("End", USE_LT | SET_PAD(MAXSIZE1));
+  n += printf_text("Start", USE_LT | USE_TAB2 | SET_PAD(MAXSIZE + 4));
+  n += printf_text("End", USE_LT | SET_PAD(MAXSIZE));
   n += printf_text("Page Offset", USE_LT | USE_EOL);
 
-  handle_t n1 = fgalloc(notes, count * 3 * 8, descsz0 - (count * 3 * 8) + 3, MEMFIND_NOBLOCKSIZE);
+  handle_t ns = fgalloc(notes, count * 3 * 8, descsz0 - (count * 3 * 8) + 3, MEMFIND_NOBLOCKSIZE);
 
   for (uint64_t i = 0; i < count; i++) {
     const uint64_t spos = fgetcpos(notes);
@@ -2183,26 +2183,24 @@ static int dump_notes3(const pbuffer_t p, const poptions_t o, const uint64_t n_d
     n += printf_nice(fofs, USE_FHEXNN);
     n += printf_eol();
 
-    n += printf_text(fgetstring(n1), USE_LT| USE_TAB3);
+    n += printf_text(fgetstring(ns), USE_LT | USE_TAB3);
     n += printf_eol();
   }
 
   fstep(notes, descsz0 + 3);
-  ffree(n1);
+  ffree(ns);
 
   return n;
 }
 
 static int dump_notesX(const pbuffer_t p, const poptions_t o, const uint64_t n_namesz, const uint64_t n_descsz, const uint64_t n_type, const handle_t notes) {
-  const int MAXSIZE0 = 22;
-//  const int MAXSIZE1 = isELF64(p) ? 19 : 12;
+  const int MAXSIZE = 22;
 
   int n0 = 0;
   int n1 = 0;
-//  const imode_t USE_FHEXNN = isELF64(p) ? USE_FHEX64 : USE_FHEX32;
 
   n1  = printf_sore(fgetp(notes, n_namesz), n_namesz, USE_STR | USE_TAB);
-  n0 += printf_pack(MAXSIZE0 - n1);
+  n0 += printf_pack(MAXSIZE - n1);
   n0 += printf_nice(n_descsz, USE_FHEX32);
   n0 += printf_pick(get_NHDRTYPE(p), n_type, USE_LT | USE_SPACE | USE_EOL);
 
