@@ -2146,13 +2146,60 @@ static int dump_notes2(const pbuffer_t p, const uint64_t p_offset, const uint64_
   return n;
 }
 
+static int dump_notes3(const pbuffer_t p, const poptions_t o, const uint64_t n_descsz, const handle_t notes) {
+  int n = 0;
+
+  const imode_t USE_FHEXNN = isELF64(p) ? USE_FHEX64 : USE_FHEX32;
+  const int MAXSIZE1 = isELF64(p) ? 19 : 12;
+
+  fstep(notes, 3);
+
+  const uint64_t smark = fgetcpos(notes);
+  const uint64_t count = fgetuNN(notes);
+  const uint64_t psize = fgetuNN(notes);
+
+  uint64_t descsz0 = n_descsz;
+  descsz0 -= 3 + fgetcpos(notes) - smark;
+
+  n += printf_text("PAGE SIZE", USE_LT | USE_TAB2 | USE_COLON);
+  n += printf_nice(psize, USE_DEC | USE_EOL);
+
+  n += printf_text("Start", USE_LT | USE_TAB2 | SET_PAD(MAXSIZE1 + 4));
+  n += printf_text("End", USE_LT | SET_PAD(MAXSIZE1));
+  n += printf_text("Page Offset", USE_LT | USE_EOL);
+
+  handle_t n1 = fgalloc(notes, count * 3 * 8, descsz0 - (count * 3 * 8) + 3, MEMFIND_NOBLOCKSIZE);
+
+  for (uint64_t i = 0; i < count; i++) {
+    const uint64_t spos = fgetcpos(notes);
+    const uint64_t cpos = fgetuNN(notes);
+    const uint64_t epos = fgetuNN(notes);
+    const uint64_t fofs = fgetuNN(notes);
+
+    descsz0 -= fgetcpos(notes) - spos;
+
+    n += printf_nice(cpos, USE_FHEXNN | USE_TAB2);
+    n += printf_nice(epos, USE_FHEXNN);
+    n += printf_nice(fofs, USE_FHEXNN);
+    n += printf_eol();
+
+    n += printf_text(fgetstring(n1), USE_LT| USE_TAB3);
+    n += printf_eol();
+  }
+
+  fstep(notes, descsz0 + 3);
+  ffree(n1);
+
+  return n;
+}
+
 static int dump_notesX(const pbuffer_t p, const poptions_t o, const uint64_t n_namesz, const uint64_t n_descsz, const uint64_t n_type, const handle_t notes) {
   const int MAXSIZE0 = 22;
-  const int MAXSIZE1 = isELF64(p) ? 19 : 12;
+//  const int MAXSIZE1 = isELF64(p) ? 19 : 12;
 
   int n0 = 0;
   int n1 = 0;
-  const imode_t USE_FHEXNN = isELF64(p) ? USE_FHEX64 : USE_FHEX32;
+//  const imode_t USE_FHEXNN = isELF64(p) ? USE_FHEX64 : USE_FHEX32;
 
   n1  = printf_sore(fgetp(notes, n_namesz), n_namesz, USE_STR | USE_TAB);
   n0 += printf_pack(MAXSIZE0 - n1);
@@ -2160,43 +2207,7 @@ static int dump_notesX(const pbuffer_t p, const poptions_t o, const uint64_t n_n
   n0 += printf_pick(get_NHDRTYPE(p), n_type, USE_LT | USE_SPACE | USE_EOL);
 
   if (NT_FILE == n_type) {
-    fstep(notes, 3);
-
-    const uint64_t smark = fgetcpos(notes);
-    const uint64_t count = fgetuNN(notes);
-    const uint64_t psize = fgetuNN(notes);
-
-    uint64_t descsz0 = n_descsz;
-    descsz0 -= 3 + fgetcpos(notes) - smark;
-
-    n0 += printf_text("PAGE SIZE", USE_LT | USE_TAB2 | USE_COLON);
-    n0 += printf_nice(psize, USE_DEC | USE_EOL);
-
-    n0 += printf_text("Start", USE_LT | USE_TAB2 | SET_PAD(MAXSIZE1 + 4));
-    n0 += printf_text("End", USE_LT | SET_PAD(MAXSIZE1));
-    n0 += printf_text("Page Offset", USE_LT | USE_EOL);
-
-    handle_t n1 = fgalloc(notes, count * 3 * 8, descsz0 - (count * 3 * 8) + 3, MEMFIND_NOBLOCKSIZE);
-
-    for (uint64_t i = 0; i < count; i++) {
-      const uint64_t spos = fgetcpos(notes);
-      const uint64_t cpos = fgetuNN(notes);
-      const uint64_t epos = fgetuNN(notes);
-      const uint64_t fofs = fgetuNN(notes);
-
-      descsz0 -= fgetcpos(notes) - spos;
-
-      n0 += printf_nice(cpos, USE_FHEXNN | USE_TAB2);
-      n0 += printf_nice(epos, USE_FHEXNN);
-      n0 += printf_nice(fofs, USE_FHEXNN);
-      n0 += printf_eol();
-
-      n0 += printf_text(fgetstring(n1), USE_LT| USE_TAB3);
-      n0 += printf_eol();
-    }
-
-    fstep(notes, descsz0 + 3);
-    ffree(n1);
+    n0 += dump_notes3(p, o, n_descsz, notes);
   } else if (NT_X86_XSTATE == n_type) {
     fstep(notes, 2);
 
