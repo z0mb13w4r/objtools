@@ -2146,7 +2146,7 @@ static int dump_notes2(const pbuffer_t p, const uint64_t p_offset, const uint64_
   return n;
 }
 
-static int dump_notes3(const pbuffer_t p, const uint64_t n_namesz, const uint64_t n_descsz, const uint64_t n_type, const handle_t notes) {
+static int dump_notesX(const pbuffer_t p, const poptions_t o, const uint64_t n_namesz, const uint64_t n_descsz, const uint64_t n_type, const handle_t notes) {
   const int MAXSIZE0 = 22;
   const int MAXSIZE1 = isELF64(p) ? 19 : 12;
 
@@ -2241,7 +2241,7 @@ int dumpelf_notes32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
             MEMSTACK(Elf32_Nhdr, nx);
             Elf32_Nhdr *n0 = ecconvert_nhdr32(p, nx, fgetp(p1, sizeof(Elf32_Nhdr)));
             if (n0) {
-              n += dump_notes3(p, n0->n_namesz, n0->n_descsz, n0->n_type, p1);
+              n += dump_notesX(p, o, n0->n_namesz, n0->n_descsz, n0->n_type, p1);
             }
           }
 
@@ -2284,7 +2284,7 @@ int dumpelf_notes64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
             MEMSTACK(Elf64_Nhdr, nx);
             Elf64_Nhdr *n0 = ecconvert_nhdr64(p, nx, fgetp(p1, sizeof(Elf64_Nhdr)));
             if (n0) {
-              n += dump_notes3(p, n0->n_namesz, n0->n_descsz, n0->n_type, p1);
+              n += dump_notesX(p, o, n0->n_namesz, n0->n_descsz, n0->n_type, p1);
             }
           }
 
