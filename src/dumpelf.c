@@ -2232,6 +2232,18 @@ static int dump_notes6A(const pbuffer_t p, const poptions_t o, const uint64_t n_
   return n;
 }
 
+static int dump_notes6B(const pbuffer_t p, const poptions_t o, const uint64_t n_descsz, const handle_t notes) {
+  int n = 0;
+
+  n += printf_text("SECONDS", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+
+  n += printf_text("MICROSECONDS", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+
+  return n;
+}
+
 static int dump_notes6(const pbuffer_t p, const poptions_t o, const uint64_t n_descsz, const handle_t notes) {
   int n = 0;
 
@@ -2260,6 +2272,11 @@ static int dump_notes6(const pbuffer_t p, const poptions_t o, const uint64_t n_d
 
     n += printf_text("SESSION ID", USE_LT | USE_COLON | USE_TAB2);
     n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+
+    n += dump_notes6B(p, o, n_descsz, notes);
+    n += dump_notes6B(p, o, n_descsz, notes);
+    n += dump_notes6B(p, o, n_descsz, notes);
+    n += dump_notes6B(p, o, n_descsz, notes);
 
     fstep(notes, n_descsz - (fgetcpos(notes) - spos) + 3);
   } else {
