@@ -2241,6 +2241,18 @@ static int dump_notes6(const pbuffer_t p, const poptions_t o, const uint64_t n_d
     n += printf_text("HELD SIGNALS", USE_LT | USE_COLON | USE_TAB2);
     n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
 
+    n += printf_text("PROCESS ID", USE_LT | USE_COLON | USE_TAB2);
+    n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+
+    n += printf_text("PARENT PROCESS ID", USE_LT | USE_COLON | USE_TAB2);
+    n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+
+    n += printf_text("GROUP ID", USE_LT | USE_COLON | USE_TAB2);
+    n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+
+    n += printf_text("SESSION ID", USE_LT | USE_COLON | USE_TAB2);
+    n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+
     fstep(notes, n_descsz - (fgetcpos(notes) - spos) + 3);
   } else {
     fstep(notes, n_descsz + 3);
