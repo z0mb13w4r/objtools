@@ -2221,9 +2221,30 @@ static int dump_notes6(const pbuffer_t p, const poptions_t o, const uint64_t n_d
   int n = 0;
 
   if (MODE_ISANY(o->action, OPRPROGRAM_COREDUMPDETAILED)) {
-  }
+    const uint64_t spos = fgetcpos(notes);
 
-  fstep(notes, n_descsz + 3);
+    n += printf_text("SIGNAL NUMBER", USE_LT | USE_COLON | USE_TAB2);
+    n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+
+    n += printf_text("EXTRA CODE", USE_LT | USE_COLON | USE_TAB2);
+    n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+
+    n += printf_text("ERROR NUMBER", USE_LT | USE_COLON | USE_TAB2);
+    n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+
+    n += printf_text("CURRENT SIGNAL", USE_LT | USE_COLON | USE_TAB2);
+    n += printf_nice(fgetu32(notes), USE_FHEX16 | USE_EOL);
+
+    n += printf_text("PENDING SIGNALS", USE_LT | USE_COLON | USE_TAB2);
+    n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+
+    n += printf_text("HELD SIGNALS", USE_LT | USE_COLON | USE_TAB2);
+    n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+
+    fstep(notes, n_descsz - (fgetcpos(notes) - spos) + 3);
+  } else {
+    fstep(notes, n_descsz + 3);
+  }
 
   return n;
 }
