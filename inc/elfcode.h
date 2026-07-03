@@ -97,6 +97,10 @@ typedef struct pthumb_s {
   uchar_t  value;
 } thumb_t, *pthumb_t;
 
+typedef struct regs_arm_s {
+  uint32_t uregs[18];
+} regs_arm_t, *pregs_arm_t;
+
 typedef struct regs_i386_s {
   uint32_t ebx, ecx, edx, esi, edi, ebp, eax;
   uint16_t ds, __ds, es, __es;
