@@ -102,6 +102,12 @@ typedef struct elf_timeval_s {
   uint32_t tv_usec;
 } elf_timeval_t, *pelf_timeval_t;
 
+typedef struct elf_siginfo_s {
+  int32_t si_signo;
+  int32_t si_code;
+  int32_t si_errno;
+} elf_siginfo_t, *pelf_siginfo_t;
+
 typedef struct regs_arm_s {
   int32_t uregs[18];
 } regs_arm_t, *pregs_arm_t;
