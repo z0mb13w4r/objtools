@@ -97,6 +97,11 @@ typedef struct pthumb_s {
   uchar_t  value;
 } thumb_t, *pthumb_t;
 
+typedef struct elf_timeval_s {
+  uint32_t tv_sec;
+  uint32_t tv_usec;
+} elf_timeval_t, *pelf_timeval_t;
+
 typedef struct regs_arm_s {
   int32_t uregs[18];
 } regs_arm_t, *pregs_arm_t;
