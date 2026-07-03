@@ -97,6 +97,16 @@ typedef struct pthumb_s {
   uchar_t  value;
 } thumb_t, *pthumb_t;
 
+typedef struct i386_regs_s {
+  uint32_t ebx, ecx, edx, esi, edi, ebp, eax;
+  uint16_t ds, __ds, es, __es;
+  uint16_t fs, __fs, gs, __gs;
+  uint32_t orig_eax, eip;
+  uint16_t cs, __cs;
+  uint32_t eflags, esp;
+  uint16_t ss, __ss;
+} i386_regs_t, *pi386_regs_t;
+
 bool_t isTBSS32(Elf32_Shdr *s, Elf32_Phdr *p);
 bool_t isTBSS64(Elf64_Shdr *s, Elf64_Phdr *p);
 
