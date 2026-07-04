@@ -211,11 +211,11 @@ typedef struct prstatus_mips_s {
 } prstatus_mips_t, *pprstatus_mips_t;
 
 typedef struct prpsinfo_arm_s {
-  unsigned char  pr_state;
+  uint8_t        pr_state;
   char           pr_sname;
-  unsigned char  pr_zomb;
+  uint8_t        pr_zomb;
   signed char    pr_nice;
-  unsigned long  pr_flag;
+  uint32_t       pr_flag;
   uint16_t       pr_uid;
   uint16_t       pr_gid;
   pid_t          pr_pid;
@@ -225,6 +225,22 @@ typedef struct prpsinfo_arm_s {
   char           pr_fname[16];
   char           pr_psargs[80];
 } prpsinfo_arm_t, *pprpsinfo_arm_t;
+
+typedef struct prpsinfo_i386_s {
+  uint8_t        pr_state;
+  char           pr_sname;
+  uint8_t        pr_zomb;
+  signed char    pr_nice;
+  uint32_t       pr_flag;
+  uint16_t       pr_uid;
+  uint16_t       pr_gid;
+  pid_t          pr_pid;
+  pid_t          pr_ppid;
+  pid_t          pr_pgrp;
+  pid_t          pr_sid;
+  char           pr_fname[16];
+  char           pr_psargs[80];
+} prpsinfo_i386_t, *pprpsinfo_i386_t;
 
 bool_t isTBSS32(Elf32_Shdr *s, Elf32_Phdr *p);
 bool_t isTBSS64(Elf64_Shdr *s, Elf64_Phdr *p);
