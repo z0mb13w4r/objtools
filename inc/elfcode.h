@@ -148,6 +148,23 @@ typedef struct regs_x86_64_s {
   uint64_t  ds, es, fs, gs;
 } regs_x86_86_t, *pregs_x86_86_t;
 
+typedef struct prstatus_x86_86_s {
+  elf_siginfo_t  pr_info;
+  uint16_t       pr_cursig;
+  unsigned long  pr_sigpend;
+  unsigned long  pr_sighold;
+  pid_t          pr_pid;
+  pid_t          pr_ppid;
+  pid_t          pr_pgrp;
+  pid_t          pr_sid;
+  elf_timeval_t  pr_utime;
+  elf_timeval_t  pr_stime;
+  elf_timeval_t  pr_cutime;
+  elf_timeval_t  pr_cstime;
+  regs_x86_86_t  pr_reg;
+  uint32_t       pr_fpvalid;
+} prstatus_x86_86_t, *pprstatus_x86_86_t;
+
 typedef struct regs_mips_s {
   uint32_t pad[6];
   uint32_t uregs[32];
