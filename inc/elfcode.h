@@ -176,6 +176,23 @@ typedef struct regs_mips_s {
   uint32_t unused;
 } regs_mips_t, *pregs_mips_t;
 
+typedef struct prstatus_mips_s {
+  elf_siginfo_t  pr_info;
+  uint16_t       pr_cursig;
+  unsigned long  pr_sigpend;
+  unsigned long  pr_sighold;
+  pid_t          pr_pid;
+  pid_t          pr_ppid;
+  pid_t          pr_pgrp;
+  pid_t          pr_sid;
+  elf_timeval_t  pr_utime;
+  elf_timeval_t  pr_stime;
+  elf_timeval_t  pr_cutime;
+  elf_timeval_t  pr_cstime;
+  regs_mips_t    pr_reg;
+  uint32_t       pr_fpvalid;
+} prstatus_mips_t, *pprstatus_mips_t;
+
 bool_t isTBSS32(Elf32_Shdr *s, Elf32_Phdr *p);
 bool_t isTBSS64(Elf64_Shdr *s, Elf64_Phdr *p);
 
