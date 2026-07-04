@@ -115,8 +115,8 @@ typedef struct regs_arm_s {
 typedef struct prstatus_arm_s {
   elf_siginfo_t  pr_info;
   uint16_t       pr_cursig;
-  unsigned long  pr_sigpend;
-  unsigned long  pr_sighold;
+  uint32_t       pr_sigpend;
+  uint32_t       pr_sighold;
   pid_t          pr_pid;
   pid_t          pr_ppid;
   pid_t          pr_pgrp;
@@ -142,8 +142,8 @@ typedef struct regs_i386_s {
 typedef struct prstatus_i386_s {
   elf_siginfo_t  pr_info;
   uint16_t       pr_cursig;
-  unsigned long  pr_sigpend;
-  unsigned long  pr_sighold;
+  uint32_t       pr_sigpend;
+  uint32_t       pr_sighold;
   pid_t          pr_pid;
   pid_t          pr_ppid;
   pid_t          pr_pgrp;
@@ -168,8 +168,8 @@ typedef struct regs_x86_64_s {
 typedef struct prstatus_x86_86_s {
   elf_siginfo_t  pr_info;
   uint16_t       pr_cursig;
-  unsigned long  pr_sigpend;
-  unsigned long  pr_sighold;
+  uint32_t       pr_sigpend;
+  uint32_t       pr_sighold;
   pid_t          pr_pid;
   pid_t          pr_ppid;
   pid_t          pr_pgrp;
@@ -196,8 +196,8 @@ typedef struct regs_mips_s {
 typedef struct prstatus_mips_s {
   elf_siginfo_t  pr_info;
   uint16_t       pr_cursig;
-  unsigned long  pr_sigpend;
-  unsigned long  pr_sighold;
+  uint32_t       pr_sigpend;
+  uint32_t       pr_sighold;
   pid_t          pr_pid;
   pid_t          pr_ppid;
   pid_t          pr_pgrp;
