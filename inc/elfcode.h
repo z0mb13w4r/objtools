@@ -122,6 +122,23 @@ typedef struct regs_i386_s {
   uint16_t ss, __ss;
 } regs_i386_t, *pregs_i386_t;
 
+typedef struct prstatus_i386_s {
+  elf_siginfo_t  pr_info;
+  uint16_t       pr_cursig;
+  unsigned long  pr_sigpend;
+  unsigned long  pr_sighold;
+  pid_t          pr_pid;
+  pid_t          pr_ppid;
+  pid_t          pr_pgrp;
+  pid_t          pr_sid;
+  elf_timeval_t  pr_utime;
+  elf_timeval_t  pr_stime;
+  elf_timeval_t  pr_cutime;
+  elf_timeval_t  pr_cstime;
+  regs_i386_t    pr_reg;
+  uint32_t       pr_fpvalid;
+} prstatus_i386_t, *pprstatus_i386_t;
+
 typedef struct regs_x86_64_s {
   uint64_t r15, r14, r13, r12, rbp, rbx, r11, r10;
   uint64_t r9, r8, rax, rcx, rdx, rsi, rdi, orig_rax;
