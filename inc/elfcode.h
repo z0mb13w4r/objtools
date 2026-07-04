@@ -129,7 +129,7 @@ typedef struct prstatus_arm_s {
   uint32_t       pr_fpvalid;
 } prstatus_arm_t, *pprstatus_arm_t;
 
-typedef struct regs_i386_s {
+typedef struct regs_x86_s {
   uint32_t ebx, ecx, edx, esi, edi, ebp, eax;
   uint16_t ds, __ds, es, __es;
   uint16_t fs, __fs, gs, __gs;
@@ -137,9 +137,9 @@ typedef struct regs_i386_s {
   uint16_t cs, __cs;
   uint32_t eflags, esp;
   uint16_t ss, __ss;
-} regs_i386_t, *pregs_i386_t;
+} regs_x86_t, *pregs_x86_t;
 
-typedef struct prstatus_i386_s {
+typedef struct prstatus_x86_s {
   elf_siginfo_t  pr_info;
   uint16_t       pr_cursig;
   uint32_t       pr_sigpend;
@@ -152,9 +152,9 @@ typedef struct prstatus_i386_s {
   elf_timeval_t  pr_stime;
   elf_timeval_t  pr_cutime;
   elf_timeval_t  pr_cstime;
-  regs_i386_t    pr_reg;
+  regs_x86_t     pr_reg;
   uint32_t       pr_fpvalid;
-} prstatus_i386_t, *pprstatus_i386_t;
+} prstatus_x86_t, *pprstatus_x86_t;
 
 typedef struct regs_x86_64_s {
   uint64_t r15, r14, r13, r12, rbp, rbx, r11, r10;
@@ -226,7 +226,7 @@ typedef struct prpsinfo_arm_s {
   char           pr_psargs[80];
 } prpsinfo_arm_t, *pprpsinfo_arm_t;
 
-typedef struct prpsinfo_i386_s {
+typedef struct prpsinfo_x86_s {
   uint8_t        pr_state;
   char           pr_sname;
   uint8_t        pr_zomb;
@@ -240,7 +240,7 @@ typedef struct prpsinfo_i386_s {
   pid_t          pr_sid;
   char           pr_fname[16];
   char           pr_psargs[80];
-} prpsinfo_i386_t, *pprpsinfo_i386_t;
+} prpsinfo_x86_t, *pprpsinfo_x86_t;
 
 typedef struct prpsinfo_x86_64_s {
   uint8_t        pr_state;
