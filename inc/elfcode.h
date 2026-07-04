@@ -112,6 +112,23 @@ typedef struct regs_arm_s {
   int32_t uregs[18];
 } regs_arm_t, *pregs_arm_t;
 
+typedef struct prstatus_arm_s {
+  elf_siginfo_t  pr_info;
+  uint16_t       pr_cursig;
+  unsigned long  pr_sigpend;
+  unsigned long  pr_sighold;
+  pid_t          pr_pid;
+  pid_t          pr_ppid;
+  pid_t          pr_pgrp;
+  pid_t          pr_sid;
+  elf_timeval_t  pr_utime;
+  elf_timeval_t  pr_stime;
+  elf_timeval_t  pr_cutime;
+  elf_timeval_t  pr_cstime;
+  regs_arm_t     pr_reg;
+  uint32_t       pr_fpvalid;
+} prstatus_arm_t, *pprstatus_arm_t;
+
 typedef struct regs_i386_s {
   uint32_t ebx, ecx, edx, esi, edi, ebp, eax;
   uint16_t ds, __ds, es, __es;
