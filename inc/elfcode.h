@@ -163,9 +163,9 @@ typedef struct regs_x86_64_s {
   uint64_t rsp, ss;
   uint64_t fs_base, gs_base;
   uint64_t  ds, es, fs, gs;
-} regs_x86_86_t, *pregs_x86_86_t;
+} regs_x86_64_t, *pregs_x86_64_t;
 
-typedef struct prstatus_x86_86_s {
+typedef struct prstatus_x86_64_s {
   elf_siginfo_t  pr_info;
   uint16_t       pr_cursig;
   uint32_t       pr_sigpend;
@@ -178,9 +178,9 @@ typedef struct prstatus_x86_86_s {
   elf_timeval_t  pr_stime;
   elf_timeval_t  pr_cutime;
   elf_timeval_t  pr_cstime;
-  regs_x86_86_t  pr_reg;
+  regs_x86_64_t  pr_reg;
   uint32_t       pr_fpvalid;
-} prstatus_x86_86_t, *pprstatus_x86_86_t;
+} prstatus_x86_64_t, *pprstatus_x86_64_t;
 
 typedef struct regs_mips_s {
   uint32_t pad[6];
@@ -209,6 +209,22 @@ typedef struct prstatus_mips_s {
   regs_mips_t    pr_reg;
   uint32_t       pr_fpvalid;
 } prstatus_mips_t, *pprstatus_mips_t;
+
+typedef struct prpsinfo_arm_s {
+  unsigned char  pr_state;
+  char           pr_sname;
+  unsigned char  pr_zomb;
+  signed char    pr_nice;
+  unsigned long  pr_flag;
+  uint16_t       pr_uid;
+  uint16_t       pr_gid;
+  pid_t          pr_pid;
+  pid_t          pr_ppid;
+  pid_t          pr_pgrp;
+  pid_t          pr_sid;
+  char           pr_fname[16];
+  char           pr_psargs[80];
+} prpsinfo_arm_t, *pprpsinfo_arm_t;
 
 bool_t isTBSS32(Elf32_Shdr *s, Elf32_Phdr *p);
 bool_t isTBSS64(Elf64_Shdr *s, Elf64_Phdr *p);
