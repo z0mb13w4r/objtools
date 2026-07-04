@@ -242,6 +242,22 @@ typedef struct prpsinfo_i386_s {
   char           pr_psargs[80];
 } prpsinfo_i386_t, *pprpsinfo_i386_t;
 
+typedef struct prpsinfo_x86_64_s {
+  uint8_t        pr_state;
+  char           pr_sname;
+  uint8_t        pr_zomb;
+  signed char    pr_nice;
+  uint32_t       pr_flag;
+  uint32_t       pr_uid;
+  uint32_t       pr_gid;
+  pid_t          pr_pid;
+  pid_t          pr_ppid;
+  pid_t          pr_pgrp;
+  pid_t          pr_sid;
+  char           pr_fname[16];
+  char           pr_psargs[80];
+} prpsinfo_x86_64_t, *pprpsinfo_x86_64_t;
+
 bool_t isTBSS32(Elf32_Shdr *s, Elf32_Phdr *p);
 bool_t isTBSS64(Elf64_Shdr *s, Elf64_Phdr *p);
 
