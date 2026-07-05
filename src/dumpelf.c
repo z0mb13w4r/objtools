@@ -2146,7 +2146,8 @@ static int dump_notes2(const pbuffer_t p, const uint64_t p_offset, const uint64_
   return n;
 }
 
-static int dump_notes3(const pbuffer_t p, const poptions_t o, const uint64_t n_descsz, const handle_t notes) {
+static int dump_notes3(const pbuffer_t p, const poptions_t o, const uint64_t e_machine,
+                     const uint64_t n_descsz, const handle_t notes) {
   int n = 0;
 
   const imode_t USE_FHEXNN = isELF64(p) ? USE_FHEX64 : USE_FHEX32;
@@ -2193,7 +2194,8 @@ static int dump_notes3(const pbuffer_t p, const poptions_t o, const uint64_t n_d
   return n;
 }
 
-static int dump_notes4(const pbuffer_t p, const poptions_t o, const uint64_t n_descsz, const handle_t notes) {
+static int dump_notes4(const pbuffer_t p, const poptions_t o, const uint64_t e_machine,
+                     const uint64_t n_descsz, const handle_t notes) {
   int n = 0;
 
   fstep(notes, 2);
@@ -2206,7 +2208,8 @@ static int dump_notes4(const pbuffer_t p, const poptions_t o, const uint64_t n_d
   return n;
 }
 
-static int dump_notes5(const pbuffer_t p, const poptions_t o, const uint64_t n_descsz, const handle_t notes) {
+static int dump_notes5(const pbuffer_t p, const poptions_t o, const uint64_t e_machine,
+                     const uint64_t n_descsz, const handle_t notes) {
   int n = 0;
 
   if (MODE_ISANY(o->action, OPRPROGRAM_COREDUMPDETAILED)) {
@@ -2369,7 +2372,8 @@ static int dump_notes6Cx64(const pbuffer_t p, const poptions_t o, const uint64_t
   return n;
 }
 
-static int dump_notes6(const pbuffer_t p, const poptions_t o, const uint64_t n_descsz, const handle_t notes) {
+static int dump_notes6(const pbuffer_t p, const poptions_t o, const uint64_t e_machine,
+                     const uint64_t n_descsz, const handle_t notes) {
   int n = 0;
 
   if (MODE_ISANY(o->action, OPRPROGRAM_COREDUMPDETAILED)) {
@@ -2429,13 +2433,13 @@ static int dump_notesX(const pbuffer_t p, const poptions_t o, const uint64_t e_m
   n0 += printf_pick(get_NHDRTYPE(p), n_type, USE_LT | USE_SPACE | USE_EOL);
 
   if (NT_FILE == n_type) {
-    n0 += dump_notes3(p, o, n_descsz, notes);
+    n0 += dump_notes3(p, o, e_machine, n_descsz, notes);
   } else if (NT_X86_XSTATE == n_type) {
-    n0 += dump_notes4(p, o, n_descsz, notes);
+    n0 += dump_notes4(p, o, e_machine, n_descsz, notes);
   } else if (NT_PRSTATUS == n_type) {
-    n0 += dump_notes5(p, o, n_descsz, notes);
+    n0 += dump_notes5(p, o, e_machine, n_descsz, notes);
   } else if (NT_PRPSINFO == n_type) {
-    n0 += dump_notes6(p, o, n_descsz, notes);
+    n0 += dump_notes6(p, o, e_machine, n_descsz, notes);
   } else {
     fstep(notes, n_descsz + 3);
   }
