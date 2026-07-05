@@ -2244,7 +2244,7 @@ static int dump_notes6B(const pbuffer_t p, const poptions_t o, const uint64_t n_
   return n;
 }
 
-static int dump_notes6C(const pbuffer_t p, const poptions_t o, const uint64_t n_descsz, const handle_t notes) {
+static int dump_notes6Cx64(const pbuffer_t p, const poptions_t o, const uint64_t n_descsz, const handle_t notes) {
   int n = 0;
 //uint64_t r15, r14, r13, r12, rbp, rbx, r11, r10;
   n += printf_text("R15", USE_LT | USE_COLON | USE_TAB2);
@@ -2343,7 +2343,7 @@ static int dump_notes6(const pbuffer_t p, const poptions_t o, const uint64_t n_d
     n += dump_notes6B(p, o, n_descsz, notes);
     n += dump_notes6B(p, o, n_descsz, notes);
     n += dump_notes6B(p, o, n_descsz, notes);
-    n += dump_notes6C(p, o, n_descsz, notes);
+    n += dump_notes6Cx64(p, o, n_descsz, notes);
 
     n += printf_text("FPVALID", USE_LT | USE_COLON | USE_TAB2);
     n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
