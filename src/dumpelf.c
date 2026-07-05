@@ -2244,6 +2244,72 @@ static int dump_notes6B(const pbuffer_t p, const poptions_t o, const uint64_t n_
   return n;
 }
 
+static int dump_notes6C(const pbuffer_t p, const poptions_t o, const uint64_t n_descsz, const handle_t notes) {
+  int n = 0;
+//uint64_t r15, r14, r13, r12, rbp, rbx, r11, r10;
+  n += printf_text("R15", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX64 | USE_EOL);
+  n += printf_text("R14", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX64 | USE_EOL);
+  n += printf_text("R13", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX64 | USE_EOL);
+  n += printf_text("R12", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX64 | USE_EOL);
+  n += printf_text("RBP", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX64 | USE_EOL);
+  n += printf_text("RBX", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX64 | USE_EOL);
+  n += printf_text("R11", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX64 | USE_EOL);
+  n += printf_text("R10", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX64 | USE_EOL);
+//uint64_t r9, r8, rax, rcx, rdx, rsi, rdi, orig_rax;
+  n += printf_text("R9", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX64 | USE_EOL);
+  n += printf_text("R8", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX64 | USE_EOL);
+  n += printf_text("RAX", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX64 | USE_EOL);
+  n += printf_text("RCX", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX64 | USE_EOL);
+  n += printf_text("RDX", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX64 | USE_EOL);
+  n += printf_text("RSI", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX64 | USE_EOL);
+  n += printf_text("RDI", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX64 | USE_EOL);
+  n += printf_text("RAX (ORIG)", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX64 | USE_EOL);
+//uint64_t rip, cs, eflags;
+  n += printf_text("RIP", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX64 | USE_EOL);
+  n += printf_text("CS", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX64 | USE_EOL);
+  n += printf_text("EFLAGS", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX64 | USE_EOL);
+//uint64_t rsp, ss;
+  n += printf_text("RSP", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX64 | USE_EOL);
+  n += printf_text("SS", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX64 | USE_EOL);
+//uint64_t fs_base, gs_base;
+  n += printf_text("FS (BASE)", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX64 | USE_EOL);
+  n += printf_text("GS (BASE)", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX64 | USE_EOL);
+//uint64_t  ds, es, fs, gs;
+  n += printf_text("DS", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX64 | USE_EOL);
+  n += printf_text("ES", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX64 | USE_EOL);
+  n += printf_text("FS", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX64 | USE_EOL);
+  n += printf_text("GS", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX64 | USE_EOL);
+
+  return n;
+}
+
 static int dump_notes6(const pbuffer_t p, const poptions_t o, const uint64_t n_descsz, const handle_t notes) {
   int n = 0;
 
@@ -2277,6 +2343,7 @@ static int dump_notes6(const pbuffer_t p, const poptions_t o, const uint64_t n_d
     n += dump_notes6B(p, o, n_descsz, notes);
     n += dump_notes6B(p, o, n_descsz, notes);
     n += dump_notes6B(p, o, n_descsz, notes);
+    n += dump_notes6C(p, o, n_descsz, notes);
 
     fstep(notes, n_descsz - (fgetcpos(notes) - spos) + 3);
   } else {
