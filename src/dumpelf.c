@@ -2345,6 +2345,9 @@ static int dump_notes6(const pbuffer_t p, const poptions_t o, const uint64_t n_d
     n += dump_notes6B(p, o, n_descsz, notes);
     n += dump_notes6C(p, o, n_descsz, notes);
 
+    n += printf_text("FPVALID", USE_LT | USE_COLON | USE_TAB2);
+    n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+
     fstep(notes, n_descsz - (fgetcpos(notes) - spos) + 3);
   } else {
     fstep(notes, n_descsz + 3);
