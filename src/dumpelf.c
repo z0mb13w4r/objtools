@@ -2402,6 +2402,7 @@ static int dump_notes6(const pbuffer_t p, const poptions_t o, const uint64_t n_d
     n += dump_notes6B(p, o, n_descsz, notes);
     n += dump_notes6B(p, o, n_descsz, notes);
     n += dump_notes6B(p, o, n_descsz, notes);
+
     n += dump_notes6Cx64(p, o, n_descsz, notes);
 
     n += printf_text("FPVALID", USE_LT | USE_COLON | USE_TAB2);
@@ -2415,7 +2416,8 @@ static int dump_notes6(const pbuffer_t p, const poptions_t o, const uint64_t n_d
   return n;
 }
 
-static int dump_notesX(const pbuffer_t p, const poptions_t o, const uint64_t n_namesz, const uint64_t n_descsz, const uint64_t n_type, const handle_t notes) {
+static int dump_notesX(const pbuffer_t p, const poptions_t o, const uint64_t e_machine,
+                     const uint64_t n_namesz, const uint64_t n_descsz, const uint64_t n_type, const handle_t notes) {
   const int MAXSIZE = 22;
 
   int n0 = 0;
@@ -2471,7 +2473,7 @@ int dumpelf_notes32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
             MEMSTACK(Elf32_Nhdr, nx);
             Elf32_Nhdr *n0 = ecconvert_nhdr32(p, nx, fgetp(p1, sizeof(Elf32_Nhdr)));
             if (n0) {
-              n += dump_notesX(p, o, n0->n_namesz, n0->n_descsz, n0->n_type, p1);
+              n += dump_notesX(p, o, ehdr->e_machine, n0->n_namesz, n0->n_descsz, n0->n_type, p1);
             }
           }
 
@@ -2514,7 +2516,7 @@ int dumpelf_notes64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
             MEMSTACK(Elf64_Nhdr, nx);
             Elf64_Nhdr *n0 = ecconvert_nhdr64(p, nx, fgetp(p1, sizeof(Elf64_Nhdr)));
             if (n0) {
-              n += dump_notesX(p, o, n0->n_namesz, n0->n_descsz, n0->n_type, p1);
+              n += dump_notesX(p, o, ehdr->e_machine, n0->n_namesz, n0->n_descsz, n0->n_type, p1);
             }
           }
 
