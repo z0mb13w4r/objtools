@@ -318,7 +318,6 @@ int dumpelf_sectionheaders64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *
   return n;
 }
 
-
 static int dump_sectiongroups0(const pbuffer_t p, const poptions_t o,
                      const int index, const int maxsize, const uint64_t flags, const uint64_t sh_info) {
   int n = 0;
@@ -736,12 +735,6 @@ int dumpelf_dynamic64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
 
   return n;
 }
-
-
-
-
-
-
 
 static int dump_relocsdef0(const pbuffer_t p,
                      const uint64_t sh_link, const uint64_t st_value, const uint64_t st_name, const uint64_t st_shndx) {
@@ -2382,7 +2375,7 @@ static int dump_notes6(const pbuffer_t p, const poptions_t o, const uint64_t e_m
     n += dump_notes6A(p, o, n_descsz, notes);
 
     n += printf_text("CURRENT SIGNAL", USE_LT | USE_COLON | USE_TAB2);
-    n += printf_nice(fgetu32(notes), USE_FHEX16 | USE_EOL);
+    n += printf_nice(fgetu16(notes), USE_FHEX16 | USE_EOL);
 
     n += printf_text("PENDING SIGNALS", USE_LT | USE_COLON | USE_TAB2);
     n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
@@ -2407,12 +2400,23 @@ static int dump_notes6(const pbuffer_t p, const poptions_t o, const uint64_t e_m
     n += dump_notes6B(p, o, n_descsz, notes);
     n += dump_notes6B(p, o, n_descsz, notes);
 
-    n += dump_notes6Cx64(p, o, n_descsz, notes);
+    if (e_machine == EM_386) {
+//printf("32:");
+      n += dump_notes6Cx32(p, o, n_descsz, notes);
+    } else if (e_machine == EM_X86_64) {
+//printf("64:");
+      n += dump_notes6Cx64(p, o, n_descsz, notes);
+    } else if (EM_ARM == e_machine || EM_AARCH64 == e_machine) {
+    } else if (EM_MIPS == e_machine || EM_MIPS_RS3_LE == e_machine) {
+    } else if (EM_RISCV == e_machine) {
+    }
 
     n += printf_text("FPVALID", USE_LT | USE_COLON | USE_TAB2);
     n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
 
-    fstep(notes, n_descsz - (fgetcpos(notes) - spos) + 3);
+    const uint64_t size = fgetcpos(notes) - spos;
+//printf("%ld:%ld\n", n_descsz, size);
+    fstep(notes, n_descsz - size + 3);
   } else {
     fstep(notes, n_descsz + 3);
   }
