@@ -2228,6 +2228,13 @@ static int dump_notes5B(const pbuffer_t p, const poptions_t o, const uint64_t n_
   return n;
 }
 
+static int dump_notes5Carm(const pbuffer_t p, const poptions_t o, const uint64_t n_descsz, const handle_t notes) {
+  int n = 0;
+//  int32_t uregs[18];
+
+  return n;
+}
+
 static int dump_notes5Cx32(const pbuffer_t p, const poptions_t o, const uint64_t n_descsz, const handle_t notes) {
   int n = 0;
 //  uint32_t ebx, ecx, edx, esi, edi, ebp, eax;
@@ -2389,12 +2396,11 @@ static int dump_notes5(const pbuffer_t p, const poptions_t o, const uint64_t e_m
     n += dump_notes5B(p, o, n_descsz, notes);
 
     if (e_machine == EM_386) {
-//printf("32:");
       n += dump_notes5Cx32(p, o, n_descsz, notes);
     } else if (e_machine == EM_X86_64) {
-//printf("64:");
       n += dump_notes5Cx64(p, o, n_descsz, notes);
     } else if (EM_ARM == e_machine || EM_AARCH64 == e_machine) {
+      n += dump_notes5Carm(p, o, n_descsz, notes);
     } else if (EM_MIPS == e_machine || EM_MIPS_RS3_LE == e_machine) {
     } else if (EM_RISCV == e_machine) {
     }
@@ -2403,7 +2409,7 @@ static int dump_notes5(const pbuffer_t p, const poptions_t o, const uint64_t e_m
     n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
 
     const uint64_t size = fgetcpos(notes) - spos;
-printf("%ld:%ld\n", n_descsz, size);
+//printf("%ld:%ld\n", n_descsz, size);
     fstep(notes, n_descsz - size + 3);
   } else {
     fstep(notes, n_descsz + 3);
