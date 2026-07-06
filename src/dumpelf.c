@@ -2231,6 +2231,42 @@ static int dump_notes5B(const pbuffer_t p, const poptions_t o, const uint64_t n_
 static int dump_notes5Carm(const pbuffer_t p, const poptions_t o, const uint64_t n_descsz, const handle_t notes) {
   int n = 0;
 //  int32_t uregs[18];
+  n += printf_text("R0", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+  n += printf_text("R1", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+  n += printf_text("R2", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+  n += printf_text("R3", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+  n += printf_text("R4", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+  n += printf_text("R5", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+  n += printf_text("R6", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+  n += printf_text("R7", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+  n += printf_text("R8", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+  n += printf_text("R9", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+  n += printf_text("R10", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+  n += printf_text("R11", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+  n += printf_text("R12", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+  n += printf_text("SP", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+  n += printf_text("LR", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+  n += printf_text("PC", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+  n += printf_text("SPARE0", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+  n += printf_text("SPARE1", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
 
   return n;
 }
