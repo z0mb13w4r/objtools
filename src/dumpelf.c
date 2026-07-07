@@ -2271,6 +2271,12 @@ static int dump_notes5Carm(const pbuffer_t p, const poptions_t o, const uint64_t
   return n;
 }
 
+static int dump_notes5Cmips(const pbuffer_t p, const poptions_t o, const uint64_t n_descsz, const handle_t notes) {
+  int n = 0;
+
+  return n;
+}
+
 static int dump_notes5Cx32(const pbuffer_t p, const poptions_t o, const uint64_t n_descsz, const handle_t notes) {
   int n = 0;
 //  uint32_t ebx, ecx, edx, esi, edi, ebp, eax;
@@ -2438,6 +2444,7 @@ static int dump_notes5(const pbuffer_t p, const poptions_t o, const uint64_t e_m
     } else if (EM_ARM == e_machine || EM_AARCH64 == e_machine) {
       n += dump_notes5Carm(p, o, n_descsz, notes);
     } else if (EM_MIPS == e_machine || EM_MIPS_RS3_LE == e_machine) {
+      n += dump_notes5Cmips(p, o, n_descsz, notes);
     } else if (EM_RISCV == e_machine) {
     }
 
