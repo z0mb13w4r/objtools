@@ -2340,6 +2340,10 @@ static int dump_notes5Cmips(const pbuffer_t p, const poptions_t o, const uint64_
   n += printf_text("RA", USE_LT | USE_COLON | USE_TAB2);
   n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
 //  uint32_t hi, lo;
+  n += printf_text("HI", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+  n += printf_text("LO", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
 //  uint32_t cp0_epc;
 //  uint32_t cp0_badvaddr;
 //  uint32_t cp0_status;
