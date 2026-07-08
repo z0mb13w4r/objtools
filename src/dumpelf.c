@@ -2564,9 +2564,21 @@ static int dump_notes6(const pbuffer_t p, const poptions_t o, const uint64_t e_m
   int n = 0;
 
   if (MODE_ISANY(o->action, OPRPROGRAM_COREDUMPDETAILED)) {
-  }
+    const uint64_t spos = fgetcpos(notes);
 
-  fstep(notes, n_descsz + 3);
+    if (e_machine == EM_386) {
+    } else if (e_machine == EM_X86_64) {
+    } else if (EM_ARM == e_machine || EM_AARCH64 == e_machine) {
+    } else if (EM_MIPS == e_machine || EM_MIPS_RS3_LE == e_machine) {
+    } else if (EM_RISCV == e_machine) {
+    }
+
+    const uint64_t size = fgetcpos(notes) - spos;
+//printf("%ld:%ld\n", n_descsz, size);
+    fstep(notes, n_descsz - size + 3);
+  } else {
+    fstep(notes, n_descsz + 3);
+  }
 
   return n;
 }
