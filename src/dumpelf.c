@@ -2274,6 +2274,18 @@ static int dump_notes5Carm(const pbuffer_t p, const poptions_t o, const uint64_t
 static int dump_notes5Cmips(const pbuffer_t p, const poptions_t o, const uint64_t n_descsz, const handle_t notes) {
   int n = 0;
 //  uint32_t pad[6];
+  n += printf_text("SPARE0", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+  n += printf_text("SPARE1", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+  n += printf_text("SPARE2", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+  n += printf_text("SPARE3", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+  n += printf_text("SPARE4", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+  n += printf_text("SPARE5", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
 //  uint32_t uregs[32];
   n += printf_text("ZERO", USE_LT | USE_COLON | USE_TAB2);
   n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
@@ -2357,7 +2369,7 @@ static int dump_notes5Cmips(const pbuffer_t p, const poptions_t o, const uint64_
   n += printf_text("CP0 (CAUSE)", USE_LT | USE_COLON | USE_TAB2);
   n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
 //  uint32_t unused;
-  n += printf_text("SPARE0", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_text("SPARE6", USE_LT | USE_COLON | USE_TAB2);
   n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
 
   return n;
