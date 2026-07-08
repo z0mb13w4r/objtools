@@ -2357,6 +2357,8 @@ static int dump_notes5Cmips(const pbuffer_t p, const poptions_t o, const uint64_
   n += printf_text("CP0 (CAUSE)", USE_LT | USE_COLON | USE_TAB2);
   n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
 //  uint32_t unused;
+  n += printf_text("SPARE0", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
 
   return n;
 }
