@@ -2575,8 +2575,14 @@ static int dump_notes6Ax64(const pbuffer_t p, const poptions_t o, const uint64_t
   n += printf_text("NICE", USE_LT | USE_COLON | USE_TAB2);
   n += printf_nice(fgetu8(notes), USE_FHEX8 | USE_EOL);
 //  uint32_t       pr_flag;
+  n += printf_text("FLAG", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
 //  uint32_t       pr_uid;
+  n += printf_text("UID", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu8(notes), USE_FHEX8 | USE_EOL);
 //  uint32_t       pr_gid;
+  n += printf_text("GID", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu8(notes), USE_FHEX8 | USE_EOL);
 //  pid_t          pr_pid;
 //  pid_t          pr_ppid;
 //  pid_t          pr_pgrp;
