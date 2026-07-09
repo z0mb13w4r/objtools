@@ -2599,6 +2599,8 @@ static int dump_notes6Ax64(const pbuffer_t p, const poptions_t o, const uint64_t
   n += printf_text("FILENAME", USE_LT | USE_COLON | USE_TAB2);
   n += printf_sore(fgetp(notes, 16), 16, USE_STR | USE_EOL);
 //  char           pr_psargs[80];
+  n += printf_text("PSARGS", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_sore(fgetp(notes, 80), 80, USE_STR | USE_EOL);
 
   return n;
 }
