@@ -2563,7 +2563,11 @@ static int dump_notes6Ax64(const pbuffer_t p, const poptions_t o, const uint64_t
   int n = 0;
 
 //  uint8_t        pr_state;
+  n += printf_text("STATE", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu8(notes), USE_FHEX8 | USE_EOL);
 //  char           pr_sname;
+  n += printf_text("SNAME", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu8(notes), USE_FHEX8 | USE_EOL);
 //  uint8_t        pr_zomb;
 //  signed char    pr_nice;
 //  uint32_t       pr_flag;
