@@ -2569,7 +2569,11 @@ static int dump_notes6Ax64(const pbuffer_t p, const poptions_t o, const uint64_t
   n += printf_text("SNAME", USE_LT | USE_COLON | USE_TAB2);
   n += printf_nice(fgetu8(notes), USE_FHEX8 | USE_EOL);
 //  uint8_t        pr_zomb;
+  n += printf_text("ZOMB", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu8(notes), USE_FHEX8 | USE_EOL);
 //  signed char    pr_nice;
+  n += printf_text("NICE", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu8(notes), USE_FHEX8 | USE_EOL);
 //  uint32_t       pr_flag;
 //  uint32_t       pr_uid;
 //  uint32_t       pr_gid;
