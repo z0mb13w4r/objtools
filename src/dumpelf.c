@@ -2697,6 +2697,26 @@ static int dump_notes6Ax64(const pbuffer_t p, const poptions_t o, const uint64_t
   return n;
 }
 
+static int dump_notes6Amips(const pbuffer_t p, const poptions_t o, const uint64_t n_descsz, const handle_t notes) {
+  int n = 0;
+
+//  uint8_t        pr_state;
+//  char           pr_sname;
+//  uint8_t        pr_zomb;
+//  signed char    pr_nice;
+//  uint32_t       pr_flag;
+//  uint32_t       pr_uid;
+//  uint32_t       pr_gid;
+//  pid_t          pr_pid;
+//  pid_t          pr_ppid;
+//  pid_t          pr_pgrp;
+//  pid_t          pr_sid;
+//  char           pr_fname[16];
+//  char           pr_psargs[80];
+
+  return n;
+}
+
 static int dump_notes6(const pbuffer_t p, const poptions_t o, const uint64_t e_machine,
                      const uint64_t n_descsz, const handle_t notes) {
   int n = 0;
@@ -2711,6 +2731,7 @@ static int dump_notes6(const pbuffer_t p, const poptions_t o, const uint64_t e_m
     } else if (EM_ARM == e_machine || EM_AARCH64 == e_machine) {
       n += dump_notes6Aarm(p, o, n_descsz, notes);
     } else if (EM_MIPS == e_machine || EM_MIPS_RS3_LE == e_machine) {
+      n += dump_notes6Amips(p, o, n_descsz, notes);
     } else if (EM_RISCV == e_machine) {
     }
 
