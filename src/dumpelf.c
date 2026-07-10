@@ -2559,6 +2559,26 @@ static int dump_notes5(const pbuffer_t p, const poptions_t o, const uint64_t e_m
   return n;
 }
 
+static int dump_notes6Ax32(const pbuffer_t p, const poptions_t o, const uint64_t n_descsz, const handle_t notes) {
+  int n = 0;
+
+//  uint8_t        pr_state;
+//  char           pr_sname;
+//  uint8_t        pr_zomb;
+//  signed char    pr_nice;
+//  uint32_t       pr_flag;
+//  uint16_t       pr_uid;
+//  uint16_t       pr_gid;
+//  pid_t          pr_pid;
+//  pid_t          pr_ppid;
+//  pid_t          pr_pgrp;
+//  pid_t          pr_sid;
+//  char           pr_fname[16];
+//  char           pr_psargs[80];
+
+  return n;
+}
+
 static int dump_notes6Ax64(const pbuffer_t p, const poptions_t o, const uint64_t n_descsz, const handle_t notes) {
   int n = 0;
 
@@ -2613,6 +2633,7 @@ static int dump_notes6(const pbuffer_t p, const poptions_t o, const uint64_t e_m
     const uint64_t spos = fgetcpos(notes);
 
     if (e_machine == EM_386) {
+      n += dump_notes6Ax32(p, o, n_descsz, notes);
     } else if (e_machine == EM_X86_64) {
       n += dump_notes6Ax64(p, o, n_descsz, notes);
     } else if (EM_ARM == e_machine || EM_AARCH64 == e_machine) {
