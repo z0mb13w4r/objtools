@@ -2563,18 +2563,44 @@ static int dump_notes6Ax32(const pbuffer_t p, const poptions_t o, const uint64_t
   int n = 0;
 
 //  uint8_t        pr_state;
+  n += printf_text("STATE", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu8(notes), USE_FHEX8 | USE_EOL);
 //  char           pr_sname;
+  n += printf_text("SNAME", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu8(notes), USE_FHEX8 | USE_EOL);
 //  uint8_t        pr_zomb;
+  n += printf_text("ZOMB", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu8(notes), USE_FHEX8 | USE_EOL);
 //  signed char    pr_nice;
+  n += printf_text("NICE", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu8(notes), USE_FHEX8 | USE_EOL);
 //  uint32_t       pr_flag;
+  n += printf_text("FLAG", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
 //  uint16_t       pr_uid;
+  n += printf_text("UID", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu16(notes), USE_FHEX16 | USE_EOL);
 //  uint16_t       pr_gid;
+  n += printf_text("GID", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu16(notes), USE_FHEX16 | USE_EOL);
 //  pid_t          pr_pid;
+  n += printf_text("PID", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
 //  pid_t          pr_ppid;
+  n += printf_text("PPID", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
 //  pid_t          pr_pgrp;
+  n += printf_text("PGRP", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
 //  pid_t          pr_sid;
+  n += printf_text("SID", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
 //  char           pr_fname[16];
+  n += printf_text("FILENAME", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_sore(fgetp(notes, 16), 16, USE_STR | USE_EOL);
 //  char           pr_psargs[80];
+  n += printf_text("PSARGS", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_sore(fgetp(notes, 80), 80, USE_STR | USE_EOL);
 
   return n;
 }
