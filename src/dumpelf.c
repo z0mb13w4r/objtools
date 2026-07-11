@@ -2216,7 +2216,7 @@ static int dump_notes5A(const pbuffer_t p, const poptions_t o, const uint64_t n_
   return n;
 }
 
-static int dump_notes5B(const pbuffer_t p, const poptions_t o, const uint64_t n_descsz, const handle_t notes) {
+static int dump_notes5C(const pbuffer_t p, const poptions_t o, const uint64_t n_descsz, const handle_t notes) {
   int n = 0;
 
   n += printf_text("SECONDS", USE_LT | USE_COLON | USE_TAB2);
@@ -2228,7 +2228,7 @@ static int dump_notes5B(const pbuffer_t p, const poptions_t o, const uint64_t n_
   return n;
 }
 
-static int dump_notes5Carm(const pbuffer_t p, const poptions_t o, const uint64_t n_descsz, const handle_t notes) {
+static int dump_notes5Darm(const pbuffer_t p, const poptions_t o, const uint64_t n_descsz, const handle_t notes) {
   int n = 0;
 //  int32_t uregs[18];
   n += printf_text("R0", USE_LT | USE_COLON | USE_TAB2);
@@ -2271,7 +2271,7 @@ static int dump_notes5Carm(const pbuffer_t p, const poptions_t o, const uint64_t
   return n;
 }
 
-static int dump_notes5Cmips(const pbuffer_t p, const poptions_t o, const uint64_t n_descsz, const handle_t notes) {
+static int dump_notes5Dmips(const pbuffer_t p, const poptions_t o, const uint64_t n_descsz, const handle_t notes) {
   int n = 0;
 //  uint32_t pad[6];
   n += printf_text("SPARE0", USE_LT | USE_COLON | USE_TAB2);
@@ -2375,7 +2375,7 @@ static int dump_notes5Cmips(const pbuffer_t p, const poptions_t o, const uint64_
   return n;
 }
 
-static int dump_notes5Cx32(const pbuffer_t p, const poptions_t o, const uint64_t n_descsz, const handle_t notes) {
+static int dump_notes5Dx32(const pbuffer_t p, const poptions_t o, const uint64_t n_descsz, const handle_t notes) {
   int n = 0;
 //  uint32_t ebx, ecx, edx, esi, edi, ebp, eax;
   n += printf_text("EBX", USE_LT | USE_COLON | USE_TAB2);
@@ -2434,7 +2434,7 @@ static int dump_notes5Cx32(const pbuffer_t p, const poptions_t o, const uint64_t
   return n;
 }
 
-static int dump_notes5Cx64(const pbuffer_t p, const poptions_t o, const uint64_t n_descsz, const handle_t notes) {
+static int dump_notes5Dx64(const pbuffer_t p, const poptions_t o, const uint64_t n_descsz, const handle_t notes) {
   int n = 0;
 //uint64_t r15, r14, r13, r12, rbp, rbx, r11, r10;
   n += printf_text("R15", USE_LT | USE_COLON | USE_TAB2);
@@ -2530,19 +2530,19 @@ static int dump_notes5(const pbuffer_t p, const poptions_t o, const uint64_t e_m
     n += printf_text("SESSION ID", USE_LT | USE_COLON | USE_TAB2);
     n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
 
-    n += dump_notes5B(p, o, n_descsz, notes);
-    n += dump_notes5B(p, o, n_descsz, notes);
-    n += dump_notes5B(p, o, n_descsz, notes);
-    n += dump_notes5B(p, o, n_descsz, notes);
+    n += dump_notes5C(p, o, n_descsz, notes);
+    n += dump_notes5C(p, o, n_descsz, notes);
+    n += dump_notes5C(p, o, n_descsz, notes);
+    n += dump_notes5C(p, o, n_descsz, notes);
 
     if (e_machine == EM_386) {
-      n += dump_notes5Cx32(p, o, n_descsz, notes);
+      n += dump_notes5Dx32(p, o, n_descsz, notes);
     } else if (e_machine == EM_X86_64) {
-      n += dump_notes5Cx64(p, o, n_descsz, notes);
+      n += dump_notes5Dx64(p, o, n_descsz, notes);
     } else if (EM_ARM == e_machine || EM_AARCH64 == e_machine) {
-      n += dump_notes5Carm(p, o, n_descsz, notes);
+      n += dump_notes5Darm(p, o, n_descsz, notes);
     } else if (EM_MIPS == e_machine || EM_MIPS_RS3_LE == e_machine) {
-      n += dump_notes5Cmips(p, o, n_descsz, notes);
+      n += dump_notes5Dmips(p, o, n_descsz, notes);
     } else if (EM_RISCV == e_machine) {
     }
 
@@ -2689,12 +2689,15 @@ static int dump_notes6Ax64(const pbuffer_t p, const poptions_t o, const uint64_t
 //  pid_t          pr_sid;
   n += printf_text("SID", USE_LT | USE_COLON | USE_TAB2);
   n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+
+  fstep(notes, 3);
+
 //  char           pr_fname[16];
   n += printf_text("FILENAME", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_sore(fgetp(notes, 16), 16, USE_STR | USE_EOL);
+  n += printf_sore(fgetp(notes, 16), 16, USE_STRSIZE | USE_EOL);
 //  char           pr_psargs[80];
   n += printf_text("PSARGS", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_sore(fgetp(notes, 80), 80, USE_STR | USE_EOL);
+  n += printf_sore(fgetp(notes, 80), 80, USE_STRSIZE | USE_EOL);
 
   return n;
 }
