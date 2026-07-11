@@ -247,7 +247,7 @@ typedef struct prpsinfo_x86_64_s {
   char           pr_sname;
   uint8_t        pr_zomb;
   signed char    pr_nice;
-  uint32_t       pr_flag;
+  uint64_t       pr_flag;
   uint32_t       pr_uid;
   uint32_t       pr_gid;
   pid_t          pr_pid;
