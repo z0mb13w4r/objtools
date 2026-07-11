@@ -2216,6 +2216,30 @@ static int dump_notes5A(const pbuffer_t p, const poptions_t o, const uint64_t n_
   return n;
 }
 
+static int dump_notes5B32(const pbuffer_t p, const poptions_t o, const uint64_t n_descsz, const handle_t notes) {
+  int n = 0;
+
+  n += printf_text("PENDING SIGNALS", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+
+  n += printf_text("HELD SIGNALS", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+
+  return n;
+}
+
+static int dump_notes5B64(const pbuffer_t p, const poptions_t o, const uint64_t n_descsz, const handle_t notes) {
+  int n = 0;
+
+  n += printf_text("PENDING SIGNALS", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu64(notes), USE_FHEX64 | USE_EOL);
+
+  n += printf_text("HELD SIGNALS", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu64(notes), USE_FHEX64 | USE_EOL);
+
+  return n;
+}
+
 static int dump_notes5C(const pbuffer_t p, const poptions_t o, const uint64_t n_descsz, const handle_t notes) {
   int n = 0;
 
@@ -2512,11 +2536,11 @@ static int dump_notes5(const pbuffer_t p, const poptions_t o, const uint64_t e_m
     n += printf_text("CURRENT SIGNAL", USE_LT | USE_COLON | USE_TAB2);
     n += printf_nice(fgetu16(notes), USE_FHEX16 | USE_EOL);
 
-    n += printf_text("PENDING SIGNALS", USE_LT | USE_COLON | USE_TAB2);
-    n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
-
-    n += printf_text("HELD SIGNALS", USE_LT | USE_COLON | USE_TAB2);
-    n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+    if (e_machine == EM_X86_64) {
+      n += dump_notes5B64(p, o, n_descsz, notes);
+    } else {
+      n += dump_notes5B32(p, o, n_descsz, notes);
+    }
 
     n += printf_text("PROCESS ID", USE_LT | USE_COLON | USE_TAB2);
     n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
@@ -2690,14 +2714,14 @@ static int dump_notes6Ax64(const pbuffer_t p, const poptions_t o, const uint64_t
   n += printf_text("SID", USE_LT | USE_COLON | USE_TAB2);
   n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
 
-  fstep(notes, 3);
+  fstep(notes, 3); // TO FIX
 
 //  char           pr_fname[16];
   n += printf_text("FILENAME", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_sore(fgetp(notes, 16), 16, USE_STRSIZE | USE_EOL);
+  n += printf_sore(fgetp(notes, 16), 16, USE_STR | USE_EOL);
 //  char           pr_psargs[80];
   n += printf_text("PSARGS", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_sore(fgetp(notes, 80), 80, USE_STRSIZE | USE_EOL);
+  n += printf_sore(fgetp(notes, 80), 80, USE_STR | USE_EOL);
 
   return n;
 }
