@@ -168,8 +168,8 @@ typedef struct regs_x86_64_s {
 typedef struct prstatus_x86_64_s {
   elf_siginfo_t  pr_info;
   uint16_t       pr_cursig;
-  uint32_t       pr_sigpend;
-  uint32_t       pr_sighold;
+  uint64_t       pr_sigpend;
+  uint64_t       pr_sighold;
   pid_t          pr_pid;
   pid_t          pr_ppid;
   pid_t          pr_pgrp;
