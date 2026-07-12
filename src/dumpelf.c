@@ -2222,9 +2222,11 @@ static int dump_notes5A(const pbuffer_t p, const poptions_t o, const uint64_t n_
 static int dump_notes5B32(const pbuffer_t p, const poptions_t o, const uint64_t n_descsz, const handle_t notes) {
   int n = 0;
 
+//  uint32_t       pr_sigpend;
   n += printf_text("PENDING SIGNALS", USE_LT | USE_COLON | USE_TAB2);
   n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
 
+//  uint32_t       pr_sighold;
   n += printf_text("HELD SIGNALS", USE_LT | USE_COLON | USE_TAB2);
   n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
 
@@ -2234,9 +2236,11 @@ static int dump_notes5B32(const pbuffer_t p, const poptions_t o, const uint64_t 
 static int dump_notes5B64(const pbuffer_t p, const poptions_t o, const uint64_t n_descsz, const handle_t notes) {
   int n = 0;
 
+//  uint64_t       pr_sigpend;
   n += printf_text("PENDING SIGNALS", USE_LT | USE_COLON | USE_TAB2);
   n += printf_nice(fgetu64(notes), USE_FHEX64 | USE_EOL);
 
+//  uint64_t       pr_sighold;
   n += printf_text("HELD SIGNALS", USE_LT | USE_COLON | USE_TAB2);
   n += printf_nice(fgetu64(notes), USE_FHEX64 | USE_EOL);
 
@@ -2246,9 +2250,11 @@ static int dump_notes5B64(const pbuffer_t p, const poptions_t o, const uint64_t 
 static int dump_notes5C(const pbuffer_t p, const poptions_t o, const uint64_t n_descsz, const handle_t notes) {
   int n = 0;
 
+//  uint32_t tv_sec;
   n += printf_text("SECONDS", USE_LT | USE_COLON | USE_TAB2);
   n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
 
+//  uint32_t tv_usec;
   n += printf_text("MICROSECONDS", USE_LT | USE_COLON | USE_TAB2);
   n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
 
@@ -2548,15 +2554,19 @@ static int dump_notes5(const pbuffer_t p, const poptions_t o, const uint64_t e_m
       n += dump_notes5B32(p, o, n_descsz, notes);
     }
 
+//  pid_t          pr_pid;
     n += printf_text("PROCESS ID", USE_LT | USE_COLON | USE_TAB2);
     n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
 
+//  pid_t          pr_ppid;
     n += printf_text("PARENT PROCESS ID", USE_LT | USE_COLON | USE_TAB2);
     n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
 
+//  pid_t          pr_pgrp;
     n += printf_text("GROUP ID", USE_LT | USE_COLON | USE_TAB2);
     n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
 
+//  pid_t          pr_sid;
     n += printf_text("SESSION ID", USE_LT | USE_COLON | USE_TAB2);
     n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
 
