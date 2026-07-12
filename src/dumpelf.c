@@ -2219,30 +2219,27 @@ static int dump_notes5A(const pbuffer_t p, const poptions_t o, const uint64_t n_
   return n;
 }
 
-static int dump_notes5B32(const pbuffer_t p, const poptions_t o, const uint64_t n_descsz, const handle_t notes) {
+static int dump_notes5B(const pbuffer_t p, const poptions_t o, const uint64_t e_machine,
+                     const uint64_t n_descsz, const handle_t notes) {
   int n = 0;
 
-//  uint32_t       pr_sigpend;
-  n += printf_text("PENDING SIGNALS", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
-
-//  uint32_t       pr_sighold;
-  n += printf_text("HELD SIGNALS", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
-
-  return n;
-}
-
-static int dump_notes5B64(const pbuffer_t p, const poptions_t o, const uint64_t n_descsz, const handle_t notes) {
-  int n = 0;
-
+  if (e_machine == EM_X86_64) {
 //  uint64_t       pr_sigpend;
-  n += printf_text("PENDING SIGNALS", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu64(notes), USE_FHEX64 | USE_EOL);
+    n += printf_text("PENDING SIGNALS", USE_LT | USE_COLON | USE_TAB2);
+    n += printf_nice(fgetu64(notes), USE_FHEX64 | USE_EOL);
 
 //  uint64_t       pr_sighold;
-  n += printf_text("HELD SIGNALS", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu64(notes), USE_FHEX64 | USE_EOL);
+    n += printf_text("HELD SIGNALS", USE_LT | USE_COLON | USE_TAB2);
+    n += printf_nice(fgetu64(notes), USE_FHEX64 | USE_EOL);
+  } else {
+//  uint32_t       pr_sigpend;
+    n += printf_text("PENDING SIGNALS", USE_LT | USE_COLON | USE_TAB2);
+    n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+
+//  uint32_t       pr_sighold;
+    n += printf_text("HELD SIGNALS", USE_LT | USE_COLON | USE_TAB2);
+    n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+  }
 
   return n;
 }
@@ -2548,11 +2545,7 @@ static int dump_notes5(const pbuffer_t p, const poptions_t o, const uint64_t e_m
 //  char padding[2];
     fstep(notes, 2);
 
-    if (e_machine == EM_X86_64) {
-      n += dump_notes5B64(p, o, n_descsz, notes);
-    } else {
-      n += dump_notes5B32(p, o, n_descsz, notes);
-    }
+    n += dump_notes5B(p, o, e_machine, n_descsz, notes);
 
 //  pid_t          pr_pid;
     n += printf_text("PROCESS ID", USE_LT | USE_COLON | USE_TAB2);
