@@ -2204,12 +2204,15 @@ static int dump_notes4(const pbuffer_t p, const poptions_t o, const uint64_t e_m
 static int dump_notes5A(const pbuffer_t p, const poptions_t o, const uint64_t n_descsz, const handle_t notes) {
   int n = 0;
 
+//  int32_t si_signo;
   n += printf_text("SIGNAL NUMBER", USE_LT | USE_COLON | USE_TAB2);
   n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
 
+//  int32_t si_code;
   n += printf_text("EXTRA CODE", USE_LT | USE_COLON | USE_TAB2);
   n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
 
+//  int32_t si_errno;
   n += printf_text("ERROR NUMBER", USE_LT | USE_COLON | USE_TAB2);
   n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
 
@@ -2533,8 +2536,11 @@ static int dump_notes5(const pbuffer_t p, const poptions_t o, const uint64_t e_m
 
     n += dump_notes5A(p, o, n_descsz, notes);
 
+//  uint16_t       pr_cursig;
     n += printf_text("CURRENT SIGNAL", USE_LT | USE_COLON | USE_TAB2);
     n += printf_nice(fgetu16(notes), USE_FHEX16 | USE_EOL);
+//  char padding[2];
+    fstep(notes, 2);
 
     if (e_machine == EM_X86_64) {
       n += dump_notes5B64(p, o, n_descsz, notes);
