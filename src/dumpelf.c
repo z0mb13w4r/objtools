@@ -2852,6 +2852,9 @@ static int dump_notes7(const pbuffer_t p, const poptions_t o, const uint64_t e_m
     n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
 
 //  int      si_status;    /* Exit value or signal */
+    n += printf_text("STATUS", USE_LT | USE_COLON | USE_TAB2);
+    n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+
 //  clock_t  si_utime;     /* User time consumed */
 //  clock_t  si_stime;     /* System time consumed */
 //  union sigval si_value; /* Signal value */
