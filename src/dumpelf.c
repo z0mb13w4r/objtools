@@ -2820,6 +2820,23 @@ static int dump_notes6(const pbuffer_t p, const poptions_t o, const uint64_t e_m
   return n;
 }
 
+static int dump_notes7(const pbuffer_t p, const poptions_t o, const uint64_t e_machine,
+                     const uint64_t n_descsz, const handle_t notes) {
+  int n = 0;
+
+  if (MODE_ISANY(o->action, OPRPROGRAM_COREDUMPDETAILED)) {
+    const uint64_t spos = fgetcpos(notes);
+
+    const uint64_t size = fgetcpos(notes) - spos;
+//printf("%ld:%ld\n", n_descsz, size);
+    fstep(notes, n_descsz - size + 3);
+  } else {
+    fstep(notes, n_descsz + 3);
+  }
+
+  return n;
+}
+
 static int dump_notesX(const pbuffer_t p, const poptions_t o, const uint64_t e_machine,
                      const uint64_t n_namesz, const uint64_t n_descsz, const uint64_t n_type, const handle_t notes) {
   const int MAXSIZE = 22;
@@ -2840,6 +2857,8 @@ static int dump_notesX(const pbuffer_t p, const poptions_t o, const uint64_t e_m
     n0 += dump_notes5(p, o, e_machine, n_descsz, notes);
   } else if (NT_PRPSINFO == n_type) {
     n0 += dump_notes6(p, o, e_machine, n_descsz, notes);
+  } else if (NT_SIGINFO == n_type) {
+    n0 += dump_notes7(p, o, e_machine, n_descsz, notes);
   } else {
     fstep(notes, n_descsz + 3);
   }
