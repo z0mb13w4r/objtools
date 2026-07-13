@@ -2844,7 +2844,13 @@ static int dump_notes7(const pbuffer_t p, const poptions_t o, const uint64_t e_m
   n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
 
 //  pid_t    si_pid;       /* Sending process ID */
+    n += printf_text("PROCESS ID", USE_LT | USE_COLON | USE_TAB2);
+    n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+
 //  uid_t    si_uid;       /* Real user ID of sending process */
+    n += printf_text("USER ID", USE_LT | USE_COLON | USE_TAB2);
+    n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+
 //  int      si_status;    /* Exit value or signal */
 //  clock_t  si_utime;     /* User time consumed */
 //  clock_t  si_stime;     /* System time consumed */
