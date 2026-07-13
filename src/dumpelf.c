@@ -2828,9 +2828,21 @@ static int dump_notes7(const pbuffer_t p, const poptions_t o, const uint64_t e_m
     const uint64_t spos = fgetcpos(notes);
 
 //  int      si_signo;     /* Signal number */
+  n += printf_text("SIGNAL NUMBER", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+
 //  int      si_errno;     /* An errno value */
+  n += printf_text("ERROR NUMBER", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+
 //  int      si_code;      /* Signal code */
+  n += printf_text("SIGNAL CODE", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+
 //  int      si_trapno;    /* Trap number that caused hardware-generated signal (unused on most architectures) */
+  n += printf_text("TRAP NUMBER", USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+
 //  pid_t    si_pid;       /* Sending process ID */
 //  uid_t    si_uid;       /* Real user ID of sending process */
 //  int      si_status;    /* Exit value or signal */
