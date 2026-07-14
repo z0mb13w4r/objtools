@@ -2036,6 +2036,26 @@ int dumpelf_actions64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
   return n;
 }
 
+static int dump_notes32(const pbuffer_t p, const poptions_t o, const uint64_t e_machine,
+                     const uint64_t n_descsz, const handle_t notes, const char* name) {
+  int n = 0;
+
+  n += printf_text(name, USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+
+  return n;
+}
+
+static int dump_notes64(const pbuffer_t p, const poptions_t o, const uint64_t e_machine,
+                     const uint64_t n_descsz, const handle_t notes, const char* name) {
+  int n = 0;
+
+  n += printf_text(name, USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+
+  return n;
+}
+
 static int dump_notesNN(const pbuffer_t p, const poptions_t o, const uint64_t e_machine,
                      const uint64_t n_descsz, const handle_t notes, const char* name) {
   int n = 0;
@@ -2813,32 +2833,23 @@ static int dump_notes7(const pbuffer_t p, const poptions_t o, const uint64_t e_m
     const uint64_t spos = fgetcpos(notes);
 
 //  int      si_signo;     /* Signal number */
-  n += printf_text("SIGNAL NUMBER", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+  n += dump_notes32(p, o, e_machine, n_descsz, notes, "SIGNAL NUMBER");
 //  int      si_errno;     /* An errno value */
-  n += printf_text("ERROR NUMBER", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+  n += dump_notes32(p, o, e_machine, n_descsz, notes, "ERROR NUMBER");
 //  int      si_code;      /* Signal code */
-  n += printf_text("SIGNAL CODE", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+  n += dump_notes32(p, o, e_machine, n_descsz, notes, "SIGNAL CODE");
 //  int      si_trapno;    /* Trap number that caused hardware-generated signal (unused on most architectures) */
-  n += printf_text("TRAP NUMBER", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+  n += dump_notes32(p, o, e_machine, n_descsz, notes, "TRAP NUMBER");
 //  pid_t    si_pid;       /* Sending process ID */
-  n += printf_text("PROCESS ID", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+  n += dump_notes32(p, o, e_machine, n_descsz, notes, "PROCESS ID");
 //  uid_t    si_uid;       /* Real user ID of sending process */
-  n += printf_text("USER ID", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+  n += dump_notes32(p, o, e_machine, n_descsz, notes, "USER ID");
 //  int      si_status;    /* Exit value or signal */
-  n += printf_text("STATUS", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+  n += dump_notes32(p, o, e_machine, n_descsz, notes, "STATUS");
 //  clock_t  si_utime;     /* User time consumed */
-  n += printf_text("UTIME", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+  n += dump_notes32(p, o, e_machine, n_descsz, notes, "UTIME");
 //  clock_t  si_stime;     /* System time consumed */
-  n += printf_text("STIME", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+  n += dump_notes32(p, o, e_machine, n_descsz, notes, "STIME");
 //  union sigval si_value; /* Signal value */
 //  int      si_int;       /* POSIX.1b signal */
 //  void    *si_ptr;       /* POSIX.1b signal */
