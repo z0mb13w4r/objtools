@@ -2061,11 +2061,9 @@ static int dump_notesNN(const pbuffer_t p, const poptions_t o, const uint64_t e_
   int n = 0;
 
   if (e_machine == EM_X86_64) {
-    n += printf_text(name, USE_LT | USE_COLON | USE_TAB2);
-    n += printf_nice(fgetu64(notes), USE_FHEX64 | USE_EOL);
+    n += dump_notes64(p, o, e_machine, n_descsz, notes, name);
   } else {
-    n += printf_text(name, USE_LT | USE_COLON | USE_TAB2);
-    n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+    n += dump_notes32(p, o, e_machine, n_descsz, notes, name);
   }
 
   return n;
