@@ -2234,20 +2234,18 @@ static int dump_notes4(const pbuffer_t p, const poptions_t o, const uint64_t e_m
   return n;
 }
 
-static int dump_notes5A(const pbuffer_t p, const poptions_t o, const uint64_t n_descsz, const handle_t notes) {
+static int dump_notes5A(const pbuffer_t p, const poptions_t o,  const uint64_t e_machine,
+                     const uint64_t n_descsz, const handle_t notes) {
   int n = 0;
 
 //  int32_t si_signo;
-  n += printf_text("SIGNAL NUMBER", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+  n += dump_notes32(p, o, e_machine, n_descsz, notes, "SIGNAL NUMBER");
 
 //  int32_t si_code;
-  n += printf_text("EXTRA CODE", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+  n += dump_notes32(p, o, e_machine, n_descsz, notes, "EXTRA CODE");
 
 //  int32_t si_errno;
-  n += printf_text("ERROR NUMBER", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+  n += dump_notes32(p, o, e_machine, n_descsz, notes, "ERROR NUMBER");
 
   return n;
 }
@@ -2551,7 +2549,7 @@ static int dump_notes5(const pbuffer_t p, const poptions_t o, const uint64_t e_m
   if (MODE_ISANY(o->action, OPRPROGRAM_COREDUMPDETAILED)) {
     const uint64_t spos = fgetcpos(notes);
 
-    n += dump_notes5A(p, o, n_descsz, notes);
+    n += dump_notes5A(p, o, e_machine, n_descsz, notes);
 
 //  uint16_t       pr_cursig;
     n += printf_text("CURRENT SIGNAL", USE_LT | USE_COLON | USE_TAB2);
