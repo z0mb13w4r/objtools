@@ -2036,6 +2036,16 @@ int dumpelf_actions64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
   return n;
 }
 
+static int dump_notes16(const pbuffer_t p, const poptions_t o, const uint64_t e_machine,
+                     const uint64_t n_descsz, const handle_t notes, const char* name) {
+  int n = 0;
+
+  n += printf_text(name, USE_LT | USE_COLON | USE_TAB2);
+  n += printf_nice(fgetu16(notes), USE_FHEX16 | USE_EOL);
+
+  return n;
+}
+
 static int dump_notes32(const pbuffer_t p, const poptions_t o, const uint64_t e_machine,
                      const uint64_t n_descsz, const handle_t notes, const char* name) {
   int n = 0;
@@ -2356,61 +2366,39 @@ static int dump_notes5Dmips(const pbuffer_t p, const poptions_t o, const uint64_
   return n;
 }
 
-static int dump_notes5Dx32(const pbuffer_t p, const poptions_t o, const uint64_t n_descsz, const handle_t notes) {
+static int dump_notes5Dx32(const pbuffer_t p, const poptions_t o, const uint64_t e_machine,
+                     const uint64_t n_descsz, const handle_t notes) {
   int n = 0;
 //  uint32_t ebx, ecx, edx, esi, edi, ebp, eax;
-  n += printf_text("EBX", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
-  n += printf_text("ECX", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
-  n += printf_text("EDX", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
-  n += printf_text("ESI", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
-  n += printf_text("EDI", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
-  n += printf_text("EBP", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
-  n += printf_text("EAX", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+  n += dump_notes32(p, o, e_machine, n_descsz, notes, "EBX");
+  n += dump_notes32(p, o, e_machine, n_descsz, notes, "ECX");
+  n += dump_notes32(p, o, e_machine, n_descsz, notes, "EDX");
+  n += dump_notes32(p, o, e_machine, n_descsz, notes, "ESI");
+  n += dump_notes32(p, o, e_machine, n_descsz, notes, "EDI");
+  n += dump_notes32(p, o, e_machine, n_descsz, notes, "EBP");
+  n += dump_notes32(p, o, e_machine, n_descsz, notes, "EAX");
 //  uint16_t ds, __ds, es, __es;
-  n += printf_text("DS", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu16(notes), USE_FHEX16 | USE_EOL);
-  n += printf_text("__DS", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu16(notes), USE_FHEX16 | USE_EOL);
-  n += printf_text("ES", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu16(notes), USE_FHEX16 | USE_EOL);
-  n += printf_text("__ES", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu16(notes), USE_FHEX16 | USE_EOL);
+  n += dump_notes16(p, o, e_machine, n_descsz, notes, "DS");
+  n += dump_notes16(p, o, e_machine, n_descsz, notes, "__DS");
+  n += dump_notes16(p, o, e_machine, n_descsz, notes, "ES");
+  n += dump_notes16(p, o, e_machine, n_descsz, notes, "__ES");
 //  uint16_t fs, __fs, gs, __gs;
-  n += printf_text("FS", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu16(notes), USE_FHEX16 | USE_EOL);
-  n += printf_text("__FS", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu16(notes), USE_FHEX16 | USE_EOL);
-  n += printf_text("GS", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu16(notes), USE_FHEX16 | USE_EOL);
-  n += printf_text("__GS", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu16(notes), USE_FHEX16 | USE_EOL);
+  n += dump_notes16(p, o, e_machine, n_descsz, notes, "F5");
+  n += dump_notes16(p, o, e_machine, n_descsz, notes, "__F5");
+  n += dump_notes16(p, o, e_machine, n_descsz, notes, "G5");
+  n += dump_notes16(p, o, e_machine, n_descsz, notes, "__G5");
 //  uint32_t orig_eax, eip;
-  n += printf_text("EAX (ORIG)", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
-  n += printf_text("EIP", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+  n += dump_notes32(p, o, e_machine, n_descsz, notes, "EAX (ORIG)");
+  n += dump_notes32(p, o, e_machine, n_descsz, notes, "EIP");
 //  uint16_t cs, __cs;
-  n += printf_text("CS", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu16(notes), USE_FHEX32 | USE_EOL);
-  n += printf_text("__CS", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu16(notes), USE_FHEX32 | USE_EOL);
+  n += dump_notes16(p, o, e_machine, n_descsz, notes, "CS");
+  n += dump_notes16(p, o, e_machine, n_descsz, notes, "__CS");
 //  uint32_t eflags, esp;
-  n += printf_text("EFLAGS", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
-  n += printf_text("ESP", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+  n += dump_notes32(p, o, e_machine, n_descsz, notes, "EFLAGS");
+  n += dump_notes32(p, o, e_machine, n_descsz, notes, "ESP");
 //  uint16_t ss, __ss;
-  n += printf_text("SS", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu16(notes), USE_FHEX16 | USE_EOL);
-  n += printf_text("__SS", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu16(notes), USE_FHEX16 | USE_EOL);
+  n += dump_notes16(p, o, e_machine, n_descsz, notes, "SS");
+  n += dump_notes16(p, o, e_machine, n_descsz, notes, "__SS");
 
   return n;
 }
@@ -2520,7 +2508,7 @@ static int dump_notes5(const pbuffer_t p, const poptions_t o, const uint64_t e_m
     n += dump_notes5C(p, o, e_machine, n_descsz, notes);
 
     if (e_machine == EM_386) {
-      n += dump_notes5Dx32(p, o, n_descsz, notes);
+      n += dump_notes5Dx32(p, o, e_machine, n_descsz, notes);
     } else if (e_machine == EM_X86_64) {
       n += dump_notes5Dx64(p, o, n_descsz, notes);
     } else if (EM_ARM == e_machine || EM_AARCH64 == e_machine) {
