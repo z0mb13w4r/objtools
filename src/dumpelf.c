@@ -2270,45 +2270,28 @@ static int dump_notes5C(const pbuffer_t p, const poptions_t o, const uint64_t e_
   return n;
 }
 
-static int dump_notes5Darm(const pbuffer_t p, const poptions_t o, const uint64_t n_descsz, const handle_t notes) {
+static int dump_notes5Darm(const pbuffer_t p, const poptions_t o, const uint64_t e_machine,
+                     const uint64_t n_descsz, const handle_t notes) {
   int n = 0;
 //  int32_t uregs[18];
-  n += printf_text("R0", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
-  n += printf_text("R1", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
-  n += printf_text("R2", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
-  n += printf_text("R3", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
-  n += printf_text("R4", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
-  n += printf_text("R5", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
-  n += printf_text("R6", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
-  n += printf_text("R7", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
-  n += printf_text("R8", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
-  n += printf_text("R9", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
-  n += printf_text("R10", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
-  n += printf_text("R11", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
-  n += printf_text("R12", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
-  n += printf_text("SP", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
-  n += printf_text("LR", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
-  n += printf_text("PC", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
-  n += printf_text("SPARE0", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
-  n += printf_text("SPARE1", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+  n += dump_notes32(p, o, e_machine, n_descsz, notes, "RO");
+  n += dump_notes32(p, o, e_machine, n_descsz, notes, "R1");
+  n += dump_notes32(p, o, e_machine, n_descsz, notes, "R2");
+  n += dump_notes32(p, o, e_machine, n_descsz, notes, "R3");
+  n += dump_notes32(p, o, e_machine, n_descsz, notes, "R4");
+  n += dump_notes32(p, o, e_machine, n_descsz, notes, "R5");
+  n += dump_notes32(p, o, e_machine, n_descsz, notes, "R6");
+  n += dump_notes32(p, o, e_machine, n_descsz, notes, "R7");
+  n += dump_notes32(p, o, e_machine, n_descsz, notes, "R8");
+  n += dump_notes32(p, o, e_machine, n_descsz, notes, "R9");
+  n += dump_notes32(p, o, e_machine, n_descsz, notes, "R10");
+  n += dump_notes32(p, o, e_machine, n_descsz, notes, "R11");
+  n += dump_notes32(p, o, e_machine, n_descsz, notes, "R12");
+  n += dump_notes32(p, o, e_machine, n_descsz, notes, "SP");
+  n += dump_notes32(p, o, e_machine, n_descsz, notes, "LR");
+  n += dump_notes32(p, o, e_machine, n_descsz, notes, "PC");
+  n += dump_notes32(p, o, e_machine, n_descsz, notes, "SPARE0");
+  n += dump_notes32(p, o, e_machine, n_descsz, notes, "SPARE1");
 
   return n;
 }
@@ -2585,7 +2568,7 @@ static int dump_notes5(const pbuffer_t p, const poptions_t o, const uint64_t e_m
     } else if (e_machine == EM_X86_64) {
       n += dump_notes5Dx64(p, o, n_descsz, notes);
     } else if (EM_ARM == e_machine || EM_AARCH64 == e_machine) {
-      n += dump_notes5Darm(p, o, n_descsz, notes);
+      n += dump_notes5Darm(p, o, e_machine, n_descsz, notes);
     } else if (EM_MIPS == e_machine || EM_MIPS_RS3_LE == e_machine) {
       n += dump_notes5Dmips(p, o, n_descsz, notes);
     } else if (EM_RISCV == e_machine) {
