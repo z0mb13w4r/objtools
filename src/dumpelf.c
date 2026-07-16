@@ -2545,42 +2545,32 @@ static int dump_notes6Aarm(const pbuffer_t p, const poptions_t o, const uint64_t
   return n;
 }
 
-static int dump_notes6Ax32(const pbuffer_t p, const poptions_t o, const uint64_t n_descsz, const handle_t notes) {
+static int dump_notes6Ax32(const pbuffer_t p, const poptions_t o, const uint64_t e_machine,
+                     const uint64_t n_descsz, const handle_t notes) {
   int n = 0;
 
 //  uint8_t        pr_state;
-  n += printf_text("STATE", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu8(notes), USE_FHEX8 | USE_EOL);
+  n += dump_notes8(p, o, e_machine, n_descsz, notes, "STATE");
 //  char           pr_sname;
-  n += printf_text("SNAME", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu8(notes), USE_FHEX8 | USE_EOL);
+  n += dump_notes8(p, o, e_machine, n_descsz, notes, "SNAME");
 //  uint8_t        pr_zomb;
-  n += printf_text("ZOMB", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu8(notes), USE_FHEX8 | USE_EOL);
+  n += dump_notes8(p, o, e_machine, n_descsz, notes, "ZOMBIE");
 //  signed char    pr_nice;
-  n += printf_text("NICE", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu8(notes), USE_FHEX8 | USE_EOL);
+  n += dump_notes8(p, o, e_machine, n_descsz, notes, "NICE");
 //  uint32_t       pr_flag;
-  n += printf_text("FLAG", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+  n += dump_notes32(p, o, e_machine, n_descsz, notes, "FLAG");
 //  uint16_t       pr_uid;
-  n += printf_text("UID", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu16(notes), USE_FHEX16 | USE_EOL);
+  n += dump_notes16(p, o, e_machine, n_descsz, notes, "UID");
 //  uint16_t       pr_gid;
-  n += printf_text("GID", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu16(notes), USE_FHEX16 | USE_EOL);
+  n += dump_notes16(p, o, e_machine, n_descsz, notes, "GID");
 //  pid_t          pr_pid;
-  n += printf_text("PID", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+  n += dump_notes32(p, o, e_machine, n_descsz, notes, "PID");
 //  pid_t          pr_ppid;
-  n += printf_text("PPID", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+  n += dump_notes32(p, o, e_machine, n_descsz, notes, "PPID");
 //  pid_t          pr_pgrp;
-  n += printf_text("PGRP", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+  n += dump_notes32(p, o, e_machine, n_descsz, notes, "PGRP");
 //  pid_t          pr_sid;
-  n += printf_text("SID", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+  n += dump_notes32(p, o, e_machine, n_descsz, notes, "SID");
 //  char           pr_fname[16];
   n += printf_text("FILENAME", USE_LT | USE_COLON | USE_TAB2);
   n += printf_sore(fgetp(notes, 16), 16, USE_STR | USE_EOL);
@@ -2696,7 +2686,7 @@ static int dump_notes6(const pbuffer_t p, const poptions_t o, const uint64_t e_m
     const uint64_t spos = fgetcpos(notes);
 
     if (e_machine == EM_386) {
-      n += dump_notes6Ax32(p, o, n_descsz, notes);
+      n += dump_notes6Ax32(p, o, e_machine, n_descsz, notes);
     } else if (e_machine == EM_X86_64) {
       n += dump_notes6Ax64(p, o, n_descsz, notes);
     } else if (EM_ARM == e_machine || EM_AARCH64 == e_machine) {
