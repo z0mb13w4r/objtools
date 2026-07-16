@@ -2453,28 +2453,23 @@ static int dump_notes5(const pbuffer_t p, const poptions_t o, const uint64_t e_m
     n += dump_notes5A(p, o, e_machine, n_descsz, notes);
 
 //  uint16_t       pr_cursig;
-    n += printf_text("CURRENT SIGNAL", USE_LT | USE_COLON | USE_TAB2);
-    n += printf_nice(fgetu16(notes), USE_FHEX16 | USE_EOL);
+    n += dump_notes16(p, o, e_machine, n_descsz, notes, "CURRENT SIGNAL");
 //  char padding[2];
     fstep(notes, 2);
 
     n += dump_notes5B(p, o, e_machine, n_descsz, notes);
 
 //  pid_t          pr_pid;
-    n += printf_text("PROCESS ID", USE_LT | USE_COLON | USE_TAB2);
-    n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+    n += dump_notes32(p, o, e_machine, n_descsz, notes, "PROCESS ID");
 
 //  pid_t          pr_ppid;
-    n += printf_text("PARENT PROCESS ID", USE_LT | USE_COLON | USE_TAB2);
-    n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+    n += dump_notes32(p, o, e_machine, n_descsz, notes, "PROCESS ID (PARENT)");
 
 //  pid_t          pr_pgrp;
-    n += printf_text("GROUP ID", USE_LT | USE_COLON | USE_TAB2);
-    n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+    n += dump_notes32(p, o, e_machine, n_descsz, notes, "GROUP ID");
 
 //  pid_t          pr_sid;
-    n += printf_text("SESSION ID", USE_LT | USE_COLON | USE_TAB2);
-    n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+    n += dump_notes32(p, o, e_machine, n_descsz, notes, "SESSION ID");
 
     n += dump_notes5C(p, o, e_machine, n_descsz, notes);
     n += dump_notes5C(p, o, e_machine, n_descsz, notes);
@@ -2492,8 +2487,7 @@ static int dump_notes5(const pbuffer_t p, const poptions_t o, const uint64_t e_m
     } else if (EM_RISCV == e_machine) {
     }
 
-    n += printf_text("FPVALID", USE_LT | USE_COLON | USE_TAB2);
-    n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+    n += dump_notes32(p, o, e_machine, n_descsz, notes, "FPVALID");
 
     const uint64_t size = fgetcpos(notes) - spos;
 //printf("%ld:%ld\n", n_descsz, size);
