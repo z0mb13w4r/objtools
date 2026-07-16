@@ -2403,68 +2403,42 @@ static int dump_notes5Dx32(const pbuffer_t p, const poptions_t o, const uint64_t
   return n;
 }
 
-static int dump_notes5Dx64(const pbuffer_t p, const poptions_t o, const uint64_t n_descsz, const handle_t notes) {
+static int dump_notes5Dx64(const pbuffer_t p, const poptions_t o, const uint64_t e_machine,
+                     const uint64_t n_descsz, const handle_t notes) {
   int n = 0;
 //uint64_t r15, r14, r13, r12, rbp, rbx, r11, r10;
-  n += printf_text("R15", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu64(notes), USE_FHEX64 | USE_EOL);
-  n += printf_text("R14", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu64(notes), USE_FHEX64 | USE_EOL);
-  n += printf_text("R13", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu64(notes), USE_FHEX64 | USE_EOL);
-  n += printf_text("R12", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu64(notes), USE_FHEX64 | USE_EOL);
-  n += printf_text("RBP", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu64(notes), USE_FHEX64 | USE_EOL);
-  n += printf_text("RBX", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu64(notes), USE_FHEX64 | USE_EOL);
-  n += printf_text("R11", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu64(notes), USE_FHEX64 | USE_EOL);
-  n += printf_text("R10", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu64(notes), USE_FHEX64 | USE_EOL);
+  n += dump_notes64(p, o, e_machine, n_descsz, notes, "R15");
+  n += dump_notes64(p, o, e_machine, n_descsz, notes, "R14");
+  n += dump_notes64(p, o, e_machine, n_descsz, notes, "R13");
+  n += dump_notes64(p, o, e_machine, n_descsz, notes, "R12");
+  n += dump_notes64(p, o, e_machine, n_descsz, notes, "RBP");
+  n += dump_notes64(p, o, e_machine, n_descsz, notes, "RBX");
+  n += dump_notes64(p, o, e_machine, n_descsz, notes, "R11");
+  n += dump_notes64(p, o, e_machine, n_descsz, notes, "R10");
 //uint64_t r9, r8, rax, rcx, rdx, rsi, rdi, orig_rax;
-  n += printf_text("R9", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu64(notes), USE_FHEX64 | USE_EOL);
-  n += printf_text("R8", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu64(notes), USE_FHEX64 | USE_EOL);
-  n += printf_text("RAX", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu64(notes), USE_FHEX64 | USE_EOL);
-  n += printf_text("RCX", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu64(notes), USE_FHEX64 | USE_EOL);
-  n += printf_text("RDX", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu64(notes), USE_FHEX64 | USE_EOL);
-  n += printf_text("RSI", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu64(notes), USE_FHEX64 | USE_EOL);
-  n += printf_text("RDI", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu64(notes), USE_FHEX64 | USE_EOL);
-  n += printf_text("RAX (ORIG)", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu64(notes), USE_FHEX64 | USE_EOL);
+  n += dump_notes64(p, o, e_machine, n_descsz, notes, "R9");
+  n += dump_notes64(p, o, e_machine, n_descsz, notes, "R8");
+  n += dump_notes64(p, o, e_machine, n_descsz, notes, "RAX");
+  n += dump_notes64(p, o, e_machine, n_descsz, notes, "RCX");
+  n += dump_notes64(p, o, e_machine, n_descsz, notes, "RDX");
+  n += dump_notes64(p, o, e_machine, n_descsz, notes, "RSI");
+  n += dump_notes64(p, o, e_machine, n_descsz, notes, "RDI");
+  n += dump_notes64(p, o, e_machine, n_descsz, notes, "RAX (ORIG)");
 //uint64_t rip, cs, eflags;
-  n += printf_text("RIP", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu64(notes), USE_FHEX64 | USE_EOL);
-  n += printf_text("CS", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu64(notes), USE_FHEX64 | USE_EOL);
-  n += printf_text("EFLAGS", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu64(notes), USE_FHEX64 | USE_EOL);
+  n += dump_notes64(p, o, e_machine, n_descsz, notes, "RIP");
+  n += dump_notes64(p, o, e_machine, n_descsz, notes, "CS");
+  n += dump_notes64(p, o, e_machine, n_descsz, notes, "EFLAGS");
 //uint64_t rsp, ss;
-  n += printf_text("RSP", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu64(notes), USE_FHEX64 | USE_EOL);
-  n += printf_text("SS", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu64(notes), USE_FHEX64 | USE_EOL);
+  n += dump_notes64(p, o, e_machine, n_descsz, notes, "RSP");
+  n += dump_notes64(p, o, e_machine, n_descsz, notes, "SS");
 //uint64_t fs_base, gs_base;
-  n += printf_text("FS (BASE)", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu64(notes), USE_FHEX64 | USE_EOL);
-  n += printf_text("GS (BASE)", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu64(notes), USE_FHEX64 | USE_EOL);
+  n += dump_notes64(p, o, e_machine, n_descsz, notes, "FS (BASE)");
+  n += dump_notes64(p, o, e_machine, n_descsz, notes, "GS (BASE)");
 //uint64_t  ds, es, fs, gs;
-  n += printf_text("DS", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu64(notes), USE_FHEX64 | USE_EOL);
-  n += printf_text("ES", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu64(notes), USE_FHEX64 | USE_EOL);
-  n += printf_text("FS", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu64(notes), USE_FHEX64 | USE_EOL);
-  n += printf_text("GS", USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu64(notes), USE_FHEX64 | USE_EOL);
+  n += dump_notes64(p, o, e_machine, n_descsz, notes, "DS");
+  n += dump_notes64(p, o, e_machine, n_descsz, notes, "ES");
+  n += dump_notes64(p, o, e_machine, n_descsz, notes, "FS");
+  n += dump_notes64(p, o, e_machine, n_descsz, notes, "GS");
 
   return n;
 }
@@ -2510,7 +2484,7 @@ static int dump_notes5(const pbuffer_t p, const poptions_t o, const uint64_t e_m
     if (e_machine == EM_386) {
       n += dump_notes5Dx32(p, o, e_machine, n_descsz, notes);
     } else if (e_machine == EM_X86_64) {
-      n += dump_notes5Dx64(p, o, n_descsz, notes);
+      n += dump_notes5Dx64(p, o, e_machine, n_descsz, notes);
     } else if (EM_ARM == e_machine || EM_AARCH64 == e_machine) {
       n += dump_notes5Darm(p, o, e_machine, n_descsz, notes);
     } else if (EM_MIPS == e_machine || EM_MIPS_RS3_LE == e_machine) {
