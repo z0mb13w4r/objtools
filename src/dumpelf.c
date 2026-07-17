@@ -2713,22 +2713,26 @@ static int dump_notes7(const pbuffer_t p, const poptions_t o, const uint64_t e_m
   n += dump_notes32(p, o, e_machine, n_descsz, notes, "STIME");
 //  union sigval si_value; /* Signal value */
 //  int      si_int;       /* POSIX.1b signal */
+  n += dump_notes32(p, o, e_machine, n_descsz, notes, "INT");
 //  void    *si_ptr;       /* POSIX.1b signal */
   n += dump_notesNN(p, o, e_machine, n_descsz, notes, "PTR");
 //  int      si_overrun;   /* Timer overrun count; POSIX.1b timers */
+  n += dump_notes32(p, o, e_machine, n_descsz, notes, "OVERRUN");
 //  int      si_timerid;   /* Timer ID; POSIX.1b timers */
+  n += dump_notes32(p, o, e_machine, n_descsz, notes, "TIMER ID");
 //  void    *si_addr;      /* Memory location which caused fault */
   n += dump_notesNN(p, o, e_machine, n_descsz, notes, "ADDR");
 //  long     si_band;      /* Band event (was int in glibc 2.3.2 and earlier) */
 //  int      si_fd;        /* File descriptor */
 //  short    si_addr_lsb;  /* Least significant bit of address (since Linux 2.6.32) */
+  n += dump_notes32(p, o, e_machine, n_descsz, notes, "ADDR (LSB)");
 //  void    *si_lower;     /* Lower bound when address violation occurred (since Linux 3.19) */
   n += dump_notesNN(p, o, e_machine, n_descsz, notes, "LOWER");
 //  void    *si_upper;     /* Upper bound when address violation occurred (since Linux 3.19) */
   n += dump_notesNN(p, o, e_machine, n_descsz, notes, "UPPER");
 //  int      si_pkey;      /* Protection key on PTE that caused fault (since Linux 4.6) */
 //  void    *si_call_addr; /* Address of system call instruction (since Linux 3.5) */
-  n += dump_notesNN(p, o, e_machine, n_descsz, notes, "CALL ADDR");
+  n += dump_notesNN(p, o, e_machine, n_descsz, notes, "ADDR (CALL)");
 //  int      si_syscall;   /* Number of attempted system call (since Linux 3.5) */
 //  unsigned int si_arch;  /* Architecture of attempted system call (since Linux 3.5) */
 
