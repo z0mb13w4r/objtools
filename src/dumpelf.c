@@ -2723,7 +2723,9 @@ static int dump_notes7(const pbuffer_t p, const poptions_t o, const uint64_t e_m
 //  void    *si_addr;      /* Memory location which caused fault */
   n += dump_notesNN(p, o, e_machine, n_descsz, notes, "ADDR");
 //  long     si_band;      /* Band event (was int in glibc 2.3.2 and earlier) */
+  n += dump_notesNN(p, o, e_machine, n_descsz, notes, "BAND");
 //  int      si_fd;        /* File descriptor */
+  n += dump_notes32(p, o, e_machine, n_descsz, notes, "FD");
 //  short    si_addr_lsb;  /* Least significant bit of address (since Linux 2.6.32) */
   n += dump_notes32(p, o, e_machine, n_descsz, notes, "ADDR (LSB)");
 //  void    *si_lower;     /* Lower bound when address violation occurred (since Linux 3.19) */
@@ -2731,10 +2733,13 @@ static int dump_notes7(const pbuffer_t p, const poptions_t o, const uint64_t e_m
 //  void    *si_upper;     /* Upper bound when address violation occurred (since Linux 3.19) */
   n += dump_notesNN(p, o, e_machine, n_descsz, notes, "UPPER");
 //  int      si_pkey;      /* Protection key on PTE that caused fault (since Linux 4.6) */
+  n += dump_notes32(p, o, e_machine, n_descsz, notes, "PKEY");
 //  void    *si_call_addr; /* Address of system call instruction (since Linux 3.5) */
   n += dump_notesNN(p, o, e_machine, n_descsz, notes, "ADDR (CALL)");
 //  int      si_syscall;   /* Number of attempted system call (since Linux 3.5) */
+  n += dump_notes32(p, o, e_machine, n_descsz, notes, "SYSCALL");
 //  unsigned int si_arch;  /* Architecture of attempted system call (since Linux 3.5) */
+  n += dump_notes32(p, o, e_machine, n_descsz, notes, "ARCH");
 
     const uint64_t size = fgetcpos(notes) - spos;
 //printf("%ld:%ld\n", n_descsz, size);
