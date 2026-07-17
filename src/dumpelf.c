@@ -2694,52 +2694,52 @@ static int dump_notes7(const pbuffer_t p, const poptions_t o, const uint64_t e_m
     const uint64_t spos = fgetcpos(notes);
 
 //  int      si_signo;     /* Signal number */
-  n += dump_notes32(p, o, e_machine, n_descsz, notes, "SIGNAL NUMBER");
+    n += dump_notes32(p, o, e_machine, n_descsz, notes, "SIGNAL NUMBER");
 //  int      si_errno;     /* An errno value */
-  n += dump_notes32(p, o, e_machine, n_descsz, notes, "ERROR NUMBER");
+    n += dump_notes32(p, o, e_machine, n_descsz, notes, "ERROR NUMBER");
 //  int      si_code;      /* Signal code */
-  n += dump_notes32(p, o, e_machine, n_descsz, notes, "SIGNAL CODE");
+    n += dump_notes32(p, o, e_machine, n_descsz, notes, "SIGNAL CODE");
 //  int      si_trapno;    /* Trap number that caused hardware-generated signal (unused on most architectures) */
-  n += dump_notes32(p, o, e_machine, n_descsz, notes, "TRAP NUMBER");
+    n += dump_notes32(p, o, e_machine, n_descsz, notes, "TRAP NUMBER");
 //  pid_t    si_pid;       /* Sending process ID */
-  n += dump_notes32(p, o, e_machine, n_descsz, notes, "PROCESS ID");
+    n += dump_notes32(p, o, e_machine, n_descsz, notes, "PROCESS ID");
 //  uid_t    si_uid;       /* Real user ID of sending process */
-  n += dump_notes32(p, o, e_machine, n_descsz, notes, "USER ID");
+    n += dump_notes32(p, o, e_machine, n_descsz, notes, "USER ID");
 //  int      si_status;    /* Exit value or signal */
-  n += dump_notes32(p, o, e_machine, n_descsz, notes, "STATUS");
+    n += dump_notes32(p, o, e_machine, n_descsz, notes, "STATUS");
 //  clock_t  si_utime;     /* User time consumed */
-  n += dump_notes32(p, o, e_machine, n_descsz, notes, "UTIME");
+    n += dump_notes32(p, o, e_machine, n_descsz, notes, "UTIME");
 //  clock_t  si_stime;     /* System time consumed */
-  n += dump_notes32(p, o, e_machine, n_descsz, notes, "STIME");
+    n += dump_notes32(p, o, e_machine, n_descsz, notes, "STIME");
 //  union sigval si_value; /* Signal value */
 //  int      si_int;       /* POSIX.1b signal */
-  n += dump_notes32(p, o, e_machine, n_descsz, notes, "INT");
+    n += dump_notes32(p, o, e_machine, n_descsz, notes, "INT");
 //  void    *si_ptr;       /* POSIX.1b signal */
-  n += dump_notesNN(p, o, e_machine, n_descsz, notes, "PTR");
+    n += dump_notesNN(p, o, e_machine, n_descsz, notes, "PTR");
 //  int      si_overrun;   /* Timer overrun count; POSIX.1b timers */
-  n += dump_notes32(p, o, e_machine, n_descsz, notes, "OVERRUN");
+    n += dump_notes32(p, o, e_machine, n_descsz, notes, "OVERRUN");
 //  int      si_timerid;   /* Timer ID; POSIX.1b timers */
-  n += dump_notes32(p, o, e_machine, n_descsz, notes, "TIMER ID");
+    n += dump_notes32(p, o, e_machine, n_descsz, notes, "TIMER ID");
 //  void    *si_addr;      /* Memory location which caused fault */
-  n += dump_notesNN(p, o, e_machine, n_descsz, notes, "ADDR");
+    n += dump_notesNN(p, o, e_machine, n_descsz, notes, "ADDR");
 //  long     si_band;      /* Band event (was int in glibc 2.3.2 and earlier) */
-  n += dump_notesNN(p, o, e_machine, n_descsz, notes, "BAND");
+    n += dump_notesNN(p, o, e_machine, n_descsz, notes, "BAND");
 //  int      si_fd;        /* File descriptor */
-  n += dump_notes32(p, o, e_machine, n_descsz, notes, "FD");
+    n += dump_notes32(p, o, e_machine, n_descsz, notes, "FD");
 //  short    si_addr_lsb;  /* Least significant bit of address (since Linux 2.6.32) */
-  n += dump_notes32(p, o, e_machine, n_descsz, notes, "ADDR (LSB)");
+    n += dump_notes32(p, o, e_machine, n_descsz, notes, "ADDR (LSB)");
 //  void    *si_lower;     /* Lower bound when address violation occurred (since Linux 3.19) */
-  n += dump_notesNN(p, o, e_machine, n_descsz, notes, "LOWER");
+    n += dump_notesNN(p, o, e_machine, n_descsz, notes, "LOWER");
 //  void    *si_upper;     /* Upper bound when address violation occurred (since Linux 3.19) */
-  n += dump_notesNN(p, o, e_machine, n_descsz, notes, "UPPER");
+    n += dump_notesNN(p, o, e_machine, n_descsz, notes, "UPPER");
 //  int      si_pkey;      /* Protection key on PTE that caused fault (since Linux 4.6) */
-  n += dump_notes32(p, o, e_machine, n_descsz, notes, "PKEY");
+    n += dump_notes32(p, o, e_machine, n_descsz, notes, "PKEY");
 //  void    *si_call_addr; /* Address of system call instruction (since Linux 3.5) */
-  n += dump_notesNN(p, o, e_machine, n_descsz, notes, "ADDR (CALL)");
+    n += dump_notesNN(p, o, e_machine, n_descsz, notes, "ADDR (CALL)");
 //  int      si_syscall;   /* Number of attempted system call (since Linux 3.5) */
-  n += dump_notes32(p, o, e_machine, n_descsz, notes, "SYSCALL");
+    n += dump_notes32(p, o, e_machine, n_descsz, notes, "SYSCALL");
 //  unsigned int si_arch;  /* Architecture of attempted system call (since Linux 3.5) */
-  n += dump_notes32(p, o, e_machine, n_descsz, notes, "ARCH");
+    n += dump_notes32(p, o, e_machine, n_descsz, notes, "ARCH");
 
     const uint64_t size = fgetcpos(notes) - spos;
 //printf("%ld:%ld\n", n_descsz, size);
