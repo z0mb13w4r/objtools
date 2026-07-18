@@ -2475,13 +2475,10 @@ static int dump_notes5(const pbuffer_t p, const poptions_t o, const uint64_t e_m
 
 //  pid_t          pr_pid;
     n += dump_notes32(p, o, e_machine, n_descsz, notes, "PROCESS ID");
-
 //  pid_t          pr_ppid;
     n += dump_notes32(p, o, e_machine, n_descsz, notes, "PROCESS ID (PARENT)");
-
 //  pid_t          pr_pgrp;
     n += dump_notes32(p, o, e_machine, n_descsz, notes, "GROUP ID");
-
 //  pid_t          pr_sid;
     n += dump_notes32(p, o, e_machine, n_descsz, notes, "SESSION ID");
 
