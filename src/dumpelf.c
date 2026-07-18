@@ -2038,9 +2038,10 @@ int dumpelf_actions64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
 
 static int dump_notes8(const pbuffer_t p, const poptions_t o, const uint64_t e_machine,
                      const uint64_t n_descsz, const handle_t notes, const char* name) {
+  const int MAXSIZE = 22;
   int n = 0;
 
-  n += printf_text(name, USE_LT | USE_COLON | USE_TAB2);
+  n += printf_text(name, USE_LT | USE_COLON | USE_TAB2 | SET_PAD(MAXSIZE));
   n += printf_nice(fgetu8(notes), USE_FHEX8 | USE_EOL);
 
   return n;
@@ -2048,9 +2049,10 @@ static int dump_notes8(const pbuffer_t p, const poptions_t o, const uint64_t e_m
 
 static int dump_notes16(const pbuffer_t p, const poptions_t o, const uint64_t e_machine,
                      const uint64_t n_descsz, const handle_t notes, const char* name) {
+  const int MAXSIZE = 22;
   int n = 0;
 
-  n += printf_text(name, USE_LT | USE_COLON | USE_TAB2);
+  n += printf_text(name, USE_LT | USE_COLON | USE_TAB2 | SET_PAD(MAXSIZE));
   n += printf_nice(fgetu16(notes), USE_FHEX16 | USE_EOL);
 
   return n;
@@ -2058,9 +2060,10 @@ static int dump_notes16(const pbuffer_t p, const poptions_t o, const uint64_t e_
 
 static int dump_notes32(const pbuffer_t p, const poptions_t o, const uint64_t e_machine,
                      const uint64_t n_descsz, const handle_t notes, const char* name) {
+  const int MAXSIZE = 22;
   int n = 0;
 
-  n += printf_text(name, USE_LT | USE_COLON | USE_TAB2);
+  n += printf_text(name, USE_LT | USE_COLON | USE_TAB2 | SET_PAD(MAXSIZE));
   n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
 
   return n;
@@ -2068,10 +2071,11 @@ static int dump_notes32(const pbuffer_t p, const poptions_t o, const uint64_t e_
 
 static int dump_notes64(const pbuffer_t p, const poptions_t o, const uint64_t e_machine,
                      const uint64_t n_descsz, const handle_t notes, const char* name) {
+  const int MAXSIZE = 22;
   int n = 0;
 
-  n += printf_text(name, USE_LT | USE_COLON | USE_TAB2);
-  n += printf_nice(fgetu32(notes), USE_FHEX32 | USE_EOL);
+  n += printf_text(name, USE_LT | USE_COLON | USE_TAB2 | SET_PAD(MAXSIZE));
+  n += printf_nice(fgetu64(notes), USE_FHEX64 | USE_EOL);
 
   return n;
 }
@@ -2712,6 +2716,7 @@ static int dump_notes7(const pbuffer_t p, const poptions_t o, const uint64_t e_m
 //  clock_t  si_stime;     /* System time consumed */
     n += dump_notes32(p, o, e_machine, n_descsz, notes, "STIME");
 //  union sigval si_value; /* Signal value */
+    n += dump_notesNN(p, o, e_machine, n_descsz, notes, "VALUE");
 //  int      si_int;       /* POSIX.1b signal */
     n += dump_notes32(p, o, e_machine, n_descsz, notes, "INT");
 //  void    *si_ptr;       /* POSIX.1b signal */
