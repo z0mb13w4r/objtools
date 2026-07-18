@@ -25,12 +25,14 @@ static char zELFUSEDYNAMIC[]     = "Use the dynamic section info when displaying
 static char zELFDEMANGLE[]       = "Decode (demangle) low-level symbol names into user-level names. This makes C++ function names readable. Different compilers have different mangling styles.";
 static char zELFDISASSEMBLE[]    = "Display the assembler mnemonics for the machine instructions from the input file.";
 
+static const char zCOREDESCRIPTION[] = "display information about ELF core dumps.";
+
 static const char *zELFDESCRIPTION[] = {
-  "displays information about one or more ELF format object files. The options",
-  "control what particular information to display.",
+  "displays information about ELF format core dumps. The options control what",
+  "particular information to display.",
   "",
-  "elffile... are the object files to be examined. 32-bit and 64-bit ELF files",
-  "are supported, as are archives containing ELF files.",
+  "elffile... are the ELF format core dump to be examined. 32-bit and 64-bit",
+  "core dumps are supported.",
   0
 };
 
