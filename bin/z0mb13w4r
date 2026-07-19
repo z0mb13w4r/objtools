@@ -1,52 +1,118 @@
 #!/bin/bash
 
-# curl -O https://raw.githubusercontent.com/z0mb13w4r/objtools/master/bin/z0mb13w4r
-
-VERSION=1.0
+VERSION=1.1
 SCRIPTNAME=$(basename "$0")
 
-TMP=/tmp/
-
+JQBIN=/usr/bin/jq
+TRBIN=/usr/bin/tr
+APTBIN=/usr/bin/apt
 CATBIN=/usr/bin/cat
 CUTBIN=/usr/bin/cut
+GITBIN=/usr/bin/git
 DPKGBIN=/usr/bin/dpkg
 GREPBIN=/usr/bin/grep
 SUDOBIN=/usr/bin/sudo
 WGETBIN=/usr/bin/wget
+REMNUXBIN=/usr/local/bin/remnux
+LSBRELEASEBIN=/usr/bin/lsb_release
+
+TMP=/tmp/
+
+function do_remnux() {
+  ${SUDOBIN} ${REMNUXBIN} install
+}
+
+function do_upgrade() {
+  ${SUDOBIN} ${APTBIN} update
+  ${SUDOBIN} ${APTBIN} upgrade -y
+}
+
+function do_config() {
+  VIMTXT=${HOME=/home/remnux}/.vimrc
+
+  echo 'set number' > ${VIMTXT}
+  echo 'set autoindent' >> ${VIMTXT}
+  echo 'set hlsearch' >> ${VIMTXT}
+  echo 'set tabstop=2' >> ${VIMTXT}
+  echo 'set softtabstop=2' >> ${VIMTXT}
+  echo 'set shiftwidth=2' >> ${VIMTXT}
+  echo 'set expandtab' >> ${VIMTXT}
+  echo >> ${VIMTXT}
+  echo '" Press F4 to toggle highlighting on/off, and show current value.' >> ${VIMTXT}
+  echo ':noremap <F4> :set hlsearch! hlsearch?<CR>' >> ${VIMTXT}
+  echo >> ${VIMTXT}
+  echo '" Press return to temporarily get out of the highlighted search.' >> ${VIMTXT}
+  echo ':nnoremap <CR> :nohlsearch<CR><CR>' >> ${VIMTXT}
+  echo >> ${VIMTXT}
+  echo '" Highlight trailing whitespaces' >> ${VIMTXT}
+  echo ':highlight TrailWhitespace ctermbg=red guibg=red' >> ${VIMTXT}
+  echo ':match TrailWhitespace /\s\+$\| \+\ze\t/' >> ${VIMTXT}
+
+  echo -n "Your name: "
+  read -r USERNAME
+  echo -n "Your email: "
+  read -r EMAILADDR
+
+  ${GITBIN} config --global user.name "'${USERNAME}'"
+  ${GITBIN} config --global user.email "'${EMAILADDR}'"
+  ${GITBIN} config --global core.editor vim
+  ${GITBIN} config --global core.pager 'less -FRSX'
+  ${GITBIN} config --global core.abbrev 12
+  ${GITBIN} config --global color.ui auto
+  ${GITBIN} config --global merge.tool vimdiff
+  ${GITBIN} config --global difftool.prompt false
+  ${GITBIN} config --global alias.unstage 'reset HEAD --'
+  ${GITBIN} config --global alias.log-all 'log --graph --stat --patch --ignore-space-change'
+  ${GITBIN} config --global alias.last 'log -1 HEAD'
+  ${GITBIN} config --global pretty.fixes 'Fixes: %h (\"%s\")'
+  ${GITBIN} config --global push.default simple
+}
+
+function do_debians() {
+  ${SUDOBIN} ${APTBIN} install -y binutils-dev
+  ${SUDOBIN} ${APTBIN} install -y vim-gtk3 git git-doc git-email
+}
+
+function do_objtools() {
+  GITHUBNAM=${TMP}github.nam
+  GITHUBTAG=${TMP}github.tag
+  GITHUBTXT=${TMP}github.txt
+  GITHUBZIP=${TMP}github.zip
+  GITHUBVER=${TMP}github.ver
+
+  ${LSBRELEASEBIN} -a | ${GREPBIN} Release | ${CUTBIN} -d ':' -f 2 | ${TRBIN} -d '[[:space:]]' > ${GITHUBVER}
+
+  ${WGETBIN} https://api.github.com/repos/z0mb13w4r/objtools/releases/latest -O ${GITHUBTXT}
+  ${CATBIN} ${GITHUBTXT} | ${JQBIN} -r '(.tag_name)' > ${GITHUBTAG}
+  ${CATBIN} ${GITHUBTXT} | ${JQBIN} -r '(.assets[].name | select(. | contains("24.04-amd64.deb")))' > ${GITHUBNAM}
+  ${CATBIN} ${GITHUBTXT} | ${JQBIN} -r '(.assets[].browser_download_url | select(. | contains("24.04-amd64.deb")))' > ${GITHUBZIP}
+
+  ${WGETBIN} -P ${TMP} $(${CATBIN} ${GITHUBZIP})
+
+  ${SUDOBIN} ${DPKGBIN} -i ${TMP}$(${CATBIN} ${GITHUBNAM})
+}
 
 function show_usage() {
   ${CATBIN} << EOF
 Usage: ${SCRIPTNAME} v${VERSION}
 EXAMPLES:
   ${SCRIPTNAME} {-u|--update}
-  ${SCRIPTNAME} {-d|--develop}
+  ${SCRIPTNAME} {-i|--install}
   ${SCRIPTNAME} {-v|--version}
   ${SCRIPTNAME} {-h|--help}
 EOF
 }
 
-function fetch_gdrive() {
-  ${WGETBIN} --no-check-certificate "https://drive.google.com/uc?export=download&id=${1}&confirm=t" -O ${TMP}${2}
-}
-
-function fetch_github() {
-  ${WGETBIN} https://github.com/${1}/${2} -O ${TMP}${2}
-}
-
-function fetch_item() {
-  echo $(${GREPBIN} ${1} ${TMP}NOTE | ${CUTBIN} -d ' ' -f ${2})
-}
-
-function debian() {
-  ${SUDOBIN} ${DPKGBIN} -i ${TMP}${1}
+function show_version() {
+  echo ${SCRIPTNAME} v${VERSION}
 }
 
 POSITIONAL_ARGS=()
 
 while [[ $# -gt 0 ]]; do
   case ${1} in
-    -d|--develop)
-      ARG_DEVELOP=YES
+    -i|--install)
+      ARG_INSTALL=YES
       shift # past argument
       ;;
     -u|--update)
@@ -80,17 +146,13 @@ if [ "${ARG_HELP}" == "YES" ]; then
 elif [ "${ARG_VERSION}" == "YES" ]; then
   show_version
   exit 0
-fi
-
-if [ "${ARG_DEVELOP}" == "YES" ]; then
-  fetch_gdrive "1LDqJ_y3mdUH7Xm9JkBDmc7laucPE54IB" "NOTE"
-  fetch_gdrive "$(fetch_item 'DEVELOP' '2')" "$(fetch_item 'DEVELOP' '1')"
-  debian "$(fetch_item 'DEVELOP' '1')"
+elif [ "${ARG_INSTALL}" == "YES" ]; then
+  do_upgrade
+  do_debians
+  do_objtools
+  do_config
+  do_remnux
 elif [ "${ARG_UPDATE}" == "YES" ]; then
-  fetch_gdrive "1LDqJ_y3mdUH7Xm9JkBDmc7laucPE54IB" "NOTE"
-  fetch_github "$(fetch_item 'GITHUB1' '2')" "$(fetch_item 'GITHUB1' '1')"
-  fetch_github "$(fetch_item 'GITHUB2' '2')" "$(fetch_item 'GITHUB2' '1')"
-  debian "$(fetch_item 'GITHUB1' '1')"
-  debian "$(fetch_item 'GITHUB2' '1')"
+  do_upgrade
+  do_remnux
 fi
-
