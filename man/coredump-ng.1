@@ -1,0 +1,199 @@
+.TH COREDUMP-NG "1" "July 2026" "objtools 1.7" "User Commands"
+.SH NAME
+coredump-ng: display information about ELF core dumps.
+
+.SH SYNOPSIS
+coredump-ng [\fB\-H\fR|\fB\-\-help\fR]
+            [\fB\-v\fR|\fB\-\-version\fR]
+            [\fB\-A\fR|\fB\-\-arch-specific\fR]
+            [\fB\-I\fR|\fB\-\-histogram\fR]
+            [\fB\-S\fR|\fB\-\-section-headers\fR]
+            [\fB\-V\fR|\fB\-\-version-info\fR]
+            [\fB\-a\fR|\fB\-\-all\fR]
+            [\fB\-d\fR|\fB\-\-dynamic\fR]
+            [\fB\-e\fR|\fB\-\-headers\fR]
+            [\fB\-g\fR|\fB\-\-section-groups\fR]
+            [\fB\-t\fR|\fB\-\-section-details\fR]
+            [\fB\-h\fR|\fB\-\-file-header\fR]
+            [\fB\-l\fR|\fB\-\-program-headers\fR]
+            [\fB\-n\fR|\fB\-\-notes\fR]
+            [\fB\-r\fR|\fB\-\-relocs\fR]
+            [\fB\-s\fR|\fB\-\-symbols\fR]
+            [\fB\-u\fR|\fB\-\-unwind\fR]
+            [\fB\-D\fR|\fB\-\-use-dynamic\fR]
+            [\fB\-C\fR|\fB\-\-demangle\fR]
+            [\fB\-m\fR <number or name>|\fB\-\-disassemble=\fR<number or name>]
+            [\fB\-\-verbose]
+            \fIelffile\fR...
+
+.SH DESCRIPTION
+\fBcoredump-ng\fR displays information about ELF format core dumps. The options control what particular information to display.
+
+\fIelffile...\fR are the ELF format core dump to be examined. 32-bit and 64-bit core dumps are supported.
+
+.SH OPTIONS
+.IP "\fB\-H\fR" 4
+.IX Item "-H"
+.PD 0
+.IP "\fB\-\-help\fR" 4
+.IX Item "--help"
+.PD
+Print a summary of the options to coredump-ng and exit.
+.IP "\fB\-v\fR" 4
+.IX Item "-v"
+.PD 0
+.IP "\fB\-\-version\fR" 4
+.IX Item "--version"
+.PD
+Print the version number of coredump-ng and exit.
+.IP "\fB\-I\fR" 4
+.IX Item "-I"
+.PD 0
+.IP "\fB\-\-histogram\fR" 4
+.IX Item "--histogram"
+.PD
+Display a histogram of bucket list lengths when displaying the contents of the symbol tables.
+.IP "\fB\-S\fR" 4
+.IX Item "-S"
+.PD 0
+.IP "\fB\-\-section\-headers\fR" 4
+.IX Item "--section-headers"
+.PD
+Displays the information contained in the file's section headers.
+.IP "\fB\-V\fR" 4
+.IX Item "-V"
+.PD 0
+.IP "\fB\-\-version\-info\fR" 4
+.IX Item "--version-info"
+.PD
+Displays the contents of the version sections in the file.
+.IP "\fB\-a\fR" 4
+.IX Item "-a"
+.PD 0
+.IP "\fB\-\-all\fR" 4
+.IX Item "--all"
+.PD
+Equivalent to specifying: \fB\-\-arch-specific\fR, \fB\-\-histogram\fR, \fB\-\-section-headers\fR, \fB\-\-version-info\fR, \fB\-\-dynamic\fR, \fB\-\-section-groups\fR, \fB\-\-file-header\fR, \fB\-\-program-headers\fR, \fB\-\-notes\fR, \fB\-\-relocs\fR, \fB\-\-symbols\fR and \fB\-\-unwind\fR.
+.IP "\fB\-d\fR" 4
+.IX Item "-d"
+.PD 0
+.IP "\fB\-\-dynamic\fR" 4
+.IX Item "--dynamic"
+Displays the contents of the file's dynamic section.
+.IP "\fB\-e\fR" 4
+.IX Item "-e"
+.PD 0
+.IP "\fB\-\-headers\fR" 4
+.IX Item "--headers"
+.PD
+Display all the headers in the file.
+Equivalent to specifying: \fB\-\-section-headers\fR, \fB\-\-file-header\fR and \fB\-\-program-headers\fR.
+.IP "\fB\-g\fR" 4
+.IX Item "-g"
+.PD 0
+.IP "\fB\-\-section\-groups\fR" 4
+.IX Item "--section-groups"
+.PD
+Displays the information contained in the file's section groups.
+.IP "\fB\-t\fR" 4
+.IX Item "-t"
+.PD 0
+.IP "\fB\-\-section\-details\fR" 4
+.IX Item "--section-details"
+.PD
+Displays the detailed section information. Implies \fB\-S\fR.
+.IP "\fB\-h\fR" 4
+.IX Item "-h"
+.PD 0
+.IP "\fB\-\-file\-header\fR" 4
+.IX Item "--file-header"
+.PD
+Displays the information contained in the ELF header at the start of the file.
+.IP "\fB\-l\fR" 4
+.IX Item "-l"
+.PD 0
+.IP "\fB\-\-program\-headers\fR" 4
+.IX Item "--program-headers"
+.PD
+Displays the information contained in the file's segment headers.
+.IP "\fB\-n\fR" 4
+.IX Item "-n"
+.PD 0
+.IP "\fB\-\-notes\fR" 4
+.IX Item "--notes"
+.PD
+Displays the contents of the NOTE segments.
+.IP "\fB\-r\fR" 4
+.IX Item "-r"
+.PD 0
+.IP "\fB\-\-relocs\fR" 4
+.IX Item "--relocs"
+.PD
+Displays the contents of the file's relocation section.
+.IP "\fB\-s\fR" 4
+.IX Item "-s"
+.PD 0
+.IP "\fB\-\-symbols\fR" 4
+.IX Item "--symbols"
+.PD
+Displays the entries in symbol table section of the file.
+.IP "\fB\-u\fR" 4
+.IX Item "-u"
+.PD 0
+.IP "\fB\-\-unwind\fR" 4
+.IX Item "--unwind"
+.PD
+Displays the contents of the file's unwind section.
+.IP "\fB\-D\fR" 4
+.IX Item "-D"
+.PD 0
+.IP "\fB\-\-use\-dynamic\fR" 4
+.IX Item "--use-dynamic"
+.PD
+Use the dynamic section info when displaying symbols.
+.IP "\fB\-C\fR" 4
+.IX Item "-C"
+.PD 0
+.IP "\fB\-\-demangle\fR" 4
+.IX Item "--demangle"
+.PD
+Decode (demangle) low-level symbol names into user-level names. This makes C++ function names readable. Different compilers have different mangling styles.
+.IP "\fB\-m <number or name>\fR" 4
+.IX Item "-m <number or name>"
+.PD 0
+.IP "\fB\-\-disassemble=<number or name>\fR" 4
+.IX Item "--disassemble=<number or name>"
+.PD
+Display the assembler mnemonics for the machine instructions from the input file.
+.IP "\fB\-\-verbose\fR" 4
+.IX Item "--verbose"
+.PD
+Print additional information.
+
+.SH SEE ALSO
+detect-ng(1), convert-ng(1), coredump-ng(1), objcopy-ng(1), objdump-ng(1), objdwarf-ng(1), objhash-ng(1), readelf-ng(1), readpe-ng(1)
+
+.SH COPYRIGHT
+.IX Header "COPYRIGHT"
+MIT License
+.PP
+Copyright (c) 2025 Kyle Wickens
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
