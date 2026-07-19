@@ -4,6 +4,7 @@ VERSION=1.1
 SCRIPTNAME=$(basename "$0")
 
 JQBIN=/usr/bin/jq
+MVBIN=/usr/bin/mv
 TRBIN=/usr/bin/tr
 APTBIN=/usr/bin/apt
 CATBIN=/usr/bin/cat
@@ -13,12 +14,17 @@ DPKGBIN=/usr/bin/dpkg
 GREPBIN=/usr/bin/grep
 SUDOBIN=/usr/bin/sudo
 WGETBIN=/usr/bin/wget
+CHMODBIN=/usr/bin/chmod
 REMNUXBIN=/usr/local/bin/remnux
 LSBRELEASEBIN=/usr/bin/lsb_release
 
 TMP=/tmp/
 
 function do_remnux() {
+  ${WGETBIN} https://REMnux.org/remnux
+  ${CHMODBIN} +x remnux
+  ${SUDOBIN} ${MVBIN} remnux ${REMNUXBIN}
+
   ${SUDOBIN} ${REMNUXBIN} install
 }
 
@@ -28,6 +34,16 @@ function do_upgrade() {
 }
 
 function do_config() {
+  echo -n "Your name: "
+  read -r USERNAME
+  echo -n "Your email: "
+  read -r EMAILADDR
+
+  ${GITBIN} config --global user.name "'${USERNAME}'"
+  ${GITBIN} config --global user.email "'${EMAILADDR}'"
+}
+
+function do_files() {
   VIMTXT=${HOME=/home/remnux}/.vimrc
 
   echo 'set number' > ${VIMTXT}
@@ -48,13 +64,6 @@ function do_config() {
   echo ':highlight TrailWhitespace ctermbg=red guibg=red' >> ${VIMTXT}
   echo ':match TrailWhitespace /\s\+$\| \+\ze\t/' >> ${VIMTXT}
 
-  echo -n "Your name: "
-  read -r USERNAME
-  echo -n "Your email: "
-  read -r EMAILADDR
-
-  ${GITBIN} config --global user.name "'${USERNAME}'"
-  ${GITBIN} config --global user.email "'${EMAILADDR}'"
   ${GITBIN} config --global core.editor vim
   ${GITBIN} config --global core.pager 'less -FRSX'
   ${GITBIN} config --global core.abbrev 12
@@ -71,6 +80,7 @@ function do_config() {
 function do_debians() {
   ${SUDOBIN} ${APTBIN} install -y binutils-dev
   ${SUDOBIN} ${APTBIN} install -y vim-gtk3 git git-doc git-email
+  ${SUDOBIN} ${APTBIN} install -y python3-scapy python3-pyx
 }
 
 function do_objtools() {
@@ -107,38 +117,34 @@ function show_version() {
   echo ${SCRIPTNAME} v${VERSION}
 }
 
-POSITIONAL_ARGS=()
-
 while [[ $# -gt 0 ]]; do
   case ${1} in
-    -i|--install)
+    config)
+      ARG_CONFIG=YES
+      shift # past argument
+      ;;
+    install)
       ARG_INSTALL=YES
       shift # past argument
       ;;
-    -u|--update)
+    update)
       ARG_UPDATE=YES
       shift # past argument
       ;;
-    -h|--help)
+    help)
       ARG_HELP=YES
       shift # past argument
       ;;
-    -v|--version)
+    version)
       ARG_VERSION=YES
       shift # past argument
       ;;
-    -*|--*)
+    *)
       echo "Unknown option ${1}"
       exit 1
       ;;
-    *)
-      POSITIONAL_ARGS+=("${1}") # save positional arg
-      shift # past argument
-      ;;
   esac
 done
-
-set -- "${POSITIONAL_ARGS[@]}" # restore positional parameters
 
 if [ "${ARG_HELP}" == "YES" ]; then
   show_usage
@@ -150,9 +156,12 @@ elif [ "${ARG_INSTALL}" == "YES" ]; then
   do_upgrade
   do_debians
   do_objtools
-  do_config
   do_remnux
+  do_files
 elif [ "${ARG_UPDATE}" == "YES" ]; then
   do_upgrade
   do_remnux
+elif [ "${ARG_CONFIG}" == "YES" ]; then
+  do_config
 fi
+
