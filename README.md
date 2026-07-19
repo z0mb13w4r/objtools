@@ -8,6 +8,8 @@ This problem is solved by the **Heuristic Assembly Language Analysis Engine (HAL
 
 ![WELCOME](https://github.com/z0mb13w4r/z0mb13w4r/blob/main/objtools-image.png)
 
+**z0mb13w4r** is a script that installs REMnux on top of Ubuntu 24.04 LTS, then installs a collection of my favourite tools which I use for vulnerability security research. [READ MORE...](INSTALL.md)
+
 **convert-ng** is a Swiss Army Knife for manipulating data in complex ways using operations, xor, addition, subtraction, logical shifts and rotations, base32, base58, base64, base85 and vigeneree cipher. [READ MORE...](https://github.com/z0mb13w4r/objtools/wiki/convert%E2%80%90ng)
 
 **coredump-ng** displays information about ELF core dumps.
@@ -39,6 +41,10 @@ Download the latest [release](https://github.com/z0mb13w4r/objtools/releases).
 ### How to build ###
 
 See the [BUILD.md](BUILD.md) for detailed instructions.
+
+### How to install ###
+
+See the [INSTALL.md](INSTALL.md) for detailed instructions.
 
 ### Support & Sponsorship ###
 
