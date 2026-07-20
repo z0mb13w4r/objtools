@@ -76,16 +76,17 @@ int main(int argc, char* argv[]) {
   poptions_t o = omalloc();
   if (o) {
     x = get_options_coredump(o, argc - 1, argv + 1, argv[0]);
-    if (ECODE_ISOK(x) && o->inpname[0]) {
-      pbuffer_t p = bopen(o->inpname);
+    if (ECODE_ISOK(x) && o->inpname0[0]) {
+      pbuffer_t p = bopen(o->inpname0);
+      pbuffer_t q = bopen(o->inpname1);
       if (p) {
-        if (isELF(p)) {
-          x = coredump(p, o);
+        if (isELFcore(p)) {
+          x = coredump(p, q, o);
         } else {
-          printf_e("'%s': invalid file format.", o->inpname);
+          printf_e("'%s': invalid file format.", o->inpname0);
         }
       } else {
-        printf_e("'%s': no such file.", o->inpname);
+        printf_e("'%s': no such file.", o->inpname0);
       }
 
      bfree(p);
