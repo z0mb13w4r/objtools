@@ -49,8 +49,10 @@ static int get_options_coredump(poptions_t o, int argc, char** argv, char* name)
         return odeath(o, THIS_NAME, argv[i] + 1);
       }
       o->action |= action;
-    } else if (0 == o->inpname[0]) {
-      xstrncpy(o->inpname, argv[i], NELEMENTS(o->inpname));
+    } else if (0 == o->inpname0[0]) {
+      xstrncpy(o->inpname0, argv[i], NELEMENTS(o->inpname0));
+    } else if (0 == o->inpname1[0]) {
+      xstrncpy(o->inpname1, argv[i], NELEMENTS(o->inpname1));
     } else {
       return odeath(o, THIS_NAME, argv[i]);
     }
