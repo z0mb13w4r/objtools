@@ -187,7 +187,7 @@ handle_t bopen(const char* name) {
 
       return p;
     }
-  } else {
+  } else if (name && name[0]) {
     FILE* f = fopen(name, "rb");
     if (f) {
       pbuffer_t p = bmalloc();
