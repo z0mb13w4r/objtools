@@ -276,6 +276,14 @@ bool_t isELFpie(const pbuffer_t p) {
   return FALSE;
 }
 
+bool_t isELFcore(const pbuffer_t p) {
+  if (isELF(p)) {
+    return ET_CORE == ecget_etype(p) ? TRUE : FALSE;
+  }
+
+  return FALSE;
+}
+
 uint64_t ecget_value32(const pbuffer_t p, const int type, const int tag) {
   MEMSTACK(Elf32_Ehdr, ex);
   Elf32_Ehdr *e0 = ecget_ehdr32(p, ex);

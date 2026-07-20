@@ -286,6 +286,7 @@ bool_t isELF64(const pbuffer_t p);
 bool_t isELFbe(const pbuffer_t p);
 bool_t isELFle(const pbuffer_t p);
 bool_t isELFpie(const pbuffer_t p);
+bool_t isELFcore(const pbuffer_t p);
 
 uint64_t ecget_etype(const pbuffer_t p);
 uint64_t ecget_eflags(const pbuffer_t p);
