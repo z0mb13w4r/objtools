@@ -1988,6 +1988,7 @@ int dumpelf_version64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
 int dumpelf_actions32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
   MALLOCA(const char*, secdone, ehdr->e_shnum);
 
+  int n = 0;
   paction_t x = o->actions;
   while (x) {
     if (x->secname[0]) {
@@ -1996,9 +1997,9 @@ int dumpelf_actions32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
       if (s0) {
         MALLOCSWRAP3(opwrap_t, s, MODE_OCSHDR32, s0, p, -1);
         if (!isnamedone(secdone, NELEMENTS(secdone), x->secname)) {
-          dump_actions1(p, o, s0->sh_offset, s0->sh_type != SHT_NOBITS ? s0->sh_size : 0);
+          n += dump_actions1(p, o, s0->sh_offset, s0->sh_type != SHT_NOBITS ? s0->sh_size : 0);
         }
-        dump_actions2(p, o, ps, x->secname, x->action, s0->sh_offset, s0->sh_type != SHT_NOBITS ? s0->sh_size : 0, s0->sh_addr);
+        n += dump_actions2(p, o, ps, x->secname, x->action, s0->sh_offset, s0->sh_type != SHT_NOBITS ? s0->sh_size : 0, s0->sh_addr);
       } else if (MODE_ISNOT(o->action, OPRPROGRAM_NOWARNINGS)) {
         printf_w("section '%s' was not dumped because it does not exist!", x->secname);
       }
@@ -2007,7 +2008,7 @@ int dumpelf_actions32(const pbuffer_t p, const poptions_t o, Elf32_Ehdr *ehdr) {
     x = x->actions;
   }
 
-  return 0;
+  return n;
 }
 
 int dumpelf_actions64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
@@ -2022,7 +2023,7 @@ int dumpelf_actions64(const pbuffer_t p, const poptions_t o, Elf64_Ehdr *ehdr) {
       if (s0) {
         MALLOCSWRAP3(opwrap_t, s, MODE_OCSHDR64, s0, p, -1);
         if (!isnamedone(secdone, NELEMENTS(secdone), x->secname)) {
-          dump_actions1(p, o, s0->sh_offset, s0->sh_type != SHT_NOBITS ? s0->sh_size : 0);
+          n += dump_actions1(p, o, s0->sh_offset, s0->sh_type != SHT_NOBITS ? s0->sh_size : 0);
         }
         n += dump_actions2(p, o, ps, x->secname, x->action, s0->sh_offset, s0->sh_type != SHT_NOBITS ? s0->sh_size : 0, s0->sh_addr);
       } else if (MODE_ISNOT(o->action, OPRPROGRAM_NOWARNINGS)) {

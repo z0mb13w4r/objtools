@@ -49,6 +49,7 @@ int dump_actions0(const pbuffer_t p, const paction_t x, const unknown_t p0, cons
 }
 
 int dump_actions1(const pbuffer_t p, const poptions_t o, const uint64_t offset, const size_t size) {
+  int n = 0;
   int32_t step = 0;
   paction_t x = o->actions;
   while (x) {
@@ -58,14 +59,14 @@ int dump_actions1(const pbuffer_t p, const poptions_t o, const uint64_t offset, 
       } else if (ACT_DEC == x->action) {
         step = -x->uvalue;
       } else {
-        dump_actions0(p, x, getp(p, offset, size), size, step);
+        n += dump_actions0(p, x, getp(p, offset, size), size, step);
       }
     }
 
     x = x->actions;
   }
 
-  return 0;
+  return n;
 }
 
 int dump_actions2(const pbuffer_t p, const poptions_t o, const handle_t s, const char* name, const int action,
