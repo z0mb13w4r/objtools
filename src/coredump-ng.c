@@ -13,13 +13,13 @@ static int usage(poptions_t o, const char* name, const args_t args[], const int 
   n += usage_name(o, name, args, zCOREDESCRIPTION);
   n += usage_synopsis0(o, name, args);
 //  n += usage_synopsis1(o, name, zDEBUGELFARGS, zREADELFARGS0, zREADELFARGS1);
-//  n += usage_synopsis2(o, name, zDISASSEMBLEARGS, zREADELFARGS2, zREADELFARGS3);
+  n += usage_synopsis2(o, name, zDISASSEMBLEARGS, zCOREELFARGS2, zCOREELFARGS3);
   n += usage_objname(o, name, "objfiles");
   n += printf_eol();
   n += usage_description(o, name, args, zELFDESCRIPTION);
   n += usage_options0(o, name, args);
 //  n += usage_options1(o, name, zDEBUGELFARGS, zREADELFARGS0, zREADELFARGS1);
-//  n += usage_options2(o, name, zDISASSEMBLEARGS, zREADELFARGS2, zREADELFARGS3);
+  n += usage_options2(o, name, zDISASSEMBLEARGS, zCOREELFARGS2, zCOREELFARGS3);
   n += usage_seealso(o, name, args);
   n += usage_copyright(o, name, args);
 
@@ -28,7 +28,7 @@ static int usage(poptions_t o, const char* name, const args_t args[], const int 
 
 static int get_options_coredump(poptions_t o, int argc, char** argv, char* name) {
   if (0 == argc) {
-    return usage(o, THIS_NAME, zREADELFARGS, ECODE_ARGUMENTS);
+    return usage(o, THIS_NAME, zCOREELFARGS, ECODE_ARGUMENTS);
   }
 
   strname(o->prgname, name);
@@ -38,13 +38,13 @@ static int get_options_coredump(poptions_t o, int argc, char** argv, char* name)
 
   for (int i = 0; i < argc; ++i) {
     if ('-' == argv[i][0] && '-' == argv[i][1]) {
-      imode_t action = get_options2(o, zREADELFARGS, argv[i]);
+      imode_t action = get_options2(o, zCOREELFARGS, argv[i]);
       if (0 == action) {
         return odeath(o, THIS_NAME, argv[i] + 2);
       }
       o->action |= action;
     } else if ('-' == argv[i][0]) {
-      imode_t action = get_options1(o, zREADELFARGS, argv[i]);
+      imode_t action = get_options1(o, zCOREELFARGS, argv[i]);
       if (0 == action) {
         return odeath(o, THIS_NAME, argv[i] + 1);
       }
@@ -58,14 +58,14 @@ static int get_options_coredump(poptions_t o, int argc, char** argv, char* name)
     }
   }
 
-  o->ocdump |= get_ocdump(o, zREADELFSWAP, o->action);
+  o->ocdump |= get_ocdump(o, zCOREELFSWAP, o->action);
 
   if (MODE_ISANY(o->action, OPTPROGRAM_VERSION)) {
-    return version0(o, THIS_NAME, zREADELFARGS);
+    return version0(o, THIS_NAME, zCOREELFARGS);
   }
 
   if (MODE_ISANY(o->action, OPTPROGRAM_HELP)) {
-    return usage(o, THIS_NAME, zREADELFARGS, ECODE_OK);
+    return usage(o, THIS_NAME, zCOREELFARGS, ECODE_OK);
   }
 
   return ECODE_OK;

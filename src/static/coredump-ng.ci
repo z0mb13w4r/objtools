@@ -1,5 +1,5 @@
-//static const char zREADELFARGS2[] = "-M";
-//static const char zREADELFARGS3[] = "--disassembler-options";
+static const char zCOREELFARGS2[] = "-M";
+static const char zCOREELFARGS3[] = "--disassembler-options";
 
 static char zELFARCHSPECIFIC[]   = "Displays architecture-specific information in the file.";
 static char zELFHISTOGRAM[]      = "Display a histogram of bucket list lengths when displaying the contents of the symbol tables.";
@@ -33,7 +33,7 @@ static const char *zELFDESCRIPTION[] = {
   0
 };
 
-static const args_t zREADELFARGS[] = {
+static const args_t zCOREELFARGS[] = {
   {'H', "--help",            OPTPROGRAM_HELP,              NULL},
   {'v', "--version",         OPTPROGRAM_VERSION,           NULL},
   {'A', "--arch-specific",   OPTCOREELF_ARCHSPECIFIC,      zELFARCHSPECIFIC},
@@ -58,7 +58,7 @@ static const args_t zREADELFARGS[] = {
   {0, NULL}
 };
 
-static const imodeswap_t zREADELFSWAP[] = {
+static const imodeswap_t zCOREELFSWAP[] = {
   {OPTPROGRAM_ENHANCED,        OPTDISASSEMBLE_ENHANCED},
   {OPTPROGRAM_ENHANCED,        OPTDWARF_ENHANCED},
   {OPTPROGRAM_VERBOSE,         OPTDISASSEMBLE_VERBOSE},
