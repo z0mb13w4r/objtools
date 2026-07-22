@@ -31,8 +31,11 @@ static const char *zELFDESCRIPTION[] = {
   "displays information about ELF format core dumps. The options control what",
   "particular information to display.",
   "",
-  "elffile... are the ELF format core dump to be examined. 32-bit and 64-bit",
+  "corefile... are the ELF format core dump to be examined. 32-bit and 64-bit",
   "core dumps are supported.",
+  "",
+  "elffile... are the object files to be examined. 32-bit and 64-bit ELF files",
+  "are supported, as are archives containing ELF files.",
   0
 };
 
