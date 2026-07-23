@@ -49,6 +49,14 @@ static int get_options_readelf(poptions_t o, int argc, char** argv, char* name) 
             return odeath(o, THIS_NAME, arg1);
           }
           o->ocdump |= ocdump;
+        } else if (0 == xstrcmp(arg0, zREADELFARGS3)) {
+          imode_t ocdump = get_options2(o, zDISASSEMBLEARGS, arg1);
+          if (0 == ocdump) {
+            return odeath(o, THIS_NAME, arg1);
+          }
+          o->ocdump |= ocdump;
+        } else if (0 == xstrcmp(arg0, zREADELFARGS5)) {
+          sinsert(o, arg1, zSCRIPTCOMMANDS, NULL);
         } else if (0 == xstrcmp(arg0, "--hex-dump")) {
           oinsertsname(o, ACT_HEXDUMP, arg1);
         } else if (0 == xstrcmp(arg0, "--string-dump")) {
@@ -63,8 +71,6 @@ static int get_options_readelf(poptions_t o, int argc, char** argv, char* name) 
           oinsertsname(o, ACT_DISASSEMBLE, arg1);
         } else if (0 == xstrcmp(arg0, "--decompress")) {
           oinsertsname(o, ACT_ZLIB, arg1);
-        } else if (0 == xstrcmp(arg0, "--script")) {
-          sinsert(o, arg1, zSCRIPTCOMMANDS, NULL);
         } else {
           return odeath(o, THIS_NAME, arg0 + 2);
         }
@@ -82,6 +88,17 @@ static int get_options_readelf(poptions_t o, int argc, char** argv, char* name) 
           return odeath(o, THIS_NAME, argv[i] + 1);
         }
         o->ocdump |= ocdump ? ocdump : set_options1(o, zDEBUGELFARGS);
+      } else if ( argv[i][0] == zREADELFARGS2[0] && argv[i][1] == zREADELFARGS2[1]  ) {
+        imode_t ocdump = get_options2(o, zDISASSEMBLEARGS, argv[++i]);
+        if (0 == ocdump) {
+          return odeath(o, THIS_NAME, argv[i]);
+        }
+        o->ocdump |= ocdump;
+      } else if (argv[i][0] == zREADELFARGS4[0] && argv[i][1] == zREADELFARGS4[1]) {
+        if (argc <= (i + 1)) {
+          return odeath(o, THIS_NAME, argv[i] + 1);
+        }
+        sinsert(o, argv[++i], zSCRIPTCOMMANDS, NULL);
       } else if (0 == xstrcmp(argv[i], "-x")) {
         if (argc <= (i + 1)) {
           return odeath(o, THIS_NAME, argv[i] + 1);
@@ -117,11 +134,6 @@ static int get_options_readelf(poptions_t o, int argc, char** argv, char* name) 
           return odeath(o, THIS_NAME, argv[i] + 1);
         }
         oinsertsname(o, ACT_ZLIB, argv[++i]);
-      } else if (0 == xstrcmp(argv[i], "-T")) {
-        if (argc <= (i + 1)) {
-          return odeath(o, THIS_NAME, argv[i] + 1);
-        }
-        sinsert(o, argv[++i], zSCRIPTCOMMANDS, NULL);
       } else {
         imode_t action = get_options1(o, zREADELFARGS, argv[i]);
         if (0 == action) {
