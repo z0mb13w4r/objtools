@@ -38,17 +38,47 @@ static int get_options_coredump(poptions_t o, int argc, char** argv, char* name)
 
   for (int i = 0; i < argc; ++i) {
     if ('-' == argv[i][0] && '-' == argv[i][1]) {
-      imode_t action = get_options2(o, zCOREELFARGS, argv[i]);
-      if (0 == action) {
-        return odeath(o, THIS_NAME, argv[i] + 2);
+      MALLOCA(char, arg0, 1024);
+      MALLOCA(char, arg1, 1024);
+
+      if (ECODE_ISOK(breakup_args(argv[i], arg0, NELEMENTS(arg0), arg1, NELEMENTS(arg1)))) {
+        if (0 == xstrcmp(arg0, zCOREELFARGS3)) {
+          imode_t ocdump = get_options2(o, zDISASSEMBLEARGS, arg1);
+          if (0 == ocdump) {
+            return odeath(o, THIS_NAME, arg1);
+          }
+          o->ocdump |= ocdump;
+        } else if (0 == xstrcmp(arg0, "--disassemble")) {
+          oinsertsname(o, ACT_DISASSEMBLE, arg1);
+        } else {
+          return odeath(o, THIS_NAME, arg0 + 2);
+        }
+      } else {
+        imode_t action = get_options2(o, zCOREELFARGS, argv[i]);
+        if (0 == action) {
+          return odeath(o, THIS_NAME, argv[i] + 2);
+        }
+        o->action |= action;
       }
-      o->action |= action;
     } else if ('-' == argv[i][0]) {
-      imode_t action = get_options1(o, zCOREELFARGS, argv[i]);
-      if (0 == action) {
-        return odeath(o, THIS_NAME, argv[i] + 1);
+      if ( argv[i][0] == zCOREELFARGS2[0] && argv[i][1] == zCOREELFARGS2[1]  ) {
+        imode_t ocdump = get_options2(o, zDISASSEMBLEARGS, argv[++i]);
+        if (0 == ocdump) {
+          return odeath(o, THIS_NAME, argv[i]);
+        }
+        o->ocdump |= ocdump;
+      } else if (0 == xstrcmp(argv[i], "-m")) {
+        if (argc <= (i + 1)) {
+          return odeath(o, THIS_NAME, argv[i] + 1);
+        }
+        oinsertsname(o, ACT_DISASSEMBLE, argv[++i]);
+      } else {
+        imode_t action = get_options1(o, zCOREELFARGS, argv[i]);
+        if (0 == action) {
+          return odeath(o, THIS_NAME, argv[i] + 1);
+        }
+        o->action |= action;
       }
-      o->action |= action;
     } else if (0 == o->inpname0[0]) {
       xstrncpy(o->inpname0, argv[i], NELEMENTS(o->inpname0));
     } else if (0 == o->inpname1[0]) {
