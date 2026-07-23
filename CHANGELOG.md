@@ -2,6 +2,8 @@ v1.7 - ??/07/2026
 -----------------------------------------------------------------------
 [+] Enhanced ELF linkable library analysis.  
 [+] Enhanced ELF core dump analysis.  
+[+] Added REMnux upgrade script.  
+[+] Updated man pages.  
 [+] Bug fixes.  
 
 v1.6 - 22/06/2026
