@@ -226,6 +226,7 @@ static int dump_sectionheaders2(const pbuffer_t p, const poptions_t o, const int
     n += printf_text("L (link order), O (extra OS processing required), G (group), T (TLS),", USE_LT | USE_TAB | USE_EOL);
     n += printf_text("C (compressed), x (unknown), o (OS specific), E (exclude),", USE_LT | USE_TAB | USE_EOL);
     n += printf_text("l (large), p (processor specific)", USE_LT | USE_TAB | USE_EOL);
+    n += printf_eol();
   }
 
   return n;
