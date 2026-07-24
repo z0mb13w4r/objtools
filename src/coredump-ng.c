@@ -12,13 +12,11 @@ static int usage(poptions_t o, const char* name, const args_t args[], const int 
   int n = 0;
   n += usage_name(o, name, args, zCOREDESCRIPTION);
   n += usage_synopsis0(o, name, args);
-//  n += usage_synopsis1(o, name, zDEBUGELFARGS, zREADELFARGS0, zREADELFARGS1);
   n += usage_synopsis2(o, name, zDISASSEMBLEARGS, zCOREELFARGS2, zCOREELFARGS3);
   n += usage_objname(o, name, "objfiles");
   n += printf_eol();
   n += usage_description(o, name, args, zELFDESCRIPTION);
   n += usage_options0(o, name, args);
-//  n += usage_options1(o, name, zDEBUGELFARGS, zREADELFARGS0, zREADELFARGS1);
   n += usage_options2(o, name, zDISASSEMBLEARGS, zCOREELFARGS2, zCOREELFARGS3);
   n += usage_seealso(o, name, args);
   n += usage_copyright(o, name, args);
@@ -120,6 +118,7 @@ int main(int argc, char* argv[]) {
       }
 
      bfree(p);
+     bfree(q);
     }
 
     ofree(o);
