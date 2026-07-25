@@ -1,4 +1,4 @@
-v1.7 - ??/07/2026
+v1.7 - 25/07/2026
 -----------------------------------------------------------------------
 [+] Enhanced ELF linkable library analysis.  
 [+] Enhanced ELF core dump analysis.  
