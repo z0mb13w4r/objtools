@@ -1,9 +1,10 @@
 #!/bin/bash
 
-VERSION=1.1
+VERSION=1.2
 SCRIPTNAME=$(basename "$0")
 
 JQBIN=/usr/bin/jq
+LSBIN=/usr/bin/ls
 MVBIN=/usr/bin/mv
 RMBIN=/usr/bin/rm
 TRBIN=/usr/bin/tr
@@ -11,6 +12,7 @@ APTBIN=/usr/bin/apt
 CATBIN=/usr/bin/cat
 CUTBIN=/usr/bin/cut
 GITBIN=/usr/bin/git
+TEEBIN=/usr/bin/tee
 DPKGBIN=/usr/bin/dpkg
 GREPBIN=/usr/bin/grep
 SUDOBIN=/usr/bin/sudo
@@ -22,7 +24,8 @@ REMNUXBIN=/usr/local/bin/remnux
 LSBRELEASEBIN=/usr/bin/lsb_release
 
 TMP=/tmp/
-CYBERCHEF=/usr/local/cyberchef/
+CYBERCHEF=/home/remnux/shared/cyberchef/
+CYBERCHEFBASH=/usr/local/bin/cyberchef
 
 GITHUBNAM=${TMP}github.nam
 GITHUBTAG=${TMP}github.tag
@@ -119,21 +122,27 @@ function do_cyberchef() {
   NAME=${TMP}$(${CATBIN} ${GITHUBNAM})
 
   ${RMBIN} ${NAME}
-  ${SUDOBIN} ${RMBIN} -rf ${CYBERCHEF}
-  ${SUDOBIN} ${MKDIRBIN} -p ${CYBERCHEF}
+  ${RMBIN} -rf ${CYBERCHEF}
+  ${MKDIRBIN} -p ${CYBERCHEF}
   ${WGETBIN} -P ${TMP} $(${CATBIN} ${GITHUBZIP})
 
-  ${SUDOBIN} ${UNZIPBIN} x ${NAME} -o${CYBERCHEF}
+  ${UNZIPBIN} x ${NAME} -o${CYBERCHEF}
+
+  NAME=$(${LSBIN} -1 ${CYBERCHEF}CyberChef_v*)
+
+  echo "#!/bin/bash" | ${SUDOBIN} ${TEEBIN} ${CYBERCHEFBASH}
+  echo "firefox ${NAME} &" | ${SUDOBIN} ${TEEBIN} -a ${CYBERCHEFBASH}
 }
 
 function show_usage() {
   ${CATBIN} << EOF
 Usage: ${SCRIPTNAME} v${VERSION}
 EXAMPLES:
-  ${SCRIPTNAME} {-u|--update}
-  ${SCRIPTNAME} {-i|--install}
-  ${SCRIPTNAME} {-v|--version}
-  ${SCRIPTNAME} {-h|--help}
+  ${SCRIPTNAME} {config}
+  ${SCRIPTNAME} {update}
+  ${SCRIPTNAME} {install}
+  ${SCRIPTNAME} {version}
+  ${SCRIPTNAME} {help}
 EOF
 }
 
@@ -181,11 +190,13 @@ elif [ "${ARG_INSTALL}" == "YES" ]; then
   do_debians
   do_objtools
   do_remnux
-  #do_cyberchef
+  do_cyberchef
   do_files
 elif [ "${ARG_UPDATE}" == "YES" ]; then
   do_upgrade
   do_remnux
+  do_objtools
+  do_cyberchef
 elif [ "${ARG_CONFIG}" == "YES" ]; then
   do_config
 fi
