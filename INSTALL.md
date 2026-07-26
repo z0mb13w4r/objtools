@@ -1,7 +1,11 @@
 
 ```bash
 curl -O https://raw.githubusercontent.com/z0mb13w4r/objtools/refs/heads/main/bin/z0mb13w4r
+```
+```bash
 chmod +x z0mb13w4r
+```
+```bash
 sudo mv z0mb13w4r /usr/local/bin/
 ```
 
