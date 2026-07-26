@@ -97,12 +97,12 @@ function do_upgrade() {
 
 function do_config() {
   echo -n "Your name: "
-  read -r USERNAME
+  read -r THIS_USERNAME
   echo -n "Your email: "
-  read -r EMAILADDR
+  read -r THIS_EMAILADDR
 
-  ${GITBIN} config --global user.name "'${USERNAME}'"
-  ${GITBIN} config --global user.email "'${EMAILADDR}'"
+  ${GITBIN} config --global user.name "'${THIS_USERNAME}'"
+  ${GITBIN} config --global user.email "'${THIS_EMAILADDR}'"
 }
 
 function do_files() {
@@ -152,12 +152,12 @@ function do_objtools() {
   ${CATBIN} ${GITHUBTXT} | ${JQBIN} -r '(.assets[].name | select(. | contains("24.04-amd64.deb")))' > ${GITHUBNAM}
   ${CATBIN} ${GITHUBTXT} | ${JQBIN} -r '(.assets[].browser_download_url | select(. | contains("24.04-amd64.deb")))' > ${GITHUBZIP}
 
-  NAME=${TMP}$(${CATBIN} ${GITHUBNAM})
+  local THIS_NAME=${TMP}$(${CATBIN} ${GITHUBNAM})
 
-  ${RMBIN} ${NAME}
+  ${RMBIN} ${THIS_NAME}
   ${WGETBIN} -P ${TMP} $(${CATBIN} ${GITHUBZIP})
 
-  ${DPKGBIN} -i ${NAME}
+  ${DPKGBIN} -i ${THIS_NAME}
 }
 
 function do_cyberchef() {
