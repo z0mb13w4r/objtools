@@ -6,11 +6,11 @@ sudo mv z0mb13w4r /usr/local/bin/
 ```
 
 ```bash
-z0mb13w4r install
+sudo z0mb13w4r install
 ```
 
 ```bash
-z0mb13w4r update
+sudo z0mb13w4r update
 ```
 
 ```bash
