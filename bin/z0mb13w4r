@@ -25,6 +25,7 @@ REMNUXBIN=/usr/local/bin/remnux
 LSBRELEASEBIN=/usr/bin/lsb_release
 
 TMP=/tmp/
+VIMTXT=/home/remnux/.vimrc
 CYBERCHEF=/home/remnux/shared/cyberchef/
 CYBERCHEFBASH=/usr/local/bin/cyberchef
 
@@ -106,8 +107,6 @@ function do_config() {
 }
 
 function do_files() {
-  VIMTXT=${HOME=/home/remnux}/.vimrc
-
   echo 'set number' > ${VIMTXT}
   echo 'set autoindent' >> ${VIMTXT}
   echo 'set hlsearch' >> ${VIMTXT}
