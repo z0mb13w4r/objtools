@@ -94,6 +94,8 @@ function do_remnux() {
 function do_upgrade() {
   ${APTBIN} update
   ${APTBIN} upgrade -y
+
+  ${APTBIN} install -y binutils-dev libssl-dev zlib1g-dev libfuzzy-dev
 }
 
 function do_config() {
@@ -139,7 +141,6 @@ function do_files() {
 }
 
 function do_debians() {
-  ${APTBIN} install -y binutils-dev
   ${APTBIN} install -y vim-gtk3 git git-doc git-email
   ${APTBIN} install -y python3-scapy python3-pyx
 }
@@ -188,6 +189,7 @@ EXAMPLES:
   ${SCRIPTNAME} config
   ${SCRIPTNAME} update
   ${SCRIPTNAME} install
+  ${SCRIPTNAME} objtools
   ${SCRIPTNAME} version
   ${SCRIPTNAME} help
 EOF
@@ -200,7 +202,7 @@ function show_version() {
 parse_args() {
   while [[ $# -gt 0 ]]; do
     case ${1} in
-      config|install|update|version|help)
+      config|install|update|objtools|version|help)
         COMMAND=${1}
         shift # past argument
         ;;
@@ -247,6 +249,9 @@ main() {
     do_remnux
     do_objtools
     do_cyberchef
+  elif [ "${COMMAND}" == "objtools" ]; then
+    do_upgrade
+    do_objtools
   fi
 }
 
