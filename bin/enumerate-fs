@@ -34,8 +34,9 @@ function show_usage() {
   ${CATBIN} << EOF
 Usage: ${SCRIPTNAME} v${SCRIPTVERSION}
 EXAMPLES:
-  ${SCRIPTNAME} version
-  ${SCRIPTNAME} help
+  ${SCRIPTNAME} info
+  ${SCRIPTNAME} -v|--version
+  ${SCRIPTNAME} -h|--help
 EOF
 }
 
@@ -46,8 +47,16 @@ function show_version() {
 parse_args() {
   while [[ $# -gt 0 ]]; do
     case ${1} in
-      version|help)
+      info)
         COMMAND=${1}
+        shift # past argument
+        ;;
+      -v|--version)
+        COMMAND=version
+        shift # past argument
+        ;;
+      -h|--help)
+        COMMAND=help
         shift # past argument
         ;;
       *)
