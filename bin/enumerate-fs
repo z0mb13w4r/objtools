@@ -21,6 +21,10 @@ function log_detail() {
   echo ">> $*"
 }
 
+function do_info() {
+  echo -e "\e[00;33m### SYSTEM ##############################################\e[00m"
+}
+
 function check_root() {
   if [[ $EUID -ne 0 ]]; then
     log_error "This script must be run with root privileges."
@@ -67,10 +71,6 @@ parse_args() {
     esac
   done
 
-  if [[ -z "${COMMAND}" ]]; then
-    show_usage
-    exit 1
-  fi
 }
 
 main() {
@@ -84,7 +84,14 @@ main() {
     exit 0
   fi
 
-  check_os
+  check_root "$@"
+
+  if [ "${COMMAND}" == "info" ]; then
+    do_info
+  elif [[ -z "${COMMAND}" ]]; then
+    do_info
+  fi
+
 }
 
 main "$@"
