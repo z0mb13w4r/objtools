@@ -1,0 +1,83 @@
+#!/bin/bash
+
+SCRIPTVERSION=1.0
+SCRIPTNAME=$(basename "$0")
+
+CATBIN=/usr/bin/cat
+
+function log_info() {
+  echo "> $*"
+}
+
+function log_error() {
+  echo "ERROR: $*" >&2
+}
+
+function log_warn() {
+  echo "WARNING: $*" >&2
+}
+
+function log_detail() {
+  echo ">> $*"
+}
+
+function check_root() {
+  if [[ $EUID -ne 0 ]]; then
+    log_error "This script must be run with root privileges."
+    echo ""
+    echo "Please run: sudo $0 $*"
+    exit 1
+  fi
+}
+
+function show_usage() {
+  ${CATBIN} << EOF
+Usage: ${SCRIPTNAME} v${SCRIPTVERSION}
+EXAMPLES:
+  ${SCRIPTNAME} version
+  ${SCRIPTNAME} help
+EOF
+}
+
+function show_version() {
+  echo ${SCRIPTNAME} v${SCRIPTVERSION}
+}
+
+parse_args() {
+  while [[ $# -gt 0 ]]; do
+    case ${1} in
+      version|help)
+        COMMAND=${1}
+        shift # past argument
+        ;;
+      *)
+        echo "Unknown option ${1}"
+        show_usage
+        exit 1
+        ;;
+    esac
+  done
+
+  if [[ -z "${COMMAND}" ]]; then
+    show_usage
+    exit 1
+  fi
+}
+
+main() {
+  parse_args "$@"
+
+  if [ "${COMMAND}" == "help" ]; then
+    show_usage
+    exit 0
+  elif [ "${COMMAND}" == "version" ]; then
+    show_version
+    exit 0
+  fi
+
+  check_os
+}
+
+main "$@"
+
+
