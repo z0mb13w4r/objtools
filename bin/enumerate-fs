@@ -6,9 +6,9 @@ SCRIPTNAME=$(basename "$0")
 CATBIN=/usr/bin/cat
 
 function zcat() {
-  xx=$(${CATBIN} ${1} 2>/dev/null)
+  xx=$(${CATBIN} ${2} 2>/dev/null)
   if [ "${xx}" ]; then
-    echo -e "${2}"
+    echo -e "\e${1} ${3}:\e[00m"
     echo -e "${xx}\n"
   fi
 }
@@ -32,9 +32,9 @@ function log_detail() {
 function do_system() {
   echo -e "\e[00;33m### SYSTEM ##############################################\e[00m"
 
-  zcat "/proc/version"  "\e[00;31m[-] Kernel information (continued):\e[00m"
-  zcat "/etc/*-release" "\e[00;31m[-] Specific release information:\e[00m"
-  zcat "/etc/hostname"  "\e[00;31m[-] Hostname:\e[00m"
+  zcat "[00;31m[-]" "/proc/version"  "Kernel information (continued)"
+  zcat "[00;31m[-]" "/etc/*-release" "Specific release information"
+  zcat "[00;31m[-]" "/etc/hostname"  "Hostname"
 }
 
 function check_root() {
