@@ -32,9 +32,9 @@ function log_detail() {
 function do_system() {
   echo -e "\e[00;33m### SYSTEM ##############################################\e[00m"
 
-  zcat "[00;31m[-]" "/proc/version"  "Kernel information (continued)"
-  zcat "[00;31m[-]" "/etc/*-release" "Specific release information"
-  zcat "[00;31m[-]" "/etc/hostname"  "Hostname"
+  zcat "[00;31m[-]" "${1}/proc/version"  "Kernel information (continued)"
+  zcat "[00;31m[-]" "${1}/etc/*-release" "Specific release information"
+  zcat "[00;31m[-]" "${1}/etc/hostname"  "Hostname"
 }
 
 function check_root() {
@@ -76,13 +76,17 @@ parse_args() {
         shift # past argument
         ;;
       *)
-        echo "Unknown option ${1}"
-        show_usage
-        exit 1
+        if [[ $# -eq 1 ]]; then
+          PATHNAME=${1}
+          shift # past argument
+        else
+          echo "Unknown option ${1}"
+          show_usage
+          exit 1
+        fi
         ;;
     esac
   done
-
 }
 
 main() {
@@ -99,9 +103,9 @@ main() {
   check_root "$@"
 
   if [ "${COMMAND}" == "info" ]; then
-    do_system
+    do_system ${PATHNAME}
   elif [[ -z "${COMMAND}" ]]; then
-    do_system
+    do_system ${PATHNAME}
   fi
 }
 
