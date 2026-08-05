@@ -4,9 +4,18 @@ SCRIPTVERSION=1.0
 SCRIPTNAME=$(basename "$0")
 
 CATBIN=/usr/bin/cat
+GREPBIN=/usr/bin/grep
 
 function zcat() {
   xx=$(${CATBIN} ${2} 2>/dev/null)
+  if [ "${xx}" ]; then
+    echo -e "\e${1} ${3}:\e[00m"
+    echo -e "${xx}\n"
+  fi
+}
+
+function zgrep() {
+  xx=$(${GREPBIN} ${2} 2>/dev/null)
   if [ "${xx}" ]; then
     echo -e "\e${1} ${3}:\e[00m"
     echo -e "${xx}\n"
@@ -37,6 +46,12 @@ function do_system() {
   zcat "[00;31m[-]" "${1}/etc/hostname"  "Hostname"
 }
 
+function do_usergroup() {
+  echo -e "\e[00;33m### USER/GROUP ##########################################\e[00m"
+
+  zgrep "[00;33m[+]" "-v '^[^:]*:[x]' ${1}/etc/passwd" "It looks like we have password hashes in /etc/passwd"
+}
+
 function check_root() {
   if [[ $EUID -ne 0 ]]; then
     log_error "This script must be run with root privileges."
@@ -50,7 +65,7 @@ function show_usage() {
   ${CATBIN} << EOF
 Usage: ${SCRIPTNAME} v${SCRIPTVERSION}
 EXAMPLES:
-  ${SCRIPTNAME} info
+  ${SCRIPTNAME} system
   ${SCRIPTNAME} -v|--version
   ${SCRIPTNAME} -h|--help
 EOF
@@ -63,7 +78,7 @@ function show_version() {
 parse_args() {
   while [[ $# -gt 0 ]]; do
     case ${1} in
-      info)
+      system|user)
         COMMAND=${1}
         shift # past argument
         ;;
@@ -102,10 +117,13 @@ main() {
 
   check_root "$@"
 
-  if [ "${COMMAND}" == "info" ]; then
+  if [ "${COMMAND}" == "system" ]; then
     do_system ${PATHNAME}
+  elif [ "${COMMAND}" == "user" ]; then
+    do_usergroup ${PATHNAME}
   elif [[ -z "${COMMAND}" ]]; then
     do_system ${PATHNAME}
+    do_usergroup ${PATHNAME}
   fi
 }
 
