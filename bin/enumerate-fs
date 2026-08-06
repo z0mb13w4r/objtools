@@ -5,6 +5,7 @@ SCRIPTNAME=$(basename "$0")
 
 CATBIN=/usr/bin/cat
 GREPBIN=/usr/bin/grep
+SUDOBIN=/usr/bin/sudo
 
 function zshow() {
   echo -e "\e${1} ${3}:\e[00m"
@@ -52,22 +53,22 @@ function log_detail() {
 function do_system() {
   echo -e "\e[00;33m### SYSTEM ##############################################\e[00m"
 
-  zcat "[00;31m[-]" "${1}/proc/version"  "Kernel information (continued)"
-  zcat "[00;31m[-]" "${1}/etc/*-release" "Specific release information"
-  zcat "[00;31m[-]" "${1}/etc/hostname"  "Hostname"
+  zcat "[00;31m[-]" "${PATHNAME}/proc/version"  "Kernel information (continued)"
+  zcat "[00;31m[-]" "${PATHNAME}/etc/*-release" "Specific release information"
+  zcat "[00;31m[-]" "${PATHNAME}/etc/hostname"  "Hostname"
 }
 
 function do_usergroup() {
   echo -e "\e[00;33m### USER/GROUP ##########################################\e[00m"
 
-  zgrep "[00;33m[+]" "-v '^[^:]*:[x]' ${1}/etc/passwd" "It looks like we have password hashes in /etc/passwd"
-  zcat  "[00;31m[-]" "${1}/etc/passwd" "Contents of /etc/passwd"
-  zcat  "[00;33m[+]" "${1}/etc/shadow" "We can read the shadow file"
-  zcat  "[00;33m[+]" "${1}/etc/master.passwd" "We can read the master.passwd file"
+  zgrep "[00;33m[+]" "-v '^[^:]*:[x]' ${PATHNAME}/etc/passwd" "It looks like we have password hashes in /etc/passwd"
+  zcat  "[00;31m[-]" "${PATHNAME}/etc/passwd" "Contents of /etc/passwd"
+  zcat  "[00;33m[+]" "${PATHNAME}/etc/shadow" "We can read the shadow file"
+  zcat  "[00;33m[+]" "${PATHNAME}/etc/master.passwd" "We can read the master.passwd file"
 #  zgrep "[00;31m[-]" "-v -E '^#' /etc/passwd 2>/dev/null | awk -F: '$3 == 0 { print $1}'" "Super user account(s)"
 #  zgrep "[00;31m[-]" "-v -e '^$' /etc/sudoers 2>/dev/null | grep -v '#'" "Sudoers configuration (condensed)"
 
-  SUDOPERMS=$(echo '' | sudo -S -l -k 2>/dev/null)
+  SUDOPERMS=$(echo '' | ${SUDOBIN} -S -l -k 2>/dev/null)
   zcheck "[00;33m[+]" "${SUDOPERMS}" "We can sudo without supplying a password"
 }
 
@@ -109,6 +110,11 @@ parse_args() {
         COMMAND=help
         shift # past argument
         ;;
+      -p|--password)
+        PASSWORD=${2}
+        shift # past argument
+        shift # past argument
+        ;;
       *)
         if [[ $# -eq 1 ]]; then
           PATHNAME=${1}
@@ -137,12 +143,12 @@ main() {
   check_root "$@"
 
   if [ "${COMMAND}" == "system" ]; then
-    do_system ${PATHNAME}
+    do_system
   elif [ "${COMMAND}" == "user" ]; then
-    do_usergroup ${PATHNAME}
+    do_usergroup
   elif [[ -z "${COMMAND}" ]]; then
-    do_system ${PATHNAME}
-    do_usergroup ${PATHNAME}
+    do_system
+    do_usergroup
   fi
 }
 
