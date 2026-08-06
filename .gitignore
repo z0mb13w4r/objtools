@@ -44,6 +44,7 @@ example-*
 exampled-*
 objtool
 objtoold
+dwarfdump*
 
 # Debug files
 *.dSYM/
@@ -67,4 +68,10 @@ dkms.conf
 bin/*-ng
 samples/
 *.swp
+
+# Compressed Files
+*.7z
+*.zip
+*.tar.gz
+*.tar.xz
 
