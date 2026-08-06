@@ -70,6 +70,15 @@ function do_usergroup() {
 
   SUDOPERMS=$(echo '' | ${SUDOBIN} -S -l -k 2>/dev/null)
   zcheck "[00;33m[+]" "${SUDOPERMS}" "We can sudo without supplying a password"
+
+  if [ "${PASSWORD}" ]; then
+    if [ "${SUDOPERMS}" ]; then
+      :
+    else
+      SUDOAUTH=$(echo ${PASSWORD} | ${SUDOBIN} -S -l -k 2>/dev/null)
+      zcheck "[00;33m[+]" "${SUDOAUTH}" "We can sudo when supplying a password"
+    fi
+  fi
 }
 
 function check_root() {
