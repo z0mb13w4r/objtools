@@ -6,19 +6,22 @@ SCRIPTNAME=$(basename "$0")
 CATBIN=/usr/bin/cat
 GREPBIN=/usr/bin/grep
 
+function zshow() {
+  echo -e "\e${1} ${3}:\e[00m"
+  echo -e "${2}\n"
+}
+
 function zcat() {
-  xx=$(${CATBIN} ${2} 2>/dev/null)
+  xx=$(${CATBIN} "${2}" 2>/dev/null)
   if [ "${xx}" ]; then
-    echo -e "\e${1} ${3}:\e[00m"
-    echo -e "${xx}\n"
+    zshow "${1}" "${xx}" "${3}"
   fi
 }
 
 function zgrep() {
-  xx=$(${GREPBIN} ${2} 2>/dev/null)
+  xx=$(${GREPBIN} "${2}" 2>/dev/null)
   if [ "${xx}" ]; then
-    echo -e "\e${1} ${3}:\e[00m"
-    echo -e "${xx}\n"
+    zshow "${1}" "${xx}" "${3}"
   fi
 }
 
@@ -49,7 +52,7 @@ function do_system() {
 function do_usergroup() {
   echo -e "\e[00;33m### USER/GROUP ##########################################\e[00m"
 
-  zgrep "[00;33m[+]" "-v '^[^:]*:[x]' ${1}/etc/passwd" "It looks like we have password hashes in /etc/passwd"
+  zgrep "[00;33m[+]" "-v '\^[\^:]*:[x]' ${1}/etc/passwd" "It looks like we have password hashes in /etc/passwd"
   zcat  "[00;31m[-]" "${1}/etc/passwd" "Contents of /etc/passwd"
 }
 
