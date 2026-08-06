@@ -11,19 +11,26 @@ function zshow() {
   echo -e "${2}\n"
 }
 
+function zcheck() {
+  if [ "${2}" ]; then
+    zshow "${1}" "${2}" "${3}"
+  fi
+}
+
 function zcat() {
   xx=$(${CATBIN} "${2}" 2>/dev/null)
-  if [ "${xx}" ]; then
-    zshow "${1}" "${xx}" "${3}"
-  fi
+  zcheck "${1}" "${xx}" "${3}"
+#  if [ "${xx}" ]; then
+#    zshow "${1}" "${xx}" "${3}"
+#  fi
 }
 
 function zgrep() {
   xx=$(${GREPBIN} "${2}" 2>/dev/null)
-  echo "${GREPBIN} "${2}" 2>/dev/null"
-  if [ "${xx}" ]; then
-    zshow "${1}" "${xx}" "${3}"
-  fi
+  zcheck "${1}" "${xx}" "${3}"
+#  if [ "${xx}" ]; then
+#    zshow "${1}" "${xx}" "${3}"
+#  fi
 }
 
 function log_info() {
@@ -61,9 +68,7 @@ function do_usergroup() {
 #  zgrep "[00;31m[-]" "-v -e '^$' /etc/sudoers 2>/dev/null | grep -v '#'" "Sudoers configuration (condensed)"
 
   SUDOPERMS=$(echo '' | sudo -S -l -k 2>/dev/null)
-  if [ "${SUDOPERMS}" ]; then
-    zshow "[00;33m[+]" "${SUDOPERMS}" "We can sudo without supplying a password"
-  fi
+  zcheck "[00;33m[+]" "${SUDOPERMS}" "We can sudo without supplying a password"
 }
 
 function check_root() {
