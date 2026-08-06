@@ -4,8 +4,12 @@ SCRIPTVERSION=1.0
 SCRIPTNAME=$(basename "$0")
 
 CATBIN=/usr/bin/cat
+SEDBIN=/usr/bin/sed
 GREPBIN=/usr/bin/grep
 SUDOBIN=/usr/bin/sudo
+XARGSBIN=/usr/bin/xargs
+
+BINLIST='aria2c\|arp\|ash\|awk\|base64\|bash\|busybox\|cat\|chmod\|chown\|cp\|csh\|curl\|cut\|dash\|date\|dd\|diff\|dmsetup\|docker\|ed\|emacs\|env\|expand\|expect\|file\|find\|flock\|fmt\|fold\|ftp\|gawk\|gdb\|gimp\|git\|grep\|head\|ht\|iftop\|ionice\|ip$\|irb\|jjs\|jq\|jrunscript\|ksh\|ld.so\|ldconfig\|less\|logsave\|lua\|make\|man\|mawk\|more\|mv\|mysql\|nano\|nawk\|nc\|netcat\|nice\|nl\|nmap\|node\|od\|openssl\|perl\|pg\|php\|pic\|pico\|python\|readelf\|rlwrap\|rpm\|rpmquery\|rsync\|ruby\|run-parts\|rvim\|scp\|script\|sed\|setarch\|sftp\|sh\|shuf\|socat\|sort\|sqlite3\|ssh$\|start-stop-daemon\|stdbuf\|strace\|systemctl\|tail\|tar\|taskset\|tclsh\|tee\|telnet\|tftp\|time\|timeout\|ul\|unexpand\|uniq\|unshare\|vi\|vim\|watch\|wget\|wish\|xargs\|xxd\|zip\|zsh'
 
 function zshow() {
   echo -e "\e${1} ${3}:\e[00m"
@@ -21,17 +25,11 @@ function zcheck() {
 function zcat() {
   xx=$(${CATBIN} "${2}" 2>/dev/null)
   zcheck "${1}" "${xx}" "${3}"
-#  if [ "${xx}" ]; then
-#    zshow "${1}" "${xx}" "${3}"
-#  fi
 }
 
 function zgrep() {
   xx=$(${GREPBIN} "${2}" 2>/dev/null)
   zcheck "${1}" "${xx}" "${3}"
-#  if [ "${xx}" ]; then
-#    zshow "${1}" "${xx}" "${3}"
-#  fi
 }
 
 function log_info() {
@@ -68,15 +66,24 @@ function do_usergroup() {
 #  zgrep "[00;31m[-]" "-v -E '^#' /etc/passwd 2>/dev/null | awk -F: '$3 == 0 { print $1}'" "Super user account(s)"
 #  zgrep "[00;31m[-]" "-v -e '^$' /etc/sudoers 2>/dev/null | grep -v '#'" "Sudoers configuration (condensed)"
 
-  SUDOPERMS=$(echo '' | ${SUDOBIN} -S -l -k 2>/dev/null)
-  zcheck "[00;33m[+]" "${SUDOPERMS}" "We can sudo without supplying a password"
+  sudoperms=$(echo '' | ${SUDOBIN} -S -l -k 2>/dev/null)
+  zcheck "[00;33m[+]" "${sudoperms}" "We can sudo without supplying a password"
 
   if [ "${PASSWORD}" ]; then
-    if [ "${SUDOPERMS}" ]; then
+    if [ "${sudoperms}" ]; then
       :
     else
-      SUDOAUTH=$(echo ${PASSWORD} | ${SUDOBIN} -S -l -k 2>/dev/null)
-      zcheck "[00;33m[+]" "${SUDOAUTH}" "We can sudo when supplying a password"
+      sudoauth=$(echo ${PASSWORD} | ${SUDOBIN} -S -l -k 2>/dev/null)
+      zcheck "[00;33m[+]" "${sudoauth}" "We can sudo when supplying a password"
+    fi
+  fi
+
+  if [ "${PASSWORD}" ]; then
+    if [ "${sudoperms}" ]; then
+      :
+    else
+      sudopermscheck=$(echo ${PASSWORD} | ${SUDOBIN} -S -l -k 2>/dev/null | ${XARGSBIN} -n 1 2>/dev/null | ${SEDBIN} 's/,*$//g' 2>/dev/null | ${GREPBIN} -w ${BINLIST} 2>/dev/null)
+      zcheck "[00;33m[-]" "${sudopermscheck}" "Possible sudo pwnage"
     fi
   fi
 }
