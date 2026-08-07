@@ -5,6 +5,7 @@ SCRIPTNAME=$(basename "$0")
 
 CATBIN=/usr/bin/cat
 SEDBIN=/usr/bin/sed
+FINDBIN=/usr/bin/find
 GREPBIN=/usr/bin/grep
 SUDOBIN=/usr/bin/sudo
 XARGSBIN=/usr/bin/xargs
@@ -24,6 +25,11 @@ function zcheck() {
 
 function zcat() {
   xx=$(${CATBIN} "${2}" 2>/dev/null)
+  zcheck "${1}" "${xx}" "${3}"
+}
+
+function zfind() {
+  xx=$(${FINDBIN} "${2}" 2>/dev/null)
   zcheck "${1}" "${xx}" "${3}"
 }
 
@@ -91,6 +97,8 @@ function do_usergroup() {
     sudopwnage=$(echo '' | ${SUDOBIN} -S -l -k 2>/dev/null | ${XARGSBIN} -n 1 2>/dev/null | ${SEDBIN} 's/,*$//g' 2>/dev/null | ${GREPBIN} -w ${BINLIST} 2>/dev/null)
     zcheck "[00;33m[+]" "${sudopwnage}" "Possible sudo pwnage"
   fi
+
+  zfind "[00;31m[-]" "${PATHNAME}/home -name .sudo_as_admin_successful" "Accounts that have recently used sudo"
 }
 
 function check_root() {
