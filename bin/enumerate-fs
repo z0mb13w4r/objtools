@@ -66,25 +66,30 @@ function do_usergroup() {
 #  zgrep "[00;31m[-]" "-v -E '^#' /etc/passwd 2>/dev/null | awk -F: '$3 == 0 { print $1}'" "Super user account(s)"
 #  zgrep "[00;31m[-]" "-v -e '^$' /etc/sudoers 2>/dev/null | grep -v '#'" "Sudoers configuration (condensed)"
 
-  sudoperms=$(echo '' | ${SUDOBIN} -S -l -k 2>/dev/null)
-  zcheck "[00;33m[+]" "${sudoperms}" "We can sudo without supplying a password"
+  if [[ -z "${PATHNAME}" ]]; then
+    sudoperms=$(echo '' | ${SUDOBIN} -S -l -k 2>/dev/null)
+    zcheck "[00;33m[+]" "${sudoperms}" "We can sudo without supplying a password"
 
-  if [ "${PASSWORD}" ]; then
-    if [ "${sudoperms}" ]; then
-      :
-    else
-      sudoauth=$(echo ${PASSWORD} | ${SUDOBIN} -S -l -k 2>/dev/null)
-      zcheck "[00;33m[+]" "${sudoauth}" "We can sudo when supplying a password"
+    if [ "${PASSWORD}" ]; then
+      if [ "${sudoperms}" ]; then
+        :
+      else
+        sudoauth=$(echo ${PASSWORD} | ${SUDOBIN} -S -l -k 2>/dev/null)
+        zcheck "[00;33m[+]" "${sudoauth}" "We can sudo when supplying a password"
+      fi
     fi
-  fi
 
-  if [ "${PASSWORD}" ]; then
-    if [ "${sudoperms}" ]; then
-      :
-    else
-      sudopermscheck=$(echo ${PASSWORD} | ${SUDOBIN} -S -l -k 2>/dev/null | ${XARGSBIN} -n 1 2>/dev/null | ${SEDBIN} 's/,*$//g' 2>/dev/null | ${GREPBIN} -w ${BINLIST} 2>/dev/null)
-      zcheck "[00;33m[-]" "${sudopermscheck}" "Possible sudo pwnage"
+    if [ "${PASSWORD}" ]; then
+      if [ "${sudoperms}" ]; then
+        :
+      else
+        sudopermscheck=$(echo ${PASSWORD} | ${SUDOBIN} -S -l -k 2>/dev/null | ${XARGSBIN} -n 1 2>/dev/null | ${SEDBIN} 's/,*$//g' 2>/dev/null | ${GREPBIN} -w ${BINLIST} 2>/dev/null)
+        zcheck "[00;33m[-]" "${sudopermscheck}" "Possible sudo pwnage"
+      fi
     fi
+
+    sudopwnage=$(echo '' | ${SUDOBIN} -S -l -k 2>/dev/null | ${XARGSBIN} -n 1 2>/dev/null | ${SEDBIN} 's/,*$//g' 2>/dev/null | ${GREPBIN} -w ${BINLIST} 2>/dev/null)
+    zcheck "[00;33m[+]" "${sudopwnage}" "Possible sudo pwnage"
   fi
 }
 
