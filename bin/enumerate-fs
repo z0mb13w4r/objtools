@@ -116,10 +116,14 @@ function do_usergroup() {
     zcheck "[00;31m[-]" "${grfilesall}" "Files not owned by user but writable by group"
   fi
 
-
   if [ "${EXTREME}" == "YES" ]; then
     ourfilesall=$(${FINDBIN} ${PATHNAME}/ -user ${USERNAME} -type f ! -path '${PATHNAME}/proc/*' ! -path '${PATHNAME}/sys/*' -exec ${LSBIN} -al {} \; 2>/dev/null)
     zcheck "[00;31m[-]" "${ourfilesall}" "Files owned by our user"
+  fi
+
+  if [ "${EXTREME}" == "YES" ]; then
+    hiddenfiles=$(${FINDBIN} ${PATHNAME}/ -name '.*' -type f ! -path '${PATHNAME}/proc/*' ! -path '${PATHNAME}/sys/*' -exec ${LSBIN} -al {} \; 2>/dev/null)
+    zcheck "[00;31m[-]" "${hiddenfiles}" "Hidden files"
   fi
 }
 
