@@ -112,8 +112,14 @@ function do_usergroup() {
   zls "[00;31m[-]" "-ahl ${PATHNAME}/home/" "Are permissions on /home directories lax"
 
   if [ "${EXTREME}" == "YES" ]; then
-    grfilesall=$(${FINDBIN} ${PATHNAME}/ -writable ! -user ${USERNAME} -type f ! -path "${PATHNAME}/proc/*" ! -path "${PATHNAME}/sys/*" -exec ${LSBIN} -al {} \; 2>/dev/null)
+    grfilesall=$(${FINDBIN} ${PATHNAME}/ -writable ! -user ${USERNAME} -type f ! -path '${PATHNAME}/proc/*' ! -path '${PATHNAME}/sys/*' -exec ${LSBIN} -al {} \; 2>/dev/null)
     zcheck "[00;31m[-]" "${grfilesall}" "Files not owned by user but writable by group"
+  fi
+
+
+  if [ "${EXTREME}" == "YES" ]; then
+    ourfilesall=$(${FINDBIN} ${PATHNAME}/ -user ${USERNAME} -type f ! -path '${PATHNAME}/proc/*' ! -path '${PATHNAME}/sys/*' -exec ${LSBIN} -al {} \; 2>/dev/null)
+    zcheck "[00;31m[-]" "${ourfilesall}" "Files owned by our user"
   fi
 }
 
