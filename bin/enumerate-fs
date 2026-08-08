@@ -10,6 +10,9 @@ FINDBIN=/usr/bin/find
 GREPBIN=/usr/bin/grep
 SUDOBIN=/usr/bin/sudo
 XARGSBIN=/usr/bin/xargs
+WHOAMIBIN=/usr/bin/whoami
+
+USERNAME=$(${WHOAMIBIN})
 
 BINLIST='aria2c\|arp\|ash\|awk\|base64\|bash\|busybox\|cat\|chmod\|chown\|cp\|csh\|curl\|cut\|dash\|date\|dd\|diff\|dmsetup\|docker\|ed\|emacs\|env\|expand\|expect\|file\|find\|flock\|fmt\|fold\|ftp\|gawk\|gdb\|gimp\|git\|grep\|head\|ht\|iftop\|ionice\|ip$\|irb\|jjs\|jq\|jrunscript\|ksh\|ld.so\|ldconfig\|less\|logsave\|lua\|make\|man\|mawk\|more\|mv\|mysql\|nano\|nawk\|nc\|netcat\|nice\|nl\|nmap\|node\|od\|openssl\|perl\|pg\|php\|pic\|pico\|python\|readelf\|rlwrap\|rpm\|rpmquery\|rsync\|ruby\|run-parts\|rvim\|scp\|script\|sed\|setarch\|sftp\|sh\|shuf\|socat\|sort\|sqlite3\|ssh$\|start-stop-daemon\|stdbuf\|strace\|systemctl\|tail\|tar\|taskset\|tclsh\|tee\|telnet\|tftp\|time\|timeout\|ul\|unexpand\|uniq\|unshare\|vi\|vim\|watch\|wget\|wish\|xargs\|xxd\|zip\|zsh'
 
@@ -106,6 +109,12 @@ function do_usergroup() {
 
   zfind "[00;31m[-]" "${PATHNAME}/home -name .sudo_as_admin_successful" "Accounts that have recently used sudo"
   zls "[00;33m[+]" "-ahl ${PATHNAME}/root/" "We can read root's home directory"
+  zls "[00;31m[-]" "-ahl ${PATHNAME}/home/" "Are permissions on /home directories lax"
+
+  if [ "${EXTREME}" == "YES" ]; then
+    grfilesall=$(${FINDBIN} ${PATHNAME}/ -writable ! -user ${USERNAME} -type f ! -path "${PATHNAME}/proc/*" ! -path "${PATHNAME}/sys/*" -exec ${LSBIN} -al {} \; 2>/dev/null)
+    zcheck "[00;31m[-]" "${grfilesall}" "Files not owned by user but writable by group"
+  fi
 }
 
 function check_root() {
@@ -149,6 +158,15 @@ parse_args() {
       -p|--password)
         PASSWORD=${2}
         shift # past argument
+        shift # past argument
+        ;;
+      -u|--username)
+        USERNAME=${2}
+        shift # past argument
+        shift # past argument
+        ;;
+      -x|--extreme)
+        EXTREME=YES
         shift # past argument
         ;;
       *)
