@@ -130,6 +130,10 @@ function do_usergroup() {
     wrfileshm=$(${FINDBIN} ${PATHNAME}/home/ -perm -4 -type f -exec ${LSBIN} -al {} \; 2>/dev/null)
     zcheck "[00;31m[-]" "${wrfileshm}" "World-readable files within /home"
   fi
+
+  if [ "${EXTREME}" == "YES" ] && [ -z "${PATHNAME}" ]; then
+    zls "[00;31m[-]" "-ahl ${HOME}" "Home directory contents"
+  fi
 }
 
 function check_root() {
