@@ -3,6 +3,7 @@
 SCRIPTVERSION=1.0
 SCRIPTNAME=$(basename "$0")
 
+LSBIN=/usr/bin/ls
 CATBIN=/usr/bin/cat
 SEDBIN=/usr/bin/sed
 FINDBIN=/usr/bin/find
@@ -21,6 +22,11 @@ function zcheck() {
   if [ "${2}" ]; then
     zshow "${1}" "${2}" "${3}"
   fi
+}
+
+function zls() {
+  xx=$(${LSBIN} ${2} 2>/dev/null)
+  zcheck "${1}" "${xx}" "${3}"
 }
 
 function zcat() {
@@ -99,6 +105,7 @@ function do_usergroup() {
   fi
 
   zfind "[00;31m[-]" "${PATHNAME}/home -name .sudo_as_admin_successful" "Accounts that have recently used sudo"
+  zls "[00;33m[+]" "-ahl ${PATHNAME}/root/" "We can read root's home directory"
 }
 
 function check_root() {
