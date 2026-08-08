@@ -3,6 +3,7 @@
 SCRIPTVERSION=1.0
 SCRIPTNAME=$(basename "$0")
 
+IDBIN=/usr/bin/id
 LSBIN=/usr/bin/ls
 AWKBIN=/usr/bin/awk
 CATBIN=/usr/bin/cat
@@ -75,7 +76,11 @@ function do_system() {
 function do_usergroup() {
   echo -e "\e[00;33m### USER/GROUP ##########################################\e[00m"
 
-  zgrep "[00;33m[+]" "-v '^[^:]*:[x]' ${PATHNAME}/etc/passwd" "It looks like we have password hashes in /etc/passwd"
+  if [[ -z "${PATHNAME}" ]]; then
+    zcheck "[00;31m[-]" "$(${IDBIN} 2>/dev/null)" "Current user/group info"
+  fi
+
+  zgrep "[00;33m[+]" "-v '^[^:]*:[x]' ${PATHNAME}/etc/passwd" "It looks like we have password hashes in ${PATHNAME}/etc/passwd"
   zcat  "[00;31m[-]" "${PATHNAME}/etc/passwd" "Contents of ${PATHNAME}/etc/passwd"
   zcat  "[00;33m[+]" "${PATHNAME}/etc/shadow" "We can read the shadow file"
   zcat  "[00;33m[+]" "${PATHNAME}/etc/master.passwd" "We can read the master.passwd file"
