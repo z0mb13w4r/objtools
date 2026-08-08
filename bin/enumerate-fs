@@ -125,6 +125,11 @@ function do_usergroup() {
     hiddenfiles=$(${FINDBIN} ${PATHNAME}/ -name '.*' -type f ! -path '${PATHNAME}/proc/*' ! -path '${PATHNAME}/sys/*' -exec ${LSBIN} -al {} \; 2>/dev/null)
     zcheck "[00;31m[-]" "${hiddenfiles}" "Hidden files"
   fi
+
+  if [ "${EXTREME}" == "YES" ]; then
+    wrfileshm=$(${FINDBIN} ${PATHNAME}/home/ -perm -4 -type f -exec ${LSBIN} -al {} \; 2>/dev/null)
+    zcheck "[00;31m[-]" "${wrfileshm}" "World-readable files within /home"
+  fi
 }
 
 function check_root() {
