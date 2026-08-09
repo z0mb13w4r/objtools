@@ -11,8 +11,10 @@ SEDBIN=/usr/bin/sed
 FINDBIN=/usr/bin/find
 GREPBIN=/usr/bin/grep
 SUDOBIN=/usr/bin/sudo
+TAILBIN=/usr/bin/tail
 XARGSBIN=/usr/bin/xargs
 WHOAMIBIN=/usr/bin/whoami
+LASTLOGBIN=/usr/bin/lastlog
 
 USERNAME=$(${WHOAMIBIN})
 
@@ -78,6 +80,9 @@ function do_usergroup() {
 
   if [[ -z "${PATHNAME}" ]]; then
     zcheck "[00;31m[-]" "$(${IDBIN} 2>/dev/null)" "Current user/group info"
+
+    lastlogedonusrs=$(${LASTLOGBIN} 2>/dev/null | ${TAILBIN} -n +2 | ${GREPBIN} -v 'Never' 2>/dev/null)
+    zcheck "[00;31m[-]" "${lastlogedonusrs}" "Users that have previously logged onto the system"
   fi
 
   zgrep "[00;33m[+]" "-v '^[^:]*:[x]' ${PATHNAME}/etc/passwd" "It looks like we have password hashes in ${PATHNAME}/etc/passwd"
