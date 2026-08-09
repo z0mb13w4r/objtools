@@ -3,6 +3,7 @@
 SCRIPTVERSION=1.0
 SCRIPTNAME=$(basename "$0")
 
+WBIN=/usr/bin/w
 IDBIN=/usr/bin/id
 LSBIN=/usr/bin/ls
 AWKBIN=/usr/bin/awk
@@ -83,6 +84,8 @@ function do_usergroup() {
 
     lastlogedonusrs=$(${LASTLOGBIN} 2>/dev/null | ${TAILBIN} -n +2 | ${GREPBIN} -v 'Never' 2>/dev/null)
     zcheck "[00;31m[-]" "${lastlogedonusrs}" "Users that have previously logged onto the system"
+
+    zcheck "[00;31m[-]" "$(${WBIN} 2>/dev/null | ${TAILBIN} -n +3)" "Who else is logged on"
   fi
 
   zgrep "[00;33m[+]" "-v '^[^:]*:[x]' ${PATHNAME}/etc/passwd" "It looks like we have password hashes in ${PATHNAME}/etc/passwd"
