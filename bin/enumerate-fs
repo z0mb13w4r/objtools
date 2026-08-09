@@ -90,6 +90,9 @@ function do_usergroup() {
 
     grpinfo=$(for i in $(${CUTBIN} -d':' -f1 /etc/passwd 2>/dev/null); do ${IDBIN} ${i}; done 2>/dev/null)
     zcheck "[00;31m[-]" "${grpinfo}" "Group memberships"
+
+    adm_users=$(echo -e "${grpinfo}" | ${GREPBIN} '(adm)')
+    zcheck "[00;31m[-]" "${adm_users}" "It looks like we have some admin users"
   fi
 
   zgrep "[00;33m[+]" "-v '^[^:]*:[x]' ${PATHNAME}/etc/passwd" "It looks like we have password hashes in ${PATHNAME}/etc/passwd"
