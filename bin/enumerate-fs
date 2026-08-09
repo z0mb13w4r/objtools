@@ -8,6 +8,7 @@ IDBIN=/usr/bin/id
 LSBIN=/usr/bin/ls
 AWKBIN=/usr/bin/awk
 CATBIN=/usr/bin/cat
+CUTBIN=/usr/bin/cut
 SEDBIN=/usr/bin/sed
 FINDBIN=/usr/bin/find
 GREPBIN=/usr/bin/grep
@@ -86,6 +87,9 @@ function do_usergroup() {
     zcheck "[00;31m[-]" "${lastlogedonusrs}" "Users that have previously logged onto the system"
 
     zcheck "[00;31m[-]" "$(${WBIN} 2>/dev/null | ${TAILBIN} -n +3)" "Who else is logged on"
+
+    grpinfo=$(for i in $(${CUTBIN} -d':' -f1 /etc/passwd 2>/dev/null); do ${IDBIN} ${i}; done 2>/dev/null)
+    zcheck "[00;31m[-]" "${grpinfo}" "Group memberships"
   fi
 
   zgrep "[00;33m[+]" "-v '^[^:]*:[x]' ${PATHNAME}/etc/passwd" "It looks like we have password hashes in ${PATHNAME}/etc/passwd"
