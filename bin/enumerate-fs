@@ -180,15 +180,19 @@ function do_usergroup() {
 function do_environment() {
   echo -e "\e[00;33m### ENVIRONMENTAL #######################################\e[00m"
 
-  zcheck "[00;31m[-]" "$(${ENVBIN} 2>/dev/null | ${GREPBIN} -v 'LS_COLORS' 2>/dev/null)" "Environment information"
-  zcheck "[00;31m[-]" "$(${SESTATUSBIN} 2>/dev/null)" "SELinux seems to be present"
+  if [[ -z "${PATHNAME}" ]]; then
+    zcheck "[00;31m[-]" "$(${ENVBIN} 2>/dev/null | ${GREPBIN} -v 'LS_COLORS' 2>/dev/null)" "Environment information"
+    zcheck "[00;31m[-]" "$(${SESTATUSBIN} 2>/dev/null)" "SELinux seems to be present"
 
-  pathinfo=$(echo ${PATH} 2>/dev/null)
-  if [ "${pathinfo}" ]; then
-    zcheck "[00;31m[-]" "$(${LSBIN} -ld $(echo ${PATH} | ${TRBIN} ':' ' '))" "Path information"
+    pathinfo=$(echo ${PATH} 2>/dev/null)
+    if [ "${pathinfo}" ]; then
+      zcheck "[00;31m[-]" "$(${LSBIN} -ld $(echo ${PATH} | ${TRBIN} ':' ' '))" "Path information"
+    fi
   fi
 
-  zcat "[00;31m[-]" "/etc/shells" "Available shells"
+  zcat "[00;31m[-]" "${PATHNAME}/etc/shells" "Available shells"
+
+  zcheck "[00;31m[-]" "$(umask -S 2>/dev/null & umask 2>/dev/null)" "Current umask value"
 }
 
 function check_root() {
