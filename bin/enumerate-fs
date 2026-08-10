@@ -187,6 +187,8 @@ function do_environment() {
   if [ "${pathinfo}" ]; then
     zcheck "[00;31m[-]" "$(${LSBIN} -ld $(echo ${PATH} | ${TRBIN} ':' ' '))" "Path information"
   fi
+
+  zcat "[00;31m[-]" "/etc/shells" "Available shells"
 }
 
 function check_root() {
