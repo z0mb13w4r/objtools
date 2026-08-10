@@ -193,6 +193,8 @@ function do_environment() {
   zcat "[00;31m[-]" "${PATHNAME}/etc/shells" "Available shells"
 
   zcheck "[00;31m[-]" "$(umask -S 2>/dev/null & umask 2>/dev/null)" "Current umask value"
+
+  zcheck "[00;31m[-]" "$(${GREPBIN} -i '^UMASK' ${PATHNAME}/etc/login.defs)" "umask value as specified in ${PATHNAME}/etc/login.defs"
 }
 
 function check_root() {
