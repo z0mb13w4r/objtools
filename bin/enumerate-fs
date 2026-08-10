@@ -174,6 +174,10 @@ function do_usergroup() {
   fi
 }
 
+function do_environment() {
+  echo -e "\e[00;33m### ENVIRONMENTAL #######################################\e[00m"
+}
+
 function check_root() {
   if [[ $EUID -ne 0 ]]; then
     log_error "This script must be run with root privileges."
@@ -187,7 +191,9 @@ function show_usage() {
   ${CATBIN} << EOF
 Usage: ${SCRIPTNAME} v${SCRIPTVERSION}
 EXAMPLES:
+  ${SCRIPTNAME} user
   ${SCRIPTNAME} system
+  ${SCRIPTNAME} environment
   ${SCRIPTNAME} -v|--version
   ${SCRIPTNAME} -h|--help
 EOF
@@ -200,7 +206,7 @@ function show_version() {
 parse_args() {
   while [[ $# -gt 0 ]]; do
     case ${1} in
-      system|user)
+      environment|system|user)
         COMMAND=${1}
         shift # past argument
         ;;
@@ -257,9 +263,12 @@ main() {
     do_system
   elif [ "${COMMAND}" == "user" ]; then
     do_usergroup
+  elif [ "${COMMAND}" == "environment" ]; then
+    do_environment
   elif [[ -z "${COMMAND}" ]]; then
     do_system
     do_usergroup
+    do_environment
   fi
 }
 
