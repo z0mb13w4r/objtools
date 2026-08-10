@@ -6,6 +6,7 @@ SCRIPTNAME=$(basename "$0")
 WBIN=/usr/bin/w
 IDBIN=/usr/bin/id
 LSBIN=/usr/bin/ls
+TRBIN=/usr/bin/tr
 AWKBIN=/usr/bin/awk
 CATBIN=/usr/bin/cat
 CUTBIN=/usr/bin/cut
@@ -19,6 +20,7 @@ UNAMEBIN=/usr/bin/uname
 XARGSBIN=/usr/bin/xargs
 WHOAMIBIN=/usr/bin/whoami
 LASTLOGBIN=/usr/bin/lastlog
+SESTATUSBIN=/usr/sbin/sestatus
 
 USERNAME=$(${WHOAMIBIN})
 
@@ -179,6 +181,12 @@ function do_environment() {
   echo -e "\e[00;33m### ENVIRONMENTAL #######################################\e[00m"
 
   zcheck "[00;31m[-]" "$(${ENVBIN} 2>/dev/null | ${GREPBIN} -v 'LS_COLORS' 2>/dev/null)" "Environment information"
+  zcheck "[00;31m[-]" "$(${SESTATUSBIN} 2>/dev/null)" "SELinux seems to be present"
+
+  pathinfo=$(echo ${PATH} 2>/dev/null)
+  if [ "${pathinfo}" ]; then
+    zcheck "[00;31m[-]" "$(${LSBIN} -ld $(echo ${PATH} | ${TRBIN} ':' ' '))" "Path information"
+  fi
 }
 
 function check_root() {
