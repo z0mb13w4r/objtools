@@ -9,6 +9,7 @@ LSBIN=/usr/bin/ls
 AWKBIN=/usr/bin/awk
 CATBIN=/usr/bin/cat
 CUTBIN=/usr/bin/cut
+ENVBIN=/usr/bin/env
 SEDBIN=/usr/bin/sed
 FINDBIN=/usr/bin/find
 GREPBIN=/usr/bin/grep
@@ -176,6 +177,8 @@ function do_usergroup() {
 
 function do_environment() {
   echo -e "\e[00;33m### ENVIRONMENTAL #######################################\e[00m"
+
+  zcheck "[00;31m[-]" "$(${ENVBIN} 2>/dev/null | ${GREPBIN} -v 'LS_COLORS' 2>/dev/null)" "Environment information"
 }
 
 function check_root() {
