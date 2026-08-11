@@ -202,6 +202,7 @@ function do_job() {
   echo -e "\e[00;33m### JOBS/TASKS ##########################################\e[00m"
 
   zls "[00;31m[-]" "${PATHNAME}/etc/cron*" "Cron jobs"
+  zcheck "[00;33m[+]" "$(${FINDBIN} ${PATHNAME}/etc/cron* -perm -0002 -type f -exec ${LSBIN} -la {} \; -exec ${CATBIN} {} 2>/dev/null \;)" "World-writable cron jobs and file contents"
 }
 
 function check_root() {
