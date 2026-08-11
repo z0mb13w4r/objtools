@@ -200,6 +200,8 @@ function do_environment() {
 
 function do_job() {
   echo -e "\e[00;33m### JOBS/TASKS ##########################################\e[00m"
+
+  zls "[00;31m[-]" "${PATHNAME}/etc/cron*" "Cron jobs"
 }
 
 function check_root() {
