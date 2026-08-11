@@ -203,6 +203,7 @@ function do_job() {
 
   zls "[00;31m[-]" "${PATHNAME}/etc/cron*" "Cron jobs"
   zcheck "[00;33m[+]" "$(${FINDBIN} ${PATHNAME}/etc/cron* -perm -0002 -type f -exec ${LSBIN} -la {} \; -exec ${CATBIN} {} 2>/dev/null \;)" "World-writable cron jobs and file contents"
+  zcat "[00;31m[-]" "${PATHNAME}/etc/crontab" "Crontab contents"
 }
 
 function check_root() {
