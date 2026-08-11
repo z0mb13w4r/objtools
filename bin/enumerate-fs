@@ -198,6 +198,10 @@ function do_environment() {
   zcheck "[00;31m[-]" "$(${GREPBIN} '^PASS_MAX_DAYS\|^PASS_MIN_DAYS\|^PASS_WARN_AGE\|^ENCRYPT_METHOD' ${PATHNAME}/etc/login.defs)" "Password and storage information"
 }
 
+function do_job() {
+  echo -e "\e[00;33m### JOBS/TASKS ##########################################\e[00m"
+}
+
 function check_root() {
   if [[ $EUID -ne 0 ]]; then
     log_error "This script must be run with root privileges."
@@ -211,6 +215,7 @@ function show_usage() {
   ${CATBIN} << EOF
 Usage: ${SCRIPTNAME} v${SCRIPTVERSION}
 EXAMPLES:
+  ${SCRIPTNAME} job
   ${SCRIPTNAME} user
   ${SCRIPTNAME} system
   ${SCRIPTNAME} environment
@@ -226,7 +231,7 @@ function show_version() {
 parse_args() {
   while [[ $# -gt 0 ]]; do
     case ${1} in
-      environment|system|user)
+      environment|system|user|job)
         COMMAND=${1}
         shift # past argument
         ;;
@@ -279,7 +284,9 @@ main() {
 
   check_root "$@"
 
-  if [ "${COMMAND}" == "system" ]; then
+  if [ "${COMMAND}" == "job" ]; then
+    do_job
+  elif [ "${COMMAND}" == "system" ]; then
     do_system
   elif [ "${COMMAND}" == "user" ]; then
     do_usergroup
@@ -289,6 +296,7 @@ main() {
     do_system
     do_usergroup
     do_environment
+    do_job
   fi
 }
 
