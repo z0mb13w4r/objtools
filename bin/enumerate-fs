@@ -205,6 +205,7 @@ function do_job() {
   zcheck "[00;33m[+]" "$(${FINDBIN} ${PATHNAME}/etc/cron* -perm -0002 -type f -exec ${LSBIN} -la {} \; -exec ${CATBIN} {} 2>/dev/null \;)" "World-writable cron jobs and file contents"
   zcat "[00;31m[-]" "${PATHNAME}/etc/crontab" "Crontab contents"
   zls "[00;31m[-]" "-la ${PATHNAME}/var/spool/cron/crontabs" "Anything interesting in ${PATHNAME}/var/spool/cron/crontabs"
+  zcheck "[00;31m[-]" "$(${LSBIN} -la ${PATHNAME}/etc/anacrontab 2>/dev/null; ${CATBIN} ${PATHNAME}/etc/anacrontab 2>/dev/null)" "Anacron jobs and associated file permissions"
 }
 
 function check_root() {
