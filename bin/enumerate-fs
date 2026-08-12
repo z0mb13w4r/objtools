@@ -22,6 +22,7 @@ WHOAMIBIN=/usr/bin/whoami
 CRONTABBIN=/usr/bin/crontab
 LASTLOGBIN=/usr/bin/lastlog
 SESTATUSBIN=/usr/sbin/sestatus
+SYSTEMCTLBIN=/usr/bin/systemctl
 
 USERNAME=$(${WHOAMIBIN})
 
@@ -216,8 +217,17 @@ function do_job() {
   anacrontab=$(${LSBIN} -la ${PATHNAME}/var/spool/anacron 2>/dev/null)
   zcheck "[00;31m[-]" "${anacrontab}" "When were jobs last executed (${PATHNAME}/var/spool/anacron contents)"
 
-  cronother=$(${CUTBIN} -d ":" -f 1 ${PATHNAME}/etc/passwd | ${XARGSBIN} -n1 ${CRONTABBIN} -l -u 2>/dev/null)
-  zcheck "[00;31m[-]" "${cronother}" "Jobs held by all users"
+  if [[ -z "${PATHNAME}" ]]; then
+    cronother=$(${CUTBIN} -d ":" -f 1 ${PATHNAME}/etc/passwd | ${XARGSBIN} -n1 ${CRONTABBIN} -l -u 2>/dev/null)
+    zcheck "[00;31m[-]" "${cronother}" "Jobs held by all users"
+
+    if [ "${EXTREME}" == "YES" ]; then
+      systemdtimers=$(${SYSTEMCTLBIN} list-timers --all 2>/dev/null)
+    else
+      systemdtimers=$(${SYSTEMCTLBIN} list-timers 2>/dev/null |head -n -1 2>/dev/null)
+    fi
+    zcheck "[00;31m[-]" "${systemdtimers}" "Systemd timers"
+  fi
 }
 
 function check_root() {
