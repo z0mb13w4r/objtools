@@ -6,6 +6,7 @@ SCRIPTNAME=$(basename "$0")
 WBIN=/usr/bin/w
 IDBIN=/usr/bin/id
 LSBIN=/usr/bin/ls
+SSBIN=/usr/bin/ss
 TRBIN=/usr/bin/tr
 AWKBIN=/usr/bin/awk
 CATBIN=/usr/bin/cat
@@ -22,6 +23,7 @@ XARGSBIN=/usr/bin/xargs
 WHOAMIBIN=/usr/bin/whoami
 CRONTABBIN=/usr/bin/crontab
 LASTLOGBIN=/usr/bin/lastlog
+NETSTATBIN=/usr/bin/netstat
 SYSTEMDRESOLVEBIN=/usr/bin/systemd-resolve
 
 IPSBIN=/usr/sbin/ip
@@ -264,6 +266,25 @@ function do_network() {
 
   defroute=$(${ROUTESBIN} 2>/dev/null | ${GREPBIN} default)
   zcheck "[00;31m[-]" "${defroute}" "Default route"
+
+  defrouteip=$(${IPSBIN} r 2>/dev/null | ${GREPBIN} default)
+  zcheck "[00;31m[-]" "${defrouteip}" "Default route"
+
+  tcpservs=$(${NETSTATBIN} -ntpl 2>/dev/null)
+  zcheck "[00;31m[-]" "${tcpservs}" "Listening TCP"
+
+  if [[ -z "${tcpservs}" ]]; then
+    tcpservsip=$(${SSBIN} -t -l -n 2>/dev/null)
+    zcheck "[00;31m[-]" "${tcpservsip}" "Listening TCP"
+  fi
+
+  udpservs=$(${NETSTATBIN} -nupl 2>/dev/null)
+  zcheck "[00;31m[-]" "${udpservs}" "Listening UDP"
+
+  if [[ -z "${udpservs}" ]]; then
+    udpservsip=$(${SSBIN} -u -l -n 2>/dev/null)
+    zcheck "[00;31m[-]" "${udpservsip}" "Listening UDP"
+  fi
 }
 
 function check_root() {
