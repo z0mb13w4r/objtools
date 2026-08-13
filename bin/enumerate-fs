@@ -21,6 +21,7 @@ XARGSBIN=/usr/bin/xargs
 WHOAMIBIN=/usr/bin/whoami
 CRONTABBIN=/usr/bin/crontab
 LASTLOGBIN=/usr/bin/lastlog
+SYSTEMDRESOLVEBIN=/usr/bin/systemd-resolve
 
 IPSBIN=/usr/sbin/ip
 ARPSBIN=/usr/sbin/arp
@@ -255,6 +256,9 @@ function do_network() {
 
   nsinfo=$(${GREPBIN} "nameserver" ${PATHNAME}/etc/resolv.conf 2>/dev/null)
   zcheck "[00;31m[-]" "${nsinfo}" "Nameserver(s)"
+
+  nsinfosysd=$(${SYSTEMDRESOLVEBIN} --status 2>/dev/null)
+  zcheck "[00;31m[-]" "${nsinfosysd}" "Nameserver(s)"
 }
 
 function check_root() {
