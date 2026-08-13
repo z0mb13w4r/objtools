@@ -21,11 +21,12 @@ XARGSBIN=/usr/bin/xargs
 WHOAMIBIN=/usr/bin/whoami
 CRONTABBIN=/usr/bin/crontab
 LASTLOGBIN=/usr/bin/lastlog
-SESTATUSBIN=/usr/sbin/sestatus
-SYSTEMCTLBIN=/usr/bin/systemctl
 
 IPSBIN=/sbin/ip
+ARPSBIN=/usr/sbin/arp
 IFCONFIGSBIN=/sbin/ifconfig
+SESTATUSSBIN=/usr/sbin/sestatus
+SYSTEMCTLSBIN=/usr/bin/systemctl
 
 USERNAME=$(${WHOAMIBIN})
 
@@ -187,7 +188,7 @@ function do_environment() {
 
   if [[ -z "${PATHNAME}" ]]; then
     zcheck "[00;31m[-]" "$(${ENVBIN} 2>/dev/null | ${GREPBIN} -v 'LS_COLORS' 2>/dev/null)" "Environment information"
-    zcheck "[00;31m[-]" "$(${SESTATUSBIN} 2>/dev/null)" "SELinux seems to be present"
+    zcheck "[00;31m[-]" "$(${SESTATUSSBIN} 2>/dev/null)" "SELinux seems to be present"
 
     pathinfo=$(echo ${PATH} 2>/dev/null)
     if [ "${pathinfo}" ]; then
@@ -225,9 +226,9 @@ function do_job() {
     zcheck "[00;31m[-]" "${cronother}" "Jobs held by all users"
 
     if [ "${EXTREME}" == "YES" ]; then
-      systemdtimers=$(${SYSTEMCTLBIN} list-timers --all 2>/dev/null)
+      systemdtimers=$(${SYSTEMCTLSBIN} list-timers --all 2>/dev/null)
     else
-      systemdtimers=$(${SYSTEMCTLBIN} list-timers 2>/dev/null |head -n -1 2>/dev/null)
+      systemdtimers=$(${SYSTEMCTLSBIN} list-timers 2>/dev/null |head -n -1 2>/dev/null)
     fi
     zcheck "[00;31m[-]" "${systemdtimers}" "Systemd timers"
   fi
@@ -243,6 +244,9 @@ function do_network() {
     nicinfoip=$(${IPSBIN} a 2>/dev/null)
     zcheck "[00;31m[-]" "${nicinfoip}" "Network and IP info"
   fi
+
+  arpinfo=$(${ARPSBIN} -a 2>/dev/null)
+  zcheck "[00;31m[-]" "${arpinfo}" "ARP history"
 }
 
 function check_root() {
