@@ -24,6 +24,7 @@ LASTLOGBIN=/usr/bin/lastlog
 SESTATUSBIN=/usr/sbin/sestatus
 SYSTEMCTLBIN=/usr/bin/systemctl
 
+IPSBIN=/sbin/ip
 IFCONFIGSBIN=/sbin/ifconfig
 
 USERNAME=$(${WHOAMIBIN})
@@ -238,7 +239,10 @@ function do_network() {
   nicinfo=$(${IFCONFIGSBIN} -a 2>/dev/null)
   zcheck "[00;31m[-]" "${nicinfo}" "Network and IP info"
 
-
+  if [[ -z "${nicinfo}" ]]; then
+    nicinfoip=$(${IPSBIN} a 2>/dev/null)
+    zcheck "[00;31m[-]" "${nicinfoip}" "Network and IP info"
+  fi
 }
 
 function check_root() {
