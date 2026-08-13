@@ -252,6 +252,9 @@ function do_network() {
     arpinfoip=$(${IPSBIN} n 2>/dev/null)
     zcheck "[00;31m[-]" "${arpinfoip}" "ARP history"
   fi
+
+  nsinfo=$(${GREPBIN} "nameserver" ${PATHNAME}/etc/resolv.conf 2>/dev/null)
+  zcheck "[00;31m[-]" "${nsinfo}" "Nameserver(s)"
 }
 
 function check_root() {
