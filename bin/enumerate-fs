@@ -14,6 +14,7 @@ ENVBIN=/usr/bin/env
 SEDBIN=/usr/bin/sed
 FINDBIN=/usr/bin/find
 GREPBIN=/usr/bin/grep
+HEADBIN=/usr/bin/head
 SUDOBIN=/usr/bin/sudo
 TAILBIN=/usr/bin/tail
 UNAMEBIN=/usr/bin/uname
@@ -25,6 +26,7 @@ SYSTEMDRESOLVEBIN=/usr/bin/systemd-resolve
 
 IPSBIN=/usr/sbin/ip
 ARPSBIN=/usr/sbin/arp
+ROUTESBIN=/usr/sbin/route
 IFCONFIGSBIN=/usr/sbin/ifconfig
 SESTATUSSBIN=/usr/sbin/sestatus
 SYSTEMCTLSBIN=/usr/bin/systemctl
@@ -229,7 +231,7 @@ function do_job() {
     if [ "${EXTREME}" == "YES" ]; then
       systemdtimers=$(${SYSTEMCTLSBIN} list-timers --all 2>/dev/null)
     else
-      systemdtimers=$(${SYSTEMCTLSBIN} list-timers 2>/dev/null |head -n -1 2>/dev/null)
+      systemdtimers=$(${SYSTEMCTLSBIN} list-timers 2>/dev/null | ${HEADBIN} -n -1 2>/dev/null)
     fi
     zcheck "[00;31m[-]" "${systemdtimers}" "Systemd timers"
   fi
@@ -259,6 +261,9 @@ function do_network() {
 
   nsinfosysd=$(${SYSTEMDRESOLVEBIN} --status 2>/dev/null)
   zcheck "[00;31m[-]" "${nsinfosysd}" "Nameserver(s)"
+
+  defroute=$(${ROUTESBIN} 2>/dev/null | ${GREPBIN} default)
+  zcheck "[00;31m[-]" "${defroute}" "Default route"
 }
 
 function check_root() {
