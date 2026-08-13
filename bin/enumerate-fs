@@ -22,9 +22,9 @@ WHOAMIBIN=/usr/bin/whoami
 CRONTABBIN=/usr/bin/crontab
 LASTLOGBIN=/usr/bin/lastlog
 
-IPSBIN=/sbin/ip
+IPSBIN=/usr/sbin/ip
 ARPSBIN=/usr/sbin/arp
-IFCONFIGSBIN=/sbin/ifconfig
+IFCONFIGSBIN=/usr/sbin/ifconfig
 SESTATUSSBIN=/usr/sbin/sestatus
 SYSTEMCTLSBIN=/usr/bin/systemctl
 
@@ -247,6 +247,11 @@ function do_network() {
 
   arpinfo=$(${ARPSBIN} -a 2>/dev/null)
   zcheck "[00;31m[-]" "${arpinfo}" "ARP history"
+
+  if [[ -z "${arpinfo}" ]]; then
+    arpinfoip=$(${IPSBIN} n 2>/dev/null)
+    zcheck "[00;31m[-]" "${arpinfoip}" "ARP history"
+  fi
 }
 
 function check_root() {
