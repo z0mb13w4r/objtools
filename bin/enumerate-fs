@@ -293,6 +293,9 @@ function do_services() {
 
   psaux=$(${PSBIN} aux 2>/dev/null)
   zcheck "[00;31m[-]" "${psaux}" "Running processes"
+
+  procperm=$(${PSBIN} aux 2>/dev/null | ${AWKBIN} '{print $11}' | ${XARGSBIN} -r ${LSBIN} -la 2>/dev/null | ${AWKBIN} '!x[$0]++' 2>/dev/null)
+  zcheck "[00;31m[-]" "${procperm}" "Process binaries and associated permissions (from above list)"
 }
 
 function do_end() {
