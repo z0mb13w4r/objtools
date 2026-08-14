@@ -303,6 +303,9 @@ function do_services() {
   zcheck "[00;31m[-]" "${inetdbinperms}" "The related inetd binary permissions"
 
   zcat "[00;31m[-]" "${PATHNAME}/etc/xinetd.conf" "The related inetd binary permissions"
+
+  xinetdincd=$(${GREPBIN} "/etc/xinetd.d" ${PATHNAME}/etc/xinetd.conf 2>/dev/null)
+  zcheck "[00;31m[-]" "${xinetdincd}" "/etc/xinetd.d is included in ${PATHNAME}/etc/xinetd.conf - associated binary permissions are listed below"
 }
 
 function do_end() {
