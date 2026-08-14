@@ -6,6 +6,7 @@ SCRIPTNAME=$(basename "$0")
 WBIN=/usr/bin/w
 IDBIN=/usr/bin/id
 LSBIN=/usr/bin/ls
+PSBIN=/usr/bin/ps
 SSBIN=/usr/bin/ss
 TRBIN=/usr/bin/tr
 AWKBIN=/usr/bin/awk
@@ -289,6 +290,9 @@ function do_network() {
 
 function do_services() {
   echo -e "\e[00;33m### SERVICES #############################################\e[00m"
+
+  psaux=$(${PSBIN} aux 2>/dev/null)
+  zcheck "[00;31m[-]" "${psaux}" "Running processes"
 }
 
 function do_end() {
