@@ -296,6 +296,13 @@ function do_services() {
 
   procperm=$(${PSBIN} aux 2>/dev/null | ${AWKBIN} '{print $11}' | ${XARGSBIN} -r ${LSBIN} -la 2>/dev/null | ${AWKBIN} '!x[$0]++' 2>/dev/null)
   zcheck "[00;31m[-]" "${procperm}" "Process binaries and associated permissions (from above list)"
+
+  zcat "[00;31m[-]" "${PATHNAME}/etc/inetd.conf" "Contents of /etc/inetd.conf"
+
+  inetdbinperms=$(${AWKBIN} '{print $7}' ${PATHNAME}/etc/inetd.conf 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -la 2>/dev/null)
+  zcheck "[00;31m[-]" "${inetdbinperms}" "The related inetd binary permissions"
+
+  zcat "[00;31m[-]" "${PATHNAME}/etc/xinetd.conf" "The related inetd binary permissions"
 }
 
 function do_end() {
