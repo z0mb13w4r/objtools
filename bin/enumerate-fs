@@ -287,6 +287,14 @@ function do_network() {
   fi
 }
 
+function do_services() {
+  echo -e "\e[00;33m### SERVICES #############################################\e[00m"
+}
+
+function do_end() {
+  echo -e "\e[00;33m### SCAN COMPLETE ####################################\e[00m"
+}
+
 function check_root() {
   if [[ $EUID -ne 0 ]]; then
     log_error "This script must be run with root privileges."
@@ -304,6 +312,7 @@ EXAMPLES:
   ${SCRIPTNAME} user
   ${SCRIPTNAME} system
   ${SCRIPTNAME} network
+  ${SCRIPTNAME} services
   ${SCRIPTNAME} environment
   ${SCRIPTNAME} -v|--version
   ${SCRIPTNAME} -h|--help
@@ -317,7 +326,7 @@ function show_version() {
 parse_args() {
   while [[ $# -gt 0 ]]; do
     case ${1} in
-      environment|system|user|job|network)
+      environment|services|system|user|job|network)
         COMMAND=${1}
         shift # past argument
         ;;
@@ -380,12 +389,16 @@ main() {
     do_environment
   elif [ "${COMMAND}" == "network" ]; then
     do_network
+  elif [ "${COMMAND}" == "services" ]; then
+    do_services
   elif [[ -z "${COMMAND}" ]]; then
     do_system
     do_usergroup
     do_environment
     do_job
     do_network
+    do_services
+    do_end
   fi
 }
 
