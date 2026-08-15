@@ -324,6 +324,9 @@ function do_services() {
 
   usrrcdread=$(${LSBIN} -la ${PATHNAME}/usr/local/etc/rc.d 2>/dev/null)
   zcheck "[00;31m[-]" "${usrrcdread}" "${PATHNAME}/usr/local/etc/rc.d binary permissions"
+
+  usrrcdperms=$(${FINDBIN} ${PATHNAME}/usr/local/etc/rc.d \! -uid 0 -type f 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -la 2>/dev/null)
+  zcheck "[00;31m[-]" "${usrrcdperms}" "${PATHNAME}/usr/local/etc/rc.d files not belonging to root"
 }
 
 function do_end() {
