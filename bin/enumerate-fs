@@ -332,6 +332,8 @@ function do_services() {
 
   initperms=$(${FINDBIN} ${PATHNAME}/etc/init \! -uid 0 -type f 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -la 2>/dev/null)
   zcheck "[00;31m[-]" "${initperms}" "${PATHNAME}/etc/init/ config files not belonging to root"
+
+  zls "[00;31m[-]" "-lthR ${PATHNAME}/lib/systemd/" "${PATHNAME}/lib/systemd/* config file permissions"
 }
 
 function do_end() {
