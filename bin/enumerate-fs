@@ -318,6 +318,9 @@ function do_services() {
 
   rcdread=$(${LSBIN} -la ${PATHNAME}/etc/rc.d/init.d 2>/dev/null)
   zcheck "[00;31m[-]" "${rcdread}" "${PATHNAME}/etc/rc.d/init.d binary permissions"
+
+  rcdperms=$(${FINDBIN} ${PATHNAME}/etc/rc.d/init.d \! -uid 0 -type f 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -la 2>/dev/null)
+  zcheck "[00;31m[-]" "${rcdperms}" "${PATHNAME}/etc/rc.d/init.d files not belonging to root"
 }
 
 function do_end() {
