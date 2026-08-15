@@ -309,6 +309,9 @@ function do_services() {
 
   xinetdbinperms=$(${AWKBIN} '{print $7}' ${PATHNAME}/etc/xinetd.conf 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -la 2>/dev/null)
   zcheck "[00;31m[-]" "${xinetdbinperms}" "The related xinetd binary permissions"
+
+  initdread=$(${LSBIN} -la ${PATHNAME}/etc/init.d 2>/dev/null)
+  zcheck "[00;31m[-]" "${initdread}" "${PATHNAME}/etc/init.d/ binary permissions"
 }
 
 function do_end() {
