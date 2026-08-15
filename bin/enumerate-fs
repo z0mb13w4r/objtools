@@ -327,6 +327,8 @@ function do_services() {
 
   usrrcdperms=$(${FINDBIN} ${PATHNAME}/usr/local/etc/rc.d \! -uid 0 -type f 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -la 2>/dev/null)
   zcheck "[00;31m[-]" "${usrrcdperms}" "${PATHNAME}/usr/local/etc/rc.d files not belonging to root"
+
+  zls "[00;31m[-]" "-la ${PATHNAME}/etc/init/" "${PATHNAME}/etc/init/ config file permissions"
 }
 
 function do_end() {
