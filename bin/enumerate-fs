@@ -312,6 +312,9 @@ function do_services() {
 
   initdread=$(${LSBIN} -la ${PATHNAME}/etc/init.d 2>/dev/null)
   zcheck "[00;31m[-]" "${initdread}" "${PATHNAME}/etc/init.d/ binary permissions"
+
+  initdperms=$(${FINDBIN} ${PATHNAME}/etc/init.d/ \! -uid 0 -type f 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -la 2>/dev/null)
+  zcheck "[00;31m[-]" "${initdperms}" "${PATHNAME}/etc/init.d/ files not belonging to root"
 }
 
 function do_end() {
