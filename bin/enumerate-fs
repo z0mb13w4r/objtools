@@ -365,6 +365,13 @@ function do_software {
 
     postcon1=$(${PSQLBIN} -U postgres -w template0 -c 'select version()' 2>/dev/null | ${GREPBIN} version)
     zcheck "[00;33m[+]" "${postcon1}" "We can connect to Postgres DB 'template0' as user 'postgres' with no password"
+
+    postcon11=$(${PSQLBIN} -U postgres -w template1 -c 'select version()' 2>/dev/null | ${GREPBIN} version)
+    zcheck "[00;33m[+]" "${postcon11}" "We can connect to Postgres DB 'template1' as user 'postgres' with no password"
+
+    postcon2=$(${PSQLBIN} -U pgsql -w template0 -c 'select version()' 2>/dev/null | ${GREPBIN} version)
+    zcheck "[00;33m[+]" "${postcon2}" "We can connect to Postgres DB 'template0' as user 'psql' with no password"
+
   fi
 }
 
