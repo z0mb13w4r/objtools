@@ -391,6 +391,11 @@ function do_software {
 
   htpasswd=$(${FINDBIN} ${PATHNAME}/ -name .htpasswd -print -exec ${CATBIN} {} \; 2>/dev/null)
   zcheck "[00;33m[-]" "${htpasswd}" "htpasswd found - could contain passwords"
+
+  if [ "${EXTREME}" == "YES" ]; then
+    apachehomedirs=$(${LSBIN} -alhR ${PATHNAME}/var/www/ 2>/dev/null; ${LSBIN} -alhR ${PATHNAME}/srv/www/htdocs/ 2>/dev/null; ${LSBIN} -alhR ${PATHNAME}/usr/local/www/apache2/data/ 2>/dev/null; ${LSBIN} -alhR ${PATHNAME}/opt/lampp/htdocs/ 2>/dev/null)
+    zcheck "[00;31m[-]" "${apachehomedirs}" "www home dir contents"
+  fi
 }
 
 function do_end() {
