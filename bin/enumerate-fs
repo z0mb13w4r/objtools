@@ -17,6 +17,7 @@ SEDBIN=/usr/bin/sed
 FINDBIN=/usr/bin/find
 GREPBIN=/usr/bin/grep
 HEADBIN=/usr/bin/head
+PSQLBIN=/usr/bin/psql
 SUDOBIN=/usr/bin/sudo
 TAILBIN=/usr/bin/tail
 MYSQLBIN=/usr/bin/mysql
@@ -358,6 +359,12 @@ function do_software {
 
     mysqlconnectnopass=$(${MYSQLADMINBIN} -uroot version 2>/dev/null)
     zcheck "[00;33m[+]" "${mysqlconnectnopass}" "We can connect to the local MYSQL service as 'root' and without a password"
+
+    postgver=$(${PSQLBIN} -V 2>/dev/null)
+    zcheck "[00;31m[-]" "${postgver}" "Postgres version"
+
+    postcon1=$(${PSQLBIN} -U postgres -w template0 -c 'select version()' 2>/dev/null | ${GREPBIN} version)
+    zcheck "[00;33m[+]" "${postcon1}" "We can connect to Postgres DB 'template0' as user 'postgres' with no password"
   fi
 }
 
