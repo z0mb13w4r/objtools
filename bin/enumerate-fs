@@ -26,6 +26,7 @@ WHOAMIBIN=/usr/bin/whoami
 CRONTABBIN=/usr/bin/crontab
 LASTLOGBIN=/usr/bin/lastlog
 NETSTATBIN=/usr/bin/netstat
+MYSQLADMINBIN=/usr/bin/mysqladmin
 SYSTEMDRESOLVEBIN=/usr/bin/systemd-resolve
 
 IPSBIN=/usr/sbin/ip
@@ -351,6 +352,9 @@ function do_software {
 
     mysqlver=$(${MYSQLBIN} --version 2>/dev/null)
     zcheck "[00;31m[-]" "${mysqlver}" "MYSQL version"
+
+    mysqlconnect=$(${MYSQLADMINBIN} -uroot -proot version 2>/dev/null)
+    zcheck "[00;33m[+]" "${mysqlconnect}" "We can connect to the local MYSQL service with default root/root credentials"
   fi
 }
 
