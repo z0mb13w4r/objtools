@@ -19,6 +19,7 @@ GREPBIN=/usr/bin/grep
 HEADBIN=/usr/bin/head
 SUDOBIN=/usr/bin/sudo
 TAILBIN=/usr/bin/tail
+MYSQLBIN=/usr/bin/mysql
 UNAMEBIN=/usr/bin/uname
 XARGSBIN=/usr/bin/xargs
 WHOAMIBIN=/usr/bin/whoami
@@ -347,6 +348,9 @@ function do_software {
   if [[ -z "${PATHNAME}" ]]; then
     sudover=$(${SUDOBIN} -V 2>/dev/null | ${GREPBIN} "Sudo version" 2>/dev/null)
     zcheck "[00;31m[-]" "${sudover}" "Sudo version"
+
+    mysqlver=$(${MYSQLBIN} --version 2>/dev/null)
+    zcheck "[00;31m[-]" "${mysqlver}" "MYSQL version"
   fi
 }
 
