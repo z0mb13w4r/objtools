@@ -355,6 +355,9 @@ function do_software {
 
     mysqlconnect=$(${MYSQLADMINBIN} -uroot -proot version 2>/dev/null)
     zcheck "[00;33m[+]" "${mysqlconnect}" "We can connect to the local MYSQL service with default root/root credentials"
+
+    mysqlconnectnopass=$(${MYSQLADMINBIN} -uroot version 2>/dev/null)
+    zcheck "[00;33m[+]" "${mysqlconnectnopass}" "We can connect to the local MYSQL service as 'root' and without a password"
   fi
 }
 
