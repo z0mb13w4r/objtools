@@ -33,6 +33,7 @@ SYSTEMDRESOLVEBIN=/usr/bin/systemd-resolve
 IPSBIN=/usr/sbin/ip
 ARPSBIN=/usr/sbin/arp
 ROUTESBIN=/usr/sbin/route
+APACHESBIN=/usr/sbin/apache2
 IFCONFIGSBIN=/usr/sbin/ifconfig
 SESTATUSSBIN=/usr/sbin/sestatus
 SYSTEMCTLSBIN=/usr/bin/systemctl
@@ -372,7 +373,16 @@ function do_software {
     postcon2=$(${PSQLBIN} -U pgsql -w template0 -c 'select version()' 2>/dev/null | ${GREPBIN} version)
     zcheck "[00;33m[+]" "${postcon2}" "We can connect to Postgres DB 'template0' as user 'psql' with no password"
 
+    postcon22=$(${PSQLBIN} -U pgsql -w template1 -c 'select version()' 2>/dev/null | ${GREPBIN} version)
+    zcheck "[00;33m[+]" "${postcon22}" "We can connect to Postgres DB 'template1' as user 'psql' with no password"
+
+    apachever=$(${APACHESBIN} -v 2>/dev/null; httpd -v 2>/dev/null)
+    zcheck "[00;31m[-]" "${apachever}" "Apache version"
   fi
+
+  apacheusr=$(${GREPBIN} -i 'user\|group' ${PATHNAME}/etc/apache2/envvars 2>/dev/null | ${AWKBIN} '{sub(/.*\export /,"")}1' 2>/dev/null)
+  zcheck "[00;31m[-]" "${apacheusr}" "Apache user configuration"
+
 }
 
 function do_end() {
