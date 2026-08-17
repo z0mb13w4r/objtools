@@ -398,6 +398,10 @@ function do_software {
   fi
 }
 
+function do_interesting() {
+  echo -e "\e[00;33m### INTERESTING FILES ####################################\e[00m"
+}
+
 function do_end() {
   echo -e "\e[00;33m### SCAN COMPLETE ####################################\e[00m"
 }
@@ -422,6 +426,7 @@ EXAMPLES:
   ${SCRIPTNAME} services
   ${SCRIPTNAME} software
   ${SCRIPTNAME} environment
+  ${SCRIPTNAME} interesting
   ${SCRIPTNAME} -v|--version
   ${SCRIPTNAME} -h|--help
 EOF
@@ -434,7 +439,7 @@ function show_version() {
 parse_args() {
   while [[ $# -gt 0 ]]; do
     case ${1} in
-      job|user|system|network|services|software|environment)
+      job|user|system|network|services|software|environment|interesting)
         COMMAND=${1}
         shift # past argument
         ;;
@@ -501,6 +506,8 @@ main() {
     do_software
   elif [ "${COMMAND}" == "environment" ]; then
     do_environment
+  elif [ "${COMMAND}" == "interesting" ]; then
+    do_interesting
   elif [[ -z "${COMMAND}" ]]; then
     do_system
     do_usergroup
@@ -509,6 +516,7 @@ main() {
     do_network
     do_services
     do_software
+    do_interesting
     do_end
   fi
 }
