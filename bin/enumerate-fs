@@ -410,6 +410,9 @@ function do_interesting() {
     compiler=$(${DPKGBIN} --list 2>/dev/null | ${GREPBIN} compiler | ${GREPBIN} -v decompiler 2>/dev/null && yum list installed 'gcc*' 2>/dev/null | ${GREPBIN} gcc 2>/dev/null)
     zcheck "[00;31m[-]" "${compiler}" "Installed compilers"
   fi
+
+  showfiles=$(${LSBIN} -la ${PATHNAME}/etc/passwd 2>/dev/null ; ${LSBIN} -la ${PATHNAME}/etc/group 2>/dev/null ; ${LSBIN} -la ${PATHNAME}/etc/profile 2>/dev/null; ${LSBIN} -la ${PATHNAME}/etc/shadow 2>/dev/null ; ${LSBIN} -la ${PATHNAME}/etc/master.passwd 2>/dev/null)
+  zcheck "[00;31m[-]" "${showfiles}" "Can we read/write sensitive files"
 }
 
 function do_end() {
