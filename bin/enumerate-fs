@@ -14,6 +14,7 @@ CATBIN=/usr/bin/cat
 CUTBIN=/usr/bin/cut
 ENVBIN=/usr/bin/env
 SEDBIN=/usr/bin/sed
+DPKGBIN=/usr/bin/dpkg
 FINDBIN=/usr/bin/find
 GREPBIN=/usr/bin/grep
 HEADBIN=/usr/bin/head
@@ -405,6 +406,10 @@ function do_interesting() {
   whichloc=$(${WHICHBIN} nc 2>/dev/null ; ${WHICHBIN} netcat 2>/dev/null ; ${WHICHBIN} wget 2>/dev/null ; ${WHICHBIN} nmap 2>/dev/null ; ${WHICHBIN} gcc 2>/dev/null; ${WHICHBIN} curl 2>/dev/null)
   zcheck "[00;31m[-]" "${whichloc}" "Useful file locations"
 
+  if [[ -z "${PATHNAME}" ]]; then
+    compiler=$(${DPKGBIN} --list 2>/dev/null | ${GREPBIN} compiler | ${GREPBIN} -v decompiler 2>/dev/null && yum list installed 'gcc*' 2>/dev/null | ${GREPBIN} gcc 2>/dev/null)
+    zcheck "[00;31m[-]" "${compiler}" "Installed compilers"
+  fi
 }
 
 function do_end() {
