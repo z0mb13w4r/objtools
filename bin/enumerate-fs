@@ -22,6 +22,7 @@ SUDOBIN=/usr/bin/sudo
 TAILBIN=/usr/bin/tail
 MYSQLBIN=/usr/bin/mysql
 UNAMEBIN=/usr/bin/uname
+WHICHBIN=/usr/bin/which
 XARGSBIN=/usr/bin/xargs
 WHOAMIBIN=/usr/bin/whoami
 CRONTABBIN=/usr/bin/crontab
@@ -400,6 +401,10 @@ function do_software {
 
 function do_interesting() {
   echo -e "\e[00;33m### INTERESTING FILES ####################################\e[00m"
+
+  whichloc=$(${WHICHBIN} nc 2>/dev/null ; ${WHICHBIN} netcat 2>/dev/null ; ${WHICHBIN} wget 2>/dev/null ; ${WHICHBIN} nmap 2>/dev/null ; ${WHICHBIN} gcc 2>/dev/null; ${WHICHBIN} curl 2>/dev/null)
+  zcheck "[00;31m[-]" "${whichloc}" "Useful file locations"
+
 }
 
 function do_end() {
