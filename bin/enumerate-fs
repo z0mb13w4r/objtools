@@ -430,6 +430,9 @@ function do_interesting() {
   allsgid=$(${FINDBIN} ${PATHNAME}/ -perm -2000 -type f 2>/dev/null)
   findsgid=$(${FINDBIN} ${allsgid} -perm -2000 -type f -exec ${LSBIN} -la {} 2>/dev/null \;)
   zcheck "[00;31m[-]" "${findsgid}" "SGID files"
+
+  intsgid=$(${FINDBIN} ${allsgid} -perm -2000 -type f -exec ${LSBIN} -la {} \; 2>/dev/null | ${GREPBIN} -w ${BINLIST} 2>/dev/null)
+  zcheck "[00;33m[+]" "${intsgid}" "Possibly interesting SGID files"
 }
 
 function do_end() {
