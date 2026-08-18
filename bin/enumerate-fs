@@ -413,6 +413,10 @@ function do_interesting() {
 
   showfiles=$(${LSBIN} -la ${PATHNAME}/etc/passwd 2>/dev/null ; ${LSBIN} -la ${PATHNAME}/etc/group 2>/dev/null ; ${LSBIN} -la ${PATHNAME}/etc/profile 2>/dev/null; ${LSBIN} -la ${PATHNAME}/etc/shadow 2>/dev/null ; ${LSBIN} -la ${PATHNAME}/etc/master.passwd 2>/dev/null)
   zcheck "[00;31m[-]" "${showfiles}" "Can we read/write sensitive files"
+
+  allsuid=$(${FINDBIN} ${PATHNAME}/ -perm -4000 -type f 2>/dev/null)
+  findsuid=$(${FINDBIN} ${allsuid} -perm -4000 -type f -exec ${LSBIN} -la {} 2>/dev/null \;)
+  zcheck "[00;31m[-]" "${findsuid}" "SUID files"
 }
 
 function do_end() {
