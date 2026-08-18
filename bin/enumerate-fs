@@ -426,6 +426,10 @@ function do_interesting() {
 
   wwsuidrt=$(${FINDBIN} ${allsuid} -uid 0 -perm -4002 -type f -exec ${LSBIN} -la {} 2>/dev/null \;)
   zcheck "[00;33m[+]" "${wwsuidrt}" "World-writable SUID files owned by root"
+
+  allsgid=$(${FINDBIN} ${PATHNAME}/ -perm -2000 -type f 2>/dev/null)
+  findsgid=$(${FINDBIN} ${allsgid} -perm -2000 -type f -exec ${LSBIN} -la {} 2>/dev/null \;)
+  zcheck "[00;31m[-]" "${findsgid}" "SGID files"
 }
 
 function do_end() {
