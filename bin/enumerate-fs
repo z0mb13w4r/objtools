@@ -433,6 +433,9 @@ function do_interesting() {
 
   intsgid=$(${FINDBIN} ${allsgid} -perm -2000 -type f -exec ${LSBIN} -la {} \; 2>/dev/null | ${GREPBIN} -w ${BINLIST} 2>/dev/null)
   zcheck "[00;33m[+]" "${intsgid}" "Possibly interesting SGID files"
+
+  wwsgid=$(${FINDBIN} ${allsgid} -perm -2002 -type f -exec ${LSBIN} -la {} 2>/dev/null \;)
+  zcheck "[00;33m[+]" "${wwsgid}" "World-writable SGID files"
 }
 
 function do_end() {
