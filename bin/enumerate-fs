@@ -36,10 +36,13 @@ SYSTEMDRESOLVEBIN=/usr/bin/systemd-resolve
 IPSBIN=/usr/sbin/ip
 ARPSBIN=/usr/sbin/arp
 ROUTESBIN=/usr/sbin/route
+GETCAPSBIN=/usr/sbin/getcap
 APACHE2SBIN=/usr/sbin/apache2
 IFCONFIGSBIN=/usr/sbin/ifconfig
 SESTATUSSBIN=/usr/sbin/sestatus
 APACHE2SBINCTL=/usr/sbin/apache2ctl
+
+GETCAPXBIN=/sbin/getcap
 
 USERNAME=$(${WHOAMIBIN})
 
@@ -439,6 +442,9 @@ function do_interesting() {
 
   wwsgidrt=$(${FINDBIN} ${allsgid} -uid 0 -perm -2002 -type f -exec ${LSBIN} -la {} 2>/dev/null \;)
   zcheck "[00;33m[+]" "${wwsgidrt}" "World-writable SGID files owned by root"
+
+  fileswithcaps=$(${GETCAPSBIN} -r / 2>/dev/null || ${GETCAPXBIN} -r / 2>/dev/null)
+  zcheck "[00;31m[+]" "${fileswithcaps}" "Files with POSIX capabilities set"
 }
 
 function do_end() {
