@@ -450,6 +450,13 @@ function do_interesting() {
 
   userswithcaps=$(${GREPBIN} -v '^#\|none\|^$' ${PATHNAME}/etc/security/capability.conf 2>/dev/null)
   zcheck "[00;33m[+]" "${userswithcaps}" "Users with specific POSIX capabilities"
+
+  # missing kk
+
+  if [ "${EXTREME}" == "YES" ]; then
+    privatekeyfiles=$(${GREPBIN} -rl "PRIVATE KEY-----" ${PATHNAME}/home 2>/dev/null)
+    zcheck "[00;33m[+]" "${privatekeyfiles}" "Private SSH keys found"
+  fi
 }
 
 function do_end() {
