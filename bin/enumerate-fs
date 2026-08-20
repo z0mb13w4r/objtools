@@ -459,6 +459,9 @@ function do_files() {
 
     awskeyfiles=$(${GREPBIN} -rli "aws_secret_access_key" ${PATHNAME}/home 2>/dev/null)
     zcheck "[00;33m[+]" "${awskeyfiles}" "AWS secret keys found"
+
+    gitcredfiles=$(${FINDBIN} ${PATHNAME}/ -name ".git-credentials" 2>/dev/null)
+    zcheck "[00;33m[+]" "${gitcredfiles}" "Git credentials saved on the machine"
   fi
 }
 
