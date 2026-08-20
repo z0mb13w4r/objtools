@@ -465,10 +465,28 @@ function do_files() {
 
     wwfiles=$(${FINDBIN} ${PATHNAME}/ ! -path "*/proc/*" ! -path "/sys/*" -perm -2 -type f -exec ${LSBIN} -la {} 2>/dev/null \;)
     zcheck "[00;31m[-]" "${wwfiles}" "World-writable files (excluding /proc and /sys)"
-
-    usrplan=$(${FINDBIN} ${PATHNAME}/home -iname *.plan -exec ${LSBIN} -la {} \; -exec ${CATBIN} {} 2>/dev/null \;)
-    zcheck "[00;31m[-]" "${usrplan}" "Plan file permissions and contents"
   fi
+
+  usrplan=$(${FINDBIN} ${PATHNAME}/home -iname *.plan -exec ${LSBIN} -la {} \; -exec ${CATBIN} {} 2>/dev/null \;)
+  zcheck "[00;31m[-]" "${usrplan}" "Plan file permissions and contents"
+
+  bsdusrplan=$(${FINDBIN} ${PATHNAME}/usr/home -iname *.plan -exec ${LSBIN} -la {} \; -exec ${CATBIN} {} 2>/dev/null \;)
+  zcheck "[00;31m[-]" "${bsdusrplan}" "Plan file permissions and contents"
+
+  rhostsusr=$(${FINDBIN} ${PATHNAME}/home -iname *.rhosts -exec ${LSBIN} -la {} 2>/dev/null \; -exec ${CATBIN} {} 2>/dev/null \;)
+  zcheck "[00;33m[+]" "${rhostsusr}" "rhost config file(s) and file contents"
+
+  bsdrhostsusr=$(${FINDBIN} ${PATHNAME}/usr/home -iname *.rhosts -exec ${LSBIN} -la {} 2>/dev/null \; -exec ${CATBIN} {} 2>/dev/null \;)
+  zcheck "[00;33m[+]" "${bsdrhostsusr}" "rhost config file(s) and file contents"
+
+  rhostssys=$(${FINDBIN} ${PATHNAME}/etc -iname hosts.equiv -exec ${LSBIN} -la {} 2>/dev/null \; -exec ${CATBIN} {} 2>/dev/null \;)
+  zcheck "[00;33m[+]" "${rhostssys}" "Hosts.equiv file and contents"
+
+  nfsexports=$(${LSBIN} -la ${PATHNAME}/etc/exports 2>/dev/null; ${CATBIN} ${PATHNAME}/etc/exports 2>/dev/null)
+  zcheck "[00;31m[-]" "${nfsexports}" "NFS config details"
+
+  fstab=$(${CATBIN} ${PATHNAME}/etc/fstab 2>/dev/null)
+  zcheck "[00;31m[-]" "${fstab}" "NFS displaying partitions and filesystems - you need to check if exotic filesystems"
 }
 
 function do_end() {
