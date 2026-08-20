@@ -465,6 +465,9 @@ function do_files() {
 
     wwfiles=$(${FINDBIN} ${PATHNAME}/ ! -path "*/proc/*" ! -path "/sys/*" -perm -2 -type f -exec ${LSBIN} -la {} 2>/dev/null \;)
     zcheck "[00;31m[-]" "${wwfiles}" "World-writable files (excluding /proc and /sys)"
+
+    usrplan=$(${FINDBIN} ${PATHNAME}/home -iname *.plan -exec ${LSBIN} -la {} \; -exec ${CATBIN} {} 2>/dev/null \;)
+    zcheck "[00;31m[-]" "${usrplan}" "Plan file permissions and contents"
   fi
 }
 
