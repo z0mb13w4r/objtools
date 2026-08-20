@@ -462,6 +462,9 @@ function do_files() {
 
     gitcredfiles=$(${FINDBIN} ${PATHNAME}/ -name ".git-credentials" 2>/dev/null)
     zcheck "[00;33m[+]" "${gitcredfiles}" "Git credentials saved on the machine"
+
+    wwfiles=$(${FINDBIN} ${PATHNAME}/ ! -path "*/proc/*" ! -path "/sys/*" -perm -2 -type f -exec ${LSBIN} -la {} 2>/dev/null \;)
+    zcheck "[00;31m[-]" "${wwfiles}" "World-writable files (excluding /proc and /sys)"
   fi
 }
 
