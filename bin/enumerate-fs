@@ -487,6 +487,10 @@ function do_files() {
 
   fstab=$(${CATBIN} ${PATHNAME}/etc/fstab 2>/dev/null)
   zcheck "[00;31m[-]" "${fstab}" "NFS displaying partitions and filesystems - you need to check if exotic filesystems"
+
+  fstab=$(${GREPBIN} username ${PATHNAME}/etc/fstab 2>/dev/null | ${AWKBIN} '{sub(/.*\username=/,"");sub(/\,.*/,"")}1' 2>/dev/null | ${XARGSBIN} -r echo username: 2>/dev/null; ${GREPBIN} password ${PATHNAME}/etc/fstab 2>/dev/null | ${AWKBIN} '{sub(/.*\password=/,"");sub(/\,.*/,"")}1' 2>/dev/null | ${XARGSBIN} -r echo password: 2>/dev/null; ${GREPBIN} domain ${PATHNAME}/etc/fstab 2>/dev/null | ${AWKBIN} '{sub(/.*\domain=/,"");sub(/\,.*/,"")}1' 2>/dev/null | ${XARGSBIN} -r echo domain: 2>/dev/null)
+  zcheck "[00;33m[+]" "${fstab}" "Looks like there are credentials in ${PATHNAME}/etc/fstab"
+
 }
 
 function do_end() {
