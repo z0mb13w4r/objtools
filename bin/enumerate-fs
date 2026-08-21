@@ -491,6 +491,14 @@ function do_files() {
   fstab=$(${GREPBIN} username ${PATHNAME}/etc/fstab 2>/dev/null | ${AWKBIN} '{sub(/.*\username=/,"");sub(/\,.*/,"")}1' 2>/dev/null | ${XARGSBIN} -r echo username: 2>/dev/null; ${GREPBIN} password ${PATHNAME}/etc/fstab 2>/dev/null | ${AWKBIN} '{sub(/.*\password=/,"");sub(/\,.*/,"")}1' 2>/dev/null | ${XARGSBIN} -r echo password: 2>/dev/null; ${GREPBIN} domain ${PATHNAME}/etc/fstab 2>/dev/null | ${AWKBIN} '{sub(/.*\domain=/,"");sub(/\,.*/,"")}1' 2>/dev/null | ${XARGSBIN} -r echo domain: 2>/dev/null)
   zcheck "[00;33m[+]" "${fstab}" "Looks like there are credentials in ${PATHNAME}/etc/fstab"
 
+  fstabcred=$(${GREPBIN} cred ${PATHNAME}/etc/fstab 2>/dev/null | ${AWKBIN} '{sub(/.*\credentials=/,"");sub(/\,.*/,"")}1' 2>/dev/null | ${XARGSBIN} -I{} sh -c 'ls -la {}; cat {}' 2>/dev/null)
+  zcheck "[00;33m[+]" "${fstabcred}" "${PATHNAME}/etc/fstab contains a credentials file"
+
+  # missing qq
+
+
+  readmailroot=$(${HEADBIN} ${PATHNAME}/var/mail/root 2>/dev/null)
+  zcheck "[00;33m[+]" "${readmailroot}" "We can read ${PATHNAME}/var/mail/root! (snippet below)"
 }
 
 function do_end() {
