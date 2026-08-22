@@ -496,6 +496,9 @@ function do_files() {
 
   # missing qq
 
+  allconf=$(${FINDBIN} ${PATHNAME}/etc/ -maxdepth 1 -name *.conf -type f -exec ${LSBIN} -la {} \; 2>/dev/null)
+  zcheck "[00;31m[-]" "${allconf}" "All *.conf files in /etc (recursive 1 level)"
+
   usrhist=$(${LSBIN} -la ${PATHNAME}/home/${USERNAME}/.*_history 2>/dev/null)
   zcheck "[00;31m[-]" "${usrhist}" "Current user's history files"
 
