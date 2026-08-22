@@ -108,7 +108,7 @@ function do_config() {
   ${GITBIN} config --global user.email "'${THIS_EMAILADDR}'"
 }
 
-function do_files() {
+function do_vimsetup() {
   echo 'set number' > ${VIMTXT}
   echo 'set autoindent' >> ${VIMTXT}
   echo 'set hlsearch' >> ${VIMTXT}
@@ -126,7 +126,9 @@ function do_files() {
   echo '" Highlight trailing whitespaces' >> ${VIMTXT}
   echo ':highlight TrailWhitespace ctermbg=red guibg=red' >> ${VIMTXT}
   echo ':match TrailWhitespace /\s\+$\| \+\ze\t/' >> ${VIMTXT}
+}
 
+function do_gitsetup() {
   ${GITBIN} config --global core.editor vim
   ${GITBIN} config --global core.pager 'less -FRSX'
   ${GITBIN} config --global core.abbrev 12
@@ -158,7 +160,22 @@ function do_objtools() {
   ${RMBIN} ${THIS_NAME}
   ${WGETBIN} -P ${TMP} $(${CATBIN} ${GITHUBZIP})
 
-  ${DPKGBIN} -i ${THIS_NAME}
+  ${APTBIN} install -y ${THIS_NAME}
+}
+
+function do_veracrypt() {
+  ${WGETBIN} https://api.github.com/repos/veracrypt/VeraCrypt/releases/latest -O ${GITHUBTXT}
+
+  ${CATBIN} ${GITHUBTXT} | ${JQBIN} -r '(.tag_name)' > ${GITHUBTAG}
+  ${CATBIN} ${GITHUBTXT} | ${JQBIN} -r '(.assets[].name | select(. | endswith("-Ubuntu-24.04-amd64.deb")))' | ${GREPBIN} -v console > ${GITHUBNAM}
+  ${CATBIN} ${GITHUBTXT} | ${JQBIN} -r '(.assets[].browser_download_url | select(. | endswith("-Ubuntu-24.04-amd64.deb")))' | ${GREPBIN} -v console > ${GITHUBZIP}
+
+  local THIS_NAME=${TMP}$(${CATBIN} ${GITHUBNAM})
+
+  ${RMBIN} ${THIS_NAME}
+  ${WGETBIN} -P ${TMP} $(${CATBIN} ${GITHUBZIP})
+
+  ${APTBIN} install -y ${THIS_NAME}
 }
 
 function do_cyberchef() {
@@ -191,6 +208,7 @@ EXAMPLES:
   ${SCRIPTNAME} update
   ${SCRIPTNAME} install
   ${SCRIPTNAME} objtools
+  ${SCRIPTNAME} veracrypt
   ${SCRIPTNAME} version
   ${SCRIPTNAME} help
 EOF
@@ -203,7 +221,7 @@ function show_version() {
 parse_args() {
   while [[ $# -gt 0 ]]; do
     case ${1} in
-      config|install|update|objtools|version|help)
+      config|install|update|objtools|veracrypt|version|help)
         COMMAND=${1}
         shift # past argument
         ;;
@@ -242,17 +260,23 @@ main() {
     do_upgrade
     do_debians
     do_objtools
+    do_veracrypt
     do_remnux
     do_cyberchef
-    do_files
+    do_gitsetup
+    do_vimsetup
   elif [ "${COMMAND}" == "update" ]; then
     do_upgrade
     do_remnux
     do_objtools
+    do_veracrypt
     do_cyberchef
   elif [ "${COMMAND}" == "objtools" ]; then
     do_upgrade
     do_objtools
+  elif [ "${COMMAND}" == "veracrypt" ]; then
+    do_upgrade
+    do_veracrypt
   fi
 }
 
