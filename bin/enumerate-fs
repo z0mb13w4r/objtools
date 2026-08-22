@@ -44,7 +44,7 @@ APACHE2SBINCTL=/usr/sbin/apache2ctl
 
 GETCAPXBIN=/sbin/getcap
 
-USERNAME=$(${WHOAMIBIN})
+USERNAME=${SUDO_USER}
 
 BINLIST='aria2c\|arp\|ash\|awk\|base64\|bash\|busybox\|cat\|chmod\|chown\|cp\|csh\|curl\|cut\|dash\|date\|dd\|diff\|dmsetup\|docker\|ed\|emacs\|env\|expand\|expect\|file\|find\|flock\|fmt\|fold\|ftp\|gawk\|gdb\|gimp\|git\|grep\|head\|ht\|iftop\|ionice\|ip$\|irb\|jjs\|jq\|jrunscript\|ksh\|ld.so\|ldconfig\|less\|logsave\|lua\|make\|man\|mawk\|more\|mv\|mysql\|nano\|nawk\|nc\|netcat\|nice\|nl\|nmap\|node\|od\|openssl\|perl\|pg\|php\|pic\|pico\|python\|readelf\|rlwrap\|rpm\|rpmquery\|rsync\|ruby\|run-parts\|rvim\|scp\|script\|sed\|setarch\|sftp\|sh\|shuf\|socat\|sort\|sqlite3\|ssh$\|start-stop-daemon\|stdbuf\|strace\|systemctl\|tail\|tar\|taskset\|tclsh\|tee\|telnet\|tftp\|time\|timeout\|ul\|unexpand\|uniq\|unshare\|vi\|vim\|watch\|wget\|wish\|xargs\|xxd\|zip\|zsh'
 
@@ -495,6 +495,9 @@ function do_files() {
   zcheck "[00;33m[+]" "${fstabcred}" "${PATHNAME}/etc/fstab contains a credentials file"
 
   # missing qq
+
+  usrhist=$(${LSBIN} -la ${PATHNAME}/home/${USERNAME}/.*_history 2>/dev/null)
+  zcheck "[00;31m[-]" "${usrhist}" "Current user's history files"
 
   roothist=$(${LSBIN} -la ${PATHNAME}/root/.*_history 2>/dev/null)
   zcheck "[00;33m[+]" "${roothist}" "Root's history files are accessible"
