@@ -496,6 +496,13 @@ function do_files() {
 
   # missing qq
 
+  if [ "${KEYWORD}" = "" ];then
+    echo -e "[-] Can't search *.ini files as no keyword was entered\n"
+  else
+    inikey=$(${FINDBIN} ${PATHNAME}/ -maxdepth 4 -name *.ini -type f -exec ${GREPBIN} -Hn ${KEYWORD} {} \; 2>/dev/null)
+    zcheck "[00;31m[-]" "${inikey}" "Find keyword (${KEYWORD}) in .ini files (recursive 4 levels - output format filepath:identified line number where keyword appears)"
+  fi
+
   allconf=$(${FINDBIN} ${PATHNAME}/etc/ -maxdepth 1 -name *.conf -type f -exec ${LSBIN} -la {} \; 2>/dev/null)
   zcheck "[00;31m[-]" "${allconf}" "All *.conf files in /etc (recursive 1 level)"
 
@@ -565,6 +572,11 @@ parse_args() {
         ;;
       -h|--help)
         COMMAND=help
+        shift # past argument
+        ;;
+      -k|--keyword)
+        KEYWORD=${2}
+        shift # past argument
         shift # past argument
         ;;
       -p|--password)
