@@ -496,6 +496,9 @@ function do_files() {
 
   # missing qq
 
+  roothist=$(${LSBIN} -la ${PATHNAME}/root/.*_history 2>/dev/null)
+  zcheck "[00;33m[+]" "${roothist}" "Root's history files are accessible"
+
   checkbashhist=$(${FINDBIN} ${PATHNAME}/home -name .bash_history -print -exec ${CATBIN} {} 2>/dev/null \;)
   zcheck "[00;31m[-]" "${checkbashhist}" "Location and contents (if accessible) of .bash_history file(s)"
 
@@ -546,7 +549,7 @@ function show_version() {
 parse_args() {
   while [[ $# -gt 0 ]]; do
     case ${1} in
-      job|user|files|system|network|services|software|environment)
+      end|job|user|files|system|network|services|software|environment)
         COMMAND=${1}
         shift # past argument
         ;;
@@ -599,7 +602,9 @@ main() {
 
   check_root "$@"
 
-  if [ "${COMMAND}" == "job" ]; then
+  if [ "${COMMAND}" == "end" ]; then
+    do_end
+  elif [ "${COMMAND}" == "job" ]; then
     do_job
   elif [ "${COMMAND}" == "user" ]; then
     do_usergroup
