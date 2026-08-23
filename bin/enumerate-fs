@@ -451,7 +451,25 @@ function do_files() {
   userswithcaps=$(${GREPBIN} -v '^#\|none\|^$' ${PATHNAME}/etc/security/capability.conf 2>/dev/null)
   zcheck "[00;33m[+]" "${userswithcaps}" "Users with specific POSIX capabilities"
 
-  # missing kk
+  if [ "${userswithcaps}" ] ; then
+    matchedcaps=$(echo -e "${userswithcaps}" | ${GREPBIN} ${USERNAME} | ${AWKBIN} '{print $1}' 2>/dev/null)
+    zcheck "[00;33m[+]" "${matchedcaps}" "Capabilities associated with the current user"
+
+    if [ "${matchedcaps}" ] && [ "${fileswithcaps}" ]; then
+      matchedfiles=$(echo -e "${matchedcaps}" | while read -r cap ; do echo -e "${fileswithcaps}" | ${GREPBIN} "${cap}" ; done 2>/dev/null)
+      zcheck "[00;33m[+]" "${matchedcaps}" "Files with the same capabilities associated with the current user (You may want to try abusing those capabilties)"
+
+      if [ "$matchedfiles" ]; then
+        matchedfilesperms=$(echo -e "${matchedfiles}" | ${AWKBIN} '{print $1}' | while read -r f; do ${LSBIN} -la ${f} ;done 2>/dev/null)
+        zcheck "[00;33m[+]" "${matchedfilesperms}" "Permissions of files with the same capabilities associated with the current user"
+
+        if [ "${matchedfilesperms}" ]; then
+          writablematchedfiles=$(echo -e "${matchedfiles}" | ${AWKBIN} '{print $1}' | while read -r f; do ${FINDBIN} ${f} -writable -exec ${LSBIN} -la {} + ;done 2>/dev/null)
+          zcheck "[00;33m[+]" "${writablematchedfiles}" "User/Group writable files with the same capabilities associated with the current user"
+        fi
+      fi
+    fi
+  fi
 
   if [ "${EXTREME}" == "YES" ]; then
     privatekeyfiles=$(${GREPBIN} -rl "PRIVATE KEY-----" ${PATHNAME}/home 2>/dev/null)
@@ -493,8 +511,6 @@ function do_files() {
 
   fstabcred=$(${GREPBIN} cred ${PATHNAME}/etc/fstab 2>/dev/null | ${AWKBIN} '{sub(/.*\credentials=/,"");sub(/\,.*/,"")}1' 2>/dev/null | ${XARGSBIN} -I{} sh -c 'ls -la {}; cat {}' 2>/dev/null)
   zcheck "[00;33m[+]" "${fstabcred}" "${PATHNAME}/etc/fstab contains a credentials file"
-
-  # missing qq
 
   if [ "${KEYWORD}" = "" ];then
     echo -e "[-] Can't search *.conf files as no keyword was entered\n"
