@@ -497,6 +497,13 @@ function do_files() {
   # missing qq
 
   if [ "${KEYWORD}" = "" ];then
+    echo -e "[-] Can't search *.php files as no keyword was entered\n"
+  else
+    phpkey=$(${FINDBIN} ${PATHNAME}/ -maxdepth 10 -name *.php -type f -exec ${GREPBIN} -Hn ${KEYWORD} {} \; 2>/dev/null)
+    zcheck "[00;31m[-]" "${phpkey}" "Find keyword (${KEYWORD}) in .php files (recursive 10 levels - output format filepath:identified line number where keyword appears)"
+  fi
+
+  if [ "${KEYWORD}" = "" ];then
     echo -e "[-] Can't search *.log files as no keyword was entered\n"
   else
     logkey=$(${FINDBIN} ${PATHNAME}/ -maxdepth 4 -name *.log -type f -exec ${GREPBIN} -Hn ${KEYWORD} {} \; 2>/dev/null)
