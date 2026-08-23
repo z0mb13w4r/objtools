@@ -497,6 +497,13 @@ function do_files() {
   # missing qq
 
   if [ "${KEYWORD}" = "" ];then
+    echo -e "[-] Can't search *.conf files as no keyword was entered\n"
+  else
+    confkey=$(${FINDBIN} ${PATHNAME}/ -maxdepth 4 -name *.conf -type f -exec ${GREPBIN} -Hn ${KEYWORD} {} \; 2>/dev/null)
+    zcheck "[00;31m[-]" "${confkey}" "Find keyword (${KEYWORD}) in .conf files (recursive 4 levels - output format filepath:identified line number where keyword appears)"
+  fi
+
+  if [ "${KEYWORD}" = "" ];then
     echo -e "[-] Can't search *.php files as no keyword was entered\n"
   else
     phpkey=$(${FINDBIN} ${PATHNAME}/ -maxdepth 10 -name *.php -type f -exec ${GREPBIN} -Hn ${KEYWORD} {} \; 2>/dev/null)
