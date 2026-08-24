@@ -1,6 +1,7 @@
 v1.8 - ??/08/2026
 -----------------------------------------------------------------------
 [+] Updated REMnux upgrade script.  
+[+] Updated the firmware enumeration script.  
 [+] Updated man pages.  
 [+] Bug fixes.  
 
