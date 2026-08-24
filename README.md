@@ -16,7 +16,7 @@ This problem is solved by the **Heuristic Assembly Language Analysis Engine (HAL
 
 **detect-ng** is a tool for file and compiler identification supporting signature-based and heuristic analysis. [READ MORE...](https://github.com/z0mb13w4r/objtools/wiki/detect%E2%80%90ng)
 
-**enumerate-ng.py** is a script inspired by rebootuser’s LinEnum for enumeration and privilege escalation, and enhanced to be used with both devices and firmware images. This information is useful for hardening devices or for understanding how an adversary obtained persistence, privilege escalation, or lateral movement. [READ MORE...](https://github.com/z0mb13w4r/objtools/wiki/enumerate%E2%80%90ng)
+**enumerate-fs** is a script inspired by rebootuser’s LinEnum for enumeration and privilege escalation, and enhanced to be used with both devices and firmware images. This information is useful for hardening devices or for understanding how an adversary obtained persistence, privilege escalation, or lateral movement. [READ MORE...](https://github.com/z0mb13w4r/objtools/wiki/enumerate%E2%80%90fs)
 
 **objcopy-ng** copies the contents of an object file to another using the GNU BFD Library to readand write the object files. It can write the destination object file in a format different from the source object files.
 
