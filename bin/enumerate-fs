@@ -44,6 +44,7 @@ APACHE2SBINCTL=/usr/sbin/apache2ctl
 
 GETCAPXBIN=/sbin/getcap
 
+EXTREME=no
 USERNAME=${SUDO_USER}
 
 BINLIST='aria2c\|arp\|ash\|awk\|base64\|bash\|busybox\|cat\|chmod\|chown\|cp\|csh\|curl\|cut\|dash\|date\|dd\|diff\|dmsetup\|docker\|ed\|emacs\|env\|expand\|expect\|file\|find\|flock\|fmt\|fold\|ftp\|gawk\|gdb\|gimp\|git\|grep\|head\|ht\|iftop\|ionice\|ip$\|irb\|jjs\|jq\|jrunscript\|ksh\|ld.so\|ldconfig\|less\|logsave\|lua\|make\|man\|mawk\|more\|mv\|mysql\|nano\|nawk\|nc\|netcat\|nice\|nl\|nmap\|node\|od\|openssl\|perl\|pg\|php\|pic\|pico\|python\|readelf\|rlwrap\|rpm\|rpmquery\|rsync\|ruby\|run-parts\|rvim\|scp\|script\|sed\|setarch\|sftp\|sh\|shuf\|socat\|sort\|sqlite3\|ssh$\|start-stop-daemon\|stdbuf\|strace\|systemctl\|tail\|tar\|taskset\|tclsh\|tee\|telnet\|tftp\|time\|timeout\|ul\|unexpand\|uniq\|unshare\|vi\|vim\|watch\|wget\|wish\|xargs\|xxd\|zip\|zsh'
@@ -127,14 +128,20 @@ function do_usergroup() {
 
   zgrep "[00;33m[+]" "-v '^[^:]*:[x]' ${PATHNAME}/etc/passwd" "It looks like we have password hashes in ${PATHNAME}/etc/passwd"
   zcat  "[00;31m[-]" "${PATHNAME}/etc/passwd" "Contents of ${PATHNAME}/etc/passwd"
+  if [ "${EXTREME}" == "yes" ]; then
+    zcat  "[00;31m[-]" "${PATHNAME}/etc/group" "Contents of ${PATHNAME}/etc/group"
+    zcat  "[00;31m[-]" "${PATHNAME}/etc/sudoers" "Contents of ${PATHNAME}/etc/sudoers"
+  fi
   zcat  "[00;33m[+]" "${PATHNAME}/etc/shadow" "We can read the shadow file"
   zcat  "[00;33m[+]" "${PATHNAME}/etc/master.passwd" "We can read the master.passwd file"
 
   superman=$(${GREPBIN} -v -E '^#' ${PATHNAME}/etc/passwd 2>/dev/null | ${AWKBIN} -F: '$3 == 0 {print $1}' 2>/dev/null)
   zcheck "[00;31m[-]" "${superman}" "Super user account(s)"
 
-  sudoers=$(${GREPBIN} -v -e '^$' ${PATHNAME}/etc/sudoers 2>/dev/null | ${GREPBIN} -v '#' 2>/dev/null)
-  zcheck "[00;31m[-]" "${sudoers}" "Sudoers configuration (condensed)"
+  if [ "${EXTREME}" == "no" ]; then
+    sudoers=$(${GREPBIN} -v -e '^$' ${PATHNAME}/etc/sudoers 2>/dev/null | ${GREPBIN} -v '#' 2>/dev/null)
+    zcheck "[00;31m[-]" "${sudoers}" "Sudoers configuration (condensed)"
+  fi
 
   if [[ -z "${PATHNAME}" ]]; then
     sudoperms=$(echo '' | ${SUDOBIN} -S -l -k 2>/dev/null)
@@ -166,27 +173,27 @@ function do_usergroup() {
   zls "[00;33m[+]" "-ahl ${PATHNAME}/root/" "We can read root's home directory"
   zls "[00;31m[-]" "-ahl ${PATHNAME}/home/" "Are permissions on ${PATHNAME}/home directories lax"
 
-  if [ "${EXTREME}" == "YES" ]; then
+  if [ "${EXTREME}" == "yes" ]; then
     grfilesall=$(${FINDBIN} ${PATHNAME}/ -writable ! -user ${USERNAME} -type f ! -path '${PATHNAME}/proc/*' ! -path '${PATHNAME}/sys/*' -exec ${LSBIN} -al {} \; 2>/dev/null)
     zcheck "[00;31m[-]" "${grfilesall}" "Files not owned by user but writable by group"
   fi
 
-  if [ "${EXTREME}" == "YES" ]; then
+  if [ "${EXTREME}" == "yes" ]; then
     ourfilesall=$(${FINDBIN} ${PATHNAME}/ -user ${USERNAME} -type f ! -path '${PATHNAME}/proc/*' ! -path '${PATHNAME}/sys/*' -exec ${LSBIN} -al {} \; 2>/dev/null)
     zcheck "[00;31m[-]" "${ourfilesall}" "Files owned by our user"
   fi
 
-  if [ "${EXTREME}" == "YES" ]; then
+  if [ "${EXTREME}" == "yes" ]; then
     hiddenfiles=$(${FINDBIN} ${PATHNAME}/ -name '.*' -type f ! -path '${PATHNAME}/proc/*' ! -path '${PATHNAME}/sys/*' -exec ${LSBIN} -al {} \; 2>/dev/null)
     zcheck "[00;31m[-]" "${hiddenfiles}" "Hidden files"
   fi
 
-  if [ "${EXTREME}" == "YES" ]; then
+  if [ "${EXTREME}" == "yes" ]; then
     wrfileshm=$(${FINDBIN} ${PATHNAME}/home/ -perm -4 -type f -exec ${LSBIN} -al {} \; 2>/dev/null)
     zcheck "[00;31m[-]" "${wrfileshm}" "World-readable files within ${PATHNAME}/home"
   fi
 
-  if [ "${EXTREME}" == "YES" ] && [ -z "${PATHNAME}" ]; then
+  if [ "${EXTREME}" == "yes" ] && [ -z "${PATHNAME}" ]; then
     zls "[00;31m[-]" "-ahl ${HOME}" "Home directory contents"
   fi
 
@@ -241,7 +248,7 @@ function do_job() {
     cronother=$(${CUTBIN} -d ":" -f 1 ${PATHNAME}/etc/passwd | ${XARGSBIN} -n1 ${CRONTABBIN} -l -u 2>/dev/null)
     zcheck "[00;31m[-]" "${cronother}" "Jobs held by all users"
 
-    if [ "${EXTREME}" == "YES" ]; then
+    if [ "${EXTREME}" == "yes" ]; then
       systemdtimers=$(${SYSTEMCTLBIN} list-timers --all 2>/dev/null)
     else
       systemdtimers=$(${SYSTEMCTLBIN} list-timers 2>/dev/null | ${HEADBIN} -n -1 2>/dev/null)
@@ -397,7 +404,7 @@ function do_software {
   htpasswd=$(${FINDBIN} ${PATHNAME}/ -name .htpasswd -print -exec ${CATBIN} {} \; 2>/dev/null)
   zcheck "[00;33m[-]" "${htpasswd}" "htpasswd found - could contain passwords"
 
-  if [ "${EXTREME}" == "YES" ]; then
+  if [ "${EXTREME}" == "yes" ]; then
     apachehomedirs=$(${LSBIN} -alhR ${PATHNAME}/var/www/ 2>/dev/null; ${LSBIN} -alhR ${PATHNAME}/srv/www/htdocs/ 2>/dev/null; ${LSBIN} -alhR ${PATHNAME}/usr/local/www/apache2/data/ 2>/dev/null; ${LSBIN} -alhR ${PATHNAME}/opt/lampp/htdocs/ 2>/dev/null)
     zcheck "[00;31m[-]" "${apachehomedirs}" "www home dir contents"
   fi
@@ -471,7 +478,7 @@ function do_files() {
     fi
   fi
 
-  if [ "${EXTREME}" == "YES" ]; then
+  if [ "${EXTREME}" == "yes" ]; then
     privatekeyfiles=$(${GREPBIN} -rl "PRIVATE KEY-----" ${PATHNAME}/home 2>/dev/null)
     zcheck "[00;33m[+]" "${privatekeyfiles}" "Private SSH keys found"
 
@@ -654,7 +661,7 @@ parse_args() {
         shift # past argument
         ;;
       -x|--extreme)
-        EXTREME=YES
+        EXTREME=yes
         shift # past argument
         ;;
       *)
