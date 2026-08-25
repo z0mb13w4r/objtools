@@ -97,7 +97,7 @@ function log_detail() {
 }
 
 function do_system() {
-  echo -e "\e[00;33m### SYSTEM ##############################################\e[00m"
+  echo -e "\e[00;33m### SYSTEM ###############################################\e[00m"
 
   if [[ -z "${PATHNAME}" ]]; then
     zcheck "[00;31m[-]" "$(${UNAMEBIN} -a 2>/dev/null)" "Kernel information"
@@ -109,7 +109,7 @@ function do_system() {
 }
 
 function do_usergroup() {
-  echo -e "\e[00;33m### USER/GROUP ##########################################\e[00m"
+  echo -e "\e[00;33m### USER/GROUP ###########################################\e[00m"
 
   if [[ -z "${PATHNAME}" ]]; then
     zcheck "[00;31m[-]" "$(${IDBIN} 2>/dev/null)" "Current user/group info"
@@ -207,7 +207,7 @@ function do_usergroup() {
 }
 
 function do_environment() {
-  echo -e "\e[00;33m### ENVIRONMENTAL #######################################\e[00m"
+  echo -e "\e[00;33m### ENVIRONMENTAL ########################################\e[00m"
 
   if [[ -z "${PATHNAME}" ]]; then
     zcheck "[00;31m[-]" "$(${ENVBIN} 2>/dev/null | ${GREPBIN} -v 'LS_COLORS' 2>/dev/null)" "Environment information"
@@ -228,7 +228,7 @@ function do_environment() {
 }
 
 function do_job() {
-  echo -e "\e[00;33m### JOBS/TASKS ##########################################\e[00m"
+  echo -e "\e[00;33m### JOBS/TASKS ###########################################\e[00m"
 
   zls "[00;31m[-]" "${PATHNAME}/etc/cron*" "Cron jobs"
 
@@ -570,7 +570,11 @@ function do_files() {
 }
 
 function do_end() {
-  echo -e "\e[00;33m### SCAN COMPLETE ####################################\e[00m"
+  echo -e "\e[00;33m### SCAN COMPLETE ########################################\e[00m"
+}
+
+function do_crack() {
+  echo -e "\e[00;33m### CRACK ################################################\e[00m"
 }
 
 function check_root() {
@@ -633,7 +637,7 @@ function show_version() {
 parse_args() {
   while [[ $# -gt 0 ]]; do
     case ${1} in
-      end|job|user|files|system|network|services|software|environment)
+      end|job|user|files|system|network|services|software|environment|crack)
         COMMAND=${1}
         shift # past argument
         ;;
@@ -711,6 +715,8 @@ main() {
     do_software
   elif [ "${COMMAND}" == "environment" ]; then
     do_environment
+  elif [ "${COMMAND}" == "crack" ]; then
+    do_crack
   elif [[ -z "${COMMAND}" ]]; then
     do_system
     do_usergroup
