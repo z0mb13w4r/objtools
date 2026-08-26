@@ -199,7 +199,7 @@ function do_usergroup() {
     zls "[00;31m[-]" "-ahl ${HOME}" "Home directory contents"
   fi
 
-  sshfiles=$(${FINDBIN} ${PATHNAME}/ \( -name "id_dsa*" -o -name "id_rsa*" -o -name "known_hosts" -o -name "authorized_hosts" -o -name "authorized_keys" \) -exec ${LSBIN} -la {} 2>/dev/null \;)
+  sshfiles=$(${FINDBIN} ${PATHNAME}/ \( -name "id_dsa*" -o -name "id_rsa*" -o -name "known_hosts" -o -name "authorized_hosts" -o -name "authorized_keys" -o -name "*.pem" \) -exec ${LSBIN} -la {} 2>/dev/null \;)
   zcheck "[00;31m[-]" "${sshfiles}" "SSH keys/host information found in the following locations"
 
   sshrootlogin=$(${GREPBIN} 'PermitRootLogin ' ${PATHNAME}/etc/ssh/sshd_config 2>/dev/null | ${GREPBIN} -v '#' | ${AWKBIN} '{print  $2}')
