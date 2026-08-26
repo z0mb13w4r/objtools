@@ -569,6 +569,9 @@ function do_files() {
 
   readmailroot=$(${HEADBIN} ${PATHNAME}/var/mail/root 2>/dev/null)
   zcheck "[00;33m[+]" "${readmailroot}" "We can read ${PATHNAME}/var/mail/root! (snippet below)"
+
+  credinfo=$(${FINDBIN} ${PATHNAME}/var/log -type f -readable | ${XARGSBIN} ${GREPBIN} -li 'password\|user\|login\|credential')
+  zcheck "[00;33m[+]" "${credinfo}" "Checking for possible credentials ${PATHNAME}/var/log"
 }
 
 function do_end() {
