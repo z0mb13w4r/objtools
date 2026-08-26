@@ -561,7 +561,7 @@ function do_files() {
   checkbashhist=$(${FINDBIN} ${PATHNAME}/home -name .bash_history -print -exec ${CATBIN} {} 2>/dev/null \;)
   zcheck "[00;31m[-]" "${checkbashhist}" "Location and contents (if accessible) of .bash_history file(s)"
 
-  bakfiles=$(${FINDBIN} ${PATHNAME}/ -name *.bak -type f 2</dev/null)
+  bakfiles=$(${FINDBIN} ${PATHNAME}/ \( -name "*.bak" -o -name "*backup*" -o -name "*.old" \) -type f 2</dev/null | ${XARGSBIN} ${LSBIN} -la)
   zcheck "[00;31m[-]" "${bakfiles}" "Location and Permissions (if accessible) of .bak file(s)"
 
   readmail=$(${LSBIN} -la ${PATHNAME}/var/mail 2>/dev/null)
