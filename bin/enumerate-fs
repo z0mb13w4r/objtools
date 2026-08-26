@@ -44,6 +44,8 @@ APACHE2SBINCTL=/usr/sbin/apache2ctl
 
 GETCAPXBIN=/sbin/getcap
 
+JOHNBIN=john
+
 EXTREME=no
 USERNAME=${SUDO_USER}
 
@@ -575,6 +577,9 @@ function do_end() {
 
 function do_crack() {
   echo -e "\e[00;33m### CRACK ################################################\e[00m"
+
+  ${CATBIN} ${PATHNAME}/etc/shadow | ${GREPBIN} -v ":\*:" | ${GREPBIN} -v ":!" > hashes.txt
+  ${JOHNBIN} --format=sha512crypt hashes.txt
 }
 
 function check_root() {
