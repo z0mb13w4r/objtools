@@ -146,6 +146,7 @@ function do_debians() {
   ${APTBIN} install -y vim-gtk3 git git-doc git-email screen meld
   ${APTBIN} install -y python3-scapy python3-pyx
   ${APTBIN} install -y python3-nmap
+  ${APTBIN} install -y john
 }
 
 function do_objtools() {
