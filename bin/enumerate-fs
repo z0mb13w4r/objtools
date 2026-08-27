@@ -572,6 +572,9 @@ function do_files() {
 
   credinfo=$(${FINDBIN} ${PATHNAME}/var/log -type f -readable | ${XARGSBIN} ${GREPBIN} -li 'password\|user\|login\|credential')
   zcheck "[00;33m[+]" "${credinfo}" "Checking for possible credentials ${PATHNAME}/var/log"
+
+  confinfo=$(${FINDBIN} ${PATHNAME}/etc -type f -name "*.conf" -o -name "*.cfg" -o -name "*.config" 2>/dev/null | ${XARGSBIN} ${GREPBIN} -li "password\|user\|credential")
+  zcheck "[00;33m[+]" "${confinfo}" "Check for possible credentials ${PATHNAME}/etc"
 }
 
 function do_end() {
