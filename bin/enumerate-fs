@@ -581,6 +581,9 @@ function do_files() {
 
   postgresinfo=$(${GREPBIN} -r "password\|user" ${PATHNAME}/etc/mysql/ ${PATHNAME}/etc/postgresql/ 2>/dev/null)
   zcheck "[00;33m[+]" "${postgresinfo}" "Check for possible postgresgl credentials"
+
+  wpconfinfo=$(${FINDBIN} ${PATHNAME}/var/www -type f -name "wp-config.php" -o -name "configuration.php" -o -name "config.inc.php" 2>/dev/null | ${XARGSBIN} ${GREPBIN} -li "password\|user")
+  zcheck "[00;33m[+]" "${wpconfinfo}" "Check for possible web applications credentials"
 }
 
 function do_end() {
