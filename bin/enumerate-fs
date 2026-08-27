@@ -578,6 +578,9 @@ function do_files() {
 
   serverinfo=$(${GREPBIN} -r "password\|user" ${PATHNAME}/etc/apache2/ ${PATHNAME}/etc/nginx/ ${PATHNAME}/etc/httpd/ 2>/dev/null)
   zcheck "[00;33m[+]" "${serverinfo}" "Check for possible server credentials"
+
+  postgresinfo=$(${GREPBIN} -r "password\|user" ${PATHNAME}/etc/mysql/ ${PATHNAME}/etc/postgresql/ 2>/dev/null)
+  zcheck "[00;33m[+]" "${postgresinfo}" "Check for possible postgresgl credentials"
 }
 
 function do_end() {
