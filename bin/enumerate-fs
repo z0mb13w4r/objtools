@@ -195,8 +195,8 @@ function do_usergroup() {
     zcheck "[00;31m[-]" "${wrfileshm}" "World-readable files within ${PATHNAME}/home"
   fi
 
-  if [ "${EXTREME}" == "yes" ] && [ -z "${PATHNAME}" ]; then
-    zls "[00;31m[-]" "-ahl ${HOME}" "Home directory contents"
+  if [ "${EXTREME}" == "yes" ]; then
+    zls "[00;31m[-]" "-ahl ${PATHNAME}/home/${USERNAME}" "Home directory contents"
   fi
 
   sshfiles=$(${FINDBIN} ${PATHNAME}/ \( -name "id_dsa*" -o -name "id_rsa*" -o -name "known_hosts" -o -name "authorized_hosts" -o -name "authorized_keys" -o -name "*.pem" \) -exec ${LSBIN} -la {} 2>/dev/null \;)
