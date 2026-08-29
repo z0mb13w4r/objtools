@@ -1,7 +1,8 @@
-v1.8 - ??/08/2026
+v1.8 - 29/08/2026
 -----------------------------------------------------------------------
 [+] Updated REMnux upgrade script.  
 [+] Updated the firmware enumeration script.  
+[+] Added more privilege escalation checks.  
 [+] Updated man pages.  
 [+] Bug fixes.  
 
