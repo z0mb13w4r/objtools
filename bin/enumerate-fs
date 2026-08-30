@@ -589,8 +589,13 @@ function do_files() {
   wpconfinfo=$(${FINDBIN} ${PATHNAME}/var/www -type f -name "wp-config.php" -o -name "configuration.php" -o -name "config.inc.php" 2>/dev/null | ${XARGSBIN} ${GREPBIN} -li "password\|user")
   zcheck "[00;33m[+]" "${wpconfinfo}" "Check for possible web applications credentials"
 
-  dfinfo=$(${DFBIN} -h | ${GREPBIN} -v "tmpfs\|proc\|sysfs\|devtmpfs\|cgroup")
-  zcheck "[00;33m[+]" "${dfinfo}" "Check for uncommon filesystems"
+  if [[ -z "${PATHNAME}" ]]; then
+    dfinfo=$(${DFBIN} -h | ${GREPBIN} -v "tmpfs\|proc\|sysfs\|devtmpfs\|cgroup")
+    zcheck "[00;33m[+]" "${dfinfo}" "Check for uncommon filesystems"
+  fi
+
+  backinfo=$(${FINDBIN} ${PATHNAME}/var/backup -type f 2>/dev/null)
+  zcheck "[00;33m[+]" "${backinfo}" "Location and contents ${PATHNAME}/var/backup"
 }
 
 function do_end() {
