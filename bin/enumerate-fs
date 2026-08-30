@@ -599,6 +599,9 @@ function do_files() {
 
   logsinfo=$(${FINDBIN} ${PATHNAME}/var/logs -type f 2>/dev/null)
   zcheck "[00;33m[+]" "${logsinfo}" "Location and contents ${PATHNAME}/var/logs"
+
+  optinfo=$(${FINDBIN} ${PATHNAME}/opt -type f -perm -o+r 2>/dev/null)
+  zcheck "[00;33m[+]" "${optinfo}" "Location and contents ${PATHNAME}/opt"
 }
 
 function do_end() {
