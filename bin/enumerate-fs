@@ -596,6 +596,9 @@ function do_files() {
 
   backinfo=$(${FINDBIN} ${PATHNAME}/var/backup -type f 2>/dev/null)
   zcheck "[00;33m[+]" "${backinfo}" "Location and contents ${PATHNAME}/var/backup"
+
+  logsinfo=$(${FINDBIN} ${PATHNAME}/var/logs -type f 2>/dev/null)
+  zcheck "[00;33m[+]" "${logsinfo}" "Location and contents ${PATHNAME}/var/logs"
 }
 
 function do_end() {
