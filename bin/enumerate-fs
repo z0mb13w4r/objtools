@@ -580,6 +580,9 @@ function do_files() {
 
     passinfo=$(${FINDBIN} ${PATHNAME}/home -type f -name "*pass*" -o -name "*cred*" 2>/dev/null)
     zcheck "[00;33m[+]" "${passinfo}" "Check for possible credentials ${PATHNAME}/home"
+
+    rootinfo=$(${FINDBIN} ${PATHNAME}/root -type f -name "*.txt" -o -name "*.cfg" -o -name "*.conf" 2>/dev/null)
+    zcheck "[00;33m[+]" "${rootinfo}" "Check for possible credentials ${PATHNAME}/root"
   else
     confinfo=$(${FINDBIN} ${PATHNAME}/home -type f -name "*.txt" -o -name "*.cfg" -o -name "*.conf" 2>/dev/null | ${XARGSBIN} ${GREPBIN} -li "password\|user\|credential")
     zcheck "[00;33m[+]" "${confinfo}" "Check for possible credentials ${PATHNAME}/home"
