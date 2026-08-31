@@ -46,6 +46,7 @@ APACHE2SBINCTL=/usr/sbin/apache2ctl
 GETCAPXBIN=/sbin/getcap
 
 JOHNBIN=john
+UNSHADOWBIN=unshadow
 
 EXTREME=no
 USERNAME=${SUDO_USER}
@@ -630,6 +631,9 @@ function do_crack() {
 
   ${CATBIN} ${PATHNAME}/etc/shadow | ${GREPBIN} -v ":\*:" | ${GREPBIN} -v ":!" > hashes.txt
   ${JOHNBIN} --format=sha512crypt hashes.txt
+
+  ${UNSHADOWBIN} ${PATHNAME}/etc/passwd ${PATHNAME}/etc/shadow > unshadowed.txt
+  ${JOHNBIN} --wordlist=/usr/share/wordlists/rockyou.txt unshadowed.txt
 }
 
 function check_root() {
