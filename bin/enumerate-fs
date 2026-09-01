@@ -598,7 +598,7 @@ function do_files() {
   confinfo=$(${FINDBIN} ${PATHNAME}/etc -type f -name "*.conf" -o -name "*.cfg" -o -name "*.config" -o 2>/dev/null | ${XARGSBIN} ${GREPBIN} -li "password\|user\|credential")
   zcheck "[00;33m[+]" "${confinfo}" "Check for possible credentials ${PATHNAME}/etc"
 
-  serverinfo=$(${GREPBIN} -r "password\|user" ${PATHNAME}/etc/apache2/ ${PATHNAME}/etc/nginx/ ${PATHNAME}/etc/httpd/ 2>/dev/null)
+  serverinfo=$(${GREPBIN} -r "password\|user\|passwd\|pwd" ${PATHNAME}/etc/apache2/ ${PATHNAME}/etc/nginx/ ${PATHNAME}/etc/httpd/ 2>/dev/null)
   zcheck "[00;33m[+]" "${serverinfo}" "Check for possible server credentials"
 
   postgresinfo=$(${GREPBIN} -r "password\|user" ${PATHNAME}/etc/mysql/ ${PATHNAME}/etc/postgresql/ 2>/dev/null)
