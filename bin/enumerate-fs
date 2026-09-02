@@ -575,6 +575,9 @@ function do_files() {
   checkpsql=$(${FINDBIN} ${PATHNAME}/home -name .psql_history -print -exec ${CATBIN} {} 2>/dev/null \;)
   zcheck "[00;31m[-]" "${checkpsql}" "Location and contents (if accessible) of .psql_history file(s)"
 
+  checknano=$(${FINDBIN} ${PATHNAME}/home -name .nano_history -print -exec ${CATBIN} {} 2>/dev/null \;)
+  zcheck "[00;31m[-]" "${checknano}" "Location and contents (if accessible) of .nano_history file(s)"
+
   bakfiles=$(${FINDBIN} ${PATHNAME}/ \( -name "*.bak" -o -name "*backup*" -o -name "*.old" \) -type f 2</dev/null | ${XARGSBIN} ${LSBIN} -la)
   zcheck "[00;31m[-]" "${bakfiles}" "Location and Permissions (if accessible) of .bak file(s)"
 
