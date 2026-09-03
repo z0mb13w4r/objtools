@@ -587,6 +587,9 @@ function do_files() {
   checktftp=$(${FINDBIN} ${PATHNAME}/home -name .zsh_history -print -exec ${CATBIN} {} 2>/dev/null \;)
   zcheck "[00;31m[-]" "${checktftp}" "Location and contents (if accessible) of .zsh_history file(s)"
 
+  checktftp=$(${FINDBIN} ${PATHNAME}/home -name .python_history -print -exec ${CATBIN} {} 2>/dev/null \;)
+  zcheck "[00;31m[-]" "${checktftp}" "Location and contents (if accessible) of .python_history file(s)"
+
   bakfiles=$(${FINDBIN} ${PATHNAME}/ \( -name "*.bak" -o -name "*backup*" -o -name "*.old" \) -type f 2</dev/null | ${XARGSBIN} ${LSBIN} -la)
   zcheck "[00;31m[-]" "${bakfiles}" "Location and Permissions (if accessible) of .bak file(s)"
 
