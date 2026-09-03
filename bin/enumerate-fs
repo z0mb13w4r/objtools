@@ -554,11 +554,16 @@ function do_files() {
   allconf=$(${FINDBIN} ${PATHNAME}/etc/ -maxdepth 1 -name *.conf -type f -exec ${LSBIN} -la {} \; 2>/dev/null)
   zcheck "[00;31m[-]" "${allconf}" "All *.conf files in /etc (recursive 1 level)"
 
-  usrhist=$(${LSBIN} -la ${PATHNAME}/home/${USERNAME}/.*_history 2>/dev/null)
-  zcheck "[00;31m[-]" "${usrhist}" "Current user's history files"
+  if [ "${EXTREME}" == "yes" ]; then
+    roothist=$(${LSBIN} -la ${PATHNAME}/.*_history 2>/dev/null)
+    zcheck "[00;33m[+]" "${roothist}" "History files are accessible"
+  else
+    usrhist=$(${LSBIN} -la ${PATHNAME}/home/${USERNAME}/.*_history 2>/dev/null)
+    zcheck "[00;31m[-]" "${usrhist}" "Current user's history files"
 
-  roothist=$(${LSBIN} -la ${PATHNAME}/root/.*_history 2>/dev/null)
-  zcheck "[00;33m[+]" "${roothist}" "Root's history files are accessible"
+    roothist=$(${LSBIN} -la ${PATHNAME}/root/.*_history 2>/dev/null)
+    zcheck "[00;33m[+]" "${roothist}" "Root's history files are accessible"
+  fi
 
   checkbashhist=$(${FINDBIN} ${PATHNAME}/home -name .bash_history -print -exec ${CATBIN} {} 2>/dev/null \;)
   zcheck "[00;31m[-]" "${checkbashhist}" "Location and contents (if accessible) of .bash_history file(s)"
