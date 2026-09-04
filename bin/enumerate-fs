@@ -624,19 +624,19 @@ function do_files() {
     zcheck "[00;33m[+]" "${confinfo}" "Check for possible credentials ${PATHNAME}/home"
   fi
 
-  confinfo=$(${FINDBIN} ${PATHNAME}/etc -type f -name "*.conf" -o -name "*.cfg" -o -name "*.config" -o 2>/dev/null | ${XARGSBIN} ${GREPBIN} -li "password\|user\|credential")
+  confinfo=$(${FINDBIN} ${PATHNAME}/etc -type f -name "*.conf" -o -name "*.cfg" -o -name "*.config" -o 2>/dev/null | ${XARGSBIN} ${GREPBIN} -li "password\|passwd\|pwd\|user\|credential")
   zcheck "[00;33m[+]" "${confinfo}" "Check for possible credentials ${PATHNAME}/etc"
 
-  serverinfo=$(${GREPBIN} -r "password\|user\|passwd\|pwd" ${PATHNAME}/etc/apache2/ ${PATHNAME}/etc/nginx/ ${PATHNAME}/etc/httpd/ 2>/dev/null)
+  serverinfo=$(${GREPBIN} -r "password\|passwd\|pwd\|user\|credential" ${PATHNAME}/etc/apache2/ ${PATHNAME}/etc/nginx/ ${PATHNAME}/etc/httpd/ 2>/dev/null)
   zcheck "[00;33m[+]" "${serverinfo}" "Check for possible server credentials"
 
-  postgresinfo=$(${GREPBIN} -r "password\|user" ${PATHNAME}/etc/mysql/ ${PATHNAME}/etc/postgresql/ 2>/dev/null)
+  postgresinfo=$(${GREPBIN} -r "password\|passwd\|pwd\|user\|credential" ${PATHNAME}/etc/mysql/ ${PATHNAME}/etc/postgresql/ 2>/dev/null)
   zcheck "[00;33m[+]" "${postgresinfo}" "Check for possible postgresgl credentials"
 
-  wpconfinfo=$(${FINDBIN} ${PATHNAME}/var/www -type f -name "wp-config.php" -o -name "configuration.php" -o -name "config.inc.php" 2>/dev/null | ${XARGSBIN} ${GREPBIN} -li "password\|user")
+  wpconfinfo=$(${FINDBIN} ${PATHNAME}/var/www -type f -name "wp-config.php" -o -name "configuration.php" -o -name "config.inc.php" 2>/dev/null | ${XARGSBIN} ${GREPBIN} -li "password\|passwd\|pwd\|user\|credentials")
   zcheck "[00;33m[+]" "${wpconfinfo}" "Check for possible web applications credentials"
 
-  wpconfinfo=$(${FINDBIN} ${PATHNAME}/var -type f -name "settings.php" 2>/dev/null | ${XARGSBIN} ${GREPBIN} -li "password\|user")
+  wpconfinfo=$(${FINDBIN} ${PATHNAME}/var -type f -name "settings.php" 2>/dev/null | ${XARGSBIN} ${GREPBIN} -li "password\|passwd\|pwd\|user\|credential")
   zcheck "[00;33m[+]" "${wpconfinfo}" "Check for possible web applications credentials"
 
   if [[ -z "${PATHNAME}" ]]; then
