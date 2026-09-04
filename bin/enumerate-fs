@@ -625,8 +625,8 @@ function do_files() {
   fi
 
   if [ "${EXTREME}" == "yes" ]; then
-    ectinfo=$(${GREPBIN} -r "password\|passwd\|pwd\|user\|credential" ${PATHNAME}/ 2>/dev/null)
-    zcheck "[00;33m[+]" "${ectinfo}" "Check for possible server credentials"
+    etcinfo=$(${GREPBIN} -r -i "password\|passwd\|pwd\|user\|credential" ${PATHNAME}/etc 2>/dev/null)
+    zcheck "[00;33m[+]" "${etcinfo}" "Check for possible server credentials"
   else
     confinfo=$(${FINDBIN} ${PATHNAME}/etc -type f -name "*.conf" -o -name "*.cfg" -o -name "*.config" -o 2>/dev/null | ${XARGSBIN} ${GREPBIN} -li "password\|passwd\|pwd\|user\|credential")
     zcheck "[00;33m[+]" "${confinfo}" "Check for possible credentials ${PATHNAME}/etc"
@@ -638,11 +638,16 @@ function do_files() {
     zcheck "[00;33m[+]" "${postgresinfo}" "Check for possible postgresgl credentials"
   fi
 
-  wpconfinfo=$(${FINDBIN} ${PATHNAME}/var/www -type f -name "wp-config.php" -o -name "configuration.php" -o -name "config.inc.php" 2>/dev/null | ${XARGSBIN} ${GREPBIN} -li "password\|passwd\|pwd\|user\|credentials")
-  zcheck "[00;33m[+]" "${wpconfinfo}" "Check for possible web applications credentials"
+  if [ "${EXTREME}" == "yes" ]; then
+    wpconfinfo=$(${GREPBIN} -r -i "password\|passwd\|pwd\|user\|credential" ${PATHNAME}/var/www 2>/dev/null)
+    zcheck "[00;33m[+]" "${wpconfinfo}" "Check for possible web applications credentials"
+  else
+    wpconfinfo=$(${FINDBIN} ${PATHNAME}/var/www -type f -name "wp-config.php" -o -name "configuration.php" -o -name "config.inc.php" 2>/dev/null | ${XARGSBIN} ${GREPBIN} -li "password\|passwd\|pwd\|user\|credentials")
+    zcheck "[00;33m[+]" "${wpconfinfo}" "Check for possible web applications credentials"
 
-  wpconfinfo=$(${FINDBIN} ${PATHNAME}/var -type f -name "settings.php" 2>/dev/null | ${XARGSBIN} ${GREPBIN} -li "password\|passwd\|pwd\|user\|credential")
-  zcheck "[00;33m[+]" "${wpconfinfo}" "Check for possible web applications credentials"
+    wpconfinfo=$(${FINDBIN} ${PATHNAME}/var -type f -name "settings.php" 2>/dev/null | ${XARGSBIN} ${GREPBIN} -li "password\|passwd\|pwd\|user\|credential")
+    zcheck "[00;33m[+]" "${wpconfinfo}" "Check for possible web applications credentials"
+  fi
 
   if [[ -z "${PATHNAME}" ]]; then
     dfinfo=$(${DFBIN} -h | ${GREPBIN} -v "tmpfs\|proc\|sysfs\|devtmpfs\|cgroup")
