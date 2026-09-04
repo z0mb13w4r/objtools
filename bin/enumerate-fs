@@ -624,14 +624,19 @@ function do_files() {
     zcheck "[00;33m[+]" "${confinfo}" "Check for possible credentials ${PATHNAME}/home"
   fi
 
-  confinfo=$(${FINDBIN} ${PATHNAME}/etc -type f -name "*.conf" -o -name "*.cfg" -o -name "*.config" -o 2>/dev/null | ${XARGSBIN} ${GREPBIN} -li "password\|passwd\|pwd\|user\|credential")
-  zcheck "[00;33m[+]" "${confinfo}" "Check for possible credentials ${PATHNAME}/etc"
+  if [ "${EXTREME}" == "yes" ]; then
+    ectinfo=$(${GREPBIN} -r "password\|passwd\|pwd\|user\|credential" ${PATHNAME}/ 2>/dev/null)
+    zcheck "[00;33m[+]" "${ectinfo}" "Check for possible server credentials"
+  else
+    confinfo=$(${FINDBIN} ${PATHNAME}/etc -type f -name "*.conf" -o -name "*.cfg" -o -name "*.config" -o 2>/dev/null | ${XARGSBIN} ${GREPBIN} -li "password\|passwd\|pwd\|user\|credential")
+    zcheck "[00;33m[+]" "${confinfo}" "Check for possible credentials ${PATHNAME}/etc"
 
-  serverinfo=$(${GREPBIN} -r "password\|passwd\|pwd\|user\|credential" ${PATHNAME}/etc/apache2/ ${PATHNAME}/etc/nginx/ ${PATHNAME}/etc/httpd/ 2>/dev/null)
-  zcheck "[00;33m[+]" "${serverinfo}" "Check for possible server credentials"
+    serverinfo=$(${GREPBIN} -r "password\|passwd\|pwd\|user\|credential" ${PATHNAME}/etc/apache2/ ${PATHNAME}/etc/nginx/ ${PATHNAME}/etc/httpd/ 2>/dev/null)
+    zcheck "[00;33m[+]" "${serverinfo}" "Check for possible server credentials"
 
-  postgresinfo=$(${GREPBIN} -r "password\|passwd\|pwd\|user\|credential" ${PATHNAME}/etc/mysql/ ${PATHNAME}/etc/postgresql/ 2>/dev/null)
-  zcheck "[00;33m[+]" "${postgresinfo}" "Check for possible postgresgl credentials"
+    postgresinfo=$(${GREPBIN} -r "password\|passwd\|pwd\|user\|credential" ${PATHNAME}/etc/mysql/ ${PATHNAME}/etc/postgresql/ 2>/dev/null)
+    zcheck "[00;33m[+]" "${postgresinfo}" "Check for possible postgresgl credentials"
+  fi
 
   wpconfinfo=$(${FINDBIN} ${PATHNAME}/var/www -type f -name "wp-config.php" -o -name "configuration.php" -o -name "config.inc.php" 2>/dev/null | ${XARGSBIN} ${GREPBIN} -li "password\|passwd\|pwd\|user\|credentials")
   zcheck "[00;33m[+]" "${wpconfinfo}" "Check for possible web applications credentials"
