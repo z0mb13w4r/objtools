@@ -78,6 +78,7 @@ $SUDOBIN $COPYBIN -v $EXTERNBIN/objdwarf-ng $LOCALBIN/
 $SUDOBIN $COPYBIN -v $EXTERNBIN/strings-ng.py $LOCALBIN/
 $SUDOBIN $COPYBIN -v $EXTERNBIN/enumerate-fs $LOCALBIN/
 $SUDOBIN $COPYBIN -v $EXTERNBIN/yara-rules-ng $LOCALBIN/
+$SUDOBIN $COPYBIN -v $EXTERNBIN/ubi-magic.py $LOCALBIN/
 
 $SUDOBIN $COPYBIN -v $EXTERNMAN/detect-ng.1 $LOCALMAN/
 $SUDOBIN $COPYBIN -v $EXTERNMAN/readpe-ng.1 $LOCALMAN/
@@ -107,6 +108,6 @@ $DPKGDEBBIN --build $NAME
 $SUDOBIN $CHOWNBIN -R $USER:$USER $NAME
 
 echo $($GREPBIN Version $EXTERNBIN/control | $CUTBIN -d ' ' -f 2) \
-     $($HEADBIN -1 $EXTERNMAN/* | $GREPBIN '.TH' | $CUTBIN -d ' ' -f 7 | $TRBIN -d '"') \
+     $($HEADBIN -1 $EXTERNMAN/*.1 | $GREPBIN '.TH' | $CUTBIN -d ' ' -f 7 | $TRBIN -d '"') \
      $($GREPBIN '#define VERSION_VALUE' $EXTERNSRC/options.c | $CUTBIN -d ' ' -f 3 | $TRBIN -d '"')
 
