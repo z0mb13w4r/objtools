@@ -1,6 +1,8 @@
 v1.9 - ??/09/2026
 -----------------------------------------------------------------------
+[+] Added REMnux upgrade script.  
 [+] Updated man pages.  
+[+] Added UBI script.  
 [+] Bug fixes.  
 
 v1.8 - 29/08/2026
