@@ -8,6 +8,7 @@ CUTBIN=/usr/bin/cut
 FINDBIN=/usr/bin/find
 GREPBIN=/usr/bin/grep
 SORTBIN=/usr/bin/sort
+EGREPBIN=/usr/bin/egrep
 
 USERNAME=${SUDO_USER}
 
@@ -18,6 +19,7 @@ function show_this() {
   ${FINDBIN} ${PATHNAME} -name *.psk
 
   echo && echo -e "\e[00;33m### UNIX-MD5 HASHES ######################################\e[00m"
+  ${EGREPBIN} -sro '\$1\$\w{8}\S{23}' ${PATHNAME}
 
   echo && echo -e "\e[00;33m### SSL RELATED FILES ####################################\e[00m"
   ${FINDBIN} ${PATHNAME} -name *.crt
