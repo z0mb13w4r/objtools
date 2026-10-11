@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SCRIPTVERSION=1.0
+SCRIPTVERSION=1.1
 SCRIPTNAME=$(basename "$0")
 
 CATBIN=/usr/bin/cat
@@ -143,6 +143,7 @@ function show_this() {
 
   echo && echo -e "\e[00;33m### URLS #################################################\e[00m"
   ${GREPBIN} -sRIEoh '(http|https)://[^/"]+' --exclude-dir='dev' ${PATHNAME} | ${SORTBIN} -u
+  ${GREPBIN} -sRIEoh '(ftp|ftps|tftp)://[^/"]+' --exclude-dir='dev' ${PATHNAME} | ${SORTBIN} -u
 
   echo && echo -e "\e[00;33m### EMAILS ###############################################\e[00m"
   ${GREPBIN} -sRIEoh '([[:alnum:]_.-]+@[[:alnum:]_.-]+?\.[[:alpha:].]{2,6})' "$@" --exclude-dir='dev' ${PATHNAME} | ${SORTBIN} -u
