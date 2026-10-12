@@ -1,10 +1,14 @@
 v1.10 - ??/10/2026
 -----------------------------------------------------------------------
+[+] Updated REMnux upgrade script.  
+[+] Updated the firmware enumeration script.  
+[+] Added more privilege escalation checks.  
+[+] Updated man pages.  
 [+] Bug fixes.  
 
 v1.9 - 29/09/2026
 -----------------------------------------------------------------------
-[+] Added REMnux upgrade script.  
+[+] Updated REMnux upgrade script.  
 [+] Updated man pages.  
 [+] Added UBI script.  
 [+] Bug fixes.  
