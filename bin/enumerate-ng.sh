@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SCRIPTVERSION=1.1
+SCRIPTVERSION=1.2
 SCRIPTNAME=$(basename "$0")
 
 WBIN=/usr/bin/w
@@ -227,8 +227,8 @@ function do_environment() {
 
   zcheck "[00;31m[-]" "$(umask -S 2>/dev/null & umask 2>/dev/null)" "Current umask value"
 
-  zcheck "[00;31m[-]" "$(${GREPBIN} -i '^UMASK' ${PATHNAME}/etc/login.defs)" "umask value as specified in ${PATHNAME}/etc/login.defs"
-  zcheck "[00;31m[-]" "$(${GREPBIN} '^PASS_MAX_DAYS\|^PASS_MIN_DAYS\|^PASS_WARN_AGE\|^ENCRYPT_METHOD' ${PATHNAME}/etc/login.defs)" "Password and storage information"
+  zcheck "[00;31m[-]" "$(${GREPBIN} -i '^UMASK' ${PATHNAME}/etc/login.defs 2>/dev/null)" "umask value as specified in ${PATHNAME}/etc/login.defs"
+  zcheck "[00;31m[-]" "$(${GREPBIN} '^PASS_MAX_DAYS\|^PASS_MIN_DAYS\|^PASS_WARN_AGE\|^ENCRYPT_METHOD' ${PATHNAME}/etc/login.defs 2>/dev/null)" "Password and storage information"
 }
 
 function do_job() {
@@ -524,28 +524,28 @@ function do_files() {
   zcheck "[00;33m[+]" "${fstabcred}" "${PATHNAME}/etc/fstab contains a credentials file"
 
   if [ "${KEYWORD}" = "" ];then
-    echo -e "[-] Can't search *.conf files as no keyword was entered\n"
+    echo -e "[-] Cannot search *.conf files as no keyword was entered\n"
   else
     confkey=$(${FINDBIN} ${PATHNAME}/ -maxdepth 4 -name *.conf -type f -exec ${GREPBIN} -Hn ${KEYWORD} {} \; 2>/dev/null)
     zcheck "[00;31m[-]" "${confkey}" "Find keyword (${KEYWORD}) in .conf files (recursive 4 levels - output format filepath:identified line number where keyword appears)"
   fi
 
   if [ "${KEYWORD}" = "" ];then
-    echo -e "[-] Can't search *.php files as no keyword was entered\n"
+    echo -e "[-] Cannot search *.php files as no keyword was entered\n"
   else
     phpkey=$(${FINDBIN} ${PATHNAME}/ -maxdepth 10 -name *.php -type f -exec ${GREPBIN} -Hn ${KEYWORD} {} \; 2>/dev/null)
     zcheck "[00;31m[-]" "${phpkey}" "Find keyword (${KEYWORD}) in .php files (recursive 10 levels - output format filepath:identified line number where keyword appears)"
   fi
 
   if [ "${KEYWORD}" = "" ];then
-    echo -e "[-] Can't search *.log files as no keyword was entered\n"
+    echo -e "[-] Cannot search *.log files as no keyword was entered\n"
   else
     logkey=$(${FINDBIN} ${PATHNAME}/ -maxdepth 4 -name *.log -type f -exec ${GREPBIN} -Hn ${KEYWORD} {} \; 2>/dev/null)
     zcheck "[00;31m[-]" "${logkey}" "Find keyword (${KEYWORD}) in .log files (recursive 4 levels - output format filepath:identified line number where keyword appears)"
   fi
 
   if [ "${KEYWORD}" = "" ];then
-    echo -e "[-] Can't search *.ini files as no keyword was entered\n"
+    echo -e "[-] Cannot search *.ini files as no keyword was entered\n"
   else
     inikey=$(${FINDBIN} ${PATHNAME}/ -maxdepth 4 -name *.ini -type f -exec ${GREPBIN} -Hn ${KEYWORD} {} \; 2>/dev/null)
     zcheck "[00;31m[-]" "${inikey}" "Find keyword (${KEYWORD}) in .ini files (recursive 4 levels - output format filepath:identified line number where keyword appears)"
