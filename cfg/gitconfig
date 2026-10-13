@@ -1,0 +1,21 @@
+[user]
+	name = "My Name"
+	email = "myname@myemail.com"
+[core]
+	editor = vim
+	pager = less -FRSX
+	abbrev = 12
+[color]
+	ui = auto
+[merge]
+	tool = vimdiff
+[difftool]
+	prompt = false
+[alias]
+	unstage = reset HEAD --
+	log-all = log --graph --stat --patch --ignore-space-change
+	last = log -1 HEAD
+[pretty]
+	fixes = Fixes: %h (\"%s\")
+[push]
+	default = simple

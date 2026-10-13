@@ -1,0 +1,14 @@
+set number
+set autoindent
+set hlsearch
+
+" Press F4 to toggle highlighting on/off, and show current value.
+:noremap <F4> :set hlsearch! hlsearch?<CR>
+
+" Press return to temporarily get out of the highlighted search.
+:nnoremap <CR> :nohlsearch<CR><CR>
+
+
+" Highlight trailing whitespaces
+:highlight TrailWhitespace ctermbg=red guibg=red
+:match TrailWhitespace /\s\+$\| \+\ze\t/
