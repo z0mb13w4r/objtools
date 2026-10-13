@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SCRIPTVERSION=1.2
+SCRIPTVERSION=1.3
 SCRIPTNAME=$(basename "$0")
 
 WBIN=/usr/bin/w
@@ -20,6 +20,7 @@ FINDBIN=/usr/bin/find
 GREPBIN=/usr/bin/grep
 HEADBIN=/usr/bin/head
 PSQLBIN=/usr/bin/psql
+SORTBIN=/usr/bin/sort
 SUDOBIN=/usr/bin/sudo
 TAILBIN=/usr/bin/tail
 MYSQLBIN=/usr/bin/mysql
@@ -259,6 +260,16 @@ function do_job() {
     fi
     zcheck "[00;31m[-]" "${systemdtimers}" "Systemd timers"
   fi
+}
+
+function do_misc() {
+  echo -e "\e[00;33m### MISCELLANEOUS  #######################################\e[00m"
+
+  ipaddress=$(${GREPBIN} -sRIEho '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' --exclude-dir='dev' ${PATHNAME}/ | ${SORTBIN} -u)
+  zcheck "[00;33m[-]" "${ipaddress}" "Used IP Addresses"
+
+  emailaddress=$(${GREPBIN} -sRIEoh '([[:alnum:]_.-]+@[[:alnum:]_.-]+?\.[[:alpha:].]{2,6})' "$@" --exclude-dir='dev' ${PATHNAME}/ | ${SORTBIN} -u)
+  zcheck "[00;33m[-]" "${emailaddress}" "Used Email Addresses"
 }
 
 function do_network() {
@@ -700,14 +711,15 @@ function show_usage() {
   ${CATBIN} << EOF
 Usage: ${SCRIPTNAME} v${SCRIPTVERSION}
 EXAMPLES:
+  ${SCRIPTNAME} env
   ${SCRIPTNAME} job
+  ${SCRIPTNAME} misc
   ${SCRIPTNAME} user
   ${SCRIPTNAME} files
   ${SCRIPTNAME} system
   ${SCRIPTNAME} network
   ${SCRIPTNAME} services
   ${SCRIPTNAME} software
-  ${SCRIPTNAME} environment
   ${SCRIPTNAME} -v|--version
   ${SCRIPTNAME} -h|--help
 EOF
@@ -747,7 +759,7 @@ function show_version() {
 parse_args() {
   while [[ $# -gt 0 ]]; do
     case ${1} in
-      end|job|user|files|system|network|services|software|environment|crack)
+      end|env|job|misc|user|files|system|network|services|software|crack)
         COMMAND=${1}
         shift # past argument
         ;;
@@ -809,8 +821,12 @@ main() {
 
   if [ "${COMMAND}" == "end" ]; then
     do_end
+  elif [ "${COMMAND}" == "env" ]; then
+    do_environment
   elif [ "${COMMAND}" == "job" ]; then
     do_job
+  elif [ "${COMMAND}" == "misc" ]; then
+    do_misc
   elif [ "${COMMAND}" == "user" ]; then
     do_usergroup
   elif [ "${COMMAND}" == "files" ]; then
@@ -823,8 +839,6 @@ main() {
     do_services
   elif [ "${COMMAND}" == "software" ]; then
     do_software
-  elif [ "${COMMAND}" == "environment" ]; then
-    do_environment
   elif [ "${COMMAND}" == "crack" ]; then
     do_crack
   elif [[ -z "${COMMAND}" ]]; then
