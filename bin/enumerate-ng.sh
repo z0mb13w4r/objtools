@@ -270,6 +270,12 @@ function do_misc() {
 
   emailaddress=$(${GREPBIN} -sRIEoh '([[:alnum:]_.-]+@[[:alnum:]_.-]+?\.[[:alpha:].]{2,6})' "$@" --exclude-dir='dev' ${PATHNAME}/ | ${SORTBIN} -u)
   zcheck "[00;33m[-]" "${emailaddress}" "Used Email Addresses"
+
+  webfiles=$(${FINDBIN} ${PATHNAME}/ -name "*.asp" -o -name "*.html" -o -name "*.xml" -o -name "*.php" -o -name "*.js" -o -name "*.json" -o -name "*.cgi" -type f 2>/dev/null)
+  zcheck "[00;33m[-]" "${webfiles}" "Webfiles found"
+
+  importantbin=$(${FINDBIN} ${PATHNAME} -name "ssh" -o -name "sshd" -o -name "scp" -o -name "sftp" -o -name "sftp" -o -name "tftp" -o -name "dropbear" -o -name "busybox" -o -name "telnet" -o -name "telnetd" -o -name "openssl" -o -name "ftpget" -o -name "ftpput" 2>/dev/null)
+  zcheck "[00;33m[-]" "${importantbin}" "Important binaries"
 }
 
 function do_network() {
