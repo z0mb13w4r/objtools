@@ -8,6 +8,7 @@ DFBIN=/usr/bin/df
 IDBIN=/usr/bin/id
 LSBIN=/usr/bin/ls
 PSBIN=/usr/bin/ps
+RMBIN=/usr/bin/rm
 SSBIN=/usr/bin/ss
 TRBIN=/usr/bin/tr
 AWKBIN=/usr/bin/awk
@@ -697,11 +698,24 @@ function do_end() {
 function do_crack() {
   echo -e "\e[00;33m### CRACK ################################################\e[00m"
 
-  ${CATBIN} ${PATHNAME}/etc/shadow | ${GREPBIN} -v ":\*:" | ${GREPBIN} -v ":!" > hashes.txt
-  ${JOHNBIN} --format=sha512crypt hashes.txt
+  local THAT_NAME=/usr/share/wordlists
+  local THIS_NAME=/tmp/credentials.txt
+  ${CATBIN} \
+    ${THAT_NAME}/rockyou.txt \
+    ${THAT_NAME}/SecLists/Passwords/Common-Credentials/Pwdb_top-10000000.txt \
+    > ${THIS_NAME}
 
-  ${UNSHADOWBIN} ${PATHNAME}/etc/passwd ${PATHNAME}/etc/shadow > unshadowed.txt
-  ${JOHNBIN} --wordlist=/usr/share/wordlists/rockyou.txt unshadowed.txt
+  ${SUDOBIN} ${RMBIN} /root/.john/john.pot /root/.john/john.log
+
+  if [ -e "${PATHNAME}/etc/shadow" ]; then
+    ${CATBIN} ${PATHNAME}/etc/shadow | ${GREPBIN} -v ":\*:" | ${GREPBIN} -v ":!" > hashes.txt
+    ${JOHNBIN} --format=sha512crypt hashes.txt
+
+    ${UNSHADOWBIN} ${PATHNAME}/etc/passwd ${PATHNAME}/etc/shadow > unshadowed.txt
+    ${JOHNBIN} --wordlist=${THIS_NAME} unshadowed.txt
+  elif [ -e "${PATHNAME}/etc/passwd" ]; then
+    ${JOHNBIN} --wordlist=${THIS_NAME} ${PATHNAME}/etc/passwd
+  fi
 }
 
 function check_root() {
