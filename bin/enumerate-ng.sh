@@ -870,6 +870,7 @@ main() {
     do_services
     do_software
     do_files
+    do_misc
     do_end
   fi
 }
