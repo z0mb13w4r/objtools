@@ -3,16 +3,62 @@
 SCRIPTVERSION=1.1
 SCRIPTNAME=$(basename "$0")
 
+LSBIN=/usr/bin/ls
 CATBIN=/usr/bin/cat
 CUTBIN=/usr/bin/cut
 FINDBIN=/usr/bin/find
 GREPBIN=/usr/bin/grep
 SORTBIN=/usr/bin/sort
 EGREPBIN=/usr/bin/egrep
+XARGSBIN=/usr/bin/xargs
 
 USERNAME=${SUDO_USER}
 
+function zshow() {
+  echo -e "\e[00;32m${1}:\e[00m"
+  echo -e "${2}\n"
+}
+
+function zcheck() {
+  if [ "${2}" ]; then
+    zshow "${1}" "${2}"
+  fi
+}
+
+function zcat() {
+  xx=$(${CATBIN} "${1}" 2>/dev/null)
+  zcheck "cat ${1}" "${xx}"
+}
+
+function zls() {
+  xx=$(${LSBIN} -al ${1} 2>/dev/null)
+  zcheck "ls -al ${1}" "${xx}"
+}
+
 function show_this() {
+  echo -e "\e[00;33m### SYSTEM FILES #########################################\e[00m"
+  zls  "${PATHNAME}/etc/"
+  zcat "${PATHNAME}/etc/hostname"
+  zcat "${PATHNAME}/etc/hosts"
+  zcat "${PATHNAME}/etc/issue"
+  zcat "${PATHNAME}/etc/os-release"
+  zcat "${PATHNAME}/etc/mtab"
+  zcat "${PATHNAME}/etc/fstab"
+  zcat "${PATHNAME}/etc/group"
+  zcat "${PATHNAME}/etc/passwd"
+  zcat "${PATHNAME}/etc/shadow"
+  zcat "${PATHNAME}/etc/inetd.conf"
+  zcat "${PATHNAME}/etc/inittab"
+  zcat "${PATHNAME}/etc/mdev.conf"
+  zcat "${PATHNAME}/etc/profile"
+  zcat "${PATHNAME}/etc/profile_prjcfg"
+  zcat "${PATHNAME}/etc/services"
+  zcat "${PATHNAME}/etc/udhcpd.conf"
+  zcat "${PATHNAME}/etc/udhcpdw.conf"
+  zcat "${PATHNAME}/etc/wifiap_wpa2.conf"
+  zcat "${PATHNAME}/etc/wpa_supplicant.conf"
+  zcat "${PATHNAME}/etc/bootchartd.conf"
+
   echo -e "\e[00;33m### PASSWORD FILES #######################################\e[00m"
   ${FINDBIN} ${PATHNAME} -name passwd
   ${FINDBIN} ${PATHNAME} -name shadow
@@ -115,19 +161,19 @@ function show_this() {
   ${GREPBIN} -sirnow ${PATHNAME} -e "scanf" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
 
   echo && echo -e "\e[00;33m### IMPORTANT BINARIES ###################################\e[00m"
-  ${FINDBIN} ${PATHNAME} -name "ssh"
-  ${FINDBIN} ${PATHNAME} -name "sshd"
-  ${FINDBIN} ${PATHNAME} -name "scp"
-  ${FINDBIN} ${PATHNAME} -name "sftp"
-  ${FINDBIN} ${PATHNAME} -name "sftp"
-  ${FINDBIN} ${PATHNAME} -name "tftp"
-  ${FINDBIN} ${PATHNAME} -name "dropbear"
-  ${FINDBIN} ${PATHNAME} -name "busybox"
-  ${FINDBIN} ${PATHNAME} -name "telnet"
-  ${FINDBIN} ${PATHNAME} -name "telnetd"
-  ${FINDBIN} ${PATHNAME} -name "openssl"
-  ${FINDBIN} ${PATHNAME} -name "ftpget"
-  ${FINDBIN} ${PATHNAME} -name "ftpput"
+  ${FINDBIN} ${PATHNAME} -name "ssh" 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -al 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name "sshd" 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -al 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name "scp" 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -al 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name "sftp" 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -al 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name "sftp" 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -al 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name "tftp" 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -al 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name "dropbear" 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -al 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name "busybox" 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -al 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name "telnet" 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -al 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name "telnetd" 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -al 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name "openssl" 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -al 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name "ftpget" 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -al 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name "ftpput" 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -al 2>/dev/null
 
   echo && echo -e "\e[00;33m### WEBFILES #############################################\e[00m"
   ${FINDBIN} ${PATHNAME} -name "*.asp"
