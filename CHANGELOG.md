@@ -3,6 +3,7 @@ v1.10 - ??/10/2026
 [+] Updated REMnux upgrade script.  
 [+] Updated the firmware enumeration script.  
 [+] Added more privilege escalation checks.  
+[+] Added configuration files.  
 [+] Updated man pages.  
 [+] Bug fixes.  
 
