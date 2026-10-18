@@ -13,6 +13,7 @@ EGREPBIN=/usr/bin/egrep
 XARGSBIN=/usr/bin/xargs
 
 USERNAME=${SUDO_USER}
+PATHNAME=/
 
 function zshow() {
   echo -e "\e[00;32m${1}:\e[00m"
@@ -37,73 +38,77 @@ function zls() {
 
 function show_this() {
   echo -e "\e[00;33m### SYSTEM FILES #########################################\e[00m"
-  zls  "${PATHNAME}/etc/"
-  zcat "${PATHNAME}/etc/hostname"
-  zcat "${PATHNAME}/etc/hosts"
-  zcat "${PATHNAME}/etc/issue"
-  zcat "${PATHNAME}/etc/os-release"
-  zcat "${PATHNAME}/etc/mtab"
-  zcat "${PATHNAME}/etc/fstab"
-  zcat "${PATHNAME}/etc/group"
-  zcat "${PATHNAME}/etc/passwd"
-  zcat "${PATHNAME}/etc/shadow"
-  zcat "${PATHNAME}/etc/inetd.conf"
-  zcat "${PATHNAME}/etc/inittab"
-  zcat "${PATHNAME}/etc/mdev.conf"
-  zcat "${PATHNAME}/etc/profile"
-  zcat "${PATHNAME}/etc/profile_prjcfg"
-  zcat "${PATHNAME}/etc/services"
-  zcat "${PATHNAME}/etc/udhcpd.conf"
-  zcat "${PATHNAME}/etc/udhcpdw.conf"
-  zcat "${PATHNAME}/etc/wifiap_wpa2.conf"
-  zcat "${PATHNAME}/etc/wpa_supplicant.conf"
-  zcat "${PATHNAME}/etc/bootchartd.conf"
+  zls  "${PATHNAME%?}/etc/"
+  zcat "${PATHNAME%?}/etc/hostname"
+  zcat "${PATHNAME%?}/etc/hosts"
+  zcat "${PATHNAME%?}/etc/issue"
+  zcat "${PATHNAME%?}/etc/os-release"
+  zcat "${PATHNAME%?}/etc/mtab"
+  zcat "${PATHNAME%?}/etc/fstab"
+  zcat "${PATHNAME%?}/etc/group"
+  zcat "${PATHNAME%?}/etc/passwd"
+  zcat "${PATHNAME%?}/etc/shadow"
+  zcat "${PATHNAME%?}/etc/inetd.conf"
+  zcat "${PATHNAME%?}/etc/inittab"
+  zcat "${PATHNAME%?}/etc/mdev.conf"
+  zcat "${PATHNAME%?}/etc/profile"
+  zcat "${PATHNAME%?}/etc/profile_prjcfg"
+  zcat "${PATHNAME%?}/etc/services"
+  zcat "${PATHNAME%?}/etc/udhcpd.conf"
+  zcat "${PATHNAME%?}/etc/udhcpdw.conf"
+  zcat "${PATHNAME%?}/etc/wifiap_wpa2.conf"
+  zcat "${PATHNAME%?}/etc/wpa_supplicant.conf"
+  zcat "${PATHNAME%?}/etc/bootchartd.conf"
+  zcat "${PATHNAME%?}/proc/sys/kernel/hostname"
+  zcat "${PATHNAME%?}/proc/sys/kernel/osrelease"
+  zcat "${PATHNAME%?}/proc/sys/kernel/ostype"
+  zcat "${PATHNAME%?}/proc/version"
 
   echo -e "\e[00;33m### PASSWORD FILES #######################################\e[00m"
-  ${FINDBIN} ${PATHNAME} -name passwd
-  ${FINDBIN} ${PATHNAME} -name shadow
-  ${FINDBIN} ${PATHNAME} -name *.psk
+  ${FINDBIN} ${PATHNAME} -name passwd 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name shadow 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name *.psk 2>/dev/null
 
   echo && echo -e "\e[00;33m### UNIX-MD5 HASHES ######################################\e[00m"
-  ${EGREPBIN} -sro '\$1\$\w{8}\S{23}' ${PATHNAME}
+  ${EGREPBIN} -sro '\$1\$\w{8}\S{23}' ${PATHNAME} 2>/dev/null
 
   echo && echo -e "\e[00;33m### SSL RELATED FILES ####################################\e[00m"
-  ${FINDBIN} ${PATHNAME} -name *.crt
-  ${FINDBIN} ${PATHNAME} -name *.pem
-  ${FINDBIN} ${PATHNAME} -name *.cer
-  ${FINDBIN} ${PATHNAME} -name *.p7b
-  ${FINDBIN} ${PATHNAME} -name *.p12
-  ${FINDBIN} ${PATHNAME} -name *.key
+  ${FINDBIN} ${PATHNAME} -name *.crt 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name *.pem 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name *.cer 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name *.p7b 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name *.p12 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name *.key 2>/dev/null
 
   echo && echo -e "\e[00;33m### SSH RELATED FILES ####################################\e[00m"
-  ${FINDBIN} ${PATHNAME} -name authorized_keys
-  ${FINDBIN} ${PATHNAME} -name *authorized_keys*
-  ${FINDBIN} ${PATHNAME} -name host_key
-  ${FINDBIN} ${PATHNAME} -name *host_key*
-  ${FINDBIN} ${PATHNAME} -name id_rsa
-  ${FINDBIN} ${PATHNAME} -name *id_rsa*
-  ${FINDBIN} ${PATHNAME} -name id_dsa
-  ${FINDBIN} ${PATHNAME} -name *id_dsa*
-  ${FINDBIN} ${PATHNAME} -name *.pub
+  ${FINDBIN} ${PATHNAME} -name authorized_keys 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name *authorized_keys* 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name host_key 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name *host_key* 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name id_rsa 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name *id_rsa* 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name id_dsa 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name *id_dsa* 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name *.pub 2>/dev/null
 
   echo && echo -e "\e[00;33m### CONFIG RELATED FILES #################################\e[00m"
-  ${FINDBIN} ${PATHNAME} -name *.conf
-  ${FINDBIN} ${PATHNAME} -name *.cfg
-  ${FINDBIN} ${PATHNAME} -name *.ini
+  ${FINDBIN} ${PATHNAME} -name *.conf 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name *.cfg 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name *.ini 2>/dev/null
 
   echo && echo -e "\e[00;33m### DATABASE RELATED FILES ###############################\e[00m"
-  ${FINDBIN} ${PATHNAME} -name *.db
-  ${FINDBIN} ${PATHNAME} -name *.sqlite
-  ${FINDBIN} ${PATHNAME} -name *.sqlite3
-  ${FINDBIN} ${PATHNAME} -name *.sqlitedb
-  ${FINDBIN} ${PATHNAME} -name *.store
-  ${FINDBIN} ${PATHNAME} -name *.sql
+  ${FINDBIN} ${PATHNAME} -name *.db 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name *.sqlite 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name *.sqlite3 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name *.sqlitedb 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name *.store 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name *.sql 2>/dev/null
 
   echo && echo -e "\e[00;33m### SHELL SCRIPTS ########################################\e[00m"
-  ${FINDBIN} ${PATHNAME} -name *.sh
+  ${FINDBIN} ${PATHNAME} -name *.sh 2>/dev/null
 
   echo && echo -e "\e[00;33m### BINARY FILES #########################################\e[00m"
-  ${FINDBIN} ${PATHNAME} -name *.bin
+  ${FINDBIN} ${PATHNAME} -name *.bin 2>/dev/null
 
   echo && echo -e "\e[00;33m### PATTERN IN FILES #####################################\e[00m"
   ${GREPBIN} -sirnow ${PATHNAME} -e "upgrade" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
@@ -125,12 +130,12 @@ function show_this() {
   ${GREPBIN} -sirnow ${PATHNAME} -e "AKIA" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
 
   echo && echo -e "\e[00;33m### WEB SERVERS ##########################################\e[00m"
-  ${FINDBIN} ${PATHNAME} -name apache
-  ${FINDBIN} ${PATHNAME} -name lighttpd
-  ${FINDBIN} ${PATHNAME} -name alphapd
-  ${FINDBIN} ${PATHNAME} -name httpd
-  ${FINDBIN} ${PATHNAME} -name GoAhead
-  ${FINDBIN} ${PATHNAME} -name nginx
+  ${FINDBIN} ${PATHNAME} -name apache 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name lighttpd 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name alphapd 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name httpd 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name GoAhead 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name nginx 2>/dev/null
 
   echo && echo -e "\e[00;33m### COMMAND INJECTION FUNCTIONS ##########################\e[00m"
   ${GREPBIN} -sirnow ${PATHNAME} -e "system" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
@@ -176,13 +181,13 @@ function show_this() {
   ${FINDBIN} ${PATHNAME} -name "ftpput" 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -al 2>/dev/null
 
   echo && echo -e "\e[00;33m### WEBFILES #############################################\e[00m"
-  ${FINDBIN} ${PATHNAME} -name "*.asp"
-  ${FINDBIN} ${PATHNAME} -name "*.html"
-  ${FINDBIN} ${PATHNAME} -name "*.xml"
-  ${FINDBIN} ${PATHNAME} -name "*.php"
-  ${FINDBIN} ${PATHNAME} -name "*.js"
-  ${FINDBIN} ${PATHNAME} -name "*.json"
-  ${FINDBIN} ${PATHNAME} -name "*.cgi"
+  ${FINDBIN} ${PATHNAME} -name "*.asp" 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name "*.html" 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name "*.xml" 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name "*.php" 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name "*.js" 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name "*.json" 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name "*.cgi" 2>/dev/null
 
   echo && echo -e "\e[00;33m### IP ADDRESSES #########################################\e[00m"
   ${GREPBIN} -sRIEho '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' --exclude-dir='dev' ${PATHNAME} | ${SORTBIN} -u
@@ -258,7 +263,11 @@ parse_args() {
         ;;
       *)
         if [[ $# -eq 1 ]]; then
-          PATHNAME=${1}
+          if [ "${1: -1}" == "/" ]; then
+            PATHNAME=${1}
+          else
+            PATHNAME=${1}/
+          fi
           shift # past argument
         else
           echo "Unknown option ${1}"
