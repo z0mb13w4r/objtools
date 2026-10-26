@@ -99,9 +99,6 @@ function do_upgrade() {
   ${ADDAPTBIN} -y ppa:giuspen/ppa
   ${APTBIN} update
   ${APTBIN} upgrade -y
-
-  ${APTBIN} install -y binutils-dev libssl-dev zlib1g-dev libfuzzy-dev
-  ${APTBIN} install -y build-essential liblzma-dev liblzo2-dev zlib1g-dev
 }
 
 function do_config() {
@@ -149,12 +146,36 @@ function do_gitsetup() {
 }
 
 function do_debians() {
+  ${APTBIN} install -y binutils-dev libssl-dev zlib1g-dev libfuzzy-dev libbz2-dev liblz4-dev libucl-dev
+  ${APTBIN} install -y build-essential liblzma-dev liblzo2-dev zlib1g-dev libfontconfig1-dev 
+
   ${APTBIN} install -y vim-gtk3 git git-doc git-email screen meld
   ${APTBIN} install -y device-tree-compiler
   ${APTBIN} install -y python3-scapy python3-pyx
   ${APTBIN} install -y python3-nmap
   ${APTBIN} install -y cherrytree
   ${APTBIN} install -y john
+  
+
+sudo apt-get install 7zip \
+    zstd \
+    srecord \
+    tar \
+    unzip \
+    sleuthkit \
+    cabextract \
+    curl \
+    wget \
+    git \
+    lz4 \
+    lzop \
+    unrar \
+    unyaffs \
+    python3-pip \
+    build-essential \
+    clang \
+    cpio \
+    device-tree-compiler
 }
 
 function do_objtools() {
@@ -173,7 +194,18 @@ function do_objtools() {
 }
 
 function do_sasquatch() {
-  :
+  ${WGETBIN} https://api.github.com/repos/onekey-sec/sasquatch/releases/latest -O ${GITHUBTXT}
+  
+  ${CATBIN} ${GITHUBTXT} | ${JQBIN} -r '(.tag_name)' > ${GITHUBTAG}
+  ${CATBIN} ${GITHUBTXT} | ${JQBIN} -r '(.assets[].name | select(. | endswith("_amd64.deb")))' | ${GREPBIN} "sasquatch_" > ${GITHUBNAM}
+  ${CATBIN} ${GITHUBTXT} | ${JQBIN} -r '(.assets[].browser_download_url | select(. | endswith("_amd64.deb")))' | ${GREPBIN} "sasquatch_" > ${GITHUBZIP}
+
+  local THIS_NAME=${TMP}$(${CATBIN} ${GITHUBNAM})
+
+  ${RMBIN} ${THIS_NAME}
+  ${WGETBIN} -P ${TMP} $(${CATBIN} ${GITHUBZIP})
+
+  ${APTBIN} install -y ${THIS_NAME}
 }
 
 function do_veracrypt() {
@@ -237,6 +269,7 @@ EXAMPLES:
   ${SCRIPTNAME} wordlist
   ${SCRIPTNAME} cyberchef
   ${SCRIPTNAME} veracrypt
+  ${SCRIPTNAME} sasquatch
   ${SCRIPTNAME} version
   ${SCRIPTNAME} help
 EOF
@@ -287,23 +320,27 @@ main() {
   if [ "${COMMAND}" == "install" ]; then
     do_upgrade
     do_debians
-    do_objtools
+    #do_remnux
+    #do_objtools
     do_sasquatch
-    do_veracrypt
-    do_remnux
-    do_cyberchef
-    do_gitsetup
-    do_vimsetup
-    do_wordlist
+    #do_veracrypt
+    #do_cyberchef
+    #do_gitsetup
+    #do_vimsetup
+    #do_wordlist
   elif [ "${COMMAND}" == "update" ]; then
     do_upgrade
     do_remnux
     do_objtools
+    do_sasquatch
     do_veracrypt
     do_cyberchef
   elif [ "${COMMAND}" == "objtools" ]; then
     do_upgrade
     do_objtools
+  elif [ "${COMMAND}" == "sasquatch" ]; then
+    do_upgrade
+    do_sasquatch
   elif [ "${COMMAND}" == "wordlist" ]; then
     do_wordlist
   elif [ "${COMMAND}" == "cyberchef" ]; then
