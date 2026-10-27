@@ -102,10 +102,9 @@ $SUDOBIN $MKDIRBIN -v -p $DEBIANBIN
 if [[ "${THIS_VERSION}" == "22.04" ]]; then
   :
 else
-  $WGETBIN -O $EXTERNBIN/sasquatch https://github.com/z0mb13w4r/sasquatch/releases/download/4.3/sasquatch
-  $CHMODBIN +x $EXTERNBIN/sasquatch
-
+  $SUDOBIN $COPYBIN -v $EXTERNBIN/binwalk3 $USRBIN/
   $SUDOBIN $COPYBIN -v $EXTERNBIN/sasquatch $USRBIN/
+  $SUDOBIN $COPYBIN -v $EXTERNBIN/sasquatch-v4be $USRBIN/
 fi
 
 $SUDOBIN $COPYBIN -v $EXTERNBIN/detect-ng $LOCALBIN/
