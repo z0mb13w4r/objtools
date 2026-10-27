@@ -1,8 +1,9 @@
-v1.10 - ??/10/2026
+v1.10 - 27/10/2026
 -----------------------------------------------------------------------
 [+] Updated REMnux upgrade script.  
 [+] Updated the firmware enumeration script.  
 [+] Added more privilege escalation checks.  
+[+] Added binwalk3 and sasquatch binaries.  
 [+] Added configuration files.  
 [+] Updated man pages.  
 [+] Bug fixes.  
