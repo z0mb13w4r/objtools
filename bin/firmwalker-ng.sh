@@ -31,6 +31,13 @@ function zcat() {
   zcheck "cat ${1}" "${xx}"
 }
 
+function zfind() {
+  xx=$(${FINDBIN} "${1}" -name "${2}" 2>/dev/null)
+  if [ "${xx}" ]; then
+    echo -e "${xx}"
+  fi
+}
+
 function zls() {
   xx=$(${LSBIN} -al ${1} 2>/dev/null)
   zcheck "ls -al ${1}" "${xx}"
@@ -65,50 +72,57 @@ function show_this() {
   zcat "${PATHNAME%?}/proc/version"
 
   echo -e "\e[00;33m### PASSWORD FILES #######################################\e[00m"
-  ${FINDBIN} ${PATHNAME} -name passwd 2>/dev/null
-  ${FINDBIN} ${PATHNAME} -name shadow 2>/dev/null
-  ${FINDBIN} ${PATHNAME} -name *.psk 2>/dev/null
+  zfind "${PATHNAME}" "passwd"
+  zfind "${PATHNAME}" "shadow"
+  zfind "${PATHNAME}" "*.psk"
 
   echo && echo -e "\e[00;33m### UNIX-MD5 HASHES ######################################\e[00m"
   ${EGREPBIN} -sro '\$1\$\w{8}\S{23}' ${PATHNAME} 2>/dev/null
 
   echo && echo -e "\e[00;33m### SSL RELATED FILES ####################################\e[00m"
-  ${FINDBIN} ${PATHNAME} -name *.crt 2>/dev/null
-  ${FINDBIN} ${PATHNAME} -name *.pem 2>/dev/null
-  ${FINDBIN} ${PATHNAME} -name *.cer 2>/dev/null
-  ${FINDBIN} ${PATHNAME} -name *.p7b 2>/dev/null
-  ${FINDBIN} ${PATHNAME} -name *.p12 2>/dev/null
-  ${FINDBIN} ${PATHNAME} -name *.key 2>/dev/null
+  zls  "${PATHNAME%?}/etc/ssl"
+
+  zfind "${PATHNAME}" "*.crt"
+  zfind "${PATHNAME}" "*.pem"
+  zfind "${PATHNAME}" "*.cer"
+  zfind "${PATHNAME}" "*.p7b"
+  zfind "${PATHNAME}" "*.p12"
+  zfind "${PATHNAME}" "*.key"
 
   echo && echo -e "\e[00;33m### SSH RELATED FILES ####################################\e[00m"
-  ${FINDBIN} ${PATHNAME} -name authorized_keys 2>/dev/null
-  ${FINDBIN} ${PATHNAME} -name *authorized_keys* 2>/dev/null
-  ${FINDBIN} ${PATHNAME} -name host_key 2>/dev/null
-  ${FINDBIN} ${PATHNAME} -name *host_key* 2>/dev/null
-  ${FINDBIN} ${PATHNAME} -name id_rsa 2>/dev/null
-  ${FINDBIN} ${PATHNAME} -name *id_rsa* 2>/dev/null
-  ${FINDBIN} ${PATHNAME} -name id_dsa 2>/dev/null
-  ${FINDBIN} ${PATHNAME} -name *id_dsa* 2>/dev/null
-  ${FINDBIN} ${PATHNAME} -name *.pub 2>/dev/null
+  zfind "${PATHNAME}" "authorized_keys"
+  zfind "${PATHNAME}" "*authorized_keys*"
+  zfind "${PATHNAME}" "host_key"
+  zfind "${PATHNAME}" "*host_key*"
+  zfind "${PATHNAME}" "id_rsa"
+  zfind "${PATHNAME}" "*id_rsa*"
+  zfind "${PATHNAME}" "id_dsa"
+  zfind "${PATHNAME}" "*id_dsa*"
+  zfind "${PATHNAME}" "*.pub"
 
   echo && echo -e "\e[00;33m### CONFIG RELATED FILES #################################\e[00m"
-  ${FINDBIN} ${PATHNAME} -name *.conf 2>/dev/null
-  ${FINDBIN} ${PATHNAME} -name *.cfg 2>/dev/null
-  ${FINDBIN} ${PATHNAME} -name *.ini 2>/dev/null
+  zfind "${PATHNAME}" "*.conf"
+  zfind "${PATHNAME}" "*.cfg"
+  zfind "${PATHNAME}" "*.ini"
 
   echo && echo -e "\e[00;33m### DATABASE RELATED FILES ###############################\e[00m"
-  ${FINDBIN} ${PATHNAME} -name *.db 2>/dev/null
-  ${FINDBIN} ${PATHNAME} -name *.sqlite 2>/dev/null
-  ${FINDBIN} ${PATHNAME} -name *.sqlite3 2>/dev/null
-  ${FINDBIN} ${PATHNAME} -name *.sqlitedb 2>/dev/null
-  ${FINDBIN} ${PATHNAME} -name *.store 2>/dev/null
-  ${FINDBIN} ${PATHNAME} -name *.sql 2>/dev/null
+  zfind "${PATHNAME}" "*.db"
+  zfind "${PATHNAME}" "*.sqlite"
+  zfind "${PATHNAME}" "*.sqlite3"
+  zfind "${PATHNAME}" "*.sqlitedb"
+  zfind "${PATHNAME}" "*.store"
+  zfind "${PATHNAME}" "*.sql"
+  zfind "${PATHNAME}" "*.mdb"
+  zfind "${PATHNAME}" "*.mdf"
+  zfind "${PATHNAME}" "*.myd"
+  zfind "${PATHNAME}" "*.dbf"
+  zfind "${PATHNAME}" "*.wdb"
 
   echo && echo -e "\e[00;33m### SHELL SCRIPTS ########################################\e[00m"
-  ${FINDBIN} ${PATHNAME} -name *.sh 2>/dev/null
+  zfind "${PATHNAME}" "*.sh"
 
   echo && echo -e "\e[00;33m### BINARY FILES #########################################\e[00m"
-  ${FINDBIN} ${PATHNAME} -name *.bin 2>/dev/null
+  zfind "${PATHNAME}" "*.bin"
 
   echo && echo -e "\e[00;33m### PATTERN IN FILES #####################################\e[00m"
   ${GREPBIN} -sirnow ${PATHNAME} -e "upgrade" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
@@ -128,14 +142,130 @@ function show_this() {
   ${GREPBIN} -sirnow ${PATHNAME} -e "api key" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
   ${GREPBIN} -sirnow ${PATHNAME} -e "oauth" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
   ${GREPBIN} -sirnow ${PATHNAME} -e "AKIA" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "cmd=" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "exec=" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "command=" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "execute=" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "AccessKey" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "AccessKeySecret" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "access_key" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "access_token" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "admin_pass" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "admin_user" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "algolia_admin_key" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "algolia_api_key" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "alias_pass" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "alicloud_access_key" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "amazon_secret_access_key" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "amazonaws" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "ansible_vault_password" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "aos_key" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "api_key" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "api_key_secret" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "api_key_sid" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "api_secret" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "api.googlemaps" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "apikey" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "apiSecret" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "app_debug" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "app_id" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "app_key" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "app_log_level" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "app_secret" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "appkey" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "appkeysecret" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "application_key" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "appsecret" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "auth_token" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "authorizationToken" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "authsecret" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "aws_access" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "aws_access_key_id" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "aws_bucket" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "aws_key" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "aws_secret" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "aws_secret_key" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "aws_token" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "AWSSecretKey" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "b2_app_key" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "bashrc password" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "bintray_apikey" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "bintray_gpg_password" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "bintray_key" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "bintraykey" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "bluemix_api_key" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "bluemix_pass" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "browserstack_access_key" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "bucket_password" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "bucketeer_aws_access_key_id" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "bucketeer_aws_secret_access_key" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "built_branch_deploy_key" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "bx_password" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "cache_driver" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "cache_s3_secret_key" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "cattle_access_key" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "cattle_secret_key" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "certificate_password" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "ci_deploy_password" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "client_secret" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "client_zpk_secret_key" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "clojars_password" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "cloud_api_key" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "cloud_watch_aws_access_key" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "cloudant_password" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "cloudflare_api_key" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "cloudflare_auth_key" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "cloudinary_api_secret" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "cloudinary_name" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "codecov_token" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "config" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "conn.login" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "connectionstring" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "consumer_key" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "consumer_secret" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "credentials" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "cypress_record_key" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "database_password" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "database_schema_test" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "datadog_api_key" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "datadog_app_key" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "db_password" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "db_server" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "db_username" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "dbpasswd" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "dbpassword" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "dbuser" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "deploy_password" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "digitalocean_ssh_key_body" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "digitalocean_ssh_key_ids" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "docker_hub_password" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "docker_key" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "docker_pass" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "docker_passwd" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "docker_password" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "dockerhub_password" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "dockerhubpassword" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "dot-files" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "dotfiles" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "droplet_travis_password" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "dynamoaccesskeyid" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "dynamosecretaccesskey" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "elastica_host" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "elastica_port" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "elasticsearch_password" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "encryption_key" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "encryption_password" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "env.heroku_api_key" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "env.sonatype_password" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
+  ${GREPBIN} -sirnow ${PATHNAME} -e "eureka.awssecretkey" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
 
   echo && echo -e "\e[00;33m### WEB SERVERS ##########################################\e[00m"
-  ${FINDBIN} ${PATHNAME} -name apache 2>/dev/null
-  ${FINDBIN} ${PATHNAME} -name lighttpd 2>/dev/null
-  ${FINDBIN} ${PATHNAME} -name alphapd 2>/dev/null
-  ${FINDBIN} ${PATHNAME} -name httpd 2>/dev/null
-  ${FINDBIN} ${PATHNAME} -name GoAhead 2>/dev/null
-  ${FINDBIN} ${PATHNAME} -name nginx 2>/dev/null
+  zfind "${PATHNAME}" "apache"
+  zfind "${PATHNAME}" "lighttpd"
+  zfind "${PATHNAME}" "alphapd"
+  zfind "${PATHNAME}" "httpd"
+  zfind "${PATHNAME}" "GoAhead"
+  zfind "${PATHNAME}" "nginx"
 
   echo && echo -e "\e[00;33m### COMMAND INJECTION FUNCTIONS ##########################\e[00m"
   ${GREPBIN} -sirnow ${PATHNAME} -e "system" 2>/dev/null | ${CUTBIN} -d ':' -f 1,3 | ${SORTBIN} -u
@@ -170,7 +300,6 @@ function show_this() {
   ${FINDBIN} ${PATHNAME} -name "sshd" 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -al 2>/dev/null
   ${FINDBIN} ${PATHNAME} -name "scp" 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -al 2>/dev/null
   ${FINDBIN} ${PATHNAME} -name "sftp" 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -al 2>/dev/null
-  ${FINDBIN} ${PATHNAME} -name "sftp" 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -al 2>/dev/null
   ${FINDBIN} ${PATHNAME} -name "tftp" 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -al 2>/dev/null
   ${FINDBIN} ${PATHNAME} -name "dropbear" 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -al 2>/dev/null
   ${FINDBIN} ${PATHNAME} -name "busybox" 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -al 2>/dev/null
@@ -181,13 +310,13 @@ function show_this() {
   ${FINDBIN} ${PATHNAME} -name "ftpput" 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -al 2>/dev/null
 
   echo && echo -e "\e[00;33m### WEBFILES #############################################\e[00m"
-  ${FINDBIN} ${PATHNAME} -name "*.asp" 2>/dev/null
-  ${FINDBIN} ${PATHNAME} -name "*.html" 2>/dev/null
-  ${FINDBIN} ${PATHNAME} -name "*.xml" 2>/dev/null
-  ${FINDBIN} ${PATHNAME} -name "*.php" 2>/dev/null
-  ${FINDBIN} ${PATHNAME} -name "*.js" 2>/dev/null
-  ${FINDBIN} ${PATHNAME} -name "*.json" 2>/dev/null
-  ${FINDBIN} ${PATHNAME} -name "*.cgi" 2>/dev/null
+  zfind "${PATHNAME}" "*.asp"
+  zfind "${PATHNAME}" "*.html"
+  zfind "${PATHNAME}" "*.xml"
+  zfind "${PATHNAME}" "*.php"
+  zfind "${PATHNAME}" "*.js"
+  zfind "${PATHNAME}" "*.json"
+  zfind "${PATHNAME}" "*.cgi"
 
   echo && echo -e "\e[00;33m### IP ADDRESSES #########################################\e[00m"
   ${GREPBIN} -sRIEho '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' --exclude-dir='dev' ${PATHNAME} | ${SORTBIN} -u
