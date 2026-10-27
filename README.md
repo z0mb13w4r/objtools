@@ -4,7 +4,10 @@ These tools were originally designed as part of a research project on industrial
 
 This suite of tools was inspired by a problem I encountered while comparing two subtly different executables that were compiled from the same source code. Also, having binaries built with different cross-compilers raises the question of which flavour of readelf or objdump to use? After I reached 12 and started thinking about a simple solution that could be automated and didn't require a $ 7,000-a-year software license.
 
-This problem is solved by the **Heuristic Assembly Language Analysis Engine (HALAE)**, which converts x86-64, ARM, MIPS or RISC-V assembly language into an Intermediate Language (IL) for the comparison and analysis.
+These problems are solved by:
+1. The **Heuristic Assembly Language Analysis Engine (HALAE)**, which converts x86-64, ARM, MIPS or RISC-V assembly language into an Intermediate Language (IL) for comparison and analysis.
+2. Tools that deploy and upgrade **REMnux: A Linux Toolkit for Malware Analysis**.
+3. Tools that automate **Firmware Analysis**.
 
 ![WELCOME](https://github.com/z0mb13w4r/z0mb13w4r/blob/main/objtools-image.png)
 
@@ -16,7 +19,9 @@ This problem is solved by the **Heuristic Assembly Language Analysis Engine (HAL
 
 **detect-ng** is a tool for file and compiler identification supporting signature-based and heuristic analysis. [READ MORE...](https://github.com/z0mb13w4r/objtools/wiki/detect%E2%80%90ng)
 
-**enumerate-fs** is a script inspired by rebootuser’s LinEnum for enumeration and privilege escalation, and enhanced to be used with both devices and firmware images. This information is useful for hardening devices or for understanding how an adversary obtained persistence, privilege escalation, or lateral movement. [READ MORE...](https://github.com/z0mb13w4r/objtools/wiki/enumerate%E2%80%90fs)
+**enumerate-ng.sh** is a script inspired by rebootuser’s LinEnum for enumeration and privilege escalation, and enhanced to be used with both devices and firmware images. This information is useful for hardening devices or for understanding how an adversary obtained persistence, privilege escalation, or lateral movement.
+
+**firmwalker-ng.sh** is a script inspired by Craig Smith's no longer supported firmwalker script, which is an automated bash script developed for security researchers and pentesters to search and analyse extracted Linux-based IoT firmware file systems for potential vulnerabilities and sensitive data.
 
 **objcopy-ng** copies the contents of an object file to another using the GNU BFD Library to readand write the object files. It can write the destination object file in a format different from the source object files.
 
