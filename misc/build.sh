@@ -99,9 +99,7 @@ $SUDOBIN $MKDIRBIN -v -p $LOCALBIN
 $SUDOBIN $MKDIRBIN -v -p $LOCALMAN
 $SUDOBIN $MKDIRBIN -v -p $DEBIANBIN
 
-if [[ "${THIS_VERSION}" == "22.04" ]]; then
-  :
-else
+if [[ "${THIS_VERSION}" == "24.04" ]]; then
   $SUDOBIN $COPYBIN -v $EXTERNBIN/binwalk3 $USRBIN/
   $SUDOBIN $COPYBIN -v $EXTERNBIN/sasquatch $USRBIN/
   $SUDOBIN $COPYBIN -v $EXTERNBIN/sasquatch-v4be $USRBIN/
