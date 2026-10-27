@@ -5,6 +5,7 @@ v1.10 - 27/10/2026
 [+] Added more privilege escalation checks.  
 [+] Added binwalk3 and sasquatch binaries.  
 [+] Added configuration files.  
+[+] Updated Capstone Engine.  
 [+] Updated man pages.  
 [+] Bug fixes.  
 
