@@ -6,6 +6,7 @@ SCRIPTNAME=$(basename "$0")
 LSBIN=/usr/bin/ls
 CATBIN=/usr/bin/cat
 CUTBIN=/usr/bin/cut
+FILEBIN=/usr/bin/file
 FINDBIN=/usr/bin/find
 GREPBIN=/usr/bin/grep
 SORTBIN=/usr/bin/sort
@@ -301,18 +302,24 @@ function show_this() {
   zgrep "${PATHNAME}" "scanf"
 
   echo && echo -e "\e[00;33m### IMPORTANT BINARIES ###################################\e[00m"
-  ${FINDBIN} ${PATHNAME} -name "ssh" 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -al 2>/dev/null
-  ${FINDBIN} ${PATHNAME} -name "sshd" 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -al 2>/dev/null
-  ${FINDBIN} ${PATHNAME} -name "scp" 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -al 2>/dev/null
-  ${FINDBIN} ${PATHNAME} -name "sftp" 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -al 2>/dev/null
-  ${FINDBIN} ${PATHNAME} -name "tftp" 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -al 2>/dev/null
-  ${FINDBIN} ${PATHNAME} -name "dropbear" 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -al 2>/dev/null
-  ${FINDBIN} ${PATHNAME} -name "busybox" 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -al 2>/dev/null
-  ${FINDBIN} ${PATHNAME} -name "telnet" 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -al 2>/dev/null
-  ${FINDBIN} ${PATHNAME} -name "telnetd" 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -al 2>/dev/null
-  ${FINDBIN} ${PATHNAME} -name "openssl" 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -al 2>/dev/null
-  ${FINDBIN} ${PATHNAME} -name "ftpget" 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -al 2>/dev/null
-  ${FINDBIN} ${PATHNAME} -name "ftpput" 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -al 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name "ssh" ! -type d 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -al 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name "sshd" ! -type d 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -al 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name "scp" ! -type d 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -al 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name "sftp" ! -type d 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -al 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name "tftp" ! -type d 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -al 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name "dropbear" ! -type d 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -al 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name "toybox" ! -type d 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -al 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name "busybox" ! -type d 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -al 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name "rustybox" ! -type d 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -al 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name "telnet" ! -type d 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -al 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name "telnetd" ! -type d 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -al 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name "openssl" ! -type d 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -al 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name "ftpget" ! -type d 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -al 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name "ftpput" ! -type d 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -al 2>/dev/null
+  echo
+  ${FINDBIN} ${PATHNAME} -name "toybox" -type f 2>/dev/null | ${XARGSBIN} -r ${FILEBIN} 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name "busybox" -type f 2>/dev/null | ${XARGSBIN} -r ${FILEBIN} 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name "rustybox" -type f 2>/dev/null | ${XARGSBIN} -r ${FILEBIN} 2>/dev/null
 
   echo && echo -e "\e[00;33m### WEBFILES #############################################\e[00m"
   zfind "${PATHNAME}" "*.asp"
