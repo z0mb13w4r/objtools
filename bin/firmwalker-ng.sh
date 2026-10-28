@@ -332,6 +332,8 @@ function show_this() {
 
   echo && echo -e "\e[00;33m### EMAILS ###############################################\e[00m"
   ${GREPBIN} -sRIEoh '([[:alnum:]_.-]+@[[:alnum:]_.-]+?\.[[:alpha:].]{2,6})' "$@" --exclude-dir='dev' ${PATHNAME} | ${SORTBIN} -u
+
+  echo && echo -e "\e[00;33m### SCAN COMPLETE ########################################\e[00m"
 }
 
 function show_usage() {
@@ -426,6 +428,7 @@ main() {
     exit 0
   fi
 
+  show_version
   show_this
 }
 
