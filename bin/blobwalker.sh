@@ -12,13 +12,15 @@ GREPBIN=/usr/bin/grep
 SORTBIN=/usr/bin/sort
 EGREPBIN=/usr/bin/egrep
 FDISKBIN=/usr/sbin/fdisk
+GDISKBIN=/usr/sbin/gdisk
+
 XARGSBIN=/usr/bin/xargs
 BINWALKBIN=/usr/bin/binwalk
 HEXDUMPBIN=/usr/bin/hexdump
 STRINGSBIN=/usr/bin/strings
 
 USERNAME=${SUDO_USER}
-PATHNAME=/
+PATHNAME=
 
 function zshow() {
   echo -e "\e[00;32m${1}:\e[00m"
@@ -34,22 +36,9 @@ function zcheck() {
 function zdo() {
   xx=$(${1})
   if [ "${xx}" ]; then
-  echo -e "\e[00;32m${1}:\e[00m"
-  echo -e "${xx}\n"
+    echo -e "\e[00;32m${1}:\e[00m"
+    echo -e "${xx}\n"
   fi
-}
-
-function show_this() {
-  echo -e "\e[00;33m### SYSTEM FILES #########################################\e[00m"
-
-  zdo "${FILEBIN} ${PATHNAME}"
-  zdo "${BINWALKBIN} ${PATHNAME}"
-  #${BINWALKBIN} -E ${PATHNAME}
-  zdo "${HEXDUMPBIN} -C -n 512 ${PATHNAME}"
-  #${HEXDUMPBIN} -C ${PATHNAME} | head
-  zdo "${FDISKBIN} -lu ${PATHNAME}"
-
-  echo -e "\e[00;33m### SCAN COMPLETE ########################################\e[00m"
 }
 
 function show_strings() {
@@ -61,6 +50,20 @@ function show_strings() {
   #${STRINGSBIN} -tx ${PATHNAME}
 
   echo -e '\n' && echo -e "\e[00;33m### SCAN COMPLETE ########################################\e[00m"
+}
+
+function show_this() {
+  echo -e "\e[00;33m### SYSTEM FILES #########################################\e[00m"
+
+  zdo "${FILEBIN} ${PATHNAME}"
+  zdo "${BINWALKBIN} ${PATHNAME}"
+  #${BINWALKBIN} -E ${PATHNAME}
+  zdo "${HEXDUMPBIN} -C -n 512 ${PATHNAME}"
+  #${HEXDUMPBIN} -C ${PATHNAME} | head
+  #zdo "${GDISKBIN} -l ${PATHNAME}"
+  zdo "${FDISKBIN} -lu ${PATHNAME}"
+
+  echo -e "\e[00;33m### SCAN COMPLETE ########################################\e[00m"
 }
 
 function show_usage() {
