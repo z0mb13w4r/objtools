@@ -1,5 +1,5 @@
 Package: objtools
-Version: 1.10
+Version: 1.11
 Architecture: amd64
 Maintainer: Kyle Wickens
 Depends: libssl-dev, zlib1g-dev, libfuzzy-dev, binutils-dev, liblzma-dev, libbz2-dev, liblz4-dev, liblzma5, liblzo2-dev, libucl-dev
