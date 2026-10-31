@@ -22,6 +22,8 @@ STRINGSBIN=/usr/bin/strings
 USERNAME=${SUDO_USER}
 PATHNAME=
 
+BINLIST='aria2c\|arp\|ash\|awk\|base64\|bash\|busybox\|cat\|chmod\|chown\|cp\|csh\|curl\|cut\|dash\|date\|dd\|diff\|dmsetup\|docker\|ed\|emacs\|env\|expand\|expect\|file\|find\|flock\|fmt\|fold\|ftp\|gawk\|gdb\|gimp\|git\|grep\|head\|ht\|iftop\|ionice\|ip$\|irb\|jjs\|jq\|jrunscript\|ksh\|ld.so\|ldconfig\|less\|logsave\|lua\|make\|man\|mawk\|more\|mv\|mysql\|nano\|nawk\|nc\|netcat\|nice\|nl\|nmap\|node\|od\|openssl\|perl\|pg\|php\|pic\|pico\|python\|readelf\|rlwrap\|rpm\|rpmquery\|rsync\|ruby\|run-parts\|rvim\|scp\|script\|sed\|setarch\|sftp\|sh\|shuf\|socat\|sort\|sqlite3\|ssh$\|start-stop-daemon\|stdbuf\|strace\|systemctl\|tail\|tar\|taskset\|tclsh\|tee\|telnet\|tftp\|time\|timeout\|ul\|unexpand\|uniq\|unshare\|vi\|vim\|watch\|wget\|wish\|xargs\|xxd\|zip\|zsh'
+
 function zshow() {
   echo -e "\e[00;32m${1}:\e[00m"
   echo -e "${2}\n"
@@ -39,6 +41,22 @@ function zdo() {
     echo -e "\e[00;32m${1}:\e[00m"
     echo -e "${xx}\n"
   fi
+}
+
+function show_scanner() {
+  echo -e "\e[00;33m### SCANNER FILES ########################################\e[00m"
+
+  ${STRINGSBIN} ${PATHNAME} | ${GREPBIN} 'bootargs=' -A 14
+  ${STRINGSBIN} ${PATHNAME} | ${GREPBIN} 'U-Boot'
+
+  ${STRINGSBIN} ${PATHNAME} | ${GREPBIN} -sIEho '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' | ${SORTBIN} -u
+  ${STRINGSBIN} ${PATHNAME} | ${GREPBIN} -sIEho '(http|https)://[^/"]+' | ${SORTBIN} -u
+  ${STRINGSBIN} ${PATHNAME} | ${GREPBIN} -sIEho '(ftp|ftps|tftp)://[^/"]+' | ${SORTBIN} -u
+  ${STRINGSBIN} ${PATHNAME} | ${GREPBIN} -sIEho '([[:alnum:]_.-]+@[[:alnum:]_.-]+?\.[[:alpha:].]{2,6})' "$@" | ${SORTBIN} -u
+
+  #${STRINGSBIN} ${PATHNAME} | ${GREPBIN} ${BINLIST}
+
+  echo -e '\n' && echo -e "\e[00;33m### SCAN COMPLETE ########################################\e[00m"
 }
 
 function show_strings() {
@@ -109,7 +127,7 @@ function show_version() {
 parse_args() {
   while [[ $# -gt 0 ]]; do
     case ${1} in
-      strings)
+      strings|scanner)
         COMMAND=${1}
         shift # past argument
         ;;
@@ -151,6 +169,8 @@ main() {
   show_version
   if [ "${COMMAND}" == "strings" ]; then
     show_strings
+  elif [ "${COMMAND}" == "scanner" ]; then
+    show_scanner
   else
     show_this
   fi
