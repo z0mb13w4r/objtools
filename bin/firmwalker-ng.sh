@@ -74,10 +74,24 @@ function show_this() {
   zcat "${PATHNAME%?}/etc/wifiap_wpa2.conf"
   zcat "${PATHNAME%?}/etc/wpa_supplicant.conf"
   zcat "${PATHNAME%?}/etc/bootchartd.conf"
+  zcat "${PATHNAME%?}/etc/crontab"
+  zcat "${PATHNAME%?}/proc/sys/kernel/tainted"
   zcat "${PATHNAME%?}/proc/sys/kernel/hostname"
   zcat "${PATHNAME%?}/proc/sys/kernel/osrelease"
   zcat "${PATHNAME%?}/proc/sys/kernel/ostype"
   zcat "${PATHNAME%?}/proc/version"
+  zls  "${PATHNAME%?}/root/"
+  zls  "${PATHNAME%?}/home/"
+  zls  "${PATHNAME%?}/lib/modules/"
+  zls  "${PATHNAME%?}/lib/systemd/system/"
+  ${CATBIN} ${PATHNAME%?}/proc/modules 2>/dev/null | ${GREPBIN} -E "O|E"
+
+##grep -rn --include="*.py" -E "cursor\.execute|render_template_string|send_file|os\.path\.join" .
+##grep -rn --include="*.py" -E "os\.system|subprocess|eval\(|exec\(|pickle\.loads|render_template_string|cursor\.execute|send_file|open\(" .
+
+##grep -rnE "(SECRET|KEY|TOKEN|PASSWORD|API_KEY)\s*=\s*['\"]" --include="*.py" .
+##grep -rnE "DEBUG\s*=\s*True|TESTING\s*=\s*True|verify\s*=\s*False" .
+##grep -rE "AKIA[0-9A-Z]{16}" .
 
   echo -e "\e[00;33m### PASSWORD FILES #######################################\e[00m"
   zfind "${PATHNAME}" "passwd"
