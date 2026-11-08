@@ -3,6 +3,7 @@
 SCRIPTVERSION=1.0
 SCRIPTNAME=$(basename "$0")
 
+CATBIN=/usr/bin/cat
 CUTBIN=/usr/bin/cut
 FINDBIN=/usr/bin/find
 GREPBIN=/usr/bin/grep
