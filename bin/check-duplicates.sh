@@ -11,13 +11,13 @@ UNIQBIN=/usr/bin/uniq
 MD5SUMBIN=/usr/bin/md5sum
 
 THISNAME=/tmp/md5sum.txt
-PATHNAME=/
+PATHNAME=.
 
 function show_this() {
   if [ "${2}" == "recursive" ]; then
-    ${FINDBIN} . -name '*' -type f -exec ${MD5SUMBIN} {} \; | ${SORTBIN} > ${THISNAME}
+    ${FINDBIN} ${PATHNAME} -name '*' -type f -exec ${MD5SUMBIN} {} \; | ${SORTBIN} > ${THISNAME}
   else
-    ${MD5SUMBIN} * | ${SORTBIN} > ${THISNAME}
+    ${MD5SUMBIN} ${PATHNAME}/* | ${SORTBIN} > ${THISNAME}
   fi
   ${CUTBIN} -d ' ' -f 1 ${THISNAME} | ${UNIQBIN} -Du | ${GREPBIN} -f - ${THISNAME}
 }
