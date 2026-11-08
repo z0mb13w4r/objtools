@@ -32,6 +32,7 @@ TMP=/tmp/
 VIMTXT=/home/remnux/.vimrc
 CYBERCHEF=/home/remnux/shared/cyberchef/
 CYBERCHEFBASH=/usr/local/bin/cyberchef
+SCRIPTDIR=/usr/local/bin/
 
 GITHUBNAM=${TMP}github.nam
 GITHUBTAG=${TMP}github.tag
@@ -149,10 +150,9 @@ function do_debians() {
   ${APTBIN} install -y binutils-dev libssl-dev zlib1g-dev libfuzzy-dev libbz2-dev liblz4-dev libucl-dev
   ${APTBIN} install -y build-essential liblzma-dev liblzo2-dev zlib1g-dev libfontconfig1-dev
 
-  ${APTBIN} install -y vim-gtk3 git git-doc git-email screen meld
+  ${APTBIN} install -y vim-gtk3 git git-doc git-email screen meld openvpn
   ${APTBIN} install -y device-tree-compiler
-  ${APTBIN} install -y python3-scapy python3-pyx
-  ${APTBIN} install -y python3-nmap
+  ${APTBIN} install -y python3-scapy python3-pyx python3-nmap nmap
   ${APTBIN} install -y cherrytree
   ${APTBIN} install -y john
 }
@@ -163,21 +163,6 @@ function do_objtools() {
   ${CATBIN} ${GITHUBTXT} | ${JQBIN} -r '(.tag_name)' > ${GITHUBTAG}
   ${CATBIN} ${GITHUBTXT} | ${JQBIN} -r '(.assets[].name | select(. | contains("24.04-amd64.deb")))' > ${GITHUBNAM}
   ${CATBIN} ${GITHUBTXT} | ${JQBIN} -r '(.assets[].browser_download_url | select(. | contains("24.04-amd64.deb")))' > ${GITHUBZIP}
-
-  local THIS_NAME=${TMP}$(${CATBIN} ${GITHUBNAM})
-
-  ${RMBIN} ${THIS_NAME}
-  ${WGETBIN} -P ${TMP} $(${CATBIN} ${GITHUBZIP})
-
-  ${APTBIN} install -y ${THIS_NAME}
-}
-
-function do_sasquatch() {
-  ${WGETBIN} https://api.github.com/repos/onekey-sec/sasquatch/releases/latest -O ${GITHUBTXT}
-
-  ${CATBIN} ${GITHUBTXT} | ${JQBIN} -r '(.tag_name)' > ${GITHUBTAG}
-  ${CATBIN} ${GITHUBTXT} | ${JQBIN} -r '(.assets[].name | select(. | endswith("_amd64.deb")))' | ${GREPBIN} "sasquatch_" > ${GITHUBNAM}
-  ${CATBIN} ${GITHUBTXT} | ${JQBIN} -r '(.assets[].browser_download_url | select(. | endswith("_amd64.deb")))' | ${GREPBIN} "sasquatch_" > ${GITHUBZIP}
 
   local THIS_NAME=${TMP}$(${CATBIN} ${GITHUBNAM})
 
@@ -237,6 +222,28 @@ function do_wordlist() {
   ${MVBIN} SecLists-master/ /usr/share/wordlists/SecLists/
 }
 
+function do_scripts() {
+  ${WGETBIN} https://raw.githubusercontent.com/z0mb13w4r/objtools/refs/heads/main/bin/blobwalker-ng.sh
+  ${CHMODBIN} +x blobwalker-ng.sh
+  ${MVBIN} blobwalker-ng.sh ${SCRIPTDIR}
+
+  ${WGETBIN} https://raw.githubusercontent.com/z0mb13w4r/objtools/refs/heads/main/bin/enumerate-ng.sh
+  ${CHMODBIN} +x enumerate-ng.sh
+  ${MVBIN} enumerate-ng.sh ${SCRIPTDIR}
+
+  ${WGETBIN} https://raw.githubusercontent.com/z0mb13w4r/objtools/refs/heads/main/bin/firmwalker-ng.sh
+  ${CHMODBIN} +x firmwalker-ng.sh
+  ${MVBIN} firmwalker-ng.sh ${SCRIPTDIR}
+
+  ${WGETBIN} https://raw.githubusercontent.com/z0mb13w4r/objtools/refs/heads/main/bin/check-duplicates.sh
+  ${CHMODBIN} +x check-duplicates.sh
+  ${MVBIN} check-duplicates.sh ${SCRIPTDIR}
+
+  ${WGETBIN} https://raw.githubusercontent.com/z0mb13w4r/objtools/refs/heads/main/bin/yara-rules-ng
+  ${CHMODBIN} +x yara-rules-ng
+  ${MVBIN} yara-rules-ng ${SCRIPTDIR}
+}
+
 function show_usage() {
   ${CATBIN} << EOF
 Usage: ${SCRIPTNAME} v${SCRIPTVERSION}
@@ -248,7 +255,6 @@ EXAMPLES:
   ${SCRIPTNAME} wordlist
   ${SCRIPTNAME} cyberchef
   ${SCRIPTNAME} veracrypt
-  ${SCRIPTNAME} sasquatch
   ${SCRIPTNAME} version
   ${SCRIPTNAME} help
 EOF
@@ -261,7 +267,7 @@ function show_version() {
 parse_args() {
   while [[ $# -gt 0 ]]; do
     case ${1} in
-      config|install|update|objtools|veracrypt|version|help)
+      config|install|update|objtools|cyberchef|scripts|wordlist|veracrypt|version|help)
         COMMAND=${1}
         shift # past argument
         ;;
@@ -301,7 +307,6 @@ main() {
     do_debians
     do_remnux
     do_objtools
-    do_sasquatch
     do_veracrypt
     do_cyberchef
     do_gitsetup
@@ -311,15 +316,13 @@ main() {
     do_upgrade
     do_remnux
     do_objtools
-    do_sasquatch
     do_veracrypt
     do_cyberchef
+  elif [ "${COMMAND}" == "scripts" ]; then
+    do_scripts
   elif [ "${COMMAND}" == "objtools" ]; then
     do_upgrade
     do_objtools
-  elif [ "${COMMAND}" == "sasquatch" ]; then
-    do_upgrade
-    do_sasquatch
   elif [ "${COMMAND}" == "wordlist" ]; then
     do_wordlist
   elif [ "${COMMAND}" == "cyberchef" ]; then
