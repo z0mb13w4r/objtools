@@ -12,6 +12,7 @@ GREPBIN=/usr/bin/grep
 SORTBIN=/usr/bin/sort
 EGREPBIN=/usr/bin/egrep
 XARGSBIN=/usr/bin/xargs
+STRINGBIN=/usr/bin/strings
 
 USERNAME=${SUDO_USER}
 PATHNAME=/
@@ -334,6 +335,8 @@ function show_this() {
   ${FINDBIN} ${PATHNAME} -name "toybox" -type f 2>/dev/null | ${XARGSBIN} -r ${FILEBIN} 2>/dev/null
   ${FINDBIN} ${PATHNAME} -name "busybox" -type f 2>/dev/null | ${XARGSBIN} -r ${FILEBIN} 2>/dev/null
   ${FINDBIN} ${PATHNAME} -name "rustybox" -type f 2>/dev/null | ${XARGSBIN} -r ${FILEBIN} 2>/dev/null
+  echo
+  ${FINDBIN} ${PATHNAME} -name "busybox" -type f 2>/dev/null | ${XARGSBIN} -r ${STRINGBIN} 2>/dev/null | ${GREPBIN} '[ ][v][^ ]*[.]'
 
   echo && echo -e "\e[00;33m### WEBFILES #############################################\e[00m"
   zfind "${PATHNAME}" "*.asp"
