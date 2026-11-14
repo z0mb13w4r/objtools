@@ -286,8 +286,16 @@ function show_this() {
   zfind "${PATHNAME}" "lighttpd"
   zfind "${PATHNAME}" "alphapd"
   zfind "${PATHNAME}" "httpd"
+  zfind "${PATHNAME}" "mini_httpd"
   zfind "${PATHNAME}" "GoAhead"
   zfind "${PATHNAME}" "nginx"
+
+  echo
+  ${FINDBIN} ${PATHNAME} -name "httpd" -type f 2>/dev/null | ${XARGSBIN} -r ${FILEBIN} 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name "mini_httpd" -type f 2>/dev/null | ${XARGSBIN} -r ${FILEBIN} 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name "httpd" -type f 2>/dev/null | ${XARGSBIN} -r ${STRINGBIN} 2>/dev/null | ${GREPBIN} -E '^V[0-9]+[.][0-9]+'
+  echo
+  ${FINDBIN} ${PATHNAME} -name "mini_httpd" -type f 2>/dev/null | ${XARGSBIN} -r ${STRINGBIN} 2>/dev/null | ${GREPBIN} -E 'httpd/[0-9]+[.][0-9]+'
 
   echo && echo -e "\e[00;33m### COMMAND INJECTION FUNCTIONS ##########################\e[00m"
   zgrep "${PATHNAME}" "system"
