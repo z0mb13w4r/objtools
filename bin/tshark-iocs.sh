@@ -1,4 +1,8 @@
 #!/bin/bash
+
+SCRIPTVERSION=1.0
+SCRIPTNAME=$(basename "$0")
+
 PCAP="${1:-investigation.pcap}"
 OUT="${2:-evidence/iocs}"
 
