@@ -28,9 +28,12 @@ app_context_name    = ProtoField.string("dicom-a.app_context_name", "application
 presentation_context_type   = ProtoField.uint8("dicom-a.presentation_context_type", "presentationContextType", base_DEC)
 presentation_context_length = ProtoField.uint16("dicom-a.presentation_context_length", "presentationContextLength", base_DEC)
 
+userinfo_length     = ProtoField.uint16("dicom-a.userinfo_length", "userinfoLength", base_DEC)
+
 dicom_protocol.fields = {message_length, pdu_type, protocol_version,
   calling_application, called_application, app_context_type, app_context_length, app_context_name,
-  presentation_context_type, presentation_context_length}
+  presentation_context_type, presentation_context_length,
+  userinfo_length}
 
 function dicom_protocol.dissector(buffer, pinfo, tree)
   pinfo.cols.protocol = dicom_protocol.name
@@ -63,6 +66,13 @@ function dicom_protocol.dissector(buffer, pinfo, tree)
     presentation_context_tree:add(presentation_context_length, buffer(78 + context_variables_length + 2, 2))
 
     -- TODO: Extract Presentation Context Items
+
+    --Extract User Info Context
+    local user_info_length = buffer(78 + context_variables_length + 2 + presentation_items_length + 2 + 2, 2):uint()
+    local userinfo_context_tree = assoc_tree:add(dicom_protocol, buffer(78 + context_variables_length + presentation_items_length + 4, user_info_length + 4), "User Info Context")
+    userinfo_context_tree:add(userinfo_length, buffer(78 + context_variables_length + 2 + presentation_items_length + 2 + 2, 2))
+
+    -- TODO: Extract User Info Context
   end
 end
 
