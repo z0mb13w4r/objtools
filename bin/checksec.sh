@@ -1,36 +1,36 @@
 #!/bin/bash
 #
-# The BSD License (http://www.opensource.org/licenses/bsd-license.php) 
+# The BSD License (http://www.opensource.org/licenses/bsd-license.php)
 # specifies the terms and conditions of use for checksec.sh:
 #
 # Copyright (c) 2009-2011, Tobias Klein.
 # All rights reserved.
 #
-# Redistribution and use in source and binary forms, with or without 
-# modification, are permitted provided that the following conditions 
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
 # are met:
-# 
-# * Redistributions of source code must retain the above copyright 
+#
+# * Redistributions of source code must retain the above copyright
 #   notice, this list of conditions and the following disclaimer.
-# * Redistributions in binary form must reproduce the above copyright 
-#   notice, this list of conditions and the following disclaimer in 
-#   the documentation and/or other materials provided with the 
+# * Redistributions in binary form must reproduce the above copyright
+#   notice, this list of conditions and the following disclaimer in
+#   the documentation and/or other materials provided with the
 #   distribution.
-# * Neither the name of Tobias Klein nor the name of trapkit.de may be 
-#   used to endorse or promote products derived from this software 
+# * Neither the name of Tobias Klein nor the name of trapkit.de may be
+#   used to endorse or promote products derived from this software
 #   without specific prior written permission.
 #
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS 
-# FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE 
-# COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, 
-# INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
-# BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS 
-# OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED 
-# AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, 
-# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF 
-# THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH 
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+# FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+# COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+# INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+# BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS
+# OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED
+# AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
+# THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
 # DAMAGE.
 #
 # Name    : checksec.sh
@@ -42,16 +42,16 @@
 #
 # Description:
 #
-# Modern Linux distributions offer some mitigation techniques to make it 
-# harder to exploit software vulnerabilities reliably. Mitigations such 
-# as RELRO, NoExecute (NX), Stack Canaries, Address Space Layout 
-# Randomization (ASLR) and Position Independent Executables (PIE) have 
-# made reliably exploiting any vulnerabilities that do exist far more 
-# challenging. The checksec.sh script is designed to test what *standard* 
-# Linux OS and PaX (http://pax.grsecurity.net/) security features are being 
+# Modern Linux distributions offer some mitigation techniques to make it
+# harder to exploit software vulnerabilities reliably. Mitigations such
+# as RELRO, NoExecute (NX), Stack Canaries, Address Space Layout
+# Randomization (ASLR) and Position Independent Executables (PIE) have
+# made reliably exploiting any vulnerabilities that do exist far more
+# challenging. The checksec.sh script is designed to test what *standard*
+# Linux OS and PaX (http://pax.grsecurity.net/) security features are being
 # used.
 #
-# As of version 1.3 the script also lists the status of various Linux kernel 
+# As of version 1.3 the script also lists the status of various Linux kernel
 # protection mechanisms.
 #
 # Credits:
@@ -59,12 +59,27 @@
 # Thanks to Brad Spengler (grsecurity.net) for the PaX support.
 # Thanks to Jon Oberheide (jon.oberheide.org) for the kernel support.
 # Thanks to Ollie Whitehouse (Research In Motion) for rpath/runpath support.
-# 
+#
 # Others that contributed to checksec.sh (in no particular order):
 #
 # Simon Ruderich, Denis Scherbakov, Stefan Kuttler, Radoslaw Madej,
-# Anthony G. Basile, Martin Vaeth and Brian Davis. 
+# Anthony G. Basile, Martin Vaeth and Brian Davis.
 #
+
+PSBIN=/usr/bin/ps
+AWKBIN=/usr/bin/awk
+CATBIN=/usr/bin/cat
+CUTBIN=/usr/bin/cut
+SEDBIN=/usr/bin/sed
+FILEBIN=/usr/bin/file
+FINDBIN=/usr/bin/find
+GREPBIN=/usr/bin/grep
+HEADBIN=/usr/bin/head
+SORTBIN=/usr/bin/sort
+ZCATBIN=/usr/bin/zcat
+XARGSBIN=/usr/bin/xargs
+READELFBIN=/usr/bin/readelf
+READLINKBIN=/usr/bin/readlink
 
 # global vars
 have_readelf=1
@@ -78,11 +93,12 @@ FS_cnt_unchecked=0
 FS_chk_func_libc=0
 FS_functions=0
 FS_libc=0
- 
+
 # version information
 version() {
   echo "checksec v1.5, Tobias Klein, www.trapkit.de, November 2011"
-  echo 
+  echo "checksec v1.5.1 Kyle Wickens, github.com/z0mb13w4r, November 2026"
+  echo
 }
 
 # help
@@ -132,19 +148,19 @@ root_privs () {
 
 # check if input is numeric
 isNumeric () {
-  echo "$@" | grep -q -v "[^0-9]"
+  echo "$@" | ${GREPBIN} -q -v "[^0-9]"
 }
 
 # check if input is a string
 isString () {
-  echo "$@" | grep -q -v "[^A-Za-z]"
+  echo "$@" | ${GREPBIN} -q -v "[^A-Za-z]"
 }
 
 # check file(s)
 filecheck() {
   # check for RELRO support
-  if readelf -l $1 2>/dev/null | grep -q 'GNU_RELRO'; then
-    if readelf -d $1 2>/dev/null | grep -q 'BIND_NOW'; then
+  if ${READELFBIN} -l $1 2>/dev/null | ${GREPBIN} -q 'GNU_RELRO'; then
+    if ${READELFBIN} -d $1 2>/dev/null | ${GREPBIN} -q 'BIND_NOW'; then
       echo -n -e '\033[32mFull RELRO   \033[m   '
     else
       echo -n -e '\033[33mPartial RELRO\033[m   '
@@ -154,40 +170,40 @@ filecheck() {
   fi
 
   # check for stack canary support
-  if readelf -s $1 2>/dev/null | grep -q '__stack_chk_fail'; then
+  if ${READELFBIN} -s $1 2>/dev/null | ${GREPBIN} -q '__stack_chk_fail'; then
     echo -n -e '\033[32mCanary found   \033[m   '
   else
     echo -n -e '\033[31mNo canary found\033[m   '
   fi
 
   # check for NX support
-  if readelf -W -l $1 2>/dev/null | grep 'GNU_STACK' | grep -q 'RWE'; then
+  if ${READELFBIN} -W -l $1 2>/dev/null | ${GREPBIN} 'GNU_STACK' | ${GREPBIN} -q 'RWE'; then
     echo -n -e '\033[31mNX disabled\033[m   '
   else
     echo -n -e '\033[32mNX enabled \033[m   '
-  fi 
+  fi
 
   # check for PIE support
-  if readelf -h $1 2>/dev/null | grep -q 'Type:[[:space:]]*EXEC'; then
+  if ${READELFBIN} -h $1 2>/dev/null | ${GREPBIN} -q 'Type:[[:space:]]*EXEC'; then
     echo -n -e '\033[31mNo PIE       \033[m   '
-  elif readelf -h $1 2>/dev/null | grep -q 'Type:[[:space:]]*DYN'; then
-    if readelf -d $1 2>/dev/null | grep -q '(DEBUG)'; then
+  elif ${READELFBIN} -h $1 2>/dev/null | ${GREPBIN} -q 'Type:[[:space:]]*DYN'; then
+    if ${READELFBIN} -d $1 2>/dev/null | ${GREPBIN} -q '(DEBUG)'; then
       echo -n -e '\033[32mPIE enabled  \033[m   '
-    else   
+    else
       echo -n -e '\033[33mDSO          \033[m   '
     fi
   else
     echo -n -e '\033[33mNot an ELF file\033[m   '
-  fi 
+  fi
 
   # check for rpath / run path
-  if readelf -d $1 2>/dev/null | grep -q 'rpath'; then
+  if ${READELFBIN} -d $1 2>/dev/null | ${GREPBIN} -q 'rpath'; then
    echo -n -e '\033[31mRPATH    \033[m  '
   else
    echo -n -e '\033[32mNo RPATH \033[m  '
   fi
 
-  if readelf -d $1 2>/dev/null | grep -q 'runpath'; then
+  if ${READELFBIN} -d $1 2>/dev/null | ${GREPBIN} -q 'runpath'; then
    echo -n -e '\033[31mRUNPATH    \033[m  '
   else
    echo -n -e '\033[32mNo RUNPATH \033[m  '
@@ -197,9 +213,9 @@ filecheck() {
 # check process(es)
 proccheck() {
   # check for RELRO support
-  if readelf -l $1/exe 2>/dev/null | grep -q 'Program Headers'; then
-    if readelf -l $1/exe 2>/dev/null | grep -q 'GNU_RELRO'; then
-      if readelf -d $1/exe 2>/dev/null | grep -q 'BIND_NOW'; then
+  if ${READELFBIN} -l $1/exe 2>/dev/null | ${GREPBIN} -q 'Program Headers'; then
+    if ${READELFBIN} -l $1/exe 2>/dev/null | ${GREPBIN} -q 'GNU_RELRO'; then
+      if ${READELFBIN} -d $1/exe 2>/dev/null | ${GREPBIN} -q 'BIND_NOW'; then
         echo -n -e '\033[32mFull RELRO       \033[m '
       else
         echo -n -e '\033[33mPartial RELRO    \033[m '
@@ -213,8 +229,8 @@ proccheck() {
   fi
 
   # check for stack canary support
-  if readelf -s $1/exe 2>/dev/null | grep -q 'Symbol table'; then
-    if readelf -s $1/exe 2>/dev/null | grep -q '__stack_chk_fail'; then
+  if ${READELFBIN} -s $1/exe 2>/dev/null | ${GREPBIN} -q 'Symbol table'; then
+    if ${READELFBIN} -s $1/exe 2>/dev/null | ${GREPBIN} -q '__stack_chk_fail'; then
       echo -n -e '\033[32mCanary found         \033[m  '
     else
       echo -n -e '\033[31mNo canary found      \033[m  '
@@ -228,11 +244,11 @@ proccheck() {
   fi
 
   # first check for PaX support
-  if cat $1/status 2> /dev/null | grep -q 'PaX:'; then
-    pageexec=( $(cat $1/status 2> /dev/null | grep 'PaX:' | cut -b6) )
-    segmexec=( $(cat $1/status 2> /dev/null | grep 'PaX:' | cut -b10) )
-    mprotect=( $(cat $1/status 2> /dev/null | grep 'PaX:' | cut -b8) )
-    randmmap=( $(cat $1/status 2> /dev/null | grep 'PaX:' | cut -b9) )
+  if ${CATBIN} $1/status 2> /dev/null | ${GREPBIN} -q 'PaX:'; then
+    pageexec=( $(${CATBIN} $1/status 2> /dev/null | ${GREPBIN} 'PaX:' | ${CUTBIN} -b6) )
+    segmexec=( $(${CATBIN} $1/status 2> /dev/null | ${GREPBIN} 'PaX:' | ${CUTBIN} -b10) )
+    mprotect=( $(${CATBIN} $1/status 2> /dev/null | ${GREPBIN} 'PaX:' | ${CUTBIN} -b8) )
+    randmmap=( $(${CATBIN} $1/status 2> /dev/null | ${GREPBIN} 'PaX:' | ${CUTBIN} -b9) )
     if [[ "$pageexec" = "P" || "$segmexec" = "S" ]] && [[ "$mprotect" = "M" && "$randmmap" = "R" ]] ; then
       echo -n -e '\033[32mPaX enabled\033[m   '
     elif [[ "$pageexec" = "p" && "$segmexec" = "s" && "$randmmap" = "R" ]] ; then
@@ -247,19 +263,19 @@ proccheck() {
       echo -n -e '\033[31mPaX disabled\033[m  '
     fi
   # fallback check for NX support
-  elif readelf -W -l $1/exe 2>/dev/null | grep 'GNU_STACK' | grep -q 'RWE'; then
+  elif ${READELFBIN} -W -l $1/exe 2>/dev/null | ${GREPBIN} 'GNU_STACK' | ${GREPBIN} -q 'RWE'; then
     echo -n -e '\033[31mNX disabled\033[m   '
   else
     echo -n -e '\033[32mNX enabled \033[m   '
-  fi 
+  fi
 
   # check for PIE support
-  if readelf -h $1/exe 2>/dev/null | grep -q 'Type:[[:space:]]*EXEC'; then
+  if ${READELFBIN} -h $1/exe 2>/dev/null | ${GREPBIN} -q 'Type:[[:space:]]*EXEC'; then
     echo -n -e '\033[31mNo PIE               \033[m   '
-  elif readelf -h $1/exe 2>/dev/null | grep -q 'Type:[[:space:]]*DYN'; then
-    if readelf -d $1/exe 2>/dev/null | grep -q '(DEBUG)'; then
+  elif ${READELFBIN} -h $1/exe 2>/dev/null | ${GREPBIN} -q 'Type:[[:space:]]*DYN'; then
+    if ${READELFBIN} -d $1/exe 2>/dev/null | ${GREPBIN} -q '(DEBUG)'; then
       echo -n -e '\033[32mPIE enabled          \033[m   '
-    else   
+    else
       echo -n -e '\033[33mDynamic Shared Object\033[m   '
     fi
   else
@@ -269,10 +285,10 @@ proccheck() {
 
 # check mapped libraries
 libcheck() {
-  libs=( $(awk '{ print $6 }' /proc/$1/maps | grep '/' | sort -u | xargs file | grep ELF | awk '{ print $1 }' | sed 's/:/ /') )
- 
+  libs=( $(${AWKBIN} '{ print $6 }' /proc/$1/maps | ${GREPBIN} '/' | ${SORTBIN} -u | ${XARGSBIN} ${FILEBIN} | ${GREPBIN} ELF | ${AWKBIN} '{ print $1 }' | ${SEDBIN} 's/:/ /') )
+
   printf "\n* Loaded libraries (file information, # of mapped files: ${#libs[@]}):\n\n"
-  
+
   for element in $(seq 0 $((${#libs[@]} - 1)))
   do
     echo "  ${libs[$element]}:"
@@ -285,14 +301,14 @@ libcheck() {
 # check for system-wide ASLR support
 aslrcheck() {
   # PaX ASLR support
-  if !(cat /proc/1/status 2> /dev/null | grep -q 'Name:') ; then
+  if !(${CATBIN} /proc/1/status 2> /dev/null | ${GREPBIN} -q 'Name:') ; then
     echo -n -e ':\033[33m insufficient privileges for PaX ASLR checks\033[m\n'
     echo -n -e '  Fallback to standard Linux ASLR check'
   fi
-  
-  if cat /proc/1/status 2> /dev/null | grep -q 'PaX:'; then
+
+  if ${CATBIN} /proc/1/status 2> /dev/null | ${GREPBIN} -q 'PaX:'; then
     printf ": "
-    if cat /proc/1/status 2> /dev/null | grep 'PaX:' | grep -q 'R'; then
+    if ${CATBIN} /proc/1/status 2> /dev/null | ${GREPBIN} 'PaX:' | ${GREPBIN} -q 'R'; then
       echo -n -e '\033[32mPaX ASLR enabled\033[m\n\n'
     else
       echo -n -e '\033[31mPaX ASLR disabled\033[m\n\n'
@@ -301,29 +317,29 @@ aslrcheck() {
     # standard Linux 'kernel.randomize_va_space' ASLR support
     # (see the kernel file 'Documentation/sysctl/kernel.txt' for a detailed description)
     printf " (kernel.randomize_va_space): "
-    if /sbin/sysctl -a 2>/dev/null | grep -q 'kernel.randomize_va_space = 1'; then
+    if /sbin/sysctl -a 2>/dev/null | ${GREPBIN} -q 'kernel.randomize_va_space = 1'; then
       echo -n -e '\033[33mOn (Setting: 1)\033[m\n\n'
       printf "  Description - Make the addresses of mmap base, stack and VDSO page randomized.\n"
       printf "  This, among other things, implies that shared libraries will be loaded to \n"
       printf "  random addresses. Also for PIE-linked binaries, the location of code start\n"
       printf "  is randomized. Heap addresses are *not* randomized.\n\n"
-    elif /sbin/sysctl -a 2>/dev/null | grep -q 'kernel.randomize_va_space = 2'; then
+    elif /sbin/sysctl -a 2>/dev/null | ${GREPBIN} -q 'kernel.randomize_va_space = 2'; then
       echo -n -e '\033[32mOn (Setting: 2)\033[m\n\n'
       printf "  Description - Make the addresses of mmap base, heap, stack and VDSO page randomized.\n"
       printf "  This, among other things, implies that shared libraries will be loaded to random \n"
       printf "  addresses. Also for PIE-linked binaries, the location of code start is randomized.\n\n"
-    elif /sbin/sysctl -a 2>/dev/null | grep -q 'kernel.randomize_va_space = 0'; then
+    elif /sbin/sysctl -a 2>/dev/null | ${GREPBIN} -q 'kernel.randomize_va_space = 0'; then
       echo -n -e '\033[31mOff (Setting: 0)\033[m\n'
     else
       echo -n -e '\033[31mNot supported\033[m\n'
     fi
     printf "  See the kernel file 'Documentation/sysctl/kernel.txt' for more details.\n\n"
-  fi 
+  fi
 }
 
 # check cpu nx flag
 nxcheck() {
-  if grep -q nx /proc/cpuinfo; then
+  if ${GREPBIN} -q nx /proc/cpuinfo; then
     echo -n -e '\033[32mYes\033[m\n\n'
   else
     echo -n -e '\033[31mNo\033[m\n\n'
@@ -337,16 +353,16 @@ kernelcheck() {
   printf "  userspace processes, this option lists the status of kernel configuration\n"
   printf "  options that harden the kernel itself against attack.\n\n"
   printf "  Kernel config: "
- 
+
   if [ -f /proc/config.gz ] ; then
-    kconfig="zcat /proc/config.gz"
+    kconfig="${ZCATBIN} /proc/config.gz"
     printf "\033[32m/proc/config.gz\033[m\n\n"
   elif [ -f /boot/config-`uname -r` ] ; then
-    kconfig="cat /boot/config-`uname -r`"
+    kconfig="${CATBIN} /boot/config-`uname -r`"
     printf "\033[33m/boot/config-`uname -r`\033[m\n\n"
     printf "  Warning: The config on disk may not represent running kernel config!\n\n";
   elif [ -f "${KBUILD_OUTPUT:-/usr/src/linux}"/.config ] ; then
-    kconfig="cat ${KBUILD_OUTPUT:-/usr/src/linux}/.config"
+    kconfig="${CATBIN} ${KBUILD_OUTPUT:-/usr/src/linux}/.config"
     printf "\033[33m%s\033[m\n\n" "${KBUILD_OUTPUT:-/usr/src/linux}/.config"
     printf "  Warning: The config on disk may not represent running kernel config!\n\n";
   else
@@ -355,34 +371,34 @@ kernelcheck() {
   fi
 
   printf "  GCC stack protector support:            "
-  if $kconfig | grep -qi 'CONFIG_CC_STACKPROTECTOR=y'; then
+  if $kconfig | ${GREPBIN} -qi 'CONFIG_CC_STACKPROTECTOR=y'; then
     printf "\033[32mEnabled\033[m\n"
   else
     printf "\033[31mDisabled\033[m\n"
   fi
 
   printf "  Strict user copy checks:                "
-  if $kconfig | grep -qi 'CONFIG_DEBUG_STRICT_USER_COPY_CHECKS=y'; then
+  if $kconfig | ${GREPBIN} -qi 'CONFIG_DEBUG_STRICT_USER_COPY_CHECKS=y'; then
     printf "\033[32mEnabled\033[m\n"
   else
     printf "\033[31mDisabled\033[m\n"
   fi
 
   printf "  Enforce read-only kernel data:          "
-  if $kconfig | grep -qi 'CONFIG_DEBUG_RODATA=y'; then
+  if $kconfig | ${GREPBIN} -qi 'CONFIG_DEBUG_RODATA=y'; then
     printf "\033[32mEnabled\033[m\n"
   else
     printf "\033[31mDisabled\033[m\n"
   fi
   printf "  Restrict /dev/mem access:               "
-  if $kconfig | grep -qi 'CONFIG_STRICT_DEVMEM=y'; then
+  if $kconfig | ${GREPBIN} -qi 'CONFIG_STRICT_DEVMEM=y'; then
     printf "\033[32mEnabled\033[m\n"
   else
     printf "\033[31mDisabled\033[m\n"
   fi
 
   printf "  Restrict /dev/kmem access:              "
-  if $kconfig | grep -qi 'CONFIG_DEVKMEM=y'; then
+  if $kconfig | ${GREPBIN} -qi 'CONFIG_DEVKMEM=y'; then
     printf "\033[31mDisabled\033[m\n"
   else
     printf "\033[32mEnabled\033[m\n"
@@ -391,68 +407,68 @@ kernelcheck() {
   printf "\n"
   printf "* grsecurity / PaX: "
 
-  if $kconfig | grep -qi 'CONFIG_GRKERNSEC=y'; then
-    if $kconfig | grep -qi 'CONFIG_GRKERNSEC_HIGH=y'; then
+  if $kconfig | ${GREPBIN} -qi 'CONFIG_GRKERNSEC=y'; then
+    if $kconfig | ${GREPBIN} -qi 'CONFIG_GRKERNSEC_HIGH=y'; then
       printf "\033[32mHigh GRKERNSEC\033[m\n\n"
-    elif $kconfig | grep -qi 'CONFIG_GRKERNSEC_MEDIUM=y'; then
+    elif $kconfig | ${GREPBIN} -qi 'CONFIG_GRKERNSEC_MEDIUM=y'; then
       printf "\033[33mMedium GRKERNSEC\033[m\n\n"
-    elif $kconfig | grep -qi 'CONFIG_GRKERNSEC_LOW=y'; then
+    elif $kconfig | ${GREPBIN} -qi 'CONFIG_GRKERNSEC_LOW=y'; then
       printf "\033[31mLow GRKERNSEC\033[m\n\n"
     else
       printf "\033[33mCustom GRKERNSEC\033[m\n\n"
     fi
 
     printf "  Non-executable kernel pages:            "
-    if $kconfig | grep -qi 'CONFIG_PAX_KERNEXEC=y'; then
+    if $kconfig | ${GREPBIN} -qi 'CONFIG_PAX_KERNEXEC=y'; then
       printf "\033[32mEnabled\033[m\n"
     else
       printf "\033[31mDisabled\033[m\n"
     fi
 
     printf "  Prevent userspace pointer deref:        "
-    if $kconfig | grep -qi 'CONFIG_PAX_MEMORY_UDEREF=y'; then
+    if $kconfig | ${GREPBIN} -qi 'CONFIG_PAX_MEMORY_UDEREF=y'; then
       printf "\033[32mEnabled\033[m\n"
     else
       printf "\033[31mDisabled\033[m\n"
     fi
 
     printf "  Prevent kobject refcount overflow:      "
-    if $kconfig | grep -qi 'CONFIG_PAX_REFCOUNT=y'; then
+    if $kconfig | ${GREPBIN} -qi 'CONFIG_PAX_REFCOUNT=y'; then
       printf "\033[32mEnabled\033[m\n"
     else
       printf "\033[31mDisabled\033[m\n"
     fi
 
     printf "  Bounds check heap object copies:        "
-    if $kconfig | grep -qi 'CONFIG_PAX_USERCOPY=y'; then
+    if $kconfig | ${GREPBIN} -qi 'CONFIG_PAX_USERCOPY=y'; then
       printf "\033[32mEnabled\033[m\n"
     else
       printf "\033[31mDisabled\033[m\n"
     fi
 
     printf "  Disable writing to kmem/mem/port:       "
-    if $kconfig | grep -qi 'CONFIG_GRKERNSEC_KMEM=y'; then
+    if $kconfig | ${GREPBIN} -qi 'CONFIG_GRKERNSEC_KMEM=y'; then
       printf "\033[32mEnabled\033[m\n"
     else
       printf "\033[31mDisabled\033[m\n"
     fi
 
     printf "  Disable privileged I/O:                 "
-    if $kconfig | grep -qi 'CONFIG_GRKERNSEC_IO=y'; then
+    if $kconfig | ${GREPBIN} -qi 'CONFIG_GRKERNSEC_IO=y'; then
       printf "\033[32mEnabled\033[m\n"
     else
       printf "\033[31mDisabled\033[m\n"
     fi
 
     printf "  Harden module auto-loading:             "
-    if $kconfig | grep -qi 'CONFIG_GRKERNSEC_MODHARDEN=y'; then
+    if $kconfig | ${GREPBIN} -qi 'CONFIG_GRKERNSEC_MODHARDEN=y'; then
       printf "\033[32mEnabled\033[m\n"
     else
       printf "\033[31mDisabled\033[m\n"
     fi
 
     printf "  Hide kernel symbols:                    "
-    if $kconfig | grep -qi 'CONFIG_GRKERNSEC_HIDESYM=y'; then
+    if $kconfig | ${GREPBIN} -qi 'CONFIG_GRKERNSEC_HIDESYM=y'; then
       printf "\033[32mEnabled\033[m\n"
     else
       printf "\033[31mDisabled\033[m\n"
@@ -466,8 +482,8 @@ kernelcheck() {
   printf "\n"
   printf "* Kernel Heap Hardening: "
 
-  if $kconfig | grep -qi 'CONFIG_KERNHEAP=y'; then
-    if $kconfig | grep -qi 'CONFIG_KERNHEAP_FULLPOISON=y'; then
+  if $kconfig | ${GREPBIN} -qi 'CONFIG_KERNHEAP=y'; then
+    if $kconfig | ${GREPBIN} -qi 'CONFIG_KERNHEAP_FULLPOISON=y'; then
       printf "\033[32mFull KERNHEAP\033[m\n\n"
     else
       printf "\033[33mPartial KERNHEAP\033[m\n\n"
@@ -548,8 +564,8 @@ FS_summary() {
 
 # --- FORTIFY_SOURCE subfunctions (end) ---
 
-if !(command_exists readelf) ; then
-  printf "\033[31mWarning: 'readelf' not found! It's required for most checks.\033[m\n\n"
+if !(command_exists ${READELFBIN}) ; then
+  printf "\033[31mWarning: '${READELFBIN}' not found! It's required for most checks.\033[m\n\n"
   have_readelf=0
 fi
 
@@ -578,7 +594,7 @@ case "$1" in
     exit 1
   fi
   # remove trailing slashes
-  tempdir=`echo $2 | sed -e "s/\/*$//"`
+  tempdir=`echo $2 | ${SEDBIN} -e "s/\/*$//"`
   if [ ! -d $tempdir ] ; then
     printf "\033[31mError: The directory '$tempdir' does not exist.\033[m\n\n"
     exit 1
@@ -592,16 +608,16 @@ case "$1" in
         printf "\033[31mError: No read permissions for '$tempdir/$N' (run as root).\033[m\n"
       else
         # ELF executable?
-        out=`file $N`
+        out=`${FILEBIN} $N`
         if [[ ! $out =~ ELF ]] ; then
            if [ "$verbose" = "true" ] ; then
              printf "\033[34m*** Not an ELF file: $tempdir/"
-             file $N
+             ${FILEBIN} $N
              printf "\033[m"
            fi
-        else 
+        else
           filecheck $N
-          if [ `find $tempdir/$N \( -perm -004000 -o -perm -002000 \) -type f -print` ]; then
+          if [ `${FINDBIN} $tempdir/$N \( -perm -004000 -o -perm -002000 \) -type f -print` ]; then
             printf "\033[37;41m%s%s\033[m" $2 $N
           else
             printf "%s%s" $tempdir/ $N
@@ -613,7 +629,7 @@ case "$1" in
   done
   exit 0
   ;;
- 
+
  --file)
   if [ $have_readelf -eq 0 ] ; then
     exit 1
@@ -633,16 +649,16 @@ case "$1" in
     exit 1
   fi
   # ELF executable?
-  out=`file $2`
+  out=`${FILEBIN} $2`
   if [[ ! $out =~ ELF ]] ; then
     printf "\033[31mError: Not an ELF file: "
-    file $2
+    ${FILEBIN} $2
     printf "\033[m\n"
     exit 1
   fi
   printf "RELRO           STACK CANARY      NX            PIE             RPATH      RUNPATH      FILE\n"
   filecheck $2
-  if [ `find $2 \( -perm -004000 -o -perm -002000 \) -type f -print` ] ; then
+  if [ `${FINDBIN} $2 \( -perm -004000 -o -perm -002000 \) -type f -print` ] ; then
     printf "\033[37;41m%s%s\033[m" $2 $N
   else
     printf "%s" $2
@@ -659,11 +675,11 @@ case "$1" in
   printf "* System-wide ASLR"
   aslrcheck
   printf "* Does the CPU support NX: "
-  nxcheck 
+  nxcheck
   printf "         COMMAND    PID RELRO             STACK CANARY           NX/PaX        PIE\n"
   for N in [1-9]*; do
-    if [ $N != $$ ] && readlink -q $N/exe > /dev/null; then
-      printf "%16s" `head -1 $N/status | cut -b 7-`
+    if [ $N != $$ ] && ${READLINKBIN} -q $N/exe > /dev/null; then
+      printf "%16s" `${HEADBIN} -1 $N/status | ${CUTBIN} -b 7-`
       printf "%7d " $N
       proccheck $N
       echo
@@ -672,9 +688,9 @@ case "$1" in
   if [ ! -e /usr/bin/id ] ; then
     printf "\n\033[33mNote: If you are running 'checksec.sh' as an unprivileged user, you\n"
     printf "      will not see all processes. Please run the script as root.\033[m\n\n"
-  else 
+  else
     if !(root_privs) ; then
-      printf "\n\033[33mNote: You are running 'checksec.sh' as an unprivileged user.\n" 
+      printf "\n\033[33mNote: You are running 'checksec.sh' as an unprivileged user.\n"
       printf "      Too see all processes, please run the script as root.\033[m\n\n"
     fi
   fi
@@ -699,9 +715,9 @@ case "$1" in
   printf "* Does the CPU support NX: "
   nxcheck
   printf "         COMMAND    PID RELRO             STACK CANARY           NX/PaX        PIE\n"
-  for N in `ps -Ao pid,comm | grep $2 | cut -b1-6`; do
+  for N in `${PSBIN} -Ao pid,comm | ${GREPBIN} $2 | ${CUTBIN} -b1-6`; do
     if [ -d $N ] ; then
-      printf "%16s" `head -1 $N/status | cut -b 7-`
+      printf "%16s" `${HEADBIN} -1 $N/status | ${CUTBIN} -b 7-`
       printf "%7d " $N
       # read permissions?
       if [ ! -r $N/exe ] ; then
@@ -709,7 +725,7 @@ case "$1" in
           printf "\033[31mNo read permissions for '/proc/$N/exe' (run as root).\033[m\n\n"
           exit 1
         fi
-        if [ ! `readlink $N/exe` ] ; then
+        if [ ! `${READLINKBIN} $N/exe` ] ; then
           printf "\033[31mPermission denied. Requested process ID belongs to a kernel thread.\033[m\n\n"
           exit 1
         fi
@@ -743,7 +759,7 @@ case "$1" in
   printf "         COMMAND    PID RELRO             STACK CANARY           NX/PaX        PIE\n"
   N=$2
   if [ -d $N ] ; then
-    printf "%16s" `head -1 $N/status | cut -b 7-`
+    printf "%16s" `${HEADBIN} -1 $N/status | ${CUTBIN} -b 7-`
     printf "%7d " $N
     # read permissions?
     if [ ! -r $N/exe ] ; then
@@ -751,7 +767,7 @@ case "$1" in
         printf "\033[31mNo read permissions for '/proc/$N/exe' (run as root).\033[m\n\n"
         exit 1
       fi
-      if [ ! `readlink $N/exe` ] ; then
+      if [ ! `${READLINKBIN} $N/exe` ] ; then
         printf "\033[31mPermission denied. Requested process ID belongs to a kernel thread.\033[m\n\n"
         exit 1
       fi
@@ -790,10 +806,10 @@ case "$1" in
     exit 1
   fi
   # ELF executable?
-  out=`file $2`
+  out=`${FILEBIN} $2`
   if [[ ! $out =~ ELF ]] ; then
     printf "\033[31mError: Not an ELF file: "
-    file $2
+    ${FILEBIN} $2
     printf "\033[m\n"
     exit 1
   fi
@@ -810,8 +826,8 @@ case "$1" in
     exit 1
   fi
 
-  FS_chk_func_libc=( $(readelf -s $FS_libc | grep _chk@@ | awk '{ print $8 }' | cut -c 3- | sed -e 's/_chk@.*//') )
-  FS_functions=( $(readelf -s $2 | awk '{ print $8 }' | sed 's/_*//' | sed -e 's/@.*//') )
+  FS_chk_func_libc=( $(${READELFBIN} -s $FS_libc | ${GREPBIN} _chk@@ | ${AWKBIN} '{ print $8 }' | ${CUTBIN} -c 3- | ${SEDBIN} -e 's/_chk@.*//') )
+  FS_functions=( $(${READELFBIN} -s $2 | ${AWKBIN} '{ print $8 }' | ${SEDBIN} 's/_*//' | ${SEDBIN} -e 's/@.*//') )
 
   FS_libc_check
   FS_binary_check
@@ -842,7 +858,7 @@ case "$1" in
         printf "\033[31mNo read permissions for '/proc/$N/exe' (run as root).\033[m\n\n"
         exit 1
       fi
-      if [ ! `readlink $N/exe` ] ; then
+      if [ ! `${READLINKBIN} $N/exe` ] ; then
         printf "\033[31mPermission denied. Requested process ID belongs to a kernel thread.\033[m\n\n"
         exit 1
       fi
@@ -860,9 +876,9 @@ case "$1" in
       printf "\033[31mError: libc not found.\033[m\n\n"
       exit 1
     fi
-    printf "* Process name (PID)                         : %s (%d)\n" `head -1 $N/status | cut -b 7-` $N
-    FS_chk_func_libc=( $(readelf -s $FS_libc | grep _chk@@ | awk '{ print $8 }' | cut -c 3- | sed -e 's/_chk@.*//') )
-    FS_functions=( $(readelf -s $2/exe | awk '{ print $8 }' | sed 's/_*//' | sed -e 's/@.*//') )
+    printf "* Process name (PID)                         : %s (%d)\n" `${HEADBIN} -1 $N/status | ${CUTBIN} -b 7-` $N
+    FS_chk_func_libc=( $(${READELFBIN} -s $FS_libc | ${GREPBIN} _chk@@ | ${AWKBIN} '{ print $8 }' | ${CUTBIN} -c 3- | ${SEDBIN} -e 's/_chk@.*//') )
+    FS_functions=( $(${READELFBIN} -s $2/exe | ${AWKBIN} '{ print $8 }' | ${SEDBIN} 's/_*//' | ${SEDBIN} -e 's/@.*//') )
 
     FS_libc_check
     FS_binary_check
@@ -880,3 +896,4 @@ case "$1" in
   exit 1
   ;;
 esac
+
