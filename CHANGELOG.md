@@ -1,3 +1,14 @@
+v1.11 - ??/11/2026
+-----------------------------------------------------------------------
+[+] Updated REMnux upgrade script.  
+[+] Updated the firmware enumeration script.  
+[+] Added more privilege escalation checks.  
+[+] Added TShark indicators of compromise script.  
+[+] Added binary security inspection script.  
+[+] Updated man pages.  
+[+] Bug fixes.  
+
+
 v1.10 - 27/10/2026
 -----------------------------------------------------------------------
 [+] Updated REMnux upgrade script.  
