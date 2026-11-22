@@ -5,13 +5,23 @@ These tools were originally designed as part of a research project on industrial
 This suite of tools was inspired by a problem I encountered while comparing two subtly different executables that were compiled from the same source code. Also, having binaries built with different cross-compilers raises the question of which flavour of readelf or objdump to use? After I reached 12 and started thinking about a simple solution that could be automated and didn't require a $ 7,000-a-year software license.
 
 These problems are solved by:
+
 1. The **Heuristic Assembly Language Analysis Engine (HALAE)**, which converts x86-64, ARM, MIPS or RISC-V assembly language into an Intermediate Language (IL) for comparison and analysis.
-2. Tools that deploy and upgrade **REMnux: A Linux Toolkit for Malware Analysis**.
-3. Tools that automate **Firmware Analysis**.
+2. Tools that deploy **REMnux: A Linux Toolkit for Malware Analysis** and upgrade with my favourite tools that I use for vulnerability security research and malware analsis.
+3. Tools that automate **Privilege Escalation**.
+4. Tools that automate **Firmware Analysis**.
 
 ![WELCOME](https://github.com/z0mb13w4r/z0mb13w4r/blob/main/objtools-image.png)
 
-**z0mb13w4r** is a script that installs REMnux on top of Ubuntu 24.04 LTS, then installs a collection of my favourite tools which I use for vulnerability security research and malware analsis. [READ MORE...](INSTALL.md)
+**z0mb13w4r** is a script that installs REMnux on top of Ubuntu 24.04 LTS Server, then installs a collection of my favourite tools which I use for vulnerability security research and malware analsis. [READ MORE...](INSTALL.md)
+
+**binwalk3, sasquatch & sasquatch-v4be** are open-source command-line tools used to scan binary files - especially firmware images, compressed data, executable code, and file systems - and to extract them.
+
+**blobwalker-ng.sh** is a script for quickly analysing an unknown binary's characteristics.
+
+**check-duplicates.sh**  is a script that analyses directories for duplicate files.
+
+**checksec.sh** is a security inspection script that checks binary mitigations, running processes, and kernel hardening settings (such as RELRO, Stack Canaries, NX, PIE, FORTIFY_SOURCE, and CFI).
 
 **convert-ng** is a Swiss Army Knife for manipulating data in complex ways using operations, xor, addition, subtraction, logical shifts and rotations, base32, base58, base64, base85 and vigeneree cipher. [READ MORE...](https://github.com/z0mb13w4r/objtools/wiki/convert%E2%80%90ng)
 
@@ -36,6 +46,8 @@ These problems are solved by:
 **readpe-ng** displays information about one or more PE format object files. [READ MORE...](https://github.com/z0mb13w4r/objtools/wiki/readpe%E2%80%90ng)
 
 **strings-ng** is a script that is used to print the sequences of printable characters in files. To search for possible privilege escalation, lateral movement, binary execution and data exfiltration methods.
+
+**tshark-iocs.sh** is a script for checking a pcap file for indicators of compromise and network analysis.
 
 **yara-rules-ng** is a bash script that was inspired by the REMnux yara-rules script. This script can be used to scan against a collection of open-source YARA rules, including Yara-Rules Project, Yara-Forge and my collection of YARA rules. [READ MORE...](https://github.com/z0mb13w4r/objtools/wiki/yara%E2%80%90rules%E2%80%90ng)
 
@@ -66,6 +78,8 @@ https://github.com/ssdeep-project/ssdeep - GPL-2.0 license
 https://github.com/davea42/libdwarf-code - LGPL license
 
 https://github.com/packing-box/peid - GPL-3.0 license
+
+https://github.com/refirmlabs/binwalk - MIT License
 
 ### License ###
 
