@@ -33,3 +33,11 @@ cd misc
 make -f <tool name>-ng.mk all
 ```
 
+#### Build Debian package:
+
+
+```bash
+cd misc
+./build.sh
+```
+
