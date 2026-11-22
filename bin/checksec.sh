@@ -66,6 +66,7 @@
 # Anthony G. Basile, Martin Vaeth and Brian Davis.
 #
 
+IDBIN=/usr/bin/id
 PSBIN=/usr/bin/ps
 AWKBIN=/usr/bin/awk
 CATBIN=/usr/bin/cat
@@ -78,8 +79,10 @@ HEADBIN=/usr/bin/head
 SORTBIN=/usr/bin/sort
 ZCATBIN=/usr/bin/zcat
 XARGSBIN=/usr/bin/xargs
-READELFBIN=/usr/bin/readelf
 READLINKBIN=/usr/bin/readlink
+
+READELFBIN=/usr/bin/readelf
+#READELFBIN=/usr/local/bin/readelf-ng
 
 # global vars
 have_readelf=1
@@ -120,6 +123,7 @@ help() {
   echo
   echo "For more information, see:"
   echo "  http://www.trapkit.de/tools/checksec.html"
+  echo "  https://github.com/z0mb13w4r/objtools"
   echo
 }
 
@@ -139,7 +143,7 @@ dir_exists () {
 
 # check user privileges
 root_privs () {
-  if [ $(/usr/bin/id -u) -eq 0 ] ; then
+  if [ $(${IDBIN} -u) -eq 0 ] ; then
     return 0
   else
     return 1
@@ -565,8 +569,13 @@ FS_summary() {
 # --- FORTIFY_SOURCE subfunctions (end) ---
 
 if !(command_exists ${READELFBIN}) ; then
-  printf "\033[31mWarning: '${READELFBIN}' not found! It's required for most checks.\033[m\n\n"
-  have_readelf=0
+  printf "\033[31mWarning: '${READELFBIN}' not found! Downgrading enhanced readelf-ng to standard readelf.\033[m\n\n"
+
+  READELFBIN=/usr/bin/readelf
+  if !(command_exists ${READELFBIN}) ; then
+    printf "\033[31mWarning: '${READELFBIN}' not found! It's required for most checks.\033[m\n\n"
+    have_readelf=0
+  fi
 fi
 
 # parse command-line arguments
