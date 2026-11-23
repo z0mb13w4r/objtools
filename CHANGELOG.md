@@ -5,6 +5,7 @@ v1.11 - ??/11/2026
 [+] Added more privilege escalation checks.  
 [+] Added TShark indicators of compromise script.  
 [+] Added binary security inspection script.  
+[+] Updated Capstone Engine.  
 [+] Updated man pages.  
 [+] Bug fixes.  
 
