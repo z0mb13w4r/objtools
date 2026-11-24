@@ -1,4 +1,4 @@
-v1.11 - ??/11/2026
+v1.11 - 24/11/2026
 -----------------------------------------------------------------------
 [+] Updated REMnux upgrade script.  
 [+] Updated the firmware enumeration script.  
@@ -8,7 +8,6 @@ v1.11 - ??/11/2026
 [+] Updated Capstone Engine.  
 [+] Updated man pages.  
 [+] Bug fixes.  
-
 
 v1.10 - 27/10/2026
 -----------------------------------------------------------------------
