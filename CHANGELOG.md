@@ -1,3 +1,10 @@
+v2.0 - ??/12/2026
+-----------------------------------------------------------------------
+[+] Updated REMnux upgrade script.  
+[+] Updated the firmware enumeration script.  
+[+] Updated man pages.  
+[+] Bug fixes.  
+
 v1.11 - 24/11/2026
 -----------------------------------------------------------------------
 [+] Updated REMnux upgrade script.  
