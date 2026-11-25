@@ -1,11 +1,12 @@
 #!/bin/bash
 
-SCRIPTVERSION=1.2
+SCRIPTVERSION=1.3
 SCRIPTNAME=$(basename "$0")
 
 LSBIN=/usr/bin/ls
 CATBIN=/usr/bin/cat
 CUTBIN=/usr/bin/cut
+SEDBIN=/usr/bin/sed
 FILEBIN=/usr/bin/file
 FINDBIN=/usr/bin/find
 GREPBIN=/usr/bin/grep
@@ -13,6 +14,8 @@ SORTBIN=/usr/bin/sort
 EGREPBIN=/usr/bin/egrep
 XARGSBIN=/usr/bin/xargs
 STRINGBIN=/usr/bin/strings
+
+CHECKSECSCRIPT=/usr/local/bin/checksec.sh
 
 USERNAME=${SUDO_USER}
 PATHNAME=/
@@ -341,8 +344,12 @@ function show_this() {
   ${FINDBIN} ${PATHNAME} -name "ftpput" ! -type d 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -al 2>/dev/null
   echo
   ${FINDBIN} ${PATHNAME} -name "toybox" -type f 2>/dev/null | ${XARGSBIN} -r ${FILEBIN} 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name "toybox" -type f 2>/dev/null | ${XARGSBIN} -r ${CHECKSECSCRIPT} --file 2>/dev/null | ${GREPBIN} -v 'FILE' | ${SEDBIN} -r "s/\x1B\[([0-9]{1,3}(;[0-9]{1,2};?)?)?[mGK]//g"
   ${FINDBIN} ${PATHNAME} -name "busybox" -type f 2>/dev/null | ${XARGSBIN} -r ${FILEBIN} 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name "busybox" -type f 2>/dev/null | ${XARGSBIN} -r ${CHECKSECSCRIPT} --file 2>/dev/null | ${GREPBIN} -v 'FILE' | ${SEDBIN} -r "s/\x1B\[([0-9]{1,3}(;[0-9]{1,2};?)?)?[mGK]//g"
   ${FINDBIN} ${PATHNAME} -name "rustybox" -type f 2>/dev/null | ${XARGSBIN} -r ${FILEBIN} 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name "rustybox" -type f 2>/dev/null | ${XARGSBIN} -r ${CHECKSECSCRIPT} --file 2>/dev/null | ${GREPBIN} -v 'FILE' | ${SEDBIN} -r "s/\x1B\[([0-9]{1,3}(;[0-9]{1,2};?)?)?[mGK]//g"
+
   echo
   ${FINDBIN} ${PATHNAME} -name "busybox" -type f 2>/dev/null | ${XARGSBIN} -r ${STRINGBIN} 2>/dev/null | ${GREPBIN} '[ ][v][^ ]*[.]'
 
