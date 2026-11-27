@@ -12,7 +12,7 @@ These problems are solved by:
 4. Scripts and tools to automate **Firmware Analysis**.
 5. Scripts and tools to automate **Malware Analysis**.
 6. Scripts and plugins to automate **Network Analysis**.
-7. **REMnux Handbook** and **IoT Handbook**.
+7. Manuals **REMnux Handbook**, **IoT Handbook** and **IoT Workbook**.
 
 ![WELCOME](https://github.com/z0mb13w4r/z0mb13w4r/blob/main/objtools-image.png)
 
