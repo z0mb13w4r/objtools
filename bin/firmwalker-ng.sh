@@ -4,6 +4,7 @@ SCRIPTVERSION=1.3
 SCRIPTNAME=$(basename "$0")
 
 LSBIN=/usr/bin/ls
+AWKBIN=/usr/bin/awk
 CATBIN=/usr/bin/cat
 CUTBIN=/usr/bin/cut
 SEDBIN=/usr/bin/sed
@@ -342,6 +343,10 @@ function show_this() {
   ${FINDBIN} ${PATHNAME} -name "openssl" ! -type d 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -al 2>/dev/null
   ${FINDBIN} ${PATHNAME} -name "ftpget" ! -type d 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -al 2>/dev/null
   ${FINDBIN} ${PATHNAME} -name "ftpput" ! -type d 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -al 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name "upnpd" ! -type d 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -al 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name "miniupnpd" ! -type d 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -al 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name "firewall" ! -type d 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -al 2>/dev/null
+  ${FINDBIN} ${PATHNAME} -name "acos_service" ! -type d 2>/dev/null | ${XARGSBIN} -r ${LSBIN} -al 2>/dev/null
   echo
   ${FINDBIN} ${PATHNAME} -name "toybox" -type f 2>/dev/null | ${XARGSBIN} -r ${FILEBIN} 2>/dev/null
   ${FINDBIN} ${PATHNAME} -name "toybox" -type f 2>/dev/null | ${XARGSBIN} -r ${CHECKSECSCRIPT} --file 2>/dev/null | ${GREPBIN} -v 'FILE' | ${SEDBIN} -r "s/\x1B\[([0-9]{1,3}(;[0-9]{1,2};?)?)?[mGK]//g"
@@ -350,8 +355,14 @@ function show_this() {
   ${FINDBIN} ${PATHNAME} -name "rustybox" -type f 2>/dev/null | ${XARGSBIN} -r ${FILEBIN} 2>/dev/null
   ${FINDBIN} ${PATHNAME} -name "rustybox" -type f 2>/dev/null | ${XARGSBIN} -r ${CHECKSECSCRIPT} --file 2>/dev/null | ${GREPBIN} -v 'FILE' | ${SEDBIN} -r "s/\x1B\[([0-9]{1,3}(;[0-9]{1,2};?)?)?[mGK]//g"
 
+  ${FINDBIN} ${PATHNAME} -name "upnpd" -type f 2>/dev/null | ${XARGSBIN} -r ${CHECKSECSCRIPT} --file 2>/dev/null | ${GREPBIN} -v 'FILE' | ${SEDBIN} -r "s/\x1B\[([0-9]{1,3}(;[0-9]{1,2};?)?)?[mGK]//g"
+  ${FINDBIN} ${PATHNAME} -name "miniupnpd" -type f 2>/dev/null | ${XARGSBIN} -r ${CHECKSECSCRIPT} --file 2>/dev/null | ${GREPBIN} -v 'FILE' | ${SEDBIN} -r "s/\x1B\[([0-9]{1,3}(;[0-9]{1,2};?)?)?[mGK]//g"
+  ${FINDBIN} ${PATHNAME} -name "firewall" -type f 2>/dev/null | ${XARGSBIN} -r ${CHECKSECSCRIPT} --file 2>/dev/null | ${GREPBIN} -v 'FILE' | ${SEDBIN} -r "s/\x1B\[([0-9]{1,3}(;[0-9]{1,2};?)?)?[mGK]//g"
+  ${FINDBIN} ${PATHNAME} -name "acos_service" -type f 2>/dev/null | ${XARGSBIN} -r ${CHECKSECSCRIPT} --file 2>/dev/null | ${GREPBIN} -v 'FILE' | ${SEDBIN} -r "s/\x1B\[([0-9]{1,3}(;[0-9]{1,2};?)?)?[mGK]//g"
   echo
-  ${FINDBIN} ${PATHNAME} -name "busybox" -type f 2>/dev/null | ${XARGSBIN} -r ${STRINGBIN} 2>/dev/null | ${GREPBIN} '[ ][v][^ ]*[.]'
+  ${FINDBIN} ${PATHNAME} -name "busybox" -type f 2>/dev/null | ${XARGSBIN} -r ${STRINGBIN} 2>/dev/null | ${GREPBIN} '[ ][v][^ ]*[.]' | ${GREPBIN} -v 'syslogd'
+  ${FINDBIN} ${PATHNAME} -name "upnpd" -type f 2>/dev/null | ${XARGSBIN} -r ${STRINGBIN} 2>/dev/null | ${GREPBIN} -E 'V[0-9.]+' | ${AWKBIN} '{print "upnpd: " $0}'
+  ${FINDBIN} ${PATHNAME} -name "acos_service" -type f 2>/dev/null | ${XARGSBIN} -r ${STRINGBIN} 2>/dev/null | ${GREPBIN} -E 'V[0-9]+[.][0-9]+[.][0-9]+[.][0-9]+' | ${AWKBIN} '{print "acos_service: " $0}'
 
   echo && echo -e "\e[00;33m### WEBFILES #############################################\e[00m"
   zfind "${PATHNAME}" "*.asp"
