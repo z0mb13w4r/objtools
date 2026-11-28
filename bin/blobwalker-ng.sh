@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SCRIPTVERSION=1.0
+SCRIPTVERSION=1.1
 SCRIPTNAME=$(basename "$0")
 
 LSBIN=/usr/bin/ls
@@ -18,6 +18,7 @@ XARGSBIN=/usr/bin/xargs
 BINWALKBIN=/usr/bin/binwalk
 HEXDUMPBIN=/usr/bin/hexdump
 STRINGSBIN=/usr/bin/strings
+SHA256SUMBIN=/usr/bin/sha256sum
 
 USERNAME=${SUDO_USER}
 PATHNAME=
@@ -53,6 +54,7 @@ function show_scanner() {
   ${STRINGSBIN} ${PATHNAME} | ${GREPBIN} -sIEho '(http|https)://[^/"]+' | ${SORTBIN} -u
   ${STRINGSBIN} ${PATHNAME} | ${GREPBIN} -sIEho '(ftp|ftps|tftp)://[^/"]+' | ${SORTBIN} -u
   ${STRINGSBIN} ${PATHNAME} | ${GREPBIN} -sIEho '([[:alnum:]_.-]+@[[:alnum:]_.-]+?\.[[:alpha:].]{2,6})' "$@" | ${SORTBIN} -u
+  ${STRINGSBIN} ${PATHNAME} | ${GREPBIN} -i 'version\|copyright\|password\|root'
 
   #${STRINGSBIN} ${PATHNAME} | ${GREPBIN} ${BINLIST}
 
@@ -73,9 +75,10 @@ function show_strings() {
 function show_this() {
   echo -e "\e[00;33m### SYSTEM FILES #########################################\e[00m"
 
+  zdo "${SHA256SUMBIN} ${PATHNAME}"
   zdo "${FILEBIN} ${PATHNAME}"
   zdo "${BINWALKBIN} ${PATHNAME}"
-  #${BINWALKBIN} -E ${PATHNAME}
+  zdo "${BINWALKBIN} -EJ ${PATHNAME}"
   zdo "${HEXDUMPBIN} -C -n 512 ${PATHNAME}"
   #${HEXDUMPBIN} -C ${PATHNAME} | head
   #zdo "${GDISKBIN} -l ${PATHNAME}"
